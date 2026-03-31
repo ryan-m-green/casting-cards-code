@@ -1,0 +1,122 @@
+﻿<div class="pc scroll-body">
+  <app-dm-nav />
+
+  <p class="pnum dashboard-welcome">Welcome Back, {{ auth.currentUser()?.displayName }}</p>
+
+  <!-- Stats -->
+  <div class="sc section-label-mb">
+    <div class="sv" (click)="goto('/dm/cast')">
+      <div class="sv-value">{{ stats().castCount }}</div>
+      <div class="sv-label">Cast</div>
+    </div>
+    <div class="sv" (click)="goto('/dm/cities')">
+      <div class="sv-value">{{ stats().cityCount }}</div>
+      <div class="sv-label">Cities</div>
+    </div>
+    <div class="sv" (click)="goto('/dm/locations')">
+      <div class="sv-value">{{ stats().locationCount }}</div>
+      <div class="sv-label">Locations</div>
+    </div>
+    <div class="sv" (click)="goto('/dm/campaigns')">
+      <div class="sv-value">{{ stats().campaignCount }}</div>
+      <div class="sv-label">Campaigns</div>
+    </div>
+  </div>
+
+  <!-- Active Campaign -->
+  @if (stats().activeCampaign) {
+    <div class="section-label section-label-mb">Active Campaign</div>
+    <div class="wb accent active-campaign-item" (click)="portalEnter(stats().activeCampaign!.id, stats().activeCampaign!.spineColor)">
+      <div class="wr">
+        <div class="flex-1">
+          <div class="wbl">{{ stats().activeCampaign!.name }}</div>
+          <div class="wbd">{{ stats().activeCampaign!.playerCount }} players · {{ stats().activeCampaign!.cityCount }} cities</div>
+        </div>
+        <span class="list-arrow">›</span>
+      </div>
+    </div>
+
+    <!-- Hidden portal card; cloned as animation ghost -->
+    <div #portalGhostTpl class="portal-card portal-ghost-tpl"
+         [attr.style]="'--portal-color:' + safeColor(stats().activeCampaign!.spineColor)">
+      <div class="portal-title">{{ stats().activeCampaign!.name }}</div>
+      <div class="portal-arch-wrap">
+        <div class="portal-arch">
+          <div class="portal-void"></div>
+          <div class="portal-rim"></div>
+          <div class="portal-spark ps1"></div>
+          <div class="portal-spark ps2"></div>
+          <div class="portal-spark ps3"></div>
+          <div class="portal-spark ps4"></div>
+        </div>
+      </div>
+      <div class="portal-footer">
+        <button class="portal-btn portal-btn--delete">✕ Delete</button>
+        <button class="portal-btn portal-btn--edit">Edit →</button>
+      </div>
+    </div>
+  }
+
+  <div class="section-label section-label-mb">Quick Actions</div>
+  <div class="wr">
+    <button class="btn-ghost" (click)="goto('/dm/cast/new')">+ New Cast</button>
+    <button class="btn-ghost" (click)="goto('/dm/cities/new')">+ New City</button>
+    <button class="btn-ghost" (click)="goto('/dm/locations/new')">+ New Location</button>
+    <button class="btn-ghost" (click)="goto('/dm/campaigns/new')">+ New Campaign</button>
+  </div>
+
+  <!-- Library Import / Export -->
+  <div class="section-label section-label-mb import-section-label">Library</div>
+  <div class="wr">
+    <button class="btn-ghost" (click)="downloadTemplate()">↓ Template</button>
+    <button class="btn-ghost" (click)="exportLibrary()">↓ Export</button>
+    <button class="btn-ghost" (click)="toggleImport()">
+      {{ showImportPanel() ? '✕ Cancel' : '↑ Import' }}
+    </button>
+  </div>
+
+  <!-- Import Panel -->
+  @if (showImportPanel()) {
+    <div class="wb import-panel">
+      <div class="import-field">
+        <div class="import-label">Library ZIP</div>
+        <input class="import-file-input" type="file" accept=".zip"
+               (change)="onZipFileSelected($event)" />
+      </div>
+
+      @if (importError()) {
+        <div class="import-error">{{ importError() }}</div>
+      }
+
+      <div class="import-actions">
+        <button class="btn-primary" (click)="submitImport()"
+                [disabled]="!selectedZipFile() || importing()">
+          {{ importing() ? 'Importing...' : 'Import' }}
+        </button>
+      </div>
+    </div>
+  }
+
+  <!-- Import Result -->
+  @if (importResult()) {
+    <div class="wb import-result">
+      <div class="import-summary">
+        {{ importResult()!.castsImported }} cast member{{ importResult()!.castsImported !== 1 ? 's' : '' }} ·
+        {{ importResult()!.citiesImported }} {{ importResult()!.citiesImported === 1 ? 'City' : 'Cities' }} ·
+        {{ importResult()!.locationsImported }} Location{{ importResult()!.locationsImported !== 1 ? 's' : '' }} imported
+      </div>
+
+      @if (importResult()!.failures.length > 0) {
+        <div class="import-failures-label">Failed to import:</div>
+        @for (failure of importResult()!.failures; track failure.name + failure.cardType) {
+          <div class="import-failure">
+            <span class="failure-type">{{ failure.cardType }}</span>
+            "{{ failure.name }}" — {{ failure.reason }}
+          </div>
+        }
+      }
+    </div>
+  }
+
+  <div class="orn orn-mt">· · ·</div>
+</div>

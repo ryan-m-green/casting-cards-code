@@ -1,0 +1,23 @@
+<div class="notes-wrap">
+  <div class="section-label section-label-mb">Group Notes</div>
+  <div class="notes-list scroll-body">
+    @for (note of notes(); track note.id) {
+      <div class="note-item wb">
+        <div class="note-meta">
+          <span class="wbl">{{ note.createdByDisplayName }}</span>
+          <span class="pnum ml-auto">{{ note.updatedAt | date:'shortDate' }}</span>
+        </div>
+        <p class="wbd note-content">{{ note.content }}</p>
+      </div>
+    }
+    @empty {
+      <p class="wbd empty-state-pad text-center">No notes yet.</p>
+    }
+  </div>
+  <div class="note-input-row wr">
+    <textarea class="fi fi-no-mb flex-1" [(ngModel)]="newNote" rows="2" placeholder="Add a group note…"></textarea>
+    <button class="btn-primary note-submit-btn" [disabled]="saving || !newNote.trim()" (click)="addNote()">
+      {{ saving ? '…' : '+ Note' }}
+    </button>
+  </div>
+</div>

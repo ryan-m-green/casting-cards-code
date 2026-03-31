@@ -1,0 +1,27 @@
+# .NET
+**/bin/
+**/obj/
+*.user
+
+# Local appsettings overrides (keep appsettings.json but never commit secrets)
+**/appsettings.Local.json
+**/appsettings.*.Local.json
+.env
+.env.local
+
+# Angular
+frontend/cast-library-ui/node_modules/
+frontend/cast-library-ui/dist/
+frontend/cast-library-ui/.angular/
+
+# Logs and images (local dev)
+images/
+logs/
+
+# IDE
+.vs/
+.vscode/
+*.DS_Store
+
+# Test results
+**/TestResults/

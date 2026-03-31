@@ -1,0 +1,161 @@
+﻿<!-- ── Zero-state: no cast instances ─────────────────────────────────────────── -->
+@if (castInstances.length === 0) {
+  <div class="rel-zero-state">
+    <div class="rel-zero-icon">🎭</div>
+    <p class="rel-zero-title">Looks like no characters have been added yet to this campaign.</p>
+    <p class="rel-zero-sub">Add some cities and characters so they can start judging each other properly.</p>
+  </div>
+} @else {
+
+  <!-- ── Card Stack + Main Card ──────────────────────────────────────────────── -->
+  <div class="rel-picker-row">
+
+    <!-- Face-down stack -->
+    <div class="rel-deck-area">
+      @if (castInstances.length > 1) {
+        <div class="deck-stack" (click)="cycleCast()" title="Cycle to next cast member">
+          <div class="deck-shadow deck-shadow-far"></div>
+          <div class="deck-shadow deck-shadow-near"></div>
+          <div class="deck-face">
+            <div class="deck-inner-border"></div>
+            <span class="deck-castle">🎭</span>
+            <div class="deck-count">
+              {{ castInstances.length }}<br>characters
+            </div>
+          </div>
+        </div>
+      } @else {
+        <div class="deck-stack deck-stack-empty"></div>
+      }
+    </div>
+
+    <!-- Main cast card (animated) -->
+    <div class="rel-main-card-area">
+      @if (currentCast(); as cast) {
+        <div class="pc-card pc-card-cast" #mainCard>
+          <app-card-flip>
+            <div slot="front" class="card-slot-front">
+              <div class="card-front-header">
+                <div class="card-name">{{ cast.name }}</div>
+                <div class="card-descriptor">{{ cast.role }} · {{ cast.race }}</div>
+              </div>
+              <div class="dv dv-card"></div>
+              <div class="card-image-area">
+                @if (cast.imageUrl) {
+                  <img [src]="cast.imageUrl" alt="" class="card-img-fill" />
+                } @else {
+                  <div class="card-placeholder">
+                    <span class="card-initial">{{ cast.name?.[0]?.toUpperCase() }}</span>
+                  </div>
+                }
+                @if (cast.publicDescription) {
+                  <div class="card-desc-overlay">
+                    <p class="card-desc-text">{{ cast.publicDescription }}</p>
+                  </div>
+                }
+              </div>
+            </div>
+            <div slot="back" class="card-slot-back">
+              <div class="card-back-content">
+                <div class="card-name card-back-name">{{ cast.name }}</div>
+                <div class="dv dv-mb"></div>
+                <div class="fi-label fi-label-strong">Pronouns</div><p class="wbd card-field-value">{{ cast.pronouns || '—' }}</p>
+                <div class="fi-label fi-label-strong">Age</div><p class="wbd card-field-value">{{ cast.age || '—' }}</p>
+                <div class="fi-label fi-label-strong">Race</div><p class="wbd card-field-value">{{ cast.race || '—' }}</p>
+                <div class="fi-label fi-label-strong">Alignment</div><p class="wbd card-field-value">{{ cast.alignment || '—' }}</p>
+                <div class="fi-label fi-label-strong">Posture</div><p class="wbd card-field-value">{{ cast.posture || '—' }}</p>
+                <div class="fi-label fi-label-strong">Speed</div><p class="wbd card-field-value">{{ cast.speed || '—' }}</p>
+                @if (cast.voicePlacement?.length) {
+                  <div class="fi-label fi-label-strong">Voice</div><p class="wbd card-field-value">{{ cast.voicePlacement.join(', ') }}</p>
+                }
+              </div>
+            </div>
+          </app-card-flip>
+        </div>
+      }
+    </div>
+
+  </div>
+
+  <!-- ── Relationship editor heading ──────────────────────────────────────────── -->
+  @if (currentCast(); as cast) {
+    <div class="rel-section-header">
+      <span>HOW OTHERS FEEL ABOUT {{ cast.name | uppercase }}</span>
+      <button class="rel-web-btn" (click)="showWebModal.set(true)" title="View Relationship Web">
+        🕸 Disposition Web
+      </button>
+    </div>
+  }
+
+  <!-- ── Search filter ─────────────────────────────────────────────────────────── -->
+  <div class="rel-search-row">
+    <input
+      class="fi rel-search-input"
+      type="text"
+      placeholder="Search cast…"
+      [value]="filterText()"
+      (input)="filterText.set($any($event.target).value)"
+    />
+  </div>
+
+  <!-- ── Avatar grid ────────────────────────────────────────────────────────────── -->
+  @if (filteredOtherCast().length === 0 && otherCast().length > 0) {
+    <p class="rel-no-match">No cast match your search.</p>
+  }
+
+  @if (otherCast().length === 0) {
+    <p class="rel-no-match">No other cast to relate to yet. Add more characters in Tab 1.</p>
+  }
+
+  <div class="rel-avatar-grid">
+    @for (cast of filteredOtherCast(); track cast.instanceId) {
+      @let draft = getDraft(cast.instanceId);
+      <div class="rel-avatar-card" [class.rel-hostile]="draft.value < 0" [class.rel-friendly]="draft.value > 0">
+        <div class="rel-avatar-icon">{{ raceIcon(cast.race) }}</div>
+        <div class="rel-avatar-name">{{ cast.name }}</div>
+        <div class="rel-avatar-sub">{{ cast.race }} · {{ cast.role }}</div>
+
+        <div class="rel-slider-wrap">
+          <input
+            type="range"
+            min="-5"
+            max="5"
+            step="1"
+            [value]="draft.value"
+            class="rel-slider"
+            [class]="sliderClass(draft.value)"
+            (input)="onSliderChange(cast.instanceId, $event)"
+            (change)="onSliderRelease(cast.instanceId, $event)"
+          />
+          <div class="rel-slider-labels">
+            <span class="hostile-label">Hostile</span>
+            <span class="neutral-label">{{ sliderLabel(draft.value) }}</span>
+            <span class="friendly-label">Friendly</span>
+          </div>
+        </div>
+
+        <textarea
+          class="fi rel-explanation"
+          rows="2"
+          placeholder="What caused this feeling?"
+          [attr.data-expl-id]="cast.instanceId"
+          [readonly]="draft.value === 0"
+          (input)="onExplanationInput(cast.instanceId, $event)"
+        ></textarea>
+      </div>
+    }
+  </div>
+
+}
+
+<!-- ── Relationship Web Modal ──────────────────────────────────────────────── -->
+@if (showWebModal()) {
+  @if (currentCast(); as cast) {
+    <app-relationship-web-modal
+      [mainCast]="cast"
+      [allCast]="castInstances"
+      [relationships]="relationships()"
+      (closed)="showWebModal.set(false)"
+    />
+  }
+}

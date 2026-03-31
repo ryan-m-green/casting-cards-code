@@ -1,0 +1,322 @@
+$cast-gold: #c8b07a;
+
+:host {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+:host.portal-entry {
+  animation: portal-fade-in 2000ms ease-out 200ms both;
+}
+
+@keyframes portal-fade-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+/* ── Void canvas ─────────────────────────────────────────────────────────── */
+.void-canvas {
+  width: 100%;
+  min-height: 100%;
+  background: #000;
+  position: relative;
+  animation: portal-inward-breathe 6.4s ease-in-out infinite;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+@keyframes portal-inward-breathe {
+  0%, 100% {
+    box-shadow:
+      inset 0 0 0    1px color-mix(in srgb, var(--portal-color, #{$cast-gold}) 40%, white 60%),
+      inset 0 0  6px  2px color-mix(in srgb, var(--portal-color, #{$cast-gold}), transparent 28%),
+      inset 0 0 14px  4px color-mix(in srgb, var(--portal-color, #{$cast-gold}), transparent 52%),
+      inset 0 0 25px  8px color-mix(in srgb, var(--portal-color, #{$cast-gold}), transparent 76%);
+  }
+  50% {
+    box-shadow:
+      inset 0 0 0    1px color-mix(in srgb, var(--portal-color, #{$cast-gold}) 25%, white 75%),
+      inset 0 0  9px  3px color-mix(in srgb, var(--portal-color, #{$cast-gold}), transparent 12%),
+      inset 0 0 19px  6px color-mix(in srgb, var(--portal-color, #{$cast-gold}), transparent 36%),
+      inset 0 0 35px 12px color-mix(in srgb, var(--portal-color, #{$cast-gold}), transparent 64%);
+  }
+}
+
+/* ── Top bar ─────────────────────────────────────────────────────────────── */
+.void-topbar {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 20px 32px 24px;
+  position: relative;
+  z-index: 1;
+}
+
+/* ── Breadcrumbs ─────────────────────────────────────────────────────────── */
+.void-breadcrumbs {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  position: relative;
+  z-index: 2;
+}
+
+.void-crumb-sep {
+  font-family: 'Cinzel', serif;
+  font-size: 9px;
+  color: color-mix(in srgb, var(--portal-color, #{$cast-gold}), white 55%);
+  opacity: 0.25;
+  user-select: none;
+  pointer-events: none;
+}
+
+.void-back {
+  font-family: 'Cinzel', serif;
+  font-size: 9px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: color-mix(in srgb, var(--portal-color, #{$cast-gold}), white 55%);
+  opacity: 0.55;
+  background: none;
+  border: none;
+  cursor: pointer;
+  transition: opacity 0.2s ease;
+  white-space: nowrap;
+
+  &:hover { opacity: 0.9; }
+}
+
+.void-title {
+  width: 100%;
+  margin-top: 10px;
+  text-align: center;
+  font-family: 'Cinzel', serif;
+  font-size: 17px;
+  font-weight: 600;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: rgba(200, 225, 235, 0.92);
+  text-shadow:
+    0 0 20px color-mix(in srgb, var(--portal-color, #{$cast-gold}), white 35%),
+    0 0 50px color-mix(in srgb, var(--portal-color, #{$cast-gold}), transparent 38%),
+    0 1px 3px rgba(0, 0, 0, 0.95);
+}
+
+/* ── Hero card ───────────────────────────────────────────────────────────── */
+.cast-hero {
+  display: flex;
+  justify-content: center;
+  padding: 8px 40px 24px;
+  position: relative;
+  z-index: 1;
+}
+
+.cast-hero-card {
+  .pc-card {
+    box-shadow:
+      0 8px 32px rgba(0, 0, 0, 0.6),
+      0 0 24px color-mix(in srgb, var(--portal-color, #{$cast-gold}) 20%, transparent 80%),
+      0 0 56px color-mix(in srgb, var(--portal-color, #{$cast-gold}) 10%, transparent 90%);
+  }
+}
+
+/* ── Per-card cast lock button ───────────────────────────────────────────── */
+.cast-lock-btn {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  z-index: 10;
+  background: rgba(0, 0, 0, 0.55);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 6px;
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  cursor: pointer;
+  transition: background 0.18s ease, border-color 0.18s ease, opacity 0.18s ease;
+  opacity: 0.6;
+
+  &:hover {
+    background: rgba(0, 0, 0, 0.8);
+    border-color: rgba(255, 255, 255, 0.28);
+    opacity: 1;
+  }
+
+  &.cast-lock-btn--visible {
+    background: rgba(40, 160, 80, 0.25);
+    border-color: rgba(80, 200, 120, 0.4);
+    opacity: 0.85;
+
+    &:hover {
+      background: rgba(40, 160, 80, 0.45);
+      opacity: 1;
+    }
+  }
+}
+
+/* ── Detail panel wrap ───────────────────────────────────────────────────── */
+.cast-detail-wrap {
+  display: flex;
+  justify-content: center;
+  padding: 0 40px 48px;
+  position: relative;
+  z-index: 1;
+}
+
+.cast-detail-panel {
+  width: 100%;
+  max-width: 560px;
+  background: rgba(14, 24, 32, 0.96);
+  border: 1px solid rgba($cast-gold, 0.40);
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+/* ── Description block ───────────────────────────────────────────────────── */
+.detail-desc {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 12px 16px;
+  border-bottom: 1px solid rgba($cast-gold, 0.12);
+}
+
+/* ── 2-col field grid ────────────────────────────────────────────────────── */
+.detail-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-content: start;
+}
+
+.detail-cell {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 12px 16px;
+  border-bottom: 1px solid rgba($cast-gold, 0.08);
+
+  &:nth-child(odd) {
+    border-right: 1px solid rgba($cast-gold, 0.08);
+  }
+
+  &--full {
+    grid-column: 1 / -1;
+    border-right: none;
+  }
+}
+
+/* ── Secrets section ─────────────────────────────────────────────────────── */
+.detail-secrets-section {
+  border-top: 1px solid rgba($cast-gold, 0.22);
+  background: rgba($cast-gold, 0.03);
+}
+
+.detail-secrets-header-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 16px 6px;
+}
+
+.detail-secrets-label {
+  font-family: 'Cinzel', serif;
+  font-size: 7px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: rgba($cast-gold, 0.65);
+  white-space: nowrap;
+}
+
+.detail-secrets-line {
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(to right, rgba($cast-gold, 0.22), transparent);
+}
+
+.detail-secret {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 8px 16px;
+  border-top: 1px solid rgba($cast-gold, 0.08);
+}
+
+.secret-lock-btn {
+  flex-shrink: 0;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  font-size: 14px;
+  line-height: 1;
+  opacity: 0.80;
+  transition: opacity 0.15s ease;
+
+  &:hover { opacity: 1; }
+}
+
+.secret-text {
+  font-family: 'Crimson Text', serif;
+  font-size: 13px;
+  color: rgba(185, 210, 220, 0.60);
+  line-height: 1.5;
+
+  &--revealed {
+    color: rgba(200, 225, 235, 0.82);
+  }
+}
+
+/* ── Shared label / line / value ─────────────────────────────────────────── */
+.detail-label {
+  font-family: 'Cinzel', serif;
+  font-size: 7px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: rgba($cast-gold, 0.55);
+  white-space: nowrap;
+}
+
+.detail-line {
+  height: 1px;
+  width: 100%;
+  background: linear-gradient(to right, rgba($cast-gold, 0.22), transparent);
+}
+
+.detail-value {
+  font-family: 'Crimson Text', serif;
+  font-size: 14px;
+  color: rgba(200, 225, 235, 0.82);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+
+  &--block {
+    white-space: normal;
+    font-size: 13px;
+    line-height: 1.6;
+    color: rgba(185, 210, 220, 0.70);
+    margin: 0;
+  }
+}
+
+/* ── Keyword / voice pills ───────────────────────────────────────────────── */
+.detail-keywords {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.detail-keyword-pill {
+  font-family: 'Cinzel', serif;
+  font-size: 7px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba($cast-gold, 0.80);
+  border: 1px solid rgba($cast-gold, 0.28);
+  border-radius: 2px;
+  padding: 2px 8px;
+}

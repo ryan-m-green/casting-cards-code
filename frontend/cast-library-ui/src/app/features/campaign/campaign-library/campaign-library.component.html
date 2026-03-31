@@ -1,0 +1,48 @@
+@if (confirmTarget()) {
+  <div class="delete-overlay" (click)="cancelDelete()">
+    <div class="delete-panel" (click)="$event.stopPropagation()">
+      <div class="delete-panel-title">Delete Campaign?</div>
+      <p class="delete-panel-message">"{{ confirmTarget()!.name }}" will be permanently removed.</p>
+      <div class="delete-btn-row">
+        <button class="btn-modal-cancel" (click)="cancelDelete()">Cancel</button>
+        <button class="btn-modal-delete" (click)="confirmDelete()">Delete</button>
+      </div>
+    </div>
+  </div>
+}
+
+<div class="pc scroll-body">
+  <app-dm-nav />
+  <div class="wr wr-page-header">
+    <a class="btn-ghost" routerLink="/dm/dashboard">← Dashboard</a>
+    <a class="btn-primary ml-auto" routerLink="/dm/campaigns/new">+ New Campaign</a>
+  </div>
+  <div class="section-label">All Campaigns — Library</div>
+
+  <div class="portal-grid">
+    @for (campaign of campaigns(); track campaign.id) {
+      <div class="portal-card"
+           [attr.style]="cardStyle(campaign)"
+           (click)="enter($event, campaign.id, campaign.spineColor)">
+        <div class="portal-title">{{ campaign.name }}</div>
+        <div class="portal-arch-wrap">
+          <div class="portal-arch">
+            <div class="portal-void"></div>
+            <div class="portal-rim"></div>
+            <div class="portal-spark ps1"></div>
+            <div class="portal-spark ps2"></div>
+            <div class="portal-spark ps3"></div>
+            <div class="portal-spark ps4"></div>
+          </div>
+        </div>
+        <div class="portal-footer">
+          <button class="portal-btn portal-btn--delete" (click)="$event.stopPropagation(); requestDelete(campaign)">✕ Delete</button>
+          <button class="portal-btn portal-btn--edit" (click)="$event.stopPropagation(); edit(campaign.id)">Edit →</button>
+        </div>
+      </div>
+    }
+    @empty {
+      <p class="wbd empty-state-pad text-center">No campaigns yet. Create your first campaign.</p>
+    }
+  </div>
+</div>

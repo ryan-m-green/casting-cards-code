@@ -1,0 +1,54 @@
+<div class="pc sub-center">
+
+  <div class="sub-ornament">✦</div>
+  <div class="page-title sub-title">Unlock the Full Ledger</div>
+  <p class="pnum sub-subtitle">Your account is ready. Choose how you'd like to continue.</p>
+
+  <div class="dv sub-dv"></div>
+
+  <!-- Free Account Card -->
+  <div class="role-card sub-card">
+    <div class="wr sub-card-header">
+      <span class="badge sub-badge-free">Free Account</span>
+    </div>
+    <p class="wbd sub-desc">Try before you commit — no payment required.</p>
+    <ul class="sub-limits">
+      <li>1 City Card</li>
+      <li>2 Location Cards</li>
+      <li>5 Cast Cards</li>
+    </ul>
+    <div class="wb sub-warning-box">
+      <p class="wbd sub-warning-text">
+        Inactive free accounts will be automatically deleted.
+      </p>
+    </div>
+  </div>
+
+  <!-- Subscription Card -->
+  <div class="role-card sub-card sub-card-paid">
+    <div class="wr sub-card-header">
+      <span class="sub-price">$3.99 / month</span>
+    </div>
+    <ul class="sub-limits sub-perks">
+      <li>Unlimited campaigns</li>
+      <li>Full Cast Library</li>
+      <li>All City &amp; Location cards</li>
+      <li>Priority support</li>
+    </ul>
+
+    <div class="sub-stripe-placeholder">
+      <p class="wbd sub-stripe-text">Payment integration coming soon</p>
+    </div>
+
+    <button class="btn-primary btn-full sub-subscribe-btn" (click)="subscribe()">
+      Subscribe &amp; Enter
+    </button>
+  </div>
+
+  <div class="dv sub-dv"></div>
+
+  <button class="btn-ghost sub-free-btn" (click)="continueFree()">
+    Continue with Free Account
+  </button>
+
+</div>

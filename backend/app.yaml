@@ -1,0 +1,109 @@
+name: cast-library
+services:
+- name: api
+  github:
+    branch: main
+    repo: ryan-m-green/casting-cards
+    deploy_on_push: true
+  build_command: dotnet publish CastLibrary.WebHost/CastLibrary.WebHost.csproj -c Release -o /app/publish /p:UseAppHost=false
+  dockerfile_path: Dockerfile
+  source_dir: /
+  http_port: 8080
+  envs:
+  - key: ASPNETCORE_ENVIRONMENT
+    value: Production
+    scope: RUN_AND_BUILD_TIME
+  - key: ASPNETCORE_URLS
+    value: http://+:8080
+    scope: RUN_TIME
+  # Database connection string - configure with your DigitalOcean Managed PostgreSQL
+  - key: ConnectionStrings__DefaultConnection
+    value: ${DB_CONNECTION_STRING}
+    scope: RUN_TIME
+  # JWT Configuration
+  - key: Jwt__Key
+    value: ${JWT_KEY}
+    scope: RUN_TIME
+  - key: Jwt__Issuer
+    value: CastLibrary
+    scope: RUN_TIME
+  - key: Jwt__Audience
+    value: CastLibraryUsers
+    scope: RUN_TIME
+  # Email Configuration
+  - key: Email__SmtpHost
+    value: ${SMTP_HOST}
+    scope: RUN_TIME
+  - key: Email__SmtpPort
+    value: "587"
+    scope: RUN_TIME
+  - key: Email__SmtpUsername
+    value: ${SMTP_USERNAME}
+    scope: RUN_TIME
+  - key: Email__SmtpPassword
+    value: ${SMTP_PASSWORD}
+    scope: RUN_TIME
+  - key: Email__FromAddress
+    value: ${EMAIL_FROM_ADDRESS}
+    scope: RUN_TIME
+  - key: Email__FromName
+    value: Cast Library
+    scope: RUN_TIME
+  - key: Email__FrontendBaseUrl
+    value: ${FRONTEND_BASE_URL}
+    scope: RUN_TIME
+  # Image Storage
+  - key: ImageStorage__BaseUrl
+    value: ${IMAGE_STORAGE_BASE_URL}
+    scope: RUN_TIME
+  # Logging
+  - key: Logging__FilePath
+    value: /tmp/logs
+    scope: RUN_TIME
+  - key: Logging__FilePathError
+    value: /tmp/logs/errors
+    scope: RUN_TIME
+  # Application Insights (optional)
+  - key: ApplicationInsights__Enabled
+    value: "false"
+    scope: RUN_TIME
+  health_check:
+    http_path: /health
+  http_routes:
+  - path: /
+    preserve_path_prefix: true
+  resources:
+    limits:
+      cpus: 1
+      memory_mb: 512
+    requests:
+      cpus: 250m
+      memory_mb: 256
+  
+databases:
+# If using DigitalOcean Managed PostgreSQL, link it here
+# Otherwise, remove this section and manage PostgreSQL separately
+- name: postgresql
+  engine: PG
+  version: "15"
+  production: true
+  envs:
+  - key: DB_CONNECTION_STRING
+    value: postgresql://${DB_USER}:${DB_PASSWORD}@${DB_HOST}:5432/${DB_NAME}
+
+static_sites:
+# If you have a separate Angular frontend in DigitalOcean App Platform, add it here
+# Example:
+# - name: frontend
+#   github:
+#     branch: main
+#     repo: your-org/casting-cards-frontend
+#     deploy_on_push: true
+#   source_dir: dist/casting-cards
+
+ingress:
+  rules:
+  - match:
+      prefix: /
+    component:
+      name: api

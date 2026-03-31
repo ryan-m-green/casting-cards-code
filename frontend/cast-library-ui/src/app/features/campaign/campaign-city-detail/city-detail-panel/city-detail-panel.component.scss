@@ -1,0 +1,234 @@
+$city-blue: #9ab0b8;
+
+:host {
+  display: contents;
+}
+
+/* ── Intel panel ─────────────────────────────────────────────────────────── */
+.city-intel-panel {
+  flex: 1;
+  min-width: 0;
+  background: rgba(14, 24, 32, 0.96);
+  border: 1px solid rgba($city-blue, 0.40);
+  border-radius: 6px;
+  overflow: hidden;
+  position: relative;
+
+  // Corner bracket accents
+  &::before,
+  &::after {
+    content: '';
+    position: absolute;
+    width: 14px;
+    height: 14px;
+    border-color: rgba($city-blue, 0.45);
+    border-style: solid;
+    pointer-events: none;
+  }
+
+  &::before {
+    top: -1px;
+    left: -1px;
+    border-width: 2px 0 0 2px;
+    border-radius: 4px 0 0 0;
+  }
+
+  &::after {
+    bottom: -1px;
+    right: -1px;
+    border-width: 0 2px 2px 0;
+    border-radius: 0 0 4px 0;
+  }
+}
+
+.intel-panel-body {
+  padding: 20px;
+  max-height: calc(100vh - 180px);
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: rgba($city-blue, 0.15) transparent;
+
+  &::-webkit-scrollbar { width: 3px; }
+  &::-webkit-scrollbar-thumb {
+    background: rgba($city-blue, 0.15);
+    border-radius: 2px;
+  }
+}
+
+/* ── Intel fields ────────────────────────────────────────────────────────── */
+.intel-field {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  margin-bottom: 11px;
+
+  &--block {
+    flex-direction: column;
+    gap: 5px;
+    margin-bottom: 14px;
+  }
+}
+
+.intel-field-label {
+  font-family: 'Cinzel', serif;
+  font-size: 7px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: rgba($city-blue, 0.5);
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.intel-divider {
+  flex: 1;
+  height: 1px;
+  min-width: 10px;
+  background: linear-gradient(to right, rgba($city-blue, 0.28), transparent);
+
+  &--block {
+    flex: none;
+    width: 100%;
+  }
+}
+
+.intel-field-value {
+  font-family: 'Crimson Text', serif;
+  font-size: 13px;
+  color: rgba(200, 225, 235, 0.80);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 280px;
+
+  &--block {
+    white-space: normal;
+    max-width: 100%;
+    line-height: 1.55;
+    font-size: 12px;
+    color: rgba(185, 210, 220, 0.68);
+    margin: 0;
+  }
+}
+
+/* ── Secrets section ─────────────────────────────────────────────────────── */
+.intel-secrets-section {
+  margin-top: 20px;
+  border-top: 1px solid rgba($city-blue, 0.14);
+  padding-top: 16px;
+}
+
+.intel-secrets-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 14px;
+}
+
+.intel-secrets-title {
+  font-family: 'Cinzel', serif;
+  font-size: 9px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: rgba($city-blue, 0.72);
+  text-shadow: 0 0 10px rgba($city-blue, 0.28);
+}
+
+.intel-secrets-count {
+  font-family: 'Cinzel', serif;
+  font-size: 7px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba($city-blue, 0.38);
+  padding: 2px 8px;
+  border: 1px solid rgba($city-blue, 0.18);
+  border-radius: 2px;
+}
+
+/* ── Secret card ─────────────────────────────────────────────────────────── */
+.secret-card {
+  background: rgba(80, 25, 10, 0.18);
+  border: 1px solid rgba(160, 110, 40, 0.28);
+  border-radius: 4px;
+  margin-bottom: 10px;
+  overflow: hidden;
+  transition: border-color 0.25s ease, background 0.25s ease;
+
+  &--revealed {
+    background: rgba(10, 52, 44, 0.22);
+    border-color: rgba(80, 180, 160, 0.35);
+  }
+}
+
+.secret-card-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px 6px;
+  border-bottom: 1px solid rgba($city-blue, 0.07);
+}
+
+.secret-card-icon {
+  font-size: 11px;
+  flex-shrink: 0;
+}
+
+.secret-card-status {
+  font-family: 'Cinzel', serif;
+  font-size: 7px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgba(160, 110, 40, 0.72);
+
+  .secret-card--revealed & {
+    color: rgba(80, 180, 160, 0.82);
+  }
+}
+
+.secret-card-content {
+  padding: 10px 12px;
+  margin: 0;
+  font-family: 'Crimson Text', serif;
+  font-size: 13px;
+  color: rgba(200, 215, 222, 0.78);
+  line-height: 1.55;
+}
+
+.secret-card-footer {
+  padding: 6px 12px 8px;
+  border-top: 1px solid rgba($city-blue, 0.07);
+  display: flex;
+  justify-content: flex-end;
+}
+
+.secret-action-btn {
+  font-family: 'Cinzel', serif;
+  font-size: 7px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  padding: 4px 12px;
+  border-radius: 2px;
+  cursor: pointer;
+  transition: background 0.18s ease, border-color 0.18s ease;
+
+  &--unseal {
+    background: rgba(80, 180, 160, 0.10);
+    border: 1px solid rgba(80, 180, 160, 0.38);
+    color: rgba(80, 180, 160, 0.88);
+
+    &:hover {
+      background: rgba(80, 180, 160, 0.20);
+      border-color: rgba(80, 180, 160, 0.62);
+    }
+  }
+
+  &--reseal {
+    background: rgba(160, 110, 40, 0.08);
+    border: 1px solid rgba(160, 110, 40, 0.32);
+    color: rgba(160, 110, 40, 0.72);
+
+    &:hover {
+      background: rgba(160, 110, 40, 0.16);
+      border-color: rgba(160, 110, 40, 0.52);
+    }
+  }
+}

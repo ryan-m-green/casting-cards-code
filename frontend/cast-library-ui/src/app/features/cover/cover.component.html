@@ -1,0 +1,36 @@
+<div class="pc cover-center">
+  <div class="cover-content">
+    <div class="cover-ornament">✦</div>
+    <h1 class="cover-title">Casting Cards</h1>
+    <p class="cover-subtitle">Cards. Connections. Campaign Clarity.</p>
+
+    <div class="dv dv-cover"></div>
+
+    <form class="cover-login-form" [formGroup]="loginForm" (ngSubmit)="knock()">
+      <label class="cover-fi-label">Arcane Seal (Email)</label>
+      <input class="cover-fi" type="email" formControlName="email" placeholder="dm@example.com" autocomplete="email" />
+
+      <label class="cover-fi-label">Password</label>
+      <input class="cover-fi" type="password" formControlName="password" placeholder="••••••••" autocomplete="current-password" />
+
+      @if (errorMsg()) {
+        <div class="wb cover-error-box">
+          <p class="wbd">{{ errorMsg() }}</p>
+        </div>
+      }
+
+      <div class="knock-spark-host" #sparkHost>
+        <button class="btn-primary cover-enter-btn" type="submit" [disabled]="loading()"
+                (click)="triggerSparkles($event)">
+          {{ loading() ? '…' : 'Knock' }}
+        </button>
+      </div>
+      <a class="cover-forgot-link" routerLink="/forgot-password">Forgot your password?</a>
+    </form>
+
+    <div class="dv dv-cover"></div>
+
+    <button class="btn-ghost cover-create-btn" (click)="createAccount()">Create Account</button>
+    <p class="pnum">Version 1.0 · Cast Library</p>
+  </div>
+</div>

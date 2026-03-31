@@ -1,0 +1,12 @@
+﻿namespace CastLibrary.Logic.Services;
+
+public interface IPasswordHashingService
+{
+    string Hash(string plainText);
+    bool Verify(string plainText, string hash);
+}
+public class PasswordHashingService : IPasswordHashingService
+{
+    public string Hash(string plainText) => BCrypt.Net.BCrypt.HashPassword(plainText);
+    public bool Verify(string plainText, string hash) => BCrypt.Net.BCrypt.Verify(plainText, hash);
+}

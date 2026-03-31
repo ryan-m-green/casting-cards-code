@@ -1,0 +1,68 @@
+# Visual Studio cache/options directory
+.vs/
+
+# Build results
+[Dd]ebug/
+[Dd]ebugPublic/
+[Rr]elease/
+[Rr]eleases/
+x64/
+x86/
+[Ww][Ii][Nn]32/
+[Aa][Rr][Mm]/
+[Aa][Rr][Mm]64/
+bld/
+[Bb]in/
+[Oo]bj/
+[Ll]og/
+[Ll]ogs/
+
+# Visual Studio cache files
+*.VC.db
+*.VC.VC.opendb
+
+# User-specific files
+*.rsuser
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# Rider
+.idea/
+*.sln.iml
+
+# VS Code
+.vscode/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Environment variables
+.env
+.env.local
+.env.*.local
+
+# NuGet
+*.nupkg
+*.snupkg
+
+# Docker
+.docker/
+docker-compose.override.yml
+
+# Local image/log storage
+/images/
+/logs/
+
+# Application-specific
+*.db
+*.sqlite
+# dotnet
+project.lock.json
+project.fragment.lock.json
+artifacts/
+
+# Test Results
+TestResults/

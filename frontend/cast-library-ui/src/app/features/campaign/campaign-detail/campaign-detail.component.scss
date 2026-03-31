@@ -1,0 +1,155 @@
+:host {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+
+/* ── Void canvas ─────────────────────────────────────────────── */
+.void-canvas {
+  width: 100%;
+  height: 100%;
+  background: #000;
+  position: relative;
+  animation: portal-inward-breathe 6.4s ease-in-out infinite;
+}
+
+@keyframes portal-inward-breathe {
+  0%, 100% {
+    box-shadow:
+      inset 0 0 0    1px color-mix(in srgb, var(--portal-color, #6e28d0) 40%, white 60%),
+      inset 0 0  6px  2px color-mix(in srgb, var(--portal-color, #6e28d0), transparent 28%),
+      inset 0 0 14px  4px color-mix(in srgb, var(--portal-color, #6e28d0), transparent 52%),
+      inset 0 0 25px  8px color-mix(in srgb, var(--portal-color, #6e28d0), transparent 76%);
+  }
+  50% {
+    box-shadow:
+      inset 0 0 0    1px color-mix(in srgb, var(--portal-color, #6e28d0) 25%, white 75%),
+      inset 0 0  9px  3px color-mix(in srgb, var(--portal-color, #6e28d0), transparent 12%),
+      inset 0 0 19px  6px color-mix(in srgb, var(--portal-color, #6e28d0), transparent 36%),
+      inset 0 0 35px 12px color-mix(in srgb, var(--portal-color, #6e28d0), transparent 64%);
+  }
+}
+
+/* ── Top bar ─────────────────────────────────────────────────── */
+.void-topbar {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 20px 32px 24px;
+  position: relative;
+  z-index: 1;
+}
+
+/* ── Back button ─────────────────────────────────────────────── */
+.void-back {
+  font-family: 'Cinzel', serif;
+  font-size: 9px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: color-mix(in srgb, var(--portal-color, #6e28d0), white 55%);
+  opacity: 0.55;
+  text-decoration: none;
+  transition: opacity 0.2s ease;
+  white-space: nowrap;
+
+  &:hover {
+    opacity: 0.9;
+  }
+}
+
+/* ── City cards section ──────────────────────────────────────── */
+.city-cards-section {
+  padding: 8px 40px 40px;
+  position: relative;
+  z-index: 1;
+}
+
+.city-cards-label {
+  font-family: 'Cinzel', serif;
+  font-size: 14px;
+  font-weight: bolder;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: rgba(200, 225, 235, 0.92);
+  margin-bottom: 16px;
+}
+
+.city-cards-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 18px;
+  align-items: flex-start;
+}
+
+/* ── City lock button ────────────────────────────────────────── */
+.city-lock-btn {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  z-index: 10;
+  background: rgba(0, 0, 0, 0.55);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 6px;
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  cursor: pointer;
+  transition: background 0.18s ease, border-color 0.18s ease, opacity 0.18s ease;
+  opacity: 0.6;
+
+  &:hover {
+    background: rgba(0, 0, 0, 0.8);
+    border-color: rgba(255, 255, 255, 0.28);
+    opacity: 1;
+  }
+
+  &.city-lock-btn--visible {
+    background: rgba(40, 160, 80, 0.25);
+    border-color: rgba(80, 200, 120, 0.4);
+    opacity: 0.85;
+
+    &:hover {
+      background: rgba(40, 160, 80, 0.45);
+      opacity: 1;
+    }
+  }
+}
+
+/* ── Breadcrumbs ─────────────────────────────────────────────── */
+.void-breadcrumbs {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  position: relative;
+  z-index: 2;
+}
+
+.void-crumb-sep {
+  font-family: 'Cinzel', serif;
+  font-size: 9px;
+  color: color-mix(in srgb, var(--portal-color, #6e28d0), white 55%);
+  opacity: 0.25;
+  user-select: none;
+  pointer-events: none;
+}
+
+/* ── Campaign title ──────────────────────────────────────────── */
+.void-title {
+  width: 100%;
+  margin-top: 10px;
+  text-align: center;
+  font-family: 'Cinzel', serif;
+  font-size: 17px;
+  font-weight: 600;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: rgba(220, 200, 255, 0.92);
+  text-shadow:
+    0 0 20px color-mix(in srgb, var(--portal-color, #6e28d0), white 35%),
+    0 0 50px color-mix(in srgb, var(--portal-color, #6e28d0), transparent 38%),
+    0 1px 3px rgba(0, 0, 0, 0.95);
+}

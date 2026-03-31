@@ -1,0 +1,125 @@
+<div class="web-backdrop" (click)="onBackdropClick($event)">
+  <div class="web-panel">
+
+    <!-- ── Header ──────────────────────────────────────────────────────────── -->
+    <div class="web-header">
+      <span class="web-title">Relationship Web · {{ mainCast?.name }}</span>
+      <button class="web-close" (click)="closed.emit()">✕</button>
+    </div>
+
+    <!-- ── Zero state ─────────────────────────────────────────────────────── -->
+    @if (nodes.length === 0) {
+      <div class="web-zero">
+        <span class="web-zero-icon">🕸</span>
+        <p class="web-zero-title">No one has strong feelings about <em>{{ mainCast?.name }}</em> yet.</p>
+        <p class="web-zero-sub">Use the relationship editor to record how other characters feel about this one.</p>
+      </div>
+    } @else {
+
+      <!-- ── Canvas ────────────────────────────────────────────────────────── -->
+      <div class="web-canvas" [style.width.px]="canvasW" [style.height.px]="canvasH">
+
+        <!-- SVG string layer -->
+        <svg class="web-svg"
+             [attr.viewBox]="'0 0 ' + canvasW + ' ' + canvasH"
+             [attr.width]="canvasW"
+             [attr.height]="canvasH">
+
+          @for (node of nodes; track node.cast.instanceId) {
+            <!-- Curved string -->
+            <path
+              [attr.d]="node.pathD"
+              fill="none"
+              [attr.stroke]="lineStroke(node.relationship.value)"
+              [attr.stroke-width]="lineWidth(node.relationship.value)"
+              stroke-linecap="round"
+              opacity="0.55"
+            />
+
+            <!-- Explanation label -->
+            @if (node.relationship.explanation) {
+              <rect
+                class="web-label-bg"
+                [attr.x]="node.textX - 72"
+                [attr.y]="node.textY - 9"
+                width="144"
+                height="16"
+                rx="4"
+              />
+              <text
+                class="web-label"
+                [attr.x]="node.textX"
+                [attr.y]="node.textY"
+                [attr.fill]="lineStroke(node.relationship.value)"
+              >{{ truncate(node.relationship.explanation) }}</text>
+            }
+          }
+        </svg>
+
+        <!-- ── Main card (centered) ──────────────────────────────────────── -->
+        <div class="web-main-card pc-card pc-card-cast"
+             [style.left.px]="cx - 75"
+             [style.top.px]="cy - 110">
+          <app-card-flip>
+            <div slot="front" class="card-slot-front">
+              <div class="card-front-header">
+                <div class="card-name">{{ mainCast.name }}</div>
+                <div class="card-descriptor">{{ mainCast.role }} · {{ mainCast.race }}</div>
+              </div>
+              <div class="dv dv-card"></div>
+              <div class="card-image-area">
+                @if (mainCast.imageUrl) {
+                  <img [src]="mainCast.imageUrl" alt="" class="card-img-fill" />
+                } @else {
+                  <div class="card-placeholder">
+                    <span class="card-initial">{{ mainCast.name?.[0]?.toUpperCase() }}</span>
+                  </div>
+                }
+                @if (mainCast.publicDescription) {
+                  <div class="card-desc-overlay">
+                    <p class="card-desc-text">{{ mainCast.publicDescription }}</p>
+                  </div>
+                }
+              </div>
+            </div>
+            <div slot="back" class="card-slot-back">
+              <div class="card-back-content">
+                <div class="card-name card-back-name">{{ mainCast.name }}</div>
+                <div class="dv dv-mb"></div>
+                <div class="fi-label fi-label-strong">Race</div>
+                <p class="wbd card-field-value">{{ mainCast.race || '—' }}</p>
+                <div class="fi-label fi-label-strong">Alignment</div>
+                <p class="wbd card-field-value">{{ mainCast.alignment || '—' }}</p>
+                <div class="fi-label fi-label-strong">Posture</div>
+                <p class="wbd card-field-value">{{ mainCast.posture || '—' }}</p>
+              </div>
+            </div>
+          </app-card-flip>
+        </div>
+
+        <!-- ── Orbit nodes ────────────────────────────────────────────────── -->
+        @for (node of nodes; track node.cast.instanceId) {
+          <div
+            class="web-node"
+            [class.web-node--friendly]="node.relationship.value > 0"
+            [class.web-node--hostile]="node.relationship.value < 0"
+            [style.left.px]="node.x"
+            [style.top.px]="node.y"
+            [title]="node.relationship.explanation || ''"
+          >
+            <div class="web-node-icon">{{ raceIcon(node.cast.race) }}</div>
+            <div class="web-node-name">{{ node.cast.name }}</div>
+            <div class="web-node-sub">{{ node.cast.race }} · {{ node.cast.role }}</div>
+            <div class="web-node-sentiment"
+                 [class.sentiment--friendly]="node.relationship.value > 0"
+                 [class.sentiment--hostile]="node.relationship.value < 0">
+              {{ sentimentLabel(node.relationship.value) }}
+            </div>
+          </div>
+        }
+
+      </div>
+    }
+
+  </div>
+</div>

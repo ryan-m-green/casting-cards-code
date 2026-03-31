@@ -1,0 +1,166 @@
+@if (cast(); as ca) {
+  <div class="void-canvas" [style.--portal-color]="portalColor()">
+
+    <!-- ── Top bar ── -->
+    <div class="void-topbar">
+      <div class="void-breadcrumbs">
+        <button class="void-back" (click)="goToCampaign()">← Cities</button>
+        <span class="void-crumb-sep">›</span>
+        <button class="void-back" (click)="goToCity()">← Locations</button>
+        <span class="void-crumb-sep">›</span>
+        <button class="void-back" (click)="goToLocation()">← Cast</button>
+      </div>
+      <span class="void-title">{{ ca.name }}</span>
+    </div>
+
+    <!-- ── Hero card ── -->
+    <div class="cast-hero">
+      <div class="cast-hero-card">
+        <div class="pc-card pc-card-cast">
+          <div class="lib-card-front">
+            <div class="card-slot-front">
+              <div class="card-front-header">
+                <div class="card-name">{{ ca.name }}</div>
+                <div class="card-descriptor">{{ ca.role }}</div>
+              </div>
+              <div class="dv dv-card"></div>
+              <div class="card-image-area">
+                @if (ca.imageUrl) {
+                  <img [src]="ca.imageUrl" alt="" class="card-img-fill" />
+                } @else {
+                  <div class="card-placeholder">
+                    <span class="card-initial">{{ initial(ca.name) }}</span>
+                  </div>
+                }
+                @if (ca.publicDescription) {
+                  <div class="card-desc-overlay">
+                    <p class="card-desc-text">{{ ca.publicDescription }}</p>
+                  </div>
+                }
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Star rating ── -->
+    <div class="cast-rating">
+      <span class="cast-rating-label">Influential Impact</span>
+      <div class="star-row" [class.star-row--animating]="starAnimating()">
+        @for (n of [1, 2, 3]; track n) {
+          <button
+            class="star"
+            [class.star--lit]="playerRating() >= n"
+            (click)="setRating(n)"
+          >
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <path d="M12 2l2.09 6.26L22 9.27l-5 4.73 1.18 6.74L12 17.77l-6.18 2.97L7 14.0 2 9.27l7.91-1.01z"/>
+            </svg>
+          </button>
+        }
+      </div>
+    </div>
+
+    <!-- ── Detail panel ── -->
+    <div class="cast-detail-wrap">
+      <div class="cast-detail-panel">
+
+        @if (ca.publicDescription) {
+          <div class="detail-desc">
+            <span class="detail-label">Public Description</span>
+            <span class="detail-line"></span>
+            <p class="detail-value detail-value--block">{{ ca.publicDescription }}</p>
+          </div>
+        }
+
+        <div class="detail-grid">
+          @if (ca.pronouns) {
+            <div class="detail-cell">
+              <span class="detail-label">Pronouns</span>
+              <span class="detail-line"></span>
+              <span class="detail-value">{{ ca.pronouns }}</span>
+            </div>
+          }
+          @if (ca.race) {
+            <div class="detail-cell">
+              <span class="detail-label">Race</span>
+              <span class="detail-line"></span>
+              <span class="detail-value">{{ ca.race }}</span>
+            </div>
+          }
+          @if (ca.role) {
+            <div class="detail-cell">
+              <span class="detail-label">Role</span>
+              <span class="detail-line"></span>
+              <span class="detail-value">{{ ca.role }}</span>
+            </div>
+          }
+          @if (ca.age) {
+            <div class="detail-cell">
+              <span class="detail-label">Age</span>
+              <span class="detail-line"></span>
+              <span class="detail-value">{{ ca.age }}</span>
+            </div>
+          }
+          @if (ca.alignment) {
+            <div class="detail-cell">
+              <span class="detail-label">Alignment</span>
+              <span class="detail-line"></span>
+              <span class="detail-value">{{ ca.alignment }}</span>
+            </div>
+          }
+          @if (ca.posture) {
+            <div class="detail-cell">
+              <span class="detail-label">Posture</span>
+              <span class="detail-line"></span>
+              <span class="detail-value">{{ ca.posture }}</span>
+            </div>
+          }
+          @if (ca.speed) {
+            <div class="detail-cell">
+              <span class="detail-label">Speed</span>
+              <span class="detail-line"></span>
+              <span class="detail-value">{{ ca.speed }}</span>
+            </div>
+          }
+          @if (ca.voicePlacement?.length) {
+            <div class="detail-cell">
+              <span class="detail-label">Voice Placement</span>
+              <span class="detail-line"></span>
+              <div class="detail-keywords">
+                @for (vp of ca.voicePlacement; track vp) {
+                  <span class="detail-keyword-pill">{{ vp }}</span>
+                }
+              </div>
+            </div>
+          }
+          @if (ca.keywords?.length) {
+            <div class="detail-cell detail-cell--full">
+              <span class="detail-label">Keywords</span>
+              <span class="detail-line"></span>
+              <div class="detail-keywords">
+                @for (kw of ca.keywords; track kw) {
+                  <span class="detail-keyword-pill">{{ kw }}</span>
+                }
+              </div>
+            </div>
+          }
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ── Cast notes panel ── -->
+    <div class="cast-notes-wrap">
+      <app-player-cast-notes
+        [campaignId]="campaignId()"
+        [castInstance]="ca"
+        [allCasts]="campaign()?.casts ?? []"
+        [allCities]="campaign()?.cities ?? []"
+        [castSecrets]="castSecrets()"
+      />
+    </div>
+
+  </div>
+}

@@ -1,0 +1,181 @@
+// ── Backdrop ──────────────────────────────────────────────────────────────────
+.web-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  background: rgba(0, 0, 0, 0.76);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+
+// ── Panel ─────────────────────────────────────────────────────────────────────
+.web-panel {
+  background: #0f0d0a;
+  border: 1px solid #3a2e1e;
+  border-radius: 14px;
+  display: flex;
+  flex-direction: column;
+  max-height: 90vh;
+  overflow: hidden;
+  box-shadow: 0 28px 72px rgba(0, 0, 0, 0.65), inset 0 0 0 1px rgba(180, 140, 60, 0.06);
+}
+
+// ── Header ────────────────────────────────────────────────────────────────────
+.web-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 22px;
+  border-bottom: 1px solid #2a2218;
+  flex-shrink: 0;
+}
+
+.web-title {
+  font-family: 'Cinzel', serif;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #c0aa80;
+  letter-spacing: 0.08em;
+}
+
+.web-close {
+  background: transparent;
+  border: none;
+  color: #6a5840;
+  font-size: 1rem;
+  line-height: 1;
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 4px;
+  transition: color 0.15s;
+
+  &:hover { color: #e8e0d0; }
+}
+
+// ── Zero State ────────────────────────────────────────────────────────────────
+.web-zero {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 64px 56px;
+  text-align: center;
+  gap: 10px;
+  min-width: 380px;
+}
+
+.web-zero-icon { font-size: 2.8rem; line-height: 1; }
+
+.web-zero-title {
+  margin: 0;
+  font-size: 0.95rem;
+  color: #e8e0d0;
+
+  em { font-style: italic; color: #c0aa80; }
+}
+
+.web-zero-sub {
+  margin: 0;
+  font-size: 0.83rem;
+  color: #6a5840;
+  font-style: italic;
+  max-width: 320px;
+}
+
+// ── Canvas ────────────────────────────────────────────────────────────────────
+.web-canvas {
+  position: relative;
+  overflow: auto;
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
+// ── SVG string layer ──────────────────────────────────────────────────────────
+.web-svg {
+  display: block;
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.web-label-bg {
+  fill: #0f0d0a;
+  opacity: 0.88;
+}
+
+.web-label {
+  font-family: 'Crimson Text', serif;
+  font-size: 11px;
+  font-style: italic;
+  text-anchor: middle;
+  dominant-baseline: middle;
+}
+
+// ── Main card ─────────────────────────────────────────────────────────────────
+.web-main-card {
+  position: absolute;
+  width: 150px;
+  height: 220px;
+  z-index: 10;
+  transform: scale(0.5);
+  transform-origin: center center;
+  // Glow ring so it reads as the focal point
+  filter: drop-shadow(0 0 12px rgba(180, 140, 60, 0.28));
+}
+
+// ── Orbit node cards ──────────────────────────────────────────────────────────
+.web-node {
+  position: absolute;
+  transform: translate(-50%, -50%) scale(0.75);
+  width: 118px;
+  background: #171310;
+  border: 1.5px solid #2e2418;
+  border-radius: 10px;
+  padding: 10px 10px 8px;
+  text-align: center;
+  z-index: 10;
+  transition: border-color 0.2s;
+
+  &.web-node--friendly { border-color: #2e5038; }
+  &.web-node--hostile  { border-color: #5c1e1e; }
+}
+
+.web-node-icon {
+  font-size: 1.55rem;
+  line-height: 1.2;
+  margin-bottom: 4px;
+}
+
+.web-node-name {
+  font-family: 'Cinzel', serif;
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: #e8e0d0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin-bottom: 2px;
+}
+
+.web-node-sub {
+  font-size: 0.7rem;
+  color: #6a5840;
+  font-style: italic;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin-bottom: 6px;
+}
+
+.web-node-sentiment {
+  font-family: 'Cinzel', serif;
+  font-size: 0.65rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: #6a5840;
+
+  &.sentiment--friendly { color: #4a8858; }
+  &.sentiment--hostile  { color: #8a2e2e; }
+}

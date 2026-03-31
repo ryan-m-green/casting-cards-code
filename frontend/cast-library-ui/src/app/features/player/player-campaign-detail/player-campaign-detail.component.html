@@ -1,0 +1,45 @@
+@if (campaign(); as camp) {
+  <div class="void-canvas" [style.--portal-color]="spineColor()">
+    <div class="void-topbar">
+      <div class="void-breadcrumbs">
+        <button class="void-back" (click)="exitPortal()">← Player Campaigns</button>
+      </div>
+      <span class="void-title">{{ camp.name }}</span>
+    </div>
+
+    @if (camp.cities.length) {
+      <div class="city-cards-section">
+        <div class="city-cards-label">Cities</div>
+        <div class="city-cards-container">
+          @for (city of camp.cities; track city.instanceId) {
+            <div class="pc-card pc-card-city city-card-clickable" (click)="goToCityDetail(city.instanceId)">
+              <div class="lib-card-front">
+                <div class="card-slot-front">
+                  <div class="card-front-header">
+                    <div class="card-name">{{ city.name }}</div>
+                    <div class="card-descriptor">{{ city.classification }}</div>
+                  </div>
+                  <div class="dv dv-card"></div>
+                  <div class="card-image-area">
+                    @if (city.imageUrl) {
+                      <img [src]="city.imageUrl" alt="" class="card-img-fill" />
+                    } @else {
+                      <div class="card-placeholder">
+                        <span class="card-initial">{{ initial(city.name) }}</span>
+                      </div>
+                    }
+                    @if (city.description) {
+                      <div class="card-desc-overlay">
+                        <p class="card-desc-text">{{ city.description }}</p>
+                      </div>
+                    }
+                  </div>
+                </div>
+              </div>
+            </div>
+          }
+        </div>
+      </div>
+    }
+  </div>
+}

@@ -1,0 +1,205 @@
+@use '../../../styles/variables' as v;
+
+:host { display: block; height: 100%; }
+
+.cover-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+}
+
+.cover-content {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  min-width: 270px;
+  background: radial-gradient(ellipse 80% 60% at 50% 50%, rgba(110, 62, 20, 0.30) 0%, transparent 70%);
+  padding: 36px 48px;
+  border-radius: 4px;
+  box-shadow:
+    inset 0 0 0 1px  rgba(185, 138, 45, 0.18),
+    inset 0 0 0 4px  rgba(185, 138, 45, 0.06),
+    inset 0 0 0 5px  rgba(185, 138, 45, 0.12);
+}
+
+// ── Gold star ornament ────────────────────────────────────────────────────────
+.cover-ornament {
+  font-size: 22px;
+  color: rgba(198, 152, 48, 0.65);
+  margin-bottom: 2px;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.5);
+}
+
+// ── Main title — embossed gold stamp ─────────────────────────────────────────
+.cover-title {
+  font-family: v.$font-header;
+  font-size: 28px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: rgba(205, 158, 52, 0.94);
+  text-shadow:
+    0 1px 0  rgba(255, 210, 90, 0.22),
+    0 -1px 0 rgba(0, 0, 0, 0.45),
+    0 2px 6px rgba(0, 0, 0, 0.50);
+}
+
+// ── Subtitle ──────────────────────────────────────────────────────────────────
+.cover-subtitle {
+  font-family: v.$font-body;
+  font-size: 14px;
+  font-style: italic;
+  color: rgba(182, 136, 42, 0.60);
+  letter-spacing: 0.10em;
+}
+
+// ── Cover divider — faint gold rule ───────────────────────────────────────────
+.dv-cover {
+  margin: 16px 0;
+  height: 1px;
+  width: 110px;
+  background: linear-gradient(to right, transparent, rgba(185, 138, 45, 0.35), transparent);
+}
+
+// ── Login form ────────────────────────────────────────────────────────────────
+// Inputs sit on dark leather — all colors must be light/warm to be readable
+.cover-login-form {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+
+  // Override global fi-label (dark ink) for leather surface
+  ::ng-deep .fi-label,
+  .fi-label {
+    color: rgba(210, 175, 100, 0.82);
+  }
+
+  // Override global fi (transparent bg, dark text) for leather surface
+  .cover-fi {
+    width: 100%;
+    background: rgba(232, 215, 168, 0.07);
+    border: 1px solid rgba(185, 150, 60, 0.38);
+    border-radius: 2px;
+    outline: none;
+    font-family: v.$font-body;
+    font-size: 12px;
+    font-style: italic;
+    color: rgba(235, 215, 168, 0.92);
+    padding: 5px 8px;
+    margin-bottom: 12px;
+    transition: border-color v.$transition-std, background v.$transition-std;
+
+    &::placeholder {
+      color: rgba(185, 150, 60, 0.38);
+      font-style: italic;
+    }
+
+    &:focus {
+      border-color: rgba(90, 58, 154, 0.65);
+      background: rgba(46, 26, 94, 0.14);
+      outline: none;
+    }
+  }
+}
+
+// ── Cover field labels ────────────────────────────────────────────────────────
+.cover-fi-label {
+  display: block;
+  font-family: v.$font-header;
+  font-size: 7.5px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  color: rgba(210, 175, 100, 0.82);
+  margin-bottom: 4px;
+}
+
+// ── Error box ─────────────────────────────────────────────────────────────────
+.cover-error-box {
+  margin-bottom: 8px;
+  border-color: rgba(180, 60, 60, 0.5);
+  background: rgba(80, 20, 20, 0.2);
+
+  .wbd {
+    color: rgba(255, 160, 140, 0.92);
+  }
+}
+
+// ── Knock button — Pale Vellum (parchment stamp on leather) ──────────────────
+.cover-enter-btn {
+  position: relative;
+  font-size: 9px;
+  padding: 8px 28px;
+  letter-spacing: 0.22em;
+  align-self: center;
+  margin-top: 4px;
+
+  background: #E4D5A0;
+  border-color: #B89830;
+  color: #2A1804;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.35), 0 1px 0 rgba(255, 240, 180, 0.4) inset;
+
+  &:hover {
+    background: #EDE0B0;
+    color: #1A0E02;
+    border-color: #C8A830;
+    box-shadow: 0 3px 12px rgba(0, 0, 0, 0.40), 0 1px 0 rgba(255, 245, 195, 0.5) inset;
+    transform: scale(1.02);
+  }
+
+  &:active { transform: scale(0.96); }
+
+  &:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+    transform: none;
+  }
+}
+
+// ── Sparkle burst wrapper (sits around the Knock button) ─────────────────────
+.knock-spark-host {
+  position: relative;
+  align-self: center;
+  margin-top: 4px;
+  display: flex;
+  justify-content: center;
+}
+
+// ── Forgot password link ──────────────────────────────────────────────────────
+.cover-forgot-link {
+  align-self: center;
+  margin-top: 6px;
+  font-family: v.$font-header;
+  font-size: 7.5px;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: rgba(185, 150, 60, 0.50);
+  text-decoration: none;
+  cursor: pointer;
+  transition: color v.$transition-std;
+
+  &:hover { color: rgba(210, 175, 100, 0.80); }
+}
+
+// ── Create Account button ─────────────────────────────────────────────────────
+.cover-create-btn {
+  font-size: 8px;
+  letter-spacing: 0.16em;
+  color: rgba(185, 150, 60, 0.65);
+  border-color: rgba(185, 150, 60, 0.28);
+
+  &:hover {
+    color: rgba(210, 175, 100, 0.85);
+    background: rgba(185, 150, 60, 0.06);
+  }
+}
+
+// ── Page number / version ─────────────────────────────────────────────────────
+.pnum {
+  color: rgba(155, 112, 32, 0.45);
+  font-size: 9px;
+  letter-spacing: 0.14em;
+}

@@ -1,0 +1,46 @@
+<div class="pc scroll-body">
+  <app-dm-nav />
+  <div class="wr wr-page-header">
+    <button class="btn-ghost" routerLink="/dm/dashboard">← Dashboard</button>
+    <h2 class="page-title page-title-row">Gold Ledger</h2>
+  </div>
+
+  <div class="wb wb-section">
+    <div class="section-label section-label-mb">New Transaction</div>
+    <form [formGroup]="form" (ngSubmit)="submit()">
+      <div class="wr ledger-form-row">
+        <div class="form-field-wide">
+          <label class="fi-label">Description</label>
+          <input class="fi" formControlName="description" placeholder="Quest reward…" />
+        </div>
+        <div class="form-field">
+          <label class="fi-label">Amount (gp)</label>
+          <input class="fi" type="number" formControlName="amount" placeholder="50" />
+        </div>
+        <div class="form-field">
+          <label class="fi-label">Type</label>
+          <select class="fi" formControlName="transactionType">
+            <option value="DM_GRANT">DM Grant</option>
+            <option value="PURCHASE">Purchase</option>
+            <option value="ADJUSTMENT">Adjustment</option>
+          </select>
+        </div>
+      </div>
+      <button class="btn-primary" type="submit" [disabled]="form.invalid">+ Record</button>
+    </form>
+  </div>
+
+  <div class="section-label section-label-mb">Transaction History</div>
+  @for (t of transactions(); track t.id) {
+    <div class="wb ledger-item">
+      <div class="wr">
+        <span class="wbl flex-1">{{ t.description }}</span>
+        <span class="pnum">{{ t.amount > 0 ? '+' : '' }}{{ t.amount }} gp</span>
+        <span class="pnum ledger-date">{{ t.createdAt | date:'shortDate' }}</span>
+      </div>
+    </div>
+  }
+  @empty {
+    <p class="wbd empty-state-center">No transactions recorded.</p>
+  }
+</div>

@@ -1,0 +1,47 @@
+@use 'styles/variables' as v;
+@use 'styles/typography';
+@use 'styles/animations';
+@use 'styles/components';
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body {
+  height: 100%;
+  // Worn dark leather surface — rustic grain, worn spots, aged patina
+  background:
+    // Fine leather grain — cross-hatched micro-texture
+    repeating-linear-gradient(87deg,  transparent 0px, transparent 3px, rgba(0,0,0,0.022) 3px, rgba(0,0,0,0.022) 4px),
+    repeating-linear-gradient(177deg, transparent 0px, transparent 5px, rgba(255,255,255,0.007) 5px, rgba(255,255,255,0.007) 6px),
+    // Deep worn pockets — heavy use darkens these areas
+    radial-gradient(ellipse 42% 32% at  7% 16%, rgba(18,  6,  0, 0.62) 0%, transparent 70%),
+    radial-gradient(ellipse 30% 42% at 93% 88%, rgba(12,  4,  0, 0.68) 0%, transparent 70%),
+    radial-gradient(ellipse 22% 18% at 72% 22%, rgba(22,  8,  1, 0.42) 0%, transparent 70%),
+    radial-gradient(ellipse 28% 22% at 18% 82%, rgba(16,  5,  0, 0.50) 0%, transparent 70%),
+    // Worn bright zones — rubbed smooth over time
+    radial-gradient(ellipse 18% 14% at 50% 50%, rgba(100, 52, 14, 0.20) 0%, transparent 60%),
+    radial-gradient(ellipse 12% 10% at 30% 35%, rgba( 90, 46, 12, 0.15) 0%, transparent 60%),
+    // Base leather — rich dark reddish-brown hide
+    linear-gradient(148deg, #2a1105 0%, #3e1c09 22%, #4c230e 45%, #3c1a07 68%, #281005 100%);
+  font-family: v.$font-body;
+  color: v.$color-text-primary;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+input, textarea, select {
+  user-select: text;
+  -webkit-user-select: text;
+}
+
+a { color: inherit; text-decoration: none; }
+
+button {
+  font-family: inherit;
+  border: none;
+  background: none;
+  cursor: pointer;
+}

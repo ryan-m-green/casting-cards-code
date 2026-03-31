@@ -1,0 +1,28 @@
+$city-blue: #9ab0b8;
+
+:host {
+  display: contents;
+}
+
+.city-card-pane {
+  flex-shrink: 0;
+  background: rgba(14, 24, 32, 0.96);
+  border: 1px solid rgba($city-blue, 0.40);
+  border-radius: 6px;
+  padding: 16px;
+}
+
+.city-card-enlarged {
+  width: 240px;
+  height: 352px;
+  overflow: hidden;
+  border-radius: 4px;
+
+  .lib-card-front {
+    height: 100%;
+  }
+}
+
+.city-card-initial-lg {
+  font-size: 64px;
+}

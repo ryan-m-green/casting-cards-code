@@ -1,0 +1,513 @@
+:host { display: block; height: 100%; }
+
+.cities-section-label {
+  font-family: 'Cinzel', serif;
+  font-size: 8px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: rgba(105, 72, 18, 0.65);
+  border-bottom: 0.5px solid rgba(110, 75, 22, 0.22);
+  padding-bottom: 4px;
+  margin: 14px 0 10px;
+}
+
+// ── Location search ───────────────────────────────────────────────────────────
+.city-search-row {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 14px;
+}
+
+.city-search-input {
+  width: 340px;
+  max-width: 100%;
+}
+
+// ── Card picker layout ────────────────────────────────────────────────────────
+.city-picker-row {
+  display: flex;
+  gap: 40px;
+  justify-content: center;
+  align-items: flex-start;
+  margin-bottom: 10px;
+}
+
+// ── Deck stack ────────────────────────────────────────────────────────────────
+.deck-stack {
+  position: relative;
+  width: 150px;
+  height: 220px;
+  flex-shrink: 0;
+  cursor: pointer;
+}
+
+.deck-shadow {
+  position: absolute;
+  border-radius: 12px;
+}
+
+.deck-shadow-far {
+  top: 8px; left: 8px; right: -8px; bottom: -8px;
+  background: rgba(100, 130, 190, 0.50);
+  border: 2.5px solid rgba(30, 60, 120, 0.26);
+  transform: rotate(6deg);
+}
+
+.deck-shadow-near {
+  top: 4px; left: 4px; right: -4px; bottom: -4px;
+  background: rgba(120, 155, 210, 0.65);
+  border: 2.5px solid rgba(30, 60, 120, 0.34);
+  transform: rotate(3deg);
+}
+
+.deck-face {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(148deg, rgba(140, 175, 230, 0.92), rgba(100, 145, 210, 0.88));
+  border: 2.5px solid rgba(30, 60, 130, 0.62);
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  box-shadow: inset 0 0 0 1.5px rgba(80, 130, 200, 0.20);
+}
+
+.deck-inner-border {
+  position: absolute;
+  inset: 7px;
+  border: 1px solid rgba(60, 100, 180, 0.20);
+  border-radius: 9px;
+  pointer-events: none;
+}
+
+.deck-castle {
+  font-size: 34px;
+  line-height: 1;
+}
+
+.deck-count {
+  font-family: 'Cinzel', serif;
+  font-size: 10px;
+  color: rgba(20, 50, 110, 0.62);
+  letter-spacing: 0.08em;
+  text-align: center;
+  line-height: 1.8;
+}
+
+.deck-stack-empty {
+  border: 1.5px dashed rgba(30, 60, 120, 0.22);
+  border-radius: 12px;
+  cursor: default;
+}
+
+.main-card-area {
+  width: 150px;
+  height: 220px;
+  flex-shrink: 0;
+}
+
+.main-card-placeholder {
+  width: 100%;
+  height: 100%;
+  border: 1.5px dashed rgba(30, 60, 120, 0.28);
+  border-radius: 12px;
+  background: rgba(140, 175, 230, 0.18);
+}
+
+// Location card accent color
+.pc-card-shop {
+  background: linear-gradient(148deg, #4765a7, #759bd7);
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.loc-placeholder {
+  flex-direction: column;
+  gap: 4px;
+}
+
+// ── Add/Select button ─────────────────────────────────────────────────────────
+.add-btn-row {
+  display: flex;
+  gap: 40px;
+  justify-content: center;
+  margin-top: 10px;
+  margin-bottom: 14px;
+}
+
+.deck-stack-spacer {
+  width: 150px;
+  flex-shrink: 0;
+}
+
+.add-btn {
+  width: 150px;
+  font-family: 'Cinzel', serif;
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(20, 50, 120, 0.92);
+  background: rgba(40, 80, 160, 0.08);
+  border: 2px solid rgba(40, 80, 160, 0.52);
+  border-radius: 7px;
+  padding: 8px 16px;
+  cursor: pointer;
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  box-shadow: 0 2px 5px rgba(40, 80, 160, 0.10);
+
+  &:hover:not(:disabled) {
+    background: rgba(40, 80, 160, 0.14);
+    border-color: rgba(40, 80, 160, 0.72);
+  }
+
+  &:disabled {
+    opacity: 0.38;
+    cursor: not-allowed;
+  }
+}
+
+.add-arrow {
+  font-size: 28px;
+  line-height: 1;
+  color: rgba(20, 50, 120, 0.75);
+}
+
+// ── Selected location stack ───────────────────────────────────────────────────
+.sel-header {
+  font-family: 'Cinzel', serif;
+  font-size: 9px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(105, 72, 18, 0.62);
+  margin-bottom: 7px;
+}
+
+.sel-layout {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  margin-bottom: 8px;
+}
+
+.sel-stack-container {
+  position: relative;
+  width: 150px;
+  flex-shrink: 0;
+}
+
+.sel-card {
+  position: absolute;
+  left: 0;
+  width: 150px;
+  height: 220px;
+  background: linear-gradient(160deg, #4765a7 0%, #759bd7 50%, #3d5a9e 100%);
+  border: 2.5px solid rgba(78, 48, 10, 0.72);
+  border-radius: 4px;
+  overflow: hidden;
+  cursor: default;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.22);
+  padding: 10px;
+}
+
+.sel-card-header-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 4px;
+}
+
+.sel-card-info {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.sel-card-remove {
+  flex-shrink: 0;
+  font-size: 14px;
+  line-height: 1;
+  border: 1px solid rgba(210, 70, 45, 0.75);
+  border-radius: 3px;
+  background: rgba(110, 20, 8, 0.92);
+  color: #ffd8cc;
+  padding: 2px 6px;
+  cursor: pointer;
+  margin-top: 1px;
+
+  &:hover { background: rgba(150, 30, 10, 0.95); }
+}
+
+
+.sel-stack-placeholder {
+  width: 150px;
+  height: 220px;
+  flex-shrink: 0;
+  border: 1.5px dashed rgba(30, 60, 120, 0.28);
+  border-radius: 12px;
+  background: rgba(140, 175, 230, 0.18);
+}
+
+// ── Detail panel ──────────────────────────────────────────────────────────────
+.detail-panel {
+  flex: 1;
+  min-width: 0;
+  padding: 10px 14px;
+  border: 1px solid rgba(30, 60, 120, 0.22);
+  border-radius: 10px;
+  background: rgba(190, 215, 245, 0.18);
+}
+
+.detail-panel-empty {
+  font-family: 'Crimson Text', serif;
+  font-style: italic;
+  font-size: 12px;
+  color: rgba(30, 60, 120, 0.52);
+  margin: 0;
+  padding: 8px 0;
+}
+
+.detail-panel-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 4px;
+  flex-wrap: wrap;
+}
+
+.detail-city-name {
+  font-family: 'Cinzel', serif;
+  font-size: 13px;
+  color: rgba(15, 40, 100, 0.92);
+  letter-spacing: 0.06em;
+}
+
+.detail-city-label {
+  font-family: 'Crimson Text', serif;
+  font-style: italic;
+  font-size: 10px;
+  color: rgba(30, 60, 120, 0.55);
+}
+
+.confirm-btn {
+  margin-left: auto;
+  font-family: 'Cinzel', serif;
+  font-size: 8px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(34, 80, 38, 0.92);
+  background: rgba(38, 88, 42, 0.08);
+  border: 1.5px solid rgba(38, 88, 42, 0.48);
+  border-radius: 5px;
+  padding: 4px 10px;
+  cursor: pointer;
+  white-space: nowrap;
+
+  &:hover { background: rgba(38, 88, 42, 0.15); }
+}
+
+.detail-desc-text {
+  font-family: 'Crimson Text', serif;
+  font-size: 11px;
+  color: rgba(15, 40, 100, 0.75);
+  line-height: 1.5;
+  margin: 0;
+}
+
+// ── Cast Members ──────────────────────────────────────────────────────────────
+.cast-section-label {
+  font-family: 'Cinzel', serif;
+  font-size: 9px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: rgba(78, 50, 10, 0.82);
+  margin-bottom: 6px;
+  padding-bottom: 4px;
+  border-bottom: 0.5px solid rgba(110, 75, 22, 0.18);
+}
+
+.cast-member-list {
+  margin-bottom: 10px;
+}
+
+.cast-member-row {
+  font-family: 'Crimson Text', serif;
+  font-size: 12px;
+  color: rgba(20, 15, 5, 0.82);
+  padding: 3px 0 3px 8px;
+  border-bottom: 0.5px solid rgba(110, 75, 22, 0.10);
+
+  &::before {
+    content: '•';
+    margin-right: 6px;
+    color: rgba(110, 75, 22, 0.45);
+  }
+}
+
+.cast-member-empty {
+  font-family: 'Crimson Text', serif;
+  font-style: italic;
+  font-size: 11px;
+  color: rgba(20, 15, 5, 0.38);
+  margin: 0 0 10px 0;
+}
+
+// ── Inventory ─────────────────────────────────────────────────────────────────
+.inv-section-label {
+  font-family: 'Cinzel', serif;
+  font-size: 9px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: rgba(78, 50, 10, 0.82);
+  margin-bottom: 6px;
+  padding-bottom: 4px;
+  border-bottom: 0.5px solid rgba(110, 75, 22, 0.18);
+}
+
+.inv-label-hint {
+  font-family: 'Crimson Text', serif;
+  font-style: italic;
+  font-size: 8px;
+  letter-spacing: 0;
+  text-transform: none;
+  color: rgba(105, 72, 18, 0.45);
+}
+
+.inv-standard-list {
+  margin-bottom: 8px;
+}
+
+.inv-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  padding: 3px 0;
+  border-bottom: 0.5px solid rgba(110, 75, 22, 0.12);
+}
+
+.inv-item-name {
+  font-family: 'Crimson Text', serif;
+  font-size: 9.5px;
+  color: rgba(58, 38, 10, 0.75);
+}
+
+.inv-item-price {
+  font-family: 'Crimson Text', serif;
+  font-style: italic;
+  font-size: 9px;
+  color: rgba(105, 72, 18, 0.55);
+}
+
+.inv-empty {
+  font-family: 'Crimson Text', serif;
+  font-style: italic;
+  font-size: 10px;
+  color: rgba(105, 72, 18, 0.42);
+  margin: 0 0 8px;
+}
+
+.inv-custom-section {
+  border-top: 0.5px solid rgba(110, 75, 22, 0.18);
+  margin-top: 6px;
+  padding-top: 6px;
+}
+
+.inv-custom-label {
+  font-family: 'Cinzel', serif;
+  font-size: 8px;
+  letter-spacing: 0.10em;
+  text-transform: uppercase;
+  color: rgba(78, 50, 10, 0.65);
+  margin-bottom: 5px;
+}
+
+.inv-custom-row {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-bottom: 4px;
+
+  .inv-custom-input {
+    flex: 2;
+    margin-bottom: 0;
+  }
+
+  .inv-custom-price {
+    flex: 1;
+  }
+}
+
+.inv-remove-btn {
+  font-size: 14px;
+  line-height: 1;
+  border: 1px dashed rgba(140, 48, 28, 0.38);
+  border-radius: 2px;
+  background: transparent;
+  color: rgba(140, 48, 28, 0.65);
+  padding: 0 5px;
+  cursor: pointer;
+  flex-shrink: 0;
+
+  &:hover { color: rgba(140, 48, 28, 0.90); }
+}
+
+.inv-add-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-family: 'Cinzel', serif;
+  font-size: 8px;
+  letter-spacing: 0.06em;
+  color: rgba(38, 88, 42, 0.75);
+  border: 1px dashed rgba(38, 88, 42, 0.42);
+  border-radius: 2px;
+  background: transparent;
+  padding: 3px 8px;
+  cursor: pointer;
+  margin-top: 2px;
+
+  &:hover { color: rgba(38, 88, 42, 1); border-color: rgba(38, 88, 42, 0.70); }
+}
+
+.add-casts-btn {
+  margin-left: auto;
+  font-family: 'Cinzel', serif;
+  font-size: 8px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(34, 80, 38, 0.92);
+  background: rgba(38, 88, 42, 0.08);
+  border: 1.5px solid rgba(38, 88, 42, 0.48);
+  border-radius: 5px;
+  padding: 4px 10px;
+  cursor: pointer;
+  white-space: nowrap;
+
+  &:hover { background: rgba(38, 88, 42, 0.15); }
+}
+
+// ── Read-only keyword chips ────────────────────────────────────────────────────
+.detail-keywords {
+  margin-bottom: 10px;
+}
+
+.keyword-chips-readonly {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-top: 4px;
+}
+
+.keyword-chip-readonly {
+  font-family: 'Crimson Text', serif;
+  font-size: 10px;
+  color: rgba(20, 50, 110, 0.78);
+  background: rgba(40, 80, 160, 0.10);
+  border: 1px solid rgba(40, 80, 160, 0.28);
+  border-radius: 20px;
+  padding: 2px 8px;
+}

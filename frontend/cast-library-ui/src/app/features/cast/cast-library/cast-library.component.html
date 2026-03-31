@@ -1,0 +1,78 @@
+<div class="pc scroll-body">
+  <app-dm-nav />
+  <div class="wr wr-page-header">
+    <button class="btn-ghost" routerLink="/dm/dashboard">← Back</button>
+    <h2 class="page-title page-title-row">Cast Library</h2>
+    <button class="btn-primary" routerLink="/dm/cast/new">+ Create Cast</button>
+  </div>
+
+  <input class="search-bar" type="text" placeholder="Name · Race · Role…"
+         [value]="searchTerm()" (input)="searchTerm.set($any($event.target).value)" />
+
+  <div class="card-grid">
+    @for (cast of filtered(); track cast.id) {
+      <div class="pc-card pc-card-cast">
+        <app-card-flip>
+          <div slot="front" class="card-slot-front">
+            <button class="card-edit-btn"
+                    (click)="edit(cast.id);$event.stopPropagation()">Edit</button>
+            <div class="card-front-header">
+              <div class="card-name">{{ cast.name }}</div>
+              <div class="card-descriptor">{{ cast.role }} · {{ cast.race }}</div>
+            </div>
+            <div class="dv dv-card"></div>
+            <div class="card-image-area">
+              @if (cast.imageUrl) {
+                <img [src]="cast.imageUrl" alt="" class="card-img-fill" />
+              } @else {
+                <div class="card-placeholder">
+                  <span class="card-initial">{{ initial(cast.name) }}</span>
+                </div>
+              }
+              @if (cast.publicDescription) {
+                <div class="card-desc-overlay">
+                  <p class="card-desc-text">{{ cast.publicDescription }}</p>
+                </div>
+              }
+            </div>
+          </div>
+          <div slot="back" class="card-slot-back">
+            <div class="card-back-content">
+              <div class="card-name card-back-name">{{ cast.name }}</div>
+              <div class="dv dv-mb"></div>
+              <div class="fi-label fi-label-strong">Pronouns</div><p class="wbd card-field-value">{{ cast.pronouns || '—' }}</p>
+              <div class="fi-label fi-label-strong">Age</div><p class="wbd card-field-value">{{ cast.age || '—' }}</p>
+              <div class="fi-label fi-label-strong">Race</div><p class="wbd card-field-value">{{ cast.race || '—' }}</p>
+              <div class="fi-label fi-label-strong">Alignment</div><p class="wbd card-field-value">{{ cast.alignment || '—' }}</p>
+              <div class="fi-label fi-label-strong">Posture</div><p class="wbd card-field-value">{{ cast.posture || '—' }}</p>
+              <div class="fi-label fi-label-strong">Speed</div><p class="wbd card-field-value">{{ cast.speed || '—' }}</p>
+              @if (cast.voicePlacement?.length) {
+                <div class="fi-label fi-label-strong">Voice</div><p class="wbd card-field-value">{{ cast.voicePlacement.join(', ') }}</p>
+              }
+            </div>
+            <button class="card-delete-btn"
+                    (click)="confirmDelete(cast.id);$event.stopPropagation()">Delete</button>
+          </div>
+        </app-card-flip>
+      </div>
+    }
+    @empty {
+      <p class="wbd empty-state-pad">No cast found. Create your first cast member to get started.</p>
+    }
+  </div>
+</div>
+
+@if (pendingDeleteId()) {
+  <div class="delete-overlay" (click)="cancelDelete()">
+    <div class="delete-panel" (click)="$event.stopPropagation()">
+      <div class="delete-panel-title">Delete Cast Member?</div>
+      <p class="delete-panel-message">
+        This will permanently delete this cast member and their portrait. This cannot be undone.
+      </p>
+      <div class="delete-btn-row">
+        <button class="btn-modal-cancel" (click)="cancelDelete()">Cancel</button>
+        <button class="btn-modal-delete" (click)="executeDelete()">Delete</button>
+      </div>
+    </div>
+  </div>
+}

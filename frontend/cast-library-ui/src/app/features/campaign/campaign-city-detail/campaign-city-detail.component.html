@@ -1,0 +1,233 @@
+@if (city(); as c) {
+  <div class="void-canvas" [style.--portal-color]="portalColor()">
+
+    <!-- ── Top bar ── -->
+    <div class="void-topbar">
+      <div class="void-breadcrumbs">
+        <button class="void-back" (click)="exitToLibrary()">← Campaign Library</button>
+        <span class="void-crumb-sep">›</span>
+        <button class="void-back" (click)="goToCampaign()">← Cities</button>
+      </div>
+      <span class="void-title">{{ c.name }}</span>
+    </div>
+
+    <!-- ── Body ── -->
+    <div class="city-body">
+
+      <!-- Card -->
+      <div class="city-card-left">
+        <div class="pc-card pc-card-city">
+          <div class="lib-card-front">
+            <div class="card-slot-front">
+              <div class="card-front-header">
+                <div class="card-name">{{ c.name }}</div>
+                <div class="card-descriptor">{{ c.classification }}</div>
+              </div>
+              <div class="dv dv-card"></div>
+              <div class="card-image-area">
+                @if (c.imageUrl) {
+                  <img [src]="c.imageUrl" alt="" class="card-img-fill" />
+                } @else {
+                  <div class="card-placeholder">
+                    <span class="card-initial">{{ c.name.charAt(0).toUpperCase() }}</span>
+                  </div>
+                }
+                @if (c.description) {
+                  <div class="card-desc-overlay">
+                    <p class="card-desc-text">{{ c.description }}</p>
+                  </div>
+                }
+              </div>
+              <button
+                class="city-lock-btn"
+                [class.city-lock-btn--visible]="c.isVisibleToPlayers"
+                (click)="toggleCityVisibility()"
+                [title]="c.isVisibleToPlayers ? 'Hide from players' : 'Reveal to players'"
+              >
+                {{ c.isVisibleToPlayers ? '🔓' : '🔒' }}
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Detail panel -->
+      <div class="city-detail-panel" [style.height]="panelHeight()">
+
+        <div class="detail-panel-content" #detailContent>
+
+          <!-- Description at top — full width -->
+          @if (c.description) {
+            <div class="detail-desc">
+              <span class="detail-label">Description</span>
+              <span class="detail-line"></span>
+              <p class="detail-value detail-value--block">{{ c.description }}</p>
+            </div>
+          }
+
+          <!-- 2-col field grid -->
+          <div class="detail-grid">
+            @if (c.classification) {
+              <div class="detail-cell">
+                <span class="detail-label">Classification</span>
+                <span class="detail-line"></span>
+                <span class="detail-value">{{ c.classification }}</span>
+              </div>
+            }
+            @if (c.size) {
+              <div class="detail-cell">
+                <span class="detail-label">Size</span>
+                <span class="detail-line"></span>
+                <span class="detail-value">{{ c.size }}</span>
+              </div>
+            }
+            @if (c.condition) {
+              <div class="detail-cell">
+                <span class="detail-label">Condition</span>
+                <span class="detail-line"></span>
+                <span class="detail-value">{{ c.condition }}</span>
+              </div>
+            }
+            @if (c.geography) {
+              <div class="detail-cell">
+                <span class="detail-label">Geography</span>
+                <span class="detail-line"></span>
+                <span class="detail-value">{{ c.geography }}</span>
+              </div>
+            }
+            @if (c.architecture) {
+              <div class="detail-cell">
+                <span class="detail-label">Architecture</span>
+                <span class="detail-line"></span>
+                <span class="detail-value">{{ c.architecture }}</span>
+              </div>
+            }
+            @if (c.climate) {
+              <div class="detail-cell">
+                <span class="detail-label">Climate</span>
+                <span class="detail-line"></span>
+                <span class="detail-value">{{ c.climate }}</span>
+              </div>
+            }
+            @if (c.religion) {
+              <div class="detail-cell">
+                <span class="detail-label">Religion</span>
+                <span class="detail-line"></span>
+                <span class="detail-value">{{ c.religion }}</span>
+              </div>
+            }
+            @if (c.vibe) {
+              <div class="detail-cell">
+                <span class="detail-label">Vibe</span>
+                <span class="detail-line"></span>
+                <span class="detail-value">{{ c.vibe }}</span>
+              </div>
+            }
+            @if (c.languages) {
+              <div class="detail-cell">
+                <span class="detail-label">Languages</span>
+                <span class="detail-line"></span>
+                <span class="detail-value">{{ c.languages }}</span>
+              </div>
+            }
+            @if (c.keywords?.length) {
+              <div class="detail-cell">
+                <span class="detail-label">Keywords</span>
+                <span class="detail-line"></span>
+                <div class="detail-keywords">
+                  @for (kw of c.keywords; track kw) {
+                    <span class="detail-keyword-pill">{{ kw }}</span>
+                  }
+                </div>
+              </div>
+            }
+          </div>
+
+          <!-- Secrets — full width, where description was -->
+          @for (secret of citySecrets(); track secret.id) {
+            <div class="detail-secret">
+              @if (isDm()) {
+                <button class="secret-lock-btn" (click)="toggleSecret(secret)"
+                        [title]="secret.isRevealed ? 'Reseal secret' : 'Reveal secret'">
+                  {{ secret.isRevealed ? '🔓' : '🔒' }}
+                </button>
+              } @else {
+                <span class="secret-lock-icon">{{ secret.isRevealed ? '🔓' : '🔒' }}</span>
+              }
+              <span class="secret-text" [class.secret-text--revealed]="secret.isRevealed">{{ secret.content }}</span>
+            </div>
+          }
+
+        </div>
+
+        <!-- Expand / collapse toggle -->
+        <button class="detail-expand-btn" #expandBtn (click)="toggleDetail()">
+          {{ detailExpanded() ? '▲' : '▼' }}
+        </button>
+
+      </div>
+
+    </div>
+
+    <!-- ── Locations section ── -->
+    @if (isDm() && cityLocations().length) {
+      <div class="city-locations-section">
+
+        <div class="locations-section-header">
+          <span class="locations-section-label">Locations</span>
+          <span class="locations-section-line"></span>
+          <button
+            class="loc-reveal-all-btn"
+            [class.loc-reveal-all-btn--visible]="allLocationsVisible()"
+            (click)="toggleAllLocationsVisibility()"
+            [title]="allLocationsVisible() ? 'Hide all locations from players' : 'Reveal all locations to players'"
+          >
+            {{ allLocationsVisible() ? '🔓 Hide All' : '🔒 Reveal All' }}
+          </button>
+        </div>
+
+        <div class="locations-grid">
+          @for (loc of cityLocations(); track loc.instanceId) {
+            <div class="loc-card-wrapper" (click)="goToLocation(loc)">
+              <div class="pc-card pc-card-location">
+                <div class="lib-card-front">
+                  <div class="card-slot-front">
+                    <div class="card-front-header">
+                      <div class="card-name">{{ loc.name }}</div>
+                      <div class="card-descriptor">{{ loc.shopItems?.length ?? 0 }} shop items</div>
+                    </div>
+                    <div class="dv dv-card"></div>
+                    <div class="card-image-area">
+                      @if (loc.imageUrl) {
+                        <img [src]="loc.imageUrl" alt="" class="card-img-fill" />
+                      } @else {
+                        <div class="card-placeholder">
+                          <span class="card-initial">{{ initial(loc.name) }}</span>
+                        </div>
+                      }
+                      @if (loc.description) {
+                        <div class="card-desc-overlay">
+                          <p class="card-desc-text">{{ loc.description }}</p>
+                        </div>
+                      }
+                    </div>
+                    <button
+                      class="city-lock-btn"
+                      [class.city-lock-btn--visible]="loc.isVisibleToPlayers"
+                      (click)="toggleLocationVisibility(loc); $event.stopPropagation()"
+                      [title]="loc.isVisibleToPlayers ? 'Hide from players' : 'Reveal to players'"
+                    >
+                      {{ loc.isVisibleToPlayers ? '🔓' : '🔒' }}
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          }
+        </div>
+
+      </div>
+    }
+
+  </div>
+}

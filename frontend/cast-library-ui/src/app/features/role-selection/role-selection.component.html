@@ -1,0 +1,55 @@
+<div class="pc join-center">
+  <div class="cover-ornament join-ornament">✦</div>
+  <div class="page-title">Create Your Account</div>
+  <p class="pnum join-subtitle">Join the ledger as a DM or Adventurer</p>
+
+  <div class="role-card join-card">
+    <form [formGroup]="registerForm" (ngSubmit)="register()">
+      <label class="fi-label">Invite Code</label>
+      <input class="fi" type="text" formControlName="inviteCode" placeholder="XXXX-XXXX-XXXX" autocomplete="off" />
+
+      <div class="dv join-dv"></div>
+
+      <label class="fi-label">Display Name</label>
+      <input class="fi" type="text" formControlName="displayName" placeholder="The Chronicler" autocomplete="name" />
+
+      <label class="fi-label">Arcane Seal (Email)</label>
+      <input class="fi" type="email" formControlName="email" placeholder="user@example.com" autocomplete="email" />
+
+      <label class="fi-label">Password</label>
+      <input class="fi" type="password" formControlName="password" placeholder="••••••••" autocomplete="new-password" />
+
+      <label class="fi-label">Confirm Password</label>
+      <input class="fi" type="password" formControlName="confirmPassword" placeholder="••••••••" autocomplete="new-password" />
+      @if (passwordMismatch) {
+        <p class="wbd text-error">Passwords do not match.</p>
+      }
+
+      <div class="dv join-dv"></div>
+
+      <p class="fi-label join-role-label">I am a...</p>
+      <div class="wr join-toggle-row">
+        <button type="button"
+                class="btn-ghost join-toggle-btn"
+                [class.btn-primary]="selectedRole() === 'DM'"
+                (click)="selectedRole.set('DM')">⚔ DM</button>
+        <button type="button"
+                class="btn-ghost join-toggle-btn"
+                [class.btn-primary]="selectedRole() === 'Player'"
+                (click)="selectedRole.set('Player')">🛡 Player</button>
+      </div>
+
+      @if (errorMsg()) {
+        <div class="wb join-error-box">
+          <p class="wbd text-error">{{ errorMsg() }}</p>
+        </div>
+      }
+
+      <button class="btn-primary btn-full join-submit-btn" type="submit" [disabled]="loading()">
+        {{ loading() ? '…' : 'Create Account' }}
+      </button>
+    </form>
+  </div>
+
+  <button class="btn-ghost join-signin-btn" (click)="signIn()">Already have an account? Sign In →</button>
+</div>

@@ -1,0 +1,249 @@
+:host { display: block; height: 100%; }
+
+/* ── Section label ─────────────────────────────────────────────── */
+.section-label {
+  font-family: 'Cinzel', serif;
+  font-size: 8px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: rgba(105, 72, 18, 0.65);
+  border-bottom: 0.5px solid rgba(110, 75, 22, 0.22);
+  padding-bottom: 4px;
+  margin: 8px 0 16px;
+}
+
+/* ── Portal grid ───────────────────────────────────────────────── */
+.portal-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  padding: 4px 0 20px;
+}
+
+/* ── Portal card ───────────────────────────────────────────────── */
+.portal-card {
+  width: 170px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: radial-gradient(ellipse at 50% 20%, #1c0e30 0%, #0c0618 50%, #050209 100%);
+  border: 1px solid color-mix(in srgb, var(--portal-color, #6e28d0), transparent 78%);
+  border-radius: 10px;
+  padding: 16px 12px 12px;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
+  box-shadow:
+    0 4px 20px rgba(0, 0, 0, 0.75),
+    inset 0 0 40px rgba(70, 15, 130, 0.08);
+
+  /* Storm cloud layers */
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 130% 45% at 50% 0%, rgba(55, 15, 95, 0.45) 0%, transparent 70%),
+      radial-gradient(ellipse 70% 35% at 15% 35%, rgba(70, 15, 110, 0.22) 0%, transparent 65%),
+      radial-gradient(ellipse 55% 28% at 85% 55%, rgba(95, 20, 75, 0.18) 0%, transparent 60%);
+    pointer-events: none;
+  }
+
+  &:hover {
+    border-color: color-mix(in srgb, var(--portal-color, #6e28d0), transparent 60%);
+    box-shadow:
+      0 10px 36px rgba(0, 0, 0, 0.85),
+      0 0 22px color-mix(in srgb, var(--portal-color, #6e28d0), transparent 86%),
+      inset 0 0 40px rgba(0, 0, 0, 0.12);
+
+    .portal-rim {
+      animation: portal-breathe 1.4s ease-in-out infinite;
+    }
+
+    .portal-spark {
+      animation-duration: 1.6s;
+    }
+  }
+}
+
+/* ── Portal title ──────────────────────────────────────────────── */
+.portal-title {
+  font-family: 'Cinzel', serif;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(215, 195, 255, 0.92);
+  text-align: center;
+  text-shadow:
+    0 0 14px color-mix(in srgb, var(--portal-color, #6e28d0), white 20%),
+    0 1px 4px rgba(0, 0, 0, 0.9);
+  margin-bottom: 14px;
+  line-height: 1.45;
+  min-height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  z-index: 1;
+}
+
+/* ── Portal arch container ─────────────────────────────────────── */
+.portal-arch-wrap {
+  position: relative;
+  width: 92px;
+  height: 132px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1;
+}
+
+.portal-arch {
+  position: relative;
+  width: 76px;
+  height: 118px;
+  border-radius: 50%;
+}
+
+/* ── Portal void (interior) ────────────────────────────────────── */
+.portal-void {
+  position: absolute;
+  inset: 5px;
+  border-radius: 50%;
+  background: radial-gradient(ellipse at 40% 35%,
+    #0e1f45 0%,
+    #07122a 40%,
+    #030a18 70%,
+    #010308 100%);
+  box-shadow:
+    inset 0 0 24px rgba(15, 50, 130, 0.85),
+    inset 0 0 10px rgba(0, 0, 0, 0.95);
+}
+
+/* ── Portal rim (glowing edge) ─────────────────────────────────── */
+.portal-rim {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: transparent;
+  animation: portal-breathe 3.2s ease-in-out infinite;
+}
+
+@keyframes portal-breathe {
+  0%, 100% {
+    box-shadow:
+      0 0 0 2px rgba(255, 255, 255, 0.82),
+      0 0 5px 3px color-mix(in srgb, var(--portal-color, #6e28d0) 40%, white 60%),
+      0 0 12px 6px color-mix(in srgb, var(--portal-color, #6e28d0), transparent 28%),
+      0 0 26px 10px color-mix(in srgb, var(--portal-color, #6e28d0), transparent 48%),
+      0 0 48px 16px color-mix(in srgb, var(--portal-color, #6e28d0), transparent 72%);
+  }
+  50% {
+    box-shadow:
+      0 0 0 2px rgba(255, 255, 255, 0.96),
+      0 0 8px 5px color-mix(in srgb, var(--portal-color, #6e28d0) 25%, white 75%),
+      0 0 18px 9px color-mix(in srgb, var(--portal-color, #6e28d0), transparent 12%),
+      0 0 38px 14px color-mix(in srgb, var(--portal-color, #6e28d0), transparent 34%),
+      0 0 68px 22px color-mix(in srgb, var(--portal-color, #6e28d0), transparent 62%);
+  }
+}
+
+/* ── Spark particles ───────────────────────────────────────────── */
+.portal-spark {
+  position: absolute;
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--portal-color, #6e28d0), white 70%);
+  box-shadow:
+    0 0 4px color-mix(in srgb, var(--portal-color, #6e28d0), white 30%),
+    0 0 9px color-mix(in srgb, var(--portal-color, #6e28d0), transparent 45%);
+  z-index: 2;
+}
+
+.ps1 {
+  top: 8px;
+  left: 18px;
+  animation: spark-drift 2.5s ease-in-out infinite;
+}
+
+.ps2 {
+  top: 28px;
+  right: -1px;
+  animation: spark-drift 3.2s ease-in-out infinite 0.7s;
+}
+
+.ps3 {
+  bottom: 22px;
+  left: -1px;
+  animation: spark-drift 2.8s ease-in-out infinite 1.3s;
+}
+
+.ps4 {
+  bottom: 10px;
+  right: 14px;
+  animation: spark-drift 3.6s ease-in-out infinite 0.4s;
+}
+
+@keyframes spark-drift {
+  0%, 100% {
+    opacity: 0.35;
+    transform: translate(0, 0) scale(1);
+  }
+  33% {
+    opacity: 1;
+    transform: translate(2px, -4px) scale(1.5);
+  }
+  66% {
+    opacity: 0.55;
+    transform: translate(-2px, 2px) scale(0.75);
+  }
+}
+
+
+/* ── Portal footer (buttons) ───────────────────────────────────── */
+.portal-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  margin-top: 14px;
+  position: relative;
+  z-index: 1;
+}
+
+.portal-btn {
+  font-family: 'Cinzel', serif;
+  font-size: 7.5px;
+  letter-spacing: 0.10em;
+  text-transform: uppercase;
+  padding: 5px 10px;
+  border-radius: 3px;
+  cursor: pointer;
+  background: transparent;
+  transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+
+  &--delete {
+    border: 1px solid rgba(190, 65, 65, 0.42);
+    color: rgba(255, 145, 125, 0.82);
+
+    &:hover {
+      background: rgba(140, 38, 38, 0.22);
+      border-color: rgba(210, 75, 75, 0.68);
+      color: rgba(255, 160, 140, 0.96);
+    }
+  }
+
+  &--edit {
+    border: 1px solid rgba(135, 75, 225, 0.42);
+    color: rgba(195, 165, 255, 0.82);
+
+    &:hover {
+      background: rgba(95, 45, 180, 0.22);
+      border-color: rgba(160, 95, 255, 0.68);
+      color: rgba(215, 185, 255, 0.96);
+    }
+  }
+}

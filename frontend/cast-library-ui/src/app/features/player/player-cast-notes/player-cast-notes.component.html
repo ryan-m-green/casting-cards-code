@@ -1,0 +1,131 @@
+<div class="cast-notes-panel">
+
+  <!-- ── Panel header ── -->
+  <div class="notes-panel-header">
+    <span class="notes-panel-label">Cast Notes</span>
+    <span class="notes-panel-line"></span>
+    @if (saving()) {
+      <span class="notes-saving">saving…</span>
+    }
+  </div>
+
+  <!-- ── 1. What does this person want ── -->
+  <div class="notes-section">
+    <div class="notes-field-label">What does this person want</div>
+    <span class="notes-field-line"></span>
+    <textarea
+      #wantTextarea
+      class="notes-textarea"
+      rows="4"
+      placeholder="What motivates them? What are they after?"
+      (input)="onWantInput($any($event.target).value)"
+    ></textarea>
+  </div>
+
+  <div class="notes-section-divider"></div>
+
+  <!-- ── 2. Who is this person connected with ── -->
+  <div class="notes-section">
+    <div class="notes-field-label">Who is this person connected with</div>
+    <span class="notes-field-line"></span>
+
+    <div class="notes-dropdown">
+      <button class="notes-dropdown-trigger" (click)="toggleDropdown($event)">
+        <span class="notes-dropdown-placeholder">Add a connection…</span>
+        <span class="notes-dropdown-caret" [class.notes-dropdown-caret--open]="dropdownOpen()">▾</span>
+      </button>
+      @if (dropdownOpen()) {
+        <div class="notes-dropdown-panel">
+          @for (group of citiesWithCasts(); track group.cityId) {
+            <div class="notes-dropdown-group-label">{{ group.cityName }}</div>
+            @for (cast of group.casts; track cast.instanceId) {
+              <div class="notes-dropdown-item" (click)="onConnectionSelect(cast.instanceId)">
+                {{ cast.name }}
+              </div>
+            }
+          }
+          @if (citiesWithCasts().length === 0) {
+            <div class="notes-dropdown-empty">No connections available</div>
+          }
+        </div>
+      }
+    </div>
+
+    @if (connectedCasts().length) {
+      <div class="notes-pills">
+        @for (cast of connectedCasts(); track cast.instanceId) {
+          <span class="notes-pill">
+            {{ cast.name }}
+            <button class="notes-pill-remove" (click)="removeConnection(cast.instanceId)">×</button>
+          </span>
+        }
+      </div>
+    }
+  </div>
+
+  <div class="notes-section-divider"></div>
+
+  <!-- ── 3. What is this person's alignment ── -->
+  <div class="notes-section">
+    <div class="notes-field-label">What is this person's alignment</div>
+    <span class="notes-field-line"></span>
+    <div class="alignment-grid">
+      @for (row of alignments; track $index) {
+        @for (cell of row; track cell) {
+          <button
+            class="alignment-cell"
+            [class.alignment-cell--selected]="notes().alignment === cell"
+            (click)="onAlignmentSelect(cell)"
+          >{{ cell }}</button>
+        }
+      }
+    </div>
+  </div>
+
+  <div class="notes-section-divider"></div>
+
+  <!-- ── 4. How does this person perceive us ── -->
+  <div class="notes-section">
+    <div class="notes-field-label">How does this person perceive us</div>
+    <span class="notes-field-line"></span>
+    <div
+      class="perception-card"
+      [class.perception-card--hostile]="notes().perception < 0"
+      [class.perception-card--friendly]="notes().perception > 0"
+    >
+      <input
+        type="range"
+        min="-5"
+        max="5"
+        step="1"
+        [value]="notes().perception"
+        class="perception-slider"
+        [class]="sliderClass(notes().perception)"
+        (input)="onPerceptionInput($event)"
+        (change)="onPerceptionRelease($event)"
+      />
+      <div class="perception-labels">
+        <span class="perception-label-end">Hostile</span>
+        <span class="perception-label-center">{{ perceptionLabel() }}</span>
+        <span class="perception-label-end">Devoted</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── 5. Secrets ── -->
+  @if (castSecrets.length) {
+    <div class="notes-section-divider"></div>
+    <div class="notes-section">
+      <div class="notes-field-label">Secrets</div>
+      <span class="notes-field-line"></span>
+      <div class="secrets-grid">
+        @for (secret of castSecrets; track secret.id) {
+          <div class="secret-card">
+            <p class="secret-card-text">{{ secret.content }}</p>
+          </div>
+        }
+      </div>
+    </div>
+  }
+
+</div>

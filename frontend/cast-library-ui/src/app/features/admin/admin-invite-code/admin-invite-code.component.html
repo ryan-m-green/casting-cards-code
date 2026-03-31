@@ -1,0 +1,29 @@
+<div class="pc scroll-body">
+  <app-dm-nav />
+
+  <h2 class="page-title page-title-sm">Invite Code</h2>
+
+  @if (code()) {
+    <div class="wb wb-narrow">
+      <p class="ic-label">Code</p>
+      <p class="ic-code">{{ code()!.code }}</p>
+      <p class="ic-meta">Expires {{ formatDate(code()!.expiresAt) }} &nbsp;·&nbsp; {{ expiresIn(code()!.expiresAt) }} remaining</p>
+    </div>
+  } @else {
+    <div class="wb wb-narrow">
+      <p class="wbd">No active invite code. Generate one below.</p>
+    </div>
+  }
+
+  <button class="btn-primary ic-btn" (click)="generate()" [disabled]="loading()">
+    {{ loading() ? '…' : (code() ? 'Generate New Code' : 'Generate Invite Code') }}
+  </button>
+
+  @if (errorMsg()) {
+    <div class="wb wb-narrow ic-error-box">
+      <p class="wbd text-error">{{ errorMsg() }}</p>
+    </div>
+  }
+
+  <div class="orn orn-mt">· · ·</div>
+</div>

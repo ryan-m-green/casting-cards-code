@@ -1,0 +1,42 @@
+:host { display: block; height: 100%; }
+
+.shop-header-row {
+  align-items: center;
+  margin: 12px 0 8px;
+}
+
+.shop-item-card {
+  margin-bottom: 8px;
+}
+
+.shop-item-fields {
+  gap: 8px;
+  align-items: flex-end;
+}
+
+.btn-item-remove {
+  margin-bottom: 2px;
+}
+
+.price-input-group {
+  display: flex;
+  gap: 4px;
+}
+
+.price-amount {
+  flex: 1;
+  min-width: 0;
+}
+
+.price-currency {
+  width: 60px;
+  flex-shrink: 0;
+}
+
+.fi-label-mt {
+  margin-top: 6px;
+}
+
+.btn-save-wide {
+  min-width: 160px;
+}

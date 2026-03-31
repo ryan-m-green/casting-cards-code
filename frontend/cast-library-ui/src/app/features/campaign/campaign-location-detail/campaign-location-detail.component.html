@@ -1,0 +1,188 @@
+@if (location(); as loc) {
+  <div class="void-canvas" [style.--portal-color]="portalColor()">
+
+    <!-- ── Top bar ── -->
+    <div class="void-topbar">
+      <div class="void-breadcrumbs">
+        <button class="void-back" (click)="exitToLibrary()">← Campaign Library</button>
+        <span class="void-crumb-sep">›</span>
+        <button class="void-back" (click)="goToCampaign()">← Cities</button>
+        <span class="void-crumb-sep">›</span>
+        <button class="void-back" (click)="goToCity()">← Settling Locations</button>
+      </div>
+      <span class="void-title">{{ loc.name }}</span>
+    </div>
+
+    <!-- ── Body ── -->
+    <div class="loc-body">
+
+      <!-- Card -->
+      <div class="loc-card-left">
+        <div class="pc-card pc-card-location">
+          <div class="lib-card-front">
+            <div class="card-slot-front">
+              <div class="card-front-header">
+                <div class="card-name">{{ loc.name }}</div>
+                <div class="card-descriptor">{{ loc.shopItems?.length ?? 0 }} shop items</div>
+              </div>
+              <div class="dv dv-card"></div>
+              <div class="card-image-area">
+                @if (loc.imageUrl) {
+                  <img [src]="loc.imageUrl" alt="" class="card-img-fill" />
+                } @else {
+                  <div class="card-placeholder">
+                    <span class="card-initial">{{ initial(loc.name) }}</span>
+                  </div>
+                }
+                @if (loc.description) {
+                  <div class="card-desc-overlay">
+                    <p class="card-desc-text">{{ loc.description }}</p>
+                  </div>
+                }
+              </div>
+              <button
+                class="cast-lock-btn"
+                [class.cast-lock-btn--visible]="loc.isVisibleToPlayers"
+                (click)="toggleLocationVisibility()"
+                [title]="loc.isVisibleToPlayers ? 'Hide from players' : 'Reveal to players'"
+              >
+                {{ loc.isVisibleToPlayers ? '🔓' : '🔒' }}
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Detail panel -->
+      <div class="loc-detail-panel" [style.height]="panelHeight()">
+
+        <div class="detail-panel-content" #detailContent>
+
+          <!-- Description — full width -->
+          @if (loc.description) {
+            <div class="detail-desc">
+              <span class="detail-label">Description</span>
+              <span class="detail-line"></span>
+              <p class="detail-value detail-value--block">{{ loc.description }}</p>
+            </div>
+          }
+
+          <!-- 2-col field grid -->
+          <div class="detail-grid">
+            @if (loc.keywords?.length) {
+              <div class="detail-cell detail-cell--full">
+                <span class="detail-label">Keywords</span>
+                <span class="detail-line"></span>
+                <div class="detail-keywords">
+                  @for (kw of loc.keywords; track kw) {
+                    <span class="detail-keyword-pill">{{ kw }}</span>
+                  }
+                </div>
+              </div>
+            }
+          </div>
+
+          <!-- Shop items — grid -->
+          @if (loc.shopItems?.length) {
+            <div class="detail-shop-section">
+              <span class="detail-label">Shop Items</span>
+              <span class="detail-line"></span>
+              <div class="detail-shop-grid">
+                @for (item of loc.shopItems; track item.id) {
+                  <div class="detail-shop-item">
+                    <span class="detail-shop-item-name">{{ item.name }}</span>
+                    <span class="detail-shop-item-price">{{ item.price }}</span>
+                  </div>
+                }
+              </div>
+            </div>
+          }
+
+          <!-- Secrets — full width -->
+          @for (secret of locationSecrets(); track secret.id) {
+            <div class="detail-secret">
+              @if (isDm()) {
+                <button class="secret-lock-btn" (click)="toggleSecret(secret)"
+                        [title]="secret.isRevealed ? 'Reseal secret' : 'Reveal secret'">
+                  {{ secret.isRevealed ? '🔓' : '🔒' }}
+                </button>
+              } @else {
+                <span class="secret-lock-icon">{{ secret.isRevealed ? '🔓' : '🔒' }}</span>
+              }
+              <span class="secret-text" [class.secret-text--revealed]="secret.isRevealed">{{ secret.content }}</span>
+            </div>
+          }
+
+        </div>
+
+        <!-- Expand / collapse toggle -->
+        <button class="detail-expand-btn" #expandBtn (click)="toggleDetail()">
+          {{ detailExpanded() ? '▲' : '▼' }}
+        </button>
+
+      </div>
+
+    </div>
+
+    <!-- ── Cast section ── -->
+    @if (isDm() && locationCasts().length) {
+      <div class="loc-cast-section">
+
+        <div class="cast-section-header">
+          <span class="cast-section-label">Cast</span>
+          <span class="cast-section-line"></span>
+          <button
+            class="cast-reveal-all-btn"
+            [class.cast-reveal-all-btn--visible]="allCastsVisible()"
+            (click)="toggleAllCastVisibility()"
+            [title]="allCastsVisible() ? 'Hide all cast from players' : 'Reveal all cast to players'"
+          >
+            {{ allCastsVisible() ? '🔓 Hide All' : '🔒 Reveal All' }}
+          </button>
+        </div>
+
+        <div class="cast-grid">
+          @for (cast of locationCasts(); track cast.instanceId) {
+            <div class="cast-card-wrapper" (click)="goToCast(cast)">
+              <div class="pc-card pc-card-cast">
+                <div class="lib-card-front">
+                  <div class="card-slot-front">
+                    <div class="card-front-header">
+                      <div class="card-name">{{ cast.name }}</div>
+                      <div class="card-descriptor">{{ cast.role }}</div>
+                    </div>
+                    <div class="dv dv-card"></div>
+                    <div class="card-image-area">
+                      @if (cast.imageUrl) {
+                        <img [src]="cast.imageUrl" alt="" class="card-img-fill" />
+                      } @else {
+                        <div class="card-placeholder">
+                          <span class="card-initial">{{ initial(cast.name) }}</span>
+                        </div>
+                      }
+                      @if (cast.publicDescription) {
+                        <div class="card-desc-overlay">
+                          <p class="card-desc-text">{{ cast.publicDescription }}</p>
+                        </div>
+                      }
+                    </div>
+                    <button
+                      class="cast-lock-btn"
+                      [class.cast-lock-btn--visible]="cast.isVisibleToPlayers"
+                      (click)="toggleCastVisibility(cast); $event.stopPropagation()"
+                      [title]="cast.isVisibleToPlayers ? 'Hide from players' : 'Reveal to players'"
+                    >
+                      {{ cast.isVisibleToPlayers ? '🔓' : '🔒' }}
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          }
+        </div>
+
+      </div>
+    }
+
+  </div>
+}

@@ -1,0 +1,70 @@
+// ─── Color Palette ──────────────────────────────────────────────────────────
+$color-bg:           #0d0804;
+$color-page-start:   #e4d5a0;
+$color-page-mid:     #f2e6c6;
+$color-page-end:     #eeddb2;
+
+$color-text-primary:   rgba(42, 24, 4, 1.0);
+$color-text-secondary: rgba(72, 48, 14, 0.75);
+$color-text-muted:     rgba(72, 48, 14, 0.45);
+
+$color-border:        rgba(110, 75, 22, 0.28);
+$color-border-accent: rgba(130, 88, 28, 0.45);
+$color-border-light:  rgba(110, 75, 22, 0.14);
+
+$color-gold:          rgba(180, 130, 60, 0.28);
+$color-gold-solid:    #8c5a1c;
+
+// Badge colors
+$color-dm-bg:     rgba(130, 28, 28, 0.12);
+$color-dm-border: rgba(130, 28, 28, 0.35);
+$color-dm-text:   rgba(110, 22, 22, 0.88);
+
+$color-player-bg:     rgba(28, 78, 130, 0.10);
+$color-player-border: rgba(28, 78, 130, 0.30);
+$color-player-text:   rgba(22, 62, 110, 0.88);
+
+$color-ai-bg:     rgba(78, 48, 130, 0.10);
+$color-ai-border: rgba(78, 48, 130, 0.30);
+$color-ai-text:   rgba(62, 38, 110, 0.88);
+
+$color-locked-bg:     rgba(140, 48, 28, 0.10);
+$color-locked-border: rgba(140, 48, 28, 0.35);
+$color-locked-text:   rgba(120, 40, 22, 0.88);
+
+$color-open-bg:     rgba(38, 88, 42, 0.10);
+$color-open-border: rgba(38, 88, 42, 0.35);
+$color-open-text:   rgba(30, 72, 34, 0.88);
+
+// Arcane / Indigo — magic accent throughout journal pages
+$color-arcane-bg:     rgba(46, 26, 94, 0.12);
+$color-arcane-border: rgba(90, 58, 154, 0.42);
+$color-arcane-text:   rgba(180, 150, 255, 0.90);
+$color-arcane-glow:   rgba(90, 58, 154, 0.18);
+
+// ─── Typography ──────────────────────────────────────────────────────────────
+$font-header:    'Cinzel', serif;
+$font-body:      'Crimson Text', serif;
+$font-page-num:  'Special Elite', cursive;
+
+// ─── Spacing ─────────────────────────────────────────────────────────────────
+$spacing-xs:  4px;
+$spacing-sm:  8px;
+$spacing-md:  14px;
+$spacing-lg:  22px;
+$spacing-xl:  36px;
+
+// ─── Card Dimensions ─────────────────────────────────────────────────────────
+$card-width:  150px;
+$card-height: 220px;
+
+// ─── Spine ───────────────────────────────────────────────────────────────────
+$spine-width:        56px;
+$spine-width-mobile: 24px;
+$spine-width-tablet: 40px;
+
+// ─── Transitions ─────────────────────────────────────────────────────────────
+$transition-fast:   120ms ease;
+$transition-std:    200ms ease;
+$transition-flip:   520ms cubic-bezier(0.4, 0, 0.2, 1);
+$transition-page:   600ms cubic-bezier(0.55, 0.06, 0.45, 0.94);

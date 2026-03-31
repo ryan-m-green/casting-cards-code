@@ -1,0 +1,30 @@
+<div class="pc scroll-body">
+  <app-dm-nav />
+  <div class="wr wr-page-header">
+    <button class="btn-ghost" routerLink="/dm/dashboard">← Dashboard</button>
+    <h2 class="page-title page-title-row">Player Invites</h2>
+  </div>
+
+  <div class="wb wb-section">
+    <div class="section-label section-label-mb">Invite a Player</div>
+    <form [formGroup]="form" (ngSubmit)="generateInvite()">
+      <label class="fi-label">Player Email</label>
+      <input class="fi" type="email" formControlName="email" placeholder="player@example.com" />
+      <label class="fi-label">Starting Gold (gp)</label>
+      <input class="fi" type="number" formControlName="startingGold" />
+      <label class="fi-label">Campaign ID</label>
+      <input class="fi" formControlName="campaignId" placeholder="Campaign ID" />
+      <button class="btn-primary" type="submit" [disabled]="form.invalid || loading()">
+        {{ loading() ? '…' : '➤ Generate Invite' }}
+      </button>
+    </form>
+  </div>
+
+  @if (inviteCode()) {
+    <div class="wb success">
+      <div class="section-label invite-code-label">Invite Code Generated</div>
+      <div class="wbl invite-code-display">{{ inviteCode() }}</div>
+      <p class="wbd">Share this code with the player to join the campaign.</p>
+    </div>
+  }
+</div>

@@ -1,0 +1,219 @@
+﻿<div class="pc scroll-body">
+  <app-dm-nav />
+  <div class="wr wr-page-header">
+    <button class="btn-ghost" (click)="goBack()" type="button">← Locations</button>
+  </div>
+  <h2 class="page-title">Campaign Cast</h2>
+
+  @if (loading()) {
+    <p class="wbd" style="text-align:center;padding:24px 0;">Loading…</p>
+  } @else {
+
+    <div class="cities-section-label">Available Cast</div>
+
+    <div class="city-search-row">
+      <input
+        class="fi city-search-input"
+        type="search"
+        placeholder="Search by name, role, race, alignment…"
+        [value]="castSearch()"
+        (input)="setCastSearch($any($event.target).value)"
+      />
+    </div>
+
+    <div class="city-picker-row">
+      @if (filteredDeckCast().length > 0) {
+        <div class="deck-stack" #deckStack (click)="swapCastCard()">
+          <div class="deck-shadow deck-shadow-far"></div>
+          <div class="deck-shadow deck-shadow-near"></div>
+          <div class="deck-face">
+            <div class="deck-inner-border"></div>
+            <span class="deck-castle">🧙</span>
+            <div class="deck-count">
+              {{ filteredDeckCast().length }}<br>remaining
+            </div>
+          </div>
+        </div>
+      } @else {
+        <div class="deck-stack deck-stack-empty" #deckStack></div>
+      }
+
+      <div class="main-card-area" #mainCardWrapper>
+        @if (filteredDeckCast().length > 0) {
+          <div class="pc-card pc-card-cast" #mainCard>
+            <app-card-flip>
+              <div slot="front" class="card-slot-front">
+                <div class="card-front-header">
+                  <div class="card-name">{{ currentCard()?.name }}</div>
+                  <div class="card-descriptor">{{ currentCard()?.role }}</div>
+                </div>
+                <div class="dv dv-card"></div>
+                <div class="card-image-area">
+                  @if (currentCard()?.imageUrl) {
+                    <img [src]="currentCard()!.imageUrl" alt="" class="card-img-fill" />
+                  } @else {
+                    <div class="card-placeholder cast-placeholder">
+                      <span class="card-initial">{{ currentCard()?.name?.[0]?.toUpperCase() }}</span>
+                      <span class="card-race">{{ currentCard()?.race }}</span>
+                    </div>
+                  }
+                  @if (currentCard()?.description) {
+                    <div class="card-desc-overlay">
+                      <p class="card-desc-text">{{ currentCard()?.description }}</p>
+                    </div>
+                  }
+                </div>
+              </div>
+              <div slot="back" class="card-slot-back">
+                <div class="card-back-content">
+                  <div class="card-name card-back-name">{{ currentCard()?.name }}</div>
+                  <div class="dv dv-mb"></div>
+                  <div class="fi-label fi-label-strong">Race</div><p class="wbd card-field-value">{{ currentCard()?.race || '—' }}</p>
+                  <div class="fi-label fi-label-strong">Pronouns</div><p class="wbd card-field-value">{{ currentCard()?.pronouns || '—' }}</p>
+                  <div class="fi-label fi-label-strong">Age</div><p class="wbd card-field-value">{{ currentCard()?.age || '—' }}</p>
+                  <div class="fi-label fi-label-strong">Alignment</div><p class="wbd card-field-value">{{ currentCard()?.alignment || '—' }}</p>
+                  <div class="fi-label fi-label-strong">Posture</div><p class="wbd card-field-value">{{ currentCard()?.posture || '—' }}</p>
+                  <div class="fi-label fi-label-strong">Speed</div><p class="wbd card-field-value">{{ currentCard()?.speed || '—' }}</p>
+                </div>
+              </div>
+            </app-card-flip>
+          </div>
+        } @else {
+          <div class="main-card-placeholder"></div>
+        }
+      </div>
+    </div>
+
+    @if (filteredDeckCast().length > 0) {
+      <div class="add-btn-row">
+        <div class="deck-stack-spacer"></div>
+        <button class="add-btn" (click)="addCastToSelected()">
+          Add to Campaign
+          <span class="add-arrow">⬇</span>
+        </button>
+      </div>
+    }
+
+    <div class="dv"></div>
+    <div class="sel-header">
+      Campaign Cast — <span>{{ addedCast().length }}</span> added
+    </div>
+
+    <div class="sel-layout">
+      @if (addedCast().length > 0) {
+        <div class="sel-stack-container" #selectedStack [style.height.px]="selContainerHeight()">
+          @for (added of addedCast(); track added.instanceId; let i = $index) {
+            <div class="sel-card pc-card-cast"
+                 [attr.data-sel-idx]="i"
+                 [style.top.px]="selTopsList()[i]"
+                 [style.z-index]="i + 1"
+                 (click)="toggleExpanded(i)">
+              <div class="card-slot-front">
+                <div class="card-front-header sel-card-header-row">
+                  <div class="sel-card-info">
+                    <div class="card-name">{{ added.cast.name }}</div>
+                    <div class="card-descriptor">{{ added.cast.role }}</div>
+                  </div>
+                  <button class="sel-card-remove"
+                          (click)="removeCastSelected(i); $event.stopPropagation()">&#215;</button>
+                </div>
+                <div class="dv dv-card"></div>
+                <div class="card-image-area">
+                  @if (added.cast.imageUrl) {
+                    <img [src]="added.cast.imageUrl" alt="" class="card-img-fill" />
+                  } @else {
+                    <div class="card-placeholder cast-placeholder">
+                      <span class="card-initial">{{ added.cast.name?.[0]?.toUpperCase() }}</span>
+                      <span class="card-race">{{ added.cast.race }}</span>
+                    </div>
+                  }
+                  @if (added.cast.description) {
+                    <div class="card-desc-overlay">
+                      <p class="card-desc-text">{{ added.cast.description }}</p>
+                    </div>
+                  }
+                </div>
+              </div>
+            </div>
+          }
+        </div>
+      } @else {
+        <div class="sel-stack-placeholder" #selectedStack></div>
+      }
+
+      <!-- Cast detail panel -->
+      <div class="detail-panel">
+        @if (expandedAddedCast(); as added) {
+          <div class="detail-panel-header">
+            <div class="detail-city-name">{{ added.cast.name }}</div>
+            <div class="detail-city-label">{{ added.cast.role }} · {{ added.cast.race }}</div>
+          </div>
+          <div class="dv dv-mb"></div>
+          <div class="detail-grid">
+            <div class="detail-field">
+              <label class="fi-label">Pronouns</label>
+              <p class="detail-value">{{ added.cast.pronouns || '—' }}</p>
+            </div>
+            <div class="detail-field">
+              <label class="fi-label">Age</label>
+              <p class="detail-value">{{ added.cast.age || '—' }}</p>
+            </div>
+            <div class="detail-field">
+              <label class="fi-label">Alignment</label>
+              <p class="detail-value">{{ added.cast.alignment || '—' }}</p>
+            </div>
+            <div class="detail-field">
+              <label class="fi-label">Posture</label>
+              <p class="detail-value">{{ added.cast.posture || '—' }}</p>
+            </div>
+            <div class="detail-field">
+              <label class="fi-label">Speed</label>
+              <p class="detail-value">{{ added.cast.speed || '—' }}</p>
+            </div>
+          </div>
+          @if (added.cast.description) {
+            <div class="detail-secrets-header">Description</div>
+            <p class="detail-desc-text">{{ added.cast.description }}</p>
+          }
+
+          @if ((added.keywords?.length ?? 0) > 0) {
+            <div class="detail-keywords">
+              <div class="fi-label">Keywords</div>
+              <div class="keyword-chips-readonly">
+                @for (kw of added.keywords; track kw) {
+                  <span class="keyword-chip-readonly">{{ kw }}</span>
+                }
+              </div>
+            </div>
+          }
+
+          <div class="detail-secrets-header">🔒 Cast Secrets</div>
+          @for (secret of added.secrets; track $index; let si = $index) {
+            @if (secret.editing) {
+              <div class="secret-row secret-row-edit">
+                <textarea class="fi fi-sm secret-textarea"
+                          [value]="secret.content"
+                          (input)="updateCastSecretContent(si, $any($event.target).value)"
+                          (blur)="confirmCastSecret(si)"
+                          (keydown.enter)="confirmCastSecret(si); $event.preventDefault()"
+                          placeholder="Enter secret…"
+                          rows="2"></textarea>
+                <button class="secret-cancel-btn"
+                        (mousedown)="$event.preventDefault()"
+                        (click)="cancelCastSecret(si)" type="button">✕</button>
+              </div>
+            } @else {
+              <div class="secret-row">
+                <span class="secret-text">{{ secret.content }}</span>
+                <button class="secret-delete-btn" (click)="deleteCastSecret(si)" type="button">✕</button>
+              </div>
+            }
+          }
+          <button class="secret-add-btn" (click)="addCastSecret()" type="button">+ Add Secret</button>
+        } @else {
+          <p class="detail-panel-empty">Tap a cast card to view its details.</p>
+        }
+      </div>
+    </div>
+  }
+</div>

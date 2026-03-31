@@ -1,0 +1,32 @@
+@use '../../../../styles/variables' as v;
+
+.notes-wrap { display: flex; flex-direction: column; gap: 0; }
+
+.notes-list {
+  max-height: 180px;
+  overflow-y: auto;
+}
+
+.note-item {
+  margin-bottom: 6px;
+  padding: 6px 8px;
+}
+
+.note-meta {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.note-content {
+  margin-top: 4px;
+}
+
+.note-input-row {
+  margin-top: 8px;
+  align-items: flex-end;
+}
+
+.note-submit-btn {
+  align-self: flex-end;
+}

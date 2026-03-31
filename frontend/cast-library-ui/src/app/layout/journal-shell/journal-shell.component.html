@@ -1,0 +1,24 @@
+<div class="journal-wrap" [class.is-cover]="isCover()">
+  <div class="spine">
+    <div class="spine-title">Harper's Hand</div>
+    <div class="spine-rings">
+      @for (ring of rings; track ring) {
+        <div class="spine-ring"></div>
+      }
+    </div>
+  </div>
+  <div class="page-area">
+    <!-- Layer 1: back page (z-index 1) — parchment base -->
+    <div class="page page-back"></div>
+    <!-- Layer 2: front page (z-index 2) — live router content -->
+    <div class="page page-front">
+      <router-outlet />
+    </div>
+    <!-- Layer 3: flip element (z-index 5) — 3D overlay, hidden at rest -->
+    <div class="page-flip" #pageFlip>
+      <div class="flip-face"></div>
+      <div class="flip-back-face"></div>
+    </div>
+    <div class="page-fold"></div>
+  </div>
+</div>

@@ -1,0 +1,180 @@
+@if (cast(); as ca) {
+  <div class="void-canvas" [style.--portal-color]="portalColor()">
+
+    <!-- ── Top bar ── -->
+    <div class="void-topbar">
+      <div class="void-breadcrumbs">
+        <button class="void-back" (click)="exitToLibrary()">← Campaign Library</button>
+        <span class="void-crumb-sep">›</span>
+        <button class="void-back" (click)="goToCampaign()">← Cities</button>
+        <span class="void-crumb-sep">›</span>
+        <button class="void-back" (click)="goToCity()">← Settling Locations</button>
+        <span class="void-crumb-sep">›</span>
+        <button class="void-back" (click)="goBack()">← Cast Members</button>
+      </div>
+      <span class="void-title">{{ ca.name }}</span>
+    </div>
+
+    <!-- ── Hero card ── -->
+    <div class="cast-hero">
+      <div class="cast-hero-card">
+        <div class="pc-card pc-card-cast">
+          <div class="lib-card-front">
+            <div class="card-slot-front">
+              <div class="card-front-header">
+                <div class="card-name">{{ ca.name }}</div>
+                <div class="card-descriptor">{{ ca.role }}</div>
+              </div>
+              <div class="dv dv-card"></div>
+              <div class="card-image-area">
+                @if (ca.imageUrl) {
+                  <img [src]="ca.imageUrl" alt="" class="card-img-fill" />
+                } @else {
+                  <div class="card-placeholder">
+                    <span class="card-initial">{{ initial(ca.name) }}</span>
+                  </div>
+                }
+                @if (ca.publicDescription) {
+                  <div class="card-desc-overlay">
+                    <p class="card-desc-text">{{ ca.publicDescription }}</p>
+                  </div>
+                }
+              </div>
+              <button
+                class="cast-lock-btn"
+                [class.cast-lock-btn--visible]="ca.isVisibleToPlayers"
+                (click)="toggleCastVisibility()"
+                [title]="ca.isVisibleToPlayers ? 'Hide from players' : 'Reveal to players'"
+              >
+                {{ ca.isVisibleToPlayers ? '🔓' : '🔒' }}
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Detail panel ── -->
+    <div class="cast-detail-wrap">
+      <div class="cast-detail-panel">
+
+        <!-- Public description -->
+        @if (ca.publicDescription) {
+          <div class="detail-desc">
+            <span class="detail-label">Public Description</span>
+            <span class="detail-line"></span>
+            <p class="detail-value detail-value--block">{{ ca.publicDescription }}</p>
+          </div>
+        }
+
+        <!-- Private description (DM only — always true on this page) -->
+        @if (ca.description) {
+          <div class="detail-desc">
+            <span class="detail-label">Description</span>
+            <span class="detail-line"></span>
+            <p class="detail-value detail-value--block">{{ ca.description }}</p>
+          </div>
+        }
+
+        <!-- 2-col field grid -->
+        <div class="detail-grid">
+          @if (ca.pronouns) {
+            <div class="detail-cell">
+              <span class="detail-label">Pronouns</span>
+              <span class="detail-line"></span>
+              <span class="detail-value">{{ ca.pronouns }}</span>
+            </div>
+          }
+          @if (ca.race) {
+            <div class="detail-cell">
+              <span class="detail-label">Race</span>
+              <span class="detail-line"></span>
+              <span class="detail-value">{{ ca.race }}</span>
+            </div>
+          }
+          @if (ca.role) {
+            <div class="detail-cell">
+              <span class="detail-label">Role</span>
+              <span class="detail-line"></span>
+              <span class="detail-value">{{ ca.role }}</span>
+            </div>
+          }
+          @if (ca.age) {
+            <div class="detail-cell">
+              <span class="detail-label">Age</span>
+              <span class="detail-line"></span>
+              <span class="detail-value">{{ ca.age }}</span>
+            </div>
+          }
+          @if (ca.alignment) {
+            <div class="detail-cell">
+              <span class="detail-label">Alignment</span>
+              <span class="detail-line"></span>
+              <span class="detail-value">{{ ca.alignment }}</span>
+            </div>
+          }
+          @if (ca.posture) {
+            <div class="detail-cell">
+              <span class="detail-label">Posture</span>
+              <span class="detail-line"></span>
+              <span class="detail-value">{{ ca.posture }}</span>
+            </div>
+          }
+          @if (ca.speed) {
+            <div class="detail-cell">
+              <span class="detail-label">Speed</span>
+              <span class="detail-line"></span>
+              <span class="detail-value">{{ ca.speed }}</span>
+            </div>
+          }
+          @if (ca.voicePlacement?.length) {
+            <div class="detail-cell">
+              <span class="detail-label">Voice Placement</span>
+              <span class="detail-line"></span>
+              <div class="detail-keywords">
+                @for (vp of ca.voicePlacement; track vp) {
+                  <span class="detail-keyword-pill">{{ vp }}</span>
+                }
+              </div>
+            </div>
+          }
+          @if (ca.keywords?.length) {
+            <div class="detail-cell detail-cell--full">
+              <span class="detail-label">Keywords</span>
+              <span class="detail-line"></span>
+              <div class="detail-keywords">
+                @for (kw of ca.keywords; track kw) {
+                  <span class="detail-keyword-pill">{{ kw }}</span>
+                }
+              </div>
+            </div>
+          }
+        </div>
+
+        <!-- Secrets section -->
+        @if (castSecrets().length) {
+          <div class="detail-secrets-section">
+            <div class="detail-secrets-header-row">
+              <span class="detail-secrets-label">Secrets</span>
+              <span class="detail-secrets-line"></span>
+            </div>
+            @for (secret of castSecrets(); track secret.id) {
+              <div class="detail-secret">
+                <button
+                  class="secret-lock-btn"
+                  (click)="toggleSecret(secret)"
+                  [title]="secret.isRevealed ? 'Reseal secret' : 'Reveal secret'"
+                >
+                  {{ secret.isRevealed ? '🔓' : '🔒' }}
+                </button>
+                <span class="secret-text" [class.secret-text--revealed]="secret.isRevealed">{{ secret.content }}</span>
+              </div>
+            }
+          </div>
+        }
+
+      </div>
+    </div>
+
+  </div>
+}

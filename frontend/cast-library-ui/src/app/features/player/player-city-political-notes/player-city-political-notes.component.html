@@ -1,0 +1,886 @@
+<div class="political-panel">
+
+  <!-- ── Panel header ── -->
+  <div class="political-header">
+    <span class="political-label">Political Intelligence</span>
+    <span class="political-line"></span>
+    @if (saving()) {
+      <span class="political-saving">saving…</span>
+    }
+  </div>
+
+  <!-- ── Tabs ── -->
+  <div class="political-tabs" role="tablist" aria-label="Political intelligence views">
+    <button
+      class="pol-tab"
+      [class.pol-tab--active]="activeTab() === 'notes'"
+      role="tab"
+      [attr.aria-selected]="activeTab() === 'notes'"
+      aria-controls="pol-panel-notes"
+      id="pol-tab-notes"
+      (click)="setTab('notes')"
+    >Field Notes</button>
+    <button
+      class="pol-tab"
+      [class.pol-tab--active]="activeTab() === 'web'"
+      role="tab"
+      [attr.aria-selected]="activeTab() === 'web'"
+      aria-controls="pol-panel-web"
+      id="pol-tab-web"
+      (click)="setTab('web')"
+    >Faction Web</button>
+    <button
+      class="pol-tab"
+      [class.pol-tab--active]="activeTab() === 'map'"
+      role="tab"
+      [attr.aria-selected]="activeTab() === 'map'"
+      aria-controls="pol-panel-map"
+      id="pol-tab-map"
+      (click)="setTab('map')"
+    >Control Map</button>
+    <button
+      class="pol-tab"
+      [class.pol-tab--active]="activeTab() === 'social'"
+      role="tab"
+      [attr.aria-selected]="activeTab() === 'social'"
+      aria-controls="pol-panel-social"
+      id="pol-tab-social"
+      (click)="setTab('social')"
+    >Social Compass</button>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════════════════════ -->
+  <!-- Tab: Field Notes                                                       -->
+  <!-- ══════════════════════════════════════════════════════════════════════ -->
+  @if (activeTab() === 'notes') {
+    <div class="pol-tab-panel" id="pol-panel-notes" role="tabpanel" aria-labelledby="pol-tab-notes">
+
+      <!-- ── Factions ── -->
+      <div class="pol-section">
+        <div class="pol-section-label">Factions</div>
+        <span class="pol-section-line"></span>
+
+        @if (notes().factions.length) {
+          <div class="factions-table" role="table" aria-label="Factions">
+            <div class="factions-thead" role="row">
+              <span role="columnheader">Name</span>
+              <span role="columnheader">Type</span>
+              <span role="columnheader">Influence</span>
+              <span role="columnheader">Hidden</span>
+              <span role="columnheader"><span class="sr-only">Remove</span></span>
+            </div>
+            @for (faction of notes().factions; track faction.id) {
+              <div class="factions-row" role="row">
+
+                <input
+                  class="pol-input"
+                  type="text"
+                  placeholder="Name…"
+                  [attr.aria-label]="'Faction name'"
+                  [attr.data-faction-name-id]="faction.id"
+                  (input)="onFactionNameInput(faction.id, $any($event.target).value)"
+                />
+
+                <!-- Faction Type dropdown -->
+                <div class="notes-dropdown">
+                  <button
+                    class="notes-dropdown-trigger"
+                    [attr.aria-label]="'Faction type for ' + (faction.name || 'faction') + ': ' + faction.type"
+                    (click)="toggleDropdown('faction-type-' + faction.id, $event)"
+                  >
+                    <span class="notes-dropdown-placeholder">{{ faction.type }}</span>
+                    <span class="notes-dropdown-caret" [class.notes-dropdown-caret--open]="isOpen('faction-type-' + faction.id)">▾</span>
+                  </button>
+                  @if (isOpen('faction-type-' + faction.id)) {
+                    <div class="notes-dropdown-panel">
+                      @for (t of factionTypes; track t) {
+                        <div
+                          class="notes-dropdown-item"
+                          [class.notes-dropdown-item--selected]="faction.type === t"
+                          (click)="setFactionType(faction.id, t)"
+                        >{{ t }}</div>
+                      }
+                    </div>
+                  }
+                </div>
+
+                <!-- Influence slider -->
+                <div class="influence-slider-wrap">
+                  <input
+                    type="range"
+                    min="0"
+                    max="10"
+                    step="1"
+                    [value]="faction.influence"
+                    class="influence-slider"
+                    [class]="influenceSliderClass(faction.influence)"
+                    [attr.aria-label]="'Influence: ' + faction.influence + ' out of 10'"
+                    (input)="onInfluenceInput(faction.id, $event)"
+                    (change)="onInfluenceRelease(faction.id, $event)"
+                  />
+                  <div class="influence-slider-labels">
+                    <span>0</span>
+                    <span class="influence-label-center">{{ faction.influence }}</span>
+                    <span>10</span>
+                  </div>
+                </div>
+
+                <input
+                  type="checkbox"
+                  class="pol-checkbox"
+                  [checked]="faction.isHidden"
+                  [attr.aria-label]="'Mark ' + (faction.name || 'faction') + ' as hidden'"
+                  (change)="setFactionHidden(faction.id, $any($event.target).checked)"
+                />
+                <button
+                  class="pol-remove"
+                  [attr.aria-label]="'Remove ' + (faction.name || 'faction')"
+                  (click)="removeFaction(faction.id)"
+                >×</button>
+
+              </div>
+            }
+          </div>
+        }
+
+        <button class="pol-add-btn" (click)="addFaction()" aria-label="Add a faction">
+          + Add faction
+        </button>
+      </div>
+
+      <div class="pol-divider"></div>
+
+      <!-- ── Relationships ── -->
+      <div class="pol-section">
+        <div class="pol-section-label">Relationships</div>
+        <span class="pol-section-line"></span>
+
+        @if (notes().relationships.length) {
+          <div class="rels-table" role="table" aria-label="Faction relationships">
+            <div class="rels-thead" role="row">
+              <span role="columnheader">Faction A</span>
+              <span role="columnheader">Type</span>
+              <span role="columnheader">Faction B</span>
+              <span role="columnheader">Strength</span>
+              <span role="columnheader">Notes</span>
+              <span role="columnheader"><span class="sr-only">Remove</span></span>
+            </div>
+            @for (rel of notes().relationships; track rel.id) {
+              <div class="rels-row" role="row">
+
+                <!-- Faction A dropdown -->
+                <div class="notes-dropdown">
+                  <button
+                    class="notes-dropdown-trigger"
+                    [attr.aria-label]="'First faction: ' + factionName(rel.factionAId)"
+                    (click)="toggleDropdown('rel-a-' + rel.id, $event)"
+                  >
+                    <span class="notes-dropdown-placeholder">{{ factionName(rel.factionAId) }}</span>
+                    <span class="notes-dropdown-caret" [class.notes-dropdown-caret--open]="isOpen('rel-a-' + rel.id)">▾</span>
+                  </button>
+                  @if (isOpen('rel-a-' + rel.id)) {
+                    <div class="notes-dropdown-panel">
+                      @for (f of notes().factions; track f.id) {
+                        <div
+                          class="notes-dropdown-item"
+                          [class.notes-dropdown-item--selected]="rel.factionAId === f.id"
+                          (click)="setRelFactionA(rel.id, f.id)"
+                        >{{ f.name || '—' }}</div>
+                      }
+                    </div>
+                  }
+                </div>
+
+                <!-- Relationship Type dropdown -->
+                <div class="notes-dropdown">
+                  <button
+                    class="notes-dropdown-trigger"
+                    [attr.aria-label]="'Relationship type: ' + rel.relationshipType"
+                    (click)="toggleDropdown('rel-type-' + rel.id, $event)"
+                  >
+                    <span class="notes-dropdown-placeholder">{{ rel.relationshipType }}</span>
+                    <span class="notes-dropdown-caret" [class.notes-dropdown-caret--open]="isOpen('rel-type-' + rel.id)">▾</span>
+                  </button>
+                  @if (isOpen('rel-type-' + rel.id)) {
+                    <div class="notes-dropdown-panel">
+                      @for (t of relTypes; track t) {
+                        <div
+                          class="notes-dropdown-item"
+                          [class.notes-dropdown-item--selected]="rel.relationshipType === t"
+                          (click)="setRelType(rel.id, t)"
+                        >{{ t }}</div>
+                      }
+                    </div>
+                  }
+                </div>
+
+                <!-- Faction B dropdown -->
+                <div class="notes-dropdown">
+                  <button
+                    class="notes-dropdown-trigger"
+                    [attr.aria-label]="'Second faction: ' + factionName(rel.factionBId)"
+                    (click)="toggleDropdown('rel-b-' + rel.id, $event)"
+                  >
+                    <span class="notes-dropdown-placeholder">{{ factionName(rel.factionBId) }}</span>
+                    <span class="notes-dropdown-caret" [class.notes-dropdown-caret--open]="isOpen('rel-b-' + rel.id)">▾</span>
+                  </button>
+                  @if (isOpen('rel-b-' + rel.id)) {
+                    <div class="notes-dropdown-panel">
+                      @for (f of notes().factions; track f.id) {
+                        <div
+                          class="notes-dropdown-item"
+                          [class.notes-dropdown-item--selected]="rel.factionBId === f.id"
+                          (click)="setRelFactionB(rel.id, f.id)"
+                        >{{ f.name || '—' }}</div>
+                      }
+                    </div>
+                  }
+                </div>
+
+                <!-- Strength slider -->
+                <div class="influence-slider-wrap">
+                  <input
+                    type="range"
+                    min="0"
+                    max="5"
+                    step="1"
+                    [value]="rel.strength"
+                    class="influence-slider"
+                    [class]="strengthSliderClass(rel.strength)"
+                    [attr.aria-label]="'Strength: ' + rel.strength + ' out of 5'"
+                    (input)="onStrengthInput(rel.id, $event)"
+                    (change)="onStrengthRelease(rel.id, $event)"
+                  />
+                  <div class="influence-slider-labels">
+                    <span>0</span>
+                    <span class="influence-label-center">{{ rel.strength }}</span>
+                    <span>5</span>
+                  </div>
+                </div>
+
+                <input
+                  class="pol-input pol-input--notes"
+                  type="text"
+                  placeholder="Notes…"
+                  [attr.aria-label]="'Notes for this relationship'"
+                  [attr.data-rel-notes-id]="rel.id"
+                  (input)="onRelNotesInput(rel.id, $any($event.target).value)"
+                />
+                <button
+                  class="pol-remove"
+                  [attr.aria-label]="'Remove relationship between ' + factionName(rel.factionAId) + ' and ' + factionName(rel.factionBId)"
+                  (click)="removeRelationship(rel.id)"
+                >×</button>
+
+              </div>
+            }
+          </div>
+        }
+
+        @if (notes().factions.length >= 2) {
+          <button class="pol-add-btn" (click)="addRelationship()" aria-label="Add a relationship">
+            + Add relationship
+          </button>
+        } @else {
+          <p class="pol-hint">Add at least two factions to link them.</p>
+        }
+      </div>
+
+      <div class="pol-divider"></div>
+
+      <!-- ── NPC Political Roles ── -->
+      <div class="pol-section">
+        <div class="pol-section-label">NPC Political Roles</div>
+        <span class="pol-section-line"></span>
+
+        @if (notes().npcRoles.length) {
+          <div class="roles-table" role="table" aria-label="NPC political roles">
+            <div class="roles-thead" role="row">
+              <span role="columnheader">Cast Member</span>
+              <span role="columnheader">Faction</span>
+              <span role="columnheader">Role</span>
+              <span role="columnheader">Motivation</span>
+              <span role="columnheader"><span class="sr-only">Remove</span></span>
+            </div>
+            @for (nr of notes().npcRoles; track nr.id) {
+              <div class="roles-row" role="row">
+                <span class="roles-cast-name">{{ castName(nr.castInstanceId) }}</span>
+
+                <!-- NPC Faction dropdown -->
+                <div class="notes-dropdown">
+                  <button
+                    class="notes-dropdown-trigger"
+                    [attr.aria-label]="castName(nr.castInstanceId) + ' faction: ' + factionName(nr.factionId)"
+                    (click)="toggleDropdown('npc-faction-' + nr.id, $event)"
+                  >
+                    <span class="notes-dropdown-placeholder">{{ factionName(nr.factionId) }}</span>
+                    <span class="notes-dropdown-caret" [class.notes-dropdown-caret--open]="isOpen('npc-faction-' + nr.id)">▾</span>
+                  </button>
+                  @if (isOpen('npc-faction-' + nr.id)) {
+                    <div class="notes-dropdown-panel">
+                      @for (f of notes().factions; track f.id) {
+                        <div
+                          class="notes-dropdown-item"
+                          [class.notes-dropdown-item--selected]="nr.factionId === f.id"
+                          (click)="setNpcFaction(nr.id, f.id)"
+                        >{{ f.name || '—' }}</div>
+                      }
+                    </div>
+                  }
+                </div>
+
+                <!-- NPC Role dropdown -->
+                <div class="notes-dropdown">
+                  <button
+                    class="notes-dropdown-trigger"
+                    [attr.aria-label]="castName(nr.castInstanceId) + ' role: ' + nr.role"
+                    (click)="toggleDropdown('npc-role-' + nr.id, $event)"
+                  >
+                    <span class="notes-dropdown-placeholder">{{ nr.role }}</span>
+                    <span class="notes-dropdown-caret" [class.notes-dropdown-caret--open]="isOpen('npc-role-' + nr.id)">▾</span>
+                  </button>
+                  @if (isOpen('npc-role-' + nr.id)) {
+                    <div class="notes-dropdown-panel">
+                      @for (r of npcRoles; track r) {
+                        <div
+                          class="notes-dropdown-item"
+                          [class.notes-dropdown-item--selected]="nr.role === r"
+                          (click)="setNpcRole(nr.id, r)"
+                        >{{ r }}</div>
+                      }
+                    </div>
+                  }
+                </div>
+
+                <!-- NPC Motivation dropdown -->
+                <div class="notes-dropdown">
+                  <button
+                    class="notes-dropdown-trigger"
+                    [attr.aria-label]="castName(nr.castInstanceId) + ' motivation: ' + nr.motivation"
+                    (click)="toggleDropdown('npc-motivation-' + nr.id, $event)"
+                  >
+                    <span class="notes-dropdown-placeholder">{{ nr.motivation }}</span>
+                    <span class="notes-dropdown-caret" [class.notes-dropdown-caret--open]="isOpen('npc-motivation-' + nr.id)">▾</span>
+                  </button>
+                  @if (isOpen('npc-motivation-' + nr.id)) {
+                    <div class="notes-dropdown-panel">
+                      @for (m of motivations; track m) {
+                        <div
+                          class="notes-dropdown-item"
+                          [class.notes-dropdown-item--selected]="nr.motivation === m"
+                          (click)="setNpcMotivation(nr.id, m)"
+                        >{{ m }}</div>
+                      }
+                    </div>
+                  }
+                </div>
+
+                <button
+                  class="pol-remove"
+                  [attr.aria-label]="'Remove political role for ' + castName(nr.castInstanceId)"
+                  (click)="removeNpcRole(nr.id)"
+                >×</button>
+              </div>
+            }
+          </div>
+        }
+
+        @if (notes().factions.length && availableCasts().length) {
+          <div class="pol-npc-add">
+            <div class="notes-dropdown">
+              <button
+                class="notes-dropdown-trigger"
+                aria-label="Add a cast member political role"
+                (click)="toggleDropdown('npc-add', $event)"
+              >
+                <span class="notes-dropdown-placeholder">Add a cast member…</span>
+                <span class="notes-dropdown-caret" [class.notes-dropdown-caret--open]="isOpen('npc-add')">▾</span>
+              </button>
+              @if (isOpen('npc-add')) {
+                <div class="notes-dropdown-panel">
+                  @for (cast of availableCasts(); track cast.instanceId) {
+                    <div class="notes-dropdown-item" (click)="addNpcRole(cast.instanceId)">
+                      {{ cast.name }}
+                    </div>
+                  }
+                </div>
+              }
+            </div>
+          </div>
+        } @else if (!notes().factions.length) {
+          <p class="pol-hint">Add factions before assigning NPC roles.</p>
+        } @else if (!availableCasts().length && !notes().npcRoles.length) {
+          <p class="pol-hint">No cast members available in this city.</p>
+        }
+      </div>
+
+      <div class="pol-divider"></div>
+
+      <!-- ── General Observations ── -->
+      <div class="pol-section">
+        <div class="pol-section-label">General Observations</div>
+        <span class="pol-section-line"></span>
+        <textarea
+          class="pol-textarea"
+          rows="5"
+          placeholder="What have you observed about this city's politics…"
+          aria-label="General political observations"
+          [value]="generalText"
+          (input)="onGeneralInput($any($event.target).value)"
+        ></textarea>
+      </div>
+
+    </div>
+  }
+
+  <!-- ══════════════════════════════════════════════════════════════════════ -->
+  <!-- Tab: Faction Web                                                       -->
+  <!-- ══════════════════════════════════════════════════════════════════════ -->
+  @if (activeTab() === 'web') {
+    <div class="pol-tab-panel" id="pol-panel-web" role="tabpanel" aria-labelledby="pol-tab-web">
+      @if (!notes().factions.length) {
+        <p class="pol-empty">Add factions in Field Notes to generate the web.</p>
+      } @else {
+        <div class="web-container" aria-label="Faction relationship web">
+          <svg
+            class="web-svg"
+            viewBox="0 0 400 400"
+            aria-hidden="true"
+            focusable="false"
+          >
+            <defs>
+              <marker id="arrow-allied"    markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto">
+                <path d="M0,0 L0,6 L6,3 z" class="arrow arrow--allied"/>
+              </marker>
+              <marker id="arrow-rival"     markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto">
+                <path d="M0,0 L0,6 L6,3 z" class="arrow arrow--rival"/>
+              </marker>
+              <marker id="arrow-enemy"     markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto">
+                <path d="M0,0 L0,6 L6,3 z" class="arrow arrow--enemy"/>
+              </marker>
+              <marker id="arrow-blackmail" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto">
+                <path d="M0,0 L0,6 L6,3 z" class="arrow arrow--blackmail"/>
+              </marker>
+            </defs>
+
+            <!-- Edges -->
+            @for (edge of webEdges(); track edge!.rel.id) {
+              <line
+                [attr.x1]="edge!.x1"
+                [attr.y1]="edge!.y1"
+                [attr.x2]="edge!.x2"
+                [attr.y2]="edge!.y2"
+                [attr.stroke-width]="edge!.rel.strength"
+                [class]="'web-edge ' + edgeClass(edge!.rel.relationshipType)"
+              />
+            }
+
+            <!-- Nodes -->
+            @for (node of webNodes(); track node.faction.id) {
+              <g class="web-node" [class.web-node--hidden]="node.faction.isHidden">
+                <circle
+                  [attr.cx]="node.cx"
+                  [attr.cy]="node.cy"
+                  [attr.r]="node.r"
+                  class="web-node-circle"
+                />
+                <text
+                  [attr.x]="node.cx"
+                  [attr.y]="node.cy + node.r + 12"
+                  class="web-node-label"
+                  text-anchor="middle"
+                >{{ node.faction.name }}</text>
+                @if (node.faction.isHidden) {
+                  <text
+                    [attr.x]="node.cx"
+                    [attr.y]="node.cy + 4"
+                    class="web-node-hidden-icon"
+                    text-anchor="middle"
+                  >?</text>
+                }
+              </g>
+            }
+          </svg>
+
+          <!-- Accessible text summary for screen readers -->
+          <div class="sr-only" aria-live="polite">
+            <p>Faction web with {{ notes().factions.length }} factions and {{ notes().relationships.length }} relationships.</p>
+            @for (rel of notes().relationships; track rel.id) {
+              <p>
+                {{ factionName(rel.factionAId) }} and {{ factionName(rel.factionBId) }}:
+                {{ rel.relationshipType }}, strength {{ rel.strength }} out of 5.
+                @if (rel.notes) { Notes: {{ rel.notes }}. }
+              </p>
+            }
+          </div>
+
+          <!-- Legend -->
+          <div class="web-legend" role="list" aria-label="Edge type legend">
+            <div class="legend-item" role="listitem">
+              <svg class="legend-swatch" aria-hidden="true"><line x1="0" y1="8" x2="32" y2="8" class="web-edge edge--allied" stroke-width="2"/></svg>
+              <span>Allied</span>
+            </div>
+            <div class="legend-item" role="listitem">
+              <svg class="legend-swatch" aria-hidden="true"><line x1="0" y1="8" x2="32" y2="8" class="web-edge edge--rival" stroke-width="2"/></svg>
+              <span>Rival</span>
+            </div>
+            <div class="legend-item" role="listitem">
+              <svg class="legend-swatch" aria-hidden="true"><line x1="0" y1="8" x2="32" y2="8" class="web-edge edge--enemy" stroke-width="2"/></svg>
+              <span>Enemy</span>
+            </div>
+            <div class="legend-item" role="listitem">
+              <svg class="legend-swatch" aria-hidden="true"><line x1="0" y1="8" x2="32" y2="8" class="web-edge edge--neutral" stroke-width="2"/></svg>
+              <span>Neutral</span>
+            </div>
+            <div class="legend-item" role="listitem">
+              <svg class="legend-swatch" aria-hidden="true"><line x1="0" y1="8" x2="32" y2="8" class="web-edge edge--blackmail" stroke-width="2"/></svg>
+              <span>Blackmail</span>
+            </div>
+            <div class="legend-item" role="listitem">
+              <svg class="legend-swatch" aria-hidden="true"><line x1="0" y1="8" x2="32" y2="8" class="web-edge edge--patronage" stroke-width="2"/></svg>
+              <span>Patronage</span>
+            </div>
+            <div class="legend-item" role="listitem">
+              <svg class="legend-swatch" aria-hidden="true"><circle cx="8" cy="8" r="6" class="web-node-circle web-node--hidden"/></svg>
+              <span>Hidden (unconfirmed)</span>
+            </div>
+          </div>
+        </div>
+      }
+    </div>
+  }
+
+  <!-- ══════════════════════════════════════════════════════════════════════ -->
+  <!-- Tab: Control Map                                                       -->
+  <!-- ══════════════════════════════════════════════════════════════════════ -->
+  @if (activeTab() === 'map') {
+    <div class="pol-tab-panel" id="pol-panel-map" role="tabpanel" aria-labelledby="pol-tab-map">
+      @if (!notes().factions.length) {
+        <p class="pol-empty">Add factions in Field Notes to use the control map.</p>
+      } @else {
+
+        <!-- SVG Patterns (ADA: color + pattern, never color alone) -->
+        <svg width="0" height="0" aria-hidden="true" focusable="false">
+          <defs>
+            <pattern id="p-diagonal" patternUnits="userSpaceOnUse" width="8" height="8">
+              <path d="M-1,1 l2,-2 M0,8 l8,-8 M7,9 l2,-2" stroke="currentColor" stroke-width="1.5" opacity="0.6"/>
+            </pattern>
+            <pattern id="p-dots" patternUnits="userSpaceOnUse" width="8" height="8">
+              <circle cx="4" cy="4" r="1.5" fill="currentColor" opacity="0.7"/>
+            </pattern>
+            <pattern id="p-lines" patternUnits="userSpaceOnUse" width="8" height="8">
+              <line x1="0" y1="4" x2="8" y2="4" stroke="currentColor" stroke-width="1.5" opacity="0.6"/>
+            </pattern>
+            <pattern id="p-cross" patternUnits="userSpaceOnUse" width="8" height="8">
+              <path d="M0,4 H8 M4,0 V8" stroke="currentColor" stroke-width="1" opacity="0.5"/>
+            </pattern>
+          </defs>
+        </svg>
+
+        <!-- Live region for screen readers -->
+        <div role="status" aria-live="polite" aria-atomic="false" class="sr-only" id="district-live"></div>
+
+        <!-- District grid -->
+        <div class="district-grid" role="list" aria-label="District control map">
+          @for (faction of notes().factions; track faction.id) {
+            <button
+              class="district-cell"
+              [class]="'district-cell ' + districtPattern(faction.id) + ' ' + districtGlow(faction.influence) + (faction.isHidden ? ' district-hidden' : '')"
+              [style.--district-color]="districtColor(faction.id)"
+              role="listitem"
+              [attr.aria-label]="faction.name + ' district. Controlled by: ' + faction.name + ' (' + faction.type + '). Influence: ' + faction.influence + ' out of 10.' + (faction.isHidden ? ' Unconfirmed.' : '')"
+              (focus)="announceDistrict(faction)"
+            >
+              <span class="district-name" aria-hidden="true">{{ faction.name }}</span>
+              <span class="district-type" aria-hidden="true">{{ faction.type }}</span>
+
+            </button>
+          }
+        </div>
+
+        <!-- Legend -->
+        <div class="map-legend-influence" role="list" aria-label="Influence level legend">
+          <span class="map-legend-influence-title">Influence</span>
+          <div class="map-legend-influence-items">
+            <div class="map-legend-influence-item" role="listitem">
+              <span class="map-legend-influence-swatch" aria-hidden="true"></span>
+              <span class="map-legend-influence-label">None</span>
+            </div>
+            <div class="map-legend-influence-item" role="listitem">
+              <span class="map-legend-influence-swatch glow--light" aria-hidden="true"></span>
+              <span class="map-legend-influence-label">Low (1–3)</span>
+            </div>
+            <div class="map-legend-influence-item" role="listitem">
+              <span class="map-legend-influence-swatch glow--medium" aria-hidden="true"></span>
+              <span class="map-legend-influence-label">Mid (4–7)</span>
+            </div>
+            <div class="map-legend-influence-item" role="listitem">
+              <span class="map-legend-influence-swatch glow--heavy" aria-hidden="true"></span>
+              <span class="map-legend-influence-label">High (8–10)</span>
+            </div>
+            <div class="map-legend-influence-item" role="listitem">
+              <span class="map-legend-influence-swatch map-legend-influence-swatch--hidden" aria-hidden="true"></span>
+              <span class="map-legend-influence-label">Hidden</span>
+            </div>
+          </div>
+        </div>
+
+      }
+    </div>
+  }
+
+  <!-- ══════════════════════════════════════════════════════════════════════ -->
+  <!-- Tab: Social Compass                                                    -->
+  <!-- ══════════════════════════════════════════════════════════════════════ -->
+  @if (activeTab() === 'social') {
+    <div class="pol-tab-panel" id="pol-panel-social" role="tabpanel" aria-labelledby="pol-tab-social">
+      @if (!allCasts().length) {
+        <p class="pol-empty">No cast members assigned to this city.</p>
+      } @else {
+        <div class="compass-container" role="region" aria-label="Social compass">
+
+          <svg class="compass-svg" viewBox="0 0 560 560" aria-hidden="true" focusable="false">
+            <defs>
+              <marker id="sc-arrow-allied"    markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto">
+                <path d="M0,0 L0,6 L6,3 z" class="arrow arrow--allied"/>
+              </marker>
+              <marker id="sc-arrow-rival"     markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto">
+                <path d="M0,0 L0,6 L6,3 z" class="arrow arrow--rival"/>
+              </marker>
+              <marker id="sc-arrow-enemy"     markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto">
+                <path d="M0,0 L0,6 L6,3 z" class="arrow arrow--enemy"/>
+              </marker>
+              <marker id="sc-arrow-blackmail" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto">
+                <path d="M0,0 L0,6 L6,3 z" class="arrow arrow--blackmail"/>
+              </marker>
+            </defs>
+
+            <!-- Compass background -->
+            <circle cx="280" cy="280" r="224" class="compass-bg"/>
+
+            <!-- Hostile band (outer ring, r=162 to r=224) -->
+            <path fill-rule="evenodd" class="compass-band compass-band--hostile"
+              d="M 504,280 A 224,224 0 1 0 56,280 A 224,224 0 1 0 504,280 Z M 442,280 A 162,162 0 1 0 118,280 A 162,162 0 1 0 442,280 Z"/>
+
+            <!-- Devoted band (inner ring, r=38 to r=100) -->
+            <path fill-rule="evenodd" class="compass-band compass-band--devoted"
+              d="M 380,280 A 100,100 0 1 0 180,280 A 100,100 0 1 0 380,280 Z M 318,280 A 38,38 0 1 0 242,280 A 38,38 0 1 0 318,280 Z"/>
+
+            <!-- Faint value rings at each discrete perception level (p=+5 to p=−4) -->
+            <circle cx="280" cy="280" r="205" class="compass-ring compass-ring--value"/>
+            <circle cx="280" cy="280" r="187" class="compass-ring compass-ring--value"/>
+            <circle cx="280" cy="280" r="168" class="compass-ring compass-ring--value"/>
+            <circle cx="280" cy="280" r="150" class="compass-ring compass-ring--value"/>
+            <circle cx="280" cy="280" r="131" class="compass-ring compass-ring--value"/>
+            <circle cx="280" cy="280" r="112" class="compass-ring compass-ring--value"/>
+            <circle cx="280" cy="280" r=" 94" class="compass-ring compass-ring--value"/>
+            <circle cx="280" cy="280" r=" 75" class="compass-ring compass-ring--value"/>
+            <circle cx="280" cy="280" r=" 57" class="compass-ring compass-ring--value"/>
+            <circle cx="280" cy="280" r=" 38" class="compass-ring compass-ring--value"/>
+
+            <!-- Ring boundary circles -->
+            <circle cx="280" cy="280" r="224" class="compass-ring compass-ring--outer"/>
+            <circle cx="280" cy="280" r="162" class="compass-ring compass-ring--mid"/>
+            <circle cx="280" cy="280" r="100" class="compass-ring compass-ring--mid"/>
+
+            <!-- Ring labels -->
+            <text x="280" y="87"  text-anchor="middle" class="compass-ring-label">Hostile</text>
+            <text x="280" y="149" text-anchor="middle" class="compass-ring-label">Indifferent</text>
+            <text x="280" y="211" text-anchor="middle" class="compass-ring-label">Devoted</text>
+
+            <!-- Connection edges (drawn before nodes so nodes render on top) -->
+            @for (edge of compassEdges(); track edge.id) {
+              <line
+                [attr.x1]="edge.x1" [attr.y1]="edge.y1"
+                [attr.x2]="edge.x2" [attr.y2]="edge.y2"
+                [class]="'compass-edge web-edge ' + edge.edgeClass"
+              />
+            }
+
+            <!-- Cast nodes -->
+            @for (node of compassNodes(); track node.castInstanceId) {
+              <g
+                class="compass-node"
+                [class.compass-node--unassessed]="node.isUnassessed"
+                role="button"
+                tabindex="0"
+                style="cursor:pointer"
+                [attr.aria-label]="'View ' + node.name + (node.isUnassessed ? ' (unassessed)' : '')"
+                (click)="openCastCard(node, $event)"
+                (keydown.enter)="openCastCard(node, $event)"
+                (keydown.space)="openCastCard(node, $event)"
+              >
+                <circle
+                  [attr.cx]="node.cx"
+                  [attr.cy]="node.cy"
+                  [attr.r]="node.r"
+                  [attr.fill]="node.fill"
+                  class="compass-node-circle"
+                  [class.compass-node-circle--selected]="selectedCast()?.instanceId === node.castInstanceId"
+                />
+                <text
+                  [attr.x]="node.cx"
+                  [attr.y]="node.cy + 3"
+                  [attr.font-size]="node.r === 7 ? 6 : node.r === 9 ? 7 : node.r === 14 ? 9 : 11"
+                  text-anchor="middle"
+                  class="compass-node-code"
+                >{{ node.alignmentCode }}</text>
+                <text
+                  [attr.x]="node.cx"
+                  [attr.y]="node.cy + node.r + 10"
+                  text-anchor="middle"
+                  class="compass-node-label"
+                >{{ node.firstName }}</text>
+                @if (node.lastName) {
+                  <text
+                    [attr.x]="node.cx"
+                    [attr.y]="node.cy + node.r + 19"
+                    text-anchor="middle"
+                    class="compass-node-label"
+                  >{{ node.lastName }}</text>
+                }
+              </g>
+            }
+
+            <!-- Party center (always on top) -->
+            <circle cx="280" cy="280" r="22" class="compass-center"/>
+            <text x="280" y="284" text-anchor="middle" class="compass-center-label">Party</text>
+
+          </svg>
+
+          <!-- Unassessed notice -->
+          @if (unassessedCount() > 0) {
+            <p class="compass-unassessed-notice">
+              {{ unassessedCount() }} cast {{ unassessedCount() === 1 ? 'member has' : 'members have' }} no alignment recorded and
+              {{ unassessedCount() === 1 ? 'is' : 'are' }} shown at Lawful Neutral with a dashed border.
+            </p>
+          }
+
+          <!-- Legend -->
+          <div class="compass-legend">
+            <div class="compass-legend-section">
+              <span class="compass-legend-title">Influence</span>
+              <div class="compass-legend-items">
+                <div class="legend-item"><span class="compass-legend-dot compass-legend-dot--nr"></span><span>Unrated</span></div>
+                <div class="legend-item"><span class="compass-legend-dot compass-legend-dot--sm"></span><span>1 Star</span></div>
+                <div class="legend-item"><span class="compass-legend-dot compass-legend-dot--md"></span><span>2 Stars</span></div>
+                <div class="legend-item"><span class="compass-legend-dot compass-legend-dot--lg"></span><span>3 Stars</span></div>
+              </div>
+            </div>
+            <div class="compass-legend-section">
+              <span class="compass-legend-title">Disposition</span>
+              <div class="compass-legend-items">
+                <div class="legend-item"><span class="compass-legend-dot" style="background:var(--compass-hostile)"></span><span>Hostile (−3 or lower)</span></div>
+                <div class="legend-item"><span class="compass-legend-dot" style="background:var(--compass-amber)"></span><span>Wary (−2 to −1)</span></div>
+                <div class="legend-item"><span class="compass-legend-dot" style="background:var(--compass-grey)"></span><span>Indifferent (0)</span></div>
+                <div class="legend-item"><span class="compass-legend-dot" style="background:var(--compass-sage)"></span><span>Friendly (+1 to +2)</span></div>
+                <div class="legend-item"><span class="compass-legend-dot" style="background:var(--compass-devoted)"></span><span>Devoted (+3 or higher)</span></div>
+              </div>
+            </div>
+            <div class="compass-legend-section">
+              <span class="compass-legend-title">Connections</span>
+              <div class="compass-legend-items">
+                <div class="legend-item"><svg class="legend-swatch" aria-hidden="true"><line x1="0" y1="8" x2="32" y2="8" class="web-edge edge--allied"    stroke-width="2"/></svg><span>Allied</span></div>
+                <div class="legend-item"><svg class="legend-swatch" aria-hidden="true"><line x1="0" y1="8" x2="32" y2="8" class="web-edge edge--patronage" stroke-width="2"/></svg><span>Patronage</span></div>
+                <div class="legend-item"><svg class="legend-swatch" aria-hidden="true"><line x1="0" y1="8" x2="32" y2="8" class="web-edge edge--neutral"   stroke-width="2"/></svg><span>Neutral</span></div>
+                <div class="legend-item"><svg class="legend-swatch" aria-hidden="true"><line x1="0" y1="8" x2="32" y2="8" class="web-edge edge--rival"     stroke-width="2"/></svg><span>Rival</span></div>
+                <div class="legend-item"><svg class="legend-swatch" aria-hidden="true"><line x1="0" y1="8" x2="32" y2="8" class="web-edge edge--blackmail" stroke-width="2"/></svg><span>Blackmail</span></div>
+                <div class="legend-item"><svg class="legend-swatch" aria-hidden="true"><line x1="0" y1="8" x2="32" y2="8" class="web-edge edge--enemy"     stroke-width="2"/></svg><span>Enemy</span></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Screen reader summary -->
+          <div class="sr-only" aria-live="polite">
+            <p>Social compass showing {{ compassNodes().length }} cast members.</p>
+            @for (node of compassNodes(); track node.castInstanceId) {
+              <p>{{ node.name }}{{ node.isUnassessed ? ' — alignment unassessed, shown at Lawful Neutral' : '' }}.</p>
+            }
+          </div>
+
+        </div>
+      }
+    </div>
+  }
+
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════════════ -->
+<!-- Cast card popout overlay                                               -->
+<!-- ══════════════════════════════════════════════════════════════════════ -->
+@if (overlayState() !== 'closed') {
+
+  <!-- Sparks -->
+  @for (angle of sparkAngles; track angle) {
+    <span
+      class="cast-spark"
+      [class.cast-spark--closing]="overlayState() === 'closing'"
+      [style.--spark-angle]="angle + 'deg'"
+      [style.--spark-x]="sparkOriginX() + 'px'"
+      [style.--spark-y]="sparkOriginY() + 'px'"
+      [style.--spark-color]="spineColor()"
+      aria-hidden="true"
+    ></span>
+  }
+
+  <!-- Backdrop -->
+  <div
+    class="cast-card-backdrop"
+    [class.cast-card-backdrop--closing]="overlayState() === 'closing'"
+    (click)="closeCastCard()"
+    aria-hidden="true"
+  ></div>
+
+  <!-- Card panel -->
+  @if (selectedCast(); as cast) {
+    <div
+      class="cast-card-popout"
+      [class.cast-card-popout--open]="overlayState() === 'open'"
+      [class.cast-card-popout--closing]="overlayState() === 'closing'"
+      role="dialog"
+      aria-modal="true"
+      [attr.aria-label]="cast.name + ' quick view'"
+    >
+      <button class="cast-card-popout-close" (click)="closeCastCard()" aria-label="Close">×</button>
+
+      <!-- Cast image header -->
+      <div class="cast-card-popout-image-wrap">
+        @if (cast.imageUrl) {
+          <img [src]="cast.imageUrl" alt="" class="cast-card-popout-img" />
+        } @else {
+          <div class="cast-card-popout-placeholder">
+            <span class="cast-card-popout-initial">{{ cast.name.charAt(0) }}</span>
+          </div>
+        }
+        @if (cast.publicDescription) {
+          <div class="cast-card-popout-desc-overlay">
+            <p class="cast-card-popout-desc">{{ cast.publicDescription }}</p>
+          </div>
+        }
+      </div>
+
+      <!-- Name / role -->
+      <div class="cast-card-popout-header">
+        <div class="cast-card-popout-name">{{ cast.name }}</div>
+        <div class="cast-card-popout-role">{{ cast.role }}</div>
+      </div>
+
+      <!-- ── Alignment + Notes ── -->
+      <div class="cast-card-popout-details">
+
+        <div class="cast-card-popout-row">
+          <div class="cast-card-popout-label">Alignment<span class="cast-card-popout-rule"></span></div>
+          <div class="cast-card-popout-value">{{ selectedCastNotes()?.alignment || '—' }}</div>
+        </div>
+
+        @if (selectedCastNotes()?.want) {
+          <div class="cast-card-popout-row">
+            <div class="cast-card-popout-label">Notes<span class="cast-card-popout-rule"></span></div>
+            <div class="cast-card-popout-notes">{{ selectedCastNotes()!.want }}</div>
+          </div>
+        }
+
+      </div>
+    </div>
+  }
+}

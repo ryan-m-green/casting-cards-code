@@ -1,0 +1,37 @@
+<div class="keyword-input-wrapper">
+  <label class="fi-label">Keywords</label>
+
+  @if (currentKeywords().length > 0) {
+    <div class="keyword-chips">
+      @for (kw of currentKeywords(); track kw) {
+        <span class="keyword-chip">
+          {{ kw }}
+          <button class="keyword-chip-remove" type="button" (click)="removeKeyword(kw)">×</button>
+        </span>
+      }
+    </div>
+  }
+
+  <div class="keyword-field-row">
+    <input
+      #inputEl
+      class="fi fi-sm keyword-field"
+      type="text"
+      placeholder="Type a keyword…"
+      [value]="inputValue()"
+      (input)="onInput($any($event.target).value)"
+      (keydown)="onKeydown($event)"
+      autocomplete="off"
+    />
+  </div>
+
+  @if (showDropdown() && suggestions().length > 0) {
+    <div class="keyword-suggestions">
+      @for (s of suggestions(); track s) {
+        <div class="keyword-suggestion-item" (mousedown)="$event.preventDefault()" (click)="selectSuggestion(s)">
+          {{ s }}
+        </div>
+      }
+    </div>
+  }
+</div>

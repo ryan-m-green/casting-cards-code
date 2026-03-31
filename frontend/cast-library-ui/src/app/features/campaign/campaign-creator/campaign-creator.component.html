@@ -1,0 +1,404 @@
+﻿<div class="pc scroll-body">
+  <app-dm-nav />
+  <div class="wr wr-page-header">
+    <a class="btn-ghost" routerLink="/dm/campaigns">← Campaigns</a>
+    <h2 class="page-title page-title-flush">{{ isEditMode() ? 'Edit Campaign — ' + (form.controls.name.value || '') : 'New Campaign' }}</h2>
+  </div>
+  <div class="title-divider"></div>
+
+  <!-- ── Tab navigation ──────────────────────────────────────────────────────── -->
+  <div class="campaign-tabs">
+    <button
+      class="tab-btn"
+      [class.tab-btn-active]="activeTab() === 'world-setup'"
+      (click)="activeTab.set('world-setup')"
+    >
+      1 — World Setup
+    </button>
+    <button
+      class="tab-btn"
+      [class.tab-btn-active]="activeTab() === 'cast-relationships'"
+      [disabled]="!campaignId()"
+      (click)="activeTab.set('cast-relationships')"
+      [title]="!campaignId() ? 'Save a campaign name first' : ''"
+    >
+      2 — Cast Disposition
+    </button>
+    <button
+      class="tab-btn"
+      [class.tab-btn-active]="activeTab() === 'players'"
+      [disabled]="!campaignId()"
+      (click)="activeTab.set('players')"
+      [title]="!campaignId() ? 'Save a campaign name first' : ''"
+    >
+      3 — Players
+    </button>
+  </div>
+
+  <!-- ── Tab 3: Players ────────────────────────────────────────────────────────── -->
+  @if (activeTab() === 'players') {
+    <div class="players-tab">
+
+      <div class="players-section-label">Invite Code</div>
+      <p class="players-hint">Generate a 24-hour code and share it with your players. Anyone with the code can join this campaign.</p>
+
+      @if (inviteCode()) {
+        <div class="invite-code-row">
+          <div class="invite-code-display">{{ inviteCode()!.code }}</div>
+          <button class="invite-copy-btn" (click)="copyCode()" title="Copy to clipboard">📋</button>
+        </div>
+        <div class="invite-expires">{{ timeRemaining() }}</div>
+        <button class="invite-generate-btn" (click)="generateInviteCode()" [disabled]="codeLoading()">
+          {{ codeLoading() ? '…' : '↻ Regenerate' }}
+        </button>
+      } @else {
+        <div class="invite-empty">No active code.</div>
+        <button class="invite-generate-btn" (click)="generateInviteCode()" [disabled]="codeLoading()">
+          {{ codeLoading() ? '…' : '↻ Generate Code' }}
+        </button>
+      }
+
+      <div class="dv dv-mb"></div>
+
+      <div class="players-section-label">
+        Players — <span>{{ players().length }} joined</span>
+      </div>
+
+      @if (players().length) {
+        <div class="players-list">
+          @for (player of players(); track player.userId) {
+            <div class="player-row">
+              <div class="player-info">
+                <span class="player-name">{{ player.displayName }}</span>
+                <span class="player-email">{{ player.email }}</span>
+              </div>
+              <button
+                class="player-remove-btn"
+                (click)="removePlayer(player.userId)"
+                [disabled]="removingPlayer() === player.userId"
+                title="Remove player"
+              >
+                {{ removingPlayer() === player.userId ? '…' : '✕' }}
+              </button>
+            </div>
+          }
+        </div>
+      } @else {
+        <p class="players-empty">No players have joined yet.</p>
+      }
+
+    </div>
+  }
+
+  <!-- ── Tab 2: Cast Relationships ─────────────────────────────────────────────── -->
+  @if (activeTab() === 'cast-relationships') {
+    <app-cast-relationships-tab
+      [campaignId]="campaignId()"
+      [castInstances]="campaignCast()"
+    />
+  }
+
+  <!-- ── Tab 1: World Setup (existing content) ─────────────────────────────────── -->
+  @if (activeTab() === 'world-setup') {
+
+  <form [formGroup]="form">
+    <label class="fi-label">Campaign Name</label>
+    <input class="fi" formControlName="name" placeholder="The Shadow of Eldenmoor" />
+    @if (form.controls.name.touched && form.controls.name.invalid) {
+      <div class="fi-error">Campaign name is required before adding cities.</div>
+    }
+    <label class="fi-label">Campaign Color</label>
+    <div class="color-picker-row">
+      <input type="color" class="color-swatch-input" formControlName="spineColor" />
+      <span class="color-swatch-preview" [style.background]="form.controls.spineColor.value"></span>
+      <span class="color-swatch-hex">{{ form.controls.spineColor.value }}</span>
+    </div>
+    <label class="fi-label">Fantasy Type</label>
+    <input class="fi" formControlName="fantasyType" placeholder="High Fantasy" />
+    <label class="fi-label">Description</label>
+    <textarea class="fi" formControlName="description" rows="3" placeholder="A brief synopsis…"></textarea>
+  </form>
+
+  @if (cities().length) {
+    <div class="cities-section-label">Available Cities</div>
+
+    <div class="city-search-row">
+      <input
+        class="fi city-search-input"
+        type="search"
+        placeholder="Search by name, type, climate, vibe…"
+        [value]="citySearch()"
+        (input)="setCitySearch($any($event.target).value)"
+      />
+    </div>
+
+    <div class="city-picker-row">
+      @if (filteredDeckCities().length > 0) {
+        <div class="deck-stack" #deckStack (click)="swapCityCard()">
+          <div class="deck-shadow deck-shadow-far"></div>
+          <div class="deck-shadow deck-shadow-near"></div>
+          <div class="deck-face">
+            <div class="deck-inner-border"></div>
+            <span class="deck-castle">🏰</span>
+            <div class="deck-count">
+              {{ filteredDeckCities().length }}<br>remaining
+            </div>
+          </div>
+        </div>
+      } @else {
+        <div class="deck-stack deck-stack-empty" #deckStack></div>
+      }
+
+      <div class="main-card-area" #mainCardWrapper>
+        @if (filteredDeckCities().length > 0) {
+          <div class="pc-card pc-card-city" #mainCard>
+            <app-card-flip>
+              <div slot="front" class="card-slot-front">
+                <div class="card-front-header">
+                  <div class="card-name">{{ currentCard()?.name }}</div>
+                  <div class="card-descriptor">{{ currentCard()?.classification }}</div>
+                </div>
+                <div class="dv dv-card"></div>
+                <div class="card-image-area">
+                  @if (currentCard()?.imageUrl) {
+                    <img [src]="currentCard()!.imageUrl" alt="" class="card-img-fill" />
+                  } @else {
+                    <div class="card-placeholder">
+                      <span class="card-initial">{{ currentCard()?.name?.[0]?.toUpperCase() }}</span>
+                    </div>
+                  }
+                  @if (currentCard()?.description) {
+                    <div class="card-desc-overlay">
+                      <p class="card-desc-text">{{ currentCard()?.description }}</p>
+                    </div>
+                  }
+                </div>
+              </div>
+              <div slot="back" class="card-slot-back">
+                <div class="card-back-content">
+                  <div class="card-name card-back-name">{{ currentCard()?.name }}</div>
+                  <div class="dv dv-mb"></div>
+                  <div class="fi-label fi-label-strong">Size</div><p class="wbd card-field-value">{{ currentCard()?.size || '—' }}</p>
+                  <div class="fi-label fi-label-strong">Condition</div><p class="wbd card-field-value">{{ currentCard()?.condition || '—' }}</p>
+                  <div class="fi-label fi-label-strong">Geography</div><p class="wbd card-field-value">{{ currentCard()?.geography || '—' }}</p>
+                  <div class="fi-label fi-label-strong">Architecture</div><p class="wbd card-field-value">{{ currentCard()?.architecture || '—' }}</p>
+                  <div class="fi-label fi-label-strong">Climate</div><p class="wbd card-field-value">{{ currentCard()?.climate || '—' }}</p>
+                  <div class="fi-label fi-label-strong">Religion</div><p class="wbd card-field-value">{{ currentCard()?.religion || '—' }}</p>
+                  <div class="fi-label fi-label-strong">Vibe</div><p class="wbd card-field-value">{{ currentCard()?.vibe || '—' }}</p>
+                  <div class="fi-label fi-label-strong">Languages</div><p class="wbd card-field-value">{{ currentCard()?.languages || '—' }}</p>
+                </div>
+              </div>
+            </app-card-flip>
+          </div>
+        } @else {
+          <div class="main-card-placeholder"></div>
+        }
+      </div>
+    </div>
+
+    @if (filteredDeckCities().length > 0) {
+      <div class="add-btn-row">
+        <div class="deck-stack-spacer"></div>
+        <button class="add-btn" (click)="addCityToSelected()">
+          Add to Campaign
+          <span class="add-arrow">⬇</span>
+        </button>
+      </div>
+    }
+
+    <div class="dv"></div>
+    <div class="sel-header">
+      Campaign Cities — <span>{{ selectedDrafts().length }}</span> added
+    </div>
+
+    <div class="sel-layout">
+      @if (selectedDrafts().length > 0) {
+        <div class="sel-stack-container" #selectedStack [style.height.px]="selContainerHeight()">
+          @for (draft of selectedDrafts(); track draft.city.id; let i = $index) {
+            <div class="sel-card pc-card-city"
+                 [attr.data-sel-idx]="i"
+                 [style.top.px]="selTopsList()[i]"
+                 [style.z-index]="i + 1"
+                 (click)="toggleExpanded(i)">
+              <div class="card-slot-front">
+                <div class="card-front-header sel-card-header-row">
+                  <div class="sel-card-info">
+                    <div class="card-name">{{ draft.city.name }}</div>
+                    <div class="card-descriptor">{{ draft.city.classification }}</div>
+                  </div>
+                  <button class="sel-card-remove"
+                          (click)="removeCitySelected(i); $event.stopPropagation()">&#215;</button>
+                </div>
+                <div class="dv dv-card"></div>
+                <div class="card-image-area">
+                  @if (draft.city.imageUrl) {
+                    <img [src]="draft.city.imageUrl" alt="" class="card-img-fill" />
+                  } @else {
+                    <div class="card-placeholder">
+                      <span class="card-initial">{{ draft.city.name?.[0]?.toUpperCase() }}</span>
+                    </div>
+                  }
+                  @if (draft.city.description) {
+                    <div class="card-desc-overlay">
+                      <p class="card-desc-text">{{ draft.city.description }}</p>
+                    </div>
+                  }
+                </div>
+              </div>
+            </div>
+          }
+        </div>
+      } @else {
+        <div class="sel-stack-placeholder" #selectedStack></div>
+      }
+
+      <!-- Detail panel -->
+      <div class="detail-panel">
+        @if (expandedDraft(); as draft) {
+          <div class="detail-panel-header">
+            <div class="detail-city-name">{{ draft.city.name }}</div>
+            <div class="detail-city-label">campaign copy</div>
+            @if (draft.instanceId && campaignId()) {
+              <button class="add-casts-btn" (click)="goToLocations()">+ Add Settling Location</button>
+            }
+          </div>
+          <div class="dv dv-mb"></div>
+
+          @if (expandedCityLocations().length > 0) {
+            <div class="loc-cast-section-label">Settling Locations</div>
+            <div class="loc-cast-summary">
+              @for (loc of expandedCityLocations(); track loc.instanceId) {
+                <div class="loc-outline-item">
+                  <div class="loc-outline-main">
+                    <span class="loc-bullet-icon" [class.loc-bullet-icon--active]="castCountForLocation(loc.instanceId) > 0">
+                      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" width="13" height="13" fill="none">
+                        <circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.4"/>
+                        <polyline points="4.5,8.2 6.8,10.5 11.5,5.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+                      </svg>
+                    </span>
+                    <span class="loc-outline-name">{{ loc.name }}</span>
+                  </div>
+                  <div class="loc-outline-child">
+                    <span class="loc-outline-child-connector">└</span>
+                    <span class="loc-outline-child-label">Cast Members</span>
+                    <span class="loc-outline-child-count">{{ castCountForLocation(loc.instanceId) }}</span>
+                  </div>
+                </div>
+              }
+            </div>
+            <div class="dv dv-mb"></div>
+          }
+
+          <div class="detail-grid">
+            <div class="detail-field">
+              <label class="fi-label">Condition</label>
+              <select class="fi fi-sm"
+                      (change)="updateDraftField('condition', $any($event.target).value)">
+                @for (opt of conditionOptions; track opt) {
+                  <option [value]="opt" [selected]="draft.condition === opt">{{ opt }}</option>
+                }
+              </select>
+            </div>
+            <div class="detail-field">
+              <label class="fi-label">Geographic Location</label>
+              <input class="fi fi-sm"
+                     data-city-field="geography"
+                     (input)="onCityTextInput('geography', $any($event.target).value)"
+                     placeholder="e.g. Northern coast" />
+            </div>
+            <div class="detail-field">
+              <label class="fi-label">Climate &amp; Weather</label>
+              <input class="fi fi-sm"
+                     data-city-field="climate"
+                     (input)="onCityTextInput('climate', $any($event.target).value)"
+                     placeholder="e.g. Temperate, foggy" />
+            </div>
+            <div class="detail-field">
+              <label class="fi-label">Dominant Religion</label>
+              <input class="fi fi-sm"
+                     data-city-field="religion"
+                     (input)="onCityTextInput('religion', $any($event.target).value)"
+                     placeholder="e.g. Church of the Light" />
+            </div>
+            <div class="detail-field">
+              <label class="fi-label">Overall Vibe</label>
+              <input class="fi fi-sm"
+                     data-city-field="vibe"
+                     (input)="onCityTextInput('vibe', $any($event.target).value)"
+                     placeholder="e.g. Gritty, mercantile" />
+            </div>
+            <div class="detail-field">
+              <label class="fi-label">Languages Spoken</label>
+              <input class="fi fi-sm"
+                     data-city-field="languages"
+                     (input)="onCityTextInput('languages', $any($event.target).value)"
+                     placeholder="e.g. Common, Elvish" />
+            </div>
+          </div>
+
+          @if ((draft.keywords?.length ?? 0) > 0) {
+            <div class="detail-keywords">
+              <div class="fi-label">Keywords</div>
+              <div class="keyword-chips-readonly">
+                @for (kw of draft.keywords; track kw) {
+                  <span class="keyword-chip-readonly">{{ kw }}</span>
+                }
+              </div>
+            </div>
+          }
+
+          <div class="detail-secrets-header">🔒 City Secrets</div>
+          @for (secret of draft.secrets; track $index; let si = $index) {
+            @if (secret.editing) {
+              <div class="secret-row secret-row-edit">
+                <textarea class="fi fi-sm secret-textarea"
+                          [value]="secret.content"
+                          (input)="updateSecretContent(si, $any($event.target).value)"
+                          (blur)="confirmSecret(si)"
+                          (keydown.enter)="confirmSecret(si); $event.preventDefault()"
+                          placeholder="Enter secret…"
+                          rows="2"></textarea>
+                <button class="secret-cancel-btn"
+                        (mousedown)="$event.preventDefault()"
+                        (click)="cancelSecret(si)" type="button">✕</button>
+              </div>
+            } @else {
+              <div class="secret-row">
+                <span class="secret-text">{{ secret.content }}</span>
+                <button class="secret-delete-btn" (click)="deleteSecret(si)" type="button">✕</button>
+              </div>
+            }
+          }
+          @if (draft.instanceId) {
+            <button class="secret-add-btn" (click)="addSecret()" type="button">+ Add Secret</button>
+          }
+        } @else {
+          <p class="detail-panel-empty">Tap a city card to view its campaign details.</p>
+        }
+      </div>
+    </div>
+  }
+
+  @if (saving()) {
+    <div class="autosave-indicator">Saving…</div>
+  }
+
+  } <!-- end @if world-setup -->
+
+</div>
+
+@if (pendingRemoveIdx() !== null) {
+  <div class="modal-backdrop" (click)="cancelRemove()">
+    <div class="modal-box" (click)="$event.stopPropagation()">
+      <div class="modal-title">Remove City?</div>
+      <p class="modal-body">
+        This city has <strong>{{ pendingCastCount() }} settling location{{ pendingCastCount() === 1 ? '' : 's' }}</strong> assigned to it.
+        Removing it will also remove {{ pendingCastCount() === 1 ? 'that location and its cast' : 'those locations and their cast' }}.
+      </p>
+      <div class="modal-actions">
+        <button class="btn-ghost" (click)="cancelRemove()" type="button">Cancel</button>
+        <button class="btn-danger" (click)="confirmRemove()" type="button">Remove</button>
+      </div>
+    </div>
+  </div>
+}

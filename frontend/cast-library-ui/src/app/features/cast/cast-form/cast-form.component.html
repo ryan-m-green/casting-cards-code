@@ -1,0 +1,163 @@
+<div class="pc scroll-body">
+  <app-dm-nav />
+  <div class="wr wr-page-header">
+    <a class="btn-ghost" routerLink="/dm/cast">← Library</a>
+    <h2 class="page-title page-title-row">
+      {{ castId() ? 'Edit Cast Member' : 'Cast Member Creation' }}
+    </h2>
+    <span class="save-label"
+          [class.save-label--saving]="labelText() === 'Saving…'"
+          [class.save-label--error]="labelText() === 'Error'"
+          [style.opacity]="labelVisible() ? 1 : 0">{{ labelText() }}</span>
+    <div class="save-spark-host" #sparkHost>
+      <button class="btn-primary"
+              [disabled]="form.invalid || saveStatus() === 'saving'"
+              (click)="onSave($event)">Save</button>
+    </div>
+  </div>
+
+  @if (castId()) {
+    <div class="form-card-preview">
+      <div class="pc-card pc-card-cast" title="Click to upload portrait"
+           (click)="showImageModal.set(true)">
+        <div class="lib-card-front card-form-inner">
+          <div class="card-form-header">
+            <div class="card-name">{{ form.value.name || 'Unnamed Cast Member' }}</div>
+            <div class="card-descriptor">{{ form.value.role || '—' }}</div>
+            <div class="dv dv-mb"></div>
+          </div>
+          @if (imageUrl()) {
+            <img [src]="imageUrl()!" alt="Cast portrait" class="card-form-image" />
+          } @else {
+            <div class="card-form-placeholder">
+              <div class="card-initial">
+                {{ form.value.name ? form.value.name[0].toUpperCase() : '?' }}
+              </div>
+              <div class="card-upload-hint">Upload Portrait</div>
+            </div>
+          }
+        </div>
+      </div>
+    </div>
+  }
+
+  <form [formGroup]="form">
+    <div class="wr form-row-gap">
+      <div class="form-field-min">
+        <label class="fi-label">Name</label>
+        <input class="fi" formControlName="name" placeholder="Aldric the Bold" />
+      </div>
+      <div class="form-field-min">
+        <label class="fi-label">Role / Class</label>
+        <input class="fi" formControlName="role" placeholder="Blacksmith" />
+      </div>
+    </div>
+
+    <div class="wr form-row-gap">
+      <div class="form-field">
+        <label class="fi-label">Race</label>
+        <input class="fi" formControlName="race" placeholder="Human" />
+      </div>
+      <div class="form-field">
+        <label class="fi-label">Age</label>
+        <input class="fi" formControlName="age" placeholder="44" />
+      </div>
+      <div class="form-field">
+        <label class="fi-label">Pronouns</label>
+        <select class="fi" formControlName="pronouns">
+          <option value="">— select —</option>
+          @for (p of pronounOptions; track p) {
+            <option [value]="p">{{ p }}</option>
+          }
+        </select>
+      </div>
+    </div>
+
+    <div class="wr form-row-gap">
+      <div class="form-field">
+        <label class="fi-label">Alignment</label>
+        <select class="fi" formControlName="alignment">
+          <option value="">— select —</option>
+          @for (a of alignmentOptions; track a) {
+            <option [value]="a">{{ a }}</option>
+          }
+        </select>
+      </div>
+      <div class="form-field">
+        <label class="fi-label">Posture</label>
+        <select class="fi" formControlName="posture">
+          <option value="">— select —</option>
+          @for (p of postureOptions; track p) {
+            <option [value]="p">{{ p }}</option>
+          }
+        </select>
+      </div>
+      <div class="form-field">
+        <label class="fi-label">Speed</label>
+        <select class="fi" formControlName="speed">
+          <option value="">— select —</option>
+          @for (s of speedOptions; track s) {
+            <option [value]="s">{{ s }}</option>
+          }
+        </select>
+      </div>
+    </div>
+
+    <div class="voice-section">
+      <label class="fi-label voice-section-label">Voice Placement (select all that apply)</label>
+      <div class="wr" formArrayName="voicePlacement">
+        @for (opt of voiceOptions; track opt; let i = $index) {
+          <label class="wr checkbox-label">
+            <input type="checkbox" [formControlName]="i" class="checkbox-input" />
+            {{ opt }}
+          </label>
+        }
+      </div>
+    </div>
+
+    <label class="fi-label">Public Description (visible to players)</label>
+    <textarea class="fi" formControlName="publicDescription" rows="3" placeholder="What players observe…"></textarea>
+
+    <label class="fi-label">DM Description (private notes)</label>
+    <textarea class="fi" formControlName="description" rows="4" placeholder="Your private notes on this cast member…"></textarea>
+  </form>
+
+</div>
+
+<!-- Image Upload Modal -->
+@if (showImageModal()) {
+  <div class="upload-overlay"
+       (click)="showImageModal.set(false)">
+    <div class="upload-panel"
+         (click)="$event.stopPropagation()">
+      <h3 class="upload-panel-title">Upload Portrait</h3>
+
+      <div class="pc-card pc-card-cast pointer-none">
+        <div class="lib-card-front card-form-inner">
+          <div class="card-form-header">
+            <div class="card-name">{{ form.value.name || 'Unnamed Cast Member' }}</div>
+            <div class="card-descriptor">{{ form.value.role || '—' }}</div>
+            <div class="dv dv-mb"></div>
+          </div>
+          @if (imageUrl()) {
+            <img [src]="imageUrl()!" alt="Cast portrait" class="card-form-image" />
+          } @else {
+            <div class="card-form-placeholder-simple">
+              <div class="card-initial">
+                {{ form.value.name ? form.value.name[0].toUpperCase() : '?' }}
+              </div>
+            </div>
+          }
+        </div>
+      </div>
+
+      <label class="upload-file-label">
+        {{ imageUploading() ? 'Uploading…' : (imageUrl() ? 'Replace Portrait' : 'Upload Portrait') }}
+        <input type="file" accept="image/jpeg,image/png,image/webp" class="hidden-input"
+               (change)="onFileSelected($event)" [disabled]="imageUploading()" />
+      </label>
+
+      <button class="btn-primary btn-upload-done" (click)="showImageModal.set(false)">Close</button>
+    </div>
+  </div>
+}

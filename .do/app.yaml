@@ -1,0 +1,145 @@
+name: cast-library
+
+# ── API Service ───────────────────────────────────────────────────────────────
+services:
+- name: api
+  github:
+    branch: main
+    repo: ryan-m-green/casting-cards
+    deploy_on_push: true
+  source_dir: backend
+  dockerfile_path: Dockerfile
+  http_port: 8080
+  instance_count: 1
+  instance_size_slug: basic-xxs
+  health_check:
+    http_path: /health
+  envs:
+  - key: ASPNETCORE_ENVIRONMENT
+    value: Production
+    scope: RUN_AND_BUILD_TIME
+  - key: ASPNETCORE_URLS
+    value: http://+:8080
+    scope: RUN_TIME
+  - key: ConnectionStrings__DefaultConnection
+    value: ${DB_CONNECTION_STRING}
+    scope: RUN_TIME
+  - key: Jwt__Key
+    value: ${JWT_KEY}
+    scope: RUN_TIME
+  - key: Jwt__Issuer
+    value: CastLibrary
+    scope: RUN_TIME
+  - key: Jwt__Audience
+    value: CastLibraryUsers
+    scope: RUN_TIME
+  - key: AllowedOrigins
+    value: ${FRONTEND_BASE_URL}
+    scope: RUN_TIME
+  - key: Email__SmtpHost
+    value: ${SMTP_HOST}
+    scope: RUN_TIME
+  - key: Email__SmtpPort
+    value: "587"
+    scope: RUN_TIME
+  - key: Email__SmtpUsername
+    value: ${SMTP_USERNAME}
+    scope: RUN_TIME
+  - key: Email__SmtpPassword
+    value: ${SMTP_PASSWORD}
+    scope: RUN_TIME
+  - key: Email__FromAddress
+    value: ${EMAIL_FROM_ADDRESS}
+    scope: RUN_TIME
+  - key: Email__FromName
+    value: Cast Library
+    scope: RUN_TIME
+  - key: Email__FrontendBaseUrl
+    value: ${FRONTEND_BASE_URL}
+    scope: RUN_TIME
+  - key: ImageStorage__S3__AccessKey
+    value: ${SPACES_ACCESS_KEY}
+    scope: RUN_TIME
+  - key: ImageStorage__S3__SecretKey
+    value: ${SPACES_SECRET_KEY}
+    scope: RUN_TIME
+  - key: ImageStorage__S3__BucketName
+    value: ${SPACES_BUCKET_NAME}
+    scope: RUN_TIME
+  - key: ImageStorage__S3__Region
+    value: ${SPACES_REGION}
+    scope: RUN_TIME
+  - key: ImageStorage__S3__Endpoint
+    value: ${SPACES_ENDPOINT}
+    scope: RUN_TIME
+  - key: ImageStorage__S3__PublicUrl
+    value: ${SPACES_PUBLIC_URL}
+    scope: RUN_TIME
+  - key: Logging__FilePath
+    value: /tmp/logs
+    scope: RUN_TIME
+  - key: Logging__FilePathError
+    value: /tmp/logs/errors
+    scope: RUN_TIME
+
+# ── Frontend Static Site ──────────────────────────────────────────────────────
+static_sites:
+- name: frontend
+  github:
+    branch: main
+    repo: ryan-m-green/casting-cards
+    deploy_on_push: true
+  source_dir: frontend/cast-library-ui
+  build_command: npm run build -- --configuration production
+  output_dir: dist/cast-library-ui/browser
+  index_document: index.html
+  catchall_document: index.html  # SPA fallback for client-side routing
+
+# ── DB Init Job (PRE_DEPLOY, idempotent — safe to run on every deploy) ────────
+jobs:
+- name: db-init
+  github:
+    branch: main
+    repo: ryan-m-green/casting-cards
+    deploy_on_push: true
+  source_dir: .
+  dockerfile_path: Dockerfile.initializer
+  instance_size_slug: basic-xxs
+  kind: PRE_DEPLOY
+  envs:
+  - key: ConnectionStrings__DefaultConnection
+    value: ${DB_CONNECTION_STRING}
+    scope: RUN_TIME
+  - key: Seed__DmEmail
+    value: ${SEED_DM_EMAIL}
+    scope: RUN_TIME
+  - key: Seed__DmPassword
+    value: ${SEED_DM_PASSWORD}
+    scope: RUN_TIME
+  - key: Seed__DmDisplayName
+    value: ${SEED_DM_DISPLAY_NAME}
+    scope: RUN_TIME
+
+# ── Ingress — route /api, /hubs, /health, /images to API; rest to frontend ───
+ingress:
+  rules:
+  - match:
+      prefix: /api
+    component:
+      name: api
+  - match:
+      prefix: /hubs
+    component:
+      name: api
+  - match:
+      prefix: /health
+    component:
+      name: api
+  - match:
+      prefix: /images
+    component:
+      name: api
+  - match:
+      prefix: /
+    component:
+      name: frontend
