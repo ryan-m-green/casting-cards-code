@@ -5,7 +5,7 @@ services:
 - name: api
   github:
     branch: main
-    repo: ryan-m-green/casting-cards
+    repo: ryan-m-green/casting-cards-code
     deploy_on_push: true
   source_dir: backend
   dockerfile_path: Dockerfile
@@ -87,7 +87,7 @@ static_sites:
 - name: frontend
   github:
     branch: main
-    repo: ryan-m-green/casting-cards
+    repo: ryan-m-green/casting-cards-code
     deploy_on_push: true
   source_dir: frontend/cast-library-ui
   build_command: npm run build -- --configuration production
@@ -100,7 +100,7 @@ jobs:
 - name: db-init
   github:
     branch: main
-    repo: ryan-m-green/casting-cards
+    repo: ryan-m-green/casting-cards-code
     deploy_on_push: true
   source_dir: .
   dockerfile_path: Dockerfile.initializer
