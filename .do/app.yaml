@@ -124,22 +124,27 @@ jobs:
 ingress:
   rules:
   - match:
-      prefix: /api
+      path:
+        prefix: /api
     component:
       name: api
   - match:
-      prefix: /hubs
+      path:
+        prefix: /hubs
     component:
       name: api
   - match:
-      prefix: /health
+      path:
+        prefix: /health
     component:
       name: api
   - match:
-      prefix: /images
+      path:
+        prefix: /images
     component:
       name: api
   - match:
-      prefix: /
+      path:
+        prefix: /
     component:
       name: frontend
