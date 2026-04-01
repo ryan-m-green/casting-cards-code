@@ -7,8 +7,13 @@ var config = new ConfigurationBuilder()
     .AddEnvironmentVariables()
     .Build();
 
-var connectionString = config.GetConnectionString("DefaultConnection")
+var rawConnectionString = config.GetConnectionString("DefaultConnection")
     ?? throw new InvalidOperationException("DefaultConnection not found in appsettings.json.");
+
+// Support both postgresql:// URI format and Npgsql key-value format
+var connectionString = rawConnectionString.StartsWith("postgresql://") || rawConnectionString.StartsWith("postgres://")
+    ? ConvertUriToNpgsql(rawConnectionString)
+    : rawConnectionString;
 
 var connBuilder = new NpgsqlConnectionStringBuilder(connectionString);
 var databaseName = connBuilder.Database
@@ -87,3 +92,20 @@ else
 
 Console.WriteLine();
 Console.WriteLine("Initialization complete.");
+
+static string ConvertUriToNpgsql(string uri)
+{
+    var u = new Uri(uri);
+    var userInfo = u.UserInfo.Split(':', 2);
+    var user = Uri.UnescapeDataString(userInfo[0]);
+    var pass = userInfo.Length > 1 ? Uri.UnescapeDataString(userInfo[1]) : "";
+    var db = u.AbsolutePath.TrimStart('/');
+    var sslMode = "Require";
+    foreach (var part in u.Query.TrimStart('?').Split('&'))
+    {
+        var kv = part.Split('=', 2);
+        if (kv.Length == 2 && kv[0].Equals("sslmode", StringComparison.OrdinalIgnoreCase))
+            sslMode = kv[1];
+    }
+    return $"Host={u.Host};Port={u.Port};Database={db};Username={user};Password={pass};SSL Mode={sslMode}";
+}
