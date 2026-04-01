@@ -1,4 +1,5 @@
 name: cast-library
+region: sfo
 
 # ── API Service ───────────────────────────────────────────────────────────────
 services:
