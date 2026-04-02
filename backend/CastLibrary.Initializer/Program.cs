@@ -36,7 +36,7 @@ var connectionString = connBuilder.ConnectionString;
 var databaseName = connBuilder.Database
     ?? throw new InvalidOperationException("Database name not specified in connection string.");
 
-connBuilder.Database = "postgres";
+connBuilder.Database = "defaultdb";
 var serverConnectionString = connBuilder.ConnectionString;
 
 // ─── Step 1: Create database ──────────────────────────────────────────────────
