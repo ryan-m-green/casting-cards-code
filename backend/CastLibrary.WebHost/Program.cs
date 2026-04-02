@@ -120,13 +120,16 @@ app.Use(async (context, next) =>
 // so re-add the prefix when it is missing.
 app.Use(async (context, next) =>
 {
+    var originalPath = context.Request.Path.Value;
     var path = context.Request.Path;
     if (!path.StartsWithSegments("/api") &&
         !path.StartsWithSegments("/hubs") &&
         !path.StartsWithSegments("/health"))
     {
         context.Request.Path = "/api" + path;
+        Console.WriteLine($"[PATH_RESTORE] Modified path from '{originalPath}' to '{context.Request.Path}'");
     }
+    Console.Out.Flush();
     await next();
 });
 
@@ -145,7 +148,25 @@ if (Directory.Exists(imagesPath))
 
 app.UseAuthentication();
 app.UseAuthorization();
+
+// Log before routing
+app.Use(async (context, next) =>
+{
+    Console.WriteLine($"[PRE_ROUTING] Path: {context.Request.Path}, Method: {context.Request.Method}");
+    Console.Out.Flush();
+    await next();
+});
+
 app.MapControllers();
+
+// Log after routing
+app.Use(async (context, next) =>
+{
+    Console.WriteLine($"[POST_ROUTING] Path: {context.Request.Path}, Status: {context.Response.StatusCode}");
+    Console.Out.Flush();
+    await next();
+});
+
 app.MapHealthChecks("/health");      // DO internal probe hits container directly
 app.MapHealthChecks("/api/health");  // public path after preserve_path_prefix
 app.MapHub<CampaignHub>("/hubs/campaign");
