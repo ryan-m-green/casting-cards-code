@@ -23,9 +23,9 @@ if (frontendUrl != null)
     builder.Configuration["Email:FrontendBaseUrl"] = frontendUrl;
 }
 
-var jwtKey = Environment.GetEnvironmentVariable("JWT_KEY");
-if (jwtKey != null)
-    builder.Configuration["Jwt:Key"] = jwtKey;
+var jwtKeyEnv = Environment.GetEnvironmentVariable("JWT_KEY");
+if (jwtKeyEnv != null)
+    builder.Configuration["Jwt:Key"] = jwtKeyEnv;
 
 builder.Services.AddApplicationInsightsTelemetry();
 
