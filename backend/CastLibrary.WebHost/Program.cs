@@ -157,20 +157,19 @@ app.Use(async (context, next) =>
     await next();
 });
 
-var controllerActions = app.Services
-    .GetRequiredService<Microsoft.AspNetCore.Mvc.Routing.IActionDescriptorCollectionProvider>()
-    .ActionDescriptors
-    .Items
-    .OfType<Microsoft.AspNetCore.Mvc.Controllers.ControllerActionDescriptor>();
+app.MapControllers();
+
+// Log registered routes after mapping
+var actionDescriptorCollectionProvider = app.Services
+    .GetRequiredService<Microsoft.AspNetCore.Mvc.Infrastructure.IActionDescriptorCollectionProvider>();
 
 Console.WriteLine("[STARTUP] Registered controller actions:");
-foreach (var action in controllerActions)
+foreach (var descriptor in actionDescriptorCollectionProvider.ActionDescriptors.Items.OfType<Microsoft.AspNetCore.Mvc.Controllers.ControllerActionDescriptor>())
 {
-    Console.WriteLine($"  {action.ControllerName}.{action.ActionName} -> {action.AttributeRouteInfo?.Template ?? "N/A"}");
+    var template = descriptor.AttributeRouteInfo?.Template ?? "N/A";
+    Console.WriteLine($"  {descriptor.ControllerName}.{descriptor.ActionName} -> {template}");
 }
 Console.Out.Flush();
-
-app.MapControllers();
 
 // Log after routing
 app.Use(async (context, next) =>
