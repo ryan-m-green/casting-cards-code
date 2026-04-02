@@ -9,6 +9,13 @@ using CastLibrary.WebHost.Middleware;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// DO App Platform injects secrets as plain env vars; ${VAR} interpolation in app.yaml
+// doesn't resolve reliably, so read DB_CONNECTION_STRING directly and inject it into
+// the config hierarchy so all downstream code (repositories, health checks) works unchanged.
+var dbConnectionString = Environment.GetEnvironmentVariable("DB_CONNECTION_STRING");
+if (dbConnectionString != null)
+    builder.Configuration["ConnectionStrings:DefaultConnection"] = dbConnectionString;
+
 builder.Services.AddApplicationInsightsTelemetry();
 
 builder.Services.AddControllers(options =>

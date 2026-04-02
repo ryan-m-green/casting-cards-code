@@ -21,9 +21,6 @@ services:
   - key: ASPNETCORE_URLS
     value: http://+:8080
     scope: RUN_TIME
-  - key: ConnectionStrings__DefaultConnection
-    value: ${DB_CONNECTION_STRING}
-    scope: RUN_TIME
   - key: Jwt__Key
     value: ${JWT_KEY}
     scope: RUN_TIME
