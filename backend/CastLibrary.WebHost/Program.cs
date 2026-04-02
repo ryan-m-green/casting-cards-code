@@ -133,6 +133,13 @@ app.Use(async (context, next) =>
     await next();
 });
 
+// ── Routing ───────────────────────────────────────────────────────────────────
+// Must be called EXPLICITLY here, AFTER path prefix restore.
+// If omitted, ASP.NET Core places UseRouting() at the very start of the pipeline
+// (before our path restoration middleware), so the router sees /auth/login instead
+// of /api/auth/login and every controller route returns 404.
+app.UseRouting();
+
 // ── Correlation ID ────────────────────────────────────────────────────────────
 // Must run before UseAuthentication so trace_id is available on every log entry,
 // including auth failures.
