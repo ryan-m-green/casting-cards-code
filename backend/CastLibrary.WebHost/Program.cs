@@ -87,6 +87,22 @@ var app = builder.Build();
 
 app.UseCors("Angular");
 
+// ── Path prefix restore ───────────────────────────────────────────────────────
+// DO App Platform strips the matched ingress prefix (/api, /hubs, /images)
+// before forwarding to the container. All controllers are routed under api/,
+// so re-add the prefix when it is missing.
+app.Use(async (context, next) =>
+{
+    var path = context.Request.Path;
+    if (!path.StartsWithSegments("/api") &&
+        !path.StartsWithSegments("/hubs") &&
+        !path.StartsWithSegments("/health"))
+    {
+        context.Request.Path = "/api" + path;
+    }
+    await next();
+});
+
 // ── Correlation ID ────────────────────────────────────────────────────────────
 // Must run before UseAuthentication so trace_id is available on every log entry,
 // including auth failures.
