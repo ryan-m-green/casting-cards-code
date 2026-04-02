@@ -1,4 +1,4 @@
-﻿using System.Text;
+using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.IdentityModel.Tokens;
@@ -9,20 +9,12 @@ using CastLibrary.WebHost.Middleware;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Force unbuffered console output for DigitalOcean App Platform visibility
-Console.OutputEncoding = System.Text.Encoding.UTF8;
-System.Environment.SetEnvironmentVariable("DOTNET_TargetFramework", "net10.0");
-
 builder.Logging.ClearProviders();
-builder.Logging.AddConsole(options =>
-{
-    options.IncludeScopes = true;
-    options.TimestampFormat = "yyyy-MM-dd HH:mm:ss ";
-});
+builder.Logging.AddConsole();
 
 // DO App Platform injects secrets as plain env vars; ${VAR} interpolation in app.yaml
-// doesn't resolve reliably, so read DB_CONNECTION_STRING directly and inject it into
-// the config hierarchy so all downstream code (repositories, health checks) works unchanged.
+// doesn't resolve reliably, so read all secrets directly and inject into the config
+// hierarchy so all downstream code works unchanged.
 var dbConnectionString = Environment.GetEnvironmentVariable("DB_CONNECTION_STRING");
 if (dbConnectionString != null)
     builder.Configuration["ConnectionStrings:DefaultConnection"] = dbConnectionString;
@@ -37,6 +29,31 @@ if (frontendUrl != null)
 var jwtKeyEnv = Environment.GetEnvironmentVariable("JWT_KEY");
 if (jwtKeyEnv != null)
     builder.Configuration["Jwt:Key"] = jwtKeyEnv;
+
+// Spaces / S3 config — injected directly to avoid ${VAR} interpolation issues
+var spacesAccessKey = Environment.GetEnvironmentVariable("SPACES_ACCESS_KEY");
+if (spacesAccessKey != null)
+    builder.Configuration["ImageStorage:S3:AccessKey"] = spacesAccessKey;
+
+var spacesSecretKey = Environment.GetEnvironmentVariable("SPACES_SECRET_KEY");
+if (spacesSecretKey != null)
+    builder.Configuration["ImageStorage:S3:SecretKey"] = spacesSecretKey;
+
+var spacesBucketName = Environment.GetEnvironmentVariable("SPACES_BUCKET_NAME");
+if (spacesBucketName != null)
+    builder.Configuration["ImageStorage:S3:BucketName"] = spacesBucketName;
+
+var spacesRegion = Environment.GetEnvironmentVariable("SPACES_REGION");
+if (spacesRegion != null)
+    builder.Configuration["ImageStorage:S3:Region"] = spacesRegion;
+
+var spacesEndpoint = Environment.GetEnvironmentVariable("SPACES_ENDPOINT");
+if (spacesEndpoint != null)
+    builder.Configuration["ImageStorage:S3:Endpoint"] = spacesEndpoint;
+
+var spacesPublicUrl = Environment.GetEnvironmentVariable("SPACES_PUBLIC_URL");
+if (spacesPublicUrl != null)
+    builder.Configuration["ImageStorage:S3:PublicUrl"] = spacesPublicUrl;
 
 builder.Services.AddApplicationInsightsTelemetry();
 
@@ -96,23 +113,7 @@ builder.Services.AddCastLibraryServices(builder.Configuration);
 
 var app = builder.Build();
 
-// Direct console output to verify app is running
-Console.WriteLine("=== Cast Library API Started ===");
-Console.WriteLine($"Environment: {app.Environment.EnvironmentName}");
-Console.WriteLine($"Listening on: {Environment.GetEnvironmentVariable("ASPNETCORE_URLS")}");
-Console.WriteLine("===============================");
-Console.Out.Flush();
-
 app.UseCors("Angular");
-
-// Log all incoming requests for debugging
-app.Use(async (context, next) =>
-{
-    Console.WriteLine($"[REQUEST] {context.Request.Method} {context.Request.Path} from {context.Connection.RemoteIpAddress}");
-    await next();
-    Console.WriteLine($"[RESPONSE] {context.Request.Method} {context.Request.Path} => {context.Response.StatusCode}");
-    Console.Out.Flush();
-});
 
 // ── Path prefix restore ───────────────────────────────────────────────────────
 // DO App Platform strips the matched ingress prefix (/api, /hubs, /images)
@@ -120,24 +121,21 @@ app.Use(async (context, next) =>
 // so re-add the prefix when it is missing.
 app.Use(async (context, next) =>
 {
-    var originalPath = context.Request.Path.Value;
     var path = context.Request.Path;
     if (!path.StartsWithSegments("/api") &&
         !path.StartsWithSegments("/hubs") &&
         !path.StartsWithSegments("/health"))
     {
         context.Request.Path = "/api" + path;
-        Console.WriteLine($"[PATH_RESTORE] Modified path from '{originalPath}' to '{context.Request.Path}'");
     }
-    Console.Out.Flush();
     await next();
 });
 
 // ── Routing ───────────────────────────────────────────────────────────────────
 // Must be called EXPLICITLY here, AFTER path prefix restore.
 // If omitted, ASP.NET Core places UseRouting() at the very start of the pipeline
-// (before our path restoration middleware), so the router sees /auth/login instead
-// of /api/auth/login and every controller route returns 404.
+// (before path restoration), so the router sees /auth/login instead of
+// /api/auth/login and every controller route returns 404.
 app.UseRouting();
 
 // ── Correlation ID ────────────────────────────────────────────────────────────
@@ -155,37 +153,7 @@ if (Directory.Exists(imagesPath))
 
 app.UseAuthentication();
 app.UseAuthorization();
-
-// Log before routing
-app.Use(async (context, next) =>
-{
-    Console.WriteLine($"[PRE_ROUTING] Path: {context.Request.Path}, Method: {context.Request.Method}");
-    Console.Out.Flush();
-    await next();
-});
-
 app.MapControllers();
-
-// Log registered routes after mapping
-var actionDescriptorCollectionProvider = app.Services
-    .GetRequiredService<Microsoft.AspNetCore.Mvc.Infrastructure.IActionDescriptorCollectionProvider>();
-
-Console.WriteLine("[STARTUP] Registered controller actions:");
-foreach (var descriptor in actionDescriptorCollectionProvider.ActionDescriptors.Items.OfType<Microsoft.AspNetCore.Mvc.Controllers.ControllerActionDescriptor>())
-{
-    var template = descriptor.AttributeRouteInfo?.Template ?? "N/A";
-    Console.WriteLine($"  {descriptor.ControllerName}.{descriptor.ActionName} -> {template}");
-}
-Console.Out.Flush();
-
-// Log after routing
-app.Use(async (context, next) =>
-{
-    Console.WriteLine($"[POST_ROUTING] Path: {context.Request.Path}, Status: {context.Response.StatusCode}");
-    Console.Out.Flush();
-    await next();
-});
-
 app.MapHealthChecks("/health");      // DO internal probe hits container directly
 app.MapHealthChecks("/api/health");  // public path after preserve_path_prefix
 app.MapHub<CampaignHub>("/hubs/campaign");

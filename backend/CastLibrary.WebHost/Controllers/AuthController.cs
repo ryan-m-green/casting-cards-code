@@ -21,48 +21,18 @@ public class AuthController(
     [HttpPost("login")]
     public async Task<IActionResult> Login([FromBody] LoginRequest request)
     {
-        try
+        if (!ModelState.IsValid)
         {
-            Console.WriteLine($"[AuthController.Login] START");
-            Console.Out.Flush();
-
-            Console.WriteLine($"[AuthController.Login] Request body: {System.Text.Json.JsonSerializer.Serialize(request)}");
-            Console.Out.Flush();
-
-            if (!ModelState.IsValid)
-            {
-                var errors = string.Join(", ", ModelState.Values.SelectMany(v => v.Errors.Select(e => e.ErrorMessage)));
-                Console.WriteLine($"[AuthController.Login] ModelState invalid: {errors}");
-                Console.Out.Flush();
-                return BadRequest(ModelState);
-            }
-
-            Console.WriteLine($"[AuthController.Login] Executing login command");
-            Console.Out.Flush();
-
-            var result = await loginCommand.HandleAsync(new LoginCommand(request));
-
-            Console.WriteLine($"[AuthController.Login] Command result: {(result is null ? "null" : "success")}");
-            Console.Out.Flush();
-
-            if (result is null)
-            {
-                Console.WriteLine($"[AuthController.Login] Returning Unauthorized");
-                Console.Out.Flush();
-                return Unauthorized(new { message = "Invalid email or password." });
-            }
-
-            Console.WriteLine($"[AuthController.Login] Returning Ok");
-            Console.Out.Flush();
-            return Ok(result);
+            return BadRequest(ModelState);
         }
-        catch (Exception ex)
+
+        var result = await loginCommand.HandleAsync(new LoginCommand(request));
+        if (result is null)
         {
-            Console.WriteLine($"[AuthController.Login] EXCEPTION: {ex.GetType().Name} - {ex.Message}");
-            Console.WriteLine($"[AuthController.Login] Stack: {ex.StackTrace}");
-            Console.Out.Flush();
-            throw;
+            return Unauthorized(new { message = "Invalid email or password." });
         }
+
+        return Ok(result);
     }
 
     [HttpPost("register")]
