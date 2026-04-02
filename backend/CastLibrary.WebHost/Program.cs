@@ -157,6 +157,19 @@ app.Use(async (context, next) =>
     await next();
 });
 
+var controllerActions = app.Services
+    .GetRequiredService<Microsoft.AspNetCore.Mvc.Routing.IActionDescriptorCollectionProvider>()
+    .ActionDescriptors
+    .Items
+    .OfType<Microsoft.AspNetCore.Mvc.Controllers.ControllerActionDescriptor>();
+
+Console.WriteLine("[STARTUP] Registered controller actions:");
+foreach (var action in controllerActions)
+{
+    Console.WriteLine($"  {action.ControllerName}.{action.ActionName} -> {action.AttributeRouteInfo?.Template ?? "N/A"}");
+}
+Console.Out.Flush();
+
 app.MapControllers();
 
 // Log after routing
