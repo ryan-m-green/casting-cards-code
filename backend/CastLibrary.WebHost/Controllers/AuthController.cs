@@ -21,31 +21,48 @@ public class AuthController(
     [HttpPost("login")]
     public async Task<IActionResult> Login([FromBody] LoginRequest request)
     {
-        Console.WriteLine($"[AuthController.Login] Received request: Email={request?.Email}");
-        Console.Out.Flush();
-
-        if (!ModelState.IsValid)
+        try
         {
-            Console.WriteLine($"[AuthController.Login] ModelState invalid: {string.Join(", ", ModelState.Values.SelectMany(v => v.Errors))}");
+            Console.WriteLine($"[AuthController.Login] START");
             Console.Out.Flush();
-            return BadRequest(ModelState);
+
+            Console.WriteLine($"[AuthController.Login] Request body: {System.Text.Json.JsonSerializer.Serialize(request)}");
+            Console.Out.Flush();
+
+            if (!ModelState.IsValid)
+            {
+                var errors = string.Join(", ", ModelState.Values.SelectMany(v => v.Errors.Select(e => e.ErrorMessage)));
+                Console.WriteLine($"[AuthController.Login] ModelState invalid: {errors}");
+                Console.Out.Flush();
+                return BadRequest(ModelState);
+            }
+
+            Console.WriteLine($"[AuthController.Login] Executing login command");
+            Console.Out.Flush();
+
+            var result = await loginCommand.HandleAsync(new LoginCommand(request));
+
+            Console.WriteLine($"[AuthController.Login] Command result: {(result is null ? "null" : "success")}");
+            Console.Out.Flush();
+
+            if (result is null)
+            {
+                Console.WriteLine($"[AuthController.Login] Returning Unauthorized");
+                Console.Out.Flush();
+                return Unauthorized(new { message = "Invalid email or password." });
+            }
+
+            Console.WriteLine($"[AuthController.Login] Returning Ok");
+            Console.Out.Flush();
+            return Ok(result);
         }
-
-        Console.WriteLine($"[AuthController.Login] ModelState valid, executing command");
-        Console.Out.Flush();
-
-        var result = await loginCommand.HandleAsync(new LoginCommand(request));
-
-        if (result is null)
+        catch (Exception ex)
         {
-            Console.WriteLine($"[AuthController.Login] Login failed - invalid credentials");
+            Console.WriteLine($"[AuthController.Login] EXCEPTION: {ex.GetType().Name} - {ex.Message}");
+            Console.WriteLine($"[AuthController.Login] Stack: {ex.StackTrace}");
             Console.Out.Flush();
-            return Unauthorized(new { message = "Invalid email or password." });
+            throw;
         }
-
-        Console.WriteLine($"[AuthController.Login] Login successful for {request.Email}");
-        Console.Out.Flush();
-        return Ok(result);
     }
 
     [HttpPost("register")]
