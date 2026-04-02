@@ -10,13 +10,24 @@ var config = new ConfigurationBuilder()
 var rawConnectionString = config.GetConnectionString("DefaultConnection")
     ?? throw new InvalidOperationException("DefaultConnection not found in appsettings.json.");
 
-// Support both postgresql:// URI format and Npgsql key-value format
-var connBuilder = rawConnectionString.StartsWith("postgresql://") || rawConnectionString.StartsWith("postgres://")
-    ? BuildFromUri(rawConnectionString)
-    : new NpgsqlConnectionStringBuilder(rawConnectionString);
+Console.WriteLine($"[DIAG] Connection string length  : {rawConnectionString.Length}");
+Console.WriteLine($"[DIAG] Starts with postgresql:// : {rawConnectionString.StartsWith("postgresql://")}");
+Console.WriteLine($"[DIAG] Starts with postgres://   : {rawConnectionString.StartsWith("postgres://")}");
+Console.WriteLine($"[DIAG] First 40 chars            : {rawConnectionString[..Math.Min(40, rawConnectionString.Length)]}");
 
-// DO managed PostgreSQL requires trusting the server certificate
-connBuilder.TrustServerCertificate = true;
+// Support both postgresql:// URI format and Npgsql key-value format
+NpgsqlConnectionStringBuilder connBuilder;
+try
+{
+    connBuilder = rawConnectionString.StartsWith("postgresql://") || rawConnectionString.StartsWith("postgres://")
+        ? BuildFromUri(rawConnectionString)
+        : new NpgsqlConnectionStringBuilder(rawConnectionString);
+}
+catch (Exception ex)
+{
+    Console.WriteLine($"[ERROR] Failed to parse connection string: {ex.GetType().Name}: {ex.Message}");
+    throw;
+}
 
 var connectionString = connBuilder.ConnectionString;
 var databaseName = connBuilder.Database
