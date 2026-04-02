@@ -11,11 +11,14 @@ var rawConnectionString = config.GetConnectionString("DefaultConnection")
     ?? throw new InvalidOperationException("DefaultConnection not found in appsettings.json.");
 
 // Support both postgresql:// URI format and Npgsql key-value format
-var connectionString = rawConnectionString.StartsWith("postgresql://") || rawConnectionString.StartsWith("postgres://")
-    ? ConvertUriToNpgsql(rawConnectionString)
-    : rawConnectionString;
+var connBuilder = rawConnectionString.StartsWith("postgresql://") || rawConnectionString.StartsWith("postgres://")
+    ? BuildFromUri(rawConnectionString)
+    : new NpgsqlConnectionStringBuilder(rawConnectionString);
 
-var connBuilder = new NpgsqlConnectionStringBuilder(connectionString);
+// DO managed PostgreSQL requires trusting the server certificate
+connBuilder.TrustServerCertificate = true;
+
+var connectionString = connBuilder.ConnectionString;
 var databaseName = connBuilder.Database
     ?? throw new InvalidOperationException("Database name not specified in connection string.");
 
@@ -93,19 +96,33 @@ else
 Console.WriteLine();
 Console.WriteLine("Initialization complete.");
 
-static string ConvertUriToNpgsql(string uri)
+static NpgsqlConnectionStringBuilder BuildFromUri(string uri)
 {
     var u = new Uri(uri);
     var userInfo = u.UserInfo.Split(':', 2);
     var user = Uri.UnescapeDataString(userInfo[0]);
     var pass = userInfo.Length > 1 ? Uri.UnescapeDataString(userInfo[1]) : "";
     var db = u.AbsolutePath.TrimStart('/');
-    var sslMode = "Require";
-    foreach (var part in u.Query.TrimStart('?').Split('&'))
+
+    var builder = new NpgsqlConnectionStringBuilder
+    {
+        Host = u.Host,
+        Port = u.Port > 0 ? u.Port : 5432,
+        Database = db,
+        Username = user,
+        Password = pass,
+        SslMode = SslMode.Require
+    };
+
+    foreach (var part in u.Query.TrimStart('?').Split('&', StringSplitOptions.RemoveEmptyEntries))
     {
         var kv = part.Split('=', 2);
-        if (kv.Length == 2 && kv[0].Equals("sslmode", StringComparison.OrdinalIgnoreCase))
-            sslMode = kv[1];
+        if (kv.Length == 2 && kv[0].Equals("sslmode", StringComparison.OrdinalIgnoreCase)
+            && Enum.TryParse<SslMode>(kv[1], ignoreCase: true, out var parsedMode))
+        {
+            builder.SslMode = parsedMode;
+        }
     }
-    return $"Host={u.Host};Port={u.Port};Database={db};Username={user};Password={pass};SSL Mode={sslMode}";
+
+    return builder;
 }
