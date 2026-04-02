@@ -9,9 +9,16 @@ using CastLibrary.WebHost.Middleware;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Configure console logging for DigitalOcean App Platform visibility
+// Force unbuffered console output for DigitalOcean App Platform visibility
+Console.OutputEncoding = System.Text.Encoding.UTF8;
+System.Environment.SetEnvironmentVariable("DOTNET_TargetFramework", "net10.0");
+
 builder.Logging.ClearProviders();
-builder.Logging.AddConsole();
+builder.Logging.AddConsole(options =>
+{
+    options.IncludeScopes = true;
+    options.TimestampFormat = "yyyy-MM-dd HH:mm:ss ";
+});
 
 // DO App Platform injects secrets as plain env vars; ${VAR} interpolation in app.yaml
 // doesn't resolve reliably, so read DB_CONNECTION_STRING directly and inject it into
@@ -88,6 +95,13 @@ builder.Services.AddAuthorization();
 builder.Services.AddCastLibraryServices(builder.Configuration);
 
 var app = builder.Build();
+
+// Direct console output to verify app is running
+Console.WriteLine("=== Cast Library API Started ===");
+Console.WriteLine($"Environment: {app.Environment.EnvironmentName}");
+Console.WriteLine($"Listening on: {Environment.GetEnvironmentVariable("ASPNETCORE_URLS")}");
+Console.WriteLine("===============================");
+Console.Out.Flush();
 
 app.UseCors("Angular");
 
