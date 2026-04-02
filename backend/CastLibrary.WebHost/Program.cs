@@ -105,6 +105,15 @@ Console.Out.Flush();
 
 app.UseCors("Angular");
 
+// Log all incoming requests for debugging
+app.Use(async (context, next) =>
+{
+    Console.WriteLine($"[REQUEST] {context.Request.Method} {context.Request.Path} from {context.Connection.RemoteIpAddress}");
+    await next();
+    Console.WriteLine($"[RESPONSE] {context.Request.Method} {context.Request.Path} => {context.Response.StatusCode}");
+    Console.Out.Flush();
+});
+
 // ── Path prefix restore ───────────────────────────────────────────────────────
 // DO App Platform strips the matched ingress prefix (/api, /hubs, /images)
 // before forwarding to the container. All controllers are routed under api/,
