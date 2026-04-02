@@ -21,17 +21,30 @@ public class AuthController(
     [HttpPost("login")]
     public async Task<IActionResult> Login([FromBody] LoginRequest request)
     {
+        Console.WriteLine($"[AuthController.Login] Received request: Email={request?.Email}");
+        Console.Out.Flush();
+
         if (!ModelState.IsValid)
         {
+            Console.WriteLine($"[AuthController.Login] ModelState invalid: {string.Join(", ", ModelState.Values.SelectMany(v => v.Errors))}");
+            Console.Out.Flush();
             return BadRequest(ModelState);
         }
 
+        Console.WriteLine($"[AuthController.Login] ModelState valid, executing command");
+        Console.Out.Flush();
+
         var result = await loginCommand.HandleAsync(new LoginCommand(request));
+
         if (result is null)
         {
+            Console.WriteLine($"[AuthController.Login] Login failed - invalid credentials");
+            Console.Out.Flush();
             return Unauthorized(new { message = "Invalid email or password." });
         }
 
+        Console.WriteLine($"[AuthController.Login] Login successful for {request.Email}");
+        Console.Out.Flush();
         return Ok(result);
     }
 
