@@ -18,8 +18,8 @@ namespace CastLibrary.WebHost.IoC
             }
             else
             {
-                var fileStorageConfiguration = new FileStorageConfiguration(configuration);
-                services.AddScoped<IFileStorageConfiguration>(_ => fileStorageConfiguration);
+                services.AddScoped<IFileStorageConfiguration>(sp =>
+                    new FileStorageConfiguration(sp.GetRequiredService<IConfiguration>()));
                 services.AddScoped<IImageStorageOperator, FileImageStorageOperator>();
             }
 
