@@ -103,7 +103,8 @@ if (Directory.Exists(imagesPath))
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
-app.MapHealthChecks("/health");
+app.MapHealthChecks("/health");      // DO internal probe hits container directly
+app.MapHealthChecks("/api/health");  // public path after preserve_path_prefix
 app.MapHub<CampaignHub>("/hubs/campaign");
 
 app.Run();
