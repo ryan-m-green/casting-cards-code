@@ -7,8 +7,11 @@ var config = new ConfigurationBuilder()
     .AddEnvironmentVariables()
     .Build();
 
-var rawConnectionString = config.GetConnectionString("DefaultConnection")
-    ?? throw new InvalidOperationException("DefaultConnection not found in appsettings.json.");
+// Read directly from env var — avoids issues with __ key names in DO App Platform
+var rawConnectionString =
+    Environment.GetEnvironmentVariable("DB_CONNECTION_STRING")
+    ?? config.GetConnectionString("DefaultConnection")
+    ?? throw new InvalidOperationException("No connection string found (DB_CONNECTION_STRING env var not set).");
 
 Console.WriteLine($"[DIAG] Connection string length  : {rawConnectionString.Length}");
 Console.WriteLine($"[DIAG] Starts with postgresql:// : {rawConnectionString.StartsWith("postgresql://")}");
@@ -87,9 +90,9 @@ if (userCount > 0)
 }
 else
 {
-    var seedEmail       = config["Seed:DmEmail"]       ?? "admin@cast-library.dev";
-    var seedPassword    = config["Seed:DmPassword"]    ?? "admin1234";
-    var seedDisplayName = config["Seed:DmDisplayName"] ?? "Admin DM";
+    var seedEmail       = Environment.GetEnvironmentVariable("SEED_DM_EMAIL")       ?? config["Seed:DmEmail"]       ?? "admin@cast-library.dev";
+    var seedPassword    = Environment.GetEnvironmentVariable("SEED_DM_PASSWORD")    ?? config["Seed:DmPassword"]    ?? "admin1234";
+    var seedDisplayName = Environment.GetEnvironmentVariable("SEED_DM_DISPLAY_NAME") ?? config["Seed:DmDisplayName"] ?? "Admin DM";
 
     var passwordHash = BCrypt.Net.BCrypt.HashPassword(seedPassword);
 

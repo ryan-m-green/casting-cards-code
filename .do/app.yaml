@@ -107,16 +107,16 @@ jobs:
   instance_size_slug: basic-xxs
   kind: PRE_DEPLOY
   envs:
-  - key: ConnectionStrings__DefaultConnection
+  - key: DB_CONNECTION_STRING
     value: ${DB_CONNECTION_STRING}
     scope: RUN_TIME
-  - key: Seed__DmEmail
+  - key: SEED_DM_EMAIL
     value: ${SEED_DM_EMAIL}
     scope: RUN_TIME
-  - key: Seed__DmPassword
+  - key: SEED_DM_PASSWORD
     value: ${SEED_DM_PASSWORD}
     scope: RUN_TIME
-  - key: Seed__DmDisplayName
+  - key: SEED_DM_DISPLAY_NAME
     value: ${SEED_DM_DISPLAY_NAME}
     scope: RUN_TIME
 
