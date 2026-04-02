@@ -16,6 +16,17 @@ var dbConnectionString = Environment.GetEnvironmentVariable("DB_CONNECTION_STRIN
 if (dbConnectionString != null)
     builder.Configuration["ConnectionStrings:DefaultConnection"] = dbConnectionString;
 
+var frontendUrl = Environment.GetEnvironmentVariable("FRONTEND_BASE_URL");
+if (frontendUrl != null)
+{
+    builder.Configuration["AllowedOrigins"] = frontendUrl;
+    builder.Configuration["Email:FrontendBaseUrl"] = frontendUrl;
+}
+
+var jwtKey = Environment.GetEnvironmentVariable("JWT_KEY");
+if (jwtKey != null)
+    builder.Configuration["Jwt:Key"] = jwtKey;
+
 builder.Services.AddApplicationInsightsTelemetry();
 
 builder.Services.AddControllers(options =>
