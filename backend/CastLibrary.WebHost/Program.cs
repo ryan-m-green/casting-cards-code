@@ -9,6 +9,10 @@ using CastLibrary.WebHost.Middleware;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// Configure console logging for DigitalOcean App Platform visibility
+builder.Logging.ClearProviders();
+builder.Logging.AddConsole();
+
 // DO App Platform injects secrets as plain env vars; ${VAR} interpolation in app.yaml
 // doesn't resolve reliably, so read DB_CONNECTION_STRING directly and inject it into
 // the config hierarchy so all downstream code (repositories, health checks) works unchanged.
