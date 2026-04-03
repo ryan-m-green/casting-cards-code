@@ -333,6 +333,65 @@
   margin: 2px 0 6px;
 }
 
+// ── Empty city state ──────────────────────────────────────────────────────────
+.no-cities-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 32px 24px;
+  border: 1.5px dashed rgba(110, 75, 22, 0.28);
+  border-radius: 12px;
+  background: rgba(240, 225, 190, 0.18);
+  margin-top: 10px;
+  gap: 6px;
+}
+
+.no-cities-icon {
+  font-size: 34px;
+  line-height: 1;
+  opacity: 0.22;
+  margin-bottom: 4px;
+}
+
+.no-cities-headline {
+  font-family: 'Crimson Text', serif;
+  font-style: italic;
+  font-size: 14px;
+  color: rgba(72, 44, 8, 0.82);
+  margin: 0;
+  text-align: center;
+}
+
+.no-cities-sub {
+  font-family: 'Crimson Text', serif;
+  font-style: italic;
+  font-size: 12px;
+  color: rgba(105, 72, 18, 0.52);
+  margin: 0;
+  text-align: center;
+}
+
+.no-cities-link {
+  font-family: 'Cinzel', serif;
+  font-size: 9px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(34, 80, 38, 0.92);
+  background: rgba(38, 88, 42, 0.08);
+  border: 1.5px solid rgba(38, 88, 42, 0.48);
+  border-radius: 7px;
+  padding: 7px 18px;
+  text-decoration: none;
+  margin-top: 8px;
+  transition: background 0.12s, border-color 0.12s;
+
+  &:hover {
+    background: rgba(38, 88, 42, 0.14);
+    border-color: rgba(38, 88, 42, 0.72);
+  }
+}
+
 .autosave-indicator {
   font-family: 'Crimson Text', serif;
   font-style: italic;

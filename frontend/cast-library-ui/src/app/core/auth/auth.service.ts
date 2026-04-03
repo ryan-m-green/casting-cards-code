@@ -12,7 +12,7 @@ export class AuthService {
 
   private _currentUser = signal<User | null>(this.loadUser());
   readonly currentUser = this._currentUser.asReadonly();
-  readonly isDm        = computed(() => this._currentUser()?.role === 'DM');
+  readonly isDm        = computed(() => this._currentUser()?.role === 'DM' || this._currentUser()?.role === 'Admin');
   readonly isAdmin     = computed(() => this._currentUser()?.role === 'Admin');
   readonly isLoggedIn  = computed(() => this._currentUser() !== null);
 

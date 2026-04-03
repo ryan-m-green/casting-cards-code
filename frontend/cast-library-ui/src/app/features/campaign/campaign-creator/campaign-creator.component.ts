@@ -162,11 +162,16 @@ export class CampaignCreatorComponent implements OnInit, OnDestroy {
     }
 
     this.form.valueChanges.subscribe(() => {
-      if (!this.campaignId()) return;
+      if (!this.form.controls.name.valid) return;
       clearTimeout(this.formSaveTimer);
       this.formSaveTimer = setTimeout(() => {
         const cid = this.campaignId();
-        if (cid) this.http.patch(`${environment.apiUrl}/api/campaigns/${cid}`, this.form.value).subscribe();
+        if (cid) {
+          this.http.patch(`${environment.apiUrl}/api/campaigns/${cid}`, this.form.value).subscribe();
+        } else {
+          this.http.post<{ id: string }>(`${environment.apiUrl}/api/campaigns`, { ...this.form.value, cityIds: [] })
+            .subscribe({ next: campaign => this.campaignId.set(campaign.id) });
+        }
       }, 800);
     });
   }

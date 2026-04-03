@@ -109,7 +109,8 @@
     }
     <label class="fi-label">Campaign Color</label>
     <div class="color-picker-row">
-      <input type="color" class="color-swatch-input" formControlName="spineColor" />
+      <input type="color" class="color-swatch-input" formControlName="spineColor"
+             (change)="form.controls.spineColor.setValue($any($event.target).value)" />
       <span class="color-swatch-preview" [style.background]="form.controls.spineColor.value"></span>
       <span class="color-swatch-hex">{{ form.controls.spineColor.value }}</span>
     </div>
@@ -376,6 +377,16 @@
           <p class="detail-panel-empty">Tap a city card to view its campaign details.</p>
         }
       </div>
+    </div>
+  }
+
+  @else {
+    <div class="cities-section-label">Available Cities</div>
+    <div class="no-cities-state">
+      <div class="no-cities-icon">🏙</div>
+      <p class="no-cities-headline">Your atlas is empty — no cities yet</p>
+      <p class="no-cities-sub">Every great campaign begins with a city.</p>
+      <a class="no-cities-link" routerLink="/dm/cities/new">✦ Forge your first city</a>
     </div>
   }
 
