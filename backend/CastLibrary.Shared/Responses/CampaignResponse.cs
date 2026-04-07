@@ -67,6 +67,7 @@ public class CampaignCityInstanceResponse
     public bool IsVisibleToPlayers { get; set; }
     public int SortOrder { get; set; }
     public string[] Keywords { get; set; } = [];
+    public string DmNotes { get; set; } = string.Empty;
 }
 
 public record CampaignCastCustomItemResponse(string Name, string Price);
@@ -93,6 +94,7 @@ public class CampaignCastInstanceResponse
     public bool IsVisibleToPlayers { get; set; }
     public List<CampaignCastCustomItemResponse> CustomItems { get; set; } = [];
     public string[] Keywords { get; set; } = [];
+    public string DmNotes { get; set; } = string.Empty;
 }
 
 public class CampaignSecretResponse
@@ -118,6 +120,7 @@ public class CampaignLocationInstanceResponse
     public string Description { get; set; } = string.Empty;
     public string ImagePath { get; set; }
     public bool IsVisibleToPlayers { get; set; }
+    public string DmNotes { get; set; } = string.Empty;
     public List<ShopItemResponse> ShopItems { get; set; } = [];
     public List<CampaignCastCustomItemResponse> CustomItems { get; set; } = [];
     public string[] Keywords { get; set; } = [];

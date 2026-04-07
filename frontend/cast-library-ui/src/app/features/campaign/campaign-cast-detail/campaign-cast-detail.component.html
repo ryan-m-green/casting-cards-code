@@ -58,73 +58,148 @@
     <div class="cast-detail-wrap">
       <div class="cast-detail-panel">
 
+        <!-- Panel action bar (DM only) -->
+        <div class="detail-panel-actions">
+          @if (!editing()) {
+            <button class="detail-edit-btn" (click)="startEditing()">✎ Edit Details</button>
+          } @else {
+            <button class="detail-save-btn" (click)="saveDetails()">✔ Save</button>
+            <button class="detail-cancel-btn" (click)="cancelEditing()">Cancel</button>
+          }
+        </div>
+
         <!-- Public description -->
-        @if (ca.publicDescription) {
+        @if (ca.publicDescription || editing()) {
           <div class="detail-desc">
             <span class="detail-label">Public Description</span>
             <span class="detail-line"></span>
-            <p class="detail-value detail-value--block">{{ ca.publicDescription }}</p>
+            @if (editing()) {
+              <textarea class="detail-input detail-input--block"
+                        [ngModel]="editPublicDescription()"
+                        (ngModelChange)="editPublicDescription.set($event)"
+                        rows="3"
+                        placeholder="Public description…"></textarea>
+            } @else {
+              <p class="detail-value detail-value--block">{{ ca.publicDescription }}</p>
+            }
           </div>
         }
 
-        <!-- Private description (DM only — always true on this page) -->
-        @if (ca.description) {
+        <!-- Private description -->
+        @if (ca.description || editing()) {
           <div class="detail-desc">
             <span class="detail-label">Description</span>
             <span class="detail-line"></span>
-            <p class="detail-value detail-value--block">{{ ca.description }}</p>
+            @if (editing()) {
+              <textarea class="detail-input detail-input--block"
+                        [ngModel]="editDescription()"
+                        (ngModelChange)="editDescription.set($event)"
+                        rows="3"
+                        placeholder="Description…"></textarea>
+            } @else {
+              <p class="detail-value detail-value--block">{{ ca.description }}</p>
+            }
           </div>
         }
 
         <!-- 2-col field grid -->
         <div class="detail-grid">
-          @if (ca.pronouns) {
+          @if (ca.pronouns || editing()) {
             <div class="detail-cell">
               <span class="detail-label">Pronouns</span>
               <span class="detail-line"></span>
-              <span class="detail-value">{{ ca.pronouns }}</span>
+              @if (editing()) {
+                <input class="detail-input"
+                       [ngModel]="editPronouns()"
+                       (ngModelChange)="editPronouns.set($event)"
+                       placeholder="Pronouns…" />
+              } @else {
+                <span class="detail-value">{{ ca.pronouns }}</span>
+              }
             </div>
           }
-          @if (ca.race) {
+          @if (ca.race || editing()) {
             <div class="detail-cell">
               <span class="detail-label">Race</span>
               <span class="detail-line"></span>
-              <span class="detail-value">{{ ca.race }}</span>
+              @if (editing()) {
+                <input class="detail-input"
+                       [ngModel]="editRace()"
+                       (ngModelChange)="editRace.set($event)"
+                       placeholder="Race…" />
+              } @else {
+                <span class="detail-value">{{ ca.race }}</span>
+              }
             </div>
           }
-          @if (ca.role) {
+          @if (ca.role || editing()) {
             <div class="detail-cell">
               <span class="detail-label">Role</span>
               <span class="detail-line"></span>
-              <span class="detail-value">{{ ca.role }}</span>
+              @if (editing()) {
+                <input class="detail-input"
+                       [ngModel]="editRole()"
+                       (ngModelChange)="editRole.set($event)"
+                       placeholder="Role…" />
+              } @else {
+                <span class="detail-value">{{ ca.role }}</span>
+              }
             </div>
           }
-          @if (ca.age) {
+          @if (ca.age || editing()) {
             <div class="detail-cell">
               <span class="detail-label">Age</span>
               <span class="detail-line"></span>
-              <span class="detail-value">{{ ca.age }}</span>
+              @if (editing()) {
+                <input class="detail-input"
+                       [ngModel]="editAge()"
+                       (ngModelChange)="editAge.set($event)"
+                       placeholder="Age…" />
+              } @else {
+                <span class="detail-value">{{ ca.age }}</span>
+              }
             </div>
           }
-          @if (ca.alignment) {
+          @if (ca.alignment || editing()) {
             <div class="detail-cell">
               <span class="detail-label">Alignment</span>
               <span class="detail-line"></span>
-              <span class="detail-value">{{ ca.alignment }}</span>
+              @if (editing()) {
+                <input class="detail-input"
+                       [ngModel]="editAlignment()"
+                       (ngModelChange)="editAlignment.set($event)"
+                       placeholder="Alignment…" />
+              } @else {
+                <span class="detail-value">{{ ca.alignment }}</span>
+              }
             </div>
           }
-          @if (ca.posture) {
+          @if (ca.posture || editing()) {
             <div class="detail-cell">
               <span class="detail-label">Posture</span>
               <span class="detail-line"></span>
-              <span class="detail-value">{{ ca.posture }}</span>
+              @if (editing()) {
+                <input class="detail-input"
+                       [ngModel]="editPosture()"
+                       (ngModelChange)="editPosture.set($event)"
+                       placeholder="Posture…" />
+              } @else {
+                <span class="detail-value">{{ ca.posture }}</span>
+              }
             </div>
           }
-          @if (ca.speed) {
+          @if (ca.speed || editing()) {
             <div class="detail-cell">
               <span class="detail-label">Speed</span>
               <span class="detail-line"></span>
-              <span class="detail-value">{{ ca.speed }}</span>
+              @if (editing()) {
+                <input class="detail-input"
+                       [ngModel]="editSpeed()"
+                       (ngModelChange)="editSpeed.set($event)"
+                       placeholder="Speed…" />
+              } @else {
+                <span class="detail-value">{{ ca.speed }}</span>
+              }
             </div>
           }
           @if (ca.voicePlacement?.length) {
@@ -152,26 +227,53 @@
         </div>
 
         <!-- Secrets section -->
-        @if (castSecrets().length) {
-          <div class="detail-secrets-section">
-            <div class="detail-secrets-header-row">
-              <span class="detail-secrets-label">Secrets</span>
-              <span class="detail-secrets-line"></span>
-            </div>
-            @for (secret of castSecrets(); track secret.id) {
-              <div class="detail-secret">
-                <button
-                  class="secret-lock-btn"
-                  (click)="toggleSecret(secret)"
-                  [title]="secret.isRevealed ? 'Reseal secret' : 'Reveal secret'"
-                >
-                  {{ secret.isRevealed ? '🔓' : '🔒' }}
-                </button>
-                <span class="secret-text" [class.secret-text--revealed]="secret.isRevealed">{{ secret.content }}</span>
-              </div>
-            }
+        <div class="detail-secrets-section">
+          <div class="detail-secrets-header">
+            <span class="detail-label">Secrets</span>
+            <span class="detail-line"></span>
           </div>
-        }
+          @for (secret of castSecrets(); track secret.id) {
+            <div class="detail-secret">
+              <button
+                class="secret-lock-btn"
+                (click)="toggleSecret(secret)"
+                [title]="secret.isRevealed ? 'Reseal secret' : 'Reveal secret'"
+              >
+                {{ secret.isRevealed ? '🔓' : '🔒' }}
+              </button>
+              <span class="secret-text" [class.secret-text--revealed]="secret.isRevealed">{{ secret.content }}</span>
+            </div>
+          }
+          @if (addingSecret()) {
+            <div class="secret-row secret-row-edit">
+              <textarea class="fi fi-sm secret-textarea"
+                        [ngModel]="newSecretContent()"
+                        (ngModelChange)="newSecretContent.set($event)"
+                        placeholder="Enter secret…"
+                        rows="2"></textarea>
+              <button class="secret-confirm-btn" (click)="confirmAddSecret()" type="button">✔</button>
+              <button class="secret-cancel-btn"  (click)="cancelAddingSecret()" type="button">✕</button>
+            </div>
+          }
+          <button class="secret-add-btn" (click)="startAddingSecret()" type="button">+ Add Secret</button>
+        </div>
+
+        <!-- DM Notes -->
+        <div class="detail-dm-notes">
+          <span class="detail-label">DM Notes</span>
+          <span class="detail-line"></span>
+          @if (editing()) {
+            <textarea class="detail-input detail-input--block"
+                      [ngModel]="editDmNotes()"
+                      (ngModelChange)="editDmNotes.set($event)"
+                      rows="4"
+                      placeholder="Jot down whatever is on your mind…"></textarea>
+          } @else if (ca.dmNotes) {
+            <p class="detail-value detail-value--block">{{ ca.dmNotes }}</p>
+          } @else {
+            <p class="detail-value detail-value--muted">No notes yet. Click Edit Details to add some.</p>
+          }
+        </div>
 
       </div>
     </div>

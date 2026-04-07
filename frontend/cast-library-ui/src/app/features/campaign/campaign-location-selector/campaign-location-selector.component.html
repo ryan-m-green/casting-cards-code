@@ -196,10 +196,31 @@
                        placeholder="Item name"
                        [value]="item.name"
                        (input)="updateCustomItemField(i, 'name', $any($event.target).value)" />
-                <input class="fi fi-sm inv-custom-input inv-custom-price"
-                       placeholder="Price"
-                       [value]="item.price"
-                       (input)="updateCustomItemField(i, 'price', $any($event.target).value)" />
+                <div class="price-input-group">
+                  <input class="fi fi-sm price-amount"
+                         type="number" min="1" max="9999"
+                         placeholder="Price"
+                         [value]="item.priceAmount ?? ''"
+                         (input)="updateCustomItemPriceField(i, 'amount', $any($event.target).value)" />
+                  <div class="notes-dropdown price-currency-dropdown">
+                    <button class="notes-dropdown-trigger"
+                            (click)="toggleDropdown('currency-' + i, $event)"
+                            type="button">
+                      <span class="notes-dropdown-placeholder">{{ item.priceCurrency }}</span>
+                      <span class="notes-dropdown-caret"
+                            [class.notes-dropdown-caret--open]="isDropdownOpen('currency-' + i)">▾</span>
+                    </button>
+                    @if (isDropdownOpen('currency-' + i)) {
+                      <div class="notes-dropdown-panel">
+                        @for (c of currencies; track c) {
+                          <div class="notes-dropdown-item"
+                               [class.notes-dropdown-item--selected]="item.priceCurrency === c"
+                               (click)="setCurrencyForItem(i, c)">{{ c }}</div>
+                        }
+                      </div>
+                    }
+                  </div>
+                </div>
                 <button class="inv-remove-btn" (click)="removeCustomItem(i)" type="button">×</button>
               </div>
             }

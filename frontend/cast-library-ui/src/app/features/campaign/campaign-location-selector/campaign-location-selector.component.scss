@@ -436,8 +436,109 @@
     margin-bottom: 0;
   }
 
-  .inv-custom-price {
-    flex: 1;
+}
+
+.price-input-group {
+  display: flex;
+  gap: 3px;
+  flex-shrink: 0;
+
+  .price-amount {
+    width: 52px;
+    margin-bottom: 0;
+    background: rgba(255, 248, 235, 0.70);
+    border: 1px solid rgba(110, 75, 22, 0.30);
+    color: rgba(80, 50, 12, 0.85);
+    font-family: 'Crimson Text', serif;
+    font-size: 13px;
+
+    &::placeholder { color: rgba(80, 50, 12, 0.35); }
+    &:hover { border-color: rgba(110, 75, 22, 0.55); }
+    &:focus { outline: 2px solid rgba(110, 75, 22, 0.50); outline-offset: 1px; border-color: rgba(110, 75, 22, 0.55); }
+  }
+}
+
+.price-currency-dropdown {
+  width: 52px;
+  flex-shrink: 0;
+}
+
+/* ── Currency notes-dropdown (parchment theme) ───────────────────────────── */
+.notes-dropdown {
+  position: relative;
+}
+
+.notes-dropdown-trigger {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  background: rgba(255, 248, 235, 0.70);
+  border: 1px solid rgba(110, 75, 22, 0.30);
+  border-radius: 3px;
+  color: rgba(80, 50, 12, 0.85);
+  font-family: 'Crimson Text', serif;
+  font-size: 13px;
+  padding: 3px 6px;
+  cursor: pointer;
+  text-align: left;
+  transition: border-color 0.15s;
+
+  &:hover { border-color: rgba(110, 75, 22, 0.55); }
+
+  &:focus-visible {
+    outline: 2px solid rgba(110, 75, 22, 0.50);
+    outline-offset: 1px;
+  }
+}
+
+.notes-dropdown-placeholder {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.notes-dropdown-caret {
+  font-size: 9px;
+  opacity: 0.50;
+  transition: transform 0.15s;
+  margin-left: 3px;
+  flex-shrink: 0;
+
+  &--open { transform: rotate(180deg); }
+}
+
+.notes-dropdown-panel {
+  position: absolute;
+  top: calc(100% + 2px);
+  left: 0;
+  right: 0;
+  background: #fdf6e3;
+  border: 1px solid rgba(110, 75, 22, 0.28);
+  border-radius: 3px;
+  z-index: 50;
+  max-height: 180px;
+  overflow-y: auto;
+  box-shadow: 0 4px 14px rgba(80, 50, 12, 0.18);
+}
+
+.notes-dropdown-item {
+  font-family: 'Crimson Text', serif;
+  font-size: 13px;
+  color: rgba(80, 50, 12, 0.80);
+  padding: 5px 8px;
+  cursor: pointer;
+  transition: background 0.12s, color 0.12s;
+
+  &:hover {
+    background: rgba(110, 75, 22, 0.10);
+    color: rgba(110, 75, 22, 0.90);
+  }
+
+  &--selected {
+    background: rgba(110, 75, 22, 0.08);
+    color: rgba(110, 75, 22, 0.85);
   }
 }
 

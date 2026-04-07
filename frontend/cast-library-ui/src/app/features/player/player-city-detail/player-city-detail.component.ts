@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, signal, computed, inject, effect, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, signal, computed, inject, effect, ViewChild, ElementRef } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
@@ -18,7 +18,7 @@ import { PlayerCityPoliticalNotesComponent } from '../player-city-political-note
   templateUrl: './player-city-detail.component.html',
   styleUrl: './player-city-detail.component.scss'
 })
-export class PlayerCityDetailComponent implements OnInit, OnDestroy {
+export class PlayerCityDetailComponent implements OnInit {
   private route      = inject(ActivatedRoute);
   private router     = inject(Router);
   private http       = inject(HttpClient);
@@ -67,13 +67,58 @@ export class PlayerCityDetailComponent implements OnInit, OnDestroy {
       if (!event || event.campaignId !== this.campaignId()) return;
       this.campaign.update(c => {
         if (!c) return c;
-        return {
-          ...c,
-          secrets: c.secrets.map(s =>
-            s.id === event.secretId ? { ...s, isRevealed: true } : s
-          )
+        const exists = c.secrets.some(s => s.id === event.secretId);
+        if (exists) {
+          return { ...c, secrets: c.secrets.map(s => s.id === event.secretId ? { ...s, isRevealed: true } : s) };
+        }
+        const newSecret: CampaignSecret = {
+          id: event.secretId,
+          campaignId: event.campaignId,
+          castInstanceId: event.castInstanceId,
+          cityInstanceId: event.cityInstanceId,
+          locationInstanceId: event.locationInstanceId,
+          content: event.secretContent,
+          sortOrder: 0,
+          isRevealed: true,
+          revealedAt: new Date().toISOString(),
         };
+        return { ...c, secrets: [...c.secrets, newSecret] };
       });
+    });
+
+    effect(() => {
+      const event = this.hub.secretResealed();
+      if (!event || event.campaignId !== this.campaignId()) return;
+      this.campaign.update(c => {
+        if (!c) return c;
+        return { ...c, secrets: c.secrets.map(s => s.id === event.secretId ? { ...s, isRevealed: false } : s) };
+      });
+    });
+
+    effect(() => {
+      const event = this.hub.cardVisibilityChanged();
+      if (!event || event.campaignId !== this.campaignId()) return;
+      if (event.isVisible) {
+        this.http.get<CampaignDetail>(`${environment.apiUrl}/api/campaigns/${this.campaignId()}/player`)
+          .subscribe(c => { this.campaign.set(c); this.transition.spineColor = c.spineColor; });
+      } else {
+        this.campaign.update(c => {
+          if (!c) return c;
+          return {
+            ...c,
+            cities:    c.cities.filter(x => x.instanceId !== event.instanceId),
+            locations: c.locations.filter(x => x.instanceId !== event.instanceId),
+            casts:     c.casts.filter(x => x.instanceId !== event.instanceId),
+          };
+        });
+      }
+    });
+
+    effect(() => {
+      const event = this.hub.bulkCardVisibilityChanged();
+      if (!event || event.campaignId !== this.campaignId()) return;
+      this.http.get<CampaignDetail>(`${environment.apiUrl}/api/campaigns/${this.campaignId()}/player`)
+        .subscribe(c => { this.campaign.set(c); this.transition.spineColor = c.spineColor; });
     });
   }
 
@@ -88,11 +133,6 @@ export class PlayerCityDetailComponent implements OnInit, OnDestroy {
         this.campaign.set(c);
         this.transition.spineColor = c.spineColor;
       });
-    this.hub.joinCampaign(id).catch(console.warn);
-  }
-
-  ngOnDestroy() {
-    this.hub.leaveCampaign(this.campaignId()).catch(console.warn);
   }
 
   toggleDetail() {

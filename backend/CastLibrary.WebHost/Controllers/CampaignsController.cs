@@ -49,6 +49,9 @@ public class CampaignsController(
     IGetPlayerCampaignDetailQueryHandler getPlayerDetailQuery,
     IRemoveCampaignPlayerCommandHandler removePlayerCommand,
     IUpdateSecretCommandHandler updateSecretCommandHandler,
+    IUpdateLocationInstanceCommandHandler updateLocationInstanceCommand,
+    IAddLocationShopItemCommandHandler addLocationShopItemCommand,
+    IToggleShopItemScratchCommandHandler toggleShopItemScratchCommand,
     ICampaignWebMapper campaignMapper,
     IUserRetriever userRetriever,
     IHubContext<CampaignHub> hubContext) : ControllerBase
@@ -190,6 +193,14 @@ public class CampaignsController(
     {
         await updateCityInstanceVisibilityCommand.HandleAsync(new UpdateCityInstanceVisibilityCommand(instanceId, request));
 
+        await hubContext.Clients.Group(id.ToString()).SendAsync("CardVisibilityChanged", new CardVisibilityChangedEvent
+        {
+            CampaignId = id,
+            InstanceId = instanceId,
+            CardType   = "city",
+            IsVisible  = request.IsVisibleToPlayers,
+        });
+
         return NoContent();
     }
 
@@ -263,6 +274,40 @@ public class CampaignsController(
         return Ok(response);
     }
 
+    [HttpPatch("{id}/locations/{instanceId}")]
+    public async Task<IActionResult> UpdateLocationInstance(Guid id, Guid instanceId,
+        [FromBody] UpdateLocationInstanceRequest request)
+    {
+        await updateLocationInstanceCommand.HandleAsync(new UpdateLocationInstanceCommand(instanceId, request));
+
+        return NoContent();
+    }
+
+    [HttpPost("{id}/locations/{instanceId}/shop-items")]
+    public async Task<IActionResult> AddLocationShopItem(Guid id, Guid instanceId,
+        [FromBody] AddLocationShopItemRequest request)
+    {
+        var item = await addLocationShopItemCommand.HandleAsync(
+            new AddLocationShopItemCommand(instanceId, request));
+
+        return Ok(new ShopItemResponse
+        {
+            Id            = item.Id,
+            Name          = item.Name,
+            Price         = item.Price,
+            Description   = item.Description,
+            IsScratchedOff = item.IsScratchedOff,
+        });
+    }
+
+    [HttpPatch("{id}/locations/{instanceId}/shop-items/{shopItemId}/scratch")]
+    public async Task<IActionResult> ToggleShopItemScratch(Guid id, Guid instanceId, Guid shopItemId)
+    {
+        await toggleShopItemScratchCommand.HandleAsync(new ToggleShopItemScratchCommand(id, shopItemId));
+
+        return NoContent();
+    }
+
     [HttpDelete("{id}/locations/{instanceId}")]
     public async Task<IActionResult> DeleteLocation(Guid id, Guid instanceId)
     {
@@ -277,6 +322,14 @@ public class CampaignsController(
     {
         await updateLocationInstanceVisibilityCommand.HandleAsync(new UpdateLocationInstanceVisibilityCommand(instanceId, request));
 
+        await hubContext.Clients.Group(id.ToString()).SendAsync("CardVisibilityChanged", new CardVisibilityChangedEvent
+        {
+            CampaignId = id,
+            InstanceId = instanceId,
+            CardType   = "location",
+            IsVisible  = request.IsVisibleToPlayers,
+        });
+
         return NoContent();
     }
 
@@ -285,6 +338,14 @@ public class CampaignsController(
         [FromBody] UpdateCityLocationsVisibilityRequest request)
     {
         await updateCityLocationsVisibilityCommand.HandleAsync(new UpdateCityLocationsVisibilityCommand(instanceId, request));
+
+        await hubContext.Clients.Group(id.ToString()).SendAsync("BulkCardVisibilityChanged", new BulkCardVisibilityChangedEvent
+        {
+            CampaignId       = id,
+            ParentInstanceId = instanceId,
+            CardType         = "location",
+            IsVisible        = request.IsVisibleToPlayers,
+        });
 
         return NoContent();
     }
@@ -295,6 +356,14 @@ public class CampaignsController(
     {
         await updateCastInstanceVisibilityCommand.HandleAsync(new UpdateCastInstanceVisibilityCommand(instanceId, request));
 
+        await hubContext.Clients.Group(id.ToString()).SendAsync("CardVisibilityChanged", new CardVisibilityChangedEvent
+        {
+            CampaignId = id,
+            InstanceId = instanceId,
+            CardType   = "cast",
+            IsVisible  = request.IsVisibleToPlayers,
+        });
+
         return NoContent();
     }
 
@@ -303,6 +372,14 @@ public class CampaignsController(
         [FromBody] UpdateLocationCastsVisibilityRequest request)
     {
         await updateLocationCastsVisibilityCommand.HandleAsync(new UpdateLocationCastsVisibilityCommand(instanceId, request));
+
+        await hubContext.Clients.Group(id.ToString()).SendAsync("BulkCardVisibilityChanged", new BulkCardVisibilityChangedEvent
+        {
+            CampaignId       = id,
+            ParentInstanceId = instanceId,
+            CardType         = "cast",
+            IsVisible        = request.IsVisibleToPlayers,
+        });
 
         return NoContent();
     }
@@ -336,11 +413,12 @@ public class CampaignsController(
 
         await hubContext.Clients.Group(id.ToString()).SendAsync("SecretRevealed", new SecretRevealedEvent
         {
-            SecretId = secretId,
-            CampaignId = id,
-            CastInstanceId = secret.CastInstanceId,
-            CityInstanceId = secret.CityInstanceId,
+            SecretId           = secretId,
+            CampaignId         = id,
+            CastInstanceId     = secret.CastInstanceId,
+            CityInstanceId     = secret.CityInstanceId,
             LocationInstanceId = secret.LocationInstanceId,
+            SecretContent      = secret.Content,
         });
 
         var response = campaignMapper.ToSecretResponse(secret);
@@ -355,6 +433,15 @@ public class CampaignsController(
         {
             return NotFound();
         }
+
+        await hubContext.Clients.Group(id.ToString()).SendAsync("SecretResealed", new SecretResealedEvent
+        {
+            SecretId           = secretId,
+            CampaignId         = id,
+            CastInstanceId     = secret.CastInstanceId,
+            CityInstanceId     = secret.CityInstanceId,
+            LocationInstanceId = secret.LocationInstanceId,
+        });
 
         var response = campaignMapper.ToSecretResponse(secret);
         return Ok(response);

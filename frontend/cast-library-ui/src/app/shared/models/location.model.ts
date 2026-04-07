@@ -3,6 +3,7 @@ export interface ShopItem {
   name: string;
   price: string;
   description: string;
+  isScratchedOff: boolean;
 }
 
 export interface Location {
@@ -22,5 +23,6 @@ export interface CampaignLocationInstance extends Location {
   sourceLocationId: string;
   cityInstanceId: string;
   isVisibleToPlayers: boolean;
+  dmNotes: string;
   keywords: string[];
 }

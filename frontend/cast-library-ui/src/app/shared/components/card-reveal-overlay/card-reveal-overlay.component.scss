@@ -1,0 +1,93 @@
+/* ── Backdrop ──────────────────────────────────────────────────── */
+.cr-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 8000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.72);
+  animation: cr-backdrop-in 0.35s ease forwards;
+}
+
+@keyframes cr-backdrop-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+/* ── Panel ─────────────────────────────────────────────────────── */
+.cr-panel {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  animation: cr-card-appear 0.6s cubic-bezier(0.2, 0, 0.3, 1) forwards;
+  will-change: transform, opacity;
+}
+
+@keyframes cr-card-appear {
+  0%   { transform: scale(8); opacity: 0; }
+  60%  { opacity: 1; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+/* ── Card wrapper ──────────────────────────────────────────────── */
+.cr-card-wrap {
+  filter:
+    drop-shadow(0 0 18px rgba(160, 120, 255, 0.65))
+    drop-shadow(0 0 48px rgba(140, 100, 220, 0.35));
+}
+
+/* Scale the card up from its 150×220 base */
+.pc-card {
+  width: 170px;
+  height: 250px;
+  cursor: default;
+}
+
+/* ── Secret block ──────────────────────────────────────────────── */
+.cr-secret-block {
+  width: 260px;
+  background: rgba(12, 6, 28, 0.88);
+  border: 1px solid rgba(160, 120, 255, 0.35);
+  border-radius: 6px;
+  padding: 14px 16px;
+  box-shadow:
+    0 0 12px rgba(120, 80, 220, 0.28),
+    0 4px 18px rgba(0, 0, 0, 0.55);
+}
+
+.cr-secret-label {
+  font-family: 'Cinzel', serif;
+  font-size: 8px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: rgba(200, 160, 255, 0.65);
+  margin-bottom: 8px;
+}
+
+.cr-secret-text {
+  font-family: 'Crimson Text', serif;
+  font-size: 14px;
+  font-style: italic;
+  line-height: 1.55;
+  color: rgba(235, 220, 255, 0.92);
+}
+
+/* ── Dismiss button ────────────────────────────────────────────── */
+.cr-dismiss {
+  font-family: 'Cinzel', serif;
+  font-size: 9px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: rgba(200, 180, 255, 0.55);
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px 10px;
+  transition: color 0.2s ease;
+
+  &:hover {
+    color: rgba(220, 200, 255, 0.9);
+  }
+}

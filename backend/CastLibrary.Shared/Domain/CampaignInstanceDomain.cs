@@ -23,6 +23,7 @@ public class CampaignCastInstanceDomain
     public bool IsVisibleToPlayers { get; set; }
     public List<CampaignCastCustomItemDomain> CustomItems { get; set; } = [];
     public string[] Keywords { get; set; } = [];
+    public string DmNotes { get; set; } = string.Empty;
 }
 
 public class CampaignCityInstanceDomain
@@ -45,6 +46,7 @@ public class CampaignCityInstanceDomain
     public string ImageUrl { get; set; } = string.Empty;
     public int SortOrder { get; set; }
     public string[] Keywords { get; set; } = [];
+    public string DmNotes { get; set; } = string.Empty;
 }
 
 public class CampaignLocationInstanceDomain
@@ -57,6 +59,7 @@ public class CampaignLocationInstanceDomain
     public string Description { get; set; } = string.Empty;
     public string ImageUrl { get; set; } = string.Empty;
     public bool IsVisibleToPlayers { get; set; }
+    public string DmNotes { get; set; } = string.Empty;
     public List<ShopItemDomain> ShopItems { get; set; } = [];
     public List<CampaignCastCustomItemDomain> CustomItems { get; set; } = [];
     public string[] Keywords { get; set; } = [];

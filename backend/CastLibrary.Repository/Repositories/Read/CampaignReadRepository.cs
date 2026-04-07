@@ -15,10 +15,12 @@ public interface ICampaignReadRepository
     Task<List<CampaignDomain>> GetAllByPlayerAsync(Guid playerUserId);
     Task<CampaignDomain> GetByIdAsync(Guid id);
     Task<CampaignCastInstanceDomain> GetCastInstanceBySourceCastIdAsync(Guid campaignId, Guid sourceCastId);
+    Task<CampaignCastInstanceDomain> GetCastInstanceByIdAsync(Guid instanceId);
     Task<List<CampaignCastInstanceDomain>> GetCastInstancesByCampaignAsync(Guid campaignId);
     Task<List<CampaignCityInstanceDomain>> GetCityInstancesByCampaignAsync(Guid campaignId);
     Task<CampaignCityInstanceDomain> GetCityInstanceByIdAsync(Guid instanceId);
     Task<List<CampaignLocationInstanceDomain>> GetLocationInstancesByCampaignAsync(Guid campaignId);
+    Task<CampaignLocationInstanceDomain> GetLocationInstanceByIdAsync(Guid instanceId);
     Task<CampaignLocationInstanceDomain> GetLocationInstanceBySourceLocationIdAsync(Guid campaignId, Guid sourceLocationId);
 }
 
@@ -171,6 +173,7 @@ public class CampaignReadRepository(
             IsVisibleToPlayers = r.is_visible_to_players,
             SortOrder = r.sort_order,
             Keywords = r.keywords ?? Array.Empty<string>(),
+            DmNotes = r.dm_notes ?? string.Empty,
         }).ToList();
     }
 
@@ -211,6 +214,48 @@ public class CampaignReadRepository(
             IsVisibleToPlayers = r.is_visible_to_players,
             CustomItems = ParseCustomItems((string)r.custom_items),
             Keywords = r.keywords ?? Array.Empty<string>(),
+            DmNotes = r.dm_notes ?? string.Empty,
+        };
+    }
+
+    public async Task<CampaignCastInstanceDomain> GetCastInstanceByIdAsync(Guid instanceId)
+    {
+        var spanId = correlation.NewSpan();
+        var @params = new { InstanceId = instanceId };
+
+        logging.LogDbOperation(correlation.TraceId, spanId, "SELECT", "campaign_cast_instances", @params);
+
+        using var conn = CreateConnection();
+        var r = await conn.QueryFirstOrDefaultAsync<dynamic>(
+            "SELECT * FROM campaign_cast_instances WHERE instance_id = @InstanceId",
+            @params);
+
+        logging.LogDbOperation(correlation.TraceId, spanId, "SELECT", "campaign_cast_instances",
+            @params, r is null ? 0 : 1);
+
+        if (r is null) return null;
+        return new CampaignCastInstanceDomain
+        {
+            InstanceId = r.instance_id,
+            CampaignId = r.campaign_id,
+            SourceCastId = r.source_cast_id,
+            CityInstanceId = r.city_instance_id,
+            LocationInstanceId = r.location_instance_id,
+            Name = r.name,
+            Pronouns = r.pronouns ?? string.Empty,
+            Race = r.race ?? string.Empty,
+            Role = r.role ?? string.Empty,
+            Age = r.age ?? string.Empty,
+            Alignment = r.alignment ?? string.Empty,
+            Posture = r.posture ?? string.Empty,
+            Speed = r.speed ?? string.Empty,
+            VoicePlacement = r.voice_placement ?? Array.Empty<string>(),
+            Description = r.description ?? string.Empty,
+            PublicDescription = r.public_description ?? string.Empty,
+            IsVisibleToPlayers = r.is_visible_to_players,
+            CustomItems = ParseCustomItems((string)r.custom_items),
+            Keywords = r.keywords ?? Array.Empty<string>(),
+            DmNotes = r.dm_notes ?? string.Empty,
         };
     }
 
@@ -250,6 +295,7 @@ public class CampaignReadRepository(
             IsVisibleToPlayers = r.is_visible_to_players,
             CustomItems = ParseCustomItems((string)r.custom_items),
             Keywords = r.keywords ?? Array.Empty<string>(),
+            DmNotes = r.dm_notes ?? string.Empty,
         }).ToList();
     }
 
@@ -289,6 +335,42 @@ public class CampaignReadRepository(
             IsVisibleToPlayers = r.is_visible_to_players,
             SortOrder = r.sort_order,
             Keywords = r.keywords ?? Array.Empty<string>(),
+            DmNotes = r.dm_notes ?? string.Empty,
+        };
+    }
+
+    public async Task<CampaignLocationInstanceDomain> GetLocationInstanceByIdAsync(Guid instanceId)
+    {
+        var spanId = correlation.NewSpan();
+        var @params = new { InstanceId = instanceId };
+
+        logging.LogDbOperation(correlation.TraceId, spanId, "SELECT", "campaign_location_instances", @params);
+
+        using var conn = CreateConnection();
+        var r = await conn.QueryFirstOrDefaultAsync<dynamic>(
+            @"SELECT instance_id, campaign_id, source_location_id, city_instance_id,
+                     is_visible_to_players, name, description, keywords, custom_items, dm_notes
+              FROM campaign_location_instances
+              WHERE instance_id = @InstanceId",
+            @params);
+
+        logging.LogDbOperation(correlation.TraceId, spanId, "SELECT", "campaign_location_instances",
+            @params, r is null ? 0 : 1);
+
+        if (r is null) return null;
+        return new CampaignLocationInstanceDomain
+        {
+            InstanceId         = r.instance_id,
+            CampaignId         = r.campaign_id,
+            SourceLocationId   = r.source_location_id,
+            CityInstanceId     = r.city_instance_id,
+            IsVisibleToPlayers = r.is_visible_to_players,
+            Name               = r.name,
+            Description        = r.description ?? string.Empty,
+            Keywords           = r.keywords ?? Array.Empty<string>(),
+            CustomItems        = ParseCustomItems((string)r.custom_items),
+            DmNotes            = r.dm_notes ?? string.Empty,
+            ShopItems          = [],
         };
     }
 
@@ -302,7 +384,7 @@ public class CampaignReadRepository(
         using var conn = CreateConnection();
         var instances = (await conn.QueryAsync<dynamic>(
             @"SELECT instance_id, campaign_id, source_location_id, city_instance_id,
-                     is_visible_to_players, name, description, keywords, custom_items
+                     is_visible_to_players, name, description, keywords, custom_items, dm_notes
               FROM campaign_location_instances
               WHERE campaign_id = @CampaignId
               ORDER BY name",
@@ -326,12 +408,13 @@ public class CampaignReadRepository(
             Description = r.description ?? string.Empty,
             Keywords = r.keywords ?? Array.Empty<string>(),
             CustomItems = ParseCustomItems((string)r.custom_items),
+            DmNotes = r.dm_notes ?? string.Empty,
             ShopItems = [],
         }).ToList();
 
         var instanceIds = domainInstances.Select(i => i.InstanceId).ToArray();
         var shopItems = (await conn.QueryAsync<dynamic>(
-            @"SELECT id, location_instance_id, name, price, description, sort_order
+            @"SELECT id, location_instance_id, name, price, description, sort_order, is_scratched_off
               FROM campaign_location_shop_items
               WHERE location_instance_id = ANY(@Ids)
               ORDER BY sort_order",
@@ -349,6 +432,7 @@ public class CampaignReadRepository(
                     Price = s.price ?? string.Empty,
                     Description = s.description ?? string.Empty,
                     SortOrder = s.sort_order,
+                    IsScratchedOff = s.is_scratched_off,
                 }).ToList();
         }
 

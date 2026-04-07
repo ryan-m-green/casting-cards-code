@@ -38,4 +38,5 @@ export interface CampaignCastInstance extends Cast {
   locationInstanceId: string | null;
   isVisibleToPlayers: boolean;
   keywords: string[];
+  dmNotes: string;
 }

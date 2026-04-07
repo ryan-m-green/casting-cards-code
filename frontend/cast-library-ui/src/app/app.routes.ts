@@ -11,22 +11,26 @@ export const routes: Routes = [
   {
     path: 'player/campaign/:id',
     canActivate: [authGuard],
-    loadComponent: () => import('./features/player/player-campaign-detail/player-campaign-detail.component').then(m => m.PlayerCampaignDetailComponent),
-  },
-  {
-    path: 'player/campaign/:id/cities/:cityInstanceId',
-    canActivate: [authGuard],
-    loadComponent: () => import('./features/player/player-city-detail/player-city-detail.component').then(m => m.PlayerCityDetailComponent),
-  },
-  {
-    path: 'player/campaign/:id/locations/:locationInstanceId',
-    canActivate: [authGuard],
-    loadComponent: () => import('./features/player/player-location-detail/player-location-detail.component').then(m => m.PlayerLocationDetailComponent),
-  },
-  {
-    path: 'player/campaign/:id/locations/:locationInstanceId/cast/:castInstanceId',
-    canActivate: [authGuard],
-    loadComponent: () => import('./features/player/player-cast-detail/player-cast-detail.component').then(m => m.PlayerCastDetailComponent),
+    loadComponent: () => import('./features/player/player-campaign-shell/player-campaign-shell.component').then(m => m.PlayerCampaignShellComponent),
+    children: [
+      {
+        path: '',
+        pathMatch: 'full',
+        loadComponent: () => import('./features/player/player-campaign-detail/player-campaign-detail.component').then(m => m.PlayerCampaignDetailComponent),
+      },
+      {
+        path: 'cities/:cityInstanceId',
+        loadComponent: () => import('./features/player/player-city-detail/player-city-detail.component').then(m => m.PlayerCityDetailComponent),
+      },
+      {
+        path: 'locations/:locationInstanceId',
+        loadComponent: () => import('./features/player/player-location-detail/player-location-detail.component').then(m => m.PlayerLocationDetailComponent),
+      },
+      {
+        path: 'locations/:locationInstanceId/cast/:castInstanceId',
+        loadComponent: () => import('./features/player/player-cast-detail/player-cast-detail.component').then(m => m.PlayerCastDetailComponent),
+      },
+    ],
   },
   {
     path: 'campaign/:id/cities/:cityInstanceId',

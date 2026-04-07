@@ -10,6 +10,8 @@ public interface ICampaignUpdateRepository
 {
     Task UpdateAsync(CampaignDomain campaign);
     Task UpdateCityInstanceAsync(CampaignCityInstanceDomain instance);
+    Task UpdateCastInstanceAsync(CampaignCastInstanceDomain instance);
+    Task UpdateLocationInstanceAsync(CampaignLocationInstanceDomain instance);
     Task UpdateCityInstanceVisibilityAsync(Guid instanceId, bool isVisibleToPlayers);
     Task UpdateLocationInstanceVisibilityAsync(Guid instanceId, bool isVisibleToPlayers);
     Task UpdateCityLocationsVisibilityAsync(Guid cityInstanceId, bool isVisibleToPlayers);
@@ -20,6 +22,7 @@ public interface ICampaignUpdateRepository
     Task UpdateCityInstanceKeywordsAsync(Guid instanceId, string[] keywords);
     Task UpdateCastInstanceKeywordsAsync(Guid instanceId, string[] keywords);
     Task UpdateLocationInstanceKeywordsAsync(Guid instanceId, string[] keywords);
+    Task ToggleShopItemScratchAsync(Guid shopItemId, bool isScratchedOff);
 }
 
 public class CampaignUpdateRepository(
@@ -58,12 +61,17 @@ public class CampaignUpdateRepository(
         var @params = new
         {
             instance.InstanceId,
+            instance.Description,
+            instance.Classification,
+            instance.Size,
             instance.Condition,
             instance.Geography,
+            instance.Architecture,
             instance.Climate,
             instance.Religion,
             instance.Vibe,
             instance.Languages,
+            instance.DmNotes,
         };
 
         logging.LogDbOperation(correlation.TraceId, spanId, "UPDATE", "campaign_city_instances", @params);
@@ -71,12 +79,90 @@ public class CampaignUpdateRepository(
         using var conn = CreateConnection();
         var rows = await conn.ExecuteAsync(
             @"UPDATE campaign_city_instances
-              SET condition=@Condition, geography=@Geography, climate=@Climate,
-                  religion=@Religion, vibe=@Vibe, languages=@Languages
+              SET description=@Description, classification=@Classification, size=@Size,
+                  condition=@Condition, geography=@Geography, architecture=@Architecture,
+                  climate=@Climate, religion=@Religion, vibe=@Vibe,
+                  languages=@Languages, dm_notes=@DmNotes
               WHERE instance_id=@InstanceId",
             @params);
 
         logging.LogDbOperation(correlation.TraceId, spanId, "UPDATE", "campaign_city_instances", @params, rows);
+    }
+
+    public async Task UpdateCastInstanceAsync(CampaignCastInstanceDomain instance)
+    {
+        var spanId = correlation.NewSpan();
+        var @params = new
+        {
+            instance.InstanceId,
+            instance.PublicDescription,
+            instance.Description,
+            instance.Pronouns,
+            instance.Race,
+            instance.Role,
+            instance.Age,
+            instance.Alignment,
+            instance.Posture,
+            instance.Speed,
+            instance.DmNotes,
+        };
+
+        logging.LogDbOperation(correlation.TraceId, spanId, "UPDATE", "campaign_cast_instances", @params);
+
+        using var conn = CreateConnection();
+        var rows = await conn.ExecuteAsync(
+            @"UPDATE campaign_cast_instances
+              SET public_description=@PublicDescription,
+                  description=@Description,
+                  pronouns=@Pronouns,
+                  race=@Race,
+                  role=@Role,
+                  age=@Age,
+                  alignment=@Alignment,
+                  posture=@Posture,
+                  speed=@Speed,
+                  dm_notes=@DmNotes
+              WHERE instance_id=@InstanceId",
+            @params);
+
+        logging.LogDbOperation(correlation.TraceId, spanId, "UPDATE", "campaign_cast_instances", @params, rows);
+    }
+
+    public async Task UpdateLocationInstanceAsync(CampaignLocationInstanceDomain instance)
+    {
+        var spanId = correlation.NewSpan();
+        var @params = new
+        {
+            instance.InstanceId,
+            instance.Description,
+            instance.DmNotes,
+        };
+
+        logging.LogDbOperation(correlation.TraceId, spanId, "UPDATE", "campaign_location_instances", @params);
+
+        using var conn = CreateConnection();
+        var rows = await conn.ExecuteAsync(
+            @"UPDATE campaign_location_instances
+              SET description=@Description, dm_notes=@DmNotes
+              WHERE instance_id=@InstanceId",
+            @params);
+
+        logging.LogDbOperation(correlation.TraceId, spanId, "UPDATE", "campaign_location_instances", @params, rows);
+    }
+
+    public async Task ToggleShopItemScratchAsync(Guid shopItemId, bool isScratchedOff)
+    {
+        var spanId = correlation.NewSpan();
+        var @params = new { ShopItemId = shopItemId, IsScratchedOff = isScratchedOff };
+
+        logging.LogDbOperation(correlation.TraceId, spanId, "UPDATE", "campaign_location_shop_items", @params);
+
+        using var conn = CreateConnection();
+        var rows = await conn.ExecuteAsync(
+            "UPDATE campaign_location_shop_items SET is_scratched_off=@IsScratchedOff WHERE id=@ShopItemId",
+            @params);
+
+        logging.LogDbOperation(correlation.TraceId, spanId, "UPDATE", "campaign_location_shop_items", @params, rows);
     }
 
     public async Task UpdateCityInstanceVisibilityAsync(Guid instanceId, bool isVisibleToPlayers)

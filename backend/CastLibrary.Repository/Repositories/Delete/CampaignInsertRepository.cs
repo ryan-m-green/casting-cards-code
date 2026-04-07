@@ -12,6 +12,7 @@ public interface ICampaignInsertRepository
     Task<CampaignCastInstanceDomain> InsertCastInstanceAsync(CampaignCastInstanceDomain instance);
     Task<CampaignCityInstanceDomain> InsertCityInstanceAsync(CampaignCityInstanceDomain instance);
     Task<CampaignLocationInstanceDomain> InsertLocationInstanceAsync(CampaignLocationInstanceDomain instance);
+    Task<ShopItemDomain> InsertLocationShopItemAsync(Guid locationInstanceId, ShopItemDomain item);
 }
 
 public class CampaignInsertRepository(
@@ -186,5 +187,35 @@ public class CampaignInsertRepository(
             @params, 1 + instance.ShopItems.Count);
 
         return instance;
+    }
+
+    public async Task<ShopItemDomain> InsertLocationShopItemAsync(Guid locationInstanceId, ShopItemDomain item)
+    {
+        var spanId = correlation.NewSpan();
+        item.Id = Guid.NewGuid();
+        item.LocationId = locationInstanceId;
+
+        var @params = new
+        {
+            Id = item.Id,
+            LocationInstanceId = locationInstanceId,
+            item.Name,
+            item.Price,
+            item.Description,
+            item.SortOrder,
+        };
+
+        logging.LogDbOperation(correlation.TraceId, spanId, "INSERT", "campaign_location_shop_items", @params);
+
+        using var conn = CreateConnection();
+        var rows = await conn.ExecuteAsync(
+            @"INSERT INTO campaign_location_shop_items
+                (id, location_instance_id, name, price, description, sort_order)
+              VALUES
+                (@Id, @LocationInstanceId, @Name, @Price, @Description, @SortOrder)",
+            @params);
+
+        logging.LogDbOperation(correlation.TraceId, spanId, "INSERT", "campaign_location_shop_items", @params, rows);
+        return item;
     }
 }

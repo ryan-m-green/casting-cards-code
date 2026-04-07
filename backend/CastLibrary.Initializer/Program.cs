@@ -36,11 +36,11 @@ var connectionString = connBuilder.ConnectionString;
 var databaseName = connBuilder.Database
     ?? throw new InvalidOperationException("Database name not specified in connection string.");
 
-connBuilder.Database = "defaultdb";
+
 var serverConnectionString = connBuilder.ConnectionString;
 
 // ─── Step 1: Create database ──────────────────────────────────────────────────
-Console.WriteLine($"[1/3] Checking database '{databaseName}'...");
+Console.WriteLine($"[1/4] Checking database '{databaseName}'...");
 
 await using (var serverConn = new NpgsqlConnection(serverConnectionString))
 {
@@ -66,7 +66,7 @@ await using (var serverConn = new NpgsqlConnection(serverConnectionString))
 }
 
 // ─── Step 2: Apply schema ─────────────────────────────────────────────────────
-Console.WriteLine("[2/3] Applying schema...");
+Console.WriteLine("[2/4] Applying schema...");
 
 var sqlPath = Path.Combine(AppContext.BaseDirectory, "init.sql");
 var schemaSql = await File.ReadAllTextAsync(sqlPath);
@@ -78,8 +78,24 @@ await using var schemaCmd = new NpgsqlCommand(schemaSql, conn);
 await schemaCmd.ExecuteNonQueryAsync();
 Console.WriteLine("       Schema applied.");
 
-// ─── Step 3: Seed ─────────────────────────────────────────────────────────────
-Console.WriteLine("[3/3] Seeding...");
+// ─── Step 3: Apply migrations ─────────────────────────────────────────────────
+Console.WriteLine("[3/4] Applying migrations...");
+
+var alterPath = Path.Combine(AppContext.BaseDirectory, "alter.sql");
+if (File.Exists(alterPath))
+{
+    var alterSql = await File.ReadAllTextAsync(alterPath);
+    await using var alterCmd = new NpgsqlCommand(alterSql, conn);
+    await alterCmd.ExecuteNonQueryAsync();
+    Console.WriteLine("       Migrations applied.");
+}
+else
+{
+    Console.WriteLine("       No alter.sql found — skipping.");
+}
+
+// ─── Step 4: Seed ─────────────────────────────────────────────────────────────
+Console.WriteLine("[4/4] Seeding...");
 
 await using var countCmd = new NpgsqlCommand("SELECT COUNT(*) FROM users", conn);
 var userCount = (long)(await countCmd.ExecuteScalarAsync())!;

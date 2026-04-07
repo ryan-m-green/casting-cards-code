@@ -1,6 +1,7 @@
 import { Component, OnInit, OnDestroy, signal, computed, inject, effect, HostBinding } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../../environments/environment';
 import { CampaignDetail } from '../../../shared/models/campaign.model';
@@ -13,7 +14,7 @@ import { AuthService } from '../../../core/auth/auth.service';
 @Component({
   selector: 'app-campaign-cast-detail',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, FormsModule],
   templateUrl: './campaign-cast-detail.component.html',
   styleUrl: './campaign-cast-detail.component.scss'
 })
@@ -31,6 +32,23 @@ export class CampaignCastDetailComponent implements OnInit, OnDestroy {
   locationInstanceId = signal('');
   castInstanceId     = signal('');
   campaign           = signal<CampaignDetail | null>(null);
+
+  // Edit mode
+  editing              = signal(false);
+  editPublicDescription = signal('');
+  editDescription      = signal('');
+  editPronouns         = signal('');
+  editRace             = signal('');
+  editRole             = signal('');
+  editAge              = signal('');
+  editAlignment        = signal('');
+  editPosture          = signal('');
+  editSpeed            = signal('');
+  editDmNotes          = signal('');
+
+  // Add secret
+  addingSecret     = signal(false);
+  newSecretContent = signal('');
 
   portalColor = computed(() => this.campaign()?.spineColor ?? '#c8b07a');
 
@@ -154,6 +172,78 @@ export class CampaignCastDetailComponent implements OnInit, OnDestroy {
           )
         };
       });
+    });
+  }
+
+  // ── Edit details ─────────────────────────────────────────────────────────
+
+  startEditing() {
+    const ca = this.cast();
+    if (!ca) return;
+    this.editPublicDescription.set(ca.publicDescription ?? '');
+    this.editDescription.set(ca.description ?? '');
+    this.editPronouns.set(ca.pronouns ?? '');
+    this.editRace.set(ca.race ?? '');
+    this.editRole.set(ca.role ?? '');
+    this.editAge.set(ca.age ?? '');
+    this.editAlignment.set(ca.alignment ?? '');
+    this.editPosture.set(ca.posture ?? '');
+    this.editSpeed.set(ca.speed ?? '');
+    this.editDmNotes.set(ca.dmNotes ?? '');
+    this.editing.set(true);
+  }
+
+  cancelEditing() {
+    this.editing.set(false);
+  }
+
+  saveDetails() {
+    const body = {
+      publicDescription: this.editPublicDescription(),
+      description:       this.editDescription(),
+      pronouns:          this.editPronouns(),
+      race:              this.editRace(),
+      role:              this.editRole(),
+      age:               this.editAge(),
+      alignment:         this.editAlignment(),
+      posture:           this.editPosture(),
+      speed:             this.editSpeed(),
+      dmNotes:           this.editDmNotes(),
+    };
+    this.http.patch(
+      `${environment.apiUrl}/api/campaigns/${this.campaignId()}/casts/${this.castInstanceId()}`,
+      body
+    ).subscribe(() => {
+      this.campaign.update(c => c ? {
+        ...c,
+        casts: c.casts.map(ca =>
+          ca.instanceId === this.castInstanceId() ? { ...ca, ...body } : ca
+        )
+      } : c);
+      this.editing.set(false);
+    });
+  }
+
+  // ── Secrets ───────────────────────────────────────────────────────────────
+
+  startAddingSecret() {
+    this.newSecretContent.set('');
+    this.addingSecret.set(true);
+  }
+
+  cancelAddingSecret() {
+    this.addingSecret.set(false);
+  }
+
+  confirmAddSecret() {
+    const content = this.newSecretContent().trim();
+    if (!content) return;
+    this.http.post<CampaignSecret>(
+      `${environment.apiUrl}/api/campaigns/${this.campaignId()}/secrets`,
+      { instanceId: this.castInstanceId(), entityType: 'Cast', content }
+    ).subscribe(s => {
+      this.campaign.update(c => c ? { ...c, secrets: [...c.secrets, s] } : c);
+      this.addingSecret.set(false);
     });
   }
 

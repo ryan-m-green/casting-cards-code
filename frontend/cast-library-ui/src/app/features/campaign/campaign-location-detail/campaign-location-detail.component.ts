@@ -1,10 +1,11 @@
-import { Component, OnInit, OnDestroy, signal, computed, inject, effect, HostBinding, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, OnDestroy, signal, computed, inject, effect, HostBinding, HostListener, ViewChild, ElementRef } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../../environments/environment';
 import { CampaignDetail } from '../../../shared/models/campaign.model';
-import { CampaignLocationInstance } from '../../../shared/models/location.model';
+import { CampaignLocationInstance, ShopItem } from '../../../shared/models/location.model';
 import { CampaignCastInstance } from '../../../shared/models/cast.model';
 import { CampaignSecret } from '../../../shared/models/secret.model';
 import { CampaignHubService } from '../../../core/hub/campaign-hub.service';
@@ -14,7 +15,7 @@ import { AuthService } from '../../../core/auth/auth.service';
 @Component({
   selector: 'app-campaign-location-detail',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, FormsModule],
   templateUrl: './campaign-location-detail.component.html',
   styleUrl: './campaign-location-detail.component.scss'
 })
@@ -35,6 +36,25 @@ export class CampaignLocationDetailComponent implements OnInit, OnDestroy {
   campaign           = signal<CampaignDetail | null>(null);
   detailExpanded     = signal(false);
   panelHeight        = signal('220px');
+
+  // Edit mode
+  editing         = signal(false);
+  editDescription = signal('');
+  editDmNotes     = signal('');
+
+  // Add secret
+  addingSecret     = signal(false);
+  newSecretContent = signal('');
+
+  // Add shop item
+  addingShopItem       = signal(false);
+  newShopItemName      = signal('');
+  newShopItemAmount    = signal('');
+  newShopItemCurrency  = signal('gp');
+
+  // Currency dropdown
+  readonly currencies      = ['cp', 'sp', 'ep', 'gp', 'pp'];
+  openDropdownId           = signal<string | null>(null);
 
   isDm = computed(() => this.auth.isDm());
 
@@ -108,16 +128,68 @@ export class CampaignLocationDetailComponent implements OnInit, OnDestroy {
     this.hub.leaveCampaign(this.campaignId()).catch(console.warn);
   }
 
-  toggleDetail() {
-    if (this.detailExpanded()) {
-      this.panelHeight.set('220px');
-      this.detailExpanded.set(false);
-    } else {
-      const contentH = this.detailContentRef.nativeElement.scrollHeight;
-      const btnH     = this.expandBtnRef.nativeElement.offsetHeight;
-      this.panelHeight.set(`${contentH + btnH}px`);
-      this.detailExpanded.set(true);
-    }
+  // ── Edit details ─────────────────────────────────────────────────────────
+
+  startEditing() {
+    const loc = this.location();
+    if (!loc) return;
+    this.editDescription.set(loc.description ?? '');
+    this.editDmNotes.set(loc.dmNotes ?? '');
+    this.editing.set(true);
+    requestAnimationFrame(() => this.expandPanel());
+  }
+
+  cancelEditing() {
+    this.editing.set(false);
+  }
+
+  saveDetails() {
+    const body = {
+      description: this.editDescription(),
+      dmNotes:     this.editDmNotes(),
+    };
+    this.http.patch(
+      `${environment.apiUrl}/api/campaigns/${this.campaignId()}/locations/${this.locationInstanceId()}`,
+      body
+    ).subscribe(() => {
+      this.campaign.update(c => c ? {
+        ...c,
+        locations: c.locations.map(l =>
+          l.instanceId === this.locationInstanceId() ? { ...l, ...body } : l
+        )
+      } : c);
+      this.editing.set(false);
+    });
+  }
+
+  private expandPanel() {
+    const contentH = this.detailContentRef.nativeElement.scrollHeight;
+    const btnH     = this.expandBtnRef.nativeElement.offsetHeight;
+    this.panelHeight.set(`${contentH + btnH}px`);
+    this.detailExpanded.set(true);
+  }
+
+  // ── Secrets ───────────────────────────────────────────────────────────────
+
+  startAddingSecret() {
+    this.newSecretContent.set('');
+    this.addingSecret.set(true);
+  }
+
+  cancelAddingSecret() {
+    this.addingSecret.set(false);
+  }
+
+  confirmAddSecret() {
+    const content = this.newSecretContent().trim();
+    if (!content) return;
+    this.http.post<CampaignSecret>(
+      `${environment.apiUrl}/api/campaigns/${this.campaignId()}/secrets`,
+      { instanceId: this.locationInstanceId(), entityType: 'Location', content }
+    ).subscribe(s => {
+      this.campaign.update(c => c ? { ...c, secrets: [...c.secrets, s] } : c);
+      this.addingSecret.set(false);
+    });
   }
 
   toggleSecret(secret: CampaignSecret) {
@@ -129,7 +201,20 @@ export class CampaignLocationDetailComponent implements OnInit, OnDestroy {
   }
 
   private revealSecret(secret: CampaignSecret) {
-    this.hub.revealSecret(this.campaignId(), secret.id).catch(console.warn);
+    this.http.post(
+      `${environment.apiUrl}/api/campaigns/${this.campaignId()}/secrets/${secret.id}/reveal`,
+      {}
+    ).subscribe(() => {
+      this.campaign.update(c => {
+        if (!c) return c;
+        return {
+          ...c,
+          secrets: c.secrets.map(s =>
+            s.id === secret.id ? { ...s, isRevealed: true } : s
+          )
+        };
+      });
+    });
   }
 
   private resealSecret(secret: CampaignSecret) {
@@ -149,6 +234,80 @@ export class CampaignLocationDetailComponent implements OnInit, OnDestroy {
     });
   }
 
+  // ── Shop items ────────────────────────────────────────────────────────────
+
+  toggleScratch(item: ShopItem) {
+    this.http.patch(
+      `${environment.apiUrl}/api/campaigns/${this.campaignId()}/locations/${this.locationInstanceId()}/shop-items/${item.id}/scratch`,
+      {}
+    ).subscribe(() => {
+      this.campaign.update(c => c ? {
+        ...c,
+        locations: c.locations.map(l =>
+          l.instanceId === this.locationInstanceId()
+            ? { ...l, shopItems: l.shopItems.map(s => s.id === item.id ? { ...s, isScratchedOff: !s.isScratchedOff } : s) }
+            : l
+        )
+      } : c);
+    });
+  }
+
+  @HostListener('document:click', ['$event'])
+  onDocumentClick(e: MouseEvent) {
+    if (!(e.target as HTMLElement).closest('.notes-dropdown')) {
+      this.openDropdownId.set(null);
+    }
+  }
+
+  toggleCurrencyDropdown(e: MouseEvent) {
+    e.stopPropagation();
+    this.openDropdownId.update(id => id === 'currency' ? null : 'currency');
+  }
+
+  isDropdownOpen(id: string): boolean { return this.openDropdownId() === id; }
+
+  setCurrency(value: string) {
+    this.newShopItemCurrency.set(value);
+    this.openDropdownId.set(null);
+  }
+
+  startAddingShopItem() {
+    this.newShopItemName.set('');
+    this.newShopItemAmount.set('');
+    this.newShopItemCurrency.set('gp');
+    this.addingShopItem.set(true);
+  }
+
+  cancelAddingShopItem() {
+    this.addingShopItem.set(false);
+    this.openDropdownId.set(null);
+  }
+
+  confirmAddShopItem() {
+    const name   = this.newShopItemName().trim();
+    if (!name) return;
+    const amount   = this.newShopItemAmount().trim();
+    const currency = this.newShopItemCurrency();
+    const price    = amount ? `${amount} ${currency}` : '';
+    const body = { name, price, description: '' };
+    this.http.post<ShopItem>(
+      `${environment.apiUrl}/api/campaigns/${this.campaignId()}/locations/${this.locationInstanceId()}/shop-items`,
+      body
+    ).subscribe(item => {
+      this.campaign.update(c => c ? {
+        ...c,
+        locations: c.locations.map(l =>
+          l.instanceId === this.locationInstanceId()
+            ? { ...l, shopItems: [...(l.shopItems ?? []), item] }
+            : l
+        )
+      } : c);
+      this.addingShopItem.set(false);
+    });
+  }
+
+  // ── Visibility ────────────────────────────────────────────────────────────
+
   toggleLocationVisibility() {
     const loc = this.location();
     if (!loc) return;
@@ -165,6 +324,22 @@ export class CampaignLocationDetailComponent implements OnInit, OnDestroy {
       } : c);
     });
   }
+
+  // ── Panel expand ──────────────────────────────────────────────────────────
+
+  toggleDetail() {
+    if (this.detailExpanded()) {
+      this.panelHeight.set('220px');
+      this.detailExpanded.set(false);
+    } else {
+      const contentH = this.detailContentRef.nativeElement.scrollHeight;
+      const btnH     = this.expandBtnRef.nativeElement.offsetHeight;
+      this.panelHeight.set(`${contentH + btnH}px`);
+      this.detailExpanded.set(true);
+    }
+  }
+
+  // ── Cast ──────────────────────────────────────────────────────────────────
 
   goToCast(cast: CampaignCastInstance) {
     this.router.navigate(
@@ -203,6 +378,8 @@ export class CampaignLocationDetailComponent implements OnInit, OnDestroy {
       } : c);
     });
   }
+
+  // ── Navigation ────────────────────────────────────────────────────────────
 
   exitToLibrary() {
     this.transition.exitToLibrary(() =>

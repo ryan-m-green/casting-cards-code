@@ -1,0 +1,43 @@
+@if (data) {
+  <div class="cr-backdrop" (click)="dismiss()">
+    <div class="cr-panel" (click)="$event.stopPropagation()">
+
+      <!-- Card -->
+      <div class="cr-card-wrap">
+        <div class="pc-card" [class]="'pc-card-' + data.cardType">
+          <div class="lib-card-front">
+            <div class="card-slot-front">
+              <div class="card-front-header">
+                <div class="card-name">{{ data.name }}</div>
+                @if (data.descriptor) {
+                  <div class="card-descriptor">{{ data.descriptor }}</div>
+                }
+              </div>
+              <div class="dv dv-card"></div>
+              <div class="card-image-area">
+                @if (data.imageUrl) {
+                  <img [src]="data.imageUrl" alt="" class="card-img-fill" />
+                } @else {
+                  <div class="card-placeholder">
+                    <span class="card-initial">{{ initial(data.name) }}</span>
+                  </div>
+                }
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Secret content (only for secret reveals) -->
+      @if (data.secretContent) {
+        <div class="cr-secret-block">
+          <div class="cr-secret-label">Secret Revealed</div>
+          <div class="cr-secret-text">{{ data.secretContent }}</div>
+        </div>
+      }
+
+      <!-- Dismiss -->
+      <button class="cr-dismiss" (click)="dismiss()">✕ Dismiss</button>
+    </div>
+  </div>
+}

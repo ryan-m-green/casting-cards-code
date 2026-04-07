@@ -12,7 +12,9 @@
         <div class="city-cards-label">Cities</div>
         <div class="city-cards-container">
           @for (city of camp.cities; track city.instanceId) {
-            <div class="pc-card pc-card-city city-card-clickable" (click)="goToCityDetail(city.instanceId)">
+            <div class="pc-card pc-card-city city-card-clickable"
+                 [class.is-locking]="isLocking(city.instanceId)"
+                 (click)="goToCityDetail(city.instanceId)">
               <div class="lib-card-front">
                 <div class="card-slot-front">
                   <div class="card-front-header">

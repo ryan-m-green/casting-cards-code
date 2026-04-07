@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, signal, inject, computed, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, OnDestroy, signal, inject, computed, ViewChild, ElementRef, HostListener } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
@@ -17,6 +17,8 @@ interface ShopItem {
 interface CampaignShopItem {
   name: string;
   price: string;
+  priceAmount: number | null;
+  priceCurrency: string;
 }
 
 interface LocationCard {
@@ -64,6 +66,9 @@ export class CampaignLocationSelectorComponent implements OnInit, OnDestroy {
   loading                = signal(true);
   isSwapping             = false;
   locationSearch         = signal('');
+
+  readonly currencies    = ['cp', 'sp', 'ep', 'gp', 'pp'];
+  openDropdownId         = signal<string | null>(null);
 
   private readonly SEL_PEEK = 46;
   private readonly SEL_FULL = 220;
@@ -149,7 +154,10 @@ export class CampaignLocationSelectorComponent implements OnInit, OnDestroy {
               loc:        libLoc,
               instanceId: l.instanceId,
               keywords:   l.keywords ?? [],
-              customItems: (l.customItems ?? []).map((i: any) => ({ name: i.name, price: i.price })),
+              customItems: (l.customItems ?? []).map((i: any) => {
+                const parsed = this._parsePrice(i.price ?? '');
+                return { name: i.name, price: i.price ?? '', priceAmount: parsed.amount, priceCurrency: parsed.currency };
+              }),
             };
           })
           .filter(Boolean) as AddedLocation[];
@@ -284,7 +292,7 @@ export class CampaignLocationSelectorComponent implements OnInit, OnDestroy {
     if (!added) return;
     this.addedLocations.update(list =>
       list.map(a => a.instanceId === added.instanceId
-        ? { ...a, customItems: [...a.customItems, { name: '', price: '' }] }
+        ? { ...a, customItems: [...a.customItems, { name: '', price: '', priceAmount: null, priceCurrency: 'gp' }] }
         : a)
     );
     this._scheduleCustomItemSave(added.instanceId);
@@ -310,6 +318,52 @@ export class CampaignLocationSelectorComponent implements OnInit, OnDestroy {
         : a)
     );
     this._scheduleCustomItemSave(added.instanceId);
+  }
+
+  @HostListener('document:click', ['$event'])
+  onDocumentClick(e: MouseEvent) {
+    if (!(e.target as HTMLElement).closest('.notes-dropdown')) {
+      this.openDropdownId.set(null);
+    }
+  }
+
+  toggleDropdown(id: string, e: MouseEvent) {
+    e.stopPropagation();
+    this.openDropdownId.update(current => current === id ? null : id);
+  }
+
+  isDropdownOpen(id: string): boolean { return this.openDropdownId() === id; }
+
+  setCurrencyForItem(index: number, value: string) {
+    this.updateCustomItemPriceField(index, 'currency', value);
+    this.openDropdownId.set(null);
+  }
+
+  updateCustomItemPriceField(index: number, field: 'amount' | 'currency', value: string) {
+    const added = this.expandedLocation();
+    if (!added) return;
+    this.addedLocations.update(list =>
+      list.map(a => a.instanceId === added.instanceId
+        ? {
+            ...a,
+            customItems: a.customItems.map((item, i) => {
+              if (i !== index) return item;
+              const newAmount   = field === 'amount'   ? (value === '' ? null : Number(value)) : item.priceAmount;
+              const newCurrency = field === 'currency' ? value : item.priceCurrency;
+              const price = newAmount != null ? `${newAmount} ${newCurrency}` : '';
+              return { ...item, priceAmount: newAmount, priceCurrency: newCurrency, price };
+            })
+          }
+        : a)
+    );
+    this._scheduleCustomItemSave(added.instanceId);
+  }
+
+  private _parsePrice(price: string): { amount: number | null; currency: string } {
+    const parts = price.trim().split(' ');
+    const amount = parts[0] ? Number(parts[0]) : null;
+    const currency = parts[1] ?? 'gp';
+    return { amount: isNaN(amount as number) ? null : amount, currency };
   }
 
   private _doRemove(index: number, added: AddedLocation) {

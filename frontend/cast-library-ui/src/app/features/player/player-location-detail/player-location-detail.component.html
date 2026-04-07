@@ -85,13 +85,18 @@
             </div>
           }
 
-          @for (secret of locationSecrets(); track secret.id) {
-            @if (secret.isRevealed) {
-              <div class="detail-secret">
-                <span class="secret-lock-icon">🔓</span>
-                <span class="secret-text secret-text--revealed">{{ secret.content }}</span>
-              </div>
-            }
+          @if (locationSecrets().some(s => s.isRevealed)) {
+            <div class="detail-secrets-section">
+              <span class="detail-label">Secrets</span>
+              <span class="detail-line"></span>
+              @for (secret of locationSecrets(); track secret.id) {
+                @if (secret.isRevealed) {
+                  <div class="detail-secret">
+                    <span class="secret-text secret-text--revealed">{{ secret.content }}</span>
+                  </div>
+                }
+              }
+            </div>
           }
 
         </div>

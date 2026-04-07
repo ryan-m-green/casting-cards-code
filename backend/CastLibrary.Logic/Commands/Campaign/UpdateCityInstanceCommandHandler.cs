@@ -15,12 +15,17 @@ public class UpdateCityInstanceCommandHandler(ICampaignReadRepository campaignRe
         var instance = await campaignReadRepository.GetCityInstanceByIdAsync(command.InstanceId);
         if (instance is null) return;
 
-        instance.Condition = command.Request.Condition;
-        instance.Geography = command.Request.Geography;
-        instance.Climate   = command.Request.Climate;
-        instance.Religion  = command.Request.Religion;
-        instance.Vibe      = command.Request.Vibe;
-        instance.Languages = command.Request.Languages;
+        instance.Description    = command.Request.Description;
+        instance.Classification = command.Request.Classification;
+        instance.Size           = command.Request.Size;
+        instance.Condition      = command.Request.Condition;
+        instance.Geography      = command.Request.Geography;
+        instance.Architecture   = command.Request.Architecture;
+        instance.Climate        = command.Request.Climate;
+        instance.Religion       = command.Request.Religion;
+        instance.Vibe           = command.Request.Vibe;
+        instance.Languages      = command.Request.Languages;
+        instance.DmNotes        = command.Request.DmNotes;
 
         await campaignUpdateRepository.UpdateCityInstanceAsync(instance);
     }

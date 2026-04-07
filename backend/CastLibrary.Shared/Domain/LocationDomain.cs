@@ -20,4 +20,5 @@ public class ShopItemDomain
     public string Price { get; set; } = string.Empty;
     public string Description { get; set; } = string.Empty;
     public int SortOrder { get; set; }
+    public bool IsScratchedOff { get; set; }
 }

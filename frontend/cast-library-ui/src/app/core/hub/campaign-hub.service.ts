@@ -1,15 +1,23 @@
 import { Injectable, signal } from '@angular/core';
 import * as signalR from '@microsoft/signalr';
 import { environment } from '../../../environments/environment';
-import { SecretRevealedEvent } from '../../shared/models/secret.model';
+import {
+  SecretRevealedEvent,
+  SecretResealedEvent,
+  CardVisibilityChangedEvent,
+  BulkCardVisibilityChangedEvent,
+} from '../../shared/models/secret.model';
 
 @Injectable({ providedIn: 'root' })
 export class CampaignHubService {
   private connection: signalR.HubConnection | null = null;
 
-  readonly secretRevealed = signal<SecretRevealedEvent | null>(null);
-  readonly noteUpdated    = signal<{ entityType: string; instanceId: string } | null>(null);
-  readonly isConnected    = signal(false);
+  readonly secretRevealed          = signal<SecretRevealedEvent | null>(null);
+  readonly secretResealed          = signal<SecretResealedEvent | null>(null);
+  readonly cardVisibilityChanged   = signal<CardVisibilityChangedEvent | null>(null);
+  readonly bulkCardVisibilityChanged = signal<BulkCardVisibilityChangedEvent | null>(null);
+  readonly noteUpdated             = signal<{ entityType: string; instanceId: string } | null>(null);
+  readonly isConnected             = signal(false);
 
   async connect(token: string): Promise<void> {
     this.connection = new signalR.HubConnectionBuilder()
@@ -21,6 +29,18 @@ export class CampaignHubService {
 
     this.connection.on('SecretRevealed', (event: SecretRevealedEvent) => {
       this.secretRevealed.set(event);
+    });
+
+    this.connection.on('SecretResealed', (event: SecretResealedEvent) => {
+      this.secretResealed.set(event);
+    });
+
+    this.connection.on('CardVisibilityChanged', (event: CardVisibilityChangedEvent) => {
+      this.cardVisibilityChanged.set(event);
+    });
+
+    this.connection.on('BulkCardVisibilityChanged', (event: BulkCardVisibilityChangedEvent) => {
+      this.bulkCardVisibilityChanged.set(event);
     });
 
     this.connection.on('NoteUpdated', (event: { entityType: string; instanceId: string }) => {

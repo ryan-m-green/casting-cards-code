@@ -23,4 +23,5 @@ export interface CampaignCityInstance extends City {
   isVisibleToPlayers: boolean;
   sortOrder: number;
   keywords: string[];
+  dmNotes: string;
 }

@@ -73,6 +73,7 @@ public class CampaignWebMapper(
             IsVisibleToPlayers = d.IsVisibleToPlayers,
             SortOrder = d.SortOrder,
             Keywords = d.Keywords,
+            DmNotes = d.DmNotes,
         };
 
         logging.LogMapping(
@@ -109,6 +110,7 @@ public class CampaignWebMapper(
                                   .Select(i => new CampaignCastCustomItemResponse(i.Name, i.Price))
                                   .ToList(),
             Keywords = d.Keywords,
+            DmNotes  = d.DmNotes,
         };
 
         logging.LogMapping(
@@ -132,12 +134,14 @@ public class CampaignWebMapper(
             Description        = d.Description,
             ImagePath          = d.ImageUrl,
             IsVisibleToPlayers = d.IsVisibleToPlayers,
+            DmNotes            = d.DmNotes,
             ShopItems        = d.ShopItems.Select(s => new ShopItemResponse
             {
-                Id          = s.Id,
-                Name        = s.Name,
-                Price       = s.Price,
-                Description = s.Description,
+                Id            = s.Id,
+                Name          = s.Name,
+                Price         = s.Price,
+                Description   = s.Description,
+                IsScratchedOff = s.IsScratchedOff,
             }).ToList(),
             CustomItems = d.CustomItems
                            .Select(i => new CampaignCastCustomItemResponse(i.Name, i.Price))
