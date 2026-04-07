@@ -25,9 +25,10 @@ public class CastReadRepository(
         var @params = new { DmUserId = dmUserId };
         const string sql =
             @"SELECT id, dm_user_id AS DmUserId, name, pronouns, race, role, age, alignment, posture, speed,
-                     voice_placement AS VoicePlacement, description, public_description AS PublicDescription,
+                     voice_placement AS VoicePlacement, voice_notes AS VoiceNotes,
+                     description, public_description AS PublicDescription,
                      created_at AS CreatedAt
-                FROM casts 
+                FROM casts
                 WHERE dm_user_id = @DmUserId ORDER BY name";
 
         logging.LogDbOperation(correlation.TraceId, spanId, "SELECT", "casts", @params);
@@ -45,9 +46,10 @@ public class CastReadRepository(
         var @params = new { Id = id };
         const string sql =
             @"SELECT id, dm_user_id AS DmUserId, name, pronouns, race, role, age, alignment, posture, speed,
-                     voice_placement AS VoicePlacement, description, public_description AS PublicDescription,
+                     voice_placement AS VoicePlacement, voice_notes AS VoiceNotes,
+                     description, public_description AS PublicDescription,
                      created_at AS CreatedAt
-                FROM casts 
+                FROM casts
                 WHERE id = @Id";
 
         logging.LogDbOperation(correlation.TraceId, spanId, "SELECT", "casts", @params);

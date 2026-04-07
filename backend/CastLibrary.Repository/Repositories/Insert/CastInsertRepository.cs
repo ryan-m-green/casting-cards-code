@@ -29,6 +29,7 @@ namespace CastLibrary.Repository.Repositories.Insert
                 cast.Posture,
                 cast.Speed,
                 cast.VoicePlacement,
+                cast.VoiceNotes,
                 cast.Description,
                 cast.PublicDescription,
                 cast.CreatedAt,
@@ -36,10 +37,10 @@ namespace CastLibrary.Repository.Repositories.Insert
             const string sql =
                 @"INSERT INTO casts
                 (id, dm_user_id, name, pronouns, race, role, age, alignment, posture, speed,
-                 voice_placement, description, public_description, created_at)
+                 voice_placement, voice_notes, description, public_description, created_at)
               VALUES
                 (@Id, @DmUserId, @Name, @Pronouns, @Race, @Role, @Age, @Alignment, @Posture, @Speed,
-                 @VoicePlacement::text[], @Description, @PublicDescription, @CreatedAt)";
+                 @VoicePlacement::text[], @VoiceNotes, @Description, @PublicDescription, @CreatedAt)";
 
             logging.LogDbOperation(correlation.TraceId, spanId, "INSERT", "casts", @params);
 

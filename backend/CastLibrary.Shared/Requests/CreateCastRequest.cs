@@ -11,6 +11,7 @@ public class CreateCastRequest
     public string Posture { get; set; } = string.Empty;
     public string Speed { get; set; } = string.Empty;
     public string[] VoicePlacement { get; set; } = [];
+    public string VoiceNotes { get; set; } = string.Empty;
     public string Description { get; set; } = string.Empty;
     public string PublicDescription { get; set; } = string.Empty;
 }

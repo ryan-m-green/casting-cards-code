@@ -74,6 +74,7 @@ export class CastFormComponent implements OnInit {
     publicDescription: [''],
     description:       [''],
     voicePlacement:    this.fb.array(VOICE_OPTIONS.map(() => false)),
+    voiceNotes:        [''],
   });
 
   ngOnInit() {
@@ -85,6 +86,7 @@ export class CastFormComponent implements OnInit {
           name: cast.name, role: cast.role, race: cast.race, age: cast.age,
           alignment: cast.alignment, pronouns: cast.pronouns, posture: cast.posture,
           speed: cast.speed, publicDescription: cast.publicDescription, description: cast.description,
+          voiceNotes: cast.voiceNotes,
         });
         const vpArray = this.form.get('voicePlacement') as FormArray;
         VOICE_OPTIONS.forEach((opt, i) => vpArray.at(i).setValue(cast.voicePlacement?.includes(opt) ?? false));

@@ -10,6 +10,7 @@ export interface Cast {
   posture: string;
   speed: string;
   voicePlacement: string[];
+  voiceNotes: string;
   description: string;
   publicDescription: string;
   imageUrl?: string;
@@ -26,6 +27,7 @@ export interface CreateCastRequest {
   posture: string;
   speed: string;
   voicePlacement: string[];
+  voiceNotes: string;
   description: string;
   publicDescription: string;
 }

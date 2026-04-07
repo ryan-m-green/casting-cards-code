@@ -29,6 +29,10 @@ CREATE TABLE IF NOT EXISTS campaign_time_of_day (
     UNIQUE (campaign_id)
 );
 
+-- [006] Add voice_notes to casts
+ALTER TABLE casts
+    ADD COLUMN IF NOT EXISTS voice_notes TEXT;
+
 CREATE TABLE IF NOT EXISTS campaign_tod_slices (
     id              UUID         PRIMARY KEY DEFAULT gen_random_uuid(),
     campaign_id     UUID         NOT NULL REFERENCES campaigns(id) ON DELETE CASCADE,

@@ -21,6 +21,7 @@ public class CastFactory : ICastFactory
         Posture = request.Posture,
         Speed = request.Speed,
         VoicePlacement = request.VoicePlacement,
+        VoiceNotes = request.VoiceNotes,
         Description = request.Description,
         PublicDescription = request.PublicDescription,
         CreatedAt = DateTime.UtcNow,

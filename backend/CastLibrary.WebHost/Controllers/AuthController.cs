@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 using CastLibrary.Logic.Commands.Auth;
 using CastLibrary.Logic.Interfaces;
 using CastLibrary.WebHost.MetadataHelpers;
@@ -19,6 +20,7 @@ public class AuthController(
     IUserRetriever userRetriever) : ControllerBase
 {
     [HttpPost("login")]
+    [EnableRateLimiting("AuthEndpoints")]
     public async Task<IActionResult> Login([FromBody] LoginRequest request)
     {
         if (!ModelState.IsValid)
@@ -36,6 +38,7 @@ public class AuthController(
     }
 
     [HttpPost("register")]
+    [EnableRateLimiting("AuthEndpoints")]
     public async Task<IActionResult> Register([FromBody] RegisterRequest request)
     {
         var validator = new RegisterRequestValidator();
@@ -56,6 +59,7 @@ public class AuthController(
     }
 
     [HttpPost("forgot-password")]
+    [EnableRateLimiting("AuthEndpoints")]
     public async Task<IActionResult> ForgotPassword([FromBody] ForgotPasswordRequest request)
     {
         var validator = new ForgotPasswordRequestValidator();

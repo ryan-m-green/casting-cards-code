@@ -13,6 +13,7 @@ public class CastEntity
     public string Posture { get; set; }
     public string Speed { get; set; }
     public string[] VoicePlacement { get; set; }
+    public string VoiceNotes { get; set; }
     public string Description { get; set; }
     public string PublicDescription { get; set; }
     public DateTime CreatedAt { get; set; }

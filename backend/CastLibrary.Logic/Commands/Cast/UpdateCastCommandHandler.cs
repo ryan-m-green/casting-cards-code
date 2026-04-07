@@ -27,6 +27,7 @@ public class UpdateCastCommandHandler(
         existing.Posture = command.Request.Posture;
         existing.Speed = command.Request.Speed;
         existing.VoicePlacement = command.Request.VoicePlacement;
+        existing.VoiceNotes = command.Request.VoiceNotes;
         existing.Description = command.Request.Description;
         existing.PublicDescription = command.Request.PublicDescription;
 

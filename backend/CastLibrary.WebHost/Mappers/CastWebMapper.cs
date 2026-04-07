@@ -34,6 +34,7 @@ public class CastWebMapper(
             Posture           = domain.Posture,
             Speed             = domain.Speed,
             VoicePlacement    = domain.VoicePlacement,
+            VoiceNotes        = domain.VoiceNotes,
             Description       = domain.Description,
             PublicDescription = domain.PublicDescription,
             ImageUrl          = domain.ImageUrl,
