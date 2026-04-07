@@ -280,8 +280,8 @@
           <span class="sublocations-section-label">Sublocations</span>
           <span class="sublocations-section-line"></span>
           <button
-            class="sublocation-reveal-all-btn"
-            [class.sublocation-reveal-all-btn--visible]="allSublocationVisible()"
+            class="subLoc-reveal-all-btn"
+            [class.subLoc-reveal-all-btn--visible]="allSublocationVisible()"
             (click)="toggleAllSublocationVisibility()"
             [title]="allSublocationVisible() ? 'Hide all sublocations from players' : 'Reveal all sublocations to players'"
           >
@@ -289,7 +289,7 @@
           </button>
         </div>
 
-        <div class="subLocations-grid">
+        <div class="sublocations-grid">
           @for (subLoc of citySublocations(); track subLoc.instanceId) {
           <div class="subLoc-card-wrapper" (click)="goToSublocation(subLoc)">
             <div class="pc-card pc-card-sublocation">

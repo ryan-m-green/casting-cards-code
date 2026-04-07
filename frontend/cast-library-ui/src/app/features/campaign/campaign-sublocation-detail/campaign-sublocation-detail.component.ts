@@ -179,6 +179,7 @@ export class CampaignSublocationDetailComponent implements OnInit, OnDestroy {
   startAddingSecret() {
     this.newSecretContent.set('');
     this.addingSecret.set(true);
+    requestAnimationFrame(() => this.expandPanel());
   }
 
   cancelAddingSecret() {
@@ -291,7 +292,7 @@ export class CampaignSublocationDetailComponent implements OnInit, OnDestroy {
   confirmAddShopItem() {
     const name   = this.newShopItemName().trim();
     if (!name) return;
-    const amount   = this.newShopItemAmount().trim();
+    const amount   = String(this.newShopItemAmount() ?? '').trim();
     const currency = this.newShopItemCurrency();
     const price    = amount ? `${amount} ${currency}` : '';
     const body = { name, price, description: '' };

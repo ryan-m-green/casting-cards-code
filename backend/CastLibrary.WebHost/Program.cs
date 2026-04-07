@@ -70,7 +70,7 @@ builder.Services.AddSignalR();
 
 // Configure CORS - support both localhost for development and environment-based URLs
 var allowedOrigins = builder.Configuration["AllowedOrigins"]?.Split(";", StringSplitOptions.RemoveEmptyEntries)
-    ?? new[] { "http://localhost:4200" };
+    ?? new[] { "http://localhost:4200", "http://localhost:5048" };
 
 builder.Services.AddCors(options =>
 {
@@ -141,7 +141,8 @@ app.Use(async (context, next) =>
     var path = context.Request.Path;
     if (!path.StartsWithSegments("/api") &&
         !path.StartsWithSegments("/hubs") &&
-        !path.StartsWithSegments("/health"))
+        !path.StartsWithSegments("/health") &&
+        !path.StartsWithSegments("/images"))
     {
         context.Request.Path = "/api" + path;
     }
