@@ -1,4 +1,4 @@
-﻿namespace CastLibrary.Shared.Entities;
+namespace CastLibrary.Shared.Entities;
 
 public class CampaignSecretEntity
 {
@@ -6,7 +6,7 @@ public class CampaignSecretEntity
     public Guid CampaignId { get; set; }
     public Guid? CastInstanceId { get; set; }
     public Guid? CityInstanceId { get; set; }
-    public Guid? LocationInstanceId { get; set; }
+    public Guid? SublocationInstanceId { get; set; }
     public string Content { get; set; } = string.Empty;
     public int SortOrder { get; set; }
     public bool IsRevealed { get; set; }

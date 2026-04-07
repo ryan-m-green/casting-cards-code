@@ -25,10 +25,10 @@ namespace CastLibrary.WebHost.IoC
             services.AddScoped<ICityInsertRepository, CityInsertRepository>();
             services.AddScoped<ICityUpdateRepository, CityUpdateRepository>();
             services.AddScoped<ICityDeleteRepository, CityDeleteRepository>();
-            services.AddScoped<ILocationReadRepository, LocationReadRepository>();
-            services.AddScoped<ILocationInsertRepository, LocationInsertRepository>();
-            services.AddScoped<ILocationUpdateRepository, LocationUpdateRepository>();
-            services.AddScoped<ILocationDeleteRepository, LocationDeleteRepository>(); 
+            services.AddScoped<ISublocationReadRepository, SublocationReadRepository>();
+            services.AddScoped<ISublocationInsertRepository, SublocationInsertRepository>();
+            services.AddScoped<ISublocationUpdateRepository, SublocationUpdateRepository>();
+            services.AddScoped<ISublocationDeleteRepository, SublocationDeleteRepository>();
             services.AddScoped<ICampaignReadRepository, CampaignReadRepository>();
             services.AddScoped<ICampaignInsertRepository, CampaignInsertRepository>();
             services.AddScoped<ICampaignUpdateRepository, CampaignUpdateRepository>();

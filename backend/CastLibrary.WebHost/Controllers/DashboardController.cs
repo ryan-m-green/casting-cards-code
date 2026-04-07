@@ -3,7 +3,7 @@ using CastLibrary.Logic.Queries.Campaign;
 using CastLibrary.Logic.Queries.Cast;
 using CastLibrary.Logic.Queries.City;
 using CastLibrary.Logic.Queries.Library;
-using CastLibrary.Logic.Queries.Location;
+using CastLibrary.Logic.Queries.Sublocation;
 using CastLibrary.Shared.Requests;
 using CastLibrary.Shared.Responses;
 using CastLibrary.WebHost.Mappers;
@@ -23,7 +23,7 @@ namespace CastLibrary.WebHost.Controllers;
 public class DashboardController(
     IGetCampaignLibraryQueryHandler getCampaignLibraryQuery,
     IGetCityLibraryQueryHandler getCityLibraryQuery,
-    IGetLocationLibraryQueryHandler getLocationLibraryQuery,
+    IGetSublocationLibraryQueryHandler getLocationLibraryQuery,
     IGetCastLibraryQueryHandler getCastLibraryQuery,
     IImportLibraryCommandHandler importLibraryCommand,
     IExportLibraryQueryHandler exportLibraryQuery,
@@ -51,7 +51,7 @@ public class DashboardController(
         {
             CampaignCount = campaigns.Count,
             CityCount = cities.Count,
-            LocationCount = locations.Count,
+            SublocationCount = locations.Count,
             CastCount = casts.Count,
             ActiveCampaign = active is null ? null : campaignMapper.ToListResponse(active),
         };
@@ -104,9 +104,9 @@ public class DashboardController(
                     ImageFileName = "city_ironhaven.png",
                 },
             ],
-            Locations =
+            Sublocations =
             [
-                new LocationCard
+                new SublocationCard
                 {
                     Name = "The Rusty Flagon",
                     Description = "A dimly lit tavern on the docks.",
@@ -238,7 +238,7 @@ public class DashboardController(
         PACKAGE STRUCTURE
         -----------------
         library-import-template.zip
-        ├── library.json        ← All Cast, City, and Location data
+        ├── library.json        ← All Cast, City, and Sublocation data
         ├── images/             ← Place image files here
         │   ├── cast_aldric_vane.png
         │   ├── city_ironhaven.png
@@ -257,7 +257,7 @@ public class DashboardController(
           }
 
         The corresponding image file must be uploaded alongside the JSON bundle
-        when importing. Images can be JPG, PNG, or WebP.
+        when importing. Images can be JPG, PNG, or WebP, but will be converted to png.
 
         If "imageFileName" is null or omitted, the card is created without an image.
         If an image file is named in the JSON but not included in the upload, the
@@ -281,6 +281,6 @@ public class DashboardController(
         ----------------------------------------
           Casts:      cast_<name>.png       e.g. cast_aldric_vane.png
           Cities:    city_<name>.png      e.g. city_ironhaven.png
-          Locations: loc_<name>.png       e.g. loc_rusty_flagon.png
+          Sublocations: loc_<name>.png       e.g. loc_rusty_flagon.png
         """;
 }

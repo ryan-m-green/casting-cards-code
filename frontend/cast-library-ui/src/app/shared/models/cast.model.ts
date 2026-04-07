@@ -37,7 +37,7 @@ export interface CampaignCastInstance extends Cast {
   campaignId: string;
   sourceCastId: string;
   cityInstanceId: string | null;
-  locationInstanceId: string | null;
+  sublocationInstanceId: string | null;
   isVisibleToPlayers: boolean;
   keywords: string[];
   dmNotes: string;

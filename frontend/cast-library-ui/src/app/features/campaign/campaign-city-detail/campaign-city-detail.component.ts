@@ -7,7 +7,7 @@ import { environment } from '../../../../environments/environment';
 import { CampaignDetail } from '../../../shared/models/campaign.model';
 import { CampaignCityInstance } from '../../../shared/models/city.model';
 import { CampaignSecret } from '../../../shared/models/secret.model';
-import { CampaignLocationInstance } from '../../../shared/models/location.model';
+import { CampaignSublocationInstance } from '../../../shared/models/sublocation.model';
 import { CampaignHubService } from '../../../core/hub/campaign-hub.service';
 import { PortalTransitionService } from '../../../core/portal-transition.service';
 import { AuthService } from '../../../core/auth/auth.service';
@@ -71,10 +71,10 @@ export class CampaignCityDetailComponent implements OnInit, OnDestroy {
     return c.secrets.filter(s => s.cityInstanceId === this.cityInstanceId());
   });
 
-  cityLocations = computed<CampaignLocationInstance[]>(() => {
+  citySublocations = computed<CampaignSublocationInstance[]>(() => {
     const c = this.campaign();
     if (!c) return [];
-    return (c.locations ?? []).filter(l => l.cityInstanceId === this.cityInstanceId());
+    return (c.sublocations ?? []).filter((l: CampaignSublocationInstance) => l.cityInstanceId === this.cityInstanceId());
   });
 
   sealedCount   = computed(() => this.citySecrets().filter(s => !s.isRevealed).length);
@@ -273,45 +273,45 @@ export class CampaignCityDetailComponent implements OnInit, OnDestroy {
     });
   }
 
-  toggleLocationVisibility(loc: CampaignLocationInstance) {
-    const next = !loc.isVisibleToPlayers;
+  toggleSublocationVisibility(subLoc: CampaignSublocationInstance) {
+    const next = !subLoc.isVisibleToPlayers;
     this.http.patch(
-      `${environment.apiUrl}/api/campaigns/${this.campaignId()}/locations/${loc.instanceId}/visibility`,
+      `${environment.apiUrl}/api/campaigns/${this.campaignId()}/sublocations/${subLoc.instanceId}/visibility`,
       { isVisibleToPlayers: next }
     ).subscribe(() => {
       this.campaign.update(c => c ? {
         ...c,
-        locations: c.locations.map(l =>
-          l.instanceId === loc.instanceId ? { ...l, isVisibleToPlayers: next } : l
+        sublocations: c.sublocations.map((l: CampaignSublocationInstance) =>
+          l.instanceId === subLoc.instanceId ? { ...l, isVisibleToPlayers: next } : l
         )
       } : c);
     });
   }
 
-  toggleAllLocationsVisibility() {
-    const locs = this.cityLocations();
-    const allVisible = locs.every(l => l.isVisibleToPlayers);
+  toggleAllSublocationVisibility() {
+    const subLocs = this.citySublocations();
+    const allVisible = subLocs.every(l => l.isVisibleToPlayers);
     const next = !allVisible;
     this.http.patch(
-      `${environment.apiUrl}/api/campaigns/${this.campaignId()}/cities/${this.cityInstanceId()}/locations/visibility`,
+      `${environment.apiUrl}/api/campaigns/${this.campaignId()}/cities/${this.cityInstanceId()}/sublocations/visibility`,
       { isVisibleToPlayers: next }
     ).subscribe(() => {
       this.campaign.update(c => c ? {
         ...c,
-        locations: c.locations.map(l =>
+        sublocations: c.sublocations.map((l: CampaignSublocationInstance) =>
           l.cityInstanceId === this.cityInstanceId() ? { ...l, isVisibleToPlayers: next } : l
         )
       } : c);
     });
   }
 
-  allLocationsVisible = computed(() => {
-    const locs = this.cityLocations();
-    return locs.length > 0 && locs.every(l => l.isVisibleToPlayers);
+  allSublocationVisible = computed(() => {
+    const subLocs = this.citySublocations();
+    return subLocs.length > 0 && subLocs.every(l => l.isVisibleToPlayers);
   });
 
-  goToLocation(loc: CampaignLocationInstance) {
-    this.router.navigate(['/campaign', this.campaignId(), 'locations', loc.instanceId]);
+  goToSublocation(subLoc: CampaignSublocationInstance) {
+    this.router.navigate(['/campaign', this.campaignId(), 'sublocations', subLoc.instanceId]);
   }
 
   exitToLibrary() {

@@ -24,7 +24,7 @@ public class AddCastToCampaignCommandHandler(
         var existing = await campaignRepository.GetCastInstanceBySourceCastIdAsync(command.CampaignId, command.Request.CastId);
         if (existing is not null) return null;
 
-        var instance = castInstanceFactory.Create(cast, command.CampaignId, command.Request.CityInstanceId, command.Request.LocationInstanceId);
+        var instance = castInstanceFactory.Create(cast, command.CampaignId, command.Request.CityInstanceId, command.Request.SublocationInstanceId);
         return await campaignInsertRepository.InsertCastInstanceAsync(instance);
     }
 }

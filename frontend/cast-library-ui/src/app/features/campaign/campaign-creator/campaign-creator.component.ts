@@ -1,4 +1,4 @@
-﻿import { Component, OnInit, OnDestroy, signal, inject, computed, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
+import { Component, OnInit, OnDestroy, signal, inject, computed, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
 import { Router, RouterLink, ActivatedRoute } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
@@ -8,7 +8,7 @@ import { environment } from '../../../../environments/environment';
 import { City } from '../../../shared/models/city.model';
 import { CampaignDetail, CampaignInviteCode, CampaignPlayer } from '../../../shared/models/campaign.model';
 import { CampaignCastInstance } from '../../../shared/models/cast.model';
-import { CampaignLocationInstance } from '../../../shared/models/location.model';
+import { CampaignSublocationInstance } from '../../../shared/models/sublocation.model';
 import { CardFlipComponent } from '../../../shared/components/card-flip/card-flip.component';
 import { CastRelationshipsTabComponent } from '../cast-relationships-tab/cast-relationships-tab.component';
 import { KeywordInputComponent } from '../../../shared/components/keyword-input/keyword-input.component';
@@ -58,8 +58,8 @@ export class CampaignCreatorComponent implements OnInit, OnDestroy {
   selectedDrafts = signal<CityDraft[]>([]);
   campaignId              = signal<string | null>(null);
   campaignCast            = signal<CampaignCastInstance[]>([]);
-  campaignLocations       = signal<CampaignLocationInstance[]>([]);
-  campaignLocationCount   = signal<Record<string, number>>({});
+  campaignSublocations    = signal<CampaignSublocationInstance[]>([]);
+  campaignSublocationCount = signal<Record<string, number>>({});
   deckIdx        = signal(0);
   expandedIdx    = signal(0);
   saving         = signal(false);
@@ -127,14 +127,14 @@ export class CampaignCreatorComponent implements OnInit, OnDestroy {
 
   expandedDraft = computed(() => this.selectedDrafts()[this.expandedIdx()] ?? null);
 
-  expandedCityLocations = computed(() => {
+  expandedCitySublocations = computed(() => {
     const draft = this.expandedDraft();
     if (!draft?.instanceId) return [];
-    return this.campaignLocations().filter(l => l.cityInstanceId === draft.instanceId);
+    return this.campaignSublocations().filter(l => l.cityInstanceId === draft.instanceId);
   });
 
-  castCountForLocation(locationInstanceId: string): number {
-    return this.campaignCast().filter(c => (c as any).locationInstanceId === locationInstanceId).length;
+  castCountForSublocation(sublocationInstanceId: string): number {
+    return this.campaignCast().filter(c => (c as any).sublocationInstanceId === sublocationInstanceId).length;
   }
 
   form = this.fb.group({
@@ -263,7 +263,7 @@ export class CampaignCreatorComponent implements OnInit, OnDestroy {
   removeCitySelected(index: number) {
     const draft = this.selectedDrafts()[index];
     if (draft.instanceId) {
-      const count = this.campaignLocationCount()[draft.instanceId] ?? 0;
+      const count = this.campaignSublocationCount()[draft.instanceId] ?? 0;
       if (count > 0) {
         this.pendingRemoveIdx.set(index);
         this.pendingCastCount.set(count);
@@ -409,11 +409,11 @@ export class CampaignCreatorComponent implements OnInit, OnDestroy {
     );
   }
 
-  goToLocations() {
+  goToSublocations() {
     const cid            = this.campaignId();
     const cityInstanceId = this.expandedDraft()?.instanceId;
     if (cid && cityInstanceId) {
-      this.router.navigate(['/dm/campaigns', cid, 'cities', cityInstanceId, 'locations']);
+      this.router.navigate(['/dm/campaigns', cid, 'cities', cityInstanceId, 'sublocations']);
     }
   }
 
@@ -520,17 +520,17 @@ export class CampaignCreatorComponent implements OnInit, OnDestroy {
     });
 
     this.campaignCast.set(detail.casts ?? []);
-    this.campaignLocations.set(detail.locations ?? []);
+    this.campaignSublocations.set(detail.sublocations ?? []);
     this.players.set(detail.players ?? []);
     this.inviteCode.set(detail.inviteCode ?? null);
 
-    const locationCountMap: Record<string, number> = {};
-    for (const loc of (detail as any).locations ?? []) {
-      if (loc.cityInstanceId) {
-        locationCountMap[loc.cityInstanceId] = (locationCountMap[loc.cityInstanceId] ?? 0) + 1;
+    const sublocationCountMap: Record<string, number> = {};
+    for (const subLoc of (detail as any).sublocations ?? []) {
+      if (subLoc.cityInstanceId) {
+        sublocationCountMap[subLoc.cityInstanceId] = (sublocationCountMap[subLoc.cityInstanceId] ?? 0) + 1;
       }
     }
-    this.campaignLocationCount.set(locationCountMap);
+    this.campaignSublocationCount.set(sublocationCountMap);
 
     this.selectedDrafts.set(drafts);
     if (drafts.length > 0) this.expandedIdx.set(0);

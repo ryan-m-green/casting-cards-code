@@ -1,4 +1,4 @@
-﻿-- Cast Library Database Schema
+-- Cast Library Database Schema
 -- Fresh install — drop all tables externally before running, or run against a blank database.
 -- Run: psql -U postgres -d cast_library -f init.sql
 
@@ -63,8 +63,8 @@ CREATE TABLE IF NOT EXISTS cities (
     created_at     TIMESTAMPTZ  NOT NULL DEFAULT NOW()
 );
 
--- ─── Library: Locations ──────────────────────────────────────────────────────
-CREATE TABLE IF NOT EXISTS locations (
+-- ─── Library: Sublocations ───────────────────────────────────────────────────
+CREATE TABLE IF NOT EXISTS sublocations (
     id           UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     city_id      UUID         REFERENCES cities(id) ON DELETE SET NULL,
     dm_user_id   UUID         NOT NULL REFERENCES users(id) ON DELETE CASCADE,
@@ -73,13 +73,13 @@ CREATE TABLE IF NOT EXISTS locations (
     created_at   TIMESTAMPTZ  NOT NULL DEFAULT NOW()
 );
 
-CREATE TABLE IF NOT EXISTS location_shop_items (
-    id          UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    location_id UUID         NOT NULL REFERENCES locations(id) ON DELETE CASCADE,
-    name        VARCHAR(255) NOT NULL,
-    price       VARCHAR(50),
-    description TEXT,
-    sort_order  INT          NOT NULL DEFAULT 0
+CREATE TABLE IF NOT EXISTS sublocation_shop_items (
+    id             UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    sublocation_id UUID         NOT NULL REFERENCES sublocations(id) ON DELETE CASCADE,
+    name           VARCHAR(255) NOT NULL,
+    price          VARCHAR(50),
+    description    TEXT,
+    sort_order     INT          NOT NULL DEFAULT 0
 );
 
 -- ─── Library: Casts ───────────────────────────────────────────────────────────
@@ -124,16 +124,16 @@ CREATE TABLE IF NOT EXISTS campaign_city_instances (
     created_at            TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
--- ─── Campaign Instances: Locations ───────────────────────────────────────────
--- source_location_id NOT NULL: a location instance must always reference its library location.
---   ON DELETE RESTRICT: prevents deleting a library location while campaign instances exist.
--- city_instance_id NOT NULL: a location must belong to a city.
---   ON DELETE CASCADE: deleting a city instance cascades to delete its location instances.
--- A location can hold many cast instances (one-to-many). Cast instances reference this table.
-CREATE TABLE IF NOT EXISTS campaign_location_instances (
+-- ─── Campaign Instances: Sublocations ────────────────────────────────────────
+-- source_sublocation_id NOT NULL: a sublocation instance must always reference its library sublocation.
+--   ON DELETE RESTRICT: prevents deleting a library sublocation while campaign instances exist.
+-- city_instance_id NOT NULL: a sublocation must belong to a city.
+--   ON DELETE CASCADE: deleting a city instance cascades to delete its sublocation instances.
+-- A sublocation can hold many cast instances (one-to-many). Cast instances reference this table.
+CREATE TABLE IF NOT EXISTS campaign_sublocation_instances (
     instance_id           UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     campaign_id           UUID         NOT NULL REFERENCES campaigns(id)                              ON DELETE CASCADE,
-    source_location_id    UUID         NOT NULL REFERENCES locations(id)                              ON DELETE RESTRICT,
+    source_sublocation_id UUID         NOT NULL REFERENCES sublocations(id)                           ON DELETE RESTRICT,
     city_instance_id      UUID         NOT NULL REFERENCES campaign_city_instances(instance_id)       ON DELETE CASCADE,
     name                  VARCHAR(255) NOT NULL,
     description           TEXT,
@@ -149,39 +149,39 @@ CREATE TABLE IF NOT EXISTS campaign_location_instances (
 --   ON DELETE RESTRICT: prevents deleting a library Cast while campaign instances exist.
 -- city_instance_id NOT NULL: a Cast must belong to a city.
 --   ON DELETE CASCADE: deleting a city instance cascades to delete its Cast instances.
--- location_instance_id NOT NULL: a Cast must be settled at a location.
---   ON DELETE CASCADE: deleting a location instance cascades to delete its Cast instances.
+-- sublocation_instance_id NOT NULL: a Cast must be settled at a sublocation.
+--   ON DELETE CASCADE: deleting a sublocation instance cascades to delete its Cast instances.
 CREATE TABLE IF NOT EXISTS campaign_cast_instances (
-    instance_id           UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    campaign_id           UUID         NOT NULL REFERENCES campaigns(id)                              ON DELETE CASCADE,
-    source_cast_id        UUID         NOT NULL REFERENCES casts(id)                                  ON DELETE RESTRICT,
-    city_instance_id      UUID         NOT NULL REFERENCES campaign_city_instances(instance_id)       ON DELETE CASCADE,
-    location_instance_id  UUID         NOT NULL REFERENCES campaign_location_instances(instance_id)   ON DELETE CASCADE,
-    name                  VARCHAR(255) NOT NULL,
-    pronouns              VARCHAR(50),
-    race                  VARCHAR(100),
-    role                  VARCHAR(100),
-    age                   VARCHAR(20),
-    alignment             VARCHAR(100),
-    posture               VARCHAR(100),
-    speed                 VARCHAR(100),
-    voice_placement       TEXT[],
-    description           TEXT,
-    public_description    TEXT,
-    is_visible_to_players BOOLEAN      NOT NULL DEFAULT FALSE,
-    custom_items          JSONB        NOT NULL DEFAULT '[]',
-    keywords              TEXT[]       NOT NULL DEFAULT '{}',
-    created_at            TIMESTAMPTZ  NOT NULL DEFAULT NOW()
+    instance_id              UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    campaign_id              UUID         NOT NULL REFERENCES campaigns(id)                              ON DELETE CASCADE,
+    source_cast_id           UUID         NOT NULL REFERENCES casts(id)                                  ON DELETE RESTRICT,
+    city_instance_id         UUID         NOT NULL REFERENCES campaign_city_instances(instance_id)       ON DELETE CASCADE,
+    sublocation_instance_id  UUID         NOT NULL REFERENCES campaign_sublocation_instances(instance_id) ON DELETE CASCADE,
+    name                     VARCHAR(255) NOT NULL,
+    pronouns                 VARCHAR(50),
+    race                     VARCHAR(100),
+    role                     VARCHAR(100),
+    age                      VARCHAR(20),
+    alignment                VARCHAR(100),
+    posture                  VARCHAR(100),
+    speed                    VARCHAR(100),
+    voice_placement          TEXT[],
+    description              TEXT,
+    public_description       TEXT,
+    is_visible_to_players    BOOLEAN      NOT NULL DEFAULT FALSE,
+    custom_items             JSONB        NOT NULL DEFAULT '[]',
+    keywords                 TEXT[]       NOT NULL DEFAULT '{}',
+    created_at               TIMESTAMPTZ  NOT NULL DEFAULT NOW()
 );
 
-CREATE TABLE IF NOT EXISTS campaign_location_shop_items (
-    id                      UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    location_instance_id    UUID         NOT NULL REFERENCES campaign_location_instances(instance_id) ON DELETE CASCADE,
-    source_location_shop_id UUID         REFERENCES location_shop_items(id) ON DELETE SET NULL,
-    name                    VARCHAR(255) NOT NULL,
-    price                   VARCHAR(50),
-    description             TEXT,
-    sort_order              INT          NOT NULL DEFAULT 0
+CREATE TABLE IF NOT EXISTS campaign_sublocation_shop_items (
+    id                        UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    sublocation_instance_id   UUID         NOT NULL REFERENCES campaign_sublocation_instances(instance_id) ON DELETE CASCADE,
+    source_sublocation_shop_id UUID        REFERENCES sublocation_shop_items(id) ON DELETE SET NULL,
+    name                      VARCHAR(255) NOT NULL,
+    price                     VARCHAR(50),
+    description               TEXT,
+    sort_order                INT          NOT NULL DEFAULT 0
 );
 
 -- ─── Campaign Secrets ─────────────────────────────────────────────────────────
@@ -189,20 +189,20 @@ CREATE TABLE IF NOT EXISTS campaign_location_shop_items (
 -- Exactly one FK column must be non-null — enforced by chk_secrets_exactly_one_entity.
 -- ON DELETE CASCADE on each FK: deleting any instance type automatically removes its secrets.
 CREATE TABLE IF NOT EXISTS campaign_secrets (
-    id                   UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    campaign_id          UUID         NOT NULL REFERENCES campaigns(id)                        ON DELETE CASCADE,
-    cast_instance_id      UUID         REFERENCES campaign_cast_instances(instance_id)           ON DELETE CASCADE,
-    city_instance_id     UUID         REFERENCES campaign_city_instances(instance_id)          ON DELETE CASCADE,
-    location_instance_id UUID         REFERENCES campaign_location_instances(instance_id)      ON DELETE CASCADE,
-    content              TEXT         NOT NULL,
-    sort_order           INT          NOT NULL DEFAULT 0,
-    is_revealed          BOOLEAN      NOT NULL DEFAULT FALSE,
-    revealed_at          TIMESTAMPTZ,
-    created_at           TIMESTAMPTZ  NOT NULL DEFAULT NOW(),
+    id                      UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    campaign_id             UUID         NOT NULL REFERENCES campaigns(id)                              ON DELETE CASCADE,
+    cast_instance_id        UUID         REFERENCES campaign_cast_instances(instance_id)               ON DELETE CASCADE,
+    city_instance_id        UUID         REFERENCES campaign_city_instances(instance_id)               ON DELETE CASCADE,
+    sublocation_instance_id UUID         REFERENCES campaign_sublocation_instances(instance_id)        ON DELETE CASCADE,
+    content                 TEXT         NOT NULL,
+    sort_order              INT          NOT NULL DEFAULT 0,
+    is_revealed             BOOLEAN      NOT NULL DEFAULT FALSE,
+    revealed_at             TIMESTAMPTZ,
+    created_at              TIMESTAMPTZ  NOT NULL DEFAULT NOW(),
     CONSTRAINT chk_secrets_exactly_one_entity CHECK (
-        (cast_instance_id      IS NOT NULL)::int +
-        (city_instance_id     IS NOT NULL)::int +
-        (location_instance_id IS NOT NULL)::int = 1
+        (cast_instance_id        IS NOT NULL)::int +
+        (city_instance_id        IS NOT NULL)::int +
+        (sublocation_instance_id IS NOT NULL)::int = 1
     )
 );
 
@@ -211,19 +211,19 @@ CREATE TABLE IF NOT EXISTS campaign_secrets (
 -- Exactly one FK column must be non-null — enforced by chk_notes_exactly_one_entity.
 -- ON DELETE CASCADE on each FK: deleting any instance type automatically removes its notes.
 CREATE TABLE IF NOT EXISTS campaign_notes (
-    id                   UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    campaign_id          UUID         NOT NULL REFERENCES campaigns(id)                        ON DELETE CASCADE,
-    cast_instance_id      UUID         REFERENCES campaign_cast_instances(instance_id)           ON DELETE CASCADE,
-    city_instance_id     UUID         REFERENCES campaign_city_instances(instance_id)          ON DELETE CASCADE,
-    location_instance_id UUID         REFERENCES campaign_location_instances(instance_id)      ON DELETE CASCADE,
-    content              TEXT         NOT NULL,
-    created_by_user_id   UUID         NOT NULL REFERENCES users(id),
-    created_at           TIMESTAMPTZ  NOT NULL DEFAULT NOW(),
-    updated_at           TIMESTAMPTZ  NOT NULL DEFAULT NOW(),
+    id                      UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    campaign_id             UUID         NOT NULL REFERENCES campaigns(id)                              ON DELETE CASCADE,
+    cast_instance_id        UUID         REFERENCES campaign_cast_instances(instance_id)               ON DELETE CASCADE,
+    city_instance_id        UUID         REFERENCES campaign_city_instances(instance_id)               ON DELETE CASCADE,
+    sublocation_instance_id UUID         REFERENCES campaign_sublocation_instances(instance_id)        ON DELETE CASCADE,
+    content                 TEXT         NOT NULL,
+    created_by_user_id      UUID         NOT NULL REFERENCES users(id),
+    created_at              TIMESTAMPTZ  NOT NULL DEFAULT NOW(),
+    updated_at              TIMESTAMPTZ  NOT NULL DEFAULT NOW(),
     CONSTRAINT chk_notes_exactly_one_entity CHECK (
-        (cast_instance_id      IS NOT NULL)::int +
-        (city_instance_id     IS NOT NULL)::int +
-        (location_instance_id IS NOT NULL)::int = 1
+        (cast_instance_id        IS NOT NULL)::int +
+        (city_instance_id        IS NOT NULL)::int +
+        (sublocation_instance_id IS NOT NULL)::int = 1
     )
 );
 
@@ -262,46 +262,46 @@ CREATE TABLE IF NOT EXISTS admin_invite_codes (
 
 -- Library
 CREATE INDEX IF NOT EXISTS idx_casts_dm_user              ON casts(dm_user_id);
-CREATE INDEX IF NOT EXISTS idx_cities_dm_user            ON cities(dm_user_id);
-CREATE INDEX IF NOT EXISTS idx_locations_city            ON locations(city_id);
-CREATE INDEX IF NOT EXISTS idx_loc_shop_location         ON location_shop_items(location_id);
+CREATE INDEX IF NOT EXISTS idx_cities_dm_user             ON cities(dm_user_id);
+CREATE INDEX IF NOT EXISTS idx_sublocations_city          ON sublocations(city_id);
+CREATE INDEX IF NOT EXISTS idx_subloc_shop_sublocation    ON sublocation_shop_items(sublocation_id);
 
 -- Campaigns
-CREATE INDEX IF NOT EXISTS idx_campaigns_dm_user         ON campaigns(dm_user_id);
+CREATE INDEX IF NOT EXISTS idx_campaigns_dm_user          ON campaigns(dm_user_id);
 
 -- Campaign city instances
-CREATE INDEX IF NOT EXISTS idx_camp_city_campaign        ON campaign_city_instances(campaign_id);
-CREATE INDEX IF NOT EXISTS idx_camp_city_source          ON campaign_city_instances(source_city_id);
+CREATE INDEX IF NOT EXISTS idx_camp_city_campaign         ON campaign_city_instances(campaign_id);
+CREATE INDEX IF NOT EXISTS idx_camp_city_source           ON campaign_city_instances(source_city_id);
 
 -- Campaign Cast instances
 CREATE INDEX IF NOT EXISTS idx_camp_cast_campaign         ON campaign_cast_instances(campaign_id);
 CREATE INDEX IF NOT EXISTS idx_camp_cast_city             ON campaign_cast_instances(city_instance_id);
-CREATE INDEX IF NOT EXISTS idx_camp_cast_location         ON campaign_cast_instances(location_instance_id);
+CREATE INDEX IF NOT EXISTS idx_camp_cast_sublocation      ON campaign_cast_instances(sublocation_instance_id);
 
--- Campaign location instances
-CREATE INDEX IF NOT EXISTS idx_camp_loc_campaign         ON campaign_location_instances(campaign_id);
-CREATE INDEX IF NOT EXISTS idx_camp_loc_city             ON campaign_location_instances(city_instance_id);
+-- Campaign sublocation instances
+CREATE INDEX IF NOT EXISTS idx_camp_subloc_campaign       ON campaign_sublocation_instances(campaign_id);
+CREATE INDEX IF NOT EXISTS idx_camp_subloc_city           ON campaign_sublocation_instances(city_instance_id);
 
--- Campaign location shop items
-CREATE INDEX IF NOT EXISTS idx_camp_loc_shop_instance    ON campaign_location_shop_items(location_instance_id);
+-- Campaign sublocation shop items
+CREATE INDEX IF NOT EXISTS idx_camp_subloc_shop_instance  ON campaign_sublocation_shop_items(sublocation_instance_id);
 
 -- Campaign secrets (typed FKs replace former instance_id index)
-CREATE INDEX IF NOT EXISTS idx_camp_secrets_campaign     ON campaign_secrets(campaign_id);
+CREATE INDEX IF NOT EXISTS idx_camp_secrets_campaign      ON campaign_secrets(campaign_id);
 CREATE INDEX IF NOT EXISTS idx_camp_secrets_cast          ON campaign_secrets(cast_instance_id);
-CREATE INDEX IF NOT EXISTS idx_camp_secrets_city         ON campaign_secrets(city_instance_id);
-CREATE INDEX IF NOT EXISTS idx_camp_secrets_location     ON campaign_secrets(location_instance_id);
+CREATE INDEX IF NOT EXISTS idx_camp_secrets_city          ON campaign_secrets(city_instance_id);
+CREATE INDEX IF NOT EXISTS idx_camp_secrets_sublocation   ON campaign_secrets(sublocation_instance_id);
 
 -- Campaign notes (typed FKs replace former instance_id index)
-CREATE INDEX IF NOT EXISTS idx_camp_notes_campaign       ON campaign_notes(campaign_id);
+CREATE INDEX IF NOT EXISTS idx_camp_notes_campaign        ON campaign_notes(campaign_id);
 CREATE INDEX IF NOT EXISTS idx_camp_notes_cast            ON campaign_notes(cast_instance_id);
-CREATE INDEX IF NOT EXISTS idx_camp_notes_city           ON campaign_notes(city_instance_id);
-CREATE INDEX IF NOT EXISTS idx_camp_notes_location       ON campaign_notes(location_instance_id);
+CREATE INDEX IF NOT EXISTS idx_camp_notes_city            ON campaign_notes(city_instance_id);
+CREATE INDEX IF NOT EXISTS idx_camp_notes_sublocation     ON campaign_notes(sublocation_instance_id);
 
 -- Gold transactions
-CREATE INDEX IF NOT EXISTS idx_gold_campaign             ON gold_transactions(campaign_id);
+CREATE INDEX IF NOT EXISTS idx_gold_campaign              ON gold_transactions(campaign_id);
 
 -- Password reset tokens
-CREATE INDEX IF NOT EXISTS idx_prt_token_hash            ON password_reset_tokens(token_hash);
+CREATE INDEX IF NOT EXISTS idx_prt_token_hash             ON password_reset_tokens(token_hash);
 
 -- ─── Cast Relationships ────────────────────────────────────────────────────────
 -- Directional sentiment between Cast instances within a campaign.

@@ -54,12 +54,12 @@ export class PlayerCampaignShellComponent implements OnInit, OnDestroy {
       const c = this.campaign();
       if (!c) return;
 
-      const instanceId = event.castInstanceId ?? event.cityInstanceId ?? event.locationInstanceId;
+      const instanceId = event.castInstanceId ?? event.cityInstanceId ?? event.sublocationInstanceId;
       if (!instanceId) return;
 
       const cardType = event.castInstanceId ? 'cast'
                      : event.cityInstanceId ? 'city'
-                     : 'location';
+                     : 'sublocation';
 
       const data = this.buildOverlayFromVisibilityEvent(c, instanceId, cardType);
       if (data) {
@@ -94,17 +94,17 @@ export class PlayerCampaignShellComponent implements OnInit, OnDestroy {
   private buildOverlayFromVisibilityEvent(
     campaign: CampaignDetail,
     instanceId: string,
-    cardType: 'city' | 'location' | 'cast',
+    cardType: 'city' | 'sublocation' | 'cast',
   ): CardRevealOverlayData | null {
     if (cardType === 'city') {
       const city = campaign.cities.find(c => c.instanceId === instanceId);
       if (!city) return null;
       return { cardType: 'city', name: city.name, descriptor: city.classification ?? '', imageUrl: city.imageUrl ?? '' };
     }
-    if (cardType === 'location') {
-      const loc = campaign.locations.find(l => l.instanceId === instanceId);
-      if (!loc) return null;
-      return { cardType: 'location', name: loc.name, descriptor: '', imageUrl: loc.imageUrl ?? '' };
+    if (cardType === 'sublocation') {
+      const subLoc = campaign.sublocations.find(l => l.instanceId === instanceId);
+      if (!subLoc) return null;
+      return { cardType: 'sublocation', name: subLoc.name, descriptor: '', imageUrl: subLoc.imageUrl ?? '' };
     }
     if (cardType === 'cast') {
       const cast = campaign.casts.find(ca => ca.instanceId === instanceId);

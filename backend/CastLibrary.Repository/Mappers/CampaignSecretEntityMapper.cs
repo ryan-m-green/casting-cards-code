@@ -1,4 +1,4 @@
-﻿using CastLibrary.Shared.Domain;
+using CastLibrary.Shared.Domain;
 using CastLibrary.Shared.Entities;
 
 namespace CastLibrary.Repository.Mappers
@@ -17,7 +17,7 @@ namespace CastLibrary.Repository.Mappers
                 CampaignId = entity.CampaignId,
                 CastInstanceId = entity.CastInstanceId,
                 CityInstanceId = entity.CityInstanceId,
-                LocationInstanceId = entity.LocationInstanceId,
+                SublocationInstanceId = entity.SublocationInstanceId,
                 Content = entity.Content,
                 SortOrder = entity.SortOrder,
                 IsRevealed = entity.IsRevealed,

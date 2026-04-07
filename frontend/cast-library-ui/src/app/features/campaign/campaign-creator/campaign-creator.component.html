@@ -1,4 +1,4 @@
-﻿<div class="pc scroll-body">
+<div class="pc scroll-body">
   <app-dm-nav />
   <div class="wr wr-page-header">
     <a class="btn-ghost" routerLink="/dm/campaigns">← Campaigns</a>
@@ -274,29 +274,29 @@
             <div class="detail-city-name">{{ draft.city.name }}</div>
             <div class="detail-city-label">campaign copy</div>
             @if (draft.instanceId && campaignId()) {
-              <button class="add-casts-btn" (click)="goToLocations()">+ Add Settling Location</button>
+              <button class="add-casts-btn" (click)="goToSublocations()">+ Add Sublocation</button>
             }
           </div>
           <div class="dv dv-mb"></div>
 
-          @if (expandedCityLocations().length > 0) {
-            <div class="loc-cast-section-label">Settling Locations</div>
-            <div class="loc-cast-summary">
-              @for (loc of expandedCityLocations(); track loc.instanceId) {
-                <div class="loc-outline-item">
-                  <div class="loc-outline-main">
-                    <span class="loc-bullet-icon" [class.loc-bullet-icon--active]="castCountForLocation(loc.instanceId) > 0">
+          @if (expandedCitySublocations().length > 0) {
+            <div class="subLoc-cast-section-label">Sublocations</div>
+            <div class="subLoc-cast-summary">
+              @for (subLoc of expandedCitySublocations(); track subLoc.instanceId) {
+                <div class="sublocation-outline-item">
+                  <div class="sublocation-outline-main">
+                    <span class="sublocation-bullet-icon" [class.sublocation-bullet-icon--active]="castCountForSublocation(subLoc.instanceId) > 0">
                       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" width="13" height="13" fill="none">
                         <circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.4"/>
                         <polyline points="4.5,8.2 6.8,10.5 11.5,5.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
                       </svg>
                     </span>
-                    <span class="loc-outline-name">{{ loc.name }}</span>
+                    <span class="subLoc-outline-name">{{ subLoc.name }}</span>
                   </div>
-                  <div class="loc-outline-child">
-                    <span class="loc-outline-child-connector">└</span>
-                    <span class="loc-outline-child-label">Cast Members</span>
-                    <span class="loc-outline-child-count">{{ castCountForLocation(loc.instanceId) }}</span>
+                  <div class="subLoc-outline-child">
+                    <span class="subLoc-outline-child-connector">└</span>
+                    <span class="subLoc-outline-child-label">Cast Members</span>
+                    <span class="subLoc-outline-child-count">{{ castCountForSublocation(subLoc.instanceId) }}</span>
                   </div>
                 </div>
               }
@@ -315,7 +315,7 @@
               </select>
             </div>
             <div class="detail-field">
-              <label class="fi-label">Geographic Location</label>
+              <label class="fi-label">Geographic Region</label>
               <input class="fi fi-sm"
                      data-city-field="geography"
                      (input)="onCityTextInput('geography', $any($event.target).value)"
@@ -417,8 +417,8 @@
     <div class="modal-box" (click)="$event.stopPropagation()">
       <div class="modal-title">Remove City?</div>
       <p class="modal-body">
-        This city has <strong>{{ pendingCastCount() }} settling location{{ pendingCastCount() === 1 ? '' : 's' }}</strong> assigned to it.
-        Removing it will also remove {{ pendingCastCount() === 1 ? 'that location and its cast' : 'those locations and their cast' }}.
+        This city has <strong>{{ pendingCastCount() }} sublocations{{ pendingCastCount() === 1 ? '' : 's' }}</strong> assigned to it.
+        Removing it will also remove {{ pendingCastCount() === 1 ? 'that sublocation and its cast' : 'those sublocations and their cast' }}.
       </p>
       <div class="modal-actions">
         <button class="btn-ghost" (click)="cancelRemove()" type="button">Cancel</button>

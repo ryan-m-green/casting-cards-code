@@ -29,28 +29,28 @@ public class CampaignsController(
     IDeleteCastInstanceCommandHandler deleteCastInstanceCommand,
     IUpdateCastInstanceCommandHandler updateCastInstanceCommand,
     IUpdateCastCustomItemsCommandHandler updateCastCustomItemsCommand,
-    IUpdateLocationCustomItemsCommandHandler updateLocationCustomItemsCommand,
-    IAddLocationToCampaignCommandHandler addLocationCommand,
-    IDeleteLocationInstanceCommandHandler deleteLocationInstanceCommand,
-    IUpdateLocationInstanceVisibilityCommandHandler updateLocationInstanceVisibilityCommand,
-    IUpdateCityLocationsVisibilityCommandHandler updateCityLocationsVisibilityCommand,
+    IUpdateSublocationCustomItemsCommandHandler updateSublocationCustomItemsCommand,
+    IAddSublocationToCampaignCommandHandler addSublocationCommand,
+    IDeleteSublocationInstanceCommandHandler deleteSublocationInstanceCommand,
+    IUpdateSublocationInstanceVisibilityCommandHandler updateSublocationInstanceVisibilityCommand,
+    IUpdateCitySublocationsVisibilityCommandHandler updateCitySublocationsVisibilityCommand,
     IUpdateCastInstanceVisibilityCommandHandler updateCastInstanceVisibilityCommand,
-    IUpdateLocationCastsVisibilityCommandHandler updateLocationCastsVisibilityCommand,
+    IUpdateSublocationCastsVisibilityCommandHandler updateSublocationCastsVisibilityCommand,
     IAddCampaignSecretCommandHandler addSecretCommand,
     IDeleteCampaignSecretCommandHandler deleteCampaignSecretCommand,
     IRevealSecretCommandHandler revealSecretCommand,
     IResealSecretCommandHandler resealSecretCommand,
     IUpdateCityInstanceKeywordsCommandHandler updateCityKeywordsCommand,
     IUpdateCastInstanceKeywordsCommandHandler updateCastKeywordsCommand,
-    IUpdateLocationInstanceKeywordsCommandHandler updateLocationKeywordsCommand,
+    IUpdateSublocationInstanceKeywordsCommandHandler updateSublocationKeywordsCommand,
     IGenerateCampaignInviteCodeCommandHandler generateInviteCodeCommand,
     IRedeemCampaignInviteCodeCommandHandler redeemInviteCodeCommand,
     IGetPlayerCampaignLibraryQueryHandler getPlayerLibraryQuery,
     IGetPlayerCampaignDetailQueryHandler getPlayerDetailQuery,
     IRemoveCampaignPlayerCommandHandler removePlayerCommand,
     IUpdateSecretCommandHandler updateSecretCommandHandler,
-    IUpdateLocationInstanceCommandHandler updateLocationInstanceCommand,
-    IAddLocationShopItemCommandHandler addLocationShopItemCommand,
+    IUpdateSublocationInstanceCommandHandler updateSublocationInstanceCommand,
+    IAddSublocationShopItemCommandHandler addSublocationShopItemCommand,
     IToggleShopItemScratchCommandHandler toggleShopItemScratchCommand,
     ICampaignWebMapper campaignMapper,
     IUserRetriever userRetriever,
@@ -129,7 +129,7 @@ public class CampaignsController(
             Status = campaign.Status.ToString(),
             Cities = cities.Select(o => campaignMapper.ToCityInstanceResponse(o)).ToList(),
             Casts = casts.Select(campaignMapper.ToCastInstanceResponse).ToList(),
-            Locations = locations.Select(campaignMapper.ToLocationInstanceResponse).ToList(),
+            Sublocations = locations.Select(campaignMapper.ToSublocationInstanceResponse).ToList(),
             Secrets = secrets.Select(campaignMapper.ToSecretResponse).ToList(),
             Relationships = relationships.Select(campaignMapper.ToRelationshipResponse).ToList(),
             Players = players.Select(campaignMapper.ToPlayerResponse).ToList(),
@@ -158,7 +158,7 @@ public class CampaignsController(
             Status = campaign.Status.ToString(),
             Cities = cities.Select(o => campaignMapper.ToCityInstanceResponse(o)).ToList(),
             Casts = casts.Select(campaignMapper.ToCastInstanceResponse).ToList(),
-            Locations = locations.Select(campaignMapper.ToLocationInstanceResponse).ToList(),
+            Sublocations = locations.Select(campaignMapper.ToSublocationInstanceResponse).ToList(),
             Secrets = secrets.Select(campaignMapper.ToSecretResponse).ToList(),
         };
 
@@ -243,11 +243,11 @@ public class CampaignsController(
         return NoContent();
     }
 
-    [HttpPatch("{id}/locations/{instanceId}/custom-items")]
-    public async Task<IActionResult> UpdateLocationCustomItems(Guid id, Guid instanceId,
+    [HttpPatch("{id}/sublocations/{instanceId}/custom-items")]
+    public async Task<IActionResult> UpdateSublocationCustomItems(Guid id, Guid instanceId,
         [FromBody] UpdateCastCustomItemsRequest request)
     {
-        await updateLocationCustomItemsCommand.HandleAsync(new UpdateLocationCustomItemsCommand(instanceId, request));
+        await updateSublocationCustomItemsCommand.HandleAsync(new UpdateSublocationCustomItemsCommand(instanceId, request));
 
         return NoContent();
     }
@@ -260,35 +260,35 @@ public class CampaignsController(
         return NoContent();
     }
 
-    [HttpPost("{id}/locations")]
-    public async Task<IActionResult> AddLocation(Guid id, [FromBody] AddLocationToCampaignRequest request)
+    [HttpPost("{id}/sublocations")]
+    public async Task<IActionResult> AddSublocation(Guid id, [FromBody] AddSublocationToCampaignRequest request)
     {
-        var instance = await addLocationCommand.HandleAsync(new AddLocationToCampaignCommand(id, request));
+        var instance = await addSublocationCommand.HandleAsync(new AddSublocationToCampaignCommand(id, request));
 
         if (instance is null)
         {
             return NotFound();
         }
 
-        var response = campaignMapper.ToLocationInstanceResponse(instance);
+        var response = campaignMapper.ToSublocationInstanceResponse(instance);
         return Ok(response);
     }
 
-    [HttpPatch("{id}/locations/{instanceId}")]
-    public async Task<IActionResult> UpdateLocationInstance(Guid id, Guid instanceId,
-        [FromBody] UpdateLocationInstanceRequest request)
+    [HttpPatch("{id}/sublocations/{instanceId}")]
+    public async Task<IActionResult> UpdateSublocationInstance(Guid id, Guid instanceId,
+        [FromBody] UpdateSublocationInstanceRequest request)
     {
-        await updateLocationInstanceCommand.HandleAsync(new UpdateLocationInstanceCommand(instanceId, request));
+        await updateSublocationInstanceCommand.HandleAsync(new UpdateSublocationInstanceCommand(instanceId, request));
 
         return NoContent();
     }
 
-    [HttpPost("{id}/locations/{instanceId}/shop-items")]
-    public async Task<IActionResult> AddLocationShopItem(Guid id, Guid instanceId,
-        [FromBody] AddLocationShopItemRequest request)
+    [HttpPost("{id}/sublocations/{instanceId}/shop-items")]
+    public async Task<IActionResult> AddSublocationShopItem(Guid id, Guid instanceId,
+        [FromBody] AddSublocationShopItemRequest request)
     {
-        var item = await addLocationShopItemCommand.HandleAsync(
-            new AddLocationShopItemCommand(instanceId, request));
+        var item = await addSublocationShopItemCommand.HandleAsync(
+            new AddSublocationShopItemCommand(instanceId, request));
 
         return Ok(new ShopItemResponse
         {
@@ -300,7 +300,7 @@ public class CampaignsController(
         });
     }
 
-    [HttpPatch("{id}/locations/{instanceId}/shop-items/{shopItemId}/scratch")]
+    [HttpPatch("{id}/sublocations/{instanceId}/shop-items/{shopItemId}/scratch")]
     public async Task<IActionResult> ToggleShopItemScratch(Guid id, Guid instanceId, Guid shopItemId)
     {
         await toggleShopItemScratchCommand.HandleAsync(new ToggleShopItemScratchCommand(id, shopItemId));
@@ -308,42 +308,42 @@ public class CampaignsController(
         return NoContent();
     }
 
-    [HttpDelete("{id}/locations/{instanceId}")]
-    public async Task<IActionResult> DeleteLocation(Guid id, Guid instanceId)
+    [HttpDelete("{id}/sublocations/{instanceId}")]
+    public async Task<IActionResult> DeleteSublocation(Guid id, Guid instanceId)
     {
-        await deleteLocationInstanceCommand.HandleAsync(new DeleteLocationInstanceCommand(instanceId));
+        await deleteSublocationInstanceCommand.HandleAsync(new DeleteSublocationInstanceCommand(instanceId));
 
         return NoContent();
     }
 
-    [HttpPatch("{id}/locations/{instanceId}/visibility")]
-    public async Task<IActionResult> UpdateLocationInstanceVisibility(Guid id, Guid instanceId,
-        [FromBody] UpdateLocationInstanceVisibilityRequest request)
+    [HttpPatch("{id}/sublocations/{instanceId}/visibility")]
+    public async Task<IActionResult> UpdateSublocationInstanceVisibility(Guid id, Guid instanceId,
+        [FromBody] UpdateSublocationInstanceVisibilityRequest request)
     {
-        await updateLocationInstanceVisibilityCommand.HandleAsync(new UpdateLocationInstanceVisibilityCommand(instanceId, request));
+        await updateSublocationInstanceVisibilityCommand.HandleAsync(new UpdateSublocationInstanceVisibilityCommand(instanceId, request));
 
         await hubContext.Clients.Group(id.ToString()).SendAsync("CardVisibilityChanged", new CardVisibilityChangedEvent
         {
             CampaignId = id,
             InstanceId = instanceId,
-            CardType   = "location",
+            CardType   = "sublocation",
             IsVisible  = request.IsVisibleToPlayers,
         });
 
         return NoContent();
     }
 
-    [HttpPatch("{id}/cities/{instanceId}/locations/visibility")]
-    public async Task<IActionResult> UpdateCityLocationsVisibility(Guid id, Guid instanceId,
-        [FromBody] UpdateCityLocationsVisibilityRequest request)
+    [HttpPatch("{id}/cities/{instanceId}/sublocations/visibility")]
+    public async Task<IActionResult> UpdateCitySublocationsVisibility(Guid id, Guid instanceId,
+        [FromBody] UpdateCitySublocationsVisibilityRequest request)
     {
-        await updateCityLocationsVisibilityCommand.HandleAsync(new UpdateCityLocationsVisibilityCommand(instanceId, request));
+        await updateCitySublocationsVisibilityCommand.HandleAsync(new UpdateCitySublocationsVisibilityCommand(instanceId, request));
 
         await hubContext.Clients.Group(id.ToString()).SendAsync("BulkCardVisibilityChanged", new BulkCardVisibilityChangedEvent
         {
             CampaignId       = id,
             ParentInstanceId = instanceId,
-            CardType         = "location",
+            CardType         = "sublocation",
             IsVisible        = request.IsVisibleToPlayers,
         });
 
@@ -367,11 +367,11 @@ public class CampaignsController(
         return NoContent();
     }
 
-    [HttpPatch("{id}/locations/{instanceId}/casts/visibility")]
-    public async Task<IActionResult> UpdateLocationCastsVisibility(Guid id, Guid instanceId,
-        [FromBody] UpdateLocationCastsVisibilityRequest request)
+    [HttpPatch("{id}/sublocations/{instanceId}/casts/visibility")]
+    public async Task<IActionResult> UpdateSublocationCastsVisibility(Guid id, Guid instanceId,
+        [FromBody] UpdateCitySublocationsVisibilityRequest request)
     {
-        await updateLocationCastsVisibilityCommand.HandleAsync(new UpdateLocationCastsVisibilityCommand(instanceId, request));
+        await updateSublocationCastsVisibilityCommand.HandleAsync(new UpdateSublocationCastsVisibilityCommand(instanceId, request));
 
         await hubContext.Clients.Group(id.ToString()).SendAsync("BulkCardVisibilityChanged", new BulkCardVisibilityChangedEvent
         {
@@ -415,10 +415,10 @@ public class CampaignsController(
         {
             SecretId           = secretId,
             CampaignId         = id,
-            CastInstanceId     = secret.CastInstanceId,
-            CityInstanceId     = secret.CityInstanceId,
-            LocationInstanceId = secret.LocationInstanceId,
-            SecretContent      = secret.Content,
+            CastInstanceId        = secret.CastInstanceId,
+            CityInstanceId        = secret.CityInstanceId,
+            SublocationInstanceId = secret.SublocationInstanceId,
+            SecretContent         = secret.Content,
         });
 
         var response = campaignMapper.ToSecretResponse(secret);
@@ -438,9 +438,9 @@ public class CampaignsController(
         {
             SecretId           = secretId,
             CampaignId         = id,
-            CastInstanceId     = secret.CastInstanceId,
-            CityInstanceId     = secret.CityInstanceId,
-            LocationInstanceId = secret.LocationInstanceId,
+            CastInstanceId        = secret.CastInstanceId,
+            CityInstanceId        = secret.CityInstanceId,
+            SublocationInstanceId = secret.SublocationInstanceId,
         });
 
         var response = campaignMapper.ToSecretResponse(secret);
@@ -467,12 +467,12 @@ public class CampaignsController(
         return NoContent();
     }
 
-    [HttpPatch("{id}/locations/{instanceId}/keywords")]
-    public async Task<IActionResult> UpdateLocationKeywords(Guid id, Guid instanceId,
+    [HttpPatch("{id}/sublocations/{instanceId}/keywords")]
+    public async Task<IActionResult> UpdateSublocationKeywords(Guid id, Guid instanceId,
         [FromBody] UpdateInstanceKeywordsRequest request)
     {
-        await updateLocationKeywordsCommand.HandleAsync(
-            new UpdateLocationInstanceKeywordsCommand(instanceId, userRetriever.GetUserId(User), request));
+        await updateSublocationKeywordsCommand.HandleAsync(
+            new UpdateSublocationInstanceKeywordsCommand(instanceId, userRetriever.GetUserId(User), request));
 
         return NoContent();
     }

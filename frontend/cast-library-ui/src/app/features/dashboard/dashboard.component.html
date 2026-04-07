@@ -1,4 +1,4 @@
-﻿<div class="pc scroll-body">
+<div class="pc scroll-body">
   <app-dm-nav />
 
   <p class="pnum dashboard-welcome">Welcome Back, {{ auth.currentUser()?.displayName }}</p>
@@ -13,9 +13,9 @@
       <div class="sv-value">{{ stats().cityCount }}</div>
       <div class="sv-label">Cities</div>
     </div>
-    <div class="sv" (click)="goto('/dm/locations')">
-      <div class="sv-value">{{ stats().locationCount }}</div>
-      <div class="sv-label">Locations</div>
+    <div class="sv" (click)="goto('/dm/sublocations')">
+      <div class="sv-value">{{ stats().sublocationCount }}</div>
+      <div class="sv-label">Sublocations</div>
     </div>
     <div class="sv" (click)="goto('/dm/campaigns')">
       <div class="sv-value">{{ stats().campaignCount }}</div>
@@ -23,10 +23,12 @@
     </div>
   </div>
 
+  <div class="section-label section-label-mb">Quick Actions</div>
+
   <!-- Active Campaign -->
   @if (stats().activeCampaign) {
-    <div class="section-label section-label-mb">Active Campaign</div>
     <div class="wb accent active-campaign-item" (click)="portalEnter(stats().activeCampaign!.id, stats().activeCampaign!.spineColor)">
+      <div class="wbd active-campaign-prompt">Get back in to your latest campaign</div>
       <div class="wr">
         <div class="flex-1">
           <div class="wbl">{{ stats().activeCampaign!.name }}</div>
@@ -34,6 +36,12 @@
         </div>
         <span class="list-arrow">›</span>
       </div>
+    </div>
+    <div class="wr section-label-mb">
+      <button class="btn-ghost" (click)="goto('/dm/cast/new')">+ New Cast</button>
+      <button class="btn-ghost" (click)="goto('/dm/cities/new')">+ New City</button>
+      <button class="btn-ghost" (click)="goto('/dm/sublocations/new')">+ New Sublocation</button>
+      <button class="btn-ghost" (click)="goto('/dm/campaigns/new')">+ New Campaign</button>
     </div>
 
     <!-- Hidden portal card; cloned as animation ghost -->
@@ -56,14 +64,6 @@
       </div>
     </div>
   }
-
-  <div class="section-label section-label-mb">Quick Actions</div>
-  <div class="wr">
-    <button class="btn-ghost" (click)="goto('/dm/cast/new')">+ New Cast</button>
-    <button class="btn-ghost" (click)="goto('/dm/cities/new')">+ New City</button>
-    <button class="btn-ghost" (click)="goto('/dm/locations/new')">+ New Location</button>
-    <button class="btn-ghost" (click)="goto('/dm/campaigns/new')">+ New Campaign</button>
-  </div>
 
   <!-- Library Import / Export -->
   <div class="section-label section-label-mb import-section-label">Library</div>
@@ -103,7 +103,7 @@
       <div class="import-summary">
         {{ importResult()!.castsImported }} cast member{{ importResult()!.castsImported !== 1 ? 's' : '' }} ·
         {{ importResult()!.citiesImported }} {{ importResult()!.citiesImported === 1 ? 'City' : 'Cities' }} ·
-        {{ importResult()!.locationsImported }} Location{{ importResult()!.locationsImported !== 1 ? 's' : '' }} imported
+        {{ importResult()!.sublocationsImported }} Sublocation{{ importResult()!.sublocationsImported !== 1 ? 's' : '' }} imported
       </div>
 
       @if (importResult()!.failures.length > 0) {

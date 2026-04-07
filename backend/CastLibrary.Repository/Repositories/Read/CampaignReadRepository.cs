@@ -19,9 +19,9 @@ public interface ICampaignReadRepository
     Task<List<CampaignCastInstanceDomain>> GetCastInstancesByCampaignAsync(Guid campaignId);
     Task<List<CampaignCityInstanceDomain>> GetCityInstancesByCampaignAsync(Guid campaignId);
     Task<CampaignCityInstanceDomain> GetCityInstanceByIdAsync(Guid instanceId);
-    Task<List<CampaignLocationInstanceDomain>> GetLocationInstancesByCampaignAsync(Guid campaignId);
-    Task<CampaignLocationInstanceDomain> GetLocationInstanceByIdAsync(Guid instanceId);
-    Task<CampaignLocationInstanceDomain> GetLocationInstanceBySourceLocationIdAsync(Guid campaignId, Guid sourceLocationId);
+    Task<List<CampaignSublocationInstanceDomain>> GetSublocationInstancesByCampaignAsync(Guid campaignId);
+    Task<CampaignSublocationInstanceDomain> GetSublocationInstanceByIdAsync(Guid instanceId);
+    Task<CampaignSublocationInstanceDomain> GetSublocationInstanceBySourceSublocationIdAsync(Guid campaignId, Guid sourceSublocationId);
 }
 
 public class CampaignReadRepository(
@@ -199,7 +199,7 @@ public class CampaignReadRepository(
             CampaignId = r.campaign_id,
             SourceCastId = r.source_cast_id,
             CityInstanceId = r.city_instance_id,
-            LocationInstanceId = r.location_instance_id,
+            SublocationInstanceId = r.sublocation_instance_id,
             Name = r.name,
             Pronouns = r.pronouns ?? string.Empty,
             Race = r.race ?? string.Empty,
@@ -240,7 +240,7 @@ public class CampaignReadRepository(
             CampaignId = r.campaign_id,
             SourceCastId = r.source_cast_id,
             CityInstanceId = r.city_instance_id,
-            LocationInstanceId = r.location_instance_id,
+            SublocationInstanceId = r.sublocation_instance_id,
             Name = r.name,
             Pronouns = r.pronouns ?? string.Empty,
             Race = r.race ?? string.Empty,
@@ -280,7 +280,7 @@ public class CampaignReadRepository(
             CampaignId = r.campaign_id,
             SourceCastId = r.source_cast_id,
             CityInstanceId = r.city_instance_id,
-            LocationInstanceId = r.location_instance_id,
+            SublocationInstanceId = r.sublocation_instance_id,
             Name = r.name,
             Pronouns = r.pronouns ?? string.Empty,
             Race = r.race ?? string.Empty,
@@ -339,95 +339,95 @@ public class CampaignReadRepository(
         };
     }
 
-    public async Task<CampaignLocationInstanceDomain> GetLocationInstanceByIdAsync(Guid instanceId)
+    public async Task<CampaignSublocationInstanceDomain> GetSublocationInstanceByIdAsync(Guid instanceId)
     {
         var spanId = correlation.NewSpan();
         var @params = new { InstanceId = instanceId };
 
-        logging.LogDbOperation(correlation.TraceId, spanId, "SELECT", "campaign_location_instances", @params);
+        logging.LogDbOperation(correlation.TraceId, spanId, "SELECT", "campaign_sublocation_instances", @params);
 
         using var conn = CreateConnection();
         var r = await conn.QueryFirstOrDefaultAsync<dynamic>(
-            @"SELECT instance_id, campaign_id, source_location_id, city_instance_id,
+            @"SELECT instance_id, campaign_id, source_sublocation_id, city_instance_id,
                      is_visible_to_players, name, description, keywords, custom_items, dm_notes
-              FROM campaign_location_instances
+              FROM campaign_sublocation_instances
               WHERE instance_id = @InstanceId",
             @params);
 
-        logging.LogDbOperation(correlation.TraceId, spanId, "SELECT", "campaign_location_instances",
+        logging.LogDbOperation(correlation.TraceId, spanId, "SELECT", "campaign_sublocation_instances",
             @params, r is null ? 0 : 1);
 
         if (r is null) return null;
-        return new CampaignLocationInstanceDomain
+        return new CampaignSublocationInstanceDomain
         {
-            InstanceId         = r.instance_id,
-            CampaignId         = r.campaign_id,
-            SourceLocationId   = r.source_location_id,
-            CityInstanceId     = r.city_instance_id,
-            IsVisibleToPlayers = r.is_visible_to_players,
-            Name               = r.name,
-            Description        = r.description ?? string.Empty,
-            Keywords           = r.keywords ?? Array.Empty<string>(),
-            CustomItems        = ParseCustomItems((string)r.custom_items),
-            DmNotes            = r.dm_notes ?? string.Empty,
-            ShopItems          = [],
+            InstanceId           = r.instance_id,
+            CampaignId           = r.campaign_id,
+            SourceSublocationId  = r.source_sublocation_id,
+            CityInstanceId       = r.city_instance_id,
+            IsVisibleToPlayers   = r.is_visible_to_players,
+            Name                 = r.name,
+            Description          = r.description ?? string.Empty,
+            Keywords             = r.keywords ?? Array.Empty<string>(),
+            CustomItems          = ParseCustomItems((string)r.custom_items),
+            DmNotes              = r.dm_notes ?? string.Empty,
+            ShopItems            = [],
         };
     }
 
-    public async Task<List<CampaignLocationInstanceDomain>> GetLocationInstancesByCampaignAsync(Guid campaignId)
+    public async Task<List<CampaignSublocationInstanceDomain>> GetSublocationInstancesByCampaignAsync(Guid campaignId)
     {
         var spanId = correlation.NewSpan();
         var @params = new { CampaignId = campaignId };
 
-        logging.LogDbOperation(correlation.TraceId, spanId, "SELECT", "campaign_location_instances", @params);
+        logging.LogDbOperation(correlation.TraceId, spanId, "SELECT", "campaign_sublocation_instances", @params);
 
         using var conn = CreateConnection();
         var instances = (await conn.QueryAsync<dynamic>(
-            @"SELECT instance_id, campaign_id, source_location_id, city_instance_id,
+            @"SELECT instance_id, campaign_id, source_sublocation_id, city_instance_id,
                      is_visible_to_players, name, description, keywords, custom_items, dm_notes
-              FROM campaign_location_instances
+              FROM campaign_sublocation_instances
               WHERE campaign_id = @CampaignId
               ORDER BY name",
             @params)).ToList();
 
         if (instances.Count == 0)
         {
-            logging.LogDbOperation(correlation.TraceId, spanId, "SELECT", "campaign_location_instances",
+            logging.LogDbOperation(correlation.TraceId, spanId, "SELECT", "campaign_sublocation_instances",
                 @params, 0);
             return [];
         }
 
-        var domainInstances = instances.Select(r => new CampaignLocationInstanceDomain
+        var domainInstances = instances.Select(r => new CampaignSublocationInstanceDomain
         {
-            InstanceId = r.instance_id,
-            CampaignId = r.campaign_id,
-            SourceLocationId = r.source_location_id,
-            CityInstanceId = r.city_instance_id,
-            IsVisibleToPlayers = r.is_visible_to_players,
-            Name = r.name,
-            Description = r.description ?? string.Empty,
-            Keywords = r.keywords ?? Array.Empty<string>(),
-            CustomItems = ParseCustomItems((string)r.custom_items),
-            DmNotes = r.dm_notes ?? string.Empty,
-            ShopItems = [],
+            InstanceId          = r.instance_id,
+            CampaignId          = r.campaign_id,
+            SourceSublocationId = r.source_sublocation_id,
+            CityInstanceId      = r.city_instance_id,
+            IsVisibleToPlayers  = r.is_visible_to_players,
+            Name                = r.name,
+            Description         = r.description ?? string.Empty,
+            Keywords            = r.keywords ?? Array.Empty<string>(),
+            CustomItems         = ParseCustomItems((string)r.custom_items),
+            DmNotes             = r.dm_notes ?? string.Empty,
+            ShopItems           = [],
         }).ToList();
 
         var instanceIds = domainInstances.Select(i => i.InstanceId).ToArray();
         var shopItems = (await conn.QueryAsync<dynamic>(
-            @"SELECT id, location_instance_id, name, price, description, sort_order, is_scratched_off
-              FROM campaign_location_shop_items
-              WHERE location_instance_id = ANY(@Ids)
+            @"SELECT id, sublocation_instance_id, name, price, description, sort_order, is_scratched_off
+              FROM campaign_sublocation_shop_items
+              WHERE sublocation_instance_id = ANY(@Ids)
               ORDER BY sort_order",
             new { Ids = instanceIds })).ToList();
 
         foreach (var inst in domainInstances)
         {
             inst.ShopItems = shopItems
-                .Where(s => (Guid)s.location_instance_id == inst.InstanceId)
+                .Where(s => (Guid)s.sublocation_instance_id == inst.InstanceId)
                 .Select(s => new ShopItemDomain
                 {
                     Id = s.id,
-                    LocationId = s.location_instance_id,
+                    SublocationId = s.sublocation_instance_id,
                     Name = s.name,
                     Price = s.price ?? string.Empty,
                     Description = s.description ?? string.Empty,
@@ -436,39 +436,39 @@ public class CampaignReadRepository(
                 }).ToList();
         }
 
-        logging.LogDbOperation(correlation.TraceId, spanId, "SELECT", "campaign_location_instances",
+        logging.LogDbOperation(correlation.TraceId, spanId, "SELECT", "campaign_sublocation_instances",
             @params, domainInstances.Count);
 
         return domainInstances;
     }
 
-    public async Task<CampaignLocationInstanceDomain> GetLocationInstanceBySourceLocationIdAsync(Guid campaignId, Guid sourceLocationId)
+    public async Task<CampaignSublocationInstanceDomain> GetSublocationInstanceBySourceSublocationIdAsync(Guid campaignId, Guid sourceSublocationId)
     {
         var spanId = correlation.NewSpan();
-        var @params = new { CampaignId = campaignId, SourceLocationId = sourceLocationId };
+        var @params = new { CampaignId = campaignId, SourceSublocationId = sourceSublocationId };
 
-        logging.LogDbOperation(correlation.TraceId, spanId, "SELECT", "campaign_location_instances", @params);
+        logging.LogDbOperation(correlation.TraceId, spanId, "SELECT", "campaign_sublocation_instances", @params);
 
         using var conn = CreateConnection();
         var r = await conn.QueryFirstOrDefaultAsync<dynamic>(
-            "SELECT * FROM campaign_location_instances WHERE campaign_id = @CampaignId AND source_location_id = @SourceLocationId",
+            "SELECT * FROM campaign_sublocation_instances WHERE campaign_id = @CampaignId AND source_sublocation_id = @SourceSublocationId",
             @params);
 
-        logging.LogDbOperation(correlation.TraceId, spanId, "SELECT", "campaign_location_instances",
+        logging.LogDbOperation(correlation.TraceId, spanId, "SELECT", "campaign_sublocation_instances",
             @params, r is null ? 0 : 1);
 
         if (r is null) return null;
-        return new CampaignLocationInstanceDomain
+        return new CampaignSublocationInstanceDomain
         {
-            InstanceId = r.instance_id,
-            CampaignId = r.campaign_id,
-            SourceLocationId = r.source_location_id,
-            CityInstanceId = r.city_instance_id,
-            Name = r.name,
-            Description = r.description ?? string.Empty,
-            Keywords = r.keywords ?? Array.Empty<string>(),
-            CustomItems = ParseCustomItems((string)r.custom_items),
-            ShopItems = [],
+            InstanceId          = r.instance_id,
+            CampaignId          = r.campaign_id,
+            SourceSublocationId = r.source_sublocation_id,
+            CityInstanceId      = r.city_instance_id,
+            Name                = r.name,
+            Description         = r.description ?? string.Empty,
+            Keywords            = r.keywords ?? Array.Empty<string>(),
+            CustomItems         = ParseCustomItems((string)r.custom_items),
+            ShopItems           = [],
         };
     }
 

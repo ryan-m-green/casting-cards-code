@@ -6,12 +6,12 @@
 ALTER TABLE campaign_city_instances
     ADD COLUMN IF NOT EXISTS dm_notes TEXT;
 
--- [002] Add dm_notes to campaign_location_instances
-ALTER TABLE campaign_location_instances
+-- [002] Add dm_notes to campaign_sublocation_instances
+ALTER TABLE campaign_sublocation_instances
     ADD COLUMN IF NOT EXISTS dm_notes TEXT;
 
--- [003] Add is_scratched_off to campaign_location_shop_items
-ALTER TABLE campaign_location_shop_items
+-- [003] Add is_scratched_off to campaign_sublocation_shop_items
+ALTER TABLE campaign_sublocation_shop_items
     ADD COLUMN IF NOT EXISTS is_scratched_off BOOLEAN NOT NULL DEFAULT FALSE;
 
 -- [004] Add dm_notes to campaign_cast_instances

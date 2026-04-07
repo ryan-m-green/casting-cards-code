@@ -272,60 +272,58 @@
 
     </div>
 
-    <!-- ── Locations section ── -->
-    @if (isDm() && cityLocations().length) {
-      <div class="city-locations-section">
+    <!-- ── Sublocations section ── -->
+    @if (isDm() && citySublocations().length) {
+      <div class="city-sublocations-section">
 
-        <div class="locations-section-header">
-          <span class="locations-section-label">Locations</span>
-          <span class="locations-section-line"></span>
+        <div class="sublocations-section-header">
+          <span class="sublocations-section-label">Sublocations</span>
+          <span class="sublocations-section-line"></span>
           <button
-            class="loc-reveal-all-btn"
-            [class.loc-reveal-all-btn--visible]="allLocationsVisible()"
-            (click)="toggleAllLocationsVisibility()"
-            [title]="allLocationsVisible() ? 'Hide all locations from players' : 'Reveal all locations to players'"
+            class="sublocation-reveal-all-btn"
+            [class.sublocation-reveal-all-btn--visible]="allSublocationVisible()"
+            (click)="toggleAllSublocationVisibility()"
+            [title]="allSublocationVisible() ? 'Hide all sublocations from players' : 'Reveal all sublocations to players'"
           >
-            {{ allLocationsVisible() ? '🔓 Hide All' : '🔒 Reveal All' }}
+            {{ allSublocationVisible() ? '🔓 Hide All' : '🔒 Reveal All' }}
           </button>
         </div>
 
-        <div class="locations-grid">
-          @for (loc of cityLocations(); track loc.instanceId) {
-            <div class="loc-card-wrapper" (click)="goToLocation(loc)">
-              <div class="pc-card pc-card-location">
-                <div class="lib-card-front">
-                  <div class="card-slot-front">
-                    <div class="card-front-header">
-                      <div class="card-name">{{ loc.name }}</div>
-                      <div class="card-descriptor">{{ loc.shopItems?.length ?? 0 }} shop items</div>
-                    </div>
-                    <div class="dv dv-card"></div>
-                    <div class="card-image-area">
-                      @if (loc.imageUrl) {
-                        <img [src]="loc.imageUrl" alt="" class="card-img-fill" />
-                      } @else {
-                        <div class="card-placeholder">
-                          <span class="card-initial">{{ initial(loc.name) }}</span>
-                        </div>
-                      }
-                      @if (loc.description) {
-                        <div class="card-desc-overlay">
-                          <p class="card-desc-text">{{ loc.description }}</p>
-                        </div>
-                      }
-                    </div>
-                    <button
-                      class="city-lock-btn"
-                      [class.city-lock-btn--visible]="loc.isVisibleToPlayers"
-                      (click)="toggleLocationVisibility(loc); $event.stopPropagation()"
-                      [title]="loc.isVisibleToPlayers ? 'Hide from players' : 'Reveal to players'"
-                    >
-                      {{ loc.isVisibleToPlayers ? '🔓' : '🔒' }}
-                    </button>
+        <div class="subLocations-grid">
+          @for (subLoc of citySublocations(); track subLoc.instanceId) {
+          <div class="subLoc-card-wrapper" (click)="goToSublocation(subLoc)">
+            <div class="pc-card pc-card-sublocation">
+              <div class="lib-card-front">
+                <div class="card-slot-front">
+                  <div class="card-front-header">
+                    <div class="card-name">{{ subLoc.name }}</div>
+                    <div class="card-descriptor">{{ subLoc.shopItems?.length ?? 0 }} shop items</div>
                   </div>
+                  <div class="dv dv-card"></div>
+                  <div class="card-image-area">
+                    @if (subLoc.imageUrl) {
+                    <img [src]="subLoc.imageUrl" alt="" class="card-img-fill" />
+                    } @else {
+                    <div class="card-placeholder">
+                      <span class="card-initial">{{ initial(subLoc.name) }}</span>
+                    </div>
+                    }
+                    @if (subLoc.description) {
+                    <div class="card-desc-overlay">
+                      <p class="card-desc-text">{{ subLoc.description }}</p>
+                    </div>
+                    }
+                  </div>
+                  <button class="city-lock-btn"
+                          [class.city-lock-btn--visible]="subLoc.isVisibleToPlayers"
+                          (click)="toggleSublocationVisibility(subLoc); $event.stopPropagation()"
+                          [title]="subLoc.isVisibleToPlayers ? 'Hide from players' : 'Reveal to players'">
+                    {{ subLoc.isVisibleToPlayers ? '🔓' : '🔒' }}
+                  </button>
                 </div>
               </div>
             </div>
+          </div>
           }
         </div>
 

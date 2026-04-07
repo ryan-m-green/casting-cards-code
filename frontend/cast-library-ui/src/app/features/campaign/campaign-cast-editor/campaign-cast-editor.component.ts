@@ -1,4 +1,4 @@
-﻿import { Component, OnInit, OnDestroy, signal, inject, computed, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, OnDestroy, signal, inject, computed, ViewChild, ElementRef } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
@@ -41,7 +41,7 @@ export class CampaignCastEditorComponent implements OnInit, OnDestroy {
 
   campaignId          = '';
   cityInstanceId      = '';
-  locationInstanceId  = '';
+  sublocationInstanceId  = '';
   allCast              = signal<Cast[]>([]);
   addedCast            = signal<AddedCast[]>([]);
   allCampaignCastIds   = signal<Set<string>>(new Set());
@@ -98,7 +98,7 @@ export class CampaignCastEditorComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.campaignId         = this.route.snapshot.paramMap.get('id')                 ?? '';
     this.cityInstanceId     = this.route.snapshot.paramMap.get('cityId')             ?? '';
-    this.locationInstanceId = this.route.snapshot.paramMap.get('locationInstanceId') ?? '';
+    this.sublocationInstanceId = this.route.snapshot.paramMap.get('sublocationInstanceId') ?? '';
 
     this.http.get<{ keywords: string[] }>(`${environment.apiUrl}/api/users/keywords`)
       .subscribe(r => this.allDmKeywords.set(r.keywords));
@@ -111,18 +111,18 @@ export class CampaignCastEditorComponent implements OnInit, OnDestroy {
 
       const allCastInsts: any[] = campaign.casts ?? [];
 
-      // Exclude cast already settled at any location other than this one
+      // Exclude cast already settled at any sublocation other than this one
       this.allCampaignCastIds.set(
         new Set(
           allCastInsts
-            .filter((inst: any) => inst.locationInstanceId !== this.locationInstanceId)
+            .filter((inst: any) => inst.sublocationInstanceId !== this.sublocationInstanceId)
             .map((inst: any) => inst.sourceCastId)
             .filter(Boolean)
         )
       );
 
       const added: AddedCast[] = allCastInsts
-        .filter((inst: any) => inst.locationInstanceId === this.locationInstanceId)
+        .filter((inst: any) => inst.sublocationInstanceId === this.sublocationInstanceId)
         .map((inst: any) => {
           const foundCast = cast.find((n: Cast) => n.id === inst.sourceCastId);
           if (!foundCast) return null;
@@ -194,7 +194,7 @@ export class CampaignCastEditorComponent implements OnInit, OnDestroy {
 
     this.http.post<{ instanceId: string }>(
       `${environment.apiUrl}/api/campaigns/${this.campaignId}/casts`,
-      { castId: cast.id, cityInstanceId: this.cityInstanceId, locationInstanceId: this.locationInstanceId }
+      { castId: cast.id, cityInstanceId: this.cityInstanceId, sublocationInstanceId: this.sublocationInstanceId }
     ).subscribe({ next: resp => {
       this.allCampaignCastIds.update(ids => new Set([...ids, cast.id]));
       this.addedCast.update(list => [...list, { cast, instanceId: resp.instanceId, secrets: [], keywords: [] }]);
@@ -236,7 +236,7 @@ export class CampaignCastEditorComponent implements OnInit, OnDestroy {
   goBack() {
     this.router.navigate([
       '/dm/campaigns', this.campaignId,
-      'cities', this.cityInstanceId, 'locations',
+      'cities', this.cityInstanceId, 'sublocations',
     ]);
   }
 

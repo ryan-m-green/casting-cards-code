@@ -1,4 +1,4 @@
-﻿import { Routes } from '@angular/router';
+import { Routes } from '@angular/router';
 import { adminGuard, authGuard, coverGuard, dmGuard, playerGuard } from './core/auth/auth.guard';
 import { JournalShellComponent } from './layout/journal-shell/journal-shell.component';
 
@@ -23,11 +23,11 @@ export const routes: Routes = [
         loadComponent: () => import('./features/player/player-city-detail/player-city-detail.component').then(m => m.PlayerCityDetailComponent),
       },
       {
-        path: 'locations/:locationInstanceId',
-        loadComponent: () => import('./features/player/player-location-detail/player-location-detail.component').then(m => m.PlayerLocationDetailComponent),
+        path: 'sublocations/:sublocationInstanceId',
+        loadComponent: () => import('./features/player/player-sublocation-detail/player-sublocation-detail.component').then(m => m.PlayerSublocationDetailComponent),
       },
       {
-        path: 'locations/:locationInstanceId/cast/:castInstanceId',
+        path: 'sublocations/:sublocationInstanceId/cast/:castInstanceId',
         loadComponent: () => import('./features/player/player-cast-detail/player-cast-detail.component').then(m => m.PlayerCastDetailComponent),
       },
     ],
@@ -38,12 +38,12 @@ export const routes: Routes = [
     loadComponent: () => import('./features/campaign/campaign-city-detail/campaign-city-detail.component').then(m => m.CampaignCityDetailComponent),
   },
   {
-    path: 'campaign/:id/locations/:locationInstanceId',
+    path: 'campaign/:id/sublocations/:sublocationInstanceId',
     canActivate: [authGuard],
-    loadComponent: () => import('./features/campaign/campaign-location-detail/campaign-location-detail.component').then(m => m.CampaignLocationDetailComponent),
+    loadComponent: () => import('./features/campaign/campaign-sublocation-detail/campaign-sublocation-detail.component').then(m => m.CampaignSublocationDetailComponent),
   },
   {
-    path: 'campaign/:id/locations/:locationInstanceId/cast/:castInstanceId',
+    path: 'campaign/:id/sublocations/:sublocationInstanceId/cast/:castInstanceId',
     canActivate: [authGuard],
     loadComponent: () => import('./features/campaign/campaign-cast-detail/campaign-cast-detail.component').then(m => m.CampaignCastDetailComponent),
   },
@@ -128,24 +128,24 @@ export const routes: Routes = [
             loadComponent: () => import('./features/campaign/campaign-creator/campaign-creator.component').then(m => m.CampaignCreatorComponent),
           },
           {
-            path: 'campaigns/:id/cities/:cityId/locations',
-            loadComponent: () => import('./features/campaign/campaign-location-selector/campaign-location-selector.component').then(m => m.CampaignLocationSelectorComponent),
+            path: 'campaigns/:id/cities/:cityId/sublocations',
+            loadComponent: () => import('./features/campaign/campaign-sublocation-selector/campaign-sublocation-selector.component').then(m => m.CampaignSublocationSelectorComponent),
           },
           {
-            path: 'campaigns/:id/cities/:cityId/locations/:locationInstanceId/cast',
+            path: 'campaigns/:id/cities/:cityId/sublocations/:sublocationInstanceId/cast',
             loadComponent: () => import('./features/campaign/campaign-cast-editor/campaign-cast-editor.component').then(m => m.CampaignCastEditorComponent),
           },
           {
-            path: 'locations',
-            loadComponent: () => import('./features/location/location-library/location-library.component').then(m => m.LocationLibraryComponent),
+            path: 'sublocations',
+            loadComponent: () => import('./features/sublocations/sublocation-library/sublocation-library.component').then(m => m.SublocationLibraryComponent),
           },
           {
-            path: 'locations/new',
-            loadComponent: () => import('./features/location/location-form/location-form.component').then(m => m.LocationFormComponent),
+            path: 'sublocations/new',
+            loadComponent: () => import('./features/sublocations/sublocation-form/sublocation-form.component').then(m => m.SublocationFormComponent),
           },
           {
-            path: 'locations/:id',
-            loadComponent: () => import('./features/location/location-form/location-form.component').then(m => m.LocationFormComponent),
+            path: 'sublocations/:id',
+            loadComponent: () => import('./features/sublocations/sublocation-form/sublocation-form.component').then(m => m.SublocationFormComponent),
           },
           {
             path: 'change-password',

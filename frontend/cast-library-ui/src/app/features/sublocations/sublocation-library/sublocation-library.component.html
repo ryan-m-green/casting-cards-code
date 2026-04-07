@@ -1,0 +1,74 @@
+<div class="pc scroll-body">
+  <app-dm-nav />
+  <div class="wr wr-page-header">
+    <button class="btn-ghost" routerLink="/dm/dashboard">← Back</button>
+    <h2 class="page-title page-title-row">Sublocation Library</h2>
+    <button class="btn-primary" routerLink="/dm/sublocations/new">+ Create Sublocation</button>
+  </div>
+
+  <div class="card-grid">
+    @for (subloc of sublocations(); track subloc.id) {
+      <div class="pc-card pc-card-sublocation">
+        <app-card-flip>
+          <div slot="front" class="card-slot-front">
+            <button class="card-edit-btn"
+                    (click)="edit(subloc.id);$event.stopPropagation()">Edit</button>
+            <div class="card-front-header">
+              <div class="card-name">{{ subloc.name }}</div>
+              <div class="card-descriptor">{{ subloc.shopItems?.length ?? 0 }} shop items</div>
+            </div>
+            <div class="dv dv-card"></div>
+            <div class="card-image-area">
+              @if (subloc.imageUrl) {
+                <img [src]="subloc.imageUrl" alt="" class="card-img-fill" />
+              } @else {
+                <div class="card-placeholder">
+                  <span class="card-initial">{{ subloc.name?.[0]?.toUpperCase() }}</span>
+                </div>
+              }
+              @if (subloc.description) {
+                <div class="card-desc-overlay">
+                  <p class="card-desc-text">{{ subloc.description }}</p>
+                </div>
+              }
+            </div>
+          </div>
+          <div slot="back" class="card-slot-back">
+            <div class="card-back-content">
+              <div class="card-name card-back-name">{{ subloc.name }}</div>
+              <div class="dv dv-mb"></div>
+              <div class="fi-label fi-label-strong">Shop Items</div>
+              @for (item of subloc.shopItems; track item.id) {
+                <div class="wr shop-item-row">
+                  <span class="wbl">{{ item.name }}</span>
+                  <span class="pnum">{{ item.price }}</span>
+                </div>
+              }
+              @empty { <p class="wbd shop-item-empty">No shop items</p> }
+            </div>
+            <button class="card-delete-btn"
+                    (click)="confirmDelete(subloc.id);$event.stopPropagation()">Delete</button>
+          </div>
+        </app-card-flip>
+      </div>
+    }
+    @empty {
+      <p class="wbd empty-state-pad">No sublocations found.</p>
+    }
+  </div>
+</div>
+
+@if (pendingDeleteId()) {
+  <div class="delete-overlay" (click)="cancelDelete()">
+    <div class="delete-panel" (click)="$event.stopPropagation()">
+      <div class="delete-panel-title">Delete Sublocation?</div>
+      <p class="delete-panel-message">
+        This will permanently delete this sublocation and its portrait. This cannot be undone.
+      </p>
+      <div class="delete-btn-row">
+        <button class="btn-modal-cancel" (click)="cancelDelete()">Cancel</button>
+        <button class="btn-modal-delete" (click)="executeDelete()">Delete</button>
+      </div>
+    </div>
+  </div>
+}

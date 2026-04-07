@@ -19,8 +19,8 @@ public class ImportLibraryCommandHandler(
     ICastInsertRepository castInsertRepository,
     ICityReadRepository cityRepository,
     ICityInsertRepository cityInsertRepository,
-    ILocationReadRepository locationReadRepository,
-    ILocationInsertRepository locationInsertRepository,
+    ISublocationReadRepository sublocationReadRepository,
+    ISublocationInsertRepository sublocationInsertRepository,
     IImageStorageOperator imageStorage,
     IImageKeyCreator imageKeyCreator) : IImportLibraryCommandHandler
 {
@@ -33,7 +33,7 @@ public class ImportLibraryCommandHandler(
                                     .Select(n => n.Name).ToHashSet(StringComparer.OrdinalIgnoreCase);
         var existingCityNames  = (await cityRepository.GetAllByDmAsync(command.DmUserId))
                                     .Select(c => c.Name).ToHashSet(StringComparer.OrdinalIgnoreCase);
-        var existingLocNames   = (await locationReadRepository.GetAllByDmAsync(command.DmUserId))
+        var existingLocNames   = (await sublocationReadRepository.GetAllByDmAsync(command.DmUserId))
                                     .Select(l => l.Name).ToHashSet(StringComparer.OrdinalIgnoreCase);
 
         var insertedCastNames  = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
@@ -104,12 +104,12 @@ public class ImportLibraryCommandHandler(
             }
         }
 
-        foreach (var card in command.Bundle.Locations)
+        foreach (var card in command.Bundle.Sublocations)
         {
             try
             {
                 var name   = ResolveName(card.Name, existingLocNames, insertedLocNames);
-                var domain = new LocationDomain
+                var domain = new SublocationDomain
                 {
                     Id = Guid.NewGuid(), DmUserId = command.DmUserId, Name = name,
                     Description = card.Description, CreatedAt = DateTime.UtcNow,
@@ -120,18 +120,18 @@ public class ImportLibraryCommandHandler(
                     }).ToList(),
                 };
 
-                await locationInsertRepository.InsertAsync(domain);
+                await sublocationInsertRepository.InsertAsync(domain);
                 insertedLocNames.Add(name);
-                response.LocationsImported++;
+                response.SublocationsImported++;
 
                 await TrySaveImageAsync(card.ImageFileName, command.Images, domain.Id, command.DmUserId,
-                    EntityType.Location, name, "Location", response.Failures);
+                    EntityType.Sublocation, name, "Sublocation", response.Failures);
             }
             catch (Exception ex)
             {
                 response.Failures.Add(new ImportFailure
                 {
-                    CardType = "Location", Name = card.Name,
+                    CardType = "Sublocation", Name = card.Name,
                     Reason = $"Failed to import: {ex.Message}"
                 });
             }

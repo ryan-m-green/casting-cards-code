@@ -44,7 +44,7 @@ export class PlayerCampaignDetailComponent implements OnInit {
             return {
               ...c,
               cities:    c.cities.filter(x => x.instanceId !== event.instanceId),
-              locations: c.locations.filter(x => x.instanceId !== event.instanceId),
+              sublocations: c.sublocations.filter(x => x.instanceId !== event.instanceId),
               casts:     c.casts.filter(x => x.instanceId !== event.instanceId),
             };
           });

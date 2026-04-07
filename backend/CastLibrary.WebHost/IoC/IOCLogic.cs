@@ -5,7 +5,7 @@ using CastLibrary.Logic.Commands.CampaignNote;
 using CastLibrary.Logic.Commands.Cast;
 using CastLibrary.Logic.Commands.City;
 using CastLibrary.Logic.Commands.Library;
-using CastLibrary.Logic.Commands.Location;
+using CastLibrary.Logic.Commands.Sublocation;
 using CastLibrary.Logic.Factories;
 using CastLibrary.Logic.Interfaces;
 using CastLibrary.Logic.Queries.Admin;
@@ -14,7 +14,7 @@ using CastLibrary.Logic.Queries.CampaignNote;
 using CastLibrary.Logic.Queries.Cast;
 using CastLibrary.Logic.Queries.City;
 using CastLibrary.Logic.Queries.Library;
-using CastLibrary.Logic.Queries.Location;
+using CastLibrary.Logic.Queries.Sublocation;
 using CastLibrary.Logic.Services;
 
 namespace CastLibrary.WebHost.IoC
@@ -46,10 +46,10 @@ namespace CastLibrary.WebHost.IoC
             services.AddScoped<IUploadCityImageCommandHandler, UploadCityImageCommandHandler>();
             services.AddScoped<IDeleteCityCommandHandler, DeleteCityCommandHandler>();
 
-            services.AddScoped<ICreateLocationCommandHandler, CreateLocationCommandHandler>();
-            services.AddScoped<IUpdateLocationCommandHandler, UpdateLocationCommandHandler>();
-            services.AddScoped<IUploadLocationImageCommandHandler, UploadLocationImageCommandHandler>();
-            services.AddScoped<IDeleteLocationCommandHandler, DeleteLocationCommandHandler>();
+            services.AddScoped<ICreateSublocationCommandHandler, CreateSublocationCommandHandler>();
+            services.AddScoped<IUpdateSublocationCommandHandler, UpdateSublocationCommandHandler>();
+            services.AddScoped<IUploadSublocationImageCommandHandler, UploadSublocationImageCommandHandler>();
+            services.AddScoped<IDeleteSublocationCommandHandler, DeleteSublocationCommandHandler>();
 
             services.AddScoped<ICreateCampaignCommandHandler, CreateCampaignCommandHandler>();
             services.AddScoped<IUpdateCampaignCommandHandler, UpdateCampaignCommandHandler>();
@@ -66,15 +66,15 @@ namespace CastLibrary.WebHost.IoC
             services.AddScoped<IRevealSecretCommandHandler, RevealSecretCommandHandler>();
             services.AddScoped<IResealSecretCommandHandler, ResealSecretCommandHandler>();
             services.AddScoped<IUpdateCastCustomItemsCommandHandler, UpdateCastCustomItemsCommandHandler>();
-            services.AddScoped<IUpdateLocationCustomItemsCommandHandler, UpdateLocationCustomItemsCommandHandler>();
+            services.AddScoped<IUpdateSublocationCustomItemsCommandHandler, UpdateSublocationCustomItemsCommandHandler>();
             services.AddScoped<IUpdateSecretCommandHandler, UpdateSecretCommandHandler>();
 
-            services.AddScoped<IAddLocationToCampaignCommandHandler, AddLocationToCampaignCommandHandler>();
-            services.AddScoped<IDeleteLocationInstanceCommandHandler, DeleteLocationInstanceCommandHandler>();
-            services.AddScoped<IUpdateLocationInstanceVisibilityCommandHandler, UpdateLocationInstanceVisibilityCommandHandler>();
-            services.AddScoped<IUpdateCityLocationsVisibilityCommandHandler, UpdateCityLocationsVisibilityCommandHandler>();
+            services.AddScoped<IAddSublocationToCampaignCommandHandler, AddSublocationToCampaignCommandHandler>();
+            services.AddScoped<IDeleteSublocationInstanceCommandHandler, DeleteSublocationInstanceCommandHandler>();
+            services.AddScoped<IUpdateSublocationInstanceVisibilityCommandHandler, UpdateSublocationInstanceVisibilityCommandHandler>();
+            services.AddScoped<IUpdateCitySublocationsVisibilityCommandHandler, UpdateCitySublocationsVisibilityCommandHandler>();
             services.AddScoped<IUpdateCastInstanceVisibilityCommandHandler, UpdateCastInstanceVisibilityCommandHandler>();
-            services.AddScoped<IUpdateLocationCastsVisibilityCommandHandler, UpdateLocationCastsVisibilityCommandHandler>();
+            services.AddScoped<IUpdateSublocationCastsVisibilityCommandHandler, UpdateSublocationCastsVisibilityCommandHandler>();
 
             services.AddScoped<IUpsertCampaignNoteCommandHandler, UpsertCampaignNoteCommandHandler>();
 
@@ -89,10 +89,10 @@ namespace CastLibrary.WebHost.IoC
 
             services.AddScoped<IUpdateCityInstanceKeywordsCommandHandler, UpdateCityInstanceKeywordsCommandHandler>();
             services.AddScoped<IUpdateCastInstanceKeywordsCommandHandler, UpdateCastInstanceKeywordsCommandHandler>();
-            services.AddScoped<IUpdateLocationInstanceKeywordsCommandHandler, UpdateLocationInstanceKeywordsCommandHandler>();
+            services.AddScoped<IUpdateSublocationInstanceKeywordsCommandHandler, UpdateSublocationInstanceKeywordsCommandHandler>();
 
-            services.AddScoped<IUpdateLocationInstanceCommandHandler, UpdateLocationInstanceCommandHandler>();
-            services.AddScoped<IAddLocationShopItemCommandHandler, AddLocationShopItemCommandHandler>();
+            services.AddScoped<IUpdateSublocationInstanceCommandHandler, UpdateSublocationInstanceCommandHandler>();
+            services.AddScoped<IAddSublocationShopItemCommandHandler, AddSublocationShopItemCommandHandler>();
             services.AddScoped<IToggleShopItemScratchCommandHandler, ToggleShopItemScratchCommandHandler>();
 
             services.AddScoped<IGenerateAdminInviteCodeCommandHandler, GenerateAdminInviteCodeCommandHandler>();
@@ -117,8 +117,8 @@ namespace CastLibrary.WebHost.IoC
             services.AddScoped<IGetCityLibraryQueryHandler, GetCityLibraryQueryHandler>();
             services.AddScoped<IGetCityDetailQueryHandler, GetCityDetailQueryHandler>();
 
-            services.AddScoped<IGetLocationLibraryQueryHandler, GetLocationLibraryQueryHandler>();
-            services.AddScoped<IGetLocationDetailQueryHandler, GetLocationDetailQueryHandler>();
+            services.AddScoped<IGetSublocationLibraryQueryHandler, GetSublocationLibraryQueryHandler>();
+            services.AddScoped<IGetSublocationDetailQueryHandler, GetSublocationDetailQueryHandler>();
 
             services.AddScoped<IGetCampaignLibraryQueryHandler, GetCampaignLibraryQueryHandler>();
             services.AddScoped<IGetPlayerCampaignLibraryQueryHandler, GetPlayerCampaignLibraryQueryHandler>();
@@ -157,7 +157,7 @@ namespace CastLibrary.WebHost.IoC
             services.AddScoped<ICastFactory, CastFactory>();
             services.AddScoped<ICastInstanceFactory, CastInstanceFactory>();
             services.AddScoped<ICityInstanceFactory, CityInstanceFactory>();
-            services.AddScoped<ILocationInstanceFactory, LocationInstanceFactory>();
+            services.AddScoped<ISublocationInstanceFactory, SublocationInstanceFactory>();
             services.AddScoped<ICampaignFactory, CampaignFactory>();
 
             return services;

@@ -10,7 +10,7 @@ public interface ICampaignDeleteRepository
     Task DeleteAsync(Guid id);
     Task DeleteCityInstanceAsync(Guid instanceId);
     Task DeleteCastInstanceAsync(Guid instanceId);
-    Task DeleteLocationInstanceAsync(Guid instanceId);
+    Task DeleteSublocationInstanceAsync(Guid instanceId);
 }
 
 public class CampaignDeleteRepository(
@@ -62,17 +62,17 @@ public class CampaignDeleteRepository(
         logging.LogDbOperation(correlation.TraceId, spanId, "DELETE", "campaign_cast_instances", @params, rows);
     }
 
-    public async Task DeleteLocationInstanceAsync(Guid instanceId)
+    public async Task DeleteSublocationInstanceAsync(Guid instanceId)
     {
         var spanId = correlation.NewSpan();
         var @params = new { InstanceId = instanceId };
 
-        logging.LogDbOperation(correlation.TraceId, spanId, "DELETE", "campaign_location_instances", @params);
+        logging.LogDbOperation(correlation.TraceId, spanId, "DELETE", "campaign_sublocation_instances", @params);
 
         using var conn = CreateConnection();
         var rows = await conn.ExecuteAsync(
-            "DELETE FROM campaign_location_instances WHERE instance_id = @InstanceId", @params);
+            "DELETE FROM campaign_sublocation_instances WHERE instance_id = @InstanceId", @params);
 
-        logging.LogDbOperation(correlation.TraceId, spanId, "DELETE", "campaign_location_instances", @params, rows);
+        logging.LogDbOperation(correlation.TraceId, spanId, "DELETE", "campaign_sublocation_instances", @params, rows);
     }
 }

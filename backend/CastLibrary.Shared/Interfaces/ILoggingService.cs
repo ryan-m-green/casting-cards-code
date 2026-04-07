@@ -10,7 +10,7 @@
 ///   http.*       — HTTP request/response fields
 ///   db.*         — Database operation fields
 ///   exception.*  — Exception fields
-///   code.*       — Source-code location fields
+///   code.*       — Source-code sublocation fields
 /// </summary>
 public interface ILoggingService
 {

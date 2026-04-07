@@ -1,4 +1,4 @@
-﻿namespace CastLibrary.Shared.Domain;
+namespace CastLibrary.Shared.Domain;
 
 public record CampaignCastCustomItemDomain(string Name, string Price);
 
@@ -8,7 +8,7 @@ public class CampaignCastInstanceDomain
     public Guid CampaignId { get; set; }
     public Guid? SourceCastId { get; set; }
     public Guid? CityInstanceId { get; set; }
-    public Guid? LocationInstanceId { get; set; }
+    public Guid? SublocationInstanceId { get; set; }
     public string Name { get; set; } = string.Empty;
     public string Pronouns { get; set; } = string.Empty;
     public string Race { get; set; } = string.Empty;
@@ -49,11 +49,11 @@ public class CampaignCityInstanceDomain
     public string DmNotes { get; set; } = string.Empty;
 }
 
-public class CampaignLocationInstanceDomain
+public class CampaignSublocationInstanceDomain
 {
     public Guid InstanceId { get; set; }
     public Guid CampaignId { get; set; }
-    public Guid? SourceLocationId { get; set; }
+    public Guid? SourceSublocationId { get; set; }
     public Guid? CityInstanceId { get; set; }
     public string Name { get; set; } = string.Empty;
     public string Description { get; set; } = string.Empty;

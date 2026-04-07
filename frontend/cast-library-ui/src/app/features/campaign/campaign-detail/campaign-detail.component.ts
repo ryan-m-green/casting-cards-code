@@ -1,4 +1,4 @@
-﻿import { Component, OnInit, OnDestroy, signal, computed, inject, effect, HostBinding } from '@angular/core';
+import { Component, OnInit, OnDestroy, signal, computed, inject, effect, HostBinding } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { CommonModule, DatePipe } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
@@ -78,7 +78,7 @@ export class CampaignDetailComponent implements OnInit, OnDestroy {
   }
 
   secretsFor(instanceId: string) {
-    return this.campaign()?.secrets.filter(s => s.castInstanceId === instanceId || s.cityInstanceId === instanceId || s.locationInstanceId === instanceId) ?? [];
+    return this.campaign()?.secrets.filter(s => s.castInstanceId === instanceId || s.cityInstanceId === instanceId || s.sublocationInstanceId === instanceId) ?? [];
   }
 
   castForCity(cityInstanceId: string) {

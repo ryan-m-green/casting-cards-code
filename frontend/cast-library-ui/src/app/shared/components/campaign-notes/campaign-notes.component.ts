@@ -1,4 +1,4 @@
-﻿import { Component, Input, OnInit, inject, signal } from '@angular/core';
+import { Component, Input, OnInit, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
@@ -15,7 +15,7 @@ import { AuthService } from '../../../core/auth/auth.service';
 })
 export class CampaignNotesComponent implements OnInit {
   @Input() campaignId!: string;
-  @Input() entityType!: 'Cast' | 'City' | 'Location';
+  @Input() entityType!: 'Cast' | 'City' | 'Sublocation';
   @Input() instanceId!: string;
 
   private http = inject(HttpClient);

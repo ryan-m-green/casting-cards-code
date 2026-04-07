@@ -7,7 +7,7 @@ namespace CastLibrary.Logic.Queries.Campaign;
 public interface IGetPlayerCampaignDetailQueryHandler
 {
     Task<(CampaignDomain Campaign, List<CampaignCityInstanceDomain> Cities,
-        List<CampaignCastInstanceDomain> Casts, List<CampaignLocationInstanceDomain> Locations,
+        List<CampaignCastInstanceDomain> Casts, List<CampaignSublocationInstanceDomain> Locations,
         List<CampaignSecretDomain> Secrets)>
         HandleAsync(Guid campaignId);
 }
@@ -17,7 +17,7 @@ public class GetPlayerCampaignDetailQueryHandler(
     ISecretReadRepository secretReadRepository) : IGetPlayerCampaignDetailQueryHandler
 {
     public async Task<(CampaignDomain Campaign, List<CampaignCityInstanceDomain> Cities,
-        List<CampaignCastInstanceDomain> Casts, List<CampaignLocationInstanceDomain> Locations,
+        List<CampaignCastInstanceDomain> Casts, List<CampaignSublocationInstanceDomain> Locations,
         List<CampaignSecretDomain> Secrets)>
         HandleAsync(Guid campaignId)
     {
@@ -30,7 +30,7 @@ public class GetPlayerCampaignDetailQueryHandler(
 
         var visibleCityIds = cities.Select(c => c.InstanceId).ToHashSet();
 
-        var locations = (await campaignRepository.GetLocationInstancesByCampaignAsync(campaignId))
+        var locations = (await campaignRepository.GetSublocationInstancesByCampaignAsync(campaignId))
                             .Where(l => l.IsVisibleToPlayers && l.CityInstanceId.HasValue && visibleCityIds.Contains(l.CityInstanceId.Value))
                             .ToList();
 
@@ -39,7 +39,7 @@ public class GetPlayerCampaignDetailQueryHandler(
         var casts = (await campaignRepository.GetCastInstancesByCampaignAsync(campaignId))
                             .Where(c => c.IsVisibleToPlayers
                                 && c.CityInstanceId.HasValue && visibleCityIds.Contains(c.CityInstanceId.Value)
-                                && (!c.LocationInstanceId.HasValue || visibleLocationIds.Contains(c.LocationInstanceId.Value)))
+                                && (!c.SublocationInstanceId.HasValue || visibleLocationIds.Contains(c.SublocationInstanceId.Value)))
                             .Select(c => { c.Description = string.Empty; return c; })
                             .ToList();
 

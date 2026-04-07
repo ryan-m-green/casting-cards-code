@@ -12,7 +12,7 @@ namespace CastLibrary.WebHost.IoC
         {
             services.AddScoped<ICastWebMapper, CastWebMapper>();
             services.AddScoped<ICityWebMapper, CityWebMapper>();
-            services.AddScoped<ILocationWebMapper, LocationWebMapper>();
+            services.AddScoped<ISublocationWebMapper, SublocationWebMapper>();
             services.AddScoped<ICampaignWebMapper, CampaignWebMapper>();
             services.AddScoped<ICityPoliticalNotesMapper, CityPoliticalNotesMapper>();
             services.AddScoped<ICityFactionMapper, CityFactionMapper>();

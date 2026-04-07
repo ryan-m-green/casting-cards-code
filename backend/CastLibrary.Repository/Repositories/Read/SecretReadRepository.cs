@@ -23,7 +23,7 @@ public class SecretReadRepository(
         var @params = new { CampaignId = campaignId };
         const string sql =
             @"SELECT id, campaign_id as CampaignId, cast_instance_id as CastInstanceId, 
-                     city_instance_id as CityInstanceId, location_instance_id as LocationInstanceId,
+                     city_instance_id as CityInstanceId, sublocation_instance_id as SublocationInstanceId,
                      content as Content, sort_order as SortOrder, is_revealed as IsRevealed,
                      revealed_at as RevealedAt, created_at as CreatedAt
               FROM campaign_secrets 
@@ -51,7 +51,7 @@ public class SecretReadRepository(
         using var conn = sqlConnectionFactory.GetConnection();
         var entity = await conn.QueryFirstOrDefaultAsync<CampaignSecretEntity>(
             @"SELECT id, campaign_id as CampaignId, cast_instance_id as CastInstanceId,
-                     city_instance_id as CityInstanceId, location_instance_id as LocationInstanceId,
+                     city_instance_id as CityInstanceId, sublocation_instance_id as SublocationInstanceId,
                      content as Content, sort_order as SortOrder, is_revealed as IsRevealed,
                      revealed_at as RevealedAt, created_at as CreatedAt
               FROM campaign_secrets 

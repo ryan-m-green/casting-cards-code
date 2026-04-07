@@ -14,7 +14,7 @@ public class ToggleShopItemScratchCommandHandler(
 {
     public async Task HandleAsync(ToggleShopItemScratchCommand command)
     {
-        var instances = await campaignReadRepository.GetLocationInstancesByCampaignAsync(command.CampaignId);
+        var instances = await campaignReadRepository.GetSublocationInstancesByCampaignAsync(command.CampaignId);
         var item = instances
             .SelectMany(i => i.ShopItems)
             .FirstOrDefault(s => s.Id == command.ShopItemId);

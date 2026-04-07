@@ -1,0 +1,237 @@
+<div class="pc scroll-body">
+  <app-dm-nav />
+  <div class="wr wr-page-header">
+    <button class="btn-ghost" (click)="goBack()" type="button">← Campaign</button>
+  </div>
+  <h2 class="page-title">Sublocations</h2>
+
+  @if (loading()) {
+    <p class="wbd" style="text-align:center;padding:24px 0;">Loading…</p>
+  } @else if (allSublocations().length === 0) {
+    <p class="wbd" style="text-align:center;padding:24px 0;font-style:italic;">
+      No sublocations in the library yet.
+    </p>
+  } @else {
+
+    <div class="cities-section-label">Available Sublocations</div>
+
+    <div class="city-search-row">
+      <input
+        class="fi city-search-input"
+        type="search"
+        placeholder="Search by name or description…"
+        [value]="sublocationSearch()"
+        (input)="setSublocationSearch($any($event.target).value)"
+      />
+    </div>
+
+    <div class="city-picker-row">
+      @if (filteredDeckSublocations().length > 0) {
+        <div class="deck-stack" #deckStack (click)="swapCard()">
+          <div class="deck-shadow deck-shadow-far"></div>
+          <div class="deck-shadow deck-shadow-near"></div>
+          <div class="deck-face">
+            <div class="deck-inner-border"></div>
+            <span class="deck-castle">🏪</span>
+            <div class="deck-count">
+              {{ filteredDeckSublocations().length }}<br>remaining
+            </div>
+          </div>
+        </div>
+      } @else {
+        <div class="deck-stack deck-stack-empty" #deckStack></div>
+      }
+
+      <div class="main-card-area" #mainCardWrapper>
+        @if (filteredDeckSublocations().length > 0) {
+          <div class="pc-card pc-card-shop" #mainCard>
+            <app-card-flip>
+              <div slot="front" class="card-slot-front">
+                <div class="card-front-header">
+                  <div class="card-name">{{ currentCard()?.name }}</div>
+                  <div class="card-descriptor">Sublocation</div>
+                </div>
+                <div class="dv dv-card"></div>
+                <div class="card-image-area">
+                  @if (currentCard()?.imageUrl) {
+                    <img [src]="currentCard()!.imageUrl" alt="" class="card-img-fill" />
+                  } @else {
+                    <div class="card-placeholder subLoc-placeholder">
+                      <span class="card-initial">{{ currentCard()?.name?.[0]?.toUpperCase() }}</span>
+                    </div>
+                  }
+                  @if (currentCard()?.description) {
+                    <div class="card-desc-overlay">
+                      <p class="card-desc-text">{{ currentCard()?.description }}</p>
+                    </div>
+                  }
+                </div>
+              </div>
+              <div slot="back" class="card-slot-back">
+                <div class="card-back-content">
+                  <div class="card-name card-back-name">{{ currentCard()?.name }}</div>
+                  <div class="dv dv-mb"></div>
+                  <div class="fi-label fi-label-strong">Description</div>
+                  <p class="wbd card-field-value">{{ currentCard()?.description || '—' }}</p>
+                </div>
+              </div>
+            </app-card-flip>
+          </div>
+        } @else {
+          <div class="main-card-placeholder"></div>
+        }
+      </div>
+    </div>
+
+    @if (filteredDeckSublocations().length > 0) {
+      <div class="add-btn-row">
+        <div class="deck-stack-spacer"></div>
+        <button class="add-btn" (click)="selectSublocation()">
+          Add to City
+          <span class="add-arrow">⬇</span>
+        </button>
+      </div>
+    }
+
+    <div class="dv"></div>
+    <div class="sel-header">
+      Sublocations — <span>{{ addedSublocations().length }}</span> added
+    </div>
+
+    <div class="sel-layout">
+      @if (addedSublocations().length > 0) {
+        <div class="sel-stack-container" #selectedStack [style.height.px]="selContainerHeight()">
+          @for (added of addedSublocations(); track added.instanceId; let i = $index) {
+            <div class="sel-card pc-card-shop"
+                 [attr.data-sel-idx]="i"
+                 [style.top.px]="selTopsList()[i]"
+                 [style.z-index]="i + 1"
+                 (click)="toggleExpanded(i)">
+              <div class="card-slot-front">
+                <div class="card-front-header sel-card-header-row">
+                  <div class="sel-card-info">
+                    <div class="card-name">{{ added.subLoc.name }}</div>
+                    <div class="card-descriptor">Sublocation</div>
+                  </div>
+                  <button class="sel-card-remove"
+                          (click)="removeSublocation(i); $event.stopPropagation()">&#215;</button>
+                </div>
+                <div class="dv dv-card"></div>
+                <div class="card-image-area">
+                  @if (added.subLoc.imageUrl) {
+                    <img [src]="added.subLoc.imageUrl" alt="" class="card-img-fill" />
+                  } @else {
+                    <div class="card-placeholder subLoc-placeholder">
+                      <span class="card-initial">{{ added.subLoc.name?.[0]?.toUpperCase() }}</span>
+                    </div>
+                  }
+                  @if (added.subLoc.description) {
+                    <div class="card-desc-overlay">
+                      <p class="card-desc-text">{{ added.subLoc.description }}</p>
+                    </div>
+                  }
+                </div>
+              </div>
+            </div>
+          }
+        </div>
+      } @else {
+        <div class="sel-stack-placeholder" #selectedStack></div>
+      }
+
+      <!-- Sublocation detail panel -->
+      <div class="detail-panel">
+        @if (expandedSublocation(); as added) {
+          <div class="detail-panel-header">
+            <div class="detail-city-name">{{ added.subLoc.name }}</div>
+            <div class="detail-city-label">settling sublocation</div>
+            <button class="add-casts-btn" (click)="goToCast(added.instanceId)" type="button">+ Add Cast</button>
+          </div>
+          <div class="dv dv-mb"></div>
+
+          <div class="cast-section-label">Cast Members</div>
+          @if (castsForExpandedSublocation().length > 0) {
+            <div class="cast-member-list">
+              @for (c of castsForExpandedSublocation(); track c.instanceId) {
+                <div class="cast-member-row">{{ c.name }}</div>
+              }
+            </div>
+          } @else {
+            <p class="cast-member-empty">No cast settled here.</p>
+          }
+
+          @if ((added.keywords?.length ?? 0) > 0) {
+            <div class="detail-keywords">
+              <div class="fi-label">Keywords</div>
+              <div class="keyword-chips-readonly">
+                @for (kw of added.keywords; track kw) {
+                  <span class="keyword-chip-readonly">{{ kw }}</span>
+                }
+              </div>
+            </div>
+          }
+
+          <div class="inv-section-label">
+            Inventory <span class="inv-label-hint">name &amp; price</span>
+          </div>
+
+          @if (added.subLoc.shopItems.length > 0) {
+            <div class="inv-standard-list">
+              @for (item of added.subLoc.shopItems; track item.id) {
+                <div class="inv-row">
+                  <span class="inv-item-name">{{ item.name }}</span>
+                  <span class="inv-item-price">{{ item.price }}</span>
+                </div>
+              }
+            </div>
+          } @else {
+            <p class="inv-empty">No standard inventory.</p>
+          }
+
+          <div class="inv-custom-section">
+            <div class="inv-custom-label">Campaign Custom Items</div>
+            @for (item of added.customItems; track $index; let i = $index) {
+              <div class="inv-custom-row">
+                <input class="fi fi-sm inv-custom-input"
+                       placeholder="Item name"
+                       [value]="item.name"
+                       (input)="updateCustomItemField(i, 'name', $any($event.target).value)" />
+                <div class="price-input-group">
+                  <input class="fi fi-sm price-amount"
+                         type="number" min="1" max="9999"
+                         placeholder="Price"
+                         [value]="item.priceAmount ?? ''"
+                         (input)="updateCustomItemPriceField(i, 'amount', $any($event.target).value)" />
+                  <div class="notes-dropdown price-currency-dropdown">
+                    <button class="notes-dropdown-trigger"
+                            (click)="toggleDropdown('currency-' + i, $event)"
+                            type="button">
+                      <span class="notes-dropdown-placeholder">{{ item.priceCurrency }}</span>
+                      <span class="notes-dropdown-caret"
+                            [class.notes-dropdown-caret--open]="isDropdownOpen('currency-' + i)">▾</span>
+                    </button>
+                    @if (isDropdownOpen('currency-' + i)) {
+                      <div class="notes-dropdown-panel">
+                        @for (c of currencies; track c) {
+                          <div class="notes-dropdown-item"
+                               [class.notes-dropdown-item--selected]="item.priceCurrency === c"
+                               (click)="setCurrencyForItem(i, c)">{{ c }}</div>
+                        }
+                      </div>
+                    }
+                  </div>
+                </div>
+                <button class="inv-remove-btn" (click)="removeCustomItem(i)" type="button">×</button>
+              </div>
+            }
+            <button class="inv-add-btn" (click)="addCustomItem()" type="button">+ Add Item</button>
+          </div>
+        } @else {
+          <p class="detail-panel-empty">Select a sublocation above to view details and add cast.</p>
+        }
+      </div>
+    </div>
+
+  }
+</div>
+

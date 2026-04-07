@@ -7,6 +7,7 @@ import { environment } from '../../../../environments/environment';
 import { CampaignDetail } from '../../../shared/models/campaign.model';
 import { CampaignCastInstance } from '../../../shared/models/cast.model';
 import { CampaignSecret } from '../../../shared/models/secret.model';
+import { CampaignSublocationInstance } from '../../../shared/models/sublocation.model';
 import { CampaignHubService } from '../../../core/hub/campaign-hub.service';
 import { PortalTransitionService } from '../../../core/portal-transition.service';
 import { AuthService } from '../../../core/auth/auth.service';
@@ -30,7 +31,7 @@ export class CampaignCastDetailComponent implements OnInit, OnDestroy {
   @HostBinding('class.portal-entry') portalEntry = false;
 
   campaignId         = signal('');
-  locationInstanceId = signal('');
+  sublocationInstanceId = signal('');
   castInstanceId     = signal('');
   campaign           = signal<CampaignDetail | null>(null);
 
@@ -61,17 +62,17 @@ export class CampaignCastDetailComponent implements OnInit, OnDestroy {
     return c.casts.find(ca => ca.instanceId === this.castInstanceId()) ?? null;
   });
 
-  parentLocation = computed(() => {
+  parentSublocation = computed(() => {
     const c = this.campaign();
     if (!c) return null;
-    return c.locations.find(l => l.instanceId === this.locationInstanceId()) ?? null;
+    return c.sublocations.find((l: CampaignSublocationInstance) => l.instanceId === this.sublocationInstanceId()) ?? null;
   });
 
   parentCity = computed(() => {
     const c   = this.campaign();
-    const loc = this.parentLocation();
-    if (!c || !loc) return null;
-    return c.cities.find(ci => ci.instanceId === loc.cityInstanceId) ?? null;
+    const subLoc = this.parentSublocation();
+    if (!c || !subLoc) return null;
+    return c.cities.find(ci => ci.instanceId === subLoc.cityInstanceId) ?? null;
   });
 
   castSecrets = computed<CampaignSecret[]>(() => {
@@ -102,10 +103,10 @@ export class CampaignCastDetailComponent implements OnInit, OnDestroy {
       setTimeout(() => this.transition.hide(), 300);
     }
     const id     = this.route.snapshot.paramMap.get('id')!;
-    const locId  = this.route.snapshot.paramMap.get('locationInstanceId')!;
+    const subLocId  = this.route.snapshot.paramMap.get('sublocationInstanceId')!;
     const castId = this.route.snapshot.paramMap.get('castInstanceId')!;
     this.campaignId.set(id);
-    this.locationInstanceId.set(locId);
+    this.sublocationInstanceId.set(subLocId);
     this.castInstanceId.set(castId);
     this.http.get<CampaignDetail>(`${environment.apiUrl}/api/campaigns/${id}`)
       .subscribe(c => {
@@ -272,7 +273,7 @@ export class CampaignCastDetailComponent implements OnInit, OnDestroy {
   }
 
   goBack() {
-    this.router.navigate(['/campaign', this.campaignId(), 'locations', this.locationInstanceId()]);
+    this.router.navigate(['/campaign', this.campaignId(), 'sublocations', this.sublocationInstanceId()]);
   }
 
   initial(name: string) { return name.charAt(0).toUpperCase(); }

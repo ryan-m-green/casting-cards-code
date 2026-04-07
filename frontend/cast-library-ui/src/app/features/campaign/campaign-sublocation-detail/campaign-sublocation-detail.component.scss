@@ -1,0 +1,858 @@
+$subLoc-olive: #a8a070;
+
+:host {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+:host.portal-entry {
+  animation: portal-fade-in 2000ms ease-out 200ms both;
+}
+
+@keyframes portal-fade-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+/* ── Void canvas ─────────────────────────────────────────────────────────── */
+.void-canvas {
+  width: 100%;
+  min-height: 100%;
+  background: #000;
+  position: relative;
+  animation: portal-inward-breathe 6.4s ease-in-out infinite;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+@keyframes portal-inward-breathe {
+  0%, 100% {
+    box-shadow:
+      inset 0 0 0    1px color-mix(in srgb, var(--portal-color, #{$subLoc-olive}) 40%, white 60%),
+      inset 0 0  6px  2px color-mix(in srgb, var(--portal-color, #{$subLoc-olive}), transparent 28%),
+      inset 0 0 14px  4px color-mix(in srgb, var(--portal-color, #{$subLoc-olive}), transparent 52%),
+      inset 0 0 25px  8px color-mix(in srgb, var(--portal-color, #{$subLoc-olive}), transparent 76%);
+  }
+  50% {
+    box-shadow:
+      inset 0 0 0    1px color-mix(in srgb, var(--portal-color, #{$subLoc-olive}) 25%, white 75%),
+      inset 0 0  9px  3px color-mix(in srgb, var(--portal-color, #{$subLoc-olive}), transparent 12%),
+      inset 0 0 19px  6px color-mix(in srgb, var(--portal-color, #{$subLoc-olive}), transparent 36%),
+      inset 0 0 35px 12px color-mix(in srgb, var(--portal-color, #{$subLoc-olive}), transparent 64%);
+  }
+}
+
+/* ── Top bar ─────────────────────────────────────────────────────────────── */
+.void-topbar {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 20px 32px 24px;
+  position: relative;
+  z-index: 1;
+}
+
+/* ── Breadcrumbs ─────────────────────────────────────────────────────────── */
+.void-breadcrumbs {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  position: relative;
+  z-index: 2;
+}
+
+.void-crumb-sep {
+  font-family: 'Cinzel', serif;
+  font-size: 9px;
+  color: color-mix(in srgb, var(--portal-color, #{$subLoc-olive}), white 55%);
+  opacity: 0.25;
+  user-select: none;
+  pointer-events: none;
+}
+
+.void-back {
+  font-family: 'Cinzel', serif;
+  font-size: 9px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: color-mix(in srgb, var(--portal-color, #{$subLoc-olive}), white 55%);
+  opacity: 0.55;
+  background: none;
+  border: none;
+  cursor: pointer;
+  transition: opacity 0.2s ease;
+  white-space: nowrap;
+
+  &:hover { opacity: 0.9; }
+}
+
+.void-title {
+  width: 100%;
+  margin-top: 10px;
+  text-align: center;
+  font-family: 'Cinzel', serif;
+  font-size: 17px;
+  font-weight: 600;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: rgba(200, 225, 235, 0.92);
+  text-shadow:
+    0 0 20px color-mix(in srgb, var(--portal-color, #{$subLoc-olive}), white 35%),
+    0 0 50px color-mix(in srgb, var(--portal-color, #{$subLoc-olive}), transparent 38%),
+    0 1px 3px rgba(0, 0, 0, 0.95);
+}
+
+/* ── Main body layout ────────────────────────────────────────────────────── */
+.subLoc-body {
+  display: flex;
+  gap: 32px;
+  padding: 8px 40px 32px;
+  position: relative;
+  z-index: 1;
+  align-items: flex-start;
+}
+
+.subLoc-card-left {
+  flex-shrink: 0;
+}
+
+/* ── Detail panel ────────────────────────────────────────────────────────── */
+.subLoc-detail-panel {
+  flex: 1;
+  min-width: 0;
+  background: rgba(14, 24, 32, 0.96);
+  border: 1px solid rgba($subLoc-olive, 0.40);
+  border-radius: 6px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  transition: height 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.detail-panel-content {
+  flex: 1;
+  min-height: 0;
+  padding-bottom: 16px;
+}
+
+/* ── Description block ───────────────────────────────────────────────────── */
+.detail-desc {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 12px 16px;
+  border-bottom: 1px solid rgba($subLoc-olive, 0.12);
+}
+
+/* ── 2-col field grid ────────────────────────────────────────────────────── */
+.detail-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-content: start;
+}
+
+.detail-cell {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 12px 16px;
+  border-bottom: 1px solid rgba($subLoc-olive, 0.08);
+
+  &:nth-child(odd) {
+    border-right: 1px solid rgba($subLoc-olive, 0.08);
+  }
+
+  &--full {
+    grid-column: 1 / -1;
+    border-right: none;
+  }
+}
+
+/* ── Secrets section ─────────────────────────────────────────────────────── */
+.detail-secrets-section {
+  border-top: 1px solid rgba($subLoc-olive, 0.22);
+  background: rgba($subLoc-olive, 0.03);
+}
+
+.detail-secrets-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px 6px;
+}
+
+/* ── Secret rows ─────────────────────────────────────────────────────────── */
+.detail-secret {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 10px 16px;
+  border-top: 1px solid rgba($subLoc-olive, 0.08);
+}
+
+.secret-lock-btn {
+  flex-shrink: 0;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  font-size: 14px;
+  line-height: 1;
+  opacity: 0.80;
+  transition: opacity 0.15s ease;
+
+  &:hover { opacity: 1; }
+}
+
+.secret-lock-icon {
+  flex-shrink: 0;
+  font-size: 14px;
+  line-height: 1;
+  opacity: 0.45;
+}
+
+.secret-text {
+  font-family: 'Crimson Text', serif;
+  font-size: 13px;
+  color: rgba(185, 210, 220, 0.60);
+  line-height: 1.5;
+
+  &--revealed {
+    color: rgba(200, 225, 235, 0.82);
+  }
+}
+
+/* ── Expand / collapse button ────────────────────────────────────────────── */
+.detail-expand-btn {
+  flex-shrink: 0;
+  width: 100%;
+  padding: 5px 0;
+  background: rgba($subLoc-olive, 0.04);
+  border: none;
+  border-top: 1px solid rgba($subLoc-olive, 0.14);
+  border-radius: 0 0 6px 6px;
+  cursor: pointer;
+  font-family: 'Cinzel', serif;
+  font-size: 8px;
+  letter-spacing: 0.12em;
+  color: rgba($subLoc-olive, 0.40);
+  transition: background 0.18s ease, color 0.18s ease;
+
+  &:hover {
+    background: rgba($subLoc-olive, 0.10);
+    color: rgba($subLoc-olive, 0.72);
+  }
+}
+
+.detail-label {
+  font-family: 'Cinzel', serif;
+  font-size: 7px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: rgba($subLoc-olive, 0.55);
+  white-space: nowrap;
+}
+
+.detail-line {
+  height: 1px;
+  width: 100%;
+  background: linear-gradient(to right, rgba($subLoc-olive, 0.22), transparent);
+}
+
+.detail-value {
+  font-family: 'Crimson Text', serif;
+  font-size: 14px;
+  color: rgba(200, 225, 235, 0.82);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+
+  &--block {
+    white-space: normal;
+    font-size: 13px;
+    line-height: 1.6;
+    color: rgba(185, 210, 220, 0.70);
+    margin: 0;
+  }
+}
+
+/* ── Keyword pills ───────────────────────────────────────────────────────── */
+.detail-keywords {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.detail-keyword-pill {
+  font-family: 'Cinzel', serif;
+  font-size: 7px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba($subLoc-olive, 0.80);
+  border: 1px solid rgba($subLoc-olive, 0.28);
+  border-radius: 2px;
+  padding: 2px 8px;
+}
+
+/* ── Panel action bar (Edit / Save / Cancel) ─────────────────────────────── */
+.detail-panel-actions {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 16px 0;
+}
+
+.detail-edit-btn {
+  background: none;
+  border: 1px solid rgba($subLoc-olive, 0.30);
+  border-radius: 4px;
+  padding: 4px 12px;
+  font-family: 'Cinzel', serif;
+  font-size: 8px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: rgba(200, 225, 235, 0.72);
+  cursor: pointer;
+  transition: background 0.18s ease, border-color 0.18s ease, color 0.18s ease;
+
+  &:hover {
+    background: rgba($subLoc-olive, 0.10);
+    border-color: rgba($subLoc-olive, 0.55);
+    color: rgba(200, 225, 235, 1.0);
+  }
+}
+
+.detail-save-btn {
+  background: rgba(40, 160, 80, 0.15);
+  border: 1px solid rgba(80, 200, 120, 0.30);
+  border-radius: 4px;
+  padding: 4px 12px;
+  font-family: 'Cinzel', serif;
+  font-size: 8px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: rgba(120, 210, 150, 0.85);
+  cursor: pointer;
+  transition: background 0.18s ease, border-color 0.18s ease, color 0.18s ease;
+
+  &:hover {
+    background: rgba(40, 160, 80, 0.30);
+    border-color: rgba(80, 200, 120, 0.55);
+    color: rgba(140, 220, 165, 1.0);
+  }
+}
+
+.detail-cancel-btn {
+  background: none;
+  border: 1px solid rgba(255, 255, 255, 0.10);
+  border-radius: 4px;
+  padding: 4px 12px;
+  font-family: 'Cinzel', serif;
+  font-size: 8px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: rgba(200, 225, 235, 0.40);
+  cursor: pointer;
+  transition: border-color 0.18s ease, color 0.18s ease;
+
+  &:hover {
+    border-color: rgba(255, 255, 255, 0.25);
+    color: rgba(200, 225, 235, 0.72);
+  }
+}
+
+/* ── Edit inputs ─────────────────────────────────────────────────────────── */
+.detail-input {
+  background: rgba(0, 0, 0, 0.35);
+  border: 1px solid rgba($subLoc-olive, 0.28);
+  border-radius: 3px;
+  padding: 5px 8px;
+  font-family: 'Crimson Text', serif;
+  font-size: 14px;
+  color: rgba(200, 225, 235, 0.88);
+  width: 100%;
+  box-sizing: border-box;
+  outline: none;
+  transition: border-color 0.18s ease;
+
+  &::placeholder {
+    color: rgba($subLoc-olive, 0.30);
+  }
+
+  &:focus {
+    border-color: rgba($subLoc-olive, 0.65);
+  }
+
+  &--block {
+    resize: vertical;
+    font-size: 13px;
+    line-height: 1.6;
+    min-height: 72px;
+  }
+}
+
+/* ── DM Notes section ────────────────────────────────────────────────────── */
+.detail-dm-notes {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 12px 16px;
+  border-top: 1px solid rgba($subLoc-olive, 0.14);
+  margin-top: 4px;
+  min-height: 60px;
+}
+
+.detail-value--muted {
+  font-family: 'Crimson Text', serif;
+  font-size: 13px;
+  color: rgba($subLoc-olive, 0.30);
+  font-style: italic;
+  margin: 0;
+}
+
+/* ── Add Secret row ──────────────────────────────────────────────────────── */
+.secret-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 8px 16px;
+}
+
+.secret-row-edit {
+  padding: 8px 16px;
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+}
+
+.secret-textarea {
+  flex: 1;
+  background: rgba(0, 0, 0, 0.35);
+  border: 1px solid rgba($subLoc-olive, 0.28);
+  border-radius: 3px;
+  padding: 5px 8px;
+  font-family: 'Crimson Text', serif;
+  font-size: 13px;
+  color: rgba(200, 225, 235, 0.88);
+  resize: vertical;
+  outline: none;
+  transition: border-color 0.18s ease;
+  min-height: 48px;
+
+  &::placeholder {
+    color: rgba($subLoc-olive, 0.30);
+  }
+
+  &:focus {
+    border-color: rgba($subLoc-olive, 0.65);
+  }
+}
+
+.secret-confirm-btn {
+  flex-shrink: 0;
+  background: rgba(40, 160, 80, 0.15);
+  border: 1px solid rgba(80, 200, 120, 0.30);
+  border-radius: 4px;
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: rgba(120, 210, 150, 0.85);
+  font-size: 13px;
+  cursor: pointer;
+  transition: background 0.18s ease, color 0.18s ease;
+
+  &:hover {
+    background: rgba(40, 160, 80, 0.30);
+    color: rgba(140, 220, 165, 1.0);
+  }
+}
+
+.secret-cancel-btn {
+  flex-shrink: 0;
+  background: none;
+  border: 1px solid rgba(255, 255, 255, 0.10);
+  border-radius: 4px;
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: rgba(200, 225, 235, 0.40);
+  font-size: 13px;
+  cursor: pointer;
+  transition: border-color 0.18s ease, color 0.18s ease;
+
+  &:hover {
+    border-color: rgba(255, 255, 255, 0.25);
+    color: rgba(200, 225, 235, 0.72);
+  }
+}
+
+.secret-add-btn {
+  display: block;
+  width: calc(100% - 32px);
+  margin: 4px 16px 8px;
+  padding: 6px 0;
+  background: none;
+  border: 1px dashed rgba($subLoc-olive, 0.22);
+  border-radius: 4px;
+  font-family: 'Cinzel', serif;
+  font-size: 8px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: rgba($subLoc-olive, 0.45);
+  cursor: pointer;
+  transition: border-color 0.18s ease, color 0.18s ease, background 0.18s ease;
+
+  &:hover {
+    border-color: rgba($subLoc-olive, 0.55);
+    color: rgba($subLoc-olive, 0.80);
+    background: rgba($subLoc-olive, 0.05);
+  }
+}
+
+/* ── Shop items grid ─────────────────────────────────────────────────────── */
+.detail-shop-section {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 12px 16px;
+  border-bottom: 1px solid rgba($subLoc-olive, 0.08);
+}
+
+.detail-shop-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.detail-shop-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  padding: 6px 0;
+  border-bottom: 1px solid rgba($subLoc-olive, 0.18);
+
+  &--sold {
+    .detail-shop-item-name {
+      text-decoration: line-through;
+      color: rgba(200, 225, 235, 0.35);
+    }
+
+    .detail-shop-item-price {
+      color: rgba($subLoc-olive, 0.30);
+    }
+  }
+}
+
+.detail-shop-item-name {
+  font-family: 'Crimson Text', serif;
+  font-size: 14px;
+  color: rgba(200, 225, 235, 0.82);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  flex: 1;
+}
+
+.detail-shop-item-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.detail-shop-item-price {
+  font-family: 'Cinzel', serif;
+  font-size: 12px;
+  letter-spacing: 0.12em;
+  color: rgba($subLoc-olive, 0.70);
+  white-space: nowrap;
+}
+
+/* ── Shop item scratch (SELL / SOLD) button ──────────────────────────────── */
+.shop-scratch-btn {
+  flex-shrink: 0;
+  padding: 2px 8px;
+  background: rgba(0, 0, 0, 0.35);
+  border: 1px solid rgba($subLoc-olive, 0.28);
+  border-radius: 3px;
+  font-family: 'Cinzel', serif;
+  font-size: 7px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba($subLoc-olive, 0.55);
+  cursor: pointer;
+  transition: background 0.18s ease, border-color 0.18s ease, color 0.18s ease;
+
+  &:hover {
+    background: rgba($subLoc-olive, 0.12);
+    border-color: rgba($subLoc-olive, 0.55);
+    color: rgba($subLoc-olive, 0.85);
+  }
+
+  &--sold {
+    background: rgba(180, 130, 40, 0.15);
+    border-color: rgba(220, 170, 60, 0.40);
+    color: rgba(220, 170, 60, 0.80);
+
+    &:hover {
+      background: rgba(180, 130, 40, 0.28);
+      color: rgba(230, 185, 80, 1.0);
+    }
+  }
+}
+
+/* ── Add shop item inline form ───────────────────────────────────────────── */
+.shop-add-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 0;
+}
+
+.shop-add-input {
+  flex: 1;
+}
+
+.price-input-group {
+  display: flex;
+  gap: 4px;
+  flex-shrink: 0;
+
+  .price-amount {
+    width: 58px;
+    flex: none;
+    background: rgba(14, 24, 32, 0.80);
+    border: 1px solid rgba($subLoc-olive, 0.28);
+    color: rgba(200, 225, 210, 0.82);
+    font-family: 'Crimson Text', serif;
+    font-size: 13px;
+
+    &::placeholder { color: rgba(200, 225, 210, 0.35); }
+    &:hover { border-color: rgba($subLoc-olive, 0.50); }
+    &:focus { outline: 2px solid rgba($subLoc-olive, 0.60); outline-offset: 1px; border-color: rgba($subLoc-olive, 0.50); }
+  }
+}
+
+.price-currency-dropdown {
+  width: 58px;
+  flex-shrink: 0;
+}
+
+/* ── Currency notes-dropdown (dark portal theme) ─────────────────────────── */
+.notes-dropdown {
+  position: relative;
+}
+
+.notes-dropdown-trigger {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  background: rgba(14, 24, 32, 0.80);
+  border: 1px solid rgba($subLoc-olive, 0.28);
+  border-radius: 3px;
+  color: rgba(200, 225, 210, 0.82);
+  font-family: 'Crimson Text', serif;
+  font-size: 13px;
+  padding: 4px 8px;
+  cursor: pointer;
+  text-align: left;
+  transition: border-color 0.15s;
+
+  &:hover { border-color: rgba($subLoc-olive, 0.50); }
+
+  &:focus-visible {
+    outline: 2px solid rgba($subLoc-olive, 0.60);
+    outline-offset: 1px;
+  }
+}
+
+.notes-dropdown-placeholder {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.notes-dropdown-caret {
+  font-size: 9px;
+  opacity: 0.50;
+  transition: transform 0.15s;
+  margin-left: 4px;
+  flex-shrink: 0;
+
+  &--open { transform: rotate(180deg); }
+}
+
+.notes-dropdown-panel {
+  position: absolute;
+  top: calc(100% + 2px);
+  left: 0;
+  right: 0;
+  background: #0c1820;
+  border: 1px solid rgba($subLoc-olive, 0.28);
+  border-radius: 3px;
+  z-index: 50;
+  max-height: 200px;
+  overflow-y: auto;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.55);
+}
+
+.notes-dropdown-item {
+  font-family: 'Crimson Text', serif;
+  font-size: 13px;
+  color: rgba(200, 225, 210, 0.78);
+  padding: 6px 10px;
+  cursor: pointer;
+  transition: background 0.12s, color 0.12s;
+
+  &:hover {
+    background: rgba($subLoc-olive, 0.10);
+    color: rgba($subLoc-olive, 0.90);
+  }
+
+  &--selected {
+    background: rgba($subLoc-olive, 0.08);
+    color: rgba($subLoc-olive, 0.85);
+  }
+}
+
+/* ── Cast section ────────────────────────────────────────────────────────── */
+.subLoc-cast-section {
+  padding: 0 40px 48px;
+  position: relative;
+  z-index: 1;
+}
+
+.cast-section-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.cast-section-label {
+  font-family: 'Cinzel', serif;
+  font-size: 9px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: rgba(200, 225, 235, 0.92);
+  white-space: nowrap;
+  text-shadow: 0 0 10px color-mix(in srgb, var(--portal-color, #{$subLoc-olive}) 22%, transparent 78%);
+}
+
+.cast-section-line {
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(to right, rgba(200, 225, 235, 0.92), transparent);
+}
+
+.cast-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 18px;
+  align-items: flex-start;
+}
+
+/* ── Reveal All button ───────────────────────────────────────────────────── */
+.cast-reveal-all-btn {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 12px;
+  background: rgba(0, 0, 0, 0.45);
+  border: 1px solid rgba(255, 255, 255, 0.10);
+  border-radius: 6px;
+  font-family: 'Cinzel', serif;
+  font-size: 8px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(200, 225, 235, 0.55);
+  cursor: pointer;
+  transition: background 0.18s ease, border-color 0.18s ease, color 0.18s ease;
+
+  &:hover {
+    background: rgba(0, 0, 0, 0.70);
+    border-color: rgba(255, 255, 255, 0.22);
+    color: rgba(200, 225, 235, 0.85);
+  }
+
+  &--visible {
+    background: rgba(40, 160, 80, 0.18);
+    border-color: rgba(80, 200, 120, 0.35);
+    color: rgba(120, 210, 150, 0.80);
+
+    &:hover {
+      background: rgba(40, 160, 80, 0.32);
+      color: rgba(140, 220, 165, 1.0);
+    }
+  }
+}
+
+/* ── Per-card cast lock button ───────────────────────────────────────────── */
+.cast-lock-btn {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  z-index: 10;
+  background: rgba(0, 0, 0, 0.55);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 6px;
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  cursor: pointer;
+  transition: background 0.18s ease, border-color 0.18s ease, opacity 0.18s ease;
+  opacity: 0.6;
+
+  &:hover {
+    background: rgba(0, 0, 0, 0.8);
+    border-color: rgba(255, 255, 255, 0.28);
+    opacity: 1;
+  }
+
+  &.cast-lock-btn--visible {
+    background: rgba(40, 160, 80, 0.25);
+    border-color: rgba(80, 200, 120, 0.4);
+    opacity: 0.85;
+
+    &:hover {
+      background: rgba(40, 160, 80, 0.45);
+      opacity: 1;
+    }
+  }
+}
+
+/* ── Cast card wrapper ───────────────────────────────────────────────────── */
+.cast-card-wrapper {
+  .pc-card {
+    transition: box-shadow 0.2s ease;
+  }
+
+  &:hover {
+    .pc-card {
+      box-shadow:
+        0 8px 24px rgba(0, 0, 0, 0.5),
+        0 0 16px color-mix(in srgb, var(--portal-color, #{$subLoc-olive}) 22%, transparent 78%),
+        0 0 42px color-mix(in srgb, var(--portal-color, #{$subLoc-olive}) 10%, transparent 90%);
+    }
+  }
+}
+
+/* ── Time-of-day bar section ─────────────────────────────────── */
+.tod-bar-section {
+  padding: 0 20px 54px;
+  max-width: 960px;
+  margin: 0 auto;
+}

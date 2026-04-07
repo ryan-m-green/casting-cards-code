@@ -11,8 +11,8 @@ public interface ICampaignInsertRepository
     Task<CampaignDomain> InsertAsync(CampaignDomain campaign);
     Task<CampaignCastInstanceDomain> InsertCastInstanceAsync(CampaignCastInstanceDomain instance);
     Task<CampaignCityInstanceDomain> InsertCityInstanceAsync(CampaignCityInstanceDomain instance);
-    Task<CampaignLocationInstanceDomain> InsertLocationInstanceAsync(CampaignLocationInstanceDomain instance);
-    Task<ShopItemDomain> InsertLocationShopItemAsync(Guid locationInstanceId, ShopItemDomain item);
+    Task<CampaignSublocationInstanceDomain> InsertSublocationInstanceAsync(CampaignSublocationInstanceDomain instance);
+    Task<ShopItemDomain> InsertSublocationShopItemAsync(Guid sublocationInstanceId, ShopItemDomain item);
 }
 
 public class CampaignInsertRepository(
@@ -102,7 +102,7 @@ public class CampaignInsertRepository(
             instance.CampaignId,
             instance.SourceCastId,
             instance.CityInstanceId,
-            instance.LocationInstanceId,
+            instance.SublocationInstanceId,
             instance.Name,
             instance.Pronouns,
             instance.Race,
@@ -118,11 +118,11 @@ public class CampaignInsertRepository(
         };
         const string sql =
             @"INSERT INTO campaign_cast_instances
-                (instance_id, campaign_id, source_cast_id, city_instance_id, location_instance_id,
+                (instance_id, campaign_id, source_cast_id, city_instance_id, sublocation_instance_id,
                  name, pronouns, race, role, age, alignment, posture, speed, voice_placement,
                  description, public_description, is_visible_to_players, created_at)
               VALUES
-                (@InstanceId, @CampaignId, @SourceCastId, @CityInstanceId, @LocationInstanceId,
+                (@InstanceId, @CampaignId, @SourceCastId, @CityInstanceId, @SublocationInstanceId,
                  @Name, @Pronouns, @Race, @Role, @Age, @Alignment, @Posture, @Speed,
                  @VoicePlacement::text[], @Description, @PublicDescription, @IsVisibleToPlayers, NOW())";
 
@@ -135,45 +135,45 @@ public class CampaignInsertRepository(
         return instance;
     }
 
-    public async Task<CampaignLocationInstanceDomain> InsertLocationInstanceAsync(CampaignLocationInstanceDomain instance)
+    public async Task<CampaignSublocationInstanceDomain> InsertSublocationInstanceAsync(CampaignSublocationInstanceDomain instance)
     {
         var spanId = correlation.NewSpan();
         var @params = new
         {
             instance.InstanceId,
             instance.CampaignId,
-            instance.SourceLocationId,
+            instance.SourceSublocationId,
             instance.CityInstanceId,
             instance.Name,
             instance.Description,
         };
 
-        logging.LogDbOperation(correlation.TraceId, spanId, "INSERT", "campaign_location_instances", @params);
+        logging.LogDbOperation(correlation.TraceId, spanId, "INSERT", "campaign_sublocation_instances", @params);
 
         using var conn = CreateConnection();
         await conn.OpenAsync();
         using var tx = await conn.BeginTransactionAsync();
 
         await conn.ExecuteAsync(
-            @"INSERT INTO campaign_location_instances
-                (instance_id, campaign_id, source_location_id, city_instance_id,
+            @"INSERT INTO campaign_sublocation_instances
+                (instance_id, campaign_id, source_sublocation_id, city_instance_id,
                  name, description, created_at)
               VALUES
-                (@InstanceId, @CampaignId, @SourceLocationId, @CityInstanceId,
+                (@InstanceId, @CampaignId, @SourceSublocationId, @CityInstanceId,
                  @Name, @Description, NOW())",
             @params, tx);
 
         foreach (var item in instance.ShopItems)
         {
             await conn.ExecuteAsync(
-                @"INSERT INTO campaign_location_shop_items
-                    (id, location_instance_id, name, price, description, sort_order)
+                @"INSERT INTO campaign_sublocation_shop_items
+                    (id, sublocation_instance_id, name, price, description, sort_order)
                   VALUES
-                    (@Id, @LocationInstanceId, @Name, @Price, @Description, @SortOrder)",
+                    (@Id, @SublocationInstanceId, @Name, @Price, @Description, @SortOrder)",
                 new
                 {
                     Id = Guid.NewGuid(),
-                    LocationInstanceId = instance.InstanceId,
+                    SublocationInstanceId = instance.InstanceId,
                     item.Name,
                     item.Price,
                     item.Description,
@@ -183,39 +183,39 @@ public class CampaignInsertRepository(
 
         await tx.CommitAsync();
 
-        logging.LogDbOperation(correlation.TraceId, spanId, "INSERT", "campaign_location_instances",
+        logging.LogDbOperation(correlation.TraceId, spanId, "INSERT", "campaign_sublocation_instances",
             @params, 1 + instance.ShopItems.Count);
 
         return instance;
     }
 
-    public async Task<ShopItemDomain> InsertLocationShopItemAsync(Guid locationInstanceId, ShopItemDomain item)
+    public async Task<ShopItemDomain> InsertSublocationShopItemAsync(Guid sublocationInstanceId, ShopItemDomain item)
     {
         var spanId = correlation.NewSpan();
         item.Id = Guid.NewGuid();
-        item.LocationId = locationInstanceId;
+        item.SublocationId = sublocationInstanceId;
 
         var @params = new
         {
             Id = item.Id,
-            LocationInstanceId = locationInstanceId,
+            SublocationInstanceId = sublocationInstanceId,
             item.Name,
             item.Price,
             item.Description,
             item.SortOrder,
         };
 
-        logging.LogDbOperation(correlation.TraceId, spanId, "INSERT", "campaign_location_shop_items", @params);
+        logging.LogDbOperation(correlation.TraceId, spanId, "INSERT", "campaign_sublocation_shop_items", @params);
 
         using var conn = CreateConnection();
         var rows = await conn.ExecuteAsync(
-            @"INSERT INTO campaign_location_shop_items
-                (id, location_instance_id, name, price, description, sort_order)
+            @"INSERT INTO campaign_sublocation_shop_items
+                (id, sublocation_instance_id, name, price, description, sort_order)
               VALUES
-                (@Id, @LocationInstanceId, @Name, @Price, @Description, @SortOrder)",
+                (@Id, @SublocationInstanceId, @Name, @Price, @Description, @SortOrder)",
             @params);
 
-        logging.LogDbOperation(correlation.TraceId, spanId, "INSERT", "campaign_location_shop_items", @params, rows);
+        logging.LogDbOperation(correlation.TraceId, spanId, "INSERT", "campaign_sublocation_shop_items", @params, rows);
         return item;
     }
 }

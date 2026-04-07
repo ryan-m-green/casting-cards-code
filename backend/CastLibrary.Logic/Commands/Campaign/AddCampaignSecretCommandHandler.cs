@@ -19,7 +19,7 @@ public class AddCampaignSecretCommandHandler(ISecretInsertRepository secretInser
             CampaignId = command.CampaignId,
             CastInstanceId = command.Request.EntityType == EntityType.Cast ? command.Request.InstanceId : null,
             CityInstanceId = command.Request.EntityType == EntityType.City ? command.Request.InstanceId : null,
-            LocationInstanceId = command.Request.EntityType == EntityType.Location ? command.Request.InstanceId : null,
+            SublocationInstanceId = command.Request.EntityType == EntityType.Sublocation ? command.Request.InstanceId : null,
             Content = command.Request.Content,
             SortOrder = 0,
             IsRevealed = false,

@@ -17,17 +17,17 @@ public interface IExportLibraryQueryHandler
 public class ExportLibraryQueryHandler(
     ICastReadRepository castReadRepository,
     ICityReadRepository cityReadRepository,
-    ILocationReadRepository locationReadRepository,
+    ISublocationReadRepository sublocationReadRepository,
     IImageStorageOperator imageStorage,
     IImageKeyCreator imageKeyCreator) : IExportLibraryQueryHandler
 {
     public async Task<LibraryExportPackage> HandleAsync(Guid dmUserId)
     {
-        var casts      = await castReadRepository.GetAllByDmAsync(dmUserId);
-        var cities    = await cityReadRepository.GetAllByDmAsync(dmUserId);
-        var locations = await locationReadRepository.GetAllByDmAsync(dmUserId);
+        var casts = await castReadRepository.GetAllByDmAsync(dmUserId);
+        var cities = await cityReadRepository.GetAllByDmAsync(dmUserId);
+        var sublocations = await sublocationReadRepository.GetAllByDmAsync(dmUserId);
 
-        var package       = new LibraryExportPackage();
+        var package = new LibraryExportPackage();
         var usedFilenames = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
 
         foreach (var cast in casts)
@@ -38,10 +38,17 @@ public class ExportLibraryQueryHandler(
 
             package.Bundle.Casts.Add(new CastCard
             {
-                Name = cast.Name, Pronouns = cast.Pronouns, Race = cast.Race,
-                Role = cast.Role, Age = cast.Age, Alignment = cast.Alignment,
-                Posture = cast.Posture, Speed = cast.Speed, VoicePlacement = cast.VoicePlacement,
-                Description = cast.Description, PublicDescription = cast.PublicDescription,
+                Name = cast.Name,
+                Pronouns = cast.Pronouns,
+                Race = cast.Race,
+                Role = cast.Role,
+                Age = cast.Age,
+                Alignment = cast.Alignment,
+                Posture = cast.Posture,
+                Speed = cast.Speed,
+                VoicePlacement = cast.VoicePlacement,
+                Description = cast.Description,
+                PublicDescription = cast.PublicDescription,
                 ImageFileName = imageFileName,
             });
         }
@@ -54,27 +61,37 @@ public class ExportLibraryQueryHandler(
 
             package.Bundle.Cities.Add(new CityCard
             {
-                Name = city.Name, Classification = city.Classification, Size = city.Size,
-                Condition = city.Condition, Geography = city.Geography,
-                Architecture = city.Architecture, Climate = city.Climate,
-                Religion = city.Religion, Vibe = city.Vibe, Languages = city.Languages,
-                Description = city.Description, ImageFileName = imageFileName,
+                Name = city.Name,
+                Classification = city.Classification,
+                Size = city.Size,
+                Condition = city.Condition,
+                Geography = city.Geography,
+                Architecture = city.Architecture,
+                Climate = city.Climate,
+                Religion = city.Religion,
+                Vibe = city.Vibe,
+                Languages = city.Languages,
+                Description = city.Description,
+                ImageFileName = imageFileName,
             });
         }
 
-        foreach (var location in locations)
+        foreach (var sublocation in sublocations)
         {
             var imageFileName = await TryReadImageAsync(
-                imageKeyCreator.Create(dmUserId, location.Id, EntityType.Location),
-                "loc", location.Name, usedFilenames, package.Images);
+                imageKeyCreator.Create(dmUserId, sublocation.Id, EntityType.Sublocation),
+                "subloc", sublocation.Name, usedFilenames, package.Images);
 
-            package.Bundle.Locations.Add(new LocationCard
+            package.Bundle.Sublocations.Add(new SublocationCard
             {
-                Name = location.Name, Description = location.Description,
+                Name = sublocation.Name,
+                Description = sublocation.Description,
                 ImageFileName = imageFileName,
-                ShopItems = location.ShopItems.Select(s => new ShopItemCard
+                ShopItems = sublocation.ShopItems.Select(s => new ShopItemCard
                 {
-                    Name = s.Name, Price = s.Price, Description = s.Description,
+                    Name = s.Name,
+                    Price = s.Price,
+                    Description = s.Description,
                 }).ToList(),
             });
         }
@@ -82,7 +99,7 @@ public class ExportLibraryQueryHandler(
         return package;
     }
 
-    private async Task<string?> TryReadImageAsync(string key, string prefix, string entityName,
+    private async Task<string> TryReadImageAsync(string key, string prefix, string entityName,
         HashSet<string> usedFilenames, Dictionary<string, byte[]> images)
     {
         var bytes = await imageStorage.ReadAsync(key);
@@ -96,7 +113,7 @@ public class ExportLibraryQueryHandler(
 
     private static string BuildUniqueFilename(string prefix, string name, HashSet<string> used)
     {
-        var slug      = Regex.Replace(name.ToLowerInvariant().Replace(" ", "_"), @"[^a-z0-9_]", "");
+        var slug = Regex.Replace(name.ToLowerInvariant().Replace(" ", "_"), @"[^a-z0-9_]", "");
         if (string.IsNullOrEmpty(slug)) slug = "unnamed";
 
         var candidate = $"{prefix}_{slug}.png";

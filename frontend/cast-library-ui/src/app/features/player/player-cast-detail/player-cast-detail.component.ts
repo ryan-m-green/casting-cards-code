@@ -28,7 +28,7 @@ export class PlayerCastDetailComponent implements OnInit {
   @ViewChild(PlayerCastNotesComponent) private notesComp?: PlayerCastNotesComponent;
 
   campaignId         = signal('');
-  locationInstanceId = signal('');
+  sublocationInstanceId = signal('');
   castInstanceId     = signal('');
   campaign           = signal<CampaignDetail | null>(null);
   playerNotes        = signal<CampaignCastPlayerNotes | null>(null);
@@ -49,10 +49,10 @@ export class PlayerCastDetailComponent implements OnInit {
     return c.secrets.filter(s => s.castInstanceId === this.castInstanceId() && s.isRevealed);
   });
 
-  parentLocation = computed(() => {
+  parentSublocation = computed(() => {
     const c = this.campaign();
     if (!c) return null;
-    return c.locations.find(l => l.instanceId === this.locationInstanceId()) ?? null;
+    return c.sublocations.find(l => l.instanceId === this.sublocationInstanceId()) ?? null;
   });
 
   constructor() {
@@ -70,7 +70,7 @@ export class PlayerCastDetailComponent implements OnInit {
           campaignId: event.campaignId,
           castInstanceId: event.castInstanceId,
           cityInstanceId: event.cityInstanceId,
-          locationInstanceId: event.locationInstanceId,
+          sublocationInstanceId: event.sublocationInstanceId,
           content: event.secretContent,
           sortOrder: 0,
           isRevealed: true,
@@ -101,7 +101,7 @@ export class PlayerCastDetailComponent implements OnInit {
           return {
             ...c,
             cities:    c.cities.filter(x => x.instanceId !== event.instanceId),
-            locations: c.locations.filter(x => x.instanceId !== event.instanceId),
+            sublocations: c.sublocations.filter(x => x.instanceId !== event.instanceId),
             casts:     c.casts.filter(x => x.instanceId !== event.instanceId),
           };
         });
@@ -119,10 +119,10 @@ export class PlayerCastDetailComponent implements OnInit {
   ngOnInit() {
     this.transition.hide();
     const id     = this.route.snapshot.paramMap.get('id')!;
-    const locId  = this.route.snapshot.paramMap.get('locationInstanceId')!;
+    const locId  = this.route.snapshot.paramMap.get('sublocationInstanceId')!;
     const castId = this.route.snapshot.paramMap.get('castInstanceId')!;
     this.campaignId.set(id);
-    this.locationInstanceId.set(locId);
+    this.sublocationInstanceId.set(locId);
     this.castInstanceId.set(castId);
     this.http.get<CampaignDetail>(`${environment.apiUrl}/api/campaigns/${id}/player`)
       .subscribe(c => {
@@ -134,13 +134,13 @@ export class PlayerCastDetailComponent implements OnInit {
     ).subscribe(n => this.playerNotes.set(n));
   }
 
-  goToLocation() {
+  goToSublocation() {
     this.transition.quickCover();
-    this.router.navigate(['/player/campaign', this.campaignId(), 'locations', this.locationInstanceId()]);
+    this.router.navigate(['/player/campaign', this.campaignId(), 'sublocations', this.sublocationInstanceId()]);
   }
 
   goToCity() {
-    const cityId = this.parentLocation()?.cityInstanceId;
+    const cityId = this.parentSublocation()?.cityInstanceId;
     if (cityId) {
       this.transition.quickCover();
       this.router.navigate(['/player/campaign', this.campaignId(), 'cities', cityId]);

@@ -1,7 +1,7 @@
-﻿import { CampaignCityInstance } from './city.model';
+import { CampaignCityInstance } from './city.model';
 import { CampaignCastInstance } from './cast.model';
 import { CampaignSecret } from './secret.model';
-import { CampaignLocationInstance } from './location.model';
+import { CampaignSublocationInstance } from './sublocation.model';
 
 export interface CampaignCastRelationship {
   id: string;
@@ -51,7 +51,7 @@ export interface CampaignDetail {
   status: CampaignStatus;
   cities: CampaignCityInstance[];
   casts: CampaignCastInstance[];
-  locations: CampaignLocationInstance[];
+  sublocations: CampaignSublocationInstance[];
   secrets: CampaignSecret[];
   players: CampaignPlayer[];
   relationships: CampaignCastRelationship[];
@@ -61,7 +61,7 @@ export interface CampaignDetail {
 export interface CampaignNote {
   id: string;
   campaignId: string;
-  entityType: 'Cast' | 'City' | 'Location';
+  entityType: 'Cast' | 'City' | 'Sublocation';
   instanceId: string;
   content: string;
   createdByDisplayName: string;

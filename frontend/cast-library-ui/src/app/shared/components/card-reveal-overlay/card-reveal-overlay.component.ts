@@ -2,7 +2,7 @@ import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 export interface CardRevealOverlayData {
-  cardType: 'city' | 'location' | 'cast';
+  cardType: 'city' | 'sublocation' | 'cast';
   name: string;
   descriptor: string;
   imageUrl?: string;

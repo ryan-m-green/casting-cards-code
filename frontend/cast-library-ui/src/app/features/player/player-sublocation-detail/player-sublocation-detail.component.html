@@ -1,0 +1,167 @@
+@if (sublocation(); as subLoc) {
+  <div class="void-canvas" [style.--portal-color]="portalColor()">
+
+    <!-- ── Top bar ── -->
+    <div class="void-topbar">
+      <div class="void-breadcrumbs">
+        <button class="void-back" (click)="goToCampaign()">← Cities</button>
+        <span class="void-crumb-sep">›</span>
+        <button class="void-back" (click)="goToCity()">← Sublocations</button>
+      </div>
+      <span class="void-title">{{ subLoc.name }}</span>
+    </div>
+
+    <!-- ── Time of day bar ── -->
+    <div class="tod-bar-section">
+      <app-time-of-day-bar [campaignId]="campaignId()" [isDm]="false" [panelTheme]="'dark'" />
+    </div>
+
+    <!-- ── Body ── -->
+    <div class="subLoc-body">
+
+      <!-- Card -->
+      <div class="subLoc-card-left">
+        <div class="pc-card pc-card-sublocation">
+          <div class="lib-card-front">
+            <div class="card-slot-front">
+              <div class="card-front-header">
+                <div class="card-name">{{ subLoc.name }}</div>
+                <div class="card-descriptor">{{ subLoc.shopItems?.length ?? 0 }} shop items</div>
+              </div>
+              <div class="dv dv-card"></div>
+              <div class="card-image-area">
+                @if (subLoc.imageUrl) {
+                  <img [src]="subLoc.imageUrl" alt="" class="card-img-fill" />
+                } @else {
+                  <div class="card-placeholder">
+                    <span class="card-initial">{{ initial(subLoc.name) }}</span>
+                  </div>
+                }
+                @if (subLoc.description) {
+                  <div class="card-desc-overlay">
+                    <p class="card-desc-text">{{ subLoc.description }}</p>
+                  </div>
+                }
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Detail panel -->
+      <div class="subLoc-detail-panel" [style.height]="panelHeight()">
+
+        <div class="detail-panel-content" #detailContent>
+
+          @if (subLoc.description) {
+            <div class="detail-desc">
+              <span class="detail-label">Description</span>
+              <span class="detail-line"></span>
+              <p class="detail-value detail-value--block">{{ subLoc.description }}</p>
+            </div>
+          }
+
+          <div class="detail-grid">
+            @if (subLoc.keywords?.length) {
+              <div class="detail-cell detail-cell--full">
+                <span class="detail-label">Keywords</span>
+                <span class="detail-line"></span>
+                <div class="detail-keywords">
+                  @for (kw of subLoc.keywords; track kw) {
+                    <span class="detail-keyword-pill">{{ kw }}</span>
+                  }
+                </div>
+              </div>
+            }
+          </div>
+
+          @if (subLoc.shopItems?.length) {
+            <div class="detail-shop-section">
+              <span class="detail-label">Shop Items</span>
+              <span class="detail-line"></span>
+              <div class="detail-shop-grid">
+                @for (item of subLoc.shopItems; track item.id) {
+                  <div class="detail-shop-item">
+                    <span class="detail-shop-item-name">{{ item.name }}</span>
+                    <span class="detail-shop-item-price">{{ item.price }}</span>
+                  </div>
+                }
+              </div>
+            </div>
+          }
+
+          @if (sublocationSecrets().some(s => s.isRevealed)) {
+            <div class="detail-secrets-section">
+              <span class="detail-label">Secrets</span>
+              <span class="detail-line"></span>
+              @for (secret of sublocationSecrets(); track secret.id) {
+                @if (secret.isRevealed) {
+                  <div class="detail-secret">
+                    <span class="secret-text secret-text--revealed">{{ secret.content }}</span>
+                  </div>
+                }
+              }
+            </div>
+          }
+
+        </div>
+
+        <button class="detail-expand-btn" #expandBtn (click)="toggleDetail()">
+          {{ detailExpanded() ? '▲' : '▼' }}
+        </button>
+
+      </div>
+
+    </div>
+
+    <!-- ── Cast section ── -->
+    @if (sublocationCasts().length) {
+      <div class="subLoc-cast-section">
+
+        <div class="cast-section-header">
+          <span class="cast-section-label">Cast</span>
+          <span class="cast-section-line"></span>
+        </div>
+
+        <div class="cast-grid">
+          @for (cast of sublocationCasts(); track cast.instanceId) {
+            <div class="cast-card-wrapper" (click)="goToCast(cast)">
+              <div class="cast-impact-stars">
+                @for (n of [1,2,3]; track n) {
+                  <span class="impact-star" [class.impact-star--lit]="castRating(cast.instanceId) >= n">★</span>
+                }
+              </div>
+              <div class="pc-card pc-card-cast">
+                <div class="lib-card-front">
+                  <div class="card-slot-front">
+                    <div class="card-front-header">
+                      <div class="card-name">{{ cast.name }}</div>
+                      <div class="card-descriptor">{{ cast.role }}</div>
+                    </div>
+                    <div class="dv dv-card"></div>
+                    <div class="card-image-area">
+                      @if (cast.imageUrl) {
+                        <img [src]="cast.imageUrl" alt="" class="card-img-fill" />
+                      } @else {
+                        <div class="card-placeholder">
+                          <span class="card-initial">{{ initial(cast.name) }}</span>
+                        </div>
+                      }
+                      @if (cast.publicDescription) {
+                        <div class="card-desc-overlay">
+                          <p class="card-desc-text">{{ cast.publicDescription }}</p>
+                        </div>
+                      }
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          }
+        </div>
+
+      </div>
+    }
+
+  </div>
+}

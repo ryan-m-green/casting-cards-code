@@ -11,17 +11,17 @@ public interface ICampaignUpdateRepository
     Task UpdateAsync(CampaignDomain campaign);
     Task UpdateCityInstanceAsync(CampaignCityInstanceDomain instance);
     Task UpdateCastInstanceAsync(CampaignCastInstanceDomain instance);
-    Task UpdateLocationInstanceAsync(CampaignLocationInstanceDomain instance);
+    Task UpdateSublocationInstanceAsync(CampaignSublocationInstanceDomain instance);
     Task UpdateCityInstanceVisibilityAsync(Guid instanceId, bool isVisibleToPlayers);
-    Task UpdateLocationInstanceVisibilityAsync(Guid instanceId, bool isVisibleToPlayers);
-    Task UpdateCityLocationsVisibilityAsync(Guid cityInstanceId, bool isVisibleToPlayers);
+    Task UpdateSublocationInstanceVisibilityAsync(Guid instanceId, bool isVisibleToPlayers);
+    Task UpdateCitySublocationsVisibilityAsync(Guid cityInstanceId, bool isVisibleToPlayers);
     Task UpdateCastInstanceVisibilityAsync(Guid instanceId, bool isVisibleToPlayers);
-    Task UpdateLocationCastsVisibilityAsync(Guid locationInstanceId, bool isVisibleToPlayers);
+    Task UpdateSublocationCastsVisibilityAsync(Guid sublocationInstanceId, bool isVisibleToPlayers);
     Task UpdateCastCustomItemsAsync(Guid instanceId, string itemsJson);
-    Task UpdateLocationCustomItemsAsync(Guid instanceId, string itemsJson);
+    Task UpdateSublocationCustomItemsAsync(Guid instanceId, string itemsJson);
     Task UpdateCityInstanceKeywordsAsync(Guid instanceId, string[] keywords);
     Task UpdateCastInstanceKeywordsAsync(Guid instanceId, string[] keywords);
-    Task UpdateLocationInstanceKeywordsAsync(Guid instanceId, string[] keywords);
+    Task UpdateSublocationInstanceKeywordsAsync(Guid instanceId, string[] keywords);
     Task ToggleShopItemScratchAsync(Guid shopItemId, bool isScratchedOff);
 }
 
@@ -128,7 +128,7 @@ public class CampaignUpdateRepository(
         logging.LogDbOperation(correlation.TraceId, spanId, "UPDATE", "campaign_cast_instances", @params, rows);
     }
 
-    public async Task UpdateLocationInstanceAsync(CampaignLocationInstanceDomain instance)
+    public async Task UpdateSublocationInstanceAsync(CampaignSublocationInstanceDomain instance)
     {
         var spanId = correlation.NewSpan();
         var @params = new
@@ -138,16 +138,16 @@ public class CampaignUpdateRepository(
             instance.DmNotes,
         };
 
-        logging.LogDbOperation(correlation.TraceId, spanId, "UPDATE", "campaign_location_instances", @params);
+        logging.LogDbOperation(correlation.TraceId, spanId, "UPDATE", "campaign_sublocation_instances", @params);
 
         using var conn = CreateConnection();
         var rows = await conn.ExecuteAsync(
-            @"UPDATE campaign_location_instances
+            @"UPDATE campaign_sublocation_instances
               SET description=@Description, dm_notes=@DmNotes
               WHERE instance_id=@InstanceId",
             @params);
 
-        logging.LogDbOperation(correlation.TraceId, spanId, "UPDATE", "campaign_location_instances", @params, rows);
+        logging.LogDbOperation(correlation.TraceId, spanId, "UPDATE", "campaign_sublocation_instances", @params, rows);
     }
 
     public async Task ToggleShopItemScratchAsync(Guid shopItemId, bool isScratchedOff)
@@ -155,14 +155,14 @@ public class CampaignUpdateRepository(
         var spanId = correlation.NewSpan();
         var @params = new { ShopItemId = shopItemId, IsScratchedOff = isScratchedOff };
 
-        logging.LogDbOperation(correlation.TraceId, spanId, "UPDATE", "campaign_location_shop_items", @params);
+        logging.LogDbOperation(correlation.TraceId, spanId, "UPDATE", "campaign_sublocation_shop_items", @params);
 
         using var conn = CreateConnection();
         var rows = await conn.ExecuteAsync(
-            "UPDATE campaign_location_shop_items SET is_scratched_off=@IsScratchedOff WHERE id=@ShopItemId",
+            "UPDATE campaign_sublocation_shop_items SET is_scratched_off=@IsScratchedOff WHERE id=@ShopItemId",
             @params);
 
-        logging.LogDbOperation(correlation.TraceId, spanId, "UPDATE", "campaign_location_shop_items", @params, rows);
+        logging.LogDbOperation(correlation.TraceId, spanId, "UPDATE", "campaign_sublocation_shop_items", @params, rows);
     }
 
     public async Task UpdateCityInstanceVisibilityAsync(Guid instanceId, bool isVisibleToPlayers)
@@ -182,38 +182,38 @@ public class CampaignUpdateRepository(
         logging.LogDbOperation(correlation.TraceId, spanId, "UPDATE", "campaign_city_instances", @params, rows);
     }
 
-    public async Task UpdateLocationInstanceVisibilityAsync(Guid instanceId, bool isVisibleToPlayers)
+    public async Task UpdateSublocationInstanceVisibilityAsync(Guid instanceId, bool isVisibleToPlayers)
     {
         var spanId = correlation.NewSpan();
         var @params = new { InstanceId = instanceId, IsVisibleToPlayers = isVisibleToPlayers };
 
-        logging.LogDbOperation(correlation.TraceId, spanId, "UPDATE", "campaign_location_instances", @params);
+        logging.LogDbOperation(correlation.TraceId, spanId, "UPDATE", "campaign_sublocation_instances", @params);
 
         using var conn = CreateConnection();
         var rows = await conn.ExecuteAsync(
-            @"UPDATE campaign_location_instances
+            @"UPDATE campaign_sublocation_instances
               SET is_visible_to_players=@IsVisibleToPlayers
               WHERE instance_id=@InstanceId",
             @params);
 
-        logging.LogDbOperation(correlation.TraceId, spanId, "UPDATE", "campaign_location_instances", @params, rows);
+        logging.LogDbOperation(correlation.TraceId, spanId, "UPDATE", "campaign_sublocation_instances", @params, rows);
     }
 
-    public async Task UpdateCityLocationsVisibilityAsync(Guid cityInstanceId, bool isVisibleToPlayers)
+    public async Task UpdateCitySublocationsVisibilityAsync(Guid cityInstanceId, bool isVisibleToPlayers)
     {
         var spanId = correlation.NewSpan();
         var @params = new { CityInstanceId = cityInstanceId, IsVisibleToPlayers = isVisibleToPlayers };
 
-        logging.LogDbOperation(correlation.TraceId, spanId, "UPDATE", "campaign_location_instances", @params);
+        logging.LogDbOperation(correlation.TraceId, spanId, "UPDATE", "campaign_sublocation_instances", @params);
 
         using var conn = CreateConnection();
         var rows = await conn.ExecuteAsync(
-            @"UPDATE campaign_location_instances
+            @"UPDATE campaign_sublocation_instances
               SET is_visible_to_players=@IsVisibleToPlayers
               WHERE city_instance_id=@CityInstanceId",
             @params);
 
-        logging.LogDbOperation(correlation.TraceId, spanId, "UPDATE", "campaign_location_instances", @params, rows);
+        logging.LogDbOperation(correlation.TraceId, spanId, "UPDATE", "campaign_sublocation_instances", @params, rows);
     }
 
     public async Task UpdateCastInstanceVisibilityAsync(Guid instanceId, bool isVisibleToPlayers)
@@ -233,10 +233,10 @@ public class CampaignUpdateRepository(
         logging.LogDbOperation(correlation.TraceId, spanId, "UPDATE", "campaign_cast_instances", @params, rows);
     }
 
-    public async Task UpdateLocationCastsVisibilityAsync(Guid locationInstanceId, bool isVisibleToPlayers)
+    public async Task UpdateSublocationCastsVisibilityAsync(Guid sublocationInstanceId, bool isVisibleToPlayers)
     {
         var spanId = correlation.NewSpan();
-        var @params = new { LocationInstanceId = locationInstanceId, IsVisibleToPlayers = isVisibleToPlayers };
+        var @params = new { SublocationInstanceId = sublocationInstanceId, IsVisibleToPlayers = isVisibleToPlayers };
 
         logging.LogDbOperation(correlation.TraceId, spanId, "UPDATE", "campaign_cast_instances", @params);
 
@@ -244,7 +244,7 @@ public class CampaignUpdateRepository(
         var rows = await conn.ExecuteAsync(
             @"UPDATE campaign_cast_instances
               SET is_visible_to_players=@IsVisibleToPlayers
-              WHERE location_instance_id=@LocationInstanceId",
+              WHERE sublocation_instance_id=@SublocationInstanceId",
             @params);
 
         logging.LogDbOperation(correlation.TraceId, spanId, "UPDATE", "campaign_cast_instances", @params, rows);
@@ -265,19 +265,19 @@ public class CampaignUpdateRepository(
         logging.LogDbOperation(correlation.TraceId, spanId, "UPDATE", "campaign_cast_instances", @params, rows);
     }
 
-    public async Task UpdateLocationCustomItemsAsync(Guid instanceId, string itemsJson)
+    public async Task UpdateSublocationCustomItemsAsync(Guid instanceId, string itemsJson)
     {
         var spanId = correlation.NewSpan();
         var @params = new { InstanceId = instanceId, Items = itemsJson };
 
-        logging.LogDbOperation(correlation.TraceId, spanId, "UPDATE", "campaign_location_instances", @params);
+        logging.LogDbOperation(correlation.TraceId, spanId, "UPDATE", "campaign_sublocation_instances", @params);
 
         using var conn = CreateConnection();
         var rows = await conn.ExecuteAsync(
-            "UPDATE campaign_location_instances SET custom_items=@Items::jsonb WHERE instance_id=@InstanceId",
+            "UPDATE campaign_sublocation_instances SET custom_items=@Items::jsonb WHERE instance_id=@InstanceId",
             @params);
 
-        logging.LogDbOperation(correlation.TraceId, spanId, "UPDATE", "campaign_location_instances", @params, rows);
+        logging.LogDbOperation(correlation.TraceId, spanId, "UPDATE", "campaign_sublocation_instances", @params, rows);
     }
 
     public async Task UpdateCityInstanceKeywordsAsync(Guid instanceId, string[] keywords)
@@ -304,15 +304,15 @@ public class CampaignUpdateRepository(
         logging.LogDbOperation(correlation.TraceId, spanId, "UPDATE", "campaign_cast_instances", @params, rows);
     }
 
-    public async Task UpdateLocationInstanceKeywordsAsync(Guid instanceId, string[] keywords)
+    public async Task UpdateSublocationInstanceKeywordsAsync(Guid instanceId, string[] keywords)
     {
         var spanId = correlation.NewSpan();
         var @params = new { InstanceId = instanceId, Keywords = keywords };
-        logging.LogDbOperation(correlation.TraceId, spanId, "UPDATE", "campaign_location_instances", @params);
+        logging.LogDbOperation(correlation.TraceId, spanId, "UPDATE", "campaign_sublocation_instances", @params);
         using var conn = CreateConnection();
         var rows = await conn.ExecuteAsync(
-            "UPDATE campaign_location_instances SET keywords = @Keywords::text[] WHERE instance_id = @InstanceId",
+            "UPDATE campaign_sublocation_instances SET keywords = @Keywords::text[] WHERE instance_id = @InstanceId",
             @params);
-        logging.LogDbOperation(correlation.TraceId, spanId, "UPDATE", "campaign_location_instances", @params, rows);
+        logging.LogDbOperation(correlation.TraceId, spanId, "UPDATE", "campaign_sublocation_instances", @params, rows);
     }
 }

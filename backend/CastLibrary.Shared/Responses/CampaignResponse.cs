@@ -1,4 +1,4 @@
-﻿namespace CastLibrary.Shared.Responses;
+namespace CastLibrary.Shared.Responses;
 
 public class CampaignListResponse
 {
@@ -22,7 +22,7 @@ public class CampaignDetailResponse
     public string Status { get; set; } = string.Empty;
     public List<CampaignCityInstanceResponse> Cities { get; set; } = [];
     public List<CampaignCastInstanceResponse> Casts { get; set; } = [];
-    public List<CampaignLocationInstanceResponse> Locations { get; set; } = [];
+    public List<CampaignSublocationInstanceResponse> Sublocations { get; set; } = [];
     public List<CampaignSecretResponse> Secrets { get; set; } = [];
     public List<CampaignPlayerResponse> Players { get; set; } = [];
     public List<CampaignCastRelationshipResponse> Relationships { get; set; } = [];
@@ -78,7 +78,7 @@ public class CampaignCastInstanceResponse
     public Guid CampaignId { get; set; }
     public Guid? SourceCastId { get; set; }
     public Guid? CityInstanceId { get; set; }
-    public Guid? LocationInstanceId { get; set; }
+    public Guid? SublocationInstanceId { get; set; }
     public string Name { get; set; } = string.Empty;
     public string Pronouns { get; set; } = string.Empty;
     public string Race { get; set; } = string.Empty;
@@ -103,18 +103,18 @@ public class CampaignSecretResponse
     public Guid CampaignId { get; set; }
     public Guid? CastInstanceId { get; set; }
     public Guid? CityInstanceId { get; set; }
-    public Guid? LocationInstanceId { get; set; }
+    public Guid? SublocationInstanceId { get; set; }
     public string Content { get; set; } = string.Empty;
     public int SortOrder { get; set; }
     public bool IsRevealed { get; set; }
     public DateTime? RevealedAt { get; set; }
 }
 
-public class CampaignLocationInstanceResponse
+public class CampaignSublocationInstanceResponse
 {
     public Guid InstanceId { get; set; }
     public Guid CampaignId { get; set; }
-    public Guid? SourceLocationId { get; set; }
+    public Guid? SourceSublocationId { get; set; }
     public Guid? CityInstanceId { get; set; }
     public string Name { get; set; } = string.Empty;
     public string Description { get; set; } = string.Empty;
@@ -139,7 +139,7 @@ public class DashboardStatsResponse
 {
     public int CampaignCount { get; set; }
     public int CityCount { get; set; }
-    public int LocationCount { get; set; }
+    public int SublocationCount { get; set; }
     public int CastCount { get; set; }
     public CampaignListResponse ActiveCampaign { get; set; }
 }

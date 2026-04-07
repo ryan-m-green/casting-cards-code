@@ -262,20 +262,20 @@ $city-blue: #9ab0b8;
   }
 }
 
-.city-locations-section {
+.city-sublocations-section {
   padding: 0 40px 48px;
   position: relative;
   z-index: 1;
 }
 
-.locations-section-header {
+.sublocations-section-header {
   display: flex;
   align-items: center;
   gap: 16px;
   margin-bottom: 20px;
 }
 
-.locations-section-label {
+.sublocations-section-label {
   font-family: 'Cinzel', serif;
   font-size: 9px;
   letter-spacing: 0.22em;
@@ -285,20 +285,20 @@ $city-blue: #9ab0b8;
   text-shadow: 0 0 10px rgba($city-blue, 0.22);
 }
 
-.locations-section-line {
+.sublocations-section-line {
   flex: 1;
   height: 1px;
   background: linear-gradient(to right, rgba($city-blue, 0.24), transparent);
 }
 
-.locations-grid {
+.sublocations-grid {
   display: flex;
   flex-wrap: wrap;
   gap: 18px;
   align-items: flex-start;
 }
 
-.loc-card-wrapper {
+.subLoc-card-wrapper {
   cursor: pointer;
   transition: transform 0.2s ease;
 

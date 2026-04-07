@@ -1,4 +1,4 @@
-﻿@use 'variables' as v;
+@use 'variables' as v;
 
 // ─── Wireframe Blocks ────────────────────────────────────────────────────────
 .wb {
@@ -152,7 +152,7 @@ textarea.fi {
   background: linear-gradient(160deg, #9ab0b8 0%, #b8cdd6 50%, #8aa0a8 100%);
 }
 
-.pc-card-location .lib-card-front {
+.pc-card-sublocation .lib-card-front {
   background: linear-gradient(160deg, #a8a070 0%, #c4bc88 50%, #98906a 100%);
 }
 
@@ -618,7 +618,7 @@ textarea.fi {
 
 .pc-card-cast .card-placeholder      { background: linear-gradient(160deg, #c8b07a, #e0c98a, #c4a86a); }
 .pc-card-city .card-placeholder     { background: linear-gradient(160deg, #9ab0b8, #b8cdd6, #8aa0a8); }
-.pc-card-location .card-placeholder { background: linear-gradient(160deg, #a8a070, #c4bc88, #98906a); }
+.pc-card-sublocation .card-placeholder { background: linear-gradient(160deg, #a8a070, #c4bc88, #98906a); }
 
 .card-initial {
   font-family: v.$font-header;
