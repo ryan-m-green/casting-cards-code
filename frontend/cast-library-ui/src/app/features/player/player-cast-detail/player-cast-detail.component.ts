@@ -9,11 +9,12 @@ import { CampaignSecret } from '../../../shared/models/secret.model';
 import { CampaignHubService } from '../../../core/hub/campaign-hub.service';
 import { PortalTransitionService } from '../../../core/portal-transition.service';
 import { PlayerCastNotesComponent } from '../player-cast-notes/player-cast-notes.component';
+import { TimeOfDayBarComponent } from '../../../shared/components/time-of-day-bar/time-of-day-bar.component';
 
 @Component({
   selector: 'app-player-cast-detail',
   standalone: true,
-  imports: [CommonModule, PlayerCastNotesComponent],
+  imports: [CommonModule, PlayerCastNotesComponent, TimeOfDayBarComponent],
   templateUrl: './player-cast-detail.component.html',
   styleUrl: './player-cast-detail.component.scss'
 })

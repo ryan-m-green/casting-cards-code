@@ -17,3 +17,27 @@ ALTER TABLE campaign_location_shop_items
 -- [004] Add dm_notes to campaign_cast_instances
 ALTER TABLE campaign_cast_instances
     ADD COLUMN IF NOT EXISTS dm_notes TEXT;
+
+-- [005] Time-of-Day: campaign day/night cycle config
+CREATE TABLE IF NOT EXISTS campaign_time_of_day (
+    id                       UUID        PRIMARY KEY DEFAULT gen_random_uuid(),
+    campaign_id              UUID        NOT NULL REFERENCES campaigns(id) ON DELETE CASCADE,
+    day_length_hours         NUMERIC(6,2) NOT NULL DEFAULT 24,
+    cursor_position_percent  NUMERIC(5,2) NOT NULL DEFAULT 0,
+    created_at               TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    updated_at               TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    UNIQUE (campaign_id)
+);
+
+CREATE TABLE IF NOT EXISTS campaign_tod_slices (
+    id              UUID         PRIMARY KEY DEFAULT gen_random_uuid(),
+    campaign_id     UUID         NOT NULL REFERENCES campaigns(id) ON DELETE CASCADE,
+    label           TEXT         NOT NULL,
+    color           TEXT         NOT NULL,
+    duration_hours  NUMERIC(6,2) NOT NULL,
+    sort_order      INT          NOT NULL DEFAULT 0,
+    dm_notes        TEXT,
+    player_notes    TEXT,
+    created_at      TIMESTAMPTZ  NOT NULL DEFAULT NOW(),
+    updated_at      TIMESTAMPTZ  NOT NULL DEFAULT NOW()
+);

@@ -1,0 +1,122 @@
+<div class="tod-editor">
+
+  <!-- ── Header ── -->
+  <div class="tod-section-label">Day / Night Cycle</div>
+
+  <div class="tod-day-length-row">
+    <label class="tod-field-label" for="tod-day-length">Day length</label>
+    <input
+      id="tod-day-length"
+      type="number"
+      min="1"
+      step="0.5"
+      class="fi tod-day-length-input"
+      [ngModel]="dayLengthHours()"
+      (ngModelChange)="onDayLengthChange($event)"
+    />
+    <span class="tod-unit">hours</span>
+  </div>
+
+  <!-- ── Live preview bar ── -->
+  @if (previewTod()) {
+    <div class="tod-preview-section">
+      <div class="tod-section-label tod-section-label--sub">Preview</div>
+      <app-time-of-day-bar [campaignId]="campaignId" [isDm]="true" [todInput]="previewTod()" />
+    </div>
+  }
+
+  <!-- ── Slice list ── -->
+  <ul class="tod-slices" role="list">
+    @for (slice of slices(); track $index; let i = $index) {
+      <li class="tod-slice-row" role="listitem">
+
+        <div class="tod-slice-row__reorder">
+          <button
+            type="button"
+            class="tod-reorder-btn"
+            [disabled]="i === 0"
+            [attr.aria-label]="'Move ' + (slice.label || 'slice') + ' up'"
+            (click)="moveUp(i)"
+          >↑</button>
+          <button
+            type="button"
+            class="tod-reorder-btn"
+            [disabled]="i === slices().length - 1"
+            [attr.aria-label]="'Move ' + (slice.label || 'slice') + ' down'"
+            (click)="moveDown(i)"
+          >↓</button>
+        </div>
+
+        <div class="tod-color-wrap">
+          <input
+            type="color"
+            class="color-swatch-input tod-color-input"
+            [value]="slice.color"
+            [attr.aria-label]="'Color for slice ' + (i + 1)"
+            (input)="updateSliceField(i, 'color', $any($event.target).value)"
+          />
+        </div>
+
+        <input
+          type="text"
+          class="fi fi-no-mb tod-label-input"
+          placeholder="Label"
+          [value]="slice.label"
+          [attr.aria-label]="'Label for slice ' + (i + 1)"
+          (input)="updateSliceField(i, 'label', $any($event.target).value)"
+        />
+
+        <div class="tod-duration-wrap">
+          <input
+            type="number"
+            class="fi fi-no-mb tod-duration-input"
+            min="0"
+            step="0.5"
+            [value]="slice.durationHours"
+            [attr.aria-label]="'Duration in hours for slice ' + (i + 1)"
+            (input)="updateSliceField(i, 'durationHours', +$any($event.target).value)"
+          />
+          <span class="tod-unit">h</span>
+        </div>
+
+        <textarea
+          class="fi fi-no-mb tod-notes-input"
+          placeholder="DM notes…"
+          rows="1"
+          [value]="slice.dmNotes"
+          [attr.aria-label]="'DM notes for ' + (slice.label || 'slice ' + (i + 1))"
+          (input)="updateSliceField(i, 'dmNotes', $any($event.target).value)"
+        ></textarea>
+
+        <button
+          type="button"
+          class="sel-card-remove tod-remove-btn"
+          [attr.aria-label]="'Remove ' + (slice.label || 'slice ' + (i + 1))"
+          (click)="removeSlice(i)"
+        >✕</button>
+      </li>
+    }
+  </ul>
+
+  <!-- ── Add slice ── -->
+  <button type="button" class="tod-add-btn" (click)="addSlice()">+ Add slice</button>
+
+  <!-- ── Totals + autosave status ── -->
+  <div class="tod-footer">
+    <span class="tod-totals" [class.tod-totals--error]="!isValid() && hasSlices()">
+      Total: <strong>{{ sliceTotal() | number:'1.0-2' }}h</strong>
+      / {{ dayLengthHours() | number:'1.0-2' }}h
+      @if (!isValid() && hasSlices()) {
+        <span class="tod-delta">({{ (sliceTotal() - dayLengthHours()) | number:'+1.2-2' }}h)</span>
+      } @else if (isValid()) {
+        <span class="tod-check">✓</span>
+      }
+    </span>
+    @if (autoSaveStatus() === 'saving') {
+      <span class="autosave-indicator" aria-live="polite">Saving…</span>
+    } @else if (autoSaveStatus() === 'saved') {
+      <span class="autosave-indicator" aria-live="polite">Saved</span>
+    }
+  </div>
+
+</div>

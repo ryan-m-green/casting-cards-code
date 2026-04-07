@@ -6,11 +6,12 @@ import { environment } from '../../../../environments/environment';
 import { CampaignDetail } from '../../../shared/models/campaign.model';
 import { PortalTransitionService } from '../../../core/portal-transition.service';
 import { CampaignHubService } from '../../../core/hub/campaign-hub.service';
+import { TimeOfDayBarComponent } from '../../../shared/components/time-of-day-bar/time-of-day-bar.component';
 
 @Component({
   selector: 'app-player-campaign-detail',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, TimeOfDayBarComponent],
   templateUrl: './player-campaign-detail.component.html',
   styleUrl: './player-campaign-detail.component.scss'
 })

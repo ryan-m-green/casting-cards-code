@@ -60,6 +60,8 @@ namespace CastLibrary.WebHost.IoC
             services.AddScoped<ICityPoliticalNotesUpdateRepository, CityPoliticalNotesUpdateRepository>();
             services.AddScoped<IAdminInviteCodeReadRepository, AdminInviteCodeReadRepository>();
             services.AddScoped<IAdminInviteCodeUpdateRepository, AdminInviteCodeUpdateRepository>();
+            services.AddScoped<ITimeOfDayReadRepository, TimeOfDayReadRepository>();
+            services.AddScoped<ITimeOfDayWriteRepository, TimeOfDayWriteRepository>();
             services.AddHealthChecks()
               .AddCheck<DatabaseHealthCheck>("postgres");
 

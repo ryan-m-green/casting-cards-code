@@ -7,6 +7,14 @@
       <span class="void-title">{{ camp.name }}</span>
     </div>
 
+    <div class="tod-bar-section">
+      <app-time-of-day-bar
+        [campaignId]="camp.id"
+        [isDm]="false"
+        [panelTheme]="'dark'"
+      />
+    </div>
+
     @if (camp.cities.length) {
       <div class="city-cards-section">
         <div class="city-cards-label">Cities</div>

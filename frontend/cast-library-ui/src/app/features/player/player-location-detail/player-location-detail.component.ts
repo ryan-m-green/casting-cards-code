@@ -9,11 +9,12 @@ import { CampaignCastInstance } from '../../../shared/models/cast.model';
 import { CampaignSecret } from '../../../shared/models/secret.model';
 import { CampaignHubService } from '../../../core/hub/campaign-hub.service';
 import { PortalTransitionService } from '../../../core/portal-transition.service';
+import { TimeOfDayBarComponent } from '../../../shared/components/time-of-day-bar/time-of-day-bar.component';
 
 @Component({
   selector: 'app-player-location-detail',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, TimeOfDayBarComponent],
   templateUrl: './player-location-detail.component.html',
   styleUrl: './player-location-detail.component.scss'
 })

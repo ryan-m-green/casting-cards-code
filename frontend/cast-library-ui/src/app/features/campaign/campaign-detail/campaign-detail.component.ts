@@ -11,10 +11,11 @@ import { PortalTransitionService } from '../../../core/portal-transition.service
 import { SecretModalComponent } from '../../../shared/components/secret-modal/secret-modal.component';
 import { LockPillComponent } from '../../../shared/components/lock-pill/lock-pill.component';
 import { CampaignNotesComponent } from '../../../shared/components/campaign-notes/campaign-notes.component';
+import { TimeOfDayBarComponent } from '../../../shared/components/time-of-day-bar/time-of-day-bar.component';
 @Component({
   selector: 'app-campaign-detail',
   standalone: true,
-  imports: [CommonModule, RouterLink, DatePipe, SecretModalComponent, LockPillComponent, CampaignNotesComponent],
+  imports: [CommonModule, RouterLink, DatePipe, SecretModalComponent, LockPillComponent, CampaignNotesComponent, TimeOfDayBarComponent],
   templateUrl: './campaign-detail.component.html',
   styleUrl: './campaign-detail.component.scss'
 })
@@ -60,7 +61,11 @@ export class CampaignDetailComponent implements OnInit, OnDestroy {
     const id = this.route.snapshot.paramMap.get('id')!;
     this.campaignId.set(id);
     this.loadCampaign(id);
-    this.hub.joinCampaign(id).catch(console.warn);
+    const token = this.auth.getToken();
+    const connectAndJoin = token && !this.hub.isConnected()
+      ? this.hub.connect(token).then(() => this.hub.joinCampaign(id))
+      : this.hub.joinCampaign(id);
+    connectAndJoin.catch(console.warn);
   }
 
   ngOnDestroy() {

@@ -11,10 +11,11 @@ import { CampaignLocationInstance } from '../../../shared/models/location.model'
 import { CampaignHubService } from '../../../core/hub/campaign-hub.service';
 import { PortalTransitionService } from '../../../core/portal-transition.service';
 import { AuthService } from '../../../core/auth/auth.service';
+import { TimeOfDayBarComponent } from '../../../shared/components/time-of-day-bar/time-of-day-bar.component';
 @Component({
   selector: 'app-campaign-city-detail',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, TimeOfDayBarComponent],
   templateUrl: './campaign-city-detail.component.html',
   styleUrl: './campaign-city-detail.component.scss'
 })
@@ -109,7 +110,11 @@ export class CampaignCityDetailComponent implements OnInit, OnDestroy {
         this.campaign.set(c);
         this.transition.spineColor = c.spineColor;
       });
-    this.hub.joinCampaign(id).catch(console.warn);
+    const token = this.auth.getToken();
+    const connectAndJoin = token && !this.hub.isConnected()
+      ? this.hub.connect(token).then(() => this.hub.joinCampaign(id))
+      : this.hub.joinCampaign(id);
+    connectAndJoin.catch(console.warn);
   }
 
   ngOnDestroy() {

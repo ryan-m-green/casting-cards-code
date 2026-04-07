@@ -13,6 +13,7 @@ import { CardFlipComponent } from '../../../shared/components/card-flip/card-fli
 import { CastRelationshipsTabComponent } from '../cast-relationships-tab/cast-relationships-tab.component';
 import { KeywordInputComponent } from '../../../shared/components/keyword-input/keyword-input.component';
 import { DmNavComponent } from '../../../shared/components/dm-nav/dm-nav.component';
+import { TimeOfDayEditorComponent } from '../time-of-day-editor/time-of-day-editor.component';
 
 interface CitySecret {
   id?: string;
@@ -36,7 +37,7 @@ interface CityDraft {
 @Component({
   selector: 'app-campaign-creator',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, RouterLink, CardFlipComponent, CastRelationshipsTabComponent, KeywordInputComponent, DmNavComponent],
+  imports: [CommonModule, ReactiveFormsModule, RouterLink, CardFlipComponent, CastRelationshipsTabComponent, KeywordInputComponent, DmNavComponent, TimeOfDayEditorComponent],
   templateUrl: './campaign-creator.component.html',
   styleUrl: './campaign-creator.component.scss'
 })
@@ -63,7 +64,7 @@ export class CampaignCreatorComponent implements OnInit, OnDestroy {
   expandedIdx    = signal(0);
   saving         = signal(false);
   isSwapping     = false;
-  activeTab      = signal<'world-setup' | 'cast-relationships' | 'players'>('world-setup');
+  activeTab      = signal<'world-setup' | 'cast-relationships' | 'day-cycle' | 'players'>('world-setup');
   players        = signal<CampaignPlayer[]>([]);
   inviteCode     = signal<CampaignInviteCode | null>(null);
   codeLoading    = signal(false);

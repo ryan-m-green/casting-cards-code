@@ -1,0 +1,136 @@
+@if (tod(); as tod) {
+  <div class="tod-wrapper" [class.tod-wrapper--dark]="panelTheme === 'dark'">
+
+    <!-- ── Bar track ── -->
+    <div
+      #barTrack
+      class="tod-bar"
+      [class.tod-bar--shimmering]="isShimmering()"
+      [class.tod-bar--panel-open]="activeSliceId() !== null"
+      role="group"
+      aria-label="Day/night cycle bar"
+    >
+      <!-- Slices -->
+      @for (slice of tod.slices; track slice.id; let i = $index) {
+        <button
+          class="tod-slice"
+          [style]="sliceStyle(slice, i)"
+          [attr.aria-label]="slice.label + ', ' + slice.durationHours + ' hours'"
+          [attr.aria-pressed]="activeSliceId() === slice.id"
+          (click)="toggleSlicePanel(slice.id)"
+          type="button"
+        >
+          <span class="tod-slice__label">{{ slice.label }}</span>
+        </button>
+      }
+
+    </div>
+
+    <!-- ── Cursor (planchette sits over the bar top edge) ── -->
+    <div
+      class="tod-cursor"
+      [class.tod-cursor--dragging]="isDragging()"
+      [class.tod-cursor--glide]="!isDragging() && !isDm"
+      [class.tod-cursor--readonly]="!isDm"
+      [style]="cursorStyle()"
+      [attr.tabindex]="isDm ? 0 : -1"
+      role="slider"
+      aria-label="Current time"
+      [attr.aria-valuenow]="cursorPercent() | number:'1.0-0'"
+      aria-valuemin="0"
+      aria-valuemax="100"
+      [attr.aria-valuetext]="cursorPercent() | number:'1.0-1' + '%'"
+      (mousedown)="onCursorMouseDown($event)"
+      (keydown)="onCursorKeyDown($event)"
+    >
+      <div class="tod-cursor__planchette" aria-hidden="true">
+        <svg viewBox="0 0 28 46" width="28" height="46" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <!-- Planchette body: heart-top, pointed bottom -->
+          <path d="M14 44 C6 37 1 28 1 19 C1 8 6 1 11 2 C12.5 1 13.5 4 14 4 C14.5 4 15.5 1 17 2 C22 1 27 8 27 19 C27 28 22 37 14 44Z"
+                fill="#d4a843" stroke="#000000" stroke-width="0.5" stroke-linejoin="round"/>
+          <!-- Circular window -->
+          <circle cx="14" cy="17" r="5.5" fill="rgba(0,0,0,0.18)" stroke="#000000" stroke-width="0.5"/>
+          <!-- Crescent moon inside window -->
+          <path d="M11.5 16.5 C11.5 13.5 13 11.5 15.5 11.5 C14 12.5 13 14 13 16.5 C13 19 14 20.5 15.5 21.5 C13 21.5 11.5 19.5 11.5 16.5Z"
+                fill="rgba(255,240,180,0.90)"/>
+          <!-- Lower ornament dot -->
+          <circle cx="14" cy="32" r="1.5" fill="rgba(255,240,180,0.80)"/>
+          <!-- Top notch star -->
+          <circle cx="14" cy="5.5" r="1" fill="rgba(255,240,180,0.95)"/>
+          <!-- Subtle side stars (yes/no positions) -->
+          <circle cx="7" cy="25" r="0.9" fill="rgba(255,240,180,0.55)"/>
+          <circle cx="21" cy="25" r="0.9" fill="rgba(255,240,180,0.55)"/>
+        </svg>
+      </div>
+    </div>
+
+    <!-- ── Notes panel ── -->
+    @if (activeSlice(); as slice) {
+      <div
+        class="tod-notes"
+        role="region"
+        [attr.aria-label]="slice.label + ' notes'"
+        (keydown.escape)="closePanel()"
+      >
+        <div class="tod-notes__header">
+          <span class="tod-notes__title">{{ slice.label }}</span>
+          <span class="tod-notes__duration">{{ slice.durationHours }}h</span>
+          <button
+            class="tod-notes__close"
+            type="button"
+            aria-label="Close notes panel"
+            (click)="closePanel()"
+          >✕</button>
+        </div>
+
+        <!-- DM notes -->
+        <div class="tod-notes__section">
+          <label class="tod-notes__label">DM Notes</label>
+          @if (isDm) {
+            <textarea
+              class="tod-notes__area tod-notes__area--dm"
+              [value]="dmNotesFor(slice.id)"
+              placeholder="DM notes…"
+              rows="3"
+              aria-label="DM notes for {{ slice.label }}"
+              (input)="onDmNotesInput(slice.id, $any($event.target).value)"
+              (blur)="onDmNotesBlur(slice.id)"
+            ></textarea>
+          } @else {
+            <p class="tod-notes__readonly">
+              {{ dmNotesFor(slice.id) || '—' }}
+            </p>
+          }
+        </div>
+
+        <!-- Player notes -->
+        <div class="tod-notes__section">
+          <label class="tod-notes__label">
+            Player Notes
+            @if (saving() === slice.id) {
+              <span class="tod-notes__saving" aria-live="polite">saving…</span>
+            }
+          </label>
+          @if (!isDm) {
+            <textarea
+              class="tod-notes__area tod-notes__area--player"
+              [value]="playerNotesFor(slice.id)"
+              placeholder="Add your own notes…"
+              rows="3"
+              aria-label="Player notes for {{ slice.label }}"
+              (input)="onPlayerNotesInput(slice.id, $any($event.target).value)"
+              (blur)="onPlayerNotesBlur(slice.id)"
+            ></textarea>
+          } @else {
+            <p class="tod-notes__readonly">
+              {{ playerNotesFor(slice.id) || '—' }}
+            </p>
+          }
+        </div>
+      </div>
+    }
+
+  </div>
+} @else {
+  <p class="tod-empty">No day/night cycle configured for this campaign.</p>
+}

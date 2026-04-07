@@ -11,6 +11,11 @@
       <span class="void-title">{{ loc.name }}</span>
     </div>
 
+    <!-- ── Time of day bar ── -->
+    <div class="tod-bar-section">
+      <app-time-of-day-bar [campaignId]="campaignId()" [isDm]="false" [panelTheme]="'dark'" />
+    </div>
+
     <!-- ── Body ── -->
     <div class="loc-body">
 

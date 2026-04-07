@@ -13,6 +13,11 @@
       <span class="void-title">{{ ca.name }}</span>
     </div>
 
+    <!-- ── Time of day bar ── -->
+    <div class="tod-bar-section">
+      <app-time-of-day-bar [campaignId]="campaignId()" [isDm]="false" [panelTheme]="'dark'" />
+    </div>
+
     <!-- ── Hero card ── -->
     <div class="cast-hero">
       <div class="cast-hero-card">

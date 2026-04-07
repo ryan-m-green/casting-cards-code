@@ -101,6 +101,11 @@ namespace CastLibrary.WebHost.IoC
             services.AddScoped<IRedeemCampaignInviteCodeCommandHandler, RedeemCampaignInviteCodeCommandHandler>();
             services.AddScoped<IRemoveCampaignPlayerCommandHandler, RemoveCampaignPlayerCommandHandler>();
 
+            services.AddScoped<IUpsertTimeOfDayCommandHandler, UpsertTimeOfDayCommandHandler>();
+            services.AddScoped<IUpdateCursorPositionCommandHandler, UpdateCursorPositionCommandHandler>();
+            services.AddScoped<IUpdateSlicePlayerNotesCommandHandler, UpdateSlicePlayerNotesCommandHandler>();
+            services.AddScoped<IUpdateSliceDmNotesCommandHandler, UpdateSliceDmNotesCommandHandler>();
+
             return services;
         }
 
@@ -133,6 +138,7 @@ namespace CastLibrary.WebHost.IoC
             services.AddScoped<IGetCityPoliticalNotesQueryHandler, GetCityPoliticalNotesQueryHandler>();
 
             services.AddScoped<IGetAdminInviteCodeQueryHandler, GetAdminInviteCodeQueryHandler>();
+            services.AddScoped<IGetTimeOfDayQueryHandler, GetTimeOfDayQueryHandler>();
 
             return services;
         }

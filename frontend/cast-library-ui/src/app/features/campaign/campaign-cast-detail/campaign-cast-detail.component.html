@@ -4,8 +4,6 @@
     <!-- ── Top bar ── -->
     <div class="void-topbar">
       <div class="void-breadcrumbs">
-        <button class="void-back" (click)="exitToLibrary()">← Campaign Library</button>
-        <span class="void-crumb-sep">›</span>
         <button class="void-back" (click)="goToCampaign()">← Cities</button>
         <span class="void-crumb-sep">›</span>
         <button class="void-back" (click)="goToCity()">← Settling Locations</button>
@@ -13,6 +11,11 @@
         <button class="void-back" (click)="goBack()">← Cast Members</button>
       </div>
       <span class="void-title">{{ ca.name }}</span>
+    </div>
+
+    <!-- ── Time of day bar ── -->
+    <div class="tod-bar-section">
+      <app-time-of-day-bar [campaignId]="campaignId()" [isDm]="isDm()" [panelTheme]="'dark'" />
     </div>
 
     <!-- ── Hero card ── -->

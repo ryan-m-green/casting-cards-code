@@ -10,11 +10,12 @@ import { CampaignSecret } from '../../../shared/models/secret.model';
 import { CampaignHubService } from '../../../core/hub/campaign-hub.service';
 import { PortalTransitionService } from '../../../core/portal-transition.service';
 import { PlayerCityPoliticalNotesComponent } from '../player-city-political-notes/player-city-political-notes.component'; // updated
+import { TimeOfDayBarComponent } from '../../../shared/components/time-of-day-bar/time-of-day-bar.component';
 
 @Component({
   selector: 'app-player-city-detail',
   standalone: true,
-  imports: [CommonModule, PlayerCityPoliticalNotesComponent],
+  imports: [CommonModule, PlayerCityPoliticalNotesComponent, TimeOfDayBarComponent],
   templateUrl: './player-city-detail.component.html',
   styleUrl: './player-city-detail.component.scss'
 })

@@ -26,16 +26,25 @@
     </button>
     <button
       class="tab-btn"
+      [class.tab-btn-active]="activeTab() === 'day-cycle'"
+      [disabled]="!campaignId()"
+      (click)="activeTab.set('day-cycle')"
+      [title]="!campaignId() ? 'Save a campaign name first' : ''"
+    >
+      3 — Day Cycle
+    </button>
+    <button
+      class="tab-btn"
       [class.tab-btn-active]="activeTab() === 'players'"
       [disabled]="!campaignId()"
       (click)="activeTab.set('players')"
       [title]="!campaignId() ? 'Save a campaign name first' : ''"
     >
-      3 — Players
+      4 — Players
     </button>
   </div>
 
-  <!-- ── Tab 3: Players ────────────────────────────────────────────────────────── -->
+  <!-- ── Tab 4: Players ────────────────────────────────────────────────────────── -->
   @if (activeTab() === 'players') {
     <div class="players-tab">
 
@@ -88,6 +97,11 @@
       }
 
     </div>
+  }
+
+  <!-- ── Tab 3: Day Cycle ─────────────────────────────────────────────────────── -->
+  @if (activeTab() === 'day-cycle') {
+    <app-time-of-day-editor [campaignId]="campaignId()!" />
   }
 
   <!-- ── Tab 2: Cast Relationships ─────────────────────────────────────────────── -->
