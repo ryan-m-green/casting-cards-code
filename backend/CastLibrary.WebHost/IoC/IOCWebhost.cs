@@ -11,13 +11,13 @@ namespace CastLibrary.WebHost.IoC
         public static IServiceCollection AddWebhost(this IServiceCollection services)
         {
             services.AddScoped<ICastWebMapper, CastWebMapper>();
-            services.AddScoped<ICityWebMapper, CityWebMapper>();
+            services.AddScoped<ILocationWebMapper, LocationWebMapper>();
             services.AddScoped<ISublocationWebMapper, SublocationWebMapper>();
             services.AddScoped<ICampaignWebMapper, CampaignWebMapper>();
-            services.AddScoped<ICityPoliticalNotesMapper, CityPoliticalNotesMapper>();
-            services.AddScoped<ICityFactionMapper, CityFactionMapper>();
-            services.AddScoped<ICityFactionRelationshipMapper, CityFactionRelationshipMapper>();
-            services.AddScoped<ICityNpcRolesMapper, CityNpcRolesMapper>();
+            services.AddScoped<ILocationPoliticalNotesMapper, LocationPoliticalNotesMapper>();
+            services.AddScoped<ILocationFactionMapper, LocationFactionMapper>();
+            services.AddScoped<ILocationFactionRelationshipMapper, LocationFactionRelationshipMapper>();
+            services.AddScoped<ILocationNpcRolesMapper, LocationNpcRolesMapper>();
             services.AddScoped<ICampaignCastPlayerNotesMapper, CampaignCastPlayerNotesMapper>();
 
             services.AddScoped<IUserRetriever, UserRetriever>();

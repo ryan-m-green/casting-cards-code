@@ -1,8 +1,10 @@
+@use '../../../../styles/variables' as v;
+
 :host { display: block; height: 100%; }
 
 /* ── Section label ─────────────────────────────────────────────── */
 .section-label {
-  font-family: 'Cinzel', serif;
+  font-family: v.$font-header;
   font-size: 8px;
   letter-spacing: 0.22em;
   text-transform: uppercase;
@@ -69,7 +71,7 @@
 
 /* ── Portal title ──────────────────────────────────────────────── */
 .portal-title {
-  font-family: 'Cinzel', serif;
+  font-family: v.$font-header;
   font-size: 10px;
   font-weight: 600;
   letter-spacing: 0.12em;
@@ -215,7 +217,7 @@
 }
 
 .portal-btn {
-  font-family: 'Cinzel', serif;
+  font-family: v.$font-header;
   font-size: 7.5px;
   letter-spacing: 0.10em;
   text-transform: uppercase;

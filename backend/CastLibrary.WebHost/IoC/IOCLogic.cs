@@ -1,9 +1,9 @@
-﻿using CastLibrary.Logic.Commands.Admin;
+using CastLibrary.Logic.Commands.Admin;
 using CastLibrary.Logic.Commands.Auth;
 using CastLibrary.Logic.Commands.Campaign;
 using CastLibrary.Logic.Commands.CampaignNote;
 using CastLibrary.Logic.Commands.Cast;
-using CastLibrary.Logic.Commands.City;
+using CastLibrary.Logic.Commands.Location;
 using CastLibrary.Logic.Commands.Library;
 using CastLibrary.Logic.Commands.Sublocation;
 using CastLibrary.Logic.Factories;
@@ -12,7 +12,7 @@ using CastLibrary.Logic.Queries.Admin;
 using CastLibrary.Logic.Queries.Campaign;
 using CastLibrary.Logic.Queries.CampaignNote;
 using CastLibrary.Logic.Queries.Cast;
-using CastLibrary.Logic.Queries.City;
+using CastLibrary.Logic.Queries.Location;
 using CastLibrary.Logic.Queries.Library;
 using CastLibrary.Logic.Queries.Sublocation;
 using CastLibrary.Logic.Services;
@@ -41,10 +41,10 @@ namespace CastLibrary.WebHost.IoC
             services.AddScoped<IUploadCastImageCommandHandler, UploadCastImageCommandHandler>();
             services.AddScoped<IDeleteCastCommandHandler, DeleteCastCommandHandler>();
 
-            services.AddScoped<ICreateCityCommandHandler, CreateCityCommandHandler>();
-            services.AddScoped<IUpdateCityCommandHandler, UpdateCityCommandHandler>();
-            services.AddScoped<IUploadCityImageCommandHandler, UploadCityImageCommandHandler>();
-            services.AddScoped<IDeleteCityCommandHandler, DeleteCityCommandHandler>();
+            services.AddScoped<ICreateLocationCommandHandler, CreateLocationCommandHandler>();
+            services.AddScoped<IUpdateLocationCommandHandler, UpdateLocationCommandHandler>();
+            services.AddScoped<IUploadLocationImageCommandHandler, UploadLocationImageCommandHandler>();
+            services.AddScoped<IDeleteLocationCommandHandler, DeleteLocationCommandHandler>();
 
             services.AddScoped<ICreateSublocationCommandHandler, CreateSublocationCommandHandler>();
             services.AddScoped<IUpdateSublocationCommandHandler, UpdateSublocationCommandHandler>();
@@ -55,11 +55,11 @@ namespace CastLibrary.WebHost.IoC
             services.AddScoped<IUpdateCampaignCommandHandler, UpdateCampaignCommandHandler>();
             services.AddScoped<IDeleteCampaignCommandHandler, DeleteCampaignCommandHandler>();
             services.AddScoped<IAddCastToCampaignCommandHandler, AddCastToCampaignCommandHandler>();
-            services.AddScoped<IAddCityToCampaignCommandHandler, AddCityToCampaignCommandHandler>();
-            services.AddScoped<IUpdateCityInstanceCommandHandler, UpdateCityInstanceCommandHandler>();
-            services.AddScoped<IUpdateCityInstanceVisibilityCommandHandler, UpdateCityInstanceVisibilityCommandHandler>();
+            services.AddScoped<IAddLocationToCampaignCommandHandler, AddLocationToCampaignCommandHandler>();
+            services.AddScoped<IUpdateLocationInstanceCommandHandler, UpdateLocationInstanceCommandHandler>();
+            services.AddScoped<IUpdateLocationInstanceVisibilityCommandHandler, UpdateLocationInstanceVisibilityCommandHandler>();
             services.AddScoped<IUpdateCastInstanceCommandHandler, UpdateCastInstanceCommandHandler>();
-            services.AddScoped<IDeleteCityInstanceCommandHandler, DeleteCityInstanceCommandHandler>();
+            services.AddScoped<IDeleteLocationInstanceCommandHandler, DeleteLocationInstanceCommandHandler>();
             services.AddScoped<IDeleteCastInstanceCommandHandler, DeleteCastInstanceCommandHandler>();
             services.AddScoped<IAddCampaignSecretCommandHandler, AddCampaignSecretCommandHandler>();
             services.AddScoped<IDeleteCampaignSecretCommandHandler, DeleteCampaignSecretCommandHandler>();
@@ -72,7 +72,7 @@ namespace CastLibrary.WebHost.IoC
             services.AddScoped<IAddSublocationToCampaignCommandHandler, AddSublocationToCampaignCommandHandler>();
             services.AddScoped<IDeleteSublocationInstanceCommandHandler, DeleteSublocationInstanceCommandHandler>();
             services.AddScoped<IUpdateSublocationInstanceVisibilityCommandHandler, UpdateSublocationInstanceVisibilityCommandHandler>();
-            services.AddScoped<IUpdateCitySublocationsVisibilityCommandHandler, UpdateCitySublocationsVisibilityCommandHandler>();
+            services.AddScoped<IUpdateLocationSublocationsVisibilityCommandHandler, UpdateLocationSubLocationsVisibilityCommandHandler>();
             services.AddScoped<IUpdateCastInstanceVisibilityCommandHandler, UpdateCastInstanceVisibilityCommandHandler>();
             services.AddScoped<IUpdateSublocationCastsVisibilityCommandHandler, UpdateSublocationCastsVisibilityCommandHandler>();
 
@@ -85,9 +85,9 @@ namespace CastLibrary.WebHost.IoC
             services.AddScoped<IImportLibraryCommandHandler, ImportLibraryCommandHandler>();
 
             services.AddScoped<IUpsertCastPlayerNotesCommandHandler, UpsertCastPlayerNotesCommandHandler>();
-            services.AddScoped<IUpsertCityPoliticalNotesCommandHandler, UpsertCityPoliticalNotesCommandHandler>();
+            services.AddScoped<IUpsertLocationPoliticalNotesCommandHandler, UpsertLocationPoliticalNotesCommandHandler>();
 
-            services.AddScoped<IUpdateCityInstanceKeywordsCommandHandler, UpdateCityInstanceKeywordsCommandHandler>();
+            services.AddScoped<IUpdateLocationInstanceKeywordsCommandHandler, UpdateLocationInstanceKeywordsCommandHandler>();
             services.AddScoped<IUpdateCastInstanceKeywordsCommandHandler, UpdateCastInstanceKeywordsCommandHandler>();
             services.AddScoped<IUpdateSublocationInstanceKeywordsCommandHandler, UpdateSublocationInstanceKeywordsCommandHandler>();
 
@@ -114,8 +114,8 @@ namespace CastLibrary.WebHost.IoC
             services.AddScoped<IGetCastLibraryQueryHandler, GetCastLibraryQueryHandler>();
             services.AddScoped<IGetCastDetailQueryHandler, GetCastDetailQueryHandler>();
 
-            services.AddScoped<IGetCityLibraryQueryHandler, GetCityLibraryQueryHandler>();
-            services.AddScoped<IGetCityDetailQueryHandler, GetCityDetailQueryHandler>();
+            services.AddScoped<IGetLocationLibraryQueryHandler, GetLocationLibraryQueryHandler>();
+            services.AddScoped<IGetLocationDetailQueryHandler, GetLocationDetailQueryHandler>();
 
             services.AddScoped<IGetSublocationLibraryQueryHandler, GetSublocationLibraryQueryHandler>();
             services.AddScoped<IGetSublocationDetailQueryHandler, GetSublocationDetailQueryHandler>();
@@ -135,7 +135,7 @@ namespace CastLibrary.WebHost.IoC
             services.AddScoped<IGetUserKeywordsQueryHandler, GetUserKeywordsQueryHandler>();
 
             services.AddScoped<IGetCastPlayerNotesQueryHandler, GetCastPlayerNotesQueryHandler>();
-            services.AddScoped<IGetCityPoliticalNotesQueryHandler, GetCityPoliticalNotesQueryHandler>();
+            services.AddScoped<IGetLocationPoliticalNotesQueryHandler, GetLocationPoliticalNotesQueryHandler>();
 
             services.AddScoped<IGetAdminInviteCodeQueryHandler, GetAdminInviteCodeQueryHandler>();
             services.AddScoped<IGetTimeOfDayQueryHandler, GetTimeOfDayQueryHandler>();
@@ -156,7 +156,7 @@ namespace CastLibrary.WebHost.IoC
         {
             services.AddScoped<ICastFactory, CastFactory>();
             services.AddScoped<ICastInstanceFactory, CastInstanceFactory>();
-            services.AddScoped<ICityInstanceFactory, CityInstanceFactory>();
+            services.AddScoped<ILocationInstanceFactory, LocationInstanceFactory>();
             services.AddScoped<ISublocationInstanceFactory, SublocationInstanceFactory>();
             services.AddScoped<ICampaignFactory, CampaignFactory>();
 
@@ -165,3 +165,5 @@ namespace CastLibrary.WebHost.IoC
 
     }
 }
+
+

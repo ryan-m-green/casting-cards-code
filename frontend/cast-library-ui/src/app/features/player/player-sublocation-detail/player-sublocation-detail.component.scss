@@ -1,3 +1,5 @@
+@use '../../../../styles/variables' as v;
+
 $subLoc-olive: #a8a070;
 
 :host {
@@ -51,7 +53,7 @@ $subLoc-olive: #a8a070;
 }
 
 .void-crumb-sep {
-  font-family: 'Cinzel', serif;
+  font-family: v.$font-header;
   font-size: 9px;
   color: color-mix(in srgb, var(--portal-color, #{$subLoc-olive}), white 55%);
   opacity: 0.25;
@@ -60,7 +62,7 @@ $subLoc-olive: #a8a070;
 }
 
 .void-back {
-  font-family: 'Cinzel', serif;
+  font-family: v.$font-header;
   font-size: 9px;
   letter-spacing: 0.18em;
   text-transform: uppercase;
@@ -79,7 +81,7 @@ $subLoc-olive: #a8a070;
   width: 100%;
   margin-top: 10px;
   text-align: center;
-  font-family: 'Cinzel', serif;
+  font-family: v.$font-header;
   font-size: 17px;
   font-weight: 600;
   letter-spacing: 0.28em;
@@ -168,7 +170,7 @@ $subLoc-olive: #a8a070;
 }
 
 .secret-text {
-  font-family: 'Crimson Text', serif;
+  font-family: v.$font-body;
   font-size: 13px;
   color: rgba(185, 210, 220, 0.60);
   line-height: 1.5;
@@ -187,7 +189,7 @@ $subLoc-olive: #a8a070;
   border-top: 1px solid rgba($subLoc-olive, 0.14);
   border-radius: 0 0 6px 6px;
   cursor: pointer;
-  font-family: 'Cinzel', serif;
+  font-family: v.$font-header;
   font-size: 8px;
   letter-spacing: 0.12em;
   color: rgba($subLoc-olive, 0.40);
@@ -200,7 +202,7 @@ $subLoc-olive: #a8a070;
 }
 
 .detail-label {
-  font-family: 'Cinzel', serif;
+  font-family: v.$font-header;
   font-size: 7px;
   letter-spacing: 0.2em;
   text-transform: uppercase;
@@ -215,7 +217,7 @@ $subLoc-olive: #a8a070;
 }
 
 .detail-value {
-  font-family: 'Crimson Text', serif;
+  font-family: v.$font-body;
   font-size: 14px;
   color: rgba(200, 225, 235, 0.82);
   white-space: nowrap;
@@ -238,7 +240,7 @@ $subLoc-olive: #a8a070;
 }
 
 .detail-keyword-pill {
-  font-family: 'Cinzel', serif;
+  font-family: v.$font-header;
   font-size: 7px;
   letter-spacing: 0.14em;
   text-transform: uppercase;
@@ -273,7 +275,7 @@ $subLoc-olive: #a8a070;
 }
 
 .detail-shop-item-name {
-  font-family: 'Crimson Text', serif;
+  font-family: v.$font-body;
   font-size: 14px;
   color: rgba(200, 225, 235, 0.82);
   overflow: hidden;
@@ -282,7 +284,7 @@ $subLoc-olive: #a8a070;
 }
 
 .detail-shop-item-price {
-  font-family: 'Cinzel', serif;
+  font-family: v.$font-header;
   font-size: 12px;
   letter-spacing: 0.12em;
   color: rgba($subLoc-olive, 0.70);
@@ -304,7 +306,7 @@ $subLoc-olive: #a8a070;
 }
 
 .cast-section-label {
-  font-family: 'Cinzel', serif;
+  font-family: v.$font-header;
   font-size: 9px;
   letter-spacing: 0.22em;
   text-transform: uppercase;

@@ -1,4 +1,4 @@
-﻿using CastLibrary.Shared.Enums;
+using CastLibrary.Shared.Enums;
 
 namespace CastLibrary.Logic.Services
 {
@@ -16,10 +16,12 @@ namespace CastLibrary.Logic.Services
                     return $"{dmUserId}/casts/{playerCardId}.png";
                 case EntityType.Sublocation:
                     return $"{dmUserId}/sublocations/{playerCardId}.png";
-                case EntityType.City:
-                    return $"{dmUserId}/cities/{playerCardId}.png";
+                case EntityType.Location:
+                    return $"{dmUserId}/locations/{playerCardId}.png";
                 default: return string.Empty;
             }
         }
     }
 }
+
+

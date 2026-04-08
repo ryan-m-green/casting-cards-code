@@ -1,30 +1,33 @@
-﻿:host { display: block; height: 100%; }
+@use '../../../../styles/variables' as v;
 
-.cities-section-label {
-  font-family: 'Cinzel', serif;
+:host { display: block; height: 100%; }
+
+.locations-section-label {
+  font-family: v.$font-header;
   font-size: 8px;
   letter-spacing: 0.22em;
   text-transform: uppercase;
-  color: rgba(105, 72, 18, 0.65);
+  color: rgba(52, 28, 4, 1);
+  font-weight: 700;
   border-bottom: 0.5px solid rgba(110, 75, 22, 0.22);
   padding-bottom: 4px;
   margin: 14px 0 10px;
 }
 
 // ── Cast search ────────────────────────────────────────────────────────────────
-.city-search-row {
+.location-search-row {
   display: flex;
   justify-content: center;
   margin-bottom: 14px;
 }
 
-.city-search-input {
+.location-search-input {
   width: 340px;
   max-width: 100%;
 }
 
 // ── Card picker layout ────────────────────────────────────────────────────────
-.city-picker-row {
+.location-picker-row {
   display: flex;
   gap: 40px;
   justify-content: center;
@@ -88,7 +91,7 @@
 }
 
 .deck-count {
-  font-family: 'Cinzel', serif;
+  font-family: v.$font-header;
   font-size: 10px;
   color: rgba(60, 40, 100, 0.62);
   letter-spacing: 0.08em;
@@ -129,7 +132,7 @@
 }
 
 .card-race {
-  font-family: 'Crimson Text', serif;
+  font-family: v.$font-body;
   font-style: italic;
   font-size: 9px;
   color: rgba(255, 234, 200, 0.75);
@@ -151,7 +154,7 @@
 
 .add-btn {
   width: 150px;
-  font-family: 'Cinzel', serif;
+  font-family: v.$font-header;
   font-size: 10px;
   letter-spacing: 0.14em;
   text-transform: uppercase;
@@ -181,11 +184,12 @@
 
 // ── Selected Cast stack ────────────────────────────────────────────────────────
 .sel-header {
-  font-family: 'Cinzel', serif;
+  font-family: v.$font-header;
   font-size: 9px;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: rgba(105, 72, 18, 0.62);
+  color: rgba(52, 28, 4, 1);
+  font-weight: 700;
   margin-bottom: 7px;
 }
 
@@ -266,7 +270,7 @@
 }
 
 .detail-panel-empty {
-  font-family: 'Crimson Text', serif;
+  font-family: v.$font-body;
   font-style: italic;
   font-size: 12px;
   color: rgba(60, 40, 100, 0.52);
@@ -284,7 +288,7 @@
 
 .btn-settle {
   margin-left: auto;
-  font-family: 'Cinzel', serif;
+  font-family: v.$font-header;
   font-size: 7.5px;
   letter-spacing: 0.08em;
   padding: 3px 8px;
@@ -311,7 +315,7 @@
   border-bottom: 0.5px solid rgba(110, 75, 22, 0.18);
 
   .settle-label {
-    font-family: 'Cinzel', serif;
+    font-family: v.$font-header;
     font-size: 7.5px;
     letter-spacing: 0.10em;
     text-transform: uppercase;
@@ -320,21 +324,21 @@
   }
 
   .settle-value {
-    font-family: 'Crimson Text', serif;
+    font-family: v.$font-body;
     font-size: 11px;
     color: rgba(52, 32, 6, 0.82);
   }
 }
 
-.detail-city-name {
-  font-family: 'Cinzel', serif;
+.detail-location-name {
+  font-family: v.$font-header;
   font-size: 13px;
   color: rgba(40, 20, 80, 0.92);
   letter-spacing: 0.06em;
 }
 
-.detail-city-label {
-  font-family: 'Crimson Text', serif;
+.detail-location-label {
+  font-family: v.$font-body;
   font-style: italic;
   font-size: 10px;
   color: rgba(60, 40, 100, 0.55);
@@ -354,14 +358,14 @@
 }
 
 .detail-value {
-  font-family: 'Crimson Text', serif;
+  font-family: v.$font-body;
   font-size: 11px;
   color: rgba(40, 20, 80, 0.82);
   margin: 0;
 }
 
 .detail-desc-text {
-  font-family: 'Crimson Text', serif;
+  font-family: v.$font-body;
   font-size: 11px;
   color: rgba(40, 20, 80, 0.75);
   line-height: 1.5;
@@ -381,7 +385,7 @@
 }
 
 .keyword-chip-readonly {
-  font-family: 'Crimson Text', serif;
+  font-family: v.$font-body;
   font-size: 10px;
   color: rgba(40, 20, 80, 0.78);
   background: rgba(80, 40, 160, 0.08);

@@ -13,11 +13,11 @@
     </p>
   } @else {
 
-    <div class="cities-section-label">Available Sublocations</div>
+    <div class="locations-section-label">Available Sublocations</div>
 
-    <div class="city-search-row">
+    <div class="location-search-row">
       <input
-        class="fi city-search-input"
+        class="fi location-search-input"
         type="search"
         placeholder="Search by name or description…"
         [value]="sublocationSearch()"
@@ -25,7 +25,7 @@
       />
     </div>
 
-    <div class="city-picker-row">
+    <div class="location-picker-row">
       @if (filteredDeckSublocations().length > 0) {
         <div class="deck-stack" #deckStack (click)="swapCard()">
           <div class="deck-shadow deck-shadow-far"></div>
@@ -87,7 +87,7 @@
       <div class="add-btn-row">
         <div class="deck-stack-spacer"></div>
         <button class="add-btn" (click)="selectSublocation()">
-          Add to City
+          Add to Location
           <span class="add-arrow">⬇</span>
         </button>
       </div>
@@ -143,9 +143,9 @@
       <div class="detail-panel">
         @if (expandedSublocation(); as added) {
           <div class="detail-panel-header">
-            <div class="detail-city-name">{{ added.subLoc.name }}</div>
-            <div class="detail-city-label">settling sublocation</div>
-            <button class="add-casts-btn" (click)="goToCast(added.instanceId)" type="button">+ Add Cast</button>
+            <div class="detail-location-name">{{ added.subLoc.name }}</div>
+            <div class="detail-location-label">settling sublocation</div>
+            <button class="add-casts-btn" (click)="goToLocation(added.instanceId)" type="button">+ Add Cast</button>
           </div>
           <div class="dv dv-mb"></div>
 

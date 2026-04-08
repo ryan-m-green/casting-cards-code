@@ -1,16 +1,16 @@
-﻿using CastLibrary.Shared.Domain;
+using CastLibrary.Shared.Domain;
 
 namespace CastLibrary.Logic.Factories;
 
 public interface ISublocationInstanceFactory
 {
     CampaignSublocationInstanceDomain Create(
-        SublocationDomain source, Guid campaignId, Guid? cityInstanceId);
+        SublocationDomain source, Guid campaignId, Guid? LocationInstanceId);
 }
 public class SublocationInstanceFactory : ISublocationInstanceFactory
 {
     public CampaignSublocationInstanceDomain Create(
-        SublocationDomain source, Guid campaignId, Guid? cityInstanceId)
+        SublocationDomain source, Guid campaignId, Guid? LocationInstanceId)
     {
         var instanceId = Guid.NewGuid();
         return new()
@@ -18,7 +18,7 @@ public class SublocationInstanceFactory : ISublocationInstanceFactory
             InstanceId = instanceId,
             CampaignId = campaignId,
             SourceSublocationId = source.Id,
-            CityInstanceId = cityInstanceId,
+            LocationInstanceId = LocationInstanceId,
             Name = source.Name,
             Description = source.Description,
             ShopItems = source.ShopItems.Select(s => new ShopItemDomain
@@ -33,3 +33,4 @@ public class SublocationInstanceFactory : ISublocationInstanceFactory
         };
     }
 }
+

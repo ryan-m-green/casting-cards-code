@@ -1,4 +1,4 @@
-﻿using CastLibrary.Logic.Factories;
+using CastLibrary.Logic.Factories;
 using CastLibrary.Repository.Repositories.Delete;
 using CastLibrary.Repository.Repositories.Read;
 using CastLibrary.Shared.Domain;
@@ -24,7 +24,7 @@ public class AddSublocationToCampaignCommandHandler(
         var existing = await campaignRepository.GetSublocationInstanceBySourceSublocationIdAsync(command.CampaignId, command.Request.SublocationId);
         if (existing is not null) return null;
 
-        var instance = sublocationInstanceFactory.Create(sublocation, command.CampaignId, command.Request.CityInstanceId);
+        var instance = sublocationInstanceFactory.Create(sublocation, command.CampaignId, command.Request.LocationInstanceId);
         return await campaignInsertRepository.InsertSublocationInstanceAsync(instance);
     }
 }
@@ -40,3 +40,4 @@ public class AddSublocationToCampaignCommand
     public Guid CampaignId { get; }
     public AddSublocationToCampaignRequest Request { get; }
 }
+

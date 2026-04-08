@@ -1,0 +1,334 @@
+@if (location(); as c) {
+  <div class="void-canvas" [style.--portal-color]="portalColor()">
+
+    <!-- ── Top bar ── -->
+    <div class="void-topbar">
+      <div class="void-breadcrumbs">
+        <button class="void-back" (click)="goToCampaign()">← Locations</button>
+      </div>
+      <span class="void-title">{{ c.name }}</span>
+    </div>
+
+    <!-- ── Time of day bar ── -->
+    <div class="tod-bar-section">
+      <app-time-of-day-bar [campaignId]="campaignId()" [isDm]="isDm()" [panelTheme]="'dark'" />
+    </div>
+
+    <!-- ── Body ── -->
+    <div class="location-body">
+
+      <!-- Card -->
+      <div class="location-card-left">
+        <div class="pc-card pc-card-location">
+          <div class="lib-card-front">
+            <div class="card-slot-front">
+              <div class="card-front-header">
+                <div class="card-name">{{ c.name }}</div>
+                <div class="card-descriptor">{{ c.classification }}</div>
+              </div>
+              <div class="dv dv-card"></div>
+              <div class="card-image-area">
+                @if (c.imageUrl) {
+                  <img [src]="c.imageUrl" alt="" class="card-img-fill" />
+                } @else {
+                  <div class="card-placeholder">
+                    <span class="card-initial">{{ c.name.charAt(0).toUpperCase() }}</span>
+                  </div>
+                }
+                @if (c.description) {
+                  <div class="card-desc-overlay">
+                    <p class="card-desc-text">{{ c.description }}</p>
+                  </div>
+                }
+              </div>
+              <button
+                class="location-lock-btn"
+                [class.location-lock-btn--visible]="c.isVisibleToPlayers"
+                (click)="toggleLocationVisibility()"
+                [title]="c.isVisibleToPlayers ? 'Hide from players' : 'Reveal to players'"
+              >
+                {{ c.isVisibleToPlayers ? '🔓' : '🔒' }}
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Detail panel -->
+      <div class="location-detail-panel" [style.height]="panelHeight()">
+
+        <div class="detail-panel-content" #detailContent>
+
+          <!-- Panel header with edit toggle -->
+          @if (isDm()) {
+            <div class="detail-panel-actions">
+              @if (!editing()) {
+                <button class="detail-edit-btn" (click)="startEditing()">✎ Edit Details</button>
+              } @else {
+                <button class="detail-save-btn" (click)="saveDetails()">✔ Save</button>
+                <button class="detail-cancel-btn" (click)="cancelEditing()">Cancel</button>
+              }
+            </div>
+          }
+
+          <!-- Description — full width -->
+          <div class="detail-desc">
+            <span class="detail-label">Description</span>
+            <span class="detail-line"></span>
+            @if (editing()) {
+              <textarea class="detail-input detail-input--block"
+                        [ngModel]="editDescription()"
+                        (ngModelChange)="editDescription.set($event)"
+                        rows="3"
+                        placeholder="Description…"></textarea>
+            } @else if (c.description) {
+              <p class="detail-value detail-value--block">{{ c.description }}</p>
+            }
+          </div>
+
+          <!-- 2-col field grid -->
+          <div class="detail-grid">
+            <div class="detail-cell">
+              <span class="detail-label">Classification</span>
+              <span class="detail-line"></span>
+              @if (editing()) {
+                <input class="detail-input"
+                       [ngModel]="editClassification()"
+                       (ngModelChange)="editClassification.set($event)"
+                       placeholder="Classification…" />
+              } @else if (c.classification) {
+                <span class="detail-value">{{ c.classification }}</span>
+              }
+            </div>
+            <div class="detail-cell">
+              <span class="detail-label">Size</span>
+              <span class="detail-line"></span>
+              @if (editing()) {
+                <input class="detail-input"
+                       [ngModel]="editSize()"
+                       (ngModelChange)="editSize.set($event)"
+                       placeholder="Size…" />
+              } @else if (c.size) {
+                <span class="detail-value">{{ c.size }}</span>
+              }
+            </div>
+            <div class="detail-cell">
+              <span class="detail-label">Condition</span>
+              <span class="detail-line"></span>
+              @if (editing()) {
+                <input class="detail-input"
+                       [ngModel]="editCondition()"
+                       (ngModelChange)="editCondition.set($event)"
+                       placeholder="Condition…" />
+              } @else if (c.condition) {
+                <span class="detail-value">{{ c.condition }}</span>
+              }
+            </div>
+            <div class="detail-cell">
+              <span class="detail-label">Geography</span>
+              <span class="detail-line"></span>
+              @if (editing()) {
+                <input class="detail-input"
+                       [ngModel]="editGeography()"
+                       (ngModelChange)="editGeography.set($event)"
+                       placeholder="Geography…" />
+              } @else if (c.geography) {
+                <span class="detail-value">{{ c.geography }}</span>
+              }
+            </div>
+            <div class="detail-cell">
+              <span class="detail-label">Architecture</span>
+              <span class="detail-line"></span>
+              @if (editing()) {
+                <input class="detail-input"
+                       [ngModel]="editArchitecture()"
+                       (ngModelChange)="editArchitecture.set($event)"
+                       placeholder="Architecture…" />
+              } @else if (c.architecture) {
+                <span class="detail-value">{{ c.architecture }}</span>
+              }
+            </div>
+            <div class="detail-cell">
+              <span class="detail-label">Climate</span>
+              <span class="detail-line"></span>
+              @if (editing()) {
+                <input class="detail-input"
+                       [ngModel]="editClimate()"
+                       (ngModelChange)="editClimate.set($event)"
+                       placeholder="Climate…" />
+              } @else if (c.climate) {
+                <span class="detail-value">{{ c.climate }}</span>
+              }
+            </div>
+            <div class="detail-cell">
+              <span class="detail-label">Religion</span>
+              <span class="detail-line"></span>
+              @if (editing()) {
+                <input class="detail-input"
+                       [ngModel]="editReligion()"
+                       (ngModelChange)="editReligion.set($event)"
+                       placeholder="Religion…" />
+              } @else if (c.religion) {
+                <span class="detail-value">{{ c.religion }}</span>
+              }
+            </div>
+            <div class="detail-cell">
+              <span class="detail-label">Vibe</span>
+              <span class="detail-line"></span>
+              @if (editing()) {
+                <input class="detail-input"
+                       [ngModel]="editVibe()"
+                       (ngModelChange)="editVibe.set($event)"
+                       placeholder="Vibe…" />
+              } @else if (c.vibe) {
+                <span class="detail-value">{{ c.vibe }}</span>
+              }
+            </div>
+            <div class="detail-cell">
+              <span class="detail-label">Languages</span>
+              <span class="detail-line"></span>
+              @if (editing()) {
+                <input class="detail-input"
+                       [ngModel]="editLanguages()"
+                       (ngModelChange)="editLanguages.set($event)"
+                       placeholder="Languages…" />
+              } @else if (c.languages) {
+                <span class="detail-value">{{ c.languages }}</span>
+              }
+            </div>
+            @if (!editing() && c.keywords?.length) {
+              <div class="detail-cell">
+                <span class="detail-label">Keywords</span>
+                <span class="detail-line"></span>
+                <div class="detail-keywords">
+                  @for (kw of c.keywords; track kw) {
+                    <span class="detail-keyword-pill">{{ kw }}</span>
+                  }
+                </div>
+              </div>
+            }
+          </div>
+
+          <!-- Secrets -->
+          <div class="detail-secrets-section">
+            <div class="detail-secrets-header">
+              <span class="detail-label">Secrets</span>
+              <span class="detail-line"></span>
+            </div>
+            @for (secret of locationSecrets(); track secret.id) {
+              <div class="detail-secret">
+                @if (isDm()) {
+                  <button class="secret-lock-btn" (click)="toggleSecret(secret)"
+                          [title]="secret.isRevealed ? 'Reseal secret' : 'Reveal secret'">
+                    {{ secret.isRevealed ? '🔓' : '🔒' }}
+                  </button>
+                }
+                <span class="secret-text" [class.secret-text--revealed]="secret.isRevealed">{{ secret.content }}</span>
+              </div>
+            }
+            @if (isDm()) {
+              @if (addingSecret()) {
+                <div class="secret-row secret-row-edit">
+                  <textarea class="fi fi-sm secret-textarea"
+                            [ngModel]="newSecretContent()"
+                            (ngModelChange)="newSecretContent.set($event)"
+                            placeholder="Enter secret…"
+                            rows="2"></textarea>
+                  <button class="secret-confirm-btn" (click)="confirmAddSecret()" type="button">✔</button>
+                  <button class="secret-cancel-btn"  (click)="cancelAddingSecret()" type="button">✕</button>
+                </div>
+              }
+              <button class="secret-add-btn" (click)="startAddingSecret()" type="button">+ Add Secret</button>
+            }
+          </div>
+
+          <!-- DM Notes (DM only) -->
+          @if (isDm()) {
+            <div class="detail-dm-notes">
+              <span class="detail-label">DM Notes</span>
+              <span class="detail-line"></span>
+              @if (editing()) {
+                <textarea class="detail-input detail-input--block"
+                          [ngModel]="editDmNotes()"
+                          (ngModelChange)="editDmNotes.set($event)"
+                          rows="4"
+                          placeholder="Jot down whatever is on your mind…"></textarea>
+              } @else if (c.dmNotes) {
+                <p class="detail-value detail-value--block">{{ c.dmNotes }}</p>
+              } @else {
+                <p class="detail-value detail-value--muted">No notes yet. Click Edit Details to add some.</p>
+              }
+            </div>
+          }
+
+        </div>
+
+        <!-- Expand / collapse toggle -->
+        <button class="detail-expand-btn" #expandBtn (click)="toggleDetail()">
+          {{ detailExpanded() ? '▲' : '▼' }}
+        </button>
+
+      </div>
+
+    </div>
+
+    <!-- ── Sublocations section ── -->
+    @if (isDm() && locationSublocations().length) {
+      <div class="location-sublocations-section">
+
+        <div class="sublocations-section-header">
+          <span class="sublocations-section-label">Sublocations</span>
+          <span class="sublocations-section-line"></span>
+          <button
+            class="subLoc-reveal-all-btn"
+            [class.subLoc-reveal-all-btn--visible]="allSublocationVisible()"
+            (click)="toggleAllSublocationVisibility()"
+            [title]="allSublocationVisible() ? 'Hide all sublocations from players' : 'Reveal all sublocations to players'"
+          >
+            {{ allSublocationVisible() ? '🔓 Hide All' : '🔒 Reveal All' }}
+          </button>
+        </div>
+
+        <div class="sublocations-grid">
+          @for (subLoc of locationSublocations(); track subLoc.instanceId) {
+          <div class="subLoc-card-wrapper" (click)="goToSublocation(subLoc)">
+            <div class="pc-card pc-card-sublocation">
+              <div class="lib-card-front">
+                <div class="card-slot-front">
+                  <div class="card-front-header">
+                    <div class="card-name">{{ subLoc.name }}</div>
+                    <div class="card-descriptor">{{ subLoc.shopItems?.length ?? 0 }} shop items</div>
+                  </div>
+                  <div class="dv dv-card"></div>
+                  <div class="card-image-area">
+                    @if (subLoc.imageUrl) {
+                    <img [src]="subLoc.imageUrl" alt="" class="card-img-fill" />
+                    } @else {
+                    <div class="card-placeholder">
+                      <span class="card-initial">{{ initial(subLoc.name) }}</span>
+                    </div>
+                    }
+                    @if (subLoc.description) {
+                    <div class="card-desc-overlay">
+                      <p class="card-desc-text">{{ subLoc.description }}</p>
+                    </div>
+                    }
+                  </div>
+                  <button class="location-lock-btn"
+                          [class.location-lock-btn--visible]="subLoc.isVisibleToPlayers"
+                          (click)="toggleSublocationVisibility(subLoc); $event.stopPropagation()"
+                          [title]="subLoc.isVisibleToPlayers ? 'Hide from players' : 'Reveal to players'">
+                    {{ subLoc.isVisibleToPlayers ? '🔓' : '🔒' }}
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+          }
+        </div>
+
+      </div>
+    }
+
+  </div>
+}

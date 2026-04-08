@@ -5,7 +5,7 @@ public class UpdateSublocationInstanceVisibilityRequest
     public bool IsVisibleToPlayers { get; set; }
 }
 
-public class UpdateCitySublocationsVisibilityRequest
+public class UpdateLocationSublocationsVisibilityRequest
 {
     public bool IsVisibleToPlayers { get; set; }
 }

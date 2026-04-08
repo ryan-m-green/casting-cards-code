@@ -1,0 +1,109 @@
+<div class="location-intel-panel">
+  <div class="intel-panel-body">
+
+    <!-- Data fields -->
+    @if (hasField(location().classification)) {
+      <div class="intel-field">
+        <span class="intel-field-label">Classification</span>
+        <span class="intel-divider"></span>
+        <span class="intel-field-value">{{ location().classification }}</span>
+      </div>
+    }
+    @if (hasField(location().size)) {
+      <div class="intel-field">
+        <span class="intel-field-label">Size</span>
+        <span class="intel-divider"></span>
+        <span class="intel-field-value">{{ location().size }}</span>
+      </div>
+    }
+    @if (hasField(location().condition)) {
+      <div class="intel-field">
+        <span class="intel-field-label">Condition</span>
+        <span class="intel-divider"></span>
+        <span class="intel-field-value">{{ location().condition }}</span>
+      </div>
+    }
+    @if (hasField(location().geography)) {
+      <div class="intel-field">
+        <span class="intel-field-label">Geography</span>
+        <span class="intel-divider"></span>
+        <span class="intel-field-value">{{ location().geography }}</span>
+      </div>
+    }
+    @if (hasField(location().architecture)) {
+      <div class="intel-field">
+        <span class="intel-field-label">Architecture</span>
+        <span class="intel-divider"></span>
+        <span class="intel-field-value">{{ location().architecture }}</span>
+      </div>
+    }
+    @if (hasField(location().climate)) {
+      <div class="intel-field">
+        <span class="intel-field-label">Climate</span>
+        <span class="intel-divider"></span>
+        <span class="intel-field-value">{{ location().climate }}</span>
+      </div>
+    }
+    @if (hasField(location().religion)) {
+      <div class="intel-field">
+        <span class="intel-field-label">Religion</span>
+        <span class="intel-divider"></span>
+        <span class="intel-field-value">{{ location().religion }}</span>
+      </div>
+    }
+    @if (hasField(location().vibe)) {
+      <div class="intel-field">
+        <span class="intel-field-label">Vibe</span>
+        <span class="intel-divider"></span>
+        <span class="intel-field-value">{{ location().vibe }}</span>
+      </div>
+    }
+    @if (hasField(location().languages)) {
+      <div class="intel-field">
+        <span class="intel-field-label">Languages</span>
+        <span class="intel-divider"></span>
+        <span class="intel-field-value">{{ location().languages }}</span>
+      </div>
+    }
+    @if (hasField(location().description)) {
+      <div class="intel-field intel-field--block">
+        <span class="intel-field-label">Description</span>
+        <span class="intel-divider intel-divider--block"></span>
+        <p class="intel-field-value intel-field-value--block">{{ location().description }}</p>
+      </div>
+    }
+
+    <!-- Secrets -->
+    @if (secrets().length) {
+      <div class="intel-secrets-section">
+        <div class="intel-secrets-header">
+          <span class="intel-secrets-title">◈ Secrets</span>
+          <span class="intel-secrets-count">{{ secrets().length }} Entries</span>
+        </div>
+
+        @for (secret of secrets(); track secret.id) {
+          <div class="secret-card" [class.secret-card--revealed]="secret.isRevealed">
+            <div class="secret-card-header">
+              <span class="secret-card-icon">{{ secret.isRevealed ? '✦' : '🔒' }}</span>
+              <span class="secret-card-status">{{ secret.isRevealed ? 'Revealed' : 'Sealed' }}</span>
+            </div>
+            <p class="secret-card-content">{{ secret.content }}</p>
+            <div class="secret-card-footer">
+              @if (!secret.isRevealed) {
+                <button class="secret-action-btn secret-action-btn--unseal" (click)="onRevealSecret(secret)">
+                  Unseal ▶
+                </button>
+              } @else {
+                <button class="secret-action-btn secret-action-btn--reseal" (click)="onResealSecret(secret)">
+                  ◀ Reseal
+                </button>
+              }
+            </div>
+          </div>
+        }
+      </div>
+    }
+
+  </div>
+</div>
+

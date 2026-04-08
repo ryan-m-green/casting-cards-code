@@ -15,7 +15,7 @@ import { AuthService } from '../../../core/auth/auth.service';
 })
 export class CampaignNotesComponent implements OnInit {
   @Input() campaignId!: string;
-  @Input() entityType!: 'Cast' | 'City' | 'Sublocation';
+  @Input() entityType!: 'Cast' | 'Location' | 'Sublocation';
   @Input() instanceId!: string;
 
   private http = inject(HttpClient);

@@ -19,7 +19,7 @@ namespace CastLibrary.Repository.Repositories.Insert
             var @params = new
             {
                 sublocation.Id,
-                sublocation.CityId,
+                sublocation.LocationId,
                 sublocation.DmUserId,
                 sublocation.Name,
                 sublocation.Description,
@@ -33,7 +33,7 @@ namespace CastLibrary.Repository.Repositories.Insert
             using var tx = await conn.BeginTransactionAsync();
 
             await conn.ExecuteAsync(
-                "INSERT INTO sublocations (id, city_id, dm_user_id, name, description, created_at) VALUES (@Id, @CityId, @DmUserId, @Name, @Description, @CreatedAt)",
+                "INSERT INTO sublocations (id, location_id, dm_user_id, name, description, created_at) VALUES (@Id, @LocationId, @DmUserId, @Name, @Description, @CreatedAt)",
                 @params, tx);
 
             foreach (var item in sublocation.ShopItems)
@@ -53,3 +53,4 @@ namespace CastLibrary.Repository.Repositories.Insert
         }
     }
 }
+

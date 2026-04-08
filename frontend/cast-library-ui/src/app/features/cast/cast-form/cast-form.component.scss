@@ -1,3 +1,5 @@
+@use '../../../../styles/variables' as v;
+
 :host { display: block; height: 100%; }
 
 .voice-section {
@@ -11,7 +13,7 @@
 .checkbox-label {
   gap: 4px;
   cursor: pointer;
-  font-family: 'Cinzel', serif;
+  font-family: v.$font-header;
   font-size: 8px;
   letter-spacing: 0.1em;
 }

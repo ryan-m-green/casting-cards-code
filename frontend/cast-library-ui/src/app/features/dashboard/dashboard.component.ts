@@ -1,4 +1,4 @@
-﻿import { Component, OnInit, signal, inject, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, signal, inject, ViewChild, ElementRef } from '@angular/core';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
@@ -10,7 +10,7 @@ import { DmNavComponent } from '../../shared/components/dm-nav/dm-nav.component'
 
 interface DashboardStats {
   campaignCount: number;
-  cityCount: number;
+  locationCount: number;
   sublocationCount: number;
   castCount: number;
   activeCampaign: Campaign | null;
@@ -18,7 +18,7 @@ interface DashboardStats {
 
 interface ImportResult {
   castsImported: number;
-  citiesImported: number;
+  locationsImported: number;
   sublocationsImported: number;
   failures: ImportFailure[];
 }
@@ -46,7 +46,7 @@ export class DashboardComponent implements OnInit {
   private isEntering = false;
 
   stats = signal<DashboardStats>({
-    campaignCount: 0, cityCount: 0, sublocationCount: 0, castCount: 0, activeCampaign: null
+    campaignCount: 0, locationCount: 0, sublocationCount: 0, castCount: 0, activeCampaign: null
   });
 
   showImportPanel = signal(false);

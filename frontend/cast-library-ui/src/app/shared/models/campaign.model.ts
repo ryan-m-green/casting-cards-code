@@ -1,4 +1,4 @@
-import { CampaignCityInstance } from './city.model';
+import { CampaignLocationInstance } from './location.model';
 import { CampaignCastInstance } from './cast.model';
 import { CampaignSecret } from './secret.model';
 import { CampaignSublocationInstance } from './sublocation.model';
@@ -25,7 +25,7 @@ export interface Campaign {
   status: CampaignStatus;
   spineColor: string;
   playerCount: number;
-  cityCount: number;
+  locationCount: number;
   createdAt: string;
 }
 
@@ -49,7 +49,7 @@ export interface CampaignDetail {
   description: string;
   spineColor: string;
   status: CampaignStatus;
-  cities: CampaignCityInstance[];
+  locations: CampaignLocationInstance[];
   casts: CampaignCastInstance[];
   sublocations: CampaignSublocationInstance[];
   secrets: CampaignSecret[];
@@ -61,7 +61,7 @@ export interface CampaignDetail {
 export interface CampaignNote {
   id: string;
   campaignId: string;
-  entityType: 'Cast' | 'City' | 'Sublocation';
+  entityType: 'Cast' | 'Location' | 'Sublocation';
   instanceId: string;
   content: string;
   createdByDisplayName: string;
@@ -81,7 +81,7 @@ export interface CampaignCastPlayerNotes {
   updatedAt: string;
 }
 
-export interface CityFaction {
+export interface LocationFaction {
   id: string;
   name: string;
   type: string;
@@ -90,7 +90,7 @@ export interface CityFaction {
   sortOrder: number;
 }
 
-export interface CityFactionRelationship {
+export interface LocationFactionRelationship {
   id: string;
   factionAId: string;
   factionBId: string;
@@ -99,7 +99,7 @@ export interface CityFactionRelationship {
   notes: string;
 }
 
-export interface CityNpcRole {
+export interface LocationNpcRole {
   id: string;
   castInstanceId: string;
   factionId: string;
@@ -107,14 +107,14 @@ export interface CityNpcRole {
   motivation: string;
 }
 
-export interface CityPoliticalNotes {
+export interface LocationPoliticalNotes {
   id: string;
   campaignId: string;
-  cityInstanceId: string;
+  locationInstanceId: string;
   generalNotes: string;
-  factions: CityFaction[];
-  relationships: CityFactionRelationship[];
-  npcRoles: CityNpcRole[];
+  factions: LocationFaction[];
+  relationships: LocationFactionRelationship[];
+  npcRoles: LocationNpcRole[];
   updatedAt: string;
 }
 

@@ -1,0 +1,28 @@
+<div class="location-card-pane">
+  <div class="location-card-enlarged pc-card-location">
+    <div class="lib-card-front">
+      <div class="card-slot-front">
+        <div class="card-front-header">
+          <div class="card-name">{{ location().name }}</div>
+          <div class="card-descriptor">{{ location().classification }}</div>
+        </div>
+        <div class="dv dv-card"></div>
+        <div class="card-image-area">
+          @if (location().imageUrl) {
+            <img [src]="location().imageUrl" alt="" class="card-img-fill" />
+          } @else {
+            <div class="card-placeholder">
+              <span class="card-initial location-card-initial-lg">{{ initial(location().name) }}</span>
+            </div>
+          }
+          @if (location().description) {
+            <div class="card-desc-overlay">
+              <p class="card-desc-text">{{ location().description }}</p>
+            </div>
+          }
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+

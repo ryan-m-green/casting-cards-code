@@ -1,4 +1,4 @@
-﻿using CastLibrary.Repository.Repositories;
+using CastLibrary.Repository.Repositories;
 using CastLibrary.Repository.Repositories.Read;
 using CastLibrary.Shared.Domain;
 
@@ -6,7 +6,7 @@ namespace CastLibrary.Logic.Queries.Campaign;
 
 public interface IGetCampaignDetailQueryHandler
 {
-    Task<(CampaignDomain Campaign, List<CampaignCityInstanceDomain> Cities,
+    Task<(CampaignDomain Campaign, List<CampaignLocationInstanceDomain> locations,
         List<CampaignCastInstanceDomain> Casts, List<CampaignSublocationInstanceDomain> Locations,
         List<CampaignSecretDomain> Secrets, List<CampaignCastRelationshipDomain> Relationships,
         List<CampaignPlayerDomain> Players, CampaignInviteCodeDomain InviteCode)>
@@ -20,7 +20,7 @@ public class GetCampaignDetailQueryHandler(
     ICampaignPlayerReadRepository playerReadRepository,
     IGetCampaignInviteCodeQueryHandler getInviteCodeQuery) : IGetCampaignDetailQueryHandler
 {
-    public async Task<(CampaignDomain Campaign, List<CampaignCityInstanceDomain> Cities,
+    public async Task<(CampaignDomain Campaign, List<CampaignLocationInstanceDomain> locations,
         List<CampaignCastInstanceDomain> Casts, List<CampaignSublocationInstanceDomain> Locations,
         List<CampaignSecretDomain> Secrets, List<CampaignCastRelationshipDomain> Relationships,
         List<CampaignPlayerDomain> Players, CampaignInviteCodeDomain InviteCode)>
@@ -29,7 +29,7 @@ public class GetCampaignDetailQueryHandler(
         var campaign = await campaignRepository.GetByIdAsync(campaignId);
         if (campaign is null) return (null, [], [], [], [], [], [], null);
 
-        var cities = await campaignRepository.GetCityInstancesByCampaignAsync(campaignId);
+        var locations = await campaignRepository.GetLocationInstancesByCampaignAsync(campaignId);
         var casts = await campaignRepository.GetCastInstancesByCampaignAsync(campaignId);
         var subLocations = await campaignRepository.GetSublocationInstancesByCampaignAsync(campaignId);
         var secrets = await secretReadRepository.GetByCampaignAsync(campaignId);
@@ -37,6 +37,8 @@ public class GetCampaignDetailQueryHandler(
         var players = await playerReadRepository.GetByCampaignAsync(campaignId);
         var inviteCode = await getInviteCodeQuery.HandleAsync(campaignId);
 
-        return (campaign, cities, casts, subLocations, secrets, relationships, players, inviteCode);
+        return (campaign, locations, casts, subLocations, secrets, relationships, players, inviteCode);
     }
 }
+
+

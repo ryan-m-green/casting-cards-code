@@ -2,8 +2,8 @@
 -- All ALTER statements must be idempotent (IF NOT EXISTS / IF EXISTS).
 -- Add new migrations at the bottom of this file.
 
--- [001] Add dm_notes to campaign_city_instances
-ALTER TABLE campaign_city_instances
+-- [001] Add dm_notes to campaign_location_instances
+ALTER TABLE campaign_location_instances
     ADD COLUMN IF NOT EXISTS dm_notes TEXT;
 
 -- [002] Add dm_notes to campaign_sublocation_instances

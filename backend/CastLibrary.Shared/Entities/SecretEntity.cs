@@ -5,7 +5,7 @@ public class CampaignSecretEntity
     public Guid Id { get; set; }
     public Guid CampaignId { get; set; }
     public Guid? CastInstanceId { get; set; }
-    public Guid? CityInstanceId { get; set; }
+    public Guid? LocationInstanceId { get; set; }
     public Guid? SublocationInstanceId { get; set; }
     public string Content { get; set; } = string.Empty;
     public int SortOrder { get; set; }

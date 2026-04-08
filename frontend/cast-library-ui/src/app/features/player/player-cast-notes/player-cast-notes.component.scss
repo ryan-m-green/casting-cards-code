@@ -1,3 +1,5 @@
+@use '../../../../styles/variables' as v;
+
 $cast-gold: #c8b07a;
 
 :host {
@@ -24,7 +26,7 @@ $cast-gold: #c8b07a;
 }
 
 .notes-panel-label {
-  font-family: 'Cinzel', serif;
+  font-family: v.$font-header;
   font-size: 7px;
   letter-spacing: 0.22em;
   text-transform: uppercase;
@@ -39,7 +41,7 @@ $cast-gold: #c8b07a;
 }
 
 .notes-saving {
-  font-family: 'Cinzel', serif;
+  font-family: v.$font-header;
   font-size: 7px;
   letter-spacing: 0.14em;
   text-transform: uppercase;
@@ -63,7 +65,7 @@ $cast-gold: #c8b07a;
 
 // ── Field label + rule ────────────────────────────────────────────────────────
 .notes-field-label {
-  font-family: 'Cinzel', serif;
+  font-family: v.$font-header;
   font-size: 7px;
   letter-spacing: 0.20em;
   text-transform: uppercase;
@@ -83,7 +85,7 @@ $cast-gold: #c8b07a;
   border: 1px solid rgba($cast-gold, 0.20);
   border-radius: 4px;
   color: rgba(200, 225, 235, 0.82);
-  font-family: 'Crimson Text', serif;
+  font-family: v.$font-body;
   font-size: 14px;
   line-height: 1.6;
   padding: 10px 12px;
@@ -112,7 +114,7 @@ $cast-gold: #c8b07a;
   border: 1px solid rgba($cast-gold, 0.20);
   border-radius: 4px;
   color: rgba($cast-gold, 0.45);
-  font-family: 'Cinzel', serif;
+  font-family: v.$font-header;
   font-size: 8px;
   letter-spacing: 0.12em;
   text-transform: uppercase;
@@ -151,7 +153,7 @@ $cast-gold: #c8b07a;
 }
 
 .notes-dropdown-group-label {
-  font-family: 'Cinzel', serif;
+  font-family: v.$font-header;
   font-size: 7px;
   letter-spacing: 0.20em;
   text-transform: uppercase;
@@ -163,7 +165,7 @@ $cast-gold: #c8b07a;
 }
 
 .notes-dropdown-item {
-  font-family: 'Crimson Text', serif;
+  font-family: v.$font-body;
   font-size: 14px;
   color: rgba(200, 225, 235, 0.78);
   padding: 7px 14px;
@@ -177,7 +179,7 @@ $cast-gold: #c8b07a;
 }
 
 .notes-dropdown-empty {
-  font-family: 'Cinzel', serif;
+  font-family: v.$font-header;
   font-size: 7px;
   letter-spacing: 0.14em;
   text-transform: uppercase;
@@ -196,7 +198,7 @@ $cast-gold: #c8b07a;
   display: inline-flex;
   align-items: center;
   gap: 5px;
-  font-family: 'Cinzel', serif;
+  font-family: v.$font-header;
   font-size: 7px;
   letter-spacing: 0.14em;
   text-transform: uppercase;
@@ -233,7 +235,7 @@ $cast-gold: #c8b07a;
   border: 1px solid rgba($cast-gold, 0.14);
   border-radius: 3px;
   color: rgba($cast-gold, 0.38);
-  font-family: 'Cinzel', serif;
+  font-family: v.$font-header;
   font-size: 8px;
   letter-spacing: 0.08em;
   text-transform: uppercase;
@@ -312,7 +314,7 @@ $cast-gold: #c8b07a;
 }
 
 .secret-card-text {
-  font-family: 'Crimson Text', serif;
+  font-family: v.$font-body;
   font-size: 13px;
   color: rgba(200, 225, 235, 0.82);
   line-height: 1.55;

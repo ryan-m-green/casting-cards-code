@@ -1,4 +1,4 @@
-﻿using CastLibrary.Logic.Interfaces;
+using CastLibrary.Logic.Interfaces;
 using CastLibrary.Logic.Services;
 using CastLibrary.Repository.Repositories;
 using CastLibrary.Repository.Repositories.Read;
@@ -16,7 +16,7 @@ public interface IExportLibraryQueryHandler
 
 public class ExportLibraryQueryHandler(
     ICastReadRepository castReadRepository,
-    ICityReadRepository cityReadRepository,
+    ILocationReadRepository locationReadRepository,
     ISublocationReadRepository sublocationReadRepository,
     IImageStorageOperator imageStorage,
     IImageKeyCreator imageKeyCreator) : IExportLibraryQueryHandler
@@ -24,7 +24,7 @@ public class ExportLibraryQueryHandler(
     public async Task<LibraryExportPackage> HandleAsync(Guid dmUserId)
     {
         var casts = await castReadRepository.GetAllByDmAsync(dmUserId);
-        var cities = await cityReadRepository.GetAllByDmAsync(dmUserId);
+        var locations = await locationReadRepository.GetAllByDmAsync(dmUserId);
         var sublocations = await sublocationReadRepository.GetAllByDmAsync(dmUserId);
 
         var package = new LibraryExportPackage();
@@ -53,25 +53,25 @@ public class ExportLibraryQueryHandler(
             });
         }
 
-        foreach (var city in cities)
+        foreach (var Location in locations)
         {
             var imageFileName = await TryReadImageAsync(
-                imageKeyCreator.Create(dmUserId, city.Id, EntityType.City),
-                "city", city.Name, usedFilenames, package.Images);
+                imageKeyCreator.Create(dmUserId, Location.Id, EntityType.Location),
+                "Location", Location.Name, usedFilenames, package.Images);
 
-            package.Bundle.Cities.Add(new CityCard
+            package.Bundle.Locations.Add(new LocationCard
             {
-                Name = city.Name,
-                Classification = city.Classification,
-                Size = city.Size,
-                Condition = city.Condition,
-                Geography = city.Geography,
-                Architecture = city.Architecture,
-                Climate = city.Climate,
-                Religion = city.Religion,
-                Vibe = city.Vibe,
-                Languages = city.Languages,
-                Description = city.Description,
+                Name = Location.Name,
+                Classification = Location.Classification,
+                Size = Location.Size,
+                Condition = Location.Condition,
+                Geography = Location.Geography,
+                Architecture = Location.Architecture,
+                Climate = Location.Climate,
+                Religion = Location.Religion,
+                Vibe = Location.Vibe,
+                Languages = Location.Languages,
+                Description = Location.Description,
                 ImageFileName = imageFileName,
             });
         }
@@ -124,3 +124,6 @@ public class ExportLibraryQueryHandler(
         return $"{prefix}_{slug}_{i}.png";
     }
 }
+
+
+

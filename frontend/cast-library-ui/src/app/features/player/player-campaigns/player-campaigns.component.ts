@@ -2,6 +2,7 @@ import { Component, OnInit, signal, inject, ElementRef, HostListener } from '@an
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { RouterLink } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../../environments/environment';
 import { Campaign } from '../../../shared/models/campaign.model';
@@ -11,7 +12,7 @@ import { AuthService } from '../../../core/auth/auth.service';
 @Component({
   selector: 'app-player-campaigns',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, RouterLink],
   templateUrl: './player-campaigns.component.html',
   styleUrl: './player-campaigns.component.scss'
 })

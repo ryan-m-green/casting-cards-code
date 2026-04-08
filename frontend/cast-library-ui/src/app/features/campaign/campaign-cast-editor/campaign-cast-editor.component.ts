@@ -40,7 +40,7 @@ export class CampaignCastEditorComponent implements OnInit, OnDestroy {
   @ViewChild('deckStack')       deckStackRef!:      ElementRef<HTMLElement>;
 
   campaignId          = '';
-  cityInstanceId      = '';
+  locationInstanceId  = '';
   sublocationInstanceId  = '';
   allCast              = signal<Cast[]>([]);
   addedCast            = signal<AddedCast[]>([]);
@@ -97,7 +97,7 @@ export class CampaignCastEditorComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.campaignId         = this.route.snapshot.paramMap.get('id')                 ?? '';
-    this.cityInstanceId     = this.route.snapshot.paramMap.get('cityId')             ?? '';
+    this.locationInstanceId = this.route.snapshot.paramMap.get('locationId')         ?? '';
     this.sublocationInstanceId = this.route.snapshot.paramMap.get('sublocationInstanceId') ?? '';
 
     this.http.get<{ keywords: string[] }>(`${environment.apiUrl}/api/users/keywords`)
@@ -194,7 +194,7 @@ export class CampaignCastEditorComponent implements OnInit, OnDestroy {
 
     this.http.post<{ instanceId: string }>(
       `${environment.apiUrl}/api/campaigns/${this.campaignId}/casts`,
-      { castId: cast.id, cityInstanceId: this.cityInstanceId, sublocationInstanceId: this.sublocationInstanceId }
+      { castId: cast.id, locationInstanceId: this.locationInstanceId, sublocationInstanceId: this.sublocationInstanceId }
     ).subscribe({ next: resp => {
       this.allCampaignCastIds.update(ids => new Set([...ids, cast.id]));
       this.addedCast.update(list => [...list, { cast, instanceId: resp.instanceId, secrets: [], keywords: [] }]);
@@ -236,7 +236,7 @@ export class CampaignCastEditorComponent implements OnInit, OnDestroy {
   goBack() {
     this.router.navigate([
       '/dm/campaigns', this.campaignId,
-      'cities', this.cityInstanceId, 'sublocations',
+      'locations', this.locationInstanceId, 'sublocations',
     ]);
   }
 

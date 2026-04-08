@@ -1,4 +1,4 @@
-﻿using CastLibrary.Repository.Repositories.Insert;
+using CastLibrary.Repository.Repositories.Insert;
 using CastLibrary.Shared.Domain;
 using CastLibrary.Shared.Enums;
 using CastLibrary.Shared.Requests;
@@ -18,7 +18,7 @@ public class AddCampaignSecretCommandHandler(ISecretInsertRepository secretInser
             Id = Guid.NewGuid(),
             CampaignId = command.CampaignId,
             CastInstanceId = command.Request.EntityType == EntityType.Cast ? command.Request.InstanceId : null,
-            CityInstanceId = command.Request.EntityType == EntityType.City ? command.Request.InstanceId : null,
+            LocationInstanceId = command.Request.EntityType == EntityType.Location ? command.Request.InstanceId : null,
             SublocationInstanceId = command.Request.EntityType == EntityType.Sublocation ? command.Request.InstanceId : null,
             Content = command.Request.Content,
             SortOrder = 0,
@@ -39,3 +39,4 @@ public class AddCampaignSecretCommand
     public Guid CampaignId { get; }
     public AddCampaignSecretRequest Request { get; }
 }
+

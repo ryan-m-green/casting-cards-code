@@ -1,3 +1,5 @@
+@use '../../../../styles/variables' as v;
+
 $cast-gold: #c8b07a;
 $star-color: #fcdf03;
 
@@ -52,7 +54,7 @@ $star-color: #fcdf03;
 }
 
 .void-crumb-sep {
-  font-family: 'Cinzel', serif;
+  font-family: v.$font-header;
   font-size: 9px;
   color: color-mix(in srgb, var(--portal-color, #{$cast-gold}), white 55%);
   opacity: 0.25;
@@ -61,7 +63,7 @@ $star-color: #fcdf03;
 }
 
 .void-back {
-  font-family: 'Cinzel', serif;
+  font-family: v.$font-header;
   font-size: 9px;
   letter-spacing: 0.18em;
   text-transform: uppercase;
@@ -80,7 +82,7 @@ $star-color: #fcdf03;
   width: 100%;
   margin-top: 10px;
   text-align: center;
-  font-family: 'Cinzel', serif;
+  font-family: v.$font-header;
   font-size: 17px;
   font-weight: 600;
   letter-spacing: 0.28em;
@@ -120,7 +122,7 @@ $star-color: #fcdf03;
 }
 
 .cast-rating-label {
-  font-family: 'Cinzel', serif;
+  font-family: v.$font-header;
   font-size: 8px;
   letter-spacing: 0.30em;
   text-transform: uppercase;
@@ -238,7 +240,7 @@ $star-color: #fcdf03;
 
 
 .detail-label {
-  font-family: 'Cinzel', serif;
+  font-family: v.$font-header;
   font-size: 7px;
   letter-spacing: 0.2em;
   text-transform: uppercase;
@@ -253,7 +255,7 @@ $star-color: #fcdf03;
 }
 
 .detail-value {
-  font-family: 'Crimson Text', serif;
+  font-family: v.$font-body;
   font-size: 14px;
   color: rgba(200, 225, 235, 0.82);
   white-space: nowrap;
@@ -289,7 +291,7 @@ $star-color: #fcdf03;
 }
 
 .detail-keyword-pill {
-  font-family: 'Cinzel', serif;
+  font-family: v.$font-header;
   font-size: 7px;
   letter-spacing: 0.14em;
   text-transform: uppercase;

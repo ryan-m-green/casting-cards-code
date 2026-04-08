@@ -1,4 +1,4 @@
-﻿using CastLibrary.Repository.Repositories.Insert;
+using CastLibrary.Repository.Repositories.Insert;
 using CastLibrary.Shared.Domain;
 using CastLibrary.Shared.Requests;
 
@@ -16,7 +16,7 @@ public class CreateSublocationCommandHandler(ISublocationInsertRepository subloc
         {
             Id = Guid.NewGuid(),
             DmUserId = command.DmUserId,
-            CityId = command.Request.CityId,
+            LocationId = command.Request.LocationId,
             Name = command.Request.Name, Description = command.Request.Description,
             CreatedAt = DateTime.UtcNow,
             ShopItems = command.Request.ShopItems.Select((item, i) => new ShopItemDomain
@@ -42,3 +42,4 @@ public class CreateSublocationCommand
     public Guid DmUserId { get; }
     public CreateSublocationRequest Request { get; }
 }
+

@@ -5,7 +5,7 @@ import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { forkJoin } from 'rxjs';
 import { environment } from '../../../../environments/environment';
-import { City } from '../../../shared/models/city.model';
+import { Location, CampaignLocationInstance } from '../../../shared/models/location.model';
 import { CampaignDetail, CampaignInviteCode, CampaignPlayer } from '../../../shared/models/campaign.model';
 import { CampaignCastInstance } from '../../../shared/models/cast.model';
 import { CampaignSublocationInstance } from '../../../shared/models/sublocation.model';
@@ -15,14 +15,14 @@ import { KeywordInputComponent } from '../../../shared/components/keyword-input/
 import { DmNavComponent } from '../../../shared/components/dm-nav/dm-nav.component';
 import { TimeOfDayEditorComponent } from '../time-of-day-editor/time-of-day-editor.component';
 
-interface CitySecret {
+interface LocationSecret {
   id?: string;
   content: string;
   editing: boolean;
 }
 
-interface CityDraft {
-  city: City;
+interface LocationDraft {
+  location: Location;
   instanceId?: string;
   condition: string;
   geography: string;
@@ -30,7 +30,7 @@ interface CityDraft {
   religion:  string;
   vibe:      string;
   languages: string;
-  secrets:   CitySecret[];
+  secrets:   LocationSecret[];
   keywords:  string[];
 }
 
@@ -54,8 +54,8 @@ export class CampaignCreatorComponent implements OnInit, OnDestroy {
   @ViewChild('selectedStack')   selectedStackRef!:  ElementRef<HTMLElement>;
   @ViewChild('deckStack')       deckStackRef!:      ElementRef<HTMLElement>;
 
-  cities         = signal<City[]>([]);
-  selectedDrafts = signal<CityDraft[]>([]);
+  locations      = signal<Location[]>([]);
+  selectedDrafts = signal<LocationDraft[]>([]);
   campaignId              = signal<string | null>(null);
   campaignCast            = signal<CampaignCastInstance[]>([]);
   campaignSublocations    = signal<CampaignSublocationInstance[]>([]);
@@ -69,7 +69,7 @@ export class CampaignCreatorComponent implements OnInit, OnDestroy {
   inviteCode     = signal<CampaignInviteCode | null>(null);
   codeLoading    = signal(false);
   removingPlayer = signal<string | null>(null);
-  citySearch     = signal('');
+  locationSearch = signal('');
 
   pendingRemoveIdx   = signal<number | null>(null);
   pendingCastCount   = signal(0);
@@ -77,8 +77,8 @@ export class CampaignCreatorComponent implements OnInit, OnDestroy {
 
   private keywordSaveTimer?: ReturnType<typeof setTimeout>;
 
-  // Local fields for city text inputs — never pushed to selectedDrafts() signal during typing
-  liveCityFields: Record<string, string> = {
+  // Local fields for location text inputs — never pushed to selectedDrafts() signal during typing
+  liveLocationFields: Record<string, string> = {
     geography: '', climate: '', religion: '', vibe: '', languages: '',
   };
 
@@ -89,14 +89,14 @@ export class CampaignCreatorComponent implements OnInit, OnDestroy {
   private saveTimer?: ReturnType<typeof setTimeout>;
   private formSaveTimer?: ReturnType<typeof setTimeout>;
 
-  deckCities = computed(() => {
-    const selectedIds = new Set(this.selectedDrafts().map(d => d.city.id));
-    return this.cities().filter(c => !selectedIds.has(c.id));
+  deckLocations = computed(() => {
+    const selectedIds = new Set(this.selectedDrafts().map(d => d.location.id));
+    return this.locations().filter(c => !selectedIds.has(c.id));
   });
 
-  filteredDeckCities = computed(() => {
-    const term = this.citySearch().trim().toLowerCase();
-    const deck = this.deckCities();
+  filteredDeckLocations = computed(() => {
+    const term = this.locationSearch().trim().toLowerCase();
+    const deck = this.deckLocations();
     if (!term) return deck;
     return deck.filter(c =>
       [c.name, c.classification, c.size, c.geography, c.climate, c.vibe, c.description, c.architecture, c.religion]
@@ -105,7 +105,7 @@ export class CampaignCreatorComponent implements OnInit, OnDestroy {
   });
 
   currentCard = computed(() => {
-    const deck = this.filteredDeckCities();
+    const deck = this.filteredDeckLocations();
     if (!deck.length) return null;
     return deck[this.deckIdx() % deck.length];
   });
@@ -127,10 +127,10 @@ export class CampaignCreatorComponent implements OnInit, OnDestroy {
 
   expandedDraft = computed(() => this.selectedDrafts()[this.expandedIdx()] ?? null);
 
-  expandedCitySublocations = computed(() => {
+  expandedLocationSublocations = computed(() => {
     const draft = this.expandedDraft();
     if (!draft?.instanceId) return [];
-    return this.campaignSublocations().filter(l => l.cityInstanceId === draft.instanceId);
+    return this.campaignSublocations().filter(l => l.locationInstanceId === draft.instanceId);
   });
 
   castCountForSublocation(sublocationInstanceId: string): number {
@@ -152,14 +152,14 @@ export class CampaignCreatorComponent implements OnInit, OnDestroy {
 
     if (id) {
       forkJoin({
-        cities:   this.http.get<City[]>(`${environment.apiUrl}/api/cities`),
+        locations: this.http.get<Location[]>(`${environment.apiUrl}/api/locations`),
         campaign: this.http.get<CampaignDetail>(`${environment.apiUrl}/api/campaigns/${id}`),
-      }).subscribe(({ cities, campaign }) => {
-        this.cities.set(cities);
-        this.loadExistingCampaign(campaign, cities);
+      }).subscribe(({ locations, campaign }) => {
+        this.locations.set(locations);
+        this.loadExistingCampaign(campaign, locations);
       });
     } else {
-      this.http.get<City[]>(`${environment.apiUrl}/api/cities`).subscribe(c => this.cities.set(c));
+      this.http.get<Location[]>(`${environment.apiUrl}/api/locations`).subscribe(l => this.locations.set(l));
     }
 
     this.form.valueChanges.subscribe(() => {
@@ -170,7 +170,7 @@ export class CampaignCreatorComponent implements OnInit, OnDestroy {
         if (cid) {
           this.http.patch(`${environment.apiUrl}/api/campaigns/${cid}`, this.form.value).subscribe();
         } else {
-          this.http.post<{ id: string }>(`${environment.apiUrl}/api/campaigns`, { ...this.form.value, cityIds: [] })
+          this.http.post<{ id: string }>(`${environment.apiUrl}/api/campaigns`, { ...this.form.value, locationIds: [] })
             .subscribe({ next: campaign => this.campaignId.set(campaign.id) });
         }
       }, 800);
@@ -183,14 +183,14 @@ export class CampaignCreatorComponent implements OnInit, OnDestroy {
     clearTimeout(this.keywordSaveTimer);
   }
 
-  setCitySearch(term: string) {
-    this.citySearch.set(term);
+  setLocationSearch(term: string) {
+    this.locationSearch.set(term);
     this.deckIdx.set(0);
   }
 
-  swapCityCard() {
+  swapLocationCard() {
     if (this.isSwapping) return;
-    const deck = this.filteredDeckCities();
+    const deck = this.filteredDeckLocations();
     if (deck.length <= 1) return;
     this.isSwapping = true;
     const card = this.mainCardRef?.nativeElement;
@@ -213,26 +213,26 @@ export class CampaignCreatorComponent implements OnInit, OnDestroy {
     }, 270);
   }
 
-  addCityToSelected() {
+  addLocationToSelected() {
     if (this.isSwapping) return;
     if (!this.form.controls.name.valid) {
       this.form.controls.name.markAsTouched();
       return;
     }
-    const city = this.currentCard();
-    if (!city) return;
+    const location = this.currentCard();
+    if (!location) return;
     this.isSwapping = true;
     const card = this.mainCardRef?.nativeElement;
     if (!card) { this.isSwapping = false; return; }
 
-    const draft: CityDraft = {
-      city,
-      condition: city.condition,
-      geography: city.geography,
-      climate:   city.climate,
-      religion:  city.religion,
-      vibe:      city.vibe,
-      languages: city.languages,
+    const draft: LocationDraft = {
+      location,
+      condition: location.condition,
+      geography: location.geography,
+      climate:   location.climate,
+      religion:  location.religion,
+      vibe:      location.vibe,
+      languages: location.languages,
       secrets:   [],
       keywords:  [],
     };
@@ -245,8 +245,8 @@ export class CampaignCreatorComponent implements OnInit, OnDestroy {
 
     this.selectedDrafts.update(sel => [...sel, draft]);
     this.expandedIdx.set(this.selectedDrafts().length - 1);
-    this.syncLiveCityFields();
-    const newDeckLen = this.deckCities().length;
+    this.syncLiveLocationFields();
+    const newDeckLen = this.deckLocations().length;
     if (newDeckLen > 0) {
       this.deckIdx.update(i => i % newDeckLen);
       void card.offsetWidth;
@@ -257,10 +257,10 @@ export class CampaignCreatorComponent implements OnInit, OnDestroy {
       card.style.opacity    = '1';
     }
 
-    this._autoSaveCity(draft);
+    this._autoSaveLocation(draft);
   }
 
-  removeCitySelected(index: number) {
+  removeLocationSelected(index: number) {
     const draft = this.selectedDrafts()[index];
     if (draft.instanceId) {
       const count = this.campaignSublocationCount()[draft.instanceId] ?? 0;
@@ -286,7 +286,7 @@ export class CampaignCreatorComponent implements OnInit, OnDestroy {
   private _executeRemove(index: number) {
     const draft       = this.selectedDrafts()[index];
     const card        = this._getSelCardEl(index);
-    const deckIsEmpty = this.deckCities().length === 0;
+    const deckIsEmpty = this.deckLocations().length === 0;
     const target      = deckIsEmpty ? this.mainCardWrapperRef?.nativeElement
                                     : this.deckStackRef?.nativeElement;
     if (card) {
@@ -298,27 +298,27 @@ export class CampaignCreatorComponent implements OnInit, OnDestroy {
 
   toggleExpanded(index: number) {
     this.expandedIdx.update(i => i === index ? -1 : index);
-    this.syncLiveCityFields();
+    this.syncLiveLocationFields();
   }
 
   updateDraftField(field: string, value: string) {
     const draft = this.expandedDraft();
     if (!draft) return;
     this.selectedDrafts.update(sel =>
-      sel.map(d => d.city.id === draft.city.id ? { ...d, [field]: value } : d)
+      sel.map(d => d.location.id === draft.location.id ? { ...d, [field]: value } : d)
     );
-    this._scheduleInstanceSave(draft.city.id);
+    this._scheduleInstanceSave(draft.location.id);
   }
 
-  onCityTextInput(field: string, value: string) {
-    this.liveCityFields[field] = value;
+  onLocationTextInput(field: string, value: string) {
+    this.liveLocationFields[field] = value;
     const draft = this.expandedDraft();
-    if (draft) this._scheduleInstanceSave(draft.city.id);
+    if (draft) this._scheduleInstanceSave(draft.location.id);
   }
 
-  private syncLiveCityFields() {
+  private syncLiveLocationFields() {
     const draft = this.expandedDraft();
-    this.liveCityFields = {
+    this.liveLocationFields = {
       geography: draft?.geography ?? '',
       climate:   draft?.climate   ?? '',
       religion:  draft?.religion  ?? '',
@@ -327,9 +327,9 @@ export class CampaignCreatorComponent implements OnInit, OnDestroy {
     };
     setTimeout(() => {
       const host = this.el.nativeElement as HTMLElement;
-      for (const field of Object.keys(this.liveCityFields)) {
-        const input = host.querySelector(`[data-city-field="${field}"]`) as HTMLInputElement | null;
-        if (input) input.value = this.liveCityFields[field];
+      for (const field of Object.keys(this.liveLocationFields)) {
+        const input = host.querySelector(`[data-location-field="${field}"]`) as HTMLInputElement | null;
+        if (input) input.value = this.liveLocationFields[field];
       }
     }, 0);
   }
@@ -338,7 +338,7 @@ export class CampaignCreatorComponent implements OnInit, OnDestroy {
     const draft = this.expandedDraft();
     if (!draft) return;
     this.selectedDrafts.update(sel =>
-      sel.map(d => d.city.id === draft.city.id
+      sel.map(d => d.location.id === draft.location.id
         ? { ...d, secrets: [...d.secrets, { content: '', editing: true }] }
         : d)
     );
@@ -348,7 +348,7 @@ export class CampaignCreatorComponent implements OnInit, OnDestroy {
     const draft = this.expandedDraft();
     if (!draft) return;
     this.selectedDrafts.update(sel =>
-      sel.map(d => d.city.id === draft.city.id
+      sel.map(d => d.location.id === draft.location.id
         ? { ...d, secrets: d.secrets.map((s, i) => i === secretIndex ? { ...s, content: value } : s) }
         : d)
     );
@@ -364,7 +364,7 @@ export class CampaignCreatorComponent implements OnInit, OnDestroy {
     const cid = this.campaignId();
     if (!cid || !draft.instanceId) {
       this.selectedDrafts.update(sel =>
-        sel.map(d => d.city.id === draft.city.id
+        sel.map(d => d.location.id === draft.location.id
           ? { ...d, secrets: d.secrets.map((s, i) => i === secretIndex ? { ...s, editing: false } : s) }
           : d)
       );
@@ -372,12 +372,12 @@ export class CampaignCreatorComponent implements OnInit, OnDestroy {
     }
 
     this.http.post<{ id: string }>(`${environment.apiUrl}/api/campaigns/${cid}/secrets`, {
-      entityType: 'City',
+      entityType: 'Location',
       instanceId: draft.instanceId,
       content:    secret.content,
     }).subscribe({ next: resp => {
       this.selectedDrafts.update(sel =>
-        sel.map(d => d.city.id === draft.city.id
+        sel.map(d => d.location.id === draft.location.id
           ? { ...d, secrets: d.secrets.map((s, i) => i === secretIndex ? { ...s, id: resp.id, editing: false } : s) }
           : d)
       );
@@ -388,7 +388,7 @@ export class CampaignCreatorComponent implements OnInit, OnDestroy {
     const draft = this.expandedDraft();
     if (!draft) return;
     this.selectedDrafts.update(sel =>
-      sel.map(d => d.city.id === draft.city.id
+      sel.map(d => d.location.id === draft.location.id
         ? { ...d, secrets: d.secrets.filter((_, i) => i !== secretIndex) }
         : d)
     );
@@ -403,17 +403,17 @@ export class CampaignCreatorComponent implements OnInit, OnDestroy {
       this.http.delete(`${environment.apiUrl}/api/campaigns/${cid}/secrets/${secret.id}`).subscribe();
     }
     this.selectedDrafts.update(sel =>
-      sel.map(d => d.city.id === draft.city.id
+      sel.map(d => d.location.id === draft.location.id
         ? { ...d, secrets: d.secrets.filter((_, i) => i !== secretIndex) }
         : d)
     );
   }
 
   goToSublocations() {
-    const cid            = this.campaignId();
-    const cityInstanceId = this.expandedDraft()?.instanceId;
-    if (cid && cityInstanceId) {
-      this.router.navigate(['/dm/campaigns', cid, 'cities', cityInstanceId, 'sublocations']);
+    const cid              = this.campaignId();
+    const locationInstanceId = this.expandedDraft()?.instanceId;
+    if (cid && locationInstanceId) {
+      this.router.navigate(['/dm/campaigns', cid, 'locations', locationInstanceId, 'sublocations']);
     }
   }
 
@@ -457,20 +457,20 @@ export class CampaignCreatorComponent implements OnInit, OnDestroy {
       });
   }
 
-  updateCityKeywords(keywords: string[]) {
+  updateLocationKeywords(keywords: string[]) {
     const draft = this.expandedDraft();
     if (!draft) return;
     this.selectedDrafts.update(sel =>
-      sel.map(d => d.city.id === draft.city.id ? { ...d, keywords } : d)
+      sel.map(d => d.location.id === draft.location.id ? { ...d, keywords } : d)
     );
     this.allDmKeywords.update(pool => {
       const merged = new Set([...pool, ...keywords]);
       return Array.from(merged);
     });
-    this._scheduleCityKeywordSave(draft.city.id);
+    this._scheduleLocationKeywordSave(draft.location.id);
   }
 
-  private loadExistingCampaign(detail: CampaignDetail, cities: City[]) {
+  private loadExistingCampaign(detail: CampaignDetail, locations: Location[]) {
     this.campaignId.set(detail.id);
     this.isEditMode.set(true);
 
@@ -481,10 +481,10 @@ export class CampaignCreatorComponent implements OnInit, OnDestroy {
       spineColor:  detail.spineColor || '#ffffff',
     }, { emitEvent: false });
 
-    const drafts: CityDraft[] = detail.cities.map(ci => {
-      const libraryCity = cities.find(c => c.id === ci.sourceCityId);
-      const city: City = {
-        id:             ci.sourceCityId,
+    const drafts: LocationDraft[] = detail.locations.map(ci => {
+      const libraryLocation = locations.find(c => c.id === ci.sourceLocationId);
+      const location: Location = {
+        id:             ci.sourceLocationId,
         dmUserId:       '',
         name:           ci.name,
         classification: ci.classification,
@@ -497,16 +497,16 @@ export class CampaignCreatorComponent implements OnInit, OnDestroy {
         vibe:           ci.vibe,
         languages:      ci.languages,
         description:    ci.description,
-        imageUrl:       libraryCity?.imageUrl,
+        imageUrl:       libraryLocation?.imageUrl,
         createdAt:      '',
       };
 
-      const citySecrets: CitySecret[] = detail.secrets
-        .filter(s => s.cityInstanceId === ci.instanceId)
+      const locationSecrets: LocationSecret[] = detail.secrets
+        .filter(s => s.locationInstanceId === ci.instanceId)
         .map(s => ({ id: s.id, content: s.content, editing: false }));
      
       return {
-        city,
+        location,
         instanceId: ci.instanceId,
         condition:  ci.condition,
         geography:  ci.geography,
@@ -514,7 +514,7 @@ export class CampaignCreatorComponent implements OnInit, OnDestroy {
         religion:   ci.religion,
         vibe:       ci.vibe,
         languages:  ci.languages,
-        secrets:    citySecrets,
+        secrets:    locationSecrets,
         keywords:   (ci as any).keywords ?? [],
       };
     });
@@ -526,83 +526,83 @@ export class CampaignCreatorComponent implements OnInit, OnDestroy {
 
     const sublocationCountMap: Record<string, number> = {};
     for (const subLoc of (detail as any).sublocations ?? []) {
-      if (subLoc.cityInstanceId) {
-        sublocationCountMap[subLoc.cityInstanceId] = (sublocationCountMap[subLoc.cityInstanceId] ?? 0) + 1;
+      if (subLoc.locationInstanceId) {
+        sublocationCountMap[subLoc.locationInstanceId] = (sublocationCountMap[subLoc.locationInstanceId] ?? 0) + 1;
       }
     }
     this.campaignSublocationCount.set(sublocationCountMap);
 
     this.selectedDrafts.set(drafts);
     if (drafts.length > 0) this.expandedIdx.set(0);
-    this.syncLiveCityFields();
+    this.syncLiveLocationFields();
   }
 
-  private _autoSaveCity(draft: CityDraft) {
+  private _autoSaveLocation(draft: LocationDraft) {
     const cid = this.campaignId();
     if (!cid) {
-      const body = { ...this.form.value, cityIds: [] };
+      const body = { ...this.form.value, locationIds: [] };
       this.http.post<{ id: string }>(`${environment.apiUrl}/api/campaigns`, body).subscribe({
         next: campaign => {
           this.campaignId.set(campaign.id);
-          this._addCityToBackend(campaign.id, draft.city.id);
+          this._addLocationToBackend(campaign.id, draft.location.id);
         }
       });
     } else {
-      this._addCityToBackend(cid, draft.city.id);
+      this._addLocationToBackend(cid, draft.location.id);
     }
   }
 
-  private _addCityToBackend(campaignId: string, cityId: string) {
+  private _addLocationToBackend(campaignId: string, locationId: string) {
     this.http.post<{ instanceId: string }>(
-      `${environment.apiUrl}/api/campaigns/${campaignId}/cities`,
-      { cityId }
+      `${environment.apiUrl}/api/campaigns/${campaignId}/locations`,
+      { locationId }
     ).subscribe({ next: resp => {
       this.selectedDrafts.update(sel =>
-        sel.map(d => d.city.id === cityId ? { ...d, instanceId: resp.instanceId } : d)
+        sel.map(d => d.location.id === locationId ? { ...d, instanceId: resp.instanceId } : d)
       );
     }});
   }
 
-  private _doRemove(index: number, draft: CityDraft) {
+  private _doRemove(index: number, draft: LocationDraft) {
     this.selectedDrafts.update(sel => sel.filter((_, i) => i !== index));
     const newLen = this.selectedDrafts().length;
     this.expandedIdx.update(i => Math.min(i, newLen - 1));
-    this.syncLiveCityFields();
-    const idx = this.deckCities().findIndex(c => c.id === draft.city.id);
+    this.syncLiveLocationFields();
+    const idx = this.deckLocations().findIndex(c => c.id === draft.location.id);
     if (idx !== -1) this.deckIdx.set(idx);
 
     const cid = this.campaignId();
     if (cid && draft.instanceId) {
-      this.http.delete(`${environment.apiUrl}/api/campaigns/${cid}/cities/${draft.instanceId}`).subscribe();
+      this.http.delete(`${environment.apiUrl}/api/campaigns/${cid}/locations/${draft.instanceId}`).subscribe();
     }
   }
 
-  private _scheduleCityKeywordSave(cityId: string) {
+  private _scheduleLocationKeywordSave(locationId: string) {
     clearTimeout(this.keywordSaveTimer);
     this.keywordSaveTimer = setTimeout(() => {
-      const current = this.selectedDrafts().find(d => d.city.id === cityId);
+      const current = this.selectedDrafts().find(d => d.location.id === locationId);
       const cid = this.campaignId();
       if (!current?.instanceId || !cid) return;
       this.http.patch(
-        `${environment.apiUrl}/api/campaigns/${cid}/cities/${current.instanceId}/keywords`,
+        `${environment.apiUrl}/api/campaigns/${cid}/locations/${current.instanceId}/keywords`,
         { keywords: current.keywords }
       ).subscribe();
     }, 600);
   }
 
-  private _scheduleInstanceSave(cityId: string) {
+  private _scheduleInstanceSave(locationId: string) {
     clearTimeout(this.saveTimer);
     this.saveTimer = setTimeout(() => {
-      const current = this.selectedDrafts().find(d => d.city.id === cityId);
+      const current = this.selectedDrafts().find(d => d.location.id === locationId);
       const cid     = this.campaignId();
       if (!current?.instanceId || !cid) return;
-      this.http.patch(`${environment.apiUrl}/api/campaigns/${cid}/cities/${current.instanceId}`, {
+      this.http.patch(`${environment.apiUrl}/api/campaigns/${cid}/locations/${current.instanceId}`, {
         condition: current.condition,
-        geography: this.liveCityFields['geography'],
-        climate:   this.liveCityFields['climate'],
-        religion:  this.liveCityFields['religion'],
-        vibe:      this.liveCityFields['vibe'],
-        languages: this.liveCityFields['languages'],
+        geography: this.liveLocationFields['geography'],
+        climate:   this.liveLocationFields['climate'],
+        religion:  this.liveLocationFields['religion'],
+        vibe:      this.liveLocationFields['vibe'],
+        languages: this.liveLocationFields['languages'],
       }).subscribe();
     }, 800);
   }

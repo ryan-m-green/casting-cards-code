@@ -6,7 +6,7 @@ namespace CastLibrary.Logic.Queries.Campaign;
 
 public interface IGetPlayerCampaignDetailQueryHandler
 {
-    Task<(CampaignDomain Campaign, List<CampaignCityInstanceDomain> Cities,
+    Task<(CampaignDomain Campaign, List<CampaignLocationInstanceDomain> locations,
         List<CampaignCastInstanceDomain> Casts, List<CampaignSublocationInstanceDomain> Locations,
         List<CampaignSecretDomain> Secrets)>
         HandleAsync(Guid campaignId);
@@ -16,7 +16,7 @@ public class GetPlayerCampaignDetailQueryHandler(
     ICampaignReadRepository campaignRepository,
     ISecretReadRepository secretReadRepository) : IGetPlayerCampaignDetailQueryHandler
 {
-    public async Task<(CampaignDomain Campaign, List<CampaignCityInstanceDomain> Cities,
+    public async Task<(CampaignDomain Campaign, List<CampaignLocationInstanceDomain> locations,
         List<CampaignCastInstanceDomain> Casts, List<CampaignSublocationInstanceDomain> Locations,
         List<CampaignSecretDomain> Secrets)>
         HandleAsync(Guid campaignId)
@@ -24,22 +24,22 @@ public class GetPlayerCampaignDetailQueryHandler(
         var campaign = await campaignRepository.GetByIdAsync(campaignId);
         if (campaign is null) return (null, [], [], [], []);
 
-        var cities = (await campaignRepository.GetCityInstancesByCampaignAsync(campaignId))
+        var locations = (await campaignRepository.GetLocationInstancesByCampaignAsync(campaignId))
                             .Where(c => c.IsVisibleToPlayers)
                             .ToList();
 
-        var visibleCityIds = cities.Select(c => c.InstanceId).ToHashSet();
+        var visibleLocationIds = locations.Select(c => c.InstanceId).ToHashSet();
 
-        var locations = (await campaignRepository.GetSublocationInstancesByCampaignAsync(campaignId))
-                            .Where(l => l.IsVisibleToPlayers && l.CityInstanceId.HasValue && visibleCityIds.Contains(l.CityInstanceId.Value))
+        var sublocations = (await campaignRepository.GetSublocationInstancesByCampaignAsync(campaignId))
+                            .Where(l => l.IsVisibleToPlayers && l.LocationInstanceId.HasValue && visibleLocationIds.Contains(l.LocationInstanceId.Value))
                             .ToList();
 
-        var visibleLocationIds = locations.Select(l => l.InstanceId).ToHashSet();
+        var visibleSublocationIds = sublocations.Select(l => l.InstanceId).ToHashSet();
 
         var casts = (await campaignRepository.GetCastInstancesByCampaignAsync(campaignId))
                             .Where(c => c.IsVisibleToPlayers
-                                && c.CityInstanceId.HasValue && visibleCityIds.Contains(c.CityInstanceId.Value)
-                                && (!c.SublocationInstanceId.HasValue || visibleLocationIds.Contains(c.SublocationInstanceId.Value)))
+                                && c.LocationInstanceId.HasValue && visibleLocationIds.Contains(c.LocationInstanceId.Value)
+                                && (!c.SublocationInstanceId.HasValue || visibleSublocationIds.Contains(c.SublocationInstanceId.Value)))
                             .Select(c => { c.Description = string.Empty; return c; })
                             .ToList();
 
@@ -47,10 +47,14 @@ public class GetPlayerCampaignDetailQueryHandler(
 
         var secrets = (await secretReadRepository.GetByCampaignAsync(campaignId))
                             .Where(s => s.IsRevealed
-                                && ((s.CityInstanceId.HasValue && visibleCityIds.Contains(s.CityInstanceId.Value))
-                                    || (s.CastInstanceId.HasValue && visibleCastIds.Contains(s.CastInstanceId.Value))))
+                                && ((s.LocationInstanceId.HasValue && visibleLocationIds.Contains(s.LocationInstanceId.Value))
+                                    || (s.CastInstanceId.HasValue && visibleCastIds.Contains(s.CastInstanceId.Value))
+                                    || (s.SublocationInstanceId.HasValue && visibleSublocationIds.Contains(s.SublocationInstanceId.Value))))
                             .ToList();
 
-        return (campaign, cities, casts, locations, secrets);
+        return (campaign, locations, casts, sublocations, secrets);
     }
 }
+
+
+

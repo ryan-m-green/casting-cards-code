@@ -9,7 +9,7 @@ public class CampaignEntity
     public string FantasyType { get; set; }
     public string Status { get; set; } = "Active";
     public string SpineColor { get; set; }
-    public int CityCount { get; set; }
+    public int LocationCount { get; set; }
     public int PlayerCount { get; set; }
     public DateTime CreatedAt { get; set; }
 }

@@ -4,9 +4,9 @@
     <!-- ── Top bar ── -->
     <div class="void-topbar">
       <div class="void-breadcrumbs">
-        <button class="void-back" (click)="goToCampaign()">← Cities</button>
+        <button class="void-back" (click)="goToCampaign()">← Locations</button>
         <span class="void-crumb-sep">›</span>
-        <button class="void-back" (click)="goToCity()">← Sublocations</button>
+        <button class="void-back" (click)="goToLocation()">← Sublocations</button>
         <span class="void-crumb-sep">›</span>
         <button class="void-back" (click)="goToSublocation()">← Cast</button>
       </div>
@@ -162,7 +162,7 @@
         [campaignId]="campaignId()"
         [castInstance]="ca"
         [allCasts]="campaign()?.casts ?? []"
-        [allCities]="campaign()?.cities ?? []"
+        [allLocations]="campaign()?.locations ?? []"
         [castSecrets]="castSecrets()"
       />
     </div>

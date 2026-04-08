@@ -9,9 +9,9 @@
       <div class="sv-value">{{ stats().castCount }}</div>
       <div class="sv-label">Cast</div>
     </div>
-    <div class="sv" (click)="goto('/dm/cities')">
-      <div class="sv-value">{{ stats().cityCount }}</div>
-      <div class="sv-label">Cities</div>
+    <div class="sv" (click)="goto('/dm/locations')">
+      <div class="sv-value">{{ stats().locationCount }}</div>
+      <div class="sv-label">Locations</div>
     </div>
     <div class="sv" (click)="goto('/dm/sublocations')">
       <div class="sv-value">{{ stats().sublocationCount }}</div>
@@ -32,14 +32,14 @@
       <div class="wr">
         <div class="flex-1">
           <div class="wbl">{{ stats().activeCampaign!.name }}</div>
-          <div class="wbd">{{ stats().activeCampaign!.playerCount }} players · {{ stats().activeCampaign!.cityCount }} cities</div>
+          <div class="wbd">{{ stats().activeCampaign!.playerCount }} players · {{ stats().activeCampaign!.locationCount }} locations</div>
         </div>
         <span class="list-arrow">›</span>
       </div>
     </div>
     <div class="wr section-label-mb">
       <button class="btn-ghost" (click)="goto('/dm/cast/new')">+ New Cast</button>
-      <button class="btn-ghost" (click)="goto('/dm/cities/new')">+ New City</button>
+      <button class="btn-ghost" (click)="goto('/dm/locations/new')">+ New Location</button>
       <button class="btn-ghost" (click)="goto('/dm/sublocations/new')">+ New Sublocation</button>
       <button class="btn-ghost" (click)="goto('/dm/campaigns/new')">+ New Campaign</button>
     </div>
@@ -102,7 +102,7 @@
     <div class="wb import-result">
       <div class="import-summary">
         {{ importResult()!.castsImported }} cast member{{ importResult()!.castsImported !== 1 ? 's' : '' }} ·
-        {{ importResult()!.citiesImported }} {{ importResult()!.citiesImported === 1 ? 'City' : 'Cities' }} ·
+        {{ importResult()!.locationsImported }} {{ importResult()!.locationsImported === 1 ? 'Location' : 'Locations' }} ·
         {{ importResult()!.sublocationsImported }} Sublocation{{ importResult()!.sublocationsImported !== 1 ? 's' : '' }} imported
       </div>
 

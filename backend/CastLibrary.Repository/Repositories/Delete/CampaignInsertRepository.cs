@@ -10,7 +10,7 @@ public interface ICampaignInsertRepository
 {
     Task<CampaignDomain> InsertAsync(CampaignDomain campaign);
     Task<CampaignCastInstanceDomain> InsertCastInstanceAsync(CampaignCastInstanceDomain instance);
-    Task<CampaignCityInstanceDomain> InsertCityInstanceAsync(CampaignCityInstanceDomain instance);
+    Task<CampaignLocationInstanceDomain> InsertLocationInstanceAsync(CampaignLocationInstanceDomain instance);
     Task<CampaignSublocationInstanceDomain> InsertSublocationInstanceAsync(CampaignSublocationInstanceDomain instance);
     Task<ShopItemDomain> InsertSublocationShopItemAsync(Guid sublocationInstanceId, ShopItemDomain item);
 }
@@ -52,14 +52,14 @@ public class CampaignInsertRepository(
         return campaign;
     }
 
-    public async Task<CampaignCityInstanceDomain> InsertCityInstanceAsync(CampaignCityInstanceDomain instance)
+    public async Task<CampaignLocationInstanceDomain> InsertLocationInstanceAsync(CampaignLocationInstanceDomain instance)
     {
         var spanId = correlation.NewSpan();
         var @params = new
         {
             instance.InstanceId,
             instance.CampaignId,
-            instance.SourceCityId,
+            instance.SourceLocationId,
             instance.Name,
             instance.Classification,
             instance.Size,
@@ -75,21 +75,21 @@ public class CampaignInsertRepository(
             instance.SortOrder,
         };
         const string sql =
-            @"INSERT INTO campaign_city_instances
-                (instance_id, campaign_id, source_city_id, name, classification, size, condition,
+            @"INSERT INTO campaign_location_instances
+                (instance_id, campaign_id, source_location_id, name, classification, size, condition,
                  geography, architecture, climate, religion, vibe, languages, description,
                  is_visible_to_players, sort_order, created_at)
               VALUES
-                (@InstanceId, @CampaignId, @SourceCityId, @Name, @Classification, @Size, @Condition,
+                (@InstanceId, @CampaignId, @SourceLocationId, @Name, @Classification, @Size, @Condition,
                  @Geography, @Architecture, @Climate, @Religion, @Vibe, @Languages, @Description,
                  @IsVisibleToPlayers, @SortOrder, NOW())";
 
-        logging.LogDbOperation(correlation.TraceId, spanId, "INSERT", "campaign_city_instances", @params);
+        logging.LogDbOperation(correlation.TraceId, spanId, "INSERT", "campaign_location_instances", @params);
 
         using var conn = CreateConnection();
         var rows = await conn.ExecuteAsync(sql, @params);
 
-        logging.LogDbOperation(correlation.TraceId, spanId, "INSERT", "campaign_city_instances", @params, rows);
+        logging.LogDbOperation(correlation.TraceId, spanId, "INSERT", "campaign_location_instances", @params, rows);
         return instance;
     }
 
@@ -101,7 +101,7 @@ public class CampaignInsertRepository(
             instance.InstanceId,
             instance.CampaignId,
             instance.SourceCastId,
-            instance.CityInstanceId,
+            instance.LocationInstanceId,
             instance.SublocationInstanceId,
             instance.Name,
             instance.Pronouns,
@@ -118,11 +118,11 @@ public class CampaignInsertRepository(
         };
         const string sql =
             @"INSERT INTO campaign_cast_instances
-                (instance_id, campaign_id, source_cast_id, city_instance_id, sublocation_instance_id,
+                (instance_id, campaign_id, source_cast_id, location_instance_id, sublocation_instance_id,
                  name, pronouns, race, role, age, alignment, posture, speed, voice_placement,
                  description, public_description, is_visible_to_players, created_at)
               VALUES
-                (@InstanceId, @CampaignId, @SourceCastId, @CityInstanceId, @SublocationInstanceId,
+                (@InstanceId, @CampaignId, @SourceCastId, @LocationInstanceId, @SublocationInstanceId,
                  @Name, @Pronouns, @Race, @Role, @Age, @Alignment, @Posture, @Speed,
                  @VoicePlacement::text[], @Description, @PublicDescription, @IsVisibleToPlayers, NOW())";
 
@@ -143,7 +143,7 @@ public class CampaignInsertRepository(
             instance.InstanceId,
             instance.CampaignId,
             instance.SourceSublocationId,
-            instance.CityInstanceId,
+            instance.LocationInstanceId,
             instance.Name,
             instance.Description,
         };
@@ -156,10 +156,10 @@ public class CampaignInsertRepository(
 
         await conn.ExecuteAsync(
             @"INSERT INTO campaign_sublocation_instances
-                (instance_id, campaign_id, source_sublocation_id, city_instance_id,
+                (instance_id, campaign_id, source_sublocation_id, location_instance_id,
                  name, description, created_at)
               VALUES
-                (@InstanceId, @CampaignId, @SourceSublocationId, @CityInstanceId,
+                (@InstanceId, @CampaignId, @SourceSublocationId, @LocationInstanceId,
                  @Name, @Description, NOW())",
             @params, tx);
 
@@ -219,3 +219,7 @@ public class CampaignInsertRepository(
         return item;
     }
 }
+
+
+
+

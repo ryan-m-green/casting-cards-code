@@ -1,0 +1,1145 @@
+@use '../../../../styles/variables' as v;
+
+$accent: #9ab0b8;
+
+// ── ADA district colors (accessible contrast, distinct even grayscale) ─────────
+:host {
+  --district-neutral: rgba(100, 120, 130, 0.35);
+  --district-0: rgba(154, 176, 184, 0.55);   // blue-grey
+  --district-1: rgba(180, 140, 100, 0.55);   // amber
+  --district-2: rgba(130, 170, 130, 0.55);   // sage
+  --district-3: rgba(180, 120, 140, 0.55);   // rose
+  --district-4: rgba(160, 150, 200, 0.55);   // lavender
+}
+
+// ── Screen-reader only ─────────────────────────────────────────────────────────
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+// ── Panel container ────────────────────────────────────────────────────────────
+.political-panel {
+  padding: 0 40px 56px;
+  position: relative;
+  z-index: 1;
+}
+
+.political-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.political-label {
+  font-family: v.$font-header;
+  font-size: 9px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: rgba($accent, 0.62);
+  white-space: nowrap;
+  text-shadow: 0 0 10px rgba($accent, 0.22);
+}
+
+.political-line {
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(to right, rgba($accent, 0.24), transparent);
+}
+
+.political-saving {
+  font-family: v.$font-header;
+  font-size: 7px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba($accent, 0.45);
+  animation: pulse-save 1.2s ease-in-out infinite;
+}
+
+@keyframes pulse-save {
+  0%, 100% { opacity: 0.45; }
+  50%       { opacity: 0.9; }
+}
+
+// ── Tabs ───────────────────────────────────────────────────────────────────────
+.political-tabs {
+  display: flex;
+  gap: 2px;
+  margin-bottom: 24px;
+  border-bottom: 1px solid rgba($accent, 0.18);
+}
+
+.pol-tab {
+  font-family: v.$font-header;
+  font-size: 8px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgba($accent, 0.45);
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  padding: 8px 16px 10px;
+  cursor: pointer;
+  transition: color 0.18s, border-color 0.18s;
+  margin-bottom: -1px;
+
+  &:hover {
+    color: rgba($accent, 0.80);
+  }
+
+  &--active {
+    color: rgba($accent, 0.92);
+    border-bottom-color: rgba($accent, 0.70);
+  }
+
+  &:focus-visible {
+    outline: 2px solid rgba($accent, 0.80);
+    outline-offset: 2px;
+    border-radius: 2px;
+  }
+}
+
+// ── Tab panel ─────────────────────────────────────────────────────────────────
+.pol-tab-panel {
+  animation: fade-in 0.18s ease;
+}
+
+@keyframes fade-in {
+  from { opacity: 0; transform: translateY(4px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+// ── Sections ──────────────────────────────────────────────────────────────────
+.pol-section {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 4px 0 8px;
+}
+
+.pol-section-label {
+  font-family: v.$font-header;
+  font-size: 7px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: rgba($accent, 0.55);
+}
+
+.pol-section-line {
+  height: 1px;
+  background: linear-gradient(to right, rgba($accent, 0.22), transparent);
+}
+
+.pol-divider {
+  height: 1px;
+  background: rgba($accent, 0.08);
+  margin: 12px 0;
+}
+
+.pol-hint {
+  font-family: v.$font-body;
+  font-size: 13px;
+  color: rgba($accent, 0.38);
+  font-style: italic;
+  margin: 0;
+}
+
+.pol-empty {
+  font-family: v.$font-body;
+  font-size: 14px;
+  color: rgba($accent, 0.40);
+  font-style: italic;
+  text-align: center;
+  padding: 40px 0;
+}
+
+// ── Custom dropdowns (matches player-cast-notes pattern) ───────────────────────
+.notes-dropdown {
+  position: relative;
+  width: 100%;
+}
+
+.notes-dropdown-trigger {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  background: rgba(14, 24, 32, 0.80);
+  border: 1px solid rgba($accent, 0.22);
+  border-radius: 3px;
+  color: rgba(200, 225, 235, 0.82);
+  font-family: v.$font-body;
+  font-size: 13px;
+  padding: 4px 8px;
+  cursor: pointer;
+  text-align: left;
+  transition: border-color 0.15s;
+
+  &:hover { border-color: rgba($accent, 0.45); }
+
+  &:focus-visible {
+    outline: 2px solid rgba($accent, 0.60);
+    outline-offset: 1px;
+  }
+}
+
+.notes-dropdown-placeholder {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.notes-dropdown-caret {
+  font-size: 9px;
+  opacity: 0.50;
+  transition: transform 0.15s;
+  margin-left: 4px;
+  flex-shrink: 0;
+
+  &--open { transform: rotate(180deg); }
+}
+
+.notes-dropdown-panel {
+  position: absolute;
+  top: calc(100% + 2px);
+  left: 0;
+  right: 0;
+  background: #0c1820;
+  border: 1px solid rgba($accent, 0.28);
+  border-radius: 3px;
+  z-index: 50;
+  max-height: 200px;
+  overflow-y: auto;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.55);
+}
+
+.notes-dropdown-item {
+  font-family: v.$font-body;
+  font-size: 13px;
+  color: rgba(200, 225, 235, 0.78);
+  padding: 6px 10px;
+  cursor: pointer;
+  transition: background 0.12s, color 0.12s;
+
+  &:hover {
+    background: rgba($accent, 0.10);
+    color: rgba($accent, 0.90);
+  }
+
+  &--selected {
+    background: rgba($accent, 0.08);
+    color: rgba($accent, 0.85);
+  }
+}
+
+.notes-dropdown-empty {
+  font-family: v.$font-header;
+  font-size: 7px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba($accent, 0.25);
+  padding: 12px;
+  text-align: center;
+}
+
+// ── Influence slider ────────────────────────────────────────────────────────────
+.influence-slider-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.influence-slider {
+  width: 100%;
+  accent-color: rgba($accent, 0.80);
+  cursor: pointer;
+
+  &.slider-low  { accent-color: rgba(120, 200, 120, 0.80); }
+  &.slider-mid  { accent-color: rgba($accent, 0.80); }
+  &.slider-high { accent-color: rgba(220, 130, 80, 0.80); }
+
+  &:focus-visible {
+    outline: 2px solid rgba($accent, 0.70);
+    outline-offset: 2px;
+    border-radius: 2px;
+  }
+}
+
+.influence-slider-labels {
+  display: flex;
+  justify-content: space-between;
+  font-family: v.$font-header;
+  font-size: 6px;
+  letter-spacing: 0.10em;
+  color: rgba($accent, 0.35);
+}
+
+.influence-label-center {
+  font-weight: 600;
+  color: rgba($accent, 0.65);
+  text-align: center;
+}
+
+// ── Shared controls ────────────────────────────────────────────────────────────
+.pol-input {
+  background: rgba(14, 24, 32, 0.80);
+  border: 1px solid rgba($accent, 0.22);
+  border-radius: 3px;
+  color: rgba(200, 225, 235, 0.82);
+  font-family: v.$font-body;
+  font-size: 13px;
+  padding: 4px 8px;
+  width: 100%;
+
+  &::placeholder { color: rgba($accent, 0.30); }
+
+  &:focus {
+    outline: 2px solid rgba($accent, 0.60);
+    outline-offset: 1px;
+    border-color: rgba($accent, 0.50);
+  }
+
+  &--notes { min-width: 80px; }
+}
+
+
+.pol-checkbox {
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
+  accent-color: rgba($accent, 0.80);
+
+  &:focus-visible {
+    outline: 2px solid rgba($accent, 0.80);
+    outline-offset: 2px;
+  }
+}
+
+.pol-remove {
+  background: none;
+  border: none;
+  color: rgba($accent, 0.35);
+  font-size: 16px;
+  cursor: pointer;
+  padding: 0 4px;
+  line-height: 1;
+  transition: color 0.15s;
+  flex-shrink: 0;
+
+  &:hover { color: rgba(220, 80, 80, 0.80); }
+
+  &:focus-visible {
+    outline: 2px solid rgba($accent, 0.70);
+    outline-offset: 2px;
+    border-radius: 2px;
+  }
+}
+
+.pol-add-btn {
+  align-self: flex-start;
+  font-family: v.$font-header;
+  font-size: 7px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: rgba($accent, 0.55);
+  background: none;
+  border: 1px solid rgba($accent, 0.20);
+  border-radius: 3px;
+  padding: 5px 12px;
+  cursor: pointer;
+  transition: color 0.15s, border-color 0.15s;
+
+  &:hover {
+    color: rgba($accent, 0.90);
+    border-color: rgba($accent, 0.50);
+  }
+
+  &:focus-visible {
+    outline: 2px solid rgba($accent, 0.70);
+    outline-offset: 2px;
+  }
+
+  &--inline { padding: 4px 10px; }
+}
+
+.pol-textarea {
+  background: rgba(14, 24, 32, 0.80);
+  border: 1px solid rgba($accent, 0.22);
+  border-radius: 4px;
+  color: rgba(200, 225, 235, 0.82);
+  font-family: v.$font-body;
+  font-size: 13px;
+  line-height: 1.6;
+  padding: 10px 12px;
+  resize: vertical;
+  width: 100%;
+  box-sizing: border-box;
+
+  &::placeholder { color: rgba($accent, 0.30); }
+
+  &:focus {
+    outline: 2px solid rgba($accent, 0.60);
+    outline-offset: 1px;
+    border-color: rgba($accent, 0.50);
+  }
+}
+
+
+// ── Factions table ─────────────────────────────────────────────────────────────
+.factions-table,
+.rels-table,
+.roles-table {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.factions-thead,
+.rels-thead,
+.roles-thead {
+  display: grid;
+  gap: 8px;
+  padding: 0 2px;
+
+  span {
+    font-family: v.$font-header;
+    font-size: 6px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: rgba($accent, 0.40);
+  }
+}
+
+.factions-thead { grid-template-columns: 1fr 120px 180px 24px 24px; }
+.factions-row   { display: grid; grid-template-columns: 1fr 120px 180px 24px 24px; gap: 8px; align-items: center; }
+
+.rels-thead { grid-template-columns: 1fr 100px 1fr 140px 1fr 24px; }
+.rels-row   { display: grid; grid-template-columns: 1fr 100px 1fr 140px 1fr 24px; gap: 8px; align-items: center; }
+
+.roles-thead { grid-template-columns: 1fr 1fr 90px 100px 24px; }
+.roles-row   { display: grid; grid-template-columns: 1fr 1fr 90px 100px 24px; gap: 8px; align-items: center; }
+
+.roles-cast-name {
+  font-family: v.$font-body;
+  font-size: 13px;
+  color: rgba(200, 225, 235, 0.82);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.pol-npc-add {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+// ── Faction Web ────────────────────────────────────────────────────────────────
+.web-container {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.web-svg {
+  width: 100%;
+  max-width: 420px;
+  height: auto;
+  background: rgba(8, 16, 22, 0.60);
+  border: 1px solid rgba($accent, 0.16);
+  border-radius: 6px;
+}
+
+.web-edge {
+  fill: none;
+  stroke-linecap: round;
+
+  &.edge--allied    { stroke: rgba(120, 200, 120, 0.80); stroke-dasharray: none; }
+  &.edge--rival     { stroke: rgba(220, 130, 80, 0.80);  stroke-dasharray: 6 3; }
+  &.edge--enemy     { stroke: rgba(210, 70, 70, 0.80);   stroke-dasharray: 2 4; }
+  &.edge--neutral   { stroke: rgba($accent, 0.40);       stroke-dasharray: none; }
+  &.edge--blackmail { stroke: rgba(180, 80, 180, 0.80);  stroke-dasharray: 8 3 2 3; }
+  &.edge--patronage { stroke: rgba(200, 190, 100, 0.80); stroke-dasharray: none; stroke-width: 3; }
+}
+
+.web-node-circle {
+  fill: rgba(14, 24, 32, 0.90);
+  stroke: rgba($accent, 0.60);
+  stroke-width: 1.5;
+  transition: stroke 0.2s;
+}
+
+.web-node--hidden .web-node-circle {
+  stroke: rgba($accent, 0.28);
+  stroke-dasharray: 4 3;
+  fill: rgba(14, 24, 32, 0.60);
+}
+
+.web-node-label {
+  font-family: v.$font-header;
+  font-size: 9px;
+  fill: rgba(200, 225, 235, 0.72);
+  letter-spacing: 0.08em;
+}
+
+.web-node-hidden-icon {
+  font-family: v.$font-header;
+  font-size: 11px;
+  fill: rgba($accent, 0.50);
+  font-weight: bold;
+}
+
+.arrow {
+  &--allied    { fill: rgba(120, 200, 120, 0.80); }
+  &--rival     { fill: rgba(220, 130, 80, 0.80); }
+  &--enemy     { fill: rgba(210, 70, 70, 0.80); }
+  &--blackmail { fill: rgba(180, 80, 180, 0.80); }
+}
+
+.web-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px 24px;
+  padding: 12px 0 4px;
+  border-top: 1px solid rgba($accent, 0.12);
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: v.$font-body;
+  font-size: 12px;
+  color: rgba(185, 210, 220, 0.65);
+}
+
+.legend-swatch {
+  width: 32px;
+  height: 16px;
+  flex-shrink: 0;
+}
+
+// ── Control Map ────────────────────────────────────────────────────────────────
+.district-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.district-cell {
+  position: relative;
+  background: var(--district-color, var(--district-neutral));
+  border: 2px solid rgba($accent, 0.30);
+  border-radius: 4px;
+  padding: 14px 12px;
+  cursor: default;
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  min-height: 72px;
+  transition: border-color 0.18s;
+
+  // Pattern overlays (SVG patterns via CSS mask is complex; use pseudo + inline SVG patterns)
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 3px;
+    pointer-events: none;
+  }
+
+  &.pattern-diagonal::before { background: repeating-linear-gradient(45deg, currentColor 0, currentColor 1px, transparent 0, transparent 50%) 0/8px 8px; color: rgba($accent, 0.22); }
+  &.pattern-dots::before     { background: radial-gradient(circle, rgba($accent, 0.30) 1.5px, transparent 1.5px) 0/8px 8px; }
+  &.pattern-lines::before    { background: repeating-linear-gradient(0deg, currentColor 0, currentColor 1px, transparent 0, transparent 50%) 0/8px 8px; color: rgba($accent, 0.18); }
+  &.pattern-solid::before    { background: rgba($accent, 0.08); }
+  &.pattern-cross::before    { background: repeating-linear-gradient(0deg, rgba($accent, 0.15) 0, rgba($accent, 0.15) 1px, transparent 0, transparent 50%) 0/8px 8px,
+                                             repeating-linear-gradient(90deg, rgba($accent, 0.15) 0, rgba($accent, 0.15) 1px, transparent 0, transparent 50%) 0/8px 8px; }
+
+  &::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 3px;
+    background: rgba(8, 16, 22, 0.65);
+    z-index: 0;
+    pointer-events: none;
+  }
+
+  &.district-hidden {
+    opacity: 0.25;
+  }
+
+  &:focus-visible {
+    outline: 3px solid rgba(255, 255, 255, 0.90);
+    outline-offset: 2px;
+  }
+}
+
+.glow--light {
+  box-shadow:
+    0 0  4px  1px rgba(255, 255, 255, 0.20),
+    0 0  8px  2px rgba(255, 255, 255, 0.12),
+    0 0 14px  4px rgba(255, 255, 255, 0.06);
+}
+
+.glow--medium {
+  box-shadow:
+    0 0  4px  1px rgba(255, 255, 255, 0.40),
+    0 0 10px  3px rgba(255, 255, 255, 0.22),
+    0 0 20px  6px rgba(255, 255, 255, 0.12),
+    0 0 30px  8px rgba(255, 255, 255, 0.06);
+}
+
+.glow--heavy {
+  box-shadow:
+    0 0  4px  1px rgba(255, 255, 255, 0.70),
+    0 0 10px  3px rgba(255, 255, 255, 0.40),
+    0 0 22px  7px rgba(255, 255, 255, 0.24),
+    0 0 36px 10px rgba(255, 255, 255, 0.12);
+}
+
+.district-name {
+  position: relative;
+  font-family: v.$font-header;
+  font-size: 9px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(200, 225, 235, 0.90);
+  font-weight: 600;
+  z-index: 1;
+}
+
+.district-type {
+  position: relative;
+  font-family: v.$font-body;
+  font-size: 11px;
+  color: rgba(185, 210, 220, 0.60);
+  z-index: 1;
+}
+
+.district-inf {
+  position: relative;
+  font-family: v.$font-header;
+  font-size: 8px;
+  letter-spacing: 0.10em;
+  color: rgba($accent, 0.55);
+  z-index: 1;
+}
+
+.district-hidden-badge {
+  position: absolute;
+  top: 6px;
+  right: 8px;
+  font-family: v.$font-header;
+  font-size: 11px;
+  font-weight: bold;
+  color: rgba($accent, 0.55);
+  z-index: 1;
+}
+
+.map-legend-influence {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding-top: 12px;
+  border-top: 1px solid rgba($accent, 0.12);
+}
+
+.map-legend-influence-title {
+  font-family: v.$font-header;
+  font-size: 7px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: rgba($accent, 0.55);
+}
+
+.map-legend-influence-items {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 24px;
+}
+
+.map-legend-influence-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.map-legend-influence-label {
+  font-family: v.$font-body;
+  font-size: 12px;
+  color: rgba(185, 210, 220, 0.65);
+}
+
+.map-legend-influence-swatch {
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  border: 2px solid rgba($accent, 0.30);
+  border-radius: 4px;
+  background: var(--district-neutral);
+  flex-shrink: 0;
+
+  &--hidden {
+    opacity: 0.25;
+  }
+}
+
+// ── Social Compass ─────────────────────────────────────────────────────────────
+
+:host {
+  --compass-hostile: rgba(210,  70,  70, 0.85);
+  --compass-amber:   rgba(220, 150,  60, 0.85);
+  --compass-grey:    rgba(140, 160, 170, 0.75);
+  --compass-sage:    rgba(120, 180, 140, 0.85);
+  --compass-devoted: rgba( 80, 190, 110, 0.90);
+}
+
+.compass-container {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  align-items: center;
+}
+
+.compass-svg {
+  width: 100%;
+  max-width: 480px;
+  height: auto;
+  background: rgba(8, 16, 22, 0.60);
+  border: 1px solid rgba($accent, 0.16);
+  border-radius: 6px;
+}
+
+// ── Compass background ─────────────────────────────────────────────────────────
+.compass-bg {
+  fill: rgba(12, 20, 28, 0.70);
+  stroke: none;
+}
+
+// ── Band fills ─────────────────────────────────────────────────────────────────
+.compass-band {
+  stroke: none;
+
+  &--hostile { fill: rgba(200, 50, 50, 0.09); }
+  &--devoted { fill: rgba(70, 170, 90, 0.09); }
+}
+
+// ── True Neutral ring ──────────────────────────────────────────────────────────
+.compass-tn-ring {
+  fill: rgba(154, 176, 184, 0.08);
+  stroke: none;
+}
+
+// ── Ring boundaries ────────────────────────────────────────────────────────────
+.compass-ring {
+  fill: none;
+  stroke-linecap: round;
+
+  &--outer { stroke: rgba($accent, 0.50); stroke-width: 1.5; }
+  &--mid   { stroke: rgba($accent, 0.22); stroke-width: 1; stroke-dasharray: 4 4; }
+  &--tn    { stroke: rgba($accent, 0.35); stroke-width: 1; }
+  &--value { stroke: rgba($accent, 0.12); stroke-width: 0.75; }
+}
+
+// ── Ring labels ────────────────────────────────────────────────────────────────
+.compass-ring-label {
+  font-family: v.$font-header;
+  font-size: 7px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  fill: rgba(180, 210, 220, 0.28);
+  pointer-events: none;
+}
+
+// ── Slice dividers ─────────────────────────────────────────────────────────────
+.compass-slice-line {
+  stroke: rgba($accent, 0.18);
+  stroke-width: 1;
+  stroke-dasharray: 3 5;
+}
+
+// ── Section labels ─────────────────────────────────────────────────────────────
+.compass-section-label {
+  font-family: v.$font-header;
+  font-size: 9px;
+  letter-spacing: 0.20em;
+  text-transform: uppercase;
+
+  &--good    { fill: rgba(120, 200, 130, 0.70); }
+  &--evil    { fill: rgba(210,  70,  70, 0.65); }
+  &--neutral { fill: rgba($accent, 0.50); }
+}
+
+// ── Alignment icons ────────────────────────────────────────────────────────────
+.compass-icon {
+  font-size: 13px;
+  fill: rgba(200, 225, 235, 0.55);
+  dominant-baseline: middle;
+}
+
+.compass-tn-icon {
+  font-size: 11px;
+  fill: rgba($accent, 0.50);
+  dominant-baseline: middle;
+}
+
+// ── Party center ───────────────────────────────────────────────────────────────
+.compass-center {
+  fill: rgba(12, 20, 28, 0.90);
+  stroke: rgba($accent, 0.65);
+  stroke-width: 1.5;
+}
+
+.compass-center-label {
+  font-family: v.$font-header;
+  font-size: 7px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  fill: rgba($accent, 0.70);
+  dominant-baseline: middle;
+}
+
+// ── Cast nodes ─────────────────────────────────────────────────────────────────
+.compass-node {
+  outline: none;
+
+  &:focus-visible .compass-node-circle {
+    stroke: rgba(255, 255, 255, 0.80);
+    stroke-width: 2;
+  }
+}
+
+.compass-node-circle {
+  stroke: rgba(0, 0, 0, 0.45);
+  stroke-width: 1.5;
+  transition: opacity 0.18s, stroke-width 0.12s;
+
+  &--selected {
+    stroke-width: 0;
+  }
+}
+
+.compass-node--unassessed .compass-node-circle {
+  stroke: rgba($accent, 0.45);
+  stroke-dasharray: 4 3;
+  stroke-width: 1.5;
+  fill-opacity: 0.70;
+}
+
+.compass-node-code {
+  font-family: v.$font-header;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  fill: rgba(255, 255, 255, 0.90);
+  pointer-events: none;
+}
+
+.compass-node-label {
+  font-family: v.$font-header;
+  font-size: 7px;
+  letter-spacing: 0.08em;
+  fill: rgba(200, 225, 235, 0.65);
+  pointer-events: none;
+}
+
+// ── Compass edges (reuse web-edge styles; just set default width) ──────────────
+.compass-edge {
+  stroke-width: 1.5;
+}
+
+// ── Unassessed notice ──────────────────────────────────────────────────────────
+.compass-unassessed-notice {
+  font-family: v.$font-body;
+  font-size: 12px;
+  color: rgba($accent, 0.45);
+  font-style: italic;
+  text-align: center;
+  margin: 0;
+}
+
+// ── Compass legend ─────────────────────────────────────────────────────────────
+.compass-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px 40px;
+  justify-content: center;
+  padding: 12px 0 4px;
+  border-top: 1px solid rgba($accent, 0.12);
+  width: 100%;
+}
+
+.compass-legend-section {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.compass-legend-title {
+  font-family: v.$font-header;
+  font-size: 7px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgba($accent, 0.45);
+}
+
+.compass-legend-items {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 16px;
+}
+
+.compass-legend-dot {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  border: 1px solid rgba(0, 0, 0, 0.30);
+
+  &--nr { width:  9px; height:  9px; }   // unrated neutral
+  &--sm { width:  7px; height:  7px; }   // 1 star
+  &--md { width: 14px; height: 14px; }   // 2 stars
+  &--lg { width: 21px; height: 21px; }   // 3 stars
+}
+
+// ── Cast card popout ───────────────────────────────────────────────────────────
+
+// Backdrop
+.cast-card-backdrop {
+  position: fixed;
+  inset: 0;
+  background: transparent;
+  z-index: 200;
+}
+
+// Card panel
+.cast-card-popout {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(0.88);
+  z-index: 201;
+  opacity: 0;
+  transition: none;
+  background: rgba(10, 18, 26, 0.96);
+  border: 1px solid rgba($accent, 0.22);
+  border-radius: 6px;
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.70);
+  width: 260px;
+  max-height: 90vh;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+
+  &--open {
+    animation: card-in 0.20s ease forwards;
+    animation-delay: 0.14s;
+  }
+
+  &--closing {
+    animation: card-out 0.18s ease forwards;
+  }
+}
+
+.cast-card-popout-image-wrap {
+  position: relative;
+  width: 100%;
+  height: 180px;
+  overflow: hidden;
+  border-radius: 5px 5px 0 0;
+  flex-shrink: 0;
+}
+
+.cast-card-popout-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.cast-card-popout-placeholder {
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(160deg, #c8b07a, #e0c98a, #c4a86a);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.cast-card-popout-initial {
+  font-family: v.$font-header;
+  font-size: 56px;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.55);
+  line-height: 1;
+}
+
+.cast-card-popout-desc-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(4, 8, 14, 0.88) 0%, transparent 55%);
+  display: flex;
+  align-items: flex-end;
+  padding: 10px 12px;
+}
+
+.cast-card-popout-desc {
+  font-family: v.$font-body;
+  font-size: 12px;
+  line-height: 1.45;
+  color: rgba(220, 235, 240, 0.82);
+  font-style: italic;
+  margin: 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.cast-card-popout-header {
+  padding: 10px 14px 8px;
+  border-bottom: 1px solid rgba($accent, 0.12);
+}
+
+.cast-card-popout-name {
+  font-family: v.$font-header;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  color: rgba(220, 235, 240, 0.92);
+}
+
+.cast-card-popout-role {
+  font-family: v.$font-body;
+  font-size: 13px;
+  color: rgba($accent, 0.65);
+  margin-top: 2px;
+}
+
+@keyframes card-in {
+  from { opacity: 0; transform: translate(-50%, -50%) scale(0.88); }
+  to   { opacity: 1; transform: translate(-50%, -50%) scale(1);    }
+}
+
+@keyframes card-out {
+  from { opacity: 1; transform: translate(-50%, -50%) scale(1);    }
+  to   { opacity: 0; transform: translate(-50%, -50%) scale(0.88); }
+}
+
+.cast-card-popout-details {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 14px 16px 16px;
+}
+
+.cast-card-popout-row {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.cast-card-popout-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: v.$font-header;
+  font-size: 7px;
+  letter-spacing: 0.20em;
+  text-transform: uppercase;
+  color: rgba($accent, 0.55);
+  white-space: nowrap;
+}
+
+.cast-card-popout-rule {
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(to right, rgba($accent, 0.22), transparent);
+  display: inline-block;
+}
+
+.cast-card-popout-value {
+  font-family: v.$font-body;
+  font-size: 14px;
+  color: rgba(200, 225, 235, 0.82);
+}
+
+.cast-card-popout-notes {
+  font-family: v.$font-body;
+  font-size: 13px;
+  line-height: 1.5;
+  color: rgba(185, 210, 220, 0.70);
+  font-style: italic;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.cast-card-popout-close {
+  position: absolute;
+  top: 6px;
+  right: 8px;
+  z-index: 1;
+  background: none;
+  border: none;
+  color: rgba(200, 225, 235, 0.55);
+  font-size: 20px;
+  line-height: 1;
+  cursor: pointer;
+  z-index: 1;
+  padding: 2px 4px;
+  transition: color 0.15s;
+
+  &:hover { color: rgba(200, 225, 235, 0.95); }
+
+  &:focus-visible {
+    outline: 2px solid rgba($accent, 0.70);
+    outline-offset: 2px;
+    border-radius: 2px;
+  }
+}
+
+// Sparks
+.cast-spark {
+  position: fixed;
+  left: var(--spark-x);
+  top:  var(--spark-y);
+  width: 3px;
+  height: 13px;
+  border-radius: 99px;
+  background: var(--spark-color, #{$accent});
+  box-shadow: 0 0 4px 1px var(--spark-color, #{$accent});
+  transform-origin: 50% 100%;
+  z-index: 202;
+  pointer-events: none;
+  animation: spark-burst 0.36s cubic-bezier(0.22, 0.61, 0.36, 1) forwards;
+
+  &--closing {
+    animation: spark-implode 0.36s cubic-bezier(0.64, 0, 0.78, 0) forwards;
+  }
+}
+
+@keyframes spark-burst {
+  0%   { transform: rotate(var(--spark-angle)) translateY(0)      scaleY(1);    opacity: 1; }
+  55%  { opacity: 0.85; }
+  100% { transform: rotate(var(--spark-angle)) translateY(-88px)  scaleY(0.5);  opacity: 0; }
+}
+
+@keyframes spark-implode {
+  0%   { transform: rotate(var(--spark-angle)) translateY(-88px)  scaleY(0.5);  opacity: 0; }
+  45%  { opacity: 0.85; }
+  100% { transform: rotate(var(--spark-angle)) translateY(0)      scaleY(1);    opacity: 0; }
+}

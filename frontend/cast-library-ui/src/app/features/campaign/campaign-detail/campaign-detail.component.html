@@ -18,40 +18,40 @@
       />
     </div>
 
-    @if (isDm() && camp.cities.length) {
-      <div class="city-cards-section">
-        <div class="city-cards-label">Cities</div>
-        <div class="city-cards-container">
-          @for (city of camp.cities; track city.instanceId) {
-            <div class="pc-card pc-card-city" (click)="goToCityDetail(city.instanceId)" style="cursor:pointer">
+    @if (isDm() && camp.locations.length) {
+      <div class="location-cards-section">
+        <div class="location-cards-label">Locations</div>
+        <div class="location-cards-container">
+          @for (location of camp.locations; track location.instanceId) {
+            <div class="pc-card pc-card-location" (click)="goToLocationDetail(location.instanceId)" style="cursor:pointer">
               <div class="lib-card-front">
               <div class="card-slot-front">
                 <div class="card-front-header">
-                  <div class="card-name">{{ city.name }}</div>
-                  <div class="card-descriptor">{{ city.classification }}</div>
+                  <div class="card-name">{{ location.name }}</div>
+                  <div class="card-descriptor">{{ location.classification }}</div>
                 </div>
                 <div class="dv dv-card"></div>
                 <div class="card-image-area">
-                  @if (city.imageUrl) {
-                    <img [src]="city.imageUrl" alt="" class="card-img-fill" />
+                  @if (location.imageUrl) {
+                    <img [src]="location.imageUrl" alt="" class="card-img-fill" />
                   } @else {
                     <div class="card-placeholder">
-                      <span class="card-initial">{{ initial(city.name) }}</span>
+                      <span class="card-initial">{{ initial(location.name) }}</span>
                     </div>
                   }
-                  @if (city.description) {
+                  @if (location.description) {
                     <div class="card-desc-overlay">
-                      <p class="card-desc-text">{{ city.description }}</p>
+                      <p class="card-desc-text">{{ location.description }}</p>
                     </div>
                   }
                 </div>
                 <button
-                  class="city-lock-btn"
-                  [class.city-lock-btn--visible]="city.isVisibleToPlayers"
-                  (click)="toggleCityVisibility(city); $event.stopPropagation()"
-                  [title]="city.isVisibleToPlayers ? 'Hide from players' : 'Reveal to players'"
+                  class="location-lock-btn"
+                  [class.location-lock-btn--visible]="location.isVisibleToPlayers"
+                  (click)="toggleLocationVisibility(location); $event.stopPropagation()"
+                  [title]="location.isVisibleToPlayers ? 'Hide from players' : 'Reveal to players'"
                 >
-                  {{ city.isVisibleToPlayers ? '🔓' : '🔒' }}
+                  {{ location.isVisibleToPlayers ? '🔓' : '🔒' }}
                 </button>
               </div>
               </div>

@@ -68,11 +68,11 @@ export class CampaignCastDetailComponent implements OnInit, OnDestroy {
     return c.sublocations.find((l: CampaignSublocationInstance) => l.instanceId === this.sublocationInstanceId()) ?? null;
   });
 
-  parentCity = computed(() => {
+  parentLocation = computed(() => {
     const c   = this.campaign();
     const subLoc = this.parentSublocation();
     if (!c || !subLoc) return null;
-    return c.cities.find(ci => ci.instanceId === subLoc.cityInstanceId) ?? null;
+    return c.locations.find(ci => ci.instanceId === subLoc.locationInstanceId) ?? null;
   });
 
   castSecrets = computed<CampaignSecret[]>(() => {
@@ -265,10 +265,10 @@ export class CampaignCastDetailComponent implements OnInit, OnDestroy {
     this.router.navigate(['/campaign', this.campaignId()]);
   }
 
-  goToCity() {
-    const city = this.parentCity();
-    if (city) {
-      this.router.navigate(['/campaign', this.campaignId(), 'cities', city.instanceId]);
+  goToLocation() {
+    const location = this.parentLocation();
+    if (location) {
+      this.router.navigate(['/campaign', this.campaignId(), 'locations', location.instanceId]);
     }
   }
 

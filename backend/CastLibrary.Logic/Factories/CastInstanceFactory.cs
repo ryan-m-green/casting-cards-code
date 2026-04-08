@@ -3,16 +3,16 @@ namespace CastLibrary.Logic.Factories;
 
 public interface ICastInstanceFactory
 {
-    CampaignCastInstanceDomain Create(CastDomain source, Guid campaignId, Guid? cityInstanceId, Guid sublocationInstanceId);
+    CampaignCastInstanceDomain Create(CastDomain source, Guid campaignId, Guid? LocationInstanceId, Guid sublocationInstanceId);
 }
 public class CastInstanceFactory : ICastInstanceFactory
 {
-    public CampaignCastInstanceDomain Create(CastDomain source, Guid campaignId, Guid? cityInstanceId, Guid sublocationInstanceId) => new()
+    public CampaignCastInstanceDomain Create(CastDomain source, Guid campaignId, Guid? LocationInstanceId, Guid sublocationInstanceId) => new()
     {
         InstanceId = Guid.NewGuid(),
         CampaignId = campaignId,
         SourceCastId = source.Id,
-        CityInstanceId = cityInstanceId,
+        LocationInstanceId = LocationInstanceId,
         SublocationInstanceId = sublocationInstanceId,
         Name = source.Name,
         Pronouns = source.Pronouns,
@@ -28,3 +28,4 @@ public class CastInstanceFactory : ICastInstanceFactory
         IsVisibleToPlayers = false,
     };
 }
+

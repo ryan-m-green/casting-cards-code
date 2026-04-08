@@ -6,7 +6,13 @@ export class PortalTransitionService {
   readonly instant  = signal(false);
   originRect: DOMRect | null = null;
   ghostTemplate: HTMLElement | null = null;
-  spineColor: string = '#6e28d0';
+
+  get spineColor(): string {
+    return sessionStorage.getItem('portalSpineColor') ?? '#6e28d0';
+  }
+  set spineColor(value: string) {
+    sessionStorage.setItem('portalSpineColor', value);
+  }
 
   show()        { this.active.set(true); }
   hide()        { this.instant.set(false); this.active.set(false); }
@@ -21,16 +27,11 @@ export class PortalTransitionService {
     setTimeout(() => {
       navigate();
 
-      if (!template) {
-        this.hide();
-        return;
-      }
-
-      const ghost = template.cloneNode(true) as HTMLElement;
+      const ghost = template?.cloneNode(true) as HTMLElement | null;
       const vw    = window.innerWidth;
       const vh    = window.innerHeight;
 
-      if (originRect) {
+      if (originRect && ghost) {
         const ghostW = originRect.width  || 170;
         const ghostH = originRect.height || 240;
 

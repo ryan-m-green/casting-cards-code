@@ -1,7 +1,7 @@
-﻿using CastLibrary.Logic.Commands.Library;
+using CastLibrary.Logic.Commands.Library;
 using CastLibrary.Logic.Queries.Campaign;
 using CastLibrary.Logic.Queries.Cast;
-using CastLibrary.Logic.Queries.City;
+using CastLibrary.Logic.Queries.Location;
 using CastLibrary.Logic.Queries.Library;
 using CastLibrary.Logic.Queries.Sublocation;
 using CastLibrary.Shared.Requests;
@@ -22,8 +22,8 @@ namespace CastLibrary.WebHost.Controllers;
 [Authorize]
 public class DashboardController(
     IGetCampaignLibraryQueryHandler getCampaignLibraryQuery,
-    IGetCityLibraryQueryHandler getCityLibraryQuery,
-    IGetSublocationLibraryQueryHandler getLocationLibraryQuery,
+    IGetLocationLibraryQueryHandler getLocationLibraryQuery,
+    IGetSublocationLibraryQueryHandler getSublocationLibraryQuery,
     IGetCastLibraryQueryHandler getCastLibraryQuery,
     IImportLibraryCommandHandler importLibraryCommand,
     IExportLibraryQueryHandler exportLibraryQuery,
@@ -42,16 +42,16 @@ public class DashboardController(
     {
         var userId = userRetriever.GetUserId(User);
         var campaigns = await getCampaignLibraryQuery.HandleAsync(userId);
-        var cities = await getCityLibraryQuery.HandleAsync(userId);
         var locations = await getLocationLibraryQuery.HandleAsync(userId);
+        var sublocations = await getSublocationLibraryQuery.HandleAsync(userId);
         var casts = await getCastLibraryQuery.HandleAsync(userId);
         var active = campaigns.FirstOrDefault(c => c.Status == Shared.Enums.CampaignStatus.Active);
 
         var response = new DashboardStatsResponse
         {
             CampaignCount = campaigns.Count,
-            CityCount = cities.Count,
-            SublocationCount = locations.Count,
+            LocationCount = locations.Count,
+            SublocationCount = sublocations.Count,
             CastCount = casts.Count,
             ActiveCampaign = active is null ? null : campaignMapper.ToListResponse(active),
         };
@@ -86,24 +86,24 @@ public class DashboardController(
                     ImageFileName = "cast_aldric_vane.png",
                 },
             ],
-            Cities =
-            [
-                new CityCard
-                {
-                    Name = "Ironhaven",
-                    Classification = "City",
-                    Size = "Large",
-                    Condition = "Weathered",
-                    Geography = "Coastal",
-                    Architecture = "Gothic",
-                    Climate = "Temperate",
-                    Religion = "The Old Gods",
-                    Vibe = "Gritty",
-                    Languages = "Common, Dwarvish",
-                    Description = "A port city known for its iron trade.",
-                    ImageFileName = "city_ironhaven.png",
-                },
-            ],
+            Locations =
+             [
+                 new LocationCard
+                 {
+                     Name = "Ironhaven",
+                     Classification = "Location",
+                     Size = "Large",
+                     Condition = "Weathered",
+                     Geography = "Coastal",
+                     Architecture = "Gothic",
+                     Climate = "Temperate",
+                     Religion = "The Old Gods",
+                     Vibe = "Gritty",
+                     Languages = "Common, Dwarvish",
+                     Description = "A port Location known for its iron trade.",
+                     ImageFileName = "location_ironhaven.png",
+                 },
+             ],
             Sublocations =
             [
                 new SublocationCard
@@ -232,25 +232,25 @@ public class DashboardController(
 
     private static string BuildTemplateReadme() =>
         """
-        Cast LIBRARY — IMPORT PACKAGE README
+        Cast LIBRARY � IMPORT PACKAGE README
         =====================================
 
         PACKAGE STRUCTURE
         -----------------
         library-import-template.zip
-        ├── library.json        ← All Cast, City, and Sublocation data
-        ├── images/             ← Place image files here
-        │   ├── cast_aldric_vane.png
-        │   ├── city_ironhaven.png
-        │   └── loc_rusty_flagon.png
-        └── readme.txt          ← This file
+        +-- library.json        ? All Cast, Location, and Sublocation data
+        +-- images/             ? Place image files here
+        �   +-- cast_aldric_vane.png
+        �   +-- location_ironhaven.png
+        �   +-- loc_rusty_flagon.png
+        +-- readme.txt          ? This file
 
         HOW TO LINK IMAGES TO CARDS
         ----------------------------
         Each card object in library.json has an optional "imageFileName" field.
         Set this to the filename of the image you place in the images/ folder.
 
-        Example — Cast card in library.json:
+        Example � Cast card in library.json:
           {
             "name": "Aldric Vane",
             "imageFileName": "cast_aldric_vane.png"   <-- must match the image filename
@@ -261,7 +261,7 @@ public class DashboardController(
 
         If "imageFileName" is null or omitted, the card is created without an image.
         If an image file is named in the JSON but not included in the upload, the
-        card is still created — the missing image is silently ignored.
+        card is still created � the missing image is silently ignored.
         If an image cannot be converted (corrupted file, unsupported format), the
         card is still created and the failure is listed in the import summary.
 
@@ -269,8 +269,8 @@ public class DashboardController(
         ---------------
         If a card name already exists in your library, the imported card will be
         automatically renamed with a numeric suffix:
-          "Aldric Vane"   →  already exists  →  saved as "Aldric Vane - 2"
-          "Aldric Vane"   →  both exist      →  saved as "Aldric Vane - 3"
+          "Aldric Vane"   ?  already exists  ?  saved as "Aldric Vane - 2"
+          "Aldric Vane"   ?  both exist      ?  saved as "Aldric Vane - 3"
 
         EXPORT FORMAT
         -------------
@@ -280,7 +280,10 @@ public class DashboardController(
         IMAGE NAMING CONVENTIONS (recommended)
         ----------------------------------------
           Casts:      cast_<name>.png       e.g. cast_aldric_vane.png
-          Cities:    city_<name>.png      e.g. city_ironhaven.png
+          locations:    location_<name>.png      e.g. location_ironhaven.png
           Sublocations: loc_<name>.png       e.g. loc_rusty_flagon.png
         """;
 }
+
+
+

@@ -1,0 +1,79 @@
+<div class="pc scroll-body">
+  @if (auth.isDm()) {
+    <app-dm-nav />
+  } @else if (auth.isLoggedIn()) {
+    <div class="player-nav">
+      <a class="player-nav__link" routerLink="/player/campaigns">Dashboard</a>
+      <span class="player-nav__link">About</span>
+      <div class="player-nav__spacer"></div>
+      <div class="player-nav__account">
+        <button class="player-nav__account-trigger" (click)="menuOpen.set(!menuOpen())">
+          Account
+          <span class="player-nav__caret" [class.player-nav__caret--open]="menuOpen()">▾</span>
+        </button>
+        @if (menuOpen()) {
+          <div class="player-nav__dropdown">
+            <button class="player-nav__dropdown-item" (click)="auth.logout()">Logout</button>
+          </div>
+        }
+      </div>
+    </div>
+  } @else {
+    <div class="player-nav">
+      <a class="player-nav__link" routerLink="/">Home</a>
+      <span class="player-nav__link">About</span>
+    </div>
+  }
+
+  <div class="about-content">
+
+    <h1 class="about-title">About</h1>
+    <div class="dv"></div>
+
+    <p class="about-body">Every great story begins with people — their bonds, their grudges, their loyalties, and the quiet threads that tie them together. As a storyteller, you're constantly tracking those threads: who trusts whom, which factions are shifting, what rumors are spreading, and how each choice reshapes the world.</p>
+    <p class="about-body">This app is a calm, structured hearth for all of that. A place where NPCs, factions, relationships, secrets, and political tensions settle into view, giving you a clearer sense of the story beneath the story. It helps you understand the people who make your world feel alive and run richer sessions with less prep.</p>
+    <p class="about-body">This is not limited to Dungeons &amp; Dragons. The flexible digital card system works with any narrative‑driven game, from homebrew systems to story‑focused RPGs. Wherever worldbuilding is needed, this app provides the structure to bring it to life.</p>
+
+    <div class="orn orn-mt">· · ·</div>
+
+    <div class="about-section-label section-label">Mission</div>
+    <p class="about-body">To support the shared craft of storytelling across any narrative game. For worldbuilders, this means a clear, human‑centered way to understand relationships, motivations, and world dynamics. For players, it means effortless note‑taking and the ability to step into the story with clarity and confidence, supported by tools that help them stay grounded in the world. For every table, it means a flexible card‑based system that brings worldbuilding to life, no matter what game you play.</p>
+
+    <div class="orn orn-mt">· · ·</div>
+
+    <div class="about-section-label section-label">Philosophy</div>
+    <div class="about-pillars">
+      <div class="about-pillar">
+        <span class="about-pillar-title">Collaboration at the table.</span>
+        <span class="about-pillar-body">Tools that help storytellers and players stay aligned, share context, and build a world together.</span>
+      </div>
+      <div class="about-pillar">
+        <span class="about-pillar-title">Clarity that supports everyone.</span>
+        <span class="about-pillar-body">A simple, intuitive structure that reduces confusion and keeps the story moving.</span>
+      </div>
+      <div class="about-pillar">
+        <span class="about-pillar-title">Shared understanding.</span>
+        <span class="about-pillar-body">Features that help each person see the same world, even when their perspectives differ.</span>
+      </div>
+      <div class="about-pillar">
+        <span class="about-pillar-title">Respect for the story.</span>
+        <span class="about-pillar-body">Systems that highlight motivations, relationships, and consequences without overwhelming the table.</span>
+      </div>
+    </div>
+
+    <div class="orn orn-mt">· · ·</div>
+
+    <div class="about-section-label section-label">From the Creator</div>
+    <div class="wb about-creator">
+      <p class="about-body about-body--creator">I'm awful at taking notes, and my dyslexia makes it even harder to keep track of story details. When I'm playing, I can focus on the moment or try to write things down, but I can't do both. My notes were scattered and incomplete, and I kept losing track of how everything fit together. I built this app to fix that for myself, and it grew into a tool meant to help storytellers and players stay organized and understand the world they're creating.</p>
+    </div>
+
+    <div class="orn orn-mt">· · ·</div>
+
+    <div class="about-section-label section-label">Vision</div>
+    <p class="about-body">A simple, reliable way to stay connected to the story. A tool that keeps the world clear and organized so players and storytellers can stay present in the game without worrying about losing track of important details.</p>
+
+    <div class="orn orn-mt">· · ·</div>
+
+  </div>
+</div>

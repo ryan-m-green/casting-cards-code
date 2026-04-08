@@ -7,7 +7,7 @@ import { CampaignDetail, CampaignCastPlayerNotes } from '../../../shared/models/
 import { CampaignSublocationInstance } from '../../../shared/models/sublocation.model';
 import { CampaignCastInstance } from '../../../shared/models/cast.model';
 import { CampaignSecret } from '../../../shared/models/secret.model';
-import { CampaignCityInstance } from '../../../shared/models/city.model';
+import { CampaignLocationInstance } from '../../../shared/models/location.model';
 import { CampaignHubService } from '../../../core/hub/campaign-hub.service';
 import { PortalTransitionService } from '../../../core/portal-transition.service';
 import { TimeOfDayBarComponent } from '../../../shared/components/time-of-day-bar/time-of-day-bar.component';
@@ -57,11 +57,11 @@ export class PlayerSublocationDetailComponent implements OnInit {
     return c.casts.filter(cast => cast.sublocationInstanceId === subLoc.instanceId);
   });
 
-  parentCity = computed(() => {
+  parentLocation = computed(() => {
     const c   = this.campaign();
     const subLoc = this.sublocation();
     if (!c || !subLoc) return null;
-    return c.cities.find(ci => ci.instanceId === subLoc.cityInstanceId) ?? null;
+    return c.locations.find(ci => ci.instanceId === subLoc.locationInstanceId) ?? null;
   });
 
   constructor() {
@@ -78,7 +78,7 @@ export class PlayerSublocationDetailComponent implements OnInit {
           id: event.secretId,
           campaignId: event.campaignId,
           castInstanceId: event.castInstanceId,
-          cityInstanceId: event.cityInstanceId,
+          locationInstanceId: event.locationInstanceId,
           sublocationInstanceId: event.sublocationInstanceId,
           content: event.secretContent,
           sortOrder: 0,
@@ -109,7 +109,7 @@ export class PlayerSublocationDetailComponent implements OnInit {
           if (!c) return c;
           return {
             ...c,
-            cities:     c.cities.filter((x: CampaignCityInstance) => x.instanceId !== event.instanceId),
+            locations:     c.locations.filter((x: CampaignLocationInstance) => x.instanceId !== event.instanceId),
             sublocations: c.sublocations.filter((x: CampaignSublocationInstance) => x.instanceId !== event.instanceId),
             casts:      c.casts.filter((x: CampaignCastInstance) => x.instanceId !== event.instanceId),
           };
@@ -176,11 +176,11 @@ export class PlayerSublocationDetailComponent implements OnInit {
     ]);
   }
 
-  goToCity() {
-    const cityId = this.sublocation()?.cityInstanceId;
-    if (cityId) {
+  goToLocation() {
+    const locationId = this.sublocation()?.locationInstanceId;
+    if (locationId) {
       this.transition.quickCover();
-      this.router.navigate(['/player/campaign', this.campaignId(), 'cities', cityId]);
+      this.router.navigate(['/player/campaign', this.campaignId(), 'locations', locationId]);
     }
   }
 

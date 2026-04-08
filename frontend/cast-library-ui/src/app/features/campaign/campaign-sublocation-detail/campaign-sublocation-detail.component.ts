@@ -80,11 +80,11 @@ export class CampaignSublocationDetailComponent implements OnInit, OnDestroy {
     return c.casts.filter(cast => cast.sublocationInstanceId === subLoc.instanceId);
   });
 
-  parentCity = computed(() => {
+  parentLocation = computed(() => {
     const c   = this.campaign();
     const subLoc = this.sublocation();
     if (!c || !subLoc) return null;
-    return c.cities.find(ci => ci.instanceId === subLoc.cityInstanceId) ?? null;
+    return c.locations.find(ci => ci.instanceId === subLoc.locationInstanceId) ?? null;
   });
 
   allCastsVisible = computed(() => {
@@ -397,17 +397,17 @@ export class CampaignSublocationDetailComponent implements OnInit, OnDestroy {
     this.router.navigate(['/campaign', this.campaignId()]);
   }
 
-  goToCity() {
-    const cityId = this.sublocation()?.cityInstanceId;
-    if (cityId) {
-      this.router.navigate(['/campaign', this.campaignId(), 'cities', cityId]);
+  goToLocation() {
+    const locationId = this.sublocation()?.locationInstanceId;
+    if (locationId) {
+      this.router.navigate(['/campaign', this.campaignId(), 'locations', locationId]);
     }
   }
 
   goBack() {
-    const cityInstanceId = this.sublocation()?.cityInstanceId;
-    if (cityInstanceId) {
-      this.router.navigate(['/campaign', this.campaignId(), 'cities', cityInstanceId]);
+    const locationInstanceId = this.sublocation()?.locationInstanceId;
+    if (locationInstanceId) {
+      this.router.navigate(['/campaign', this.campaignId(), 'locations', locationInstanceId]);
     } else {
       this.router.navigate(['/campaign', this.campaignId()]);
     }

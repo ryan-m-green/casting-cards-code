@@ -1,3 +1,5 @@
+@use '../../../../styles/variables' as v;
+
 :host {
   display: block;
   width: 100%;
@@ -43,7 +45,7 @@
 
 /* ── Back button ─────────────────────────────────────────────── */
 .void-back {
-  font-family: 'Cinzel', serif;
+  font-family: v.$font-header;
   font-size: 9px;
   letter-spacing: 0.18em;
   text-transform: uppercase;
@@ -58,15 +60,15 @@
   }
 }
 
-/* ── City cards section ──────────────────────────────────────── */
-.city-cards-section {
+/* ── Location cards section ──────────────────────────────────── */
+.location-cards-section {
   padding: 8px 40px 40px;
   position: relative;
   z-index: 1;
 }
 
-.city-cards-label {
-  font-family: 'Cinzel', serif;
+.location-cards-label {
+  font-family: v.$font-header;
   font-size: 14px;
   font-weight: bolder;
   letter-spacing: 0.22em;
@@ -75,15 +77,15 @@
   margin-bottom: 16px;
 }
 
-.city-cards-container {
+.location-cards-container {
   display: flex;
   flex-wrap: wrap;
   gap: 18px;
   align-items: flex-start;
 }
 
-/* ── City lock button ────────────────────────────────────────── */
-.city-lock-btn {
+/* ── Location lock button ────────────────────────────────────── */
+.location-lock-btn {
   position: absolute;
   top: 8px;
   right: 8px;
@@ -107,7 +109,7 @@
     opacity: 1;
   }
 
-  &.city-lock-btn--visible {
+  &.location-lock-btn--visible {
     background: rgba(40, 160, 80, 0.25);
     border-color: rgba(80, 200, 120, 0.4);
     opacity: 0.85;
@@ -129,7 +131,7 @@
 }
 
 .void-crumb-sep {
-  font-family: 'Cinzel', serif;
+  font-family: v.$font-header;
   font-size: 9px;
   color: color-mix(in srgb, var(--portal-color, #6e28d0), white 55%);
   opacity: 0.25;
@@ -142,7 +144,7 @@
   width: 100%;
   margin-top: 10px;
   text-align: center;
-  font-family: 'Cinzel', serif;
+  font-family: v.$font-header;
   font-size: 17px;
   font-weight: 600;
   letter-spacing: 0.28em;

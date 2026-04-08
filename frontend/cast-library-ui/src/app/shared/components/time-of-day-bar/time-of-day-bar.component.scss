@@ -1,3 +1,5 @@
+@use '../../../../styles/variables' as v;
+
 // ── Variables ───────────────────────────────────────────────────────────────
 $cursor-color:        #fff;
 $cursor-shadow:       0 0 6px rgba(0,0,0,.5);
@@ -238,7 +240,7 @@ $spring-easing:       cubic-bezier(0.22, 1, 0.36, 1);
   }
 
   &__title {
-    font-family: 'Cinzel', serif;
+    font-family: v.$font-header;
     font-size: 0.8rem;
     letter-spacing: 0.08em;
     color: rgba(72, 44, 8, 0.92);
@@ -246,7 +248,7 @@ $spring-easing:       cubic-bezier(0.22, 1, 0.36, 1);
   }
 
   &__duration {
-    font-family: 'Crimson Text', serif;
+    font-family: v.$font-body;
     font-style: italic;
     font-size: 0.82rem;
     color: rgba(105, 72, 18, 0.55);
@@ -280,7 +282,7 @@ $spring-easing:       cubic-bezier(0.22, 1, 0.36, 1);
 
   &__label {
     display: block;
-    font-family: 'Cinzel', serif;
+    font-family: v.$font-header;
     font-size: 0.6rem;
     text-transform: uppercase;
     letter-spacing: 0.18em;
@@ -289,7 +291,7 @@ $spring-easing:       cubic-bezier(0.22, 1, 0.36, 1);
   }
 
   &__saving {
-    font-family: 'Crimson Text', serif;
+    font-family: v.$font-body;
     font-style: italic;
     font-size: 0.72rem;
     color: rgba(105, 72, 18, 0.45);
@@ -305,7 +307,7 @@ $spring-easing:       cubic-bezier(0.22, 1, 0.36, 1);
     border: 1px solid rgba(110, 75, 22, 0.22);
     border-radius: 5px;
     color: rgba(52, 28, 4, 0.90);
-    font-family: 'Crimson Text', serif;
+    font-family: v.$font-body;
     font-size: 0.9rem;
     line-height: 1.55;
     padding: 7px 10px;
@@ -325,7 +327,7 @@ $spring-easing:       cubic-bezier(0.22, 1, 0.36, 1);
   }
 
   &__readonly {
-    font-family: 'Crimson Text', serif;
+    font-family: v.$font-body;
     font-size: 0.9rem;
     color: rgba(72, 44, 8, 0.72);
     line-height: 1.55;
@@ -343,7 +345,7 @@ $spring-easing:       cubic-bezier(0.22, 1, 0.36, 1);
 
 // ── Empty state ───────────────────────────────────────────────────────────────
 .tod-empty {
-  font-family: 'Crimson Text', serif;
+  font-family: v.$font-body;
   font-style: italic;
   font-size: 0.82rem;
   color: rgba(105, 72, 18, 0.45);

@@ -19,12 +19,12 @@ public class UpdateSublocationCastsVisibilityCommandHandler(ICampaignUpdateRepos
 
 public class UpdateSublocationCastsVisibilityCommand
 {
-    public UpdateSublocationCastsVisibilityCommand(Guid sublocationInstanceId, UpdateCitySublocationsVisibilityRequest request)
+    public UpdateSublocationCastsVisibilityCommand(Guid sublocationInstanceId, UpdateLocationSublocationsVisibilityRequest request)
     {
         SublocationInstanceId = sublocationInstanceId;
         Request = request;
     }
 
     public Guid SublocationInstanceId { get; }
-    public UpdateCitySublocationsVisibilityRequest Request { get; }
+    public UpdateLocationSublocationsVisibilityRequest Request { get; }
 }

@@ -1,4 +1,4 @@
-﻿using CastLibrary.Repository.Repositories.Read;
+using CastLibrary.Repository.Repositories.Read;
 using CastLibrary.Repository.Repositories.Update;
 using CastLibrary.Shared.Domain;
 using CastLibrary.Shared.Requests;
@@ -18,7 +18,7 @@ public class UpdateSublocationCommandHandler(
         var existing = await sublocationRepository.GetByIdAsync(command.Id);
         if (existing is null || existing.DmUserId != command.DmUserId) return null;
 
-        existing.CityId = command.Request.CityId;
+        existing.LocationId = command.Request.LocationId;
         existing.Name = command.Request.Name;
         existing.Description = command.Request.Description;
         existing.ShopItems = command.Request.ShopItems.Select((item, i) => new ShopItemDomain
@@ -44,3 +44,4 @@ public class UpdateSublocationCommand
     public CreateSublocationRequest Request { get; }
     public Guid DmUserId { get; }
 }
+

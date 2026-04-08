@@ -10,7 +10,7 @@ public class CampaignDomain
     public string FantasyType { get; set; } = string.Empty;
     public CampaignStatus Status { get; set; }
     public string SpineColor { get; set; } = string.Empty;
-    public int CityCount { get; set; }
+    public int LocationCount { get; set; }
     public int PlayerCount { get; set; }
     public DateTime CreatedAt { get; set; }
 }

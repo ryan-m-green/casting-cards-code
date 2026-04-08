@@ -17,7 +17,7 @@
   }
 
   &.locked {
-    opacity: 0.45;
+    opacity: 1;
     pointer-events: none;
   }
 
@@ -48,7 +48,7 @@
   transition: border-color v.$transition-std, background v.$transition-std;
 
   &::placeholder {
-    color: rgba(110, 75, 22, 0.38);
+    color: rgba(110, 75, 22, 1.0);
     font-style: italic;
   }
 
@@ -148,7 +148,7 @@ textarea.fi {
   background: linear-gradient(160deg, #c8b07a 0%, #e0c98a 50%, #c4a86a 100%);
 }
 
-.pc-card-city .lib-card-front {
+.pc-card-location .lib-card-front {
   background: linear-gradient(160deg, #9ab0b8 0%, #b8cdd6 50%, #8aa0a8 100%);
 }
 
@@ -193,7 +193,7 @@ textarea.fi {
   font-family: v.$font-body;
   font-size: 9px;
   font-style: italic;
-  color: rgba(42, 24, 4, 0.65);
+  color: rgba(42, 24, 4, 1.0);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -273,7 +273,7 @@ textarea.fi {
     font-family: v.$font-header;
     font-size: 11px;
     font-weight: 700;
-    color: rgba(255, 248, 230, 0.9);
+    color: rgba(255, 248, 230, 1.0);
     flex-shrink: 0;
   }
 
@@ -392,7 +392,7 @@ textarea.fi {
   border: 1px dashed v.$color-border;
   border-radius: 2px;
   font-family: v.$font-header;
-  font-size: 7.5px;
+  font-size: 9.5px;
   text-transform: uppercase;
   letter-spacing: 0.12em;
   color: v.$color-text-secondary;
@@ -495,13 +495,13 @@ textarea.fi {
   padding: 4px 8px;
 }
 
-// ─── Campaign secrets (shared: city + Cast detail panels) ──────────────────────
+// ─── Campaign secrets (shared: location + Cast detail panels) ──────────────────────
 .detail-secrets-header {
-  font-family: 'Cinzel', serif;
+  font-family: v.$font-header;
   font-size: 8px;
   letter-spacing: 0.18em;
   text-transform: uppercase;
-  color: rgba(105, 72, 18, 0.65);
+  color: rgba(105, 72, 18, 1.0);
   border-bottom: 0.5px solid rgba(110, 75, 22, 0.22);
   padding-bottom: 3px;
   margin: 8px 0 6px;
@@ -517,9 +517,9 @@ textarea.fi {
 
 .secret-text {
   flex: 1;
-  font-family: 'Crimson Text', serif;
+  font-family: v.$font-body;
   font-size: 11px;
-  color: rgba(72, 44, 8, 0.88);
+  color: rgba(72, 44, 8, 1.0);
   line-height: 1.4;
 }
 
@@ -536,7 +536,7 @@ textarea.fi {
   background: none;
   border: 1px solid rgba(160, 40, 20, 0.4);
   border-radius: 3px;
-  color: rgba(160, 40, 20, 0.7);
+  color: rgba(160, 40, 20, 1.0);
   padding: 1px 5px;
   cursor: pointer;
   line-height: 1.4;
@@ -548,11 +548,11 @@ textarea.fi {
 .secret-add-btn {
   display: block;
   margin-top: 8px;
-  font-family: 'Cinzel', serif;
+  font-family: v.$font-header;
   font-size: 8px;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: rgba(105, 72, 18, 0.72);
+  color: rgba(105, 72, 18, 1.0);
   background: none;
   border: 1px dashed rgba(110, 75, 22, 0.38);
   border-radius: 5px;
@@ -617,14 +617,14 @@ textarea.fi {
 }
 
 .pc-card-cast .card-placeholder      { background: linear-gradient(160deg, #c8b07a, #e0c98a, #c4a86a); }
-.pc-card-city .card-placeholder     { background: linear-gradient(160deg, #9ab0b8, #b8cdd6, #8aa0a8); }
+.pc-card-location .card-placeholder     { background: linear-gradient(160deg, #9ab0b8, #b8cdd6, #8aa0a8); }
 .pc-card-sublocation .card-placeholder { background: linear-gradient(160deg, #a8a070, #c4bc88, #98906a); }
 
 .card-initial {
   font-family: v.$font-header;
   font-size: 40px;
   font-weight: 700;
-  color: rgba(42, 24, 4, 0.35);
+  color: rgba(42, 24, 4, 1.0);
 }
 
 .card-desc-overlay {
@@ -641,7 +641,7 @@ textarea.fi {
   font-family: v.$font-body;
   font-size: 9px;
   font-style: italic;
-  color: rgba(255, 240, 200, 0.92);
+  color: rgba(255, 240, 200, 1.0);
   line-height: 1.35;
   display: -webkit-box;
   -webkit-line-clamp: 3;
@@ -663,7 +663,7 @@ textarea.fi {
   border: none;
   border-radius: 2px;
   background: rgba(20, 12, 4, 0.55);
-  color: rgba(255, 240, 200, 0.9);
+  color: rgba(255, 240, 200, 1.0);
   cursor: pointer;
 }
 
@@ -679,7 +679,7 @@ textarea.fi {
   font-weight: 800;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: rgba(255, 210, 190, 0.88);
+  color: rgba(255, 210, 190, 1.0);
   cursor: pointer;
 }
 
@@ -689,7 +689,7 @@ textarea.fi {
 
 .fi-label-strong {
   font-weight: 700;
-  color: rgba(42, 24, 4, 0.9);
+  color: rgba(42, 24, 4, 1.0);
   margin-bottom: 1px;
 }
 
@@ -739,7 +739,7 @@ textarea.fi {
   font-size: 8px;
   font-family: v.$font-header;
   letter-spacing: 0.1em;
-  color: rgba(42, 24, 4, 0.4);
+  color: rgba(42, 24, 4, 1.0);
   text-transform: uppercase;
 }
 
@@ -778,7 +778,7 @@ textarea.fi {
 .delete-panel-message {
   font-family: v.$font-body;
   font-size: 15px;
-  color: rgba(240, 220, 180, 0.75);
+  color: rgba(240, 220, 180, 1.0);
   margin: 0 0 24px 0;
   line-height: 1.5;
 }
@@ -799,7 +799,7 @@ textarea.fi {
   border: 1px solid rgba(110, 75, 22, 0.4);
   border-radius: 3px;
   background: rgba(255, 245, 220, 0.06);
-  color: rgba(240, 220, 180, 0.75);
+  color: rgba(240, 220, 180, 1.0);
   cursor: pointer;
 }
 
@@ -867,12 +867,12 @@ textarea.fi {
   font-family: v.$font-body;
   font-size: 11px;
   font-style: italic;
-  color: rgba(72, 48, 14, 0.50);
+  color: rgba(72, 48, 14, 1.0);
   white-space: nowrap;
   transition: opacity 280ms ease;
 
-  &.save-label--saving { color: rgba(90, 58, 154, 0.75); }
-  &.save-label--error  { color: rgba(160, 40, 40, 0.75); }
+  &.save-label--saving { color: rgba(90, 58, 154, 1.0); }
+  &.save-label--error  { color: rgba(160, 40, 40, 1.0); }
 }
 
 // ─── Spark host wrapper (Save / Knock buttons) ─────────────────────────────────
@@ -894,5 +894,5 @@ textarea.fi {
 
 .list-arrow {
   font-size: 16px;
-  color: rgba(110, 75, 22, 0.4);
+  color: rgba(110, 75, 22, 1.0);
 }

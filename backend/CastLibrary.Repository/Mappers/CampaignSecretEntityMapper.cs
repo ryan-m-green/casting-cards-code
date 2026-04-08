@@ -16,7 +16,7 @@ namespace CastLibrary.Repository.Mappers
                 Id = entity.Id,
                 CampaignId = entity.CampaignId,
                 CastInstanceId = entity.CastInstanceId,
-                CityInstanceId = entity.CityInstanceId,
+                LocationInstanceId = entity.LocationInstanceId,
                 SublocationInstanceId = entity.SublocationInstanceId,
                 Content = entity.Content,
                 SortOrder = entity.SortOrder,
@@ -27,3 +27,4 @@ namespace CastLibrary.Repository.Mappers
         }
     }
 }
+

@@ -1,10 +1,12 @@
+@use '../../../../styles/variables' as v;
+
 .tod-editor {
   padding-bottom: 32px;
 }
 
 // ── Section labels ────────────────────────────────────────────────────────────
 .tod-section-label {
-  font-family: 'Cinzel', serif;
+  font-family: v.$font-header;
   font-size: 8px;
   letter-spacing: 0.22em;
   text-transform: uppercase;
@@ -27,7 +29,7 @@
 }
 
 .tod-field-label {
-  font-family: 'Crimson Text', serif;
+  font-family: v.$font-body;
   font-style: italic;
   font-size: 12px;
   color: rgba(105, 72, 18, 0.65);
@@ -41,7 +43,7 @@
 }
 
 .tod-unit {
-  font-family: 'Crimson Text', serif;
+  font-family: v.$font-body;
   font-style: italic;
   font-size: 11px;
   color: rgba(105, 72, 18, 0.45);
@@ -160,7 +162,7 @@
 
 // ── Add slice button (matching .invite-generate-btn) ─────────────────────────
 .tod-add-btn {
-  font-family: 'Cinzel', serif;
+  font-family: v.$font-header;
   font-size: 9px;
   letter-spacing: 0.14em;
   text-transform: uppercase;
@@ -188,7 +190,7 @@
 }
 
 .tod-totals {
-  font-family: 'Crimson Text', serif;
+  font-family: v.$font-body;
   font-style: italic;
   font-size: 12px;
   color: rgba(105, 72, 18, 0.60);
@@ -214,7 +216,7 @@
 
 // ── Autosave indicator (matches .autosave-indicator in creator) ───────────────
 .autosave-indicator {
-  font-family: 'Crimson Text', serif;
+  font-family: v.$font-body;
   font-style: italic;
   font-size: 11px;
   color: rgba(105, 72, 18, 0.52);

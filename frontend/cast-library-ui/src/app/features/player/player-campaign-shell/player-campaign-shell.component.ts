@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, signal, inject, effect } from '@angular/core';
+import { Component, OnInit, OnDestroy, signal, inject, effect, untracked } from '@angular/core';
 import { RouterOutlet, ActivatedRoute } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
@@ -50,15 +50,16 @@ export class PlayerCampaignShellComponent implements OnInit, OnDestroy {
       const event = this.hub.secretRevealed();
       if (!event || event.campaignId !== this.campaignId()) return;
 
-      // Use the cached campaign data to identify the card
-      const c = this.campaign();
+      // Use the cached campaign data to identify the card (untracked to avoid
+      // re-running this effect when campaign updates from other events)
+      const c = untracked(() => this.campaign());
       if (!c) return;
 
-      const instanceId = event.castInstanceId ?? event.cityInstanceId ?? event.sublocationInstanceId;
+      const instanceId = event.castInstanceId ?? event.locationInstanceId ?? event.sublocationInstanceId;
       if (!instanceId) return;
 
       const cardType = event.castInstanceId ? 'cast'
-                     : event.cityInstanceId ? 'city'
+                     : event.locationInstanceId ? 'location'
                      : 'sublocation';
 
       const data = this.buildOverlayFromVisibilityEvent(c, instanceId, cardType);
@@ -94,20 +95,20 @@ export class PlayerCampaignShellComponent implements OnInit, OnDestroy {
   private buildOverlayFromVisibilityEvent(
     campaign: CampaignDetail,
     instanceId: string,
-    cardType: 'city' | 'sublocation' | 'cast',
+    cardType: 'location' | 'sublocation' | 'cast',
   ): CardRevealOverlayData | null {
-    if (cardType === 'city') {
-      const city = campaign.cities.find(c => c.instanceId === instanceId);
-      if (!city) return null;
-      return { cardType: 'city', name: city.name, descriptor: city.classification ?? '', imageUrl: city.imageUrl ?? '' };
+    if (cardType === 'location') {
+      const location = campaign.locations.find((c: any) => c.instanceId === instanceId);
+      if (!location) return null;
+      return { cardType: 'location', name: location.name, descriptor: location.classification ?? '', imageUrl: location.imageUrl ?? '' };
     }
     if (cardType === 'sublocation') {
-      const subLoc = campaign.sublocations.find(l => l.instanceId === instanceId);
+      const subLoc = campaign.sublocations.find((l: any) => l.instanceId === instanceId);
       if (!subLoc) return null;
       return { cardType: 'sublocation', name: subLoc.name, descriptor: '', imageUrl: subLoc.imageUrl ?? '' };
     }
     if (cardType === 'cast') {
-      const cast = campaign.casts.find(ca => ca.instanceId === instanceId);
+      const cast = campaign.casts.find((ca: any) => ca.instanceId === instanceId);
       if (!cast) return null;
       return { cardType: 'cast', name: cast.name, descriptor: cast.role ?? '', imageUrl: cast.imageUrl ?? '' };
     }

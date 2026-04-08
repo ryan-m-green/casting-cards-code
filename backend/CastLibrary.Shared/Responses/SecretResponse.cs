@@ -5,7 +5,7 @@ public class SecretRevealedEvent
     public Guid SecretId { get; set; }
     public Guid CampaignId { get; set; }
     public Guid? CastInstanceId { get; set; }
-    public Guid? CityInstanceId { get; set; }
+    public Guid? LocationInstanceId { get; set; }
     public Guid? SublocationInstanceId { get; set; }
     public string SecretContent { get; set; } = string.Empty;
 }
@@ -15,7 +15,7 @@ public class SecretResealedEvent
     public Guid SecretId { get; set; }
     public Guid CampaignId { get; set; }
     public Guid? CastInstanceId { get; set; }
-    public Guid? CityInstanceId { get; set; }
+    public Guid? LocationInstanceId { get; set; }
     public Guid? SublocationInstanceId { get; set; }
 }
 

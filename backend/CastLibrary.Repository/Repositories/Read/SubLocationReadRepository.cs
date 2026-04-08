@@ -19,7 +19,7 @@ public class SublocationReadRepository(
         var spanId  = correlation.NewSpan();
         var @params = new { DmUserId = dmUserId };
         const string sql =
-            @"SELECT id, city_id AS CityId, dm_user_id AS DmUserId,
+            @"SELECT id, location_id AS LocationId, dm_user_id AS DmUserId,
                      name, description, created_at AS CreatedAt
               FROM sublocations WHERE dm_user_id = @DmUserId ORDER BY name";
 
@@ -52,7 +52,7 @@ public class SublocationReadRepository(
         var spanId  = correlation.NewSpan();
         var @params = new { Id = id };
         const string sql =
-            @"SELECT id, city_id AS CityId, dm_user_id AS DmUserId,
+            @"SELECT id, location_id AS LocationId, dm_user_id AS DmUserId,
                      name, description, created_at AS CreatedAt
               FROM sublocations WHERE id = @Id";
 
@@ -76,3 +76,4 @@ public class SublocationReadRepository(
         return sublocation;
     }
 }
+

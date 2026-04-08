@@ -21,7 +21,7 @@ public class CampaignEntityMapper : ICampaignEntityMapper
         FantasyType = entity.FantasyType ?? string.Empty,
         Status = Enum.Parse<CampaignStatus>(entity.Status, true),
         SpineColor = entity.SpineColor ?? string.Empty,
-        CityCount = entity.CityCount,
+        LocationCount = entity.LocationCount,
         PlayerCount = entity.PlayerCount,
         CreatedAt = entity.CreatedAt,
     };
@@ -35,8 +35,9 @@ public class CampaignEntityMapper : ICampaignEntityMapper
         FantasyType = domain.FantasyType,
         Status = domain.Status.ToString(),
         SpineColor = domain.SpineColor,
-        CityCount = domain.CityCount,
+        LocationCount = domain.LocationCount,
         PlayerCount = domain.PlayerCount,
         CreatedAt = domain.CreatedAt,
     };
 }
+

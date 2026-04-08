@@ -3,7 +3,7 @@ namespace CastLibrary.Shared.Responses;
 public class SublocationResponse
 {
     public Guid Id { get; set; }
-    public Guid? CityId { get; set; }
+    public Guid? LocationId { get; set; }
     public Guid DmUserId { get; set; }
     public string Name { get; set; } = string.Empty;
     public string Description { get; set; } = string.Empty;

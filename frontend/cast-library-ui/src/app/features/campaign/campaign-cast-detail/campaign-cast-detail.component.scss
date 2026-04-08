@@ -1,3 +1,5 @@
+@use '../../../../styles/variables' as v;
+
 $cast-gold: #c8b07a;
 
 :host {
@@ -63,7 +65,7 @@ $cast-gold: #c8b07a;
 }
 
 .void-crumb-sep {
-  font-family: 'Cinzel', serif;
+  font-family: v.$font-header;
   font-size: 9px;
   color: color-mix(in srgb, var(--portal-color, #{$cast-gold}), white 55%);
   opacity: 0.25;
@@ -72,7 +74,7 @@ $cast-gold: #c8b07a;
 }
 
 .void-back {
-  font-family: 'Cinzel', serif;
+  font-family: v.$font-header;
   font-size: 9px;
   letter-spacing: 0.18em;
   text-transform: uppercase;
@@ -91,7 +93,7 @@ $cast-gold: #c8b07a;
   width: 100%;
   margin-top: 10px;
   text-align: center;
-  font-family: 'Cinzel', serif;
+  font-family: v.$font-header;
   font-size: 17px;
   font-weight: 600;
   letter-spacing: 0.28em;
@@ -245,7 +247,7 @@ $cast-gold: #c8b07a;
 }
 
 .secret-text {
-  font-family: 'Crimson Text', serif;
+  font-family: v.$font-body;
   font-size: 13px;
   color: rgba(185, 210, 220, 0.60);
   line-height: 1.5;
@@ -257,7 +259,7 @@ $cast-gold: #c8b07a;
 
 /* ── Shared label / line / value ─────────────────────────────────────────── */
 .detail-label {
-  font-family: 'Cinzel', serif;
+  font-family: v.$font-header;
   font-size: 7px;
   letter-spacing: 0.2em;
   text-transform: uppercase;
@@ -272,7 +274,7 @@ $cast-gold: #c8b07a;
 }
 
 .detail-value {
-  font-family: 'Crimson Text', serif;
+  font-family: v.$font-body;
   font-size: 14px;
   color: rgba(200, 225, 235, 0.82);
   white-space: nowrap;
@@ -296,7 +298,7 @@ $cast-gold: #c8b07a;
 }
 
 .detail-keyword-pill {
-  font-family: 'Cinzel', serif;
+  font-family: v.$font-header;
   font-size: 7px;
   letter-spacing: 0.14em;
   text-transform: uppercase;
@@ -320,7 +322,7 @@ $cast-gold: #c8b07a;
   border: 1px solid rgba($cast-gold, 0.30);
   border-radius: 4px;
   padding: 4px 12px;
-  font-family: 'Cinzel', serif;
+  font-family: v.$font-header;
   font-size: 8px;
   letter-spacing: 0.16em;
   text-transform: uppercase;
@@ -340,7 +342,7 @@ $cast-gold: #c8b07a;
   border: 1px solid rgba(80, 200, 120, 0.30);
   border-radius: 4px;
   padding: 4px 12px;
-  font-family: 'Cinzel', serif;
+  font-family: v.$font-header;
   font-size: 8px;
   letter-spacing: 0.16em;
   text-transform: uppercase;
@@ -360,7 +362,7 @@ $cast-gold: #c8b07a;
   border: 1px solid rgba(255, 255, 255, 0.10);
   border-radius: 4px;
   padding: 4px 12px;
-  font-family: 'Cinzel', serif;
+  font-family: v.$font-header;
   font-size: 8px;
   letter-spacing: 0.16em;
   text-transform: uppercase;
@@ -380,7 +382,7 @@ $cast-gold: #c8b07a;
   border: 1px solid rgba($cast-gold, 0.28);
   border-radius: 3px;
   padding: 5px 8px;
-  font-family: 'Crimson Text', serif;
+  font-family: v.$font-body;
   font-size: 14px;
   color: rgba(200, 225, 235, 0.88);
   width: 100%;
@@ -416,7 +418,7 @@ $cast-gold: #c8b07a;
 }
 
 .detail-value--muted {
-  font-family: 'Crimson Text', serif;
+  font-family: v.$font-body;
   font-size: 13px;
   color: rgba($cast-gold, 0.30);
   font-style: italic;
@@ -444,7 +446,7 @@ $cast-gold: #c8b07a;
   border: 1px solid rgba($cast-gold, 0.28);
   border-radius: 3px;
   padding: 5px 8px;
-  font-family: 'Crimson Text', serif;
+  font-family: v.$font-body;
   font-size: 13px;
   color: rgba(200, 225, 235, 0.88);
   resize: vertical;
@@ -511,7 +513,7 @@ $cast-gold: #c8b07a;
   background: none;
   border: 1px dashed rgba($cast-gold, 0.22);
   border-radius: 4px;
-  font-family: 'Cinzel', serif;
+  font-family: v.$font-header;
   font-size: 8px;
   letter-spacing: 0.16em;
   text-transform: uppercase;

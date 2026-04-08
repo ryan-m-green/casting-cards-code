@@ -43,9 +43,9 @@ export class PlayerCampaignDetailComponent implements OnInit {
             this.lockingIds.set(locking);
             return {
               ...c,
-              cities:    c.cities.filter(x => x.instanceId !== event.instanceId),
-              sublocations: c.sublocations.filter(x => x.instanceId !== event.instanceId),
-              casts:     c.casts.filter(x => x.instanceId !== event.instanceId),
+              locations:    c.locations.filter((x: any) => x.instanceId !== event.instanceId),
+              sublocations: c.sublocations.filter((x: any) => x.instanceId !== event.instanceId),
+              casts:     c.casts.filter((x: any) => x.instanceId !== event.instanceId),
             };
           });
           this.lockingIds.update(s => { const n = new Set(s); n.delete(event.instanceId); return n; });
@@ -87,9 +87,9 @@ export class PlayerCampaignDetailComponent implements OnInit {
       });
   }
 
-  goToCityDetail(instanceId: string) {
+  goToLocationDetail(instanceId: string) {
     this.transition.quickCover();
-    this.router.navigate(['/player/campaign', this.campaignId(), 'cities', instanceId]);
+    this.router.navigate(['/player/campaign', this.campaignId(), 'locations', instanceId]);
   }
 
   exitPortal() {

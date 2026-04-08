@@ -9,11 +9,11 @@
     <p class="wbd" style="text-align:center;padding:24px 0;">Loading…</p>
   } @else {
 
-    <div class="cities-section-label">Available Cast</div>
+    <div class="locations-section-label">Available Cast</div>
 
-    <div class="city-search-row">
+    <div class="location-search-row">
       <input
-        class="fi city-search-input"
+        class="fi location-search-input"
         type="search"
         placeholder="Search by name, role, race, alignment…"
         [value]="castSearch()"
@@ -21,7 +21,7 @@
       />
     </div>
 
-    <div class="city-picker-row">
+    <div class="location-picker-row">
       @if (filteredDeckCast().length > 0) {
         <div class="deck-stack" #deckStack (click)="swapCastCard()">
           <div class="deck-shadow deck-shadow-far"></div>
@@ -145,8 +145,8 @@
       <div class="detail-panel">
         @if (expandedAddedCast(); as added) {
           <div class="detail-panel-header">
-            <div class="detail-city-name">{{ added.cast.name }}</div>
-            <div class="detail-city-label">{{ added.cast.role }} · {{ added.cast.race }}</div>
+            <div class="detail-location-name">{{ added.cast.name }}</div>
+            <div class="detail-location-label">{{ added.cast.role }} · {{ added.cast.race }}</div>
           </div>
           <div class="dv dv-mb"></div>
           <div class="detail-grid">

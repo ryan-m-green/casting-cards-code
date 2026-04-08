@@ -1,3 +1,5 @@
+@use '../../../../styles/variables' as v;
+
 // ── Zero state ────────────────────────────────────────────────────────────────
 .rel-zero-state {
   display: flex;
@@ -13,7 +15,7 @@
 .rel-zero-title  { font-size: 1.05rem; font-weight: 600; color: var(--text-primary, #e8e0d0); margin: 0; }
 .rel-zero-sub    { font-size: 0.88rem; color: var(--text-muted, #9a8f7e); margin: 0; max-width: 420px; }
 
-// ── Card stack row (mirrors city picker row) ──────────────────────────────────
+// ── Card stack row (mirrors location picker row) ────────────────────────────────
 .rel-picker-row {
   display: flex;
   align-items: flex-start;
@@ -90,7 +92,7 @@
 .deck-castle { font-size: 34px; line-height: 1; }
 
 .deck-count {
-  font-family: 'Cinzel', serif;
+  font-family: v.$font-header;
   font-size: 10px;
   color: rgba(60, 40, 100, 0.62);
   letter-spacing: 0.08em;
@@ -119,7 +121,7 @@
 }
 
 .rel-web-btn {
-  font-family: 'Cinzel', serif;
+  font-family: v.$font-header;
   font-size: 0.78rem;
   font-weight: 600;
   letter-spacing: 0.08em;

@@ -36,15 +36,15 @@
       </button>
       @if (dropdownOpen()) {
         <div class="notes-dropdown-panel">
-          @for (group of citiesWithCasts(); track group.cityId) {
-            <div class="notes-dropdown-group-label">{{ group.cityName }}</div>
+          @for (group of locationsWithCasts(); track group.locationId) {
+            <div class="notes-dropdown-group-label">{{ group.locationName }}</div>
             @for (cast of group.casts; track cast.instanceId) {
               <div class="notes-dropdown-item" (click)="onConnectionSelect(cast.instanceId)">
                 {{ cast.name }}
               </div>
             }
           }
-          @if (citiesWithCasts().length === 0) {
+          @if (locationsWithCasts().length === 0) {
             <div class="notes-dropdown-empty">No connections available</div>
           }
         </div>

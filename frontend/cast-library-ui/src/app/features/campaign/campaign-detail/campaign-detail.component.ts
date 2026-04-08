@@ -78,11 +78,11 @@ export class CampaignDetailComponent implements OnInit, OnDestroy {
   }
 
   secretsFor(instanceId: string) {
-    return this.campaign()?.secrets.filter(s => s.castInstanceId === instanceId || s.cityInstanceId === instanceId || s.sublocationInstanceId === instanceId) ?? [];
+    return this.campaign()?.secrets.filter(s => s.castInstanceId === instanceId || s.locationInstanceId === instanceId || s.sublocationInstanceId === instanceId) ?? [];
   }
 
-  castForCity(cityInstanceId: string) {
-    return this.campaign()?.casts.filter(n => n.cityInstanceId === cityInstanceId) ?? [];
+  castForLocation(locationInstanceId: string) {
+    return this.campaign()?.casts.filter(n => n.locationInstanceId === locationInstanceId) ?? [];
   }
 
   revealSecret(secret: CampaignSecret) {
@@ -122,22 +122,22 @@ export class CampaignDetailComponent implements OnInit, OnDestroy {
     return color && /^#[0-9a-fA-F]{6}$/.test(color) ? color : '#6e28d0';
   }
 
-  toggleCityVisibility(city: { instanceId: string; isVisibleToPlayers: boolean }) {
-    const next = !city.isVisibleToPlayers;
-    this.http.patch(`${environment.apiUrl}/api/campaigns/${this.campaignId()}/cities/${city.instanceId}/visibility`,
+  toggleLocationVisibility(location: { instanceId: string; isVisibleToPlayers: boolean }) {
+    const next = !location.isVisibleToPlayers;
+    this.http.patch(`${environment.apiUrl}/api/campaigns/${this.campaignId()}/locations/${location.instanceId}/visibility`,
       { isVisibleToPlayers: next })
       .subscribe(() => {
         this.campaign.update(c => c ? {
           ...c,
-          cities: c.cities.map(ci => ci.instanceId === city.instanceId
+          locations: c.locations.map(ci => ci.instanceId === location.instanceId
             ? { ...ci, isVisibleToPlayers: next }
             : ci)
         } : c);
       });
   }
 
-  goToCityDetail(instanceId: string) {
-    this.router.navigate(['/campaign', this.campaignId(), 'cities', instanceId]);
+  goToLocationDetail(instanceId: string) {
+    this.router.navigate(['/campaign', this.campaignId(), 'locations', instanceId]);
   }
 
   exitPortal() {

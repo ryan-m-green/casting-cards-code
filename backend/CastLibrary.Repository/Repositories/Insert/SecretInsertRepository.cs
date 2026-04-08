@@ -1,4 +1,4 @@
-﻿using CastLibrary.Logic.Interfaces;
+using CastLibrary.Logic.Interfaces;
 using CastLibrary.Shared.Domain;
 using Dapper;
 
@@ -22,7 +22,7 @@ namespace CastLibrary.Repository.Repositories.Insert
                 secret.Id,
                 secret.CampaignId,
                 secret.CastInstanceId,
-                secret.CityInstanceId,
+                secret.LocationInstanceId,
                 secret.SublocationInstanceId,
                 secret.Content,
                 secret.SortOrder,
@@ -31,9 +31,9 @@ namespace CastLibrary.Repository.Repositories.Insert
             };
             const string sql =
                 @"INSERT INTO campaign_secrets
-                (id, campaign_id, cast_instance_id, city_instance_id, sublocation_instance_id, content, sort_order, is_revealed, created_at)
+                (id, campaign_id, cast_instance_id, location_instance_id, sublocation_instance_id, content, sort_order, is_revealed, created_at)
               VALUES
-                (@Id, @CampaignId, @CastInstanceId, @CityInstanceId, @SublocationInstanceId, @Content, @SortOrder, @IsRevealed, @CreatedAt)";
+                (@Id, @CampaignId, @CastInstanceId, @LocationInstanceId, @SublocationInstanceId, @Content, @SortOrder, @IsRevealed, @CreatedAt)";
 
             logging.LogDbOperation(correlation.TraceId, spanId, "INSERT", "campaign_secrets", @params);
 
@@ -45,3 +45,4 @@ namespace CastLibrary.Repository.Repositories.Insert
         }
     }
 }
+

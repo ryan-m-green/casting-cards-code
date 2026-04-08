@@ -2,7 +2,7 @@ export interface CampaignSecret {
   id: string;
   campaignId: string;
   castInstanceId: string | null;
-  cityInstanceId: string | null;
+  locationInstanceId: string | null;
   sublocationInstanceId: string | null;
   content: string;
   sortOrder: number;
@@ -14,7 +14,7 @@ export interface SecretRevealedEvent {
   secretId: string;
   campaignId: string;
   castInstanceId: string | null;
-  cityInstanceId: string | null;
+  locationInstanceId: string | null;
   sublocationInstanceId: string | null;
   secretContent: string;
 }
@@ -23,14 +23,14 @@ export interface SecretResealedEvent {
   secretId: string;
   campaignId: string;
   castInstanceId: string | null;
-  cityInstanceId: string | null;
+  locationInstanceId: string | null;
   sublocationInstanceId: string | null;
 }
 
 export interface CardVisibilityChangedEvent {
   campaignId: string;
   instanceId: string;
-  cardType: 'city' | 'sublocation' | 'cast';
+  cardType: 'location' | 'sublocation' | 'cast';
   isVisible: boolean;
 }
 

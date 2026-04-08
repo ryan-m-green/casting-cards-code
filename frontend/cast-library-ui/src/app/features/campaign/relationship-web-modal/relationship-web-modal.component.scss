@@ -1,3 +1,5 @@
+@use '../../../../styles/variables' as v;
+
 // ── Backdrop ──────────────────────────────────────────────────────────────────
 .web-backdrop {
   position: fixed;
@@ -33,7 +35,7 @@
 }
 
 .web-title {
-  font-family: 'Cinzel', serif;
+  font-family: v.$font-header;
   font-size: 0.9rem;
   font-weight: 600;
   color: #c0aa80;
@@ -106,7 +108,7 @@
 }
 
 .web-label {
-  font-family: 'Crimson Text', serif;
+  font-family: v.$font-body;
   font-size: 11px;
   font-style: italic;
   text-anchor: middle;
@@ -149,7 +151,7 @@
 }
 
 .web-node-name {
-  font-family: 'Cinzel', serif;
+  font-family: v.$font-header;
   font-size: 0.72rem;
   font-weight: 600;
   color: #e8e0d0;
@@ -170,7 +172,7 @@
 }
 
 .web-node-sentiment {
-  font-family: 'Cinzel', serif;
+  font-family: v.$font-header;
   font-size: 0.65rem;
   font-weight: 600;
   letter-spacing: 0.02em;

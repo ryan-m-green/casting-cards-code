@@ -64,42 +64,42 @@
       </div>
       <div class="form-field">
         <label class="fi-label">Pronouns</label>
-        <select class="fi" formControlName="pronouns">
-          <option value="">— select —</option>
+        <input class="fi" formControlName="pronouns" list="pronouns-options" placeholder="he/him" />
+        <datalist id="pronouns-options">
           @for (p of pronounOptions; track p) {
-            <option [value]="p">{{ p }}</option>
+            <option [value]="p"></option>
           }
-        </select>
+        </datalist>
       </div>
     </div>
 
     <div class="wr form-row-gap">
       <div class="form-field">
         <label class="fi-label">Alignment</label>
-        <select class="fi" formControlName="alignment">
-          <option value="">— select —</option>
+        <input class="fi" formControlName="alignment" list="alignment-options" placeholder="Neutral Good" />
+        <datalist id="alignment-options">
           @for (a of alignmentOptions; track a) {
-            <option [value]="a">{{ a }}</option>
+            <option [value]="a"></option>
           }
-        </select>
+        </datalist>
       </div>
       <div class="form-field">
         <label class="fi-label">Posture</label>
-        <select class="fi" formControlName="posture">
-          <option value="">— select —</option>
+        <input class="fi" formControlName="posture" list="posture-options" placeholder="Upright" />
+        <datalist id="posture-options">
           @for (p of postureOptions; track p) {
-            <option [value]="p">{{ p }}</option>
+            <option [value]="p"></option>
           }
-        </select>
+        </datalist>
       </div>
       <div class="form-field">
         <label class="fi-label">Speed</label>
-        <select class="fi" formControlName="speed">
-          <option value="">— select —</option>
+        <input class="fi" formControlName="speed" list="speed-options" placeholder="Average" />
+        <datalist id="speed-options">
           @for (s of speedOptions; track s) {
-            <option [value]="s">{{ s }}</option>
+            <option [value]="s"></option>
           }
-        </select>
+        </datalist>
       </div>
     </div>
 

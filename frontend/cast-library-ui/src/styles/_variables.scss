@@ -5,8 +5,8 @@ $color-page-mid:     #f2e6c6;
 $color-page-end:     #eeddb2;
 
 $color-text-primary:   rgba(42, 24, 4, 1.0);
-$color-text-secondary: rgba(72, 48, 14, 0.75);
-$color-text-muted:     rgba(72, 48, 14, 0.45);
+$color-text-secondary: rgba(72, 48, 14, 1.0);
+$color-text-muted:     rgba(72, 48, 14, 1.0);
 
 $color-border:        rgba(110, 75, 22, 0.28);
 $color-border-accent: rgba(130, 88, 28, 0.45);
@@ -18,28 +18,28 @@ $color-gold-solid:    #8c5a1c;
 // Badge colors
 $color-dm-bg:     rgba(130, 28, 28, 0.12);
 $color-dm-border: rgba(130, 28, 28, 0.35);
-$color-dm-text:   rgba(110, 22, 22, 0.88);
+$color-dm-text:   rgba(110, 22, 22, 1.0);
 
 $color-player-bg:     rgba(28, 78, 130, 0.10);
 $color-player-border: rgba(28, 78, 130, 0.30);
-$color-player-text:   rgba(22, 62, 110, 0.88);
+$color-player-text:   rgba(22, 62, 110, 1.0);
 
 $color-ai-bg:     rgba(78, 48, 130, 0.10);
 $color-ai-border: rgba(78, 48, 130, 0.30);
-$color-ai-text:   rgba(62, 38, 110, 0.88);
+$color-ai-text:   rgba(62, 38, 110, 1.0);
 
 $color-locked-bg:     rgba(140, 48, 28, 0.10);
 $color-locked-border: rgba(140, 48, 28, 0.35);
-$color-locked-text:   rgba(120, 40, 22, 0.88);
+$color-locked-text:   rgba(120, 40, 22, 1.0);
 
 $color-open-bg:     rgba(38, 88, 42, 0.10);
 $color-open-border: rgba(38, 88, 42, 0.35);
-$color-open-text:   rgba(30, 72, 34, 0.88);
+$color-open-text:   rgba(30, 72, 34, 1.0);
 
 // Arcane / Indigo — magic accent throughout journal pages
 $color-arcane-bg:     rgba(46, 26, 94, 0.12);
 $color-arcane-border: rgba(90, 58, 154, 0.42);
-$color-arcane-text:   rgba(180, 150, 255, 0.90);
+$color-arcane-text:   rgba(180, 150, 255, 1.0);
 $color-arcane-glow:   rgba(90, 58, 154, 0.18);
 
 // ─── Typography ──────────────────────────────────────────────────────────────

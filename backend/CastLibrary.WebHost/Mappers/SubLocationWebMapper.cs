@@ -1,4 +1,4 @@
-﻿using CastLibrary.Logic.Interfaces;
+using CastLibrary.Logic.Interfaces;
 using CastLibrary.Shared.Domain;
 using CastLibrary.Shared.Responses;
 
@@ -24,7 +24,7 @@ public class SublocationWebMapper(
         {
             Id = domain.Id,
             DmUserId = domain.DmUserId,
-            CityId = domain.CityId,
+            LocationId = domain.LocationId,
             Name = domain.Name,
             Description = domain.Description,
             ImageUrl = domain.ImageUrl,
@@ -41,9 +41,10 @@ public class SublocationWebMapper(
         logging.LogMapping(
             correlation.TraceId, correlation.SpanId,
             Ns, "SublocationWebMapper.ToResponse",
-            "domain→response",
+            "domain?response",
             domain, response);
 
         return response;
     }
 }
+

@@ -1,4 +1,4 @@
-﻿using CastLibrary.Logic.Factories;
+using CastLibrary.Logic.Factories;
 using CastLibrary.Repository.Repositories.Delete;
 using CastLibrary.Repository.Repositories.Read;
 using CastLibrary.Shared.Domain;
@@ -24,7 +24,7 @@ public class AddCastToCampaignCommandHandler(
         var existing = await campaignRepository.GetCastInstanceBySourceCastIdAsync(command.CampaignId, command.Request.CastId);
         if (existing is not null) return null;
 
-        var instance = castInstanceFactory.Create(cast, command.CampaignId, command.Request.CityInstanceId, command.Request.SublocationInstanceId);
+        var instance = castInstanceFactory.Create(cast, command.CampaignId, command.Request.LocationInstanceId, command.Request.SublocationInstanceId);
         return await campaignInsertRepository.InsertCastInstanceAsync(instance);
     }
 }
@@ -39,3 +39,4 @@ public class AddCastToCampaignCommand
     public Guid CampaignId { get; }
     public AddCastToCampaignRequest Request { get; }
 }
+

@@ -1,3 +1,5 @@
+@use '../../../styles/variables' as v;
+
 :host { display: block; height: 100%; }
 
 .page-title-flush {
@@ -9,7 +11,7 @@
   text-align: center;
   margin-bottom: 16px;
   font-size: 16pt;
-  font-family: 'Cinzel', serif;
+  font-family: v.$font-header;
   opacity: 1;
 }
 
@@ -55,12 +57,12 @@
 }
 
 .portal-title {
-  font-family: 'Cinzel', serif;
+  font-family: v.$font-header;
   font-size: 10px;
   font-weight: 600;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: rgba(215, 195, 255, 0.92);
+  color: rgba(215, 195, 255, 1.0);
   text-align: center;
   text-shadow:
     0 0 14px color-mix(in srgb, var(--portal-color, #6e28d0), white 20%),
@@ -168,7 +170,7 @@
 }
 
 .portal-btn {
-  font-family: 'Cinzel', serif;
+  font-family: v.$font-header;
   font-size: 7.5px;
   letter-spacing: 0.10em;
   text-transform: uppercase;
@@ -210,33 +212,33 @@
 }
 
 .import-label {
-  font-family: 'Cinzel', serif;
+  font-family: v.$font-header;
   font-size: 7px;
   font-weight: 600;
   letter-spacing: 0.15em;
   text-transform: uppercase;
-  color: rgba(105, 72, 18, 0.65);
+  color: rgba(105, 72, 18, 1.0);
 }
 
 .import-file-input {
-  font-family: 'Crimson Text', serif;
+  font-family: v.$font-body;
   font-size: 11px;
-  color: rgba(42, 24, 4, 0.75);
+  color: rgba(42, 24, 4, 1.0);
   width: 100%;
   cursor: pointer;
 }
 
 .import-image-count {
-  font-family: 'Crimson Text', serif;
+  font-family: v.$font-body;
   font-size: 10px;
   font-style: italic;
-  color: rgba(42, 24, 4, 0.5);
+  color: rgba(42, 24, 4, 1.0);
 }
 
 .import-error {
-  font-family: 'Crimson Text', serif;
+  font-family: v.$font-body;
   font-size: 11px;
-  color: rgba(160, 40, 20, 0.85);
+  color: rgba(160, 40, 20, 1.0);
   font-style: italic;
 }
 
@@ -251,40 +253,40 @@
 }
 
 .import-summary {
-  font-family: 'Cinzel', serif;
+  font-family: v.$font-header;
   font-size: 9px;
   font-weight: 600;
   letter-spacing: 0.1em;
-  color: rgba(42, 24, 4, 0.8);
+  color: rgba(42, 24, 4, 1.0);
   margin-bottom: 6px;
 }
 
 .import-failures-label {
-  font-family: 'Cinzel', serif;
+  font-family: v.$font-header;
   font-size: 7px;
   font-weight: 600;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: rgba(160, 40, 20, 0.7);
+  color: rgba(160, 40, 20, 1.0);
   margin-bottom: 4px;
 }
 
 .import-failure {
-  font-family: 'Crimson Text', serif;
+  font-family: v.$font-body;
   font-size: 10px;
   font-style: italic;
-  color: rgba(42, 24, 4, 0.7);
+  color: rgba(42, 24, 4, 1.0);
   padding: 2px 0;
   border-bottom: 0.5px solid rgba(110, 75, 22, 0.12);
   line-height: 1.4;
 }
 
 .failure-type {
-  font-family: 'Cinzel', serif;
+  font-family: v.$font-header;
   font-size: 7px;
   font-weight: 700;
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: rgba(160, 40, 20, 0.65);
+  color: rgba(160, 40, 20, 1.0);
   margin-right: 4px;
 }

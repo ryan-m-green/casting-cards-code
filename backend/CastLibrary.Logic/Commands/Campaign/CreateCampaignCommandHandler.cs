@@ -1,4 +1,4 @@
-﻿using CastLibrary.Logic.Factories;
+using CastLibrary.Logic.Factories;
 using CastLibrary.Repository.Repositories.Delete;
 using CastLibrary.Repository.Repositories.Read;
 using CastLibrary.Shared.Domain;
@@ -12,9 +12,9 @@ public interface ICreateCampaignCommandHandler
 }
 public class CreateCampaignCommandHandler(
     ICampaignInsertRepository campaignRepository,
-    ICityReadRepository cityReadRepository,
+    ILocationReadRepository locationReadRepository,
     ICampaignFactory campaignFactory,
-    ICityInstanceFactory cityInstanceFactory) : ICreateCampaignCommandHandler
+    ILocationInstanceFactory locationInstanceFactory) : ICreateCampaignCommandHandler
 {
     public async Task<CampaignDomain> HandleAsync(CreateCampaignCommand command)
     {
@@ -22,12 +22,12 @@ public class CreateCampaignCommandHandler(
         var saved    = await campaignRepository.InsertAsync(campaign);
 
         int sortOrder = 0;
-        foreach (var cityId in command.Request.CityIds)
+        foreach (var LocationId in command.Request.LocationIds)
         {
-            var city = await cityReadRepository.GetByIdAsync(cityId);
-            if (city is null) continue;
-            var instance = cityInstanceFactory.Create(city, saved.Id, sortOrder++);
-            await campaignRepository.InsertCityInstanceAsync(instance);
+            var location = await locationReadRepository.GetByIdAsync(LocationId);
+            if (location is null) continue;
+            var instance = locationInstanceFactory.Create(location, saved.Id, sortOrder++);
+            await campaignRepository.InsertLocationInstanceAsync(instance);
         }
 
         return saved;
@@ -45,3 +45,5 @@ public class CreateCampaignCommand
     public Guid DmUserId { get; }
     public CreateCampaignRequest Request { get; }
 }
+
+

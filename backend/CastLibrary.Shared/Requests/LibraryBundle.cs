@@ -3,7 +3,7 @@ namespace CastLibrary.Shared.Requests;
 public class LibraryBundle
 {
     public List<CastCard> Casts { get; set; } = [];
-    public List<CityCard> Cities { get; set; } = [];
+    public List<LocationCard> Locations { get; set; } = [];
     public List<SublocationCard> Sublocations { get; set; } = [];
 }
 
@@ -23,7 +23,7 @@ public class CastCard
     public string? ImageFileName { get; set; }
 }
 
-public class CityCard
+public class LocationCard
 {
     public string Name { get; set; } = string.Empty;
     public string Classification { get; set; } = string.Empty;

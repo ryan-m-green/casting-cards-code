@@ -1,4 +1,4 @@
-﻿using CastLibrary.Logic.Interfaces;
+using CastLibrary.Logic.Interfaces;
 using CastLibrary.Shared.Domain;
 using CastLibrary.Shared.Responses;
 
@@ -8,7 +8,7 @@ namespace CastLibrary.WebHost.Mappers;
 public interface ICampaignWebMapper
 {
     CampaignListResponse ToListResponse(CampaignDomain domain);
-    CampaignCityInstanceResponse ToCityInstanceResponse(CampaignCityInstanceDomain d);
+    CampaignLocationInstanceResponse ToLocationInstanceResponse(CampaignLocationInstanceDomain d);
     CampaignCastInstanceResponse ToCastInstanceResponse(CampaignCastInstanceDomain d);
     CampaignSublocationInstanceResponse ToSublocationInstanceResponse(CampaignSublocationInstanceDomain d);
     CampaignSecretResponse ToSecretResponse(CampaignSecretDomain d);
@@ -37,7 +37,7 @@ public class CampaignWebMapper(
             FantasyType = domain.FantasyType,
             Status = domain.Status.ToString(),
             SpineColor = domain.SpineColor,
-            CityCount = domain.CityCount,
+            LocationCount = domain.LocationCount,
             PlayerCount = domain.PlayerCount,
             CreatedAt = domain.CreatedAt,
         };
@@ -45,19 +45,19 @@ public class CampaignWebMapper(
         logging.LogMapping(
             correlation.TraceId, correlation.SpanId,
             Ns, "CampaignWebMapper.ToListResponse",
-            "domain→response",
+            "domain?response",
             domain, response);
 
         return response;
     }
 
-    public CampaignCityInstanceResponse ToCityInstanceResponse(CampaignCityInstanceDomain d)
+    public CampaignLocationInstanceResponse ToLocationInstanceResponse(CampaignLocationInstanceDomain d)
     {
-        var response = new CampaignCityInstanceResponse
+        var response = new CampaignLocationInstanceResponse
         {
             InstanceId = d.InstanceId,
             CampaignId = d.CampaignId,
-            SourceCityId = d.SourceCityId,
+            SourceLocationId = d.SourceLocationId,
             Name = d.Name,
             Classification = d.Classification,
             Size = d.Size,
@@ -78,8 +78,8 @@ public class CampaignWebMapper(
 
         logging.LogMapping(
             correlation.TraceId, correlation.SpanId,
-            Ns, "CampaignWebMapper.ToCityInstanceResponse",
-            "domain→response",
+            Ns, "CampaignWebMapper.ToLocationInstanceResponse",
+            "domain?response",
             d, response);
 
         return response;
@@ -92,7 +92,7 @@ public class CampaignWebMapper(
             InstanceId         = d.InstanceId,
             CampaignId         = d.CampaignId,
             SourceCastId       = d.SourceCastId,
-            CityInstanceId     = d.CityInstanceId,
+            LocationInstanceId     = d.LocationInstanceId,
             SublocationInstanceId = d.SublocationInstanceId,
             Name              = d.Name,
             Pronouns          = d.Pronouns,
@@ -116,7 +116,7 @@ public class CampaignWebMapper(
         logging.LogMapping(
             correlation.TraceId, correlation.SpanId,
             Ns, "CampaignWebMapper.ToCastInstanceResponse",
-            "domain→response",
+            "domain?response",
             d, response);
 
         return response;
@@ -129,7 +129,7 @@ public class CampaignWebMapper(
             InstanceId           = d.InstanceId,
             CampaignId           = d.CampaignId,
             SourceSublocationId  = d.SourceSublocationId,
-            CityInstanceId       = d.CityInstanceId,
+            LocationInstanceId       = d.LocationInstanceId,
             Name               = d.Name,
             Description        = d.Description,
             ImagePath          = d.ImageUrl,
@@ -152,7 +152,7 @@ public class CampaignWebMapper(
         logging.LogMapping(
             correlation.TraceId, correlation.SpanId,
             Ns, "CampaignWebMapper.ToSublocationInstanceResponse",
-            "domain→response",
+            "domain?response",
             d, response);
 
         return response;
@@ -165,7 +165,7 @@ public class CampaignWebMapper(
             Id                 = d.Id,
             CampaignId         = d.CampaignId,
             CastInstanceId     = d.CastInstanceId,
-            CityInstanceId     = d.CityInstanceId,
+            LocationInstanceId     = d.LocationInstanceId,
             SublocationInstanceId = d.SublocationInstanceId,
             Content            = d.Content,
             SortOrder          = d.SortOrder,
@@ -176,7 +176,7 @@ public class CampaignWebMapper(
         logging.LogMapping(
             correlation.TraceId, correlation.SpanId,
             Ns, "CampaignWebMapper.ToSecretResponse",
-            "domain→response",
+            "domain?response",
             d, response);
 
         return response;
@@ -199,7 +199,7 @@ public class CampaignWebMapper(
         logging.LogMapping(
             correlation.TraceId, correlation.SpanId,
             Ns, "CampaignWebMapper.ToRelationshipResponse",
-            "domain→response",
+            "domain?response",
             d, response);
 
         return response;
@@ -219,7 +219,7 @@ public class CampaignWebMapper(
         logging.LogMapping(
             correlation.TraceId, correlation.SpanId,
             Ns, "CampaignWebMapper.ToPlayerResponse",
-            "domain→response",
+            "domain?response",
             d, response);
 
         return response;
@@ -236,9 +236,12 @@ public class CampaignWebMapper(
         logging.LogMapping(
             correlation.TraceId, correlation.SpanId,
             Ns, "CampaignWebMapper.ToInviteCodeResponse",
-            "domain→response",
+            "domain?response",
             d, response);
 
         return response;
     }
 }
+
+
+

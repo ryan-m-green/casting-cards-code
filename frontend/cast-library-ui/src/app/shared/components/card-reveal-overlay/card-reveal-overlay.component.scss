@@ -1,3 +1,5 @@
+@use '../../../../styles/variables' as v;
+
 /* ── Backdrop ──────────────────────────────────────────────────── */
 .cr-backdrop {
   position: fixed;
@@ -58,7 +60,7 @@
 }
 
 .cr-secret-label {
-  font-family: 'Cinzel', serif;
+  font-family: v.$font-header;
   font-size: 8px;
   letter-spacing: 0.22em;
   text-transform: uppercase;
@@ -67,7 +69,7 @@
 }
 
 .cr-secret-text {
-  font-family: 'Crimson Text', serif;
+  font-family: v.$font-body;
   font-size: 14px;
   font-style: italic;
   line-height: 1.55;
@@ -76,18 +78,21 @@
 
 /* ── Dismiss button ────────────────────────────────────────────── */
 .cr-dismiss {
-  font-family: 'Cinzel', serif;
-  font-size: 9px;
+  font-family: v.$font-header;
+  font-size: 11px;
   letter-spacing: 0.2em;
   text-transform: uppercase;
-  color: rgba(200, 180, 255, 0.55);
-  background: none;
-  border: none;
+  color: rgba(220, 200, 255, 0.9);
+  background: rgba(120, 80, 200, 0.25);
+  border: 1px solid rgba(180, 140, 255, 0.5);
+  border-radius: 4px;
   cursor: pointer;
-  padding: 4px 10px;
-  transition: color 0.2s ease;
+  padding: 8px 20px;
+  transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease;
 
   &:hover {
-    color: rgba(220, 200, 255, 0.9);
+    background: rgba(140, 100, 220, 0.45);
+    border-color: rgba(200, 160, 255, 0.8);
+    color: #fff;
   }
 }

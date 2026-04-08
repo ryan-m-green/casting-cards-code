@@ -6,7 +6,7 @@ import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../../environments/environment';
 import { CampaignCastInstance } from '../../../shared/models/cast.model';
-import { CampaignCityInstance } from '../../../shared/models/city.model';
+import { CampaignLocationInstance } from '../../../shared/models/location.model';
 import { CampaignSecret } from '../../../shared/models/secret.model';
 import { CampaignCastPlayerNotes } from '../../../shared/models/campaign.model';
 
@@ -30,9 +30,9 @@ const PERCEPTION_LABELS: Record<number, string> = {
   5:    'Devoted',
 };
 
-interface CityGroup {
-  cityId: string;
-  cityName: string;
+interface LocationGroup {
+  locationId: string;
+  locationName: string;
   casts: CampaignCastInstance[];
 }
 
@@ -47,7 +47,7 @@ export class PlayerCastNotesComponent implements OnInit, OnChanges, OnDestroy {
   @Input() campaignId!: string;
   @Input() castInstance!: CampaignCastInstance;
   @Input() allCasts: CampaignCastInstance[] = [];
-  @Input() allCities: CampaignCityInstance[] = [];
+  @Input() allLocations: CampaignLocationInstance[] = [];
   @Input() castSecrets: CampaignSecret[] = [];
 
   private http = inject(HttpClient);
@@ -84,37 +84,37 @@ export class PlayerCastNotesComponent implements OnInit, OnChanges, OnDestroy {
     this.allCasts.filter(c => this.notes().connections.includes(c.instanceId))
   );
 
-  citiesWithCasts = computed((): CityGroup[] => {
+  locationsWithCasts = computed((): LocationGroup[] => {
     const connected = new Set(this.notes().connections);
     const available = this.allCasts.filter(
       c => c.instanceId !== this.castInstance?.instanceId && !connected.has(c.instanceId)
     );
 
-    const currentCityId = this.castInstance?.cityInstanceId ?? null;
-    const cityOrder: string[] = [];
-    const byCity = new Map<string, CampaignCastInstance[]>();
+    const currentLocationId = this.castInstance?.locationInstanceId ?? null;
+    const locationOrder: string[] = [];
+    const byLocation = new Map<string, CampaignCastInstance[]>();
 
     for (const cast of available) {
-      const cityId = cast.cityInstanceId ?? 'none';
-      if (!byCity.has(cityId)) {
-        byCity.set(cityId, []);
-        cityOrder.push(cityId);
+      const locationId = cast.locationInstanceId ?? 'none';
+      if (!byLocation.has(locationId)) {
+        byLocation.set(locationId, []);
+        locationOrder.push(locationId);
       }
-      byCity.get(cityId)!.push(cast);
+      byLocation.get(locationId)!.push(cast);
     }
 
-    cityOrder.sort((a, b) => {
-      if (a === currentCityId) return -1;
-      if (b === currentCityId) return 1;
+    locationOrder.sort((a, b) => {
+      if (a === currentLocationId) return -1;
+      if (b === currentLocationId) return 1;
       return 0;
     });
 
-    return cityOrder.map(cityId => ({
-      cityId,
-      cityName: cityId === 'none'
+    return locationOrder.map(locationId => ({
+      locationId,
+      locationName: locationId === 'none'
         ? 'Unknown'
-        : (this.allCities.find(c => c.instanceId === cityId)?.name ?? 'Unknown'),
-      casts: byCity.get(cityId) ?? [],
+        : (this.allLocations.find(c => c.instanceId === locationId)?.name ?? 'Unknown'),
+      casts: byLocation.get(locationId) ?? [],
     }));
   });
 

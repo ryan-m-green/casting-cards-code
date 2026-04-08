@@ -1,16 +1,37 @@
+@use '../../../../styles/variables' as v;
+
 :host { display: block; height: 100%; }
 
 .player-nav {
   display: flex;
   align-items: center;
-  justify-content: flex-end;
+  gap: 4px;
   padding: 6px 0 8px;
   border-bottom: 1px solid rgba(255, 255, 255, 0.08);
   margin-bottom: 4px;
 }
 
+.player-nav__link {
+  font-size: 0.72rem;
+  font-family: inherit;
+  color: rgba(140, 90, 28, 0.70);
+  text-decoration: none;
+  padding: 3px 8px;
+  border-radius: 4px;
+  border: 1px solid transparent;
+  transition: color 0.15s ease, border-color 0.15s ease, background 0.15s ease;
+  white-space: nowrap;
+
+  &:hover {
+    color: #8c5a1c;
+    border-color: rgba(140, 90, 28, 0.30);
+    background: rgba(140, 90, 28, 0.06);
+  }
+}
+
 .player-nav__account {
   position: relative;
+  margin-left: auto;
 }
 
 .player-nav__account-trigger {
@@ -79,12 +100,12 @@
   text-align: center;
   margin-bottom: 16px;
   font-size: 16pt;
-  font-family: 'Cinzel', serif;
+  font-family: v.$font-header;
   opacity: 1;
 }
 
 .section-label {
-  font-family: 'Cinzel', serif;
+  font-family: v.$font-header;
   font-size: 8px;
   letter-spacing: 0.22em;
   text-transform: uppercase;
@@ -147,7 +168,7 @@
 }
 
 .portal-title {
-  font-family: 'Cinzel', serif;
+  font-family: v.$font-header;
   font-size: 10px;
   font-weight: 600;
   letter-spacing: 0.12em;
@@ -271,7 +292,7 @@
 }
 
 .join-label {
-  font-family: 'Cinzel', serif;
+  font-family: v.$font-header;
   font-size: 8px;
   letter-spacing: 0.18em;
   text-transform: uppercase;
@@ -294,7 +315,7 @@
 }
 
 .join-btn {
-  font-family: 'Cinzel', serif;
+  font-family: v.$font-header;
   font-size: 9px;
   letter-spacing: 0.12em;
   text-transform: uppercase;
@@ -311,7 +332,7 @@
 }
 
 .join-error {
-  font-family: 'Crimson Text', serif;
+  font-family: v.$font-body;
   font-size: 11px;
   color: rgba(160, 40, 20, 0.85);
   margin: 6px 0 0;

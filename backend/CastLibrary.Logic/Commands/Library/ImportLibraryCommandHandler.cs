@@ -1,4 +1,4 @@
-﻿using CastLibrary.Logic.Interfaces;
+using CastLibrary.Logic.Interfaces;
 using CastLibrary.Logic.Services;
 using CastLibrary.Repository.Repositories.Insert;
 using CastLibrary.Repository.Repositories.Read;
@@ -17,8 +17,8 @@ public interface IImportLibraryCommandHandler
 public class ImportLibraryCommandHandler(
     ICastReadRepository castReadRepository,
     ICastInsertRepository castInsertRepository,
-    ICityReadRepository cityRepository,
-    ICityInsertRepository cityInsertRepository,
+    ILocationReadRepository locationRepository,
+    ILocationInsertRepository locationInsertRepository,
     ISublocationReadRepository sublocationReadRepository,
     ISublocationInsertRepository sublocationInsertRepository,
     IImageStorageOperator imageStorage,
@@ -31,13 +31,13 @@ public class ImportLibraryCommandHandler(
 
         var existingCastNames   = (await castReadRepository.GetAllByDmAsync(command.DmUserId))
                                     .Select(n => n.Name).ToHashSet(StringComparer.OrdinalIgnoreCase);
-        var existingCityNames  = (await cityRepository.GetAllByDmAsync(command.DmUserId))
+        var existingLocationNames  = (await locationRepository.GetAllByDmAsync(command.DmUserId))
                                     .Select(c => c.Name).ToHashSet(StringComparer.OrdinalIgnoreCase);
         var existingLocNames   = (await sublocationReadRepository.GetAllByDmAsync(command.DmUserId))
                                     .Select(l => l.Name).ToHashSet(StringComparer.OrdinalIgnoreCase);
 
         var insertedCastNames  = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
-        var insertedCityNames = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        var insertedLocationNames = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
         var insertedLocNames  = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
 
         foreach (var card in command.Bundle.Casts)
@@ -72,12 +72,12 @@ public class ImportLibraryCommandHandler(
             }
         }
 
-        foreach (var card in command.Bundle.Cities)
+        foreach (var card in command.Bundle.Locations)
         {
             try
             {
-                var name   = ResolveName(card.Name, existingCityNames, insertedCityNames);
-                var domain = new CityDomain
+                var name   = ResolveName(card.Name, existingLocationNames, insertedLocationNames);
+                var domain = new LocationDomain
                 {
                     Id = Guid.NewGuid(), DmUserId = command.DmUserId, Name = name,
                     Classification = card.Classification, Size = card.Size,
@@ -87,18 +87,18 @@ public class ImportLibraryCommandHandler(
                     Description = card.Description, CreatedAt = DateTime.UtcNow,
                 };
 
-                await cityInsertRepository.InsertAsync(domain);
-                insertedCityNames.Add(name);
-                response.CitiesImported++;
+                await locationInsertRepository.InsertAsync(domain);
+                insertedLocationNames.Add(name);
+                response.LocationsImported++;
 
                 await TrySaveImageAsync(card.ImageFileName, command.Images, domain.Id, command.DmUserId,
-                    EntityType.City, name, "City", response.Failures);
+                    EntityType.Location, name, "Location", response.Failures);
             }
             catch (Exception ex)
             {
                 response.Failures.Add(new ImportFailure
                 {
-                    CardType = "City", Name = card.Name,
+                    CardType = "Location", Name = card.Name,
                     Reason = $"Failed to import: {ex.Message}"
                 });
             }
@@ -188,3 +188,5 @@ public class ImportLibraryCommand
     public Dictionary<string, Stream> Images { get; }
     public Guid DmUserId { get; }
 }
+
+

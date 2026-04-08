@@ -54,7 +54,7 @@ export class CampaignSublocationSelectorComponent implements OnInit, OnDestroy {
   @ViewChild('deckStack')       deckStackRef!:      ElementRef<HTMLElement>;
 
   campaignId     = '';
-  cityInstanceId = '';
+  locationInstanceId = '';
 
   allSublocations           = signal<SublocationCard[]>([]);
   addedSublocations         = signal<AddedSublocation[]>([]);
@@ -121,7 +121,7 @@ export class CampaignSublocationSelectorComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.campaignId     = this.route.snapshot.paramMap.get('id')       ?? '';
-    this.cityInstanceId = this.route.snapshot.paramMap.get('cityId')   ?? '';
+    this.locationInstanceId = this.route.snapshot.paramMap.get('locationId')   ?? '';
 
     this.http.get<{ keywords: string[] }>(`${environment.apiUrl}/api/users/keywords`)
       .subscribe(r => this.allDmKeywords.set(r.keywords));
@@ -144,9 +144,9 @@ export class CampaignSublocationSelectorComponent implements OnInit, OnDestroy {
       if (campaign) {
         const campaignSublocations: any[] = campaign.sublocations ?? [];
 
-        // Sublocations already settled for this city → populate selected stack
+        // Sublocations already settled for this location → populate selected stack
         const added: AddedSublocation[] = campaignSublocations
-          .filter((l: any) => l.cityInstanceId === this.cityInstanceId)
+          .filter((l: any) => l.locationInstanceId === this.locationInstanceId)
           .map((l: any) => {
             const subLoc: SublocationCard = {
               id:          l.sourceSublocationId,
@@ -168,10 +168,10 @@ export class CampaignSublocationSelectorComponent implements OnInit, OnDestroy {
           .filter(Boolean) as AddedSublocation[];
         this.addedSublocations.set(added);
 
-        // Exclusion set: sublocations claimed by OTHER cities
+        // Exclusion set: sublocations claimed by OTHER locations
         const usedIds = new Set<string>(
           campaignSublocations
-            .filter((l: any) => l.cityInstanceId !== this.cityInstanceId)
+            .filter((l: any) => l.locationInstanceId !== this.locationInstanceId)
             .map((l: any) => l.sourceSublocationId)
             .filter(Boolean)
         );
@@ -252,7 +252,7 @@ export class CampaignSublocationSelectorComponent implements OnInit, OnDestroy {
 
     this.http.post<{ instanceId: string }>(
       `${environment.apiUrl}/api/campaigns/${this.campaignId}/sublocations`,
-      { sublocationId: subLoc.id, cityInstanceId: this.cityInstanceId }
+      { sublocationId: subLoc.id, locationInstanceId: this.locationInstanceId }
     ).subscribe({ 
       next: resp => {
         // Replace temp ID with actual ID from server
@@ -286,10 +286,10 @@ export class CampaignSublocationSelectorComponent implements OnInit, OnDestroy {
     this.expandedIdx.update(i => i === index ? -1 : index);
   }
 
-  goToCast(sublocationInstanceId: string) {
+  goToLocation(sublocationInstanceId: string) {
     this.router.navigate([
       '/dm/campaigns', this.campaignId,
-      'cities', this.cityInstanceId,
+      'locations', this.locationInstanceId,
       'sublocations', sublocationInstanceId, 'cast',
     ]);
   }

@@ -19,8 +19,8 @@ export const routes: Routes = [
         loadComponent: () => import('./features/player/player-campaign-detail/player-campaign-detail.component').then(m => m.PlayerCampaignDetailComponent),
       },
       {
-        path: 'cities/:cityInstanceId',
-        loadComponent: () => import('./features/player/player-city-detail/player-city-detail.component').then(m => m.PlayerCityDetailComponent),
+        path: 'locations/:locationInstanceId',
+        loadComponent: () => import('./features/player/player-location-detail/player-location-detail.component').then(m => m.PlayerLocationDetailComponent),
       },
       {
         path: 'sublocations/:sublocationInstanceId',
@@ -33,9 +33,9 @@ export const routes: Routes = [
     ],
   },
   {
-    path: 'campaign/:id/cities/:cityInstanceId',
+    path: 'campaign/:id/locations/:locationInstanceId',
     canActivate: [authGuard],
-    loadComponent: () => import('./features/campaign/campaign-city-detail/campaign-city-detail.component').then(m => m.CampaignCityDetailComponent),
+    loadComponent: () => import('./features/campaign/campaign-location-detail/campaign-location-detail.component').then(m => m.CampaignLocationDetailComponent),
   },
   {
     path: 'campaign/:id/sublocations/:sublocationInstanceId',
@@ -59,6 +59,10 @@ export const routes: Routes = [
       {
         path: 'join',
         loadComponent: () => import('./features/role-selection/role-selection.component').then(m => m.RoleSelectionComponent),
+      },
+      {
+        path: 'about',
+        loadComponent: () => import('./features/about/about.component').then(m => m.AboutComponent),
       },
       {
         path: 'subscribe',
@@ -104,16 +108,16 @@ export const routes: Routes = [
             loadComponent: () => import('./features/cast/cast-form/cast-form.component').then(m => m.CastFormComponent),
           },
           {
-            path: 'cities',
-            loadComponent: () => import('./features/city/city-library/city-library.component').then(m => m.CityLibraryComponent),
+            path: 'locations',
+            loadComponent: () => import('./features/location/location-library/location-library.component').then(m => m.LocationLibraryComponent),
           },
           {
-            path: 'cities/new',
-            loadComponent: () => import('./features/city/city-form/city-form.component').then(m => m.CityFormComponent),
+            path: 'locations/new',
+            loadComponent: () => import('./features/location/location-form/location-form.component').then(m => m.LocationFormComponent),
           },
           {
-            path: 'cities/:id',
-            loadComponent: () => import('./features/city/city-form/city-form.component').then(m => m.CityFormComponent),
+            path: 'locations/:id',
+            loadComponent: () => import('./features/location/location-form/location-form.component').then(m => m.LocationFormComponent),
           },
           {
             path: 'campaigns',
@@ -128,11 +132,11 @@ export const routes: Routes = [
             loadComponent: () => import('./features/campaign/campaign-creator/campaign-creator.component').then(m => m.CampaignCreatorComponent),
           },
           {
-            path: 'campaigns/:id/cities/:cityId/sublocations',
+            path: 'campaigns/:id/locations/:locationId/sublocations',
             loadComponent: () => import('./features/campaign/campaign-sublocation-selector/campaign-sublocation-selector.component').then(m => m.CampaignSublocationSelectorComponent),
           },
           {
-            path: 'campaigns/:id/cities/:cityId/sublocations/:sublocationInstanceId/cast',
+            path: 'campaigns/:id/locations/:locationId/sublocations/:sublocationInstanceId/cast',
             loadComponent: () => import('./features/campaign/campaign-cast-editor/campaign-cast-editor.component').then(m => m.CampaignCastEditorComponent),
           },
           {

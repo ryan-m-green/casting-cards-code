@@ -17,8 +17,8 @@ public interface ICampaignReadRepository
     Task<CampaignCastInstanceDomain> GetCastInstanceBySourceCastIdAsync(Guid campaignId, Guid sourceCastId);
     Task<CampaignCastInstanceDomain> GetCastInstanceByIdAsync(Guid instanceId);
     Task<List<CampaignCastInstanceDomain>> GetCastInstancesByCampaignAsync(Guid campaignId);
-    Task<List<CampaignCityInstanceDomain>> GetCityInstancesByCampaignAsync(Guid campaignId);
-    Task<CampaignCityInstanceDomain> GetCityInstanceByIdAsync(Guid instanceId);
+    Task<List<CampaignLocationInstanceDomain>> GetLocationInstancesByCampaignAsync(Guid campaignId);
+    Task<CampaignLocationInstanceDomain> GetLocationInstanceByIdAsync(Guid instanceId);
     Task<List<CampaignSublocationInstanceDomain>> GetSublocationInstancesByCampaignAsync(Guid campaignId);
     Task<CampaignSublocationInstanceDomain> GetSublocationInstanceByIdAsync(Guid instanceId);
     Task<CampaignSublocationInstanceDomain> GetSublocationInstanceBySourceSublocationIdAsync(Guid campaignId, Guid sourceSublocationId);
@@ -46,12 +46,12 @@ public class CampaignReadRepository(
                 c.status,
                 c.spine_color    AS SpineColor,
                 c.created_at     AS CreatedAt,
-                COALESCE(ci.city_count, 0)   AS CityCount,
+                COALESCE(ci.location_count, 0)   AS LocationCount,
                 COALESCE(cp.player_count, 0) AS PlayerCount
               FROM campaigns c
               LEFT JOIN (
-                SELECT campaign_id, COUNT(*) AS city_count
-                FROM campaign_city_instances
+                SELECT campaign_id, COUNT(*) AS location_count
+                FROM campaign_location_instances
                 GROUP BY campaign_id
               ) ci ON ci.campaign_id = c.id
               LEFT JOIN (
@@ -84,13 +84,13 @@ public class CampaignReadRepository(
                 c.status,
                 c.spine_color    AS SpineColor,
                 c.created_at     AS CreatedAt,
-                COALESCE(ci.city_count, 0)   AS CityCount,
+                COALESCE(ci.location_count, 0)   AS LocationCount,
                 COALESCE(cp.player_count, 0) AS PlayerCount
               FROM campaigns c
               INNER JOIN campaign_players cp2 ON cp2.campaign_id = c.id AND cp2.player_user_id = @PlayerUserId
               LEFT JOIN (
-                SELECT campaign_id, COUNT(*) AS city_count
-                FROM campaign_city_instances
+                SELECT campaign_id, COUNT(*) AS location_count
+                FROM campaign_location_instances
                 GROUP BY campaign_id
               ) ci ON ci.campaign_id = c.id
               LEFT JOIN (
@@ -135,30 +135,30 @@ public class CampaignReadRepository(
         return entity is null ? null : mapper.ToDomain(entity);
     }
 
-    public async Task<List<CampaignCityInstanceDomain>> GetCityInstancesByCampaignAsync(Guid campaignId)
+    public async Task<List<CampaignLocationInstanceDomain>> GetLocationInstancesByCampaignAsync(Guid campaignId)
     {
         var spanId = correlation.NewSpan();
         var @params = new { CampaignId = campaignId };
         const string sql =
             @"SELECT ci.*
-              FROM campaign_city_instances ci
-              LEFT JOIN cities c ON c.id = ci.source_city_id
+              FROM campaign_location_instances ci
+              LEFT JOIN locations c ON c.id = ci.source_location_id
               WHERE ci.campaign_id = @CampaignId
               ORDER BY ci.sort_order";
 
-        logging.LogDbOperation(correlation.TraceId, spanId, "SELECT", "campaign_city_instances", @params);
+        logging.LogDbOperation(correlation.TraceId, spanId, "SELECT", "campaign_location_instances", @params);
 
         using var conn = CreateConnection();
         var rows = (await conn.QueryAsync<dynamic>(sql, @params)).ToList();
 
-        logging.LogDbOperation(correlation.TraceId, spanId, "SELECT", "campaign_city_instances",
+        logging.LogDbOperation(correlation.TraceId, spanId, "SELECT", "campaign_location_instances",
             @params, rows.Count);
 
-        return rows.Select(r => new CampaignCityInstanceDomain
+        return rows.Select(r => new CampaignLocationInstanceDomain
         {
             InstanceId = r.instance_id,
             CampaignId = r.campaign_id,
-            SourceCityId = r.source_city_id,
+            SourceLocationId = r.source_location_id,
             Name = r.name,
             Classification = r.classification ?? string.Empty,
             Size = r.size ?? string.Empty,
@@ -198,7 +198,7 @@ public class CampaignReadRepository(
             InstanceId = r.instance_id,
             CampaignId = r.campaign_id,
             SourceCastId = r.source_cast_id,
-            CityInstanceId = r.city_instance_id,
+            LocationInstanceId = r.location_instance_id,
             SublocationInstanceId = r.sublocation_instance_id,
             Name = r.name,
             Pronouns = r.pronouns ?? string.Empty,
@@ -239,7 +239,7 @@ public class CampaignReadRepository(
             InstanceId = r.instance_id,
             CampaignId = r.campaign_id,
             SourceCastId = r.source_cast_id,
-            CityInstanceId = r.city_instance_id,
+            LocationInstanceId = r.location_instance_id,
             SublocationInstanceId = r.sublocation_instance_id,
             Name = r.name,
             Pronouns = r.pronouns ?? string.Empty,
@@ -279,7 +279,7 @@ public class CampaignReadRepository(
             InstanceId = r.instance_id,
             CampaignId = r.campaign_id,
             SourceCastId = r.source_cast_id,
-            CityInstanceId = r.city_instance_id,
+            LocationInstanceId = r.location_instance_id,
             SublocationInstanceId = r.sublocation_instance_id,
             Name = r.name,
             Pronouns = r.pronouns ?? string.Empty,
@@ -299,28 +299,28 @@ public class CampaignReadRepository(
         }).ToList();
     }
 
-    public async Task<CampaignCityInstanceDomain> GetCityInstanceByIdAsync(Guid instanceId)
+    public async Task<CampaignLocationInstanceDomain> GetLocationInstanceByIdAsync(Guid instanceId)
     {
         var spanId = correlation.NewSpan();
         var @params = new { InstanceId = instanceId };
 
-        logging.LogDbOperation(correlation.TraceId, spanId, "SELECT", "campaign_city_instances", @params);
+        logging.LogDbOperation(correlation.TraceId, spanId, "SELECT", "campaign_location_instances", @params);
 
         using var conn = CreateConnection();
         var rows = (await conn.QueryAsync<dynamic>(
-            "SELECT * FROM campaign_city_instances WHERE instance_id = @InstanceId",
+            "SELECT * FROM campaign_location_instances WHERE instance_id = @InstanceId",
             @params)).ToList();
 
-        logging.LogDbOperation(correlation.TraceId, spanId, "SELECT", "campaign_city_instances",
+        logging.LogDbOperation(correlation.TraceId, spanId, "SELECT", "campaign_location_instances",
             @params, rows.Count);
 
         var r = rows.FirstOrDefault();
         if (r is null) return null;
-        return new CampaignCityInstanceDomain
+        return new CampaignLocationInstanceDomain
         {
             InstanceId = r.instance_id,
             CampaignId = r.campaign_id,
-            SourceCityId = r.source_city_id,
+            SourceLocationId = r.source_location_id,
             Name = r.name,
             Classification = r.classification ?? string.Empty,
             Size = r.size ?? string.Empty,
@@ -348,7 +348,7 @@ public class CampaignReadRepository(
 
         using var conn = CreateConnection();
         var r = await conn.QueryFirstOrDefaultAsync<dynamic>(
-            @"SELECT instance_id, campaign_id, source_sublocation_id, city_instance_id,
+            @"SELECT instance_id, campaign_id, source_sublocation_id, location_instance_id,
                      is_visible_to_players, name, description, keywords, custom_items, dm_notes
               FROM campaign_sublocation_instances
               WHERE instance_id = @InstanceId",
@@ -363,7 +363,7 @@ public class CampaignReadRepository(
             InstanceId           = r.instance_id,
             CampaignId           = r.campaign_id,
             SourceSublocationId  = r.source_sublocation_id,
-            CityInstanceId       = r.city_instance_id,
+            LocationInstanceId       = r.location_instance_id,
             IsVisibleToPlayers   = r.is_visible_to_players,
             Name                 = r.name,
             Description          = r.description ?? string.Empty,
@@ -383,7 +383,7 @@ public class CampaignReadRepository(
 
         using var conn = CreateConnection();
         var instances = (await conn.QueryAsync<dynamic>(
-            @"SELECT instance_id, campaign_id, source_sublocation_id, city_instance_id,
+            @"SELECT instance_id, campaign_id, source_sublocation_id, location_instance_id,
                      is_visible_to_players, name, description, keywords, custom_items, dm_notes
               FROM campaign_sublocation_instances
               WHERE campaign_id = @CampaignId
@@ -402,7 +402,7 @@ public class CampaignReadRepository(
             InstanceId          = r.instance_id,
             CampaignId          = r.campaign_id,
             SourceSublocationId = r.source_sublocation_id,
-            CityInstanceId      = r.city_instance_id,
+            LocationInstanceId      = r.location_instance_id,
             IsVisibleToPlayers  = r.is_visible_to_players,
             Name                = r.name,
             Description         = r.description ?? string.Empty,
@@ -463,7 +463,7 @@ public class CampaignReadRepository(
             InstanceId          = r.instance_id,
             CampaignId          = r.campaign_id,
             SourceSublocationId = r.source_sublocation_id,
-            CityInstanceId      = r.city_instance_id,
+            LocationInstanceId      = r.location_instance_id,
             Name                = r.name,
             Description         = r.description ?? string.Empty,
             Keywords            = r.keywords ?? Array.Empty<string>(),
@@ -485,3 +485,8 @@ public class CampaignReadRepository(
         catch { return []; }
     }
 }
+
+
+
+
+

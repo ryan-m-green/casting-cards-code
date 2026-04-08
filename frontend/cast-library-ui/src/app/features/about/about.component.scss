@@ -1,0 +1,183 @@
+@use '../../../styles/variables' as v;
+
+:host { display: block; height: 100%; }
+
+// ── Page title ────────────────────────────────────────────────────────────────
+
+.about-title {
+  font-family: v.$font-header;
+  font-size: 17px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  color: rgba(42, 24, 4, 1.0);
+  text-align: center;
+  margin: 10px 0 10px;
+}
+
+// ── Content area ──────────────────────────────────────────────────────────────
+
+.about-content {
+  padding-bottom: 8px;
+}
+
+// ── Section label spacing ─────────────────────────────────────────────────────
+
+.about-section-label {
+  margin: 14px 0 8px;
+}
+
+// ── Body text ─────────────────────────────────────────────────────────────────
+
+.about-body {
+  font-family: v.$font-body;
+  font-size: 13px;
+  font-style: italic;
+  color: rgba(42, 24, 4, 0.82);
+  line-height: 1.65;
+  margin-bottom: 10px;
+
+  &--creator {
+    margin-bottom: 0;
+    color: rgba(42, 24, 4, 0.78);
+  }
+}
+
+// ── Philosophy pillars ────────────────────────────────────────────────────────
+
+.about-pillars {
+  display: flex;
+  flex-direction: column;
+}
+
+.about-pillar {
+  padding: 7px 0;
+  border-bottom: 0.5px solid rgba(110, 75, 22, 0.16);
+  font-family: v.$font-body;
+  font-size: 13px;
+  font-style: italic;
+  color: rgba(42, 24, 4, 0.82);
+  line-height: 1.55;
+
+  &:first-child { border-top: 0.5px solid rgba(110, 75, 22, 0.16); }
+}
+
+.about-pillar-title {
+  font-family: v.$font-header;
+  font-size: 8px;
+  font-style: normal;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(72, 48, 14, 0.80);
+  margin-right: 5px;
+}
+
+.about-pillar-body {
+  font-style: italic;
+}
+
+// ── Creator block ─────────────────────────────────────────────────────────────
+
+.about-creator {
+  margin-bottom: 0;
+  background: rgba(255, 248, 232, 0.30);
+}
+
+// ── Player nav (mirrors player-campaigns nav styles) ──────────────────────────
+
+.player-nav {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 6px 0 8px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  margin-bottom: 4px;
+}
+
+.player-nav__link {
+  font-size: 0.72rem;
+  font-family: inherit;
+  color: rgba(140, 90, 28, 0.70);
+  text-decoration: none;
+  padding: 3px 8px;
+  border-radius: 4px;
+  border: 1px solid transparent;
+  transition: color 0.15s ease, border-color 0.15s ease, background 0.15s ease;
+  white-space: nowrap;
+
+  &:hover {
+    color: #8c5a1c;
+    border-color: rgba(140, 90, 28, 0.30);
+    background: rgba(140, 90, 28, 0.06);
+  }
+}
+
+.player-nav__spacer {
+  flex: 1;
+}
+
+.player-nav__account {
+  position: relative;
+}
+
+.player-nav__account-trigger {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 0.72rem;
+  font-family: inherit;
+  color: rgba(140, 90, 28, 0.70);
+  background: rgba(0, 0, 0, 0.08);
+  border: 1px solid rgba(140, 90, 28, 0.20);
+  border-radius: 4px;
+  padding: 3px 8px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: color 0.15s ease, border-color 0.15s ease, background 0.15s ease;
+
+  &:hover {
+    color: #8c5a1c;
+    border-color: rgba(140, 90, 28, 0.40);
+    background: rgba(140, 90, 28, 0.06);
+  }
+}
+
+.player-nav__caret {
+  font-size: 10px;
+  opacity: 0.60;
+  transition: transform 0.15s;
+
+  &--open { transform: rotate(180deg); }
+}
+
+.player-nav__dropdown {
+  position: absolute;
+  top: calc(100% + 4px);
+  right: 0;
+  min-width: 140px;
+  background: #e2d096;
+  border: 1px solid rgba(140, 90, 28, 0.28);
+  border-radius: 4px;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.18);
+  z-index: 50;
+  overflow: hidden;
+}
+
+.player-nav__dropdown-item {
+  display: block;
+  width: 100%;
+  font-size: 0.72rem;
+  font-family: inherit;
+  color: rgba(100, 60, 10, 0.85);
+  text-align: left;
+  background: none;
+  border: none;
+  padding: 7px 12px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.12s;
+
+  &:hover {
+    background: rgba(140, 90, 28, 0.12);
+  }
+}

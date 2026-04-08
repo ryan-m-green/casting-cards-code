@@ -69,7 +69,7 @@ export class PlayerCastDetailComponent implements OnInit {
           id: event.secretId,
           campaignId: event.campaignId,
           castInstanceId: event.castInstanceId,
-          cityInstanceId: event.cityInstanceId,
+          locationInstanceId: event.locationInstanceId,
           sublocationInstanceId: event.sublocationInstanceId,
           content: event.secretContent,
           sortOrder: 0,
@@ -100,7 +100,7 @@ export class PlayerCastDetailComponent implements OnInit {
           if (!c) return c;
           return {
             ...c,
-            cities:    c.cities.filter(x => x.instanceId !== event.instanceId),
+            locations: c.locations.filter(x => x.instanceId !== event.instanceId),
             sublocations: c.sublocations.filter(x => x.instanceId !== event.instanceId),
             casts:     c.casts.filter(x => x.instanceId !== event.instanceId),
           };
@@ -139,11 +139,11 @@ export class PlayerCastDetailComponent implements OnInit {
     this.router.navigate(['/player/campaign', this.campaignId(), 'sublocations', this.sublocationInstanceId()]);
   }
 
-  goToCity() {
-    const cityId = this.parentSublocation()?.cityInstanceId;
-    if (cityId) {
+  goToLocation() {
+    const locationId = this.parentSublocation()?.locationInstanceId;
+    if (locationId) {
       this.transition.quickCover();
-      this.router.navigate(['/player/campaign', this.campaignId(), 'cities', cityId]);
+      this.router.navigate(['/player/campaign', this.campaignId(), 'locations', locationId]);
     }
   }
 
