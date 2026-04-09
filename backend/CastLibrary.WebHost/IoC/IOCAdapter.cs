@@ -10,6 +10,10 @@ namespace CastLibrary.WebHost.IoC
         public static IServiceCollection AddAdapter(this IServiceCollection services, IConfiguration configuration)
         {
             var useLocalStorage = false;
+#if (DEBUG)
+            useLocalStorage = true;
+#endif
+
             services.AddScoped<IEmailOperator, EmailOperator>();
 
             if (useLocalStorage)

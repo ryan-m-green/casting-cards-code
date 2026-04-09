@@ -61,6 +61,23 @@ export class AuthService {
 
   private loadUser(): User | null {
     const stored = localStorage.getItem(this.USER_KEY);
-    return stored ? JSON.parse(stored) : null;
+    if (!stored) return null;
+    if (this.isTokenExpired()) {
+      localStorage.removeItem(this.TOKEN_KEY);
+      localStorage.removeItem(this.USER_KEY);
+      return null;
+    }
+    return JSON.parse(stored);
+  }
+
+  private isTokenExpired(): boolean {
+    const token = localStorage.getItem(this.TOKEN_KEY);
+    if (!token) return true;
+    try {
+      const payload = JSON.parse(atob(token.split('.')[1]));
+      return payload.exp * 1000 < Date.now();
+    } catch {
+      return true;
+    }
   }
 }

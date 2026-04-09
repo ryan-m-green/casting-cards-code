@@ -186,14 +186,25 @@ export class LocationFormComponent implements OnInit {
     const input = event.target as HTMLInputElement;
     const file  = input.files?.[0];
     if (!file || !this.locationId()) return;
+    const previousUrl = this.imageUrl();
+    const objectUrl   = URL.createObjectURL(file);
+    this.imageUrl.set(objectUrl);
     this.imageUploading.set(true);
     const formData = new FormData();
     formData.append('file', file);
     this.http.post<{ imageUrl: string }>(
       `${environment.apiUrl}/api/locations/${this.locationId()}/image`, formData
     ).subscribe({
-      next: res => { this.imageUrl.set(res.imageUrl); this.imageUploading.set(false); },
-      error: ()  => { this.imageUploading.set(false); },
+      next: res => {
+        URL.revokeObjectURL(objectUrl);
+        this.imageUrl.set(res.imageUrl);
+        this.imageUploading.set(false);
+      },
+      error: () => {
+        URL.revokeObjectURL(objectUrl);
+        this.imageUrl.set(previousUrl);
+        this.imageUploading.set(false);
+      },
     });
   }
 }
