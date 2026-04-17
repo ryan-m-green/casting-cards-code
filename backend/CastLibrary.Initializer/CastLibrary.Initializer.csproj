@@ -9,14 +9,14 @@
 
   <ItemGroup>
     <PackageReference Include="BCrypt.Net-Next" Version="4.1.0" />
-    <PackageReference Include="Microsoft.Extensions.Configuration" Version="10.0.0" />
-    <PackageReference Include="Microsoft.Extensions.Configuration.EnvironmentVariables" Version="10.0.0" />
-    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="10.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration" Version="10.0.6" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.EnvironmentVariables" Version="10.0.6" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="10.0.6" />
     <PackageReference Include="Npgsql" Version="10.0.2" />
   </ItemGroup>
 
   <ItemGroup>
-    <None Include="..\..\database\init.sql"  CopyToOutputDirectory="Always" Link="init.sql" />
+    <None Include="..\..\database\init.sql" CopyToOutputDirectory="Always" Link="init.sql" />
     <None Include="..\..\database\alter.sql" CopyToOutputDirectory="Always" Link="alter.sql" />
     <None Update="appsettings.json" CopyToOutputDirectory="Always" />
   </ItemGroup>
