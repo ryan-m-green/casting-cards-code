@@ -1,5 +1,7 @@
 @use '../../../../styles/variables' as v;
 
+$memory-search-accent: #9ab0b8;
+
 :host {
   display: block;
   width: 100%;
@@ -398,8 +400,6 @@
 }
 
 /* ── Memory search ───────────────────────────────────────────── */
-$memory-search-accent: #9ab0b8;
-
 .memory-search-bar { margin-bottom: 12px; }
 
 .memory-search-input {
