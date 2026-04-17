@@ -54,7 +54,7 @@ export class PlayerMyCharacterComponent implements OnInit, OnDestroy {
   portalColor = signal(this.transition.spineColor);
 
   // ── Tabs ─────────────────────────────────────────────────────────────────────
-  activeTab = signal<Tab>('chronicle');
+  activeTab = signal<Tab>('cast');
 
   // ── Chronicle tab ────────────────────────────────────────────────────────────
   memories      = signal<PlayerMemory[]>([]);
@@ -177,6 +177,7 @@ export class PlayerMyCharacterComponent implements OnInit, OnDestroy {
     const id = this.route.snapshot.paramMap.get('id')!;
     this.campaignId.set(id);
     this.loadPlayerCard(id);
+    this.loadCast(id);
     document.addEventListener('click', this.outsideClickHandler);
   }
 

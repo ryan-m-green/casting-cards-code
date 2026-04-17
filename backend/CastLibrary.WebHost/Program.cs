@@ -17,9 +17,16 @@ builder.Logging.AddConsole();
 // DO App Platform injects secrets as plain env vars; ${VAR} interpolation in app.yaml
 // doesn't resolve reliably, so read all secrets directly and inject into the config
 // hierarchy so all downstream code works unchanged.
-var dbConnectionString = Environment.GetEnvironmentVariable("DB_CONNECTION_STRING");
+var dbConnectionString = string.Empty;
+
+#if(DEBUG)
+dbConnectionString = builder.Configuration["ConnectionStrings:DefaultConnection"];
+#else
+dbConnectionString = Environment.GetEnvironmentVariable("DB_CONNECTION_STRING");
 if (dbConnectionString != null)
     builder.Configuration["ConnectionStrings:DefaultConnection"] = dbConnectionString;
+#endif
+
 
 var frontendUrl = Environment.GetEnvironmentVariable("FRONTEND_BASE_URL");
 if (frontendUrl != null)
@@ -56,8 +63,6 @@ if (spacesEndpoint != null)
 var spacesPublicUrl = Environment.GetEnvironmentVariable("SPACES_PUBLIC_URL");
 if (spacesPublicUrl != null)
     builder.Configuration["ImageStorage:S3:PublicUrl"] = spacesPublicUrl;
-
-builder.Services.AddApplicationInsightsTelemetry();
 
 builder.Services.AddControllers(options =>
 {

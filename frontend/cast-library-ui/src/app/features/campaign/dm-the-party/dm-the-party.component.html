@@ -47,6 +47,7 @@
               <app-currency-display [purse]="cardPurse(card)" [compact]="true" />
               @if (card.conditions.length) {
                 <div class="fi-label fi-label-strong">Conditions</div>
+                <div class="currency-display-divider"></div>
                 <div class="pc-conditions">
                   @for (cond of card.conditions; track cond.id) {
                     <span class="pc-cond-pill">{{ cond.conditionName }}</span>
