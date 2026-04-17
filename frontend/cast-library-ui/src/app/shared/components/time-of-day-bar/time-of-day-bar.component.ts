@@ -109,17 +109,12 @@ export class TimeOfDayBarComponent implements OnInit, OnChanges, OnDestroy {
 
   ngOnChanges(changes: SimpleChanges) {
     if (changes['todInput'] && this.todInput !== null) {
-      this.tod.set(this.todInput);
+      this.loadFromTod(this.todInput);
     }
   }
 
   ngOnInit() {
-    if (this.todInput !== null) return;
-    this.http.get<TimeOfDay>(`${environment.apiUrl}/api/campaigns/${this.campaignId}/time-of-day`)
-      .subscribe({
-        next:  tod => this.loadFromTod(tod),
-        error: ()  => { /* no ToD configured yet */ },
-      });
+    // tod data is supplied via todInput by the parent; no self-fetch needed
   }
 
   ngOnDestroy() {
@@ -157,6 +152,12 @@ export class TimeOfDayBarComponent implements OnInit, OnChanges, OnDestroy {
     this.dragStart = event.clientX;
   }
 
+  onCursorTouchStart(event: TouchEvent) {
+    if (!this.isDm) return;
+    event.preventDefault();
+    this.isDragging.set(true);
+  }
+
   onCursorKeyDown(event: KeyboardEvent) {
     if (!this.isDm) return;
     const step = event.shiftKey ? 5 : 1;
@@ -186,6 +187,24 @@ export class TimeOfDayBarComponent implements OnInit, OnChanges, OnDestroy {
 
   @HostListener('document:mouseup')
   onDocMouseUp() {
+    if (!this.isDragging()) return;
+    this.isDragging.set(false);
+    this.broadcastCursorPosition();
+  }
+
+  @HostListener('document:touchmove', ['$event'])
+  onDocTouchMove(event: TouchEvent) {
+    if (!this.isDragging()) return;
+    const bar = this.barTrackRef?.nativeElement;
+    if (!bar) return;
+    const rect = bar.getBoundingClientRect();
+    const pct  = ((event.touches[0].clientX - rect.left) / rect.width) * 100;
+    this.cursorPercent.set(Math.max(0, Math.min(100, pct)));
+  }
+
+  @HostListener('document:touchend')
+  @HostListener('document:touchcancel')
+  onDocTouchEnd() {
     if (!this.isDragging()) return;
     this.isDragging.set(false);
     this.broadcastCursorPosition();

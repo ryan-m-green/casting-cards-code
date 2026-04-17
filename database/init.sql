@@ -33,7 +33,6 @@ CREATE TABLE IF NOT EXISTS campaign_players (
     campaign_id    UUID NOT NULL REFERENCES campaigns(id) ON DELETE CASCADE,
     player_user_id UUID NOT NULL REFERENCES users(id)    ON DELETE CASCADE,
     starting_gold  INT  NOT NULL DEFAULT 50,
-    current_gold   INT  NOT NULL DEFAULT 50,
     joined_at      TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     PRIMARY KEY (campaign_id, player_user_id)
 );
@@ -227,12 +226,13 @@ CREATE TABLE IF NOT EXISTS campaign_notes (
     )
 );
 
--- ─── Gold Transactions ────────────────────────────────────────────────────────
-CREATE TABLE IF NOT EXISTS gold_transactions (
+-- ─── Currency Transactions ────────────────────────────────────────────────────
+CREATE TABLE IF NOT EXISTS currency_transactions (
     id               UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     campaign_id      UUID        NOT NULL REFERENCES campaigns(id) ON DELETE CASCADE,
     player_user_id   UUID        REFERENCES users(id) ON DELETE SET NULL,
     amount           INT         NOT NULL,
+    currency_type    VARCHAR(5)  NOT NULL DEFAULT 'gp' CHECK (currency_type IN ('cp','sp','ep','gp','pp')),
     transaction_type VARCHAR(20) NOT NULL CHECK (transaction_type IN ('DM_GRANT','PURCHASE','ADJUSTMENT')),
     description      TEXT,
     created_by       UUID        REFERENCES users(id),
@@ -297,8 +297,8 @@ CREATE INDEX IF NOT EXISTS idx_camp_notes_cast            ON campaign_notes(cast
 CREATE INDEX IF NOT EXISTS idx_camp_notes_location        ON campaign_notes(location_instance_id);
 CREATE INDEX IF NOT EXISTS idx_camp_notes_sublocation     ON campaign_notes(sublocation_instance_id);
 
--- Gold transactions
-CREATE INDEX IF NOT EXISTS idx_gold_campaign              ON gold_transactions(campaign_id);
+-- Currency transactions
+CREATE INDEX IF NOT EXISTS idx_currency_campaign          ON currency_transactions(campaign_id);
 
 -- Password reset tokens
 CREATE INDEX IF NOT EXISTS idx_prt_token_hash             ON password_reset_tokens(token_hash);

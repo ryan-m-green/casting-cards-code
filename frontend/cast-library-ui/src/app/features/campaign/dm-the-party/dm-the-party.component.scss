@@ -1,0 +1,533 @@
+@use '../../../../styles/variables' as v;
+
+:host {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+/* ── Void canvas ─────────────────────────────────────────────── */
+.void-canvas {
+  width: 100%;
+  min-height: 100%;
+  background: #000;
+  position: relative;
+  overflow-y: auto;
+  overflow-x: hidden;
+  animation: portal-inward-breathe 6.4s ease-in-out infinite;
+}
+
+@keyframes portal-inward-breathe {
+  0%, 100% {
+    box-shadow:
+      inset 0 0 0    1px color-mix(in srgb, var(--portal-color, #6e28d0) 40%, white 60%),
+      inset 0 0  6px  2px color-mix(in srgb, var(--portal-color, #6e28d0), transparent 28%),
+      inset 0 0 14px  4px color-mix(in srgb, var(--portal-color, #6e28d0), transparent 52%),
+      inset 0 0 25px  8px color-mix(in srgb, var(--portal-color, #6e28d0), transparent 76%);
+  }
+  50% {
+    box-shadow:
+      inset 0 0 0    1px color-mix(in srgb, var(--portal-color, #6e28d0) 25%, white 75%),
+      inset 0 0  9px  3px color-mix(in srgb, var(--portal-color, #6e28d0), transparent 12%),
+      inset 0 0 19px  6px color-mix(in srgb, var(--portal-color, #6e28d0), transparent 36%),
+      inset 0 0 35px 12px color-mix(in srgb, var(--portal-color, #6e28d0), transparent 64%);
+  }
+}
+
+/* ── Top bar ─────────────────────────────────────────────────── */
+.void-topbar {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 20px 32px 16px;
+  position: relative;
+  z-index: 1;
+}
+
+.void-breadcrumbs {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.void-back {
+  font-family: v.$font-header;
+  font-size: 9px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: color-mix(in srgb, var(--portal-color, #6e28d0), white 75%);
+  background: none;
+  border: none;
+  cursor: pointer;
+  transition: color 0.2s ease;
+  white-space: nowrap;
+
+  &:hover { color: color-mix(in srgb, var(--portal-color, #6e28d0), white 92%); }
+}
+
+.void-title {
+  width: 100%;
+  margin-top: 8px;
+  text-align: center;
+  font-family: v.$font-header;
+  font-size: 17px;
+  font-weight: 600;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: rgba(220, 200, 255, 0.92);
+  text-shadow:
+    0 0 20px color-mix(in srgb, var(--portal-color, #6e28d0), white 35%),
+    0 0 50px color-mix(in srgb, var(--portal-color, #6e28d0), transparent 38%),
+    0 1px 3px rgba(0, 0, 0, 0.95);
+}
+
+/* ── Party actions ───────────────────────────────────────────── */
+.party-actions {
+  display: flex;
+  justify-content: flex-end;
+  padding: 8px 32px 20px;
+}
+
+.party-gold-btn {
+  font-family: v.$font-header;
+  font-size: 9px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  padding: 9px 20px;
+  background: rgba(180, 130, 40, 0.2);
+  border: 1px solid rgba(180, 130, 40, 0.4);
+  border-radius: 20px;
+  color: rgba(255, 210, 120, 0.95);
+  cursor: pointer;
+  transition: all 0.18s ease;
+
+  &:hover {
+    background: rgba(180, 130, 40, 0.35);
+    border-color: rgba(180, 130, 40, 0.65);
+  }
+}
+
+/* ── Card grid ───────────────────────────────────────────────── */
+.card-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: v.$spacing-md;
+  padding: 0 32px 48px;
+}
+
+/* ── Player card back specifics ──────────────────────────────── */
+.pc-card-player .card-placeholder {
+  background: linear-gradient(160deg, #b8a8d4, #d4cce8, #a89ec4);
+}
+
+.pc-conditions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-bottom: 8px;
+}
+
+.pc-cond-pill {
+  font-family: v.$font-header;
+  font-size: 6px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 2px 5px;
+  background: rgba(130, 28, 28, 0.12);
+  border: 1px solid rgba(130, 28, 28, 0.35);
+  border-radius: 2px;
+  color: rgba(110, 22, 22, 1.0);
+}
+
+/* ── Action row (card back footer) ──────────────────────────── */
+.pc-action-row {
+  flex-shrink: 0;
+  display: flex;
+  justify-content: space-around;
+  padding: 5px 4px;
+  border-top: 1px solid rgba(110, 75, 22, 0.2);
+}
+
+.pc-action-btn {
+  font-size: 13px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 3px 5px;
+  border-radius: 2px;
+  line-height: 1;
+  transition: background v.$transition-std;
+
+  &:hover { background: rgba(110, 75, 22, 0.12); }
+}
+
+/* ── Modals ──────────────────────────────────────────────────── */
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 200;
+  padding: 20px;
+}
+
+.modal-panel {
+  background: rgba(12, 6, 24, 0.97);
+  border: 1px solid color-mix(in srgb, var(--portal-color, #6e28d0) 55%, transparent 45%);
+  border-radius: 12px;
+  width: 100%;
+  max-width: 480px;
+  box-shadow: 0 0 40px rgba(110, 40, 208, 0.2), 0 16px 48px rgba(0, 0, 0, 0.8);
+}
+
+.modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 18px 22px 14px;
+  border-bottom: 1px solid rgba(110, 40, 208, 0.2);
+}
+
+.modal-title {
+  font-family: v.$font-header;
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgba(220, 200, 255, 0.9);
+}
+
+.modal-close {
+  background: none;
+  border: none;
+  color: rgba(180, 150, 255, 0.9);
+  font-size: 13px;
+  cursor: pointer;
+  transition: color 0.15s ease;
+
+  &:hover { color: rgba(220, 200, 255, 0.95); }
+}
+
+.modal-body {
+  padding: 18px 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  max-height: 60vh;
+  overflow-y: auto;
+
+  &--overflow-visible {
+    overflow: visible;
+    max-height: none;
+  }
+}
+
+.modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  padding: 14px 22px 18px;
+  border-top: 1px solid rgba(110, 40, 208, 0.15);
+}
+
+.modal-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.modal-label {
+  font-family: v.$font-header;
+  font-size: 8px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(195, 180, 235, 0.9);
+}
+
+.modal-input,
+.modal-textarea {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(110, 40, 208, 0.25);
+  border-radius: 6px;
+  color: rgba(220, 200, 255, 0.9);
+  font-family: v.$font-body;
+  font-size: 14px;
+  padding: 9px 12px;
+  outline: none;
+  width: 100%;
+  box-sizing: border-box;
+  transition: border-color 0.15s ease;
+
+  &:focus { border-color: rgba(110, 40, 208, 0.55); }
+}
+
+.modal-textarea {
+  resize: vertical;
+  min-height: 100px;
+  line-height: 1.55;
+}
+
+.modal-cancel {
+  font-family: v.$font-header;
+  font-size: 9px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  padding: 9px 18px;
+  background: none;
+  border: 1px solid rgba(180, 150, 255, 0.35);
+  border-radius: 6px;
+  color: rgba(195, 170, 255, 0.9);
+  cursor: pointer;
+  transition: all 0.15s ease;
+
+  &:hover { border-color: rgba(180, 150, 255, 0.6); color: rgba(220, 200, 255, 0.95); }
+}
+
+.modal-confirm {
+  font-family: v.$font-header;
+  font-size: 9px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  padding: 9px 18px;
+  background: rgba(110, 40, 208, 0.35);
+  border: 1px solid rgba(110, 40, 208, 0.6);
+  border-radius: 6px;
+  color: rgba(220, 200, 255, 0.95);
+  cursor: pointer;
+  transition: all 0.18s ease;
+
+  &:hover:not(:disabled) {
+    background: rgba(110, 40, 208, 0.55);
+    border-color: rgba(110, 40, 208, 0.85);
+  }
+
+  &:disabled { opacity: 0.4; cursor: not-allowed; }
+
+  &--sm { padding: 7px 14px; }
+}
+
+/* ── Condition modal specifics ───────────────────────────────── */
+.cond-active-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.cond-active-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 6px 10px;
+  background: rgba(200, 50, 50, 0.12);
+  border: 1px solid rgba(200, 50, 50, 0.3);
+  border-radius: 6px;
+  font-family: v.$font-body;
+  font-size: 13px;
+  color: rgba(255, 160, 150, 0.9);
+}
+
+.cond-remove-btn {
+  background: none;
+  border: none;
+  color: rgba(200, 80, 80, 0.85);
+  cursor: pointer;
+  font-size: 11px;
+  padding: 2px 4px;
+  transition: color 0.15s ease;
+
+  &:hover { color: rgba(230, 100, 100, 0.95); }
+}
+
+.cond-empty {
+  font-family: v.$font-body;
+  font-size: 12px;
+  color: rgba(195, 180, 230, 0.8);
+  font-style: italic;
+}
+
+.cond-divider {
+  border: none;
+  border-top: 1px solid rgba(110, 40, 208, 0.15);
+}
+
+.cond-label {
+  font-family: v.$font-header;
+  font-size: 8px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(195, 180, 235, 0.9);
+}
+
+.cond-standard-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.cond-standard-btn {
+  font-family: v.$font-body;
+  font-size: 12px;
+  padding: 5px 11px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(110, 40, 208, 0.2);
+  border-radius: 20px;
+  color: rgba(210, 195, 255, 0.95);
+  cursor: pointer;
+  transition: all 0.15s ease;
+
+  &:hover:not(:disabled) {
+    background: rgba(110, 40, 208, 0.2);
+    border-color: rgba(110, 40, 208, 0.5);
+    color: rgba(220, 200, 255, 0.95);
+  }
+
+  &--active,
+  &:disabled {
+    background: rgba(200, 50, 50, 0.15);
+    border-color: rgba(200, 50, 50, 0.35);
+    color: rgba(255, 160, 150, 0.9);
+    cursor: not-allowed;
+    opacity: 0.6;
+  }
+}
+
+.cond-custom-row {
+  display: flex;
+  gap: 8px;
+  align-items: flex-end;
+
+  .modal-input { flex: 1; }
+}
+
+/* ── Gold modal amount + currency ────────────────────────────── */
+.price-input-group {
+  display: flex;
+  gap: 4px;
+}
+
+.price-amount {
+  flex: 1;
+  padding: 9px 10px;
+}
+
+/* ── Secrets list modal ──────────────────────────────────────── */
+.secrets-list-entry {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(110, 40, 208, 0.15);
+  border-radius: 6px;
+  padding: 12px 14px;
+  transition: border-color 0.15s ease;
+
+  &:hover { border-color: rgba(110, 40, 208, 0.3); }
+}
+
+.sle-content {
+  font-family: v.$font-body;
+  font-size: 14px;
+  color: rgba(220, 200, 255, 0.95);
+  line-height: 1.55;
+  margin-bottom: 8px;
+}
+
+.sle-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.sle-date {
+  font-family: v.$font-body;
+  font-size: 11px;
+  color: rgba(200, 185, 235, 0.75);
+}
+
+.sle-delete {
+  background: none;
+  border: none;
+  color: rgba(200, 80, 80, 0.75);
+  cursor: pointer;
+  font-size: 11px;
+  padding: 2px 4px;
+  border-radius: 4px;
+  transition: color 0.15s ease, background 0.15s ease;
+
+  &:hover { color: rgba(230, 100, 100, 0.95); background: rgba(200, 50, 50, 0.1); }
+}
+
+.sle-empty,
+.sle-loading {
+  font-family: v.$font-body;
+  font-size: 13px;
+  color: rgba(195, 180, 230, 0.75);
+  font-style: italic;
+  padding: 4px 0;
+}
+
+/* ── Currency custom dropdown ────────────────────────────────── */
+.currency-dropdown {
+  position: relative;
+  flex-shrink: 0;
+  width: 68px;
+}
+
+.currency-dropdown-trigger {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  background: rgba(14, 8, 28, 0.80);
+  border: 1px solid color-mix(in srgb, var(--portal-color, #6e28d0), transparent 72%);
+  border-radius: 6px;
+  color: rgba(220, 200, 255, 0.95);
+  font-family: v.$font-body;
+  font-size: 14px;
+  padding: 9px 10px;
+  cursor: pointer;
+  transition: border-color 0.15s ease;
+
+  &:hover {
+    border-color: color-mix(in srgb, var(--portal-color, #6e28d0), transparent 45%);
+  }
+}
+
+.currency-dropdown-caret {
+  font-size: 9px;
+  margin-left: 4px;
+  flex-shrink: 0;
+  transition: transform 0.15s ease;
+  color: rgba(195, 170, 255, 0.75);
+
+  &--open { transform: rotate(180deg); }
+}
+
+.currency-dropdown-panel {
+  position: absolute;
+  top: calc(100% + 2px);
+  left: 0;
+  right: 0;
+  background: rgba(10, 5, 22, 0.97);
+  border: 1px solid color-mix(in srgb, var(--portal-color, #6e28d0), transparent 65%);
+  border-radius: 6px;
+  z-index: 300;
+  overflow: hidden;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.6);
+}
+
+.currency-dropdown-item {
+  font-family: v.$font-body;
+  font-size: 13px;
+  color: rgba(210, 195, 255, 0.95);
+  padding: 7px 10px;
+  cursor: pointer;
+  transition: background 0.12s ease;
+
+  &:hover {
+    background: color-mix(in srgb, var(--portal-color, #6e28d0), transparent 80%);
+  }
+
+  &--selected {
+    color: rgba(240, 225, 255, 1);
+    background: color-mix(in srgb, var(--portal-color, #6e28d0), transparent 72%);
+  }
+}

@@ -3,12 +3,15 @@
 
     <!-- ── Top bar ── -->
     <div class="void-topbar">
-      <div class="void-breadcrumbs">
-        <button class="void-back" (click)="goToCampaign()">← Locations</button>
-        <span class="void-crumb-sep">›</span>
-        <button class="void-back" (click)="goToLocation()">← Sublocations</button>
-        <span class="void-crumb-sep">›</span>
-        <button class="void-back" (click)="goToSublocation()">← Cast</button>
+      <div class="topbar-row">
+        <div class="void-breadcrumbs">
+          <button class="void-back" (click)="goToCampaign()">← Locations</button>
+          <span class="void-crumb-sep">›</span>
+          <button class="void-back" (click)="goToLocation()">← Sublocations</button>
+          <span class="void-crumb-sep">›</span>
+          <button class="void-back" (click)="goToSublocation()">← Cast</button>
+        </div>
+        <button class="topbar-party-btn" (click)="goToMyCharacter()">⚔ My Character</button>
       </div>
       <span class="void-title">{{ ca.name }}</span>
     </div>

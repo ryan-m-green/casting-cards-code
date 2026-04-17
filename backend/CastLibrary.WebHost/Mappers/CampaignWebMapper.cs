@@ -15,6 +15,7 @@ public interface ICampaignWebMapper
     CampaignCastRelationshipResponse ToRelationshipResponse(CampaignCastRelationshipDomain d);
     CampaignPlayerResponse ToPlayerResponse(CampaignPlayerDomain d);
     CampaignInviteCodeResponse ToInviteCodeResponse(CampaignInviteCodeDomain d);
+    TimeOfDayResponse ToTimeOfDayResponse(TimeOfDayDomain d);
 }
 /// <summary>
 /// Maps Campaign-related domain objects to API response objects.
@@ -213,7 +214,6 @@ public class CampaignWebMapper(
             DisplayName  = d.DisplayName,
             Email        = d.Email,
             StartingGold = d.StartingGold,
-            CurrentGold  = d.CurrentGold,
         };
 
         logging.LogMapping(
@@ -236,6 +236,45 @@ public class CampaignWebMapper(
         logging.LogMapping(
             correlation.TraceId, correlation.SpanId,
             Ns, "CampaignWebMapper.ToInviteCodeResponse",
+            "domain?response",
+            d, response);
+
+        return response;
+    }
+
+    public TimeOfDayResponse ToTimeOfDayResponse(TimeOfDayDomain d)
+    {
+        var total   = d.Slices.Sum(s => s.DurationHours);
+        decimal running = 0;
+
+        var response = new TimeOfDayResponse
+        {
+            Id                    = d.Id,
+            CampaignId            = d.CampaignId,
+            DayLengthHours        = d.DayLengthHours,
+            CursorPositionPercent = d.CursorPositionPercent,
+            Slices = d.Slices.Select(s =>
+            {
+                var start = total > 0 ? running / total * 100 : 0;
+                running  += s.DurationHours;
+                var end   = total > 0 ? running / total * 100 : 0;
+                return new TimeOfDaySliceResponse
+                {
+                    Id            = s.Id,
+                    Label         = s.Label,
+                    Color         = s.Color,
+                    DurationHours = s.DurationHours,
+                    StartPercent  = Math.Round(start, 4),
+                    EndPercent    = Math.Round(end,   4),
+                    DmNotes       = s.DmNotes,
+                    PlayerNotes   = s.PlayerNotes,
+                };
+            }).ToList(),
+        };
+
+        logging.LogMapping(
+            correlation.TraceId, correlation.SpanId,
+            Ns, "CampaignWebMapper.ToTimeOfDayResponse",
             "domain?response",
             d, response);
 

@@ -40,3 +40,9 @@ export interface BulkCardVisibilityChangedEvent {
   cardType: 'sublocation' | 'cast';
   isVisible: boolean;
 }
+
+export interface SecretDeliveredEvent {
+  campaignId: string;
+  playerUserId: string;
+  content: string;
+}

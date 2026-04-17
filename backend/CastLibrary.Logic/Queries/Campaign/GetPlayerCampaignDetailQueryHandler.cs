@@ -8,21 +8,22 @@ public interface IGetPlayerCampaignDetailQueryHandler
 {
     Task<(CampaignDomain Campaign, List<CampaignLocationInstanceDomain> locations,
         List<CampaignCastInstanceDomain> Casts, List<CampaignSublocationInstanceDomain> Locations,
-        List<CampaignSecretDomain> Secrets)>
+        List<CampaignSecretDomain> Secrets, TimeOfDayDomain? TimeOfDay)>
         HandleAsync(Guid campaignId);
 }
 
 public class GetPlayerCampaignDetailQueryHandler(
     ICampaignReadRepository campaignRepository,
-    ISecretReadRepository secretReadRepository) : IGetPlayerCampaignDetailQueryHandler
+    ISecretReadRepository secretReadRepository,
+    ITimeOfDayReadRepository timeOfDayRepository) : IGetPlayerCampaignDetailQueryHandler
 {
     public async Task<(CampaignDomain Campaign, List<CampaignLocationInstanceDomain> locations,
         List<CampaignCastInstanceDomain> Casts, List<CampaignSublocationInstanceDomain> Locations,
-        List<CampaignSecretDomain> Secrets)>
+        List<CampaignSecretDomain> Secrets, TimeOfDayDomain? TimeOfDay)>
         HandleAsync(Guid campaignId)
     {
         var campaign = await campaignRepository.GetByIdAsync(campaignId);
-        if (campaign is null) return (null, [], [], [], []);
+        if (campaign is null) return (null, [], [], [], [], null);
 
         var locations = (await campaignRepository.GetLocationInstancesByCampaignAsync(campaignId))
                             .Where(c => c.IsVisibleToPlayers)
@@ -52,7 +53,9 @@ public class GetPlayerCampaignDetailQueryHandler(
                                     || (s.SublocationInstanceId.HasValue && visibleSublocationIds.Contains(s.SublocationInstanceId.Value))))
                             .ToList();
 
-        return (campaign, locations, casts, sublocations, secrets);
+        var timeOfDay = await timeOfDayRepository.GetByCampaignIdAsync(campaignId);
+
+        return (campaign, locations, casts, sublocations, secrets, timeOfDay);
     }
 }
 

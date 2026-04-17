@@ -44,6 +44,33 @@ $location-blue: #9ab0b8;
   z-index: 1;
 }
 
+.topbar-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.topbar-party-btn {
+  font-family: v.$font-header;
+  font-size: 9px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  padding: 7px 16px;
+  background: rgba(110, 40, 208, 0.18);
+  border: 1px solid rgba(110, 40, 208, 0.4);
+  border-radius: 20px;
+  color: rgba(200, 180, 255, 0.85);
+  cursor: pointer;
+  transition: background 0.18s ease, border-color 0.18s ease, color 0.18s ease;
+
+  &:hover {
+    background: rgba(110, 40, 208, 0.35);
+    border-color: rgba(110, 40, 208, 0.65);
+    color: rgba(220, 200, 255, 0.98);
+  }
+}
+
 .void-breadcrumbs {
   display: flex;
   align-items: center;
@@ -57,15 +84,14 @@ $location-blue: #9ab0b8;
   font-size: 9px;
   letter-spacing: 0.18em;
   text-transform: uppercase;
-  color: color-mix(in srgb, var(--portal-color, #{$location-blue}), white 55%);
-  opacity: 0.55;
+  color: color-mix(in srgb, var(--portal-color, #{$location-blue}), white 75%);
   background: none;
   border: none;
   cursor: pointer;
-  transition: opacity 0.2s ease;
+  transition: color 0.2s ease;
   white-space: nowrap;
 
-  &:hover { opacity: 0.9; }
+  &:hover { color: color-mix(in srgb, var(--portal-color, #{$location-blue}), white 92%); }
 }
 
 .void-title {
@@ -158,11 +184,11 @@ $location-blue: #9ab0b8;
 .secret-text {
   font-family: v.$font-body;
   font-size: 13px;
-  color: rgba(185, 210, 220, 0.60);
+  color: rgba(185, 210, 220, 0.9);
   line-height: 1.5;
 
   &--revealed {
-    color: rgba(200, 225, 235, 0.82);
+    color: rgba(200, 225, 235, 0.95);
   }
 }
 
@@ -178,12 +204,12 @@ $location-blue: #9ab0b8;
   font-family: v.$font-header;
   font-size: 8px;
   letter-spacing: 0.12em;
-  color: rgba($location-blue, 0.40);
+  color: rgba($location-blue, 0.85);
   transition: background 0.18s ease, color 0.18s ease;
 
   &:hover {
     background: rgba($location-blue, 0.10);
-    color: rgba($location-blue, 0.72);
+    color: rgba($location-blue, 0.95);
   }
 }
 
@@ -192,7 +218,7 @@ $location-blue: #9ab0b8;
   font-size: 7px;
   letter-spacing: 0.2em;
   text-transform: uppercase;
-  color: rgba($location-blue, 0.55);
+  color: rgba($location-blue, 0.85);
   white-space: nowrap;
 }
 
@@ -205,7 +231,7 @@ $location-blue: #9ab0b8;
 .detail-value {
   font-family: v.$font-body;
   font-size: 14px;
-  color: rgba(200, 225, 235, 0.82);
+  color: rgba(200, 225, 235, 0.95);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -214,7 +240,7 @@ $location-blue: #9ab0b8;
     white-space: normal;
     font-size: 13px;
     line-height: 1.6;
-    color: rgba(185, 210, 220, 0.70);
+    color: rgba(185, 210, 220, 0.9);
     margin: 0;
   }
 }
@@ -249,7 +275,7 @@ $location-blue: #9ab0b8;
   font-size: 7px;
   letter-spacing: 0.18em;
   text-transform: uppercase;
-  color: rgba($location-blue, 0.45);
+  color: rgba($location-blue, 0.85);
   transition: color 0.18s ease, border-color 0.18s ease, background 0.18s ease;
 
   &:hover {
@@ -282,7 +308,7 @@ $location-blue: #9ab0b8;
   font-size: 9px;
   letter-spacing: 0.22em;
   text-transform: uppercase;
-  color: rgba($location-blue, 0.62);
+  color: rgba($location-blue, 0.92);
   white-space: nowrap;
   text-shadow: 0 0 10px rgba($location-blue, 0.22);
 }

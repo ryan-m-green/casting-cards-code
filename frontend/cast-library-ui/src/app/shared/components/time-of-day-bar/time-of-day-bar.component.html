@@ -41,6 +41,7 @@
       aria-valuemax="100"
       [attr.aria-valuetext]="cursorPercent() | number:'1.0-1' + '%'"
       (mousedown)="onCursorMouseDown($event)"
+      (touchstart)="onCursorTouchStart($event)"
       (keydown)="onCursorKeyDown($event)"
     >
       <div class="tod-cursor__planchette" aria-hidden="true">

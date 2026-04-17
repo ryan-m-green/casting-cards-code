@@ -153,6 +153,11 @@ export class PlayerLocationDetailComponent implements OnInit {
     this.router.navigate(['/player/campaign', this.campaignId(), 'sublocations', subLoc.instanceId]);
   }
 
+  goToMyCharacter() {
+    this.transition.quickCover();
+    this.router.navigate(['/player/campaign', this.campaignId(), 'my-character']);
+  }
+
   goToCampaign() {
     this.transition.quickCover();
     this.router.navigate(['/player/campaign', this.campaignId()]);

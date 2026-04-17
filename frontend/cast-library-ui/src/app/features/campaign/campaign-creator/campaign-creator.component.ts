@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, signal, inject, computed, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
+import { Component, OnInit, OnDestroy, signal, inject, computed, ViewChild, ElementRef, AfterViewInit, effect } from '@angular/core';
 import { Router, RouterLink, ActivatedRoute } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
@@ -14,6 +14,8 @@ import { CastRelationshipsTabComponent } from '../cast-relationships-tab/cast-re
 import { KeywordInputComponent } from '../../../shared/components/keyword-input/keyword-input.component';
 import { DmNavComponent } from '../../../shared/components/dm-nav/dm-nav.component';
 import { TimeOfDayEditorComponent } from '../time-of-day-editor/time-of-day-editor.component';
+import { AuthService } from '../../../core/auth/auth.service';
+import { CampaignHubService } from '../../../core/hub/campaign-hub.service';
 
 interface LocationSecret {
   id?: string;
@@ -45,9 +47,21 @@ export class CampaignCreatorComponent implements OnInit, OnDestroy {
   private http   = inject(HttpClient);
   private route  = inject(ActivatedRoute);
   private el     = inject(ElementRef);
+  private auth   = inject(AuthService);
+  private hub    = inject(CampaignHubService);
   router         = inject(Router);
   fb             = inject(FormBuilder);
   isEditMode     = signal(false);
+
+  constructor() {
+    effect(() => {
+      const event = this.hub.playerJoined();
+      if (!event || event.campaignId !== this.campaignId()) return;
+      this.players.update(ps =>
+        ps.some(p => p.userId === event.player.userId) ? ps : [...ps, event.player]
+      );
+    });
+  }
 
   @ViewChild('mainCard')        mainCardRef!:       ElementRef<HTMLElement>;
   @ViewChild('mainCardWrapper') mainCardWrapperRef!: ElementRef<HTMLElement>;
@@ -68,6 +82,7 @@ export class CampaignCreatorComponent implements OnInit, OnDestroy {
   players        = signal<CampaignPlayer[]>([]);
   inviteCode     = signal<CampaignInviteCode | null>(null);
   codeLoading    = signal(false);
+  codeCopied     = signal(false);
   removingPlayer = signal<string | null>(null);
   locationSearch = signal('');
 
@@ -146,6 +161,13 @@ export class CampaignCreatorComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     const id = this.route.snapshot.paramMap.get('id');
+    if (id) {
+      const token = this.auth.getToken();
+      const connectAndJoin = token && !this.hub.isConnected()
+        ? this.hub.connect(token).then(() => this.hub.joinCampaign(id))
+        : this.hub.joinCampaign(id);
+      connectAndJoin.catch(console.warn);
+    }
 
     this.http.get<{ keywords: string[] }>(`${environment.apiUrl}/api/users/keywords`)
       .subscribe(r => this.allDmKeywords.set(r.keywords));
@@ -181,6 +203,8 @@ export class CampaignCreatorComponent implements OnInit, OnDestroy {
     clearTimeout(this.saveTimer);
     clearTimeout(this.formSaveTimer);
     clearTimeout(this.keywordSaveTimer);
+    const id = this.campaignId();
+    if (id) this.hub.leaveCampaign(id).catch(console.warn);
   }
 
   setLocationSearch(term: string) {
@@ -430,7 +454,10 @@ export class CampaignCreatorComponent implements OnInit, OnDestroy {
 
   copyCode() {
     const code = this.inviteCode()?.code;
-    if (code) navigator.clipboard.writeText(code);
+    if (!code) return;
+    navigator.clipboard.writeText(code);
+    this.codeCopied.set(true);
+    setTimeout(() => this.codeCopied.set(false), 1500);
   }
 
   timeRemaining(): string {

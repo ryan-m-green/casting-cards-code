@@ -113,7 +113,7 @@ public class CampaignsController(
     [HttpGet("{id}")]
     public async Task<IActionResult> GetById(Guid id)
     {
-        var (campaign, locations, casts, sublocations, secrets, relationships, players, inviteCode) = await getDetailQuery.HandleAsync(id);
+        var (campaign, locations, casts, sublocations, secrets, relationships, players, inviteCode, timeOfDay) = await getDetailQuery.HandleAsync(id);
         if (campaign is null)
         {
             return NotFound();
@@ -134,6 +134,7 @@ public class CampaignsController(
             Relationships = relationships.Select(campaignMapper.ToRelationshipResponse).ToList(),
             Players = players.Select(campaignMapper.ToPlayerResponse).ToList(),
             InviteCode = inviteCode is not null ? campaignMapper.ToInviteCodeResponse(inviteCode) : null,
+            TimeOfDay = timeOfDay is not null ? campaignMapper.ToTimeOfDayResponse(timeOfDay) : null,
         };
 
         return Ok(response);
@@ -142,7 +143,7 @@ public class CampaignsController(
     [HttpGet("{id}/player")]
     public async Task<IActionResult> GetPlayerView(Guid id)
     {
-        var (campaign, locations, casts, sublocations, secrets) = await getPlayerDetailQuery.HandleAsync(id);
+        var (campaign, locations, casts, sublocations, secrets, timeOfDay) = await getPlayerDetailQuery.HandleAsync(id);
         if (campaign is null)
         {
             return NotFound();
@@ -160,6 +161,7 @@ public class CampaignsController(
             Casts = casts.Select(campaignMapper.ToCastInstanceResponse).ToList(),
             Sublocations = sublocations.Select(campaignMapper.ToSublocationInstanceResponse).ToList(),
             Secrets = secrets.Select(campaignMapper.ToSecretResponse).ToList(),
+            TimeOfDay = timeOfDay is not null ? campaignMapper.ToTimeOfDayResponse(timeOfDay) : null,
         };
 
         return Ok(response);
@@ -489,14 +491,21 @@ public class CampaignsController(
     [HttpPost("redeem")]
     public async Task<IActionResult> RedeemInviteCode([FromBody] RedeemInviteCodeRequest request)
     {
-        var campaign = await redeemInviteCodeCommand.HandleAsync(
+        var result = await redeemInviteCodeCommand.HandleAsync(
             new RedeemCampaignInviteCodeCommand(userRetriever.GetUserId(User), request));
-        if (campaign is null)
+        if (result is null)
         {
             return BadRequest(new { message = "That code is invalid or has expired. Ask your DM to generate a new one." });
         }
 
-        var response = campaignMapper.ToListResponse(campaign);
+        await hubContext.Clients.Group(result.Campaign.Id.ToString())
+            .SendAsync("PlayerJoined", new
+            {
+                campaignId = result.Campaign.Id,
+                player     = campaignMapper.ToPlayerResponse(result.Player),
+            });
+
+        var response = campaignMapper.ToListResponse(result.Campaign);
         return Ok(response);
     }
 

@@ -5,10 +5,12 @@ using CastLibrary.Shared.Requests;
 
 namespace CastLibrary.Logic.Commands.Campaign;
 
+public record RedeemCampaignInviteCodeResult(CampaignDomain Campaign, CampaignPlayerDomain Player);
+
 public interface IRedeemCampaignInviteCodeCommandHandler
 {
-    /// <returns>The campaign the player joined, or null if the code was invalid/expired.</returns>
-    Task<CampaignDomain> HandleAsync(RedeemCampaignInviteCodeCommand command);
+    /// <returns>The campaign and player that joined, or null if the code was invalid/expired.</returns>
+    Task<RedeemCampaignInviteCodeResult?> HandleAsync(RedeemCampaignInviteCodeCommand command);
 }
 
 public class RedeemCampaignInviteCodeCommandHandler(
@@ -17,7 +19,7 @@ public class RedeemCampaignInviteCodeCommandHandler(
     ICampaignPlayerInsertRepository playerInsertRepository,
     ICampaignReadRepository campaignRepository) : IRedeemCampaignInviteCodeCommandHandler
 {
-    public async Task<CampaignDomain> HandleAsync(RedeemCampaignInviteCodeCommand command)
+    public async Task<RedeemCampaignInviteCodeResult?> HandleAsync(RedeemCampaignInviteCodeCommand command)
     {
         var invite = await inviteCodeRepository.GetByCodeAsync(command.Request.Code);
         if (invite is null) return null;
@@ -26,7 +28,10 @@ public class RedeemCampaignInviteCodeCommandHandler(
         if (!alreadyJoined)
             await playerInsertRepository.InsertCampaignPlayerAsync(invite.CampaignId, command.PlayerUserId);
 
-        return await campaignRepository.GetByIdAsync(invite.CampaignId);
+        var campaign = await campaignRepository.GetByIdAsync(invite.CampaignId);
+        var player   = await playerReadRepository.GetByUserAndCampaignAsync(invite.CampaignId, command.PlayerUserId);
+
+        return new RedeemCampaignInviteCodeResult(campaign, player!);
     }
 }
 

@@ -1,0 +1,842 @@
+@use '../../../../styles/variables' as v;
+
+:host {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+/* ── Void canvas ─────────────────────────────────────────────── */
+.void-canvas {
+  width: 100%;
+  min-height: 100%;
+  background: #000;
+  position: relative;
+  overflow-y: auto;
+  overflow-x: hidden;
+  animation: portal-inward-breathe 6.4s ease-in-out infinite;
+}
+
+@keyframes portal-inward-breathe {
+  0%, 100% {
+    box-shadow:
+      inset 0 0 0    1px color-mix(in srgb, var(--portal-color, #6e28d0) 40%, white 60%),
+      inset 0 0  6px  2px color-mix(in srgb, var(--portal-color, #6e28d0), transparent 28%),
+      inset 0 0 14px  4px color-mix(in srgb, var(--portal-color, #6e28d0), transparent 52%),
+      inset 0 0 25px  8px color-mix(in srgb, var(--portal-color, #6e28d0), transparent 76%);
+  }
+  50% {
+    box-shadow:
+      inset 0 0 0    1px color-mix(in srgb, var(--portal-color, #6e28d0) 25%, white 75%),
+      inset 0 0  9px  3px color-mix(in srgb, var(--portal-color, #6e28d0), transparent 12%),
+      inset 0 0 19px  6px color-mix(in srgb, var(--portal-color, #6e28d0), transparent 36%),
+      inset 0 0 35px 12px color-mix(in srgb, var(--portal-color, #6e28d0), transparent 64%);
+  }
+}
+
+/* ── Top bar ─────────────────────────────────────────────────── */
+.void-topbar {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 20px 32px 16px;
+  position: relative;
+  z-index: 1;
+}
+
+.void-breadcrumbs {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.void-back {
+  font-family: v.$font-header;
+  font-size: 9px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: color-mix(in srgb, var(--portal-color, #6e28d0), white 70%);
+  background: none;
+  border: none;
+  cursor: pointer;
+  transition: color 0.2s ease;
+  white-space: nowrap;
+
+  &:hover { color: color-mix(in srgb, var(--portal-color, #6e28d0), white 90%); }
+}
+
+.void-title {
+  width: 100%;
+  margin-top: 8px;
+  text-align: center;
+  font-family: v.$font-header;
+  font-size: 17px;
+  font-weight: 600;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: rgba(220, 200, 255, 0.92);
+  text-shadow:
+    0 0 20px color-mix(in srgb, var(--portal-color, #6e28d0), white 35%),
+    0 0 50px color-mix(in srgb, var(--portal-color, #6e28d0), transparent 38%),
+    0 1px 3px rgba(0, 0, 0, 0.95);
+}
+
+/* ── Character header ────────────────────────────────────────── */
+.char-header {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  padding: 16px 32px 20px;
+  border-bottom: 1px solid rgba(110, 40, 208, 0.2);
+}
+
+.char-portrait {
+  flex-shrink: 0;
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 2px solid rgba(110, 40, 208, 0.4);
+}
+
+.char-portrait-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.char-portrait-placeholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(110, 40, 208, 0.2);
+  font-family: v.$font-header;
+  font-size: 28px;
+  color: rgba(180, 150, 255, 1);
+}
+
+.char-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.char-name {
+  font-family: v.$font-header;
+  font-size: 18px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  color: rgba(220, 200, 255, 0.95);
+  text-shadow: 0 0 12px rgba(110, 40, 208, 0.4);
+}
+
+.char-subtitle {
+  font-family: v.$font-body;
+  font-size: 13px;
+  color: rgba(200, 185, 235, 0.9);
+  margin-top: 3px;
+}
+
+.char-conditions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 8px;
+}
+
+.condition-pill {
+  font-family: v.$font-header;
+  font-size: 8px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 3px 8px;
+  background: rgba(200, 50, 50, 0.2);
+  border: 1px solid rgba(200, 50, 50, 0.4);
+  border-radius: 20px;
+  color: rgba(255, 160, 150, 0.9);
+}
+
+/* ── Tabs bar ────────────────────────────────────────────────── */
+.tabs-bar {
+  display: flex;
+  gap: 0;
+  border-bottom: 1px solid rgba(110, 40, 208, 0.2);
+  padding: 0 20px;
+}
+
+.tab-btn {
+  font-family: v.$font-header;
+  font-size: 9px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: rgba(195, 180, 235, 0.8);
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  padding: 14px 18px 12px;
+  cursor: pointer;
+  transition: color 0.18s ease, border-color 0.18s ease;
+
+  &:hover {
+    color: rgba(215, 200, 255, 0.95);
+  }
+
+  &--active {
+    color: rgba(220, 200, 255, 0.95);
+    border-bottom-color: rgba(110, 40, 208, 0.7);
+  }
+}
+
+/* ── Tab content ─────────────────────────────────────────────── */
+.tab-content {
+  padding: 24px 32px 48px;
+  max-width: 900px;
+}
+
+.tab-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.tab-section-title {
+  font-family: v.$font-header;
+  font-size: 12px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: rgba(210, 190, 255, 0.95);
+}
+
+.add-btn {
+  font-family: v.$font-header;
+  font-size: 8px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(195, 170, 255, 0.95);
+  background: none;
+  border: 1px solid rgba(110, 40, 208, 0.3);
+  border-radius: 20px;
+  padding: 6px 14px;
+  cursor: pointer;
+  transition: color 0.18s ease, border-color 0.18s ease;
+
+  &:hover {
+    color: rgba(220, 200, 255, 0.95);
+    border-color: rgba(110, 40, 208, 0.6);
+  }
+}
+
+/* ── Add form panel ──────────────────────────────────────────── */
+.add-form-panel {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(110, 40, 208, 0.2);
+  border-radius: 8px;
+  padding: 18px 20px;
+  margin-bottom: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.add-form-row {
+  display: flex;
+  gap: 14px;
+}
+
+.add-form-field {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  flex: 1;
+
+  &--sm { flex: 0 0 100px; }
+}
+
+.add-label {
+  font-family: v.$font-header;
+  font-size: 8px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(195, 180, 235, 0.9);
+}
+
+.add-input,
+.add-select,
+.add-textarea {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(110, 40, 208, 0.25);
+  border-radius: 5px;
+  color: rgba(220, 200, 255, 0.9);
+  font-family: v.$font-body;
+  font-size: 14px;
+  padding: 8px 10px;
+  outline: none;
+  transition: border-color 0.15s ease;
+  width: 100%;
+  box-sizing: border-box;
+
+  &:focus {
+    border-color: rgba(110, 40, 208, 0.55);
+  }
+}
+
+.add-select {
+  appearance: none;
+  cursor: pointer;
+
+  option { background: #1a0d2e; color: rgba(220, 200, 255, 0.9); }
+}
+
+.add-textarea {
+  resize: vertical;
+  min-height: 70px;
+  line-height: 1.5;
+}
+
+.save-btn {
+  align-self: flex-end;
+  font-family: v.$font-header;
+  font-size: 9px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  padding: 9px 20px;
+  background: rgba(110, 40, 208, 0.3);
+  border: 1px solid rgba(110, 40, 208, 0.55);
+  border-radius: 6px;
+  color: rgba(220, 200, 255, 0.95);
+  cursor: pointer;
+  transition: background 0.18s ease, border-color 0.18s ease;
+
+  &:hover {
+    background: rgba(110, 40, 208, 0.5);
+    border-color: rgba(110, 40, 208, 0.8);
+  }
+}
+
+/* ── Session number label ────────────────────────────────────── */
+.session-number {
+  font-family: v.$font-body;
+  font-size: 14px;
+  color: rgba(220, 200, 255, 0.9);
+  padding: 8px 10px;
+  display: block;
+}
+
+/* ── Notes dropdown (memory type) ────────────────────────────── */
+.notes-dropdown {
+  position: relative;
+}
+
+.notes-dropdown-trigger {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  box-sizing: border-box;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(110, 40, 208, 0.25);
+  border-radius: 5px;
+  color: rgba(220, 200, 255, 0.9);
+  font-family: v.$font-body;
+  font-size: 14px;
+  padding: 8px 10px;
+  cursor: pointer;
+  transition: border-color 0.15s ease;
+  text-align: left;
+
+  &:hover, &:focus {
+    border-color: rgba(110, 40, 208, 0.55);
+    outline: none;
+  }
+}
+
+.notes-dropdown-placeholder {
+  flex: 1;
+}
+
+.notes-dropdown-caret {
+  flex-shrink: 0;
+  margin-left: 6px;
+  color: rgba(195, 170, 255, 0.7);
+  font-size: 12px;
+  transition: transform 0.15s ease;
+
+  &--open { transform: rotate(180deg); }
+}
+
+.notes-dropdown-panel {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  right: 0;
+  background: #1a0d2e;
+  border: 1px solid rgba(110, 40, 208, 0.4);
+  border-radius: 5px;
+  list-style: none;
+  margin: 0;
+  padding: 4px 0;
+  z-index: 100;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.6);
+}
+
+.notes-dropdown-item {
+  font-family: v.$font-body;
+  font-size: 14px;
+  color: rgba(220, 200, 255, 0.9);
+  padding: 9px 12px;
+  cursor: pointer;
+  transition: background 0.12s ease;
+
+  &:hover { background: rgba(110, 40, 208, 0.2); }
+
+  &--selected {
+    background: rgba(110, 40, 208, 0.25);
+    color: rgba(235, 220, 255, 1);
+  }
+}
+
+/* ── Memory list ─────────────────────────────────────────────── */
+.memory-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.memory-entry {
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(110, 40, 208, 0.15);
+  border-radius: 8px;
+  padding: 14px 16px;
+  transition: border-color 0.18s ease;
+
+  &:hover { border-color: rgba(110, 40, 208, 0.3); }
+}
+
+.memory-icon {
+  font-size: 18px;
+  flex-shrink: 0;
+  width: 24px;
+  text-align: center;
+  margin-top: 2px;
+}
+
+.memory-body { flex: 1; min-width: 0; }
+
+.memory-meta {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  margin-bottom: 4px;
+}
+
+.memory-type-label {
+  font-family: v.$font-header;
+  font-size: 8px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(195, 170, 255, 0.9);
+}
+
+.memory-session {
+  font-family: v.$font-header;
+  font-size: 8px;
+  letter-spacing: 0.1em;
+  color: rgba(195, 170, 255, 0.8);
+}
+
+.memory-title {
+  font-family: v.$font-header;
+  font-size: 14px;
+  color: rgba(220, 200, 255, 0.95);
+}
+
+.memory-detail {
+  font-family: v.$font-body;
+  font-size: 13px;
+  color: rgba(200, 185, 235, 0.9);
+  margin-top: 5px;
+  line-height: 1.5;
+}
+
+/* ── Party tab — player cards ────────────────────────────────── */
+.pc-card-player .card-placeholder {
+  background: linear-gradient(160deg, #b8a8d4, #d4cce8, #a89ec4);
+}
+
+.tab-content .card-grid {
+  padding: 0;
+}
+
+/* ── Cast tab ────────────────────────────────────────────────── */
+.cast-filter-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.cast-filters {
+  display: flex;
+  gap: 8px;
+}
+
+.filter-pill {
+  font-family: v.$font-header;
+  font-size: 8px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  padding: 6px 14px;
+  background: none;
+  border: 1px solid rgba(110, 40, 208, 0.25);
+  border-radius: 20px;
+  color: rgba(195, 170, 255, 0.85);
+  cursor: pointer;
+  transition: all 0.18s ease;
+
+  &:hover { color: rgba(220, 200, 255, 0.95); border-color: rgba(110, 40, 208, 0.5); }
+
+  &--active {
+    background: rgba(110, 40, 208, 0.25);
+    border-color: rgba(110, 40, 208, 0.6);
+    color: rgba(220, 200, 255, 0.95);
+  }
+}
+
+.cast-search {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(110, 40, 208, 0.2);
+  border-radius: 20px;
+  color: rgba(220, 200, 255, 0.9);
+  font-family: v.$font-body;
+  font-size: 13px;
+  padding: 7px 16px;
+  outline: none;
+  width: 180px;
+  transition: border-color 0.15s ease;
+
+  &::placeholder { color: rgba(180, 150, 255, 0.6); }
+  &:focus { border-color: rgba(110, 40, 208, 0.5); }
+}
+
+.cast-section { margin-bottom: 32px; }
+
+.cast-section-label {
+  font-family: v.$font-header;
+  font-size: 9px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: rgba(195, 170, 255, 0.9);
+  margin-bottom: 14px;
+}
+
+.cast-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.cast-card {
+  display: flex;
+  gap: 14px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(110, 40, 208, 0.15);
+  border-radius: 8px;
+  padding: 14px 16px;
+
+  &--party { border-color: rgba(60, 160, 110, 0.2); background: rgba(60, 160, 110, 0.04); }
+}
+
+.cast-card-portrait {
+  flex-shrink: 0;
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 1px solid rgba(110, 40, 208, 0.3);
+}
+
+.cast-card-portrait-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.cast-card-portrait-placeholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(110, 40, 208, 0.2);
+  font-family: v.$font-header;
+  font-size: 20px;
+  color: rgba(195, 170, 255, 0.95);
+
+  &--place { background: rgba(80, 120, 180, 0.2); color: rgba(165, 200, 255, 0.95); }
+}
+
+.cast-card-info { flex: 1; min-width: 0; }
+
+.cast-card-name {
+  font-family: v.$font-header;
+  font-size: 14px;
+  color: rgba(220, 200, 255, 0.95);
+  margin-bottom: 2px;
+}
+
+.cast-card-sub {
+  font-family: v.$font-body;
+  font-size: 12px;
+  color: rgba(200, 185, 235, 0.85);
+  margin-bottom: 6px;
+}
+
+.cast-card-desc {
+  font-family: v.$font-body;
+  font-size: 13px;
+  color: rgba(200, 185, 235, 0.9);
+  line-height: 1.45;
+  margin-bottom: 8px;
+}
+
+.impression-row { margin-top: 8px; }
+
+.impression-display {
+  cursor: pointer;
+  padding: 6px 10px;
+  background: rgba(110, 40, 208, 0.08);
+  border: 1px dashed rgba(110, 40, 208, 0.25);
+  border-radius: 5px;
+  transition: border-color 0.15s ease, background 0.15s ease;
+
+  &:hover { border-color: rgba(110, 40, 208, 0.5); background: rgba(110, 40, 208, 0.14); }
+}
+
+.impression-text {
+  font-family: v.$font-body;
+  font-size: 13px;
+  color: rgba(210, 190, 255, 0.95);
+  font-style: italic;
+}
+
+.impression-prompt {
+  font-family: v.$font-body;
+  font-size: 12px;
+  color: rgba(195, 170, 255, 0.75);
+}
+
+.impression-input {
+  width: 100%;
+  box-sizing: border-box;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(110, 40, 208, 0.3);
+  border-radius: 5px;
+  color: rgba(220, 200, 255, 0.9);
+  font-family: v.$font-body;
+  font-size: 13px;
+  padding: 7px 10px;
+  outline: none;
+  resize: vertical;
+
+  &:focus { border-color: rgba(110, 40, 208, 0.55); }
+}
+
+.impression-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 6px;
+}
+
+.impression-save,
+.impression-cancel {
+  font-family: v.$font-header;
+  font-size: 8px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 5px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.impression-save {
+  background: rgba(110, 40, 208, 0.35);
+  border: 1px solid rgba(110, 40, 208, 0.55);
+  color: rgba(220, 200, 255, 0.95);
+
+  &:hover { background: rgba(110, 40, 208, 0.55); }
+}
+
+.impression-cancel {
+  background: none;
+  border: 1px solid rgba(180, 150, 255, 0.35);
+  color: rgba(195, 170, 255, 0.9);
+
+  &:hover { border-color: rgba(180, 150, 255, 0.6); }
+}
+
+/* ── Soul tab ────────────────────────────────────────────────── */
+.soul-section {
+  margin-bottom: 28px;
+}
+
+.soul-section-label {
+  font-family: v.$font-header;
+  font-size: 9px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: rgba(195, 170, 255, 0.9);
+  margin-bottom: 12px;
+}
+
+.soul-empty {
+  font-family: v.$font-body;
+  font-size: 13px;
+  color: rgba(195, 180, 230, 0.75);
+  font-style: italic;
+}
+
+.soul-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 14px;
+  background: rgba(255, 255, 255, 0.025);
+  border: 1px solid rgba(110, 40, 208, 0.12);
+  border-radius: 6px;
+  margin-bottom: 8px;
+
+  &--completed .soul-item-content {
+    text-decoration: line-through;
+    color: rgba(195, 180, 230, 0.55);
+  }
+}
+
+.goal-toggle {
+  font-size: 16px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: rgba(195, 170, 255, 0.9);
+  flex-shrink: 0;
+  transition: color 0.15s ease;
+
+  &:hover { color: rgba(220, 200, 255, 0.95); }
+}
+
+.soul-type-icon {
+  font-size: 14px;
+  flex-shrink: 0;
+  color: rgba(255, 200, 100, 0.9);
+
+  &--flaw { color: rgba(210, 140, 255, 0.9); }
+}
+
+.soul-item-content {
+  font-family: v.$font-body;
+  font-size: 14px;
+  color: rgba(220, 200, 255, 0.95);
+  flex: 1;
+}
+
+/* ── Secrets tab ─────────────────────────────────────────────── */
+.secrets-section {
+  margin-bottom: 32px;
+}
+
+.secrets-section-label {
+  font-family: v.$font-header;
+  font-size: 9px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgba(195, 170, 255, 0.9);
+  margin-bottom: 14px;
+}
+
+.secret-entry {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(110, 40, 208, 0.2);
+  border-radius: 8px;
+  padding: 16px 18px;
+  margin-bottom: 10px;
+
+  &--shared {
+    border-color: rgba(60, 180, 120, 0.2);
+    background: rgba(60, 180, 120, 0.04);
+  }
+}
+
+.secret-content {
+  font-family: v.$font-body;
+  font-size: 15px;
+  color: rgba(220, 200, 255, 0.95);
+  line-height: 1.55;
+  margin-bottom: 8px;
+}
+
+.secret-meta {
+  font-family: v.$font-body;
+  font-size: 11px;
+  color: rgba(200, 185, 235, 0.8);
+  margin-bottom: 10px;
+}
+
+.share-btn {
+  font-family: v.$font-header;
+  font-size: 8px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 6px 14px;
+  background: none;
+  border: 1px solid rgba(60, 180, 120, 0.35);
+  border-radius: 20px;
+  color: rgba(120, 220, 160, 0.95);
+  cursor: pointer;
+  transition: all 0.18s ease;
+
+  &:hover:not(:disabled) {
+    background: rgba(60, 180, 120, 0.15);
+    border-color: rgba(60, 180, 120, 0.6);
+  }
+
+  &:disabled { opacity: 0.4; cursor: not-allowed; }
+}
+
+/* ── Shared utilities ────────────────────────────────────────── */
+.delete-btn {
+  flex-shrink: 0;
+  background: none;
+  border: none;
+  color: rgba(200, 80, 80, 0.75);
+  cursor: pointer;
+  font-size: 11px;
+  padding: 4px 6px;
+  border-radius: 4px;
+  transition: color 0.15s ease, background 0.15s ease;
+
+  &:hover { color: rgba(230, 100, 100, 0.95); background: rgba(200, 50, 50, 0.1); }
+}
+
+.empty-state {
+  font-family: v.$font-body;
+  font-size: 13px;
+  color: rgba(195, 180, 230, 0.75);
+  font-style: italic;
+  padding: 12px 0;
+}
+
+.loading-state {
+  padding: 60px 32px;
+  font-family: v.$font-body;
+  font-size: 14px;
+  color: rgba(195, 180, 230, 0.85);
+  font-style: italic;
+  text-align: center;
+}

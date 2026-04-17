@@ -4,3 +4,20 @@
   [data]="overlayData()"
   (dismissed)="dismissOverlay()"
 />
+
+<app-wizard-secret-overlay
+  [content]="wizardSecretContent()"
+  [portalColor]="campaign()?.spineColor ?? '#6e28d0'"
+  (dismissed)="dismissWizardSecret()"
+  (goToSecrets)="navigateToSecrets()"
+/>
+
+@if (showGoldCard()) {
+  <app-currency-card
+    [amount]="goldCardAmount()"
+    [currency]="goldCardCurrency()"
+    [note]="goldCardNote()"
+    [portalColor]="campaign()?.spineColor ?? '#6e28d0'"
+    (dismissed)="dismissGoldCard()"
+  />
+}

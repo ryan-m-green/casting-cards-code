@@ -1,4 +1,5 @@
 ﻿using CastLibrary.Logic.Interfaces;
+using CastLibrary.Logic.Services;
 
 namespace CastLibrary.WebHost.Infrastructure;
 
@@ -6,7 +7,7 @@ namespace CastLibrary.WebHost.Infrastructure;
 /// Scoped implementation of ICorrelationContext.
 /// Produces W3C-compatible trace_id (128-bit / 32 hex) and span_id (64-bit / 16 hex).
 /// </summary>
-public sealed class CorrelationContext : ICorrelationContext
+public sealed class CorrelationContext(ISystemValuesService systemValuesService) : ICorrelationContext
 {
     public string TraceId { get; private set; } = string.Empty;
     public string SpanId  { get; private set; } = string.Empty;
@@ -23,11 +24,11 @@ public sealed class CorrelationContext : ICorrelationContext
     }
 
     /// <summary>Generates a 128-bit (32 hex char) trace_id.</summary>
-    public static string GenerateTraceId()
+    public string GenerateTraceId()
     {
-        // Two Guid.NewGuid() values concatenated give 32 random hex chars
-        var a = Guid.NewGuid().ToByteArray();
-        var b = Guid.NewGuid().ToByteArray();
+        // Two systemValuesService.GetNewGuid() values concatenated give 32 random hex chars
+        var a = systemValuesService.GetNewGuid().ToByteArray();
+        var b = systemValuesService.GetNewGuid().ToByteArray();
         return Convert.ToHexString(a[..8]).ToLowerInvariant()
              + Convert.ToHexString(b[..8]).ToLowerInvariant();
     }

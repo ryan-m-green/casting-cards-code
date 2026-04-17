@@ -76,7 +76,7 @@ $location-blue: #9ab0b8;
   font-size: 7px;
   letter-spacing: 0.2em;
   text-transform: uppercase;
-  color: rgba($location-blue, 0.5);
+  color: rgba($location-blue, 0.85);
   white-space: nowrap;
   flex-shrink: 0;
 }
@@ -96,7 +96,7 @@ $location-blue: #9ab0b8;
 .intel-field-value {
   font-family: v.$font-body;
   font-size: 13px;
-  color: rgba(200, 225, 235, 0.80);
+  color: rgba(200, 225, 235, 0.95);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -107,7 +107,7 @@ $location-blue: #9ab0b8;
     max-width: 100%;
     line-height: 1.55;
     font-size: 12px;
-    color: rgba(185, 210, 220, 0.68);
+    color: rgba(185, 210, 220, 0.9);
     margin: 0;
   }
 }
@@ -131,7 +131,7 @@ $location-blue: #9ab0b8;
   font-size: 9px;
   letter-spacing: 0.22em;
   text-transform: uppercase;
-  color: rgba($location-blue, 0.72);
+  color: rgba($location-blue, 0.9);
   text-shadow: 0 0 10px rgba($location-blue, 0.28);
 }
 
@@ -140,7 +140,7 @@ $location-blue: #9ab0b8;
   font-size: 7px;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: rgba($location-blue, 0.38);
+  color: rgba($location-blue, 0.82);
   padding: 2px 8px;
   border: 1px solid rgba($location-blue, 0.18);
   border-radius: 2px;
@@ -179,10 +179,10 @@ $location-blue: #9ab0b8;
   font-size: 7px;
   letter-spacing: 0.18em;
   text-transform: uppercase;
-  color: rgba(160, 110, 40, 0.72);
+  color: rgba(160, 110, 40, 0.9);
 
   .secret-card--revealed & {
-    color: rgba(80, 180, 160, 0.82);
+    color: rgba(80, 180, 160, 0.95);
   }
 }
 
@@ -191,7 +191,7 @@ $location-blue: #9ab0b8;
   margin: 0;
   font-family: v.$font-body;
   font-size: 13px;
-  color: rgba(200, 215, 222, 0.78);
+  color: rgba(200, 215, 222, 0.95);
   line-height: 1.55;
 }
 

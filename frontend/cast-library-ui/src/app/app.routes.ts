@@ -30,7 +30,20 @@ export const routes: Routes = [
         path: 'sublocations/:sublocationInstanceId/cast/:castInstanceId',
         loadComponent: () => import('./features/player/player-cast-detail/player-cast-detail.component').then(m => m.PlayerCastDetailComponent),
       },
+      {
+        path: 'my-character',
+        loadComponent: () => import('./features/player/player-my-character/player-my-character.component').then(m => m.PlayerMyCharacterComponent),
+      },
+      {
+        path: 'player-card/new',
+        loadComponent: () => import('./features/player/player-card-form/player-card-form.component').then(m => m.PlayerCardFormComponent),
+      },
     ],
+  },
+  {
+    path: 'campaign/:id/the-party',
+    canActivate: [dmGuard],
+    loadComponent: () => import('./features/campaign/dm-the-party/dm-the-party.component').then(m => m.DmThePartyComponent),
   },
   {
     path: 'campaign/:id/locations/:locationInstanceId',

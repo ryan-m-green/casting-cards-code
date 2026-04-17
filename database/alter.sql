@@ -1,6 +1,8 @@
 -- ─── Migrations ───────────────────────────────────────────────────────────────
 -- All ALTER statements must be idempotent (IF NOT EXISTS / IF EXISTS).
 -- Add new migrations at the bottom of this file.
+-- All ALTER statements must be idempotent (IF NOT EXISTS / IF EXISTS).
+-- Add new migrations at the bottom of this file.
 
 -- [001] Add dm_notes to campaign_location_instances
 ALTER TABLE campaign_location_instances
@@ -45,3 +47,113 @@ CREATE TABLE IF NOT EXISTS campaign_tod_slices (
     created_at      TIMESTAMPTZ  NOT NULL DEFAULT NOW(),
     updated_at      TIMESTAMPTZ  NOT NULL DEFAULT NOW()
 );
+
+-- [007] Player Cards — The Company feature
+-- One player card per player per campaign. Created by the player on first entry.
+CREATE TABLE IF NOT EXISTS player_cards (
+    id               UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    campaign_id      UUID         NOT NULL REFERENCES campaigns(id) ON DELETE CASCADE,
+    player_user_id   UUID         NOT NULL REFERENCES users(id)     ON DELETE CASCADE,
+    name             VARCHAR(255) NOT NULL,
+    race             VARCHAR(100) NOT NULL,
+    class            VARCHAR(100) NOT NULL,
+    description      TEXT,
+    image_path       TEXT,
+    created_at       TIMESTAMPTZ  NOT NULL DEFAULT NOW(),
+    updated_at       TIMESTAMPTZ  NOT NULL DEFAULT NOW(),
+    CONSTRAINT uq_player_card UNIQUE (campaign_id, player_user_id)
+);
+
+CREATE INDEX IF NOT EXISTS idx_player_cards_campaign    ON player_cards(campaign_id);
+CREATE INDEX IF NOT EXISTS idx_player_cards_player_user ON player_cards(player_user_id);
+
+-- Active D&D conditions assigned to a player card by the DM.
+CREATE TABLE IF NOT EXISTS player_card_conditions (
+    id             UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    player_card_id UUID         NOT NULL REFERENCES player_cards(id) ON DELETE CASCADE,
+    condition_name VARCHAR(100) NOT NULL,
+    assigned_at    TIMESTAMPTZ  NOT NULL DEFAULT NOW()
+);
+
+CREATE INDEX IF NOT EXISTS idx_player_card_conditions_card ON player_card_conditions(player_card_id);
+
+-- Chronicle entries (memories) authored by the player.
+CREATE TABLE IF NOT EXISTS player_card_memories (
+    id             UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    player_card_id UUID         NOT NULL REFERENCES player_cards(id) ON DELETE CASCADE,
+    memory_type    VARCHAR(20)  NOT NULL CHECK (memory_type IN ('KEY_EVENT','ENCOUNTER','DISCOVERY','DECISION','LOSS','BOND')),
+    session_number INT,
+    title          VARCHAR(255) NOT NULL,
+    detail         TEXT,
+    created_at     TIMESTAMPTZ  NOT NULL DEFAULT NOW()
+);
+
+CREATE INDEX IF NOT EXISTS idx_player_card_memories_card ON player_card_memories(player_card_id);
+
+-- Goals, fears, and flaws authored by the player.
+CREATE TABLE IF NOT EXISTS player_card_traits (
+    id             UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    player_card_id UUID        NOT NULL REFERENCES player_cards(id) ON DELETE CASCADE,
+    trait_type     VARCHAR(10) NOT NULL CHECK (trait_type IN ('GOAL','FEAR','FLAW')),
+    content        TEXT        NOT NULL,
+    is_completed   BOOLEAN     NOT NULL DEFAULT FALSE,
+    created_at     TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+CREATE INDEX IF NOT EXISTS idx_player_card_traits_card ON player_card_traits(player_card_id);
+
+-- [008] Rename gold_transactions → currency_transactions; add currency_type column
+ALTER TABLE IF EXISTS gold_transactions RENAME TO currency_transactions;
+
+ALTER TABLE currency_transactions
+    ADD COLUMN IF NOT EXISTS currency_type VARCHAR(5) NOT NULL DEFAULT 'gp'
+        CHECK (currency_type IN ('cp','sp','ep','gp','pp'));
+
+DO $$ BEGIN
+    IF NOT EXISTS (
+        SELECT 1 FROM pg_indexes
+        WHERE tablename = 'currency_transactions' AND indexname = 'idx_currency_campaign'
+    ) THEN
+        CREATE INDEX idx_currency_campaign ON currency_transactions(campaign_id);
+    END IF;
+END $$;
+
+-- Private secrets delivered by the DM; shareable to the party.
+CREATE TABLE IF NOT EXISTS player_card_secrets (
+    id             UUID        PRIMARY KEY DEFAULT gen_random_uuid(),
+    player_card_id UUID        NOT NULL REFERENCES player_cards(id) ON DELETE CASCADE,
+    content        TEXT        NOT NULL,
+    is_shared      BOOLEAN     NOT NULL DEFAULT FALSE,
+    shared_at      TIMESTAMPTZ,
+    shared_by      VARCHAR(10) CHECK (shared_by IN ('DM','PLAYER')),
+    created_at     TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+CREATE INDEX IF NOT EXISTS idx_player_card_secrets_card ON player_card_secrets(player_card_id);
+
+-- Player impression notes per cast/location/sublocation instance.
+-- Exactly one FK column must be non-null (same pattern as campaign_secrets).
+CREATE TABLE IF NOT EXISTS player_cast_perceptions (
+    id                      UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    player_card_id          UUID NOT NULL REFERENCES player_cards(id) ON DELETE CASCADE,
+    cast_instance_id        UUID REFERENCES campaign_cast_instances(instance_id)        ON DELETE CASCADE,
+    location_instance_id    UUID REFERENCES campaign_location_instances(instance_id)    ON DELETE CASCADE,
+    sublocation_instance_id UUID REFERENCES campaign_sublocation_instances(instance_id) ON DELETE CASCADE,
+    impression              TEXT NOT NULL,
+    created_at              TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    updated_at              TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    CONSTRAINT chk_perception_exactly_one_entity CHECK (
+        (cast_instance_id        IS NOT NULL)::int +
+        (location_instance_id    IS NOT NULL)::int +
+        (sublocation_instance_id IS NOT NULL)::int = 1
+    ),
+    CONSTRAINT uq_player_perception UNIQUE (player_card_id, cast_instance_id, location_instance_id, sublocation_instance_id)
+);
+
+CREATE INDEX IF NOT EXISTS idx_player_perception_card         ON player_cast_perceptions(player_card_id);
+CREATE INDEX IF NOT EXISTS idx_player_perception_cast         ON player_cast_perceptions(cast_instance_id);
+CREATE INDEX IF NOT EXISTS idx_player_perception_location     ON player_cast_perceptions(location_instance_id);
+CREATE INDEX IF NOT EXISTS idx_player_perception_sublocation  ON player_cast_perceptions(sublocation_instance_id);
+
+-- [009] Drop current_gold from campaign_players — currency balances are derived from currency_transactions
+ALTER TABLE campaign_players DROP COLUMN IF EXISTS current_gold;

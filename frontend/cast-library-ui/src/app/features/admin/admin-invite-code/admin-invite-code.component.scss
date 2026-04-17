@@ -14,10 +14,32 @@
   margin: 0 0 6px;
 }
 
+.ic-code-clickable {
+  cursor: pointer;
+  user-select: none;
+}
+
+.ic-feedback {
+  min-height: 18px;
+}
+
 .ic-meta {
   font-size: 0.72rem;
   color: rgba(100, 60, 10, 0.60);
   margin: 0;
+}
+
+.ic-copied-label {
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: rgba(45, 110, 55, 0.90);
+  animation: fade-out-label 1.5s ease forwards;
+}
+
+@keyframes fade-out-label {
+  0%   { opacity: 1; }
+  65%  { opacity: 1; }
+  100% { opacity: 0; }
 }
 
 .ic-btn {

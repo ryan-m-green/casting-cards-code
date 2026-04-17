@@ -1,0 +1,195 @@
+@if (!savedCard()) {
+  <!-- Step 1: Fill out form -->
+  <div class="gate-canvas">
+    <div class="gate-card">
+      <div class="gate-header">
+        <div class="gate-rune">⚔</div>
+        <h1 class="gate-title">Create Your Character</h1>
+        <p class="gate-subtitle">Before you enter this campaign, tell us who you are.</p>
+      </div>
+
+      <form [formGroup]="form" (ngSubmit)="submit()" class="gate-form" novalidate>
+
+        <!-- Name -->
+        <div class="field-group">
+          <label class="field-label" for="char-name">Character Name <span class="required">*</span></label>
+          <input
+            id="char-name"
+            class="field-input"
+            [class.field-input--error]="form.controls.name.invalid && form.controls.name.touched"
+            type="text"
+            formControlName="name"
+            placeholder="Your character's name"
+            autocomplete="off"
+          />
+          @if (form.controls.name.invalid && form.controls.name.touched) {
+            <span class="field-error">Name is required.</span>
+          }
+        </div>
+
+        <!-- Race (multi-pill) -->
+        <div class="field-group">
+          <label class="field-label">Race <span class="required">*</span></label>
+          <div class="pill-select"
+               [class.pill-select--open]="showRaceDropdown()"
+               [class.pill-select--error]="raceError()"
+               (click)="toggleRaceDropdown($event)">
+            <div class="pill-select-inner">
+              @for (r of selectedRaces(); track r) {
+                <span class="pill-token">
+                  {{ r }}
+                  <button type="button" class="pill-remove" (click)="removeRace(r, $event)">×</button>
+                </span>
+              }
+              @if (!selectedRaces().length) {
+                <span class="pill-placeholder">Select race(s)…</span>
+              }
+            </div>
+            <span class="pill-chevron" [class.pill-chevron--open]="showRaceDropdown()">▾</span>
+          </div>
+          @if (showRaceDropdown()) {
+            <div class="pill-dropdown">
+              @for (r of availableRaces(); track r) {
+                <div class="pill-dropdown-item" (click)="addRace(r, $event)">{{ r }}</div>
+              }
+              @if (!availableRaces().length) {
+                <div class="pill-dropdown-empty">All races selected</div>
+              }
+            </div>
+          }
+          @if (raceError()) {
+            <span class="field-error">At least one race is required.</span>
+          }
+        </div>
+
+        <!-- Class (multi-pill) -->
+        <div class="field-group">
+          <label class="field-label">Class <span class="required">*</span></label>
+          <div class="pill-select"
+               [class.pill-select--open]="showClassDropdown()"
+               [class.pill-select--error]="classError()"
+               (click)="toggleClassDropdown($event)">
+            <div class="pill-select-inner">
+              @for (c of selectedClasses(); track c) {
+                <span class="pill-token">
+                  {{ c }}
+                  <button type="button" class="pill-remove" (click)="removeClassItem(c, $event)">×</button>
+                </span>
+              }
+              @if (!selectedClasses().length) {
+                <span class="pill-placeholder">Select class(es)…</span>
+              }
+            </div>
+            <span class="pill-chevron" [class.pill-chevron--open]="showClassDropdown()">▾</span>
+          </div>
+          @if (showClassDropdown()) {
+            <div class="pill-dropdown">
+              @for (c of availableClasses(); track c) {
+                <div class="pill-dropdown-item" (click)="addClassItem(c, $event)">{{ c }}</div>
+              }
+              @if (!availableClasses().length) {
+                <div class="pill-dropdown-empty">All classes selected</div>
+              }
+            </div>
+          }
+          @if (classError()) {
+            <span class="field-error">At least one class is required.</span>
+          }
+        </div>
+
+        <!-- Description -->
+        <div class="field-group">
+          <label class="field-label" for="char-desc">Description <span class="optional">(optional)</span></label>
+          <textarea
+            id="char-desc"
+            class="field-input field-textarea"
+            formControlName="description"
+            placeholder="A brief description of your character…"
+            rows="4"
+          ></textarea>
+        </div>
+
+        @if (error()) {
+          <div class="form-error-banner">{{ error() }}</div>
+        }
+
+        <button type="submit" class="gate-submit-btn"
+                [disabled]="form.invalid || saving()">
+          @if (saving()) {
+            <span class="saving-dots">Saving<span>.</span><span>.</span><span>.</span></span>
+          } @else {
+            Save Character
+          }
+        </button>
+
+      </form>
+    </div>
+  </div>
+
+} @else {
+  <!-- Step 2 & 3: Card preview + image upload + enter campaign -->
+  <div class="gate-canvas">
+    <div class="gate-card gate-card--wide">
+      <div class="gate-header">
+        <div class="gate-rune">✦</div>
+        <h1 class="gate-title">{{ savedCard()!.name }}</h1>
+        <p class="gate-subtitle">{{ savedCard()!.race }} · {{ savedCard()!.class }}</p>
+      </div>
+
+      <div class="card-preview-area">
+        <div class="pc-card pc-card-player" title="Click to upload portrait"
+             (click)="showImageModal.set(true)">
+          <div class="lib-card-front card-form-inner">
+            <div class="card-form-header">
+              <div class="card-name">{{ savedCard()!.name }}</div>
+              <div class="card-descriptor">{{ savedCard()!.race }} · {{ savedCard()!.class }}</div>
+              <div class="dv dv-mb"></div>
+            </div>
+            @if (imageUrl()) {
+              <img [src]="imageUrl()!" alt="Character portrait" class="card-form-image" />
+            } @else {
+              <div class="card-form-placeholder">
+                <div class="card-initial">{{ savedCard()!.name[0].toUpperCase() }}</div>
+                <div class="card-upload-hint">Upload Portrait</div>
+              </div>
+            }
+          </div>
+        </div>
+      </div>
+
+      <button class="gate-submit-btn gate-submit-btn--enter" (click)="enterCampaign()">
+        Enter Campaign
+      </button>
+    </div>
+  </div>
+}
+
+@if (showImageModal()) {
+  <div class="upload-overlay" (click)="showImageModal.set(false)">
+    <div class="upload-panel" (click)="$event.stopPropagation()">
+      <h3 class="upload-panel-title">Upload Portrait</h3>
+      <div class="pc-card pc-card-player pointer-none">
+        <div class="lib-card-front card-form-inner">
+          <div class="card-form-header">
+            <div class="card-name">{{ savedCard()!.name }}</div>
+            <div class="card-descriptor">{{ savedCard()!.race }} · {{ savedCard()!.class }}</div>
+            <div class="dv dv-mb"></div>
+          </div>
+          @if (imageUrl()) {
+            <img [src]="imageUrl()!" alt="Character portrait" class="card-form-image" />
+          } @else {
+            <div class="card-form-placeholder-simple">
+              <div class="card-initial">{{ savedCard()!.name[0].toUpperCase() }}</div>
+            </div>
+          }
+        </div>
+      </div>
+      <label class="upload-file-label">
+        {{ imageUploading() ? 'Uploading…' : (imageUrl() ? 'Replace Portrait' : 'Upload Portrait') }}
+        <input type="file" accept="image/jpeg,image/png,image/webp" class="hidden-input"
+               (change)="onFileSelected($event)" [disabled]="imageUploading()" />
+      </label>
+      <button class="btn-primary btn-upload-done" (click)="showImageModal.set(false)">Close</button>
+    </div>
+  </div>
+}

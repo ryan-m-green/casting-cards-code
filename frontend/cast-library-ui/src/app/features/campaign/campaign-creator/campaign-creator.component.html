@@ -53,10 +53,15 @@
 
       @if (inviteCode()) {
         <div class="invite-code-row">
-          <div class="invite-code-display">{{ inviteCode()!.code }}</div>
-          <button class="invite-copy-btn" (click)="copyCode()" title="Copy to clipboard">📋</button>
+          <div class="invite-code-display" (click)="copyCode()" title="Click to copy" style="cursor:pointer">{{ inviteCode()!.code }}</div>
         </div>
-        <div class="invite-expires">{{ timeRemaining() }}</div>
+        <div class="invite-code-feedback">
+          @if (codeCopied()) {
+            <span class="code-copied-label">Copied!</span>
+          } @else {
+            <span class="invite-expires">{{ timeRemaining() }}</span>
+          }
+        </div>
         <button class="invite-generate-btn" (click)="generateInviteCode()" [disabled]="codeLoading()">
           {{ codeLoading() ? '…' : '↻ Regenerate' }}
         </button>

@@ -22,7 +22,7 @@ public sealed class CorrelationIdMiddleware(RequestDelegate next)
     {
         // Honour an upstream trace_id if one was forwarded; otherwise start a new trace.
         var traceId = context.Request.Headers[TraceHeader].FirstOrDefault()
-                      ?? CorrelationContext.GenerateTraceId();
+                      ?? ((CorrelationContext)correlation).GenerateTraceId();
 
         correlation.SetTraceId(traceId);
         correlation.NewSpan(); // root span for this HTTP request

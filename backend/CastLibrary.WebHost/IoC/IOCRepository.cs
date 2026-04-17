@@ -62,6 +62,28 @@ namespace CastLibrary.WebHost.IoC
             services.AddScoped<IAdminInviteCodeUpdateRepository, AdminInviteCodeUpdateRepository>();
             services.AddScoped<ITimeOfDayReadRepository, TimeOfDayReadRepository>();
             services.AddScoped<ITimeOfDayWriteRepository, TimeOfDayWriteRepository>();
+            services.AddScoped<IPlayerCardReadRepository, PlayerCardReadRepository>();
+            services.AddScoped<IPlayerCardInsertRepository, PlayerCardInsertRepository>();
+            services.AddScoped<IPlayerCardUpdateRepository, PlayerCardUpdateRepository>();
+            services.AddScoped<IPlayerCardConditionReadRepository, PlayerCardConditionReadRepository>();
+            services.AddScoped<IPlayerCardConditionInsertRepository, PlayerCardConditionInsertRepository>();
+            services.AddScoped<IPlayerCardConditionDeleteRepository, PlayerCardConditionDeleteRepository>();
+            services.AddScoped<IPlayerCardMemoryReadRepository, PlayerCardMemoryReadRepository>();
+            services.AddScoped<IPlayerCardMemoryInsertRepository, PlayerCardMemoryInsertRepository>();
+            services.AddScoped<IPlayerCardMemoryDeleteRepository, PlayerCardMemoryDeleteRepository>();
+            services.AddScoped<IPlayerCardTraitReadRepository, PlayerCardTraitReadRepository>();
+            services.AddScoped<IPlayerCardTraitInsertRepository, PlayerCardTraitInsertRepository>();
+            services.AddScoped<IPlayerCardTraitUpdateRepository, PlayerCardTraitUpdateRepository>();
+            services.AddScoped<IPlayerCardTraitDeleteRepository, PlayerCardTraitDeleteRepository>();
+            services.AddScoped<IPlayerCardSecretReadRepository, PlayerCardSecretReadRepository>();
+            services.AddScoped<IPlayerCardSecretInsertRepository, PlayerCardSecretInsertRepository>();
+            services.AddScoped<IPlayerCardSecretUpdateRepository, PlayerCardSecretUpdateRepository>();
+            services.AddScoped<IPlayerCardSecretDeleteRepository, PlayerCardSecretDeleteRepository>();
+            services.AddScoped<IPlayerCastPerceptionReadRepository, PlayerCastPerceptionReadRepository>();
+            services.AddScoped<IPlayerCastPerceptionInsertRepository, PlayerCastPerceptionInsertRepository>();
+            services.AddScoped<IPlayerCastPerceptionUpdateRepository, PlayerCastPerceptionUpdateRepository>();
+            services.AddScoped<IGoldTransactionInsertRepository, GoldTransactionInsertRepository>();
+            services.AddScoped<ICurrencyBalanceReadRepository, CurrencyBalanceReadRepository>();
             services.AddHealthChecks()
               .AddCheck<DatabaseHealthCheck>("postgres");
 
@@ -82,6 +104,12 @@ namespace CastLibrary.WebHost.IoC
             services.AddScoped<ICampaignSecretEntityMapper, CampaignSecretEntityMapper>();
             services.AddScoped<ICampaignPlayerEntityMapper, CampaignPlayerEntityMapper>();
             services.AddScoped<IAdminInviteCodeEntityMapper, AdminInviteCodeEntityMapper>();
+            services.AddScoped<IPlayerCardEntityMapper, PlayerCardEntityMapper>();
+            services.AddScoped<IPlayerCardConditionEntityMapper, PlayerCardConditionEntityMapper>();
+            services.AddScoped<IPlayerCardMemoryEntityMapper, PlayerCardMemoryEntityMapper>();
+            services.AddScoped<IPlayerCardTraitEntityMapper, PlayerCardTraitEntityMapper>();
+            services.AddScoped<IPlayerCardSecretEntityMapper, PlayerCardSecretEntityMapper>();
+            services.AddScoped<IPlayerCastPerceptionEntityMapper, PlayerCastPerceptionEntityMapper>();
         }
     }
 }

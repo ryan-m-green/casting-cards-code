@@ -1,32 +1,46 @@
 import { Component, OnInit, OnDestroy, signal, inject, effect, untracked } from '@angular/core';
-import { RouterOutlet, ActivatedRoute } from '@angular/router';
+import { RouterOutlet, ActivatedRoute, Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
+import { catchError } from 'rxjs/operators';
+import { EMPTY } from 'rxjs';
 import { environment } from '../../../../environments/environment';
 import { CampaignDetail } from '../../../shared/models/campaign.model';
 import { CampaignHubService } from '../../../core/hub/campaign-hub.service';
 import { AuthService } from '../../../core/auth/auth.service';
+import { PortalTransitionService } from '../../../core/portal-transition.service';
 import {
   CardRevealOverlayComponent,
   CardRevealOverlayData,
 } from '../../../shared/components/card-reveal-overlay/card-reveal-overlay.component';
+import { WizardSecretOverlayComponent } from '../../../shared/components/wizard-secret-overlay/wizard-secret-overlay.component';
+import { CurrencyCardComponent } from '../../../shared/components/currency-card/currency-card.component';
 
 @Component({
   selector: 'app-player-campaign-shell',
   standalone: true,
-  imports: [RouterOutlet, CommonModule, CardRevealOverlayComponent],
+  imports: [RouterOutlet, CommonModule, CardRevealOverlayComponent, WizardSecretOverlayComponent, CurrencyCardComponent],
   templateUrl: './player-campaign-shell.component.html',
   styleUrl: './player-campaign-shell.component.scss',
 })
 export class PlayerCampaignShellComponent implements OnInit, OnDestroy {
-  private route = inject(ActivatedRoute);
-  private http  = inject(HttpClient);
-  private hub   = inject(CampaignHubService);
-  private auth  = inject(AuthService);
+  private route      = inject(ActivatedRoute);
+  private router     = inject(Router);
+  private http       = inject(HttpClient);
+  private hub        = inject(CampaignHubService);
+  private auth       = inject(AuthService);
+  private transition = inject(PortalTransitionService);
 
-  campaignId  = signal('');
-  campaign    = signal<CampaignDetail | null>(null);
-  overlayData = signal<CardRevealOverlayData | null>(null);
+  campaignId        = signal('');
+  campaign          = signal<CampaignDetail | null>(null);
+  overlayData       = signal<CardRevealOverlayData | null>(null);
+  wizardSecretContent = signal<string | null>(null);
+
+  // ── Currency card overlay ─────────────────────────────────────────────────
+  showGoldCard     = signal(false);
+  goldCardAmount   = signal(0);
+  goldCardCurrency = signal('gp');
+  goldCardNote     = signal<string | null>(null);
 
   constructor() {
     // Show overlay when a card is newly unlocked
@@ -50,8 +64,6 @@ export class PlayerCampaignShellComponent implements OnInit, OnDestroy {
       const event = this.hub.secretRevealed();
       if (!event || event.campaignId !== this.campaignId()) return;
 
-      // Use the cached campaign data to identify the card (untracked to avoid
-      // re-running this effect when campaign updates from other events)
       const c = untracked(() => this.campaign());
       if (!c) return;
 
@@ -67,6 +79,27 @@ export class PlayerCampaignShellComponent implements OnInit, OnDestroy {
         this.overlayData.set({ ...data, secretContent: event.secretContent });
       }
     });
+
+    // Show wizard overlay when the DM delivers a personal secret to this player
+    effect(() => {
+      const event = this.hub.secretDelivered();
+      if (!event || event.campaignId !== this.campaignId()) return;
+      const myId = untracked(() => this.auth.currentUser()?.id);
+      if (!myId || event.playerUserId !== myId) return;
+      this.wizardSecretContent.set(event.content);
+    });
+
+    // Show currency card when the DM awards gold to this player or the party
+    effect(() => {
+      const event = this.hub.goldAwarded();
+      if (!event || event.campaignId !== this.campaignId()) return;
+      const myId = untracked(() => this.auth.currentUser()?.id);
+      if (event.playerUserId !== null && event.playerUserId !== myId) return;
+      this.goldCardAmount.set(event.amount);
+      this.goldCardCurrency.set(event.currency);
+      this.goldCardNote.set(event.note);
+      this.showGoldCard.set(true);
+    });
   }
 
   ngOnInit() {
@@ -79,6 +112,18 @@ export class PlayerCampaignShellComponent implements OnInit, OnDestroy {
       : this.hub.joinCampaign(id);
     connectAndJoin.catch(console.warn);
 
+    // Gate: redirect to player card creation if none exists yet
+    this.http.get(
+      `${environment.apiUrl}/api/campaigns/${id}/player-cards/mine`
+    ).pipe(
+      catchError(err => {
+        if (err.status === 404) {
+          this.router.navigate(['/player/campaign', id, 'player-card', 'new'], { replaceUrl: true });
+        }
+        return EMPTY;
+      })
+    ).subscribe();
+
     this.http
       .get<CampaignDetail>(`${environment.apiUrl}/api/campaigns/${id}/player`)
       .subscribe(c => this.campaign.set(c));
@@ -90,6 +135,20 @@ export class PlayerCampaignShellComponent implements OnInit, OnDestroy {
 
   dismissOverlay() {
     this.overlayData.set(null);
+  }
+
+  dismissWizardSecret() {
+    this.wizardSecretContent.set(null);
+  }
+
+  dismissGoldCard() {
+    this.showGoldCard.set(false);
+  }
+
+  navigateToSecrets() {
+    this.wizardSecretContent.set(null);
+    this.transition.quickCover();
+    this.router.navigate(['/player/campaign', this.campaignId(), 'my-character']);
   }
 
   private buildOverlayFromVisibilityEvent(

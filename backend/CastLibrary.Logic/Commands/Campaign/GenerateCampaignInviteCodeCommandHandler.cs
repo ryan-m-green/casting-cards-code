@@ -1,3 +1,4 @@
+using CastLibrary.Logic.Services;
 using CastLibrary.Repository.Repositories.Update;
 using CastLibrary.Shared.Domain;
 
@@ -9,12 +10,13 @@ public interface IGenerateCampaignInviteCodeCommandHandler
 }
 
 public class GenerateCampaignInviteCodeCommandHandler(
-    ICampaignInviteCodeUpdateRepository inviteCodeRepository) : IGenerateCampaignInviteCodeCommandHandler
+    ICampaignInviteCodeUpdateRepository inviteCodeRepository,
+    ISystemValuesService systemValuesService) : IGenerateCampaignInviteCodeCommandHandler
 {
 
-    public static string GenerateInviteCode()
+    public string GenerateInviteCode()
     {
-        var parts = Guid.NewGuid().ToString().Split('-');
+        var parts = systemValuesService.GetNewGuid().ToString().Split('-');
         return $"{parts[1]}-{parts[2]}-{parts[3]}".ToUpper();
     }
 
@@ -26,7 +28,7 @@ public class GenerateCampaignInviteCodeCommandHandler(
         {
             CampaignId = command.CampaignId,
             Code = code,
-            ExpiresAt = DateTime.UtcNow.AddHours(24),
+            ExpiresAt = systemValuesService.GetUTCNow(24),
         };
 
         await inviteCodeRepository.UpsertAsync(domain);

@@ -160,6 +160,10 @@ textarea.fi {
   background: linear-gradient(160deg, #4765a7 0%, #759bd7 50%, #3d5a9e 100%);
 }
 
+.pc-card-player .lib-card-front {
+  background: linear-gradient(160deg, #b8a8d4 0%, #d4cce8 50%, #a89ec4 100%);
+}
+
 .lib-card-front,
 .lib-card-back {
   padding: 10px;
@@ -879,6 +883,62 @@ textarea.fi {
 .save-spark-host {
   position: relative;
   display: inline-flex;
+}
+
+// ─── Currency Display ─────────────────────────────────────────────────────────
+.currency-display {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  margin-bottom: 8px;
+}
+
+.currency-display-header {
+  font-family: v.$font-header;
+  font-size: 7px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgba(105, 72, 18, 1.0);
+  padding-bottom: 2px;
+}
+
+.currency-display-divider {
+  height: 0.5px;
+  background: v.$color-border-light;
+  margin-bottom: 3px;
+}
+
+.currency-row {
+  display: flex;
+  align-items: baseline;
+  padding: 1px 0;
+}
+
+.currency-row-sep {
+  font-family: v.$font-body;
+  font-size: 9px;
+  color: v.$color-border-accent;
+  padding: 0 3px;
+}
+
+.currency-row-type {
+  font-family: v.$font-header;
+  font-size: 9px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: v.$color-text-secondary;
+}
+
+.currency-row-amount {
+  font-family: v.$font-body;
+  font-size: 10px;
+  color: v.$color-text-primary;
+}
+
+.currency-display--compact {
+  .currency-display-header  { font-size: 6px; }
+  .currency-row-type        { font-size: 7px; }
+  .currency-row-amount      { font-size: 9px; }
 }
 
 // ─── Global Utilities ─────────────────────────────────────────────────────────

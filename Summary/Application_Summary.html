@@ -1,0 +1,1443 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cast Library Application Summary</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: #f5f5f5;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            padding: 40px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        h1 {
+            color: #2c3e50;
+            border-bottom: 3px solid #3498db;
+            padding-bottom: 10px;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+        }
+        
+        h2 {
+            color: #34495e;
+            border-bottom: 2px solid #3498db;
+            padding: 10px 0;
+            margin-top: 40px;
+            margin-bottom: 20px;
+            font-size: 1.8em;
+        }
+        
+        h3 {
+            color: #7f8c8d;
+            margin-top: 25px;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+            display: flex;
+            align-items: center;
+        }
+        
+        h3::before {
+            content: '▶';
+            margin-right: 10px;
+            color: #3498db;
+        }
+        
+        h4 {
+            color: #2c3e50;
+            margin-top: 15px;
+            margin-bottom: 10px;
+            font-size: 1.1em;
+            background: #ecf0f1;
+            padding: 8px 12px;
+            border-left: 4px solid #3498db;
+        }
+        
+        .intro {
+            background: #ecf0f1;
+            padding: 20px;
+            border-radius: 5px;
+            margin-bottom: 30px;
+            border-left: 5px solid #3498db;
+        }
+        
+        .tech-stack {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+        
+        .tech-item {
+            background: #ecf0f1;
+            padding: 15px;
+            border-radius: 5px;
+            text-align: center;
+            border-left: 4px solid #3498db;
+        }
+        
+        .tech-item strong {
+            color: #2c3e50;
+            display: block;
+            margin-bottom: 5px;
+        }
+        
+        .diagram-container {
+            margin: 30px 0;
+            padding: 20px;
+            background: #f9f9f9;
+            border: 1px solid #e0e0e0;
+            border-radius: 5px;
+            overflow-x: auto;
+        }
+        
+        svg {
+            min-width: 100%;
+            height: auto;
+        }
+        
+        .endpoint-list {
+            list-style: none;
+            margin: 20px 0;
+        }
+        
+        .endpoint-item {
+            background: #f9f9f9;
+            border-left: 4px solid #3498db;
+            padding: 15px;
+            margin-bottom: 15px;
+            border-radius: 3px;
+            transition: all 0.3s ease;
+        }
+        
+        .endpoint-item:hover {
+            background: #ecf0f1;
+            border-left-color: #2980b9;
+        }
+        
+        .endpoint-method {
+            display: inline-block;
+            font-weight: bold;
+            font-size: 0.9em;
+            padding: 3px 8px;
+            border-radius: 3px;
+            margin-right: 10px;
+            color: white;
+        }
+        
+        .endpoint-method.get {
+            background: #27ae60;
+        }
+        
+        .endpoint-method.post {
+            background: #2980b9;
+        }
+        
+        .endpoint-method.put {
+            background: #f39c12;
+        }
+        
+        .endpoint-method.patch {
+            background: #e67e22;
+        }
+        
+        .endpoint-method.delete {
+            background: #e74c3c;
+        }
+        
+        .endpoint-path {
+            font-family: 'Courier New', monospace;
+            color: #2c3e50;
+            font-weight: bold;
+            margin-left: 10px;
+        }
+        
+        .endpoint-description {
+            margin-top: 8px;
+            padding-left: 118px;
+            color: #555;
+            font-size: 0.95em;
+        }
+        
+        .route-list {
+            list-style: none;
+            margin: 20px 0;
+        }
+        
+        .route-item {
+            background: #f9f9f9;
+            border-left: 4px solid #27ae60;
+            padding: 15px;
+            margin-bottom: 15px;
+            border-radius: 3px;
+            transition: all 0.3s ease;
+        }
+        
+        .route-item:hover {
+            background: #ecf0f1;
+            border-left-color: #229954;
+        }
+        
+        .route-path {
+            font-family: 'Courier New', monospace;
+            color: #2c3e50;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        
+        .route-component {
+            color: #666;
+            font-style: italic;
+            font-size: 0.95em;
+            margin-bottom: 5px;
+        }
+        
+        .route-description {
+            color: #555;
+            font-size: 0.95em;
+        }
+        
+        .class-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            background: white;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+        
+        .class-table th {
+            background: #34495e;
+            color: white;
+            padding: 12px;
+            text-align: left;
+            font-weight: bold;
+        }
+        
+        .class-table td {
+            border-bottom: 1px solid #e0e0e0;
+            padding: 12px;
+        }
+        
+        .class-table tr:nth-child(even) {
+            background: #f9f9f9;
+        }
+        
+        .class-table tr:hover {
+            background: #ecf0f1;
+        }
+        
+        .class-name {
+            font-weight: bold;
+            color: #2c3e50;
+            font-family: 'Courier New', monospace;
+        }
+        
+        .class-type {
+            display: inline-block;
+            font-size: 0.85em;
+            padding: 3px 8px;
+            border-radius: 3px;
+            color: white;
+            margin-right: 5px;
+        }
+        
+        .class-type.domain {
+            background: #3498db;
+        }
+        
+        .class-type.entity {
+            background: #e74c3c;
+        }
+        
+        .class-type.request {
+            background: #f39c12;
+        }
+        
+        .class-type.response {
+            background: #27ae60;
+        }
+        
+        .property-list {
+            background: #f9f9f9;
+            padding: 15px;
+            border-radius: 3px;
+            margin: 15px 0;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+            line-height: 1.8;
+            border-left: 4px solid #3498db;
+        }
+        
+        .property-item {
+            margin-bottom: 8px;
+            padding: 5px 0;
+        }
+        
+        .property-name {
+            color: #2c3e50;
+            font-weight: bold;
+        }
+        
+        .property-type {
+            color: #7f8c8d;
+        }
+        
+        .toc {
+            background: #ecf0f1;
+            padding: 20px;
+            border-radius: 5px;
+            margin-bottom: 30px;
+            border-left: 5px solid #3498db;
+        }
+        
+        .toc h3 {
+            color: #2c3e50;
+            margin-top: 0;
+            margin-bottom: 15px;
+        }
+        
+        .toc ul {
+            list-style: none;
+            margin-left: 20px;
+        }
+        
+        .toc li {
+            margin-bottom: 8px;
+        }
+        
+        .toc a {
+            color: #3498db;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+        
+        .toc a:hover {
+            color: #2980b9;
+            text-decoration: underline;
+        }
+        
+        .section-separator {
+            margin: 50px 0;
+            height: 2px;
+            background: linear-gradient(to right, transparent, #3498db, transparent);
+        }
+        
+        .note {
+            background: #fff3cd;
+            border: 1px solid #ffc107;
+            color: #856404;
+            padding: 12px;
+            border-radius: 3px;
+            margin: 20px 0;
+            border-left: 4px solid #ffc107;
+        }
+        
+        .footer {
+            margin-top: 50px;
+            padding-top: 20px;
+            border-top: 2px solid #e0e0e0;
+            color: #7f8c8d;
+            text-align: center;
+            font-size: 0.9em;
+        }
+        
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin: 20px 0;
+        }
+        
+        @media (max-width: 1024px) {
+            .grid-2 {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📚 Cast Library Application Summary</h1>
+        
+        <div class="intro">
+            <h3 style="margin-top: 0;">Overview</h3>
+            <p>The Cast Library is a comprehensive D&D campaign management tool that enables Dungeon Masters (DMs) to create, manage, and share campaign content including characters (casts), locations, sublocations, and player cards. The application features real-time collaboration through SignalR, robust role-based access control, and a rich Angular-based UI.</p>
+        </div>
+        
+        <div class="tech-stack">
+            <div class="tech-item">
+                <strong>Frontend</strong>
+                <div>Angular 17+</div>
+                <div>TypeScript</div>
+                <div>SignalR</div>
+            </div>
+            <div class="tech-item">
+                <strong>Backend</strong>
+                <div>.NET 10</div>
+                <div>C#</div>
+                <div>ASP.NET Core</div>
+            </div>
+            <div class="tech-item">
+                <strong>Database</strong>
+                <div>PostgreSQL</div>
+                <div>Entity Framework Core</div>
+                <div>Migrations</div>
+            </div>
+        </div>
+        
+        <div class="toc">
+            <h3>📋 Table of Contents</h3>
+            <ul>
+                <li><a href="#architecture">Architecture Overview</a></li>
+                <li><a href="#domain-classes">Domain Classes & Entities</a></li>
+                <li><a href="#api-endpoints">API Endpoints</a></li>
+                <li><a href="#frontend-routes">Frontend Routes & Components</a></li>
+            </ul>
+        </div>
+        
+        <div id="architecture" class="section-separator"></div>
+        <h2>🏗️ Architecture Overview</h2>
+        
+        <h3>Backend Structure</h3>
+        <p>The backend follows a layered architecture pattern with clear separation of concerns:</p>
+        <ul style="margin: 15px 0 20px 30px; line-height: 2;">
+            <li><strong>CastLibrary.WebHost</strong> - ASP.NET Core API controllers and SignalR hubs</li>
+            <li><strong>CastLibrary.Logic</strong> - Business logic, command handlers, and query handlers (CQRS pattern)</li>
+            <li><strong>CastLibrary.Repository</strong> - Data access layer with Entity Framework Core</li>
+            <li><strong>CastLibrary.Shared</strong> - Shared domain objects, entities, requests, responses, and enums</li>
+            <li><strong>CastLibrary.Adapter</strong> - External service integrations</li>
+            <li><strong>CastLibrary.Initializer</strong> - Database initialization and seeding</li>
+        </ul>
+        
+        <h3>Frontend Structure</h3>
+        <p>The Angular application is organized by feature modules with lazy loading for optimal performance:</p>
+        <ul style="margin: 15px 0 20px 30px; line-height: 2;">
+            <li><strong>core</strong> - Authentication, authorization guards, and hub services</li>
+            <li><strong>features</strong> - Feature-specific components (campaigns, casts, locations, etc.)</li>
+            <li><strong>shared</strong> - Reusable components and services</li>
+            <li><strong>layout</strong> - Shell components and navigation</li>
+        </ul>
+        
+        <div id="domain-classes" class="section-separator"></div>
+        <h2>📊 Domain Classes & Entities</h2>
+        
+        <h3>Core Domain Model</h3>
+        <p>The application models the following key domains and their relationships:</p>
+        
+        <div class="diagram-container">
+            <svg viewBox="0 0 1200 800" xmlns="http://www.w3.org/2000/svg">
+                <!-- Define styles -->
+                <defs>
+                    <style>
+                        .domain-box { fill: #e8f4f8; stroke: #3498db; stroke-width: 2; }
+                        .entity-box { fill: #ffe8e8; stroke: #e74c3c; stroke-width: 2; }
+                        .text-title { font-weight: bold; font-size: 14px; fill: #2c3e50; }
+                        .text-property { font-size: 11px; fill: #555; }
+                        .arrow { stroke: #7f8c8d; stroke-width: 2; marker-end: url(#arrowhead); }
+                        .relationship-label { font-size: 10px; fill: #7f8c8d; font-weight: bold; }
+                    </style>
+                    <marker id="arrowhead" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+                        <polygon points="0 0, 10 3, 0 6" fill="#7f8c8d" />
+                    </marker>
+                </defs>
+                
+                <!-- Campaign Domain -->
+                <rect class="domain-box" x="20" y="20" width="200" height="120" rx="5"/>
+                <text class="text-title" x="30" y="40">Campaign</text>
+                <line x1="20" y1="45" x2="220" y2="45" stroke="#3498db" stroke-width="1"/>
+                <text class="text-property" x="30" y="60">- Id: Guid</text>
+                <text class="text-property" x="30" y="75">- Name: string</text>
+                <text class="text-property" x="30" y="90">- Status: CampaignStatus</text>
+                <text class="text-property" x="30" y="105">- Description: string</text>
+                <text class="text-property" x="30" y="120">- OwnerId: Guid</text>
+                
+                <!-- Cast Domain -->
+                <rect class="domain-box" x="270" y="20" width="200" height="120" rx="5"/>
+                <text class="text-title" x="280" y="40">Cast</text>
+                <line x1="270" y1="45" x2="470" y2="45" stroke="#3498db" stroke-width="1"/>
+                <text class="text-property" x="280" y="60">- Id: Guid</text>
+                <text class="text-property" x="280" y="75">- Name: string</text>
+                <text class="text-property" x="280" y="90">- Race: string</text>
+                <text class="text-property" x="280" y="105">- DmUserId: Guid</text>
+                <text class="text-property" x="280" y="120">- VoiceNotes: string</text>
+                
+                <!-- Location Domain -->
+                <rect class="domain-box" x="520" y="20" width="200" height="120" rx="5"/>
+                <text class="text-title" x="530" y="40">Location</text>
+                <line x1="520" y1="45" x2="720" y2="45" stroke="#3498db" stroke-width="1"/>
+                <text class="text-property" x="530" y="60">- Id: Guid</text>
+                <text class="text-property" x="530" y="75">- Name: string</text>
+                <text class="text-property" x="530" y="90">- Description: string</text>
+                <text class="text-property" x="530" y="105">- OwnerId: Guid</text>
+                <text class="text-property" x="530" y="120">- ImageUrl: string</text>
+                
+                <!-- SubLocation Domain -->
+                <rect class="domain-box" x="770" y="20" width="200" height="120" rx="5"/>
+                <text class="text-title" x="780" y="40">SubLocation</text>
+                <line x1="770" y1="45" x2="970" y2="45" stroke="#3498db" stroke-width="1"/>
+                <text class="text-property" x="780" y="60">- Id: Guid</text>
+                <text class="text-property" x="780" y="75">- Name: string</text>
+                <text class="text-property" x="780" y="90">- Description: string</text>
+                <text class="text-property" x="780" y="105">- OwnerId: Guid</text>
+                <text class="text-property" x="780" y="120">- ShopItems: ShopItem[]</text>
+                
+                <!-- PlayerCard Domain -->
+                <rect class="domain-box" x="20" y="200" width="200" height="150" rx="5"/>
+                <text class="text-title" x="30" y="220">PlayerCard</text>
+                <line x1="20" y1="225" x2="220" y2="225" stroke="#3498db" stroke-width="1"/>
+                <text class="text-property" x="30" y="240">- Id: Guid</text>
+                <text class="text-property" x="30" y="255">- CampaignId: Guid</text>
+                <text class="text-property" x="30" y="270">- UserId: Guid</text>
+                <text class="text-property" x="30" y="285">- Name: string</text>
+                <text class="text-property" x="30" y="300">- ImageUrl: string</text>
+                <text class="text-property" x="30" y="315">- Conditions: Condition[]</text>
+                <text class="text-property" x="30" y="330">- Memories: Memory[]</text>
+                <text class="text-property" x="30" y="345">- Traits: Trait[]</text>
+                
+                <!-- CastRelationship Domain -->
+                <rect class="domain-box" x="270" y="200" width="200" height="120" rx="5"/>
+                <text class="text-title" x="280" y="220">CastRelationship</text>
+                <line x1="270" y1="225" x2="470" y2="225" stroke="#3498db" stroke-width="1"/>
+                <text class="text-property" x="280" y="240">- Id: Guid</text>
+                <text class="text-property" x="280" y="255">- SourceCastId: Guid</text>
+                <text class="text-property" x="280" y="270">- TargetCastId: Guid</text>
+                <text class="text-property" x="280" y="285">- RelationshipType: string</text>
+                <text class="text-property" x="280" y="300">- Description: string</text>
+                <text class="text-property" x="280" y="315">- IsPublic: bool</text>
+                
+                <!-- Secret Domain -->
+                <rect class="domain-box" x="520" y="200" width="200" height="120" rx="5"/>
+                <text class="text-title" x="530" y="220">Secret</text>
+                <line x1="520" y1="225" x2="720" y2="225" stroke="#3498db" stroke-width="1"/>
+                <text class="text-property" x="530" y="240">- Id: Guid</text>
+                <text class="text-property" x="530" y="255">- CampaignId: Guid</text>
+                <text class="text-property" x="530" y="270">- Content: string</text>
+                <text class="text-property" x="530" y="285">- IsRevealed: bool</text>
+                <text class="text-property" x="530" y="300">- RevealedToPlayers: Guid[]</text>
+                <text class="text-property" x="530" y="315">- EntityType: EntityType</text>
+                
+                <!-- TimeOfDay Domain -->
+                <rect class="domain-box" x="770" y="200" width="200" height="120" rx="5"/>
+                <text class="text-title" x="780" y="220">TimeOfDay</text>
+                <line x1="770" y1="225" x2="970" y2="225" stroke="#3498db" stroke-width="1"/>
+                <text class="text-property" x="780" y="240">- Id: Guid</text>
+                <text class="text-property" x="780" y="255">- CampaignId: Guid</text>
+                <text class="text-property" x="780" y="270">- DayLengthHours: decimal</text>
+                <text class="text-property" x="780" y="285">- CursorPosition: decimal</text>
+                <text class="text-property" x="780" y="300">- Slices: TimeSlice[]</text>
+                <text class="text-property" x="780" y="315">- CreatedAt: DateTime</text>
+                
+                <!-- Relationships -->
+                <path class="arrow" d="M 220 80 L 270 80" stroke-dasharray="5,5"/>
+                <path class="arrow" d="M 470 80 L 520 80" stroke-dasharray="5,5"/>
+                <path class="arrow" d="M 720 80 L 770 80" stroke-dasharray="5,5"/>
+                <path class="arrow" d="M 120 120 L 120 200"/>
+                <path class="arrow" d="M 370 120 L 370 200"/>
+                <path class="arrow" d="M 620 120 L 620 200"/>
+                
+                <!-- Legend -->
+                <rect fill="#f9f9f9" stroke="#e0e0e0" x="20" y="420" width="400" height="80" rx="3"/>
+                <text class="text-title" x="30" y="440">Legend</text>
+                <rect class="domain-box" x="30" y="450" width="30" height="20" rx="2"/>
+                <text class="text-property" x="70" y="463">Domain/Response Objects</text>
+                <rect class="entity-box" x="230" y="450" width="30" height="20" rx="2"/>
+                <text class="text-property" x="270" y="463">Entity Objects (Database)</text>
+                
+                <!-- Notes -->
+                <text class="text-property" x="30" y="550">Domain objects represent business logic and are used in requests/responses.</text>
+                <text class="text-property" x="30" y="565">Entity objects map directly to database tables via Entity Framework Core.</text>
+                <text class="text-property" x="30" y="580">All objects use Guid for primary keys with proper relationships and navigation properties.</text>
+            </svg>
+        </div>
+        
+        <h3>Domain Classes Reference</h3>
+        <table class="class-table">
+            <thead>
+                <tr>
+                    <th>Class Name</th>
+                    <th>Type</th>
+                    <th>Description</th>
+                    <th>Key Properties</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td class="class-name">CastDomain / CastEntity / CastResponse</td>
+                    <td><span class="class-type domain">Domain</span><span class="class-type entity">Entity</span><span class="class-type response">Response</span></td>
+                    <td>Represents a character/NPC that can be added to campaigns</td>
+                    <td>Name, Race, Role, VoiceNotes, Description, PublicDescription, ImageUrl</td>
+                </tr>
+                <tr>
+                    <td class="class-name">CampaignDomain / CampaignEntity / CampaignResponse</td>
+                    <td><span class="class-type domain">Domain</span><span class="class-type entity">Entity</span><span class="class-type response">Response</span></td>
+                    <td>Main container for campaign content, locations, and casts</td>
+                    <td>Name, Status, Description, FantasyType, SpineColor, OwnerId</td>
+                </tr>
+                <tr>
+                    <td class="class-name">LocationDomain / LocationEntity / LocationResponse</td>
+                    <td><span class="class-type domain">Domain</span><span class="class-type entity">Entity</span><span class="class-type response">Response</span></td>
+                    <td>Represents a location that can be added to campaigns</td>
+                    <td>Name, Description, OwnerId, ImageUrl</td>
+                </tr>
+                <tr>
+                    <td class="class-name">SubLocationDomain / SubLocationEntity / SubLocationResponse</td>
+                    <td><span class="class-type domain">Domain</span><span class="class-type entity">Entity</span><span class="class-type response">Response</span></td>
+                    <td>Nested locations within main locations with shop items</td>
+                    <td>Name, Description, OwnerId, ShopItems</td>
+                </tr>
+                <tr>
+                    <td class="class-name">PlayerCardDomain / PlayerCardEntity / PlayerCardResponse</td>
+                    <td><span class="class-type domain">Domain</span><span class="class-type entity">Entity</span><span class="class-type response">Response</span></td>
+                    <td>Character card for players in a campaign</td>
+                    <td>Name, CampaignId, UserId, ImageUrl, Conditions, Memories, Traits</td>
+                </tr>
+                <tr>
+                    <td class="class-name">PlayerCardMemoryDomain / Entity / Response</td>
+                    <td><span class="class-type domain">Domain</span><span class="class-type entity">Entity</span><span class="class-type response">Response</span></td>
+                    <td>Memories associated with player cards</td>
+                    <td>PlayerCardId, Content, MemoryType, CreatedAt</td>
+                </tr>
+                <tr>
+                    <td class="class-name">PlayerCardTraitDomain / Entity / Response</td>
+                    <td><span class="class-type domain">Domain</span><span class="class-type entity">Entity</span><span class="class-type response">Response</span></td>
+                    <td>Character traits/abilities for player cards</td>
+                    <td>PlayerCardId, Content, TraitType, IsGoal</td>
+                </tr>
+                <tr>
+                    <td class="class-name">PlayerCardConditionDomain / Entity</td>
+                    <td><span class="class-type domain">Domain</span><span class="class-type entity">Entity</span></td>
+                    <td>Status conditions affecting player characters</td>
+                    <td>PlayerCardId, ConditionName, AssignedAt</td>
+                </tr>
+                <tr>
+                    <td class="class-name">PlayerCardSecretDomain / Entity / Response</td>
+                    <td><span class="class-type domain">Domain</span><span class="class-type entity">Entity</span><span class="class-type response">Response</span></td>
+                    <td>Secrets revealed to player cards</td>
+                    <td>PlayerCardId, SecretContent, RevealedAt</td>
+                </tr>
+                <tr>
+                    <td class="class-name">CampaignCastRelationshipDomain / Entity / Response</td>
+                    <td><span class="class-type domain">Domain</span><span class="class-type entity">Entity</span><span class="class-type response">Response</span></td>
+                    <td>Relationships between character instances in campaigns</td>
+                    <td>SourceCastInstanceId, TargetCastInstanceId, RelationshipType, Description</td>
+                </tr>
+                <tr>
+                    <td class="class-name">CampaignCastPlayerNotesDomain / Entity / Response</td>
+                    <td><span class="class-type domain">Domain</span><span class="class-type entity">Entity</span><span class="class-type response">Response</span></td>
+                    <td>Player's notes about a cast instance</td>
+                    <td>CampaignId, CastInstanceId, PlayerNotes, DmNotes</td>
+                </tr>
+                <tr>
+                    <td class="class-name">LocationPoliticalNotesDomain / Entity / Response</td>
+                    <td><span class="class-type domain">Domain</span><span class="class-type entity">Entity</span><span class="class-type response">Response</span></td>
+                    <td>Political notes for location instances</td>
+                    <td>CampaignId, LocationInstanceId, PlayerNotes, DmNotes</td>
+                </tr>
+                <tr>
+                    <td class="class-name">TimeOfDayDomain</td>
+                    <td><span class="class-type domain">Domain</span></td>
+                    <td>Time tracking system for campaigns with slices</td>
+                    <td>CampaignId, DayLengthHours, CursorPosition, Slices</td>
+                </tr>
+                <tr>
+                    <td class="class-name">GoldTransactionDomain</td>
+                    <td><span class="class-type domain">Domain</span></td>
+                    <td>Currency/transaction tracking in campaigns</td>
+                    <td>CampaignId, Amount, TransactionType, Description</td>
+                </tr>
+                <tr>
+                    <td class="class-name">AdminInviteCodeDomain / Entity / Response</td>
+                    <td><span class="class-type domain">Domain</span><span class="class-type entity">Entity</span><span class="class-type response">Response</span></td>
+                    <td>Admin-level invitation codes for new users</td>
+                    <td>Code, ExpiresAt, CreatedAt</td>
+                </tr>
+                <tr>
+                    <td class="class-name">CampaignInviteCodeDomain / Entity</td>
+                    <td><span class="class-type domain">Domain</span><span class="class-type entity">Entity</span></td>
+                    <td>Campaign-specific invitation codes for players</td>
+                    <td>Code, CampaignId, ExpiresAt, IsActive</td>
+                </tr>
+            </tbody>
+        </table>
+        
+        <div id="api-endpoints" class="section-separator"></div>
+        <h2>🔌 API Endpoints</h2>
+        
+        <h3>AuthController (Public API - No Authorization Required)</h3>
+        <p><strong>Route Prefix:</strong> <code>api/auth</code></p>
+        <ul class="endpoint-list">
+            <li class="endpoint-item">
+                <span class="endpoint-method post">POST</span>
+                <span class="endpoint-path">/login</span>
+                <div class="endpoint-description">Authenticates a user with email and password. Returns JWT token and user information. Rate limited to prevent brute force attacks.</div>
+            </li>
+            <li class="endpoint-item">
+                <span class="endpoint-method post">POST</span>
+                <span class="endpoint-path">/register</span>
+                <div class="endpoint-description">Registers a new user account. Validates email format and password strength. Requires admin invite code.</div>
+            </li>
+            <li class="endpoint-item">
+                <span class="endpoint-method post">POST</span>
+                <span class="endpoint-path">/forgot-password</span>
+                <div class="endpoint-description">Initiates password reset flow. Sends reset token via email to user.</div>
+            </li>
+            <li class="endpoint-item">
+                <span class="endpoint-method post">POST</span>
+                <span class="endpoint-path">/reset-password</span>
+                <div class="endpoint-description">Completes password reset with new password and reset token from email.</div>
+            </li>
+            <li class="endpoint-item">
+                <span class="endpoint-method post">POST</span>
+                <span class="endpoint-path">/change-password</span>
+                <div class="endpoint-description">Changes password for authenticated user. Requires current password verification.</div>
+            </li>
+        </ul>
+        
+        <h3>CastsController (Authorized - DM Only)</h3>
+        <p><strong>Route Prefix:</strong> <code>api/cast</code></p>
+        <ul class="endpoint-list">
+            <li class="endpoint-item">
+                <span class="endpoint-method get">GET</span>
+                <span class="endpoint-path">/</span>
+                <div class="endpoint-description">Retrieves all cast characters owned by the current DM user. Returns list of cast summaries with metadata.</div>
+            </li>
+            <li class="endpoint-item">
+                <span class="endpoint-method get">GET</span>
+                <span class="endpoint-path">/{id}</span>
+                <div class="endpoint-description">Retrieves detailed information for a specific cast character by ID.</div>
+            </li>
+            <li class="endpoint-item">
+                <span class="endpoint-method post">POST</span>
+                <span class="endpoint-path">/</span>
+                <div class="endpoint-description">Creates a new cast character with provided details (name, race, role, voice notes, etc.). Returns created cast with generated ID.</div>
+            </li>
+            <li class="endpoint-item">
+                <span class="endpoint-method put">PUT</span>
+                <span class="endpoint-path">/{id}</span>
+                <div class="endpoint-description">Updates an existing cast character's properties. All fields are optional for partial updates.</div>
+            </li>
+            <li class="endpoint-item">
+                <span class="endpoint-method delete">DELETE</span>
+                <span class="endpoint-path">/{id}</span>
+                <div class="endpoint-description">Deletes a cast character. Returns 204 No Content on success.</div>
+            </li>
+            <li class="endpoint-item">
+                <span class="endpoint-method post">POST</span>
+                <span class="endpoint-path">/{id}/image</span>
+                <div class="endpoint-description">Uploads a profile image for a cast character. Accepts JPEG, PNG, WebP up to 5MB. Returns new image URL.</div>
+            </li>
+        </ul>
+        
+        <h3>LocationsController (Authorized - DM Only)</h3>
+        <p><strong>Route Prefix:</strong> <code>api/locations</code></p>
+        <ul class="endpoint-list">
+            <li class="endpoint-item">
+                <span class="endpoint-method get">GET</span>
+                <span class="endpoint-path">/</span>
+                <div class="endpoint-description">Retrieves all locations owned by the current user. Used for location library browsing.</div>
+            </li>
+            <li class="endpoint-item">
+                <span class="endpoint-method get">GET</span>
+                <span class="endpoint-path">/{id}</span>
+                <div class="endpoint-description">Retrieves detailed information for a specific location including description and metadata.</div>
+            </li>
+            <li class="endpoint-item">
+                <span class="endpoint-method post">POST</span>
+                <span class="endpoint-path">/</span>
+                <div class="endpoint-description">Creates a new location with name and description. Location becomes part of user's reusable library.</div>
+            </li>
+            <li class="endpoint-item">
+                <span class="endpoint-method put">PUT</span>
+                <span class="endpoint-path">/{id}</span>
+                <div class="endpoint-description">Updates an existing location's information.</div>
+            </li>
+            <li class="endpoint-item">
+                <span class="endpoint-method delete">DELETE</span>
+                <span class="endpoint-path">/{id}</span>
+                <div class="endpoint-description">Deletes a location from the library. May fail if location is in use by active campaigns.</div>
+            </li>
+            <li class="endpoint-item">
+                <span class="endpoint-method post">POST</span>
+                <span class="endpoint-path">/{id}/image</span>
+                <div class="endpoint-description">Uploads a background image for a location. Accepts JPEG, PNG, WebP up to 5MB.</div>
+            </li>
+        </ul>
+        
+        <h3>SubLocationsController (Authorized - DM Only)</h3>
+        <p><strong>Route Prefix:</strong> <code>api/sublocations</code></p>
+        <ul class="endpoint-list">
+            <li class="endpoint-item">
+                <span class="endpoint-method get">GET</span>
+                <span class="endpoint-path">/</span>
+                <div class="endpoint-description">Retrieves all sublocations (nested locations with shops) owned by current user.</div>
+            </li>
+            <li class="endpoint-item">
+                <span class="endpoint-method get">GET</span>
+                <span class="endpoint-path">/{id}</span>
+                <div class="endpoint-description">Retrieves detailed sublocation including shop items and description.</div>
+            </li>
+            <li class="endpoint-item">
+                <span class="endpoint-method post">POST</span>
+                <span class="endpoint-path">/</span>
+                <div class="endpoint-description">Creates a new sublocation. Name is required. Can include shop items.</div>
+            </li>
+            <li class="endpoint-item">
+                <span class="endpoint-method put">PUT</span>
+                <span class="endpoint-path">/{id}</span>
+                <div class="endpoint-description">Updates an existing sublocation's name, description, and shop items.</div>
+            </li>
+            <li class="endpoint-item">
+                <span class="endpoint-method delete">DELETE</span>
+                <span class="endpoint-path">/{id}</span>
+                <div class="endpoint-description">Deletes a sublocation.</div>
+            </li>
+            <li class="endpoint-item">
+                <span class="endpoint-method post">POST</span>
+                <span class="endpoint-path">/{id}/image</span>
+                <div class="endpoint-description">Uploads an image for a sublocation.</div>
+            </li>
+        </ul>
+        
+        <h3>CampaignsController (Authorized - DM & Player)</h3>
+        <p><strong>Route Prefix:</strong> <code>api/campaigns</code></p>
+        <ul class="endpoint-list">
+            <li class="endpoint-item">
+                <span class="endpoint-method get">GET</span>
+                <span class="endpoint-path">/</span>
+                <div class="endpoint-description">Retrieves campaigns. Returns DM campaigns if user is DM, player campaigns if user is player. Lists basic campaign info without full details.</div>
+            </li>
+            <li class="endpoint-item">
+                <span class="endpoint-method get">GET</span>
+                <span class="endpoint-path">/{id}</span>
+                <div class="endpoint-description">Retrieves complete campaign details including locations, casts, sublocations, secrets, relationships, and players. DM-only view.</div>
+            </li>
+            <li class="endpoint-item">
+                <span class="endpoint-method get">GET</span>
+                <span class="endpoint-path">/{id}/player</span>
+                <div class="endpoint-description">Retrieves player view of campaign with limited visibility (no DM-only secrets, limited cast details).</div>
+            </li>
+            <li class="endpoint-item">
+                <span class="endpoint-method post">POST</span>
+                <span class="endpoint-path">/</span>
+                <div class="endpoint-description">Creates a new campaign with name, fantasy type, and optional description. DM becomes owner.</div>
+            </li>
+            <li class="endpoint-item">
+                <span class="endpoint-method patch">PATCH</span>
+                <span class="endpoint-path">/{id}</span>
+                <div class="endpoint-description">Updates campaign metadata (name, description, status, etc.).</div>
+            </li>
+            <li class="endpoint-item">
+                <span class="endpoint-method delete">DELETE</span>
+                <span class="endpoint-path">/{id}</span>
+                <div class="endpoint-description">Deletes an entire campaign and all associated data.</div>
+            </li>
+            <li class="endpoint-item">
+                <span class="endpoint-method post">POST</span>
+                <span class="endpoint-path">/{id}/locations</span>
+                <div class="endpoint-description">Adds a location from library to campaign. Creates a campaign-specific instance of the location.</div>
+            </li>
+            <li class="endpoint-item">
+                <span class="endpoint-method patch">PATCH</span>
+                <span class="endpoint-path">/{id}/locations/{instanceId}</span>
+                <div class="endpoint-description">Updates location instance properties specific to this campaign.</div>
+            </li>
+            <li class="endpoint-item">
+                <span class="endpoint-method patch">PATCH</span>
+                <span class="endpoint-path">/{id}/locations/{instanceId}/visibility</span>
+                <div class="endpoint-description">Toggles visibility of location to players. Sends real-time notification via SignalR.</div>
+            </li>
+            <li class="endpoint-item">
+                <span class="endpoint-method post">POST</span>
+                <span class="endpoint-path">/{id}/sublocations</span>
+                <div class="endpoint-description">Adds a sublocation instance to campaign.</div>
+            </li>
+            <li class="endpoint-item">
+                <span class="endpoint-method patch">PATCH</span>
+                <span class="endpoint-path">/{id}/sublocations/{instanceId}</span>
+                <div class="endpoint-description">Updates sublocation instance details in campaign.</div>
+            </li>
+            <li class="endpoint-item">
+                <span class="endpoint-method patch">PATCH</span>
+                <span class="endpoint-path">/{id}/sublocations/{instanceId}/visibility</span>
+                <div class="endpoint-description">Toggles sublocation visibility to players.</div>
+            </li>
+        </ul>
+        
+        <h3>CastsController - Campaign Instances (Authorized)</h3>
+        <p><strong>Route Prefix:</strong> <code>api/campaigns/{campaignId}</code></p>
+        <ul class="endpoint-list">
+            <li class="endpoint-item">
+                <span class="endpoint-method post">POST</span>
+                <span class="endpoint-path">/cast/{castId}</span>
+                <div class="endpoint-description">Adds a cast to a campaign, creating a campaign-specific instance with visibility controls.</div>
+            </li>
+            <li class="endpoint-item">
+                <span class="endpoint-method patch">PATCH</span>
+                <span class="endpoint-path">/cast/{castInstanceId}</span>
+                <div class="endpoint-description">Updates a cast instance's campaign-specific properties (custom items, notes, etc.).</div>
+            </li>
+            <li class="endpoint-item">
+                <span class="endpoint-method patch">PATCH</span>
+                <span class="endpoint-path">/cast/{castInstanceId}/visibility</span>
+                <div class="endpoint-description">Controls which players can see a cast instance. Broadcasts change via SignalR.</div>
+            </li>
+            <li class="endpoint-item">
+                <span class="endpoint-method delete">DELETE</span>
+                <span class="endpoint-path">/cast/{castInstanceId}</span>
+                <div class="endpoint-description">Removes a cast instance from campaign.</div>
+            </li>
+        </ul>
+        
+        <h3>CastRelationshipsController (Authorized)</h3>
+        <p><strong>Route Prefix:</strong> <code>api/campaigns/{campaignId}/cast-relationships</code></p>
+        <ul class="endpoint-list">
+            <li class="endpoint-item">
+                <span class="endpoint-method get">GET</span>
+                <span class="endpoint-path">/</span>
+                <div class="endpoint-description">Retrieves all cast relationships in campaign. Can filter by source cast instance using query parameter.</div>
+            </li>
+            <li class="endpoint-item">
+                <span class="endpoint-method get">GET</span>
+                <span class="endpoint-path">/{id}</span>
+                <div class="endpoint-description">Retrieves specific relationship details between two casts.</div>
+            </li>
+            <li class="endpoint-item">
+                <span class="endpoint-method post">POST</span>
+                <span class="endpoint-path">/</span>
+                <div class="endpoint-description">Creates a new relationship between two cast instances (friend, rival, mentor, etc.).</div>
+            </li>
+            <li class="endpoint-item">
+                <span class="endpoint-method put">PUT</span>
+                <span class="endpoint-path">/{id}</span>
+                <div class="endpoint-description">Updates an existing relationship type and description.</div>
+            </li>
+            <li class="endpoint-item">
+                <span class="endpoint-method delete">DELETE</span>
+                <span class="endpoint-path">/{id}</span>
+                <div class="endpoint-description">Deletes a relationship between two casts.</div>
+            </li>
+        </ul>
+        
+        <h3>PlayerCardsController (Authorized)</h3>
+        <p><strong>Route Prefix:</strong> <code>api/campaigns/{campaignId}/player-cards</code></p>
+        <ul class="endpoint-list">
+            <li class="endpoint-item">
+                <span class="endpoint-method get">GET</span>
+                <span class="endpoint-path">/mine</span>
+                <div class="endpoint-description">Retrieves the current player's own character card in this campaign.</div>
+            </li>
+            <li class="endpoint-item">
+                <span class="endpoint-method get">GET</span>
+                <span class="endpoint-path">/</span>
+                <div class="endpoint-description">Retrieves all player cards in campaign. DM can see all, players can see discovered party.</div>
+            </li>
+            <li class="endpoint-item">
+                <span class="endpoint-method get">GET</span>
+                <span class="endpoint-path">/party</span>
+                <div class="endpoint-description">Retrieves discovered party members that players have encountered.</div>
+            </li>
+            <li class="endpoint-item">
+                <span class="endpoint-method post">POST</span>
+                <span class="endpoint-path">/</span>
+                <div class="endpoint-description">Creates a new player card for current user in campaign.</div>
+            </li>
+            <li class="endpoint-item">
+                <span class="endpoint-method put">PUT</span>
+                <span class="endpoint-path">/{playerCardId}</span>
+                <div class="endpoint-description">Updates player card properties (name, description, etc.).</div>
+            </li>
+            <li class="endpoint-item">
+                <span class="endpoint-method post">POST</span>
+                <span class="endpoint-path">/{playerCardId}/image</span>
+                <div class="endpoint-description">Uploads player character portrait image.</div>
+            </li>
+            <li class="endpoint-item">
+                <span class="endpoint-method get">GET</span>
+                <span class="endpoint-path">/{playerCardId}/memories</span>
+                <div class="endpoint-description">Retrieves all memories/story notes for a player card.</div>
+            </li>
+            <li class="endpoint-item">
+                <span class="endpoint-method post">POST</span>
+                <span class="endpoint-path">/{playerCardId}/memories</span>
+                <div class="endpoint-description">Adds a memory entry to player card with optional memory type.</div>
+            </li>
+            <li class="endpoint-item">
+                <span class="endpoint-method delete">DELETE</span>
+                <span class="endpoint-path">/{playerCardId}/memories/{memoryId}</span>
+                <div class="endpoint-description">Deletes a memory from player card.</div>
+            </li>
+            <li class="endpoint-item">
+                <span class="endpoint-method get">GET</span>
+                <span class="endpoint-path">/{playerCardId}/traits</span>
+                <div class="endpoint-description">Retrieves all traits/abilities for a player card.</div>
+            </li>
+            <li class="endpoint-item">
+                <span class="endpoint-method put">PUT</span>
+                <span class="endpoint-path">/{playerCardId}/traits/{traitId}</span>
+                <div class="endpoint-description">Updates a trait entry or creates if not exists (upsert).</div>
+            </li>
+            <li class="endpoint-item">
+                <span class="endpoint-method delete">DELETE</span>
+                <span class="endpoint-path">/{playerCardId}/traits/{traitId}</span>
+                <div class="endpoint-description">Deletes a trait from player card.</div>
+            </li>
+            <li class="endpoint-item">
+                <span class="endpoint-method get">GET</span>
+                <span class="endpoint-path">/{playerCardId}/secrets</span>
+                <div class="endpoint-description">Retrieves secrets that have been revealed to player card.</div>
+            </li>
+            <li class="endpoint-item">
+                <span class="endpoint-method post">POST</span>
+                <span class="endpoint-path">/{playerCardId}/conditions</span>
+                <div class="endpoint-description">Assigns a condition/status to player card. DM-only. Broadcasts via SignalR.</div>
+            </li>
+            <li class="endpoint-item">
+                <span class="endpoint-method delete">DELETE</span>
+                <span class="endpoint-path">/{playerCardId}/conditions/{conditionId}</span>
+                <div class="endpoint-description">Removes a condition from player card. Broadcasts via SignalR.</div>
+            </li>
+            <li class="endpoint-item">
+                <span class="endpoint-method get">GET</span>
+                <span class="endpoint-path">/{playerCardId}/perceptions</span>
+                <div class="endpoint-description">Retrieves cast perceptions (what player thinks about specific casts).</div>
+            </li>
+            <li class="endpoint-item">
+                <span class="endpoint-method put">PUT</span>
+                <span class="endpoint-path">/{playerCardId}/perceptions/{castInstanceId}</span>
+                <div class="endpoint-description">Updates or creates player's perception of a cast instance.</div>
+            </li>
+        </ul>
+        
+        <h3>CastPlayerNotesController (Authorized)</h3>
+        <p><strong>Route Prefix:</strong> <code>api/campaigns/{campaignId}/cast-player-notes</code></p>
+        <ul class="endpoint-list">
+            <li class="endpoint-item">
+                <span class="endpoint-method get">GET</span>
+                <span class="endpoint-path">/{castInstanceId}</span>
+                <div class="endpoint-description">Retrieves DM and player notes for a specific cast instance in campaign.</div>
+            </li>
+            <li class="endpoint-item">
+                <span class="endpoint-method get">GET</span>
+                <span class="endpoint-path">/by-cast-instances</span>
+                <div class="endpoint-description">Retrieves notes for multiple cast instances at once using query parameters.</div>
+            </li>
+            <li class="endpoint-item">
+                <span class="endpoint-method put">PUT</span>
+                <span class="endpoint-path">/{castInstanceId}</span>
+                <div class="endpoint-description">Updates or creates notes for a cast instance. Separate DM and player note fields.</div>
+            </li>
+        </ul>
+        
+        <h3>LocationPoliticalNotesController (Authorized)</h3>
+        <p><strong>Route Prefix:</strong> <code>api/campaigns/{campaignId}/Location-political-notes</code></p>
+        <ul class="endpoint-list">
+            <li class="endpoint-item">
+                <span class="endpoint-method get">GET</span>
+                <span class="endpoint-path">/{LocationInstanceId}</span>
+                <div class="endpoint-description">Retrieves political notes for a location instance.</div>
+            </li>
+            <li class="endpoint-item">
+                <span class="endpoint-method put">PUT</span>
+                <span class="endpoint-path">/{LocationInstanceId}</span>
+                <div class="endpoint-description">Updates political notes for location instance with player and DM sections.</div>
+            </li>
+        </ul>
+        
+        <h3>CampaignNotesController (Authorized)</h3>
+        <p><strong>Route Prefix:</strong> <code>api/campaigns/{campaignId}/notes</code></p>
+        <ul class="endpoint-list">
+            <li class="endpoint-item">
+                <span class="endpoint-method get">GET</span>
+                <span class="endpoint-path">/</span>
+                <div class="endpoint-description">Retrieves notes for specific entity type and instance. Filters by entityType and instanceId query parameters.</div>
+            </li>
+            <li class="endpoint-item">
+                <span class="endpoint-method post">POST</span>
+                <span class="endpoint-path">/</span>
+                <div class="endpoint-description">Creates or updates notes for a campaign entity (location, cast, etc.).</div>
+            </li>
+        </ul>
+        
+        <h3>TimeOfDayController (Authorized)</h3>
+        <p><strong>Route Prefix:</strong> <code>api/campaigns/{campaignId}/time-of-day</code></p>
+        <ul class="endpoint-list">
+            <li class="endpoint-item">
+                <span class="endpoint-method get">GET</span>
+                <span class="endpoint-path">/</span>
+                <div class="endpoint-description">Retrieves campaign's time of day configuration and current cursor position.</div>
+            </li>
+            <li class="endpoint-item">
+                <span class="endpoint-method put">PUT</span>
+                <span class="endpoint-path">/</span>
+                <div class="endpoint-description">Creates or updates time of day with slices. Validates slice durations sum correctly. Broadcasts via SignalR.</div>
+            </li>
+            <li class="endpoint-item">
+                <span class="endpoint-method patch">PATCH</span>
+                <span class="endpoint-path">/cursor</span>
+                <div class="endpoint-description">Updates time cursor position (0-100%). Broadcasts movement to all connected clients.</div>
+            </li>
+            <li class="endpoint-item">
+                <span class="endpoint-method patch">PATCH</span>
+                <span class="endpoint-path">/slices/{sliceId}/player-notes</span>
+                <div class="endpoint-description">Updates player-visible notes for a time slice. Broadcasts via SignalR.</div>
+            </li>
+            <li class="endpoint-item">
+                <span class="endpoint-method patch">PATCH</span>
+                <span class="endpoint-path">/slices/{sliceId}/dm-notes</span>
+                <div class="endpoint-description">Updates DM-only notes for a time slice. Broadcasts via SignalR.</div>
+            </li>
+        </ul>
+        
+        <h3>DashboardController (Authorized - DM Only)</h3>
+        <p><strong>Route Prefix:</strong> <code>api/dashboard</code></p>
+        <ul class="endpoint-list">
+            <li class="endpoint-item">
+                <span class="endpoint-method get">GET</span>
+                <span class="endpoint-path">/stats</span>
+                <div class="endpoint-description">Retrieves DM dashboard statistics (total campaigns, locations, sublocations, casts, active campaign).</div>
+            </li>
+            <li class="endpoint-item">
+                <span class="endpoint-method get">GET</span>
+                <span class="endpoint-path">/import-template</span>
+                <div class="endpoint-description">Downloads a ZIP template for importing library data. Returns compressed file.</div>
+            </li>
+            <li class="endpoint-item">
+                <span class="endpoint-method post">POST</span>
+                <span class="endpoint-path">/import</span>
+                <div class="endpoint-description">Imports library data from ZIP file. Processes JSON manifest and embedded images. Returns import results.</div>
+            </li>
+            <li class="endpoint-item">
+                <span class="endpoint-method get">GET</span>
+                <span class="endpoint-path">/export</span>
+                <div class="endpoint-description">Exports all DM's library data (casts, locations, sublocations) as ZIP file with JSON and images.</div>
+            </li>
+        </ul>
+        
+        <h3>AdminController (Authorized - Admin Only)</h3>
+        <p><strong>Route Prefix:</strong> <code>api/admin</code></p>
+        <ul class="endpoint-list">
+            <li class="endpoint-item">
+                <span class="endpoint-method get">GET</span>
+                <span class="endpoint-path">/invite-code</span>
+                <div class="endpoint-description">Retrieves current admin invite code if exists. Returns code and expiration time.</div>
+            </li>
+            <li class="endpoint-item">
+                <span class="endpoint-method post">POST</span>
+                <span class="endpoint-path">/invite-code/generate</span>
+                <div class="endpoint-description">Generates a new admin invite code. Invalidates previous code. Sets expiration time.</div>
+            </li>
+        </ul>
+        
+        <h3>UsersController (Authorized)</h3>
+        <p><strong>Route Prefix:</strong> <code>api/users</code></p>
+        <ul class="endpoint-list">
+            <li class="endpoint-item">
+                <span class="endpoint-method get">GET</span>
+                <span class="endpoint-path">/keywords</span>
+                <div class="endpoint-description">Retrieves list of keywords associated with current user's content (for autocomplete/search).</div>
+            </li>
+        </ul>
+        
+        <div id="frontend-routes" class="section-separator"></div>
+        <h2>🎨 Frontend Routes & Components</h2>
+        
+        <h3>Route Structure Overview</h3>
+        <p>The Angular application uses lazy-loaded feature modules with role-based route guards:</p>
+        
+        <h3>Public Routes (No Authentication Required)</h3>
+        <ul class="route-list">
+            <li class="route-item">
+                <div class="route-path">/</div>
+                <div class="route-component">Component: CoverComponent</div>
+                <div class="route-description">Landing page showing application branding and login/registration options. Shows subscription information.</div>
+            </li>
+            <li class="route-item">
+                <div class="route-path">/about</div>
+                <div class="route-component">Component: AboutComponent</div>
+                <div class="route-description">About page with application information, features, and team details.</div>
+            </li>
+            <li class="route-item">
+                <div class="route-path">/subscribe</div>
+                <div class="route-component">Component: SubscribeComponent</div>
+                <div class="route-description">Subscription/pricing page with feature tiers and payment options.</div>
+            </li>
+            <li class="route-item">
+                <div class="route-path">/join</div>
+                <div class="route-component">Component: RoleSelectionComponent</div>
+                <div class="route-description">Post-login role selection allowing user to choose between Player and DM roles.</div>
+            </li>
+            <li class="route-item">
+                <div class="route-path">/forgot-password</div>
+                <div class="route-component">Component: ForgotPasswordComponent</div>
+                <div class="route-description">Password recovery form. User enters email to receive reset link.</div>
+            </li>
+            <li class="route-item">
+                <div class="route-path">/reset-password</div>
+                <div class="route-component">Component: ResetPasswordComponent</div>
+                <div class="route-description">Password reset form. Validates reset token from email link before allowing new password.</div>
+            </li>
+        </ul>
+        
+        <h3>Player Routes (/player)</h3>
+        <p>Guarded by playerGuard - only accessible to users with Player role</p>
+        <ul class="route-list">
+            <li class="route-item">
+                <div class="route-path">/player/campaigns</div>
+                <div class="route-component">Component: PlayerCampaignsComponent</div>
+                <div class="route-description">Lists all campaigns the player is invited to participate in. Shows campaign names, descriptions, and DM names.</div>
+            </li>
+            <li class="route-item">
+                <div class="route-path">/player/campaign/{id}</div>
+                <div class="route-component">Component: PlayerCampaignShellComponent</div>
+                <div class="route-description">Main campaign view for players. Parent component managing nested campaign navigation.</div>
+            </li>
+            <li class="route-item">
+                <div class="route-path">/player/campaign/{id}/locations/{locationInstanceId}</div>
+                <div class="route-component">Component: PlayerLocationDetailComponent</div>
+                <div class="route-description">Displays location details visible to players. Shows location description, NPCs, and player-visible notes.</div>
+            </li>
+            <li class="route-item">
+                <div class="route-path">/player/campaign/{id}/sublocations/{sublocationInstanceId}</div>
+                <div class="route-component">Component: PlayerSublocationDetailComponent</div>
+                <div class="route-description">Shows sublocation (shop, tavern, etc.) details with items, NPCs, and available interactions.</div>
+            </li>
+            <li class="route-item">
+                <div class="route-path">/player/campaign/{id}/sublocations/{sublocationInstanceId}/cast/{castInstanceId}</div>
+                <div class="route-component">Component: PlayerCastDetailComponent</div>
+                <div class="route-description">Displays NPC details from player perspective. Shows public description, voice notes, and player-discovered information.</div>
+            </li>
+            <li class="route-item">
+                <div class="route-path">/player/campaign/{id}/the-company</div>
+                <div class="route-component">Component: PlayerTheCompanyComponent</div>
+                <div class="route-description">Shows all discovered party members and other players' character cards the player has encountered.</div>
+            </li>
+        </ul>
+        
+        <h3>DM Routes (/dm)</h3>
+        <p>Guarded by dmGuard - only accessible to users with DM role</p>
+        <ul class="route-list">
+            <li class="route-item">
+                <div class="route-path">/dm/dashboard</div>
+                <div class="route-component">Component: DashboardComponent</div>
+                <div class="route-description">DM dashboard showing statistics (campaign count, total casts/locations), active campaign summary, and quick access links.</div>
+            </li>
+            <li class="route-item">
+                <div class="route-path">/dm/cast</div>
+                <div class="route-component">Component: CastLibraryComponent</div>
+                <div class="route-description">Master character library. Displays all created casts with search, filter, and edit capabilities. Access to create/delete casts.</div>
+            </li>
+            <li class="route-item">
+                <div class="route-path">/dm/cast/new</div>
+                <div class="route-component">Component: CastFormComponent</div>
+                <div class="route-description">Form for creating new character. Includes all cast properties (name, race, voice notes, appearance, etc.) and image upload.</div>
+            </li>
+            <li class="route-item">
+                <div class="route-path">/dm/cast/{id}</div>
+                <div class="route-component">Component: CastFormComponent</div>
+                <div class="route-description">Form for editing existing character. Pre-populated with current cast data. Allows property updates and image replacement.</div>
+            </li>
+            <li class="route-item">
+                <div class="route-path">/dm/locations</div>
+                <div class="route-component">Component: LocationLibraryComponent</div>
+                <div class="route-description">Location library management. Shows all locations with ability to create, edit, delete, and organize by category.</div>
+            </li>
+            <li class="route-item">
+                <div class="route-path">/dm/locations/new</div>
+                <div class="route-component">Component: LocationFormComponent</div>
+                <div class="route-description">Create new location. Form for name, description, theme, and image upload.</div>
+            </li>
+            <li class="route-item">
+                <div class="route-path">/dm/locations/{id}</div>
+                <div class="route-component">Component: LocationFormComponent</div>
+                <div class="route-description">Edit existing location. Pre-populated form with current location data.</div>
+            </li>
+            <li class="route-item">
+                <div class="route-path">/dm/sublocations</div>
+                <div class="route-component">Component: SublocationLibraryComponent</div>
+                <div class="route-description">Sublocation management (shops, taverns, etc.). Shows all sublocations with shop items and edit options.</div>
+            </li>
+            <li class="route-item">
+                <div class="route-path">/dm/sublocations/new</div>
+                <div class="route-component">Component: SublocationFormComponent</div>
+                <div class="route-description">Create sublocation with name, description, and shop items editor.</div>
+            </li>
+            <li class="route-item">
+                <div class="route-path">/dm/sublocations/{id}</div>
+                <div class="route-component">Component: SublocationFormComponent</div>
+                <div class="route-description">Edit sublocation including shop item management.</div>
+            </li>
+            <li class="route-item">
+                <div class="route-path">/dm/campaigns</div>
+                <div class="route-component">Component: CampaignLibraryComponent</div>
+                <div class="route-description">Campaign library showing all campaigns. Search, filter by status, quick actions to edit or play campaigns.</div>
+            </li>
+            <li class="route-item">
+                <div class="route-path">/dm/campaigns/new</div>
+                <div class="route-component">Component: CampaignCreatorComponent</div>
+                <div class="route-description">Create new campaign. Form for campaign name, fantasy type, description, and color scheme.</div>
+            </li>
+            <li class="route-item">
+                <div class="route-path">/dm/campaigns/{id}</div>
+                <div class="route-component">Component: CampaignCreatorComponent</div>
+                <div class="route-description">Edit campaign properties and configuration.</div>
+            </li>
+            <li class="route-item">
+                <div class="route-path">/dm/campaigns/{id}/locations/{locationId}/sublocations</div>
+                <div class="route-component">Component: CampaignSublocationSelectorComponent</div>
+                <div class="route-description">Select and add sublocations to a location instance within campaign.</div>
+            </li>
+            <li class="route-item">
+                <div class="route-path">/dm/campaigns/{id}/locations/{locationId}/sublocations/{sublocationInstanceId}/cast</div>
+                <div class="route-component">Component: CampaignCastEditorComponent</div>
+                <div class="route-description">Assign and manage casts/NPCs within a sublocation. Set visibility, notes, and relationships.</div>
+            </li>
+            <li class="route-item">
+                <div class="route-path">/dm/change-password</div>
+                <div class="route-component">Component: ChangePasswordComponent</div>
+                <div class="route-description">Account security page. DM can change their password with current password verification.</div>
+            </li>
+            <li class="route-item">
+                <div class="route-path">/dm/gold-ledger</div>
+                <div class="route-component">Component: GoldLedgerComponent</div>
+                <div class="route-description">Currency/transaction ledger for campaign economy tracking. Shows all transactions and balances.</div>
+            </li>
+            <li class="route-item">
+                <div class="route-path">/dm/player-invites</div>
+                <div class="route-component">Component: PlayerInvitesComponent</div>
+                <div class="route-description">Manage player invitations and invites to campaigns. View pending and accepted invites.</div>
+            </li>
+        </ul>
+        
+        <h3>Admin Routes (/admin)</h3>
+        <p>Guarded by adminGuard - only accessible to users with Admin role</p>
+        <ul class="route-list">
+            <li class="route-item">
+                <div class="route-path">/admin/invite-code</div>
+                <div class="route-component">Component: AdminInviteCodeComponent</div>
+                <div class="route-description">Admin panel for managing system-wide invite codes. View current code, generate new codes, manage expiration.</div>
+            </li>
+        </ul>
+        
+        <h3>Campaign Routes (Both Authorized)</h3>
+        <p>Shared routes used by both DMs and players for playing campaigns</p>
+        <ul class="route-list">
+            <li class="route-item">
+                <div class="route-path">/campaign/{id}</div>
+                <div class="route-component">Component: CampaignDetailComponent</div>
+                <div class="route-description">Main campaign detail view. Shows campaign overview, locations, casts, and available actions. Context-aware based on user role.</div>
+            </li>
+            <li class="route-item">
+                <div class="route-path">/campaign/{id}/the-company</div>
+                <div class="route-component">Component: DmTheCompanyComponent</div>
+                <div class="route-description">DM view of all characters (both casts and player cards) in campaign. Manage relationships and visibility.</div>
+            </li>
+            <li class="route-item">
+                <div class="route-path">/campaign/{id}/locations/{locationInstanceId}</div>
+                <div class="route-component">Component: CampaignLocationDetailComponent</div>
+                <div class="route-description">Location detail view with DM controls. Manage sublocations, NPCs, visibility, and notes. Split panel view for editing.</div>
+            </li>
+            <li class="route-item">
+                <div class="route-path">/campaign/{id}/sublocations/{sublocationInstanceId}</div>
+                <div class="route-component">Component: CampaignSublocationDetailComponent</div>
+                <div class="route-description">Sublocation (shop) detail with shop items list and NPC management.</div>
+            </li>
+            <li class="route-item">
+                <div class="route-path">/campaign/{id}/sublocations/{sublocationInstanceId}/cast/{castInstanceId}</div>
+                <div class="route-component">Component: CampaignCastDetailComponent</div>
+                <div class="route-description">NPC detail view with full information (appearance, voice, relationships, notes). DM can edit all properties.</div>
+            </li>
+        </ul>
+        
+        <h3>Shared Components</h3>
+        <p>Reusable components used throughout the application:</p>
+        <ul class="route-list">
+            <li class="route-item">
+                <div class="route-component">Component: BadgeComponent</div>
+                <div class="route-description">Display status badges (campaign status, role badges, etc.) with color coding and icons.</div>
+            </li>
+            <li class="route-item">
+                <div class="route-component">Component: CampaignNotesComponent</div>
+                <div class="route-description">Shared notes editor for campaign-related notes. Supports rich text and timestamps.</div>
+            </li>
+            <li class="route-item">
+                <div class="route-component">Component: CardFlipComponent</div>
+                <div class="route-description">Animated card flip effect component for revealing secrets or hidden information.</div>
+            </li>
+            <li class="route-item">
+                <div class="route-component">Component: CardRevealOverlayComponent</div>
+                <div class="route-description">Modal overlay for revealing card details with animation.</div>
+            </li>
+            <li class="route-item">
+                <div class="route-component">Component: DmNavComponent</div>
+                <div class="route-description">Navigation component for DM sidebar. Shows links to all DM features with current page indicator.</div>
+            </li>
+            <li class="route-item">
+                <div class="route-component">Component: KeywordInputComponent</div>
+                <div class="route-description">Reusable keyword/tag input with autocomplete support and tag management.</div>
+            </li>
+            <li class="route-item">
+                <div class="route-component">Component: LocationDetailPanelComponent</div>
+                <div class="route-description">Reusable panel for displaying location information with edit and delete buttons.</div>
+            </li>
+            <li class="route-item">
+                <div class="route-component">Component: LocationPlayerCardComponent</div>
+                <div class="route-description">Card component showing NPC/location related player card information.</div>
+            </li>
+            <li class="route-item">
+                <div class="route-component">Component: CastRelationshipsTabComponent</div>
+                <div class="route-description">Tab component for managing and viewing relationships between casts in campaign.</div>
+            </li>
+        </ul>
+        
+        <h3>Service Layers</h3>
+        <p><strong>Core Services (Authentication & Authorization):</strong></p>
+        <ul style="margin: 15px 0 20px 30px; line-height: 2;">
+            <li><strong>AuthService</strong> - Login, registration, token management, and session handling</li>
+            <li><strong>AuthGuard</strong> - Route guard for general authentication checks</li>
+            <li><strong>PlayerGuard</strong> - Route guard enforcing Player role requirement</li>
+            <li><strong>DmGuard</strong> - Route guard enforcing DM role requirement</li>
+            <li><strong>AdminGuard</strong> - Route guard enforcing Admin role requirement</li>
+            <li><strong>CoverGuard</strong> - Route guard for cover/landing page access logic</li>
+            <li><strong>AuthInterceptor</strong> - HTTP interceptor automatically adding JWT tokens to requests</li>
+        </ul>
+        
+        <p><strong>Hub Services (Real-time Communication):</strong></p>
+        <ul style="margin: 15px 0 20px 30px; line-height: 2;">
+            <li><strong>CampaignHubService</strong> - SignalR hub for real-time campaign updates (cast visibility changes, time updates, condition assignments, etc.)</li>
+        </ul>
+        
+        <div class="note">
+            <strong>📝 Note on Real-time Features:</strong> The application uses SignalR for live updates in campaigns. When DMs or players perform certain actions (reveal secrets, assign conditions, update time of day), connected clients in the same campaign receive real-time notifications through the CampaignHub WebSocket connection.
+        </div>
+        
+        <div class="note">
+            <strong>🔐 Note on Role-Based Access:</strong> The application supports three user roles: Player, DM, and Admin. Each role has distinct capabilities and visible routes. Players see only campaign and character content. DMs have full library management and campaign control. Admins manage system-level features like invite codes.
+        </div>
+        
+        <div class="section-separator"></div>
+        
+        <div class="footer">
+            <p>Cast Library Application Summary | Generated for development reference</p>
+            <p>This document provides an overview of the system architecture, domain models, and API endpoints.</p>
+            <p>For detailed implementation specifics, refer to source code and inline documentation.</p>
+        </div>
+    </div>
+</body>
+</html>

@@ -6,8 +6,14 @@
   @if (code()) {
     <div class="wb wb-narrow">
       <p class="ic-label">Code</p>
-      <p class="ic-code">{{ code()!.code }}</p>
-      <p class="ic-meta">Expires {{ formatDate(code()!.expiresAt) }} &nbsp;·&nbsp; {{ expiresIn(code()!.expiresAt) }} remaining</p>
+      <p class="ic-code ic-code-clickable" (click)="copyCode()" title="Click to copy">{{ code()!.code }}</p>
+      <div class="ic-feedback">
+        @if (codeCopied()) {
+          <span class="ic-copied-label">Copied!</span>
+        } @else {
+          <p class="ic-meta">Expires {{ formatDate(code()!.expiresAt) }} &nbsp;·&nbsp; {{ expiresIn(code()!.expiresAt) }} remaining</p>
+        }
+      </div>
     </div>
   } @else {
     <div class="wb wb-narrow">

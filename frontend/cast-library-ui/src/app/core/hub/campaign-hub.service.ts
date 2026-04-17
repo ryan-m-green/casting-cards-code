@@ -6,6 +6,7 @@ import {
   SecretResealedEvent,
   CardVisibilityChangedEvent,
   BulkCardVisibilityChangedEvent,
+  SecretDeliveredEvent,
 } from '../../shared/models/secret.model';
 import {
   TimeCursorMovedEvent,
@@ -13,12 +14,20 @@ import {
   DmNotesUpdatedEvent,
   TimeOfDay,
 } from '../../shared/models/time-of-day.model';
+import { GoldAwardedEvent, ConditionRemovedEvent, ConditionAssignedEvent } from '../../shared/models/player-card.model';
+import { CampaignPlayer } from '../../shared/models/campaign.model';
+
+export interface PlayerJoinedEvent {
+  campaignId: string;
+  player: CampaignPlayer;
+}
 
 @Injectable({ providedIn: 'root' })
 export class CampaignHubService {
   private connection: signalR.HubConnection | null = null;
 
   readonly secretRevealed            = signal<SecretRevealedEvent | null>(null);
+  readonly secretDelivered           = signal<SecretDeliveredEvent | null>(null);
   readonly secretResealed            = signal<SecretResealedEvent | null>(null);
   readonly cardVisibilityChanged     = signal<CardVisibilityChangedEvent | null>(null);
   readonly bulkCardVisibilityChanged = signal<BulkCardVisibilityChangedEvent | null>(null);
@@ -27,6 +36,10 @@ export class CampaignHubService {
   readonly playerNotesUpdated        = signal<PlayerNotesUpdatedEvent | null>(null);
   readonly dmNotesUpdated            = signal<DmNotesUpdatedEvent | null>(null);
   readonly timeOfDayUpdated          = signal<TimeOfDay | null>(null);
+  readonly goldAwarded               = signal<GoldAwardedEvent | null>(null);
+  readonly conditionRemoved          = signal<ConditionRemovedEvent | null>(null);
+  readonly conditionAssigned         = signal<ConditionAssignedEvent | null>(null);
+  readonly playerJoined              = signal<PlayerJoinedEvent | null>(null);
   readonly isConnected               = signal(false);
 
   async connect(token: string): Promise<void> {
@@ -39,6 +52,10 @@ export class CampaignHubService {
 
     this.connection.on('SecretRevealed', (event: SecretRevealedEvent) => {
       this.secretRevealed.set(event);
+    });
+
+    this.connection.on('SecretDelivered', (event: SecretDeliveredEvent) => {
+      this.secretDelivered.set(event);
     });
 
     this.connection.on('SecretResealed', (event: SecretResealedEvent) => {
@@ -71,6 +88,22 @@ export class CampaignHubService {
 
     this.connection.on('TimeOfDayUpdated', (tod: TimeOfDay) => {
       this.timeOfDayUpdated.set(tod);
+    });
+
+    this.connection.on('GoldAwarded', (event: GoldAwardedEvent) => {
+      this.goldAwarded.set(event);
+    });
+
+    this.connection.on('ConditionRemoved', (event: ConditionRemovedEvent) => {
+      this.conditionRemoved.set(event);
+    });
+
+    this.connection.on('ConditionAssigned', (event: ConditionAssignedEvent) => {
+      this.conditionAssigned.set(event);
+    });
+
+    this.connection.on('PlayerJoined', (event: PlayerJoinedEvent) => {
+      this.playerJoined.set(event);
     });
 
     this.connection.onclose(() => this.isConnected.set(false));

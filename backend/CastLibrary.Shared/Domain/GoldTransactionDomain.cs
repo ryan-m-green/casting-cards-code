@@ -7,6 +7,7 @@ public class GoldTransactionDomain
     public Guid CampaignId { get; set; }
     public Guid? PlayerUserId { get; set; }
     public int Amount { get; set; }
+    public string Currency { get; set; } = "gp";
     public TransactionType TransactionType { get; set; }
     public string Description { get; set; } = string.Empty;
     public Guid? CreatedBy { get; set; }

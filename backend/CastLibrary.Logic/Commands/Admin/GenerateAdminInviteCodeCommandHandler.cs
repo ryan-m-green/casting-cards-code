@@ -1,3 +1,4 @@
+using CastLibrary.Logic.Services;
 using CastLibrary.Repository.Repositories.Update;
 using CastLibrary.Shared.Domain;
 
@@ -9,11 +10,12 @@ public interface IGenerateAdminInviteCodeCommandHandler
 }
 
 public class GenerateAdminInviteCodeCommandHandler(
-    IAdminInviteCodeUpdateRepository updateRepository) : IGenerateAdminInviteCodeCommandHandler
+    IAdminInviteCodeUpdateRepository updateRepository,
+    ISystemValuesService systemValuesService) : IGenerateAdminInviteCodeCommandHandler
 {
-    private static string GenerateCode()
+    private string GenerateCode()
     {
-        var parts = Guid.NewGuid().ToString().Split('-');
+        var parts = systemValuesService.GetNewGuid().ToString().Split('-');
         return $"{parts[1]}-{parts[2]}-{parts[3]}".ToUpper();
     }
 
@@ -21,10 +23,10 @@ public class GenerateAdminInviteCodeCommandHandler(
     {
         var domain = new AdminInviteCodeDomain
         {
-            Id = Guid.NewGuid(),
+            Id = systemValuesService.GetNewGuid(),
             Code = GenerateCode(),
-            ExpiresAt = DateTime.UtcNow.AddHours(24),
-            CreatedAt = DateTime.UtcNow,
+            ExpiresAt = systemValuesService.GetUTCNow(24),
+            CreatedAt = systemValuesService.GetUTCNow(),
         };
 
         await updateRepository.UpsertAsync(domain);

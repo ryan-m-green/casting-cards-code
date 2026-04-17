@@ -1,0 +1,20 @@
+<div class="cc-backdrop" (click)="dismiss()">
+  <div class="cc-card" [style.--portal-color]="portalColor" (click)="$event.stopPropagation()">
+
+    <div class="cc-header">Gold Awarded</div>
+
+    <div class="cc-figure-wrap">
+      <img src="/currency.png" alt="" class="cc-image" />
+    </div>
+
+    <div class="cc-amount-block">
+      <span class="cc-amount">✦ {{ amount }} {{ currency }}</span>
+      @if (note) {
+        <span class="cc-note">{{ note }}</span>
+      }
+    </div>
+
+    <button class="cc-cta" (click)="dismiss()">Acknowledge</button>
+
+  </div>
+</div>

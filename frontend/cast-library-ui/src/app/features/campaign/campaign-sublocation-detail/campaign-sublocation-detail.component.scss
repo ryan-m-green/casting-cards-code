@@ -55,6 +55,33 @@ $subLoc-olive: #a8a070;
   z-index: 1;
 }
 
+.topbar-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.topbar-party-btn {
+  font-family: v.$font-header;
+  font-size: 9px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  padding: 7px 16px;
+  background: rgba(110, 40, 208, 0.18);
+  border: 1px solid rgba(110, 40, 208, 0.4);
+  border-radius: 20px;
+  color: rgba(200, 180, 255, 0.85);
+  cursor: pointer;
+  transition: background 0.18s ease, border-color 0.18s ease, color 0.18s ease;
+
+  &:hover {
+    background: rgba(110, 40, 208, 0.35);
+    border-color: rgba(110, 40, 208, 0.65);
+    color: rgba(220, 200, 255, 0.98);
+  }
+}
+
 /* ── Breadcrumbs ─────────────────────────────────────────────────────────── */
 .void-breadcrumbs {
   display: flex;
@@ -68,7 +95,6 @@ $subLoc-olive: #a8a070;
   font-family: v.$font-header;
   font-size: 9px;
   color: color-mix(in srgb, var(--portal-color, #{$subLoc-olive}), white 55%);
-  opacity: 0.25;
   user-select: none;
   pointer-events: none;
 }
@@ -78,15 +104,14 @@ $subLoc-olive: #a8a070;
   font-size: 9px;
   letter-spacing: 0.18em;
   text-transform: uppercase;
-  color: color-mix(in srgb, var(--portal-color, #{$subLoc-olive}), white 55%);
-  opacity: 0.55;
+  color: color-mix(in srgb, var(--portal-color, #{$subLoc-olive}), white 75%);
   background: none;
   border: none;
   cursor: pointer;
-  transition: opacity 0.2s ease;
+  transition: color 0.2s ease;
   white-space: nowrap;
 
-  &:hover { opacity: 0.9; }
+  &:hover { color: color-mix(in srgb, var(--portal-color, #{$subLoc-olive}), white 92%); }
 }
 
 .void-title {
@@ -217,11 +242,11 @@ $subLoc-olive: #a8a070;
 .secret-text {
   font-family: v.$font-body;
   font-size: 13px;
-  color: rgba(185, 210, 220, 0.60);
+  color: rgba(185, 210, 220, 0.9);
   line-height: 1.5;
 
   &--revealed {
-    color: rgba(200, 225, 235, 0.82);
+    color: rgba(200, 225, 235, 0.95);
   }
 }
 
@@ -238,12 +263,12 @@ $subLoc-olive: #a8a070;
   font-family: v.$font-header;
   font-size: 8px;
   letter-spacing: 0.12em;
-  color: rgba($subLoc-olive, 0.40);
+  color: rgba($subLoc-olive, 0.85);
   transition: background 0.18s ease, color 0.18s ease;
 
   &:hover {
     background: rgba($subLoc-olive, 0.10);
-    color: rgba($subLoc-olive, 0.72);
+    color: rgba($subLoc-olive, 0.95);
   }
 }
 
@@ -252,7 +277,7 @@ $subLoc-olive: #a8a070;
   font-size: 7px;
   letter-spacing: 0.2em;
   text-transform: uppercase;
-  color: rgba($subLoc-olive, 0.55);
+  color: rgba($subLoc-olive, 0.85);
   white-space: nowrap;
 }
 
@@ -265,7 +290,7 @@ $subLoc-olive: #a8a070;
 .detail-value {
   font-family: v.$font-body;
   font-size: 14px;
-  color: rgba(200, 225, 235, 0.82);
+  color: rgba(200, 225, 235, 0.95);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -274,7 +299,7 @@ $subLoc-olive: #a8a070;
     white-space: normal;
     font-size: 13px;
     line-height: 1.6;
-    color: rgba(185, 210, 220, 0.70);
+    color: rgba(185, 210, 220, 0.9);
     margin: 0;
   }
 }
@@ -315,7 +340,7 @@ $subLoc-olive: #a8a070;
   font-size: 8px;
   letter-spacing: 0.16em;
   text-transform: uppercase;
-  color: rgba(200, 225, 235, 0.72);
+  color: rgba(200, 225, 235, 0.9);
   cursor: pointer;
   transition: background 0.18s ease, border-color 0.18s ease, color 0.18s ease;
 
@@ -355,13 +380,13 @@ $subLoc-olive: #a8a070;
   font-size: 8px;
   letter-spacing: 0.16em;
   text-transform: uppercase;
-  color: rgba(200, 225, 235, 0.40);
+  color: rgba(200, 225, 235, 0.75);
   cursor: pointer;
   transition: border-color 0.18s ease, color 0.18s ease;
 
   &:hover {
     border-color: rgba(255, 255, 255, 0.25);
-    color: rgba(200, 225, 235, 0.72);
+    color: rgba(200, 225, 235, 0.95);
   }
 }
 
@@ -409,7 +434,7 @@ $subLoc-olive: #a8a070;
 .detail-value--muted {
   font-family: v.$font-body;
   font-size: 13px;
-  color: rgba($subLoc-olive, 0.30);
+  color: rgba($subLoc-olive, 0.75);
   font-style: italic;
   margin: 0;
 }
@@ -506,7 +531,7 @@ $subLoc-olive: #a8a070;
   font-size: 8px;
   letter-spacing: 0.16em;
   text-transform: uppercase;
-  color: rgba($subLoc-olive, 0.45);
+  color: rgba($subLoc-olive, 0.85);
   cursor: pointer;
   transition: border-color 0.18s ease, color 0.18s ease, background 0.18s ease;
 
@@ -555,7 +580,7 @@ $subLoc-olive: #a8a070;
 .detail-shop-item-name {
   font-family: v.$font-body;
   font-size: 14px;
-  color: rgba(200, 225, 235, 0.82);
+  color: rgba(200, 225, 235, 0.95);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -573,7 +598,7 @@ $subLoc-olive: #a8a070;
   font-family: v.$font-header;
   font-size: 12px;
   letter-spacing: 0.12em;
-  color: rgba($subLoc-olive, 0.70);
+  color: rgba($subLoc-olive, 0.95);
   white-space: nowrap;
 }
 
@@ -588,7 +613,7 @@ $subLoc-olive: #a8a070;
   font-size: 7px;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: rgba($subLoc-olive, 0.55);
+  color: rgba($subLoc-olive, 0.85);
   cursor: pointer;
   transition: background 0.18s ease, border-color 0.18s ease, color 0.18s ease;
 
@@ -660,7 +685,7 @@ $subLoc-olive: #a8a070;
   background: rgba(14, 24, 32, 0.80);
   border: 1px solid rgba($subLoc-olive, 0.28);
   border-radius: 3px;
-  color: rgba(200, 225, 210, 0.82);
+  color: rgba(200, 225, 210, 0.95);
   font-family: v.$font-body;
   font-size: 13px;
   padding: 4px 8px;
@@ -685,7 +710,6 @@ $subLoc-olive: #a8a070;
 
 .notes-dropdown-caret {
   font-size: 9px;
-  opacity: 0.50;
   transition: transform 0.15s;
   margin-left: 4px;
   flex-shrink: 0;
@@ -710,7 +734,7 @@ $subLoc-olive: #a8a070;
 .notes-dropdown-item {
   font-family: v.$font-body;
   font-size: 13px;
-  color: rgba(200, 225, 210, 0.78);
+  color: rgba(200, 225, 210, 0.95);
   padding: 6px 10px;
   cursor: pointer;
   transition: background 0.12s, color 0.12s;
@@ -777,20 +801,20 @@ $subLoc-olive: #a8a070;
   font-size: 8px;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: rgba(200, 225, 235, 0.55);
+  color: rgba(200, 225, 235, 0.85);
   cursor: pointer;
   transition: background 0.18s ease, border-color 0.18s ease, color 0.18s ease;
 
   &:hover {
     background: rgba(0, 0, 0, 0.70);
     border-color: rgba(255, 255, 255, 0.22);
-    color: rgba(200, 225, 235, 0.85);
+    color: rgba(200, 225, 235, 0.95);
   }
 
   &--visible {
     background: rgba(40, 160, 80, 0.18);
     border-color: rgba(80, 200, 120, 0.35);
-    color: rgba(120, 210, 150, 0.80);
+    color: rgba(120, 210, 150, 0.90);
 
     &:hover {
       background: rgba(40, 160, 80, 0.32);

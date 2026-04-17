@@ -1,8 +1,11 @@
 @if (campaign(); as camp) {
   <div class="void-canvas" [style.--portal-color]="spineColor()">
     <div class="void-topbar">
-      <div class="void-breadcrumbs">
-        <button class="void-back" (click)="exitPortal()">← Player Campaigns</button>
+      <div class="topbar-row">
+        <div class="void-breadcrumbs">
+          <button class="void-back" (click)="exitPortal()">← Player Campaigns</button>
+        </div>
+        <button class="topbar-party-btn" (click)="goToMyCharacter()">⚔ My Character</button>
       </div>
       <span class="void-title">{{ camp.name }}</span>
     </div>
@@ -12,6 +15,7 @@
         [campaignId]="camp.id"
         [isDm]="false"
         [panelTheme]="'dark'"
+        [todInput]="timeOfDay()"
       />
     </div>
 

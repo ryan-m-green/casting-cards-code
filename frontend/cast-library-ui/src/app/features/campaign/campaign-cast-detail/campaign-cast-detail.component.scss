@@ -55,6 +55,33 @@ $cast-gold: #c8b07a;
   z-index: 1;
 }
 
+.topbar-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.topbar-party-btn {
+  font-family: v.$font-header;
+  font-size: 9px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  padding: 7px 16px;
+  background: rgba(110, 40, 208, 0.18);
+  border: 1px solid rgba(110, 40, 208, 0.4);
+  border-radius: 20px;
+  color: rgba(200, 180, 255, 0.85);
+  cursor: pointer;
+  transition: background 0.18s ease, border-color 0.18s ease, color 0.18s ease;
+
+  &:hover {
+    background: rgba(110, 40, 208, 0.35);
+    border-color: rgba(110, 40, 208, 0.65);
+    color: rgba(220, 200, 255, 0.98);
+  }
+}
+
 /* ── Breadcrumbs ─────────────────────────────────────────────────────────── */
 .void-breadcrumbs {
   display: flex;
@@ -68,7 +95,6 @@ $cast-gold: #c8b07a;
   font-family: v.$font-header;
   font-size: 9px;
   color: color-mix(in srgb, var(--portal-color, #{$cast-gold}), white 55%);
-  opacity: 0.25;
   user-select: none;
   pointer-events: none;
 }
@@ -78,15 +104,14 @@ $cast-gold: #c8b07a;
   font-size: 9px;
   letter-spacing: 0.18em;
   text-transform: uppercase;
-  color: color-mix(in srgb, var(--portal-color, #{$cast-gold}), white 55%);
-  opacity: 0.55;
+  color: color-mix(in srgb, var(--portal-color, #{$cast-gold}), white 75%);
   background: none;
   border: none;
   cursor: pointer;
-  transition: opacity 0.2s ease;
+  transition: color 0.2s ease;
   white-space: nowrap;
 
-  &:hover { opacity: 0.9; }
+  &:hover { color: color-mix(in srgb, var(--portal-color, #{$cast-gold}), white 92%); }
 }
 
 .void-title {
@@ -249,11 +274,11 @@ $cast-gold: #c8b07a;
 .secret-text {
   font-family: v.$font-body;
   font-size: 13px;
-  color: rgba(185, 210, 220, 0.60);
+  color: rgba(185, 210, 220, 0.9);
   line-height: 1.5;
 
   &--revealed {
-    color: rgba(200, 225, 235, 0.82);
+    color: rgba(200, 225, 235, 0.95);
   }
 }
 
@@ -263,7 +288,7 @@ $cast-gold: #c8b07a;
   font-size: 7px;
   letter-spacing: 0.2em;
   text-transform: uppercase;
-  color: rgba($cast-gold, 0.55);
+  color: rgba($cast-gold, 0.85);
   white-space: nowrap;
 }
 
@@ -276,7 +301,7 @@ $cast-gold: #c8b07a;
 .detail-value {
   font-family: v.$font-body;
   font-size: 14px;
-  color: rgba(200, 225, 235, 0.82);
+  color: rgba(200, 225, 235, 0.95);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -285,7 +310,7 @@ $cast-gold: #c8b07a;
     white-space: normal;
     font-size: 13px;
     line-height: 1.6;
-    color: rgba(185, 210, 220, 0.70);
+    color: rgba(185, 210, 220, 0.9);
     margin: 0;
   }
 }
@@ -326,7 +351,7 @@ $cast-gold: #c8b07a;
   font-size: 8px;
   letter-spacing: 0.16em;
   text-transform: uppercase;
-  color: rgba(200, 225, 235, 0.72);
+  color: rgba(200, 225, 235, 0.9);
   cursor: pointer;
   transition: background 0.18s ease, border-color 0.18s ease, color 0.18s ease;
 
@@ -366,13 +391,13 @@ $cast-gold: #c8b07a;
   font-size: 8px;
   letter-spacing: 0.16em;
   text-transform: uppercase;
-  color: rgba(200, 225, 235, 0.40);
+  color: rgba(200, 225, 235, 0.75);
   cursor: pointer;
   transition: border-color 0.18s ease, color 0.18s ease;
 
   &:hover {
     border-color: rgba(255, 255, 255, 0.25);
-    color: rgba(200, 225, 235, 0.72);
+    color: rgba(200, 225, 235, 0.95);
   }
 }
 
@@ -420,7 +445,7 @@ $cast-gold: #c8b07a;
 .detail-value--muted {
   font-family: v.$font-body;
   font-size: 13px;
-  color: rgba($cast-gold, 0.30);
+  color: rgba($cast-gold, 0.75);
   font-style: italic;
   margin: 0;
 }
@@ -517,7 +542,7 @@ $cast-gold: #c8b07a;
   font-size: 8px;
   letter-spacing: 0.16em;
   text-transform: uppercase;
-  color: rgba($cast-gold, 0.45);
+  color: rgba($cast-gold, 0.85);
   cursor: pointer;
   transition: border-color 0.18s ease, color 0.18s ease, background 0.18s ease;
 

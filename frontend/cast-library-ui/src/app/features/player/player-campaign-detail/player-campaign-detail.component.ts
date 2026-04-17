@@ -4,6 +4,7 @@ import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../../environments/environment';
 import { CampaignDetail } from '../../../shared/models/campaign.model';
+import { TimeOfDay } from '../../../shared/models/time-of-day.model';
 import { PortalTransitionService } from '../../../core/portal-transition.service';
 import { CampaignHubService } from '../../../core/hub/campaign-hub.service';
 import { TimeOfDayBarComponent } from '../../../shared/components/time-of-day-bar/time-of-day-bar.component';
@@ -24,6 +25,7 @@ export class PlayerCampaignDetailComponent implements OnInit {
 
   campaignId = signal('');
   campaign   = signal<CampaignDetail | null>(null);
+  timeOfDay  = signal<TimeOfDay | null>(null);
   lockingIds = signal<Set<string>>(new Set());
 
   spineColor = () => this.campaign()?.spineColor ?? '#6e28d0';
@@ -85,11 +87,25 @@ export class PlayerCampaignDetailComponent implements OnInit {
         this.campaign.set(c);
         this.transition.spineColor = c.spineColor;
       });
+    this.loadTimeOfDay(id);
+  }
+
+  loadTimeOfDay(id: string) {
+    this.http.get<TimeOfDay>(`${environment.apiUrl}/api/campaigns/${id}/time-of-day`)
+      .subscribe({
+        next:  tod => this.timeOfDay.set(tod),
+        error: ()  => { /* no ToD configured — leave null */ },
+      });
   }
 
   goToLocationDetail(instanceId: string) {
     this.transition.quickCover();
     this.router.navigate(['/player/campaign', this.campaignId(), 'locations', instanceId]);
+  }
+
+  goToMyCharacter() {
+    this.transition.quickCover();
+    this.router.navigate(['/player/campaign', this.campaignId(), 'my-character']);
   }
 
   exitPortal() {

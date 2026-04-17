@@ -1,0 +1,774 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CQRS & Clean Code Analysis - CastLibrary Backend</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+        header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px;
+            text-align: center;
+        }
+        header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+        header p {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+        .content {
+            padding: 40px;
+        }
+        .summary-section {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+            border-left: 4px solid #667eea;
+        }
+        .summary-section h2 {
+            color: #667eea;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+        }
+        .metrics {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        .metric-card {
+            background: white;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 20px;
+            text-align: center;
+        }
+        .metric-card .number {
+            font-size: 2.5em;
+            font-weight: bold;
+            color: #667eea;
+        }
+        .metric-card .label {
+            color: #666;
+            font-weight: 500;
+            margin-top: 10px;
+        }
+        .issues-section {
+            margin-bottom: 30px;
+        }
+        .issue-category {
+            margin-bottom: 25px;
+            background: white;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        .issue-category-header {
+            background: #f8f9fa;
+            padding: 15px 20px;
+            border-bottom: 2px solid #e0e0e0;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: 600;
+        }
+        .issue-category-header:hover {
+            background: #e0e0e0;
+        }
+        .issue-category-header .count {
+            background: #667eea;
+            color: white;
+            padding: 2px 8px;
+            border-radius: 20px;
+            font-size: 0.9em;
+        }
+        .issue-category-content {
+            padding: 20px;
+        }
+        .issue {
+            margin-bottom: 20px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        .issue:last-child {
+            border-bottom: none;
+        }
+        .issue-title {
+            font-weight: 600;
+            color: #d9534f;
+            margin-bottom: 8px;
+            font-size: 1.05em;
+        }
+        .issue-severity {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.85em;
+            font-weight: 600;
+            margin-bottom: 8px;
+            margin-right: 8px;
+        }
+        .severity-critical {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        .severity-high {
+            background: #fff3cd;
+            color: #856404;
+            border: 1px solid #ffeaa7;
+        }
+        .severity-medium {
+            background: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+        .issue-description {
+            color: #555;
+            margin-bottom: 10px;
+            line-height: 1.6;
+        }
+        .issue-files {
+            background: #f5f5f5;
+            padding: 10px 15px;
+            border-radius: 4px;
+            font-size: 0.9em;
+            color: #666;
+            font-family: 'Monaco', 'Courier New', monospace;
+            word-break: break-all;
+        }
+        .issue-files strong {
+            color: #333;
+        }
+        .code-example {
+            background: #282c34;
+            color: #61dafb;
+            padding: 15px;
+            border-radius: 4px;
+            font-family: 'Monaco', 'Courier New', monospace;
+            font-size: 0.9em;
+            margin-top: 10px;
+            overflow-x: auto;
+            line-height: 1.5;
+        }
+        .recommendation {
+            background: #d4edda;
+            border-left: 4px solid #28a745;
+            padding: 12px 15px;
+            border-radius: 4px;
+            margin-top: 10px;
+            font-size: 0.95em;
+        }
+        .recommendation strong {
+            color: #155724;
+        }
+        .section-title {
+            font-size: 1.8em;
+            color: #667eea;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 3px solid #667eea;
+        }
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+        .stat-item {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+        }
+        .stat-item .number {
+            font-size: 2em;
+            font-weight: bold;
+            display: block;
+        }
+        .stat-item .label {
+            font-size: 0.9em;
+            opacity: 0.9;
+        }
+        .recommendations-section {
+            background: #d4edda;
+            border: 2px solid #28a745;
+            border-radius: 8px;
+            padding: 20px;
+            margin-top: 30px;
+        }
+        .recommendations-section h3 {
+            color: #155724;
+            margin-bottom: 15px;
+        }
+        .recommendations-section ul {
+            list-style-position: inside;
+        }
+        .recommendations-section li {
+            margin-bottom: 10px;
+            color: #155724;
+        }
+        footer {
+            background: #f8f9fa;
+            padding: 20px;
+            text-align: center;
+            color: #666;
+            border-top: 2px solid #e0e0e0;
+        }
+        .highlight {
+            background: #fff3cd;
+            padding: 2px 4px;
+            border-radius: 3px;
+        }
+        .pattern-good {
+            color: #28a745;
+            font-weight: 600;
+        }
+        .pattern-bad {
+            color: #d9534f;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🔍 CQRS & Clean Code Analysis</h1>
+            <p>CastLibrary Backend Architecture Review</p>
+        </header>
+        
+        <div class="content">
+            <!-- Executive Summary -->
+            <div class="summary-section">
+                <h2>📊 Executive Summary</h2>
+                <p>The CastLibrary backend demonstrates a <span class="highlight">solid attempt at CQRS pattern implementation</span> with clear separation between commands and queries. However, there are several areas where the architecture deviates from best practices in clean code principles and CQRS purity. This analysis identifies 8 major issue categories with 28+ specific violations.</p>
+            </div>
+
+            <!-- Key Metrics -->
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <span class="number">28+</span>
+                    <span class="label">Issues Found</span>
+                </div>
+                <div class="stat-item">
+                    <span class="number">8</span>
+                    <span class="label">Categories</span>
+                </div>
+                <div class="stat-item">
+                    <span class="number">14+</span>
+                    <span class="label">Files Affected</span>
+                </div>
+                <div class="stat-item">
+                    <span class="number">5/10</span>
+                    <span class="label">Overall Score</span>
+                </div>
+            </div>
+
+            <!-- Issues -->
+            <div class="issues-section">
+                <h3 class="section-title">🚨 Issues Identified</h3>
+
+                <!-- Issue Category 1: Massive Controllers -->
+                <div class="issue-category">
+                    <div class="issue-category-header">
+                        <span>1. Bloated Controllers with Too Many Dependencies</span>
+                        <span class="count">4 instances</span>
+                    </div>
+                    <div class="issue-category-content">
+                        <div class="issue">
+                            <div class="issue-title">CampaignsController: Constructor Injection Hell</div>
+                            <div><span class="issue-severity severity-critical">CRITICAL</span></div>
+                            <div class="issue-description">
+                                The <code>CampaignsController</code> has 35+ constructor dependencies including 31+ handler interfaces. This violates the Single Responsibility Principle and makes testing extremely difficult.
+                            </div>
+                            <div class="issue-files">
+                                <strong>File:</strong> backend/CastLibrary.WebHost/Controllers/CampaignsController.cs (lines 18-57)
+                            </div>
+                            <div class="code-example">
+public class CampaignsController(
+    IGetCampaignLibraryQueryHandler getLibraryQuery,
+    IGetCampaignDetailQueryHandler getDetailQuery,
+    ICreateCampaignCommandHandler createCommand,
+    IUpdateCampaignCommandHandler updateCampaignCommand,
+    // ... 31 more handlers ...
+    IToggleShopItemScratchCommandHandler toggleShopItemScratchCommand,
+    ICampaignWebMapper campaignMapper,
+    IUserRetriever userRetriever,
+    IHubContext&lt;CampaignHub&gt; hubContext) : ControllerBase
+                            </div>
+                            <div class="recommendation">
+                                <strong>Recommendation:</strong> Introduce a CQRS Dispatcher/Mediator pattern to handle all command and query routing. This would reduce dependencies from 35+ to just 3-4 (Mediator, Mapper, UserRetriever, Hub).
+                            </div>
+                        </div>
+
+                        <div class="issue">
+                            <div class="issue-title">Missing Mediator Pattern Implementation</div>
+                            <div><span class="issue-severity severity-high">HIGH</span></div>
+                            <div class="issue-description">
+                                The project has individual handler interfaces (ICommandHandler, IQueryHandler) but lacks a central mediator to dispatch to them. Controllers directly reference all handlers.
+                            </div>
+                            <div class="issue-files">
+                                <strong>Pattern Observed:</strong> Direct handler injection instead of mediator pattern
+                            </div>
+                            <div class="code-example">
+// Current (Anti-Pattern)
+var cast = await getCastLibraryQuery.HandleAsync(dmUserId);
+
+// Ideal (with MediatR or similar)
+var cast = await mediator.Send(new GetCastLibraryQuery(dmUserId));
+                            </div>
+                            <div class="recommendation">
+                                <strong>Recommendation:</strong> Implement MediatR NuGet package or create a custom IMediator interface to centralize request/response routing.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Issue Category 2: Mixed Concerns -->
+                <div class="issue-category">
+                    <div class="issue-category-header">
+                        <span>2. Mixed Concerns in Handlers</span>
+                        <span class="count">5 instances</span>
+                    </div>
+                    <div class="issue-category-content">
+                        <div class="issue">
+                            <div class="issue-title">Image Processing Logic Mixed with Query Logic</div>
+                            <div><span class="issue-severity severity-high">HIGH</span></div>
+                            <div class="issue-description">
+                                The <code>GetCastLibraryQueryHandler</code> mixes data retrieval with image URL generation. This violates SRP - a query handler should only fetch data.
+                            </div>
+                            <div class="issue-files">
+                                <strong>File:</strong> backend/CastLibrary.Logic/Queries/Cast/GetCastLibraryQueryHandler.cs (lines 22-27)
+                            </div>
+                            <div class="code-example">
+public async Task&lt;List&lt;CastDomain&gt;&gt; HandleAsync(Guid dmUserId)
+{
+    var cast = await castReadRepository.GetAllByDmAsync(dmUserId);
+    var options = new ParallelOptions() { MaxDegreeOfParallelism = 4 };
+    
+    // Image processing logic shouldn't be here!
+    Parallel.ForEach(cast, options, member =&gt; {
+        var imageKey = imageKeyCreator.Create(...);
+        member.ImageUrl = imageStorageOperator.GetPublicUrl(imageKey);
+    });
+    return cast;
+}
+                            </div>
+                            <div class="recommendation">
+                                <strong>Recommendation:</strong> Create a separate <code>ImageUrlEnricher</code> service or move this logic to a post-processor/mapper layer that runs after the query.
+                            </div>
+                        </div>
+
+                        <div class="issue">
+                            <div class="issue-title">Logging Concerns Mixed into Repository Layer</div>
+                            <div><span class="image-severity severity-medium">MEDIUM</span></div>
+                            <div class="issue-description">
+                                Repositories directly call <code>ILoggingService</code> before and after database operations, mixing infrastructure concerns with data access.
+                            </div>
+                            <div class="issue-files">
+                                <strong>File:</strong> backend/CastLibrary.Repository/Repositories/Read/CastReadRepository.cs (lines 34, 39)
+                            </div>
+                            <div class="code-example">
+logging.LogDbOperation(correlation.TraceId, spanId, "SELECT", "casts", @params);
+using var conn = sqlConnectionFactory.GetConnection();
+var entities = (await conn.QueryAsync&lt;CastEntity&gt;(sql, @params)).ToList();
+logging.LogDbOperation(correlation.TraceId, spanId, "SELECT", "casts", @params, entities.Count);
+                            </div>
+                            <div class="recommendation">
+                                <strong>Recommendation:</strong> Consider using Dapper's built-in tracing/profiling or implement decorator pattern for repositories to separate logging.
+                            </div>
+                        </div>
+
+                        <div class="issue">
+                            <div class="issue-title">Correlation Context Management in Repository</div>
+                            <div><span class="issue-severity severity-medium">MEDIUM</span></div>
+                            <div class="issue-description">
+                                Repositories manage <code>ICorrelationContext</code> which is an infrastructure/cross-cutting concern, not a data access concern.
+                            </div>
+                            <div class="issue-files">
+                                <strong>File:</strong> backend/CastLibrary.Repository/Repositories/Read/CastReadRepository.cs (line 24)
+                            </div>
+                            <div class="recommendation">
+                                <strong>Recommendation:</strong> Use middleware or AOP (Aspect-Oriented Programming) for correlation tracking instead of spreading it through repositories.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Issue Category 3: CQRS Violations -->
+                <div class="issue-category">
+                    <div class="issue-category-header">
+                        <span>3. CQRS Pattern Violations</span>
+                        <span class="count">4 instances</span>
+                    </div>
+                    <div class="issue-category-content">
+                        <div class="issue">
+                            <div class="issue-title">Commands Modifying Multiple Aggregates</div>
+                            <div><span class="issue-severity severity-high">HIGH</span></div>
+                            <div class="issue-description">
+                                <code>CreateCampaignCommandHandler</code> creates a campaign AND inserts location instances in a single command. This violates CQRS - commands should have single, focused responsibility.
+                            </div>
+                            <div class="issue-files">
+                                <strong>File:</strong> backend/CastLibrary.Logic/Commands/Campaign/CreateCampaignCommandHandler.cs (lines 19-34)
+                            </div>
+                            <div class="code-example">
+public async Task&lt;CampaignDomain&gt; HandleAsync(CreateCampaignCommand command)
+{
+    var campaign = campaignFactory.Create(command.Request, command.DmUserId);
+    var saved = await campaignRepository.InsertAsync(campaign);
+    
+    // Mixing concerns: also handling location instances
+    int sortOrder = 0;
+    foreach (var LocationId in command.Request.LocationIds) {
+        var location = await locationReadRepository.GetByIdAsync(LocationId);
+        var instance = locationInstanceFactory.Create(location, saved.Id, sortOrder++);
+        await campaignRepository.InsertLocationInstanceAsync(instance);
+    }
+    return saved;
+}
+                            </div>
+                            <div class="recommendation">
+                                <strong>Recommendation:</strong> Split into separate commands: <code>CreateCampaignCommand</code> and <code>AddLocationsToCampaignCommand</code>, or use Domain Events for eventual consistency.
+                            </div>
+                        </div>
+
+                        <div class="issue">
+                            <div class="issue-title">Queries with Side Effects (Parallel.ForEach Mutation)</div>
+                            <div><span class="issue-severity severity-high">HIGH</span></div>
+                            <div class="issue-description">
+                                Query handlers mutate the returned entities with image URLs. While not a database operation, this violates CQRS purity where queries should have no side effects.
+                            </div>
+                            <div class="issue-files">
+                                <strong>File:</strong> backend/CastLibrary.Logic/Queries/Cast/GetCastLibraryQueryHandler.cs (lines 22-27)
+                            </div>
+                            <div class="recommendation">
+                                <strong>Recommendation:</strong> Return DTOs with pre-calculated URLs instead of mutating domain objects in parallel.
+                            </div>
+                        </div>
+
+                        <div class="issue">
+                            <div class="issue-title">Repository Pattern Mixed with CQRS</div>
+                            <div><span class="issue-severity severity-medium">MEDIUM</span></div>
+                            <div class="issue-description">
+                                Project uses separate read/write repositories (IxxxxReadRepository, IxxxxInsertRepository) but doesn't have clear command/query separation at the handler level.
+                            </div>
+                            <div class="recommendation">
+                                <strong>Recommendation:</strong> Clearly separate read repositories (for queries) and write repositories (for commands) with distinct interfaces and implementations.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Issue Category 4: Validation Placement -->
+                <div class="issue-category">
+                    <div class="issue-category-header">
+                        <span>4. Scattered Validation Logic</span>
+                        <span class="count">6 instances</span>
+                    </div>
+                    <div class="issue-category-content">
+                        <div class="issue">
+                            <div class="issue-title">Validation in Controllers Instead of Handlers</div>
+                            <div><span class="issue-severity severity-high">HIGH</span></div>
+                            <div class="issue-description">
+                                Controllers instantiate and run validators manually instead of centralizing validation in the command/query handler layer. This violates clean architecture principles.
+                            </div>
+                            <div class="issue-files">
+                                <strong>File:</strong> backend/CastLibrary.WebHost/Controllers/CastsController.cs (lines 54-60)
+                            </div>
+                            <div class="code-example">
+public async Task&lt;IActionResult&gt; Create([FromBody] CreateCastRequest request)
+{
+    var validator = new CreateCastRequestValidator();
+    var validationResult = validator.Validate(request);
+    if (!validationResult.IsValid) {
+        var errors = validationResult.Errors.Select(e =&gt; e.ErrorMessage).ToList();
+        return BadRequest(errors);
+    }
+    // ...
+}
+                            </div>
+                            <div class="recommendation">
+                                <strong>Recommendation:</strong> Move validation into command handlers or use FluentValidation behaviors/pipeline behaviors. Controllers should be thin.
+                            </div>
+                        </div>
+
+                        <div class="issue">
+                            <div class="issue-title">Multiple Validator Instantiation</div>
+                            <div><span class="issue-severity severity-medium">MEDIUM</span></div>
+                            <div class="issue-description">
+                                Validators are created new with <code>new CreateCastRequestValidator()</code> in controllers instead of being injected. This violates DI principles and makes testing difficult.
+                            </div>
+                            <div class="issue-files">
+                                <strong>File:</strong> backend/CastLibrary.WebHost/Controllers/*.cs (multiple instances)
+                            </div>
+                            <div class="recommendation">
+                                <strong>Recommendation:</strong> Register validators in DI container and inject them, or better yet, move to handler layer where validation is automatic.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Issue Category 5: Repository Concerns -->
+                <div class="issue-category">
+                    <div class="issue-category-header">
+                        <span>5. Repository Layer Design Issues</span>
+                        <span class="count">3 instances</span>
+                    </div>
+                    <div class="issue-category-content">
+                        <div class="issue">
+                            <div class="issue-title">Read Repository Type Inconsistency</div>
+                            <div><span class="issue-severity severity-medium">MEDIUM</span></div>
+                            <div class="issue-description">
+                                Different repositories return inconsistent types. Some return Domain objects, some return DTOs, creating confusion about data flow.
+                            </div>
+                            <div class="issue-files">
+                                <strong>File:</strong> backend/CastLibrary.Repository/Repositories/Read/ (multiple files)
+                            </div>
+                            <div class="recommendation">
+                                <strong>Recommendation:</strong> Establish clear contract: read repositories return Domain objects, queries can map to DTOs if needed.
+                            </div>
+                        </div>
+
+                        <div class="issue">
+                            <div class="issue-title">Null Reference Patterns</div>
+                            <div><span class="issue-severity severity-medium">MEDIUM</span></div>
+                            <div class="issue-description">
+                                Repositories and handlers return null for "not found" scenarios. This is problematic and should use Result patterns.
+                            </div>
+                            <div class="issue-files">
+                                <strong>File:</strong> backend/CastLibrary.Logic/Commands/Auth/LoginCommandHandler.cs (line 20)
+                            </div>
+                            <div class="code-example">
+public async Task&lt;AuthResponse&gt; HandleAsync(LoginCommand command)
+{
+    var user = await userReadRepository.GetByEmailAsync(command.Request.Email);
+    if (user is null) return null;  // Returns null instead of Result&lt;T&gt;
+    // ...
+}
+                            </div>
+                            <div class="recommendation">
+                                <strong>Recommendation:</strong> Implement a Result&lt;T&gt; type or use language features like IAsyncEnumerable with empty result handling.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Issue Category 6: Dependency Injection Issues -->
+                <div class="issue-category">
+                    <div class="issue-category-header">
+                        <span>6. IoC/DI Configuration Problems</span>
+                        <span class="count">3 instances</span>
+                    </div>
+                    <div class="issue-category-content">
+                        <div class="issue">
+                            <div class="issue-title">Massive IoC Registration Files</div>
+                            <div><span class="issue-severity severity-high">HIGH</span></div>
+                            <div class="issue-description">
+                                <code>IOCLogic.cs</code> registers 70+ handlers with individual extension methods for Commands, Queries, Services, and Factories. This violates SRP and makes maintenance difficult.
+                            </div>
+                            <div class="issue-files">
+                                <strong>File:</strong> backend/CastLibrary.WebHost/IoC/IOCLogic.cs (126+ lines)
+                            </div>
+                            <div class="issue-description">
+                                Suggested approach: Auto-registration using reflection or factory patterns.
+                            </div>
+                            <div class="recommendation">
+                                <strong>Recommendation:</strong> Use Scrutor for auto-registration of handlers by convention, reducing boilerplate from 200+ lines to 10-15 lines.
+                            </div>
+                        </div>
+
+                        <div class="issue">
+                            <div class="issue-title">Scattered IoC Configuration Across Multiple Files</div>
+                            <div><span class="issue-severity severity-medium">MEDIUM</span></div>
+                            <div class="issue-description">
+                                IoC configuration split across 5 files (IOCLogic, IOCRepository, IOCAdapter, IOCWebhost, IOCRootContainer) makes it hard to see full dependency graph.
+                            </div>
+                            <div class="issue-files">
+                                <strong>Files:</strong> backend/CastLibrary.WebHost/IoC/*.cs
+                            </div>
+                            <div class="recommendation">
+                                <strong>Recommendation:</strong> Consider consolidating or creating a visual dependency diagram. Use a modular registration pattern.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Issue Category 7: Testing & Testability -->
+                <div class="issue-category">
+                    <div class="issue-category-header">
+                        <span>7. Limited Testability</span>
+                        <span class="count">3 instances</span>
+                    </div>
+                    <div class="issue-category-content">
+                        <div class="issue">
+                            <div class="issue-title">Controllers Hard to Unit Test</div>
+                            <div><span class="issue-severity severity-high">HIGH</span></div>
+                            <div class="issue-description">
+                                With 35+ dependencies in CampaignsController, creating meaningful unit tests would require mocking 35+ services. This is a test smell.
+                            </div>
+                            <div class="recommendation">
+                                <strong>Recommendation:</strong> Introduce mediator pattern to reduce controller to handling framework concerns only (routing, auth, serialization).
+                            </div>
+                        </div>
+
+                        <div class="issue">
+                            <div class="issue-title">No Command/Query Builder Pattern</div>
+                            <div><span class="issue-severity severity-medium">MEDIUM</span></div>
+                            <div class="issue-description">
+                                Commands are created with positional constructor parameters, making test data setup verbose and error-prone.
+                            </div>
+                            <div class="code-example">
+new CreateCampaignCommand(userId, request)
+// vs
+new CreateCampaignCommandBuilder()
+    .WithUserId(userId)
+    .WithRequest(request)
+    .Build()
+                            </div>
+                            <div class="recommendation">
+                                <strong>Recommendation:</strong> Create builder classes or use object initializers for commands/queries.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Issue Category 8: Architecture & Documentation -->
+                <div class="issue-category">
+                    <div class="issue-category-header">
+                        <span>8. Architecture Documentation & Design Patterns</span>
+                        <span class="count">2 instances</span>
+                    </div>
+                    <div class="issue-category-content">
+                        <div class="issue">
+                            <div class="issue-title">No Clear CQRS Boundary Definition</div>
+                            <div><span class="issue-severity severity-medium">MEDIUM</span></div>
+                            <div class="issue-description">
+                                While Commands and Queries are separated, there's no clear documentation or enforcement of CQRS principles. Handlers can do both reading and writing without clear distinction.
+                            </div>
+                            <div class="recommendation">
+                                <strong>Recommendation:</strong> Document CQRS rules: Commands = void-returning or ID-returning, Queries = data-returning, never both in same handler.
+                            </div>
+                        </div>
+
+                        <div class="issue">
+                            <div class="issue-title">Missing Domain Events Pattern</div>
+                            <div><span class="issue-severity severity-medium">MEDIUM</span></div>
+                            <div class="issue-description">
+                                Complex operations that should trigger domain events (like campaign creation) have no event publishing mechanism visible.
+                            </div>
+                            <div class="recommendation">
+                                <strong>Recommendation:</strong> Implement IDomainEvent pattern for publishing events from aggregates and handling them through separate event handlers.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recommendations Summary -->
+            <div class="recommendations-section">
+                <h3>🎯 Priority Recommendations</h3>
+                <ol style="list-style-type: decimal; padding-left: 20px;">
+                    <li><strong>Immediate (1-2 sprints):</strong>
+                        <ul style="margin-top: 10px;">
+                            <li>Implement MediatR for centralized command/query dispatching to reduce controller complexity</li>
+                            <li>Move validation from controllers to command handlers using FluentValidation pipeline behaviors</li>
+                            <li>Auto-register handlers using Scrutor to eliminate manual IoC registration</li>
+                        </ul>
+                    </li>
+                    <li><strong>Short-term (3-4 sprints):</strong>
+                        <ul style="margin-top: 10px;">
+                            <li>Extract image enrichment from query handlers into separate service layer</li>
+                            <li>Remove correlation and logging concerns from repository layer</li>
+                            <li>Implement Result&lt;T&gt; pattern to eliminate null reference propagation</li>
+                        </ul>
+                    </li>
+                    <li><strong>Medium-term (5-6 sprints):</strong>
+                        <ul style="margin-top: 10px;">
+                            <li>Split multi-operation commands into separate single-operation commands</li>
+                            <li>Implement domain events for eventual consistency</li>
+                            <li>Create comprehensive CQRS architecture documentation and patterns guide</li>
+                        </ul>
+                    </li>
+                </ol>
+            </div>
+
+            <!-- Strengths Section -->
+            <div class="summary-section" style="border-left-color: #28a745; background: #f0f8f5;">
+                <h2 style="color: #28a745;">✅ Architecture Strengths</h2>
+                <ul style="margin-left: 20px;">
+                    <li><span class="pattern-good">Good:</span> Clear separation of Commands and Queries folders</li>
+                    <li><span class="pattern-good">Good:</span> Handler interfaces are properly abstracted</li>
+                    <li><span class="pattern-good">Good:</span> Mapper pattern used for DTOs/Domain conversions</li>
+                    <li><span class="pattern-good">Good:</span> Repository pattern provides data access abstraction</li>
+                    <li><span class="pattern-good">Good:</span> Factory pattern for complex object creation</li>
+                    <li><span class="pattern-good">Good:</span> Proper use of async/await throughout</li>
+                </ul>
+            </div>
+
+            <!-- Implementation Guide -->
+            <div class="summary-section">
+                <h2>🛠️ Quick Implementation Guide: MediatR Integration</h2>
+                <p style="margin-bottom: 15px;"><strong>Step 1:</strong> Install NuGet package</p>
+                <div class="code-example">dotnet add package MediatR</div>
+                
+                <p style="margin: 15px 0;"><strong>Step 2:</strong> Register in Program.cs</p>
+                <div class="code-example">builder.Services.AddMediatR(cfg =&gt; 
+    cfg.RegisterServicesFromAssembly(typeof(Program).Assembly));</div>
+                
+                <p style="margin: 15px 0;"><strong>Step 3:</strong> Update handler to implement IRequestHandler</p>
+                <div class="code-example">public class LoginCommandHandler : 
+    IRequestHandler&lt;LoginCommand, AuthResponse&gt;
+{
+    public async Task&lt;AuthResponse&gt; Handle(
+        LoginCommand command, 
+        CancellationToken cancellationToken) { ... }
+}</div>
+                
+                <p style="margin: 15px 0;"><strong>Step 4:</strong> Update controller</p>
+                <div class="code-example">public class AuthController(IMediator mediator) : ControllerBase
+{
+    [HttpPost("login")]
+    public async Task&lt;IActionResult&gt; Login([FromBody] LoginRequest request)
+    {
+        var result = await mediator.Send(
+            new LoginCommand(request));
+        return Ok(result);
+    }
+}</div>
+            </div>
+        </div>
+
+        <footer>
+            <p>Generated: <strong>2026-04-07</strong> | Analysis Scope: CastLibrary Backend | Repository: ryan-m-green/casting-cards-code</p>
+            <p style="margin-top: 10px; opacity: 0.7;">This analysis is based on CQRS best practices, Clean Code principles, and SOLID design patterns.</p>
+        </footer>
+    </div>
+</body>
+</html>

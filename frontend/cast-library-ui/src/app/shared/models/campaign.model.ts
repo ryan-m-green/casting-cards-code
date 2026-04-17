@@ -2,6 +2,7 @@ import { CampaignLocationInstance } from './location.model';
 import { CampaignCastInstance } from './cast.model';
 import { CampaignSecret } from './secret.model';
 import { CampaignSublocationInstance } from './sublocation.model';
+import { TimeOfDay } from './time-of-day.model';
 
 export interface CampaignCastRelationship {
   id: string;
@@ -34,7 +35,6 @@ export interface CampaignPlayer {
   displayName: string;
   email: string;
   startingGold: number;
-  currentGold: number;
 }
 
 export interface CampaignInviteCode {
@@ -56,6 +56,7 @@ export interface CampaignDetail {
   players: CampaignPlayer[];
   relationships: CampaignCastRelationship[];
   inviteCode: CampaignInviteCode | null;
+  timeOfDay: TimeOfDay | null;
 }
 
 export interface CampaignNote {

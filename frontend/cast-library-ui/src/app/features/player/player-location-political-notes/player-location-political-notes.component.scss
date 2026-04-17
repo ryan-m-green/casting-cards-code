@@ -44,7 +44,7 @@ $accent: #9ab0b8;
   font-size: 9px;
   letter-spacing: 0.22em;
   text-transform: uppercase;
-  color: rgba($accent, 0.62);
+  color: rgba($accent, 0.92);
   white-space: nowrap;
   text-shadow: 0 0 10px rgba($accent, 0.22);
 }
@@ -60,13 +60,13 @@ $accent: #9ab0b8;
   font-size: 7px;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: rgba($accent, 0.45);
+  color: rgba($accent, 0.85);
   animation: pulse-save 1.2s ease-in-out infinite;
 }
 
 @keyframes pulse-save {
-  0%, 100% { opacity: 0.45; }
-  50%       { opacity: 0.9; }
+  0%, 100% { opacity: 0.7; }
+  50%       { opacity: 1; }
 }
 
 // ── Tabs ───────────────────────────────────────────────────────────────────────
@@ -82,7 +82,7 @@ $accent: #9ab0b8;
   font-size: 8px;
   letter-spacing: 0.18em;
   text-transform: uppercase;
-  color: rgba($accent, 0.45);
+  color: rgba($accent, 0.82);
   background: none;
   border: none;
   border-bottom: 2px solid transparent;
@@ -130,7 +130,7 @@ $accent: #9ab0b8;
   font-size: 7px;
   letter-spacing: 0.2em;
   text-transform: uppercase;
-  color: rgba($accent, 0.55);
+  color: rgba($accent, 0.9);
 }
 
 .pol-section-line {
@@ -147,7 +147,7 @@ $accent: #9ab0b8;
 .pol-hint {
   font-family: v.$font-body;
   font-size: 13px;
-  color: rgba($accent, 0.38);
+  color: rgba($accent, 0.82);
   font-style: italic;
   margin: 0;
 }
@@ -155,7 +155,7 @@ $accent: #9ab0b8;
 .pol-empty {
   font-family: v.$font-body;
   font-size: 14px;
-  color: rgba($accent, 0.40);
+  color: rgba($accent, 0.82);
   font-style: italic;
   text-align: center;
   padding: 40px 0;
@@ -175,7 +175,7 @@ $accent: #9ab0b8;
   background: rgba(14, 24, 32, 0.80);
   border: 1px solid rgba($accent, 0.22);
   border-radius: 3px;
-  color: rgba(200, 225, 235, 0.82);
+  color: rgba(200, 225, 235, 0.95);
   font-family: v.$font-body;
   font-size: 13px;
   padding: 4px 8px;
@@ -200,7 +200,6 @@ $accent: #9ab0b8;
 
 .notes-dropdown-caret {
   font-size: 9px;
-  opacity: 0.50;
   transition: transform 0.15s;
   margin-left: 4px;
   flex-shrink: 0;
@@ -225,7 +224,7 @@ $accent: #9ab0b8;
 .notes-dropdown-item {
   font-family: v.$font-body;
   font-size: 13px;
-  color: rgba(200, 225, 235, 0.78);
+  color: rgba(200, 225, 235, 0.95);
   padding: 6px 10px;
   cursor: pointer;
   transition: background 0.12s, color 0.12s;
@@ -246,7 +245,7 @@ $accent: #9ab0b8;
   font-size: 7px;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: rgba($accent, 0.25);
+  color: rgba($accent, 0.75);
   padding: 12px;
   text-align: center;
 }
@@ -280,12 +279,12 @@ $accent: #9ab0b8;
   font-family: v.$font-header;
   font-size: 6px;
   letter-spacing: 0.10em;
-  color: rgba($accent, 0.35);
+  color: rgba($accent, 0.85);
 }
 
 .influence-label-center {
   font-weight: 600;
-  color: rgba($accent, 0.65);
+  color: rgba($accent, 0.95);
   text-align: center;
 }
 
@@ -294,7 +293,7 @@ $accent: #9ab0b8;
   background: rgba(14, 24, 32, 0.80);
   border: 1px solid rgba($accent, 0.22);
   border-radius: 3px;
-  color: rgba(200, 225, 235, 0.82);
+  color: rgba(200, 225, 235, 0.95);
   font-family: v.$font-body;
   font-size: 13px;
   padding: 4px 8px;
@@ -327,7 +326,7 @@ $accent: #9ab0b8;
 .pol-remove {
   background: none;
   border: none;
-  color: rgba($accent, 0.35);
+  color: rgba($accent, 0.8);
   font-size: 16px;
   cursor: pointer;
   padding: 0 4px;
@@ -350,7 +349,7 @@ $accent: #9ab0b8;
   font-size: 7px;
   letter-spacing: 0.16em;
   text-transform: uppercase;
-  color: rgba($accent, 0.55);
+  color: rgba($accent, 0.9);
   background: none;
   border: 1px solid rgba($accent, 0.20);
   border-radius: 3px;
@@ -375,7 +374,7 @@ $accent: #9ab0b8;
   background: rgba(14, 24, 32, 0.80);
   border: 1px solid rgba($accent, 0.22);
   border-radius: 4px;
-  color: rgba(200, 225, 235, 0.82);
+  color: rgba(200, 225, 235, 0.95);
   font-family: v.$font-body;
   font-size: 13px;
   line-height: 1.6;
@@ -415,7 +414,7 @@ $accent: #9ab0b8;
     font-size: 6px;
     letter-spacing: 0.16em;
     text-transform: uppercase;
-    color: rgba($accent, 0.40);
+    color: rgba($accent, 0.85);
   }
 }
 
@@ -431,7 +430,7 @@ $accent: #9ab0b8;
 .roles-cast-name {
   font-family: v.$font-body;
   font-size: 13px;
-  color: rgba(200, 225, 235, 0.82);
+  color: rgba(200, 225, 235, 0.95);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -487,14 +486,14 @@ $accent: #9ab0b8;
 .web-node-label {
   font-family: v.$font-header;
   font-size: 9px;
-  fill: rgba(200, 225, 235, 0.72);
+  fill: rgba(200, 225, 235, 0.95);
   letter-spacing: 0.08em;
 }
 
 .web-node-hidden-icon {
   font-family: v.$font-header;
   font-size: 11px;
-  fill: rgba($accent, 0.50);
+  fill: rgba($accent, 0.85);
   font-weight: bold;
 }
 
@@ -519,7 +518,7 @@ $accent: #9ab0b8;
   gap: 8px;
   font-family: v.$font-body;
   font-size: 12px;
-  color: rgba(185, 210, 220, 0.65);
+  color: rgba(185, 210, 220, 0.95);
 }
 
 .legend-swatch {
@@ -624,7 +623,7 @@ $accent: #9ab0b8;
   position: relative;
   font-family: v.$font-body;
   font-size: 11px;
-  color: rgba(185, 210, 220, 0.60);
+  color: rgba(185, 210, 220, 0.9);
   z-index: 1;
 }
 
@@ -633,7 +632,7 @@ $accent: #9ab0b8;
   font-family: v.$font-header;
   font-size: 8px;
   letter-spacing: 0.10em;
-  color: rgba($accent, 0.55);
+  color: rgba($accent, 0.85);
   z-index: 1;
 }
 
@@ -644,7 +643,7 @@ $accent: #9ab0b8;
   font-family: v.$font-header;
   font-size: 11px;
   font-weight: bold;
-  color: rgba($accent, 0.55);
+  color: rgba($accent, 0.85);
   z-index: 1;
 }
 
@@ -661,7 +660,7 @@ $accent: #9ab0b8;
   font-size: 7px;
   letter-spacing: 0.2em;
   text-transform: uppercase;
-  color: rgba($accent, 0.55);
+  color: rgba($accent, 0.85);
 }
 
 .map-legend-influence-items {
@@ -679,7 +678,7 @@ $accent: #9ab0b8;
 .map-legend-influence-label {
   font-family: v.$font-body;
   font-size: 12px;
-  color: rgba(185, 210, 220, 0.65);
+  color: rgba(185, 210, 220, 0.95);
 }
 
 .map-legend-influence-swatch {
@@ -759,7 +758,7 @@ $accent: #9ab0b8;
   font-size: 7px;
   letter-spacing: 0.18em;
   text-transform: uppercase;
-  fill: rgba(180, 210, 220, 0.28);
+  fill: rgba(180, 210, 220, 0.75);
   pointer-events: none;
 }
 
@@ -777,21 +776,21 @@ $accent: #9ab0b8;
   letter-spacing: 0.20em;
   text-transform: uppercase;
 
-  &--good    { fill: rgba(120, 200, 130, 0.70); }
-  &--evil    { fill: rgba(210,  70,  70, 0.65); }
-  &--neutral { fill: rgba($accent, 0.50); }
+  &--good    { fill: rgba(120, 200, 130, 0.90); }
+  &--evil    { fill: rgba(210,  70,  70, 0.90); }
+  &--neutral { fill: rgba($accent, 0.85); }
 }
 
 // ── Alignment icons ────────────────────────────────────────────────────────────
 .compass-icon {
   font-size: 13px;
-  fill: rgba(200, 225, 235, 0.55);
+  fill: rgba(200, 225, 235, 0.85);
   dominant-baseline: middle;
 }
 
 .compass-tn-icon {
   font-size: 11px;
-  fill: rgba($accent, 0.50);
+  fill: rgba($accent, 0.85);
   dominant-baseline: middle;
 }
 
@@ -807,7 +806,7 @@ $accent: #9ab0b8;
   font-size: 7px;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  fill: rgba($accent, 0.70);
+  fill: rgba($accent, 0.90);
   dominant-baseline: middle;
 }
 
@@ -850,7 +849,7 @@ $accent: #9ab0b8;
   font-family: v.$font-header;
   font-size: 7px;
   letter-spacing: 0.08em;
-  fill: rgba(200, 225, 235, 0.65);
+  fill: rgba(200, 225, 235, 0.90);
   pointer-events: none;
 }
 
@@ -863,7 +862,7 @@ $accent: #9ab0b8;
 .compass-unassessed-notice {
   font-family: v.$font-body;
   font-size: 12px;
-  color: rgba($accent, 0.45);
+  color: rgba($accent, 0.82);
   font-style: italic;
   text-align: center;
   margin: 0;
@@ -891,7 +890,7 @@ $accent: #9ab0b8;
   font-size: 7px;
   letter-spacing: 0.18em;
   text-transform: uppercase;
-  color: rgba($accent, 0.45);
+  color: rgba($accent, 0.85);
 }
 
 .compass-legend-items {
@@ -982,7 +981,7 @@ $accent: #9ab0b8;
   font-family: v.$font-header;
   font-size: 56px;
   font-weight: 700;
-  color: rgba(255, 255, 255, 0.55);
+  color: rgba(255, 255, 255, 0.85);
   line-height: 1;
 }
 
@@ -999,7 +998,7 @@ $accent: #9ab0b8;
   font-family: v.$font-body;
   font-size: 12px;
   line-height: 1.45;
-  color: rgba(220, 235, 240, 0.82);
+  color: rgba(220, 235, 240, 0.95);
   font-style: italic;
   margin: 0;
   display: -webkit-box;
@@ -1024,7 +1023,7 @@ $accent: #9ab0b8;
 .cast-card-popout-role {
   font-family: v.$font-body;
   font-size: 13px;
-  color: rgba($accent, 0.65);
+  color: rgba($accent, 0.90);
   margin-top: 2px;
 }
 
@@ -1059,7 +1058,7 @@ $accent: #9ab0b8;
   font-size: 7px;
   letter-spacing: 0.20em;
   text-transform: uppercase;
-  color: rgba($accent, 0.55);
+  color: rgba($accent, 0.85);
   white-space: nowrap;
 }
 
@@ -1073,14 +1072,14 @@ $accent: #9ab0b8;
 .cast-card-popout-value {
   font-family: v.$font-body;
   font-size: 14px;
-  color: rgba(200, 225, 235, 0.82);
+  color: rgba(200, 225, 235, 0.95);
 }
 
 .cast-card-popout-notes {
   font-family: v.$font-body;
   font-size: 13px;
   line-height: 1.5;
-  color: rgba(185, 210, 220, 0.70);
+  color: rgba(185, 210, 220, 0.90);
   font-style: italic;
   display: -webkit-box;
   -webkit-line-clamp: 3;
@@ -1095,7 +1094,7 @@ $accent: #9ab0b8;
   z-index: 1;
   background: none;
   border: none;
-  color: rgba(200, 225, 235, 0.55);
+  color: rgba(200, 225, 235, 0.85);
   font-size: 20px;
   line-height: 1;
   cursor: pointer;

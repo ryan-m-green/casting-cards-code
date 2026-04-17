@@ -3,12 +3,17 @@
 
     <!-- ── Top bar ── -->
     <div class="void-topbar">
-      <div class="void-breadcrumbs">
-        <button class="void-back" (click)="goToCampaign()">← Locations</button>
-        <span class="void-crumb-sep">›</span>
-        <button class="void-back" (click)="goToLocation()">← Settling Sublocations</button>
-        <span class="void-crumb-sep">›</span>
-        <button class="void-back" (click)="goBack()">← Cast Members</button>
+      <div class="topbar-row">
+        <div class="void-breadcrumbs">
+          <button class="void-back" (click)="goToCampaign()">← Locations</button>
+          <span class="void-crumb-sep">›</span>
+          <button class="void-back" (click)="goToLocation()">← Settling Sublocations</button>
+          <span class="void-crumb-sep">›</span>
+          <button class="void-back" (click)="goBack()">← Cast Members</button>
+        </div>
+        @if (isDm()) {
+          <button class="topbar-party-btn" (click)="goToTheParty()">⚔ The Party</button>
+        }
       </div>
       <span class="void-title">{{ ca.name }}</span>
     </div>

@@ -4,6 +4,7 @@ import { CommonModule, DatePipe } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../../environments/environment';
 import { CampaignDetail, CampaignNote } from '../../../shared/models/campaign.model';
+import { TimeOfDay } from '../../../shared/models/time-of-day.model';
 import { CampaignSecret } from '../../../shared/models/secret.model';
 import { AuthService } from '../../../core/auth/auth.service';
 import { CampaignHubService } from '../../../core/hub/campaign-hub.service';
@@ -31,6 +32,7 @@ export class CampaignDetailComponent implements OnInit, OnDestroy {
 
   campaign         = signal<CampaignDetail | null>(null);
   campaignId       = signal('');
+  timeOfDay        = signal<TimeOfDay | null>(null);
   selectedSecretId = signal<string | null>(null);
   secretModalContent = signal('');
   showSecretModal  = signal(false);
@@ -57,10 +59,13 @@ export class CampaignDetailComponent implements OnInit, OnDestroy {
     if (history.state?.portalEntry) {
       this.portalEntry = true;
       setTimeout(() => this.transition.hide(), 300);
+    } else {
+      this.transition.hide();
     }
     const id = this.route.snapshot.paramMap.get('id')!;
     this.campaignId.set(id);
     this.loadCampaign(id);
+    this.loadTimeOfDay(id);
     const token = this.auth.getToken();
     const connectAndJoin = token && !this.hub.isConnected()
       ? this.hub.connect(token).then(() => this.hub.joinCampaign(id))
@@ -70,6 +75,14 @@ export class CampaignDetailComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     this.hub.leaveCampaign(this.campaignId()).catch(console.warn);
+  }
+
+  loadTimeOfDay(id: string) {
+    this.http.get<TimeOfDay>(`${environment.apiUrl}/api/campaigns/${id}/time-of-day`)
+      .subscribe({
+        next:  tod => this.timeOfDay.set(tod),
+        error: ()  => { /* no ToD configured — leave null */ },
+      });
   }
 
   loadCampaign(id: string) {
@@ -134,6 +147,10 @@ export class CampaignDetailComponent implements OnInit, OnDestroy {
             : ci)
         } : c);
       });
+  }
+
+  goToTheParty() {
+    this.router.navigate(['/campaign', this.campaignId(), 'the-party']);
   }
 
   goToLocationDetail(instanceId: string) {

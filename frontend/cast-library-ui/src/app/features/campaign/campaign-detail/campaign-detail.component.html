@@ -1,11 +1,18 @@
 @if (campaign(); as camp) {
   <div class="void-canvas" [style.--portal-color]="safeColor(camp.spineColor)">
     <div class="void-topbar">
-      @if (isDm()) {
-        <div class="void-breadcrumbs">
-          <button class="void-back" (click)="exitPortal()">← Campaign Library</button>
-        </div>
-      }
+      <div class="topbar-row">
+        @if (isDm()) {
+          <div class="void-breadcrumbs">
+            <button class="void-back" (click)="exitPortal()">← Campaign Library</button>
+          </div>
+        } @else {
+          <div></div>
+        }
+        @if (isDm()) {
+          <button class="topbar-party-btn" (click)="goToTheParty()">⚔ The Party</button>
+        }
+      </div>
       <span class="void-title">{{ camp.name }}</span>
     </div>
 
@@ -15,6 +22,7 @@
         [campaignId]="camp.id"
         [isDm]="isDm()"
         [panelTheme]="'dark'"
+        [todInput]="timeOfDay()"
       />
     </div>
 

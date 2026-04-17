@@ -27,6 +27,7 @@ public class CampaignDetailResponse
     public List<CampaignPlayerResponse> Players { get; set; } = [];
     public List<CampaignCastRelationshipResponse> Relationships { get; set; } = [];
     public CampaignInviteCodeResponse? InviteCode { get; set; }
+    public TimeOfDayResponse? TimeOfDay { get; set; }
 }
 
 public class CampaignInviteCodeResponse
@@ -132,7 +133,6 @@ public class CampaignPlayerResponse
     public string DisplayName { get; set; } = string.Empty;
     public string Email { get; set; } = string.Empty;
     public int StartingGold { get; set; }
-    public int CurrentGold { get; set; }
 }
 
 public class DashboardStatsResponse

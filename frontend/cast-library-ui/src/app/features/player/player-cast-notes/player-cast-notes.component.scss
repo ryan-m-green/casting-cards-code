@@ -30,7 +30,7 @@ $cast-gold: #c8b07a;
   font-size: 7px;
   letter-spacing: 0.22em;
   text-transform: uppercase;
-  color: rgba($cast-gold, 0.75);
+  color: rgba($cast-gold, 0.95);
   white-space: nowrap;
 }
 
@@ -45,7 +45,7 @@ $cast-gold: #c8b07a;
   font-size: 7px;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: rgba($cast-gold, 0.40);
+  color: rgba($cast-gold, 0.8);
   white-space: nowrap;
 }
 
@@ -69,7 +69,7 @@ $cast-gold: #c8b07a;
   font-size: 7px;
   letter-spacing: 0.20em;
   text-transform: uppercase;
-  color: rgba($cast-gold, 0.55);
+  color: rgba($cast-gold, 0.9);
 }
 
 .notes-field-line {
@@ -84,7 +84,7 @@ $cast-gold: #c8b07a;
   background: rgba(0, 0, 0, 0.30);
   border: 1px solid rgba($cast-gold, 0.20);
   border-radius: 4px;
-  color: rgba(200, 225, 235, 0.82);
+  color: rgba(200, 225, 235, 0.95);
   font-family: v.$font-body;
   font-size: 14px;
   line-height: 1.6;
@@ -113,7 +113,7 @@ $cast-gold: #c8b07a;
   background: rgba(0, 0, 0, 0.30);
   border: 1px solid rgba($cast-gold, 0.20);
   border-radius: 4px;
-  color: rgba($cast-gold, 0.45);
+  color: rgba($cast-gold, 0.9);
   font-family: v.$font-header;
   font-size: 8px;
   letter-spacing: 0.12em;
@@ -132,7 +132,6 @@ $cast-gold: #c8b07a;
 
 .notes-dropdown-caret {
   font-size: 10px;
-  opacity: 0.50;
   transition: transform 0.15s;
 
   &--open { transform: rotate(180deg); }
@@ -157,7 +156,7 @@ $cast-gold: #c8b07a;
   font-size: 7px;
   letter-spacing: 0.20em;
   text-transform: uppercase;
-  color: rgba($cast-gold, 0.40);
+  color: rgba($cast-gold, 0.8);
   padding: 8px 12px 4px;
   border-top: 1px solid rgba($cast-gold, 0.08);
 
@@ -167,7 +166,7 @@ $cast-gold: #c8b07a;
 .notes-dropdown-item {
   font-family: v.$font-body;
   font-size: 14px;
-  color: rgba(200, 225, 235, 0.78);
+  color: rgba(200, 225, 235, 0.95);
   padding: 7px 14px;
   cursor: pointer;
   transition: background 0.12s, color 0.12s;
@@ -183,7 +182,7 @@ $cast-gold: #c8b07a;
   font-size: 7px;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: rgba($cast-gold, 0.25);
+  color: rgba($cast-gold, 0.7);
   padding: 12px;
   text-align: center;
 }
@@ -211,7 +210,7 @@ $cast-gold: #c8b07a;
 .notes-pill-remove {
   background: none;
   border: none;
-  color: rgba($cast-gold, 0.45);
+  color: rgba($cast-gold, 0.8);
   font-size: 12px;
   line-height: 1;
   cursor: pointer;
@@ -234,7 +233,7 @@ $cast-gold: #c8b07a;
   background: transparent;
   border: 1px solid rgba($cast-gold, 0.14);
   border-radius: 3px;
-  color: rgba($cast-gold, 0.38);
+  color: rgba($cast-gold, 0.8);
   font-family: v.$font-header;
   font-size: 8px;
   letter-spacing: 0.08em;
@@ -285,7 +284,7 @@ $cast-gold: #c8b07a;
   display: flex;
   justify-content: space-between;
   font-size: 0.70rem;
-  color: rgba($cast-gold, 0.50);
+  color: rgba($cast-gold, 0.85);
 }
 
 .perception-label-center {
@@ -296,7 +295,7 @@ $cast-gold: #c8b07a;
 
 .perception-label-end {
   font-size: 0.68rem;
-  color: rgba($cast-gold, 0.40);
+  color: rgba($cast-gold, 0.8);
 }
 
 // ── 5. Secrets grid ───────────────────────────────────────────────────────────
@@ -316,7 +315,7 @@ $cast-gold: #c8b07a;
 .secret-card-text {
   font-family: v.$font-body;
   font-size: 13px;
-  color: rgba(200, 225, 235, 0.82);
+  color: rgba(200, 225, 235, 0.95);
   line-height: 1.55;
   margin: 0;
 }

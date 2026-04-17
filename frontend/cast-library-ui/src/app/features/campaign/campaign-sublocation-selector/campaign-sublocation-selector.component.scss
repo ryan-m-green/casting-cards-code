@@ -93,7 +93,7 @@
 .deck-count {
   font-family: v.$font-header;
   font-size: 10px;
-  color: rgba(20, 50, 110, 0.62);
+  color: rgba(20, 50, 110, 0.9);
   letter-spacing: 0.08em;
   text-align: center;
   line-height: 1.8;
@@ -270,7 +270,7 @@
   font-family: v.$font-body;
   font-style: italic;
   font-size: 12px;
-  color: rgba(30, 60, 120, 0.52);
+  color: rgba(30, 60, 120, 0.85);
   margin: 0;
   padding: 8px 0;
 }
@@ -294,7 +294,7 @@
   font-family: v.$font-body;
   font-style: italic;
   font-size: 10px;
-  color: rgba(30, 60, 120, 0.55);
+  color: rgba(30, 60, 120, 0.85);
 }
 
 .confirm-btn {
@@ -317,7 +317,7 @@
 .detail-desc-text {
   font-family: v.$font-body;
   font-size: 11px;
-  color: rgba(15, 40, 100, 0.75);
+  color: rgba(15, 40, 100, 0.95);
   line-height: 1.5;
   margin: 0;
 }
@@ -356,7 +356,7 @@
   font-family: v.$font-body;
   font-style: italic;
   font-size: 11px;
-  color: rgba(20, 15, 5, 0.38);
+  color: rgba(20, 15, 5, 0.75);
   margin: 0 0 10px 0;
 }
 
@@ -378,7 +378,7 @@
   font-size: 8px;
   letter-spacing: 0;
   text-transform: none;
-  color: rgba(105, 72, 18, 0.45);
+  color: rgba(105, 72, 18, 0.82);
 }
 
 .inv-standard-list {
@@ -396,21 +396,21 @@
 .inv-item-name {
   font-family: v.$font-body;
   font-size: 9.5px;
-  color: rgba(58, 38, 10, 0.75);
+  color: rgba(58, 38, 10, 0.95);
 }
 
 .inv-item-price {
   font-family: v.$font-body;
   font-style: italic;
   font-size: 9px;
-  color: rgba(105, 72, 18, 0.55);
+  color: rgba(105, 72, 18, 0.85);
 }
 
 .inv-empty {
   font-family: v.$font-body;
   font-style: italic;
   font-size: 10px;
-  color: rgba(105, 72, 18, 0.42);
+  color: rgba(105, 72, 18, 0.82);
   margin: 0 0 8px;
 }
 
@@ -425,7 +425,7 @@
   font-size: 8px;
   letter-spacing: 0.10em;
   text-transform: uppercase;
-  color: rgba(78, 50, 10, 0.65);
+  color: rgba(78, 50, 10, 0.9);
   margin-bottom: 5px;
 }
 
@@ -552,7 +552,7 @@
   border: 1px dashed rgba(140, 48, 28, 0.38);
   border-radius: 2px;
   background: transparent;
-  color: rgba(140, 48, 28, 0.65);
+  color: rgba(140, 48, 28, 0.85);
   padding: 0 5px;
   cursor: pointer;
   flex-shrink: 0;
@@ -567,7 +567,7 @@
   font-family: v.$font-header;
   font-size: 8px;
   letter-spacing: 0.06em;
-  color: rgba(38, 88, 42, 0.75);
+  color: rgba(38, 88, 42, 0.92);
   border: 1px dashed rgba(38, 88, 42, 0.42);
   border-radius: 2px;
   background: transparent;

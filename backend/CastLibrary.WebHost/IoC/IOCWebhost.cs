@@ -19,6 +19,8 @@ namespace CastLibrary.WebHost.IoC
             services.AddScoped<ILocationFactionRelationshipMapper, LocationFactionRelationshipMapper>();
             services.AddScoped<ILocationNpcRolesMapper, LocationNpcRolesMapper>();
             services.AddScoped<ICampaignCastPlayerNotesMapper, CampaignCastPlayerNotesMapper>();
+            services.AddScoped<IPlayerCardWebMapper, PlayerCardWebMapper>();
+            services.AddScoped<IZipArchiveMapper, ZipArchiveMapper>();
 
             services.AddScoped<IUserRetriever, UserRetriever>();
             // Scoped: one CorrelationContext per HTTP request.

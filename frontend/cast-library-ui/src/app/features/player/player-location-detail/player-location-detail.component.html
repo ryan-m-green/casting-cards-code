@@ -3,8 +3,11 @@
 
     <!-- ── Top bar ── -->
     <div class="void-topbar">
-      <div class="void-breadcrumbs">
-        <button class="void-back" (click)="goToCampaign()">← Locations</button>
+      <div class="topbar-row">
+        <div class="void-breadcrumbs">
+          <button class="void-back" (click)="goToCampaign()">← Locations</button>
+        </div>
+        <button class="topbar-party-btn" (click)="goToMyCharacter()">⚔ My Character</button>
       </div>
       <span class="void-title">{{ c.name }}</span>
     </div>

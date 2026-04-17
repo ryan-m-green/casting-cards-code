@@ -14,10 +14,9 @@
 <div class="pc scroll-body">
   <app-dm-nav />
   <div class="wr wr-page-header">
-    <a class="btn-ghost" routerLink="/dm/dashboard">← Dashboard</a>
     <a class="btn-primary ml-auto" routerLink="/dm/campaigns/new">+ New Campaign</a>
   </div>
-  <div class="section-label">All Campaigns — Library</div>
+  <div class="section-label">Campaigns — Library</div>
 
   <div class="portal-grid">
     @for (campaign of campaigns(); track campaign.id) {

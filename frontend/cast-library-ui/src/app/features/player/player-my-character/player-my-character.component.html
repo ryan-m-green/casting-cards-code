@@ -1,0 +1,310 @@
+<div class="void-canvas" [style.--portal-color]="portalColor()">
+
+  <!-- ── Top bar ── -->
+  <div class="void-topbar">
+    <div class="void-breadcrumbs">
+      <button class="void-back" (click)="goBack()">← Locations</button>
+    </div>
+    <span class="void-title">My Character</span>
+  </div>
+
+  @if (playerCard(); as card) {
+
+    <!-- ── Character header ── -->
+    <div class="char-header">
+      <div class="char-portrait">
+        @if (card.imageUrl) {
+          <img [src]="card.imageUrl" alt="" class="char-portrait-img" />
+        } @else {
+          <div class="char-portrait-placeholder">{{ initial(card.name) }}</div>
+        }
+      </div>
+      <div class="char-info">
+        <div class="char-name">{{ card.name }}</div>
+        <div class="char-subtitle">{{ card.race }} · {{ card.class }}</div>
+        @if (conditions().length) {
+          <div class="char-conditions">
+            @for (c of conditions(); track c.id) {
+              <span class="condition-pill">{{ c.conditionName }}</span>
+            }
+          </div>
+        }
+      </div>
+    </div>
+
+    <!-- ── Tabs ── -->
+    <div class="tabs-bar">
+      <button class="tab-btn" [class.tab-btn--active]="activeTab() === 'cast'"      (click)="setTab('cast')">The Party</button>
+      <button class="tab-btn" [class.tab-btn--active]="activeTab() === 'secrets'"   (click)="setTab('secrets')">Secrets</button>
+      <button class="tab-btn" [class.tab-btn--active]="activeTab() === 'soul'"      (click)="setTab('soul')">Motivation</button>
+      <button class="tab-btn" [class.tab-btn--active]="activeTab() === 'chronicle'" (click)="setTab('chronicle')">Chronicle</button>
+    </div>
+
+    <!-- ════════════════════════════════════════════ CHRONICLE ══ -->
+    @if (activeTab() === 'chronicle') {
+      <div class="tab-content">
+
+        <div class="tab-header">
+          <span class="tab-section-title">Chronicle</span>
+          <button class="add-btn" (click)="showAddMemory.set(!showAddMemory())">
+            {{ showAddMemory() ? '✕ Cancel' : '+ Add Memory' }}
+          </button>
+        </div>
+
+        @if (showAddMemory()) {
+          <div class="add-form-panel">
+            <div class="add-form-row">
+              <div class="add-form-field">
+                <label class="add-label">Type</label>
+                <div class="notes-dropdown">
+                  <button
+                    class="notes-dropdown-trigger"
+                    (click)="toggleMemoryTypeDropdown($event)"
+                  >
+                    <span class="notes-dropdown-placeholder">{{ memoryIcon(newMemoryType) }} {{ memoryLabel(newMemoryType) }}</span>
+                    <span class="notes-dropdown-caret" [class.notes-dropdown-caret--open]="memoryTypeDropdownOpen()">▾</span>
+                  </button>
+                  @if (memoryTypeDropdownOpen()) {
+                    <ul class="notes-dropdown-panel" role="listbox">
+                      @for (type of memoryTypes; track type) {
+                        <li
+                          class="notes-dropdown-item"
+                          [class.notes-dropdown-item--selected]="newMemoryType === type"
+                          role="option"
+                          [attr.aria-selected]="newMemoryType === type"
+                          (click)="selectMemoryType(type)"
+                        >{{ memoryIcon(type) }} {{ memoryLabel(type) }}</li>
+                      }
+                    </ul>
+                  }
+                </div>
+              </div>
+              <div class="add-form-field add-form-field--sm">
+                <label class="add-label">Session</label>
+                <span class="session-number">Session {{ nextSessionNumber }}</span>
+              </div>
+            </div>
+            <div class="add-form-field">
+              <label class="add-label">Title *</label>
+              <input class="add-input" type="text" [value]="newMemoryTitle" (input)="onMemoryTitleInput($any($event.target).value)" placeholder="What happened?" />
+            </div>
+            <div class="add-form-field">
+              <label class="add-label">Detail</label>
+              <textarea class="add-textarea" [value]="newMemoryDetail" (input)="onMemoryDetailInput($any($event.target).value)" placeholder="Describe it…" rows="3"></textarea>
+            </div>
+            <button class="save-btn" (click)="addMemory()">Save Memory</button>
+          </div>
+        }
+
+        <div class="memory-list">
+          @for (memory of memories(); track memory.id) {
+            <div class="memory-entry memory-entry--{{ memory.memoryType.toLowerCase() }}">
+              <div class="memory-icon">{{ memoryIcon(memory.memoryType) }}</div>
+              <div class="memory-body">
+                <div class="memory-meta">
+                  <span class="memory-type-label">{{ memoryLabel(memory.memoryType) }}</span>
+                  @if (memory.sessionNumber) {
+                    <span class="memory-session">Session {{ memory.sessionNumber }}</span>
+                  }
+                </div>
+                <div class="memory-title">{{ memory.title }}</div>
+                @if (memory.detail) {
+                  <div class="memory-detail">{{ memory.detail }}</div>
+                }
+              </div>
+              <button class="delete-btn" (click)="deleteMemory(memory.id)" title="Delete">✕</button>
+            </div>
+          }
+          @if (memories().length === 0) {
+            <div class="empty-state">No memories yet. Add your first chronicle entry.</div>
+          }
+        </div>
+
+      </div>
+    }
+
+    <!-- ════════════════════════════════════════════ THE PARTY ══ -->
+    @if (activeTab() === 'cast') {
+      <div class="tab-content">
+
+        <div class="card-grid">
+          @for (member of filteredParty(); track member.id) {
+            <div class="pc-card pc-card-player">
+              <app-card-flip>
+
+                <!-- Front -->
+                <div slot="front" class="card-slot-front">
+                  <div class="card-front-header">
+                    <div class="card-name">{{ member.name }}</div>
+                    <div class="card-descriptor">{{ member.race }} · {{ member.class }}</div>
+                  </div>
+                  <div class="dv dv-card"></div>
+                  <div class="card-image-area">
+                    @if (member.imageUrl) {
+                      <img [src]="member.imageUrl" alt="" class="card-img-fill" />
+                    } @else {
+                      <div class="card-placeholder">
+                        <span class="card-initial">{{ initial(member.name) }}</span>
+                      </div>
+                    }
+                  </div>
+                </div>
+
+                <!-- Back -->
+                <div slot="back" class="card-slot-back">
+                  <div class="card-back-content">
+                    <div class="card-name card-back-name">{{ member.name }}</div>
+                    <div class="dv dv-mb"></div>
+                    @if (member.description) {
+                      <div class="card-desc">{{ member.description }}</div>
+                    }
+                  </div>
+                </div>
+
+              </app-card-flip>
+            </div>
+          }
+        </div>
+
+        @if (!filteredParty().length) {
+          <div class="empty-state">No other party members yet.</div>
+        }
+
+      </div>
+    }
+
+    <!-- ════════════════════════════════════════════ SOUL ══ -->
+    @if (activeTab() === 'soul') {
+      <div class="tab-content">
+
+        <div class="tab-header">
+          <span class="tab-section-title">Motivation</span>
+          <button class="add-btn" (click)="showAddTrait.set(!showAddTrait())">
+            {{ showAddTrait() ? '✕ Cancel' : '+ Add' }}
+          </button>
+        </div>
+
+        @if (showAddTrait()) {
+          <div class="add-form-panel">
+            <div class="add-form-row">
+              <div class="add-form-field">
+                <label class="add-label">Type</label>
+                <select class="add-select" [ngModel]="newTraitType()" (ngModelChange)="newTraitType.set($event)">
+                  <option value="GOAL">Goal</option>
+                  <option value="FEAR">Fear</option>
+                  <option value="FLAW">Flaw</option>
+                </select>
+              </div>
+            </div>
+            <div class="add-form-field">
+              <label class="add-label">Content *</label>
+              <input class="add-input" type="text" [ngModel]="newTraitContent()" (ngModelChange)="newTraitContent.set($event)" placeholder="Describe it…" />
+            </div>
+            <button class="save-btn" (click)="addTrait()">Save</button>
+          </div>
+        }
+
+        <!-- Goals -->
+        <div class="soul-section">
+          <div class="soul-section-label">Goals</div>
+          @if (goals().length === 0) {
+            <div class="soul-empty">No goals recorded.</div>
+          }
+          @for (trait of goals(); track trait.id) {
+            <div class="soul-item" [class.soul-item--completed]="trait.isCompleted">
+              <button class="goal-toggle" (click)="toggleGoal(trait)" [title]="trait.isCompleted ? 'Mark active' : 'Mark done'">
+                {{ trait.isCompleted ? '◎' : '◉' }}
+              </button>
+              <span class="soul-item-content">{{ trait.content }}</span>
+              <button class="delete-btn" (click)="deleteTrait(trait.id)">✕</button>
+            </div>
+          }
+        </div>
+
+        <!-- Fears -->
+        <div class="soul-section">
+          <div class="soul-section-label">Known Fears</div>
+          @if (fears().length === 0) {
+            <div class="soul-empty">No fears recorded.</div>
+          }
+          @for (trait of fears(); track trait.id) {
+            <div class="soul-item">
+              <span class="soul-type-icon">⚡</span>
+              <span class="soul-item-content">{{ trait.content }}</span>
+              <button class="delete-btn" (click)="deleteTrait(trait.id)">✕</button>
+            </div>
+          }
+        </div>
+
+        <!-- Flaws -->
+        <div class="soul-section">
+          <div class="soul-section-label">Flaws</div>
+          @if (flaws().length === 0) {
+            <div class="soul-empty">No flaws recorded.</div>
+          }
+          @for (trait of flaws(); track trait.id) {
+            <div class="soul-item">
+              <span class="soul-type-icon soul-type-icon--flaw">⬡</span>
+              <span class="soul-item-content">{{ trait.content }}</span>
+              <button class="delete-btn" (click)="deleteTrait(trait.id)">✕</button>
+            </div>
+          }
+        </div>
+
+      </div>
+    }
+
+    <!-- ════════════════════════════════════════════ SECRETS ══ -->
+    @if (activeTab() === 'secrets') {
+      <div class="tab-content">
+
+        <div class="tab-header">
+          <span class="tab-section-title">Secrets</span>
+        </div>
+
+        <div class="secrets-section">
+          <div class="secrets-section-label">🔒 Held in Confidence</div>
+          @if (heldSecrets().length === 0) {
+            <div class="empty-state">No private secrets.</div>
+          }
+          @for (secret of heldSecrets(); track secret.id) {
+            <div class="secret-entry">
+              <div class="secret-content">{{ secret.content }}</div>
+              <div class="secret-meta">
+                Delivered {{ secret.deliveredAt | date:'mediumDate' }}
+              </div>
+              <button
+                class="share-btn"
+                (click)="shareSecret(secret.id)"
+                [disabled]="sharingSecretId() === secret.id"
+              >
+                Share with Party
+              </button>
+            </div>
+          }
+        </div>
+
+        <div class="secrets-section">
+          <div class="secrets-section-label">📖 Party Knowledge</div>
+          @if (partySecrets().length === 0) {
+            <div class="empty-state">No shared secrets yet.</div>
+          }
+          @for (secret of partySecrets(); track secret.id) {
+            <div class="secret-entry secret-entry--shared">
+              <div class="secret-content">{{ secret.content }}</div>
+              <div class="secret-meta">
+                Shared {{ secret.sharedAt | date:'mediumDate' }}
+                @if (secret.sharedBy) { · by {{ secret.sharedBy === 'DM' ? 'DM' : 'you' }} }
+              </div>
+            </div>
+          }
+        </div>
+
+      </div>
+    }
+
+  } @else {
+    <div class="loading-state">Loading your character…</div>
+  }
+
+</div>

@@ -21,6 +21,7 @@ export class AdminInviteCodeComponent implements OnInit {
   code      = signal<AdminInviteCodeResponse | null>(null);
   loading   = signal(false);
   errorMsg  = signal('');
+  codeCopied = signal(false);
 
   ngOnInit() {
     this.http.get<AdminInviteCodeResponse | null>(`${environment.apiUrl}/api/admin/invite-code`).subscribe({
@@ -54,5 +55,13 @@ export class AdminInviteCodeComponent implements OnInit {
 
   formatDate(expiresAt: string): string {
     return new Date(expiresAt).toLocaleString();
+  }
+
+  copyCode() {
+    const code = this.code();
+    if (!code) return;
+    navigator.clipboard.writeText(code.code);
+    this.codeCopied.set(true);
+    setTimeout(() => this.codeCopied.set(false), 1500);
   }
 }

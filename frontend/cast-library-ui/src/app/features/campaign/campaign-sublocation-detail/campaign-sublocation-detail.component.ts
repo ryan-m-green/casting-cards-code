@@ -393,6 +393,10 @@ export class CampaignSublocationDetailComponent implements OnInit, OnDestroy {
     );
   }
 
+  goToTheParty() {
+    this.router.navigate(['/campaign', this.campaignId(), 'the-party']);
+  }
+
   goToCampaign() {
     this.router.navigate(['/campaign', this.campaignId()]);
   }

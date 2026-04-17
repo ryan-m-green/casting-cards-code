@@ -1,0 +1,251 @@
+<div class="void-canvas" [style.--portal-color]="spineColor()">
+
+  <!-- ── Top bar ── -->
+  <div class="void-topbar">
+    <div class="void-breadcrumbs">
+      <button class="void-back" (click)="goBack()">← Locations</button>
+    </div>
+    <span class="void-title">The Party</span>
+  </div>
+
+  <!-- ── Party-wide treasure button ── -->
+  <div class="party-actions">
+    <button class="party-gold-btn" (click)="openGoldModal(null)">
+      💰 Award Gold to Party
+    </button>
+  </div>
+
+  <!-- ── Card grid ── -->
+  <div class="card-grid">
+    @for (card of playerCards(); track card.id) {
+      <div class="pc-card pc-card-player">
+        <app-card-flip>
+
+          <!-- Front -->
+          <div slot="front" class="card-slot-front">
+            <div class="card-front-header">
+              <div class="card-name">{{ card.name }}</div>
+              <div class="card-descriptor">{{ card.race }} · {{ card.class }}</div>
+            </div>
+            <div class="dv dv-card"></div>
+            <div class="card-image-area">
+              @if (card.imageUrl) {
+                <img [src]="card.imageUrl" alt="" class="card-img-fill" />
+              } @else {
+                <div class="card-placeholder">
+                  <span class="card-initial">{{ initial(card.name) }}</span>
+                </div>
+              }
+            </div>
+          </div>
+
+          <!-- Back -->
+          <div slot="back" class="card-slot-back">
+            <div class="card-back-content">
+              <div class="card-name card-back-name">{{ card.name }}</div>
+              <div class="dv dv-mb"></div>
+              <app-currency-display [purse]="cardPurse(card)" [compact]="true" />
+              @if (card.conditions.length) {
+                <div class="fi-label fi-label-strong">Conditions</div>
+                <div class="pc-conditions">
+                  @for (cond of card.conditions; track cond.id) {
+                    <span class="pc-cond-pill">{{ cond.conditionName }}</span>
+                  }
+                </div>
+              }
+            </div>
+            <div class="pc-action-row">
+              <button class="pc-action-btn" title="Award Gold"     (click)="openGoldModal(card);        $event.stopPropagation()">💰</button>
+              <button class="pc-action-btn" title="Conditions"     (click)="openCondModal(card);        $event.stopPropagation()">⚑</button>
+              <button class="pc-action-btn" title="Deliver Secret" (click)="openSecretModal(card);      $event.stopPropagation()">🔒</button>
+              <button class="pc-action-btn" title="View Secrets"   (click)="openViewSecretsModal(card); $event.stopPropagation()">📜</button>
+            </div>
+          </div>
+
+        </app-card-flip>
+      </div>
+    }
+
+    @if (playerCards().length === 0) {
+      <p class="wbd empty-state-pad">No player cards yet. Players must enter the campaign first.</p>
+    }
+  </div>
+
+</div>
+
+<!-- ════════════════════ GOLD MODAL ══ -->
+@if (goldModalOpen()) {
+  <div class="modal-backdrop" (click)="goldModalOpen.set(false)">
+    <div class="modal-panel" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <span class="modal-title">
+          @if (goldModalTarget()) {
+            Award Treasures — {{ goldModalTarget()!.name }}
+          } @else {
+            Award Treasures to Party
+          }
+        </span>
+        <button class="modal-close" (click)="goldModalOpen.set(false)">✕</button>
+      </div>
+      <div class="modal-body modal-body--overflow-visible">
+        <div class="modal-field">
+          <label class="modal-label">Amount</label>
+          <div class="price-input-group">
+            <input class="modal-input price-amount"
+                   type="number"
+                   [ngModel]="goldAmount()"
+                   (ngModelChange)="goldAmount.set(+$event)"
+                   min="1" placeholder="0" />
+            <div class="currency-dropdown">
+              <button class="currency-dropdown-trigger"
+                      type="button"
+                      (click)="currencyDropdownOpen.set(!currencyDropdownOpen()); $event.stopPropagation()">
+                <span>{{ goldCurrency() }}</span>
+                <span class="currency-dropdown-caret" [class.currency-dropdown-caret--open]="currencyDropdownOpen()">▾</span>
+              </button>
+              @if (currencyDropdownOpen()) {
+                <div class="currency-dropdown-panel">
+                  @for (c of currencies; track c) {
+                    <div class="currency-dropdown-item"
+                         [class.currency-dropdown-item--selected]="goldCurrency() === c"
+                         (click)="goldCurrency.set(c); currencyDropdownOpen.set(false); $event.stopPropagation()">
+                      {{ c }}
+                    </div>
+                  }
+                </div>
+              }
+            </div>
+          </div>
+        </div>
+        <div class="modal-field">
+          <label class="modal-label">Note (optional)</label>
+          <input class="modal-input" type="text"
+                 [ngModel]="goldNote()"
+                 (ngModelChange)="goldNote.set($event)"
+                 placeholder="Reason…" />
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="modal-cancel" (click)="goldModalOpen.set(false)">Cancel</button>
+        <button class="modal-confirm" (click)="awardGold()" [disabled]="!goldAmount() || goldAmount() <= 0 || goldSaving()">
+          {{ goldSaving() ? 'Awarding…' : 'Award Treasures' }}
+        </button>
+      </div>
+    </div>
+  </div>
+}
+
+<!-- ════════════════════ CONDITION MODAL ══ -->
+@if (condModalOpen()) {
+  <div class="modal-backdrop" (click)="condModalOpen.set(false)">
+    <div class="modal-panel" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <span class="modal-title">Conditions — {{ condModalCard()?.name }}</span>
+        <button class="modal-close" (click)="condModalOpen.set(false)">✕</button>
+      </div>
+      <div class="modal-body">
+
+        <!-- Active conditions -->
+        @if (conditionsForModal().length) {
+          <div class="cond-active-list">
+            @for (cond of conditionsForModal(); track cond.id) {
+              <div class="cond-active-item">
+                <span>{{ cond.conditionName }}</span>
+                <button class="cond-remove-btn" (click)="removeCondition(condModalCard()!, cond.id)">✕</button>
+              </div>
+            }
+          </div>
+        } @else {
+          <div class="cond-empty">No active conditions.</div>
+        }
+
+        <div class="cond-divider"></div>
+
+        <!-- Standard D&D conditions -->
+        <div class="cond-label">Assign condition</div>
+        <div class="cond-standard-grid">
+          @for (name of condStandard; track name) {
+            <button
+              class="cond-standard-btn"
+              [class.cond-standard-btn--active]="isConditionActive(condModalCard()!, name)"
+              (click)="assignCondition(name)"
+              [disabled]="isConditionActive(condModalCard()!, name)"
+            >{{ name }}</button>
+          }
+        </div>
+
+        <!-- Custom condition -->
+        <div class="cond-custom-row">
+          <input class="modal-input" type="text" [ngModel]="condInput()" (ngModelChange)="condInput.set($event)" placeholder="Custom condition…" />
+          <button class="modal-confirm modal-confirm--sm" (click)="assignCondition(condInput()); condInput.set('')" [disabled]="!condInput().trim()">Add</button>
+        </div>
+
+      </div>
+      <div class="modal-footer">
+        <button class="modal-cancel" (click)="condModalOpen.set(false)">Done</button>
+      </div>
+    </div>
+  </div>
+}
+
+<!-- ════════════════════ VIEW SECRETS MODAL ══ -->
+@if (viewSecretsOpen()) {
+  <div class="modal-backdrop" (click)="viewSecretsOpen.set(false)">
+    <div class="modal-panel" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <span class="modal-title">Secrets — {{ viewSecretsCard()?.name }}</span>
+        <button class="modal-close" (click)="viewSecretsOpen.set(false)">✕</button>
+      </div>
+      <div class="modal-body">
+        @if (viewSecretsLoading()) {
+          <div class="sle-loading">Loading…</div>
+        } @else if (viewSecretsList().length === 0) {
+          <div class="sle-empty">No secrets delivered yet.</div>
+        } @else {
+          @for (secret of viewSecretsList(); track secret.id) {
+            <div class="secrets-list-entry">
+              <div class="sle-content">{{ secret.content }}</div>
+              <div class="sle-footer">
+                <span class="sle-date">Delivered {{ secret.deliveredAt | date:'mediumDate' }}</span>
+                <button class="sle-delete" (click)="deletePlayerSecret(secret.id)" title="Delete secret">✕</button>
+              </div>
+            </div>
+          }
+        }
+      </div>
+      <div class="modal-footer">
+        <button class="modal-cancel" (click)="viewSecretsOpen.set(false)">Close</button>
+      </div>
+    </div>
+  </div>
+}
+
+<!-- ════════════════════ SECRET MODAL ══ -->
+@if (secretModalOpen()) {
+  <div class="modal-backdrop" (click)="secretModalOpen.set(false)">
+    <div class="modal-panel" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <span class="modal-title">Deliver Secret — {{ secretModalCard()?.name }}</span>
+        <button class="modal-close" (click)="secretModalOpen.set(false)">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="modal-field">
+          <label class="modal-label">Secret</label>
+          <textarea
+            class="modal-textarea"
+            [ngModel]="secretContent()"
+            (ngModelChange)="secretContent.set($event)"
+            placeholder="What does this player secretly know…"
+            rows="5"
+          ></textarea>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="modal-cancel" (click)="secretModalOpen.set(false)">Cancel</button>
+        <button class="modal-confirm" (click)="deliverSecret()" [disabled]="!secretContent().trim() || secretSaving()">
+          {{ secretSaving() ? 'Delivering…' : 'Deliver Secret' }}
+        </button>
+      </div>
+    </div>
+  </div>
+}

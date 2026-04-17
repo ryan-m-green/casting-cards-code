@@ -147,6 +147,11 @@ export class PlayerCastDetailComponent implements OnInit {
     }
   }
 
+  goToMyCharacter() {
+    this.transition.quickCover();
+    this.router.navigate(['/player/campaign', this.campaignId(), 'my-character']);
+  }
+
   goToCampaign() {
     this.transition.quickCover();
     this.router.navigate(['/player/campaign', this.campaignId()]);
