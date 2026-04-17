@@ -10,5 +10,6 @@ public class PlayerCardMemoryDomain
     public int? SessionNumber { get; set; }
     public string Title { get; set; } = string.Empty;
     public string? Detail { get; set; }
+    public DateOnly MemoryDate { get; set; }
     public DateTime CreatedAt { get; set; }
 }

@@ -59,6 +59,7 @@ public class PlayerCardWebMapper(
             SessionNumber = domain.SessionNumber,
             Title = domain.Title,
             Detail = domain.Detail,
+            MemoryDate = domain.MemoryDate,
             CreatedAt = domain.CreatedAt,
         };
 

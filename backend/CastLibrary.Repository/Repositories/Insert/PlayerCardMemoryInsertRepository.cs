@@ -25,11 +25,12 @@ public class PlayerCardMemoryInsertRepository(
             memory.SessionNumber,
             memory.Title,
             memory.Detail,
+            MemoryDate = memory.MemoryDate.ToString("yyyy-MM-dd"),
             memory.CreatedAt,
         };
         const string sql =
-            @"INSERT INTO player_card_memories (id, player_card_id, memory_type, session_number, title, detail, created_at)
-              VALUES (@Id, @PlayerCardId, @MemoryType, @SessionNumber, @Title, @Detail, @CreatedAt)";
+            @"INSERT INTO player_card_memories (id, player_card_id, memory_type, session_number, title, detail, memory_date, created_at)
+              VALUES (@Id, @PlayerCardId, @MemoryType, @SessionNumber, @Title, @Detail, @MemoryDate::date, @CreatedAt)";
 
         logging.LogDbOperation(correlation.TraceId, spanId, "INSERT", "player_card_memories", @params);
 

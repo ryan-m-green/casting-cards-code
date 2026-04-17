@@ -29,6 +29,7 @@ export interface PlayerMemory {
   memoryType: 'KEY_EVENT' | 'ENCOUNTER' | 'DISCOVERY' | 'DECISION' | 'LOSS' | 'BOND';
   title: string;
   detail?: string;
+  memoryDate: string;
   createdAt: string;
 }
 

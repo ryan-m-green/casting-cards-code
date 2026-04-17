@@ -59,8 +59,19 @@ export class PlayerMyCharacterComponent implements OnInit, OnDestroy {
   // ── Chronicle tab ────────────────────────────────────────────────────────────
   memories      = signal<PlayerMemory[]>([]);
   showAddMemory = signal(false);
+  memorySearch  = signal('');
   memoryTypes   = Object.keys(MEMORY_TYPE_META) as PlayerMemory['memoryType'][];
   memoryTypeMeta = MEMORY_TYPE_META;
+
+  filteredMemories = computed(() => {
+    const q = this.memorySearch().toLowerCase().trim();
+    if (!q) return this.memories();
+    return this.memories().filter(m =>
+      m.title.toLowerCase().includes(q) ||
+      (m.detail ?? '').toLowerCase().includes(q) ||
+      this.formatMemoryDate(m.memoryDate).toLowerCase().includes(q)
+    );
+  });
 
   newMemoryType: PlayerMemory['memoryType'] = 'KEY_EVENT';
   newMemoryTitle = '';
@@ -243,11 +254,14 @@ export class PlayerMyCharacterComponent implements OnInit, OnDestroy {
     if (!this.newMemoryTitle.trim()) return;
     const campaignId   = this.campaignId();
     const playerCardId = this.playerCardId();
+    const today = new Date();
+    const memoryDate = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
     this.http.post<PlayerMemory>(`${environment.apiUrl}/api/campaigns/${campaignId}/player-cards/${playerCardId}/memories`, {
       memoryType:    this.newMemoryType,
       sessionNumber: this.nextSessionNumber,
       title:         this.newMemoryTitle.trim(),
       detail:        this.newMemoryDetail.trim() || null,
+      memoryDate,
     }).subscribe(m => {
       this.memories.update(list => [m, ...list]);
       this.newMemoryType = 'KEY_EVENT';
@@ -270,6 +284,11 @@ export class PlayerMyCharacterComponent implements OnInit, OnDestroy {
 
   memoryLabel(type: PlayerMemory['memoryType']): string {
     return MEMORY_TYPE_META[type].label;
+  }
+
+  formatMemoryDate(dateStr: string): string {
+    const [year, month, day] = dateStr.split('-').map(Number);
+    return new Date(year, month - 1, day).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
   }
 
   // ── Soul ─────────────────────────────────────────────────────────────────────

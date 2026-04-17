@@ -23,7 +23,8 @@ public class PlayerCardMemoryReadRepository(
         var @params = new { PlayerCardId = playerCardId };
         const string sql =
             @"SELECT id, player_card_id as PlayerCardId, memory_type as MemoryType,
-                     session_number as SessionNumber, title, detail, created_at as CreatedAt
+                     session_number as SessionNumber, title, detail,
+                     memory_date::text as MemoryDate, created_at as CreatedAt
               FROM player_card_memories
               WHERE player_card_id = @PlayerCardId
               ORDER BY created_at";

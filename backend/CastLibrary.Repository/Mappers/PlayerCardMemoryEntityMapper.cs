@@ -19,6 +19,7 @@ public class PlayerCardMemoryEntityMapper : IPlayerCardMemoryEntityMapper
         SessionNumber = entity.SessionNumber,
         Title = entity.Title,
         Detail = entity.Detail,
+        MemoryDate = DateOnly.Parse(entity.MemoryDate),
         CreatedAt = entity.CreatedAt,
     };
 }

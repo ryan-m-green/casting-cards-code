@@ -27,6 +27,7 @@ public class AddMemoryCommandHandler(
             SessionNumber = command.Request.SessionNumber,
             Title = command.Request.Title,
             Detail = command.Request.Detail,
+            MemoryDate = DateOnly.Parse(command.Request.MemoryDate),
             CreatedAt = DateTime.UtcNow,
         };
         return await memoryInsertRepository.InsertAsync(memory);

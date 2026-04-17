@@ -8,5 +8,6 @@ public class PlayerCardMemoryEntity
     public int? SessionNumber { get; set; }
     public string Title { get; set; } = string.Empty;
     public string? Detail { get; set; }
+    public string MemoryDate { get; set; } = string.Empty;
     public DateTime CreatedAt { get; set; }
 }

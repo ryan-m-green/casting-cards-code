@@ -157,3 +157,7 @@ CREATE INDEX IF NOT EXISTS idx_player_perception_sublocation  ON player_cast_per
 
 -- [009] Drop current_gold from campaign_players — currency balances are derived from currency_transactions
 ALTER TABLE campaign_players DROP COLUMN IF EXISTS current_gold;
+
+-- [010] Add player-local date to memories (sent from browser, avoids UTC midnight mismatch)
+ALTER TABLE player_card_memories
+    ADD COLUMN IF NOT EXISTS memory_date DATE NOT NULL DEFAULT CURRENT_DATE;

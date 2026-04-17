@@ -87,7 +87,7 @@
   align-items: center;
   gap: 20px;
   padding: 16px 32px 20px;
-  border-bottom: 1px solid rgba(110, 40, 208, 0.2);
+  border-bottom: 1px solid rgba($memory-search-accent, 0.22);
 }
 
 .char-portrait {
@@ -161,7 +161,7 @@
 .tabs-bar {
   display: flex;
   gap: 0;
-  border-bottom: 1px solid rgba(110, 40, 208, 0.2);
+  border-bottom: 1px solid rgba($memory-search-accent, 0.22);
   padding: 0 20px;
 }
 
@@ -397,6 +397,32 @@
   }
 }
 
+/* ── Memory search ───────────────────────────────────────────── */
+$memory-search-accent: #9ab0b8;
+
+.memory-search-bar { margin-bottom: 12px; }
+
+.memory-search-input {
+  background: rgba(14, 24, 32, 0.80);
+  border: 1px solid rgba($memory-search-accent, 0.22);
+  border-radius: 4px;
+  color: rgba(200, 225, 235, 0.95);
+  font-family: v.$font-body;
+  font-size: 13px;
+  line-height: 1.6;
+  padding: 10px 12px;
+  width: 100%;
+  box-sizing: border-box;
+
+  &::placeholder { color: rgba($memory-search-accent, 0.30); }
+
+  &:focus {
+    outline: 2px solid rgba($memory-search-accent, 0.60);
+    outline-offset: 1px;
+    border-color: rgba($memory-search-accent, 0.50);
+  }
+}
+
 /* ── Memory list ─────────────────────────────────────────────── */
 .memory-list {
   display: flex;
@@ -409,13 +435,15 @@
   gap: 14px;
   align-items: flex-start;
   background: rgba(255, 255, 255, 0.03);
-  border: 1px solid rgba(110, 40, 208, 0.15);
+  border: 1px solid rgba($memory-search-accent, 0.22);
   border-radius: 8px;
   padding: 14px 16px;
   transition: border-color 0.18s ease;
 
-  &:hover { border-color: rgba(110, 40, 208, 0.3); }
+  &:hover { border-color: rgba($memory-search-accent, 0.50); }
 }
+
+.memory-entry--key_event .memory-icon { color: #fcdf03; }
 
 .memory-icon {
   font-size: 18px;
@@ -442,7 +470,8 @@
   color: rgba(195, 170, 255, 0.9);
 }
 
-.memory-session {
+.memory-session,
+.memory-date {
   font-family: v.$font-header;
   font-size: 8px;
   letter-spacing: 0.1em;

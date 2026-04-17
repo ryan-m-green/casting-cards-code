@@ -51,6 +51,18 @@
           </button>
         </div>
 
+        @if (!showAddMemory()) {
+          <div class="memory-search-bar">
+            <input
+              class="memory-search-input"
+              type="text"
+              placeholder="Search memories…"
+              [ngModel]="memorySearch()"
+              (ngModelChange)="memorySearch.set($event)"
+            />
+          </div>
+        }
+
         @if (showAddMemory()) {
           <div class="add-form-panel">
             <div class="add-form-row">
@@ -97,7 +109,7 @@
         }
 
         <div class="memory-list">
-          @for (memory of memories(); track memory.id) {
+          @for (memory of filteredMemories(); track memory.id) {
             <div class="memory-entry memory-entry--{{ memory.memoryType.toLowerCase() }}">
               <div class="memory-icon">{{ memoryIcon(memory.memoryType) }}</div>
               <div class="memory-body">
@@ -105,6 +117,9 @@
                   <span class="memory-type-label">{{ memoryLabel(memory.memoryType) }}</span>
                   @if (memory.sessionNumber) {
                     <span class="memory-session">Session {{ memory.sessionNumber }}</span>
+                  }
+                  @if (memory.memoryDate) {
+                    <span class="memory-date">{{ formatMemoryDate(memory.memoryDate) }}</span>
                   }
                 </div>
                 <div class="memory-title">{{ memory.title }}</div>
@@ -117,6 +132,8 @@
           }
           @if (memories().length === 0) {
             <div class="empty-state">No memories yet. Add your first chronicle entry.</div>
+          } @else if (filteredMemories().length === 0) {
+            <div class="empty-state">No memories match your search.</div>
           }
         </div>
 
