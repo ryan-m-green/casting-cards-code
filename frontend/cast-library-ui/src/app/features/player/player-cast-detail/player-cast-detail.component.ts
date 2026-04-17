@@ -37,6 +37,8 @@ export class PlayerCastDetailComponent implements OnInit {
 
   portalColor = computed(() => this.campaign()?.spineColor ?? '#c8b07a');
 
+  timeOfDay = computed(() => this.campaign()?.timeOfDay ?? null);
+
   cast = computed<CampaignCastInstance | null>(() => {
     const c = this.campaign();
     if (!c) return null;

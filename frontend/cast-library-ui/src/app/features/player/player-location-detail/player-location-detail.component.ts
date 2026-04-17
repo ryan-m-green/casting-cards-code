@@ -56,6 +56,8 @@ export class PlayerLocationDetailComponent implements OnInit {
     return (c.sublocations ?? []).filter((l: CampaignSublocationInstance) => l.locationInstanceId === this.locationInstanceId());
   });
 
+  timeOfDay = computed(() => this.campaign()?.timeOfDay ?? null);
+
   locationCasts = computed(() => {
     const c = this.campaign();
     if (!c) return [];
