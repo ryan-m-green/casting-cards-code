@@ -15,7 +15,6 @@ import {
   PlayerCardSecret,
   PlayerMemory,
   PlayerTrait,
-  PlayerCardSecret,
   PlayerCastPerception,
   DiscoveredCastResponse,
 } from '../../../shared/models/player-card.model';

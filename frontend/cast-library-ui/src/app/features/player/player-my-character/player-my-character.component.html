@@ -175,8 +175,6 @@
                     @if (member.description) {
                       <div class="card-desc">{{ member.description }}</div>
                     }
-                    <button class="view-secrets-btn" (click)="viewSecrets(member)">View Secrets</button>
-
                     @if (member.conditions?.length) {
                       <div class="card-conditions">
                         <div class="card-conditions-label">Conditions</div>
@@ -189,6 +187,7 @@
                       </div>
                     }
                   </div>
+                  <button class="view-secrets-btn" (click)="viewSecrets(member)">View Secrets</button>
                 </div>
 
               </app-card-flip>
