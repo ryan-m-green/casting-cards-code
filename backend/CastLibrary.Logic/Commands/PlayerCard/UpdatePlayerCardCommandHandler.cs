@@ -20,9 +20,11 @@ public class UpdatePlayerCardCommandHandler(
         if (card is null || card.PlayerUserId != command.PlayerUserId) return null;
 
         var updatedAt = DateTime.UtcNow;
-        await playerCardUpdateRepository.UpdateAsync(command.PlayerCardId, command.Request.Name, command.Request.Description, updatedAt);
+        await playerCardUpdateRepository.UpdateAsync(command.PlayerCardId, command.Request.Name, command.Request.Race, command.Request.Class, command.Request.Description, updatedAt);
 
         card.Name = command.Request.Name;
+        card.Race = command.Request.Race;
+        card.Class = command.Request.Class;
         card.Description = command.Request.Description;
         card.UpdatedAt = updatedAt;
         return card;

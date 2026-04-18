@@ -1,0 +1,26 @@
+<div class="campaign-dropdown" [style.--dd-font-size]="fontSize">
+  <button
+    class="campaign-dropdown-trigger"
+    (click)="toggle($event)"
+  >
+    <span class="campaign-dropdown-value">
+      @if (selected?.icon) { {{ selected?.icon }} }{{ selected?.label ?? '' }}
+    </span>
+    <span class="campaign-dropdown-caret" [class.campaign-dropdown-caret--open]="isOpen()">▾</span>
+  </button>
+  @if (isOpen()) {
+    <ul class="campaign-dropdown-panel" role="listbox">
+      @for (option of options; track option.value) {
+        <li
+          class="campaign-dropdown-item"
+          [class.campaign-dropdown-item--selected]="value === option.value"
+          role="option"
+          [attr.aria-selected]="value === option.value"
+          (click)="select(option)"
+        >
+          @if (option.icon) { {{ option.icon }} }{{ option.label }}
+        </li>
+      }
+    </ul>
+  }
+</div>

@@ -12,14 +12,14 @@
 
     <!-- ── Character header ── -->
     <div class="char-header">
-      <div class="char-portrait">
+      <div class="char-portrait char-portrait--editable" (click)="showCharacterEditor.set(true)" title="Edit portrait">
         @if (card.imageUrl) {
           <img [src]="card.imageUrl" alt="" class="char-portrait-img" />
         } @else {
           <div class="char-portrait-placeholder">{{ initial(card.name) }}</div>
         }
       </div>
-      <div class="char-info">
+      <div class="char-info char-info--editable" (click)="showInfoEditor.set(true)" title="Edit character">
         <div class="char-name">{{ card.name }}</div>
         <div class="char-subtitle">{{ card.race }} · {{ card.class }}</div>
         @if (conditions().length) {
@@ -68,28 +68,11 @@
             <div class="add-form-row">
               <div class="add-form-field">
                 <label class="add-label">Type</label>
-                <div class="notes-dropdown">
-                  <button
-                    class="notes-dropdown-trigger"
-                    (click)="toggleMemoryTypeDropdown($event)"
-                  >
-                    <span class="notes-dropdown-placeholder">{{ memoryIcon(newMemoryType) }} {{ memoryLabel(newMemoryType) }}</span>
-                    <span class="notes-dropdown-caret" [class.notes-dropdown-caret--open]="memoryTypeDropdownOpen()">▾</span>
-                  </button>
-                  @if (memoryTypeDropdownOpen()) {
-                    <ul class="notes-dropdown-panel" role="listbox">
-                      @for (type of memoryTypes; track type) {
-                        <li
-                          class="notes-dropdown-item"
-                          [class.notes-dropdown-item--selected]="newMemoryType === type"
-                          role="option"
-                          [attr.aria-selected]="newMemoryType === type"
-                          (click)="selectMemoryType(type)"
-                        >{{ memoryIcon(type) }} {{ memoryLabel(type) }}</li>
-                      }
-                    </ul>
-                  }
-                </div>
+                <app-campaign-dropdown
+                  [options]="memoryTypeOptions"
+                  [value]="newMemoryType"
+                  (valueChange)="newMemoryType = $any($event)"
+                />
               </div>
               <div class="add-form-field add-form-field--sm">
                 <label class="add-label">Session</label>
@@ -218,11 +201,11 @@
             <div class="add-form-row">
               <div class="add-form-field">
                 <label class="add-label">Type</label>
-                <select class="add-select" [ngModel]="newTraitType()" (ngModelChange)="newTraitType.set($event)">
-                  <option value="GOAL">Goal</option>
-                  <option value="FEAR">Fear</option>
-                  <option value="FLAW">Flaw</option>
-                </select>
+                <app-campaign-dropdown
+                  [options]="traitTypeOptions"
+                  [value]="newTraitType()"
+                  (valueChange)="newTraitType.set($any($event))"
+                />
               </div>
             </div>
             <div class="add-form-field">
@@ -337,6 +320,29 @@
   }
 
 </div>
+
+<app-character-info-editor
+  [visible]="showInfoEditor()"
+  [campaignId]="campaignId()"
+  [playerCardId]="playerCardId()"
+  [name]="playerCard()?.name ?? ''"
+  [race]="playerCard()?.race ?? ''"
+  [classValue]="playerCard()?.class ?? ''"
+  [description]="playerCard()?.description ?? null"
+  (closed)="showInfoEditor.set(false)"
+  (saved)="onInfoSaved($event)"
+/>
+
+<app-character-editor
+  [visible]="showCharacterEditor()"
+  [campaignId]="campaignId()"
+  [playerCardId]="playerCardId()"
+  [name]="playerCard()?.name ?? ''"
+  [descriptor]="(playerCard()?.race ?? '') + ' · ' + (playerCard()?.class ?? '')"
+  [imageUrl]="playerCard()?.imageUrl ?? null"
+  (closed)="showCharacterEditor.set(false)"
+  (uploaded)="onPortraitUploaded($event)"
+/>
 
 @if (viewingSecretsFor(); as member) {
   <div class="secrets-modal-backdrop" (click)="closeSecretsModal()">

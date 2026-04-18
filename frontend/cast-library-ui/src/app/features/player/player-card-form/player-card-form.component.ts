@@ -5,6 +5,7 @@ import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../../environments/environment';
 import { PlayerCard } from '../../../shared/models/player-card.model';
+import { CharacterEditorComponent } from '../../../shared/components/character-editor/character-editor.component';
 
 const RACE_OPTIONS = [
   'Human', 'Elf', 'Half-Elf', 'Dwarf', 'Halfling', 'Gnome', 'Half-Orc', 'Tiefling',
@@ -21,7 +22,7 @@ const CLASS_OPTIONS = [
 @Component({
   selector: 'app-player-card-form',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, CharacterEditorComponent],
   templateUrl: './player-card-form.component.html',
   styleUrl: './player-card-form.component.scss',
 })
@@ -49,7 +50,6 @@ export class PlayerCardFormComponent implements OnInit {
   // ── Post-save state ────────────────────────────────────────────────────
   savedCard      = signal<PlayerCard | null>(null);
   imageUrl       = signal<string | null>(null);
-  imageUploading = signal(false);
   showImageModal = signal(false);
 
   form = this.fb.group({
@@ -146,35 +146,7 @@ export class PlayerCardFormComponent implements OnInit {
   }
 
   // ── Image upload ────────────────────────────────────────────────────────
-  onFileSelected(event: Event) {
-    const input = event.target as HTMLInputElement;
-    const file  = input.files?.[0];
-    const card  = this.savedCard();
-    if (!file || !card) return;
-
-    const previousUrl = this.imageUrl();
-    const objectUrl   = URL.createObjectURL(file);
-    this.imageUrl.set(objectUrl);
-    this.imageUploading.set(true);
-
-    const formData = new FormData();
-    formData.append('file', file);
-
-    this.http.post<{ imageUrl: string }>(
-      `${environment.apiUrl}/api/campaigns/${this.campaignId()}/player-cards/${card.id}/image`, formData
-    ).subscribe({
-      next: res => {
-        URL.revokeObjectURL(objectUrl);
-        this.imageUrl.set(res.imageUrl);
-        this.imageUploading.set(false);
-      },
-      error: () => {
-        URL.revokeObjectURL(objectUrl);
-        this.imageUrl.set(previousUrl);
-        this.imageUploading.set(false);
-      },
-    });
-  }
+  onPortraitUploaded(url: string) { this.imageUrl.set(url); }
 
   enterCampaign() {
     this.router.navigate(['/player/campaign', this.campaignId()]);

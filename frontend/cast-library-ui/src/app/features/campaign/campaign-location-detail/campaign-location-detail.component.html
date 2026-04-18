@@ -16,7 +16,7 @@
 
     <!-- ── Time of day bar ── -->
     <div class="tod-bar-section">
-      <app-time-of-day-bar [campaignId]="campaignId()" [isDm]="isDm()" [panelTheme]="'dark'" />
+      <app-time-of-day-bar [campaignId]="campaignId()" [isDm]="isDm()" [panelTheme]="'dark'" [todInput]="campaign()?.timeOfDay ?? null" />
     </div>
 
     <!-- ── Body ── -->

@@ -4,6 +4,7 @@ import {
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
+import { CampaignDropdownComponent, CampaignDropdownOption } from '../../../shared/components/campaign-dropdown/campaign-dropdown.component';
 import { environment } from '../../../../environments/environment';
 import { CampaignCastInstance } from '../../../shared/models/cast.model';
 import {
@@ -84,7 +85,7 @@ interface AlignmentIcon {
 @Component({
   selector: 'app-player-location-political-notes',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, CampaignDropdownComponent],
   templateUrl: './player-location-political-notes.component.html',
   styleUrl: './player-location-political-notes.component.scss',
 })
@@ -103,11 +104,15 @@ export class PlayerLocationPoliticalNotesComponent implements OnInit, OnChanges,
   readonly npcRoles     = NPC_ROLES;
   readonly motivations  = NPC_MOTIVATIONS;
 
-  activeTab      = signal<PoliticalTab>('notes');
-  notes          = signal<LocationPoliticalNotes>(EMPTY_NOTES());
-  saving         = signal(false);
-  openDropdownId = signal<string | null>(null);
-  locationCastNotes  = signal<CampaignCastPlayerNotes[]>([]);
+  readonly factionTypeOptions: CampaignDropdownOption[] = FACTION_TYPES.map(t => ({ value: t, label: t }));
+  readonly relTypeOptions: CampaignDropdownOption[]     = REL_TYPES.map(t => ({ value: t, label: t }));
+  readonly npcRoleOptions: CampaignDropdownOption[]     = NPC_ROLES.map(r => ({ value: r, label: r }));
+  readonly motivationOptions: CampaignDropdownOption[]  = NPC_MOTIVATIONS.map(m => ({ value: m, label: m }));
+
+  activeTab         = signal<PoliticalTab>('notes');
+  notes             = signal<LocationPoliticalNotes>(EMPTY_NOTES());
+  saving            = signal(false);
+  locationCastNotes = signal<CampaignCastPlayerNotes[]>([]);
 
   // ── Cast card popout ──────────────────────────────────────────────────────
   selectedCast      = signal<CampaignCastInstance | null>(null);
@@ -139,15 +144,13 @@ export class PlayerLocationPoliticalNotesComponent implements OnInit, OnChanges,
     this.locationCastNotes.set(value());
   }
 
-  private saveDebounce: ReturnType<typeof setTimeout> | null = null;
+  factionOptions       = computed(() => this.notes().factions.map(f => ({ value: f.id, label: f.name || '—' })));
+  availableCastOptions = computed((): CampaignDropdownOption[] => [
+    { value: '', label: 'Add a cast member…' },
+    ...this.availableCasts().map(c => ({ value: c.instanceId, label: c.name })),
+  ]);
 
-  private outsideClickHandler = (e: MouseEvent) => {
-    const target = e.target as HTMLElement;
-    if (!document.body.contains(target)) return;
-    if (!target.closest('.notes-dropdown')) {
-      this.openDropdownId.set(null);
-    }
-  };
+  private saveDebounce: ReturnType<typeof setTimeout> | null = null;
 
   // ── Compass readonlys ─────────────────────────────────────────────────────
 
@@ -283,13 +286,11 @@ export class PlayerLocationPoliticalNotesComponent implements OnInit, OnChanges,
 
   ngOnInit() {
     this.load();
-    document.addEventListener('click', this.outsideClickHandler);
   }
 
   ngOnDestroy() {
-    document.removeEventListener('click', this.outsideClickHandler);
-    if (this.saveDebounce)   clearTimeout(this.saveDebounce);
-    if (this.overlayTimer)   clearTimeout(this.overlayTimer);
+    if (this.saveDebounce) clearTimeout(this.saveDebounce);
+    if (this.overlayTimer) clearTimeout(this.overlayTimer);
   }
 
   ngOnChanges(changes: SimpleChanges) {
@@ -377,17 +378,6 @@ export class PlayerLocationPoliticalNotesComponent implements OnInit, OnChanges,
     }
   }
 
-  // ── Dropdown management ───────────────────────────────────────────────────
-
-  toggleDropdown(id: string, e: MouseEvent) {
-    e.stopPropagation();
-    this.openDropdownId.update(current => current === id ? null : id);
-  }
-
-  isOpen(id: string): boolean { return this.openDropdownId() === id; }
-
-  closeDropdown() { this.openDropdownId.set(null); }
-
   // ── General notes ────────────────────────────────────────────────────────
 
   onGeneralInput(value: string) {
@@ -416,7 +406,6 @@ export class PlayerLocationPoliticalNotesComponent implements OnInit, OnChanges,
     this.notes.update(n => ({
       ...n, factions: n.factions.map((f: any) => f.id === factionId ? { ...f, type } : f),
     }));
-    this.closeDropdown();
     this.scheduleSave();
   }
 
@@ -480,7 +469,6 @@ export class PlayerLocationPoliticalNotesComponent implements OnInit, OnChanges,
     this.notes.update(n => ({
       ...n, relationships: n.relationships.map((r: any) => r.id === relId ? { ...r, factionAId: factionId } : r),
     }));
-    this.closeDropdown();
     this.scheduleSave();
   }
 
@@ -488,7 +476,6 @@ export class PlayerLocationPoliticalNotesComponent implements OnInit, OnChanges,
     this.notes.update(n => ({
       ...n, relationships: n.relationships.map((r: any) => r.id === relId ? { ...r, factionBId: factionId } : r),
     }));
-    this.closeDropdown();
     this.scheduleSave();
   }
 
@@ -496,7 +483,6 @@ export class PlayerLocationPoliticalNotesComponent implements OnInit, OnChanges,
     this.notes.update(n => ({
       ...n, relationships: n.relationships.map((r: any) => r.id === relId ? { ...r, relationshipType: type } : r),
     }));
-    this.closeDropdown();
     this.scheduleSave();
   }
 
@@ -545,7 +531,6 @@ export class PlayerLocationPoliticalNotesComponent implements OnInit, OnChanges,
         factionId: n.factions[0].id, role: 'Member', motivation: 'Loyalty',
       }],
     }));
-    this.closeDropdown();
     this.save();
   }
 
@@ -553,7 +538,6 @@ export class PlayerLocationPoliticalNotesComponent implements OnInit, OnChanges,
     this.notes.update(n => ({
       ...n, npcRoles: n.npcRoles.map(nr => nr.id === roleId ? { ...nr, factionId } : nr),
     }));
-    this.closeDropdown();
     this.scheduleSave();
   }
 
@@ -561,7 +545,6 @@ export class PlayerLocationPoliticalNotesComponent implements OnInit, OnChanges,
     this.notes.update(n => ({
       ...n, npcRoles: n.npcRoles.map(nr => nr.id === roleId ? { ...nr, role } : nr),
     }));
-    this.closeDropdown();
     this.scheduleSave();
   }
 
@@ -569,7 +552,6 @@ export class PlayerLocationPoliticalNotesComponent implements OnInit, OnChanges,
     this.notes.update(n => ({
       ...n, npcRoles: n.npcRoles.map(nr => nr.id === roleId ? { ...nr, motivation } : nr),
     }));
-    this.closeDropdown();
     this.scheduleSave();
   }
 

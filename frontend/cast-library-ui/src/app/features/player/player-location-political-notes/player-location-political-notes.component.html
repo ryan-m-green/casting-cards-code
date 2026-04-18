@@ -82,27 +82,12 @@
                 />
 
                 <!-- Faction Type dropdown -->
-                <div class="notes-dropdown">
-                  <button
-                    class="notes-dropdown-trigger"
-                    [attr.aria-label]="'Faction type for ' + (faction.name || 'faction') + ': ' + faction.type"
-                    (click)="toggleDropdown('faction-type-' + faction.id, $event)"
-                  >
-                    <span class="notes-dropdown-placeholder">{{ faction.type }}</span>
-                    <span class="notes-dropdown-caret" [class.notes-dropdown-caret--open]="isOpen('faction-type-' + faction.id)">▾</span>
-                  </button>
-                  @if (isOpen('faction-type-' + faction.id)) {
-                    <div class="notes-dropdown-panel">
-                      @for (t of factionTypes; track t) {
-                        <div
-                          class="notes-dropdown-item"
-                          [class.notes-dropdown-item--selected]="faction.type === t"
-                          (click)="setFactionType(faction.id, t)"
-                        >{{ t }}</div>
-                      }
-                    </div>
-                  }
-                </div>
+                <app-campaign-dropdown
+                  [options]="factionTypeOptions"
+                  [value]="faction.type"
+                  fontSize="12px"
+                  (valueChange)="setFactionType(faction.id, $event)"
+                />
 
                 <!-- Influence slider -->
                 <div class="influence-slider-wrap">
@@ -157,120 +142,78 @@
 
         @if (notes().relationships.length) {
           <div class="rels-table" role="table" aria-label="Faction relationships">
-            <div class="rels-thead" role="row">
+            <div class="rels-thead-top" role="row">
               <span role="columnheader">Faction A</span>
               <span role="columnheader">Type</span>
               <span role="columnheader">Faction B</span>
-              <span role="columnheader">Strength</span>
-              <span role="columnheader">Notes</span>
-              <span role="columnheader"><span class="sr-only">Remove</span></span>
             </div>
             @for (rel of notes().relationships; track rel.id) {
-              <div class="rels-row" role="row">
+              <div class="rels-row" role="rowgroup">
 
-                <!-- Faction A dropdown -->
-                <div class="notes-dropdown">
-                  <button
-                    class="notes-dropdown-trigger"
-                    [attr.aria-label]="'First faction: ' + factionName(rel.factionAId)"
-                    (click)="toggleDropdown('rel-a-' + rel.id, $event)"
-                  >
-                    <span class="notes-dropdown-placeholder">{{ factionName(rel.factionAId) }}</span>
-                    <span class="notes-dropdown-caret" [class.notes-dropdown-caret--open]="isOpen('rel-a-' + rel.id)">▾</span>
-                  </button>
-                  @if (isOpen('rel-a-' + rel.id)) {
-                    <div class="notes-dropdown-panel">
-                      @for (f of notes().factions; track f.id) {
-                        <div
-                          class="notes-dropdown-item"
-                          [class.notes-dropdown-item--selected]="rel.factionAId === f.id"
-                          (click)="setRelFactionA(rel.id, f.id)"
-                        >{{ f.name || '—' }}</div>
-                      }
-                    </div>
-                  }
-                </div>
-
-                <!-- Relationship Type dropdown -->
-                <div class="notes-dropdown">
-                  <button
-                    class="notes-dropdown-trigger"
-                    [attr.aria-label]="'Relationship type: ' + rel.relationshipType"
-                    (click)="toggleDropdown('rel-type-' + rel.id, $event)"
-                  >
-                    <span class="notes-dropdown-placeholder">{{ rel.relationshipType }}</span>
-                    <span class="notes-dropdown-caret" [class.notes-dropdown-caret--open]="isOpen('rel-type-' + rel.id)">▾</span>
-                  </button>
-                  @if (isOpen('rel-type-' + rel.id)) {
-                    <div class="notes-dropdown-panel">
-                      @for (t of relTypes; track t) {
-                        <div
-                          class="notes-dropdown-item"
-                          [class.notes-dropdown-item--selected]="rel.relationshipType === t"
-                          (click)="setRelType(rel.id, t)"
-                        >{{ t }}</div>
-                      }
-                    </div>
-                  }
-                </div>
-
-                <!-- Faction B dropdown -->
-                <div class="notes-dropdown">
-                  <button
-                    class="notes-dropdown-trigger"
-                    [attr.aria-label]="'Second faction: ' + factionName(rel.factionBId)"
-                    (click)="toggleDropdown('rel-b-' + rel.id, $event)"
-                  >
-                    <span class="notes-dropdown-placeholder">{{ factionName(rel.factionBId) }}</span>
-                    <span class="notes-dropdown-caret" [class.notes-dropdown-caret--open]="isOpen('rel-b-' + rel.id)">▾</span>
-                  </button>
-                  @if (isOpen('rel-b-' + rel.id)) {
-                    <div class="notes-dropdown-panel">
-                      @for (f of notes().factions; track f.id) {
-                        <div
-                          class="notes-dropdown-item"
-                          [class.notes-dropdown-item--selected]="rel.factionBId === f.id"
-                          (click)="setRelFactionB(rel.id, f.id)"
-                        >{{ f.name || '—' }}</div>
-                      }
-                    </div>
-                  }
-                </div>
-
-                <!-- Strength slider -->
-                <div class="influence-slider-wrap">
-                  <input
-                    type="range"
-                    min="0"
-                    max="5"
-                    step="1"
-                    [value]="rel.strength"
-                    class="influence-slider"
-                    [class]="strengthSliderClass(rel.strength)"
-                    [attr.aria-label]="'Strength: ' + rel.strength + ' out of 5'"
-                    (input)="onStrengthInput(rel.id, $event)"
-                    (change)="onStrengthRelease(rel.id, $event)"
+                <div class="rels-row-top">
+                  <!-- Faction A dropdown -->
+                  <app-campaign-dropdown
+                    [options]="factionOptions()"
+                    [value]="rel.factionAId"
+                    fontSize="12px"
+                    (valueChange)="setRelFactionA(rel.id, $event)"
                   />
-                  <div class="influence-slider-labels">
-                    <span>0</span>
-                    <span class="influence-label-center">{{ rel.strength }}</span>
-                    <span>5</span>
+
+                  <!-- Relationship Type dropdown -->
+                  <app-campaign-dropdown
+                    [options]="relTypeOptions"
+                    [value]="rel.relationshipType"
+                    fontSize="12px"
+                    (valueChange)="setRelType(rel.id, $event)"
+                  />
+
+                  <!-- Faction B dropdown -->
+                  <app-campaign-dropdown
+                    [options]="factionOptions()"
+                    [value]="rel.factionBId"
+                    fontSize="12px"
+                    (valueChange)="setRelFactionB(rel.id, $event)"
+                  />
+                </div>
+
+                <div class="rels-row-strength">
+                  <span class="rels-strength-label">Strength</span>
+                  <div class="influence-slider-wrap">
+                    <input
+                      type="range"
+                      min="0"
+                      max="5"
+                      step="1"
+                      [value]="rel.strength"
+                      class="influence-slider"
+                      [class]="strengthSliderClass(rel.strength)"
+                      [attr.aria-label]="'Strength: ' + rel.strength + ' out of 5'"
+                      (input)="onStrengthInput(rel.id, $event)"
+                      (change)="onStrengthRelease(rel.id, $event)"
+                    />
+                    <div class="influence-slider-labels">
+                      <span>0</span>
+                      <span class="influence-label-center">{{ rel.strength }}</span>
+                      <span>5</span>
+                    </div>
                   </div>
                 </div>
 
-                <input
-                  class="pol-input pol-input--notes"
-                  type="text"
-                  placeholder="Notes…"
-                  [attr.aria-label]="'Notes for this relationship'"
-                  [attr.data-rel-notes-id]="rel.id"
-                  (input)="onRelNotesInput(rel.id, $any($event.target).value)"
-                />
-                <button
-                  class="pol-remove"
-                  [attr.aria-label]="'Remove relationship between ' + factionName(rel.factionAId) + ' and ' + factionName(rel.factionBId)"
-                  (click)="removeRelationship(rel.id)"
-                >×</button>
+                <div class="rels-row-notes">
+                  <input
+                    class="pol-input pol-input--notes"
+                    type="text"
+                    placeholder="Notes…"
+                    [attr.aria-label]="'Notes for this relationship'"
+                    [attr.data-rel-notes-id]="rel.id"
+                    (input)="onRelNotesInput(rel.id, $any($event.target).value)"
+                  />
+                  <button
+                    class="pol-remove"
+                    [attr.aria-label]="'Remove relationship between ' + factionName(rel.factionAId) + ' and ' + factionName(rel.factionBId)"
+                    (click)="removeRelationship(rel.id)"
+                  >×</button>
+                </div>
 
               </div>
             }
@@ -307,73 +250,28 @@
                 <span class="roles-cast-name">{{ castName(nr.castInstanceId) }}</span>
 
                 <!-- NPC Faction dropdown -->
-                <div class="notes-dropdown">
-                  <button
-                    class="notes-dropdown-trigger"
-                    [attr.aria-label]="castName(nr.castInstanceId) + ' faction: ' + factionName(nr.factionId)"
-                    (click)="toggleDropdown('npc-faction-' + nr.id, $event)"
-                  >
-                    <span class="notes-dropdown-placeholder">{{ factionName(nr.factionId) }}</span>
-                    <span class="notes-dropdown-caret" [class.notes-dropdown-caret--open]="isOpen('npc-faction-' + nr.id)">▾</span>
-                  </button>
-                  @if (isOpen('npc-faction-' + nr.id)) {
-                    <div class="notes-dropdown-panel">
-                      @for (f of notes().factions; track f.id) {
-                        <div
-                          class="notes-dropdown-item"
-                          [class.notes-dropdown-item--selected]="nr.factionId === f.id"
-                          (click)="setNpcFaction(nr.id, f.id)"
-                        >{{ f.name || '—' }}</div>
-                      }
-                    </div>
-                  }
-                </div>
+                <app-campaign-dropdown
+                  [options]="factionOptions()"
+                  [value]="nr.factionId"
+                  fontSize="12px"
+                  (valueChange)="setNpcFaction(nr.id, $event)"
+                />
 
                 <!-- NPC Role dropdown -->
-                <div class="notes-dropdown">
-                  <button
-                    class="notes-dropdown-trigger"
-                    [attr.aria-label]="castName(nr.castInstanceId) + ' role: ' + nr.role"
-                    (click)="toggleDropdown('npc-role-' + nr.id, $event)"
-                  >
-                    <span class="notes-dropdown-placeholder">{{ nr.role }}</span>
-                    <span class="notes-dropdown-caret" [class.notes-dropdown-caret--open]="isOpen('npc-role-' + nr.id)">▾</span>
-                  </button>
-                  @if (isOpen('npc-role-' + nr.id)) {
-                    <div class="notes-dropdown-panel">
-                      @for (r of npcRoles; track r) {
-                        <div
-                          class="notes-dropdown-item"
-                          [class.notes-dropdown-item--selected]="nr.role === r"
-                          (click)="setNpcRole(nr.id, r)"
-                        >{{ r }}</div>
-                      }
-                    </div>
-                  }
-                </div>
+                <app-campaign-dropdown
+                  [options]="npcRoleOptions"
+                  [value]="nr.role"
+                  fontSize="12px"
+                  (valueChange)="setNpcRole(nr.id, $event)"
+                />
 
                 <!-- NPC Motivation dropdown -->
-                <div class="notes-dropdown">
-                  <button
-                    class="notes-dropdown-trigger"
-                    [attr.aria-label]="castName(nr.castInstanceId) + ' motivation: ' + nr.motivation"
-                    (click)="toggleDropdown('npc-motivation-' + nr.id, $event)"
-                  >
-                    <span class="notes-dropdown-placeholder">{{ nr.motivation }}</span>
-                    <span class="notes-dropdown-caret" [class.notes-dropdown-caret--open]="isOpen('npc-motivation-' + nr.id)">▾</span>
-                  </button>
-                  @if (isOpen('npc-motivation-' + nr.id)) {
-                    <div class="notes-dropdown-panel">
-                      @for (m of motivations; track m) {
-                        <div
-                          class="notes-dropdown-item"
-                          [class.notes-dropdown-item--selected]="nr.motivation === m"
-                          (click)="setNpcMotivation(nr.id, m)"
-                        >{{ m }}</div>
-                      }
-                    </div>
-                  }
-                </div>
+                <app-campaign-dropdown
+                  [options]="motivationOptions"
+                  [value]="nr.motivation"
+                  fontSize="12px"
+                  (valueChange)="setNpcMotivation(nr.id, $event)"
+                />
 
                 <button
                   class="pol-remove"
@@ -387,25 +285,12 @@
 
         @if (notes().factions.length && availableCasts().length) {
           <div class="pol-npc-add">
-            <div class="notes-dropdown">
-              <button
-                class="notes-dropdown-trigger"
-                aria-label="Add a cast member political role"
-                (click)="toggleDropdown('npc-add', $event)"
-              >
-                <span class="notes-dropdown-placeholder">Add a cast member…</span>
-                <span class="notes-dropdown-caret" [class.notes-dropdown-caret--open]="isOpen('npc-add')">▾</span>
-              </button>
-              @if (isOpen('npc-add')) {
-                <div class="notes-dropdown-panel">
-                  @for (cast of availableCasts(); track cast.instanceId) {
-                    <div class="notes-dropdown-item" (click)="addNpcRole(cast.instanceId)">
-                      {{ cast.name }}
-                    </div>
-                  }
-                </div>
-              }
-            </div>
+            <app-campaign-dropdown
+              [options]="availableCastOptions()"
+              value=""
+              fontSize="12px"
+              (valueChange)="addNpcRole($event)"
+            />
           </div>
         } @else if (!notes().factions.length) {
           <p class="pol-hint">Add factions before assigning NPC roles.</p>

@@ -164,32 +164,13 @@
   </div>
 }
 
-@if (showImageModal()) {
-  <div class="upload-overlay" (click)="showImageModal.set(false)">
-    <div class="upload-panel" (click)="$event.stopPropagation()">
-      <h3 class="upload-panel-title">Upload Portrait</h3>
-      <div class="pc-card pc-card-player pointer-none">
-        <div class="lib-card-front card-form-inner">
-          <div class="card-form-header">
-            <div class="card-name">{{ savedCard()!.name }}</div>
-            <div class="card-descriptor">{{ savedCard()!.race }} · {{ savedCard()!.class }}</div>
-            <div class="dv dv-mb"></div>
-          </div>
-          @if (imageUrl()) {
-            <img [src]="imageUrl()!" alt="Character portrait" class="card-form-image" />
-          } @else {
-            <div class="card-form-placeholder-simple">
-              <div class="card-initial">{{ savedCard()!.name[0].toUpperCase() }}</div>
-            </div>
-          }
-        </div>
-      </div>
-      <label class="upload-file-label">
-        {{ imageUploading() ? 'Uploading…' : (imageUrl() ? 'Replace Portrait' : 'Upload Portrait') }}
-        <input type="file" accept="image/jpeg,image/png,image/webp" class="hidden-input"
-               (change)="onFileSelected($event)" [disabled]="imageUploading()" />
-      </label>
-      <button class="btn-primary btn-upload-done" (click)="showImageModal.set(false)">Close</button>
-    </div>
-  </div>
-}
+<app-character-editor
+  [visible]="showImageModal()"
+  [campaignId]="campaignId()"
+  [playerCardId]="savedCard()?.id ?? ''"
+  [name]="savedCard()?.name ?? ''"
+  [descriptor]="(savedCard()?.race ?? '') + ' · ' + (savedCard()?.class ?? '')"
+  [imageUrl]="imageUrl()"
+  (closed)="showImageModal.set(false)"
+  (uploaded)="onPortraitUploaded($event)"
+/>

@@ -3,6 +3,9 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { CardFlipComponent } from '../../../shared/components/card-flip/card-flip.component';
+import { CampaignDropdownComponent, CampaignDropdownOption } from '../../../shared/components/campaign-dropdown/campaign-dropdown.component';
+import { CharacterEditorComponent } from '../../../shared/components/character-editor/character-editor.component';
+import { CharacterInfoEditorComponent, PlayerCardInfoUpdate } from '../../../shared/components/character-info-editor/character-info-editor.component';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../../environments/environment';
 import { PortalTransitionService } from '../../../core/portal-transition.service';
@@ -33,7 +36,7 @@ const MEMORY_TYPE_META: Record<PlayerMemory['memoryType'], { icon: string; label
 @Component({
   selector: 'app-player-my-character',
   standalone: true,
-  imports: [CommonModule, FormsModule, CardFlipComponent],
+  imports: [CommonModule, FormsModule, CardFlipComponent, CampaignDropdownComponent, CharacterEditorComponent, CharacterInfoEditorComponent],
   templateUrl: './player-my-character.component.html',
   styleUrl: './player-my-character.component.scss',
 })
@@ -49,8 +52,10 @@ export class PlayerMyCharacterComponent implements OnInit, OnDestroy {
   playerCardId = signal('');
 
   // ── Player card ──────────────────────────────────────────────────────────────
-  playerCard = signal<PlayerCard | null>(null);
-  conditions = signal<PlayerCardCondition[]>([]);
+  playerCard          = signal<PlayerCard | null>(null);
+  conditions          = signal<PlayerCardCondition[]>([]);
+  showCharacterEditor = signal(false);
+  showInfoEditor      = signal(false);
 
   portalColor = signal(this.transition.spineColor);
 
@@ -63,6 +68,18 @@ export class PlayerMyCharacterComponent implements OnInit, OnDestroy {
   memorySearch  = signal('');
   memoryTypes   = Object.keys(MEMORY_TYPE_META) as PlayerMemory['memoryType'][];
   memoryTypeMeta = MEMORY_TYPE_META;
+
+  memoryTypeOptions: CampaignDropdownOption[] = this.memoryTypes.map(t => ({
+    value: t,
+    label: MEMORY_TYPE_META[t].label,
+    icon: MEMORY_TYPE_META[t].icon,
+  }));
+
+  traitTypeOptions: CampaignDropdownOption[] = [
+    { value: 'GOAL', label: 'Goal' },
+    { value: 'FEAR', label: 'Fear' },
+    { value: 'FLAW', label: 'Flaw' },
+  ];
 
   filteredMemories = computed(() => {
     const q = this.memorySearch().toLowerCase().trim();
@@ -78,14 +95,8 @@ export class PlayerMyCharacterComponent implements OnInit, OnDestroy {
   newMemoryTitle = '';
   newMemoryDetail = '';
 
-  memoryTypeDropdownOpen = signal(false);
   private memoryNextSession = computed(() => this.memories().length + 1);
   private newMemoryDebounce: ReturnType<typeof setTimeout> | null = null;
-  private outsideClickHandler = (e: MouseEvent) => {
-    if (!(e.target as HTMLElement).closest('.notes-dropdown')) {
-      this.memoryTypeDropdownOpen.set(false);
-    }
-  };
 
   // ── Soul tab ─────────────────────────────────────────────────────────────────
   traits        = signal<PlayerTrait[]>([]);
@@ -176,6 +187,15 @@ export class PlayerMyCharacterComponent implements OnInit, OnDestroy {
     });
 
     effect(() => {
+      const event = this.hub.secretDelivered();
+      if (!event) return;
+      const myUserId   = untracked(() => this.auth.currentUser()?.id);
+      const campaignId = untracked(() => this.campaignId());
+      if (!myUserId || event.playerUserId !== myUserId) return;
+      this.loadSecrets(campaignId);
+    });
+
+    effect(() => {
       const event = this.hub.conditionAssigned();
       if (!event) return;
       const myCardId = untracked(() => this.playerCardId());
@@ -229,14 +249,12 @@ export class PlayerMyCharacterComponent implements OnInit, OnDestroy {
     this.campaignId.set(id);
     this.loadPlayerCard(id);
     this.loadCast(id);
-    document.addEventListener('click', this.outsideClickHandler);
 
     const tab = this.route.snapshot.queryParamMap.get('tab') as Tab | null;
     if (tab) this.activeTab.set(tab);
   }
 
   ngOnDestroy() {
-    document.removeEventListener('click', this.outsideClickHandler);
     if (this.newMemoryDebounce) clearTimeout(this.newMemoryDebounce);
   }
 
@@ -285,16 +303,6 @@ export class PlayerMyCharacterComponent implements OnInit, OnDestroy {
 
   onMemoryDetailInput(value: string) {
     this.newMemoryDetail = value;
-  }
-
-  toggleMemoryTypeDropdown(e: MouseEvent) {
-    e.stopPropagation();
-    this.memoryTypeDropdownOpen.update(v => !v);
-  }
-
-  selectMemoryType(type: PlayerMemory['memoryType']) {
-    this.newMemoryType = type;
-    this.memoryTypeDropdownOpen.set(false);
   }
 
   get nextSessionNumber(): number {
@@ -481,6 +489,16 @@ export class PlayerMyCharacterComponent implements OnInit, OnDestroy {
   goBack() {
     this.transition.quickCover();
     this.router.navigate(['/player/campaign', this.campaignId()]);
+  }
+
+  onPortraitUploaded(url: string) {
+    const card = this.playerCard();
+    if (card) this.playerCard.set({ ...card, imageUrl: url });
+  }
+
+  onInfoSaved(data: PlayerCardInfoUpdate) {
+    const card = this.playerCard();
+    if (card) this.playerCard.set({ ...card, name: data.name, race: data.race, class: data.class, description: data.description ?? undefined });
   }
 
   initial(name: string) { return name.charAt(0).toUpperCase(); }

@@ -1,0 +1,29 @@
+@if (visible) {
+  <div class="upload-overlay" (click)="close()">
+    <div class="upload-panel" (click)="$event.stopPropagation()">
+      <h3 class="upload-panel-title">Edit Portrait</h3>
+      <div class="pc-card pc-card-player pointer-none">
+        <div class="lib-card-front card-form-inner">
+          <div class="card-form-header">
+            <div class="card-name">{{ name }}</div>
+            <div class="card-descriptor">{{ descriptor }}</div>
+            <div class="dv dv-mb"></div>
+          </div>
+          @if (displayUrl) {
+            <img [src]="displayUrl" alt="Character portrait" class="card-form-image" />
+          } @else {
+            <div class="card-form-placeholder-simple">
+              <div class="card-initial">{{ name[0]?.toUpperCase() }}</div>
+            </div>
+          }
+        </div>
+      </div>
+      <label class="upload-file-label">
+        {{ imageUploading() ? 'Uploading…' : (displayUrl ? 'Replace Portrait' : 'Upload Portrait') }}
+        <input type="file" accept="image/jpeg,image/png,image/webp" class="hidden-input"
+               (change)="onFileSelected($event)" [disabled]="imageUploading()" />
+      </label>
+      <button class="btn-primary btn-upload-done" (click)="close()">Close</button>
+    </div>
+  </div>
+}

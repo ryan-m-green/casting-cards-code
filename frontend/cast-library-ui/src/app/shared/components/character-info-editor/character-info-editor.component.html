@@ -1,0 +1,97 @@
+@if (visible) {
+  <div class="info-overlay" (click)="close()">
+    <div class="info-panel" (click)="$event.stopPropagation()">
+
+      <h3 class="info-panel-title">Edit Character</h3>
+
+      <!-- Name -->
+      <div class="field-group">
+        <label class="field-label">Character Name <span class="required">*</span></label>
+        <input class="field-input" type="text" [value]="draftName()"
+               (input)="draftName.set($any($event.target).value)"
+               placeholder="Your character's name" autocomplete="off" />
+      </div>
+
+      <!-- Race -->
+      <div class="field-group">
+        <label class="field-label">Race <span class="required">*</span></label>
+        <div class="pill-select" [class.pill-select--open]="showRaceDropdown()"
+             (click)="toggleRaceDropdown($event)">
+          <div class="pill-select-inner">
+            @for (r of selectedRaces(); track r) {
+              <span class="pill-token">
+                {{ r }}
+                <button type="button" class="pill-remove" (click)="removeRace(r, $event)">×</button>
+              </span>
+            }
+            @if (!selectedRaces().length) {
+              <span class="pill-placeholder">Select race(s)…</span>
+            }
+          </div>
+          <span class="pill-chevron" [class.pill-chevron--open]="showRaceDropdown()">▾</span>
+        </div>
+        @if (showRaceDropdown()) {
+          <div class="pill-dropdown">
+            @for (r of availableRaces(); track r) {
+              <div class="pill-dropdown-item" (click)="addRace(r, $event)">{{ r }}</div>
+            }
+            @if (!availableRaces().length) {
+              <div class="pill-dropdown-empty">All races selected</div>
+            }
+          </div>
+        }
+      </div>
+
+      <!-- Class -->
+      <div class="field-group">
+        <label class="field-label">Class <span class="required">*</span></label>
+        <div class="pill-select" [class.pill-select--open]="showClassDropdown()"
+             (click)="toggleClassDropdown($event)">
+          <div class="pill-select-inner">
+            @for (c of selectedClasses(); track c) {
+              <span class="pill-token">
+                {{ c }}
+                <button type="button" class="pill-remove" (click)="removeClassItem(c, $event)">×</button>
+              </span>
+            }
+            @if (!selectedClasses().length) {
+              <span class="pill-placeholder">Select class(es)…</span>
+            }
+          </div>
+          <span class="pill-chevron" [class.pill-chevron--open]="showClassDropdown()">▾</span>
+        </div>
+        @if (showClassDropdown()) {
+          <div class="pill-dropdown">
+            @for (c of availableClasses(); track c) {
+              <div class="pill-dropdown-item" (click)="addClassItem(c, $event)">{{ c }}</div>
+            }
+            @if (!availableClasses().length) {
+              <div class="pill-dropdown-empty">All classes selected</div>
+            }
+          </div>
+        }
+      </div>
+
+      <!-- Description -->
+      <div class="field-group">
+        <label class="field-label">Description <span class="optional">(optional)</span></label>
+        <textarea class="field-input field-textarea" rows="4"
+                  [value]="draftDescription()"
+                  (input)="draftDescription.set($any($event.target).value)"
+                  placeholder="A brief description of your character…"></textarea>
+      </div>
+
+      @if (error()) {
+        <div class="error-banner">{{ error() }}</div>
+      }
+
+      <div class="modal-footer">
+        <button class="btn-ghost" (click)="close()" [disabled]="saving()">Cancel</button>
+        <button class="btn-primary" (click)="save()" [disabled]="saving()">
+          @if (saving()) { Saving… } @else { Save }
+        </button>
+      </div>
+
+    </div>
+  </div>
+}
