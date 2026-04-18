@@ -298,7 +298,12 @@ public class PlayerCardsController(
         var success = await deletePlayerCardSecret.HandleAsync(
             new DeletePlayerCardSecretCommand(playerCardId, secretId, campaignId));
 
-        return success ? NoContent() : NotFound();
+        if (!success) return NotFound();
+
+        await hub.Clients.Group(campaignId.ToString())
+            .SendAsync("PlayerSecretDeleted", new { campaignId, playerCardId, secretId });
+
+        return NoContent();
     }
 
     // ─── Perceptions ──────────────────────────────────────────────────────────

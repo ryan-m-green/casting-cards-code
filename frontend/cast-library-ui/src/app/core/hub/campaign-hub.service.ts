@@ -8,6 +8,7 @@ import {
   BulkCardVisibilityChangedEvent,
   SecretDeliveredEvent,
   SecretSharedEvent,
+  PlayerSecretDeletedEvent,
 } from '../../shared/models/secret.model';
 import {
   TimeCursorMovedEvent,
@@ -41,6 +42,7 @@ export class CampaignHubService {
   readonly conditionRemoved          = signal<ConditionRemovedEvent | null>(null);
   readonly conditionAssigned         = signal<ConditionAssignedEvent | null>(null);
   readonly secretShared              = signal<SecretSharedEvent | null>(null);
+  readonly playerSecretDeleted       = signal<PlayerSecretDeletedEvent | null>(null);
   readonly playerJoined              = signal<PlayerJoinedEvent | null>(null);
   readonly isConnected               = signal(false);
 
@@ -106,6 +108,10 @@ export class CampaignHubService {
 
     this.connection.on('SecretShared', (event: SecretSharedEvent) => {
       this.secretShared.set(event);
+    });
+
+    this.connection.on('PlayerSecretDeleted', (event: PlayerSecretDeletedEvent) => {
+      this.playerSecretDeleted.set(event);
     });
 
     this.connection.on('PlayerJoined', (event: PlayerJoinedEvent) => {

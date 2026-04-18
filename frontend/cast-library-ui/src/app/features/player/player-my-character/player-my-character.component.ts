@@ -168,6 +168,14 @@ export class PlayerMyCharacterComponent implements OnInit, OnDestroy {
 
   constructor() {
     effect(() => {
+      const event = this.hub.playerSecretDeleted();
+      if (!event) return;
+      const myCardId = untracked(() => this.playerCardId());
+      if (event.playerCardId !== myCardId) return;
+      this.secrets.update(list => list.filter(s => s.id !== event.secretId));
+    });
+
+    effect(() => {
       const event = this.hub.conditionAssigned();
       if (!event) return;
       const myCardId = untracked(() => this.playerCardId());
@@ -222,6 +230,9 @@ export class PlayerMyCharacterComponent implements OnInit, OnDestroy {
     this.loadPlayerCard(id);
     this.loadCast(id);
     document.addEventListener('click', this.outsideClickHandler);
+
+    const tab = this.route.snapshot.queryParamMap.get('tab') as Tab | null;
+    if (tab) this.activeTab.set(tab);
   }
 
   ngOnDestroy() {
@@ -237,11 +248,19 @@ export class PlayerMyCharacterComponent implements OnInit, OnDestroy {
         this.playerCardId.set(card.id);
         this.playerCard.set(card);
         this.conditions.set(card.conditions ?? []);
+        this.loadPerceptions(id, card.id);
+        if (this.activeTab() === 'secrets' && this.secrets().length === 0) this.loadSecrets(id);
       },
       error: () => {
         this.playerCard.set(null);
       },
     });
+  }
+
+  private loadPerceptions(campaignId: string, playerCardId: string) {
+    this.http.get<PlayerCastPerception[]>(
+      `${environment.apiUrl}/api/campaigns/${campaignId}/player-cards/${playerCardId}/perceptions`
+    ).subscribe(p => this.perceptions.set(p));
   }
 
   setTab(tab: Tab) {
@@ -391,7 +410,6 @@ export class PlayerMyCharacterComponent implements OnInit, OnDestroy {
 
   // ── Cast ─────────────────────────────────────────────────────────────────────
   private loadCast(id: string) {
-    const playerCardId = this.playerCardId();
     this.http.get<PlayerCardWithDetails[]>(`${environment.apiUrl}/api/campaigns/${id}/player-cards/party`)
       .subscribe(cards => this.discoveredCast.set({
         partyCards: cards,
@@ -399,9 +417,6 @@ export class PlayerMyCharacterComponent implements OnInit, OnDestroy {
         locations: [],
         sublocations: [],
       }));
-    this.http.get<PlayerCastPerception[]>(
-      `${environment.apiUrl}/api/campaigns/${id}/player-cards/${playerCardId}/perceptions`
-    ).subscribe(p => this.perceptions.set(p));
   }
 
   perceptionFor(key: string): string {

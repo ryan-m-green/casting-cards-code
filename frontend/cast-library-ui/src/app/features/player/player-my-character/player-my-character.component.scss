@@ -527,6 +527,7 @@ $memory-search-accent: #9ab0b8;
 
 .secrets-modal {
   width: min(480px, 90vw);
+  max-height: 80vh;
   background: #0e0618;
   border: 1px solid rgba(110, 40, 208, 0.4);
   border-radius: 10px;
@@ -551,6 +552,9 @@ $memory-search-accent: #9ab0b8;
   display: flex;
   flex-direction: column;
   gap: 14px;
+  overflow-y: auto;
+  flex: 1 1 auto;
+  min-height: 0;
 }
 
 .secrets-modal-item {

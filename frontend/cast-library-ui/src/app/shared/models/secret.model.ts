@@ -56,3 +56,9 @@ export interface SecretSharedEvent {
   playerImageUrl: string;
   playerRaceClass: string;
 }
+
+export interface PlayerSecretDeletedEvent {
+  campaignId: string;
+  playerCardId: string;
+  secretId: string;
+}

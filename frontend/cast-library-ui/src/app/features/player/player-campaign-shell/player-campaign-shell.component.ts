@@ -161,7 +161,8 @@ export class PlayerCampaignShellComponent implements OnInit, OnDestroy {
   navigateToSecrets() {
     this.wizardSecretContent.set(null);
     this.transition.quickCover();
-    this.router.navigate(['/player/campaign', this.campaignId(), 'my-character']);
+    this.router.navigate(['/player/campaign', this.campaignId(), 'my-character'], { queryParams: { tab: 'secrets' } })
+      .then(() => this.transition.hide());
   }
 
   private buildOverlayFromVisibilityEvent(
