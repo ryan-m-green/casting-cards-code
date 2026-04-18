@@ -63,7 +63,7 @@ export interface PlayerCastPerception {
 }
 
 export interface DiscoveredCastResponse {
-  partyCards: PlayerCard[];
+  partyCards: PlayerCardWithDetails[];
   people: DiscoveredPerson[];
   locations: DiscoveredPlace[];
   sublocations: DiscoveredPlace[];

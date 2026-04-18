@@ -103,7 +103,12 @@ CREATE TABLE IF NOT EXISTS player_card_traits (
 CREATE INDEX IF NOT EXISTS idx_player_card_traits_card ON player_card_traits(player_card_id);
 
 -- [008] Rename gold_transactions → currency_transactions; add currency_type column
-ALTER TABLE IF EXISTS gold_transactions RENAME TO currency_transactions;
+DO $$ BEGIN
+    IF EXISTS (SELECT 1 FROM pg_tables WHERE schemaname = 'public' AND tablename = 'gold_transactions')
+       AND NOT EXISTS (SELECT 1 FROM pg_tables WHERE schemaname = 'public' AND tablename = 'currency_transactions') THEN
+        ALTER TABLE gold_transactions RENAME TO currency_transactions;
+    END IF;
+END $$;
 
 ALTER TABLE currency_transactions
     ADD COLUMN IF NOT EXISTS currency_type VARCHAR(5) NOT NULL DEFAULT 'gp'

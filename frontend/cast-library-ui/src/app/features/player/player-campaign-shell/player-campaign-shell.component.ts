@@ -89,6 +89,19 @@ export class PlayerCampaignShellComponent implements OnInit, OnDestroy {
       this.wizardSecretContent.set(event.content);
     });
 
+    // Show card reveal overlay when a party member shares a secret
+    effect(() => {
+      const event = this.hub.secretShared();
+      if (!event) return;
+      this.overlayData.set({
+        cardType:      'player',
+        name:          event.playerName,
+        descriptor:    event.playerRaceClass,
+        imageUrl:      event.playerImageUrl,
+        secretContent: event.secretContent,
+      });
+    });
+
     // Show currency card when the DM awards gold to this player or the party
     effect(() => {
       const event = this.hub.goldAwarded();

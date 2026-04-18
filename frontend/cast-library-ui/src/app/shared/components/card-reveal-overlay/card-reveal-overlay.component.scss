@@ -47,6 +47,11 @@
   cursor: default;
 }
 
+/* ── Player card placeholder colour ───────────────────────────── */
+.pc-card-player .card-placeholder {
+  background: linear-gradient(160deg, #b8a8d4, #d4cce8, #a89ec4);
+}
+
 /* ── Secret block ──────────────────────────────────────────────── */
 .cr-secret-block {
   width: 260px;

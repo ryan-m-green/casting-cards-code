@@ -153,10 +153,10 @@ $memory-search-accent: #9ab0b8;
   letter-spacing: 0.12em;
   text-transform: uppercase;
   padding: 3px 8px;
-  background: rgba(200, 50, 50, 0.2);
-  border: 1px solid rgba(200, 50, 50, 0.4);
+  background: rgb(140, 4, 4);
+  border: 1px solid rgba(140, 4, 4, 0.8);
   border-radius: 20px;
-  color: rgba(255, 160, 150, 0.9);
+  color: rgb(255, 255, 255);
 }
 
 /* ── Tabs bar ────────────────────────────────────────────────── */
@@ -490,6 +490,126 @@ $memory-search-accent: #9ab0b8;
   color: rgba(200, 185, 235, 0.9);
   margin-top: 5px;
   line-height: 1.5;
+}
+
+/* ── View Secrets button ─────────────────────────────────────── */
+.view-secrets-btn {
+  margin-top: 12px;
+  width: 100%;
+  font-family: v.$font-header;
+  font-size: 8px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgb(255, 255, 255);
+  background: rgba(110, 40, 208, 0.25);
+  border: 1px solid rgba(110, 40, 208, 0.45);
+  border-radius: 4px;
+  padding: 7px 0;
+  cursor: pointer;
+  transition: background 0.18s ease, border-color 0.18s ease;
+
+  &:hover {
+    background: rgba(110, 40, 208, 0.45);
+    border-color: rgba(110, 40, 208, 0.75);
+  }
+}
+
+/* ── Secrets modal ───────────────────────────────────────────── */
+.secrets-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 9000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.72);
+}
+
+.secrets-modal {
+  width: min(480px, 90vw);
+  background: #0e0618;
+  border: 1px solid rgba(110, 40, 208, 0.4);
+  border-radius: 10px;
+  padding: 28px 28px 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  box-shadow: 0 0 40px rgba(110, 40, 208, 0.3), 0 8px 32px rgba(0, 0, 0, 0.7);
+}
+
+.secrets-modal-title {
+  font-family: v.$font-header;
+  font-size: 14px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgb(255, 255, 255);
+}
+
+.secrets-modal-list {
+  margin: 0;
+  padding-left: 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.secrets-modal-item {
+  font-family: v.$font-body;
+  font-size: 14px;
+  line-height: 1.55;
+  color: rgb(255, 255, 255);
+}
+
+.secrets-modal-empty {
+  font-family: v.$font-body;
+  font-size: 13px;
+  color: rgb(255, 255, 255);
+  font-style: italic;
+}
+
+.secrets-modal-close {
+  align-self: flex-end;
+  font-family: v.$font-header;
+  font-size: 9px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgb(255, 255, 255);
+  background: none;
+  border: 1px solid rgba(180, 150, 255, 0.4);
+  border-radius: 4px;
+  padding: 7px 18px;
+  cursor: pointer;
+  transition: border-color 0.18s ease, background 0.18s ease;
+
+  &:hover {
+    border-color: rgba(180, 150, 255, 0.75);
+    background: rgba(110, 40, 208, 0.2);
+  }
+}
+
+/* ── Party card conditions ───────────────────────────────────── */
+.card-desc {
+  margin-bottom: 15px;
+}
+
+.card-conditions {
+  margin-top: 10px;
+}
+
+.card-conditions-label {
+  font-family: v.$font-header;
+  font-size: 8px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgb(42, 24, 4);
+  font-weight: bolder;
+  margin-bottom: 6px;
+}
+
+.card-conditions-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
 }
 
 /* ── Party tab — player cards ────────────────────────────────── */

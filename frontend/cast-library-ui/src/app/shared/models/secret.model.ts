@@ -46,3 +46,13 @@ export interface SecretDeliveredEvent {
   playerUserId: string;
   content: string;
 }
+
+export interface SecretSharedEvent {
+  playerCardId: string;
+  secretId: string;
+  sharedBy: string;
+  secretContent: string;
+  playerName: string;
+  playerImageUrl: string;
+  playerRaceClass: string;
+}

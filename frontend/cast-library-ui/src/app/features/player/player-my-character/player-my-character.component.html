@@ -175,6 +175,19 @@
                     @if (member.description) {
                       <div class="card-desc">{{ member.description }}</div>
                     }
+                    <button class="view-secrets-btn" (click)="viewSecrets(member)">View Secrets</button>
+
+                    @if (member.conditions?.length) {
+                      <div class="card-conditions">
+                        <div class="card-conditions-label">Conditions</div>
+                        <div class="dv dv-mb"></div>
+                        <div class="card-conditions-pills">
+                          @for (c of member.conditions; track c.id) {
+                            <span class="condition-pill">{{ c.conditionName }}</span>
+                          }
+                        </div>
+                      </div>
+                    }
                   </div>
                 </div>
 
@@ -325,3 +338,24 @@
   }
 
 </div>
+
+@if (viewingSecretsFor(); as member) {
+  <div class="secrets-modal-backdrop" (click)="closeSecretsModal()">
+    <div class="secrets-modal" (click)="$event.stopPropagation()">
+      <div class="secrets-modal-title">{{ member.name }}'s Secrets</div>
+      <div class="dv dv-mb"></div>
+      @if (secretsLoading()) {
+        <div class="secrets-modal-empty">Loading…</div>
+      } @else if (memberSecrets().length === 0) {
+        <div class="secrets-modal-empty">No shared secrets yet.</div>
+      } @else {
+        <ol class="secrets-modal-list">
+          @for (secret of memberSecrets(); track secret.id) {
+            <li class="secrets-modal-item">{{ secret.content }}</li>
+          }
+        </ol>
+      }
+      <button class="secrets-modal-close" (click)="closeSecretsModal()">Close</button>
+    </div>
+  </div>
+}

@@ -169,6 +169,7 @@ namespace CastLibrary.WebHost.IoC
             services.AddScoped<IGetPlayerMemoriesQueryHandler, GetPlayerMemoriesQueryHandler>();
             services.AddScoped<IGetPlayerTraitsQueryHandler, GetPlayerTraitsQueryHandler>();
             services.AddScoped<IGetPlayerSecretsQueryHandler, GetPlayerSecretsQueryHandler>();
+            services.AddScoped<IGetSharedPlayerSecretsQueryHandler, GetSharedPlayerSecretsQueryHandler>();
             services.AddScoped<IGetPlayerConditionsQueryHandler, GetPlayerConditionsQueryHandler>();
             services.AddScoped<IGetDiscoveredCastQueryHandler, GetDiscoveredCastQueryHandler>();
             services.AddScoped<IGetPlayerCastPerceptionsQueryHandler, GetPlayerCastPerceptionsQueryHandler>();

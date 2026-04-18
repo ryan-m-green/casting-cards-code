@@ -10,7 +10,9 @@ import { AuthService } from '../../../core/auth/auth.service';
 import { CampaignHubService } from '../../../core/hub/campaign-hub.service';
 import {
   PlayerCard,
+  PlayerCardWithDetails,
   PlayerCardCondition,
+  PlayerCardSecret,
   PlayerMemory,
   PlayerTrait,
   PlayerCardSecret,
@@ -102,6 +104,11 @@ export class PlayerMyCharacterComponent implements OnInit, OnDestroy {
   partySecrets   = computed(() => this.secrets().filter(s => s.isShared));
   sharingSecretId = signal<string | null>(null);
 
+  // ── View Secrets modal ───────────────────────────────────────────────────────
+  viewingSecretsFor = signal<PlayerCardWithDetails | null>(null);
+  memberSecrets     = signal<PlayerCardSecret[]>([]);
+  secretsLoading    = signal(false);
+
   // ── Cast tab ─────────────────────────────────────────────────────────────────
   discoveredCast  = signal<DiscoveredCastResponse | null>(null);
   perceptions     = signal<PlayerCastPerception[]>([]);
@@ -165,21 +172,47 @@ export class PlayerMyCharacterComponent implements OnInit, OnDestroy {
       const event = this.hub.conditionAssigned();
       if (!event) return;
       const myCardId = untracked(() => this.playerCardId());
-      if (event.playerCardId !== myCardId) return;
-      this.conditions.update(list => [...list, {
-        id: event.conditionId,
-        playerCardId: event.playerCardId,
-        conditionName: event.conditionName,
-        assignedAt: event.assignedAt,
-      }]);
+      if (event.playerCardId === myCardId) {
+        this.conditions.update(list => [...list, {
+          id: event.conditionId,
+          playerCardId: event.playerCardId,
+          conditionName: event.conditionName,
+          assignedAt: event.assignedAt,
+        }]);
+      } else {
+        this.discoveredCast.update(cast => {
+          if (!cast) return cast;
+          return {
+            ...cast,
+            partyCards: cast.partyCards.map(p =>
+              p.id === event.playerCardId
+                ? { ...p, conditions: [...p.conditions, { id: event.conditionId, playerCardId: event.playerCardId, conditionName: event.conditionName, assignedAt: event.assignedAt }] }
+                : p
+            ),
+          };
+        });
+      }
     });
 
     effect(() => {
       const event = this.hub.conditionRemoved();
       if (!event) return;
       const myCardId = untracked(() => this.playerCardId());
-      if (event.playerCardId !== myCardId) return;
-      this.conditions.update(list => list.filter(c => c.id !== event.conditionId));
+      if (event.playerCardId === myCardId) {
+        this.conditions.update(list => list.filter(c => c.id !== event.conditionId));
+      } else {
+        this.discoveredCast.update(cast => {
+          if (!cast) return cast;
+          return {
+            ...cast,
+            partyCards: cast.partyCards.map(p =>
+              p.id === event.playerCardId
+                ? { ...p, conditions: p.conditions.filter(c => c.id !== event.conditionId) }
+                : p
+            ),
+          };
+        });
+      }
     });
   }
 
@@ -360,7 +393,7 @@ export class PlayerMyCharacterComponent implements OnInit, OnDestroy {
   // ── Cast ─────────────────────────────────────────────────────────────────────
   private loadCast(id: string) {
     const playerCardId = this.playerCardId();
-    this.http.get<PlayerCard[]>(`${environment.apiUrl}/api/campaigns/${id}/player-cards/party`)
+    this.http.get<PlayerCardWithDetails[]>(`${environment.apiUrl}/api/campaigns/${id}/player-cards/party`)
       .subscribe(cards => this.discoveredCast.set({
         partyCards: cards,
         people: [],
@@ -410,6 +443,24 @@ export class PlayerMyCharacterComponent implements OnInit, OnDestroy {
       });
       this.editingPerceptionKey.set(null);
     });
+  }
+
+  // ── View Secrets modal ───────────────────────────────────────────────────────
+  viewSecrets(member: PlayerCardWithDetails) {
+    this.viewingSecretsFor.set(member);
+    this.secretsLoading.set(true);
+    const id = this.campaignId();
+    this.http.get<PlayerCardSecret[]>(
+      `${environment.apiUrl}/api/campaigns/${id}/player-cards/${member.id}/secrets/shared`
+    ).subscribe({
+      next: s => { this.memberSecrets.set(s); this.secretsLoading.set(false); },
+      error: () => this.secretsLoading.set(false),
+    });
+  }
+
+  closeSecretsModal() {
+    this.viewingSecretsFor.set(null);
+    this.memberSecrets.set([]);
   }
 
   // ── Navigation ───────────────────────────────────────────────────────────────

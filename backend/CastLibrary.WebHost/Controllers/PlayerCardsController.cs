@@ -19,6 +19,7 @@ public class PlayerCardsController(
     IGetPlayerMemoriesQueryHandler getPlayerMemories,
     IGetPlayerTraitsQueryHandler getPlayerTraits,
     IGetPlayerSecretsQueryHandler getPlayerSecrets,
+    IGetSharedPlayerSecretsQueryHandler getSharedPlayerSecrets,
     IGetPlayerCastPerceptionsQueryHandler getPlayerCastPerceptions,
     IGetCastInstancePerceptionsQueryHandler getCastInstancePerceptions,
     IGetDiscoveredCastQueryHandler getDiscoveredCast,
@@ -104,6 +105,13 @@ public class PlayerCardsController(
     public async Task<IActionResult> GetSecrets(Guid playerCardId)
     {
         var secrets = await getPlayerSecrets.HandleAsync(playerCardId);
+        return Ok(secrets.Select(mapper.ToResponse));
+    }
+
+    [HttpGet("{playerCardId}/secrets/shared")]
+    public async Task<IActionResult> GetSharedSecrets(Guid playerCardId)
+    {
+        var secrets = await getSharedPlayerSecrets.HandleAsync(playerCardId);
         return Ok(secrets.Select(mapper.ToResponse));
     }
 
@@ -266,8 +274,20 @@ public class PlayerCardsController(
         var secret = await shareSecret.HandleAsync(new ShareSecretCommand(playerCardId, secretId, sharedBy));
         if (secret is null) return NotFound();
 
+        var cards = await getAllPlayerCards.HandleAsync(campaignId);
+        var card = cards.FirstOrDefault(c => c.Id == playerCardId);
+
         await hub.Clients.Group(campaignId.ToString())
-            .SendAsync("SecretShared", new { playerCardId, secretId, sharedBy });
+            .SendAsync("SecretShared", new
+            {
+                playerCardId,
+                secretId,
+                sharedBy,
+                secretContent   = secret.Content,
+                playerName      = card?.Name ?? string.Empty,
+                playerImageUrl  = card?.ImageUrl ?? string.Empty,
+                playerRaceClass = card is not null ? $"{card.Race} · {card.Class}" : string.Empty,
+            });
 
         return Ok(mapper.ToResponse(secret));
     }
