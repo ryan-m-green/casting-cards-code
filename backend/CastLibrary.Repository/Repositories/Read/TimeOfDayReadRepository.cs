@@ -29,7 +29,7 @@ public class TimeOfDayReadRepository(
         using var conn = CreateConnection();
 
         var tod = await conn.QueryFirstOrDefaultAsync<dynamic>(
-            @"SELECT id, campaign_id, day_length_hours, cursor_position_percent
+            @"SELECT id, campaign_id, day_length_hours, cursor_position_percent, days_passed
               FROM campaign_time_of_day
               WHERE campaign_id = @CampaignId",
             @params);
@@ -55,6 +55,7 @@ public class TimeOfDayReadRepository(
             CampaignId            = tod.campaign_id,
             DayLengthHours        = tod.day_length_hours,
             CursorPositionPercent = tod.cursor_position_percent,
+            DaysPassed            = (int)tod.days_passed,
             Slices = slices.Select(s => new TimeOfDaySliceDomain
             {
                 Id            = s.id,

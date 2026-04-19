@@ -40,6 +40,7 @@ export class TimeOfDayBarComponent implements OnInit, OnChanges, OnDestroy {
 
   tod             = signal<TimeOfDay | null>(null);
   cursorPercent   = signal(0);
+  daysPassed      = signal(0);
   isDragging      = signal(false);
   isShimmering    = signal(false);
   activeSliceId   = signal<string | null>(null);
@@ -104,6 +105,13 @@ export class TimeOfDayBarComponent implements OnInit, OnChanges, OnDestroy {
       const updated = this.hub.timeOfDayUpdated();
       if (!updated || updated.campaignId !== this.campaignId) return;
       this.loadFromTod(updated);
+    });
+
+    // React to day advanced (all users)
+    effect(() => {
+      const event = this.hub.dayAdvanced();
+      if (!event || event.campaignId !== this.campaignId) return;
+      this.daysPassed.set(event.daysPassed);
     });
   }
 
@@ -208,6 +216,14 @@ export class TimeOfDayBarComponent implements OnInit, OnChanges, OnDestroy {
     if (!this.isDragging()) return;
     this.isDragging.set(false);
     this.broadcastCursorPosition();
+  }
+
+  onAdvanceDay() {
+    if (!this.isDm) return;
+    this.http.patch(
+      `${environment.apiUrl}/api/campaigns/${this.campaignId}/time-of-day/advance-day`,
+      {}
+    ).subscribe();
   }
 
   private broadcastCursorPosition() {
@@ -332,6 +348,7 @@ export class TimeOfDayBarComponent implements OnInit, OnChanges, OnDestroy {
   private loadFromTod(tod: TimeOfDay) {
     this.tod.set(tod);
     this.cursorPercent.set(tod.cursorPositionPercent);
+    this.daysPassed.set(tod.daysPassed ?? 0);
     const playerMap: Record<string, string> = {};
     const dmMap: Record<string, string> = {};
     tod.slices.forEach(s => {

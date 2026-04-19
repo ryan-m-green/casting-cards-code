@@ -14,6 +14,7 @@ import {
   TimeCursorMovedEvent,
   PlayerNotesUpdatedEvent,
   DmNotesUpdatedEvent,
+  DayAdvancedEvent,
   TimeOfDay,
 } from '../../shared/models/time-of-day.model';
 import { GoldAwardedEvent, ConditionRemovedEvent, ConditionAssignedEvent } from '../../shared/models/player-card.model';
@@ -38,6 +39,7 @@ export class CampaignHubService {
   readonly playerNotesUpdated        = signal<PlayerNotesUpdatedEvent | null>(null);
   readonly dmNotesUpdated            = signal<DmNotesUpdatedEvent | null>(null);
   readonly timeOfDayUpdated          = signal<TimeOfDay | null>(null);
+  readonly dayAdvanced               = signal<DayAdvancedEvent | null>(null);
   readonly goldAwarded               = signal<GoldAwardedEvent | null>(null);
   readonly conditionRemoved          = signal<ConditionRemovedEvent | null>(null);
   readonly conditionAssigned         = signal<ConditionAssignedEvent | null>(null);
@@ -92,6 +94,10 @@ export class CampaignHubService {
 
     this.connection.on('TimeOfDayUpdated', (tod: TimeOfDay) => {
       this.timeOfDayUpdated.set(tod);
+    });
+
+    this.connection.on('DayAdvanced', (event: DayAdvancedEvent) => {
+      this.dayAdvanced.set(event);
     });
 
     this.connection.on('GoldAwarded', (event: GoldAwardedEvent) => {

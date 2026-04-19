@@ -46,9 +46,9 @@
 
         <div class="tab-header">
           <span class="tab-section-title">Chronicle</span>
-          <button class="add-btn" (click)="showAddMemory.set(!showAddMemory())">
-            {{ showAddMemory() ? '✕ Cancel' : '+ Add Memory' }}
-          </button>
+          @if (!showAddMemory()) {
+            <button class="add-btn" (click)="showAddMemory.set(true)">+ Add Memory</button>
+          }
         </div>
 
         @if (!showAddMemory()) {
@@ -87,7 +87,10 @@
               <label class="add-label">Detail</label>
               <textarea class="add-textarea" [value]="newMemoryDetail" (input)="onMemoryDetailInput($any($event.target).value)" placeholder="Describe it…" rows="3"></textarea>
             </div>
-            <button class="save-btn" (click)="addMemory()">Save Memory</button>
+            <div class="add-form-actions">
+              <button class="campaign-secondary-btn" (click)="showAddMemory.set(false)">Cancel</button>
+              <button class="campaign-primary-btn" (click)="addMemory()">Save Memory</button>
+            </div>
           </div>
         }
 
@@ -191,9 +194,9 @@
 
         <div class="tab-header">
           <span class="tab-section-title">Motivation</span>
-          <button class="add-btn" (click)="showAddTrait.set(!showAddTrait())">
-            {{ showAddTrait() ? '✕ Cancel' : '+ Add' }}
-          </button>
+          @if (!showAddTrait()) {
+            <button class="add-btn" (click)="showAddTrait.set(true)">+ Add</button>
+          }
         </div>
 
         @if (showAddTrait()) {
@@ -212,7 +215,10 @@
               <label class="add-label">Content *</label>
               <input class="add-input" type="text" [ngModel]="newTraitContent()" (ngModelChange)="newTraitContent.set($event)" placeholder="Describe it…" />
             </div>
-            <button class="save-btn" (click)="addTrait()">Save</button>
+            <div class="add-form-actions">
+              <button class="campaign-secondary-btn" (click)="showAddTrait.set(false)">Cancel</button>
+              <button class="campaign-primary-btn" (click)="addTrait()">Save</button>
+            </div>
           </div>
         }
 
@@ -360,7 +366,9 @@
           }
         </ol>
       }
-      <button class="secrets-modal-close" (click)="closeSecretsModal()">Close</button>
+      <div class="secrets-modal-footer">
+        <button class="campaign-secondary-btn" (click)="closeSecretsModal()">Close</button>
+      </div>
     </div>
   </div>
 }

@@ -361,6 +361,64 @@ textarea.fi {
   &.error   { color: v.$color-dm-text; }
 }
 
+// ─── Campaign Buttons (dark-theme primary / secondary) ───────────────────────
+.campaign-primary-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: v.$spacing-xs;
+  padding: 4px 12px;
+  background: rgb(35, 140, 70);
+  border: 1px solid rgba(70, 190, 110, .6);
+  border-radius: 4px;
+  font-family: v.$font-header;
+  font-size: 8px;
+  font-weight: bolder;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: rgb(220, 255, 235);
+  cursor: pointer;
+  transition: background 0.18s ease, border-color 0.18s ease, color 0.18s ease;
+
+  &:hover {
+    background: rgb(50, 165, 85);
+    border-color: rgb(90, 210, 130);
+    color: rgb(235, 255, 245);
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
+
+.campaign-secondary-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: v.$spacing-xs;
+  padding: 4px 12px;
+  background: none;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  border-radius: 4px;
+  font-family: v.$font-header;
+  font-size: 8px;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: rgba(200, 225, 235, 0.75);
+  cursor: pointer;
+  transition: border-color 0.18s ease, color 0.18s ease;
+
+  &:hover {
+    border-color: rgba(255, 255, 255, 0.65);
+    color: rgba(200, 225, 235, 0.95);
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
+
 // ─── Buttons ─────────────────────────────────────────────────────────────────
 .btn-primary {
   display: inline-flex;

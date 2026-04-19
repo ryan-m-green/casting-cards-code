@@ -166,3 +166,7 @@ ALTER TABLE campaign_players DROP COLUMN IF EXISTS current_gold;
 -- [010] Add player-local date to memories (sent from browser, avoids UTC midnight mismatch)
 ALTER TABLE player_card_memories
     ADD COLUMN IF NOT EXISTS memory_date DATE NOT NULL DEFAULT CURRENT_DATE;
+
+-- [011] Campaign Day Counter — track how many in-game days have passed
+ALTER TABLE campaign_time_of_day
+    ADD COLUMN IF NOT EXISTS days_passed INT NOT NULL DEFAULT 0;

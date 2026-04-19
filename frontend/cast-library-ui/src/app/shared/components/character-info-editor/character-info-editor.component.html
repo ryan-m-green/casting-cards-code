@@ -86,8 +86,8 @@
       }
 
       <div class="modal-footer">
-        <button class="btn-ghost" (click)="close()" [disabled]="saving()">Cancel</button>
-        <button class="btn-primary" (click)="save()" [disabled]="saving()">
+        <button class="campaign-secondary-btn" (click)="close()" [disabled]="saving()">Cancel</button>
+        <button class="campaign-primary-btn" (click)="save()" [disabled]="saving()">
           @if (saving()) { Saving… } @else { Save }
         </button>
       </div>

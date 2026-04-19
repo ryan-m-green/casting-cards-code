@@ -18,6 +18,7 @@ public class TimeOfDayController(
     IUpdateCursorPositionCommandHandler updateCursorCommand,
     IUpdateSlicePlayerNotesCommandHandler updatePlayerNotesCommand,
     IUpdateSliceDmNotesCommandHandler updateDmNotesCommand,
+    IAdvanceDayCommandHandler advanceDayCommand,
     IHubContext<CampaignHub> hubContext) : ControllerBase
 {
     [HttpGet]
@@ -63,6 +64,20 @@ public class TimeOfDayController(
         return NoContent();
     }
 
+    [HttpPatch("advance-day")]
+    public async Task<IActionResult> AdvanceDay(Guid campaignId)
+    {
+        var daysPassed = await advanceDayCommand.HandleAsync(new AdvanceDayCommand(campaignId));
+
+        await hubContext.Clients.Group(campaignId.ToString())
+            .SendAsync("DayAdvanced", new { campaignId, daysPassed });
+
+        await hubContext.Clients.Group(campaignId.ToString())
+            .SendAsync("TimeCursorMoved", new { campaignId, positionPercent = 0 });
+
+        return NoContent();
+    }
+
     [HttpPatch("slices/{sliceId}/player-notes")]
     public async Task<IActionResult> UpdatePlayerNotes(Guid campaignId, Guid sliceId,
         [FromBody] UpdateSlicePlayerNotesRequest request)
@@ -102,6 +117,7 @@ public class TimeOfDayController(
             CampaignId            = tod.CampaignId,
             DayLengthHours        = tod.DayLengthHours,
             CursorPositionPercent = tod.CursorPositionPercent,
+            DaysPassed            = tod.DaysPassed,
             Slices = tod.Slices.Select(s =>
             {
                 var start = total > 0 ? running / total * 100 : 0;

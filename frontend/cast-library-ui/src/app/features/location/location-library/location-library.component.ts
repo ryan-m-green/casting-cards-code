@@ -5,13 +5,13 @@ import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../../environments/environment';
 import { Location } from '../../../shared/models/location.model';
-import { CardFlipComponent } from '../../../shared/components/card-flip/card-flip.component';
+import { LocationCardComponent } from '../../../shared/components/location-card/location-card.component';
 import { DmNavComponent } from '../../../shared/components/dm-nav/dm-nav.component';
 
 @Component({
   selector: 'app-location-library',
   standalone: true,
-  imports: [CommonModule, FormsModule, CardFlipComponent, RouterLink, DmNavComponent],
+  imports: [CommonModule, FormsModule, LocationCardComponent, RouterLink, DmNavComponent],
   templateUrl: './location-library.component.html',
   styleUrl: './location-library.component.scss'
 })

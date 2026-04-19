@@ -6,6 +6,7 @@ public class TimeOfDayDomain
     public Guid CampaignId { get; set; }
     public decimal DayLengthHours { get; set; }
     public decimal CursorPositionPercent { get; set; }
+    public int DaysPassed { get; set; }
     public List<TimeOfDaySliceDomain> Slices { get; set; } = [];
 }
 

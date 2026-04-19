@@ -11,12 +11,10 @@ namespace CastLibrary.WebHost.Mappers
         public async Task<ZipArchive> MapAsync(IFormFile zipFile)
         {
             await using var zipStream = zipFile.OpenReadStream();
-            using var ms = new MemoryStream();
+            var ms = new MemoryStream();
             await zipStream.CopyToAsync(ms);
             ms.Position = 0;
-            using var archive = new ZipArchive(ms, ZipArchiveMode.Read, leaveOpen: false);
-
-            return archive;
+            return new ZipArchive(ms, ZipArchiveMode.Read, leaveOpen: false);
         }
     }
 }

@@ -6,6 +6,7 @@ public class TimeOfDayResponse
     public Guid CampaignId { get; set; }
     public decimal DayLengthHours { get; set; }
     public decimal CursorPositionPercent { get; set; }
+    public int DaysPassed { get; set; }
     public List<TimeOfDaySliceResponse> Slices { get; set; } = [];
 }
 

@@ -71,7 +71,7 @@ export class TimeOfDayEditorComponent implements OnInit, OnDestroy {
         dmNotes: d.dmNotes, playerNotes: d.playerNotes,
       };
     });
-    return { id: '', campaignId: this.campaignId, dayLengthHours: day, cursorPositionPercent: 0, slices };
+    return { id: '', campaignId: this.campaignId, dayLengthHours: day, cursorPositionPercent: 0, daysPassed: 0, slices };
   });
 
   ngOnInit() {

@@ -18,6 +18,72 @@ $spring-easing:       cubic-bezier(0.22, 1, 0.36, 1);
   user-select: none;
 }
 
+// ── Day counter label ────────────────────────────────────────────────────────
+.tod-day-counter {
+  text-align: center;
+  font-family: v.$font-header;
+  font-size: 0.72rem;
+  letter-spacing: 0.10em;
+  color: rgba(105, 72, 18, 0.75);
+  margin-bottom: 6px;
+
+  .tod-wrapper--dark & {
+    color: rgba(200, 175, 255, 0.65);
+  }
+}
+
+// ── Bar row (bar + Next Day button side by side) ─────────────────────────────
+.tod-bar-row {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+}
+
+// ── Next Day button ───────────────────────────────────────────────────────────
+.tod-next-day {
+  flex-shrink: 0;
+  height: 48px;
+  padding: 0 14px;
+  border-radius: 8px;
+  border: 1px solid rgba(110, 75, 22, 0.35);
+  background: rgba(248, 238, 210, 0.70);
+  color: rgba(72, 44, 8, 0.88);
+  font-family: v.$font-header;
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+
+  &:hover,
+  &:focus-visible {
+    background: rgba(212, 168, 67, 0.22);
+    border-color: rgba(110, 75, 22, 0.60);
+    color: rgba(52, 28, 4, 0.95);
+  }
+
+  &:focus-visible {
+    outline: 2px solid rgba(212, 168, 67, 0.70);
+    outline-offset: 2px;
+  }
+
+  .tod-wrapper--dark & {
+    background: rgba(40, 28, 65, 0.80);
+    border-color: rgba(150, 120, 210, 0.35);
+    color: rgba(200, 175, 255, 0.80);
+
+    &:hover,
+    &:focus-visible {
+      background: rgba(150, 120, 210, 0.18);
+      border-color: rgba(150, 120, 210, 0.60);
+      color: rgba(220, 200, 255, 0.95);
+    }
+  }
+}
+
 // ── Dark theme (campaign void canvas) ────────────────────────────────────────
 .tod-wrapper--dark {
   .tod-notes {
@@ -81,6 +147,7 @@ $spring-easing:       cubic-bezier(0.22, 1, 0.36, 1);
 .tod-bar {
   position: relative;
   display: flex;
+  flex: 1;
   height: 48px;
   border-radius: 8px;
   overflow: visible;

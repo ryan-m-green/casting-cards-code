@@ -4,13 +4,13 @@ import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../../environments/environment';
 import { Sublocation } from '../../../shared/models/sublocation.model';
-import { CardFlipComponent } from '../../../shared/components/card-flip/card-flip.component';
+import { SublocationCardComponent } from '../../../shared/components/sublocation-card/sublocation-card.component';
 import { DmNavComponent } from '../../../shared/components/dm-nav/dm-nav.component';
 
 @Component({
   selector: 'app-sublocation-library',
   standalone: true,
-  imports: [CommonModule, RouterLink, CardFlipComponent, DmNavComponent],
+  imports: [CommonModule, RouterLink, SublocationCardComponent, DmNavComponent],
   templateUrl: './sublocation-library.component.html',
   styleUrl: './sublocation-library.component.scss'
 })

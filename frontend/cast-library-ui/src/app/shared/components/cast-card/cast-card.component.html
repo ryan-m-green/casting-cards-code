@@ -1,0 +1,159 @@
+<div class="cast-card"
+     [class.cast-card--flipped]="flipped"
+     [class.cast-card--no-flip]="!flippable"
+     [style.transform]="tiltTransform"
+     (click)="toggleFlip($event)">
+  <div class="cast-card__inner">
+
+    <!-- ── BACK FACE (first in DOM so front paints on top when unflipped) ── -->
+    <div class="cast-card__face cast-card__face--back">
+      <div class="cast-frame">
+        <div class="cast-back-inner">
+          <div class="cast-back-border"></div>
+          <div class="cast-back-border2"></div>
+
+          <div class="cast-back-emblem">
+            <svg width="44" height="44" viewBox="0 0 80 80">
+              <circle cx="40" cy="40" r="36" fill="none" stroke="#e8c96a" stroke-width="1.2" opacity=".55"/>
+              <circle cx="40" cy="40" r="29" fill="none" stroke="#e8c96a" stroke-width=".5" opacity=".35"/>
+              <polygon points="40,4 43,11 40,8 37,11" fill="#e8c96a" opacity=".65"/>
+              <polygon points="40,76 43,69 40,72 37,69" fill="#e8c96a" opacity=".65"/>
+              <polygon points="4,40 11,37 8,40 11,43" fill="#e8c96a" opacity=".65"/>
+              <polygon points="76,40 69,37 72,40 69,43" fill="#e8c96a" opacity=".65"/>
+              <path d="M40 20L50 26L50 40Q50 52 40 58Q30 52 30 40L30 26Z" fill="#1e100a" stroke="#e8c96a" stroke-width="1.1" opacity=".9"/>
+              <text x="40" y="44" text-anchor="middle" font-family="'Cinzel Decorative',serif" font-size="14" fill="#e8c96a" opacity=".9">C</text>
+            </svg>
+          </div>
+
+          <div class="cast-back-name">{{ cast.name }}</div>
+          <div class="cast-back-divider"></div>
+
+          <div class="cast-back-stats">
+            @for (stat of stats; track stat.k) {
+              <div class="cast-stat-row">
+                <span class="cast-stat-key">{{ stat.k }}</span>
+                <span class="cast-stat-val">{{ stat.v }}</span>
+              </div>
+            }
+          </div>
+
+          @if (editable) {
+            <div class="cast-back-actions">
+              <button class="cast-btn cast-btn--gold" (click)="onEditClick($event)">✦ Edit</button>
+              <button class="cast-btn cast-btn--red" (click)="onDeleteClick($event)">✦ Delete</button>
+            </div>
+          }
+        </div>
+      </div>
+    </div>
+
+    <!-- ── FRONT FACE ── -->
+    <div class="cast-card__face cast-card__face--front">
+      <div class="cast-frame">
+        <div class="cast-inner">
+
+          <!-- corner flourishes -->
+          <div class="cast-corner cast-corner--tl">
+            <svg viewBox="0 0 20 20" fill="none" width="12" height="12">
+              <path d="M2 18L2 2L18 2" stroke="#c9a84c" stroke-width="1.5" stroke-linecap="round"/>
+              <path d="M2 10L6 10" stroke="#c9a84c" stroke-width="1" stroke-linecap="round"/>
+              <path d="M10 2L10 6" stroke="#c9a84c" stroke-width="1" stroke-linecap="round"/>
+              <rect x="8" y="8" width="4" height="4" fill="#c9a84c" transform="rotate(45 10 10)" opacity="0.7"/>
+            </svg>
+          </div>
+          <div class="cast-corner cast-corner--tr">
+            <svg viewBox="0 0 20 20" fill="none" width="12" height="12">
+              <path d="M2 18L2 2L18 2" stroke="#c9a84c" stroke-width="1.5" stroke-linecap="round"/>
+              <path d="M2 10L6 10" stroke="#c9a84c" stroke-width="1" stroke-linecap="round"/>
+              <path d="M10 2L10 6" stroke="#c9a84c" stroke-width="1" stroke-linecap="round"/>
+              <rect x="8" y="8" width="4" height="4" fill="#c9a84c" transform="rotate(45 10 10)" opacity="0.7"/>
+            </svg>
+          </div>
+          <div class="cast-corner cast-corner--bl">
+            <svg viewBox="0 0 20 20" fill="none" width="12" height="12">
+              <path d="M2 18L2 2L18 2" stroke="#c9a84c" stroke-width="1.5" stroke-linecap="round"/>
+              <path d="M2 10L6 10" stroke="#c9a84c" stroke-width="1" stroke-linecap="round"/>
+              <path d="M10 2L10 6" stroke="#c9a84c" stroke-width="1" stroke-linecap="round"/>
+              <rect x="8" y="8" width="4" height="4" fill="#c9a84c" transform="rotate(45 10 10)" opacity="0.7"/>
+            </svg>
+          </div>
+          <div class="cast-corner cast-corner--br">
+            <svg viewBox="0 0 20 20" fill="none" width="12" height="12">
+              <path d="M2 18L2 2L18 2" stroke="#c9a84c" stroke-width="1.5" stroke-linecap="round"/>
+              <path d="M2 10L6 10" stroke="#c9a84c" stroke-width="1" stroke-linecap="round"/>
+              <path d="M10 2L10 6" stroke="#c9a84c" stroke-width="1" stroke-linecap="round"/>
+              <rect x="8" y="8" width="4" height="4" fill="#c9a84c" transform="rotate(45 10 10)" opacity="0.7"/>
+            </svg>
+          </div>
+
+          <!-- banner -->
+          <div class="cast-banner">
+            <div class="cast-name">{{ cast.name }}</div>
+            <div class="cast-subtitle">{{ cast.role }} · {{ cast.race }}</div>
+          </div>
+
+          <!-- portrait -->
+          <div class="cast-portrait">
+            @if (showStars) {
+              <div class="cast-stars" (click)="$event.stopPropagation()">
+                @for (n of starNums; track n) {
+                  <svg width="16" height="16" viewBox="0 0 24 24"
+                       (click)="onStarClick($event, n)"
+                       (mouseenter)="starHover.set(n)"
+                       (mouseleave)="starHover.set(null)">
+                    <polygon
+                      points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"
+                      [attr.fill]="starFilled(n) ? '#f8d840' : 'none'"
+                      [attr.stroke]="starFilled(n) ? '#c9a000' : '#c9a84c'"
+                      stroke-width="1.5"
+                      stroke-linejoin="round"
+                    />
+                  </svg>
+                }
+              </div>
+            }
+            @if (cast.imageUrl) {
+              <img [src]="cast.imageUrl" alt="" class="cast-portrait-img" />
+            } @else {
+              <div class="cast-portrait-placeholder">
+                <svg width="36" height="50" viewBox="0 0 58 80" opacity=".2">
+                  <ellipse cx="29" cy="17" rx="13" ry="14" fill="#3d2a10"/>
+                  <path d="M8 80Q8 52 29 44Q50 52 50 80" fill="#3d2a10"/>
+                </svg>
+              </div>
+            }
+          </div>
+
+          <!-- flavor -->
+          <div class="cast-flavor">
+            <div class="cast-flavor-text">{{ cast.publicDescription ? '"' + cast.publicDescription + '"' : '—' }}</div>
+          </div>
+
+          <!-- bottom strip -->
+          <div class="cast-strip"
+               [class.cast-strip--editable]="editable"
+               (click)="onEditClick($event)">
+            <div class="cast-strip-left">
+              <div class="cast-pip-row">
+                <div class="cast-pip"></div>
+                <div class="cast-pip"></div>
+                <div class="cast-pip"></div>
+              </div>
+              @if (editable) {
+                <button class="cast-edit-icon">✎</button>
+              }
+            </div>
+            <span class="cast-strip-label">Character</span>
+            <div class="cast-pip-row">
+              <div class="cast-pip"></div>
+              <div class="cast-pip"></div>
+              <div class="cast-pip"></div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>

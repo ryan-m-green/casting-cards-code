@@ -121,6 +121,9 @@ $location-blue: #9ab0b8;
 
 .location-card-left {
   flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
 }
 
 .location-detail-panel {

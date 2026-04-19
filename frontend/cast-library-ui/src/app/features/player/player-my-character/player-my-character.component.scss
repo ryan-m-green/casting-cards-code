@@ -273,6 +273,12 @@ $memory-search-accent: #9ab0b8;
   &--sm { flex: 0 0 100px; }
 }
 
+.add-form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
 .add-label {
   font-family: v.$font-header;
   font-size: 8px;
@@ -506,6 +512,11 @@ $memory-search-accent: #9ab0b8;
   font-size: 13px;
   color: rgb(255, 255, 255);
   font-style: italic;
+}
+
+.secrets-modal-footer {
+  display: flex;
+  justify-content: flex-end;
 }
 
 .secrets-modal-close {

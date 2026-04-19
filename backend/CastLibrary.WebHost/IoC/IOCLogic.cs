@@ -106,6 +106,7 @@ namespace CastLibrary.WebHost.IoC
 
             services.AddScoped<IUpsertTimeOfDayCommandHandler, UpsertTimeOfDayCommandHandler>();
             services.AddScoped<IUpdateCursorPositionCommandHandler, UpdateCursorPositionCommandHandler>();
+            services.AddScoped<IAdvanceDayCommandHandler, AdvanceDayCommandHandler>();
             services.AddScoped<IUpdateSlicePlayerNotesCommandHandler, UpdateSlicePlayerNotesCommandHandler>();
             services.AddScoped<IUpdateSliceDmNotesCommandHandler, UpdateSliceDmNotesCommandHandler>();
 

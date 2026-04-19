@@ -8,49 +8,11 @@
 
   <div class="card-grid">
     @for (subloc of sublocations(); track subloc.id) {
-      <div class="pc-card pc-card-sublocation">
-        <app-card-flip>
-          <div slot="front" class="card-slot-front">
-            <button class="card-edit-btn"
-                    (click)="edit(subloc.id);$event.stopPropagation()">Edit</button>
-            <div class="card-front-header">
-              <div class="card-name">{{ subloc.name }}</div>
-              <div class="card-descriptor">{{ subloc.shopItems?.length ?? 0 }} shop items</div>
-            </div>
-            <div class="dv dv-card"></div>
-            <div class="card-image-area">
-              @if (subloc.imageUrl) {
-                <img [src]="subloc.imageUrl" alt="" class="card-img-fill" />
-              } @else {
-                <div class="card-placeholder">
-                  <span class="card-initial">{{ subloc.name?.[0]?.toUpperCase() }}</span>
-                </div>
-              }
-              @if (subloc.description) {
-                <div class="card-desc-overlay">
-                  <p class="card-desc-text">{{ subloc.description }}</p>
-                </div>
-              }
-            </div>
-          </div>
-          <div slot="back" class="card-slot-back">
-            <div class="card-back-content">
-              <div class="card-name card-back-name">{{ subloc.name }}</div>
-              <div class="dv dv-mb"></div>
-              <div class="fi-label fi-label-strong">Shop Items</div>
-              @for (item of subloc.shopItems; track item.id) {
-                <div class="wr shop-item-row">
-                  <span class="wbl">{{ item.name }}</span>
-                  <span class="pnum">{{ item.price }}</span>
-                </div>
-              }
-              @empty { <p class="wbd shop-item-empty">No shop items</p> }
-            </div>
-            <button class="card-delete-btn"
-                    (click)="confirmDelete(subloc.id);$event.stopPropagation()">Delete</button>
-          </div>
-        </app-card-flip>
-      </div>
+      <app-sublocation-card
+        [sublocation]="subloc"
+        (editClick)="edit(subloc.id)"
+        (deleteClick)="confirmDelete(subloc.id)">
+      </app-sublocation-card>
     }
     @empty {
       <p class="wbd empty-state-pad">No sublocations found.</p>

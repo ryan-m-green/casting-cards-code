@@ -3,6 +3,7 @@ export interface TimeOfDay {
   campaignId: string;
   dayLengthHours: number;
   cursorPositionPercent: number;
+  daysPassed: number;
   slices: TimeOfDaySlice[];
 }
 
@@ -32,4 +33,9 @@ export interface DmNotesUpdatedEvent {
   campaignId: string;
   sliceId: string;
   dmNotes: string;
+}
+
+export interface DayAdvancedEvent {
+  campaignId: string;
+  daysPassed: number;
 }

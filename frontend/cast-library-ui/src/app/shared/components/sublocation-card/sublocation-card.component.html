@@ -1,0 +1,149 @@
+<div class="sub-card"
+     [class.sub-card--flipped]="flipped"
+     [class.sub-card--no-flip]="!flippable"
+     [style.transform]="tiltTransform"
+     (click)="toggleFlip($event)">
+  <div class="sub-card__inner">
+
+    <!-- ── BACK FACE ── -->
+    <div class="sub-card__face sub-card__face--back">
+      <div class="sub-frame">
+        <div class="sub-back-inner">
+          <div class="sub-back-border"></div>
+          <div class="sub-back-border2"></div>
+
+          <div class="sub-back-emblem">
+            <svg width="44" height="44" viewBox="0 0 80 80">
+              <circle cx="40" cy="40" r="36" fill="none" stroke="#c0d4f0" stroke-width="1.2" opacity=".55"/>
+              <circle cx="40" cy="40" r="29" fill="none" stroke="#c0d4f0" stroke-width=".5" opacity=".35"/>
+              <polygon points="40,4 43,11 40,8 37,11" fill="#c0d4f0" opacity=".65"/>
+              <polygon points="40,76 43,69 40,72 37,69" fill="#c0d4f0" opacity=".65"/>
+              <polygon points="4,40 11,37 8,40 11,43" fill="#c0d4f0" opacity=".65"/>
+              <polygon points="76,40 69,37 72,40 69,43" fill="#c0d4f0" opacity=".65"/>
+              <path d="M40 20L50 26L50 40Q50 52 40 58Q30 52 30 40L30 26Z" fill="#0a1018" stroke="#c0d4f0" stroke-width="1.1" opacity=".9"/>
+              <text x="40" y="44" text-anchor="middle" font-family="'Cinzel Decorative',serif" font-size="14" fill="#c0d4f0" opacity=".9">S</text>
+            </svg>
+          </div>
+
+          <div class="sub-back-name">{{ sublocation.name }}</div>
+          <div class="sub-back-divider"></div>
+
+          <div class="sub-back-stats">
+            <div class="sub-stat-row">
+              <span class="sub-stat-key">Shop Items</span>
+            </div>
+            @for (item of sublocation.shopItems; track item.id) {
+              <div class="sub-shop-item">
+                <span class="sub-shop-item-name">{{ item.name }}</span>
+                <span class="sub-shop-item-price">{{ item.price }}</span>
+              </div>
+            }
+            @empty {
+              <span class="sub-stat-val sub-shop-empty">No shop items</span>
+            }
+          </div>
+
+          @if (editable) {
+            <div class="sub-back-actions">
+              <button class="sub-btn sub-btn--gold" (click)="onEditClick($event)">✦ Edit</button>
+              <button class="sub-btn sub-btn--red" (click)="onDeleteClick($event)">✦ Delete</button>
+            </div>
+          }
+        </div>
+      </div>
+    </div>
+
+    <!-- ── FRONT FACE ── -->
+    <div class="sub-card__face sub-card__face--front">
+      <div class="sub-frame">
+        <div class="sub-inner">
+
+          <div class="sub-corner sub-corner--tl">
+            <svg viewBox="0 0 20 20" fill="none" width="12" height="12">
+              <path d="M2 18L2 2L18 2" stroke="#7090c0" stroke-width="1.5" stroke-linecap="round"/>
+              <path d="M2 10L6 10" stroke="#7090c0" stroke-width="1" stroke-linecap="round"/>
+              <path d="M10 2L10 6" stroke="#7090c0" stroke-width="1" stroke-linecap="round"/>
+              <rect x="8" y="8" width="4" height="4" fill="#7090c0" transform="rotate(45 10 10)" opacity="0.7"/>
+            </svg>
+          </div>
+          <div class="sub-corner sub-corner--tr">
+            <svg viewBox="0 0 20 20" fill="none" width="12" height="12">
+              <path d="M2 18L2 2L18 2" stroke="#7090c0" stroke-width="1.5" stroke-linecap="round"/>
+              <path d="M2 10L6 10" stroke="#7090c0" stroke-width="1" stroke-linecap="round"/>
+              <path d="M10 2L10 6" stroke="#7090c0" stroke-width="1" stroke-linecap="round"/>
+              <rect x="8" y="8" width="4" height="4" fill="#7090c0" transform="rotate(45 10 10)" opacity="0.7"/>
+            </svg>
+          </div>
+          <div class="sub-corner sub-corner--bl">
+            <svg viewBox="0 0 20 20" fill="none" width="12" height="12">
+              <path d="M2 18L2 2L18 2" stroke="#7090c0" stroke-width="1.5" stroke-linecap="round"/>
+              <path d="M2 10L6 10" stroke="#7090c0" stroke-width="1" stroke-linecap="round"/>
+              <path d="M10 2L10 6" stroke="#7090c0" stroke-width="1" stroke-linecap="round"/>
+              <rect x="8" y="8" width="4" height="4" fill="#7090c0" transform="rotate(45 10 10)" opacity="0.7"/>
+            </svg>
+          </div>
+          <div class="sub-corner sub-corner--br">
+            <svg viewBox="0 0 20 20" fill="none" width="12" height="12">
+              <path d="M2 18L2 2L18 2" stroke="#7090c0" stroke-width="1.5" stroke-linecap="round"/>
+              <path d="M2 10L6 10" stroke="#7090c0" stroke-width="1" stroke-linecap="round"/>
+              <path d="M10 2L10 6" stroke="#7090c0" stroke-width="1" stroke-linecap="round"/>
+              <rect x="8" y="8" width="4" height="4" fill="#7090c0" transform="rotate(45 10 10)" opacity="0.7"/>
+            </svg>
+          </div>
+
+          <!-- banner -->
+          <div class="sub-banner">
+            <div class="sub-name">{{ sublocation.name }}</div>
+            <div class="sub-subtitle">Sublocation · {{ shopItemCount }} item{{ shopItemCount === 1 ? '' : 's' }}</div>
+          </div>
+
+          <!-- portrait -->
+          <div class="sub-portrait">
+            @if (sublocation.imageUrl) {
+              <img [src]="sublocation.imageUrl" alt="" class="sub-portrait-img" />
+            } @else {
+              <div class="sub-portrait-placeholder">
+                <svg width="44" height="44" viewBox="0 0 60 60" opacity=".25">
+                  <rect x="5" y="15" width="50" height="35" rx="2" fill="#1a2a40"/>
+                  <rect x="18" y="35" width="10" height="15" fill="#1a2a40"/>
+                  <rect x="32" y="35" width="10" height="15" fill="#1a2a40"/>
+                  <path d="M5 15 L30 5 L55 15" fill="#1a2a40"/>
+                  <rect x="24" y="24" width="12" height="10" rx="1" fill="none" stroke="#1a2a40" stroke-width="1.5"/>
+                </svg>
+              </div>
+            }
+          </div>
+
+          <!-- flavor -->
+          <div class="sub-flavor">
+            <div class="sub-flavor-text">{{ sublocation.description ? '"' + sublocation.description + '"' : '—' }}</div>
+          </div>
+
+          <!-- bottom strip -->
+          <div class="sub-strip"
+               [class.sub-strip--editable]="editable"
+               (click)="onEditClick($event)">
+            <div class="sub-strip-left">
+              <div class="sub-pip-row">
+                <div class="sub-pip"></div>
+                <div class="sub-pip"></div>
+                <div class="sub-pip"></div>
+              </div>
+              @if (editable) {
+                <button class="sub-edit-icon">✎</button>
+              }
+            </div>
+            <span class="sub-strip-label">Sublocation</span>
+            <div class="sub-pip-row">
+              <div class="sub-pip"></div>
+              <div class="sub-pip"></div>
+              <div class="sub-pip"></div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>

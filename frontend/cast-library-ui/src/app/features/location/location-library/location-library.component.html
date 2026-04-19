@@ -11,49 +11,11 @@
 
   <div class="card-grid">
     @for (location of filtered(); track location.id) {
-      <div class="pc-card pc-card-location">
-        <app-card-flip>
-          <div slot="front" class="card-slot-front">
-            <button class="card-edit-btn"
-                    (click)="edit(location.id);$event.stopPropagation()">Edit</button>
-            <div class="card-front-header">
-              <div class="card-name">{{ location.name }}</div>
-              <div class="card-descriptor">{{ location.classification }}</div>
-            </div>
-            <div class="dv dv-card"></div>
-            <div class="card-image-area">
-              @if (location.imageUrl) {
-                <img [src]="location.imageUrl" alt="" class="card-img-fill" />
-              } @else {
-                <div class="card-placeholder">
-                  <span class="card-initial">{{ location.name?.[0]?.toUpperCase() }}</span>
-                </div>
-              }
-              @if (location.description) {
-                <div class="card-desc-overlay">
-                  <p class="card-desc-text">{{ location.description }}</p>
-                </div>
-              }
-            </div>
-          </div>
-          <div slot="back" class="card-slot-back">
-            <div class="card-back-content">
-              <div class="card-name card-back-name">{{ location.name }}</div>
-              <div class="dv dv-mb"></div>
-              <div class="fi-label fi-label-strong">Size</div><p class="wbd card-field-value">{{ location.size || '—' }}</p>
-              <div class="fi-label fi-label-strong">Condition</div><p class="wbd card-field-value">{{ location.condition || '—' }}</p>
-              <div class="fi-label fi-label-strong">Geography</div><p class="wbd card-field-value">{{ location.geography || '—' }}</p>
-              <div class="fi-label fi-label-strong">Architecture</div><p class="wbd card-field-value">{{ location.architecture || '—' }}</p>
-              <div class="fi-label fi-label-strong">Climate</div><p class="wbd card-field-value">{{ location.climate || '—' }}</p>
-              <div class="fi-label fi-label-strong">Religion</div><p class="wbd card-field-value">{{ location.religion || '—' }}</p>
-              <div class="fi-label fi-label-strong">Vibe</div><p class="wbd card-field-value">{{ location.vibe || '—' }}</p>
-              <div class="fi-label fi-label-strong">Languages</div><p class="wbd card-field-value">{{ location.languages || '—' }}</p>
-            </div>
-            <button class="card-delete-btn"
-                    (click)="confirmDelete(location.id);$event.stopPropagation()">Delete</button>
-          </div>
-        </app-card-flip>
-      </div>
+      <app-location-card
+        [location]="location"
+        (editClick)="edit(location.id)"
+        (deleteClick)="confirmDelete(location.id)">
+      </app-location-card>
     }
     @empty {
       <p class="wbd empty-state-pad">No locations found. Create your first location.</p>

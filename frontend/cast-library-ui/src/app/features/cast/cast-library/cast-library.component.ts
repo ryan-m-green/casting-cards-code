@@ -5,13 +5,13 @@ import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../../environments/environment';
 import { Cast } from '../../../shared/models/cast.model';
-import { CardFlipComponent } from '../../../shared/components/card-flip/card-flip.component';
+import { CastCardComponent } from '../../../shared/components/cast-card/cast-card.component';
 import { DmNavComponent } from '../../../shared/components/dm-nav/dm-nav.component';
 
 @Component({
   selector: 'app-cast-library',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterLink, CardFlipComponent, DmNavComponent],
+  imports: [CommonModule, FormsModule, RouterLink, CastCardComponent, DmNavComponent],
   templateUrl: './cast-library.component.html',
   styleUrl: './cast-library.component.scss'
 })

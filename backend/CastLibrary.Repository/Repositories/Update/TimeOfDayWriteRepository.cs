@@ -10,6 +10,7 @@ public interface ITimeOfDayWriteRepository
 {
     Task<TimeOfDayDomain> UpsertAsync(TimeOfDayDomain domain);
     Task UpdateCursorAsync(Guid campaignId, decimal positionPercent);
+    Task<int> AdvanceDayAsync(Guid campaignId);
     Task UpdateSlicePlayerNotesAsync(Guid sliceId, string playerNotes);
     Task UpdateSliceDmNotesAsync(Guid sliceId, string dmNotes);
 }
@@ -32,13 +33,13 @@ public class TimeOfDayWriteRepository(
 
         // Upsert the header row
         var tod = await conn.QueryFirstAsync<dynamic>(
-            @"INSERT INTO campaign_time_of_day (campaign_id, day_length_hours, cursor_position_percent, updated_at)
-              VALUES (@CampaignId, @DayLengthHours, @CursorPositionPercent, NOW())
+            @"INSERT INTO campaign_time_of_day (campaign_id, day_length_hours, cursor_position_percent, days_passed, updated_at)
+              VALUES (@CampaignId, @DayLengthHours, @CursorPositionPercent, 0, NOW())
               ON CONFLICT (campaign_id) DO UPDATE
                 SET day_length_hours        = EXCLUDED.day_length_hours,
                     cursor_position_percent = EXCLUDED.cursor_position_percent,
                     updated_at              = NOW()
-              RETURNING id, campaign_id, day_length_hours, cursor_position_percent",
+              RETURNING id, campaign_id, day_length_hours, cursor_position_percent, days_passed",
             new
             {
                 domain.CampaignId,
@@ -93,6 +94,7 @@ public class TimeOfDayWriteRepository(
             CampaignId            = tod.campaign_id,
             DayLengthHours        = tod.day_length_hours,
             CursorPositionPercent = tod.cursor_position_percent,
+            DaysPassed            = (int)tod.days_passed,
             Slices                = insertedSlices,
         };
     }
@@ -112,6 +114,27 @@ public class TimeOfDayWriteRepository(
             @params);
 
         logging.LogDbOperation(correlation.TraceId, spanId, "UPDATE", "campaign_time_of_day", @params, rows);
+    }
+
+    public async Task<int> AdvanceDayAsync(Guid campaignId)
+    {
+        var spanId  = correlation.NewSpan();
+        var @params = new { CampaignId = campaignId };
+
+        logging.LogDbOperation(correlation.TraceId, spanId, "UPDATE", "campaign_time_of_day", @params);
+
+        using var conn = CreateConnection();
+        var daysPassed = await conn.QueryFirstAsync<int>(
+            @"UPDATE campaign_time_of_day
+              SET days_passed             = days_passed + 1,
+                  cursor_position_percent = 0,
+                  updated_at              = NOW()
+              WHERE campaign_id = @CampaignId
+              RETURNING days_passed",
+            @params);
+
+        logging.LogDbOperation(correlation.TraceId, spanId, "UPDATE", "campaign_time_of_day", @params, 1);
+        return daysPassed;
     }
 
     public async Task UpdateSlicePlayerNotesAsync(Guid sliceId, string playerNotes)
