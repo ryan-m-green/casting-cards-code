@@ -26,39 +26,15 @@
     <!-- ── Hero card ── -->
     <div class="cast-hero">
       <div class="cast-hero-card">
-        <div class="pc-card pc-card-cast">
-          <div class="lib-card-front">
-            <div class="card-slot-front">
-              <div class="card-front-header">
-                <div class="card-name">{{ ca.name }}</div>
-                <div class="card-descriptor">{{ ca.role }}</div>
-              </div>
-              <div class="dv dv-card"></div>
-              <div class="card-image-area">
-                @if (ca.imageUrl) {
-                  <img [src]="ca.imageUrl" alt="" class="card-img-fill" />
-                } @else {
-                  <div class="card-placeholder">
-                    <span class="card-initial">{{ initial(ca.name) }}</span>
-                  </div>
-                }
-                @if (ca.publicDescription) {
-                  <div class="card-desc-overlay">
-                    <p class="card-desc-text">{{ ca.publicDescription }}</p>
-                  </div>
-                }
-              </div>
-              <button
-                class="cast-lock-btn"
-                [class.cast-lock-btn--visible]="ca.isVisibleToPlayers"
-                (click)="toggleCastVisibility()"
-                [title]="ca.isVisibleToPlayers ? 'Hide from players' : 'Reveal to players'"
-              >
-                {{ ca.isVisibleToPlayers ? '🔓' : '🔒' }}
-              </button>
-            </div>
-          </div>
-        </div>
+        <app-cast-card
+          [cast]="ca"
+          [flippable]="false"
+          [editable]="false"
+          [secrets]="isDm()"
+          [secretsRevealed]="ca.isVisibleToPlayers"
+          [campaignMode]="false"
+          (secretsClick)="toggleCastVisibility()"
+        />
       </div>
     </div>
 

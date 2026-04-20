@@ -10,6 +10,7 @@ import { CampaignDetail, CampaignInviteCode, CampaignPlayer } from '../../../sha
 import { CampaignCastInstance } from '../../../shared/models/cast.model';
 import { CampaignSublocationInstance } from '../../../shared/models/sublocation.model';
 import { CardFlipComponent } from '../../../shared/components/card-flip/card-flip.component';
+import { LocationCardComponent } from '../../../shared/components/location-card/location-card.component';
 import { CastRelationshipsTabComponent } from '../cast-relationships-tab/cast-relationships-tab.component';
 import { KeywordInputComponent } from '../../../shared/components/keyword-input/keyword-input.component';
 import { DmNavComponent } from '../../../shared/components/dm-nav/dm-nav.component';
@@ -39,7 +40,7 @@ interface LocationDraft {
 @Component({
   selector: 'app-campaign-creator',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, RouterLink, CardFlipComponent, CastRelationshipsTabComponent, KeywordInputComponent, DmNavComponent, TimeOfDayEditorComponent],
+  imports: [CommonModule, ReactiveFormsModule, RouterLink, CardFlipComponent, LocationCardComponent, CastRelationshipsTabComponent, KeywordInputComponent, DmNavComponent, TimeOfDayEditorComponent],
   templateUrl: './campaign-creator.component.html',
   styleUrl: './campaign-creator.component.scss'
 })
@@ -63,7 +64,7 @@ export class CampaignCreatorComponent implements OnInit, OnDestroy {
     });
   }
 
-  @ViewChild('mainCard')        mainCardRef!:       ElementRef<HTMLElement>;
+  @ViewChild('mainCard', { read: ElementRef }) mainCardRef!: ElementRef<HTMLElement>;
   @ViewChild('mainCardWrapper') mainCardWrapperRef!: ElementRef<HTMLElement>;
   @ViewChild('selectedStack')   selectedStackRef!:  ElementRef<HTMLElement>;
   @ViewChild('deckStack')       deckStackRef!:      ElementRef<HTMLElement>;

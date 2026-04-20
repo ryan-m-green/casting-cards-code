@@ -1,4 +1,4 @@
-import { Component, OnInit, signal, inject, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, signal, computed, inject, ViewChild, ElementRef } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormArray, Validators, FormGroup } from '@angular/forms';
@@ -9,11 +9,12 @@ import { environment } from '../../../../environments/environment';
 import { Sublocation } from '../../../shared/models/sublocation.model';
 import { SparkleService } from '../../../shared/services/sparkle.service';
 import { DmNavComponent } from '../../../shared/components/dm-nav/dm-nav.component';
+import { SublocationCardComponent } from '../../../shared/components/sublocation-card/sublocation-card.component';
 
 @Component({
   selector: 'app-sublocation-form',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, RouterLink, DmNavComponent],
+  imports: [CommonModule, ReactiveFormsModule, RouterLink, DmNavComponent, SublocationCardComponent],
   templateUrl: './sublocation-form.component.html',
   styleUrl: './sublocation-form.component.scss'
 })
@@ -30,7 +31,6 @@ export class SublocationFormComponent implements OnInit {
   saveStatus     = signal<'idle' | 'saving' | 'saved' | 'error'>('idle');
   imageUrl       = signal<string | null>(null);
   imageUploading = signal(false);
-  showImageModal = signal(false);
 
   labelText    = signal<'Saved' | 'Saving…' | 'Error'>('Saved');
   labelVisible = signal(true);
@@ -42,6 +42,26 @@ export class SublocationFormComponent implements OnInit {
 
   get shopItems() { return this.form.get('shopItems') as FormArray; }
 
+  previewSublocation = computed<Sublocation>(() => {
+    const v = this.form.value;
+    return {
+      id: this.sublocationId() ?? '',
+      locationId: '',
+      dmUserId: '',
+      name: v.name ?? '',
+      description: v.description ?? '',
+      imageUrl: this.imageUrl() ?? undefined,
+      shopItems: (v.shopItems ?? []).map((item: any, i: number) => ({
+        id: String(i),
+        name: item.name ?? '',
+        price: item.priceAmount != null ? `${item.priceAmount} ${item.priceCurrency}` : '',
+        description: item.description ?? '',
+        isScratchedOff: false,
+      })),
+      createdAt: '',
+    };
+  });
+
   ngOnInit() {
     const id = this.route.snapshot.paramMap.get('id');
     if (id) {
@@ -52,15 +72,10 @@ export class SublocationFormComponent implements OnInit {
         this.imageUrl.set(l.imageUrl ?? null);
       });
     }
-    if (this.route.snapshot.queryParamMap.get('upload') === 'true') {
-      this.showImageModal.set(true);
-    }
   }
 
-  onFileSelected(event: Event) {
-    const input = event.target as HTMLInputElement;
-    const file  = input.files?.[0];
-    if (!file || !this.sublocationId()) return;
+  onFileSelected(file: File) {
+    if (!this.sublocationId()) return;
     const previousUrl = this.imageUrl();
     const objectUrl   = URL.createObjectURL(file);
     this.imageUrl.set(objectUrl);

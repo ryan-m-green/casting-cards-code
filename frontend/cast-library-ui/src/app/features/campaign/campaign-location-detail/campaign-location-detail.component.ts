@@ -12,10 +12,13 @@ import { CampaignHubService } from '../../../core/hub/campaign-hub.service';
 import { PortalTransitionService } from '../../../core/portal-transition.service';
 import { AuthService } from '../../../core/auth/auth.service';
 import { TimeOfDayBarComponent } from '../../../shared/components/time-of-day-bar/time-of-day-bar.component';
+import { LocationCardComponent } from '../../../shared/components/location-card/location-card.component';
+import { SublocationCardComponent } from '../../../shared/components/sublocation-card/sublocation-card.component';
+
 @Component({
   selector: 'app-campaign-location-detail',
   standalone: true,
-  imports: [CommonModule, FormsModule, TimeOfDayBarComponent],
+  imports: [CommonModule, FormsModule, TimeOfDayBarComponent, LocationCardComponent, SublocationCardComponent],
   templateUrl: './campaign-location-detail.component.html',
   styleUrl: './campaign-location-detail.component.scss'
 })
@@ -303,6 +306,15 @@ export class CampaignLocationDetailComponent implements OnInit, OnDestroy {
         )
       } : c);
     });
+  }
+
+  private sublocationTilts = new Map<string, number>();
+
+  sublocationTilt(instanceId: string): number {
+    if (!this.sublocationTilts.has(instanceId)) {
+      this.sublocationTilts.set(instanceId, Math.random() < 0.5 ? -2 : 2);
+    }
+    return this.sublocationTilts.get(instanceId)!;
   }
 
   allSublocationVisible = computed(() => {

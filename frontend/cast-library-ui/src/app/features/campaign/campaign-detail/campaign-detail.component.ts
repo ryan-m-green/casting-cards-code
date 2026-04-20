@@ -13,10 +13,11 @@ import { SecretModalComponent } from '../../../shared/components/secret-modal/se
 import { LockPillComponent } from '../../../shared/components/lock-pill/lock-pill.component';
 import { CampaignNotesComponent } from '../../../shared/components/campaign-notes/campaign-notes.component';
 import { TimeOfDayBarComponent } from '../../../shared/components/time-of-day-bar/time-of-day-bar.component';
+import { LocationCardComponent } from '../../../shared/components/location-card/location-card.component';
 @Component({
   selector: 'app-campaign-detail',
   standalone: true,
-  imports: [CommonModule, RouterLink, DatePipe, SecretModalComponent, LockPillComponent, CampaignNotesComponent, TimeOfDayBarComponent],
+  imports: [CommonModule, RouterLink, DatePipe, SecretModalComponent, LockPillComponent, CampaignNotesComponent, TimeOfDayBarComponent, LocationCardComponent],
   templateUrl: './campaign-detail.component.html',
   styleUrl: './campaign-detail.component.scss'
 })
@@ -37,6 +38,16 @@ export class CampaignDetailComponent implements OnInit, OnDestroy {
   secretModalContent = signal('');
   showSecretModal  = signal(false);
   activeCastId     = signal<string | null>(null);
+
+  private locationTilts = new Map<string, number>();
+
+  locationTilt(instanceId: string): number {
+    if (!this.locationTilts.has(instanceId)) {
+      const magnitude = 2;
+      this.locationTilts.set(instanceId, Math.random() < 0.5 ? -magnitude : magnitude);
+    }
+    return this.locationTilts.get(instanceId)!;
+  }
 
   isDm = computed(() => this.auth.isDm());
 

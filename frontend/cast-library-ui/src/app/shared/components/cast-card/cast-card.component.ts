@@ -10,13 +10,21 @@ import { Cast } from '../../models/cast.model';
 })
 export class CastCardComponent {
   @Input({ required: true }) cast!: Cast;
-  @Input() editable   = true;
-  @Input() flippable  = true;
-  @Input() tilt       = 0;
-  @Input() showStars  = false;
+  @Input() editable        = true;
+  @Input() flippable       = true;
+  @Input() queueable       = false;
+  @Input() tilt            = 0;
+  @Input() showStars       = false;
+  @Input() imageUpload     = false;
+  @Input() secrets         = false;
+  @Input() secretsRevealed = false;
+  @Input() campaignMode    = false;
 
-  @Output() editClick   = new EventEmitter<void>();
-  @Output() deleteClick = new EventEmitter<void>();
+  @Output() editClick    = new EventEmitter<void>();
+  @Output() deleteClick  = new EventEmitter<void>();
+  @Output() fileSelected = new EventEmitter<File>();
+  @Output() secretsClick = new EventEmitter<void>();
+  @Output() cardClick    = new EventEmitter<void>();
 
   flipped   = false;
   stars     = signal(0);
@@ -45,7 +53,13 @@ export class CastCardComponent {
   }
 
   toggleFlip(e: Event): void {
+    if (this.campaignMode) { this.cardClick.emit(); return; }
     if (this.flippable) this.flipped = !this.flipped;
+  }
+
+  onSecretsClick(e: Event): void {
+    e.stopPropagation();
+    this.secretsClick.emit();
   }
 
   onEditClick(e: Event): void {
@@ -61,6 +75,11 @@ export class CastCardComponent {
   onStarClick(e: Event, n: number): void {
     e.stopPropagation();
     this.stars.set(this.stars() === n ? 0 : n);
+  }
+
+  onFileInputChange(e: Event): void {
+    const file = (e.target as HTMLInputElement).files?.[0];
+    if (file) this.fileSelected.emit(file);
   }
 
   starFilled(n: number): boolean {

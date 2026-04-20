@@ -16,26 +16,12 @@
 
   @if (locationId()) {
     <div class="form-card-preview">
-      <div class="pc-card pc-card-location" title="Click to upload portrait"
-           (click)="showImageModal.set(true)">
-        <div class="lib-card-front card-form-inner">
-          <div class="card-form-header">
-            <div class="card-name">{{ form.value.name || 'Unnamed Location' }}</div>
-            <div class="card-descriptor">{{ form.value.classification || '—' }}</div>
-            <div class="dv dv-mb"></div>
-          </div>
-          @if (imageUrl()) {
-            <img [src]="imageUrl()!" alt="Location portrait" class="card-form-image" />
-          } @else {
-            <div class="card-form-placeholder">
-              <div class="card-initial">
-                {{ form.value.name ? form.value.name[0].toUpperCase() : '?' }}
-              </div>
-              <div class="card-upload-hint">Upload Portrait</div>
-            </div>
-          }
-        </div>
-      </div>
+      <app-location-card
+        [location]="previewLocation()"
+        [editable]="false"
+        [flippable]="false"
+        [imageUpload]="true"
+        (fileSelected)="onFileSelected($event)" />
     </div>
   }
 
@@ -116,36 +102,3 @@
 
 </div>
 
-@if (showImageModal()) {
-  <div class="upload-overlay"
-       (click)="showImageModal.set(false)">
-    <div class="upload-panel"
-         (click)="$event.stopPropagation()">
-      <h3 class="upload-panel-title">Upload Portrait</h3>
-      <div class="pc-card pc-card-location pointer-none">
-        <div class="lib-card-front card-form-inner">
-          <div class="card-form-header">
-            <div class="card-name">{{ form.value.name || 'Unnamed Location' }}</div>
-            <div class="card-descriptor">{{ form.value.classification || '—' }}</div>
-            <div class="dv dv-mb"></div>
-          </div>
-          @if (imageUrl()) {
-            <img [src]="imageUrl()!" alt="Location portrait" class="card-form-image" />
-          } @else {
-            <div class="card-form-placeholder-simple">
-              <div class="card-initial">
-                {{ form.value.name ? form.value.name[0].toUpperCase() : '?' }}
-              </div>
-            </div>
-          }
-        </div>
-      </div>
-      <label class="upload-file-label">
-        {{ imageUploading() ? 'Uploading…' : (imageUrl() ? 'Replace Portrait' : 'Upload Portrait') }}
-        <input type="file" accept="image/jpeg,image/png,image/webp" class="hidden-input"
-               (change)="onFileSelected($event)" [disabled]="imageUploading()" />
-      </label>
-      <button class="btn-primary btn-upload-done" (click)="showImageModal.set(false)">Close</button>
-    </div>
-  </div>
-}

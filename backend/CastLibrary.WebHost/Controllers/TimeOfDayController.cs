@@ -19,6 +19,7 @@ public class TimeOfDayController(
     IUpdateSlicePlayerNotesCommandHandler updatePlayerNotesCommand,
     IUpdateSliceDmNotesCommandHandler updateDmNotesCommand,
     IAdvanceDayCommandHandler advanceDayCommand,
+    IRewindDayCommandHandler rewindDayCommand,
     IHubContext<CampaignHub> hubContext) : ControllerBase
 {
     [HttpGet]
@@ -68,6 +69,20 @@ public class TimeOfDayController(
     public async Task<IActionResult> AdvanceDay(Guid campaignId)
     {
         var daysPassed = await advanceDayCommand.HandleAsync(new AdvanceDayCommand(campaignId));
+
+        await hubContext.Clients.Group(campaignId.ToString())
+            .SendAsync("DayAdvanced", new { campaignId, daysPassed });
+
+        await hubContext.Clients.Group(campaignId.ToString())
+            .SendAsync("TimeCursorMoved", new { campaignId, positionPercent = 0 });
+
+        return NoContent();
+    }
+
+    [HttpPatch("rewind-day")]
+    public async Task<IActionResult> RewindDay(Guid campaignId)
+    {
+        var daysPassed = await rewindDayCommand.HandleAsync(new RewindDayCommand(campaignId));
 
         await hubContext.Clients.Group(campaignId.ToString())
             .SendAsync("DayAdvanced", new { campaignId, daysPassed });

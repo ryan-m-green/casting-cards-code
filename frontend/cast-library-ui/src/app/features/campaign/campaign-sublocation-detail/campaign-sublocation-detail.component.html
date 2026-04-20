@@ -26,39 +26,15 @@
 
       <!-- Card -->
       <div class="subLoc-card-left">
-        <div class="pc-card pc-card-sublocation">
-          <div class="lib-card-front">
-            <div class="card-slot-front">
-              <div class="card-front-header">
-                <div class="card-name">{{ subLoc.name }}</div>
-                <div class="card-descriptor">{{ subLoc.shopItems?.length ?? 0 }} shop items</div>
-              </div>
-              <div class="dv dv-card"></div>
-              <div class="card-image-area">
-                @if (subLoc.imageUrl) {
-                  <img [src]="subLoc.imageUrl" alt="" class="card-img-fill" />
-                } @else {
-                  <div class="card-placeholder">
-                    <span class="card-initial">{{ initial(subLoc.name) }}</span>
-                  </div>
-                }
-                @if (subLoc.description) {
-                  <div class="card-desc-overlay">
-                    <p class="card-desc-text">{{ subLoc.description }}</p>
-                  </div>
-                }
-              </div>
-              <button
-                class="cast-lock-btn"
-                [class.cast-lock-btn--visible]="subLoc.isVisibleToPlayers"
-                (click)="toggleSublocationVisibility()"
-                [title]="subLoc.isVisibleToPlayers ? 'Hide from players' : 'Reveal to players'"
-              >
-                {{ subLoc.isVisibleToPlayers ? '🔓' : '🔒' }}
-              </button>
-            </div>
-          </div>
-        </div>
+        <app-sublocation-card
+          [sublocation]="subLoc"
+          [flippable]="false"
+          [editable]="false"
+          [secrets]="isDm()"
+          [secretsRevealed]="subLoc.isVisibleToPlayers"
+          [campaignMode]="false"
+          (secretsClick)="toggleSublocationVisibility()"
+        />
       </div>
 
       <!-- Detail panel -->
@@ -297,41 +273,17 @@
 
         <div class="cast-grid">
           @for (cast of sublocationCasts(); track cast.instanceId) {
-            <div class="cast-card-wrapper" (click)="goToCast(cast)">
-              <div class="pc-card pc-card-cast">
-                <div class="lib-card-front">
-                  <div class="card-slot-front">
-                    <div class="card-front-header">
-                      <div class="card-name">{{ cast.name }}</div>
-                      <div class="card-descriptor">{{ cast.role }}</div>
-                    </div>
-                    <div class="dv dv-card"></div>
-                    <div class="card-image-area">
-                      @if (cast.imageUrl) {
-                        <img [src]="cast.imageUrl" alt="" class="card-img-fill" />
-                      } @else {
-                        <div class="card-placeholder">
-                          <span class="card-initial">{{ initial(cast.name) }}</span>
-                        </div>
-                      }
-                      @if (cast.publicDescription) {
-                        <div class="card-desc-overlay">
-                          <p class="card-desc-text">{{ cast.publicDescription }}</p>
-                        </div>
-                      }
-                    </div>
-                    <button
-                      class="cast-lock-btn"
-                      [class.cast-lock-btn--visible]="cast.isVisibleToPlayers"
-                      (click)="toggleCastVisibility(cast); $event.stopPropagation()"
-                      [title]="cast.isVisibleToPlayers ? 'Hide from players' : 'Reveal to players'"
-                    >
-                      {{ cast.isVisibleToPlayers ? '🔓' : '🔒' }}
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </div>
+            <app-cast-card
+              [cast]="cast"
+              [flippable]="false"
+              [editable]="false"
+              [secrets]="true"
+              [secretsRevealed]="cast.isVisibleToPlayers"
+              [campaignMode]="true"
+              [tilt]="castTilt(cast.instanceId)"
+              (secretsClick)="toggleCastVisibility(cast)"
+              (cardClick)="goToCast(cast)"
+            />
           }
         </div>
 

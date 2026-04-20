@@ -9,6 +9,7 @@ import { environment } from '../../../../environments/environment';
 import { Location } from '../../../shared/models/location.model';
 import { SparkleService } from '../../../shared/services/sparkle.service';
 import { DmNavComponent } from '../../../shared/components/dm-nav/dm-nav.component';
+import { LocationCardComponent } from '../../../shared/components/location-card/location-card.component';
 
 const SIZE_OPTIONS = ['Hamlet', 'Village', 'Town', 'Large Town', 'Location', 'Large Location', 'Metropolis'];
 
@@ -69,7 +70,7 @@ const CLIMATE_OPTIONS = [
 @Component({
   selector: 'app-location-form',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, RouterLink, DmNavComponent],
+  imports: [CommonModule, ReactiveFormsModule, RouterLink, DmNavComponent, LocationCardComponent],
   templateUrl: './location-form.component.html',
   styleUrl: './location-form.component.scss'
 })
@@ -93,11 +94,10 @@ export class LocationFormComponent implements OnInit {
     ALL_LANGUAGES.filter(l => !this.selectedLanguages().includes(l))
   );
 
-  locationId         = signal<string | null>(null);
+  locationId     = signal<string | null>(null);
   saveStatus     = signal<'idle' | 'saving' | 'saved' | 'error'>('idle');
   imageUrl       = signal<string | null>(null);
   imageUploading = signal(false);
-  showImageModal = signal(false);
 
   labelText    = signal<'Saved' | 'Saving…' | 'Error'>('Saved');
   labelVisible = signal(true);
@@ -116,6 +116,27 @@ export class LocationFormComponent implements OnInit {
     description:    [''],
   });
 
+  previewLocation = computed<Location>(() => {
+    const v = this.form.value;
+    return {
+      id: this.locationId() ?? '',
+      dmUserId: '',
+      name: v.name ?? '',
+      classification: v.classification ?? '',
+      size: v.size ?? '',
+      condition: v.condition ?? '',
+      geography: v.geography ?? '',
+      architecture: v.architecture ?? '',
+      climate: v.climate ?? '',
+      religion: v.religion ?? '',
+      vibe: v.vibe ?? '',
+      languages: v.languages ?? '',
+      description: v.description ?? '',
+      imageUrl: this.imageUrl() ?? undefined,
+      createdAt: '',
+    };
+  });
+
   ngOnInit() {
     const id = this.route.snapshot.paramMap.get('id');
     if (id) {
@@ -126,9 +147,6 @@ export class LocationFormComponent implements OnInit {
         const existing = (c.languages ?? '').split(',').map((l: string) => l.trim()).filter(Boolean);
         this.selectedLanguages.set(existing);
       });
-    }
-    if (this.route.snapshot.queryParamMap.get('upload') === 'true') {
-      this.showImageModal.set(true);
     }
   }
 
@@ -182,10 +200,8 @@ export class LocationFormComponent implements OnInit {
     });
   }
 
-  onFileSelected(event: Event) {
-    const input = event.target as HTMLInputElement;
-    const file  = input.files?.[0];
-    if (!file || !this.locationId()) return;
+  onFileSelected(file: File) {
+    if (!this.locationId()) return;
     const previousUrl = this.imageUrl();
     const objectUrl   = URL.createObjectURL(file);
     this.imageUrl.set(objectUrl);

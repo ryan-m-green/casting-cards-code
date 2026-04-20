@@ -218,6 +218,14 @@ export class TimeOfDayBarComponent implements OnInit, OnChanges, OnDestroy {
     this.broadcastCursorPosition();
   }
 
+  onRewindDay() {
+    if (!this.isDm || this.daysPassed() === 0) return;
+    this.http.patch(
+      `${environment.apiUrl}/api/campaigns/${this.campaignId}/time-of-day/rewind-day`,
+      {}
+    ).subscribe();
+  }
+
   onAdvanceDay() {
     if (!this.isDm) return;
     this.http.patch(

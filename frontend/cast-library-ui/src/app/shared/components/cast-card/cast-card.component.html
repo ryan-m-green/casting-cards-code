@@ -86,6 +86,19 @@
             </svg>
           </div>
 
+          @if (queueable) {
+            <button class="loc-delete-btn" (click)="onDeleteClick($event)">&#215;</button>
+          }
+
+          @if (secrets) {
+            <button class="cast-secrets-btn"
+                    [class.cast-secrets-btn--revealed]="secretsRevealed"
+                    (click)="onSecretsClick($event)"
+                    [title]="secretsRevealed ? 'Hide from players' : 'Reveal to players'">
+              {{ secretsRevealed ? '🔓' : '🔒' }}
+            </button>
+          }
+
           <!-- banner -->
           <div class="cast-banner">
             <div class="cast-name">{{ cast.name }}</div>
@@ -93,7 +106,20 @@
           </div>
 
           <!-- portrait -->
-          <div class="cast-portrait">
+          <div class="cast-portrait"
+               [class.cast-portrait--uploadable]="imageUpload">
+            @if (imageUpload) {
+              <label class="cast-upload-label">
+                <input type="file" accept="image/jpeg,image/png,image/webp"
+                       class="cast-upload-input" (change)="onFileInputChange($event)" />
+                <div class="cast-upload-overlay">
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#f0e8d8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
+                    <circle cx="12" cy="13" r="4"/>
+                  </svg>
+                </div>
+              </label>
+            }
             @if (showStars) {
               <div class="cast-stars" (click)="$event.stopPropagation()">
                 @for (n of starNums; track n) {
@@ -139,9 +165,6 @@
                 <div class="cast-pip"></div>
                 <div class="cast-pip"></div>
               </div>
-              @if (editable) {
-                <button class="cast-edit-icon">✎</button>
-              }
             </div>
             <span class="cast-strip-label">Character</span>
             <div class="cast-pip-row">

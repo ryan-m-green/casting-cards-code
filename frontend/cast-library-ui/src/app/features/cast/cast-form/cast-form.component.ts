@@ -1,4 +1,4 @@
-import { Component, OnInit, signal, inject, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, signal, computed, inject, ViewChild, ElementRef } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormArray, Validators } from '@angular/forms';
@@ -9,6 +9,7 @@ import { environment } from '../../../../environments/environment';
 import { Cast } from '../../../shared/models/cast.model';
 import { SparkleService } from '../../../shared/services/sparkle.service';
 import { DmNavComponent } from '../../../shared/components/dm-nav/dm-nav.component';
+import { CastCardComponent } from '../../../shared/components/cast-card/cast-card.component';
 
 const VOICE_OPTIONS = ['Chest', 'Throat', 'Mouth / Oral', 'Nasal', 'Head / Sinus'];
 
@@ -35,7 +36,7 @@ const PRONOUN_OPTIONS = [
 @Component({
   selector: 'app-cast-form',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, RouterLink, DmNavComponent],
+  imports: [CommonModule, ReactiveFormsModule, RouterLink, DmNavComponent, CastCardComponent],
   templateUrl: './cast-form.component.html',
   styleUrl: './cast-form.component.scss'
 })
@@ -48,11 +49,10 @@ export class CastFormComponent implements OnInit {
   private fb      = inject(FormBuilder);
   private sparkle = inject(SparkleService);
 
-  castId          = signal<string | null>(null);
-  saveStatus      = signal<'idle' | 'saving' | 'saved' | 'error'>('idle');
-  imageUrl        = signal<string | null>(null);
-  imageUploading  = signal(false);
-  showImageModal  = signal(false);
+  castId         = signal<string | null>(null);
+  saveStatus     = signal<'idle' | 'saving' | 'saved' | 'error'>('idle');
+  imageUrl       = signal<string | null>(null);
+  imageUploading = signal(false);
   voiceOptions     = VOICE_OPTIONS;
   pronounOptions   = PRONOUN_OPTIONS;
   alignmentOptions = ALIGNMENT_OPTIONS;
@@ -77,6 +77,29 @@ export class CastFormComponent implements OnInit {
     voiceNotes:        [''],
   });
 
+  previewCast = computed<Cast>(() => {
+    const v = this.form.value;
+    const vp = (v.voicePlacement as boolean[] | undefined) ?? [];
+    return {
+      id: this.castId() ?? '',
+      dmUserId: '',
+      name: v.name ?? '',
+      role: v.role ?? '',
+      race: v.race ?? '',
+      age: v.age ?? '',
+      alignment: v.alignment ?? '',
+      pronouns: v.pronouns ?? '',
+      posture: v.posture ?? '',
+      speed: v.speed ?? '',
+      voicePlacement: VOICE_OPTIONS.filter((_, i) => vp[i]),
+      voiceNotes: v.voiceNotes ?? '',
+      description: v.description ?? '',
+      publicDescription: v.publicDescription ?? '',
+      imageUrl: this.imageUrl() ?? undefined,
+      createdAt: '',
+    };
+  });
+
   ngOnInit() {
     const id = this.route.snapshot.paramMap.get('id');
     if (id) {
@@ -92,9 +115,6 @@ export class CastFormComponent implements OnInit {
         VOICE_OPTIONS.forEach((opt, i) => vpArray.at(i).setValue(cast.voicePlacement?.includes(opt) ?? false));
         this.imageUrl.set(cast.imageUrl ?? null);
       });
-    }
-    if (this.route.snapshot.queryParamMap.get('upload') === 'true') {
-      this.showImageModal.set(true);
     }
   }
 
@@ -141,10 +161,8 @@ export class CastFormComponent implements OnInit {
     });
   }
 
-  onFileSelected(event: Event) {
-    const input = event.target as HTMLInputElement;
-    const file  = input.files?.[0];
-    if (!file || !this.castId()) return;
+  onFileSelected(file: File) {
+    if (!this.castId()) return;
     const previousUrl = this.imageUrl();
     const objectUrl   = URL.createObjectURL(file);
     this.imageUrl.set(objectUrl);

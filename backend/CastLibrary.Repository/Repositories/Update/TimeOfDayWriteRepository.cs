@@ -11,6 +11,7 @@ public interface ITimeOfDayWriteRepository
     Task<TimeOfDayDomain> UpsertAsync(TimeOfDayDomain domain);
     Task UpdateCursorAsync(Guid campaignId, decimal positionPercent);
     Task<int> AdvanceDayAsync(Guid campaignId);
+    Task<int> RewindDayAsync(Guid campaignId);
     Task UpdateSlicePlayerNotesAsync(Guid sliceId, string playerNotes);
     Task UpdateSliceDmNotesAsync(Guid sliceId, string dmNotes);
 }
@@ -127,6 +128,27 @@ public class TimeOfDayWriteRepository(
         var daysPassed = await conn.QueryFirstAsync<int>(
             @"UPDATE campaign_time_of_day
               SET days_passed             = days_passed + 1,
+                  cursor_position_percent = 0,
+                  updated_at              = NOW()
+              WHERE campaign_id = @CampaignId
+              RETURNING days_passed",
+            @params);
+
+        logging.LogDbOperation(correlation.TraceId, spanId, "UPDATE", "campaign_time_of_day", @params, 1);
+        return daysPassed;
+    }
+
+    public async Task<int> RewindDayAsync(Guid campaignId)
+    {
+        var spanId  = correlation.NewSpan();
+        var @params = new { CampaignId = campaignId };
+
+        logging.LogDbOperation(correlation.TraceId, spanId, "UPDATE", "campaign_time_of_day", @params);
+
+        using var conn = CreateConnection();
+        var daysPassed = await conn.QueryFirstAsync<int>(
+            @"UPDATE campaign_time_of_day
+              SET days_passed             = GREATEST(0, days_passed - 1),
                   cursor_position_percent = 0,
                   updated_at              = NOW()
               WHERE campaign_id = @CampaignId

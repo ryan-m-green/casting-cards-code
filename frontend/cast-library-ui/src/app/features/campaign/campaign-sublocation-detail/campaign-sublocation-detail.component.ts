@@ -12,11 +12,13 @@ import { CampaignHubService } from '../../../core/hub/campaign-hub.service';
 import { PortalTransitionService } from '../../../core/portal-transition.service';
 import { AuthService } from '../../../core/auth/auth.service';
 import { TimeOfDayBarComponent } from '../../../shared/components/time-of-day-bar/time-of-day-bar.component';
+import { SublocationCardComponent } from '../../../shared/components/sublocation-card/sublocation-card.component';
+import { CastCardComponent } from '../../../shared/components/cast-card/cast-card.component';
 
 @Component({
   selector: 'app-campaign-sublocation-detail',
   standalone: true,
-  imports: [CommonModule, FormsModule, TimeOfDayBarComponent],
+  imports: [CommonModule, FormsModule, TimeOfDayBarComponent, SublocationCardComponent, CastCardComponent],
   templateUrl: './campaign-sublocation-detail.component.html',
   styleUrl: './campaign-sublocation-detail.component.scss'
 })
@@ -343,6 +345,17 @@ export class CampaignSublocationDetailComponent implements OnInit, OnDestroy {
       this.panelHeight.set(`${contentH + btnH}px`);
       this.detailExpanded.set(true);
     }
+  }
+
+  // ── Tilt ──────────────────────────────────────────────────────────────────
+
+  private castTilts = new Map<string, number>();
+
+  castTilt(instanceId: string): number {
+    if (!this.castTilts.has(instanceId)) {
+      this.castTilts.set(instanceId, Math.random() < 0.5 ? -2 : 2);
+    }
+    return this.castTilts.get(instanceId)!;
   }
 
   // ── Cast ──────────────────────────────────────────────────────────────────

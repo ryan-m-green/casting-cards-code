@@ -5,9 +5,9 @@ import { HttpClient } from '@angular/common/http';
 import { forkJoin } from 'rxjs';
 import { environment } from '../../../../environments/environment';
 import { Cast } from '../../../shared/models/cast.model';
-import { CardFlipComponent } from '../../../shared/components/card-flip/card-flip.component';
 import { KeywordInputComponent } from '../../../shared/components/keyword-input/keyword-input.component';
 import { DmNavComponent } from '../../../shared/components/dm-nav/dm-nav.component';
+import { CastCardComponent } from '../../../shared/components/cast-card/cast-card.component';
 
 interface CastSecret {
   id?: string;
@@ -25,7 +25,7 @@ interface AddedCast {
 @Component({
   selector: 'app-campaign-cast-editor',
   standalone: true,
-  imports: [CommonModule, CardFlipComponent, KeywordInputComponent, DmNavComponent],
+  imports: [CommonModule, KeywordInputComponent, DmNavComponent, CastCardComponent],
   templateUrl: './campaign-cast-editor.component.html',
   styleUrl: './campaign-cast-editor.component.scss'
 })
@@ -34,7 +34,7 @@ export class CampaignCastEditorComponent implements OnInit, OnDestroy {
   private http   = inject(HttpClient);
   router = inject(Router);
 
-  @ViewChild('mainCard')        mainCardRef!:       ElementRef<HTMLElement>;
+  @ViewChild('mainCard', { read: ElementRef }) mainCardRef!: ElementRef<HTMLElement>;
   @ViewChild('mainCardWrapper') mainCardWrapperRef!: ElementRef<HTMLElement>;
   @ViewChild('selectedStack')   selectedStackRef!:  ElementRef<HTMLElement>;
   @ViewChild('deckStack')       deckStackRef!:      ElementRef<HTMLElement>;

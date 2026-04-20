@@ -44,9 +44,15 @@ $spring-easing:       cubic-bezier(0.22, 1, 0.36, 1);
 // ── Next Day button ───────────────────────────────────────────────────────────
 .tod-next-day {
   flex-shrink: 0;
-  height: 48px;
-  padding: 0 14px;
-  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 32px;
+  width: 32px;
+  min-width: 44px;
+  min-height: 44px;
+  padding: 0;
+  border-radius: 6px;
   border: 1px solid rgba(110, 75, 22, 0.35);
   background: rgba(248, 238, 210, 0.70);
   color: rgba(72, 44, 8, 0.88);
@@ -56,10 +62,13 @@ $spring-easing:       cubic-bezier(0.22, 1, 0.36, 1);
   letter-spacing: 0.06em;
   cursor: pointer;
   white-space: nowrap;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
   transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
 
   &:hover,
-  &:focus-visible {
+  &:focus-visible,
+  &:active {
     background: rgba(212, 168, 67, 0.22);
     border-color: rgba(110, 75, 22, 0.60);
     color: rgba(52, 28, 4, 0.95);
@@ -68,6 +77,12 @@ $spring-easing:       cubic-bezier(0.22, 1, 0.36, 1);
   &:focus-visible {
     outline: 2px solid rgba(212, 168, 67, 0.70);
     outline-offset: 2px;
+  }
+
+  &:disabled {
+    opacity: 0.35;
+    cursor: not-allowed;
+    pointer-events: none;
   }
 
   .tod-wrapper--dark & {

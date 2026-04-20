@@ -622,64 +622,6 @@ $location-blue: #9ab0b8;
   }
 }
 
-/* ── Per-card lock button (reused from campaign-detail pattern) ──────────── */
-.location-lock-btn {
-  position: absolute;
-  top: 8px;
-  right: 8px;
-  z-index: 10;
-  background: rgba(0, 0, 0, 0.55);
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  border-radius: 6px;
-  width: 28px;
-  height: 28px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 13px;
-  cursor: pointer;
-  transition: background 0.18s ease, border-color 0.18s ease, opacity 0.18s ease;
-  opacity: 0.6;
-
-  &:hover {
-    background: rgba(0, 0, 0, 0.8);
-    border-color: rgba(255, 255, 255, 0.28);
-    opacity: 1;
-  }
-
-  &.location-lock-btn--visible {
-    background: rgba(40, 160, 80, 0.25);
-    border-color: rgba(80, 200, 120, 0.4);
-    opacity: 0.85;
-
-    &:hover {
-      background: rgba(40, 160, 80, 0.45);
-      opacity: 1;
-    }
-  }
-}
-
-/* ── Sublocation card wrapper ───────────────────────────────────────────────── */
-.subLoc-card-wrapper {
-  cursor: pointer;
-  transition: transform 0.2s ease;
-
-  .pc-card {
-    transition: box-shadow 0.2s ease;
-  }
-
-  &:hover {
-    transform: translateY(-4px);
-
-    .pc-card {
-      box-shadow:
-        0 8px 24px rgba(0, 0, 0, 0.5),
-        0 0 16px rgba($location-blue,0.22),
-        0 0 42px rgba($location-blue,0.10);
-    }
-  }
-}
-
 /* ── Time-of-day bar section ─────────────────────────────────── */
 .tod-bar-section {
   padding: 0 20px 54px;

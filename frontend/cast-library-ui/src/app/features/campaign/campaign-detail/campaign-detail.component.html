@@ -31,39 +31,17 @@
         <div class="location-cards-label">Locations</div>
         <div class="location-cards-container">
           @for (location of camp.locations; track location.instanceId) {
-            <div class="pc-card pc-card-location" (click)="goToLocationDetail(location.instanceId)" style="cursor:pointer">
-              <div class="lib-card-front">
-              <div class="card-slot-front">
-                <div class="card-front-header">
-                  <div class="card-name">{{ location.name }}</div>
-                  <div class="card-descriptor">{{ location.classification }}</div>
-                </div>
-                <div class="dv dv-card"></div>
-                <div class="card-image-area">
-                  @if (location.imageUrl) {
-                    <img [src]="location.imageUrl" alt="" class="card-img-fill" />
-                  } @else {
-                    <div class="card-placeholder">
-                      <span class="card-initial">{{ initial(location.name) }}</span>
-                    </div>
-                  }
-                  @if (location.description) {
-                    <div class="card-desc-overlay">
-                      <p class="card-desc-text">{{ location.description }}</p>
-                    </div>
-                  }
-                </div>
-                <button
-                  class="location-lock-btn"
-                  [class.location-lock-btn--visible]="location.isVisibleToPlayers"
-                  (click)="toggleLocationVisibility(location); $event.stopPropagation()"
-                  [title]="location.isVisibleToPlayers ? 'Hide from players' : 'Reveal to players'"
-                >
-                  {{ location.isVisibleToPlayers ? '🔓' : '🔒' }}
-                </button>
-              </div>
-              </div>
-            </div>
+            <app-location-card
+              [location]="location"
+              [flippable]="false"
+              [editable]="false"
+              [secrets]="true"
+              [secretsRevealed]="location.isVisibleToPlayers"
+              [campaignMode]="true"
+              [tilt]="locationTilt(location.instanceId)"
+              (secretsClick)="toggleLocationVisibility(location)"
+              (cardClick)="goToLocationDetail(location.instanceId)"
+            />
           }
         </div>
       </div>

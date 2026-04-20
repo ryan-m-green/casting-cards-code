@@ -12,11 +12,12 @@ import { CampaignHubService } from '../../../core/hub/campaign-hub.service';
 import { PortalTransitionService } from '../../../core/portal-transition.service';
 import { AuthService } from '../../../core/auth/auth.service';
 import { TimeOfDayBarComponent } from '../../../shared/components/time-of-day-bar/time-of-day-bar.component';
+import { CastCardComponent } from '../../../shared/components/cast-card/cast-card.component';
 
 @Component({
   selector: 'app-campaign-cast-detail',
   standalone: true,
-  imports: [CommonModule, FormsModule, TimeOfDayBarComponent],
+  imports: [CommonModule, FormsModule, TimeOfDayBarComponent, CastCardComponent],
   templateUrl: './campaign-cast-detail.component.html',
   styleUrl: './campaign-cast-detail.component.scss'
 })

@@ -85,6 +85,19 @@
             </svg>
           </div>
 
+          @if (queueable) {
+            <button class="loc-delete-btn" (click)="onDeleteClick($event)">&#215;</button>
+          }
+
+          @if (secrets) {
+            <button class="loc-secrets-btn"
+                    [class.loc-secrets-btn--revealed]="secretsRevealed"
+                    (click)="onSecretsClick($event)"
+                    [title]="secretsRevealed ? 'Hide from players' : 'Reveal to players'">
+              {{ secretsRevealed ? '🔓' : '🔒' }}
+            </button>
+          }
+
           <!-- banner -->
           <div class="loc-banner">
             <div class="loc-name">{{ location.name }}</div>
@@ -92,7 +105,20 @@
           </div>
 
           <!-- portrait -->
-          <div class="loc-portrait">
+          <div class="loc-portrait"
+               [class.loc-portrait--uploadable]="imageUpload">
+            @if (imageUpload) {
+              <label class="loc-upload-label">
+                <input type="file" accept="image/jpeg,image/png,image/webp"
+                       class="loc-upload-input" (change)="onFileInputChange($event)" />
+                <div class="loc-upload-overlay">
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#e8f0d0" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
+                    <circle cx="12" cy="13" r="4"/>
+                  </svg>
+                </div>
+              </label>
+            }
             @if (location.imageUrl) {
               <img [src]="location.imageUrl" alt="" class="loc-portrait-img" />
             } @else {
@@ -159,9 +185,6 @@
                 <div class="loc-pip"></div>
                 <div class="loc-pip"></div>
               </div>
-              @if (editable) {
-                <button class="loc-edit-icon">✎</button>
-              }
             </div>
             <span class="loc-strip-label">Location</span>
             <div class="loc-pip-row">

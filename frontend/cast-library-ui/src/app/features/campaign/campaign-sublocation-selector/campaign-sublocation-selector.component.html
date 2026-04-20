@@ -44,39 +44,12 @@
 
       <div class="main-card-area" #mainCardWrapper>
         @if (filteredDeckSublocations().length > 0) {
-          <div class="pc-card pc-card-shop" #mainCard>
-            <app-card-flip>
-              <div slot="front" class="card-slot-front">
-                <div class="card-front-header">
-                  <div class="card-name">{{ currentCard()?.name }}</div>
-                  <div class="card-descriptor">Sublocation</div>
-                </div>
-                <div class="dv dv-card"></div>
-                <div class="card-image-area">
-                  @if (currentCard()?.imageUrl) {
-                    <img [src]="currentCard()!.imageUrl" alt="" class="card-img-fill" />
-                  } @else {
-                    <div class="card-placeholder subLoc-placeholder">
-                      <span class="card-initial">{{ currentCard()?.name?.[0]?.toUpperCase() }}</span>
-                    </div>
-                  }
-                  @if (currentCard()?.description) {
-                    <div class="card-desc-overlay">
-                      <p class="card-desc-text">{{ currentCard()?.description }}</p>
-                    </div>
-                  }
-                </div>
-              </div>
-              <div slot="back" class="card-slot-back">
-                <div class="card-back-content">
-                  <div class="card-name card-back-name">{{ currentCard()?.name }}</div>
-                  <div class="dv dv-mb"></div>
-                  <div class="fi-label fi-label-strong">Description</div>
-                  <p class="wbd card-field-value">{{ currentCard()?.description || '—' }}</p>
-                </div>
-              </div>
-            </app-card-flip>
-          </div>
+          <app-sublocation-card
+            #mainCard
+            [sublocation]="$any(currentCard()!)"
+            [flippable]="false"
+            [editable]="false"
+          />
         } @else {
           <div class="main-card-placeholder"></div>
         }
@@ -102,37 +75,18 @@
       @if (addedSublocations().length > 0) {
         <div class="sel-stack-container" #selectedStack [style.height.px]="selContainerHeight()">
           @for (added of addedSublocations(); track added.instanceId; let i = $index) {
-            <div class="sel-card pc-card-shop"
-                 [attr.data-sel-idx]="i"
-                 [style.top.px]="selTopsList()[i]"
-                 [style.z-index]="i + 1"
-                 (click)="toggleExpanded(i)">
-              <div class="card-slot-front">
-                <div class="card-front-header sel-card-header-row">
-                  <div class="sel-card-info">
-                    <div class="card-name">{{ added.subLoc.name }}</div>
-                    <div class="card-descriptor">Sublocation</div>
-                  </div>
-                  <button class="sel-card-remove"
-                          (click)="removeSublocation(i); $event.stopPropagation()">&#215;</button>
-                </div>
-                <div class="dv dv-card"></div>
-                <div class="card-image-area">
-                  @if (added.subLoc.imageUrl) {
-                    <img [src]="added.subLoc.imageUrl" alt="" class="card-img-fill" />
-                  } @else {
-                    <div class="card-placeholder subLoc-placeholder">
-                      <span class="card-initial">{{ added.subLoc.name?.[0]?.toUpperCase() }}</span>
-                    </div>
-                  }
-                  @if (added.subLoc.description) {
-                    <div class="card-desc-overlay">
-                      <p class="card-desc-text">{{ added.subLoc.description }}</p>
-                    </div>
-                  }
-                </div>
-              </div>
-            </div>
+            <app-sublocation-card
+              [attr.data-sel-idx]="i"
+              [style.top.px]="selTopsList()[i]"
+              [style.z-index]="i + 1"
+              [style.position]="'absolute'"
+              (click)="toggleExpanded(i)"
+              [sublocation]="$any(added.subLoc)"
+              [flippable]="false"
+              [editable]="false"
+              [queueable]="true"
+              (deleteClick)="removeSublocation(i)"
+            />
           }
         </div>
       } @else {

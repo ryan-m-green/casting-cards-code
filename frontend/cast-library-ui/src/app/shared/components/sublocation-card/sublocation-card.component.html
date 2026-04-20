@@ -91,6 +91,19 @@
             </svg>
           </div>
 
+          @if (queueable) {
+            <button class="loc-delete-btn" (click)="onDeleteClick($event)">&#215;</button>
+          }
+
+          @if (secrets) {
+            <button class="subloc-secrets-btn"
+                    [class.subloc-secrets-btn--revealed]="secretsRevealed"
+                    (click)="onSecretsClick($event)"
+                    [title]="secretsRevealed ? 'Hide from players' : 'Reveal to players'">
+              {{ secretsRevealed ? '🔓' : '🔒' }}
+            </button>
+          }
+
           <!-- banner -->
           <div class="sub-banner">
             <div class="sub-name">{{ sublocation.name }}</div>
@@ -98,7 +111,20 @@
           </div>
 
           <!-- portrait -->
-          <div class="sub-portrait">
+          <div class="sub-portrait"
+               [class.sub-portrait--uploadable]="imageUpload">
+            @if (imageUpload) {
+              <label class="sub-upload-label">
+                <input type="file" accept="image/jpeg,image/png,image/webp"
+                       class="sub-upload-input" (change)="onFileInputChange($event)" />
+                <div class="sub-upload-overlay">
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#d4dff0" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
+                    <circle cx="12" cy="13" r="4"/>
+                  </svg>
+                </div>
+              </label>
+            }
             @if (sublocation.imageUrl) {
               <img [src]="sublocation.imageUrl" alt="" class="sub-portrait-img" />
             } @else {
@@ -129,9 +155,6 @@
                 <div class="sub-pip"></div>
                 <div class="sub-pip"></div>
               </div>
-              @if (editable) {
-                <button class="sub-edit-icon">✎</button>
-              }
             </div>
             <span class="sub-strip-label">Sublocation</span>
             <div class="sub-pip-row">

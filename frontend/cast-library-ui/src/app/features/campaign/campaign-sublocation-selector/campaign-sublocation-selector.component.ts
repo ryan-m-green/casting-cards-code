@@ -4,9 +4,9 @@ import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { forkJoin, catchError, of } from 'rxjs';
 import { environment } from '../../../../environments/environment';
-import { CardFlipComponent } from '../../../shared/components/card-flip/card-flip.component';
 import { KeywordInputComponent } from '../../../shared/components/keyword-input/keyword-input.component';
 import { DmNavComponent } from '../../../shared/components/dm-nav/dm-nav.component';
+import { SublocationCardComponent } from '../../../shared/components/sublocation-card/sublocation-card.component';
 
 interface ShopItem {
   id: string;
@@ -39,7 +39,7 @@ interface AddedSublocation {
 @Component({
   selector: 'app-campaign-sublocation-selector',
   standalone: true,
-  imports: [CommonModule, CardFlipComponent, KeywordInputComponent, DmNavComponent],
+  imports: [CommonModule, KeywordInputComponent, DmNavComponent, SublocationCardComponent],
   templateUrl: './campaign-sublocation-selector.component.html',
   styleUrl: './campaign-sublocation-selector.component.scss'
 })
@@ -48,7 +48,7 @@ export class CampaignSublocationSelectorComponent implements OnInit, OnDestroy {
   private router = inject(Router);
   private http   = inject(HttpClient);
 
-  @ViewChild('mainCard')        mainCardRef!:       ElementRef<HTMLElement>;
+  @ViewChild('mainCard', { read: ElementRef }) mainCardRef!: ElementRef<HTMLElement>;
   @ViewChild('mainCardWrapper') mainCardWrapperRef!: ElementRef<HTMLElement>;
   @ViewChild('selectedStack')   selectedStackRef!:  ElementRef<HTMLElement>;
   @ViewChild('deckStack')       deckStackRef!:      ElementRef<HTMLElement>;

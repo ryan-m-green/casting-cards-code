@@ -24,39 +24,15 @@
 
       <!-- Card -->
       <div class="location-card-left">
-        <div class="pc-card pc-card-location">
-          <div class="lib-card-front">
-            <div class="card-slot-front">
-              <div class="card-front-header">
-                <div class="card-name">{{ c.name }}</div>
-                <div class="card-descriptor">{{ c.classification }}</div>
-              </div>
-              <div class="dv dv-card"></div>
-              <div class="card-image-area">
-                @if (c.imageUrl) {
-                  <img [src]="c.imageUrl" alt="" class="card-img-fill" />
-                } @else {
-                  <div class="card-placeholder">
-                    <span class="card-initial">{{ c.name.charAt(0).toUpperCase() }}</span>
-                  </div>
-                }
-                @if (c.description) {
-                  <div class="card-desc-overlay">
-                    <p class="card-desc-text">{{ c.description }}</p>
-                  </div>
-                }
-              </div>
-              <button
-                class="location-lock-btn"
-                [class.location-lock-btn--visible]="c.isVisibleToPlayers"
-                (click)="toggleLocationVisibility()"
-                [title]="c.isVisibleToPlayers ? 'Hide from players' : 'Reveal to players'"
-              >
-                {{ c.isVisibleToPlayers ? '🔓' : '🔒' }}
-              </button>
-            </div>
-          </div>
-        </div>
+        <app-location-card
+          [location]="c"
+          [flippable]="false"
+          [editable]="false"
+          [secrets]="isDm()"
+          [secretsRevealed]="c.isVisibleToPlayers"
+          [campaignMode]="false"
+          (secretsClick)="toggleLocationVisibility()"
+        />
       </div>
 
       <!-- Detail panel -->
@@ -296,39 +272,17 @@
 
         <div class="sublocations-grid">
           @for (subLoc of locationSublocations(); track subLoc.instanceId) {
-          <div class="subLoc-card-wrapper" (click)="goToSublocation(subLoc)">
-            <div class="pc-card pc-card-sublocation">
-              <div class="lib-card-front">
-                <div class="card-slot-front">
-                  <div class="card-front-header">
-                    <div class="card-name">{{ subLoc.name }}</div>
-                    <div class="card-descriptor">{{ subLoc.shopItems?.length ?? 0 }} shop items</div>
-                  </div>
-                  <div class="dv dv-card"></div>
-                  <div class="card-image-area">
-                    @if (subLoc.imageUrl) {
-                    <img [src]="subLoc.imageUrl" alt="" class="card-img-fill" />
-                    } @else {
-                    <div class="card-placeholder">
-                      <span class="card-initial">{{ initial(subLoc.name) }}</span>
-                    </div>
-                    }
-                    @if (subLoc.description) {
-                    <div class="card-desc-overlay">
-                      <p class="card-desc-text">{{ subLoc.description }}</p>
-                    </div>
-                    }
-                  </div>
-                  <button class="location-lock-btn"
-                          [class.location-lock-btn--visible]="subLoc.isVisibleToPlayers"
-                          (click)="toggleSublocationVisibility(subLoc); $event.stopPropagation()"
-                          [title]="subLoc.isVisibleToPlayers ? 'Hide from players' : 'Reveal to players'">
-                    {{ subLoc.isVisibleToPlayers ? '🔓' : '🔒' }}
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
+            <app-sublocation-card
+              [sublocation]="subLoc"
+              [flippable]="false"
+              [editable]="false"
+              [secrets]="true"
+              [secretsRevealed]="subLoc.isVisibleToPlayers"
+              [campaignMode]="true"
+              [tilt]="sublocationTilt(subLoc.instanceId)"
+              (secretsClick)="toggleSublocationVisibility(subLoc)"
+              (cardClick)="goToSublocation(subLoc)"
+            />
           }
         </div>
 

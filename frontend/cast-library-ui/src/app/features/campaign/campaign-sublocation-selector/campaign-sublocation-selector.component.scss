@@ -51,36 +51,36 @@
 
 .deck-shadow-far {
   top: 8px; left: 8px; right: -8px; bottom: -8px;
-  background: rgba(100, 130, 190, 0.50);
-  border: 2.5px solid rgba(30, 60, 120, 0.26);
+  background: rgba(144, 180, 216, 0.50);
+  border: 2.5px solid rgba(48, 72, 96, 0.26);
   transform: rotate(6deg);
 }
 
 .deck-shadow-near {
   top: 4px; left: 4px; right: -4px; bottom: -4px;
-  background: rgba(120, 155, 210, 0.65);
-  border: 2.5px solid rgba(30, 60, 120, 0.34);
+  background: rgba(160, 196, 224, 0.65);
+  border: 2.5px solid rgba(48, 72, 96, 0.34);
   transform: rotate(3deg);
 }
 
 .deck-face {
   position: absolute;
   inset: 0;
-  background: linear-gradient(148deg, rgba(140, 175, 230, 0.92), rgba(100, 145, 210, 0.88));
-  border: 2.5px solid rgba(30, 60, 130, 0.62);
+  background: linear-gradient(148deg, rgba(192, 212, 240, 0.92), rgba(112, 144, 192, 0.88));
+  border: 2.5px solid rgba(48, 72, 96, 0.62);
   border-radius: 12px;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   gap: 8px;
-  box-shadow: inset 0 0 0 1.5px rgba(80, 130, 200, 0.20);
+  box-shadow: inset 0 0 0 1.5px rgba(180, 220, 255, 0.20);
 }
 
 .deck-inner-border {
   position: absolute;
   inset: 7px;
-  border: 1px solid rgba(60, 100, 180, 0.20);
+  border: 1px solid rgba(112, 144, 192, 0.20);
   border-radius: 9px;
   pointer-events: none;
 }
@@ -93,7 +93,7 @@
 .deck-count {
   font-family: v.$font-header;
   font-size: 10px;
-  color: rgba(20, 50, 110, 0.9);
+  color: rgba(26, 46, 64, 0.70);
   letter-spacing: 0.08em;
   text-align: center;
   line-height: 1.8;

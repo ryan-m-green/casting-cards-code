@@ -10,12 +10,20 @@ import { Location } from '../../models/location.model';
 })
 export class LocationCardComponent {
   @Input({ required: true }) location!: Location;
-  @Input() editable  = true;
-  @Input() flippable = true;
-  @Input() tilt      = 0;
+  @Input() editable        = true;
+  @Input() flippable       = true;
+  @Input() queueable       = false;
+  @Input() tilt            = 0;
+  @Input() imageUpload     = false;
+  @Input() secrets         = false;
+  @Input() secretsRevealed = false;
+  @Input() campaignMode    = false;
 
-  @Output() editClick   = new EventEmitter<void>();
-  @Output() deleteClick = new EventEmitter<void>();
+  @Output() editClick    = new EventEmitter<void>();
+  @Output() deleteClick  = new EventEmitter<void>();
+  @Output() fileSelected = new EventEmitter<File>();
+  @Output() secretsClick = new EventEmitter<void>();
+  @Output() cardClick    = new EventEmitter<void>();
 
   flipped = false;
 
@@ -46,7 +54,13 @@ export class LocationCardComponent {
   }
 
   toggleFlip(e: Event): void {
+    if (this.campaignMode) { this.cardClick.emit(); return; }
     if (this.flippable) this.flipped = !this.flipped;
+  }
+
+  onSecretsClick(e: Event): void {
+    e.stopPropagation();
+    this.secretsClick.emit();
   }
 
   onEditClick(e: Event): void {
@@ -57,5 +71,10 @@ export class LocationCardComponent {
   onDeleteClick(e: Event): void {
     e.stopPropagation();
     this.deleteClick.emit();
+  }
+
+  onFileInputChange(e: Event): void {
+    const file = (e.target as HTMLInputElement).files?.[0];
+    if (file) this.fileSelected.emit(file);
   }
 }
