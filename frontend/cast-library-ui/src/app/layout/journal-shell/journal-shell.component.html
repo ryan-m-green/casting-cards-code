@@ -1,11 +1,10 @@
 <div class="journal-wrap" [class.is-cover]="isCover()">
   <div class="spine">
-    <div class="spine-title">Harper's Hand</div>
-    <div class="spine-rings">
-      @for (ring of rings; track ring) {
-        <div class="spine-ring"></div>
-      }
-    </div>
+    <div class="spine-cap top"></div>
+    @for (pct of spineBands; track pct) {
+      <div class="spine-band" [style.top.%]="pct"></div>
+    }
+    <div class="spine-cap bottom"></div>
   </div>
   <div class="page-area">
     <!-- Layer 1: back page (z-index 1) — parchment base -->
@@ -21,4 +20,17 @@
     </div>
     <div class="page-fold"></div>
   </div>
+
+  <!-- Leather strap + buckle — visible on cover page only -->
+  @if (isCover()) {
+    <div class="strap">
+      <div class="strap-grain"></div>
+      <div class="strap-buckle">
+        <div class="buckle-outer">
+          <div class="buckle-bar"></div>
+          <div class="buckle-pin"></div>
+        </div>
+      </div>
+    </div>
+  }
 </div>

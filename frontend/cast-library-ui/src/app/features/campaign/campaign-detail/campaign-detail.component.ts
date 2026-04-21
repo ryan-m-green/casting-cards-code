@@ -1,39 +1,37 @@
-import { Component, OnInit, OnDestroy, signal, computed, inject, effect, HostBinding } from '@angular/core';
-import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { Component, OnInit, signal, computed, inject, effect } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
 import { CommonModule, DatePipe } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../../environments/environment';
 import { CampaignDetail, CampaignNote } from '../../../shared/models/campaign.model';
-import { TimeOfDay } from '../../../shared/models/time-of-day.model';
 import { CampaignSecret } from '../../../shared/models/secret.model';
 import { AuthService } from '../../../core/auth/auth.service';
 import { CampaignHubService } from '../../../core/hub/campaign-hub.service';
 import { PortalTransitionService } from '../../../core/portal-transition.service';
+import { CampaignShellService } from '../../../core/campaign-shell.service';
 import { SecretModalComponent } from '../../../shared/components/secret-modal/secret-modal.component';
 import { LockPillComponent } from '../../../shared/components/lock-pill/lock-pill.component';
 import { CampaignNotesComponent } from '../../../shared/components/campaign-notes/campaign-notes.component';
-import { TimeOfDayBarComponent } from '../../../shared/components/time-of-day-bar/time-of-day-bar.component';
 import { LocationCardComponent } from '../../../shared/components/location-card/location-card.component';
+
 @Component({
   selector: 'app-campaign-detail',
   standalone: true,
-  imports: [CommonModule, RouterLink, DatePipe, SecretModalComponent, LockPillComponent, CampaignNotesComponent, TimeOfDayBarComponent, LocationCardComponent],
+  imports: [CommonModule, DatePipe, SecretModalComponent, LockPillComponent, CampaignNotesComponent, LocationCardComponent],
   templateUrl: './campaign-detail.component.html',
   styleUrl: './campaign-detail.component.scss'
 })
-export class CampaignDetailComponent implements OnInit, OnDestroy {
-  private route      = inject(ActivatedRoute);
-  private router     = inject(Router);
-  private http       = inject(HttpClient);
+export class CampaignDetailComponent implements OnInit {
+  private route    = inject(ActivatedRoute);
+  private router   = inject(Router);
+  private http     = inject(HttpClient);
   private transition = inject(PortalTransitionService);
-  auth               = inject(AuthService);
-  hub                = inject(CampaignHubService);
-
-  @HostBinding('class.portal-entry') portalEntry = false;
+  private hub      = inject(CampaignHubService);
+  private shellSvc = inject(CampaignShellService);
+  auth             = inject(AuthService);
 
   campaign         = signal<CampaignDetail | null>(null);
   campaignId       = signal('');
-  timeOfDay        = signal<TimeOfDay | null>(null);
   selectedSecretId = signal<string | null>(null);
   secretModalContent = signal('');
   showSecretModal  = signal(false);
@@ -52,7 +50,6 @@ export class CampaignDetailComponent implements OnInit, OnDestroy {
   isDm = computed(() => this.auth.isDm());
 
   constructor() {
-    // React to real-time secret reveals
     effect(() => {
       const event = this.hub.secretRevealed();
       if (!event || event.campaignId !== this.campaignId()) return;
@@ -67,38 +64,22 @@ export class CampaignDetailComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    if (history.state?.portalEntry) {
-      this.portalEntry = true;
-      setTimeout(() => this.transition.hide(), 300);
-    } else {
-      this.transition.hide();
-    }
     const id = this.route.snapshot.paramMap.get('id')!;
     this.campaignId.set(id);
+
+    this.shellSvc.setCrumbs([
+      { label: '← Campaign Library', action: () => this.exitPortal() },
+    ]);
+
     this.loadCampaign(id);
-    this.loadTimeOfDay(id);
-    const token = this.auth.getToken();
-    const connectAndJoin = token && !this.hub.isConnected()
-      ? this.hub.connect(token).then(() => this.hub.joinCampaign(id))
-      : this.hub.joinCampaign(id);
-    connectAndJoin.catch(console.warn);
-  }
-
-  ngOnDestroy() {
-    this.hub.leaveCampaign(this.campaignId()).catch(console.warn);
-  }
-
-  loadTimeOfDay(id: string) {
-    this.http.get<TimeOfDay>(`${environment.apiUrl}/api/campaigns/${id}/time-of-day`)
-      .subscribe({
-        next:  tod => this.timeOfDay.set(tod),
-        error: ()  => { /* no ToD configured — leave null */ },
-      });
   }
 
   loadCampaign(id: string) {
     this.http.get<CampaignDetail>(`${environment.apiUrl}/api/campaigns/${id}`)
-      .subscribe(c => this.campaign.set(c));
+      .subscribe(c => {
+        this.campaign.set(c);
+        this.shellSvc.setTitle(c.name);
+      });
   }
 
   secretsFor(instanceId: string) {
@@ -160,12 +141,8 @@ export class CampaignDetailComponent implements OnInit, OnDestroy {
       });
   }
 
-  goToTheParty() {
-    this.router.navigate(['/campaign', this.campaignId(), 'the-party']);
-  }
-
   goToLocationDetail(instanceId: string) {
-    this.router.navigate(['/campaign', this.campaignId(), 'locations', instanceId]);
+    this.router.navigate(['locations', instanceId], { relativeTo: this.route });
   }
 
   exitPortal() {

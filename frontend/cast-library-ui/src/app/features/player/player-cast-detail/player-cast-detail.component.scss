@@ -127,14 +127,6 @@ $star-color: #fcdf03;
   z-index: 1;
 }
 
-.cast-hero-card {
-  .pc-card {
-    box-shadow:
-      0 8px 32px rgba(0, 0, 0, 0.6),
-      0 0 24px color-mix(in srgb, var(--portal-color, #{$cast-gold}) 20%, transparent 80%),
-      0 0 56px color-mix(in srgb, var(--portal-color, #{$cast-gold}) 10%, transparent 90%);
-  }
-}
 
 /* ── Star rating ─────────────────────────────────────────────────────────── */
 .cast-rating {

@@ -11,6 +11,8 @@ import { environment } from '../../../../environments/environment';
 import { PortalTransitionService } from '../../../core/portal-transition.service';
 import { AuthService } from '../../../core/auth/auth.service';
 import { CampaignHubService } from '../../../core/hub/campaign-hub.service';
+import { PlayerCampaignShellComponent } from '../player-campaign-shell/player-campaign-shell.component';
+import { PlayerCampaignShellService } from '../../../core/player-campaign-shell.service';
 import {
   PlayerCard,
   PlayerCardWithDetails,
@@ -46,6 +48,8 @@ export class PlayerMyCharacterComponent implements OnInit, OnDestroy {
   private http       = inject(HttpClient);
   private transition = inject(PortalTransitionService);
   private hub        = inject(CampaignHubService);
+  private shell      = inject(PlayerCampaignShellComponent);
+  private shellService = inject(PlayerCampaignShellService);
   auth               = inject(AuthService);
 
   campaignId   = signal('');
@@ -247,6 +251,12 @@ export class PlayerMyCharacterComponent implements OnInit, OnDestroy {
     this.transition.hide();
     const id = this.route.snapshot.paramMap.get('id')!;
     this.campaignId.set(id);
+
+    this.shellService.setCrumbs([
+      { label: '← Locations', action: () => this.goBack() }
+    ]);
+    this.shellService.setTitle('My Character');
+
     this.loadPlayerCard(id);
     this.loadCast(id);
 

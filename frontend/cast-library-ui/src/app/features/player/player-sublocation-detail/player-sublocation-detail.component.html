@@ -1,54 +1,17 @@
 @if (sublocation(); as subLoc) {
-  <div class="void-canvas" [style.--portal-color]="portalColor()">
-
-    <!-- ── Top bar ── -->
-    <div class="void-topbar">
-      <div class="topbar-row">
-        <div class="void-breadcrumbs">
-          <button class="void-back" (click)="goToCampaign()">← Locations</button>
-          <span class="void-crumb-sep">›</span>
-          <button class="void-back" (click)="goToLocation()">← Sublocations</button>
-        </div>
-        <button class="topbar-party-btn" (click)="goToMyCharacter()">⚔ My Character</button>
-      </div>
-      <span class="void-title">{{ subLoc.name }}</span>
-    </div>
-
-    <!-- ── Time of day bar ── -->
-    <div class="tod-bar-section">
-      <app-time-of-day-bar [campaignId]="campaignId()" [isDm]="false" [panelTheme]="'dark'" [todInput]="timeOfDay()" />
-    </div>
-
-    <!-- ── Body ── -->
-    <div class="subLoc-body">
+  <!-- ── Body ── -->
+  <div class="subLoc-body">
 
       <!-- Card -->
       <div class="subLoc-card-left">
-        <div class="pc-card pc-card-sublocation">
-          <div class="lib-card-front">
-            <div class="card-slot-front">
-              <div class="card-front-header">
-                <div class="card-name">{{ subLoc.name }}</div>
-                <div class="card-descriptor">{{ subLoc.shopItems?.length ?? 0 }} shop items</div>
-              </div>
-              <div class="dv dv-card"></div>
-              <div class="card-image-area">
-                @if (subLoc.imageUrl) {
-                  <img [src]="subLoc.imageUrl" alt="" class="card-img-fill" />
-                } @else {
-                  <div class="card-placeholder">
-                    <span class="card-initial">{{ initial(subLoc.name) }}</span>
-                  </div>
-                }
-                @if (subLoc.description) {
-                  <div class="card-desc-overlay">
-                    <p class="card-desc-text">{{ subLoc.description }}</p>
-                  </div>
-                }
-              </div>
-            </div>
-          </div>
-        </div>
+        <app-sublocation-card
+          [sublocation]="subLoc"
+          [flippable]="false"
+          [editable]="false"
+          [secrets]="false"
+          [tilt]="0"
+          [campaignMode]="false"
+        />
       </div>
 
       <!-- Detail panel -->
@@ -134,37 +97,19 @@
                   <span class="impact-star" [class.impact-star--lit]="castRating(cast.instanceId) >= n">★</span>
                 }
               </div>
-              <div class="pc-card pc-card-cast">
-                <div class="lib-card-front">
-                  <div class="card-slot-front">
-                    <div class="card-front-header">
-                      <div class="card-name">{{ cast.name }}</div>
-                      <div class="card-descriptor">{{ cast.role }}</div>
-                    </div>
-                    <div class="dv dv-card"></div>
-                    <div class="card-image-area">
-                      @if (cast.imageUrl) {
-                        <img [src]="cast.imageUrl" alt="" class="card-img-fill" />
-                      } @else {
-                        <div class="card-placeholder">
-                          <span class="card-initial">{{ initial(cast.name) }}</span>
-                        </div>
-                      }
-                      @if (cast.publicDescription) {
-                        <div class="card-desc-overlay">
-                          <p class="card-desc-text">{{ cast.publicDescription }}</p>
-                        </div>
-                      }
-                    </div>
-                  </div>
-                </div>
-              </div>
+              <app-cast-card
+                [cast]="cast"
+                [flippable]="false"
+                [editable]="false"
+                [secrets]="false"
+                [tilt]="tiltFor(cast.instanceId)"
+                [campaignMode]="true"
+                (cardClick)="goToCast(cast)"
+              />
             </div>
           }
         </div>
 
       </div>
     }
-
-  </div>
 }

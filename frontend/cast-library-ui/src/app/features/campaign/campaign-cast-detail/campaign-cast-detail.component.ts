@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, signal, computed, inject, effect, HostBinding } from '@angular/core';
+import { Component, OnInit, signal, computed, inject, effect } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -9,27 +9,26 @@ import { CampaignCastInstance } from '../../../shared/models/cast.model';
 import { CampaignSecret } from '../../../shared/models/secret.model';
 import { CampaignSublocationInstance } from '../../../shared/models/sublocation.model';
 import { CampaignHubService } from '../../../core/hub/campaign-hub.service';
-import { PortalTransitionService } from '../../../core/portal-transition.service';
 import { AuthService } from '../../../core/auth/auth.service';
-import { TimeOfDayBarComponent } from '../../../shared/components/time-of-day-bar/time-of-day-bar.component';
+import { CampaignShellService } from '../../../core/campaign-shell.service';
+import { PortalTransitionService } from '../../../core/portal-transition.service';
 import { CastCardComponent } from '../../../shared/components/cast-card/cast-card.component';
 
 @Component({
   selector: 'app-campaign-cast-detail',
   standalone: true,
-  imports: [CommonModule, FormsModule, TimeOfDayBarComponent, CastCardComponent],
+  imports: [CommonModule, FormsModule, CastCardComponent],
   templateUrl: './campaign-cast-detail.component.html',
   styleUrl: './campaign-cast-detail.component.scss'
 })
-export class CampaignCastDetailComponent implements OnInit, OnDestroy {
-  private route      = inject(ActivatedRoute);
-  private router     = inject(Router);
-  private http       = inject(HttpClient);
-  private hub        = inject(CampaignHubService);
+export class CampaignCastDetailComponent implements OnInit {
+  private route    = inject(ActivatedRoute);
+  private router   = inject(Router);
+  private http     = inject(HttpClient);
+  private hub      = inject(CampaignHubService);
+  private auth     = inject(AuthService);
+  private shellSvc = inject(CampaignShellService);
   private transition = inject(PortalTransitionService);
-  private auth       = inject(AuthService);
-
-  @HostBinding('class.portal-entry') portalEntry = false;
 
   campaignId         = signal('');
   sublocationInstanceId = signal('');
@@ -54,8 +53,6 @@ export class CampaignCastDetailComponent implements OnInit, OnDestroy {
   newSecretContent = signal('');
 
   isDm = computed(() => this.auth.isDm());
-
-  portalColor = computed(() => this.campaign()?.spineColor ?? '#c8b07a');
 
   cast = computed<CampaignCastInstance | null>(() => {
     const c = this.campaign();
@@ -99,30 +96,25 @@ export class CampaignCastDetailComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    if (history.state?.portalEntry) {
-      this.portalEntry = true;
-      setTimeout(() => this.transition.hide(), 300);
-    }
-    const id     = this.route.snapshot.paramMap.get('id')!;
-    const subLocId  = this.route.snapshot.paramMap.get('sublocationInstanceId')!;
-    const castId = this.route.snapshot.paramMap.get('castInstanceId')!;
+    const id       = this.route.snapshot.paramMap.get('id')!;
+    const subLocId = this.route.snapshot.paramMap.get('sublocationInstanceId')!;
+    const castId   = this.route.snapshot.paramMap.get('castInstanceId')!;
     this.campaignId.set(id);
     this.sublocationInstanceId.set(subLocId);
     this.castInstanceId.set(castId);
     this.http.get<CampaignDetail>(`${environment.apiUrl}/api/campaigns/${id}`)
       .subscribe(c => {
         this.campaign.set(c);
-        this.transition.spineColor = c.spineColor;
+        const cast    = c.casts.find(ca => ca.instanceId === castId);
+        const subLoc  = c.sublocations.find((l: CampaignSublocationInstance) => l.instanceId === subLocId);
+        const loc     = subLoc ? c.locations.find(l => l.instanceId === subLoc.locationInstanceId) : null;
+        this.shellSvc.setTitle(cast?.name ?? '');
+        this.shellSvc.setCrumbs([
+          { label: '← Locations',     action: () => this.goToCampaign() },
+          { label: `← ${loc?.name ?? 'Location'}`, action: () => this.goToLocation() },
+          { label: '← Cast Members',  action: () => this.goBack() },
+        ]);
       });
-    const token = this.auth.getToken();
-    const connectAndJoin = token && !this.hub.isConnected()
-      ? this.hub.connect(token).then(() => this.hub.joinCampaign(id))
-      : this.hub.joinCampaign(id);
-    connectAndJoin.catch(console.warn);
-  }
-
-  ngOnDestroy() {
-    this.hub.leaveCampaign(this.campaignId()).catch(console.warn);
   }
 
   toggleCastVisibility() {

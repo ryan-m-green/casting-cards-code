@@ -1,14 +1,4 @@
-<div class="void-canvas" [style.--portal-color]="spineColor()">
-
-  <!-- ── Top bar ── -->
-  <div class="void-topbar">
-    <div class="void-breadcrumbs">
-      <button class="void-back" (click)="goBack()">← Locations</button>
-    </div>
-    <span class="void-title">The Party</span>
-  </div>
-
-  <!-- ── Party-wide treasure button ── -->
+<!-- ── Party-wide treasure button ── -->
   <div class="party-actions">
     <button class="party-gold-btn" (click)="openGoldModal(null)">
       💰 Award Gold to Party
@@ -71,8 +61,6 @@
       <p class="wbd empty-state-pad">No player cards yet. Players must enter the campaign first.</p>
     }
   </div>
-
-</div>
 
 <!-- ════════════════════ GOLD MODAL ══ -->
 @if (goldModalOpen()) {

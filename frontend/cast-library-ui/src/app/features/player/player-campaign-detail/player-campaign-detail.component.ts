@@ -8,11 +8,12 @@ import { TimeOfDay } from '../../../shared/models/time-of-day.model';
 import { PortalTransitionService } from '../../../core/portal-transition.service';
 import { CampaignHubService } from '../../../core/hub/campaign-hub.service';
 import { TimeOfDayBarComponent } from '../../../shared/components/time-of-day-bar/time-of-day-bar.component';
+import { LocationCardComponent } from '../../../shared/components/location-card/location-card.component';
 
 @Component({
   selector: 'app-player-campaign-detail',
   standalone: true,
-  imports: [CommonModule, TimeOfDayBarComponent],
+  imports: [CommonModule, TimeOfDayBarComponent, LocationCardComponent],
   templateUrl: './player-campaign-detail.component.html',
   styleUrl: './player-campaign-detail.component.scss'
 })
@@ -82,41 +83,23 @@ export class PlayerCampaignDetailComponent implements OnInit {
     this.transition.hide();
     const id = this.route.snapshot.paramMap.get('id')!;
     this.campaignId.set(id);
-    this.http.get<CampaignDetail>(`${environment.apiUrl}/api/campaigns/${id}/player`)
-      .subscribe(c => {
-        this.campaign.set(c);
-        this.transition.spineColor = c.spineColor;
-      });
-    this.loadTimeOfDay(id);
-  }
-
-  loadTimeOfDay(id: string) {
-    this.http.get<TimeOfDay>(`${environment.apiUrl}/api/campaigns/${id}/time-of-day`)
-      .subscribe({
-        next:  tod => this.timeOfDay.set(tod),
-        error: ()  => { /* no ToD configured — leave null */ },
-      });
   }
 
   goToLocationDetail(instanceId: string) {
     this.transition.quickCover();
-    this.router.navigate(['/player/campaign', this.campaignId(), 'locations', instanceId]);
-  }
-
-  goToMyCharacter() {
-    this.transition.quickCover();
-    this.router.navigate(['/player/campaign', this.campaignId(), 'my-character']);
-  }
-
-  exitPortal() {
-    this.transition.exitToLibrary(() =>
-      this.router.navigate(['/player/campaigns'], { state: { noFlip: true } })
-    );
+    this.router.navigate(['locations', instanceId], { relativeTo: this.route });
   }
 
   isLocking(instanceId: string): boolean {
     return this.lockingIds().has(instanceId);
   }
 
-  initial(name: string) { return name.charAt(0).toUpperCase(); }
+  private tiltMap = new Map<string, number>();
+
+  tiltFor(instanceId: string): number {
+    if (!this.tiltMap.has(instanceId)) {
+      this.tiltMap.set(instanceId, parseFloat((Math.random() * 4 - 2).toFixed(2)));
+    }
+    return this.tiltMap.get(instanceId)!;
+  }
 }

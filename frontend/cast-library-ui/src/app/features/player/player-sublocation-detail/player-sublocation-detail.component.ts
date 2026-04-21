@@ -1,21 +1,22 @@
-import { Component, OnInit, signal, computed, inject, effect, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, signal, computed, inject, ViewChild, ElementRef } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../../environments/environment';
-import { CampaignDetail, CampaignCastPlayerNotes } from '../../../shared/models/campaign.model';
+import { CampaignCastPlayerNotes } from '../../../shared/models/campaign.model';
 import { CampaignSublocationInstance } from '../../../shared/models/sublocation.model';
 import { CampaignCastInstance } from '../../../shared/models/cast.model';
 import { CampaignSecret } from '../../../shared/models/secret.model';
-import { CampaignLocationInstance } from '../../../shared/models/location.model';
-import { CampaignHubService } from '../../../core/hub/campaign-hub.service';
 import { PortalTransitionService } from '../../../core/portal-transition.service';
-import { TimeOfDayBarComponent } from '../../../shared/components/time-of-day-bar/time-of-day-bar.component';
+import { SublocationCardComponent } from '../../../shared/components/sublocation-card/sublocation-card.component';
+import { CastCardComponent } from '../../../shared/components/cast-card/cast-card.component';
+import { PlayerCampaignShellComponent } from '../player-campaign-shell/player-campaign-shell.component';
+import { PlayerCampaignShellService } from '../../../core/player-campaign-shell.service';
 
 @Component({
   selector: 'app-player-sublocation-detail',
   standalone: true,
-  imports: [CommonModule, TimeOfDayBarComponent],
+  imports: [CommonModule, SublocationCardComponent, CastCardComponent],
   templateUrl: './player-sublocation-detail.component.html',
   styleUrl: './player-sublocation-detail.component.scss'
 })
@@ -23,20 +24,19 @@ export class PlayerSublocationDetailComponent implements OnInit {
   private route      = inject(ActivatedRoute);
   private router     = inject(Router);
   private http       = inject(HttpClient);
-  private hub        = inject(CampaignHubService);
   private transition = inject(PortalTransitionService);
+  private shell      = inject(PlayerCampaignShellComponent);
+  private shellService = inject(PlayerCampaignShellService);
 
   @ViewChild('detailContent') private detailContentRef!: ElementRef<HTMLElement>;
   @ViewChild('expandBtn')     private expandBtnRef!: ElementRef<HTMLElement>;
 
   campaignId         = signal('');
   sublocationInstanceId = signal('');
-  campaign           = signal<CampaignDetail | null>(null);
+  campaign           = () => this.shell.campaign();
   detailExpanded     = signal(false);
   panelHeight        = signal('220px');
   castRatings        = signal<Map<string, number>>(new Map());
-
-  portalColor = computed(() => this.campaign()?.spineColor ?? '#a8a070');
 
   sublocation = computed<CampaignSublocationInstance | null>(() => {
     const c = this.campaign();
@@ -57,8 +57,6 @@ export class PlayerSublocationDetailComponent implements OnInit {
     return c.casts.filter(cast => cast.sublocationInstanceId === subLoc.instanceId);
   });
 
-  timeOfDay = computed(() => this.campaign()?.timeOfDay ?? null);
-
   parentLocation = computed(() => {
     const c   = this.campaign();
     const subLoc = this.sublocation();
@@ -66,66 +64,7 @@ export class PlayerSublocationDetailComponent implements OnInit {
     return c.locations.find(ci => ci.instanceId === subLoc.locationInstanceId) ?? null;
   });
 
-  constructor() {
-    effect(() => {
-      const event = this.hub.secretRevealed();
-      if (!event || event.campaignId !== this.campaignId()) return;
-      this.campaign.update(c => {
-        if (!c) return c;
-        const exists = c.secrets.some(s => s.id === event.secretId);
-        if (exists) {
-          return { ...c, secrets: c.secrets.map(s => s.id === event.secretId ? { ...s, isRevealed: true } : s) };
-        }
-        const newSecret: CampaignSecret = {
-          id: event.secretId,
-          campaignId: event.campaignId,
-          castInstanceId: event.castInstanceId,
-          locationInstanceId: event.locationInstanceId,
-          sublocationInstanceId: event.sublocationInstanceId,
-          content: event.secretContent,
-          sortOrder: 0,
-          isRevealed: true,
-          revealedAt: new Date().toISOString(),
-        };
-        return { ...c, secrets: [...c.secrets, newSecret] };
-      });
-    });
-
-    effect(() => {
-      const event = this.hub.secretResealed();
-      if (!event || event.campaignId !== this.campaignId()) return;
-      this.campaign.update(c => {
-        if (!c) return c;
-        return { ...c, secrets: c.secrets.map(s => s.id === event.secretId ? { ...s, isRevealed: false } : s) };
-      });
-    });
-
-    effect(() => {
-      const event = this.hub.cardVisibilityChanged();
-      if (!event || event.campaignId !== this.campaignId()) return;
-      if (event.isVisible) {
-        this.http.get<CampaignDetail>(`${environment.apiUrl}/api/campaigns/${this.campaignId()}/player`)
-          .subscribe(c => { this.campaign.set(c); this.transition.spineColor = c.spineColor; });
-      } else {
-        this.campaign.update(c => {
-          if (!c) return c;
-          return {
-            ...c,
-            locations:     c.locations.filter((x: CampaignLocationInstance) => x.instanceId !== event.instanceId),
-            sublocations: c.sublocations.filter((x: CampaignSublocationInstance) => x.instanceId !== event.instanceId),
-            casts:      c.casts.filter((x: CampaignCastInstance) => x.instanceId !== event.instanceId),
-          };
-        });
-      }
-    });
-
-    effect(() => {
-      const event = this.hub.bulkCardVisibilityChanged();
-      if (!event || event.campaignId !== this.campaignId()) return;
-      this.http.get<CampaignDetail>(`${environment.apiUrl}/api/campaigns/${this.campaignId()}/player`)
-        .subscribe(c => { this.campaign.set(c); this.transition.spineColor = c.spineColor; });
-    });
-  }
+  constructor() {}
 
   ngOnInit() {
     this.transition.hide();
@@ -133,28 +72,33 @@ export class PlayerSublocationDetailComponent implements OnInit {
     const locId = this.route.snapshot.paramMap.get('sublocationInstanceId')!;
     this.campaignId.set(id);
     this.sublocationInstanceId.set(locId);
-    this.http.get<CampaignDetail>(`${environment.apiUrl}/api/campaigns/${id}/player`)
-      .subscribe(c => {
-        this.campaign.set(c);
-        this.transition.spineColor = c.spineColor;
 
-        const subLoc = c.sublocations.find(l => l.instanceId === locId);
-        if (subLoc) {
-          const castIds = c.casts
-            .filter(ca => ca.sublocationInstanceId === subLoc.instanceId)
-            .map(ca => ca.instanceId);
-          if (castIds.length) {
-            const params = castIds.map(cid => `castInstanceId=${cid}`).join('&');
-            this.http.get<CampaignCastPlayerNotes[]>(
-              `${environment.apiUrl}/api/campaigns/${id}/cast-player-notes/by-cast-instances?${params}`
-            ).subscribe(notes => {
-              const map = new Map<string, number>();
-              notes.forEach(n => map.set(n.castInstanceId, n.rating));
-              this.castRatings.set(map);
-            });
-          }
+    const subLoc = this.sublocation();
+    const parentLoc = this.parentLocation();
+    if (subLoc && parentLoc) {
+      this.shellService.setCrumbs([
+        { label: '← Locations', action: () => this.goToCampaign() },
+        { label: `← ${parentLoc.name}`, action: () => this.goToLocation() }
+      ]);
+      this.shellService.setTitle(subLoc.name);
+
+      const c = this.campaign();
+      if (c) {
+        const castIds = c.casts
+          .filter(ca => ca.sublocationInstanceId === subLoc.instanceId)
+          .map(ca => ca.instanceId);
+        if (castIds.length) {
+          const params = castIds.map(cid => `castInstanceId=${cid}`).join('&');
+          this.http.get<CampaignCastPlayerNotes[]>(
+            `${environment.apiUrl}/api/campaigns/${id}/cast-player-notes/by-cast-instances?${params}`
+          ).subscribe(notes => {
+            const map = new Map<string, number>();
+            notes.forEach(n => map.set(n.castInstanceId, n.rating));
+            this.castRatings.set(map);
+          });
         }
-      });
+      }
+    }
   }
 
   toggleDetail() {
@@ -198,6 +142,15 @@ export class PlayerSublocationDetailComponent implements OnInit {
 
   castRating(instanceId: string): number {
     return this.castRatings().get(instanceId) ?? 0;
+  }
+
+  private tiltMap = new Map<string, number>();
+
+  tiltFor(instanceId: string): number {
+    if (!this.tiltMap.has(instanceId)) {
+      this.tiltMap.set(instanceId, parseFloat((Math.random() * 4 - 2).toFixed(2)));
+    }
+    return this.tiltMap.get(instanceId)!;
   }
 
   initial(name: string) { return name.charAt(0).toUpperCase(); }

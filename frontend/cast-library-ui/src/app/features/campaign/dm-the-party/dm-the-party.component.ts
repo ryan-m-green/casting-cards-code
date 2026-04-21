@@ -6,6 +6,7 @@ import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../../environments/environment';
 import { PortalTransitionService } from '../../../core/portal-transition.service';
 import { AuthService } from '../../../core/auth/auth.service';
+import { CampaignShellService } from '../../../core/campaign-shell.service';
 import { CampaignDetail } from '../../../shared/models/campaign.model';
 import {
   PlayerCardWithDetails,
@@ -35,6 +36,7 @@ export class DmThePartyComponent implements OnInit {
   private router     = inject(Router);
   private http       = inject(HttpClient);
   private transition = inject(PortalTransitionService);
+  private shellSvc   = inject(CampaignShellService);
   auth               = inject(AuthService);
 
   campaignId   = signal('');
@@ -74,9 +76,12 @@ export class DmThePartyComponent implements OnInit {
   viewingCard = signal<PlayerCardWithDetails | null>(null);
 
   ngOnInit() {
-    this.transition.hide();
     const id = this.route.snapshot.paramMap.get('id')!;
     this.campaignId.set(id);
+    this.shellSvc.setTitle('The Party');
+    this.shellSvc.setCrumbs([
+      { label: '← Campaign', action: () => this.goBack() },
+    ]);
     this.http.get<CampaignDetail>(`${environment.apiUrl}/api/campaigns/${id}`)
       .subscribe(c => this.campaign.set(c));
     this.loadCards(id);

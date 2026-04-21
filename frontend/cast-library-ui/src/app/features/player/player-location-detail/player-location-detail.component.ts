@@ -9,13 +9,16 @@ import { CampaignSublocationInstance } from '../../../shared/models/sublocation.
 import { CampaignSecret } from '../../../shared/models/secret.model';
 import { CampaignHubService } from '../../../core/hub/campaign-hub.service';
 import { PortalTransitionService } from '../../../core/portal-transition.service';
-import { PlayerLocationPoliticalNotesComponent } from '../player-location-political-notes/player-location-political-notes.component'; // updated
-import { TimeOfDayBarComponent } from '../../../shared/components/time-of-day-bar/time-of-day-bar.component';
+import { PlayerCampaignShellComponent } from '../player-campaign-shell/player-campaign-shell.component';
+import { PlayerCampaignShellService } from '../../../core/player-campaign-shell.service';
+import { PlayerLocationPoliticalNotesComponent } from '../player-location-political-notes/player-location-political-notes.component';
+import { LocationCardComponent } from '../../../shared/components/location-card/location-card.component';
+import { SublocationCardComponent } from '../../../shared/components/sublocation-card/sublocation-card.component';
 
 @Component({
   selector: 'app-player-location-detail',
   standalone: true,
-  imports: [CommonModule, PlayerLocationPoliticalNotesComponent, TimeOfDayBarComponent],
+  imports: [CommonModule, PlayerLocationPoliticalNotesComponent, LocationCardComponent, SublocationCardComponent],
   templateUrl: './player-location-detail.component.html',
   styleUrl: './player-location-detail.component.scss'
 })
@@ -25,6 +28,8 @@ export class PlayerLocationDetailComponent implements OnInit {
   private http       = inject(HttpClient);
   private hub        = inject(CampaignHubService);
   private transition = inject(PortalTransitionService);
+  private shell      = inject(PlayerCampaignShellComponent);
+  private shellSvc   = inject(PlayerCampaignShellService);
 
   @ViewChild('detailContent')   private detailContentRef!: ElementRef<HTMLElement>;
   @ViewChild('expandBtn')       private expandBtnRef!: ElementRef<HTMLElement>;
@@ -32,10 +37,10 @@ export class PlayerLocationDetailComponent implements OnInit {
 
   campaignId     = signal('');
   locationInstanceId = signal('');
-  campaign       = signal<CampaignDetail | null>(null);
   detailExpanded = signal(false);
   panelHeight    = signal('220px');
 
+  campaign = () => this.shell.campaign();
   portalColor = computed(() => this.campaign()?.spineColor ?? '#9ab0b8');
 
   location = computed<CampaignLocationInstance | null>(() => {
@@ -56,8 +61,6 @@ export class PlayerLocationDetailComponent implements OnInit {
     return (c.sublocations ?? []).filter((l: CampaignSublocationInstance) => l.locationInstanceId === this.locationInstanceId());
   });
 
-  timeOfDay = computed(() => this.campaign()?.timeOfDay ?? null);
-
   locationCasts = computed(() => {
     const c = this.campaign();
     if (!c) return [];
@@ -65,64 +68,7 @@ export class PlayerLocationDetailComponent implements OnInit {
   });
 
   constructor() {
-    effect(() => {
-      const event = this.hub.secretRevealed();
-      if (!event || event.campaignId !== this.campaignId()) return;
-      this.campaign.update(c => {
-        if (!c) return c;
-        const exists = c.secrets.some(s => s.id === event.secretId);
-        if (exists) {
-          return { ...c, secrets: c.secrets.map(s => s.id === event.secretId ? { ...s, isRevealed: true } : s) };
-        }
-         const newSecret: CampaignSecret = {
-          id: event.secretId,
-          campaignId: event.campaignId,
-          castInstanceId: event.castInstanceId,
-          locationInstanceId: event.locationInstanceId,
-          sublocationInstanceId: event.sublocationInstanceId,
-          content: event.secretContent,
-          sortOrder: 0,
-          isRevealed: true,
-          revealedAt: new Date().toISOString(),
-        };
-        return { ...c, secrets: [...c.secrets, newSecret] };
-      });
-    });
-
-    effect(() => {
-      const event = this.hub.secretResealed();
-      if (!event || event.campaignId !== this.campaignId()) return;
-      this.campaign.update(c => {
-        if (!c) return c;
-        return { ...c, secrets: c.secrets.map(s => s.id === event.secretId ? { ...s, isRevealed: false } : s) };
-      });
-    });
-
-    effect(() => {
-      const event = this.hub.cardVisibilityChanged();
-      if (!event || event.campaignId !== this.campaignId()) return;
-      if (event.isVisible) {
-        this.http.get<CampaignDetail>(`${environment.apiUrl}/api/campaigns/${this.campaignId()}/player`)
-          .subscribe(c => { this.campaign.set(c); this.transition.spineColor = c.spineColor; });
-      } else {
-        this.campaign.update(c => {
-          if (!c) return c;
-          return {
-            ...c,
-            locations:    c.locations.filter((x: any) => x.instanceId !== event.instanceId),
-            sublocations: c.sublocations.filter((x: any) => x.instanceId !== event.instanceId),
-            casts:     c.casts.filter((x: any) => x.instanceId !== event.instanceId),
-          };
-        });
-      }
-    });
-
-    effect(() => {
-      const event = this.hub.bulkCardVisibilityChanged();
-      if (!event || event.campaignId !== this.campaignId()) return;
-      this.http.get<CampaignDetail>(`${environment.apiUrl}/api/campaigns/${this.campaignId()}/player`)
-        .subscribe(c => { this.campaign.set(c); this.transition.spineColor = c.spineColor; });
-    });
+    // Shell handles secret reveal events and campaign updates
   }
 
   ngOnInit() {
@@ -131,11 +77,12 @@ export class PlayerLocationDetailComponent implements OnInit {
     const locationInstId = this.route.snapshot.paramMap.get('locationInstanceId')!;
     this.campaignId.set(id);
     this.locationInstanceId.set(locationInstId);
-    this.http.get<CampaignDetail>(`${environment.apiUrl}/api/campaigns/${id}/player`)
-      .subscribe(c => {
-        this.campaign.set(c);
-        this.transition.spineColor = c.spineColor;
-      });
+
+    const loc = this.location();
+    if (loc) {
+      this.shellSvc.setTitle(loc.name);
+      this.shellSvc.setCrumbs([{ label: '← Locations', action: () => this.goToCampaign() }]);
+    }
   }
 
   toggleDetail() {
@@ -155,11 +102,6 @@ export class PlayerLocationDetailComponent implements OnInit {
     this.router.navigate(['/player/campaign', this.campaignId(), 'sublocations', subLoc.instanceId]);
   }
 
-  goToMyCharacter() {
-    this.transition.quickCover();
-    this.router.navigate(['/player/campaign', this.campaignId(), 'my-character']);
-  }
-
   goToCampaign() {
     this.transition.quickCover();
     this.router.navigate(['/player/campaign', this.campaignId()]);
@@ -170,6 +112,15 @@ export class PlayerLocationDetailComponent implements OnInit {
     if (!el) return;
     const targetScroll = window.scrollY + el.getBoundingClientRect().top - 20;
     window.scrollTo({ top: targetScroll, behavior: 'smooth' });
+  }
+
+  private tiltMap = new Map<string, number>();
+
+  tiltFor(instanceId: string): number {
+    if (!this.tiltMap.has(instanceId)) {
+      this.tiltMap.set(instanceId, parseFloat((Math.random() * 4 - 2).toFixed(2)));
+    }
+    return this.tiltMap.get(instanceId)!;
   }
 
   initial(name: string) { return name.charAt(0).toUpperCase(); }

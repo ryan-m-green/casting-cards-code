@@ -329,25 +329,6 @@ $location-blue: #9ab0b8;
   align-items: flex-start;
 }
 
-.subLoc-card-wrapper {
-  cursor: pointer;
-  transition: transform 0.2s ease;
-
-  .pc-card {
-    transition: box-shadow 0.2s ease;
-  }
-
-  &:hover {
-    transform: translateY(-4px);
-
-    .pc-card {
-      box-shadow:
-        0 8px 24px rgba(0, 0, 0, 0.5),
-        0 0 16px rgba($location-blue, 0.22),
-        0 0 42px rgba($location-blue, 0.10);
-    }
-  }
-}
 
 /* ── Time-of-day bar section ─────────────────────────────────── */
 .tod-bar-section {

@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, signal, computed, inject, effect, HostBinding, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, signal, computed, inject, effect, ViewChild, ElementRef } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -9,36 +9,36 @@ import { CampaignLocationInstance } from '../../../shared/models/location.model'
 import { CampaignSecret } from '../../../shared/models/secret.model';
 import { CampaignSublocationInstance } from '../../../shared/models/sublocation.model';
 import { CampaignHubService } from '../../../core/hub/campaign-hub.service';
-import { PortalTransitionService } from '../../../core/portal-transition.service';
 import { AuthService } from '../../../core/auth/auth.service';
-import { TimeOfDayBarComponent } from '../../../shared/components/time-of-day-bar/time-of-day-bar.component';
+import { CampaignShellService } from '../../../core/campaign-shell.service';
+import { PortalTransitionService } from '../../../core/portal-transition.service';
 import { LocationCardComponent } from '../../../shared/components/location-card/location-card.component';
 import { SublocationCardComponent } from '../../../shared/components/sublocation-card/sublocation-card.component';
 
 @Component({
   selector: 'app-campaign-location-detail',
   standalone: true,
-  imports: [CommonModule, FormsModule, TimeOfDayBarComponent, LocationCardComponent, SublocationCardComponent],
+  imports: [CommonModule, FormsModule, LocationCardComponent, SublocationCardComponent],
   templateUrl: './campaign-location-detail.component.html',
   styleUrl: './campaign-location-detail.component.scss'
 })
-export class CampaignLocationDetailComponent implements OnInit, OnDestroy {
+export class CampaignLocationDetailComponent implements OnInit {
   private route      = inject(ActivatedRoute);
   private router     = inject(Router);
   private http       = inject(HttpClient);
   private hub        = inject(CampaignHubService);
-  private transition = inject(PortalTransitionService);
   private auth       = inject(AuthService);
+  private shellSvc   = inject(CampaignShellService);
+  private transition = inject(PortalTransitionService);
 
-  @HostBinding('class.portal-entry') portalEntry = false;
   @ViewChild('detailContent') private detailContentRef!: ElementRef<HTMLElement>;
   @ViewChild('expandBtn')     private expandBtnRef!: ElementRef<HTMLElement>;
 
-  campaignId        = signal('');
+  campaignId         = signal('');
   locationInstanceId = signal('');
-  campaign       = signal<CampaignDetail | null>(null);
-  detailExpanded = signal(false);
-  panelHeight    = signal('220px');
+  campaign           = signal<CampaignDetail | null>(null);
+  detailExpanded     = signal(false);
+  panelHeight        = signal('220px');
 
   // Edit mode
   editing          = signal(false);
@@ -59,8 +59,6 @@ export class CampaignLocationDetailComponent implements OnInit, OnDestroy {
   newSecretContent = signal('');
 
   isDm = computed(() => this.auth.isDm());
-
-  portalColor = computed(() => this.campaign()?.spineColor ?? '#9ab0b8');
 
   location = computed<CampaignLocationInstance | null>(() => {
     const c = this.campaign();
@@ -100,28 +98,19 @@ export class CampaignLocationDetailComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    if (history.state?.portalEntry) {
-      this.portalEntry = true;
-      setTimeout(() => this.transition.hide(), 300);
-    }
-    const id            = this.route.snapshot.paramMap.get('id')!;
+    const id             = this.route.snapshot.paramMap.get('id')!;
     const locationInstId = this.route.snapshot.paramMap.get('locationInstanceId')!;
     this.campaignId.set(id);
     this.locationInstanceId.set(locationInstId);
     this.http.get<CampaignDetail>(`${environment.apiUrl}/api/campaigns/${id}`)
       .subscribe(c => {
         this.campaign.set(c);
-        this.transition.spineColor = c.spineColor;
+        const loc = c.locations.find(l => l.instanceId === locationInstId);
+        this.shellSvc.setTitle(loc?.name ?? '');
+        this.shellSvc.setCrumbs([
+          { label: '← Locations', action: () => this.goToCampaign() },
+        ]);
       });
-    const token = this.auth.getToken();
-    const connectAndJoin = token && !this.hub.isConnected()
-      ? this.hub.connect(token).then(() => this.hub.joinCampaign(id))
-      : this.hub.joinCampaign(id);
-    connectAndJoin.catch(console.warn);
-  }
-
-  ngOnDestroy() {
-    this.hub.leaveCampaign(this.campaignId()).catch(console.warn);
   }
 
   startEditing() {

@@ -1,0 +1,84 @@
+@if (content) {
+  <div class="whisper-backdrop" (click)="dismiss()">
+    <div class="whisper-card" [style.--portal-color]="portalColor" (click)="$event.stopPropagation()">
+      <div class="whisper-frame">
+        <div class="whisper-inner">
+
+          <!-- corner flourishes -->
+          <div class="whisper-corner whisper-corner--tl">
+            <svg viewBox="0 0 20 20" fill="none" width="12" height="12">
+              <path d="M2 18L2 2L18 2" stroke="#9060d0" stroke-width="1.5" stroke-linecap="round"/>
+              <path d="M2 10L6 10" stroke="#9060d0" stroke-width="1" stroke-linecap="round"/>
+              <path d="M10 2L10 6" stroke="#9060d0" stroke-width="1" stroke-linecap="round"/>
+              <rect x="8" y="8" width="4" height="4" fill="#9060d0" transform="rotate(45 10 10)" opacity="0.7"/>
+            </svg>
+          </div>
+          <div class="whisper-corner whisper-corner--tr">
+            <svg viewBox="0 0 20 20" fill="none" width="12" height="12">
+              <path d="M2 18L2 2L18 2" stroke="#9060d0" stroke-width="1.5" stroke-linecap="round"/>
+              <path d="M2 10L6 10" stroke="#9060d0" stroke-width="1" stroke-linecap="round"/>
+              <path d="M10 2L10 6" stroke="#9060d0" stroke-width="1" stroke-linecap="round"/>
+              <rect x="8" y="8" width="4" height="4" fill="#9060d0" transform="rotate(45 10 10)" opacity="0.7"/>
+            </svg>
+          </div>
+          <div class="whisper-corner whisper-corner--bl">
+            <svg viewBox="0 0 20 20" fill="none" width="12" height="12">
+              <path d="M2 18L2 2L18 2" stroke="#9060d0" stroke-width="1.5" stroke-linecap="round"/>
+              <path d="M2 10L6 10" stroke="#9060d0" stroke-width="1" stroke-linecap="round"/>
+              <path d="M10 2L10 6" stroke="#9060d0" stroke-width="1" stroke-linecap="round"/>
+              <rect x="8" y="8" width="4" height="4" fill="#9060d0" transform="rotate(45 10 10)" opacity="0.7"/>
+            </svg>
+          </div>
+          <div class="whisper-corner whisper-corner--br">
+            <svg viewBox="0 0 20 20" fill="none" width="12" height="12">
+              <path d="M2 18L2 2L18 2" stroke="#9060d0" stroke-width="1.5" stroke-linecap="round"/>
+              <path d="M2 10L6 10" stroke="#9060d0" stroke-width="1" stroke-linecap="round"/>
+              <path d="M10 2L10 6" stroke="#9060d0" stroke-width="1" stroke-linecap="round"/>
+              <rect x="8" y="8" width="4" height="4" fill="#9060d0" transform="rotate(45 10 10)" opacity="0.7"/>
+            </svg>
+          </div>
+
+          <!-- banner -->
+          <div class="whisper-banner">
+            <div class="whisper-name">{{ recipient }}</div>
+            <div class="whisper-subtitle">Eyes Only · Game Master</div>
+          </div>
+
+          <!-- portrait -->
+          <div class="whisper-portrait">
+            <img src="/wizard.png" alt="" class="whisper-portrait-img" />
+          </div>
+
+          <!-- content -->
+          <div class="whisper-flavor">
+            <div class="whisper-tagline">Whispers reach you…</div>
+            <div class="whisper-secret">{{ content }}</div>
+          </div>
+
+          <!-- reveal button (always shown) -->
+          <button class="whisper-reveal-btn" (click)="goToSecrets.emit()">✦ Reveal in My Secrets</button>
+
+          @if (dismissable) {
+            <button class="whisper-dismiss-btn" (click)="dismiss()">Dismiss</button>
+          }
+
+          <!-- strip -->
+          <div class="whisper-strip">
+            <div class="whisper-pip-row">
+              <div class="whisper-pip"></div>
+              <div class="whisper-pip"></div>
+              <div class="whisper-pip"></div>
+            </div>
+            <span class="whisper-strip-label">Whisper</span>
+            <div class="whisper-pip-row">
+              <div class="whisper-pip"></div>
+              <div class="whisper-pip"></div>
+              <div class="whisper-pip"></div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+}

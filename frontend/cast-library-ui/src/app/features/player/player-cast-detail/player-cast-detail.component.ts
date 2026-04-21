@@ -1,20 +1,21 @@
-import { Component, OnInit, signal, computed, inject, effect, ViewChild } from '@angular/core';
+import { Component, OnInit, signal, computed, inject, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../../environments/environment';
-import { CampaignDetail, CampaignCastPlayerNotes } from '../../../shared/models/campaign.model';
+import { CampaignCastPlayerNotes } from '../../../shared/models/campaign.model';
 import { CampaignCastInstance } from '../../../shared/models/cast.model';
 import { CampaignSecret } from '../../../shared/models/secret.model';
-import { CampaignHubService } from '../../../core/hub/campaign-hub.service';
 import { PortalTransitionService } from '../../../core/portal-transition.service';
 import { PlayerCastNotesComponent } from '../player-cast-notes/player-cast-notes.component';
-import { TimeOfDayBarComponent } from '../../../shared/components/time-of-day-bar/time-of-day-bar.component';
+import { CastCardComponent } from '../../../shared/components/cast-card/cast-card.component';
+import { PlayerCampaignShellComponent } from '../player-campaign-shell/player-campaign-shell.component';
+import { PlayerCampaignShellService } from '../../../core/player-campaign-shell.service';
 
 @Component({
   selector: 'app-player-cast-detail',
   standalone: true,
-  imports: [CommonModule, PlayerCastNotesComponent, TimeOfDayBarComponent],
+  imports: [CommonModule, PlayerCastNotesComponent, CastCardComponent],
   templateUrl: './player-cast-detail.component.html',
   styleUrl: './player-cast-detail.component.scss'
 })
@@ -22,22 +23,19 @@ export class PlayerCastDetailComponent implements OnInit {
   private route      = inject(ActivatedRoute);
   private router     = inject(Router);
   private http       = inject(HttpClient);
-  private hub        = inject(CampaignHubService);
   private transition = inject(PortalTransitionService);
+  private shell      = inject(PlayerCampaignShellComponent);
+  private shellService = inject(PlayerCampaignShellService);
 
   @ViewChild(PlayerCastNotesComponent) private notesComp?: PlayerCastNotesComponent;
 
   campaignId         = signal('');
   sublocationInstanceId = signal('');
   castInstanceId     = signal('');
-  campaign           = signal<CampaignDetail | null>(null);
+  campaign           = () => this.shell.campaign();
   playerNotes        = signal<CampaignCastPlayerNotes | null>(null);
   playerRating       = computed(() => this.playerNotes()?.rating ?? 0);
   starAnimating      = signal(false);
-
-  portalColor = computed(() => this.campaign()?.spineColor ?? '#c8b07a');
-
-  timeOfDay = computed(() => this.campaign()?.timeOfDay ?? null);
 
   cast = computed<CampaignCastInstance | null>(() => {
     const c = this.campaign();
@@ -57,66 +55,7 @@ export class PlayerCastDetailComponent implements OnInit {
     return c.sublocations.find(l => l.instanceId === this.sublocationInstanceId()) ?? null;
   });
 
-  constructor() {
-    effect(() => {
-      const event = this.hub.secretRevealed();
-      if (!event || event.campaignId !== this.campaignId()) return;
-      this.campaign.update(c => {
-        if (!c) return c;
-        const exists = c.secrets.some(s => s.id === event.secretId);
-        if (exists) {
-          return { ...c, secrets: c.secrets.map(s => s.id === event.secretId ? { ...s, isRevealed: true } : s) };
-        }
-        const newSecret: CampaignSecret = {
-          id: event.secretId,
-          campaignId: event.campaignId,
-          castInstanceId: event.castInstanceId,
-          locationInstanceId: event.locationInstanceId,
-          sublocationInstanceId: event.sublocationInstanceId,
-          content: event.secretContent,
-          sortOrder: 0,
-          isRevealed: true,
-          revealedAt: new Date().toISOString(),
-        };
-        return { ...c, secrets: [...c.secrets, newSecret] };
-      });
-    });
-
-    effect(() => {
-      const event = this.hub.secretResealed();
-      if (!event || event.campaignId !== this.campaignId()) return;
-      this.campaign.update(c => {
-        if (!c) return c;
-        return { ...c, secrets: c.secrets.map(s => s.id === event.secretId ? { ...s, isRevealed: false } : s) };
-      });
-    });
-
-    effect(() => {
-      const event = this.hub.cardVisibilityChanged();
-      if (!event || event.campaignId !== this.campaignId()) return;
-      if (event.isVisible) {
-        this.http.get<CampaignDetail>(`${environment.apiUrl}/api/campaigns/${this.campaignId()}/player`)
-          .subscribe(c => { this.campaign.set(c); this.transition.spineColor = c.spineColor; });
-      } else {
-        this.campaign.update(c => {
-          if (!c) return c;
-          return {
-            ...c,
-            locations: c.locations.filter(x => x.instanceId !== event.instanceId),
-            sublocations: c.sublocations.filter(x => x.instanceId !== event.instanceId),
-            casts:     c.casts.filter(x => x.instanceId !== event.instanceId),
-          };
-        });
-      }
-    });
-
-    effect(() => {
-      const event = this.hub.bulkCardVisibilityChanged();
-      if (!event || event.campaignId !== this.campaignId()) return;
-      this.http.get<CampaignDetail>(`${environment.apiUrl}/api/campaigns/${this.campaignId()}/player`)
-        .subscribe(c => { this.campaign.set(c); this.transition.spineColor = c.spineColor; });
-    });
-  }
+  constructor() {}
 
   ngOnInit() {
     this.transition.hide();
@@ -126,11 +65,21 @@ export class PlayerCastDetailComponent implements OnInit {
     this.campaignId.set(id);
     this.sublocationInstanceId.set(locId);
     this.castInstanceId.set(castId);
-    this.http.get<CampaignDetail>(`${environment.apiUrl}/api/campaigns/${id}/player`)
-      .subscribe(c => {
-        this.campaign.set(c);
-        this.transition.spineColor = c.spineColor;
-      });
+
+    const ca = this.cast();
+    const parentSubLoc = this.parentSublocation();
+    if (ca && parentSubLoc) {
+      const parentLoc = this.campaign()?.locations.find(l => l.instanceId === parentSubLoc.locationInstanceId);
+      if (parentLoc) {
+        this.shellService.setCrumbs([
+          { label: '← Locations', action: () => this.goToCampaign() },
+          { label: `← ${parentLoc.name}`, action: () => this.goToLocation() },
+          { label: `← ${parentSubLoc.name}`, action: () => this.goToSublocation() }
+        ]);
+      }
+      this.shellService.setTitle(ca.name);
+    }
+
     this.http.get<CampaignCastPlayerNotes>(
       `${environment.apiUrl}/api/campaigns/${id}/cast-player-notes/${castId}`
     ).subscribe(n => this.playerNotes.set(n));

@@ -11,7 +11,9 @@
           <button class="void-back" (click)="crumb.action()">{{ crumb.label }}</button>
         }
       </div>
-      <button class="topbar-party-btn" (click)="goToMyCharacter()">⚔ My Character</button>
+      @if (isDm()) {
+        <button class="topbar-party-btn" (click)="goToTheParty()">⚔ The Party</button>
+      }
     </div>
     <span class="void-title">{{ shellSvc.title() }}</span>
   </div>
@@ -21,9 +23,9 @@
     <div class="tod-bar-section">
       <app-time-of-day-bar
         [campaignId]="campaignId()"
-        [isDm]="false"
+        [isDm]="isDm()"
         [panelTheme]="'dark'"
-        [todInput]="timeOfDay()"
+        [todInput]="camp.timeOfDay ?? null"
       />
     </div>
   }
@@ -32,28 +34,3 @@
   <router-outlet />
 
 </div>
-
-<app-card-reveal-overlay
-  [data]="overlayData()"
-  (dismissed)="dismissOverlay()"
-/>
-
-<app-whisper-card
-  [content]="wizardSecretContent()"
-  [recipient]="wizardSecretRecipient()"
-  [portalColor]="campaign()?.spineColor ?? '#6e28d0'"
-  [dismissable]="false"
-  (dismissed)="dismissWizardSecret()"
-  (goToSecrets)="navigateToSecrets()"
-/>
-
-@if (showGoldCard()) {
-  <app-currency-card
-    [amount]="goldCardAmount()"
-    [currency]="goldCardCurrency()"
-    [note]="goldCardNote()"
-    [portalColor]="campaign()?.spineColor ?? '#6e28d0'"
-    [dismissable]="true"
-    (dismissed)="dismissGoldCard()"
-  />
-}

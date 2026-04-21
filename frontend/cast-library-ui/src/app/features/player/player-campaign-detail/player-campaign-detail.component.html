@@ -1,59 +1,22 @@
 @if (campaign(); as camp) {
-  <div class="void-canvas" [style.--portal-color]="spineColor()">
-    <div class="void-topbar">
-      <div class="topbar-row">
-        <div class="void-breadcrumbs">
-          <button class="void-back" (click)="exitPortal()">← Player Campaigns</button>
-        </div>
-        <button class="topbar-party-btn" (click)="goToMyCharacter()">⚔ My Character</button>
+  @if (camp.locations.length) {
+    <div class="location-cards-section">
+      <div class="location-cards-label">Locations</div>
+      <div class="location-cards-container">
+        @for (location of camp.locations; track location.instanceId) {
+          <div [class.is-locking]="isLocking(location.instanceId)">
+            <app-location-card
+              [location]="location"
+              [flippable]="false"
+              [editable]="false"
+              [secrets]="false"
+              [tilt]="tiltFor(location.instanceId)"
+              [campaignMode]="true"
+              (cardClick)="goToLocationDetail(location.instanceId)"
+            />
+          </div>
+        }
       </div>
-      <span class="void-title">{{ camp.name }}</span>
     </div>
-
-    <div class="tod-bar-section">
-      <app-time-of-day-bar
-        [campaignId]="camp.id"
-        [isDm]="false"
-        [panelTheme]="'dark'"
-        [todInput]="timeOfDay()"
-      />
-    </div>
-
-    @if (camp.locations.length) {
-      <div class="location-cards-section">
-        <div class="location-cards-label">Locations</div>
-        <div class="location-cards-container">
-          @for (location of camp.locations; track location.instanceId) {
-            <div class="pc-card pc-card-location location-card-clickable"
-                 [class.is-locking]="isLocking(location.instanceId)"
-                 (click)="goToLocationDetail(location.instanceId)">
-              <div class="lib-card-front">
-                <div class="card-slot-front">
-                  <div class="card-front-header">
-                    <div class="card-name">{{ location.name }}</div>
-                    <div class="card-descriptor">{{ location.classification }}</div>
-                  </div>
-                  <div class="dv dv-card"></div>
-                  <div class="card-image-area">
-                    @if (location.imageUrl) {
-                      <img [src]="location.imageUrl" alt="" class="card-img-fill" />
-                    } @else {
-                      <div class="card-placeholder">
-                        <span class="card-initial">{{ initial(location.name) }}</span>
-                      </div>
-                    }
-                    @if (location.description) {
-                      <div class="card-desc-overlay">
-                        <p class="card-desc-text">{{ location.description }}</p>
-                      </div>
-                    }
-                  </div>
-                </div>
-              </div>
-            </div>
-          }
-        </div>
-      </div>
-    }
-  </div>
+  }
 }

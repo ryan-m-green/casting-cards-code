@@ -1,7 +1,7 @@
 @use '../../../../styles/variables' as v;
 
 // ── Backdrop ──────────────────────────────────────────────────────────────────
-.currency-backdrop {
+.whisper-backdrop {
   position: fixed;
   inset: 0;
   z-index: 8100;
@@ -9,67 +9,67 @@
   align-items: center;
   justify-content: center;
   background: rgba(0, 0, 0, 0.84);
-  animation: currency-fade-in 0.3s ease forwards;
+  animation: whisper-fade-in 0.3s ease forwards;
 }
 
-@keyframes currency-fade-in {
+@keyframes whisper-fade-in {
   from { opacity: 0; }
   to   { opacity: 1; }
 }
 
 // ── Card Shell ────────────────────────────────────────────────────────────────
-.currency-card {
+.whisper-card {
   width: v.$card-width;
   height: v.$card-height;
   position: relative;
   animation:
-    currency-appear 0.65s cubic-bezier(0.2, 0, 0.3, 1) forwards,
-    currency-pulse  3.2s ease-in-out infinite;
+    whisper-appear 0.65s cubic-bezier(0.2, 0, 0.3, 1) forwards,
+    whisper-pulse  3.2s ease-in-out infinite;
   will-change: transform, opacity, box-shadow;
 }
 
-@keyframes currency-appear {
+@keyframes whisper-appear {
   0%   { transform: scale(6); opacity: 0; }
   55%  { opacity: 1; }
   100% { transform: scale(1); opacity: 1; }
 }
 
-@keyframes currency-pulse {
+@keyframes whisper-pulse {
   0%, 100% {
     box-shadow:
-      0 0 0   3px color-mix(in srgb, var(--portal-color, #d4a800) 40%, white 60%),
-      0 0  8px 5px color-mix(in srgb, var(--portal-color, #d4a800), transparent 28%),
-      0 0 18px 8px color-mix(in srgb, var(--portal-color, #d4a800), transparent 52%),
-      0 0 36px 12px color-mix(in srgb, var(--portal-color, #d4a800), transparent 76%);
+      0 0 0   3px color-mix(in srgb, var(--portal-color, #6e28d0) 40%, white 60%),
+      0 0  8px 5px color-mix(in srgb, var(--portal-color, #6e28d0), transparent 28%),
+      0 0 18px 8px color-mix(in srgb, var(--portal-color, #6e28d0), transparent 52%),
+      0 0 36px 12px color-mix(in srgb, var(--portal-color, #6e28d0), transparent 76%);
   }
   50% {
     box-shadow:
-      0 0 0   3px color-mix(in srgb, var(--portal-color, #d4a800) 25%, white 75%),
-      0 0 12px 7px color-mix(in srgb, var(--portal-color, #d4a800), transparent 12%),
-      0 0 26px 12px color-mix(in srgb, var(--portal-color, #d4a800), transparent 36%),
-      0 0 52px 18px color-mix(in srgb, var(--portal-color, #d4a800), transparent 64%);
+      0 0 0   3px color-mix(in srgb, var(--portal-color, #6e28d0) 25%, white 75%),
+      0 0 12px 7px color-mix(in srgb, var(--portal-color, #6e28d0), transparent 12%),
+      0 0 26px 12px color-mix(in srgb, var(--portal-color, #6e28d0), transparent 36%),
+      0 0 52px 18px color-mix(in srgb, var(--portal-color, #6e28d0), transparent 64%);
   }
 }
 
 // ── Frame ─────────────────────────────────────────────────────────────────────
-.currency-frame {
+.whisper-frame {
   position: absolute;
   inset: 0;
   border-radius: 8px;
   padding: 4px;
   background: linear-gradient(
     145deg,
-    #f8e860 0%, #d4a800 15%, #8a6000 40%,
-    #f0d040 55%, #c09000 70%, #604800 85%, #e0c030 100%
+    #d0b8f8 0%, #9060d0 15%, #401870 40%,
+    #c0a0f0 55%, #7840b0 70%, #200840 85%, #b090e8 100%
   );
   box-shadow:
     0 0 0 1px #1a0f00,
     0 6px 22px rgba(0, 0, 0, 0.9),
-    inset 0 1px 0 rgba(255, 230, 100, 0.3);
+    inset 0 1px 0 rgba(200, 160, 255, 0.3);
 }
 
 // ── Inner Parchment ───────────────────────────────────────────────────────────
-.currency-inner {
+.whisper-inner {
   width: 100%;
   height: 100%;
   border-radius: 5px;
@@ -77,7 +77,7 @@
   overflow: hidden;
   display: flex;
   flex-direction: column;
-  background: linear-gradient(160deg, #fdf0cc 0%, #f5e0a0 50%, #e8cc78 100%);
+  background: linear-gradient(160deg, #4b3c58 0%, #a087c5 50%, #8c6dbd 100%);
 
   &::before {
     content: '';
@@ -91,7 +91,7 @@
 }
 
 // ── Corner Flourishes ─────────────────────────────────────────────────────────
-.currency-corner {
+.whisper-corner {
   position: absolute;
   width: 12px;
   height: 12px;
@@ -105,12 +105,12 @@
 }
 
 // ── Banner ────────────────────────────────────────────────────────────────────
-.currency-banner {
+.whisper-banner {
   padding: 6px 8px 5px;
   position: relative;
   flex-shrink: 0;
-  background: linear-gradient(180deg, #2a1800 0%, #4a2e00 100%);
-  border-bottom: 1.5px solid #8a6000;
+  background: linear-gradient(180deg, #0e0420 0%, #200840 100%);
+  border-bottom: 1.5px solid #401870;
 
   &::after {
     content: '';
@@ -119,31 +119,34 @@
     left: 0;
     right: 0;
     height: 1.5px;
-    background: linear-gradient(90deg, transparent, rgba(255, 220, 80, 0.5), transparent);
+    background: linear-gradient(90deg, transparent, rgba(180, 130, 255, 0.5), transparent);
   }
 }
 
-.currency-name {
+.whisper-name {
   font-family: 'Cinzel', serif;
   font-weight: 700;
   font-size: 8px;
   letter-spacing: 0.03em;
   line-height: 1.2;
-  color: #f8e860;
+  color: #d0b8f8;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
   text-shadow: 0 1px 4px rgba(0, 0, 0, 0.9);
 }
 
-.currency-subtitle {
+.whisper-subtitle {
   font-family: 'Cinzel', serif;
   font-size: 6px;
   letter-spacing: 0.12em;
-  color: #e0c060;
+  color: #d9d1e4;
   margin-top: 1px;
   opacity: 0.8;
 }
 
 // ── Portrait ──────────────────────────────────────────────────────────────────
-.currency-portrait {
+.whisper-portrait {
   flex: 1;
   margin: 5px 5px 0;
   border: 1.5px solid rgba(0, 0, 0, 0.25);
@@ -155,54 +158,68 @@
   justify-content: center;
 }
 
-.currency-portrait-img {
+.whisper-portrait-img {
   width: 100%;
   height: 100%;
   object-fit: cover;
   display: block;
 }
 
-// ── Amount + Note ─────────────────────────────────────────────────────────────
-.currency-flavor {
+// ── Content ───────────────────────────────────────────────────────────────────
+.whisper-flavor {
   border: 1.5px solid rgba(0, 0, 0, 0.2);
   border-top: 1px solid rgba(0, 0, 0, 0.15);
   border-radius: 0 0 3px 3px;
   margin: 0 5px;
-  padding: 5px 6px;
+  padding: 4px 6px;
   flex-shrink: 0;
-  text-align: center;
 }
 
-.currency-amount {
+.whisper-tagline {
   font-family: 'Cinzel', serif;
-  font-weight: 900;
-  font-size: 22px;
-  line-height: 1;
-  color: #8a6000;
-  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
+  font-size: 8px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: #401870;
+  text-align: center;
+  margin-bottom: 3px;
 }
 
-.currency-unit {
-  font-size: 11px;
-  font-weight: 400;
-}
-
-.currency-note {
+.whisper-secret {
   font-family: 'IM Fell English', serif;
   font-style: italic;
   font-size: 7px;
-  color: #1e110a;
-  line-height: 1.4;
-  opacity: 0.8;
-  margin-top: 3px;
+  color: #1e0a30;
+  line-height: 1.45;
+  text-align: center;
   display: -webkit-box;
-  -webkit-line-clamp: 2;
+  -webkit-line-clamp: 5;
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
 
+// ── Reveal Button ─────────────────────────────────────────────────────────────
+.whisper-reveal-btn {
+  flex-shrink: 0;
+  width: calc(100% - 10px);
+  margin: 2px 5px 0;
+  padding: 4px 3px;
+  font-family: 'Cinzel', serif;
+  font-size: 8px;
+  letter-spacing: 0.1em;
+  border: 1px solid black;
+  border-radius: 2px;
+  cursor: pointer;
+  transition: all 0.2s;
+  background: linear-gradient(180deg, #9060d0, #5c2890);
+  color: #e8d8ff;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+
+  &:hover { background: linear-gradient(180deg, #a070e0, #6c3aa0); transform: translateY(-1px); }
+}
+
 // ── Dismiss Button ────────────────────────────────────────────────────────────
-.currency-dismiss-btn {
+.whisper-dismiss-btn {
   flex-shrink: 0;
   width: calc(100% - 10px);
   margin: 2px 5px 0;
@@ -214,15 +231,15 @@
   border-radius: 2px;
   cursor: pointer;
   transition: all 0.2s;
-  background: linear-gradient(180deg, #e8c96a, #c9a84c);
-  color: #3d0e0e;
+  background: linear-gradient(180deg, #3a1860, #20083a);
+  color: #c0a0e8;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
 
-  &:hover { background: linear-gradient(180deg, #f8d870, #d9b850); transform: translateY(-1px); }
+  &:hover { background: linear-gradient(180deg, #4a2070, #280a4a); transform: translateY(-1px); }
 }
 
 // ── Strip ─────────────────────────────────────────────────────────────────────
-.currency-strip {
+.whisper-strip {
   padding: 3px 8px;
   display: flex;
   align-items: center;
@@ -230,31 +247,31 @@
   flex-shrink: 0;
   margin-top: 2px;
   position: relative;
-  background: linear-gradient(180deg, #4a2e00 0%, #2a1800 100%);
-  border-top: 1.5px solid #8a6000;
+  background: linear-gradient(180deg, #200840 0%, #0e0420 100%);
+  border-top: 1.5px solid #401870;
 }
 
-.currency-strip-label {
+.whisper-strip-label {
   font-family: 'Cinzel', serif;
   font-size: 5px;
   letter-spacing: 0.15em;
   text-transform: uppercase;
-  color: #f8e860;
+  color: #d0b8f8;
   position: absolute;
   left: 50%;
   transform: translateX(-50%);
   white-space: nowrap;
 }
 
-.currency-pip-row {
+.whisper-pip-row {
   display: flex;
   gap: 1.5px;
 }
 
-.currency-pip {
+.whisper-pip {
   width: 3px;
   height: 3px;
-  background: #d4a800;
+  background: #9060d0;
   transform: rotate(45deg);
   opacity: 0.7;
 }

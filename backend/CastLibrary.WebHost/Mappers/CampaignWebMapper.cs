@@ -253,6 +253,7 @@ public class CampaignWebMapper(
             CampaignId            = d.CampaignId,
             DayLengthHours        = d.DayLengthHours,
             CursorPositionPercent = d.CursorPositionPercent,
+            DaysPassed            = d.DaysPassed,
             Slices = d.Slices.Select(s =>
             {
                 var start = total > 0 ? running / total * 100 : 0;

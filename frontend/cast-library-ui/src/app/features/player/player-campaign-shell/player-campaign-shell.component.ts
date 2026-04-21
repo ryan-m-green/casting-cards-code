@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, signal, inject, effect, untracked } from '@angular/core';
+import { Component, OnInit, OnDestroy, signal, computed, inject, effect, untracked } from '@angular/core';
 import { RouterOutlet, ActivatedRoute, Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
@@ -9,17 +9,19 @@ import { CampaignDetail } from '../../../shared/models/campaign.model';
 import { CampaignHubService } from '../../../core/hub/campaign-hub.service';
 import { AuthService } from '../../../core/auth/auth.service';
 import { PortalTransitionService } from '../../../core/portal-transition.service';
+import { PlayerCampaignShellService } from '../../../core/player-campaign-shell.service';
+import { TimeOfDayBarComponent } from '../../../shared/components/time-of-day-bar/time-of-day-bar.component';
 import {
   CardRevealOverlayComponent,
   CardRevealOverlayData,
 } from '../../../shared/components/card-reveal-overlay/card-reveal-overlay.component';
-import { WizardSecretOverlayComponent } from '../../../shared/components/wizard-secret-overlay/wizard-secret-overlay.component';
+import { WhisperCardComponent } from '../../../shared/components/whisper-card/whisper-card.component';
 import { CurrencyCardComponent } from '../../../shared/components/currency-card/currency-card.component';
 
 @Component({
   selector: 'app-player-campaign-shell',
   standalone: true,
-  imports: [RouterOutlet, CommonModule, CardRevealOverlayComponent, WizardSecretOverlayComponent, CurrencyCardComponent],
+  imports: [RouterOutlet, CommonModule, TimeOfDayBarComponent, CardRevealOverlayComponent, WhisperCardComponent, CurrencyCardComponent],
   templateUrl: './player-campaign-shell.component.html',
   styleUrl: './player-campaign-shell.component.scss',
 })
@@ -30,11 +32,14 @@ export class PlayerCampaignShellComponent implements OnInit, OnDestroy {
   private hub        = inject(CampaignHubService);
   private auth       = inject(AuthService);
   private transition = inject(PortalTransitionService);
+  shellSvc           = inject(PlayerCampaignShellService);
 
   campaignId        = signal('');
   campaign          = signal<CampaignDetail | null>(null);
+  timeOfDay         = computed(() => this.campaign()?.timeOfDay ?? null);
   overlayData       = signal<CardRevealOverlayData | null>(null);
-  wizardSecretContent = signal<string | null>(null);
+  wizardSecretContent   = signal<string | null>(null);
+  wizardSecretRecipient = signal<string>('');
 
   // ── Currency card overlay ─────────────────────────────────────────────────
   showGoldCard     = signal(false);
@@ -87,6 +92,7 @@ export class PlayerCampaignShellComponent implements OnInit, OnDestroy {
       const myId = untracked(() => this.auth.currentUser()?.id);
       if (!myId || event.playerUserId !== myId) return;
       this.wizardSecretContent.set(event.content);
+      this.wizardSecretRecipient.set(untracked(() => this.auth.currentUser()?.displayName ?? ''));
     });
 
     // Show card reveal overlay when a party member shares a secret
@@ -163,6 +169,20 @@ export class PlayerCampaignShellComponent implements OnInit, OnDestroy {
     this.transition.quickCover();
     this.router.navigate(['/player/campaign', this.campaignId(), 'my-character'], { queryParams: { tab: 'secrets' } })
       .then(() => this.transition.hide());
+  }
+
+  goToMyCharacter() {
+    this.router.navigate(['/player/campaign', this.campaignId(), 'my-character']);
+  }
+
+  exitPortal() {
+    this.transition.exitToLibrary(() =>
+      this.router.navigate(['/player/campaigns'], { state: { noFlip: true } })
+    );
+  }
+
+  safeColor(color: string | undefined): string {
+    return color && /^#[0-9a-fA-F]{6}$/.test(color) ? color : '#6e28d0';
   }
 
   private buildOverlayFromVisibilityEvent(

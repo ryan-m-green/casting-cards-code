@@ -1,16 +1,6 @@
-<div class="void-canvas" [style.--portal-color]="portalColor()">
+@if (playerCard(); as card) {
 
-  <!-- ── Top bar ── -->
-  <div class="void-topbar">
-    <div class="void-breadcrumbs">
-      <button class="void-back" (click)="goBack()">← Locations</button>
-    </div>
-    <span class="void-title">My Character</span>
-  </div>
-
-  @if (playerCard(); as card) {
-
-    <!-- ── Character header ── -->
+  <!-- ── Character header ── -->
     <div class="char-header">
       <div class="char-portrait char-portrait--editable" (click)="showCharacterEditor.set(true)" title="Edit portrait">
         @if (card.imageUrl) {
@@ -324,8 +314,6 @@
   } @else {
     <div class="loading-state">Loading your character…</div>
   }
-
-</div>
 
 <app-character-info-editor
   [visible]="showInfoEditor()"

@@ -1,17 +1,85 @@
+<!-- Leather cover overlays -->
+<div class="cover-grain" aria-hidden="true"></div>
+<div class="cover-grain-fine" aria-hidden="true"></div>
+<div class="cover-border" aria-hidden="true"></div>
+<div class="cover-vignette" aria-hidden="true"></div>
+
+<svg class="cover-scratches" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
+  <defs>
+    @for (s of scratches; track $index; let i = $index) {
+      <linearGradient [attr.id]="'csg' + i" gradientUnits="userSpaceOnUse"
+        [attr.x1]="s.x1" [attr.y1]="s.y1"
+        [attr.x2]="s.x2" [attr.y2]="s.y2">
+        <stop offset="0%"   stop-color="rgba(255,200,140,0)"/>
+        <stop offset="20%"  [attr.stop-color]="s.stopMid1"/>
+        <stop offset="80%"  [attr.stop-color]="s.stopMid2"/>
+        <stop offset="100%" stop-color="rgba(255,200,140,0)"/>
+      </linearGradient>
+    }
+  </defs>
+  @for (s of scratches; track $index; let i = $index) {
+    <line [attr.x1]="s.x1" [attr.y1]="s.y1"
+          [attr.x2]="s.x2" [attr.y2]="s.y2"
+          [attr.stroke]="'url(#csg' + i + ')'"
+          stroke-width="0.7"/>
+  }
+</svg>
+
+<div class="corner corner-tl" aria-hidden="true"></div>
+<div class="corner corner-tr" aria-hidden="true"></div>
+<div class="corner corner-bl" aria-hidden="true"></div>
+<div class="corner corner-br" aria-hidden="true"></div>
+<div class="page-edge"        aria-hidden="true"></div>
+
 <div class="pc cover-center">
   <div class="cover-content">
-    <div class="cover-ornament">✦</div>
+
+    <!-- Arcane crest -->
+    <svg class="crest" width="52" height="52" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="50" cy="50" r="44" stroke="rgba(180,120,40,0.4)" stroke-width="0.8"/>
+      <circle cx="50" cy="50" r="40" stroke="rgba(180,120,40,0.2)" stroke-width="0.5"/>
+      <circle cx="50" cy="50" r="22" stroke="rgba(180,120,40,0.35)" stroke-width="0.8"/>
+      @for (line of crestStarLines; track $index) {
+        <line
+          [attr.x1]="line.x1" [attr.y1]="line.y1"
+          [attr.x2]="line.x2" [attr.y2]="line.y2"
+          [attr.stroke]="line.stroke"
+          [attr.stroke-width]="line.strokeWidth"/>
+      }
+      <polygon points="50,34 56,50 50,66 44,50"
+        stroke="rgba(200,140,50,0.55)" stroke-width="0.8" fill="rgba(180,120,40,0.12)"/>
+      @for (tick of crestTicks; track $index) {
+        <line
+          [attr.x1]="tick.x1" [attr.y1]="tick.y1"
+          [attr.x2]="tick.x2" [attr.y2]="tick.y2"
+          stroke="rgba(180,120,40,0.3)" stroke-width="0.6"/>
+      }
+      <circle cx="50" cy="50" r="2.5" fill="rgba(200,150,50,0.6)"/>
+    </svg>
+
     <h1 class="cover-title">Casting Cards</h1>
     <p class="cover-subtitle">Cards. Connections. Campaign Clarity.</p>
 
-    <div class="dv dv-cover"></div>
+    <form id="loginForm" class="cover-login-form" [formGroup]="loginForm" (ngSubmit)="knock()">
+      <div class="field">
+        <label class="cover-fi-label">Arcane Seal (Email)</label>
+        <input class="cover-fi" [class.input-error]="hasEmailError()"
+               type="email" formControlName="email"
+               placeholder="dm@example.com" autocomplete="email"/>
+        @if (hasEmailError()) {
+          <div class="field-error">{{ emailErrorMsg() }}</div>
+        }
+      </div>
 
-    <form class="cover-login-form" [formGroup]="loginForm" (ngSubmit)="knock()">
-      <label class="cover-fi-label">Arcane Seal (Email)</label>
-      <input class="cover-fi" type="email" formControlName="email" placeholder="dm@example.com" autocomplete="email" />
-
-      <label class="cover-fi-label">Password</label>
-      <input class="cover-fi" type="password" formControlName="password" placeholder="••••••••" autocomplete="current-password" />
+      <div class="field">
+        <label class="cover-fi-label">Passphrase</label>
+        <input class="cover-fi" [class.input-error]="hasPasswordError()"
+               type="password" formControlName="password"
+               placeholder="••••••••" autocomplete="current-password"/>
+        @if (hasPasswordError()) {
+          <div class="field-error">Passphrase required</div>
+        }
+      </div>
 
       @if (errorMsg()) {
         <div class="wb cover-error-box">
@@ -19,18 +87,52 @@
         </div>
       }
 
-      <div class="knock-spark-host" #sparkHost>
-        <button class="btn-primary cover-enter-btn" type="submit" [disabled]="loading()"
-                (click)="triggerSparkles($event)">
-          {{ loading() ? '…' : 'Knock' }}
-        </button>
-      </div>
-      <a class="cover-forgot-link" routerLink="/forgot-password">Forgot your password?</a>
     </form>
 
-    <div class="dv dv-cover"></div>
+    <div class="knock-group">
+      <div class="knock-spark-host" #sparkHost>
+        <button class="btn-knock" type="submit" [disabled]="loading()"
+                (click)="triggerSparkles($event)" form="loginForm">
+          {{ loading() ? 'Opening…' : 'Knock' }}
+        </button>
+      </div>
+      <a class="link-subtle" routerLink="/forgot-password">Forgot your passphrase?</a>
+    </div>
 
-    <button class="btn-ghost cover-create-btn" (click)="createAccount()">Create Account</button>
+    <div class="divider">
+      <div class="divider-line"></div>
+      <div class="divider-diamond">✦</div>
+      <div class="divider-line"></div>
+    </div>
+
+    <button class="btn-create" (click)="createAccount()">Open a New Chronicle</button>
+
     <a class="cover-about-link" routerLink="/about">About this app</a>
   </div>
+</div>
+
+<!-- Success overlay — positioned relative to :host -->
+<div class="success-overlay" [class.show]="showSuccess()">
+  <svg class="crest" width="64" height="64" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <circle cx="50" cy="50" r="44" stroke="rgba(180,120,40,0.4)" stroke-width="0.8"/>
+    <circle cx="50" cy="50" r="40" stroke="rgba(180,120,40,0.2)" stroke-width="0.5"/>
+    <circle cx="50" cy="50" r="22" stroke="rgba(180,120,40,0.35)" stroke-width="0.8"/>
+    @for (line of crestStarLines; track $index) {
+      <line
+        [attr.x1]="line.x1" [attr.y1]="line.y1"
+        [attr.x2]="line.x2" [attr.y2]="line.y2"
+        [attr.stroke]="line.stroke"
+        [attr.stroke-width]="line.strokeWidth"/>
+    }
+    <polygon points="50,34 56,50 50,66 44,50"
+      stroke="rgba(200,140,50,0.55)" stroke-width="0.8" fill="rgba(180,120,40,0.12)"/>
+    @for (tick of crestTicks; track $index) {
+      <line
+        [attr.x1]="tick.x1" [attr.y1]="tick.y1"
+        [attr.x2]="tick.x2" [attr.y2]="tick.y2"
+        stroke="rgba(180,120,40,0.3)" stroke-width="0.6"/>
+    }
+    <circle cx="50" cy="50" r="2.5" fill="rgba(200,150,50,0.6)"/>
+  </svg>
+  <div class="success-text">The journal opens…</div>
 </div>

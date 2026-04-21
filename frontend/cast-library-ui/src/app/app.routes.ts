@@ -6,7 +6,31 @@ export const routes: Routes = [
   {
     path: 'campaign/:id',
     canActivate: [authGuard],
-    loadComponent: () => import('./features/campaign/campaign-detail/campaign-detail.component').then(m => m.CampaignDetailComponent),
+    loadComponent: () => import('./features/campaign/campaign-shell/campaign-shell.component').then(m => m.CampaignShellComponent),
+    children: [
+      {
+        path: '',
+        pathMatch: 'full',
+        loadComponent: () => import('./features/campaign/campaign-detail/campaign-detail.component').then(m => m.CampaignDetailComponent),
+      },
+      {
+        path: 'the-party',
+        canActivate: [dmGuard],
+        loadComponent: () => import('./features/campaign/dm-the-party/dm-the-party.component').then(m => m.DmThePartyComponent),
+      },
+      {
+        path: 'locations/:locationInstanceId',
+        loadComponent: () => import('./features/campaign/campaign-location-detail/campaign-location-detail.component').then(m => m.CampaignLocationDetailComponent),
+      },
+      {
+        path: 'sublocations/:sublocationInstanceId',
+        loadComponent: () => import('./features/campaign/campaign-sublocation-detail/campaign-sublocation-detail.component').then(m => m.CampaignSublocationDetailComponent),
+      },
+      {
+        path: 'sublocations/:sublocationInstanceId/cast/:castInstanceId',
+        loadComponent: () => import('./features/campaign/campaign-cast-detail/campaign-cast-detail.component').then(m => m.CampaignCastDetailComponent),
+      },
+    ],
   },
   {
     path: 'player/campaign/:id',
@@ -39,26 +63,6 @@ export const routes: Routes = [
         loadComponent: () => import('./features/player/player-card-form/player-card-form.component').then(m => m.PlayerCardFormComponent),
       },
     ],
-  },
-  {
-    path: 'campaign/:id/the-party',
-    canActivate: [dmGuard],
-    loadComponent: () => import('./features/campaign/dm-the-party/dm-the-party.component').then(m => m.DmThePartyComponent),
-  },
-  {
-    path: 'campaign/:id/locations/:locationInstanceId',
-    canActivate: [authGuard],
-    loadComponent: () => import('./features/campaign/campaign-location-detail/campaign-location-detail.component').then(m => m.CampaignLocationDetailComponent),
-  },
-  {
-    path: 'campaign/:id/sublocations/:sublocationInstanceId',
-    canActivate: [authGuard],
-    loadComponent: () => import('./features/campaign/campaign-sublocation-detail/campaign-sublocation-detail.component').then(m => m.CampaignSublocationDetailComponent),
-  },
-  {
-    path: 'campaign/:id/sublocations/:sublocationInstanceId/cast/:castInstanceId',
-    canActivate: [authGuard],
-    loadComponent: () => import('./features/campaign/campaign-cast-detail/campaign-cast-detail.component').then(m => m.CampaignCastDetailComponent),
   },
   {
     path: '',

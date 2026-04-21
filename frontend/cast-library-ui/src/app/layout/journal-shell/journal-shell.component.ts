@@ -15,7 +15,7 @@ export class JournalShellComponent implements OnInit, OnDestroy {
   private router = inject(Router);
   protected transition = inject(PortalTransitionService);
 
-  readonly rings = [1,2,3,4,5,6,7,8];
+  readonly spineBands = [18, 30, 45, 60, 72];
   isCover = signal(false);
 
   @ViewChild('pageFlip') private pageFlipRef!: ElementRef<HTMLDivElement>;

@@ -1,54 +1,15 @@
 @if (cast(); as ca) {
-  <div class="void-canvas" [style.--portal-color]="portalColor()">
-
-    <!-- ── Top bar ── -->
-    <div class="void-topbar">
-      <div class="topbar-row">
-        <div class="void-breadcrumbs">
-          <button class="void-back" (click)="goToCampaign()">← Locations</button>
-          <span class="void-crumb-sep">›</span>
-          <button class="void-back" (click)="goToLocation()">← Sublocations</button>
-          <span class="void-crumb-sep">›</span>
-          <button class="void-back" (click)="goToSublocation()">← Cast</button>
-        </div>
-        <button class="topbar-party-btn" (click)="goToMyCharacter()">⚔ My Character</button>
-      </div>
-      <span class="void-title">{{ ca.name }}</span>
-    </div>
-
-    <!-- ── Time of day bar ── -->
-    <div class="tod-bar-section">
-      <app-time-of-day-bar [campaignId]="campaignId()" [isDm]="false" [panelTheme]="'dark'" [todInput]="timeOfDay()" />
-    </div>
-
-    <!-- ── Hero card ── -->
-    <div class="cast-hero">
+  <!-- ── Hero card ── -->
+  <div class="cast-hero">
       <div class="cast-hero-card">
-        <div class="pc-card pc-card-cast">
-          <div class="lib-card-front">
-            <div class="card-slot-front">
-              <div class="card-front-header">
-                <div class="card-name">{{ ca.name }}</div>
-                <div class="card-descriptor">{{ ca.role }}</div>
-              </div>
-              <div class="dv dv-card"></div>
-              <div class="card-image-area">
-                @if (ca.imageUrl) {
-                  <img [src]="ca.imageUrl" alt="" class="card-img-fill" />
-                } @else {
-                  <div class="card-placeholder">
-                    <span class="card-initial">{{ initial(ca.name) }}</span>
-                  </div>
-                }
-                @if (ca.publicDescription) {
-                  <div class="card-desc-overlay">
-                    <p class="card-desc-text">{{ ca.publicDescription }}</p>
-                  </div>
-                }
-              </div>
-            </div>
-          </div>
-        </div>
+        <app-cast-card
+          [cast]="ca"
+          [flippable]="false"
+          [editable]="false"
+          [secrets]="false"
+          [tilt]="0"
+          [campaignMode]="false"
+        />
       </div>
     </div>
 
@@ -169,6 +130,4 @@
         [castSecrets]="castSecrets()"
       />
     </div>
-
-  </div>
 }

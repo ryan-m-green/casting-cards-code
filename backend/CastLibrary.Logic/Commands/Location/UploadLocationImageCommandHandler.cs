@@ -32,9 +32,9 @@ public class UploadLocationImageCommandHandler(
 
 public class UploadLocationImageCommand
 {
-    public UploadLocationImageCommand(Guid LocationId, Guid dmUserId, Stream stream, string contentType)
+    public UploadLocationImageCommand(Guid locationId, Guid dmUserId, Stream stream, string contentType)
     {
-        LocationId = LocationId;
+        LocationId = locationId;
         DmUserId = dmUserId;
         Stream = stream;
         ContentType = contentType;

@@ -1,12 +1,131 @@
 @use '../../../styles/variables' as v;
 
-:host { display: block; height: 100%; }
+:host {
+  display: block;
+  height: 100%;
+  position: relative; // anchor for success-overlay
+}
+
+// ── Leather cover overlays ────────────────────────────────────────────────────
+.cover-grain {
+  position: absolute;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='512' height='512'%3E%3Cfilter id='lg2'%3E%3CfeTurbulence type='turbulence' baseFrequency='0.025 0.6' numOctaves='6' seed='12' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='0 0 0 0 0.5  0 0 0 0 0.22  0 0 0 0 0.08  0 0 0 0.45 0'/%3E%3C/filter%3E%3Crect width='512' height='512' filter='url(%23lg2)'/%3E%3C/svg%3E");
+  background-size: 512px 512px;
+  mix-blend-mode: overlay;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.cover-grain-fine {
+  position: absolute;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='256' height='256'%3E%3Cfilter id='fg'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' seed='5' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='0 0 0 0 0.4  0 0 0 0 0.18  0 0 0 0 0.06  0 0 0 0.18 0'/%3E%3C/filter%3E%3Crect width='256' height='256' filter='url(%23fg)'/%3E%3C/svg%3E");
+  background-size: 256px 256px;
+  mix-blend-mode: screen;
+  opacity: 0.5;
+  pointer-events: none;
+  z-index: 2;
+}
+
+.cover-border {
+  position: absolute;
+  inset: 18px 16px 18px 10px;
+  border: 1px solid rgba(180,110,40,0.18);
+  border-radius: 2px;
+  box-shadow: inset 0 0 0 1px rgba(0,0,0,0.5), 0 0 0 1px rgba(0,0,0,0.3);
+  pointer-events: none;
+  z-index: 3;
+
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 5px;
+    border: 1px solid rgba(180,110,40,0.1);
+    border-radius: 1px;
+  }
+}
+
+.cover-vignette {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse 90% 80% at 50% 42%, transparent 35%, rgba(0,0,0,0.28) 100%);
+  pointer-events: none;
+  z-index: 4;
+}
+
+.cover-scratches {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 3;
+}
+
+// ── Worn corners ──────────────────────────────────────────────────────────────
+.corner {
+  position: absolute;
+  pointer-events: none;
+  z-index: 5;
+}
+
+.corner-tl {
+  top: 0; left: 0;
+  width: 70px; height: 70px;
+  background: radial-gradient(circle at 0% 0%, rgba(0,0,0,0.5) 0%, transparent 70%);
+}
+
+.corner-tr {
+  top: 0; right: 0;
+  width: 80px; height: 70px;
+  background: radial-gradient(circle at 100% 0%, rgba(0,0,0,0.55) 0%, transparent 70%);
+}
+
+.corner-bl {
+  bottom: 0; left: 0;
+  width: 70px; height: 80px;
+  background: radial-gradient(circle at 0% 100%, rgba(0,0,0,0.6) 0%, transparent 70%);
+}
+
+.corner-br {
+  bottom: 0; right: 0;
+  width: 80px; height: 80px;
+  background: radial-gradient(circle at 100% 100%, rgba(0,0,0,0.7) 0%, transparent 70%);
+}
+
+// ── Page edge ─────────────────────────────────────────────────────────────────
+.page-edge {
+  position: absolute;
+  right: 0;
+  top: 8px;
+  bottom: 8px;
+  width: 5px;
+  background: repeating-linear-gradient(
+    to bottom,
+    #E8DCCC 0px, #E2D4BE 2px, #D4C8A8 3px, #E8DCCC 4px
+  );
+  border-radius: 0 1px 1px 0;
+  box-shadow: 2px 0 4px rgba(0,0,0,0.5);
+  pointer-events: none;
+  z-index: 6;
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
 
 .cover-center {
   display: flex;
   align-items: center;
   justify-content: center;
   height: 100%;
+  position: relative;
+  z-index: 8;
+  overflow: hidden;
+  scrollbar-width: none;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
 }
 
 .cover-content {
@@ -14,210 +133,287 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 10px;
+  gap: 0;
   min-width: 270px;
-  background: radial-gradient(ellipse 80% 60% at 50% 50%, rgba(110, 62, 20, 0.30) 0%, transparent 70%);
-  padding: 36px 48px 12px;
-  border-radius: 4px;
-  box-shadow:
-    inset 0 0 0 1px  rgba(185, 138, 45, 0.18),
-    inset 0 0 0 4px  rgba(185, 138, 45, 0.06),
-    inset 0 0 0 5px  rgba(185, 138, 45, 0.12);
+  padding: 28px 40px 16px;
 }
 
-// ── Gold star ornament ────────────────────────────────────────────────────────
-.cover-ornament {
-  font-size: 22px;
-  color: rgba(198, 152, 48, 0.65);
-  margin-bottom: 2px;
-  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.5);
+// ── Arcane crest ──────────────────────────────────────────────────────────────
+.crest {
+  margin-bottom: 12px;
+  opacity: 0.75;
+  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.8));
 }
 
 // ── Main title — embossed gold stamp ─────────────────────────────────────────
 .cover-title {
   font-family: v.$font-header;
-  font-size: 28px;
+  font-size: clamp(36px, 6.4vw, 60px);
   font-weight: 700;
-  letter-spacing: 0.08em;
-  color: rgba(205, 158, 52, 0.94);
-  text-shadow:
-    0 1px 0  rgba(255, 210, 90, 0.22),
-    0 -1px 0 rgba(0, 0, 0, 0.45),
-    0 2px 6px rgba(0, 0, 0, 0.50);
+  letter-spacing: 0.1em;
+  line-height: 1.1;
+  margin-bottom: 5px;
+  background: linear-gradient(to bottom, #E8C060 0%, #C4922A 40%, #A07020 70%, #C4922A 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  text-shadow: none;
+  filter: drop-shadow(0 1px 3px rgba(0,0,0,0.9));
 }
 
 // ── Subtitle ──────────────────────────────────────────────────────────────────
 .cover-subtitle {
   font-family: v.$font-body;
-  font-size: 14px;
+  font-size: clamp(10px, 1.4vw, 13px);
   font-style: italic;
-  color: rgba(182, 136, 42, 0.60);
-  letter-spacing: 0.10em;
-}
-
-// ── Cover divider — faint gold rule ───────────────────────────────────────────
-.dv-cover {
-  margin: 16px 0;
-  height: 1px;
-  width: 110px;
-  background: linear-gradient(to right, transparent, rgba(185, 138, 45, 0.35), transparent);
+  color: rgba(180, 120, 40, 0.65);
+  letter-spacing: 0.05em;
+  margin-bottom: 20px;
+  text-shadow: 0 1px 3px rgba(0,0,0,0.8);
 }
 
 // ── Login form ────────────────────────────────────────────────────────────────
-// Inputs sit on dark leather — all colors must be light/warm to be readable
 .cover-login-form {
   width: 100%;
+  max-width: 300px;
   display: flex;
   flex-direction: column;
   text-align: left;
-
-  // Override global fi-label (dark ink) for leather surface
-  ::ng-deep .fi-label,
-  .fi-label {
-    color: rgba(210, 175, 100, 0.82);
-  }
-
-  // Override global fi (transparent bg, dark text) for leather surface
-  .cover-fi {
-    width: 100%;
-    background: rgba(232, 215, 168, 0.07);
-    border: 1px solid rgba(185, 150, 60, 0.38);
-    border-radius: 2px;
-    outline: none;
-    font-family: v.$font-body;
-    font-size: 12px;
-    font-style: italic;
-    color: rgba(235, 215, 168, 0.92);
-    padding: 5px 8px;
-    margin-bottom: 12px;
-    transition: border-color v.$transition-std, background v.$transition-std;
-
-    &::placeholder {
-      color: rgba(185, 150, 60, 0.38);
-      font-style: italic;
-    }
-
-    &:focus {
-      border-color: rgba(90, 58, 154, 0.65);
-      background: rgba(46, 26, 94, 0.14);
-      outline: none;
-    }
-  }
+  margin-bottom: 94px;
 }
 
-// ── Cover field labels ────────────────────────────────────────────────────────
+.field {
+  margin-bottom: 12px;
+}
+
+.field-error {
+  font-family: v.$font-header;
+  font-size: 8px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgb(199 175 170 / 90%);
+  margin-top: 4px;
+}
+
 .cover-fi-label {
   display: block;
   font-family: v.$font-header;
-  font-size: 7.5px;
+  font-size: 8px;
   font-weight: 600;
   text-transform: uppercase;
-  letter-spacing: 0.18em;
-  color: rgba(210, 175, 100, 0.82);
-  margin-bottom: 4px;
+  letter-spacing: 0.22em;
+  color: rgba(180, 120, 40, 0.6);
+  margin-bottom: 5px;
+}
+
+.cover-fi {
+  width: 100%;
+  background: linear-gradient(to bottom, rgba(0,0,0,0.35) 0%, rgba(0,0,0,0.2) 100%),
+              radial-gradient(ellipse 80% 80% at 50% 50%, #200E07 0%, #180B05 100%);
+  border: 1px solid rgba(140, 80, 25, 0.28);
+  border-top-color: rgba(80, 35, 10, 0.5);
+  border-bottom-color: rgba(200, 140, 50, 0.15);
+  border-radius: 2px;
+  outline: none;
+  font-family: v.$font-body;
+  font-size: 13px;
+  font-style: italic;
+  color: rgba(220, 190, 140, 0.85);
+  padding: 8px 12px;
+  box-shadow: inset 0 2px 5px rgba(0,0,0,0.5), inset 0 1px 2px rgba(0,0,0,0.4);
+  margin-bottom: 0;
+  transition: border-color v.$transition-std, box-shadow v.$transition-std;
+
+  &.input-error { border-color: rgba(180, 60, 40, 0.6); }
+
+  &::placeholder {
+    color: rgba(160, 100, 35, 0.4);
+    font-style: italic;
+  }
+
+  &:focus {
+    border-color: rgba(180, 120, 40, 0.5);
+    box-shadow: inset 0 2px 5px rgba(0,0,0,0.5), 0 0 8px rgba(180,120,30,0.15);
+  }
 }
 
 // ── Error box ─────────────────────────────────────────────────────────────────
 .cover-error-box {
   margin-bottom: 8px;
-  border-color: rgba(180, 60, 60, 0.5);
+  border-color: rgba(180, 60, 40, 0.6);
   background: rgba(80, 20, 20, 0.2);
 
-  .wbd {
-    color: rgba(255, 160, 140, 0.92);
-  }
+  .wbd { color: rgba(200, 80, 60, 0.8); }
 }
 
-// ── Knock button — Pale Vellum (parchment stamp on leather) ──────────────────
-.cover-enter-btn {
-  position: relative;
-  font-size: 9px;
-  padding: 8px 28px;
-  letter-spacing: 0.22em;
-  align-self: center;
-  margin-top: 4px;
-
-  background: #E4D5A0;
-  border-color: #B89830;
-  color: #2A1804;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.35), 0 1px 0 rgba(255, 240, 180, 0.4) inset;
-
-  &:hover {
-    background: #EDE0B0;
-    color: #1A0E02;
-    border-color: #C8A830;
-    box-shadow: 0 3px 12px rgba(0, 0, 0, 0.40), 0 1px 0 rgba(255, 245, 195, 0.5) inset;
-    transform: scale(1.02);
-  }
-
-  &:active { transform: scale(0.96); }
-
-  &:disabled {
-    opacity: 0.55;
-    cursor: not-allowed;
-    transform: none;
-  }
+// ── Knock button ──────────────────────────────────────────────────────────────
+.knock-group {
+  position: absolute;
+  top: calc(62% + 38px);
+  width: 300px;
+  max-width: calc(100% - 80px);
+  left: 50%;
+  transform: translateX(-50%);
 }
 
-// ── Sparkle burst wrapper (sits around the Knock button) ─────────────────────
 .knock-spark-host {
   position: relative;
-  align-self: center;
-  margin-top: 4px;
+  margin-top: 0;
   display: flex;
-  justify-content: center;
+  justify-content: stretch;
 }
 
-// ── Forgot password link ──────────────────────────────────────────────────────
-.cover-forgot-link {
-  align-self: center;
-  margin-top: 6px;
+.btn-knock {
+  width: 100%;
+  padding: 11px 0;
   font-family: v.$font-header;
-  font-size: 8px;
+  font-size: 11px;
   font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.12em;
-  color: rgba(210, 175, 100, 0.80);
-  text-decoration: none;
+  letter-spacing: 0.3em;
+  color: #C4922A;
+  background: linear-gradient(to bottom, #2A1408 0%, #221008 40%, #1C0D06 60%, #2A1408 100%);
+  border: 1px solid rgba(160, 100, 30, 0.45);
+  border-top-color: rgba(200, 140, 50, 0.35);
+  border-bottom-color: rgba(80, 45, 10, 0.6);
+  border-radius: 2px;
   cursor: pointer;
-  transition: color v.$transition-std;
-
-  &:hover { color: rgba(235, 200, 120, 1); }
-}
-
-// ── Create Account button ─────────────────────────────────────────────────────
-.cover-create-btn {
-  font-size: 9px;
-  font-weight: 700;
-  letter-spacing: 0.16em;
-  color: rgba(220, 185, 90, 0.90);
-  border-color: rgba(185, 150, 60, 0.50);
+  box-shadow: 0 3px 8px rgba(0,0,0,0.6), 0 1px 2px rgba(0,0,0,0.4),
+              inset 0 1px 1px rgba(255,200,80,0.08);
+  transition: all 0.15s;
 
   &:hover {
-    color: rgba(240, 210, 120, 1);
-    background: rgba(185, 150, 60, 0.10);
-    border-color: rgba(210, 175, 100, 0.70);
+    border-color: rgba(180, 120, 40, 0.6);
+    box-shadow: 0 3px 12px rgba(0,0,0,0.7), 0 0 12px rgba(180,120,30,0.12),
+                inset 0 1px 1px rgba(255,200,80,0.12);
+    color: #E8B840;
+  }
+
+  &:active {
+    box-shadow: 0 1px 3px rgba(0,0,0,0.6), inset 0 2px 5px rgba(0,0,0,0.4);
+    transform: translateY(1px);
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
   }
 }
 
-// ── Page number / version ─────────────────────────────────────────────────────
-.pnum {
-  color: rgba(155, 112, 32, 0.45);
+// ── Forgot passphrase link ────────────────────────────────────────────────────
+.link-subtle {
+  display: block;
+  text-align: center;
+  margin-top: 10px;
+  font-family: v.$font-header;
+  font-size: 7.5px;
+  font-weight: 600;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: rgba(200, 140, 50, 0.85);
+  cursor: pointer;
+  text-decoration: none;
+  transition: color v.$transition-std;
+
+  &:hover { color: rgba(200, 140, 50, 0.75); }
+}
+
+// ── Divider with diamond ──────────────────────────────────────────────────────
+.divider {
+  width: 100%;
+  max-width: 300px;
+  margin: 16px 0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.divider-line {
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(to right, transparent, rgba(140,80,25,0.25), transparent);
+}
+
+.divider-diamond {
+  color: rgba(140, 80, 25, 0.35);
+  font-size: 6px;
+}
+
+// ── Create account button ─────────────────────────────────────────────────────
+.btn-create {
+  width: 100%;
+  max-width: 300px;
+  padding: 9px 0;
+  margin-top: -12px;
+  font-family: v.$font-header;
   font-size: 9px;
-  letter-spacing: 0.14em;
+  font-weight: 500;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: rgb(200, 140, 50);
+  background: transparent;
+  border: 1px solid rgb(140, 80, 25);
+  border-radius: 2px;
+  cursor: pointer;
+  transition: all 0.2s;
+
+  &:hover {
+    border-color: rgb(160, 100, 35);
+    color: rgb(200, 140, 50);
+    box-shadow: 0 0 8px rgba(180,120,30,0.08);
+  }
 }
 
 // ── About link ────────────────────────────────────────────────────────────────
 .cover-about-link {
-  margin-top: 14px;
+  margin-top: 34px;
   font-family: v.$font-header;
   font-size: 8px;
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.14em;
-  color: rgba(185, 150, 60, 0.75);
+  color: rgba(185, 150, 60, 0.5);
   text-decoration: none;
   transition: color v.$transition-std;
 
-  &:hover { color: rgba(210, 175, 100, 0.95); }
+  &:hover { color: rgba(210, 175, 100, 0.75); }
+}
+
+// ── Success overlay ───────────────────────────────────────────────────────────
+.success-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 20;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: radial-gradient(ellipse 70% 60% at 50% 45%, #2A1208 0%, #120805 60%, #0D0603 100%);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.6s;
+
+  &.show {
+    opacity: 1;
+    pointer-events: all;
+  }
+
+  .crest { margin-bottom: 0; }
+}
+
+.success-text {
+  font-family: v.$font-header;
+  font-size: clamp(14px, 2.5vw, 22px);
+  color: #C4922A;
+  text-shadow: 0 0 20px rgba(180,120,30,0.5);
+  margin-top: 16px;
+  animation: flicker 2s infinite;
+}
+
+@keyframes flicker {
+  0%, 100% { opacity: 1; }
+  92%       { opacity: 1; }
+  93%       { opacity: 0.85; }
+  94%       { opacity: 1; }
+  96%       { opacity: 0.9; }
+  97%       { opacity: 1; }
 }

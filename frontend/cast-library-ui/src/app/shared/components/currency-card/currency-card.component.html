@@ -1,20 +1,83 @@
-<div class="cc-backdrop" (click)="dismiss()">
-  <div class="cc-card" [style.--portal-color]="portalColor" (click)="$event.stopPropagation()">
+<div class="currency-backdrop" (click)="dismiss()">
+  <div class="currency-card" [style.--portal-color]="portalColor" (click)="$event.stopPropagation()">
+    <div class="currency-frame">
+      <div class="currency-inner">
 
-    <div class="cc-header">Gold Awarded</div>
+        <!-- corner flourishes -->
+        <div class="currency-corner currency-corner--tl">
+          <svg viewBox="0 0 20 20" fill="none" width="12" height="12">
+            <path d="M2 18L2 2L18 2" stroke="#d4a800" stroke-width="1.5" stroke-linecap="round"/>
+            <path d="M2 10L6 10" stroke="#d4a800" stroke-width="1" stroke-linecap="round"/>
+            <path d="M10 2L10 6" stroke="#d4a800" stroke-width="1" stroke-linecap="round"/>
+            <rect x="8" y="8" width="4" height="4" fill="#d4a800" transform="rotate(45 10 10)" opacity="0.7"/>
+          </svg>
+        </div>
+        <div class="currency-corner currency-corner--tr">
+          <svg viewBox="0 0 20 20" fill="none" width="12" height="12">
+            <path d="M2 18L2 2L18 2" stroke="#d4a800" stroke-width="1.5" stroke-linecap="round"/>
+            <path d="M2 10L6 10" stroke="#d4a800" stroke-width="1" stroke-linecap="round"/>
+            <path d="M10 2L10 6" stroke="#d4a800" stroke-width="1" stroke-linecap="round"/>
+            <rect x="8" y="8" width="4" height="4" fill="#d4a800" transform="rotate(45 10 10)" opacity="0.7"/>
+          </svg>
+        </div>
+        <div class="currency-corner currency-corner--bl">
+          <svg viewBox="0 0 20 20" fill="none" width="12" height="12">
+            <path d="M2 18L2 2L18 2" stroke="#d4a800" stroke-width="1.5" stroke-linecap="round"/>
+            <path d="M2 10L6 10" stroke="#d4a800" stroke-width="1" stroke-linecap="round"/>
+            <path d="M10 2L10 6" stroke="#d4a800" stroke-width="1" stroke-linecap="round"/>
+            <rect x="8" y="8" width="4" height="4" fill="#d4a800" transform="rotate(45 10 10)" opacity="0.7"/>
+          </svg>
+        </div>
+        <div class="currency-corner currency-corner--br">
+          <svg viewBox="0 0 20 20" fill="none" width="12" height="12">
+            <path d="M2 18L2 2L18 2" stroke="#d4a800" stroke-width="1.5" stroke-linecap="round"/>
+            <path d="M2 10L6 10" stroke="#d4a800" stroke-width="1" stroke-linecap="round"/>
+            <path d="M10 2L10 6" stroke="#d4a800" stroke-width="1" stroke-linecap="round"/>
+            <rect x="8" y="8" width="4" height="4" fill="#d4a800" transform="rotate(45 10 10)" opacity="0.7"/>
+          </svg>
+        </div>
 
-    <div class="cc-figure-wrap">
-      <img src="/currency.png" alt="" class="cc-image" />
+        <!-- banner -->
+        <div class="currency-banner">
+          <div class="currency-name">Coin Purse</div>
+          <div class="currency-subtitle">From the Dungeon Master</div>
+        </div>
+
+        <!-- portrait -->
+        <div class="currency-portrait">
+          <img src="/currency.png" alt="" class="currency-portrait-img" />
+        </div>
+
+        <!-- amount + note -->
+        <div class="currency-flavor">
+          <div class="currency-amount">
+            {{ amount }}<span class="currency-unit"> {{ currency }}</span>
+          </div>
+          @if (note) {
+            <div class="currency-note">{{ note }}</div>
+          }
+        </div>
+
+        @if (dismissable) {
+          <button class="currency-dismiss-btn" (click)="dismiss()">Acknowledge</button>
+        }
+
+        <!-- strip -->
+        <div class="currency-strip">
+          <div class="currency-pip-row">
+            <div class="currency-pip"></div>
+            <div class="currency-pip"></div>
+            <div class="currency-pip"></div>
+          </div>
+          <span class="currency-strip-label">Currency</span>
+          <div class="currency-pip-row">
+            <div class="currency-pip"></div>
+            <div class="currency-pip"></div>
+            <div class="currency-pip"></div>
+          </div>
+        </div>
+
+      </div>
     </div>
-
-    <div class="cc-amount-block">
-      <span class="cc-amount">✦ {{ amount }} {{ currency }}</span>
-      @if (note) {
-        <span class="cc-note">{{ note }}</span>
-      }
-    </div>
-
-    <button class="cc-cta" (click)="dismiss()">Acknowledge</button>
-
   </div>
 </div>

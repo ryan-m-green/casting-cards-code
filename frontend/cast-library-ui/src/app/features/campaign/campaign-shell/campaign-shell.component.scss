@@ -6,15 +6,25 @@
   height: 100%;
 }
 
+:host.portal-entry {
+  animation: portal-fade-in 2000ms ease-out 200ms both;
+}
+
+@keyframes portal-fade-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
 /* ── Void canvas ─────────────────────────────────────────────── */
 .void-canvas {
-  width: 100%;
-  min-height: 100%;
+  position: fixed;
+  inset: 0;
   background: #000;
-  position: relative;
-  animation: portal-inward-breathe 6.4s ease-in-out infinite;
   overflow-y: auto;
-  overflow-x: hidden;
+  scrollbar-width: none;
+  animation: portal-inward-breathe 6.4s ease-in-out infinite;
+
+  &::-webkit-scrollbar { display: none; }
 }
 
 @keyframes portal-inward-breathe {
@@ -44,6 +54,14 @@
   z-index: 1;
 }
 
+/* ── Topbar row (breadcrumbs left, party btn right) ──────────── */
+.topbar-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+}
+
 /* ── Breadcrumbs ─────────────────────────────────────────────── */
 .void-breadcrumbs {
   display: flex;
@@ -53,6 +71,14 @@
   z-index: 2;
 }
 
+.void-crumb-sep {
+  font-family: v.$font-header;
+  font-size: 9px;
+  color: color-mix(in srgb, var(--portal-color, #6e28d0), white 55%);
+  user-select: none;
+  pointer-events: none;
+}
+
 /* ── Back button ─────────────────────────────────────────────── */
 .void-back {
   font-family: v.$font-header;
@@ -60,47 +86,16 @@
   letter-spacing: 0.18em;
   text-transform: uppercase;
   color: color-mix(in srgb, var(--portal-color, #6e28d0), white 75%);
-  background: none;
-  border: none;
-  cursor: pointer;
+  text-decoration: none;
   transition: color 0.2s ease;
   white-space: nowrap;
 
-  &:hover { color: color-mix(in srgb, var(--portal-color, #6e28d0), white 92%); }
+  &:hover {
+    color: color-mix(in srgb, var(--portal-color, #6e28d0), white 92%);
+  }
 }
 
-/* ── Campaign title ──────────────────────────────────────────── */
-.void-title {
-  width: 100%;
-  margin-top: 10px;
-  text-align: center;
-  font-family: v.$font-header;
-  font-size: 17px;
-  font-weight: 600;
-  letter-spacing: 0.28em;
-  text-transform: uppercase;
-  color: rgba(220, 200, 255, 0.92);
-  text-shadow:
-    0 0 20px color-mix(in srgb, var(--portal-color, #6e28d0), white 35%),
-    0 0 50px color-mix(in srgb, var(--portal-color, #6e28d0), transparent 38%),
-    0 1px 3px rgba(0, 0, 0, 0.95);
-}
-
-/* ── Time-of-day bar section ─────────────────────────────────── */
-.tod-bar-section {
-  padding: 0 20px 54px;
-  max-width: 960px;
-  margin: 0 auto;
-}
-
-/* ── Topbar row (breadcrumbs left, party btn right) ──────────── */
-.topbar-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  width: 100%;
-}
-
+/* ── Party button ────────────────────────────────────────────── */
 .topbar-party-btn {
   font-family: v.$font-header;
   font-size: 9px;
@@ -121,38 +116,26 @@
   }
 }
 
-/* ── Location cards section ──────────────────────────────────── */
-.location-cards-section {
-  padding: 8px 40px 40px;
-  position: relative;
-  z-index: 1;
-}
-
-.location-cards-label {
+/* ── Campaign / page title ───────────────────────────────────── */
+.void-title {
+  width: 100%;
+  margin-top: 10px;
+  text-align: center;
   font-family: v.$font-header;
-  font-size: 14px;
-  font-weight: bolder;
-  letter-spacing: 0.22em;
+  font-size: 17px;
+  font-weight: 600;
+  letter-spacing: 0.28em;
   text-transform: uppercase;
-  color: rgba(200, 225, 235, 0.92);
-  margin-bottom: 16px;
+  color: rgba(220, 200, 255, 0.92);
+  text-shadow:
+    0 0 20px color-mix(in srgb, var(--portal-color, #6e28d0), white 35%),
+    0 0 50px color-mix(in srgb, var(--portal-color, #6e28d0), transparent 38%),
+    0 1px 3px rgba(0, 0, 0, 0.95);
 }
 
-.location-cards-container {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 18px;
-  align-items: flex-start;
-}
-
-
-@keyframes card-lock-out {
-  0%   { transform: scale(1);    opacity: 1; }
-  40%  { transform: scale(1.08); opacity: 0.8; }
-  100% { transform: scale(0);    opacity: 0; }
-}
-
-.is-locking {
-  animation: card-lock-out 0.65s cubic-bezier(0.55, 0.06, 0.45, 0.94) forwards;
-  pointer-events: none;
+/* ── Time of day bar ─────────────────────────────────────────── */
+.tod-bar-section {
+  padding: 0 20px 54px;
+  max-width: 960px;
+  margin: 0 auto;
 }

@@ -1,50 +1,22 @@
 @if (campaign(); as camp) {
-  <div class="void-canvas" [style.--portal-color]="safeColor(camp.spineColor)">
-    <div class="void-topbar">
-      <div class="topbar-row">
-        @if (isDm()) {
-          <div class="void-breadcrumbs">
-            <button class="void-back" (click)="exitPortal()">← Campaign Library</button>
-          </div>
-        } @else {
-          <div></div>
-        }
-        @if (isDm()) {
-          <button class="topbar-party-btn" (click)="goToTheParty()">⚔ The Party</button>
+  @if (isDm() && camp.locations.length) {
+    <div class="location-cards-section">
+      <div class="location-cards-label">Locations</div>
+      <div class="location-cards-container">
+        @for (location of camp.locations; track location.instanceId) {
+          <app-location-card
+            [location]="location"
+            [flippable]="false"
+            [editable]="false"
+            [secrets]="true"
+            [secretsRevealed]="location.isVisibleToPlayers"
+            [campaignMode]="true"
+            [tilt]="locationTilt(location.instanceId)"
+            (secretsClick)="toggleLocationVisibility(location)"
+            (cardClick)="goToLocationDetail(location.instanceId)"
+          />
         }
       </div>
-      <span class="void-title">{{ camp.name }}</span>
     </div>
-
-    <!-- Time-of-Day bar -->
-    <div class="tod-bar-section">
-      <app-time-of-day-bar
-        [campaignId]="camp.id"
-        [isDm]="isDm()"
-        [panelTheme]="'dark'"
-        [todInput]="timeOfDay()"
-      />
-    </div>
-
-    @if (isDm() && camp.locations.length) {
-      <div class="location-cards-section">
-        <div class="location-cards-label">Locations</div>
-        <div class="location-cards-container">
-          @for (location of camp.locations; track location.instanceId) {
-            <app-location-card
-              [location]="location"
-              [flippable]="false"
-              [editable]="false"
-              [secrets]="true"
-              [secretsRevealed]="location.isVisibleToPlayers"
-              [campaignMode]="true"
-              [tilt]="locationTilt(location.instanceId)"
-              (secretsClick)="toggleLocationVisibility(location)"
-              (cardClick)="goToLocationDetail(location.instanceId)"
-            />
-          }
-        </div>
-      </div>
-    }
-  </div>
+  }
 }
