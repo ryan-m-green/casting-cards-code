@@ -122,26 +122,51 @@
                 </div>
               </label>
             }
-            <div class="cast-stars" (click)="$event.stopPropagation()" role="group" aria-label="Rate importance of {{ cast.name }}">
-              @for (n of starNums; track n) {
-                <button
-                  type="button"
-                  [attr.aria-label]="'Rate ' + n + ' out of 5 stars'"
-                  (click)="onStarClick($event, n)"
-                  (mouseenter)="starHover.set(n)"
-                  (mouseleave)="starHover.set(null)">
-                  <svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true">
-                    <polygon
-                      points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"
-                      [attr.fill]="starFilled(n) ? '#f8d840' : 'none'"
-                      [attr.stroke]="starFilled(n) ? '#c9a000' : '#c9a84c'"
-                      stroke-width="1.5"
-                      stroke-linejoin="round"
-                    />
-                  </svg>
-                </button>
-              }
-            </div>
+            @if (setStars !== null) {
+              <div class="cast-stars cast-stars--readonly"
+                   role="group"
+                   [attr.aria-label]="'Importance of ' + cast.name + ': ' + setStars + ' out of 3 stars'">
+                @for (n of starNums; track n) {
+                  <span>
+                    <svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true">
+                      <polygon
+                        points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"
+                        [attr.fill]="starFilled(n) ? '#f8d840' : 'none'"
+                        [attr.stroke]="starFilled(n) ? '#c9a000' : '#c9a84c'"
+                        stroke-width="1.5"
+                        stroke-linejoin="round"
+                      />
+                    </svg>
+                  </span>
+                }
+              </div>
+            } @else {
+              <div class="cast-stars"
+                   [class.cast-stars--readonly]="readonlyStars"
+                   (click)="$event.stopPropagation()"
+                   role="group"
+                   [attr.aria-label]="readonlyStars ? 'Importance of ' + cast.name + ': ' + rating + ' out of 3 stars' : 'Rate importance of ' + cast.name">
+                @for (n of starNums; track n) {
+                  <button
+                    type="button"
+                    [attr.aria-label]="readonlyStars ? '' : 'Rate ' + n + ' out of 5 stars'"
+                    [disabled]="readonlyStars"
+                    (click)="onStarClick($event, n)"
+                    (mouseenter)="starHover.set(readonlyStars ? null : n)"
+                    (mouseleave)="starHover.set(null)">
+                    <svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true">
+                      <polygon
+                        points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"
+                        [attr.fill]="starFilled(n) ? '#f8d840' : 'none'"
+                        [attr.stroke]="starFilled(n) ? '#c9a000' : '#c9a84c'"
+                        stroke-width="1.5"
+                        stroke-linejoin="round"
+                      />
+                    </svg>
+                  </button>
+                }
+              </div>
+            }
             @if (cast.imageUrl) {
               <img [src]="cast.imageUrl" [alt]="'Portrait of ' + cast.name + ', ' + cast.role" class="cast-portrait-img" />
             } @else {

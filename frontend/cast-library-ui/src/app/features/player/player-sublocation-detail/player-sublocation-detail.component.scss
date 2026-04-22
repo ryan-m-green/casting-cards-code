@@ -353,31 +353,6 @@ $subLoc-olive: #a8a070;
   align-items: flex-start;
 }
 
-.cast-impact-stars {
-  position: absolute;
-  top: 8px;
-  right: 8px;
-  display: flex;
-  gap: 2px;
-  pointer-events: none;
-  z-index: 1;
-}
-
-.impact-star {
-  font-size: 12px;
-  line-height: 1;
-  color: rgba(252, 223, 3, 0.28);
-
-  &--lit {
-    color: #fcdf03;
-    text-shadow:
-      -0.5px -0.5px 0 black,
-       0.5px -0.5px 0 black,
-      -0.5px  0.5px 0 black,
-       0.5px  0.5px 0 black;
-  }
-}
-
 .cast-card-wrapper {
   position: relative;
   cursor: pointer;

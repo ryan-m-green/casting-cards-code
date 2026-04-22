@@ -102,7 +102,7 @@ $spring-easing:       cubic-bezier(0.22, 1, 0.36, 1);
 // ── Dark theme (campaign void canvas) ────────────────────────────────────────
 .tod-wrapper--dark {
   .tod-notes {
-    background: rgba(12, 8, 22, 0.94);
+    background: rgba(18, 18, 20, 0.94);
     border-color: rgba(150, 120, 210, 0.28);
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.55);
 
@@ -111,16 +111,16 @@ $spring-easing:       cubic-bezier(0.22, 1, 0.36, 1);
     }
 
     &__title {
-      color: rgba(220, 200, 255, 0.92);
+      color: rgba(255, 255, 255, 0.85);
     }
 
     &__duration {
-      color: rgba(160, 130, 220, 0.55);
+      color: rgba(255, 255, 255, 0.85);
     }
 
     &__close {
       border-color: rgba(150, 120, 210, 0.28);
-      color: rgba(160, 130, 220, 0.55);
+      color: rgba(255, 255, 255, 0.85);
 
       &:hover,
       &:focus-visible {
@@ -131,7 +131,7 @@ $spring-easing:       cubic-bezier(0.22, 1, 0.36, 1);
     }
 
     &__label {
-      color: rgba(160, 130, 220, 0.65);
+      color: rgba(255, 255, 255, 0.75);
     }
 
     &__saving {
@@ -140,11 +140,11 @@ $spring-easing:       cubic-bezier(0.22, 1, 0.36, 1);
 
     &__area {
       background: rgba(255, 255, 255, 0.05);
-      border-color: rgba(150, 120, 210, 0.25);
-      color: rgba(220, 200, 255, 0.88);
+      border-color: rgba(255, 255, 255, 0.25);
+      color: rgba(255, 255, 255, 0.85);
 
       &::placeholder {
-        color: rgba(160, 130, 220, 0.35);
+        color: rgba(255, 255, 255, 0.35);
       }
 
       &:focus {

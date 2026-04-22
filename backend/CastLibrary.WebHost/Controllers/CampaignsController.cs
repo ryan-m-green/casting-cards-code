@@ -514,6 +514,9 @@ public class CampaignsController(
     {
         await removePlayerCommand.HandleAsync(new RemoveCampaignPlayerCommand(id, playerUserId));
 
+        await hubContext.Clients.User(playerUserId.ToString())
+            .SendAsync("PlayerRemoved", new { campaignId = id });
+
         return NoContent();
     }
 

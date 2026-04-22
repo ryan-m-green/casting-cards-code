@@ -13,6 +13,7 @@
     @for (location of filtered(); track location.id) {
       <app-location-card
         [location]="location"
+        [tilt]="tiltFor(location.id)"
         (editClick)="edit(location.id)"
         (deleteClick)="confirmDelete(location.id)">
       </app-location-card>

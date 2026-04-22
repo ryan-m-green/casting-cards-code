@@ -1,4 +1,4 @@
-import { Component, OnInit, signal, computed, inject, ViewChild } from '@angular/core';
+import { Component, OnInit, signal, computed, inject, ViewChild, effect } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
@@ -55,7 +55,29 @@ export class PlayerCastDetailComponent implements OnInit {
     return c.sublocations.find(l => l.instanceId === this.sublocationInstanceId()) ?? null;
   });
 
-  constructor() {}
+  parentLocation = computed(() => {
+    const c = this.campaign();
+    const parentSubLoc = this.parentSublocation();
+    if (!c || !parentSubLoc) return null;
+    return c.locations.find(l => l.instanceId === parentSubLoc.locationInstanceId) ?? null;
+  });
+
+  constructor() {
+    effect(() => {
+      const ca = this.cast();
+      const parentSubLoc = this.parentSublocation();
+      const parentLoc = this.parentLocation();
+
+      if (ca && parentSubLoc && parentLoc) {
+        this.shellService.setCrumbs([
+          { label: '← Locations', action: () => this.goToCampaign() },
+          { label: `← ${parentLoc.name}`, action: () => this.goToLocation() },
+          { label: `← ${parentSubLoc.name}`, action: () => this.goToSublocation() }
+        ]);
+        this.shellService.setTitle(ca.name);
+      }
+    });
+  }
 
   ngOnInit() {
     this.transition.hide();
@@ -65,20 +87,6 @@ export class PlayerCastDetailComponent implements OnInit {
     this.campaignId.set(id);
     this.sublocationInstanceId.set(locId);
     this.castInstanceId.set(castId);
-
-    const ca = this.cast();
-    const parentSubLoc = this.parentSublocation();
-    if (ca && parentSubLoc) {
-      const parentLoc = this.campaign()?.locations.find(l => l.instanceId === parentSubLoc.locationInstanceId);
-      if (parentLoc) {
-        this.shellService.setCrumbs([
-          { label: '← Locations', action: () => this.goToCampaign() },
-          { label: `← ${parentLoc.name}`, action: () => this.goToLocation() },
-          { label: `← ${parentSubLoc.name}`, action: () => this.goToSublocation() }
-        ]);
-      }
-      this.shellService.setTitle(ca.name);
-    }
 
     this.http.get<CampaignCastPlayerNotes>(
       `${environment.apiUrl}/api/campaigns/${id}/cast-player-notes/${castId}`

@@ -471,7 +471,7 @@ $memory-search-accent: #9ab0b8;
 .secrets-modal {
   width: min(480px, 90vw);
   max-height: 80vh;
-  background: #0e0618;
+  background: rgba(14, 24, 32, 0.96);
   border: 1px solid rgba(110, 40, 208, 0.4);
   border-radius: 10px;
   padding: 28px 28px 22px;
@@ -486,7 +486,7 @@ $memory-search-accent: #9ab0b8;
   font-size: 14px;
   letter-spacing: 0.18em;
   text-transform: uppercase;
-  color: rgb(255, 255, 255);
+  color: rgba(161, 216, 255, 0.9);
 }
 
 .secrets-modal-list {
@@ -504,13 +504,13 @@ $memory-search-accent: #9ab0b8;
   font-family: v.$font-body;
   font-size: 14px;
   line-height: 1.55;
-  color: rgb(255, 255, 255);
+  color: rgba(161, 216, 255, 0.9);
 }
 
 .secrets-modal-empty {
   font-family: v.$font-body;
   font-size: 13px;
-  color: rgb(255, 255, 255);
+  color: rgba(161, 216, 255, 0.9);
   font-style: italic;
 }
 
@@ -525,7 +525,7 @@ $memory-search-accent: #9ab0b8;
   font-size: 9px;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: rgb(255, 255, 255);
+  color: rgba(161, 216, 255, 0.9);
   background: none;
   border: 1px solid rgba(180, 150, 255, 0.4);
   border-radius: 4px;
@@ -857,7 +857,7 @@ $memory-search-accent: #9ab0b8;
   font-size: 9px;
   letter-spacing: 0.18em;
   text-transform: uppercase;
-  color: rgba(195, 170, 255, 0.9);
+  color: rgba(161, 216, 255, 0.9);
   margin-bottom: 14px;
 }
 
@@ -877,7 +877,7 @@ $memory-search-accent: #9ab0b8;
 .secret-content {
   font-family: v.$font-body;
   font-size: 15px;
-  color: rgba(220, 200, 255, 0.95);
+  color: rgba(161, 216, 255, 0.9);
   line-height: 1.55;
   margin-bottom: 8px;
 }

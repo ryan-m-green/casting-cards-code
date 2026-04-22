@@ -19,6 +19,9 @@ export class CastCardComponent {
   @Input() secrets         = false;
   @Input() secretsRevealed = false;
   @Input() campaignMode    = false;
+  @Input() rating          = 0;
+  @Input() readonlyStars   = false;
+  @Input() setStars: number | null = null;
 
   @Output() editClick    = new EventEmitter<void>();
   @Output() deleteClick  = new EventEmitter<void>();
@@ -74,6 +77,7 @@ export class CastCardComponent {
 
   onStarClick(e: Event, n: number): void {
     e.stopPropagation();
+    if (this.readonlyStars || this.setStars !== null) return;
     this.stars.set(this.stars() === n ? 0 : n);
   }
 
@@ -83,6 +87,8 @@ export class CastCardComponent {
   }
 
   starFilled(n: number): boolean {
+    if (this.setStars !== null) return n <= this.setStars;
+    if (this.readonlyStars) return n <= this.rating;
     return n <= (this.starHover() ?? this.stars());
   }
 }

@@ -109,7 +109,7 @@
   font-size: 8px;
   letter-spacing: 0.22em;
   text-transform: uppercase;
-  color: rgba(105, 72, 18, 0.65);
+  color: rgba(105, 72, 18);
   border-bottom: 1.5px solid rgba(110, 75, 22, 0.22);
   padding-bottom: 4px;
   margin: 8px 0 16px;
@@ -288,6 +288,7 @@
 .join-section {
   margin-top: 28px;
   padding-top: 18px;
+  font-weight:600;
   border-top: 1.5px solid rgba(110, 75, 22, 0.22);
 }
 
@@ -296,7 +297,7 @@
   font-size: 8px;
   letter-spacing: 0.18em;
   text-transform: uppercase;
-  color: rgba(105, 72, 18, 0.55);
+  color: rgba(105, 72, 18);
   margin-bottom: 8px;
 }
 

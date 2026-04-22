@@ -22,6 +22,7 @@ export class LocationLibraryComponent implements OnInit {
   locations          = signal<Location[]>([]);
   searchTerm      = signal('');
   pendingDeleteId = signal<string | null>(null);
+  private tiltMap = new Map<string, number>();
 
   ngOnInit() {
     this.http.get<Location[]>(`${environment.apiUrl}/api/locations`).subscribe(c => this.locations.set(c));
@@ -46,5 +47,12 @@ export class LocationLibraryComponent implements OnInit {
         this.locations.set(this.locations().filter(c => c.id !== id));
         this.pendingDeleteId.set(null);
       });
+  }
+
+  tiltFor(id: string): number {
+    if (!this.tiltMap.has(id)) {
+      this.tiltMap.set(id, parseFloat((Math.random() * 4 - 2).toFixed(2)));
+    }
+    return this.tiltMap.get(id)!;
   }
 }

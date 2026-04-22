@@ -32,6 +32,7 @@ export class TimeOfDayBarComponent implements OnInit, OnChanges, OnDestroy {
   @Input() isDm = false;
   @Input() panelTheme: 'light' | 'dark' = 'light';
   @Input() todInput: TimeOfDay | null = null;
+  @Input() previewOnly = false;
 
   @ViewChild('barTrack') barTrackRef!: ElementRef<HTMLElement>;
 
@@ -197,7 +198,9 @@ export class TimeOfDayBarComponent implements OnInit, OnChanges, OnDestroy {
   onDocMouseUp() {
     if (!this.isDragging()) return;
     this.isDragging.set(false);
-    this.broadcastCursorPosition();
+    if (!this.previewOnly) {
+      this.broadcastCursorPosition();
+    }
   }
 
   @HostListener('document:touchmove', ['$event'])
@@ -215,23 +218,43 @@ export class TimeOfDayBarComponent implements OnInit, OnChanges, OnDestroy {
   onDocTouchEnd() {
     if (!this.isDragging()) return;
     this.isDragging.set(false);
-    this.broadcastCursorPosition();
+    if (!this.previewOnly) {
+      this.broadcastCursorPosition();
+    }
   }
 
   onRewindDay() {
     if (!this.isDm || this.daysPassed() === 0) return;
+    if (this.previewOnly) {
+      this.daysPassed.update(d => Math.max(0, d - 1));
+      return;
+    }
     this.http.patch(
       `${environment.apiUrl}/api/campaigns/${this.campaignId}/time-of-day/rewind-day`,
       {}
     ).subscribe();
   }
 
+  onRewindDayTouch(event: TouchEvent) {
+    event.preventDefault();
+    this.onRewindDay();
+  }
+
   onAdvanceDay() {
     if (!this.isDm) return;
+    if (this.previewOnly) {
+      this.daysPassed.update(d => d + 1);
+      return;
+    }
     this.http.patch(
       `${environment.apiUrl}/api/campaigns/${this.campaignId}/time-of-day/advance-day`,
       {}
     ).subscribe();
+  }
+
+  onAdvanceDayTouch(event: TouchEvent) {
+    event.preventDefault();
+    this.onAdvanceDay();
   }
 
   private broadcastCursorPosition() {

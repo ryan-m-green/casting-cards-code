@@ -92,11 +92,6 @@
         <div class="cast-grid">
           @for (cast of sublocationCasts(); track cast.instanceId) {
             <div class="cast-card-wrapper" (click)="goToCast(cast)">
-              <div class="cast-impact-stars">
-                @for (n of [1,2,3]; track n) {
-                  <span class="impact-star" [class.impact-star--lit]="castRating(cast.instanceId) >= n">★</span>
-                }
-              </div>
               <app-cast-card
                 [cast]="cast"
                 [flippable]="false"
@@ -104,6 +99,7 @@
                 [secrets]="false"
                 [tilt]="tiltFor(cast.instanceId)"
                 [campaignMode]="true"
+                [setStars]="castRating(cast.instanceId)"
                 (cardClick)="goToCast(cast)"
               />
             </div>

@@ -19,6 +19,7 @@ export class SublocationLibraryComponent implements OnInit {
   router = inject(Router);
   sublocations    = signal<Sublocation[]>([]);
   pendingDeleteId = signal<string | null>(null);
+  private tiltMap = new Map<string, number>();
 
   ngOnInit() {
     this.http.get<Sublocation[]>(`${environment.apiUrl}/api/sublocations`).subscribe(l => this.sublocations.set(l));
@@ -37,5 +38,12 @@ export class SublocationLibraryComponent implements OnInit {
         this.sublocations.set(this.sublocations().filter(l => l.id !== id));
         this.pendingDeleteId.set(null);
       });
+  }
+
+  tiltFor(id: string): number {
+    if (!this.tiltMap.has(id)) {
+      this.tiltMap.set(id, parseFloat((Math.random() * 4 - 2).toFixed(2)));
+    }
+    return this.tiltMap.get(id)!;
   }
 }

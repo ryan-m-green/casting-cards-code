@@ -229,10 +229,27 @@
 
   &:hover { opacity: 0.9; }
 
+  &--readonly {
+    cursor: default;
+    opacity: 0.85;
+    pointer-events: none;
+    &:hover { opacity: 0.85; }
+  }
+
   svg {
     cursor: pointer;
     transition: transform 0.15s;
     &:hover { transform: scale(1.2); }
+  }
+
+  &--readonly svg {
+    cursor: default;
+    &:hover { transform: none; }
+  }
+
+  &--readonly span {
+    display: block;
+    line-height: 1;
   }
 }
 

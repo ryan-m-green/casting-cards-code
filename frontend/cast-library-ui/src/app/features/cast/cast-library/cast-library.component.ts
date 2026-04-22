@@ -1,4 +1,4 @@
-﻿import { Component, OnInit, signal, inject } from '@angular/core';
+import { Component, OnInit, signal, inject } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -22,6 +22,7 @@ export class CastLibraryComponent implements OnInit {
   cast            = signal<Cast[]>([]);
   searchTerm      = signal('');
   pendingDeleteId = signal<string | null>(null);
+  private tiltMap = new Map<string, number>();
 
   ngOnInit() {
     this.http.get<Cast[]>(`${environment.apiUrl}/api/cast`)
@@ -52,5 +53,12 @@ export class CastLibraryComponent implements OnInit {
         this.cast.set(this.cast().filter(n => n.id !== id));
         this.pendingDeleteId.set(null);
       });
+  }
+
+  tiltFor(id: string): number {
+    if (!this.tiltMap.has(id)) {
+      this.tiltMap.set(id, parseFloat((Math.random() * 4 - 2).toFixed(2)));
+    }
+    return this.tiltMap.get(id)!;
   }
 }

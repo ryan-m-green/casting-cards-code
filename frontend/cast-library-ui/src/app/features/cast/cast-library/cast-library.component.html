@@ -13,6 +13,7 @@
     @for (cast of filtered(); track cast.id) {
       <app-cast-card
         [cast]="cast"
+        [tilt]="tiltFor(cast.id)"
         (editClick)="edit(cast.id)"
         (deleteClick)="confirmDelete(cast.id)">
       </app-cast-card>

@@ -1,4 +1,4 @@
-import { Component, OnInit, signal, inject, ElementRef, HostListener } from '@angular/core';
+import { Component, OnInit, OnDestroy, signal, inject, ElementRef, HostListener, effect } from '@angular/core';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -8,6 +8,7 @@ import { environment } from '../../../../environments/environment';
 import { Campaign } from '../../../shared/models/campaign.model';
 import { PortalTransitionService } from '../../../core/portal-transition.service';
 import { AuthService } from '../../../core/auth/auth.service';
+import { CampaignHubService } from '../../../core/hub/campaign-hub.service';
 
 @Component({
   selector: 'app-player-campaigns',
@@ -16,11 +17,12 @@ import { AuthService } from '../../../core/auth/auth.service';
   templateUrl: './player-campaigns.component.html',
   styleUrl: './player-campaigns.component.scss'
 })
-export class PlayerCampaignsComponent implements OnInit {
+export class PlayerCampaignsComponent implements OnInit, OnDestroy {
   private http       = inject(HttpClient);
   private router     = inject(Router);
   private transition = inject(PortalTransitionService);
   private el         = inject(ElementRef);
+  private hub        = inject(CampaignHubService);
   auth               = inject(AuthService);
 
   campaigns       = signal<Campaign[]>([]);
@@ -30,6 +32,17 @@ export class PlayerCampaignsComponent implements OnInit {
   joinError       = signal('');
   menuOpen        = signal(false);
   private isEntering = false;
+
+  constructor() {
+    // Listen for PlayerRemoved event from SignalR
+    effect(() => {
+      const event = this.hub.playerRemoved();
+      if (!event) return;
+
+      // Remove the campaign from the list
+      this.campaigns.update(list => list.filter(c => c.id !== event.campaignId));
+    });
+  }
 
   toggleMenu() { this.menuOpen.update(v => !v); }
 
@@ -49,7 +62,18 @@ export class PlayerCampaignsComponent implements OnInit {
   }
 
   ngOnInit() {
+    // Connect to SignalR hub to receive real-time events
+    const token = this.auth.getToken();
+    if (token && !this.hub.isConnected()) {
+      this.hub.connect(token).catch(console.warn);
+    }
+
     this.http.get<Campaign[]>(`${environment.apiUrl}/api/campaigns`).subscribe(c => this.campaigns.set(c));
+  }
+
+  ngOnDestroy() {
+    // Disconnect from SignalR hub when leaving the page
+    this.hub.disconnect().catch(console.warn);
   }
 
   redeemCode() {
@@ -70,9 +94,12 @@ export class PlayerCampaignsComponent implements OnInit {
           ) as HTMLElement[];
           const oldRects = existingCards.map(el => el.getBoundingClientRect());
 
+          // Mark as materializing to prevent visibility before we're ready
+          this.materializingId.set(campaign.id);
           this.campaigns.update(list => [campaign, ...list]);
 
-          setTimeout(() => {
+          // Use requestAnimationFrame to ensure DOM is updated before we manipulate styles
+          requestAnimationFrame(() => {
             // FLIP: slide existing cards from their old positions into their new ones
             existingCards.forEach((el, i) => {
               const newRect = el.getBoundingClientRect();
@@ -87,17 +114,26 @@ export class PlayerCampaignsComponent implements OnInit {
               el.addEventListener('transitionend', () => { el.style.transition = ''; }, { once: true });
             });
 
-            // Set new card to invisible starting state then animate it in
+            // Get the new card element
             const cardEl = this.el.nativeElement.querySelector(
               `[data-campaign-id="${campaign.id}"]`
             ) as HTMLElement | null;
             if (!cardEl) return;
+
+            // Remove materializing class so we can control the card with inline styles
+            this.materializingId.set(null);
+
+            // Force a layout to ensure class removal is applied
+            void cardEl.offsetWidth;
+
+            // Set invisible starting state for animation
             cardEl.style.opacity    = '0';
             cardEl.style.transform  = 'scale(0.3)';
             cardEl.style.transition = 'none';
             void cardEl.offsetWidth;
+
             this.animateMaterialize(cardEl, this.safeColor(campaign.spineColor));
-          }, 50);
+          });
         }
       },
       error: err => {

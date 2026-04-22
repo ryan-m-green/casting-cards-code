@@ -7,6 +7,7 @@ import { CampaignDetail } from '../../../shared/models/campaign.model';
 import { TimeOfDay } from '../../../shared/models/time-of-day.model';
 import { PortalTransitionService } from '../../../core/portal-transition.service';
 import { CampaignHubService } from '../../../core/hub/campaign-hub.service';
+import { PlayerCampaignShellService } from '../../../core/player-campaign-shell.service';
 import { TimeOfDayBarComponent } from '../../../shared/components/time-of-day-bar/time-of-day-bar.component';
 import { LocationCardComponent } from '../../../shared/components/location-card/location-card.component';
 
@@ -23,6 +24,7 @@ export class PlayerCampaignDetailComponent implements OnInit {
   private http       = inject(HttpClient);
   private transition = inject(PortalTransitionService);
   private hub        = inject(CampaignHubService);
+  private shellSvc   = inject(PlayerCampaignShellService);
 
   campaignId = signal('');
   campaign   = signal<CampaignDetail | null>(null);
@@ -83,6 +85,20 @@ export class PlayerCampaignDetailComponent implements OnInit {
     this.transition.hide();
     const id = this.route.snapshot.paramMap.get('id')!;
     this.campaignId.set(id);
+
+    this.http.get<CampaignDetail>(`${environment.apiUrl}/api/campaigns/${id}/player`)
+      .subscribe(c => {
+        this.campaign.set(c);
+        this.transition.spineColor = c.spineColor;
+        this.shellSvc.setTitle(c.name);
+        this.shellSvc.setCrumbs([{ label: '← Campaigns', action: () => this.goToCampaigns() }]);
+      });
+  }
+
+  goToCampaigns() {
+    this.transition.exitToLibrary(() => {
+      this.router.navigate(['/player/campaigns'], { state: { exitAnimation: true } });
+    });
   }
 
   goToLocationDetail(instanceId: string) {

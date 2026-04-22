@@ -10,6 +10,7 @@
     @for (subloc of sublocations(); track subloc.id) {
       <app-sublocation-card
         [sublocation]="subloc"
+        [tilt]="tiltFor(subloc.id)"
         (editClick)="edit(subloc.id)"
         (deleteClick)="confirmDelete(subloc.id)">
       </app-sublocation-card>
