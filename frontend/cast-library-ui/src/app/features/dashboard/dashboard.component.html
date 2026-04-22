@@ -5,21 +5,21 @@
 
   <!-- Stats -->
   <div class="sc section-label-mb">
-    <div class="sv" (click)="goto('/dm/cast')">
-      <div class="sv-value">{{ stats().castCount }}</div>
-      <div class="sv-label">Cast</div>
+    <div class="sv" (click)="goto('/dm/cast')" (keydown.enter)="goto('/dm/cast')" (keydown.space)="goto('/dm/cast')" role="button" tabindex="0" aria-label="Go to Cast page. You have {{ stats().castCount }} cast members.">
+      <div class="sv-value" aria-hidden="true">{{ stats().castCount }}</div>
+      <div class="sv-label" aria-hidden="true">Cast</div>
     </div>
-    <div class="sv" (click)="goto('/dm/locations')">
-      <div class="sv-value">{{ stats().locationCount }}</div>
-      <div class="sv-label">Locations</div>
+    <div class="sv" (click)="goto('/dm/locations')" (keydown.enter)="goto('/dm/locations')" (keydown.space)="goto('/dm/locations')" role="button" tabindex="0" aria-label="Go to Locations page. You have {{ stats().locationCount }} locations.">
+      <div class="sv-value" aria-hidden="true">{{ stats().locationCount }}</div>
+      <div class="sv-label" aria-hidden="true">Locations</div>
     </div>
-    <div class="sv" (click)="goto('/dm/sublocations')">
-      <div class="sv-value">{{ stats().sublocationCount }}</div>
-      <div class="sv-label">Sublocations</div>
+    <div class="sv" (click)="goto('/dm/sublocations')" (keydown.enter)="goto('/dm/sublocations')" (keydown.space)="goto('/dm/sublocations')" role="button" tabindex="0" aria-label="Go to Sublocations page. You have {{ stats().sublocationCount }} sublocations.">
+      <div class="sv-value" aria-hidden="true">{{ stats().sublocationCount }}</div>
+      <div class="sv-label" aria-hidden="true">Sublocations</div>
     </div>
-    <div class="sv" (click)="goto('/dm/campaigns')">
-      <div class="sv-value">{{ stats().campaignCount }}</div>
-      <div class="sv-label">Campaigns</div>
+    <div class="sv" (click)="goto('/dm/campaigns')" (keydown.enter)="goto('/dm/campaigns')" (keydown.space)="goto('/dm/campaigns')" role="button" tabindex="0" aria-label="Go to Campaigns page. You have {{ stats().campaignCount }} campaigns.">
+      <div class="sv-value" aria-hidden="true">{{ stats().campaignCount }}</div>
+      <div class="sv-label" aria-hidden="true">Campaigns</div>
     </div>
   </div>
 
@@ -27,7 +27,7 @@
 
   <!-- Active Campaign -->
   @if (stats().activeCampaign) {
-    <div class="wb accent active-campaign-item" (click)="portalEnter(stats().activeCampaign!.id, stats().activeCampaign!.spineColor)">
+    <div class="wb accent active-campaign-item" (click)="portalEnter(stats().activeCampaign!.id, stats().activeCampaign!.spineColor)" (keydown.enter)="portalEnter(stats().activeCampaign!.id, stats().activeCampaign!.spineColor)" (keydown.space)="portalEnter(stats().activeCampaign!.id, stats().activeCampaign!.spineColor)" role="button" tabindex="0" [attr.aria-label]="'Enter campaign: ' + stats().activeCampaign!.name + '. ' + stats().activeCampaign!.playerCount + ' players, ' + stats().activeCampaign!.locationCount + ' locations'">
       <div class="wbd active-campaign-prompt">Get back in to your latest campaign</div>
       <div class="wr">
         <div class="flex-1">
@@ -59,8 +59,8 @@
         </div>
       </div>
       <div class="portal-footer">
-        <button class="portal-btn portal-btn--delete">✕ Delete</button>
-        <button class="portal-btn portal-btn--edit">Edit →</button>
+        <button class="portal-btn portal-btn--delete" aria-label="Delete campaign">✕ Delete</button>
+        <button class="portal-btn portal-btn--edit" aria-label="Edit campaign">Edit →</button>
       </div>
     </div>
   }
@@ -68,9 +68,9 @@
   <!-- Library Import / Export -->
   <div class="section-label section-label-mb import-section-label">Library</div>
   <div class="wr">
-    <button class="btn-ghost" (click)="downloadTemplate()">↓ Template</button>
-    <button class="btn-ghost" (click)="exportLibrary()">↓ Export</button>
-    <button class="btn-ghost" (click)="toggleImport()">
+    <button class="btn-ghost" (click)="downloadTemplate()" aria-label="Download template">↓ Template</button>
+    <button class="btn-ghost" (click)="exportLibrary()" aria-label="Export library">↓ Export</button>
+    <button class="btn-ghost" (click)="toggleImport()" aria-label="Toggle import panel">
       {{ showImportPanel() ? '✕ Cancel' : '↑ Import' }}
     </button>
   </div>
@@ -79,9 +79,10 @@
   @if (showImportPanel()) {
     <div class="wb import-panel">
       <div class="import-field">
-        <div class="import-label">Library ZIP</div>
-        <input class="import-file-input" type="file" accept=".zip"
+        <label for="library-zip-input" class="import-label">Library ZIP</label>
+        <input id="library-zip-input" class="import-file-input" type="file" accept=".zip" aria-describedby="import-instructions"
                (change)="onZipFileSelected($event)" />
+        <span id="import-instructions" class="visually-hidden">Select a ZIP file containing your library export to import cast members, locations, and sublocations</span>
       </div>
 
       @if (importError()) {
@@ -89,7 +90,7 @@
       }
 
       <div class="import-actions">
-        <button class="btn-primary" (click)="submitImport()"
+        <button class="btn-primary" (click)="submitImport()" aria-label="Submit import"
                 [disabled]="!selectedZipFile() || importing()">
           {{ importing() ? 'Importing...' : 'Import' }}
         </button>

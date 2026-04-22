@@ -20,7 +20,7 @@
             <div class="dv dv-card"></div>
             <div class="card-image-area">
               @if (card.imageUrl) {
-                <img [src]="card.imageUrl" alt="" class="card-img-fill" />
+                <img [src]="card.imageUrl" [alt]="'Portrait of ' + card.name" class="card-img-fill" />
               } @else {
                 <div class="card-placeholder">
                   <span class="card-initial">{{ initial(card.name) }}</span>
@@ -46,10 +46,10 @@
               }
             </div>
             <div class="pc-action-row">
-              <button class="pc-action-btn" title="Award Gold"     (click)="openGoldModal(card);        $event.stopPropagation()">💰</button>
-              <button class="pc-action-btn" title="Conditions"     (click)="openCondModal(card);        $event.stopPropagation()">⚑</button>
-              <button class="pc-action-btn" title="Deliver Secret" (click)="openSecretModal(card);      $event.stopPropagation()">🔒</button>
-              <button class="pc-action-btn" title="View Secrets"   (click)="openViewSecretsModal(card); $event.stopPropagation()">📜</button>
+              <button class="pc-action-btn" aria-label="Award gold to {{ card.name }}" title="Award Gold" (click)="openGoldModal(card); $event.stopPropagation()">💰</button>
+              <button class="pc-action-btn" aria-label="Manage conditions for {{ card.name }}" title="Conditions" (click)="openCondModal(card); $event.stopPropagation()">⚑</button>
+              <button class="pc-action-btn" aria-label="Deliver secret to {{ card.name }}" title="Deliver Secret" (click)="openSecretModal(card); $event.stopPropagation()">🔒</button>
+              <button class="pc-action-btn" aria-label="View secrets for {{ card.name }}" title="View Secrets" (click)="openViewSecretsModal(card); $event.stopPropagation()">📜</button>
             </div>
           </div>
 
@@ -64,10 +64,10 @@
 
 <!-- ════════════════════ GOLD MODAL ══ -->
 @if (goldModalOpen()) {
-  <div class="modal-backdrop" (click)="goldModalOpen.set(false)">
+  <div class="modal-backdrop" (click)="goldModalOpen.set(false)" role="dialog" aria-modal="true" aria-labelledby="gold-modal-title">
     <div class="modal-panel" (click)="$event.stopPropagation()">
       <div class="modal-header">
-        <span class="modal-title">
+        <span id="gold-modal-title" class="modal-title">
           @if (goldModalTarget()) {
             Award Treasures — {{ goldModalTarget()!.name }}
           } @else {
@@ -78,9 +78,9 @@
       </div>
       <div class="modal-body modal-body--overflow-visible">
         <div class="modal-field">
-          <label class="modal-label">Amount</label>
+          <label for="gold-amount-input" class="modal-label">Amount</label>
           <div class="price-input-group">
-            <input class="modal-input price-amount"
+            <input id="gold-amount-input" class="modal-input price-amount"
                    type="number"
                    [ngModel]="goldAmount()"
                    (ngModelChange)="goldAmount.set(+$event)"
@@ -88,14 +88,19 @@
             <div class="currency-dropdown">
               <button class="currency-dropdown-trigger"
                       type="button"
+                      aria-label="Select currency type"
+                      aria-haspopup="listbox"
+                      [attr.aria-expanded]="currencyDropdownOpen()"
                       (click)="currencyDropdownOpen.set(!currencyDropdownOpen()); $event.stopPropagation()">
                 <span>{{ goldCurrency() }}</span>
-                <span class="currency-dropdown-caret" [class.currency-dropdown-caret--open]="currencyDropdownOpen()">▾</span>
+                <span class="currency-dropdown-caret" [class.currency-dropdown-caret--open]="currencyDropdownOpen()" aria-hidden="true">▾</span>
               </button>
               @if (currencyDropdownOpen()) {
-                <div class="currency-dropdown-panel">
+                <div class="currency-dropdown-panel" role="listbox" aria-label="Currency types">
                   @for (c of currencies; track c) {
                     <div class="currency-dropdown-item"
+                         role="option"
+                         [attr.aria-selected]="goldCurrency() === c"
                          [class.currency-dropdown-item--selected]="goldCurrency() === c"
                          (click)="goldCurrency.set(c); currencyDropdownOpen.set(false); $event.stopPropagation()">
                       {{ c }}
@@ -107,8 +112,8 @@
           </div>
         </div>
         <div class="modal-field">
-          <label class="modal-label">Note (optional)</label>
-          <input class="modal-input" type="text"
+          <label for="gold-note-input" class="modal-label">Note (optional)</label>
+          <input id="gold-note-input" class="modal-input" type="text"
                  [ngModel]="goldNote()"
                  (ngModelChange)="goldNote.set($event)"
                  placeholder="Reason…" />
@@ -126,10 +131,10 @@
 
 <!-- ════════════════════ CONDITION MODAL ══ -->
 @if (condModalOpen()) {
-  <div class="modal-backdrop" (click)="condModalOpen.set(false)">
+  <div class="modal-backdrop" (click)="condModalOpen.set(false)" role="dialog" aria-modal="true" aria-labelledby="cond-modal-title">
     <div class="modal-panel" (click)="$event.stopPropagation()">
       <div class="modal-header">
-        <span class="modal-title">Conditions — {{ condModalCard()?.name }}</span>
+        <span id="cond-modal-title" class="modal-title">Conditions — {{ condModalCard()?.name }}</span>
         <button class="modal-close" (click)="condModalOpen.set(false)">✕</button>
       </div>
       <div class="modal-body">
@@ -140,7 +145,7 @@
             @for (cond of conditionsForModal(); track cond.id) {
               <div class="cond-active-item">
                 <span>{{ cond.conditionName }}</span>
-                <button class="cond-remove-btn" (click)="removeCondition(condModalCard()!, cond.id)">✕</button>
+                <button class="cond-remove-btn" (click)="removeCondition(condModalCard()!, cond.id)" [attr.aria-label]="'Remove ' + cond.conditionName + ' condition'">✕</button>
               </div>
             }
           </div>
@@ -165,8 +170,9 @@
 
         <!-- Custom condition -->
         <div class="cond-custom-row">
-          <input class="modal-input" type="text" [ngModel]="condInput()" (ngModelChange)="condInput.set($event)" placeholder="Custom condition…" />
-          <button class="modal-confirm modal-confirm--sm" (click)="assignCondition(condInput()); condInput.set('')" [disabled]="!condInput().trim()">Add</button>
+          <label for="custom-condition-input" class="visually-hidden">Custom condition name</label>
+          <input id="custom-condition-input" class="modal-input" type="text" [ngModel]="condInput()" (ngModelChange)="condInput.set($event)" placeholder="Custom condition…" />
+          <button class="modal-confirm modal-confirm--sm" (click)="assignCondition(condInput()); condInput.set('')" [disabled]="!condInput().trim()" aria-label="Add custom condition">Add</button>
         </div>
 
       </div>
@@ -179,10 +185,10 @@
 
 <!-- ════════════════════ VIEW SECRETS MODAL ══ -->
 @if (viewSecretsOpen()) {
-  <div class="modal-backdrop" (click)="viewSecretsOpen.set(false)">
+  <div class="modal-backdrop" (click)="viewSecretsOpen.set(false)" role="dialog" aria-modal="true" aria-labelledby="view-secrets-modal-title">
     <div class="modal-panel" (click)="$event.stopPropagation()">
       <div class="modal-header">
-        <span class="modal-title">Secrets — {{ viewSecretsCard()?.name }}</span>
+        <span id="view-secrets-modal-title" class="modal-title">Secrets — {{ viewSecretsCard()?.name }}</span>
         <button class="modal-close" (click)="viewSecretsOpen.set(false)">✕</button>
       </div>
       <div class="modal-body">
@@ -196,7 +202,7 @@
               <div class="sle-content">{{ secret.content }}</div>
               <div class="sle-footer">
                 <span class="sle-date">Delivered {{ secret.deliveredAt | date:'mediumDate' }}</span>
-                <button class="sle-delete" (click)="deletePlayerSecret(secret.id)" title="Delete secret">✕</button>
+                <button class="sle-delete" (click)="deletePlayerSecret(secret.id)" aria-label="Delete this secret" title="Delete secret">✕</button>
               </div>
             </div>
           }
@@ -211,16 +217,17 @@
 
 <!-- ════════════════════ SECRET MODAL ══ -->
 @if (secretModalOpen()) {
-  <div class="modal-backdrop" (click)="secretModalOpen.set(false)">
+  <div class="modal-backdrop" (click)="secretModalOpen.set(false)" role="dialog" aria-modal="true" aria-labelledby="secret-modal-title">
     <div class="modal-panel" (click)="$event.stopPropagation()">
       <div class="modal-header">
-        <span class="modal-title">Deliver Secret — {{ secretModalCard()?.name }}</span>
+        <span id="secret-modal-title" class="modal-title">Deliver Secret — {{ secretModalCard()?.name }}</span>
         <button class="modal-close" (click)="secretModalOpen.set(false)">✕</button>
       </div>
       <div class="modal-body">
         <div class="modal-field">
-          <label class="modal-label">Secret</label>
+          <label for="secret-content-textarea" class="modal-label">Secret</label>
           <textarea
+            id="secret-content-textarea"
             class="modal-textarea"
             [ngModel]="secretContent()"
             (ngModelChange)="secretContent.set($event)"

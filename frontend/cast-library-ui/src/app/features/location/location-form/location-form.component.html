@@ -28,59 +28,62 @@
   <form [formGroup]="form">
     <div class="wr form-row-gap">
       <div class="form-field-wide">
-        <label class="fi-label">Location Name</label>
-        <input class="fi" formControlName="name" placeholder="Irongate" />
+        <label for="location-name-input" class="fi-label">Location Name</label>
+        <input id="location-name-input" class="fi" formControlName="name" placeholder="Irongate" />
       </div>
       <div class="form-field">
-        <label class="fi-label">Classification</label>
-        <input class="fi" formControlName="classification" placeholder="Major Port Location" />
+        <label for="location-classification-input" class="fi-label">Classification</label>
+        <input id="location-classification-input" class="fi" formControlName="classification" placeholder="Major Port Location" />
       </div>
     </div>
     <div class="wr form-row-gap">
       <div class="form-field">
-        <label class="fi-label">Size</label>
-        <input class="fi" formControlName="size" list="size-options" placeholder="Large" />
+        <label for="location-size-input" class="fi-label">Size</label>
+        <input id="location-size-input" class="fi" formControlName="size" list="size-options" placeholder="Large" />
         <datalist id="size-options">
           @for (s of sizeOptions; track s) { <option [value]="s"></option> }
         </datalist>
       </div>
       <div class="form-field">
-        <label class="fi-label">Condition</label>
-        <input class="fi" formControlName="condition" list="condition-options" placeholder="Prosperous" />
+        <label for="location-condition-input" class="fi-label">Condition</label>
+        <input id="location-condition-input" class="fi" formControlName="condition" list="condition-options" placeholder="Prosperous" />
         <datalist id="condition-options">
           @for (c of conditionOptions; track c) { <option [value]="c"></option> }
         </datalist>
       </div>
     </div>
-    <label class="fi-label">Geography</label>
-    <input class="fi" formControlName="geography" list="geography-options" placeholder="Coastal" />
+    <label for="location-geography-input" class="fi-label">Geography</label>
+    <input id="location-geography-input" class="fi" formControlName="geography" list="geography-options" placeholder="Coastal" />
     <datalist id="geography-options">
       @for (g of geographyOptions; track g) { <option [value]="g"></option> }
     </datalist>
-    <label class="fi-label">Architecture</label>
-    <input class="fi" formControlName="architecture" list="architecture-options" placeholder="Gothic" />
+    <label for="location-architecture-input" class="fi-label">Architecture</label>
+    <input id="location-architecture-input" class="fi" formControlName="architecture" list="architecture-options" placeholder="Gothic" />
     <datalist id="architecture-options">
       @for (a of architectureOptions; track a) { <option [value]="a"></option> }
     </datalist>
     <div class="wr form-row-gap">
       <div class="form-field">
-        <label class="fi-label">Climate</label>
-        <input class="fi" formControlName="climate" list="climate-options" placeholder="Temperate" />
+        <label for="location-climate-input" class="fi-label">Climate</label>
+        <input id="location-climate-input" class="fi" formControlName="climate" list="climate-options" placeholder="Temperate" />
         <datalist id="climate-options">
           @for (cl of climateOptions; track cl) { <option [value]="cl"></option> }
         </datalist>
       </div>
-      <div class="form-field"><label class="fi-label">Religion</label><input class="fi" formControlName="religion" placeholder="Temple of Kord" /></div>
+      <div class="form-field">
+        <label for="location-religion-input" class="fi-label">Religion</label>
+        <input id="location-religion-input" class="fi" formControlName="religion" placeholder="Temple of Kord" />
+      </div>
     </div>
-    <label class="fi-label">Vibe / Atmosphere</label>
-    <textarea class="fi" formControlName="vibe" rows="2" placeholder="Industrious and bustling…"></textarea>
+    <label for="location-vibe-textarea" class="fi-label">Vibe / Atmosphere</label>
+    <textarea id="location-vibe-textarea" class="fi" formControlName="vibe" rows="2" placeholder="Industrious and bustling…"></textarea>
     <label class="fi-label">Languages</label>
-    <div class="lang-picker">
+    <div class="lang-picker" role="group" aria-label="Select languages spoken in this location">
       <div class="lang-col">
         <div class="lang-col-header">Available</div>
         <div class="lang-list">
           @for (lang of availableLanguages(); track lang) {
-            <div class="lang-item" (click)="addLanguage(lang)">{{ lang }}</div>
+            <div class="lang-item" role="button" tabindex="0" [attr.aria-label]="'Add ' + lang" (click)="addLanguage(lang)" (keydown.enter)="addLanguage(lang)" (keydown.space)="addLanguage(lang)">{{ lang }}</div>
           }
         </div>
       </div>
@@ -88,7 +91,7 @@
         <div class="lang-col-header">Selected</div>
         <div class="lang-list lang-list--selected">
           @for (lang of selectedLanguages(); track lang) {
-            <div class="lang-item lang-item--selected" (click)="removeLanguage(lang)">{{ lang }}</div>
+            <div class="lang-item lang-item--selected" role="button" tabindex="0" [attr.aria-label]="'Remove ' + lang" (click)="removeLanguage(lang)" (keydown.enter)="removeLanguage(lang)" (keydown.space)="removeLanguage(lang)">{{ lang }}</div>
           }
           @if (!selectedLanguages().length) {
             <div class="lang-empty">None selected</div>
@@ -96,8 +99,8 @@
         </div>
       </div>
     </div>
-    <label class="fi-label">Description</label>
-    <textarea class="fi" formControlName="description" rows="4" placeholder="Full description…"></textarea>
+    <label for="location-description-textarea" class="fi-label">Description</label>
+    <textarea id="location-description-textarea" class="fi" formControlName="description" rows="4" placeholder="Full description…"></textarea>
   </form>
 
 </div>

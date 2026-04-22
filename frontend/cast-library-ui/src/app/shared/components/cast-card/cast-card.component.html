@@ -87,13 +87,14 @@
           </div>
 
           @if (queueable) {
-            <button class="loc-delete-btn" (click)="onDeleteClick($event)">&#215;</button>
+            <button class="loc-delete-btn" (click)="onDeleteClick($event)" aria-label="Remove {{ cast.name }} from queue">&#215;</button>
           }
 
           @if (secrets) {
             <button class="cast-secrets-btn"
                     [class.cast-secrets-btn--revealed]="secretsRevealed"
                     (click)="onSecretsClick($event)"
+                    [attr.aria-label]="(secretsRevealed ? 'Hide ' : 'Reveal ') + cast.name + ' to players'"
                     [title]="secretsRevealed ? 'Hide from players' : 'Reveal to players'">
               {{ secretsRevealed ? '🔓' : '🔒' }}
             </button>
@@ -111,6 +112,7 @@
             @if (imageUpload) {
               <label class="cast-upload-label">
                 <input type="file" accept="image/jpeg,image/png,image/webp"
+                       aria-label="Upload portrait image for {{ cast.name }}"
                        class="cast-upload-input" (change)="onFileInputChange($event)" />
                 <div class="cast-upload-overlay">
                   <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#f0e8d8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
@@ -120,13 +122,15 @@
                 </div>
               </label>
             }
-            @if (showStars) {
-              <div class="cast-stars" (click)="$event.stopPropagation()">
-                @for (n of starNums; track n) {
-                  <svg width="16" height="16" viewBox="0 0 24 24"
-                       (click)="onStarClick($event, n)"
-                       (mouseenter)="starHover.set(n)"
-                       (mouseleave)="starHover.set(null)">
+            <div class="cast-stars" (click)="$event.stopPropagation()" role="group" aria-label="Rate importance of {{ cast.name }}">
+              @for (n of starNums; track n) {
+                <button
+                  type="button"
+                  [attr.aria-label]="'Rate ' + n + ' out of 5 stars'"
+                  (click)="onStarClick($event, n)"
+                  (mouseenter)="starHover.set(n)"
+                  (mouseleave)="starHover.set(null)">
+                  <svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true">
                     <polygon
                       points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"
                       [attr.fill]="starFilled(n) ? '#f8d840' : 'none'"
@@ -135,11 +139,11 @@
                       stroke-linejoin="round"
                     />
                   </svg>
-                }
-              </div>
-            }
+                </button>
+              }
+            </div>
             @if (cast.imageUrl) {
-              <img [src]="cast.imageUrl" alt="" class="cast-portrait-img" />
+              <img [src]="cast.imageUrl" [alt]="'Portrait of ' + cast.name + ', ' + cast.role" class="cast-portrait-img" />
             } @else {
               <div class="cast-portrait-placeholder">
                 <svg width="36" height="50" viewBox="0 0 58 80" opacity=".2">

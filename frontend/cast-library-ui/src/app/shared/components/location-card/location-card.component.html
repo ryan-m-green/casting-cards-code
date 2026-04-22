@@ -86,13 +86,14 @@
           </div>
 
           @if (queueable) {
-            <button class="loc-delete-btn" (click)="onDeleteClick($event)">&#215;</button>
+            <button class="loc-delete-btn" (click)="onDeleteClick($event)" aria-label="Remove {{ location.name }} from queue">&#215;</button>
           }
 
           @if (secrets) {
             <button class="loc-secrets-btn"
                     [class.loc-secrets-btn--revealed]="secretsRevealed"
                     (click)="onSecretsClick($event)"
+                    [attr.aria-label]="(secretsRevealed ? 'Hide ' : 'Reveal ') + location.name + ' to players'"
                     [title]="secretsRevealed ? 'Hide from players' : 'Reveal to players'">
               {{ secretsRevealed ? '🔓' : '🔒' }}
             </button>
@@ -110,6 +111,7 @@
             @if (imageUpload) {
               <label class="loc-upload-label">
                 <input type="file" accept="image/jpeg,image/png,image/webp"
+                       aria-label="Upload image for {{ location.name }}"
                        class="loc-upload-input" (change)="onFileInputChange($event)" />
                 <div class="loc-upload-overlay">
                   <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#e8f0d0" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
@@ -120,7 +122,7 @@
               </label>
             }
             @if (location.imageUrl) {
-              <img [src]="location.imageUrl" alt="" class="loc-portrait-img" />
+              <img [src]="location.imageUrl" [alt]="'Image of ' + location.name + ', a ' + location.classification" class="loc-portrait-img" />
             } @else {
               <div class="loc-portrait-placeholder">
                 @if (terrainType === 'city') {

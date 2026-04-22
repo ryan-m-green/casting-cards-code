@@ -82,6 +82,10 @@ export const routes: Routes = [
         loadComponent: () => import('./features/about/about.component').then(m => m.AboutComponent),
       },
       {
+        path: 'legal',
+        loadComponent: () => import('./features/legal/legal.component').then(m => m.LegalComponent),
+      },
+      {
         path: 'subscribe',
         loadComponent: () => import('./features/subscribe/subscribe.component').then(m => m.SubscribeComponent),
       },

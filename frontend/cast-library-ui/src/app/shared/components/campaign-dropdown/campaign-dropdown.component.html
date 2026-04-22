@@ -1,12 +1,15 @@
 <div class="campaign-dropdown" [style.--dd-font-size]="fontSize">
   <button
     class="campaign-dropdown-trigger"
+    aria-haspopup="listbox"
+    [attr.aria-expanded]="isOpen()"
+    [attr.aria-label]="'Select campaign: ' + (selected?.label ?? 'None selected')"
     (click)="toggle($event)"
   >
-    <span class="campaign-dropdown-value">
+    <span class="campaign-dropdown-value" aria-hidden="true">
       @if (selected?.icon) { {{ selected?.icon }} }{{ selected?.label ?? '' }}
     </span>
-    <span class="campaign-dropdown-caret" [class.campaign-dropdown-caret--open]="isOpen()">▾</span>
+    <span class="campaign-dropdown-caret" [class.campaign-dropdown-caret--open]="isOpen()" aria-hidden="true">▾</span>
   </button>
   @if (isOpen()) {
     <ul class="campaign-dropdown-panel" role="listbox">

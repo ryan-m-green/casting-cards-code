@@ -103,7 +103,7 @@
                   <div class="memory-detail">{{ memory.detail }}</div>
                 }
               </div>
-              <button class="delete-btn" (click)="deleteMemory(memory.id)" title="Delete">✕</button>
+              <button class="delete-btn" (click)="deleteMemory(memory.id)" title="Delete" aria-label="Delete">✕</button>
             </div>
           }
           @if (memories().length === 0) {

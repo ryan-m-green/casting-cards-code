@@ -1,0 +1,642 @@
+<div class="pc scroll-body">
+  @if (auth.isDm()) {
+    <app-dm-nav />
+  } @else if (auth.isLoggedIn()) {
+    <div class="player-nav">
+      <a class="player-nav__link" routerLink="/player/campaigns">Dashboard</a>
+      <span class="player-nav__link">Legal</span>
+      <div class="player-nav__spacer"></div>
+      <div class="player-nav__account">
+        <button class="player-nav__account-trigger" (click)="menuOpen.set(!menuOpen())">
+          Account
+          <span class="player-nav__caret" [class.player-nav__caret--open]="menuOpen()">▾</span>
+        </button>
+        @if (menuOpen()) {
+          <div class="player-nav__dropdown">
+            <a class="player-nav__dropdown-item" routerLink="/about" (click)="menuOpen.set(false)">About</a>
+            <button class="player-nav__dropdown-item" (click)="auth.logout()">Logout</button>
+          </div>
+        }
+      </div>
+    </div>
+  } @else {
+    <div class="player-nav">
+      <a class="player-nav__link" routerLink="/">Home</a>
+      <span class="player-nav__link">Legal</span>
+    </div>
+  }
+
+  <div class="legal-content">
+
+    <h1 class="legal-title">Legal</h1>
+    <div class="dv"></div>
+
+    <!-- Copyright Notice -->
+    <div class="copyright-notice">
+      <p class="legal-body">
+        <strong>© 2026 Saving Throw Studio. All rights reserved.</strong>
+      </p>
+      <p class="legal-body">
+        This app and all associated content, including software code, design, graphics, text, and media, are the exclusive property of Saving Throw Studio. Unauthorized copying, distribution, modification, reverse engineering, or use of any part of this application is strictly prohibited without prior written permission.
+      </p>
+    </div>
+
+    <!-- Tabs -->
+    <div class="tabs-bar" role="tablist" aria-label="Legal information tabs">
+      <button class="tab-btn" role="tab" [class.tab-btn--active]="activeTab() === 'privacy'" [attr.aria-selected]="activeTab() === 'privacy'" (click)="setTab('privacy')">Privacy Policy</button>
+      <button class="tab-btn" role="tab" [class.tab-btn--active]="activeTab() === 'terms'" [attr.aria-selected]="activeTab() === 'terms'" (click)="setTab('terms')">Terms of Service</button>
+      <button class="tab-btn" role="tab" [class.tab-btn--active]="activeTab() === 'cookies'" [attr.aria-selected]="activeTab() === 'cookies'" (click)="setTab('cookies')">Cookie Policy</button>
+      <button class="tab-btn" role="tab" [class.tab-btn--active]="activeTab() === 'accessibility'" [attr.aria-selected]="activeTab() === 'accessibility'" (click)="setTab('accessibility')">Accessibility Statement</button>
+    </div>
+
+    <!-- Tab Content -->
+    <div class="tab-content">
+      @if (activeTab() === 'privacy') {
+        <div class="legal-section">
+          <h2 class="legal-section-label">Privacy Policy for Casting Cards</h2>
+          <p class="legal-body legal-last-updated"><strong>Last Updated:</strong> April 21, 2026</p>
+
+          <p class="legal-body">
+            This Privacy Policy explains how <strong>Saving Throw Studio LLC</strong> ("we", "us", "our") collects, uses, and protects information when you use the <strong>Casting Cards</strong> application (the "App"). By using the App, you agree to the practices described in this policy.
+          </p>
+
+          <h3 class="legal-subsection-label">1. Eligibility & Age Requirements</h3>
+          <p class="legal-body">
+            You must be <strong>at least 13 years old</strong> to use Casting Cards.
+          </p>
+          <p class="legal-body">
+            We do not knowingly collect personal information from children under 13. If you believe a child under 13 has created an account, please contact us at <strong>savingthrowstudio.app&#64;gmail.com</strong> so we can remove the information.
+          </p>
+
+          <h3 class="legal-subsection-label">2. Information We Collect</h3>
+          <p class="legal-body">
+            We only collect the minimum information necessary to operate Casting Cards.
+          </p>
+
+          <h4 class="legal-subsubsection-label">2.1 Information You Provide</h4>
+          <p class="legal-body">
+            Depending on how you use the App, we may collect:
+          </p>
+          <ul class="legal-list">
+            <li>Email address (for account creation and login)</li>
+            <li>Username</li>
+            <li>User‑generated content created within the App (e.g., characters, notes, campaign data)</li>
+          </ul>
+          <p class="legal-body">
+            We <strong>do not</strong> request or collect sensitive personal information such as your home address, phone number, or government identification.
+          </p>
+
+          <h4 class="legal-subsubsection-label">2.2 Automatically Collected Information</h4>
+          <p class="legal-body">
+            To improve performance and stability, we may collect:
+          </p>
+          <ul class="legal-list">
+            <li>Device type and operating system</li>
+            <li>App usage data</li>
+            <li>Crash logs and diagnostics</li>
+          </ul>
+          <p class="legal-body">
+            This information is used only to maintain and improve the App.
+          </p>
+
+          <h3 class="legal-subsection-label">3. Payments & Financial Information</h3>
+          <p class="legal-body">
+            All payments made within Casting Cards are processed securely by <strong>Stripe</strong>.
+          </p>
+          <ul class="legal-list">
+            <li>We <strong>do not store</strong>, access, or process your credit card number or full payment details.</li>
+            <li>Stripe may provide us with limited information such as payment status or subscription status.</li>
+            <li>Stripe handles your payment information according to its own privacy and security policies.</li>
+          </ul>
+
+          <h3 class="legal-subsection-label">4. How We Use Your Information</h3>
+          <p class="legal-body">
+            We use the information we collect to:
+          </p>
+          <ul class="legal-list">
+            <li>Provide and maintain the App</li>
+            <li>Sync and save your content</li>
+            <li>Process payments (via Stripe)</li>
+            <li>Improve performance and user experience</li>
+            <li>Respond to support requests</li>
+            <li>Prevent misuse or security issues</li>
+          </ul>
+          <p class="legal-body">
+            We <strong>do not</strong> use your information for advertising or marketing.
+          </p>
+
+          <h3 class="legal-subsection-label">5. Data Sharing</h3>
+          <p class="legal-body">
+            We <strong>never sell your data</strong> to third parties.
+          </p>
+          <p class="legal-body">
+            We only share information in the following limited situations:
+          </p>
+          <ul class="legal-list">
+            <li><strong>Service Providers</strong> (e.g., Stripe, analytics tools) who help us operate the App</li>
+            <li><strong>Legal Requirements</strong> if required by law, regulation, or government request</li>
+            <li><strong>Security Purposes</strong> to prevent fraud or protect the App</li>
+          </ul>
+          <p class="legal-body">
+            We do not share your data for advertising or promotional purposes.
+          </p>
+
+          <h3 class="legal-subsection-label">6. Data Security</h3>
+          <p class="legal-body">
+            We use reasonable technical and organizational measures to protect your information, including:
+          </p>
+          <ul class="legal-list">
+            <li>Encrypted connections (HTTPS)</li>
+            <li>Secure authentication</li>
+            <li>Restricted access to production systems</li>
+          </ul>
+          <p class="legal-body">
+            While no method of transmission or storage is completely secure, we work to safeguard your data to the best of our ability.
+          </p>
+
+          <h3 class="legal-subsection-label">7. Your Rights</h3>
+          <p class="legal-body">
+            Depending on your location, you may have rights such as:
+          </p>
+          <ul class="legal-list">
+            <li>Accessing your data</li>
+            <li>Requesting deletion</li>
+            <li>Correcting inaccurate information</li>
+            <li>Exporting your data</li>
+          </ul>
+          <p class="legal-body">
+            To exercise these rights, contact us at <strong>savingthrowstudio.app&#64;gmail.com</strong>.
+          </p>
+
+          <h3 class="legal-subsection-label">8. International Users</h3>
+          <p class="legal-body">
+            If you access Casting Cards from outside the United States, your information may be transferred to and processed in the U.S. or other countries where our service providers operate.
+          </p>
+
+          <h3 class="legal-subsection-label">9. Changes to This Privacy Policy</h3>
+          <p class="legal-body">
+            We may update this Privacy Policy from time to time. When we do, we will update the "Last Updated" date at the top of this page.
+          </p>
+          <p class="legal-body">
+            Continued use of the App after changes means you accept the updated policy.
+          </p>
+
+          <h3 class="legal-subsection-label">10. Contact Us</h3>
+          <p class="legal-body">
+            If you have questions about this Privacy Policy or your data, contact us at:
+          </p>
+          <p class="legal-body">
+            <strong>Saving Throw Studio LLC</strong><br>
+            <strong>Email:</strong> savingthrowstudio.app&#64;gmail.com
+          </p>
+        </div>
+      } @else if (activeTab() === 'terms') {
+        <div class="legal-section">
+          <h2 class="legal-section-label">Terms of Service for Casting Cards</h2>
+          <p class="legal-body legal-last-updated"><strong>Last Updated:</strong> April 21, 2026</p>
+
+          <p class="legal-body">
+            These Terms of Service ("Terms") govern your use of the Casting Cards application and related services (the "App"), operated by <strong>Saving Throw Studio LLC</strong> ("we", "us", "our"). By creating an account or using the App, you agree to these Terms. If you do not agree, you must stop using the App.
+          </p>
+
+          <h3 class="legal-subsection-label">1. Eligibility</h3>
+          <p class="legal-body">
+            You must be <strong>at least 13 years old</strong> to use Casting Cards.
+          </p>
+          <p class="legal-body">
+            By using the App, you confirm that:
+          </p>
+          <ul class="legal-list">
+            <li>You are at least 13 years old</li>
+            <li>You have the legal authority to agree to these Terms</li>
+            <li>You will comply with all applicable laws</li>
+          </ul>
+
+          <h3 class="legal-subsection-label">2. Your Account</h3>
+          <p class="legal-body">
+            To access certain features, you may need to create an account.
+          </p>
+          <p class="legal-body">
+            You agree to:
+          </p>
+          <ul class="legal-list">
+            <li>Provide accurate information</li>
+            <li>Keep your login credentials secure</li>
+            <li>Notify us immediately if you suspect unauthorized access</li>
+          </ul>
+          <p class="legal-body">
+            You are responsible for all activity under your account. We may suspend or terminate accounts that violate these Terms.
+          </p>
+
+          <h3 class="legal-subsection-label">3. User Content</h3>
+          <p class="legal-body">
+            Casting Cards allows you to create, upload, and manage content such as characters, notes, images, and campaign data ("User Content").
+          </p>
+          <ul class="legal-list">
+            <li>You retain ownership of your User Content.</li>
+            <li>You grant us a limited license to store, display, and process your content solely to operate the App.</li>
+          </ul>
+          <p class="legal-body">
+            You agree not to upload or create content that:
+          </p>
+          <ul class="legal-list">
+            <li>Violates any law</li>
+            <li>Contains harmful, abusive, or hateful material</li>
+            <li>Infringes on intellectual property rights</li>
+            <li>Disrupts or harms the App or other users</li>
+          </ul>
+          <p class="legal-body">
+            We may remove content that violates these rules.
+          </p>
+
+          <h3 class="legal-subsection-label">4. Image Upload Restrictions</h3>
+          <p class="legal-body">
+            Casting Cards allows users to upload images for characters, locations, and other campaign elements. You agree not to upload any images that:
+          </p>
+          <ul class="legal-list">
+            <li>Depict illegal activity</li>
+            <li>Contain sexually explicit content involving minors</li>
+            <li>Contain pornography or sexual exploitation</li>
+            <li>Depict graphic violence or gore</li>
+            <li>Infringe on copyrights or trademarks</li>
+            <li>Include private or sensitive information about others without consent</li>
+            <li>Are intended to harass, defame, or intimidate others</li>
+          </ul>
+          <p class="legal-body">
+            We may remove any image that violates these rules and may suspend or terminate accounts for severe or repeated violations.
+          </p>
+
+          <h3 class="legal-subsection-label">5. Payments & Subscriptions</h3>
+          <p class="legal-body">
+            Casting Cards operates on a freemium model with optional paid subscriptions.
+          </p>
+
+          <h4 class="legal-subsubsection-label">5.1 Free Tier (Freemium Plan)</h4>
+          <p class="legal-body">
+            Free users may create and manage:
+          </p>
+          <ul class="legal-list">
+            <li>1 Location card</li>
+            <li>2 Sublocation cards</li>
+            <li>4 Cast cards</li>
+          </ul>
+          <p class="legal-body">
+            These limits may change, but we will notify users if the free tier is modified.
+          </p>
+
+          <h4 class="legal-subsubsection-label">5.2 Subscription Plans</h4>
+          <p class="legal-body">
+            Paid subscriptions unlock additional features and expanded content limits. Pricing and plan details are displayed within the App and may vary by region.
+          </p>
+
+          <h4 class="legal-subsubsection-label">5.3 Payment Processing</h4>
+          <ul class="legal-list">
+            <li>All payments are securely processed by Stripe.</li>
+            <li>We do not store or access your full credit card information.</li>
+          </ul>
+
+          <h4 class="legal-subsubsection-label">5.4 Billing & Renewal</h4>
+          <ul class="legal-list">
+            <li>By subscribing, you authorize Stripe to charge your payment method on a recurring basis (monthly or annually).</li>
+            <li>Subscriptions automatically renew unless canceled before the renewal date.</li>
+          </ul>
+
+          <h4 class="legal-subsubsection-label">5.5 Cancellation</h4>
+          <p class="legal-body">
+            You may cancel your subscription at any time through your account settings or app store subscription page.
+          </p>
+          <p class="legal-body">
+            After cancellation:
+          </p>
+          <ul class="legal-list">
+            <li>You retain premium access until the end of the current billing period</li>
+            <li>Your account then reverts to the freemium limits</li>
+            <li>Content exceeding free limits may become read‑only until you upgrade again</li>
+          </ul>
+
+          <h3 class="legal-subsection-label">6. Refund Policy</h3>
+          <p class="legal-body">
+            We aim to be fair and transparent with refunds. Refunds are granted only in specific circumstances.
+          </p>
+
+          <h4 class="legal-subsubsection-label">6.1 Refunds We Provide</h4>
+          <p class="legal-body">
+            We may issue refunds for:
+          </p>
+          <ul class="legal-list">
+            <li>Duplicate charges or billing errors</li>
+            <li>Unauthorized or fraudulent transactions</li>
+            <li>Extended service outages preventing access to paid features</li>
+            <li>Accidental renewals reported within 48–72 hours</li>
+            <li>Situations required by law</li>
+          </ul>
+
+          <h4 class="legal-subsubsection-label">6.2 Refunds We Do Not Provide</h4>
+          <p class="legal-body">
+            We do not issue refunds for:
+          </p>
+          <ul class="legal-list">
+            <li>Lack of use or inactivity</li>
+            <li>Forgetting to cancel before renewal</li>
+            <li>Requests made long after renewal</li>
+            <li>Dissatisfaction with features that function as described</li>
+            <li>Abuse of the refund system</li>
+          </ul>
+
+          <h4 class="legal-subsubsection-label">6.3 Platform‑Controlled Refunds</h4>
+          <p class="legal-body">
+            If you subscribed through a platform (e.g., Stripe, App Store, Google Play), that platform's refund rules may apply and may override ours.
+          </p>
+
+          <h4 class="legal-subsubsection-label">6.4 Chargebacks</h4>
+          <p class="legal-body">
+            If you initiate a chargeback:
+          </p>
+          <ul class="legal-list">
+            <li>Your account may be suspended during the investigation</li>
+            <li>We may provide evidence to Stripe or your bank</li>
+            <li>Repeated or abusive chargebacks may result in permanent account termination</li>
+          </ul>
+
+          <h3 class="legal-subsection-label">7. Prohibited Conduct</h3>
+          <p class="legal-body">
+            You agree not to:
+          </p>
+          <ul class="legal-list">
+            <li>Upload illegal, harmful, or abusive content or images</li>
+            <li>Attempt to hack, reverse engineer, or disrupt the App</li>
+            <li>Use the App for unlawful purposes</li>
+            <li>Impersonate another person or entity</li>
+            <li>Upload malware or harmful code</li>
+            <li>Interfere with other users' experience</li>
+          </ul>
+          <p class="legal-body">
+            Violations may result in account termination.
+          </p>
+
+          <h3 class="legal-subsection-label">8. Intellectual Property</h3>
+          <p class="legal-body">
+            All content, features, and functionality of the App—excluding User Content—are owned by Saving Throw Studio LLC and protected by copyright, trademark, and other laws.
+          </p>
+          <p class="legal-body">
+            You may not:
+          </p>
+          <ul class="legal-list">
+            <li>Copy, modify, or distribute the App</li>
+            <li>Use our trademarks without permission</li>
+            <li>Create derivative works based on the App</li>
+          </ul>
+
+          <h3 class="legal-subsection-label">9. Service Availability</h3>
+          <p class="legal-body">
+            We strive to keep Casting Cards available and functioning, but we do not guarantee:
+          </p>
+          <ul class="legal-list">
+            <li>Uninterrupted service</li>
+            <li>Error‑free operation</li>
+            <li>Permanent availability of all features</li>
+          </ul>
+          <p class="legal-body">
+            We may modify, suspend, or discontinue parts of the App at any time.
+          </p>
+
+          <h3 class="legal-subsection-label">10. Disclaimer of Warranties</h3>
+          <p class="legal-body">
+            Casting Cards is provided "as is" and "as available" without warranties of any kind.
+          </p>
+          <p class="legal-body">
+            We do not guarantee:
+          </p>
+          <ul class="legal-list">
+            <li>Accuracy of content</li>
+            <li>Compatibility with all devices</li>
+            <li>That the App will be free of bugs or security vulnerabilities</li>
+          </ul>
+          <p class="legal-body">
+            You use the App at your own risk.
+          </p>
+
+          <h3 class="legal-subsection-label">11. Limitation of Liability</h3>
+          <p class="legal-body">
+            To the fullest extent permitted by law, Saving Throw Studio LLC is not liable for:
+          </p>
+          <ul class="legal-list">
+            <li>Indirect, incidental, or consequential damages</li>
+            <li>Loss of data, profits, or business</li>
+            <li>Issues caused by third‑party services (including Stripe)</li>
+          </ul>
+          <p class="legal-body">
+            Our total liability will not exceed the amount you paid to us in the past 12 months.
+          </p>
+
+          <h3 class="legal-subsection-label">12. Termination</h3>
+          <p class="legal-body">
+            We may suspend or terminate your account if:
+          </p>
+          <ul class="legal-list">
+            <li>You violate these Terms</li>
+            <li>You misuse the App</li>
+            <li>We are required to do so by law</li>
+          </ul>
+          <p class="legal-body">
+            You may stop using the App at any time.
+          </p>
+
+          <h3 class="legal-subsection-label">13. Changes to These Terms</h3>
+          <p class="legal-body">
+            We may update these Terms occasionally. When we do, we will update the "Last Updated" date at the top of this page.
+          </p>
+          <p class="legal-body">
+            Continued use of the App after changes means you accept the updated Terms.
+          </p>
+
+          <h3 class="legal-subsection-label">14. Governing Law</h3>
+          <p class="legal-body">
+            These Terms are governed by the laws of the State of Washington, without regard to conflict‑of‑law principles.
+          </p>
+
+          <h3 class="legal-subsection-label">15. Acceptance of Terms</h3>
+          <p class="legal-body">
+            By creating an account, accessing, or using Casting Cards in any way, you acknowledge that you have read, understood, and agree to be bound by these Terms. If you continue to use the App after updates are posted, you agree to the revised Terms.
+          </p>
+          <p class="legal-body">
+            If you do not agree, you must stop using the App immediately.
+          </p>
+
+          <h3 class="legal-subsection-label">16. Contact Us</h3>
+          <p class="legal-body">
+            If you have questions about these Terms, contact us at:
+          </p>
+          <p class="legal-body">
+            <strong>Saving Throw Studio LLC</strong><br>
+            <strong>Email:</strong> savingthrowstudio.app&#64;gmail.com
+          </p>
+        </div>
+      } @else if (activeTab() === 'cookies') {
+        <div class="legal-section">
+          <h2 class="legal-section-label">Cookie Policy for Casting Cards</h2>
+          <p class="legal-body legal-last-updated"><strong>Last Updated:</strong> April 21, 2026</p>
+
+          <p class="legal-body">
+            This Cookie Policy explains how Casting Cards ("we", "us", "our") uses cookies and similar technologies within our application and website. This policy should be read together with our Privacy Policy.
+          </p>
+
+          <h3 class="legal-subsection-label">1. What Are Cookies?</h3>
+          <p class="legal-body">
+            Cookies are small text files stored on your device when you use an app or website. They help applications function correctly, maintain security, and remember certain information.
+          </p>
+
+          <h3 class="legal-subsection-label">2. Types of Cookies We Use</h3>
+          <p class="legal-body">
+            We only use strictly necessary cookies. These cookies are essential for the operation and security of the Casting Cards application and cannot be disabled.
+          </p>
+
+          <h4 class="legal-subsubsection-label">2.1 Authentication Cookie (Required)</h4>
+          <p class="legal-body">
+            We use a secure authentication cookie to:
+          </p>
+          <ul class="legal-list">
+            <li>Keep you logged in</li>
+            <li>Verify your identity</li>
+            <li>Protect your account</li>
+            <li>Maintain session security</li>
+          </ul>
+          <p class="legal-body">
+            This cookie does not track your activity, does not collect personal data beyond what is required for login, and is not used for advertising or analytics.
+          </p>
+
+          <h3 class="legal-subsection-label">3. No Analytics or Tracking Cookies</h3>
+          <p class="legal-body">
+            Casting Cards does not use:
+          </p>
+          <ul class="legal-list">
+            <li>Analytics cookies</li>
+            <li>Advertising or marketing cookies</li>
+            <li>Behavioral tracking cookies</li>
+            <li>Third‑party tracking technologies</li>
+          </ul>
+          <p class="legal-body">
+            We do not sell or share cookie data with third parties.
+          </p>
+
+          <h3 class="legal-subsection-label">4. Why We Don't Require Consent</h3>
+          <p class="legal-body">
+            Because we only use a strictly necessary authentication cookie, user consent is not required under GDPR, CCPA, or other major privacy regulations. These cookies are essential for the service you request (logging in and using your account).
+          </p>
+          <p class="legal-body">
+            By using the app, you acknowledge that these essential cookies are required for functionality.
+          </p>
+
+          <h3 class="legal-subsection-label">5. How Long Cookies Last</h3>
+          <p class="legal-body">
+            Our authentication cookie lasts only as long as needed to maintain your secure session. It may expire when:
+          </p>
+          <ul class="legal-list">
+            <li>You log out</li>
+            <li>Your session times out</li>
+            <li>You clear your browser or app data</li>
+          </ul>
+          <p class="legal-body">
+            We do not use persistent cookies for tracking or profiling.
+          </p>
+
+          <h3 class="legal-subsection-label">6. Managing Cookies</h3>
+          <p class="legal-body">
+            Because our cookie is strictly necessary, disabling it will prevent the app from functioning. If you choose to block or delete this cookie through your device settings, you may not be able to log in or use Casting Cards.
+          </p>
+
+          <h3 class="legal-subsection-label">7. Changes to This Cookie Policy</h3>
+          <p class="legal-body">
+            We may update this Cookie Policy from time to time. When we do, we will update the "Last Updated" date at the top of this page. Continued use of the app after changes means you accept the updated policy.
+          </p>
+
+          <h3 class="legal-subsection-label">8. Contact Us</h3>
+          <p class="legal-body">
+            If you have questions about this Cookie Policy, contact us at:
+          </p>
+          <p class="legal-body">
+            <strong>Saving Throw Studio LLC</strong><br>
+            <strong>Email:</strong> savingthrowstudio.app&#64;gmail.com
+          </p>
+        </div>
+      } @else if (activeTab() === 'accessibility') {
+        <div class="legal-section">
+          <h2 class="legal-section-label">Accessibility Statement for Casting Cards</h2>
+          <p class="legal-body legal-last-updated"><strong>Last updated:</strong> 2026</p>
+          <p class="legal-body legal-last-updated"><strong>Operated by:</strong> Saving Throw Studio</p>
+
+          <h3 class="legal-subsection-label">Our Commitment</h3>
+          <p class="legal-body">
+            Saving Throw Studio is committed to ensuring that Casting Cards is accessible to as many people as possible. We believe everyone should be able to use our app regardless of ability, technology, or environment. Our goal is to provide a user experience that aligns with recognized accessibility standards, including the Web Content Accessibility Guidelines (WCAG) 2.1.
+          </p>
+
+          <h3 class="legal-subsection-label">Accessibility Features</h3>
+          <p class="legal-body">
+            We are actively working to improve accessibility and currently support:
+          </p>
+          <ul class="legal-list">
+            <li>High-contrast UI elements for improved visibility</li>
+            <li>Clear, readable typography</li>
+            <li>Consistent navigation patterns</li>
+            <li>Descriptive labels for interactive elements</li>
+            <li>Keyboard-friendly interactions (where applicable)</li>
+            <li>Screen-reader compatibility for major UI components</li>
+          </ul>
+          <p class="legal-body">
+            As the app evolves, we will continue expanding accessibility support.
+          </p>
+
+          <h3 class="legal-subsection-label">Ongoing Improvements</h3>
+          <p class="legal-body">
+            Accessibility is an ongoing effort. We regularly review the app to identify and fix issues related to:
+          </p>
+          <ul class="legal-list">
+            <li>Color contrast</li>
+            <li>Touch target size</li>
+            <li>Text alternatives for non-text content</li>
+            <li>Navigation clarity</li>
+            <li>Compatibility with assistive technologies</li>
+          </ul>
+          <p class="legal-body">
+            We aim to meet or exceed WCAG 2.1 Level AA guidelines where feasible.
+          </p>
+
+          <h3 class="legal-subsection-label">Known Limitations</h3>
+          <p class="legal-body">
+            Despite our best efforts, some parts of the app may not be fully accessible yet. These may include:
+          </p>
+          <ul class="legal-list">
+            <li>Certain dynamic UI elements</li>
+            <li>Complex interactive components</li>
+            <li>Third-party integrations that we do not fully control</li>
+          </ul>
+          <p class="legal-body">
+            We are actively working to resolve these limitations in future updates.
+          </p>
+
+          <h3 class="legal-subsection-label">Feedback and Support</h3>
+          <p class="legal-body">
+            We welcome feedback on accessibility. If you encounter any barriers or have suggestions for improvement, please contact us:
+          </p>
+          <p class="legal-body">
+            <strong>Email:</strong> savingthrowstudio.app&#64;gmail.com
+          </p>
+          <p class="legal-body">
+            We aim to respond to accessibility-related inquiries within 5 business days.
+          </p>
+
+          <h3 class="legal-subsection-label">Third-Party Content</h3>
+          <p class="legal-body">
+            Some parts of the app may rely on third-party services or libraries. While we strive to ensure accessibility across all components, we cannot guarantee the accessibility of third-party content outside our control.
+          </p>
+
+          <h3 class="legal-subsection-label">Continuous Commitment</h3>
+          <p class="legal-body">
+            Saving Throw Studio is dedicated to improving accessibility over time. As Casting Cards grows, we will continue refining our design, code, and content to ensure an inclusive experience for all users.
+          </p>
+        </div>
+      }
+    </div>
+
+  </div>
+</div>

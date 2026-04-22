@@ -4,7 +4,7 @@
     <!-- ── Header ──────────────────────────────────────────────────────────── -->
     <div class="web-header">
       <span class="web-title">Relationship Web · {{ mainCast?.name }}</span>
-      <button class="web-close" (click)="closed.emit()">✕</button>
+      <button class="web-close" (click)="closed.emit()" aria-label="Close">✕</button>
     </div>
 
     <!-- ── Zero state ─────────────────────────────────────────────────────── -->
@@ -69,7 +69,7 @@
               <div class="dv dv-card"></div>
               <div class="card-image-area">
                 @if (mainCast.imageUrl) {
-                  <img [src]="mainCast.imageUrl" alt="" class="card-img-fill" />
+                  <img [src]="mainCast.imageUrl" alt="cast card image" class="card-img-fill" />
                 } @else {
                   <div class="card-placeholder">
                     <span class="card-initial">{{ mainCast.name?.[0]?.toUpperCase() }}</span>

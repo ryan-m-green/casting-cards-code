@@ -92,13 +92,14 @@
           </div>
 
           @if (queueable) {
-            <button class="loc-delete-btn" (click)="onDeleteClick($event)">&#215;</button>
+            <button class="loc-delete-btn" (click)="onDeleteClick($event)" aria-label="Remove {{ sublocation.name }} from queue">&#215;</button>
           }
 
           @if (secrets) {
             <button class="subloc-secrets-btn"
                     [class.subloc-secrets-btn--revealed]="secretsRevealed"
                     (click)="onSecretsClick($event)"
+                    [attr.aria-label]="(secretsRevealed ? 'Hide ' : 'Reveal ') + sublocation.name + ' to players'"
                     [title]="secretsRevealed ? 'Hide from players' : 'Reveal to players'">
               {{ secretsRevealed ? '🔓' : '🔒' }}
             </button>
@@ -116,6 +117,7 @@
             @if (imageUpload) {
               <label class="sub-upload-label">
                 <input type="file" accept="image/jpeg,image/png,image/webp"
+                       aria-label="Upload image for {{ sublocation.name }}"
                        class="sub-upload-input" (change)="onFileInputChange($event)" />
                 <div class="sub-upload-overlay">
                   <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#d4dff0" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
@@ -126,7 +128,7 @@
               </label>
             }
             @if (sublocation.imageUrl) {
-              <img [src]="sublocation.imageUrl" alt="" class="sub-portrait-img" />
+              <img [src]="sublocation.imageUrl" [alt]="'Image of ' + sublocation.name + ' sublocation'" class="sub-portrait-img" />
             } @else {
               <div class="sub-portrait-placeholder">
                 <svg width="44" height="44" viewBox="0 0 60 60" opacity=".25">

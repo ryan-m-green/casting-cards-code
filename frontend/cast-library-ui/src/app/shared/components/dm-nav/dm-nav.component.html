@@ -3,17 +3,21 @@
   <a class="dm-nav__link" routerLink="/dm/campaigns">Campaigns</a>
   <a class="dm-nav__link" routerLink="/about">About</a>
   <div class="dm-nav__account">
-    <button class="dm-nav__account-trigger" (click)="toggleMenu()">
+    <button class="dm-nav__account-trigger" 
+            aria-haspopup="menu" 
+            [attr.aria-expanded]="menuOpen()"
+            aria-label="Account menu"
+            (click)="toggleMenu()">
       Account
-      <span class="dm-nav__caret" [class.dm-nav__caret--open]="menuOpen()">▾</span>
+      <span class="dm-nav__caret" [class.dm-nav__caret--open]="menuOpen()" aria-hidden="true">▾</span>
     </button>
     @if (menuOpen()) {
-      <div class="dm-nav__dropdown">
+      <div class="dm-nav__dropdown" role="menu">
         @if (auth.isAdmin()) {
-          <a class="dm-nav__dropdown-item" routerLink="/admin/invite-code" (click)="menuOpen.set(false)">Invite Code</a>
+          <a class="dm-nav__dropdown-item" role="menuitem" routerLink="/admin/invite-code" (click)="menuOpen.set(false)">Invite Code</a>
         }
-        <a class="dm-nav__dropdown-item" routerLink="/dm/change-password" (click)="menuOpen.set(false)">Change Password</a>
-        <button class="dm-nav__dropdown-item" (click)="auth.logout()">Logout</button>
+        <a class="dm-nav__dropdown-item" role="menuitem" routerLink="/dm/change-password" (click)="menuOpen.set(false)">Change Password</a>
+        <button class="dm-nav__dropdown-item" role="menuitem" (click)="auth.logout()">Logout</button>
       </div>
     }
   </div>

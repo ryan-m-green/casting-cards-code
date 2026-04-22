@@ -31,27 +31,27 @@
   <form [formGroup]="form">
     <div class="wr form-row-gap">
       <div class="form-field-min">
-        <label class="fi-label">Name</label>
-        <input class="fi" formControlName="name" placeholder="Aldric the Bold" />
+        <label for="cast-name-input" class="fi-label">Name</label>
+        <input id="cast-name-input" class="fi" formControlName="name" placeholder="Aldric the Bold" />
       </div>
       <div class="form-field-min">
-        <label class="fi-label">Role / Class</label>
-        <input class="fi" formControlName="role" placeholder="Blacksmith" />
+        <label for="cast-role-input" class="fi-label">Role / Class</label>
+        <input id="cast-role-input" class="fi" formControlName="role" placeholder="Blacksmith" />
       </div>
     </div>
 
     <div class="wr form-row-gap">
       <div class="form-field">
-        <label class="fi-label">Race</label>
-        <input class="fi" formControlName="race" placeholder="Human" />
+        <label for="cast-race-input" class="fi-label">Race</label>
+        <input id="cast-race-input" class="fi" formControlName="race" placeholder="Human" />
       </div>
       <div class="form-field">
-        <label class="fi-label">Age</label>
-        <input class="fi" formControlName="age" placeholder="44" />
+        <label for="cast-age-input" class="fi-label">Age</label>
+        <input id="cast-age-input" class="fi" formControlName="age" placeholder="44" />
       </div>
       <div class="form-field">
-        <label class="fi-label">Pronouns</label>
-        <input class="fi" formControlName="pronouns" list="pronouns-options" placeholder="he/him" />
+        <label for="cast-pronouns-input" class="fi-label">Pronouns</label>
+        <input id="cast-pronouns-input" class="fi" formControlName="pronouns" list="pronouns-options" placeholder="he/him" />
         <datalist id="pronouns-options">
           @for (p of pronounOptions; track p) {
             <option [value]="p"></option>
@@ -62,8 +62,8 @@
 
     <div class="wr form-row-gap">
       <div class="form-field">
-        <label class="fi-label">Alignment</label>
-        <input class="fi" formControlName="alignment" list="alignment-options" placeholder="Neutral Good" />
+        <label for="cast-alignment-input" class="fi-label">Alignment</label>
+        <input id="cast-alignment-input" class="fi" formControlName="alignment" list="alignment-options" placeholder="Neutral Good" />
         <datalist id="alignment-options">
           @for (a of alignmentOptions; track a) {
             <option [value]="a"></option>
@@ -71,8 +71,8 @@
         </datalist>
       </div>
       <div class="form-field">
-        <label class="fi-label">Posture</label>
-        <input class="fi" formControlName="posture" list="posture-options" placeholder="Upright" />
+        <label for="cast-posture-input" class="fi-label">Posture</label>
+        <input id="cast-posture-input" class="fi" formControlName="posture" list="posture-options" placeholder="Upright" />
         <datalist id="posture-options">
           @for (p of postureOptions; track p) {
             <option [value]="p"></option>
@@ -80,8 +80,8 @@
         </datalist>
       </div>
       <div class="form-field">
-        <label class="fi-label">Speed</label>
-        <input class="fi" formControlName="speed" list="speed-options" placeholder="Average" />
+        <label for="cast-speed-input" class="fi-label">Speed</label>
+        <input id="cast-speed-input" class="fi" formControlName="speed" list="speed-options" placeholder="Average" />
         <datalist id="speed-options">
           @for (s of speedOptions; track s) {
             <option [value]="s"></option>
@@ -102,14 +102,14 @@
       </div>
     </div>
 
-    <label class="fi-label">Additional Voice Notes</label>
-    <textarea class="fi" formControlName="voiceNotes" rows="3" placeholder="Speaks with a slight stammer when nervous…"></textarea>
+    <label for="cast-voice-notes-textarea" class="fi-label">Additional Voice Notes</label>
+    <textarea id="cast-voice-notes-textarea" class="fi" formControlName="voiceNotes" rows="3" placeholder="Speaks with a slight stammer when nervous…"></textarea>
 
-    <label class="fi-label">Public Description (visible to players)</label>
-    <textarea class="fi" formControlName="publicDescription" rows="3" placeholder="What players observe…"></textarea>
+    <label for="cast-public-desc-textarea" class="fi-label">Public Description (visible to players)</label>
+    <textarea id="cast-public-desc-textarea" class="fi" formControlName="publicDescription" rows="3" placeholder="What players observe…"></textarea>
 
-    <label class="fi-label">DM Description (private notes)</label>
-    <textarea class="fi" formControlName="description" rows="4" placeholder="Your private notes on this cast member…"></textarea>
+    <label for="cast-dm-desc-textarea" class="fi-label">DM Description (private notes)</label>
+    <textarea id="cast-dm-desc-textarea" class="fi" formControlName="description" rows="4" placeholder="Your private notes on this cast member…"></textarea>
   </form>
 
 </div>

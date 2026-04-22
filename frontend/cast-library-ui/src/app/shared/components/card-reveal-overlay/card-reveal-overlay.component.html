@@ -16,7 +16,7 @@
               <div class="dv dv-card"></div>
               <div class="card-image-area">
                 @if (data.imageUrl) {
-                  <img [src]="data.imageUrl" alt="" class="card-img-fill" />
+                  <img [src]="data.imageUrl" alt="cast card image" class="card-img-fill" />
                 } @else {
                   <div class="card-placeholder">
                     <span class="card-initial">{{ initial(data.name) }}</span>
@@ -37,7 +37,7 @@
       }
 
       <!-- Dismiss -->
-      <button class="cr-dismiss" (click)="dismiss()">✕ Dismiss</button>
+      <button class="cr-dismiss" (click)="dismiss()" aria-label="Dismiss">✕ Dismiss</button>
     </div>
   </div>
 }

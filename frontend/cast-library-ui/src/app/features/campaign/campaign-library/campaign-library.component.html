@@ -35,8 +35,8 @@
           </div>
         </div>
         <div class="portal-footer">
-          <button class="portal-btn portal-btn--delete" (click)="$event.stopPropagation(); requestDelete(campaign)">✕ Delete</button>
-          <button class="portal-btn portal-btn--edit" (click)="$event.stopPropagation(); edit(campaign.id)">Edit →</button>
+          <button class="portal-btn portal-btn--delete" (click)="$event.stopPropagation(); requestDelete(campaign)" aria-label="Delete campaign">✕ Delete</button>
+          <button class="portal-btn portal-btn--edit" (click)="$event.stopPropagation(); edit(campaign.id)" aria-label="Edit campaign">Edit →</button>
         </div>
       </div>
     }

@@ -29,29 +29,37 @@ public class ImportLibraryCommandHandler(
     {
         var response = new ImportLibraryResponse();
 
-        var existingCastNames   = (await castReadRepository.GetAllByDmAsync(command.DmUserId))
+        var existingCastNames = (await castReadRepository.GetAllByDmAsync(command.DmUserId))
                                     .Select(n => n.Name).ToHashSet(StringComparer.OrdinalIgnoreCase);
-        var existingLocationNames  = (await locationRepository.GetAllByDmAsync(command.DmUserId))
+        var existingLocationNames = (await locationRepository.GetAllByDmAsync(command.DmUserId))
                                     .Select(c => c.Name).ToHashSet(StringComparer.OrdinalIgnoreCase);
-        var existingLocNames   = (await sublocationReadRepository.GetAllByDmAsync(command.DmUserId))
+        var existingLocNames = (await sublocationReadRepository.GetAllByDmAsync(command.DmUserId))
                                     .Select(l => l.Name).ToHashSet(StringComparer.OrdinalIgnoreCase);
 
-        var insertedCastNames  = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        var insertedCastNames = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
         var insertedLocationNames = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
-        var insertedLocNames  = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        var insertedLocNames = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
 
         foreach (var card in command.Bundle.Casts)
         {
             try
             {
-                var name   = ResolveName(card.Name, existingCastNames, insertedCastNames);
+                var name = ResolveName(card.Name, existingCastNames, insertedCastNames);
                 var domain = new CastDomain
                 {
-                    Id = Guid.NewGuid(), DmUserId = command.DmUserId, Name = name,
-                    Pronouns = card.Pronouns, Race = card.Race, Role = card.Role,
-                    Age = card.Age, Alignment = card.Alignment, Posture = card.Posture,
-                    Speed = card.Speed, VoicePlacement = card.VoicePlacement,
-                    Description = card.Description, PublicDescription = card.PublicDescription,
+                    Id = Guid.NewGuid(),
+                    DmUserId = command.DmUserId,
+                    Name = name,
+                    Pronouns = card.Pronouns,
+                    Race = card.Race,
+                    Role = card.Role,
+                    Age = card.Age,
+                    Alignment = card.Alignment,
+                    Posture = card.Posture,
+                    Speed = card.Speed,
+                    VoicePlacement = card.VoicePlacement,
+                    Description = card.Description,
+                    PublicDescription = card.PublicDescription,
                     CreatedAt = DateTime.UtcNow,
                 };
 
@@ -66,7 +74,8 @@ public class ImportLibraryCommandHandler(
             {
                 response.Failures.Add(new ImportFailure
                 {
-                    CardType = "Cast", Name = card.Name,
+                    CardType = "Cast",
+                    Name = card.Name,
                     Reason = $"Failed to import: {ex.Message}"
                 });
             }
@@ -76,15 +85,23 @@ public class ImportLibraryCommandHandler(
         {
             try
             {
-                var name   = ResolveName(card.Name, existingLocationNames, insertedLocationNames);
+                var name = ResolveName(card.Name, existingLocationNames, insertedLocationNames);
                 var domain = new LocationDomain
                 {
-                    Id = Guid.NewGuid(), DmUserId = command.DmUserId, Name = name,
-                    Classification = card.Classification, Size = card.Size,
-                    Condition = card.Condition, Geography = card.Geography,
-                    Architecture = card.Architecture, Climate = card.Climate,
-                    Religion = card.Religion, Vibe = card.Vibe, Languages = card.Languages,
-                    Description = card.Description, CreatedAt = DateTime.UtcNow,
+                    Id = Guid.NewGuid(),
+                    DmUserId = command.DmUserId,
+                    Name = name,
+                    Classification = card.Classification,
+                    Size = card.Size,
+                    Condition = card.Condition,
+                    Geography = card.Geography,
+                    Architecture = card.Architecture,
+                    Climate = card.Climate,
+                    Religion = card.Religion,
+                    Vibe = card.Vibe,
+                    Languages = card.Languages,
+                    Description = card.Description,
+                    CreatedAt = DateTime.UtcNow
                 };
 
                 await locationInsertRepository.InsertAsync(domain);
@@ -98,7 +115,8 @@ public class ImportLibraryCommandHandler(
             {
                 response.Failures.Add(new ImportFailure
                 {
-                    CardType = "Location", Name = card.Name,
+                    CardType = "Location",
+                    Name = card.Name,
                     Reason = $"Failed to import: {ex.Message}"
                 });
             }
@@ -108,15 +126,21 @@ public class ImportLibraryCommandHandler(
         {
             try
             {
-                var name   = ResolveName(card.Name, existingLocNames, insertedLocNames);
+                var name = ResolveName(card.Name, existingLocNames, insertedLocNames);
                 var domain = new SublocationDomain
                 {
-                    Id = Guid.NewGuid(), DmUserId = command.DmUserId, Name = name,
-                    Description = card.Description, CreatedAt = DateTime.UtcNow,
+                    Id = Guid.NewGuid(),
+                    DmUserId = command.DmUserId,
+                    Name = name,
+                    Description = card.Description,
+                    CreatedAt = DateTime.UtcNow,
                     ShopItems = card.ShopItems.Select((item, i) => new ShopItemDomain
                     {
-                        Id = Guid.NewGuid(), Name = item.Name,
-                        Price = item.Price, Description = item.Description, SortOrder = i,
+                        Id = Guid.NewGuid(),
+                        Name = item.Name,
+                        Price = item.Price,
+                        Description = item.Description,
+                        SortOrder = i,
                     }).ToList(),
                 };
 
@@ -131,7 +155,8 @@ public class ImportLibraryCommandHandler(
             {
                 response.Failures.Add(new ImportFailure
                 {
-                    CardType = "Sublocation", Name = card.Name,
+                    CardType = "Sublocation",
+                    Name = card.Name,
                     Reason = $"Failed to import: {ex.Message}"
                 });
             }
@@ -156,7 +181,8 @@ public class ImportLibraryCommandHandler(
         {
             failures.Add(new ImportFailure
             {
-                CardType = cardType, Name = cardName,
+                CardType = cardType,
+                Name = cardName,
                 Reason = $"Failed to convert image '{imageFileName}': {ex.Message}"
             });
         }
