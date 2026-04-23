@@ -57,6 +57,7 @@ export class CampaignHubService {
     this.connection = new signalR.HubConnectionBuilder()
       .withUrl(`${environment.apiUrl}/hubs/campaign`, {
         accessTokenFactory: () => token,
+        transport: signalR.HttpTransportType.LongPolling,
       })
       .withAutomaticReconnect()
       .build();
