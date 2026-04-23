@@ -135,6 +135,7 @@ builder.Services.AddCastLibraryServices(builder.Configuration);
 var app = builder.Build();
 
 app.UseCors("Angular");
+app.UseWebSockets();
 app.UseRateLimiter();
 
 // ── Path prefix restore ───────────────────────────────────────────────────────
