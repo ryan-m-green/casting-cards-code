@@ -1,4 +1,4 @@
-using CastLibrary.Logic.Services;
+﻿using CastLibrary.Logic.Services;
 using CastLibrary.Repository.Repositories.Insert;
 using CastLibrary.Repository.Repositories.Read;
 using CastLibrary.Shared.Domain;
@@ -48,22 +48,35 @@ public class AwardCurrencyCommandHandler(
         }
         else
         {
-            var players = await campaignPlayerReadRepository.GetByCampaignAsync(command.CampaignId);
+            var players = (await campaignPlayerReadRepository.GetByCampaignAsync(command.CampaignId)).ToList();
+            if (players.Count == 0) return null;
 
-            foreach (var player in players)
+            var share = command.Request.Amount / players.Count;
+            var remainder = command.Request.Amount % players.Count;
+            var choices = Enumerable.Range(0, players.Count).ToArray();
+            var bonusIndices = Random.Shared.GetItems(choices, remainder).ToHashSet();
+            var now = systemValuesService.GetUTCNow();
+            var awards = new List<PlayerAwardSplit>();
+
+            for (var i = 0; i < players.Count; i++)
             {
+                var playerAmount = share + (bonusIndices.Contains(i) ? 1 : 0);
+                if (playerAmount == 0) continue;
+
                 await goldTransactionInsertRepository.InsertAsync(new GoldTransactionDomain
                 {
                     Id = Guid.NewGuid(),
                     CampaignId = command.CampaignId,
-                    PlayerUserId = player.UserId,
-                    Amount = command.Request.Amount,
+                    PlayerUserId = players[i].UserId,
+                    Amount = playerAmount,
                     Currency = command.Request.Currency,
                     TransactionType = TransactionType.DM_GRANT,
                     Description = command.Request.Note ?? string.Empty,
                     CreatedBy = command.RequestingUserId,
-                    CreatedAt = systemValuesService.GetUTCNow(),
+                    CreatedAt = now,
                 });
+
+                awards.Add(new PlayerAwardSplit(players[i].UserId, playerAmount));
             }
 
             return new AwardCurrencyResult
@@ -72,6 +85,7 @@ public class AwardCurrencyCommandHandler(
                 Amount = command.Request.Amount,
                 Currency = command.Request.Currency,
                 Note = command.Request.Note,
+                PlayerAwards = awards,
             };
         }
     }
@@ -91,10 +105,13 @@ public class AwardCurrencyCommand
     public AwardCurrencyRequest Request { get; }
 }
 
+public record PlayerAwardSplit(Guid PlayerUserId, int Amount);
+
 public class AwardCurrencyResult
 {
     public Guid? TargetPlayerUserId { get; set; }
     public int Amount { get; set; }
     public string Currency { get; set; } = "gp";
     public string? Note { get; set; }
+    public List<PlayerAwardSplit> PlayerAwards { get; set; } = [];
 }

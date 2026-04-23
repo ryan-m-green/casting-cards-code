@@ -1,0 +1,252 @@
+@use '../../../../styles/variables' as v;
+
+.toolbar {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+
+.btn-reload {
+  padding: 8px 16px;
+}
+
+.btn-cleanup {
+  padding: 8px 16px;
+  background: transparent;
+  color: v.$color-dm-text;
+  border: 1px solid v.$color-dm-border;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 13px;
+  transition: all 0.2s;
+
+  &:hover:not(:disabled) {
+    background: v.$color-dm-bg;
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
+
+.section-heading {
+  font-size: 15px;
+  font-weight: 600;
+  color: v.$color-text-secondary;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin: 24px 0 12px;
+}
+
+.section-heading-fixed {
+  color: v.$color-text-muted;
+}
+
+.bug-list {
+  max-width: 860px;
+  margin: 0 auto;
+}
+
+.bug-card {
+  padding: 16px 20px;
+  margin-bottom: 12px;
+  background: v.$color-page-mid;
+  border: 1px solid v.$color-border;
+  border-radius: 4px;
+  transition: border-color 0.2s;
+
+  &:hover {
+    border-color: v.$color-border-accent;
+  }
+}
+
+.bug-card--fixed {
+  opacity: 0.72;
+  background: v.$color-page-start;
+}
+
+.bug-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-bottom: 8px;
+}
+
+.bug-title {
+  font-size: 15px;
+  font-weight: 600;
+  color: v.$color-text-primary;
+  flex: 1;
+}
+
+.bug-title--fixed {
+  text-decoration: line-through;
+  color: v.$color-text-muted;
+}
+
+.severity-badge {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 2px 8px;
+  border-radius: 3px;
+  border: 1px solid;
+}
+
+.severity-select {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 2px 6px;
+  border-radius: 3px;
+  border: 1px solid;
+  cursor: pointer;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='5' viewBox='0 0 8 5'%3E%3Cpath d='M0 0l4 5 4-5z' fill='currentColor'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 6px center;
+  padding-right: 20px;
+  transition: opacity 0.2s;
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  &:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(110, 75, 22, 0.2);
+  }
+}
+
+.severity-low {
+  color: #3a7d44;
+  border-color: rgba(58, 125, 68, 0.4);
+  background: rgba(58, 125, 68, 0.08);
+}
+
+.severity-medium {
+  color: #8a6800;
+  border-color: rgba(138, 104, 0, 0.4);
+  background: rgba(138, 104, 0, 0.08);
+}
+
+.severity-high {
+  color: #b84c00;
+  border-color: rgba(184, 76, 0, 0.4);
+  background: rgba(184, 76, 0, 0.08);
+}
+
+.severity-critical {
+  color: v.$color-dm-text;
+  border-color: v.$color-dm-border;
+  background: v.$color-dm-bg;
+}
+
+.fixed-badge {
+  font-size: 11px;
+  font-weight: 600;
+  color: #3a7d44;
+  border: 1px solid rgba(58, 125, 68, 0.4);
+  background: rgba(58, 125, 68, 0.08);
+  padding: 2px 8px;
+  border-radius: 3px;
+  letter-spacing: 0.04em;
+}
+
+.bug-description {
+  font-size: 14px;
+  color: v.$color-text-secondary;
+  margin-bottom: 6px;
+  line-height: 1.5;
+}
+
+.bug-description--fixed {
+  color: v.$color-text-muted;
+}
+
+.bug-steps {
+  font-size: 13px;
+  color: v.$color-text-secondary;
+  margin-bottom: 8px;
+  white-space: pre-line;
+}
+
+.meta-label {
+  font-weight: 600;
+}
+
+.bug-meta {
+  font-size: 12px;
+  color: v.$color-text-muted;
+  margin-bottom: 4px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+
+  &--tech {
+    margin-bottom: 12px;
+    font-size: 11px;
+    opacity: 0.8;
+  }
+}
+
+.bug-actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.btn-mark-fixed {
+  padding: 6px 14px;
+  background: transparent;
+  color: #3a7d44;
+  border: 1px solid rgba(58, 125, 68, 0.5);
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 13px;
+  transition: all 0.2s;
+
+  &:hover:not(:disabled) {
+    background: rgba(58, 125, 68, 0.08);
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
+
+.btn-not-doing {
+  padding: 6px 14px;
+  background: transparent;
+  color: v.$color-dm-text;
+  border: 1px solid v.$color-dm-border;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 13px;
+  transition: all 0.2s;
+
+  &:hover:not(:disabled) {
+    background: v.$color-dm-bg;
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
+
+.error-box {
+  margin-bottom: 16px;
+}
+
+.text-error {
+  color: v.$color-dm-text;
+}

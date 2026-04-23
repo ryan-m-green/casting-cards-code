@@ -8,7 +8,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: rgba(0, 0, 0, 0.84);
+  background: v.$color-ext-650;
   animation: currency-fade-in 0.3s ease forwards;
 }
 
@@ -37,17 +37,17 @@
 @keyframes currency-pulse {
   0%, 100% {
     box-shadow:
-      0 0 0   3px color-mix(in srgb, var(--portal-color, #d4a800) 40%, white 60%),
-      0 0  8px 5px color-mix(in srgb, var(--portal-color, #d4a800), transparent 28%),
-      0 0 18px 8px color-mix(in srgb, var(--portal-color, #d4a800), transparent 52%),
-      0 0 36px 12px color-mix(in srgb, var(--portal-color, #d4a800), transparent 76%);
+      0 0 0   3px color-mix(in srgb, var(--portal-color, v.$color-ext-651) 40%, white 60%),
+      0 0  8px 5px color-mix(in srgb, var(--portal-color, v.$color-ext-651), transparent 28%),
+      0 0 18px 8px color-mix(in srgb, var(--portal-color, v.$color-ext-651), transparent 52%),
+      0 0 36px 12px color-mix(in srgb, var(--portal-color, v.$color-ext-651), transparent 76%);
   }
   50% {
     box-shadow:
-      0 0 0   3px color-mix(in srgb, var(--portal-color, #d4a800) 25%, white 75%),
-      0 0 12px 7px color-mix(in srgb, var(--portal-color, #d4a800), transparent 12%),
-      0 0 26px 12px color-mix(in srgb, var(--portal-color, #d4a800), transparent 36%),
-      0 0 52px 18px color-mix(in srgb, var(--portal-color, #d4a800), transparent 64%);
+      0 0 0   3px color-mix(in srgb, var(--portal-color, v.$color-ext-651) 25%, white 75%),
+      0 0 12px 7px color-mix(in srgb, var(--portal-color, v.$color-ext-651), transparent 12%),
+      0 0 26px 12px color-mix(in srgb, var(--portal-color, v.$color-ext-651), transparent 36%),
+      0 0 52px 18px color-mix(in srgb, var(--portal-color, v.$color-ext-651), transparent 64%);
   }
 }
 
@@ -59,13 +59,13 @@
   padding: 4px;
   background: linear-gradient(
     145deg,
-    #f8e860 0%, #d4a800 15%, #8a6000 40%,
-    #f0d040 55%, #c09000 70%, #604800 85%, #e0c030 100%
+    v.$color-ext-652 0%, v.$color-ext-651 15%, v.$color-ext-653 40%,
+    v.$color-ext-654 55%, v.$color-ext-655 70%, v.$color-ext-656 85%, v.$color-ext-657 100%
   );
   box-shadow:
-    0 0 0 1px #1a0f00,
-    0 6px 22px rgba(0, 0, 0, 0.9),
-    inset 0 1px 0 rgba(255, 230, 100, 0.3);
+    0 0 0 1px v.$color-dark-frame,
+    0 6px 22px v.$color-shadow-dark,
+    inset 0 1px 0 v.$color-cast-shadow-inset;
 }
 
 // ── Inner Parchment ───────────────────────────────────────────────────────────
@@ -77,7 +77,7 @@
   overflow: hidden;
   display: flex;
   flex-direction: column;
-  background: linear-gradient(160deg, #fdf0cc 0%, #f5e0a0 50%, #e8cc78 100%);
+  background: linear-gradient(160deg, v.$color-ext-658 0%, v.$color-ext-659 50%, v.$color-ext-660 100%);
 
   &::before {
     content: '';
@@ -109,8 +109,8 @@
   padding: 6px 8px 5px;
   position: relative;
   flex-shrink: 0;
-  background: linear-gradient(180deg, #2a1800 0%, #4a2e00 100%);
-  border-bottom: 1.5px solid #8a6000;
+  background: linear-gradient(180deg, v.$color-ext-661 0%, v.$color-ext-662 100%);
+  border-bottom: 1.5px solid v.$color-ext-653;
 
   &::after {
     content: '';
@@ -119,7 +119,7 @@
     left: 0;
     right: 0;
     height: 1.5px;
-    background: linear-gradient(90deg, transparent, rgba(255, 220, 80, 0.5), transparent);
+    background: linear-gradient(90deg, transparent, v.$color-cast-accent-glow, transparent);
   }
 }
 
@@ -129,15 +129,15 @@
   font-size: 8px;
   letter-spacing: 0.03em;
   line-height: 1.2;
-  color: #f8e860;
-  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.9);
+  color: v.$color-ext-652;
+  text-shadow: 0 1px 4px v.$color-shadow-dark;
 }
 
 .currency-subtitle {
   font-family: 'Cinzel', serif;
   font-size: 6px;
   letter-spacing: 0.12em;
-  color: #e0c060;
+  color: v.$color-ext-663;
   margin-top: 1px;
   opacity: 0.8;
 }
@@ -146,7 +146,7 @@
 .currency-portrait {
   flex: 1;
   margin: 5px 5px 0;
-  border: 1.5px solid rgba(0, 0, 0, 0.25);
+  border: 1.5px solid v.$color-border-black-strong;
   border-bottom: none;
   border-radius: 3px 3px 0 0;
   overflow: hidden;
@@ -164,8 +164,8 @@
 
 // ── Amount + Note ─────────────────────────────────────────────────────────────
 .currency-flavor {
-  border: 1.5px solid rgba(0, 0, 0, 0.2);
-  border-top: 1px solid rgba(0, 0, 0, 0.15);
+  border: 1.5px solid v.$color-border-black-med;
+  border-top: 1px solid v.$color-border-black-light;
   border-radius: 0 0 3px 3px;
   margin: 0 5px;
   padding: 5px 6px;
@@ -178,8 +178,8 @@
   font-weight: 900;
   font-size: 22px;
   line-height: 1;
-  color: #8a6000;
-  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
+  color: v.$color-ext-653;
+  text-shadow: 0 1px 4px v.$color-border-black-med;
 }
 
 .currency-unit {
@@ -191,7 +191,7 @@
   font-family: 'IM Fell English', serif;
   font-style: italic;
   font-size: 7px;
-  color: #1e110a;
+  color: v.$color-text-dark;
   line-height: 1.4;
   opacity: 0.8;
   margin-top: 3px;
@@ -214,11 +214,11 @@
   border-radius: 2px;
   cursor: pointer;
   transition: all 0.2s;
-  background: linear-gradient(180deg, #e8c96a, #c9a84c);
-  color: #3d0e0e;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+  background: linear-gradient(180deg, v.$color-cast-btn-gold-1, v.$color-cast-btn-gold-2);
+  color: v.$color-cast-banner-dark;
+  box-shadow: 0 2px 4px v.$color-shadow-light;
 
-  &:hover { background: linear-gradient(180deg, #f8d870, #d9b850); transform: translateY(-1px); }
+  &:hover { background: linear-gradient(180deg, v.$color-cast-btn-gold-hover-1, v.$color-cast-btn-gold-hover-2); transform: translateY(-1px); }
 }
 
 // ── Strip ─────────────────────────────────────────────────────────────────────
@@ -230,8 +230,8 @@
   flex-shrink: 0;
   margin-top: 2px;
   position: relative;
-  background: linear-gradient(180deg, #4a2e00 0%, #2a1800 100%);
-  border-top: 1.5px solid #8a6000;
+  background: linear-gradient(180deg, v.$color-ext-662 0%, v.$color-ext-661 100%);
+  border-top: 1.5px solid v.$color-ext-653;
 }
 
 .currency-strip-label {
@@ -239,7 +239,7 @@
   font-size: 5px;
   letter-spacing: 0.15em;
   text-transform: uppercase;
-  color: #f8e860;
+  color: v.$color-ext-652;
   position: absolute;
   left: 50%;
   transform: translateX(-50%);
@@ -254,7 +254,7 @@
 .currency-pip {
   width: 3px;
   height: 3px;
-  background: #d4a800;
+  background: v.$color-ext-651;
   transform: rotate(45deg);
   opacity: 0.7;
 }

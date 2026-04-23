@@ -90,28 +90,29 @@ public class CampaignWebMapper(
     {
         var response = new CampaignCastInstanceResponse
         {
-            InstanceId         = d.InstanceId,
-            CampaignId         = d.CampaignId,
-            SourceCastId       = d.SourceCastId,
-            LocationInstanceId     = d.LocationInstanceId,
+            InstanceId = d.InstanceId,
+            CampaignId = d.CampaignId,
+            SourceCastId = d.SourceCastId,
+            LocationInstanceId = d.LocationInstanceId,
             SublocationInstanceId = d.SublocationInstanceId,
-            Name              = d.Name,
-            Pronouns          = d.Pronouns,
-            Race              = d.Race,
-            Role              = d.Role,
-            Age               = d.Age,
-            Alignment         = d.Alignment,
-            Posture           = d.Posture,
-            Speed             = d.Speed,
-            VoicePlacement    = d.VoicePlacement,
-            Description       = d.Description,
+            Name = d.Name,
+            Pronouns = d.Pronouns,
+            Race = d.Race,
+            Role = d.Role,
+            Age = d.Age,
+            Alignment = d.Alignment,
+            Posture = d.Posture,
+            Speed = d.Speed,
+            VoicePlacement = d.VoicePlacement,
+            Description = d.Description,
             PublicDescription = d.PublicDescription,
             IsVisibleToPlayers = d.IsVisibleToPlayers,
+            ImageUrl = d.ImageUrl,
             CustomItems = d.CustomItems
                                   .Select(i => new CampaignCastCustomItemResponse(i.Name, i.Price))
                                   .ToList(),
             Keywords = d.Keywords,
-            DmNotes  = d.DmNotes,
+            DmNotes = d.DmNotes,
         };
 
         logging.LogMapping(
@@ -127,21 +128,21 @@ public class CampaignWebMapper(
     {
         var response = new CampaignSublocationInstanceResponse
         {
-            InstanceId           = d.InstanceId,
-            CampaignId           = d.CampaignId,
-            SourceSublocationId  = d.SourceSublocationId,
-            LocationInstanceId       = d.LocationInstanceId,
-            Name               = d.Name,
-            Description        = d.Description,
-            ImagePath          = d.ImageUrl,
+            InstanceId = d.InstanceId,
+            CampaignId = d.CampaignId,
+            SourceSublocationId = d.SourceSublocationId,
+            LocationInstanceId = d.LocationInstanceId,
+            Name = d.Name,
+            Description = d.Description,
+            ImageUrl = d.ImageUrl,
             IsVisibleToPlayers = d.IsVisibleToPlayers,
-            DmNotes            = d.DmNotes,
-            ShopItems        = d.ShopItems.Select(s => new ShopItemResponse
+            DmNotes = d.DmNotes,
+            ShopItems = d.ShopItems.Select(s => new ShopItemResponse
             {
-                Id            = s.Id,
-                Name          = s.Name,
-                Price         = s.Price,
-                Description   = s.Description,
+                Id = s.Id,
+                Name = s.Name,
+                Price = s.Price,
+                Description = s.Description,
                 IsScratchedOff = s.IsScratchedOff,
             }).ToList(),
             CustomItems = d.CustomItems
@@ -163,15 +164,15 @@ public class CampaignWebMapper(
     {
         var response = new CampaignSecretResponse
         {
-            Id                 = d.Id,
-            CampaignId         = d.CampaignId,
-            CastInstanceId     = d.CastInstanceId,
-            LocationInstanceId     = d.LocationInstanceId,
+            Id = d.Id,
+            CampaignId = d.CampaignId,
+            CastInstanceId = d.CastInstanceId,
+            LocationInstanceId = d.LocationInstanceId,
             SublocationInstanceId = d.SublocationInstanceId,
-            Content            = d.Content,
-            SortOrder          = d.SortOrder,
-            IsRevealed         = d.IsRevealed,
-            RevealedAt         = d.RevealedAt,
+            Content = d.Content,
+            SortOrder = d.SortOrder,
+            IsRevealed = d.IsRevealed,
+            RevealedAt = d.RevealedAt,
         };
 
         logging.LogMapping(
@@ -187,14 +188,14 @@ public class CampaignWebMapper(
     {
         var response = new CampaignCastRelationshipResponse
         {
-            Id                    = d.Id,
-            CampaignId            = d.CampaignId,
-            SourceCastInstanceId  = d.SourceCastInstanceId,
-            TargetCastInstanceId  = d.TargetCastInstanceId,
-            Value                 = d.Value,
-            Explanation           = d.Explanation,
-            CreatedAt             = d.CreatedAt,
-            UpdatedAt             = d.UpdatedAt,
+            Id = d.Id,
+            CampaignId = d.CampaignId,
+            SourceCastInstanceId = d.SourceCastInstanceId,
+            TargetCastInstanceId = d.TargetCastInstanceId,
+            Value = d.Value,
+            Explanation = d.Explanation,
+            CreatedAt = d.CreatedAt,
+            UpdatedAt = d.UpdatedAt,
         };
 
         logging.LogMapping(
@@ -210,9 +211,9 @@ public class CampaignWebMapper(
     {
         var response = new CampaignPlayerResponse
         {
-            UserId       = d.UserId,
-            DisplayName  = d.DisplayName,
-            Email        = d.Email,
+            UserId = d.UserId,
+            DisplayName = d.DisplayName,
+            Email = d.Email,
             StartingGold = d.StartingGold,
         };
 
@@ -229,7 +230,7 @@ public class CampaignWebMapper(
     {
         var response = new CampaignInviteCodeResponse
         {
-            Code      = d.Code,
+            Code = d.Code,
             ExpiresAt = d.ExpiresAt,
         };
 
@@ -244,31 +245,31 @@ public class CampaignWebMapper(
 
     public TimeOfDayResponse ToTimeOfDayResponse(TimeOfDayDomain d)
     {
-        var total   = d.Slices.Sum(s => s.DurationHours);
+        var total = d.Slices.Sum(s => s.DurationHours);
         decimal running = 0;
 
         var response = new TimeOfDayResponse
         {
-            Id                    = d.Id,
-            CampaignId            = d.CampaignId,
-            DayLengthHours        = d.DayLengthHours,
+            Id = d.Id,
+            CampaignId = d.CampaignId,
+            DayLengthHours = d.DayLengthHours,
             CursorPositionPercent = d.CursorPositionPercent,
-            DaysPassed            = d.DaysPassed,
+            DaysPassed = d.DaysPassed,
             Slices = d.Slices.Select(s =>
             {
                 var start = total > 0 ? running / total * 100 : 0;
-                running  += s.DurationHours;
-                var end   = total > 0 ? running / total * 100 : 0;
+                running += s.DurationHours;
+                var end = total > 0 ? running / total * 100 : 0;
                 return new TimeOfDaySliceResponse
                 {
-                    Id            = s.Id,
-                    Label         = s.Label,
-                    Color         = s.Color,
+                    Id = s.Id,
+                    Label = s.Label,
+                    Color = s.Color,
                     DurationHours = s.DurationHours,
-                    StartPercent  = Math.Round(start, 4),
-                    EndPercent    = Math.Round(end,   4),
-                    DmNotes       = s.DmNotes,
-                    PlayerNotes   = s.PlayerNotes,
+                    StartPercent = Math.Round(start, 4),
+                    EndPercent = Math.Round(end, 4),
+                    DmNotes = s.DmNotes,
+                    PlayerNotes = s.PlayerNotes,
                 };
             }).ToList(),
         };

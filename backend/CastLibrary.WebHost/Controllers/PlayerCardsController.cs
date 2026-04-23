@@ -1,4 +1,4 @@
-using CastLibrary.Logic.Commands.PlayerCard;
+﻿using CastLibrary.Logic.Commands.PlayerCard;
 using CastLibrary.Logic.Queries.PlayerCard;
 using CastLibrary.Shared.Requests;
 using CastLibrary.WebHost.Hubs;
@@ -43,7 +43,6 @@ public class PlayerCardsController(
     IHubContext<CampaignHub> hub,
     IUserRetriever userRetriever) : ControllerBase
 {
-    // ─── Player card queries ───────────────────────────────────────────────────
 
     [HttpGet("mine")]
     public async Task<IActionResult> GetMine(Guid campaignId)
@@ -66,7 +65,8 @@ public class PlayerCardsController(
         foreach (var card in cards)
         {
             var conditions = (await getPlayerConditions.HandleAsync(card.Id)).ToList();
-            responses.Add(mapper.ToResponse(card, conditions));
+            var traits = (await getPlayerTraits.HandleAsync(card.Id)).ToList();
+            responses.Add(mapper.ToResponse(card, conditions, traits));
         }
 
         return Ok(responses);
@@ -129,8 +129,6 @@ public class PlayerCardsController(
         return Ok(perceptions.Select(mapper.ToResponse));
     }
 
-    // ─── Player card commands ──────────────────────────────────────────────────
-
     [HttpPost]
     public async Task<IActionResult> Create(Guid campaignId, [FromBody] CreatePlayerCardRequest request)
     {
@@ -173,8 +171,6 @@ public class PlayerCardsController(
         return Ok(new { imageUrl = card?.ImageUrl });
     }
 
-    // ─── Conditions (DM only) ──────────────────────────────────────────────────
-
     [HttpPost("{playerCardId}/conditions")]
     public async Task<IActionResult> AssignCondition(Guid campaignId, Guid playerCardId, [FromBody] AssignConditionRequest request)
     {
@@ -199,7 +195,6 @@ public class PlayerCardsController(
         return NoContent();
     }
 
-    // ─── Memories ─────────────────────────────────────────────────────────────
 
     [HttpPost("{playerCardId}/memories")]
     public async Task<IActionResult> AddMemory(Guid playerCardId, [FromBody] AddMemoryRequest request)
@@ -219,7 +214,6 @@ public class PlayerCardsController(
         return success ? NoContent() : NotFound();
     }
 
-    // ─── Traits ───────────────────────────────────────────────────────────────
 
     [HttpPost("{playerCardId}/traits")]
     public async Task<IActionResult> UpsertTrait(Guid playerCardId, [FromBody] UpsertTraitRequest request)
@@ -249,7 +243,6 @@ public class PlayerCardsController(
         return Ok(mapper.ToResponse(trait));
     }
 
-    // ─── Secrets ──────────────────────────────────────────────────────────────
 
     [HttpPost("{playerCardId}/secrets")]
     public async Task<IActionResult> DeliverSecret(Guid campaignId, Guid playerCardId, [FromBody] DeliverSecretRequest request)
@@ -260,9 +253,9 @@ public class PlayerCardsController(
         await hub.Clients.Group(campaignId.ToString())
             .SendAsync("SecretDelivered", new
             {
-                campaignId    = campaignId.ToString(),
-                playerUserId  = result.PlayerUserId.ToString(),
-                content       = result.Secret.Content,
+                campaignId = campaignId.ToString(),
+                playerUserId = result.PlayerUserId.ToString(),
+                content = result.Secret.Content,
             });
 
         return Created(string.Empty, mapper.ToResponse(result.Secret));
@@ -283,10 +276,10 @@ public class PlayerCardsController(
                 playerCardId,
                 secretId,
                 sharedBy,
-                secretContent   = secret.Content,
-                playerName      = card?.Name ?? string.Empty,
-                playerImageUrl  = card?.ImageUrl ?? string.Empty,
-                playerRaceClass = card is not null ? $"{card.Race} · {card.Class}" : string.Empty,
+                secretContent = secret.Content,
+                playerName = card?.Name ?? string.Empty,
+                playerImageUrl = card?.ImageUrl ?? string.Empty,
+                playerRaceClass = card is not null ? $"{card.Race} Â· {card.Class}" : string.Empty,
             });
 
         return Ok(mapper.ToResponse(secret));
@@ -306,7 +299,6 @@ public class PlayerCardsController(
         return NoContent();
     }
 
-    // ─── Perceptions ──────────────────────────────────────────────────────────
 
     [HttpPost("{playerCardId}/perceptions")]
     public async Task<IActionResult> UpsertPerception(Guid playerCardId, [FromBody] UpsertPlayerCastPerceptionRequest request)
@@ -318,7 +310,6 @@ public class PlayerCardsController(
         return Ok(mapper.ToResponse(perception));
     }
 
-    // ─── Gold ─────────────────────────────────────────────────────────────────
 
     [HttpPost("/api/campaigns/{campaignId}/gold-award")]
     public async Task<IActionResult> AwardGold(Guid campaignId, [FromBody] AwardCurrencyRequest request)
@@ -327,16 +318,44 @@ public class PlayerCardsController(
         var result = await awardGold.HandleAsync(new AwardCurrencyCommand(campaignId, userId, request));
         if (result is null) return NotFound();
 
-        await hub.Clients.Group(campaignId.ToString())
-            .SendAsync("GoldAwarded", new
+        if (result.PlayerAwards.Count > 0)
+        {
+            foreach (var award in result.PlayerAwards)
             {
-                campaignId   = campaignId.ToString(),
-                playerUserId = result.TargetPlayerUserId?.ToString(),
-                amount       = result.Amount,
-                currency     = result.Currency,
-                note         = result.Note,
-            });
+                await hub.Clients.Group(campaignId.ToString())
+                    .SendAsync("GoldAwarded", new
+                    {
+                        campaignId = campaignId.ToString(),
+                        playerUserId = award.PlayerUserId.ToString(),
+                        amount = award.Amount,
+                        currency = result.Currency,
+                        note = result.Note,
+                        tickCount = DateTime.UtcNow.Ticks,
+                    });
+            }
+        }
+        else
+        {
+            await hub.Clients.Group(campaignId.ToString())
+                .SendAsync("GoldAwarded", new
+                {
+                    campaignId = campaignId.ToString(),
+                    playerUserId = result.TargetPlayerUserId?.ToString(),
+                    amount = result.Amount,
+                    currency = result.Currency,
+                    note = result.Note,
+                    tickCount = DateTime.UtcNow.Ticks,
+                });
+        }
 
-        return Ok();
+        return Ok(new
+        {
+            currency = result.Currency,
+            playerAwards = result.PlayerAwards.Select(a => new
+            {
+                playerUserId = a.PlayerUserId.ToString(),
+                amount = a.Amount,
+            }),
+        });
     }
 }

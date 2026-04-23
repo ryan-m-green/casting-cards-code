@@ -171,6 +171,7 @@ public class CampaignReadRepository(
             Languages = r.languages ?? string.Empty,
             Description = r.description ?? string.Empty,
             IsVisibleToPlayers = r.is_visible_to_players,
+            ImageUrl = r.image_url ?? string.Empty,
             SortOrder = r.sort_order,
             Keywords = r.keywords ?? Array.Empty<string>(),
             DmNotes = r.dm_notes ?? string.Empty,
@@ -308,9 +309,8 @@ public class CampaignReadRepository(
 
         using var conn = CreateConnection();
         var rows = (await conn.QueryAsync<dynamic>(
-            "SELECT * FROM campaign_location_instances WHERE instance_id = @InstanceId",
+            "SELECT cli.*, l.image_url FROM campaign_location_instances cli LEFT JOIN locations l ON l.id = cli.source_location_id WHERE cli.instance_id = @InstanceId",
             @params)).ToList();
-
         logging.LogDbOperation(correlation.TraceId, spanId, "SELECT", "campaign_location_instances",
             @params, rows.Count);
 
@@ -334,6 +334,7 @@ public class CampaignReadRepository(
             Description = r.description ?? string.Empty,
             IsVisibleToPlayers = r.is_visible_to_players,
             SortOrder = r.sort_order,
+            ImageUrl = r.image_url ?? string.Empty,
             Keywords = r.keywords ?? Array.Empty<string>(),
             DmNotes = r.dm_notes ?? string.Empty,
         };

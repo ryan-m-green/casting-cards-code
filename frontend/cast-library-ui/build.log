@@ -1,0 +1,413 @@
+
+> cast-library-ui@0.0.0 build
+> ng build
+
+[33m>[39m Building...
+[32mΓêÜ[39m Building...
+Application bundle generation failed. [7.301 seconds] - 2026-04-23T01:46:58.174Z
+
+node.exe : [1m[33m[33mΓû▓ [43;33m[[43;30mWARNING[43;33m][0m [1mNG8107: NG8107: The left side of this optional chain operation does not include 'null' or 'undefined' in its type, therefore the '?.' 
+operator can be replaced with the '.' operator. Find more at https://v21.angular.dev/extended-diagnostics/NG8107[0m [1m[35m[plugin angular-compiler][0m
+At line:1 char:1
++ & "C:\Program Files\nodejs/node.exe" "C:\Program Files\nodejs/node_mo ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: ([1m[33m[33mΓ...r-compiler][0m:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+
+    src/app/features/campaign/campaign-cast-detail/campaign-cast-detail.component.html:166:32:
+[37m      166 Γöé         @if (ca.voicePlacement?.[32mlength[37m) {
+          Γò╡                                 [32m~~~~~~[0m
+
+  Warning occurs in the template of component CampaignCastDetailComponent.
+
+    src/app/features/campaign/campaign-cast-detail/campaign-cast-detail.component.ts:21:15:
+[37m      21 Γöé   templateUrl: [32m'./campaign-cast-detail.component.html'[37m,
+         Γò╡                [32m~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+
+
+[33mΓû▓ [43;33m[[43;30mWARNING[43;33m][0m [1mNG8107: NG8107: The left side of this optional chain operation does not include 'null' or 'undefined' in its type, therefore the '?.' operator can be 
+replaced with the '.' operator. Find more at https://v21.angular.dev/extended-diagnostics/NG8107[0m [1m[35m[plugin angular-compiler][0m
+
+    src/app/features/campaign/campaign-cast-detail/campaign-cast-detail.component.html:177:26:
+[37m      177 Γöé         @if (ca.keywords?.[32mlength[37m) {
+          Γò╡                           [32m~~~~~~[0m
+
+  Warning occurs in the template of component CampaignCastDetailComponent.
+
+    src/app/features/campaign/campaign-cast-detail/campaign-cast-detail.component.ts:21:15:
+[37m      21 Γöé   templateUrl: [32m'./campaign-cast-detail.component.html'[37m,
+         Γò╡                [32m~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+
+
+[33mΓû▓ [43;33m[[43;30mWARNING[43;33m][0m [1mNG8107: NG8107: The left side of this optional chain operation does not include 'null' or 'undefined' in its type, therefore the '?.' operator can be 
+replaced with the '.' operator. Find more at https://v21.angular.dev/extended-diagnostics/NG8107[0m [1m[35m[plugin angular-compiler][0m
+
+    src/app/features/campaign/campaign-cast-editor/campaign-cast-editor.component.html:127:32:
+[37m      127 Γöé           @if ((added.keywords?.[32mlength[37m ?? 0) > 0) {
+          Γò╡                                 [32m~~~~~~[0m
+
+  Warning occurs in the template of component CampaignCastEditorComponent.
+
+    src/app/features/campaign/campaign-cast-editor/campaign-cast-editor.component.ts:29:15:
+[37m      29 Γöé   templateUrl: [32m'./campaign-cast-editor.component.html'[37m,
+         Γò╡                [32m~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+
+
+[33mΓû▓ [43;33m[[43;30mWARNING[43;33m][0m [1mNG8113: KeywordInputComponent is not used within the template of CampaignCastEditorComponent[0m [1m[35m[plugin angular-compiler][0m
+
+    src/app/features/campaign/campaign-cast-editor/campaign-cast-editor.component.ts:28:26:
+[37m      28 Γöé ...orts: [CommonModule, [32mKeywordInputComponent[37m, DmNavComponent, Cas...
+         Γò╡                         [32m~~~~~~~~~~~~~~~~~~~~~[0m
+
+
+[33mΓû▓ [43;33m[[43;30mWARNING[43;33m][0m [1mNG8102: NG8102: The left side of this nullish coalescing operation does not include 'null' or 'undefined' in its type, therefore the '??' operator can be 
+safely removed. Find more at https://v21.angular.dev/extended-diagnostics/NG8102[0m [1m[35m[plugin angular-compiler][0m
+
+    src/app/features/campaign/campaign-creator/campaign-creator.component.html:264:30:
+[37m      264 Γöé                      [value]="[32mdraft.condition ?? ''[37m"
+          Γò╡                               [32m~~~~~~~~~~~~~~~~~~~~~[0m
+
+  Warning occurs in the template of component CampaignCreatorComponent.
+
+    src/app/features/campaign/campaign-creator/campaign-creator.component.ts:44:15:
+[37m      44 Γöé   templateUrl: [32m'./campaign-creator.component.html'[37m,
+         Γò╡                [32m~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+
+
+[33mΓû▓ [43;33m[[43;30mWARNING[43;33m][0m [1mNG8107: NG8107: The left side of this optional chain operation does not include 'null' or 'undefined' in its type, therefore the '?.' operator can be 
+replaced with the '.' operator. Find more at https://v21.angular.dev/extended-diagnostics/NG8107[0m [1m[35m[plugin angular-compiler][0m
+
+    src/app/features/campaign/campaign-creator/campaign-creator.component.html:310:32:
+[37m      310 Γöé           @if ((draft.keywords?.[32mlength[37m ?? 0) > 0) {
+          Γò╡                                 [32m~~~~~~[0m
+
+  Warning occurs in the template of component CampaignCreatorComponent.
+
+    src/app/features/campaign/campaign-creator/campaign-creator.component.ts:44:15:
+[37m      44 Γöé   templateUrl: [32m'./campaign-creator.component.html'[37m,
+         Γò╡                [32m~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+
+
+[33mΓû▓ [43;33m[[43;30mWARNING[43;33m][0m [1mNG8113: CardFlipComponent is not used within the template of CampaignCreatorComponent[0m [1m[35m[plugin angular-compiler][0m
+
+    src/app/features/campaign/campaign-creator/campaign-creator.component.ts:43:59:
+[37m      43 Γöé ...rmsModule, RouterLink, [32mCardFlipComponent[37m, LocationCardComponent...
+         Γò╡                           [32m~~~~~~~~~~~~~~~~~[0m
+
+
+[33mΓû▓ [43;33m[[43;30mWARNING[43;33m][0m [1mNG8113: KeywordInputComponent is not used within the template of CampaignCreatorComponent[0m [1m[35m[plugin angular-compiler][0m
+
+    src/app/features/campaign/campaign-creator/campaign-creator.component.ts:43:132:
+[37m      43 Γöé ...onshipsTabComponent, [32mKeywordInputComponent[37m, DmNavComponent, Tim...
+         Γò╡                         [32m~~~~~~~~~~~~~~~~~~~~~[0m
+
+
+[33mΓû▓ [43;33m[[43;30mWARNING[43;33m][0m [1mNG8113: DatePipe is not used within the template of CampaignDetailComponent[0m [1m[35m[plugin angular-compiler][0m
+
+    src/app/features/campaign/campaign-detail/campaign-detail.component.ts:20:26:
+[37m      20 Γöé   imports: [CommonModule, [32mDatePipe[37m, SecretModalComponent, LockPill...
+         Γò╡                           [32m~~~~~~~~[0m
+
+
+[33mΓû▓ [43;33m[[43;30mWARNING[43;33m][0m [1mNG8113: SecretModalComponent is not used within the template of CampaignDetailComponent[0m [1m[35m[plugin angular-compiler][0m
+
+    src/app/features/campaign/campaign-detail/campaign-detail.component.ts:20:36:
+[37m      20 Γöé ...mmonModule, DatePipe, [32mSecretModalComponent[37m, LockPillComponent, ...
+         Γò╡                          [32m~~~~~~~~~~~~~~~~~~~~[0m
+
+
+[33mΓû▓ [43;33m[[43;30mWARNING[43;33m][0m [1mNG8113: LockPillComponent is not used within the template of CampaignDetailComponent[0m [1m[35m[plugin angular-compiler][0m
+
+    src/app/features/campaign/campaign-detail/campaign-detail.component.ts:20:58:
+[37m      20 Γöé ... SecretModalComponent, [32mLockPillComponent[37m, CampaignNotesComponen...
+         Γò╡                           [32m~~~~~~~~~~~~~~~~~[0m
+
+
+[33mΓû▓ [43;33m[[43;30mWARNING[43;33m][0m [1mNG8113: CampaignNotesComponent is not used within the template of CampaignDetailComponent[0m [1m[35m[plugin angular-compiler][0m
+
+    src/app/features/campaign/campaign-detail/campaign-detail.component.ts:20:77:
+[37m      20 Γöé ..., LockPillComponent, [32mCampaignNotesComponent[37m, LocationCardCompon...
+         Γò╡                         [32m~~~~~~~~~~~~~~~~~~~~~~[0m
+
+
+[33mΓû▓ [43;33m[[43;30mWARNING[43;33m][0m [1mNG8107: NG8107: The left side of this optional chain operation does not include 'null' or 'undefined' in its type, therefore the '?.' operator can be 
+replaced with the '.' operator. Find more at https://v21.angular.dev/extended-diagnostics/NG8107[0m [1m[35m[plugin angular-compiler][0m
+
+    src/app/features/campaign/campaign-location-detail/campaign-location-detail.component.html:161:41:
+[37m      161 Γöé           @if (!editing() && c.keywords?.[32mlength[37m) {
+          Γò╡                                          [32m~~~~~~[0m
+
+  Warning occurs in the template of component CampaignLocationDetailComponent.
+
+    src/app/features/campaign/campaign-location-detail/campaign-location-detail.component.ts:22:15:
+[37m      22 Γöé   templateUrl: [32m'./campaign-location-detail.component.html'[37m,
+         Γò╡                [32m~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+
+
+[33mΓû▓ [43;33m[[43;30mWARNING[43;33m][0m [1mNG8107: NG8107: The left side of this optional chain operation does not include 'null' or 'undefined' in its type, therefore the '?.' operator can be 
+replaced with the '.' operator. Find more at https://v21.angular.dev/extended-diagnostics/NG8107[0m [1m[35m[plugin angular-compiler][0m
+
+    src/app/features/campaign/campaign-sublocation-detail/campaign-sublocation-detail.component.html:53:46:
+[37m      53 Γöé           @if (!editing() && subLoc.keywords?.[32mlength[37m) {
+         Γò╡                                               [32m~~~~~~[0m
+
+  Warning occurs in the template of component CampaignSublocationDetailComponent.
+
+    src/app/features/campaign/campaign-sublocation-detail/campaign-sublocation-detail.component.ts:22:15:
+[37m      22 Γöé   templateUrl: [32m'./campaign-sublocation-detail.component.html'[37m,
+         Γò╡                [32m~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+
+
+[33mΓû▓ [43;33m[[43;30mWARNING[43;33m][0m [1mNG8107: NG8107: The left side of this optional chain operation does not include 'null' or 'undefined' in its type, therefore the '?.' operator can be 
+replaced with the '.' operator. Find more at https://v21.angular.dev/extended-diagnostics/NG8107[0m [1m[35m[plugin angular-compiler][0m
+
+    src/app/features/campaign/campaign-sublocation-detail/campaign-sublocation-detail.component.html:67:31:
+[37m      67 Γöé         @if (subLoc.shopItems?.[32mlength[37m || addingShopItem()) {
+         Γò╡                                [32m~~~~~~[0m
+
+  Warning occurs in the template of component CampaignSublocationDetailComponent.
+
+    src/app/features/campaign/campaign-sublocation-detail/campaign-sublocation-detail.component.ts:22:15:
+[37m      22 Γöé   templateUrl: [32m'./campaign-sublocation-detail.component.html'[37m,
+         Γò╡                [32m~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+
+
+[33mΓû▓ [43;33m[[43;30mWARNING[43;33m][0m [1mNG8107: NG8107: The left side of this optional chain operation does not include 'null' or 'undefined' in its type, therefore the '?.' operator can be 
+replaced with the '.' operator. Find more at https://v21.angular.dev/extended-diagnostics/NG8107[0m [1m[35m[plugin angular-compiler][0m
+
+    src/app/features/campaign/campaign-sublocation-selector/campaign-sublocation-selector.component.html:117:32:
+[37m      117 Γöé           @if ((added.keywords?.[32mlength[37m ?? 0) > 0) {
+          Γò╡                                 [32m~~~~~~[0m
+
+  Warning occurs in the template of component CampaignSublocationSelectorComponent.
+
+    src/app/features/campaign/campaign-sublocation-selector/campaign-sublocation-selector.component.ts:43:15:
+[37m      43 Γöé   templateUrl: [32m'./campaign-sublocation-selector.component.html'[37m,
+         Γò╡                [32m~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+
+
+[33mΓû▓ [43;33m[[43;30mWARNING[43;33m][0m [1mNG8113: KeywordInputComponent is not used within the template of CampaignSublocationSelectorComponent[0m [1m[35m[plugin angular-compiler][0m
+
+    src/app/features/campaign/campaign-sublocation-selector/campaign-sublocation-selector.component.ts:42:26:
+[37m      42 Γöé ...orts: [CommonModule, [32mKeywordInputComponent[37m, DmNavComponent, Sub...
+         Γò╡                         [32m~~~~~~~~~~~~~~~~~~~~~[0m
+
+
+[33mΓû▓ [43;33m[[43;30mWARNING[43;33m][0m [1mNG8107: NG8107: The left side of this optional chain operation does not include 'null' or 'undefined' in its type, therefore the '?.' operator can be safely 
+removed. Find more at https://v21.angular.dev/extended-diagnostics/NG8107[0m [1m[35m[plugin angular-compiler][0m
+
+    src/app/features/campaign/cast-relationships-tab/cast-relationships-tab.component.html:48:50:
+[37m      48 Γöé ...an class="card-initial">{{ [32mcast.name?.[0][37m?.toUpperCase() }}</span>
+         Γò╡                               [32m~~~~~~~~~~~~~~[0m
+
+  Warning occurs in the template of component CastRelationshipsTabComponent.
+
+    src/app/features/campaign/cast-relationships-tab/cast-relationships-tab.component.ts:24:15:
+[37m      24 Γöé   templateUrl: [32m'./cast-relationships-tab.component.html'[37m,
+         Γò╡                [32m~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+
+
+[33mΓû▓ [43;33m[[43;30mWARNING[43;33m][0m [1mNG8107: NG8107: The left side of this optional chain operation does not include 'null' or 'undefined' in its type, therefore the '?.' operator can be 
+replaced with the '.' operator. Find more at https://v21.angular.dev/extended-diagnostics/NG8107[0m [1m[35m[plugin angular-compiler][0m
+
+    src/app/features/campaign/cast-relationships-tab/cast-relationships-tab.component.html:68:42:
+[37m      68 Γöé                 @if (cast.voicePlacement?.[32mlength[37m) {
+         Γò╡                                           [32m~~~~~~[0m
+
+  Warning occurs in the template of component CastRelationshipsTabComponent.
+
+    src/app/features/campaign/cast-relationships-tab/cast-relationships-tab.component.ts:24:15:
+[37m      24 Γöé   templateUrl: [32m'./cast-relationships-tab.component.html'[37m,
+         Γò╡                [32m~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+
+
+[33mΓû▓ [43;33m[[43;30mWARNING[43;33m][0m [1mNG8107: NG8107: The left side of this optional chain operation does not include 'null' or 'undefined' in its type, therefore the '?.' operator can be 
+replaced with the '.' operator. Find more at https://v21.angular.dev/extended-diagnostics/NG8107[0m [1m[35m[plugin angular-compiler][0m
+
+    src/app/features/campaign/relationship-web-modal/relationship-web-modal.component.html:6:62:
+[37m      6 Γöé ...n class="web-title">Relationship Web ┬╖ {{ mainCast?[32m.nam[37me }}</span>
+        Γò╡                                                       [32m~~~~[0m
+
+  Warning occurs in the template of component RelationshipWebModalComponent.
+
+    src/app/features/campaign/relationship-web-modal/relationship-web-modal.component.ts:21:15:
+[37m      21 Γöé   templateUrl: [32m'./relationship-web-modal.component.html'[37m,
+         Γò╡                [32m~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+
+
+[33mΓû▓ [43;33m[[43;30mWARNING[43;33m][0m [1mNG8107: NG8107: The left side of this optional chain operation does not include 'null' or 'undefined' in its type, therefore the '?.' operator can be 
+replaced with the '.' operator. Find more at https://v21.angular.dev/extended-diagnostics/NG8107[0m [1m[35m[plugin angular-compiler][0m
+
+    src/app/features/campaign/relationship-web-modal/relationship-web-modal.component.html:14:84:
+[37m      14 Γöé ...e has strong feelings about <em>{{ mainCast?.[32mname[37m }}</em> yet.</p>
+         Γò╡                                                 [32m~~~~[0m
+
+  Warning occurs in the template of component RelationshipWebModalComponent.
+
+    src/app/features/campaign/relationship-web-modal/relationship-web-modal.component.ts:21:15:
+[37m      21 Γöé   templateUrl: [32m'./relationship-web-modal.component.html'[37m,
+         Γò╡                [32m~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+
+
+[33mΓû▓ [43;33m[[43;30mWARNING[43;33m][0m [1mNG8107: NG8107: The left side of this optional chain operation does not include 'null' or 'undefined' in its type, therefore the '?.' operator can be safely 
+removed. Find more at https://v21.angular.dev/extended-diagnostics/NG8107[0m [1m[35m[plugin angular-compiler][0m
+
+    src/app/features/campaign/relationship-web-modal/relationship-web-modal.component.html:75:50:
+[37m      75 Γöé ...lass="card-initial">{{ [32mmainCast.name?.[0][37m?.toUpperCase() }}</span>
+         Γò╡                           [32m~~~~~~~~~~~~~~~~~~[0m
+
+  Warning occurs in the template of component RelationshipWebModalComponent.
+
+    src/app/features/campaign/relationship-web-modal/relationship-web-modal.component.ts:21:15:
+[37m      21 Γöé   templateUrl: [32m'./relationship-web-modal.component.html'[37m,
+         Γò╡                [32m~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+
+
+[33mΓû▓ [43;33m[[43;30mWARNING[43;33m][0m [1mNG8113: TimeOfDayBarComponent is not used within the template of PlayerCampaignDetailComponent[0m [1m[35m[plugin angular-compiler][0m
+
+    src/app/features/player/player-campaign-detail/player-campaign-detail.component.ts:17:26:
+[37m      17 Γöé ...orts: [CommonModule, [32mTimeOfDayBarComponent[37m, LocationCardCompone...
+         Γò╡                         [32m~~~~~~~~~~~~~~~~~~~~~[0m
+
+
+[33mΓû▓ [43;33m[[43;30mWARNING[43;33m][0m [1mNG8107: NG8107: The left side of this optional chain operation does not include 'null' or 'undefined' in its type, therefore the '?.' operator can be 
+replaced with the '.' operator. Find more at https://v21.angular.dev/extended-diagnostics/NG8107[0m [1m[35m[plugin angular-compiler][0m
+
+    src/app/features/player/player-cast-detail/player-cast-detail.component.html:97:34:
+[37m      97 Γöé           @if (ca.voicePlacement?.[32mlength[37m) {
+         Γò╡                                   [32m~~~~~~[0m
+
+  Warning occurs in the template of component PlayerCastDetailComponent.
+
+    src/app/features/player/player-cast-detail/player-cast-detail.component.ts:19:15:
+[37m      19 Γöé   templateUrl: [32m'./player-cast-detail.component.html'[37m,
+         Γò╡                [32m~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+
+
+[33mΓû▓ [43;33m[[43;30mWARNING[43;33m][0m [1mNG8107: NG8107: The left side of this optional chain operation does not include 'null' or 'undefined' in its type, therefore the '?.' operator can be 
+replaced with the '.' operator. Find more at https://v21.angular.dev/extended-diagnostics/NG8107[0m [1m[35m[plugin angular-compiler][0m
+
+    src/app/features/player/player-cast-detail/player-cast-detail.component.html:108:28:
+[37m      108 Γöé           @if (ca.keywords?.[32mlength[37m) {
+          Γò╡                             [32m~~~~~~[0m
+
+  Warning occurs in the template of component PlayerCastDetailComponent.
+
+    src/app/features/player/player-cast-detail/player-cast-detail.component.ts:19:15:
+[37m      19 Γöé   templateUrl: [32m'./player-cast-detail.component.html'[37m,
+         Γò╡                [32m~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+
+
+[33mΓû▓ [43;33m[[43;30mWARNING[43;33m][0m [1mNG8107: NG8107: The left side of this optional chain operation does not include 'null' or 'undefined' in its type, therefore the '?.' operator can be 
+replaced with the '.' operator. Find more at https://v21.angular.dev/extended-diagnostics/NG8107[0m [1m[35m[plugin angular-compiler][0m
+
+    src/app/features/player/player-location-detail/player-location-detail.component.html:95:25:
+[37m      95 Γöé         @if (c.keywords?.[32mlength[37m) {
+         Γò╡                          [32m~~~~~~[0m
+
+  Warning occurs in the template of component PlayerLocationDetailComponent.
+
+    src/app/features/player/player-location-detail/player-location-detail.component.ts:22:15:
+[37m      22 Γöé   templateUrl: [32m'./player-location-detail.component.html'[37m,
+         Γò╡                [32m~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+
+
+[33mΓû▓ [43;33m[[43;30mWARNING[43;33m][0m [1mNG8107: NG8107: The left side of this optional chain operation does not include 'null' or 'undefined' in its type, therefore the '?.' operator can be 
+replaced with the '.' operator. Find more at https://v21.angular.dev/extended-diagnostics/NG8107[0m [1m[35m[plugin angular-compiler][0m
+
+    src/app/features/player/player-my-character/player-my-character.component.html:154:44:
+[37m      154 Γöé                     @if (member.conditions?.[32mlength[37m) {
+          Γò╡                                             [32m~~~~~~[0m
+
+  Warning occurs in the template of component PlayerMyCharacterComponent.
+
+    src/app/features/player/player-my-character/player-my-character.component.ts:42:15:
+[37m      42 Γöé   templateUrl: [32m'./player-my-character.component.html'[37m,
+         Γò╡                [32m~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+
+
+[33mΓû▓ [43;33m[[43;30mWARNING[43;33m][0m [1mNG8107: NG8107: The left side of this optional chain operation does not include 'null' or 'undefined' in its type, therefore the '?.' operator can be 
+replaced with the '.' operator. Find more at https://v21.angular.dev/extended-diagnostics/NG8107[0m [1m[35m[plugin angular-compiler][0m
+
+    src/app/features/player/player-sublocation-detail/player-sublocation-detail.component.html:31:34:
+[37m      31 Γöé             @if (subLoc.keywords?.[32mlength[37m) {
+         Γò╡                                   [32m~~~~~~[0m
+
+  Warning occurs in the template of component PlayerSublocationDetailComponent.
+
+    src/app/features/player/player-sublocation-detail/player-sublocation-detail.component.ts:20:15:
+[37m      20 Γöé   templateUrl: [32m'./player-sublocation-detail.component.html'[37m,
+         Γò╡                [32m~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+
+
+[33mΓû▓ [43;33m[[43;30mWARNING[43;33m][0m [1mNG8107: NG8107: The left side of this optional chain operation does not include 'null' or 'undefined' in its type, therefore the '?.' operator can be 
+replaced with the '.' operator. Find more at https://v21.angular.dev/extended-diagnostics/NG8107[0m [1m[35m[plugin angular-compiler][0m
+
+    src/app/features/player/player-sublocation-detail/player-sublocation-detail.component.html:44:33:
+[37m      44 Γöé           @if (subLoc.shopItems?.[32mlength[37m) {
+         Γò╡                                  [32m~~~~~~[0m
+
+  Warning occurs in the template of component PlayerSublocationDetailComponent.
+
+    src/app/features/player/player-sublocation-detail/player-sublocation-detail.component.ts:20:15:
+[37m      20 Γöé   templateUrl: [32m'./player-sublocation-detail.component.html'[37m,
+         Γò╡                [32m~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+
+[39m[22m
+[1m[31m[31mX [41;31m[[41;97mERROR[41;31m][0m [1mUndefined variable.
+    Γò╖
+179 Γöé   border-bottom: 1px solid rgba($location-blue, 0.12);
+    Γöé                                 ^^^^^^^^^^^^^^
+    Γò╡
+  src\app\features\campaign\campaign-location-detail\campaign-location-detail.component.scss 179:33  root stylesheet[0m [1m[35m[plugin angular-sass][0m
+
+
+[31mX [41;31m[[41;97mERROR[41;31m][0m [1mUndefined variable.
+    Γò╖
+170 Γöé   border-bottom: 1px solid rgba($subLoc-olive, 0.12);
+    Γöé                                 ^^^^^^^^^^^^^
+    Γò╡
+  src\app\features\campaign\campaign-sublocation-detail\campaign-sublocation-detail.component.scss 170:33  root stylesheet[0m [1m[35m[plugin angular-sass][0m
+
+
+[31mX [41;31m[[41;97mERROR[41;31m][0m [1mUndefined variable.
+    Γò╖
+143 Γöé   color: rgba($cast-gold, 0.95);
+    Γöé               ^^^^^^^^^^
+    Γò╡
+  src\app\features\player\player-cast-detail\player-cast-detail.component.scss 143:15  root stylesheet[0m [1m[35m[plugin angular-sass][0m
+
+
+[31mX [41;31m[[41;97mERROR[41;31m][0m [1mUndefined variable.
+   Γò╖
+60 Γöé   background: rgba($cast-gold, 0.08);
+   Γöé                    ^^^^^^^^^^
+   Γò╡
+  src\app\features\player\player-cast-notes\player-cast-notes.component.scss 60:20  root stylesheet[0m [1m[35m[plugin angular-sass][0m
+
+
+[31mX [41;31m[[41;97mERROR[41;31m][0m [1mUndefined variable.
+    Γò╖
+154 Γöé   border-bottom: 1px solid rgba($subLoc-olive, 0.12);
+    Γöé                                 ^^^^^^^^^^^^^
+    Γò╡
+  src\app\features\player\player-sublocation-detail\player-sublocation-detail.component.scss 154:33  root stylesheet[0m [1m[35m[plugin angular-sass][0m
+
+
+[31mX [41;31m[[41;97mERROR[41;31m][0m [1mUndefined variable.
+    Γò╖
+141 Γöé   color: rgba($location-blue, 0.82);
+    Γöé               ^^^^^^^^^^^^^^
+    Γò╡
+  src\app\features\campaign\campaign-location-detail\location-detail-panel\location-detail-panel.component.scss 141:15  root stylesheet[0m [1m[35m[plugin angular-sass][0m
+
+
+[31mX [41;31m[[41;97mERROR[41;31m][0m [1mUndefined variable.
+    Γò╖
+102 Γöé     outline: 2px solid rgba(v.$accent, 0.80);
+    Γöé                             ^^^^^^^
+    Γò╡
+  src\app\features\player\player-location-political-notes\player-location-political-notes.component.scss 102:29  root stylesheet[0m [1m[35m[plugin angular-sass][0m
+
+[39m[22m

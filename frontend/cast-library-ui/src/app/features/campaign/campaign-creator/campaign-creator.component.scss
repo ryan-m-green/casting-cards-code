@@ -13,7 +13,7 @@
   display: flex;
   gap: 4px;
   margin-bottom: 24px;
-  border-bottom: 1px solid rgba(110, 75, 22, 0.4);
+  border-bottom: 1px solid v.$color-ui-cancel-border;
   padding-bottom: 0;
 }
 
@@ -25,16 +25,16 @@
   font-size: 0.82rem;
   font-weight: 600;
   letter-spacing: 0.05em;
-  color: rgba(72, 53, 1, 0.82);
+  color: v.$color-ext-94;
   cursor: pointer;
   transition: color 0.15s, border-color 0.15s;
   margin-bottom: -1px;
 
-  &:hover:not(:disabled) { color: rgba(72, 53, 1, 0.95); }
+  &:hover:not(:disabled) { color: v.$color-ext-95; }
 
   &.tab-btn-active {
-    color: rgb(72, 53, 1);
-    border-bottom-color: rgb(72, 53, 1);
+    color: v.$color-ext-96;
+    border-bottom-color: v.$color-ext-96;
   }
 
   &:disabled {
@@ -48,16 +48,16 @@
   font-size: 8px;
   letter-spacing: 0.22em;
   text-transform: uppercase;
-  color: rgba(52, 28, 4, 1);
+  color: v.$color-ext-49;
   font-weight: 700;
-  border-bottom: 0.5px solid rgba(110, 75, 22, 0.22);
+  border-bottom: 0.5px solid v.$color-ext-50;
   padding-bottom: 4px;
   margin: 14px 0 10px;
 }
 
 // ── Title divider ─────────────────────────────────────────────────────────────
 .title-divider {
-  border-top: 1px solid rgba(110, 75, 22, 0.65);
+  border-top: 1px solid v.$color-ext-97;
   margin: 12px 0 20px;
 }
 
@@ -72,7 +72,7 @@
 .color-swatch-input {
   width: 42px;
   height: 36px;
-  border: 1px solid rgba(110, 75, 22, 0.35);
+  border: 1px solid v.$color-ext-98;
   border-radius: 6px;
   padding: 2px;
   background: transparent;
@@ -84,14 +84,14 @@
   width: 36px;
   height: 36px;
   border-radius: 6px;
-  border: 1px solid rgba(110, 75, 22, 0.35);
+  border: 1px solid v.$color-ext-98;
   flex-shrink: 0;
 }
 
 .color-swatch-hex {
   font-family: 'Courier New', monospace;
   font-size: 11px;
-  color: rgba(105, 72, 18, 0.75);
+  color: v.$color-ext-99;
   letter-spacing: 0.05em;
 }
 
@@ -132,50 +132,50 @@
 
 .deck-shadow-far {
   top: 8px; left: 8px; right: -8px; bottom: -8px;
-  background: rgba(160, 200, 80, 0.50);
-  border: 2.5px solid rgba(42, 64, 8, 0.26);
+  background: v.$color-ext-100;
+  border: 2.5px solid v.$color-ext-101;
   transform: rotate(6deg);
 }
 
 .deck-shadow-near {
   top: 4px; left: 4px; right: -4px; bottom: -4px;
-  background: rgba(180, 215, 100, 0.65);
-  border: 2.5px solid rgba(42, 64, 8, 0.34);
+  background: v.$color-ext-102;
+  border: 2.5px solid v.$color-ext-103;
   transform: rotate(3deg);
 }
 
 .deck-face {
   position: absolute;
   inset: 0;
-  background: linear-gradient(148deg, rgba(200, 224, 128, 0.92), rgba(168, 200, 80, 0.88));
-  border: 2.5px solid rgba(42, 64, 8, 0.62);
+  background: linear-gradient(148deg, v.$color-ext-104, v.$color-ext-105);
+  border: 2.5px solid v.$color-ext-106;
   border-radius: 12px;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   gap: 8px;
-  box-shadow: inset 0 0 0 1.5px rgba(200, 255, 100, 0.20);
+  box-shadow: inset 0 0 0 1.5px v.$color-ext-107;
 }
 
 .deck-inner-border {
   position: absolute;
   inset: 7px;
-  border: 1px solid rgba(120, 180, 40, 0.20);
+  border: 1px solid v.$color-ext-108;
   border-radius: 9px;
   pointer-events: none;
 }
 
 .deck-castle {
   font-size: 34px;
-  color: rgba(42, 64, 8, 0.22);
+  color: v.$color-ext-109;
   line-height: 1;
 }
 
 .deck-count {
   font-family: v.$font-header;
   font-size: 10px;
-  color: rgba(42, 64, 8, 0.52);
+  color: v.$color-ext-110;
   letter-spacing: 0.08em;
   text-align: center;
   line-height: 1.8;
@@ -183,7 +183,7 @@
 
 // ── Empty / placeholder states ────────────────────────────────────────────────
 .deck-stack-empty {
-  border: 1.5px dashed rgba(110, 75, 22, 0.22);
+  border: 1.5px dashed v.$color-ext-50;
   border-radius: 12px;
   cursor: default;
 }
@@ -197,9 +197,9 @@
 .main-card-placeholder {
   width: 100%;
   height: 100%;
-  border: 1.5px dashed rgba(110, 75, 22, 0.28);
+  border: 1.5px dashed v.$color-border;
   border-radius: 12px;
-  background: rgba(240, 225, 190, 0.18);
+  background: v.$color-ext-111;
 }
 
 // ── Add to Campaign button ────────────────────────────────────────────────────
@@ -222,9 +222,9 @@
   font-size: 10px;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: rgba(34, 80, 38, 0.94);
-  background: rgba(38, 88, 42, 0.08);
-  border: 2px solid rgba(38, 88, 42, 0.52);
+  color: v.$color-ext-112;
+  background: v.$color-ext-113;
+  border: 2px solid v.$color-ext-114;
   border-radius: 7px;
   padding: 8px 16px;
   cursor: pointer;
@@ -232,18 +232,18 @@
   flex-direction: column;
   align-items: center;
   gap: 4px;
-  box-shadow: 0 2px 5px rgba(38, 88, 42, 0.10);
+  box-shadow: 0 2px 5px v.$color-open-bg;
 
   &:hover {
-    background: rgba(38, 88, 42, 0.14);
-    border-color: rgba(38, 88, 42, 0.72);
+    background: v.$color-ext-115;
+    border-color: v.$color-ext-116;
   }
 }
 
 .add-arrow {
   font-size: 28px;
   line-height: 1;
-  color: rgba(34, 80, 38, 0.80);
+  color: v.$color-ext-117;
 }
 
 .all-added-note {
@@ -257,7 +257,7 @@
   font-size: 9px;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: rgba(52, 28, 4, 1);
+  color: v.$color-ext-49;
   font-weight: 700;
   margin-bottom: 7px;
 }
@@ -280,12 +280,12 @@
   left: 0;
   width: 150px;
   height: 220px;
-  background: linear-gradient(160deg, #9ab0b8 0%, #b8cdd6 50%, #8aa0a8 100%);
-  border: 2.5px solid rgba(78, 48, 10, 0.72);
+  background: linear-gradient(160deg, v.$color-lib-location-1 0%, v.$color-lib-location-2 50%, v.$color-lib-location-3 100%);
+  border: 2.5px solid v.$color-ext-73;
   border-radius: 4px;
   overflow: hidden;
   cursor: pointer;
-  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.22);
+  box-shadow: 0 3px 10px v.$color-ext-74;
   transition: top 0.34s cubic-bezier(0.25, 0.46, 0.45, 0.94);
   padding: 10px;
 }
@@ -307,16 +307,16 @@
   flex-shrink: 0;
   font-size: 14px;
   line-height: 1;
-  border: 1px solid rgba(210, 70, 45, 0.75);
+  border: 1px solid v.$color-ext-75;
   border-radius: 3px;
-  background: rgba(110, 20, 8, 0.92);
-  color: #ffd8cc;
+  background: v.$color-ext-76;
+  color: v.$color-ext-77;
   padding: 2px 6px;
   cursor: pointer;
   margin-top: 1px;
 
   &:hover {
-    background: rgba(150, 30, 10, 0.95);
+    background: v.$color-ext-78;
   }
 }
 
@@ -325,15 +325,15 @@
   width: 150px;
   height: 220px;
   flex-shrink: 0;
-  border: 1.5px dashed rgba(110, 75, 22, 0.28);
+  border: 1.5px dashed v.$color-border;
   border-radius: 12px;
-  background: rgba(240, 225, 190, 0.18);
+  background: v.$color-ext-111;
 }
 
 .fi-error {
   font-family: v.$font-body;
   font-size: 11px;
-  color: rgba(160, 40, 20, 0.85);
+  color: v.$color-ext-118;
   margin: 2px 0 6px;
 }
 
@@ -344,9 +344,9 @@
   align-items: center;
   justify-content: center;
   padding: 32px 24px;
-  border: 1.5px dashed rgba(110, 75, 22, 0.28);
+  border: 1.5px dashed v.$color-border;
   border-radius: 12px;
-  background: rgba(240, 225, 190, 0.18);
+  background: v.$color-ext-111;
   margin-top: 10px;
   gap: 6px;
 }
@@ -362,7 +362,7 @@
   font-family: v.$font-body;
   font-style: italic;
   font-size: 14px;
-  color: rgba(72, 44, 8, 0.82);
+  color: v.$color-ext-119;
   margin: 0;
   text-align: center;
 }
@@ -371,7 +371,7 @@
   font-family: v.$font-body;
   font-style: italic;
   font-size: 12px;
-  color: rgba(105, 72, 18, 0.85);
+  color: v.$color-ext-120;
   margin: 0;
   text-align: center;
 }
@@ -381,9 +381,9 @@
   font-size: 9px;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: rgba(34, 80, 38, 0.92);
-  background: rgba(38, 88, 42, 0.08);
-  border: 1.5px solid rgba(38, 88, 42, 0.48);
+  color: v.$color-ext-121;
+  background: v.$color-ext-113;
+  border: 1.5px solid v.$color-ext-122;
   border-radius: 7px;
   padding: 7px 18px;
   text-decoration: none;
@@ -391,8 +391,8 @@
   transition: background 0.12s, border-color 0.12s;
 
   &:hover {
-    background: rgba(38, 88, 42, 0.14);
-    border-color: rgba(38, 88, 42, 0.72);
+    background: v.$color-ext-115;
+    border-color: v.$color-ext-116;
   }
 }
 
@@ -400,7 +400,7 @@
   font-family: v.$font-body;
   font-style: italic;
   font-size: 11px;
-  color: rgba(105, 72, 18, 0.85);
+  color: v.$color-ext-120;
   text-align: right;
   margin-top: 8px;
 }
@@ -410,16 +410,16 @@
   flex: 1;
   min-width: 0;
   padding: 10px 14px;
-  border: 1px solid rgba(110, 75, 22, 0.22);
+  border: 1px solid v.$color-ext-50;
   border-radius: 10px;
-  background: rgba(248, 238, 210, 0.28);
+  background: v.$color-ext-123;
 }
 
 .detail-panel-empty {
   font-family: v.$font-body;
   font-style: italic;
   font-size: 12px;
-  color: rgba(105, 72, 18, 0.85);
+  color: v.$color-ext-120;
   margin: 0;
   padding: 8px 0;
 }
@@ -434,7 +434,7 @@
 .detail-location-name {
   font-family: v.$font-header;
   font-size: 13px;
-  color: rgba(72, 44, 8, 0.92);
+  color: v.$color-ext-124;
   letter-spacing: 0.06em;
 }
 
@@ -442,7 +442,7 @@
   font-family: v.$font-body;
   font-style: italic;
   font-size: 10px;
-  color: rgba(105, 72, 18, 0.85);
+  color: v.$color-ext-120;
 }
 
 .detail-grid {
@@ -464,15 +464,15 @@
   font-size: 8px;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: rgba(34, 80, 38, 0.92);
-  background: rgba(38, 88, 42, 0.08);
-  border: 1.5px solid rgba(38, 88, 42, 0.48);
+  color: v.$color-ext-121;
+  background: v.$color-ext-113;
+  border: 1.5px solid v.$color-ext-122;
   border-radius: 5px;
   padding: 4px 10px;
   cursor: pointer;
   white-space: nowrap;
 
-  &:hover { background: rgba(38, 88, 42, 0.15); }
+  &:hover { background: v.$color-ext-125; }
 }
 
 // ── Sublocation cast summary outline ─────────────────────────────────────────────
@@ -481,8 +481,8 @@
   font-size: 8px;
   letter-spacing: 0.22em;
   text-transform: uppercase;
-  color: rgba(105, 72, 18, 0.65);
-  border-bottom: 0.5px solid rgba(110, 75, 22, 0.22);
+  color: v.$color-ext-126;
+  border-bottom: 0.5px solid v.$color-ext-50;
   padding-bottom: 4px;
   margin-bottom: 8px;
 }
@@ -512,12 +512,12 @@
 
 .subLoc-bullet-icon {
   flex-shrink: 0;
-  color: rgba(105, 72, 18, 0.28);
+  color: v.$color-ext-127;
   display: flex;
   align-items: center;
 
   &.subLoc-bullet-icon--active {
-    color: rgba(34, 80, 38, 0.80);
+    color: v.$color-ext-117;
   }
 }
 
@@ -525,7 +525,7 @@
   font-family: v.$font-body;
   font-size: 12px;
   font-weight: 600;
-  color: rgba(72, 44, 8, 0.85);
+  color: v.$color-ext-128;
   line-height: 1.3;
 }
 
@@ -538,7 +538,7 @@
 
 .subLoc-outline-child-connector {
   font-size: 10px;
-  color: rgba(105, 72, 18, 0.75);
+  color: v.$color-ext-99;
   line-height: 1;
   margin-right: 1px;
 }
@@ -547,13 +547,13 @@
   font-family: v.$font-body;
   font-size: 10px;
   font-style: italic;
-  color: rgba(105, 72, 18, 0.9);
+  color: v.$color-ext-129;
 }
 
 .subLoc-outline-child-count {
   font-family: v.$font-header;
   font-size: 9px;
-  color: rgba(72, 44, 8, 0.9);
+  color: v.$color-ext-130;
   letter-spacing: 0.04em;
 }
 
@@ -572,9 +572,9 @@
 .keyword-chip-readonly {
   font-family: v.$font-body;
   font-size: 10px;
-  color: rgba(30, 70, 34, 0.82);
-  background: rgba(38, 88, 42, 0.08);
-  border: 1px solid rgba(38, 88, 42, 0.28);
+  color: v.$color-ext-131;
+  background: v.$color-ext-113;
+  border: 1px solid v.$color-ext-132;
   border-radius: 20px;
   padding: 2px 8px;
 }
@@ -589,18 +589,18 @@
   font-size: 8px;
   letter-spacing: 0.22em;
   text-transform: uppercase;
-  color: rgba(105, 72, 18, 0.65);
-  border-bottom: 0.5px solid rgba(110, 75, 22, 0.22);
+  color: v.$color-ext-126;
+  border-bottom: 0.5px solid v.$color-ext-50;
   padding-bottom: 4px;
   margin: 0 0 10px;
 
-  span { color: rgba(72, 44, 8, 0.85); }
+  span { color: v.$color-ext-128; }
 }
 
 .players-hint {
   font-family: v.$font-body;
   font-size: 12px;
-  color: rgba(105, 72, 18, 0.65);
+  color: v.$color-ext-126;
   margin: 0 0 12px;
   line-height: 1.5;
 }
@@ -617,9 +617,9 @@
   font-size: 15px;
   font-weight: 700;
   letter-spacing: 0.12em;
-  color: rgba(52, 28, 4, 0.92);
-  background: rgba(248, 238, 210, 0.60);
-  border: 1.5px solid rgba(110, 75, 22, 0.35);
+  color: v.$color-ext-133;
+  background: v.$color-ext-134;
+  border: 1.5px solid v.$color-ext-98;
   border-radius: 7px;
   padding: 9px 16px;
   flex: 1;
@@ -628,15 +628,15 @@
 
 .invite-copy-btn {
   background: none;
-  border: 1.5px solid rgba(110, 75, 22, 0.30);
+  border: 1.5px solid v.$color-ext-135;
   border-radius: 6px;
   padding: 8px 10px;
   font-size: 14px;
   cursor: pointer;
-  color: rgba(105, 72, 18, 0.75);
+  color: v.$color-ext-99;
   transition: background 0.12s;
 
-  &:hover { background: rgba(110, 75, 22, 0.08); }
+  &:hover { background: v.$color-ext-136; }
 }
 
 .invite-code-feedback {
@@ -648,14 +648,14 @@
   font-family: v.$font-body;
   font-style: italic;
   font-size: 11px;
-  color: rgba(105, 72, 18, 0.85);
+  color: v.$color-ext-120;
 }
 
 .code-copied-label {
   font-family: v.$font-body;
   font-size: 11px;
   font-weight: 600;
-  color: rgba(45, 110, 55, 0.90);
+  color: v.$color-ext-20;
   animation: fade-out-label 1.5s ease forwards;
 }
 
@@ -669,7 +669,7 @@
   font-family: v.$font-body;
   font-style: italic;
   font-size: 12px;
-  color: rgba(105, 72, 18, 0.82);
+  color: v.$color-ext-137;
   margin-bottom: 10px;
 }
 
@@ -678,9 +678,9 @@
   font-size: 9px;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: rgba(34, 80, 38, 0.92);
-  background: rgba(38, 88, 42, 0.07);
-  border: 1.5px solid rgba(38, 88, 42, 0.42);
+  color: v.$color-ext-121;
+  background: v.$color-ext-138;
+  border: 1.5px solid v.$color-ext-139;
   border-radius: 6px;
   padding: 7px 18px;
   cursor: pointer;
@@ -688,8 +688,8 @@
   margin-bottom: 20px;
 
   &:hover:not(:disabled) {
-    background: rgba(38, 88, 42, 0.14);
-    border-color: rgba(38, 88, 42, 0.65);
+    background: v.$color-ext-115;
+    border-color: v.$color-ext-140;
   }
 
   &:disabled { opacity: 0.45; cursor: not-allowed; }
@@ -698,7 +698,7 @@
 .players-list {
   display: flex;
   flex-direction: column;
-  border: 1px solid rgba(110, 75, 22, 0.20);
+  border: 1px solid v.$color-ext-141;
   border-radius: 8px;
   overflow: hidden;
 }
@@ -709,8 +709,8 @@
   justify-content: space-between;
   gap: 10px;
   padding: 10px 14px;
-  background: rgba(248, 238, 210, 0.22);
-  border-bottom: 0.5px solid rgba(110, 75, 22, 0.14);
+  background: v.$color-ext-142;
+  border-bottom: 0.5px solid v.$color-border-light;
 
   &:last-child { border-bottom: none; }
 }
@@ -726,7 +726,7 @@
   font-family: v.$font-body;
   font-size: 13px;
   font-weight: 600;
-  color: rgba(52, 28, 4, 0.90);
+  color: v.$color-ext-143;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -736,7 +736,7 @@
   font-family: v.$font-body;
   font-style: italic;
   font-size: 11px;
-  color: rgba(105, 72, 18, 0.85);
+  color: v.$color-ext-120;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -746,15 +746,15 @@
   flex-shrink: 0;
   font-size: 13px;
   line-height: 1;
-  border: 1px solid rgba(210, 70, 45, 0.65);
+  border: 1px solid v.$color-ext-144;
   border-radius: 4px;
-  background: rgba(110, 20, 8, 0.88);
-  color: #ffd8cc;
+  background: v.$color-ext-145;
+  color: v.$color-ext-77;
   padding: 3px 8px;
   cursor: pointer;
   transition: background 0.12s;
 
-  &:hover:not(:disabled) { background: rgba(150, 30, 10, 0.95); }
+  &:hover:not(:disabled) { background: v.$color-ext-78; }
   &:disabled { opacity: 0.45; cursor: not-allowed; }
 }
 
@@ -762,7 +762,7 @@
   font-family: v.$font-body;
   font-style: italic;
   font-size: 12px;
-  color: rgba(105, 72, 18, 0.82);
+  color: v.$color-ext-137;
   margin: 0;
 }
 
@@ -770,7 +770,7 @@
 .modal-backdrop {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.55);
+  background: v.$color-ext-146;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -778,30 +778,30 @@
 }
 
 .modal-box {
-  background: #fdf8f0;
-  border: 1px solid rgba(110, 75, 22, 0.3);
+  background: v.$color-ext-147;
+  border: 1px solid v.$color-ext-148;
   border-radius: 10px;
   padding: 28px 32px 24px;
   max-width: 380px;
   width: 90%;
-  box-shadow: 0 8px 32px rgba(0,0,0,0.22);
+  box-shadow: 0 8px 32px v.$color-ext-74;
 }
 
 .modal-title {
   font-family: v.$font-header;
   font-size: 15px;
   font-weight: 700;
-  color: #3d2408;
+  color: v.$color-ext-149;
   margin-bottom: 12px;
 }
 
 .modal-body {
   font-size: 13px;
-  color: #5a3e1b;
+  color: v.$color-ext-150;
   line-height: 1.55;
   margin-bottom: 22px;
 
-  strong { color: #3d2408; }
+  strong { color: v.$color-ext-149; }
 }
 
 .modal-actions {
@@ -812,13 +812,13 @@
 
 .btn-danger {
   padding: 7px 18px;
-  background: #b83232;
-  color: #fff;
+  background: v.$color-ext-151;
+  color: v.$color-ext-152;
   border: none;
   border-radius: 6px;
   font-size: 13px;
   font-weight: 600;
   cursor: pointer;
 
-  &:hover { background: #9a2828; }
+  &:hover { background: v.$color-ext-153; }
 }

@@ -13,15 +13,15 @@
 
   &::-webkit-scrollbar { width: 3px; }
   &::-webkit-scrollbar-thumb {
-    background: rgba(110, 75, 22, 0.2);
+    background: v.$color-lib-scrollbar;
     border-radius: 2px;
   }
 }
 
 .sub-ornament {
   font-size: 18px;
-  color: rgba(198, 152, 48, 0.65);
-  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
+  color: v.$color-ext-609;
+  text-shadow: 0 1px 4px v.$color-ext-388;
 }
 
 .sub-title {
@@ -35,7 +35,7 @@
 .sub-dv {
   width: 110px;
   height: 1px;
-  background: linear-gradient(to right, transparent, rgba(185, 138, 45, 0.35), transparent);
+  background: linear-gradient(to right, transparent, v.$color-ext-610, transparent);
   margin: 4px 0;
   flex-shrink: 0;
 }
@@ -50,7 +50,7 @@
 
 .sub-card-paid {
   border-color: v.$color-border-accent;
-  background: rgba(110, 75, 22, 0.03);
+  background: v.$color-ext-611;
 }
 
 .sub-card-header {
@@ -62,7 +62,7 @@
 
 // ── Free badge — neutral parchment tone ───────────────────────────────────────
 .sub-badge-free {
-  background: rgba(110, 75, 22, 0.08);
+  background: v.$color-ext-136;
   border-color: v.$color-border;
   color: v.$color-text-secondary;
 }
@@ -72,7 +72,7 @@
   font-family: v.$font-header;
   font-size: 12px;
   font-weight: 600;
-  color: rgba(180, 130, 60, 0.9);
+  color: v.$color-ext-612;
   letter-spacing: 0.05em;
 }
 
@@ -97,7 +97,7 @@
 
     &::before {
       content: '· ';
-      color: rgba(180, 130, 60, 0.7);
+      color: v.$color-ext-613;
     }
   }
 }
@@ -108,18 +108,18 @@
 
 // ── Inactive account warning ───────────────────────────────────────────────────
 .sub-warning-box {
-  border-color: rgba(130, 80, 28, 0.32);
-  background: rgba(130, 80, 28, 0.04);
+  border-color: v.$color-ext-614;
+  background: v.$color-ext-615;
 }
 
 .sub-warning-text {
   font-size: 10px;
-  color: rgba(130, 80, 28, 0.8);
+  color: v.$color-ext-616;
 }
 
 // ── Stripe placeholder ────────────────────────────────────────────────────────
 .sub-stripe-placeholder {
-  border: 1px dashed rgba(185, 138, 45, 0.32);
+  border: 1px dashed v.$color-ext-617;
   border-radius: 3px;
   padding: 18px;
   text-align: center;

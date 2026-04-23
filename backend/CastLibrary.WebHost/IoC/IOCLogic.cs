@@ -1,5 +1,6 @@
 using CastLibrary.Logic.Commands.Admin;
 using CastLibrary.Logic.Commands.Auth;
+using CastLibrary.Logic.Commands.BugReport;
 using CastLibrary.Logic.Commands.Campaign;
 using CastLibrary.Logic.Commands.CampaignNote;
 using CastLibrary.Logic.Commands.Cast;
@@ -10,6 +11,7 @@ using CastLibrary.Logic.Commands.Sublocation;
 using CastLibrary.Logic.Factories;
 using CastLibrary.Logic.Interfaces;
 using CastLibrary.Logic.Queries.Admin;
+using CastLibrary.Logic.Queries.BugReport;
 using CastLibrary.Logic.Queries.Campaign;
 using CastLibrary.Logic.Queries.CampaignNote;
 using CastLibrary.Logic.Queries.Cast;
@@ -99,6 +101,7 @@ namespace CastLibrary.WebHost.IoC
             services.AddScoped<IToggleShopItemScratchCommandHandler, ToggleShopItemScratchCommandHandler>();
 
             services.AddScoped<IGenerateAdminInviteCodeCommandHandler, GenerateAdminInviteCodeCommandHandler>();
+            services.AddScoped<IDeleteUserCommandHandler, DeleteUserCommandHandler>();
 
             services.AddScoped<IGenerateCampaignInviteCodeCommandHandler, GenerateCampaignInviteCodeCommandHandler>();
             services.AddScoped<IRedeemCampaignInviteCodeCommandHandler, RedeemCampaignInviteCodeCommandHandler>();
@@ -126,6 +129,11 @@ namespace CastLibrary.WebHost.IoC
             services.AddScoped<IDeletePlayerCardSecretCommandHandler, DeletePlayerCardSecretCommandHandler>();
             services.AddScoped<IUpsertPlayerCastPerceptionCommandHandler, UpsertPlayerCastPerceptionCommandHandler>();
             services.AddScoped<IAwardCurrencyCommandHandler, AwardCurrencyCommandHandler>();
+            services.AddScoped<ISubmitBugReportCommandHandler, SubmitBugReportCommandHandler>();
+            services.AddScoped<IMarkBugFixedCommandHandler, MarkBugFixedCommandHandler>();
+            services.AddScoped<ICleanupBugReportsCommandHandler, CleanupBugReportsCommandHandler>();
+            services.AddScoped<IDeleteBugReportCommandHandler, DeleteBugReportCommandHandler>();
+            services.AddScoped<IUpdateBugSeverityCommandHandler, UpdateBugSeverityCommandHandler>();
 
             return services;
         }
@@ -164,6 +172,7 @@ namespace CastLibrary.WebHost.IoC
             services.AddScoped<IGetLocationPoliticalNotesQueryHandler, GetLocationPoliticalNotesQueryHandler>();
 
             services.AddScoped<IGetAdminInviteCodeQueryHandler, GetAdminInviteCodeQueryHandler>();
+            services.AddScoped<IGetAllUsersQueryHandler, GetAllUsersQueryHandler>();
             services.AddScoped<IGetTimeOfDayQueryHandler, GetTimeOfDayQueryHandler>();
 
             services.AddScoped<IGetPlayerCardQueryHandler, GetPlayerCardQueryHandler>();
@@ -176,6 +185,7 @@ namespace CastLibrary.WebHost.IoC
             services.AddScoped<IGetDiscoveredCastQueryHandler, GetDiscoveredCastQueryHandler>();
             services.AddScoped<IGetPlayerCastPerceptionsQueryHandler, GetPlayerCastPerceptionsQueryHandler>();
             services.AddScoped<IGetCastInstancePerceptionsQueryHandler, GetCastInstancePerceptionsQueryHandler>();
+            services.AddScoped<IGetBugReportsQueryHandler, GetBugReportsQueryHandler>();
 
             return services;
         }

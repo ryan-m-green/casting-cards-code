@@ -12,7 +12,7 @@
     cursor: pointer;
 
     &:hover {
-      background: rgba(110, 75, 22, 0.04);
+      background: v.$color-wb-hover;
     }
   }
 
@@ -35,8 +35,8 @@
 // ─── Form Inputs ─────────────────────────────────────────────────────────────
 .fi {
   width: 100%;
-  background: rgba(255, 248, 232, 0.55);
-  border: 1px solid rgba(110, 75, 22, 0.32);
+  background: v.$color-input-bg;
+  border: 1px solid v.$color-border-solid;
   border-radius: 2px;
   outline: none;
   font-family: v.$font-body;
@@ -48,13 +48,13 @@
   transition: border-color v.$transition-std, background v.$transition-std;
 
   &::placeholder {
-    color: rgba(110, 75, 22, 1.0);
+    color: v.$color-text-placeholder;
     font-style: italic;
   }
 
   &:focus {
-    border-color: rgba(90, 58, 154, 0.65);
-    background: rgba(46, 26, 94, 0.04);
+    border-color: v.$color-input-focus-border;
+    background: v.$color-input-focus-bg;
     outline: none;
   }
 }
@@ -145,29 +145,29 @@ textarea.fi {
 }
 
 .pc-card-cast .lib-card-front {
-  background: linear-gradient(160deg, #c8b07a 0%, #e0c98a 50%, #c4a86a 100%);
+  background: linear-gradient(160deg, v.$color-lib-cast-1 0%, v.$color-lib-cast-2 50%, v.$color-lib-cast-3 100%);
 }
 
 .pc-card-location .lib-card-front {
-  background: linear-gradient(160deg, #9ab0b8 0%, #b8cdd6 50%, #8aa0a8 100%);
+  background: linear-gradient(160deg, v.$color-lib-location-1 0%, v.$color-lib-location-2 50%, v.$color-lib-location-3 100%);
 }
 
 .pc-card-sublocation .lib-card-front {
-  background: linear-gradient(160deg, #a8a070 0%, #c4bc88 50%, #98906a 100%);
+  background: linear-gradient(160deg, v.$color-lib-sublocation-1 0%, v.$color-lib-sublocation-2 50%, v.$color-lib-sublocation-3 100%);
 }
 
 .pc-card-shop .lib-card-front {
-  background: linear-gradient(160deg, #4765a7 0%, #759bd7 50%, #3d5a9e 100%);
+  background: linear-gradient(160deg, v.$color-lib-shop-1 0%, v.$color-lib-shop-2 50%, v.$color-lib-shop-3 100%);
 }
 
 .pc-card-player .lib-card-front {
-  background: linear-gradient(160deg, #b8a8d4 0%, #d4cce8 50%, #a89ec4 100%);
+  background: linear-gradient(160deg, v.$color-lib-player-1 0%, v.$color-lib-player-2 50%, v.$color-lib-player-3 100%);
 }
 
 .lib-card-front,
 .lib-card-back {
   padding: 10px;
-  box-shadow: 0 3px 10px rgba(0,0,0,0.22);
+  box-shadow: 0 3px 10px v.$color-shadow-light;
 }
 
 .lib-card-back {
@@ -177,7 +177,7 @@ textarea.fi {
 
   &::-webkit-scrollbar { width: 3px; }
   &::-webkit-scrollbar-thumb {
-    background: rgba(110, 75, 22, 0.2);
+    background: v.$color-scrollbar-thumb;
     border-radius: 2px;
   }
 }
@@ -197,7 +197,7 @@ textarea.fi {
   font-family: v.$font-body;
   font-size: 9px;
   font-style: italic;
-  color: rgba(42, 24, 4, 1.0);
+  color: v.$color-text-primary;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -233,7 +233,7 @@ textarea.fi {
   transition: background v.$transition-std;
 
   &:hover {
-    background: rgba(110, 75, 22, 0.04);
+    background: v.$color-wb-hover;
   }
 
   .sv-value {
@@ -263,21 +263,21 @@ textarea.fi {
   transition: background v.$transition-std;
 
   &:hover {
-    background: rgba(110, 75, 22, 0.04);
+    background: v.$color-cast-row-hover;
   }
 
   .cast-img {
     width: 28px;
     height: 28px;
     border-radius: 50%;
-    background: linear-gradient(135deg, #c8a060, #8c6030);
+    background: v.$color-cast-row-avatar;
     display: flex;
     align-items: center;
     justify-content: center;
     font-family: v.$font-header;
     font-size: 11px;
     font-weight: 700;
-    color: rgba(255, 248, 230, 1.0);
+    color: v.$color-cast-row-avatar-text;
     flex-shrink: 0;
   }
 
@@ -344,7 +344,7 @@ textarea.fi {
 
   &::-webkit-scrollbar { width: 3px; }
   &::-webkit-scrollbar-thumb {
-    background: rgba(110, 75, 22, 0.2);
+    background: v.$color-scrollbar-thumb;
     border-radius: 2px;
   }
 }
@@ -367,22 +367,22 @@ textarea.fi {
   align-items: center;
   gap: v.$spacing-xs;
   padding: 4px 12px;
-  background: rgb(35, 140, 70);
-  border: 1px solid rgba(70, 190, 110, .6);
+  background: v.$campaign-btn-primary-bg;
+  border: 1px solid v.$campaign-btn-primary-border;
   border-radius: 4px;
   font-family: v.$font-header;
   font-size: 8px;
   font-weight: bolder;
   letter-spacing: 0.16em;
   text-transform: uppercase;
-  color: rgb(220, 255, 235);
+  color: v.$campaign-btn-primary-text;
   cursor: pointer;
   transition: background 0.18s ease, border-color 0.18s ease, color 0.18s ease;
 
   &:hover {
-    background: rgb(50, 165, 85);
-    border-color: rgb(90, 210, 130);
-    color: rgb(235, 255, 245);
+    background: v.$campaign-btn-primary-hover-bg;
+    border-color: v.$campaign-btn-primary-hover-border;
+    color: v.$campaign-btn-primary-hover-text;
   }
 
   &:disabled {
@@ -397,20 +397,20 @@ textarea.fi {
   gap: v.$spacing-xs;
   padding: 4px 12px;
   background: none;
-  border: 1px solid rgba(255, 255, 255, 0.4);
+  border: 1px solid v.$campaign-btn-secondary-border;
   border-radius: 4px;
   font-family: v.$font-header;
   font-size: 8px;
   font-weight: 600;
   letter-spacing: 0.16em;
   text-transform: uppercase;
-  color: rgba(200, 225, 235, 0.75);
+  color: v.$campaign-btn-secondary-text;
   cursor: pointer;
   transition: border-color 0.18s ease, color 0.18s ease;
 
   &:hover {
-    border-color: rgba(255, 255, 255, 0.65);
-    color: rgba(200, 225, 235, 0.95);
+    border-color: v.$campaign-btn-secondary-hover-border;
+    color: v.$campaign-btn-secondary-hover-text;
   }
 
   &:disabled {
@@ -425,7 +425,7 @@ textarea.fi {
   align-items: center;
   gap: v.$spacing-xs;
   padding: 6px 14px;
-  background: rgba(110, 75, 22, 0.10);
+  background: v.$color-btn-primary-bg;
   border: 1px solid v.$color-border-accent;
   border-radius: 2px;
   font-family: v.$font-header;
@@ -438,7 +438,7 @@ textarea.fi {
   transition: background v.$transition-std, transform v.$transition-fast;
 
   &:hover {
-    background: rgba(110, 75, 22, 0.16);
+    background: v.$color-btn-primary-hover-bg;
     transform: scale(1.02);
   }
 
@@ -462,7 +462,7 @@ textarea.fi {
   transition: background v.$transition-std;
 
   &:hover {
-    background: rgba(110, 75, 22, 0.06);
+    background: v.$color-btn-ghost-hover-bg;
   }
 }
 
@@ -476,7 +476,7 @@ textarea.fi {
   transition: background v.$transition-std, border-color v.$transition-std;
 
   &:hover {
-    background: rgba(110, 75, 22, 0.04);
+    background: v.$color-role-card-hover-bg;
     border-color: v.$color-border-accent;
   }
 }
@@ -484,7 +484,7 @@ textarea.fi {
 // ─── Search Bar ──────────────────────────────────────────────────────────────
 .search-bar {
   width: 100%;
-  background: rgba(255, 255, 255, 0.15);
+  background: v.$color-search-bar-bg;
   border: 1px solid v.$color-border;
   border-radius: 3px;
   padding: 6px 10px;
@@ -563,8 +563,8 @@ textarea.fi {
   font-size: 8px;
   letter-spacing: 0.18em;
   text-transform: uppercase;
-  color: rgba(105, 72, 18, 1.0);
-  border-bottom: 0.5px solid rgba(110, 75, 22, 0.22);
+  color: v.$color-secret-header-text;
+  border-bottom: 0.5px solid v.$color-secret-header-border;
   padding-bottom: 3px;
   margin: 8px 0 6px;
 }
@@ -574,14 +574,14 @@ textarea.fi {
   align-items: flex-start;
   gap: 6px;
   padding: 5px 0;
-  border-bottom: 0.5px solid rgba(110, 75, 22, 0.12);
+  border-bottom: 0.5px solid v.$color-secret-row-border;
 }
 
 .secret-text {
   flex: 1;
   font-family: v.$font-body;
   font-size: 11px;
-  color: rgba(72, 44, 8, 1.0);
+  color: v.$color-secret-text;
   line-height: 1.4;
 }
 
@@ -596,15 +596,15 @@ textarea.fi {
   flex-shrink: 0;
   font-size: 11px;
   background: none;
-  border: 1px solid rgba(160, 40, 20, 0.4);
+  border: 1px solid v.$color-secret-delete-border;
   border-radius: 3px;
-  color: rgba(160, 40, 20, 1.0);
+  color: v.$color-secret-delete-text;
   padding: 1px 5px;
   cursor: pointer;
   line-height: 1.4;
   margin-top: 1px;
 
-  &:hover { background: rgba(160, 40, 20, 0.08); }
+  &:hover { background: v.$color-secret-delete-hover-bg; }
 }
 
 .secret-add-btn {
@@ -614,20 +614,20 @@ textarea.fi {
   font-size: 8px;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: rgba(105, 72, 18, 1.0);
+  color: v.$color-secret-header-text;
   background: none;
-  border: 1px dashed rgba(110, 75, 22, 0.38);
+  border: 1px dashed v.$color-secret-add-border;
   border-radius: 5px;
   padding: 5px 12px;
   width: 100%;
   cursor: pointer;
 
-  &:hover { background: rgba(240, 218, 168, 0.25); }
+  &:hover { background: v.$color-secret-add-hover-bg; }
 }
 
 .btn-upload-done {
   width: 100%;
-  color: #f0e6d0;
+  color: v.$color-upload-done-text;
 }
 
 // ─── Card Slot Layout ─────────────────────────────────────────────────────────
@@ -678,15 +678,15 @@ textarea.fi {
   justify-content: center;
 }
 
-.pc-card-cast .card-placeholder      { background: linear-gradient(160deg, #c8b07a, #e0c98a, #c4a86a); }
-.pc-card-location .card-placeholder     { background: linear-gradient(160deg, #9ab0b8, #b8cdd6, #8aa0a8); }
-.pc-card-sublocation .card-placeholder { background: linear-gradient(160deg, #a8a070, #c4bc88, #98906a); }
+.pc-card-cast .card-placeholder      { background: v.$color-card-placeholder-cast; }
+.pc-card-location .card-placeholder     { background: v.$color-card-placeholder-location; }
+.pc-card-sublocation .card-placeholder { background: v.$color-card-placeholder-sublocation; }
 
 .card-initial {
   font-family: v.$font-header;
   font-size: 40px;
   font-weight: 700;
-  color: rgba(42, 24, 4, 1.0);
+  color: v.$color-card-initial-text;
 }
 
 .card-desc-overlay {
@@ -694,7 +694,7 @@ textarea.fi {
   bottom: 0;
   left: 0;
   right: 0;
-  background: linear-gradient(to bottom, transparent 0%, rgba(10, 6, 2, 0.82) 100%);
+  background: linear-gradient(to bottom, v.$color-card-desc-overlay-start 0%, v.$color-card-desc-overlay-end 100%);
   padding: 18px 8px 7px;
 }
 
@@ -703,7 +703,7 @@ textarea.fi {
   font-family: v.$font-body;
   font-size: 9px;
   font-style: italic;
-  color: rgba(255, 240, 200, 1.0);
+  color: v.$color-card-desc-text;
   line-height: 1.35;
   display: -webkit-box;
   -webkit-line-clamp: 3;
@@ -724,8 +724,8 @@ textarea.fi {
   padding: 2px 6px;
   border: none;
   border-radius: 2px;
-  background: rgba(20, 12, 4, 0.55);
-  color: rgba(255, 240, 200, 1.0);
+  background: v.$color-card-edit-btn-bg;
+  color: v.$color-card-edit-btn-text;
   cursor: pointer;
 }
 
@@ -734,14 +734,14 @@ textarea.fi {
   width: 100%;
   height: 20px;
   border: none;
-  border-top: 1px solid rgba(110, 75, 22, 0.2);
-  background: rgba(110, 31, 31, 0.82);
+  border-top: 1px solid v.$color-card-delete-border;
+  background: v.$color-card-delete-bg;
   font-family: v.$font-header;
   font-size: 6px;
   font-weight: 800;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: rgba(255, 210, 190, 1.0);
+  color: v.$color-card-delete-text;
   cursor: pointer;
 }
 
@@ -751,7 +751,6 @@ textarea.fi {
 
 .fi-label-strong {
   font-weight: 700;
-  color: rgba(42, 24, 4, 1.0);
   margin-bottom: 1px;
 }
 
@@ -801,7 +800,7 @@ textarea.fi {
   font-size: 8px;
   font-family: v.$font-header;
   letter-spacing: 0.1em;
-  color: rgba(42, 24, 4, 1.0);
+  color: v.$color-card-upload-hint;
   text-transform: uppercase;
 }
 
@@ -811,7 +810,7 @@ textarea.fi {
 .delete-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(10, 6, 2, 0.72);
+  background: v.$color-delete-modal-overlay;
   z-index: 1000;
   display: flex;
   align-items: center;
@@ -819,8 +818,8 @@ textarea.fi {
 }
 
 .delete-panel {
-  background: #1e1410;
-  border: 1px solid rgba(140, 48, 28, 0.45);
+  background: v.$color-delete-modal-panel-bg;
+  border: 1px solid v.$color-delete-modal-panel-border;
   border-radius: 6px;
   padding: 28px 32px;
   max-width: 320px;
@@ -832,7 +831,7 @@ textarea.fi {
   font-family: v.$font-header;
   font-size: 13px;
   font-weight: 700;
-  color: #f0e6d0;
+  color: v.$color-delete-modal-title;
   letter-spacing: 0.06em;
   margin-bottom: 10px;
 }
@@ -840,7 +839,7 @@ textarea.fi {
 .delete-panel-message {
   font-family: v.$font-body;
   font-size: 15px;
-  color: rgba(240, 220, 180, 1.0);
+  color: v.$color-delete-modal-message;
   margin: 0 0 24px 0;
   line-height: 1.5;
 }
@@ -858,10 +857,10 @@ textarea.fi {
   letter-spacing: 0.14em;
   text-transform: uppercase;
   padding: 9px 20px;
-  border: 1px solid rgba(110, 75, 22, 0.4);
+  border: 1px solid v.$color-ui-cancel-border;
   border-radius: 3px;
-  background: rgba(255, 245, 220, 0.06);
-  color: rgba(240, 220, 180, 1.0);
+  background: v.$color-ui-cancel-bg;
+  color: v.$color-ui-cancel-text;
   cursor: pointer;
 }
 
@@ -872,10 +871,10 @@ textarea.fi {
   letter-spacing: 0.14em;
   text-transform: uppercase;
   padding: 9px 20px;
-  border: 1px solid rgba(140, 48, 28, 0.55);
+  border: 1px solid v.$color-ui-delete-border;
   border-radius: 3px;
-  background: rgba(140, 48, 28, 0.18);
-  color: rgba(255, 160, 140, 0.95);
+  background: v.$color-ui-delete-bg;
+  color: v.$color-ui-delete-text;
   cursor: pointer;
 }
 
@@ -883,7 +882,7 @@ textarea.fi {
 .upload-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.7);
+  background: v.$color-shadow-medium;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -891,8 +890,8 @@ textarea.fi {
 }
 
 .upload-panel {
-  background: #2a2a3a;
-  border: 1px solid var(--accent, #b8945a);
+  background: v.$color-ui-upload-panel-bg;
+  border: 1px solid v.$color-ui-upload-panel-border;
   border-radius: 8px;
   padding: 24px;
   min-width: 280px;
@@ -908,16 +907,16 @@ textarea.fi {
   font-family: v.$font-header;
   font-size: 14px;
   letter-spacing: 0.1em;
-  color: #f0e6d0;
+  color: v.$color-ui-upload-text;
 }
 
 .upload-file-label {
   cursor: pointer;
-  color: #f0e6d0;
+  color: v.$color-ui-upload-text;
   font-family: v.$font-header;
   font-size: 12px;
   letter-spacing: 0.08em;
-  border: 1px solid #b8945a;
+  border: 1px solid v.$color-ui-upload-panel-border;
   padding: 6px 16px;
   border-radius: 4px;
 }
@@ -929,12 +928,12 @@ textarea.fi {
   font-family: v.$font-body;
   font-size: 11px;
   font-style: italic;
-  color: rgba(72, 48, 14, 1.0);
+  color: v.$color-text-secondary;
   white-space: nowrap;
   transition: opacity 280ms ease;
 
-  &.save-label--saving { color: rgba(90, 58, 154, 1.0); }
-  &.save-label--error  { color: rgba(160, 40, 40, 1.0); }
+  &.save-label--saving { color: v.$color-arcane-saving; }
+  &.save-label--error  { color: v.$color-ui-error-text; }
 }
 
 // ─── Spark host wrapper (Save / Knock buttons) ─────────────────────────────────
@@ -956,7 +955,7 @@ textarea.fi {
   font-size: 7px;
   letter-spacing: 0.18em;
   text-transform: uppercase;
-  color: rgba(105, 72, 18, 1.0);
+  color: v.$color-currency-header;
   padding-bottom: 2px;
 }
 
@@ -975,7 +974,6 @@ textarea.fi {
 .currency-row-sep {
   font-family: v.$font-body;
   font-size: 9px;
-  color: v.$color-border-accent;
   padding: 0 3px;
 }
 
@@ -984,13 +982,11 @@ textarea.fi {
   font-size: 9px;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: v.$color-text-secondary;
 }
 
 .currency-row-amount {
   font-family: v.$font-body;
   font-size: 10px;
-  color: v.$color-text-primary;
 }
 
 .currency-display--compact {
@@ -1012,5 +1008,5 @@ textarea.fi {
 
 .list-arrow {
   font-size: 16px;
-  color: rgba(110, 75, 22, 1.0);
+  color: v.$color-ui-list-arrow;
 }

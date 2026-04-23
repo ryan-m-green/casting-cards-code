@@ -1,4 +1,4 @@
-$location-blue: #9ab0b8;
+@use '../../../../../styles/variables' as v;
 
 :host {
   display: contents;
@@ -6,8 +6,8 @@ $location-blue: #9ab0b8;
 
 .location-card-pane {
   flex-shrink: 0;
-  background: rgba(14, 24, 32, 0.96);
-  border: 1px solid rgba($location-blue, 0.40);
+  background: v.$campaign-portal-bg-dark;
+  border: 1px solid rgba(v.$color-lib-location-1, 0.40);
   border-radius: 6px;
   padding: 16px;
 }

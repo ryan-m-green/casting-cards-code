@@ -63,17 +63,17 @@
 
 // ─── Secret Reveal ───────────────────────────────────────────────────────────
 .secret-content {
-  transition: filter 400ms ease, color 400ms ease;
+  transition: filter 600ms ease, color 600ms ease;
 
   &.locked {
     filter: blur(4px);
-    color: rgba(72, 44, 10, 0.0);
+    color: v.$color-secret-reveal-blur;
     user-select: none;
   }
 
   &.revealed {
     filter: none;
-    color: rgba(72, 44, 10, 1.0);
+    color: v.$color-secret-reveal-shown;
   }
 }
 

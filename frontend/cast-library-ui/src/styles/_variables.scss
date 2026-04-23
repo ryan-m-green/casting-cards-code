@@ -1,70 +1,1312 @@
-// ─── Color Palette ──────────────────────────────────────────────────────────
-$color-bg:           #0d0804;
-$color-page-start:   #e4d5a0;
-$color-page-mid:     #f2e6c6;
-$color-page-end:     #eeddb2;
+// ─── Base Color Primitives (deduplicated rgba base values) ────────────────────
+$color-base-brown-warm: rgb(110, 75, 22);
+$color-base-dark-brown: rgb(42, 24, 4);
+$color-base-deep-brown: rgb(72, 44, 8);
+$color-base-amber-brown: rgb(105, 72, 18);
+$color-base-golden-brown: rgb(140, 90, 28);
+$color-base-dark-amber: rgb(100, 60, 10);
+$color-base-arcane-purple: rgb(90, 58, 154);
+$color-base-arcane-dark: rgb(46, 26, 94);
+$color-base-portal-violet: rgb(167, 121, 233);
+$color-base-lavender-light: rgb(180, 150, 255);
+$color-base-lavender-pale: rgb(220, 200, 255);
+$color-base-lavender-mid: rgb(195, 170, 255);
+$color-base-lavender-soft: rgb(200, 175, 255);
+$color-base-lavender-bright: rgb(215, 195, 255);
+$color-base-lavender-whisper: rgb(235, 220, 255);
+$color-base-violet-light: rgb(200, 160, 255);
+$color-base-violet-mid: rgb(160, 120, 255);
+$color-base-violet-muted: rgb(140, 100, 220);
+$color-base-periwinkle: rgb(150, 120, 210);
+$color-base-indigo-mid: rgb(80, 50, 130);
+$color-base-indigo-dark: rgb(60, 40, 100);
+$color-base-indigo-deep: rgb(40, 20, 80);
+$color-base-violet-deep: rgb(80, 40, 160);
+$color-base-purple-dark: rgb(60, 30, 100);
+$color-base-void-dark: rgb(14, 8, 28);
+$color-base-mist-blue: rgb(200, 225, 235);
+$color-base-sky-mist: rgb(185, 210, 220);
+$color-base-aqua-light: rgb(161, 216, 255);
+$color-base-void-blue: rgb(14, 24, 32);
+$color-base-sage-mist: rgb(200, 225, 210);
+$color-base-frost-blue: rgb(220, 235, 240);
+$color-base-lilac-pale: rgb(220, 205, 240);
+$color-base-mauve-light: rgb(195, 180, 230);
+$color-base-orchid-mist: rgb(200, 185, 235);
+$color-base-forest-green: rgb(38, 88, 42);
+$color-base-deep-forest: rgb(34, 80, 38);
+$color-base-olive-dark: rgb(42, 64, 8);
+$color-base-emerald: rgb(40, 160, 80);
+$color-base-mint-green: rgb(80, 200, 120);
+$color-base-seafoam: rgb(120, 210, 150);
+$color-base-jade: rgb(60, 180, 120);
+$color-base-teal-green: rgb(60, 160, 110);
+$color-base-teal: rgb(80, 180, 160);
+$color-base-crimson-dark: rgb(130, 28, 28);
+$color-base-rust: rgb(140, 48, 28);
+$color-base-brick: rgb(160, 40, 20);
+$color-base-dark-red: rgb(110, 22, 22);
+$color-base-coral-red: rgb(200, 50, 50);
+$color-base-salmon: rgb(200, 80, 80);
+$color-base-red-mid: rgb(220, 80, 80);
+$color-base-red-bright: rgb(220, 60, 60);
+$color-base-rose-dark: rgb(210, 70, 70);
+$color-base-vermilion: rgb(210, 70, 45);
+$color-base-dark-crimson: rgb(110, 20, 8);
+$color-base-blood-red: rgb(140, 4, 4);
+$color-base-espresso: rgb(52, 28, 4);
+$color-base-dark-gold: rgb(72, 53, 1);
+$color-base-text-brown: rgb(72, 48, 14);
+$color-base-umber: rgb(52, 32, 6);
+$color-base-sienna: rgb(78, 50, 10);
+$color-base-parchment-brown: rgb(78, 48, 10);
+$color-base-ochre: rgb(90, 64, 16);
+$color-base-tan-dark: rgb(80, 50, 12);
+$color-base-parchment-pale: rgb(248, 238, 210);
+$color-base-gold-warm: rgb(212, 168, 67);
+$color-base-gold-mid: rgb(180, 130, 40);
+$color-base-antique-gold: rgb(180, 140, 60);
+$color-base-amber: rgb(220, 170, 60);
+$color-base-sand: rgb(200, 165, 106);
+$color-base-bronze: rgb(200, 140, 50);
+$color-base-gold-deep: rgb(185, 138, 45);
+$color-base-amber-gold: rgb(180, 130, 60);
+$color-base-honey: rgb(180, 120, 40);
+$color-base-caramel: rgb(180, 120, 30);
+$color-base-copper: rgb(180, 110, 40);
+$color-base-warm-amber: rgb(160, 110, 40);
+$color-base-burnt-sienna: rgb(140, 80, 25);
+$color-base-tawny: rgb(160, 100, 35);
+$color-base-russet: rgb(130, 80, 28);
+$color-base-gold-bright: rgb(255, 200, 80);
+$color-base-yellow-warm: rgb(255, 230, 100);
+$color-base-orange-warm: rgb(255, 160, 60);
+$color-base-cream-warm: rgb(240, 220, 180);
+$color-base-ivory-warm: rgb(255, 240, 200);
+$color-base-salmon-light: rgb(255, 160, 140);
+$color-base-linen: rgb(255, 248, 230);
+$color-base-linen-warm: rgb(255, 248, 232);
+$color-base-lavender-mid-2: rgb(180, 160, 220);
+$color-base-periwinkle-bright: rgb(160, 130, 220);
+$color-base-slate-blue: rgb(154, 176, 184);
+$color-base-steel-blue: rgb(112, 144, 192);
+$color-base-sky-blue: rgb(180, 220, 255);
+$color-base-pale-blue: rgb(160, 200, 240);
+$color-base-cobalt: rgb(40, 80, 160);
+$color-base-navy-mid: rgb(30, 60, 120);
+$color-base-navy: rgb(20, 50, 120);
+$color-base-navy-deep: rgb(15, 40, 100);
+$color-base-steel-dark: rgb(48, 72, 96);
+$color-base-abyss: rgb(8, 16, 22);
+$color-base-midnight: rgb(12, 20, 28);
+$color-base-near-black-warm: rgb(20, 15, 5);
+$color-base-pitch: rgb(6, 3, 1);
+$color-base-gold-bright-hex: #e8c96a;
+$color-base-gold-mid-hex: #c9a84c;
+$color-base-gold-dark-hex: #8a6820;
+$color-base-cast-tan: #c8b07a;
+$color-base-cast-gold-pale: #e0c98a;
+$color-base-cast-amber: #c4a86a;
+$color-base-btn-red: #8a2020;
+$color-base-btn-red-dark: #5c1010;
+$color-base-btn-red-hover: #a02828;
+$color-base-btn-red-hover-dark: #6e1818;
+$color-base-loc-green: #c8e080;
+$color-base-loc-green-mid: #7aaa30;
+$color-base-loc-green-dark: #3d6010;
+$color-base-loc-sage: #d8e5b8;
+$color-base-warm-cream: #f0e6d0;
+// ═══════════════════════════════════════════════════════════════════════════
+// ║                          JOURNAL PAGES                                  ║
+// ═══════════════════════════════════════════════════════════════════════════
 
-$color-text-primary:   rgba(42, 24, 4, 1.0);
-$color-text-secondary: rgba(72, 48, 14, 1.0);
-$color-text-muted:     rgba(72, 48, 14, 1.0);
+// ─── Parchment Page Colors ──────────────────────────────────────────────────
+$journal-parchment-base-1: #cbb970; // Parchment base gradient 1
+$journal-parchment-base-2: #dac888; // Parchment base gradient 2 / linear base 128deg
+$journal-parchment-base-3: #e8d89e; // Parchment base gradient 3
+$journal-parchment-base-4: #e2d096; // Parchment base gradient 4
+$journal-parchment-base-5: #d2be78; // Parchment base gradient 5
+$journal-parchment-flip-1: #daca88; // Parchment flip face gradient 2
+$journal-parchment-flip-back-1: #c8b268; // Parchment flip back gradient 1
+$journal-parchment-flip-back-2: #d8c484; // Parchment flip back gradient 2
+$journal-parchment-flip-back-3: #e2d094; // Parchment flip back gradient 3
+$journal-parchment-flip-back-4: #dcc888; // Parchment flip back gradient 4
+$journal-parchment-flip-back-5: #cabb74; // Parchment flip back gradient 5
+$journal-parchment-shadow-front: rgba(0, 0, 0, 0.12); // Parchment front page shadow
+$journal-parchment-shadow-front-light: rgba(0, 0, 0, 0.06); // Parchment front page light shadow
+$journal-parchment-shadow-flip-back: rgba(0, 0, 0, 0.1); // Parchment flip back shadow
+$journal-parchment-stain-binding: rgba(90, 52, 10, 0.20); // Parchment binding stain
+$journal-parchment-stain-binding-fade: rgba(90, 52, 10, 0.06); // Parchment binding stain fade
+$journal-parchment-stain-edge: rgba(90, 52, 10, 0.12); // Parchment edge stain
+$journal-parchment-stain-top-bottom: rgba(100, 60, 14, 0.16); // Parchment top/bottom stain
+$journal-parchment-stain-fade-2: rgba(100, 60, 14, 0.04); // Parchment stain fade 2
+$journal-parchment-foxing-1: rgba(108, 66, 14, 0.26); // Parchment foxing corner 1 (top-left)
+$journal-parchment-foxing-2: rgba(102, 62, 13, 0.20); // Parchment foxing corner 2 (top-right)
+$journal-parchment-foxing-3: rgba(105, 68, 15, 0.22); // Parchment foxing corner 3 (bottom-right)
+$journal-parchment-foxing-4: rgba(98, 60, 13, 0.22); // Parchment foxing corner 4 (bottom-left)
+$journal-parchment-spot-1: rgba(92, 56, 11, 0.11); // Parchment age spot 1 (70% 14%)
+$journal-parchment-spot-2: rgba(88, 52, 10, 0.10); // Parchment age spot 2 (38% 70%)
+$journal-parchment-spot-3: rgba(84, 50, 10, 0.08); // Parchment age spot 3 (56% 44%)
+$journal-parchment-spot-4: rgba($color-base-parchment-brown, 0.09); // Parchment age spot 4 (14% 52%)
+$journal-parchment-spot-5: rgba(86, 52, 11, 0.09); // Parchment age spot 5 (84% 58%)
+$journal-parchment-spot-6: rgba(80, 48, 10, 0.08); // Parchment age spot 6 (62% 82%)
+$journal-parchment-spot-7: rgba(90, 55, 12, 0.07); // Parchment age spot 7 (25% 25%)
+$journal-parchment-watermark-1: rgba(88, 56, 12, 0.09); // Parchment watermark 1 (compass ring)
+$journal-parchment-watermark-2: rgba(88, 56, 12, 0.04); // Parchment watermark 2 (compass center fade)
+$journal-parchment-watermark-3: rgba(88, 56, 12, 0.05); // Parchment watermark 3 (compass center)
+$journal-parchment-toning-1: rgba(248, 226, 162, 0.30); // Parchment toning 1 (upper-left warm)
+$journal-parchment-toning-2: rgba(228, 202, 132, 0.24); // Parchment toning 2 (lower-right warm)
+$journal-parchment-fold: rgba(100, 70, 18, 0.22); // Parchment corner fold
 
-$color-border:        rgba(110, 75, 22, 0.28);
-$color-border-accent: rgba(130, 88, 28, 0.45);
-$color-border-light:  rgba(110, 75, 22, 0.14);
+// ─── Leather Cover & Spine Colors ───────────────────────────────────────────
+$journal-leather-cover-base-1: #3a1b07; // Leather cover gradient 1
+$journal-leather-cover-base-2: #5c2f12; // Leather cover gradient 2
+$journal-leather-cover-base-3: #4d2510; // Leather cover gradient 3
+$journal-leather-cover-base-4: #6a3618; // Leather cover gradient 4
+$journal-leather-cover-base-5: #3c1c08; // Leather cover gradient 5
+$journal-leather-cover-base-6: #281205; // Leather cover gradient 6
+$journal-leather-cover-shadow: rgba(0, 0, 0, 0.45); // Leather cover shadow
+$journal-leather-cover-shadow-light: rgba(0, 0, 0, 0.20); // Leather cover light shadow
+$journal-leather-grain-dark: rgba(0, 0, 0, 0.038); // Leather grain dark
+$journal-leather-grain-light: rgba(255, 255, 255, 0.013); // Leather grain light
+$journal-leather-scratch-1: rgba(220, 135, 52, 0.042); // Leather scratch 1
+$journal-leather-scratch-2: rgba(0, 0, 0, 0.05); // Leather scratch 2
+$journal-leather-worn-1: rgba(105, 58, 22, 0.38); // Leather worn zone 1 (center)
+$journal-leather-worn-2: rgba(112, 62, 24, 0.28); // Leather worn zone 2 (lower center)
+$journal-leather-worn-3: rgba(108, 60, 22, 0.24); // Leather worn zone 3 (upper center)
+$journal-leather-worn-corner-1: rgba(118, 68, 28, 0.35); // Leather worn corner 1 (top-left)
+$journal-leather-worn-corner-2: rgba(112, 64, 26, 0.32); // Leather worn corner 2 (top-right)
+$journal-leather-worn-corner-3: rgba(105, 58, 22, 0.32); // Leather worn corner 3 (bottom-left)
+$journal-leather-worn-corner-4: rgba(110, 62, 24, 0.34); // Leather worn corner 4 (bottom-right)
+$journal-leather-stain-1: rgba(22, 8, 1, 0.48); // Leather compression stain 1 (left center)
+$journal-leather-stain-2: rgba(18, 6, 1, 0.52); // Leather compression stain 2 (upper right)
+$journal-leather-stain-3: rgba(20, 7, 1, 0.40); // Leather compression stain 3 (lower right)
+$journal-leather-stain-4: rgba(15, 5, 0, 0.38); // Leather compression stain 4 (upper left)
+$journal-leather-lustre: rgba(82, 44, 16, 0.28); // Leather center lustre
+$journal-leather-frame: rgba(200, 140, 50, 0.08); // Leather cover frame inset
 
-$color-gold:          rgba(180, 130, 60, 0.28);
-$color-gold-solid:    #8c5a1c;
+$journal-spine-dark-1: #1C0B05; // Journal spine dark gradient 1
+$journal-spine-dark-2: #0E0603; // Journal spine dark gradient 2
+$journal-spine-shadow: rgba(0, 0, 0, 0.7); // Journal spine inset shadow
+$journal-spine-cap-1: #8A6020; // Journal spine cap gradient 1
+$journal-spine-cap-2: #C4922A; // Journal spine cap gradient 2
+$journal-spine-cap-3: #6A4A18; // Journal spine cap gradient 3
+$journal-spine-band-1: #2A1208; // Journal spine band gradient 1
+$journal-spine-band-2: #3A1A0A; // Journal spine band gradient 2
+$journal-spine-band-3: #2E1308; // Journal spine band gradient 3
+$journal-spine-band-4: #180905; // Journal spine band gradient 4
+$journal-spine-band-shadow: rgba(0, 0, 0, 0.6); // Journal spine band shadow
+$journal-spine-band-highlight: rgba(255, 160, 60, 0.08); // Journal spine band highlight
+$journal-spine-band-highlight-2: rgba($color-base-orange-warm, 0.06); // Journal spine band highlight 2
+$journal-spine-band-accent: rgba(200, 140, 60, 0.3); // Journal spine band accent line
 
-// Badge colors
-$color-dm-bg:     rgba(130, 28, 28, 0.12);
-$color-dm-border: rgba(130, 28, 28, 0.35);
-$color-dm-text:   rgba(110, 22, 22, 1.0);
+// ─── Time-of-Day Bar ─────────────────────────────────────────────────────────
+$journal-tod-cursor-shadow: rgba(0, 0, 0, 0.5);
+$journal-tod-panel-bg: $journal-parchment-base-4;
+$journal-tod-panel-border: rgba($color-base-brown-warm, 0.28);
+$journal-tod-notes-focus-border: rgba($color-base-arcane-purple, 0.65);
 
-$color-player-bg:     rgba(28, 78, 130, 0.10);
-$color-player-border: rgba(28, 78, 130, 0.30);
-$color-player-text:   rgba(22, 62, 110, 1.0);
+// ═══════════════════════════════════════════════════════════════════════════
+// ║                         CAMPAIGN PAGES                                  ║
+// ═══════════════════════════════════════════════════════════════════════════
 
-$color-ai-bg:     rgba(78, 48, 130, 0.10);
-$color-ai-border: rgba(78, 48, 130, 0.30);
-$color-ai-text:   rgba(62, 38, 110, 1.0);
+// ─── Player Portal / Void Colors ────────────────────────────────────────────
+$campaign-portal-primary: #6e28d0; // Primary portal color
+$campaign-portal-bg-dark: rgba(14, 24, 32, 0.96); // Portal dark background
+$campaign-portal-bg-medium: rgba(14, 24, 32, 0.80); // Portal medium background  / input bg
+$campaign-portal-panel-dark: #0c1820; // Portal dropdown panel
+$campaign-portal-border-light: rgba($color-base-portal-violet, 0.15); // Portal light border
+$campaign-portal-border: rgba($color-base-portal-violet, 0.2); // Portal standard border / char portrait
+$campaign-portal-border-medium: rgba($color-base-portal-violet, 0.25); // Portal medium border
+$campaign-portal-border-strong: rgba($color-base-portal-violet, 0.3); // Portal strong border
+$campaign-portal-border-accent: rgba($color-base-portal-violet, 0.35); // Portal accent border
+$campaign-portal-border-bold: rgba($color-base-portal-violet, 0.4); // Portal bold border / portrait
+$campaign-portal-border-hover: rgba($color-base-portal-violet, 0.5); // Portal hover border
+$campaign-portal-border-active: rgba($color-base-portal-violet, 0.55); // Portal active border
+$campaign-portal-border-focus: rgba($color-base-portal-violet, 0.6); // Portal focus border
+$campaign-portal-border-strong-focus: rgba($color-base-portal-violet, 0.65); // Portal strong focus
+$campaign-portal-bg-overlay: rgba($color-base-portal-violet, 0.1); // Portal overlay
+$campaign-portal-bg-hover: rgba($color-base-portal-violet, 0.1); // Portal hover background
+$campaign-portal-bg-placeholder: rgba($color-base-portal-violet, 0.2); // Portrait placeholder
+$campaign-portal-text-primary: rgba(161, 216, 255, 0.9); // Portal primary text (aqua accent)
+$campaign-portal-text-secondary: rgba(185, 210, 220, 0.9); // Portal secondary text
+$campaign-portal-text-bright: rgba(200, 225, 235, 0.95); // Portal bright text / dropdown text
+$campaign-portal-text-softer: rgba($color-base-mist-blue, 0.92); // Portal softer text
+$campaign-portal-text-muted: rgba($color-base-mist-blue, 0.88); // Portal muted text
+$campaign-portal-text-lavender: rgba(220, 200, 255, 0.95); // Portal lavender text
+$campaign-portal-text-lavender-bright: rgba($color-base-lavender-pale, 0.98); // Portal bright lavender
+$campaign-portal-text-purple-light: rgb(224, 216, 246, 0.80); // Portal light purple text
+$campaign-portal-glow-bright: rgba(140, 220, 165, 1.0); // Portal bright glow
+$campaign-portal-placeholder: rgba(180, 150, 255, 1); // Portal placeholder text
 
-$color-locked-bg:     rgba(140, 48, 28, 0.10);
-$color-locked-border: rgba(140, 48, 28, 0.35);
-$color-locked-text:   rgba(120, 40, 22, 1.0);
+// ─── Campaign Button Colors (Dark Theme) ────────────────────────────────────
+$campaign-btn-primary-bg: rgb(35, 140, 70);
+$campaign-btn-primary-border: rgba(70, 190, 110, 0.6);
+$campaign-btn-primary-text: rgb(220, 255, 235);
+$campaign-btn-primary-hover-bg: rgb(50, 165, 85);
+$campaign-btn-primary-hover-border: rgb(90, 210, 130);
+$campaign-btn-primary-hover-text: rgb(235, 255, 245);
 
-$color-open-bg:     rgba(38, 88, 42, 0.10);
-$color-open-border: rgba(38, 88, 42, 0.35);
-$color-open-text:   rgba(30, 72, 34, 1.0);
+$campaign-btn-secondary-border: rgba(255, 255, 255, 0.4);
+$campaign-btn-secondary-text: rgba($color-base-mist-blue, 0.75);
+$campaign-btn-secondary-hover-border: rgba(255, 255, 255, 0.65);
+$campaign-btn-secondary-hover-text: rgba($color-base-mist-blue, 0.95);
 
+// ═══════════════════════════════════════════════════════════════════════════
+// ║                         GLOBAL STYLES                                   ║
+// ═══════════════════════════════════════════════════════════════════════════
+
+// ─── Base & Page Colors ─────────────────────────────────────────────────────
+$color-bg:           #0d0804;  // Main background
+$color-page-start:   #e4d5a0;  // Page gradient start
+$color-page-mid:     #f2e6c6;  // Page gradient middle
+$color-page-end:     #eeddb2;  // Page gradient end
+$color-black:        #000;     // Pure black
+$color-dark-frame:   #1a0f00;  // Dark frame border
+
+// ─── Text Colors ────────────────────────────────────────────────────────────
+$color-text-primary:   rgba(42, 24, 4, 1.0);   // Primary text
+$color-text-secondary: rgba(72, 48, 14, 1.0);  // Secondary text
+$color-text-muted:     rgba(72, 48, 14, 1.0);  // Muted text
+$color-text-dark:      #1e110a;                // Dark text for flavor
+$color-text-placeholder: rgba(110, 75, 22, 1.0); // Input placeholder
+
+// ─── Border Colors ──────────────────────────────────────────────────────────
+$color-border:        rgba($color-base-brown-warm, 0.28);  // Standard border
+$color-border-accent: rgba(130, 88, 28, 0.45);  // Accent border
+$color-border-light:  rgba($color-base-brown-warm, 0.14);  // Light border
+$color-border-solid:  rgba($color-base-brown-warm, 0.32);  // Solid border for inputs
+$color-border-black-light: rgba(0, 0, 0, 0.15); // Light black border
+$color-border-black-med:   rgba(0, 0, 0, 0.2);  // Medium black border
+$color-border-black-strong: rgba(0, 0, 0, 0.25); // Strong black border
+$color-border-white-light: rgba(255, 255, 255, 0.10); // Light white border
+$color-border-white-med:   rgba(255, 255, 255, 0.25);  // Medium white border
+
+// ─── Gold Colors (Cast Cards) ───────────────────────────────────────────────
+$color-gold:          rgba(180, 130, 60, 0.28);  // Gold transparent
+$color-gold-solid:    #8c5a1c;                    // Solid gold
+$color-cast-gold-1:   #f0d060;  // Cast frame gradient 1
+$color-cast-gold-2:   $color-base-gold-mid-hex;  // Cast frame gradient 2 / text / elements
+$color-cast-gold-3:   $color-base-gold-dark-hex;  // Cast frame gradient 3 / border elements
+$color-cast-gold-4:   $color-base-gold-bright-hex;  // Cast frame gradient 4 / text highlights / emblem
+$color-cast-gold-5:   #5a4010;  // Cast frame gradient 5 (dark)
+$color-cast-gold-6:   #d4a840;  // Cast frame gradient 6
+$color-cast-gold-7:   #d9c090;  // Cast subtitle color
+$color-cast-gold-back-border: rgba(200, 180, 100, 0.3); // Cast back border
+$color-cast-gold-back-border-2: rgba(200, 180, 100, 0.15); // Cast back border 2
+$color-cast-gold-back-divider: rgba(200, 180, 100, 0.15); // Cast back stat divider
+$color-cast-gold-scrollbar: rgba(200, 180, 100, 0.2); // Cast scrollbar
+$color-cast-gold-stat-key: $color-base-gold-dark-hex; // Cast stat key color
+$color-cast-gold-stat-val: #e8d4a0; // Cast stat value color
+
+// ─── Cast Card Specific ─────────────────────────────────────────────────────
+$color-cast-banner-dark:   #3d0e0e;  // Cast banner gradient start/end
+$color-cast-banner-red:    #6b1a1a;  // Cast banner gradient mid
+$color-cast-bg-light-1:    #f0e2b6;  // Cast front bg gradient 1
+$color-cast-bg-light-2:    #e5d49a;  // Cast front bg gradient 2
+$color-cast-bg-light-3:    #d4c07a;  // Cast front bg gradient 3
+$color-cast-portrait-1:    $color-base-cast-tan;  // Cast portrait bg 1
+$color-cast-portrait-2:    $color-base-cast-gold-pale;  // Cast portrait bg 2
+$color-cast-portrait-3:    $color-base-cast-amber;  // Cast portrait bg 3
+$color-cast-back-dark-1:   #1e100a;  // Cast back bg gradient 1
+$color-cast-back-dark-2:   #2a1a0f;  // Cast back bg gradient 2
+$color-cast-btn-gold-1:    $color-base-gold-bright-hex;  // Cast button gold gradient 1
+$color-cast-btn-gold-2:    $color-base-gold-mid-hex;  // Cast button gold gradient 2
+$color-cast-btn-gold-hover-1: #f8d870; // Cast button gold hover 1
+$color-cast-btn-gold-hover-2: #d9b850; // Cast button gold hover 2
+$color-cast-btn-red-1:     $color-base-btn-red;  // Cast button red gradient 1
+$color-cast-btn-red-2:     $color-base-btn-red-dark;  // Cast button red gradient 2
+$color-cast-btn-red-hover-1: $color-base-btn-red-hover; // Cast button red hover 1
+$color-cast-btn-red-hover-2: $color-base-btn-red-hover-dark; // Cast button red hover 2
+$color-cast-shadow-inset: rgba(255, 230, 100, 0.3); // Cast frame inset shadow
+$color-cast-accent-glow: rgba(255, 220, 80, 0.5); // Cast accent glow
+
+// ─── Green Colors (Location Cards) ──────────────────────────────────────────
+$color-loc-green-1:    $color-base-loc-green;  // Location frame gradient 1 / text
+$color-loc-green-2:    $color-base-loc-green-mid;  // Location frame gradient 2 / pip / corner flourish
+$color-loc-green-3:    $color-base-loc-green-dark;  // Location frame gradient 3 / border
+$color-loc-green-4:    #a8c850;  // Location frame gradient 4
+$color-loc-green-5:    #6a9828;  // Location frame gradient 5
+$color-loc-green-6:    #2a4008;  // Location frame gradient 6 (dark)
+$color-loc-green-7:    #90b840;  // Location frame gradient 7
+$color-loc-green-8:    #a8d080;  // Location subtitle
+$color-loc-banner-dark: #1a2e0a; // Location banner gradient start
+$color-loc-banner-mid:  #2d4f14; // Location banner gradient end / strip start
+$color-loc-bg-light-1:  #eaf0d8; // Location front bg gradient 1
+$color-loc-bg-light-2:  $color-base-loc-sage; // Location front bg gradient 2
+$color-loc-bg-light-3:  #c4d49a; // Location front bg gradient 3 / portrait bg 1
+$color-loc-portrait-2:  $color-base-loc-sage; // Location portrait bg 2
+$color-loc-portrait-3:  #b8cc88; // Location portrait bg 3
+$color-loc-accent-glow: rgba(180, 255, 80, 0.4); // Location accent glow
+$color-loc-frame-inset: rgba(200, 255, 100, 0.3); // Location frame inset
+$color-loc-back-dark-1: #0e180a; // Location back bg gradient 1
+$color-loc-back-dark-2: #182810; // Location back bg gradient 2
+$color-loc-back-border: rgba(180, 220, 100, 0.3); // Location back border
+$color-loc-back-border-2: rgba(180, 220, 100, 0.15); // Location back border 2
+$color-loc-back-divider: rgba(180, 220, 100, 0.15); // Location back stat divider
+$color-loc-scrollbar: rgba(180, 220, 100, 0.2); // Location scrollbar
+$color-loc-stat-key: $color-base-loc-green-dark; // Location stat key color
+$color-loc-stat-val: #d0e8a0; // Location stat value color
+$color-loc-btn-green-1: $color-base-loc-green; // Location button green gradient 1
+$color-loc-btn-green-2: $color-base-loc-green-mid; // Location button green gradient 2
+$color-loc-btn-green-hover-1: #d8f090; // Location button green hover 1
+$color-loc-btn-green-hover-2: #88b838; // Location button green hover 2
+$color-loc-btn-red-1: $color-base-btn-red; // Location button red gradient 1
+$color-loc-btn-red-2: $color-base-btn-red-dark; // Location button red gradient 2
+$color-loc-btn-red-hover-1: $color-base-btn-red-hover; // Location button red hover 1
+$color-loc-btn-red-hover-2: $color-base-btn-red-hover-dark; // Location button red hover 2
+
+// ─── Shadow & Overlay Colors ────────────────────────────────────────────────
+$color-shadow-light:   rgba(0, 0, 0, 0.5);  // Light shadow
+$color-shadow-medium:  rgba(0, 0, 0, 0.6);  // Medium shadow
+$color-shadow-dark:    rgba(0, 0, 0, 0.9);  // Dark shadow
+$color-overlay-dark:   rgba(0, 0, 0, 0.45); // Dark overlay
+$color-overlay-darker: rgba(0, 0, 0, 0.35); // Darker overlay
+
+// ─── Secret/Lock Button Colors ──────────────────────────────────────────────
+$color-secrets-bg:       rgba(10, 20, 5, 0.75);  // Secrets button bg
+$color-secrets-hover:    rgba(20, 40, 10, 0.9);  // Secrets button hover
+$color-secrets-revealed: rgba(30, 80, 10, 0.8);  // Secrets revealed bg
+$color-secrets-revealed-hover: rgba(40, 100, 15, 0.95); // Secrets revealed hover
+
+// ─── Delete Button Colors ───────────────────────────────────────────────────
+$color-delete-bg:    rgba(90, 20, 20, 0.85);  // Delete button bg
+$color-delete-hover: rgba(150, 30, 30, 0.95); // Delete button hover
+
+// ─── Form Input Colors ──────────────────────────────────────────────────────
+$color-input-bg:     rgba(255, 248, 232, 0.55); // Input background
+$color-input-focus-border: rgba($color-base-arcane-purple, 0.65); // Input focus border
+$color-input-focus-bg:     rgba($color-base-arcane-dark, 0.04);  // Input focus background
+
+// ─── Wireframe/Accent Colors ────────────────────────────────────────────────
+$color-wb-hover: rgba($color-base-brown-warm, 0.04); // Wireframe block hover
+
+// ─── Badge Colors ───────────────────────────────────────────────────────────
+$color-dm-bg:     rgba(130, 28, 28, 0.12);  // DM badge background
+$color-dm-border: rgba(130, 28, 28, 0.35);  // DM badge border
+$color-dm-text:   rgba(110, 22, 22, 1.0);   // DM badge text
+
+$color-player-bg:     rgba(28, 78, 130, 0.10);  // Player badge background
+$color-player-border: rgba(28, 78, 130, 0.30);  // Player badge border
+$color-player-text:   rgba(22, 62, 110, 1.0);   // Player badge text
+
+$color-ai-bg:     rgba(78, 48, 130, 0.10);  // AI badge background
+$color-ai-border: rgba(78, 48, 130, 0.30);  // AI badge border
+$color-ai-text:   rgba(62, 38, 110, 1.0);   // AI badge text
+
+$color-locked-bg:     rgba(140, 48, 28, 0.10);  // Locked status background
+$color-locked-border: rgba(140, 48, 28, 0.35);  // Locked status border
+$color-locked-text:   rgba(120, 40, 22, 1.0);   // Locked status text
+
+$color-open-bg:     rgba(38, 88, 42, 0.10);  // Open status background
+$color-open-border: rgba(38, 88, 42, 0.35);  // Open status border
+$color-open-text:   rgba(30, 72, 34, 1.0);   // Open status text
+
+// ─── Arcane / Indigo Colors ─────────────────────────────────────────────────
 // Arcane / Indigo — magic accent throughout journal pages
-$color-arcane-bg:     rgba(46, 26, 94, 0.12);
-$color-arcane-border: rgba(90, 58, 154, 0.42);
-$color-arcane-text:   rgba(180, 150, 255, 1.0);
-$color-arcane-glow:   rgba(90, 58, 154, 0.18);
+$color-arcane-bg:     rgba($color-base-arcane-dark, 0.12);   // Arcane badge background
+$color-arcane-border: rgba($color-base-arcane-purple, 0.42);  // Arcane badge border / card hover / role-card active
+$color-arcane-text:   rgba(180, 150, 255, 1.0); // Arcane badge text
+$color-arcane-glow:   rgba($color-base-arcane-purple, 0.18);  // Arcane glow effect
+$color-arcane-border-hover: rgba($color-base-arcane-purple, 0.50); // role-card active strong
+$color-arcane-border-focus: rgba($color-base-arcane-purple, 0.65); // Input focus border
+$color-arcane-border-tab: rgba($color-base-arcane-purple, 0.80); // Active tab border
+$color-arcane-glow-card: rgba($color-base-arcane-purple, 0.10); // Card hover glow
+$color-arcane-bg-focus: rgba($color-base-arcane-dark, 0.04);  // Input/card focus background
+$color-arcane-saving: $color-base-arcane-purple; // Saving status text
 
-// ─── Typography ──────────────────────────────────────────────────────────────
+// ─── Component Colors ───────────────────────────────────────────────────────
+// Secret reveal animation colors
+$color-secret-reveal-blur: rgba(72, 44, 10, 0.0);  // _animations.scss - secret-content.locked
+$color-secret-reveal-shown: rgba(72, 44, 10, 1.0); // _animations.scss - secret-content.revealed
+
+// Scrollbar colors
+$color-scrollbar-thumb: rgba($color-base-brown-warm, 0.2);   // _components.scss - lib-card-back, scroll-body scrollbar thumb
+
+// Cast row colors
+$color-cast-row-hover: rgba($color-base-brown-warm, 0.04);   // _components.scss - cast-row:hover
+$color-cast-row-avatar: linear-gradient(135deg, #c8a060, #8c6030); // _components.scss - cast-row .cast-img background
+$color-cast-row-avatar-text: rgba(255, 248, 230, 1.0); // _components.scss - cast-row .cast-img text
+
+// Standard button colors
+$color-btn-primary-bg: rgba($color-base-brown-warm, 0.10);   // _components.scss - btn-primary background
+$color-btn-primary-hover-bg: rgba($color-base-brown-warm, 0.16); // _components.scss - btn-primary:hover background
+$color-btn-ghost-hover-bg: rgba($color-base-brown-warm, 0.06); // _components.scss - btn-ghost:hover background
+$color-role-card-hover-bg: rgba($color-base-brown-warm, 0.04); // _components.scss - role-card:hover background
+
+// Search bar colors
+$color-search-bar-bg: rgba(255, 255, 255, 0.15);  // _components.scss - search-bar background
+
+// Secret section colors
+$color-secret-header-text: rgba(105, 72, 18, 1.0); // _components.scss - detail-secrets-header text
+$color-secret-header-border: rgba($color-base-brown-warm, 0.22); // _components.scss - detail-secrets-header border
+$color-secret-row-border: rgba($color-base-brown-warm, 0.12); // _components.scss - secret-row border
+$color-secret-text: rgba(72, 44, 8, 1.0);         // _components.scss - secret-text color
+$color-secret-delete-border: rgba(160, 40, 20, 0.4); // _components.scss - secret-delete-btn border
+$color-secret-delete-text: rgba(160, 40, 20, 1.0); // _components.scss - secret-delete-btn text
+$color-secret-delete-hover-bg: rgba(160, 40, 20, 0.08); // _components.scss - secret-delete-btn:hover background
+$color-secret-add-border: rgba($color-base-brown-warm, 0.38); // _components.scss - secret-add-btn border
+$color-secret-add-hover-bg: rgba(240, 218, 168, 0.25); // _components.scss - secret-add-btn:hover background
+
+// Upload/Form colors
+$color-upload-done-text: $color-base-warm-cream;                 // _components.scss - btn-upload-done text
+
+// Card placeholder colors
+$color-card-placeholder-cast: linear-gradient(160deg, #c8b07a, #e0c98a, #c4a86a); // _components.scss - pc-card-cast .card-placeholder
+$color-card-placeholder-location: linear-gradient(160deg, #9ab0b8, #b8cdd6, #8aa0a8); // _components.scss - pc-card-location .card-placeholder
+$color-card-placeholder-sublocation: linear-gradient(160deg, #a8a070, #c4bc88, #98906a); // _components.scss - pc-card-sublocation .card-placeholder
+$color-card-initial-text: $color-base-dark-brown;   // _components.scss - card-initial text
+
+// Card overlay colors
+$color-card-desc-overlay-start: transparent;       // _components.scss - card-desc-overlay gradient start
+$color-card-desc-overlay-end: rgba(10, 6, 2, 0.82); // _components.scss - card-desc-overlay gradient end
+$color-card-desc-text: rgba(255, 240, 200, 1.0);  // _components.scss - card-desc-text color
+$color-card-edit-btn-bg: rgba(20, 12, 4, 0.55);   // _components.scss - card-edit-btn background
+$color-card-edit-btn-text: $color-base-ivory-warm; // _components.scss - card-edit-btn text
+$color-card-delete-border: rgba($color-base-brown-warm, 0.2); // _components.scss - card-delete-btn border
+$color-card-delete-bg: rgba(110, 31, 31, 0.82);   // _components.scss - card-delete-btn background
+$color-card-delete-text: rgba(255, 210, 190, 1.0); // _components.scss - card-delete-btn text
+
+// Form label colors
+$color-form-label-strong: $color-base-dark-brown;   // _components.scss - fi-label-strong text
+$color-card-upload-hint: $color-base-dark-brown;    // _components.scss - card-upload-hint text
+
+// Delete modal colors
+$color-delete-modal-overlay: rgba(10, 6, 2, 0.72); // _components.scss - delete-overlay background
+$color-delete-modal-panel-bg: #1e1410;            // _components.scss - delete-panel background
+$color-delete-modal-panel-border: rgba(140, 48, 28, 0.45); // _components.scss - delete-panel border
+$color-delete-modal-title: $color-base-warm-cream;               // _components.scss - delete-panel-title text
+$color-delete-modal-message: rgba(240, 220, 180, 1.0); // _components.scss - delete-panel-message text
+
+// Currency display colors
+$color-currency-header: $color-base-amber-brown;   // _components.scss - currency-display-header text
+
+// ─── Shared UI Colors ───────────────────────────────────────────────────────
+$color-ui-cancel-bg: rgba(255, 245, 220, 0.06); // Modal cancel button background
+$color-ui-cancel-text: $color-base-cream-warm; // Modal cancel button text
+$color-ui-cancel-border: rgba($color-base-brown-warm, 0.4); // Modal cancel button border
+$color-ui-delete-bg: rgba(140, 48, 28, 0.18); // Modal delete button background
+$color-ui-delete-text: rgba(255, 160, 140, 0.95); // Modal delete button text
+$color-ui-delete-border: rgba(140, 48, 28, 0.55); // Modal delete button border
+$color-ui-upload-panel-bg: #2a2a3a; // Upload panel background
+$color-ui-upload-panel-border: #b8945a; // Upload panel border
+$color-ui-upload-text: $color-base-warm-cream; // Upload panel text
+$color-ui-saving-text: $color-base-arcane-purple; // Saving label text
+$color-ui-error-text: rgba(160, 40, 40, 1.0); // Error label text
+$color-ui-list-arrow: rgba(110, 75, 22, 1.0); // List arrow color
+
+// ─── Library Card Colors ────────────────────────────────────────────────────
+$color-lib-cast-1:   $color-base-cast-tan;  // Library cast card bg 1
+$color-lib-cast-2:   $color-base-cast-gold-pale;  // Library cast card bg 2
+$color-lib-cast-3:   $color-base-cast-amber;  // Library cast card bg 3
+$color-lib-location-1: #9ab0b8; // Library location card bg 1
+$color-lib-location-2: #b8cdd6; // Library location card bg 2
+$color-lib-location-3: #8aa0a8; // Library location card bg 3
+$color-lib-sublocation-1: #a8a070; // Library sublocation card bg 1
+$color-lib-sublocation-2: #c4bc88; // Library sublocation card bg 2
+$color-lib-sublocation-3: #98906a; // Library sublocation card bg 3
+$color-lib-shop-1:   #4765a7;  // Library shop card bg 1
+$color-lib-shop-2:   #759bd7;  // Library shop card bg 2
+$color-lib-shop-3:   #3d5a9e;  // Library shop card bg 3
+$color-lib-player-1: #b8a8d4;  // Library player card bg 1
+$color-lib-player-2: #d4cce8;  // Library player card bg 2
+$color-lib-player-3: #a89ec4;  // Library player card bg 3
+$color-lib-scrollbar: rgba($color-base-brown-warm, 0.2); // Library card scrollbar
+
+// ─── Convenience Variables ──────────────────────────────────────────────────
+$cast-gold: $color-lib-cast-1;           // Alias for cast card color
+$location-blue: $color-lib-location-1;   // Alias for location card color
+$sublocation-green: $color-lib-sublocation-1; // Alias for sublocation card color
+$subLoc-olive: $color-lib-sublocation-1; // Alias for sublocation card color (alternate name)
+$accent: $color-arcane-border;           // Alias for arcane accent color
+$star-color: $color-base-gold-bright-hex;                    // Star/favorite icon color (same as cast-gold-4)
+$memory-search-accent: $color-arcane-border; // Memory search accent color
+
+// ─── Typography ─────────────────────────────────────────────────────────────
 $font-header:    'Cinzel', serif;
 $font-body:      'Crimson Text', serif;
 $font-page-num:  'Special Elite', cursive;
 
-// ─── Spacing ─────────────────────────────────────────────────────────────────
+// ─── Spacing ────────────────────────────────────────────────────────────────
 $spacing-xs:  4px;
 $spacing-sm:  8px;
 $spacing-md:  14px;
 $spacing-lg:  22px;
 $spacing-xl:  36px;
 
-// ─── Card Dimensions ─────────────────────────────────────────────────────────
+// ─── Card Dimensions ────────────────────────────────────────────────────────
 $card-width:  150px;
 $card-height: 220px;
 
-// ─── Spine ───────────────────────────────────────────────────────────────────
+// ─── Spine ──────────────────────────────────────────────────────────────────
 $spine-width:        56px;
 $spine-width-mobile: 24px;
 $spine-width-tablet: 40px;
 
-// ─── Transitions ─────────────────────────────────────────────────────────────
+// ─── Transitions ────────────────────────────────────────────────────────────
 $transition-fast:   120ms ease;
 $transition-std:    200ms ease;
 $transition-flip:   520ms cubic-bezier(0.4, 0, 0.2, 1);
 $transition-page:   700ms cubic-bezier(0.55, 0.06, 0.45, 0.94);
+
+
+$color-ext-1: rgba($color-base-dark-brown, 0.82); // Used in: about, about, legal
+$color-ext-2: rgba($color-base-dark-brown, 0.78); // Used in: about
+$color-ext-3: rgba($color-base-brown-warm, 0.16); // Used in: about, about, cast-relationships-tab
+$color-ext-4: rgba($color-base-text-brown, 0.80); // Used in: about
+$color-ext-5: rgba($color-base-linen-warm, 0.30); // Used in: about
+$color-ext-6: rgba(255, 255, 255, 0.08); // Used in: about, legal, player-campaigns
+$color-ext-7: rgba($color-base-golden-brown, 0.70); // Used in: about, about, legal
+$color-ext-8: rgba($color-base-golden-brown, 0.30); // Used in: about, legal, player-campaigns
+$color-ext-9: rgba($color-base-golden-brown, 0.06); // Used in: about, about, legal
+$color-ext-10: rgba(0, 0, 0, 0.08); // Used in: about, legal, player-campaigns
+$color-ext-11: rgba($color-base-golden-brown, 0.20); // Used in: about, legal, player-campaigns
+$color-ext-12: rgba($color-base-golden-brown, 0.40); // Used in: about, legal, player-campaigns
+$color-ext-13: rgba($color-base-golden-brown, 0.28); // Used in: about, legal, player-campaigns
+$color-ext-14: rgba(0, 0, 0, 0.18); // Used in: about, legal, player-campaigns
+$color-ext-15: rgba($color-base-dark-amber, 0.85); // Used in: about, legal, player-campaigns
+$color-ext-16: rgba($color-base-golden-brown, 0.12); // Used in: about, legal, player-campaigns
+$color-ext-17: rgba($color-base-dark-amber, 0.55); // Used in: admin-invite-code
+$color-ext-18: rgba(80, 45, 5, 0.92); // Used in: admin-invite-code
+$color-ext-19: rgba($color-base-dark-amber, 0.60); // Used in: admin-invite-code
+$color-ext-20: rgba(45, 110, 55, 0.90); // Used in: admin-invite-code, campaign-creator
+$color-ext-21: rgba($color-base-crimson-dark, 0.4); // Used in: admin-invite-code, change-password, reset-password
+$color-ext-22: rgba($color-base-portal-violet, 0.18); // Used in: campaign-cast-detail, campaign-detail, campaign-location-detail
+$color-ext-23: rgba(0, 0, 0, 0.95); // Used in: campaign-cast-detail, campaign-detail, campaign-library
+$color-ext-24: rgba($cast-gold, 0.40); // Used in: campaign-cast-detail, player-cast-detail, player-cast-notes
+$color-ext-25: rgba($cast-gold, 0.12); // Used in: campaign-cast-detail, player-cast-detail
+$color-ext-26: rgba($cast-gold, 0.08); // Used in: campaign-cast-detail, campaign-cast-detail, campaign-cast-detail
+$color-ext-27: rgba($cast-gold, 0.22); // Used in: campaign-cast-detail, campaign-cast-detail, campaign-cast-detail
+$color-ext-28: rgba($cast-gold, 0.03); // Used in: campaign-cast-detail
+$color-ext-29: rgba($cast-gold, 0.85); // Used in: campaign-cast-detail, campaign-cast-detail, player-cast-detail
+$color-ext-30: rgba($cast-gold, 0.80); // Used in: campaign-cast-detail, campaign-cast-detail, player-cast-detail
+$color-ext-31: rgba($cast-gold, 0.28); // Used in: campaign-cast-detail, campaign-cast-detail, campaign-cast-detail
+$color-ext-32: rgba($cast-gold, 0.30); // Used in: campaign-cast-detail, campaign-cast-detail, campaign-cast-detail
+$color-ext-33: rgba($color-base-mist-blue, 0.9); // Used in: campaign-cast-detail, campaign-location-detail, campaign-sublocation-detail
+$color-ext-34: rgba($cast-gold, 0.10); // Used in: campaign-cast-detail, player-cast-notes
+$color-ext-35: rgba($cast-gold, 0.55); // Used in: campaign-cast-detail, campaign-cast-detail
+$color-ext-36: $color-base-mist-blue; // Used in: campaign-cast-detail, campaign-location-detail, campaign-sublocation-detail
+$color-ext-37: rgba($color-base-emerald, 0.15); // Used in: campaign-cast-detail, campaign-cast-detail, campaign-location-detail
+$color-ext-38: rgba($color-base-mint-green, 0.30); // Used in: campaign-cast-detail, campaign-cast-detail, campaign-location-detail
+$color-ext-39: rgba($color-base-seafoam, 0.85); // Used in: campaign-cast-detail, campaign-cast-detail, campaign-location-detail
+$color-ext-40: rgba($color-base-emerald, 0.30); // Used in: campaign-cast-detail, campaign-cast-detail, campaign-location-detail
+$color-ext-41: rgba($color-base-mint-green, 0.55); // Used in: campaign-cast-detail, campaign-location-detail, campaign-sublocation-detail
+$color-ext-42: rgba($color-base-mist-blue, 0.75); // Used in: campaign-cast-detail, campaign-location-detail, campaign-sublocation-detail
+$color-ext-43: rgba($cast-gold, 0.65); // Used in: campaign-cast-detail, campaign-cast-detail, player-cast-notes
+$color-ext-44: rgba($cast-gold, 0.14); // Used in: campaign-cast-detail, player-cast-notes
+$color-ext-45: rgba($cast-gold, 0.75); // Used in: campaign-cast-detail
+$color-ext-46: rgba($color-base-mist-blue, 0.40); // Used in: campaign-cast-detail, campaign-location-detail, campaign-sublocation-detail
+$color-ext-47: rgba($color-base-mist-blue, 0.72); // Used in: campaign-cast-detail, campaign-location-detail, campaign-sublocation-detail
+$color-ext-48: rgba($cast-gold, 0.05); // Used in: campaign-cast-detail
+$color-ext-49: $color-base-espresso; // Used in: campaign-cast-editor, campaign-cast-editor, campaign-creator
+$color-ext-50: rgba($color-base-brown-warm, 0.22); // Used in: campaign-cast-editor, campaign-creator, campaign-creator
+$color-ext-51: rgba(212, 168, 64, 0.50); // Used in: campaign-cast-editor
+$color-ext-52: rgba($color-base-ochre, 0.26); // Used in: campaign-cast-editor
+$color-ext-53: rgba(228, 188, 80, 0.65); // Used in: campaign-cast-editor
+$color-ext-54: rgba($color-base-ochre, 0.34); // Used in: campaign-cast-editor
+$color-ext-55: rgba(240, 208, 96, 0.92); // Used in: campaign-cast-editor
+$color-ext-56: rgba(201, 168, 76, 0.88); // Used in: campaign-cast-editor
+$color-ext-57: rgba($color-base-ochre, 0.62); // Used in: campaign-cast-editor, campaign-cast-editor
+$color-ext-58: rgba($color-base-yellow-warm, 0.20); // Used in: campaign-cast-editor
+$color-ext-59: rgba(138, 104, 32, 0.20); // Used in: campaign-cast-editor
+$color-ext-60: rgba($color-base-indigo-dark, 0.22); // Used in: campaign-cast-editor, campaign-cast-editor, cast-relationships-tab
+$color-ext-61: rgba($color-base-indigo-dark, 0.28); // Used in: campaign-cast-editor, campaign-cast-editor
+$color-ext-62: rgba($color-base-lilac-pale, 0.18); // Used in: campaign-cast-editor, campaign-cast-editor, campaign-cast-editor
+$color-ext-63: rgba(180, 155, 215, 0.92); // Used in: campaign-cast-editor
+$color-ext-64: rgba(150, 120, 190, 0.88); // Used in: campaign-cast-editor
+$color-ext-65: rgba(255, 234, 200, 0.75); // Used in: campaign-cast-editor
+$color-ext-66: rgba($color-base-purple-dark, 0.92); // Used in: campaign-cast-editor
+$color-ext-67: rgba($color-base-indigo-mid, 0.08); // Used in: campaign-cast-editor
+$color-ext-68: rgba($color-base-indigo-mid, 0.52); // Used in: campaign-cast-editor
+$color-ext-69: rgba($color-base-indigo-mid, 0.10); // Used in: campaign-cast-editor
+$color-ext-70: rgba($color-base-indigo-mid, 0.14); // Used in: campaign-cast-editor
+$color-ext-71: rgba($color-base-indigo-mid, 0.72); // Used in: campaign-cast-editor
+$color-ext-72: rgba($color-base-purple-dark, 0.75); // Used in: campaign-cast-editor
+$color-ext-73: rgba($color-base-parchment-brown, 0.72); // Used in: campaign-cast-editor, campaign-creator, campaign-sublocation-selector
+$color-ext-74: rgba(0, 0, 0, 0.22); // Used in: campaign-cast-editor, campaign-creator, campaign-creator
+$color-ext-75: rgba($color-base-vermilion, 0.75); // Used in: campaign-cast-editor, campaign-creator, campaign-sublocation-selector
+$color-ext-76: rgba($color-base-dark-crimson, 0.92); // Used in: campaign-cast-editor, campaign-creator, campaign-sublocation-selector
+$color-ext-77: #ffd8cc; // Used in: campaign-cast-editor, campaign-creator, campaign-creator
+$color-ext-78: rgba(150, 30, 10, 0.95); // Used in: campaign-cast-editor, campaign-creator, campaign-creator
+$color-ext-79: rgba($color-base-indigo-dark, 0.85); // Used in: campaign-cast-editor, campaign-cast-editor
+$color-ext-80: rgba($color-base-brown-warm, 0.40); // Used in: campaign-cast-editor
+$color-ext-81: rgba($color-base-sand, 0.18); // Used in: campaign-cast-editor
+$color-ext-82: rgba($color-base-umber, 0.9); // Used in: campaign-cast-editor
+$color-ext-83: rgba($color-base-sand, 0.30); // Used in: campaign-cast-editor
+$color-ext-84: rgba($color-base-umber, 0.90); // Used in: campaign-cast-editor
+$color-ext-85: rgba($color-base-brown-warm, 0.18); // Used in: campaign-cast-editor, campaign-sublocation-selector, campaign-sublocation-selector
+$color-ext-86: rgba($color-base-sienna, 0.85); // Used in: campaign-cast-editor
+$color-ext-87: rgba($color-base-umber, 0.95); // Used in: campaign-cast-editor
+$color-ext-88: rgba($color-base-indigo-deep, 0.92); // Used in: campaign-cast-editor
+$color-ext-89: rgba($color-base-indigo-deep, 0.82); // Used in: campaign-cast-editor
+$color-ext-90: rgba($color-base-indigo-deep, 0.95); // Used in: campaign-cast-editor
+$color-ext-91: rgba($color-base-indigo-deep, 0.78); // Used in: campaign-cast-editor
+$color-ext-92: rgba($color-base-violet-deep, 0.08); // Used in: campaign-cast-editor
+$color-ext-93: rgba($color-base-violet-deep, 0.24); // Used in: campaign-cast-editor
+$color-ext-94: rgba($color-base-dark-gold, 0.82); // Used in: campaign-creator
+$color-ext-95: rgba($color-base-dark-gold, 0.95); // Used in: campaign-creator
+$color-ext-96: rgb(72, 53, 1); // Used in: campaign-creator, campaign-creator, keyword-input
+$color-ext-97: rgba($color-base-brown-warm, 0.65); // Used in: campaign-creator
+$color-ext-98: rgba($color-base-brown-warm, 0.35); // Used in: campaign-creator, campaign-creator, campaign-creator
+$color-ext-99: rgba($color-base-amber-brown, 0.75); // Used in: campaign-creator, campaign-creator, campaign-creator
+$color-ext-100: rgba(160, 200, 80, 0.50); // Used in: campaign-creator
+$color-ext-101: rgba($color-base-olive-dark, 0.26); // Used in: campaign-creator
+$color-ext-102: rgba(180, 215, 100, 0.65); // Used in: campaign-creator
+$color-ext-103: rgba($color-base-olive-dark, 0.34); // Used in: campaign-creator
+$color-ext-104: rgba(200, 224, 128, 0.92); // Used in: campaign-creator
+$color-ext-105: rgba(168, 200, 80, 0.88); // Used in: campaign-creator
+$color-ext-106: rgba($color-base-olive-dark, 0.62); // Used in: campaign-creator
+$color-ext-107: rgba(200, 255, 100, 0.20); // Used in: campaign-creator
+$color-ext-108: rgba(120, 180, 40, 0.20); // Used in: campaign-creator
+$color-ext-109: rgba($color-base-olive-dark, 0.22); // Used in: campaign-creator
+$color-ext-110: rgba($color-base-olive-dark, 0.52); // Used in: campaign-creator
+$color-ext-111: rgba(240, 225, 190, 0.18); // Used in: campaign-creator, campaign-creator, campaign-creator
+$color-ext-112: rgba($color-base-deep-forest, 0.94); // Used in: campaign-creator
+$color-ext-113: rgba($color-base-forest-green, 0.08); // Used in: campaign-creator, campaign-creator, campaign-creator
+$color-ext-114: rgba($color-base-forest-green, 0.52); // Used in: campaign-creator
+$color-ext-115: rgba($color-base-forest-green, 0.14); // Used in: campaign-creator, campaign-creator, campaign-creator
+$color-ext-116: rgba($color-base-forest-green, 0.72); // Used in: campaign-creator, campaign-creator
+$color-ext-117: rgba($color-base-deep-forest, 0.80); // Used in: campaign-creator, campaign-creator
+$color-ext-118: rgba($color-base-brick, 0.85); // Used in: campaign-creator, time-of-day-editor, player-campaigns
+$color-ext-119: rgba($color-base-deep-brown, 0.82); // Used in: campaign-creator
+$color-ext-120: rgba($color-base-amber-brown, 0.85); // Used in: campaign-creator, campaign-creator, campaign-creator
+$color-ext-121: rgba($color-base-deep-forest, 0.92); // Used in: campaign-creator, campaign-creator, campaign-creator
+$color-ext-122: rgba($color-base-forest-green, 0.48); // Used in: campaign-creator, campaign-creator, campaign-sublocation-selector
+$color-ext-123: rgba($color-base-parchment-pale, 0.28); // Used in: campaign-creator, time-of-day-editor
+$color-ext-124: rgba($color-base-deep-brown, 0.92); // Used in: campaign-creator, time-of-day-bar
+$color-ext-125: rgba($color-base-forest-green, 0.15); // Used in: campaign-creator, campaign-sublocation-selector, campaign-sublocation-selector
+$color-ext-126: rgba($color-base-amber-brown, 0.65); // Used in: campaign-creator, campaign-creator, campaign-creator
+$color-ext-127: rgba($color-base-amber-brown, 0.28); // Used in: campaign-creator
+$color-ext-128: rgba($color-base-deep-brown, 0.85); // Used in: campaign-creator, campaign-creator, time-of-day-editor
+$color-ext-129: rgba($color-base-amber-brown, 0.9); // Used in: campaign-creator, campaign-library, time-of-day-editor
+$color-ext-130: rgba($color-base-deep-brown, 0.9); // Used in: campaign-creator, time-of-day-editor, keyword-input
+$color-ext-131: rgba(30, 70, 34, 0.82); // Used in: campaign-creator
+$color-ext-132: rgba($color-base-forest-green, 0.28); // Used in: campaign-creator
+$color-ext-133: rgba($color-base-espresso, 0.92); // Used in: campaign-creator
+$color-ext-134: rgba($color-base-parchment-pale, 0.60); // Used in: campaign-creator
+$color-ext-135: rgba($color-base-brown-warm, 0.30); // Used in: campaign-creator, campaign-sublocation-selector, campaign-sublocation-selector
+$color-ext-136: rgba($color-base-brown-warm, 0.08); // Used in: campaign-creator, campaign-sublocation-selector, cast-relationships-tab
+$color-ext-137: rgba($color-base-amber-brown, 0.82); // Used in: campaign-creator, campaign-creator, campaign-sublocation-selector
+$color-ext-138: rgba($color-base-forest-green, 0.07); // Used in: campaign-creator, time-of-day-editor
+$color-ext-139: rgba($color-base-forest-green, 0.42); // Used in: campaign-creator, campaign-sublocation-selector, time-of-day-editor
+$color-ext-140: rgba($color-base-forest-green, 0.65); // Used in: campaign-creator, time-of-day-editor
+$color-ext-141: rgba($color-base-brown-warm, 0.20); // Used in: campaign-creator
+$color-ext-142: rgba($color-base-parchment-pale, 0.22); // Used in: campaign-creator
+$color-ext-143: rgba($color-base-espresso, 0.90); // Used in: campaign-creator, time-of-day-bar
+$color-ext-144: rgba($color-base-vermilion, 0.65); // Used in: campaign-creator
+$color-ext-145: rgba($color-base-dark-crimson, 0.88); // Used in: campaign-creator
+$color-ext-146: rgba(0, 0, 0, 0.55); // Used in: campaign-creator, campaign-detail, campaign-sublocation-detail
+$color-ext-147: #fdf8f0; // Used in: campaign-creator, keyword-input, time-of-day-bar
+$color-ext-148: rgba($color-base-brown-warm, 0.3); // Used in: campaign-creator
+$color-ext-149: #3d2408; // Used in: campaign-creator, campaign-creator
+$color-ext-150: #5a3e1b; // Used in: campaign-creator
+$color-ext-151: #b83232; // Used in: campaign-creator
+$color-ext-152: #fff; // Used in: campaign-creator, card-reveal-overlay, time-of-day-bar
+$color-ext-153: #9a2828; // Used in: campaign-creator
+$color-ext-154: rgba(255, 255, 255, 0.12); // Used in: campaign-detail, player-location-political-notes, player-location-political-notes
+$color-ext-155: rgba(0, 0, 0, 0.8); // Used in: campaign-detail, dm-the-party, cover
+$color-ext-156: rgba(255, 255, 255, 0.28); // Used in: campaign-detail
+$color-ext-157: rgba($color-base-emerald, 0.25); // Used in: campaign-detail
+$color-ext-158: rgba($color-base-mint-green, 0.4); // Used in: campaign-detail
+$color-ext-159: rgba($color-base-emerald, 0.45); // Used in: campaign-detail
+$color-ext-160: rgba($color-base-lavender-pale, 0.92); // Used in: campaign-detail, campaign-shell, dm-the-party
+$color-ext-161: #1c0e30; // Used in: campaign-library, dashboard, player-campaigns
+$color-ext-162: #0c0618; // Used in: campaign-library, dashboard, player-campaigns
+$color-ext-163: #050209; // Used in: campaign-library, dashboard, player-campaigns
+$color-ext-164: rgba(0, 0, 0, 0.75); // Used in: campaign-library, dashboard, player-campaigns
+$color-ext-165: rgba(70, 15, 130, 0.08); // Used in: campaign-library, dashboard, player-campaigns
+$color-ext-166: rgba(55, 15, 95, 0.45); // Used in: campaign-library, dashboard, player-campaigns
+$color-ext-167: rgba(70, 15, 110, 0.22); // Used in: campaign-library, dashboard, player-campaigns
+$color-ext-168: rgba(95, 20, 75, 0.18); // Used in: campaign-library, dashboard, player-campaigns
+$color-ext-169: rgba(0, 0, 0, 0.85); // Used in: campaign-library, player-campaigns
+$color-ext-170: rgba($color-base-lavender-bright, 0.92); // Used in: campaign-library, player-campaigns
+$color-ext-171: #0e1f45; // Used in: campaign-library, dashboard, player-campaigns
+$color-ext-172: #07122a; // Used in: campaign-library, dashboard, player-campaigns
+$color-ext-173: #030a18; // Used in: campaign-library, dashboard, player-campaigns
+$color-ext-174: #010308; // Used in: campaign-library, dashboard, player-campaigns
+$color-ext-175: rgba(15, 50, 130, 0.85); // Used in: campaign-library, dashboard, player-campaigns
+$color-ext-176: rgba(255, 255, 255, 0.82); // Used in: campaign-library, dashboard, player-campaigns
+$color-ext-177: rgba(255, 255, 255, 0.96); // Used in: campaign-library, dashboard, player-campaigns
+$color-ext-178: rgba(190, 65, 65, 0.42); // Used in: campaign-library
+$color-ext-179: rgba(255, 145, 125, 0.82); // Used in: campaign-library
+$color-ext-180: rgba(140, 38, 38, 0.22); // Used in: campaign-library
+$color-ext-181: rgba(210, 75, 75, 0.68); // Used in: campaign-library
+$color-ext-182: rgba($color-base-salmon-light, 0.96); // Used in: campaign-library
+$color-ext-183: rgba(135, 75, 225, 0.42); // Used in: campaign-library
+$color-ext-184: rgba(195, 165, 255, 0.82); // Used in: campaign-library
+$color-ext-185: rgba(95, 45, 180, 0.22); // Used in: campaign-library
+$color-ext-186: rgba(160, 95, 255, 0.68); // Used in: campaign-library
+$color-ext-187: rgba(215, 185, 255, 0.96); // Used in: campaign-library
+$color-ext-188: rgba($location-blue, 0.40); // Used in: campaign-location-detail, location-detail-panel, location-player-card
+$color-ext-189: rgba($location-blue, 0.12); // Used in: campaign-location-detail, player-location-detail
+$color-ext-190: rgba($location-blue, 0.08); // Used in: campaign-location-detail, campaign-location-detail, campaign-location-detail
+$color-ext-191: rgba($location-blue, 0.22); // Used in: campaign-location-detail, campaign-location-detail, campaign-location-detail
+$color-ext-192: rgba($location-blue, 0.03); // Used in: campaign-location-detail
+$color-ext-193: rgba($location-blue, 0.30); // Used in: campaign-location-detail, campaign-location-detail, campaign-location-detail
+$color-ext-194: rgba($location-blue, 0.10); // Used in: campaign-location-detail, campaign-location-detail, player-location-detail
+$color-ext-195: rgba($location-blue, 0.55); // Used in: campaign-location-detail, campaign-location-detail
+$color-ext-196: rgba($location-blue, 0.28); // Used in: campaign-location-detail, campaign-location-detail, campaign-location-detail
+$color-ext-197: rgba($location-blue, 0.65); // Used in: campaign-location-detail, campaign-location-detail
+$color-ext-198: rgba($location-blue, 0.14); // Used in: campaign-location-detail, campaign-location-detail, location-detail-panel
+$color-ext-199: rgba($location-blue, 0.75); // Used in: campaign-location-detail
+$color-ext-200: rgba($location-blue, 0.85); // Used in: campaign-location-detail, campaign-location-detail, campaign-location-detail
+$color-ext-201: rgba($location-blue, 0.80); // Used in: campaign-location-detail, campaign-location-detail, player-location-detail
+$color-ext-202: rgba($location-blue, 0.05); // Used in: campaign-location-detail
+$color-ext-203: rgba($location-blue, 0.04); // Used in: campaign-location-detail, player-location-detail, player-location-detail
+$color-ext-204: rgba($location-blue, 0.95); // Used in: campaign-location-detail, player-location-detail
+$color-ext-205: rgba($location-blue, 0.92); // Used in: campaign-location-detail, player-location-detail
+$color-ext-206: rgba($location-blue,0.24); // Used in: campaign-location-detail, player-location-detail
+$color-ext-207: rgba($color-base-mist-blue, 0.85); // Used in: campaign-location-detail, campaign-sublocation-detail, player-location-political-notes
+$color-ext-208: rgba(0, 0, 0, 0.70); // Used in: campaign-location-detail, campaign-sublocation-detail, player-location-political-notes
+$color-ext-209: rgba(255, 255, 255, 0.22); // Used in: campaign-location-detail, campaign-sublocation-detail, player-location-political-notes
+$color-ext-210: rgba($color-base-emerald, 0.18); // Used in: campaign-location-detail, campaign-sublocation-detail
+$color-ext-211: rgba($color-base-mint-green, 0.35); // Used in: campaign-location-detail, campaign-sublocation-detail
+$color-ext-212: rgba($color-base-seafoam, 0.90); // Used in: campaign-location-detail, campaign-sublocation-detail
+$color-ext-213: rgba($color-base-emerald, 0.32); // Used in: campaign-location-detail, campaign-sublocation-detail
+$color-ext-214: rgba($location-blue, 0.45); // Used in: location-detail-panel
+$color-ext-215: rgba($location-blue, 0.15); // Used in: location-detail-panel, location-detail-panel
+$color-ext-216: rgba($location-blue, 0.9); // Used in: location-detail-panel
+$color-ext-217: rgba($location-blue, 0.82); // Used in: location-detail-panel
+$color-ext-218: rgba($location-blue, 0.18); // Used in: location-detail-panel, player-location-detail
+$color-ext-219: rgba(80, 25, 10, 0.18); // Used in: location-detail-panel
+$color-ext-220: rgba($color-base-warm-amber, 0.28); // Used in: location-detail-panel
+$color-ext-221: rgba(10, 52, 44, 0.22); // Used in: location-detail-panel
+$color-ext-222: rgba($color-base-teal, 0.35); // Used in: location-detail-panel
+$color-ext-223: rgba($location-blue, 0.07); // Used in: location-detail-panel, location-detail-panel
+$color-ext-224: rgba($color-base-warm-amber, 0.9); // Used in: location-detail-panel
+$color-ext-225: rgba($color-base-teal, 0.95); // Used in: location-detail-panel
+$color-ext-226: rgba(200, 215, 222, 0.95); // Used in: location-detail-panel
+$color-ext-227: rgba($color-base-teal, 0.10); // Used in: location-detail-panel
+$color-ext-228: rgba($color-base-teal, 0.38); // Used in: location-detail-panel
+$color-ext-229: rgba($color-base-teal, 0.88); // Used in: location-detail-panel
+$color-ext-230: rgba($color-base-teal, 0.20); // Used in: location-detail-panel
+$color-ext-231: rgba($color-base-teal, 0.62); // Used in: location-detail-panel
+$color-ext-232: rgba($color-base-warm-amber, 0.08); // Used in: location-detail-panel
+$color-ext-233: rgba($color-base-warm-amber, 0.32); // Used in: location-detail-panel
+$color-ext-234: rgba($color-base-warm-amber, 0.72); // Used in: location-detail-panel
+$color-ext-235: rgba($color-base-warm-amber, 0.16); // Used in: location-detail-panel
+$color-ext-236: rgba($color-base-warm-amber, 0.52); // Used in: location-detail-panel
+$color-ext-237: rgba($subLoc-olive, 0.40); // Used in: campaign-sublocation-detail, player-sublocation-detail
+$color-ext-238: rgba($subLoc-olive, 0.12); // Used in: campaign-sublocation-detail, campaign-sublocation-detail, player-sublocation-detail
+$color-ext-239: rgba($subLoc-olive, 0.08); // Used in: campaign-sublocation-detail, campaign-sublocation-detail, campaign-sublocation-detail
+$color-ext-240: rgba($subLoc-olive, 0.22); // Used in: campaign-sublocation-detail, campaign-sublocation-detail, campaign-sublocation-detail
+$color-ext-241: rgba($subLoc-olive, 0.03); // Used in: campaign-sublocation-detail
+$color-ext-242: rgba($subLoc-olive, 0.04); // Used in: campaign-sublocation-detail, player-sublocation-detail
+$color-ext-243: rgba($subLoc-olive, 0.14); // Used in: campaign-sublocation-detail, campaign-sublocation-detail, player-sublocation-detail
+$color-ext-244: rgba($subLoc-olive, 0.85); // Used in: campaign-sublocation-detail, campaign-sublocation-detail, campaign-sublocation-detail
+$color-ext-245: rgba($subLoc-olive, 0.10); // Used in: campaign-sublocation-detail, campaign-sublocation-detail, campaign-sublocation-detail
+$color-ext-246: rgba($subLoc-olive, 0.95); // Used in: campaign-sublocation-detail, campaign-sublocation-detail, player-sublocation-detail
+$color-ext-247: rgba($subLoc-olive, 0.80); // Used in: campaign-sublocation-detail, campaign-sublocation-detail, player-sublocation-detail
+$color-ext-248: rgba($subLoc-olive, 0.28); // Used in: campaign-sublocation-detail, campaign-sublocation-detail, campaign-sublocation-detail
+$color-ext-249: rgba($subLoc-olive, 0.30); // Used in: campaign-sublocation-detail, campaign-sublocation-detail, campaign-sublocation-detail
+$color-ext-250: rgba($subLoc-olive, 0.55); // Used in: campaign-sublocation-detail, campaign-sublocation-detail, campaign-sublocation-detail
+$color-ext-251: rgba($subLoc-olive, 0.65); // Used in: campaign-sublocation-detail, campaign-sublocation-detail
+$color-ext-252: rgba($subLoc-olive, 0.75); // Used in: campaign-sublocation-detail
+$color-ext-253: rgba($subLoc-olive, 0.05); // Used in: campaign-sublocation-detail
+$color-ext-254: rgba($subLoc-olive, 0.18); // Used in: campaign-sublocation-detail
+$color-ext-255: rgba($color-base-mist-blue, 0.35); // Used in: campaign-sublocation-detail
+$color-ext-256: rgba($color-base-gold-mid, 0.15); // Used in: campaign-sublocation-detail
+$color-ext-257: rgba($color-base-amber, 0.40); // Used in: campaign-sublocation-detail
+$color-ext-258: rgba($color-base-amber, 0.80); // Used in: campaign-sublocation-detail
+$color-ext-259: rgba($color-base-gold-mid, 0.28); // Used in: campaign-sublocation-detail
+$color-ext-260: rgba(230, 185, 80, 1.0); // Used in: campaign-sublocation-detail
+$color-ext-261: rgba($color-base-sage-mist, 0.82); // Used in: campaign-sublocation-detail
+$color-ext-262: rgba($color-base-sage-mist, 0.35); // Used in: campaign-sublocation-detail
+$color-ext-263: rgba($subLoc-olive, 0.50); // Used in: campaign-sublocation-detail, campaign-sublocation-detail, campaign-sublocation-detail
+$color-ext-264: rgba($subLoc-olive, 0.60); // Used in: campaign-sublocation-detail, campaign-sublocation-detail
+$color-ext-265: rgba($color-base-sage-mist, 0.95); // Used in: campaign-sublocation-detail, campaign-sublocation-detail
+$color-ext-266: rgba($subLoc-olive, 0.90); // Used in: campaign-sublocation-detail
+$color-ext-267: rgba(144, 180, 216, 0.50); // Used in: campaign-sublocation-selector
+$color-ext-268: rgba($color-base-steel-dark, 0.26); // Used in: campaign-sublocation-selector
+$color-ext-269: rgba(160, 196, 224, 0.65); // Used in: campaign-sublocation-selector
+$color-ext-270: rgba($color-base-steel-dark, 0.34); // Used in: campaign-sublocation-selector
+$color-ext-271: rgba(192, 212, 240, 0.92); // Used in: campaign-sublocation-selector
+$color-ext-272: rgba($color-base-steel-blue, 0.88); // Used in: campaign-sublocation-selector
+$color-ext-273: rgba($color-base-steel-dark, 0.62); // Used in: campaign-sublocation-selector
+$color-ext-274: rgba($color-base-sky-blue, 0.20); // Used in: campaign-sublocation-selector
+$color-ext-275: rgba($color-base-steel-blue, 0.20); // Used in: campaign-sublocation-selector
+$color-ext-276: rgba(26, 46, 64, 0.70); // Used in: campaign-sublocation-selector
+$color-ext-277: rgba($color-base-navy-mid, 0.22); // Used in: campaign-sublocation-selector, campaign-sublocation-selector
+$color-ext-278: rgba($color-base-navy-mid, 0.28); // Used in: campaign-sublocation-selector, campaign-sublocation-selector
+$color-ext-279: rgba(140, 175, 230, 0.18); // Used in: campaign-sublocation-selector, campaign-sublocation-selector
+$color-ext-280: rgba($color-base-navy, 0.92); // Used in: campaign-sublocation-selector
+$color-ext-281: rgba($color-base-cobalt, 0.08); // Used in: campaign-sublocation-selector
+$color-ext-282: rgba($color-base-cobalt, 0.52); // Used in: campaign-sublocation-selector
+$color-ext-283: rgba($color-base-cobalt, 0.10); // Used in: campaign-sublocation-selector, campaign-sublocation-selector
+$color-ext-284: rgba($color-base-cobalt, 0.14); // Used in: campaign-sublocation-selector
+$color-ext-285: rgba($color-base-cobalt, 0.72); // Used in: campaign-sublocation-selector
+$color-ext-286: rgba($color-base-navy, 0.75); // Used in: campaign-sublocation-selector
+$color-ext-287: rgba(190, 215, 245, 0.18); // Used in: campaign-sublocation-selector
+$color-ext-288: rgba($color-base-navy-mid, 0.85); // Used in: campaign-sublocation-selector, campaign-sublocation-selector
+$color-ext-289: rgba($color-base-navy-deep, 0.92); // Used in: campaign-sublocation-selector
+$color-ext-290: rgba($color-base-navy-deep, 0.95); // Used in: campaign-sublocation-selector
+$color-ext-291: rgba($color-base-sienna, 0.82); // Used in: campaign-sublocation-selector, campaign-sublocation-selector
+$color-ext-292: rgba($color-base-near-black-warm, 0.82); // Used in: campaign-sublocation-selector
+$color-ext-293: rgba($color-base-brown-warm, 0.10); // Used in: campaign-sublocation-selector, campaign-sublocation-selector
+$color-ext-294: rgba($color-base-brown-warm, 0.45); // Used in: campaign-sublocation-selector
+$color-ext-295: rgba($color-base-near-black-warm, 0.75); // Used in: campaign-sublocation-selector
+$color-ext-296: rgba($color-base-brown-warm, 0.12); // Used in: campaign-sublocation-selector, dm-the-party, dashboard
+$color-ext-297: rgba(58, 38, 10, 0.95); // Used in: campaign-sublocation-selector
+$color-ext-298: rgba($color-base-sienna, 0.9); // Used in: campaign-sublocation-selector
+$color-ext-299: rgba(255, 248, 235, 0.70); // Used in: campaign-sublocation-selector, campaign-sublocation-selector
+$color-ext-300: rgba($color-base-tan-dark, 0.85); // Used in: campaign-sublocation-selector, campaign-sublocation-selector
+$color-ext-301: rgba($color-base-tan-dark, 0.35); // Used in: campaign-sublocation-selector
+$color-ext-302: rgba($color-base-brown-warm, 0.55); // Used in: campaign-sublocation-selector, campaign-sublocation-selector, campaign-sublocation-selector
+$color-ext-303: rgba($color-base-brown-warm, 0.50); // Used in: campaign-sublocation-selector, campaign-sublocation-selector
+$color-ext-304: #fdf6e3; // Used in: campaign-sublocation-selector
+$color-ext-305: rgba($color-base-tan-dark, 0.18); // Used in: campaign-sublocation-selector
+$color-ext-306: rgba($color-base-tan-dark, 0.80); // Used in: campaign-sublocation-selector
+$color-ext-307: rgba($color-base-brown-warm, 0.90); // Used in: campaign-sublocation-selector
+$color-ext-308: rgba($color-base-brown-warm, 0.85); // Used in: campaign-sublocation-selector
+$color-ext-309: rgba($color-base-rust, 0.38); // Used in: campaign-sublocation-selector
+$color-ext-310: rgba($color-base-rust, 0.85); // Used in: campaign-sublocation-selector
+$color-ext-311: rgba($color-base-rust, 0.90); // Used in: campaign-sublocation-selector
+$color-ext-312: rgba($color-base-forest-green, 0.92); // Used in: campaign-sublocation-selector
+$color-ext-313: $color-base-forest-green; // Used in: campaign-sublocation-selector
+$color-ext-314: rgba($color-base-forest-green, 0.70); // Used in: campaign-sublocation-selector
+$color-ext-315: rgba(20, 50, 110, 0.78); // Used in: campaign-sublocation-selector
+$color-ext-316: rgba($color-base-cobalt, 0.28); // Used in: campaign-sublocation-selector
+$color-ext-317: #e8e0d0; // Used in: cast-relationships-tab, cast-relationships-tab, cast-relationships-tab
+$color-ext-318: #9a8f7e; // Used in: cast-relationships-tab
+$color-ext-319: rgba(180, 160, 210, 0.50); // Used in: cast-relationships-tab
+$color-ext-320: rgba($color-base-indigo-dark, 0.26); // Used in: cast-relationships-tab
+$color-ext-321: rgba(200, 180, 225, 0.65); // Used in: cast-relationships-tab
+$color-ext-322: rgba($color-base-indigo-dark, 0.34); // Used in: cast-relationships-tab
+$color-ext-323: rgba($color-base-lilac-pale, 0.92); // Used in: cast-relationships-tab
+$color-ext-324: rgba(190, 170, 215, 0.88); // Used in: cast-relationships-tab
+$color-ext-325: rgba($color-base-indigo-dark, 0.52); // Used in: cast-relationships-tab
+$color-ext-326: rgba(140, 100, 200, 0.20); // Used in: cast-relationships-tab
+$color-ext-327: rgba(100, 70, 160, 0.20); // Used in: cast-relationships-tab
+$color-ext-328: rgba($color-base-indigo-dark, 0.62); // Used in: cast-relationships-tab
+$color-ext-329: #9a8060; // Used in: cast-relationships-tab, cast-relationships-tab, cast-relationships-tab
+$color-ext-330: #3a2e1e; // Used in: cast-relationships-tab, cast-relationships-tab, relationship-web-modal
+$color-ext-331: #5a4428; // Used in: cast-relationships-tab
+$color-ext-332: #c0aa80; // Used in: cast-relationships-tab, cast-relationships-tab, relationship-web-modal
+$color-ext-333: #8a6030; // Used in: cast-relationships-tab
+$color-ext-334: #1a1510; // Used in: cast-relationships-tab
+$color-ext-335: #3a6040; // Used in: cast-relationships-tab
+$color-ext-336: #6a2020; // Used in: cast-relationships-tab
+$color-ext-337: #8a7040; // Used in: cast-relationships-tab, player-cast-notes
+$color-ext-338: #4a9060; // Used in: cast-relationships-tab, player-cast-notes
+$color-ext-339: #9a3030; // Used in: cast-relationships-tab, player-cast-notes
+$color-ext-340: rgba($color-base-gold-mid, 0.2); // Used in: dm-the-party
+$color-ext-341: rgba($color-base-gold-mid, 0.4); // Used in: dm-the-party
+$color-ext-342: rgba(255, 210, 120, 0.95); // Used in: dm-the-party
+$color-ext-343: rgba($color-base-gold-mid, 0.35); // Used in: dm-the-party
+$color-ext-344: rgba($color-base-gold-mid, 0.65); // Used in: dm-the-party
+$color-ext-345: rgba($color-base-lavender-light, 0.9); // Used in: dm-the-party
+$color-ext-346: rgba(255, 255, 255, 0.04); // Used in: dm-the-party, dm-the-party, player-card-form
+$color-ext-347: rgba($color-base-lavender-light, 0.35); // Used in: dm-the-party, player-my-character
+$color-ext-348: rgba($color-base-lavender-mid, 0.9); // Used in: dm-the-party, player-my-character, player-my-character
+$color-ext-349: rgba($color-base-lavender-light, 0.6); // Used in: dm-the-party, player-my-character, player-my-character
+$color-ext-350: rgb(102, 60, 160, 0.40); // Used in: dm-the-party
+$color-ext-351: rgba($color-base-portal-violet, 0.85); // Used in: dm-the-party
+$color-ext-352: rgba($color-base-coral-red, 0.12); // Used in: dm-the-party
+$color-ext-353: rgba($color-base-coral-red, 0.3); // Used in: dm-the-party, player-card-form, character-info-editor
+$color-ext-354: rgba(255, 160, 150, 0.9); // Used in: dm-the-party, dm-the-party
+$color-ext-355: rgba($color-base-salmon, 0.85); // Used in: dm-the-party
+$color-ext-356: rgba(230, 100, 100, 0.95); // Used in: dm-the-party, dm-the-party, player-my-character
+$color-ext-357: rgba($color-base-mauve-light, 0.8); // Used in: dm-the-party
+$color-ext-358: rgba(195, 180, 235, 0.9); // Used in: dm-the-party, player-my-character
+$color-ext-359: rgba(210, 195, 255, 0.95); // Used in: dm-the-party, dm-the-party
+$color-ext-360: rgba($color-base-coral-red, 0.15); // Used in: dm-the-party, player-card-form, character-info-editor
+$color-ext-361: rgba($color-base-coral-red, 0.35); // Used in: dm-the-party
+$color-ext-362: rgba(255, 255, 255, 0.03); // Used in: dm-the-party, player-my-character, player-my-character
+$color-ext-363: rgba($color-base-orchid-mist, 0.75); // Used in: dm-the-party
+$color-ext-364: rgba($color-base-salmon, 0.75); // Used in: dm-the-party, player-my-character
+$color-ext-365: rgba($color-base-coral-red, 0.1); // Used in: dm-the-party, player-my-character
+$color-ext-366: rgba($color-base-mauve-light, 0.75); // Used in: dm-the-party
+$color-ext-367: rgba($color-base-void-dark, 0.80); // Used in: dm-the-party
+$color-ext-368: rgba($color-base-lavender-mid, 0.75); // Used in: dm-the-party, player-my-character
+$color-ext-369: rgba(10, 5, 22, 0.97); // Used in: dm-the-party
+$color-ext-370: rgba(240, 225, 255, 1); // Used in: dm-the-party
+$color-ext-371: rgba(0, 0, 0, 0.76); // Used in: relationship-web-modal
+$color-ext-372: #0f0d0a; // Used in: relationship-web-modal, relationship-web-modal
+$color-ext-373: rgba(0, 0, 0, 0.65); // Used in: relationship-web-modal
+$color-ext-374: rgba($color-base-antique-gold, 0.06); // Used in: relationship-web-modal
+$color-ext-375: #2a2218; // Used in: relationship-web-modal
+$color-ext-376: #6a5840; // Used in: relationship-web-modal, relationship-web-modal, relationship-web-modal
+$color-ext-377: rgba($color-base-antique-gold, 0.28); // Used in: relationship-web-modal
+$color-ext-378: #171310; // Used in: relationship-web-modal
+$color-ext-379: #2e2418; // Used in: relationship-web-modal
+$color-ext-380: #2e5038; // Used in: relationship-web-modal
+$color-ext-381: #5c1e1e; // Used in: relationship-web-modal
+$color-ext-382: #4a8858; // Used in: relationship-web-modal
+$color-ext-383: #8a2e2e; // Used in: relationship-web-modal
+$color-ext-384: rgba($color-base-brick, 0.80); // Used in: time-of-day-editor
+$color-ext-385: rgba(34, 100, 38, 0.80); // Used in: time-of-day-editor
+$color-ext-386: rgba($color-base-dark-red, 0.88); // Used in: change-password, reset-password
+$color-ext-387: rgba($color-base-copper, 0.18); // Used in: cover
+$color-ext-388: rgba(0,0,0,0.3); // Used in: cover, role-selection, subscribe
+$color-ext-389: rgba($color-base-copper, 0.1); // Used in: cover
+$color-ext-390: rgba(0,0,0,0.28); // Used in: cover
+$color-ext-391: #E8DCCC; // Used in: cover, cover
+$color-ext-392: #E2D4BE; // Used in: cover
+$color-ext-393: #D4C8A8; // Used in: cover
+$color-ext-394: #E8C060; // Used in: cover
+$color-ext-395: #A07020; // Used in: cover
+$color-ext-396: rgba($color-base-honey, 0.65); // Used in: cover
+$color-ext-397: rgb(199 175 170 / 90%); // Used in: cover
+$color-ext-398: rgba($color-base-honey, 0.6); // Used in: cover, cover
+$color-ext-399: #200E07; // Used in: cover
+$color-ext-400: #180B05; // Used in: cover
+$color-ext-401: rgba($color-base-burnt-sienna, 0.28); // Used in: cover
+$color-ext-402: rgba(80, 35, 10, 0.5); // Used in: cover
+$color-ext-403: rgba($color-base-bronze, 0.15); // Used in: cover
+$color-ext-404: rgba(220, 190, 140, 0.85); // Used in: cover
+$color-ext-405: rgba(0,0,0,0.4); // Used in: cover, cover, cover
+$color-ext-406: rgba(180, 60, 40, 0.6); // Used in: cover, cover
+$color-ext-407: rgba($color-base-tawny, 0.4); // Used in: cover
+$color-ext-408: rgba($color-base-honey, 0.5); // Used in: cover
+$color-ext-409: rgba($color-base-caramel, 0.15); // Used in: cover
+$color-ext-410: rgba(80, 20, 20, 0.2); // Used in: cover
+$color-ext-411: rgba(200, 80, 60, 0.8); // Used in: cover
+$color-ext-412: #2A1408; // Used in: cover, cover
+$color-ext-413: #221008; // Used in: cover, journal-shell
+$color-ext-414: #1C0D06; // Used in: cover
+$color-ext-415: rgba(160, 100, 30, 0.45); // Used in: cover
+$color-ext-416: rgba($color-base-bronze, 0.35); // Used in: cover
+$color-ext-417: rgba(80, 45, 10, 0.6); // Used in: cover
+$color-ext-418: rgba($color-base-gold-bright, 0.08); // Used in: cover
+$color-ext-419: rgba($color-base-caramel, 0.12); // Used in: cover
+$color-ext-420: rgba($color-base-gold-bright, 0.12); // Used in: cover
+$color-ext-421: #E8B840; // Used in: cover
+$color-ext-422: rgba($color-base-bronze, 0.85); // Used in: cover
+$color-ext-423: rgba($color-base-bronze, 0.75); // Used in: cover
+$color-ext-424: $color-base-bronze; // Used in: cover, cover
+$color-ext-425: rgb(140, 80, 25); // Used in: cover
+$color-ext-426: rgb(160, 100, 35); // Used in: cover
+$color-ext-427: rgba($color-base-caramel, 0.08); // Used in: cover
+$color-ext-428: rgba(185, 150, 60, 0.5); // Used in: cover
+$color-ext-429: rgba(210, 175, 100, 0.75); // Used in: cover
+$color-ext-430: #120805; // Used in: cover
+$color-ext-431: #0D0603; // Used in: cover
+$color-ext-432: rgba($color-base-caramel, 0.5); // Used in: cover
+$color-ext-433: $color-base-lavender-bright; // Used in: dashboard
+$color-ext-434: $color-base-amber-brown; // Used in: dashboard
+$color-ext-435: $color-base-brick; // Used in: dashboard, dashboard, dashboard
+$color-ext-436: rgba($color-base-golden-brown, 0.25); // Used in: legal
+$color-ext-437: rgba($color-base-dark-amber, 0.70); // Used in: legal
+$color-ext-438: rgba($color-base-dark-amber, 0.90); // Used in: legal
+$color-ext-439: rgba($color-base-dark-brown, 0.95); // Used in: legal
+$color-ext-440: rgba($color-base-golden-brown, 0.7); // Used in: legal
+$color-ext-441: rgba($color-base-dark-brown, 0.92); // Used in: legal, legal, legal
+$color-ext-442: rgba($color-base-dark-brown, 0.88); // Used in: legal
+$color-ext-443: rgba($color-base-dark-brown, 0.85); // Used in: legal, location-form
+$color-ext-444: rgba($color-base-dark-brown, 0.65); // Used in: legal
+$color-ext-445: rgba($color-base-dark-brown, 0.5); // Used in: location-form
+$color-ext-446: rgba($color-base-brown-warm, 0.25); // Used in: location-form
+$color-ext-447: rgba($color-base-linen, 0.6); // Used in: location-form
+$color-ext-448: rgba($color-base-brown-warm, 0.06); // Used in: location-form
+$color-ext-449: rgba($color-base-dark-brown, 0.9); // Used in: location-form
+$color-ext-450: rgba($color-base-rust, 0.1); // Used in: location-form
+$color-ext-451: rgba($color-base-dark-brown, 0.3); // Used in: location-form
+$color-ext-452: $color-base-amber-brown; // Used in: player-campaigns, player-campaigns
+$color-ext-453: rgba($color-base-forest-green, 0.45); // Used in: player-campaigns
+$color-ext-454: rgba($color-base-forest-green, 0.16); // Used in: player-campaigns
+$color-ext-455: rgba($color-base-portal-violet, 0.05); // Used in: player-card-form
+$color-ext-456: rgba($color-base-void-dark, 0.92); // Used in: player-card-form
+$color-ext-457: $color-base-lavender-pale; // Used in: player-card-form, player-card-form, player-card-form
+$color-ext-458: rgb(180, 160, 220); // Used in: player-card-form, character-info-editor
+$color-ext-459: rgb(118, 0, 255); // Used in: player-card-form
+$color-ext-460: rgb(220, 80, 80); // Used in: player-card-form, player-card-form, character-info-editor
+$color-ext-461: rgb(160, 140, 200); // Used in: player-card-form, character-info-editor
+$color-ext-462: rgba($color-base-lavender-mid-2, 0.35); // Used in: player-card-form, player-card-form, player-card-form
+$color-ext-463: rgba($color-base-red-bright, 0.55); // Used in: player-card-form, player-card-form
+$color-ext-464: rgba($color-base-red-bright, 0.15); // Used in: player-card-form, player-card-form
+$color-ext-465: rgba($color-base-portal-violet, 0.45); // Used in: player-card-form, player-card-form, player-my-character
+$color-ext-466: rgb(210, 185, 255); // Used in: player-card-form, character-info-editor
+$color-ext-467: rgb(160, 130, 220); // Used in: player-card-form, player-card-form, character-info-editor
+$color-ext-468: rgb(220, 180, 255); // Used in: player-card-form, character-info-editor
+$color-ext-469: rgb(18, 10, 36); // Used in: player-card-form, character-info-editor
+$color-ext-470: rgb(200, 180, 240); // Used in: player-card-form, character-info-editor
+$color-ext-471: rgb(130, 110, 180); // Used in: player-card-form, character-info-editor
+$color-ext-472: rgb(255, 140, 130); // Used in: player-card-form, character-info-editor
+$color-ext-473: rgba($color-base-portal-violet, 0.8); // Used in: player-card-form, player-my-character
+$color-ext-474: #fcdf03; // Used in: player-cast-detail, player-my-character
+$color-ext-475: rgba($cast-gold, 0.95); // Used in: player-cast-detail, player-cast-notes
+$color-ext-476: rgba($star-color, 0.40); // Used in: player-cast-detail
+$color-ext-477: rgba($star-color, 0.50); // Used in: player-cast-detail, player-cast-detail
+$color-ext-478: rgba($star-color, 0.5); // Used in: player-cast-detail
+$color-ext-479: rgba($star-color, 0.70); // Used in: player-cast-detail
+$color-ext-480: rgba($star-color, 0.55); // Used in: player-cast-detail
+$color-ext-481: rgba($cast-gold, 0.18); // Used in: player-cast-notes, player-cast-notes
+$color-ext-482: rgba($cast-gold, 0.8); // Used in: player-cast-notes, player-cast-notes, player-cast-notes
+$color-ext-483: rgba($cast-gold, 0.9); // Used in: player-cast-notes, player-cast-notes
+$color-ext-484: rgba(0, 0, 0, 0.30); // Used in: player-cast-notes, player-cast-notes, player-location-political-notes
+$color-ext-485: rgba($cast-gold, 0.20); // Used in: player-cast-notes, player-cast-notes, player-cast-notes
+$color-ext-486: rgba($cast-gold, 0.25); // Used in: player-cast-notes
+$color-ext-487: rgba($cast-gold, 0.45); // Used in: player-cast-notes
+$color-ext-488: rgba($cast-gold, 0.90); // Used in: player-cast-notes, player-cast-notes
+$color-ext-489: rgba($cast-gold, 0.7); // Used in: player-cast-notes
+$color-ext-490: rgba($cast-gold, 0.16); // Used in: player-cast-notes
+$color-ext-491: rgba(154, 48, 48, 0.55); // Used in: player-cast-notes
+$color-ext-492: rgba(58, 96, 64, 0.55); // Used in: player-cast-notes
+$color-ext-493: rgba($cast-gold, 0.04); // Used in: player-cast-notes
+$color-ext-494: rgba($location-blue, 0.42); // Used in: player-location-detail
+$color-ext-495: rgba($location-blue, 0.70); // Used in: player-location-detail
+$color-ext-496: rgba($color-base-aqua-light, .9); // Used in: player-location-political-notes
+$color-ext-497: rgba(100, 120, 130, 0.35); // Used in: player-location-political-notes
+$color-ext-498: rgba($color-base-slate-blue, 0.55); // Used in: player-location-political-notes
+$color-ext-499: rgba(180, 140, 100, 0.55); // Used in: player-location-political-notes
+$color-ext-500: rgba(130, 170, 130, 0.55); // Used in: player-location-political-notes
+$color-ext-501: rgba(180, 120, 140, 0.55); // Used in: player-location-political-notes
+$color-ext-502: rgba(160, 150, 200, 0.55); // Used in: player-location-political-notes
+$color-ext-503: rgba($accent, 0.92); // Used in: player-location-political-notes, player-location-political-notes
+$color-ext-504: rgba($accent, 0.22); // Used in: player-location-political-notes, player-location-political-notes, player-location-political-notes
+$color-ext-505: rgba($accent, 0.24); // Used in: player-location-political-notes
+$color-ext-506: rgba($accent, 0.85); // Used in: player-location-political-notes, player-location-political-notes, player-location-political-notes
+$color-ext-507: rgba($accent, 0.18); // Used in: player-location-political-notes, player-location-political-notes, player-location-political-notes
+$color-ext-508: rgba($accent, 0.82); // Used in: player-location-political-notes, player-location-political-notes, player-location-political-notes
+$color-ext-509: rgba($accent, 0.80); // Used in: player-location-political-notes, player-location-political-notes, player-location-political-notes
+$color-ext-510: rgba($accent, 0.70); // Used in: player-location-political-notes, player-location-political-notes, player-location-political-notes
+$color-ext-511: rgba($accent, 0.9); // Used in: player-location-political-notes, player-location-political-notes
+$color-ext-512: rgba($accent, 0.08); // Used in: player-location-political-notes, player-location-political-notes, player-location-political-notes
+$color-ext-513: rgba($accent, 0.45); // Used in: player-location-political-notes, player-location-political-notes
+$color-ext-514: rgba($accent, 0.60); // Used in: player-location-political-notes, player-location-political-notes, player-location-political-notes
+$color-ext-515: rgba($accent, 0.28); // Used in: player-location-political-notes, player-location-political-notes
+$color-ext-516: rgba($accent, 0.10); // Used in: player-location-political-notes
+$color-ext-517: rgba($accent, 0.90); // Used in: player-location-political-notes, player-location-political-notes, player-location-political-notes
+$color-ext-518: rgba($accent, 0.75); // Used in: player-location-political-notes
+$color-ext-519: rgba(120, 200, 120, 0.80); // Used in: player-location-political-notes, player-location-political-notes, player-location-political-notes
+$color-ext-520: rgba(220, 130, 80, 0.80); // Used in: player-location-political-notes, player-location-political-notes, player-location-political-notes
+$color-ext-521: rgba($accent, 0.95); // Used in: player-location-political-notes
+$color-ext-522: rgba($accent, 0.30); // Used in: player-location-political-notes, player-location-political-notes, player-location-political-notes
+$color-ext-523: rgba($accent, 0.50); // Used in: player-location-political-notes, player-location-political-notes, player-location-political-notes
+$color-ext-524: rgba($accent, 0.8); // Used in: player-location-political-notes
+$color-ext-525: rgba($color-base-red-mid, 0.80); // Used in: player-location-political-notes
+$color-ext-526: rgba($accent, 0.20); // Used in: player-location-political-notes
+$color-ext-527: rgba($color-base-abyss, 0.60); // Used in: player-location-political-notes, player-location-political-notes
+$color-ext-528: rgba($accent, 0.16); // Used in: player-location-political-notes, player-location-political-notes
+$color-ext-529: rgba($color-base-rose-dark, 0.80); // Used in: player-location-political-notes, player-location-political-notes
+$color-ext-530: rgba($accent, 0.40); // Used in: player-location-political-notes
+$color-ext-531: rgba(180, 80, 180, 0.80); // Used in: player-location-political-notes, player-location-political-notes
+$color-ext-532: rgba(200, 190, 100, 0.80); // Used in: player-location-political-notes
+$color-ext-533: rgba($color-base-void-blue, 0.90); // Used in: player-location-political-notes
+$color-ext-534: rgba($color-base-void-blue, 0.60); // Used in: player-location-political-notes
+$color-ext-535: rgba($accent, 0.12); // Used in: player-location-political-notes, player-location-political-notes, player-location-political-notes
+$color-ext-536: rgba($color-base-sky-mist, 0.95); // Used in: player-location-political-notes, player-location-political-notes
+$color-ext-537: rgba($accent, 0.15); // Used in: player-location-political-notes, player-location-political-notes, player-location-political-notes
+$color-ext-538: rgba($color-base-abyss, 0.65); // Used in: player-location-political-notes
+$color-ext-539: rgba(255, 255, 255, 0.90); // Used in: player-location-political-notes, player-location-political-notes
+$color-ext-540: rgba(255, 255, 255, 0.20); // Used in: player-location-political-notes
+$color-ext-541: rgba(255, 255, 255, 0.06); // Used in: player-location-political-notes, player-location-political-notes
+$color-ext-542: rgba(255, 255, 255, 0.40); // Used in: player-location-political-notes, player-location-political-notes
+$color-ext-543: rgba(255, 255, 255, 0.70); // Used in: player-location-political-notes
+$color-ext-544: rgba(255, 255, 255, 0.24); // Used in: player-location-political-notes
+$color-ext-545: rgba($color-base-mist-blue, 0.90); // Used in: player-location-political-notes, player-location-political-notes
+$color-ext-546: rgba($color-base-rose-dark, 0.85); // Used in: player-location-political-notes
+$color-ext-547: rgba(220, 150,  60, 0.85); // Used in: player-location-political-notes
+$color-ext-548: rgba(140, 160, 170, 0.75); // Used in: player-location-political-notes
+$color-ext-549: rgba(120, 180, 140, 0.85); // Used in: player-location-political-notes
+$color-ext-550: rgba( 80, 190, 110, 0.90); // Used in: player-location-political-notes
+$color-ext-551: rgba($color-base-midnight, 0.70); // Used in: player-location-political-notes
+$color-ext-552: rgba($color-base-coral-red, 0.09); // Used in: player-location-political-notes
+$color-ext-553: rgba(70, 170, 90, 0.09); // Used in: player-location-political-notes
+$color-ext-554: rgba($color-base-slate-blue, 0.08); // Used in: player-location-political-notes
+$color-ext-555: rgba($accent, 0.35); // Used in: player-location-political-notes
+$color-ext-556: rgba(180, 210, 220, 0.75); // Used in: player-location-political-notes
+$color-ext-557: rgba(120, 200, 130, 0.90); // Used in: player-location-political-notes
+$color-ext-558: rgba($color-base-rose-dark, 0.90); // Used in: player-location-political-notes
+$color-ext-559: rgba($color-base-midnight, 0.90); // Used in: player-location-political-notes
+$color-ext-560: rgba($accent, 0.65); // Used in: player-location-political-notes
+$color-ext-561: rgba(255, 255, 255, 0.80); // Used in: player-location-political-notes
+$color-ext-562: rgba(10, 18, 26, 0.96); // Used in: player-location-political-notes
+$color-ext-563: rgba(255, 255, 255, 0.85); // Used in: player-location-political-notes, time-of-day-bar, time-of-day-bar
+$color-ext-564: rgba(4, 8, 14, 0.88); // Used in: player-location-political-notes
+$color-ext-565: rgba($color-base-frost-blue, 0.95); // Used in: player-location-political-notes
+$color-ext-566: rgba($color-base-frost-blue, 0.92); // Used in: player-location-political-notes
+$color-ext-567: rgba($color-base-sky-mist, 0.90); // Used in: player-location-political-notes
+$color-ext-568: rgba($memory-search-accent, 0.22); // Used in: player-my-character, player-my-character, player-my-character
+$color-ext-569: rgb(140, 4, 4); // Used in: player-my-character
+$color-ext-570: rgba($color-base-blood-red, 0.8); // Used in: player-my-character
+$color-ext-571: rgb(255, 255, 255); // Used in: player-my-character, player-my-character
+$color-ext-572: rgba(215, 200, 255, 0.95); // Used in: player-my-character
+$color-ext-573: rgb(229, 166, 51, 0.90); // Used in: player-my-character, player-my-character
+$color-ext-574: rgba($color-base-lavender-mid, 0.95); // Used in: player-my-character, player-my-character
+$color-ext-575: rgba($color-base-lavender-pale, 0.9); // Used in: player-my-character, player-my-character, player-my-character
+$color-ext-576: rgba($memory-search-accent, 0.30); // Used in: player-my-character
+$color-ext-577: rgba($memory-search-accent, 0.60); // Used in: player-my-character
+$color-ext-578: rgba($memory-search-accent, 0.50); // Used in: player-my-character, player-my-character
+$color-ext-579: rgba($color-base-lavender-mid, 0.8); // Used in: player-my-character, campaign-dropdown
+$color-ext-580: rgba($color-base-orchid-mist, 0.9); // Used in: player-my-character, player-my-character
+$color-ext-581: rgba($color-base-portal-violet, 0.75); // Used in: player-my-character
+$color-ext-582: rgba(0, 0, 0, 0.72); // Used in: player-my-character, card-reveal-overlay
+$color-ext-583: rgba($color-base-lavender-light, 0.4); // Used in: player-my-character
+$color-ext-584: rgba($color-base-lavender-light, 0.75); // Used in: player-my-character
+$color-ext-585: $color-base-dark-brown; // Used in: player-my-character
+$color-ext-586: rgba($color-base-lavender-mid, 0.85); // Used in: player-my-character
+$color-ext-587: rgba($color-base-teal-green, 0.2); // Used in: player-my-character
+$color-ext-588: rgba($color-base-teal-green, 0.04); // Used in: player-my-character
+$color-ext-589: rgba(80, 120, 180, 0.2); // Used in: player-my-character
+$color-ext-590: rgba(165, 200, 255, 0.95); // Used in: player-my-character
+$color-ext-591: rgba($color-base-orchid-mist, 0.85); // Used in: player-my-character
+$color-ext-592: rgba($color-base-portal-violet, 0.08); // Used in: player-my-character
+$color-ext-593: rgba($color-base-portal-violet, 0.14); // Used in: player-my-character
+$color-ext-594: rgba(210, 190, 255, 0.95); // Used in: player-my-character
+$color-ext-595: rgba(255, 255, 255, 0.025); // Used in: player-my-character
+$color-ext-596: rgba($color-base-portal-violet, 0.12); // Used in: player-my-character
+$color-ext-597: rgba($color-base-mauve-light, 0.55); // Used in: player-my-character
+$color-ext-598: rgba(255, 200, 100, 0.9); // Used in: player-my-character
+$color-ext-599: rgba(210, 140, 255, 0.9); // Used in: player-my-character
+$color-ext-600: rgba($color-base-jade, 0.2); // Used in: player-my-character
+$color-ext-601: rgba($color-base-jade, 0.04); // Used in: player-my-character
+$color-ext-602: rgb(120, 167, 200, 0.80); // Used in: player-my-character
+$color-ext-603: rgba($color-base-jade, 0.35); // Used in: player-my-character
+$color-ext-604: rgba(120, 220, 160, 0.95); // Used in: player-my-character
+$color-ext-605: rgba($color-base-jade, 0.15); // Used in: player-my-character
+$color-ext-606: rgba($color-base-jade, 0.6); // Used in: player-my-character
+$color-ext-607: rgba($color-base-mauve-light, 0.85); // Used in: player-my-character
+$color-ext-608: rgba($color-base-mist-blue, 0.82); // Used in: player-sublocation-detail
+$color-ext-609: rgba(198, 152, 48, 0.65); // Used in: role-selection, subscribe
+$color-ext-610: rgba($color-base-gold-deep, 0.35); // Used in: subscribe
+$color-ext-611: rgba($color-base-brown-warm, 0.03); // Used in: subscribe
+$color-ext-612: rgba($color-base-amber-gold, 0.9); // Used in: subscribe
+$color-ext-613: rgba($color-base-amber-gold, 0.7); // Used in: subscribe
+$color-ext-614: rgba($color-base-russet, 0.32); // Used in: subscribe
+$color-ext-615: rgba($color-base-russet, 0.04); // Used in: subscribe
+$color-ext-616: rgba($color-base-russet, 0.8); // Used in: subscribe
+$color-ext-617: rgba($color-base-gold-deep, 0.32); // Used in: subscribe
+$color-ext-618: #0E0804; // Used in: journal-shell
+$color-ext-619: #1A0C06; // Used in: journal-shell
+$color-ext-620: #1C0D07; // Used in: journal-shell
+$color-ext-621: #150A05; // Used in: journal-shell
+$color-ext-622: #0C0604; // Used in: journal-shell
+$color-ext-623: rgba(255,180,80,0.05); // Used in: journal-shell
+$color-ext-624: rgba(140,80,30,0.35); // Used in: journal-shell, journal-shell
+$color-ext-625: #6A5020; // Used in: journal-shell
+$color-ext-626: #7A6028; // Used in: journal-shell
+$color-ext-627: #4A3818; // Used in: journal-shell, journal-shell, journal-shell
+$color-ext-628: #8A7030; // Used in: journal-shell, journal-shell, journal-shell
+$color-ext-629: #5A4820; // Used in: journal-shell
+$color-ext-630: rgba(255,220,100,0.15); // Used in: journal-shell
+$color-ext-631: #C4A050; // Used in: journal-shell
+$color-ext-632: rgb(65, 106, 135, 0.70); // Used in: campaign-dropdown, campaign-dropdown
+$color-ext-633: #1a0d2e; // Used in: campaign-dropdown
+$color-ext-634: $color-base-lavender-whisper; // Used in: campaign-dropdown
+$color-ext-635: rgba($color-base-violet-mid, 0.65); // Used in: card-reveal-overlay
+$color-ext-636: rgba($color-base-violet-muted, 0.35); // Used in: card-reveal-overlay
+$color-ext-637: rgba(12, 6, 28, 0.88); // Used in: card-reveal-overlay
+$color-ext-638: rgba($color-base-violet-mid, 0.35); // Used in: card-reveal-overlay
+$color-ext-639: rgba(120, 80, 220, 0.28); // Used in: card-reveal-overlay
+$color-ext-640: rgba($color-base-violet-light, 0.65); // Used in: card-reveal-overlay
+$color-ext-641: rgba($color-base-lavender-whisper, 0.92); // Used in: card-reveal-overlay
+$color-ext-642: rgba(120, 80, 200, 0.25); // Used in: card-reveal-overlay
+$color-ext-643: rgba(180, 140, 255, 0.5); // Used in: card-reveal-overlay
+$color-ext-644: rgba($color-base-violet-muted, 0.45); // Used in: card-reveal-overlay
+$color-ext-645: rgba($color-base-violet-light, 0.8); // Used in: card-reveal-overlay
+$color-ext-646: #f0e8d8; // Used in: cast-card, location-card, sublocation-card
+$color-ext-647: #f0d0a0; // Used in: cast-card, cast-card, location-card
+$color-ext-648: rgba($color-base-pitch, 0.78); // Used in: character-info-editor
+$color-ext-649: rgba($color-base-void-dark, 0.97); // Used in: character-info-editor
+$color-ext-650: rgba(0, 0, 0, 0.84); // Used in: currency-card, whisper-card
+$color-ext-651: #d4a800; // Used in: currency-card, currency-card, currency-card
+$color-ext-652: #f8e860; // Used in: currency-card, currency-card, currency-card
+$color-ext-653: #8a6000; // Used in: currency-card, currency-card, currency-card
+$color-ext-654: #f0d040; // Used in: currency-card
+$color-ext-655: #c09000; // Used in: currency-card
+$color-ext-656: #604800; // Used in: currency-card
+$color-ext-657: #e0c030; // Used in: currency-card
+$color-ext-658: #fdf0cc; // Used in: currency-card
+$color-ext-659: #f5e0a0; // Used in: currency-card
+$color-ext-660: #e8cc78; // Used in: currency-card
+$color-ext-661: #2a1800; // Used in: currency-card, currency-card
+$color-ext-662: #4a2e00; // Used in: currency-card, currency-card
+$color-ext-663: #e0c060; // Used in: currency-card
+$color-ext-664: $color-base-golden-brown; // Used in: dm-nav, dm-nav
+$color-ext-665: $color-base-dark-amber; // Used in: dm-nav
+$color-ext-666: rgba($color-base-golden-brown, 0.14); // Used in: dm-nav
+$color-ext-667: rgba($color-base-dark-gold, 0.12); // Used in: keyword-input
+$color-ext-668: rgba($color-base-dark-gold, 0.35); // Used in: keyword-input
+$color-ext-669: rgba($color-base-dark-gold, 0.55); // Used in: keyword-input
+$color-ext-670: rgba(0, 0, 0, 0.14); // Used in: keyword-input
+$color-ext-671: rgba($color-base-dark-gold, 0.09); // Used in: keyword-input
+$color-ext-672: rgba($color-base-pitch, 0.75); // Used in: secret-modal
+$color-ext-673: rgba($color-base-linen, 0.95); // Used in: secret-modal
+$color-ext-674: rgba(140, 95, 30, 0.4); // Used in: secret-modal
+$color-ext-675: #c0d4f0; // Used in: sublocation-card, sublocation-card, sublocation-card
+$color-ext-676: #7090c0; // Used in: sublocation-card, sublocation-card
+$color-ext-677: #304860; // Used in: sublocation-card, sublocation-card, sublocation-card
+$color-ext-678: #90b4d8; // Used in: sublocation-card, sublocation-card
+$color-ext-679: #507098; // Used in: sublocation-card, sublocation-card, sublocation-card
+$color-ext-680: #1a2e40; // Used in: sublocation-card
+$color-ext-681: #80a8d0; // Used in: sublocation-card
+$color-ext-682: rgba($color-base-sky-blue, 0.3); // Used in: sublocation-card
+$color-ext-683: #e8eef8; // Used in: sublocation-card
+$color-ext-684: #d4dff0; // Used in: sublocation-card, sublocation-card
+$color-ext-685: #bccce8; // Used in: sublocation-card, sublocation-card
+$color-ext-686: #0a1620; // Used in: sublocation-card, sublocation-card
+$color-ext-687: #1a2a40; // Used in: sublocation-card, sublocation-card
+$color-ext-688: rgba(160, 200, 255, 0.4); // Used in: sublocation-card
+$color-ext-689: #aabcd8; // Used in: sublocation-card
+$color-ext-690: #0a1018; // Used in: sublocation-card, sublocation-card
+$color-ext-691: #141e2c; // Used in: sublocation-card
+$color-ext-692: rgba($color-base-pale-blue, 0.3); // Used in: sublocation-card
+$color-ext-693: rgba($color-base-pale-blue, 0.15); // Used in: sublocation-card, sublocation-card
+$color-ext-694: rgba($color-base-pale-blue, 0.2); // Used in: sublocation-card
+$color-ext-695: #c8daf0; // Used in: sublocation-card, sublocation-card
+$color-ext-696: rgba($color-base-pale-blue, 0.1); // Used in: sublocation-card
+$color-ext-697: rgba(0,0,0,.5); // Used in: time-of-day-bar
+$color-ext-698: rgba($color-base-amber-brown, 0.55); // Used in: time-of-day-bar, time-of-day-bar, time-of-day-bar
+$color-ext-699: rgba($color-base-lavender-soft, 0.65); // Used in: time-of-day-bar
+$color-ext-700: rgba($color-base-parchment-pale, 0.70); // Used in: time-of-day-bar
+$color-ext-701: rgba($color-base-deep-brown, 0.88); // Used in: time-of-day-bar
+$color-ext-702: rgba($color-base-gold-warm, 0.22); // Used in: time-of-day-bar
+$color-ext-703: rgba($color-base-brown-warm, 0.60); // Used in: time-of-day-bar
+$color-ext-704: rgba($color-base-espresso, 0.95); // Used in: time-of-day-bar
+$color-ext-705: rgba($color-base-gold-warm, 0.70); // Used in: time-of-day-bar
+$color-ext-706: rgba(40, 28, 65, 0.80); // Used in: time-of-day-bar
+$color-ext-707: rgba($color-base-periwinkle, 0.35); // Used in: time-of-day-bar
+$color-ext-708: rgba($color-base-lavender-soft, 0.80); // Used in: time-of-day-bar
+$color-ext-709: rgba($color-base-periwinkle, 0.18); // Used in: time-of-day-bar
+$color-ext-710: rgba($color-base-periwinkle, 0.60); // Used in: time-of-day-bar, time-of-day-bar
+$color-ext-711: rgba(18, 18, 20, 0.94); // Used in: time-of-day-bar
+$color-ext-712: rgba($color-base-periwinkle, 0.28); // Used in: time-of-day-bar, time-of-day-bar
+$color-ext-713: rgba($color-base-periwinkle, 0.20); // Used in: time-of-day-bar
+$color-ext-714: rgba($color-base-lavender-pale, 0.90); // Used in: time-of-day-bar
+$color-ext-715: rgba($color-base-periwinkle, 0.12); // Used in: time-of-day-bar
+$color-ext-716: rgba($color-base-periwinkle, 0.50); // Used in: time-of-day-bar
+$color-ext-717: rgba(255, 255, 255, 0.75); // Used in: time-of-day-bar
+$color-ext-718: rgba($color-base-periwinkle-bright, 0.45); // Used in: time-of-day-bar
+$color-ext-719: rgba(255, 255, 255, 0.05); // Used in: time-of-day-bar
+$color-ext-720: rgba(255, 255, 255, 0.35); // Used in: time-of-day-bar
+$color-ext-721: rgba(190, 170, 235, 0.70); // Used in: time-of-day-bar
+$color-ext-722: rgba(0,0,0,.35); // Used in: time-of-day-bar
+$color-ext-723: rgba(255,255,255,.25); // Used in: time-of-day-bar, time-of-day-bar
+$color-ext-724: rgba(255,255,255,.45); // Used in: time-of-day-bar
+$color-ext-725: rgba(255,255,255,.6); // Used in: time-of-day-bar
+$color-ext-726: rgba(255,255,255,.85); // Used in: time-of-day-bar
+$color-ext-727: rgba(0,0,0,.6); // Used in: time-of-day-bar
+$color-ext-728: rgba($color-base-gold-warm, .90); // Used in: time-of-day-bar
+$color-ext-729: rgba(255,255,255,.8); // Used in: time-of-day-bar
+$color-ext-730: rgba($color-base-gold-warm, .55); // Used in: time-of-day-bar
+$color-ext-731: rgba($color-base-deep-brown, 0.90); // Used in: time-of-day-bar
+$color-ext-732: rgba($color-base-brown-warm, 0.42); // Used in: time-of-day-bar
+$color-ext-733: rgba($color-base-amber-brown, 0.45); // Used in: time-of-day-bar, time-of-day-bar
+$color-ext-734: rgba($color-base-parchment-pale, 0.50); // Used in: time-of-day-bar
+$color-ext-735: rgba($color-base-amber-brown, 0.35); // Used in: time-of-day-bar
+$color-ext-736: rgba($color-base-deep-brown, 0.72); // Used in: time-of-day-bar
+$color-ext-737: #d0b8f8; // Used in: whisper-card, whisper-card, whisper-card
+$color-ext-738: #9060d0; // Used in: whisper-card, whisper-card, whisper-card
+$color-ext-739: #401870; // Used in: whisper-card, whisper-card, whisper-card
+$color-ext-740: #c0a0f0; // Used in: whisper-card
+$color-ext-741: #7840b0; // Used in: whisper-card
+$color-ext-742: #200840; // Used in: whisper-card, whisper-card, whisper-card
+$color-ext-743: #b090e8; // Used in: whisper-card
+$color-ext-744: rgba($color-base-violet-light, 0.3); // Used in: whisper-card
+$color-ext-745: #4b3c58; // Used in: whisper-card
+$color-ext-746: #a087c5; // Used in: whisper-card
+$color-ext-747: #8c6dbd; // Used in: whisper-card
+$color-ext-748: #0e0420; // Used in: whisper-card, whisper-card
+$color-ext-749: rgba(180, 130, 255, 0.5); // Used in: whisper-card
+$color-ext-750: #d9d1e4; // Used in: whisper-card
+$color-ext-751: #1e0a30; // Used in: whisper-card
+$color-ext-752: #5c2890; // Used in: whisper-card
+$color-ext-753: #e8d8ff; // Used in: whisper-card
+$color-ext-754: #a070e0; // Used in: whisper-card
+$color-ext-755: #6c3aa0; // Used in: whisper-card
+$color-ext-756: #3a1860; // Used in: whisper-card
+$color-ext-757: #20083a; // Used in: whisper-card
+$color-ext-758: #c0a0e8; // Used in: whisper-card
+$color-ext-759: #4a2070; // Used in: whisper-card
+$color-ext-760: #280a4a; // Used in: whisper-card

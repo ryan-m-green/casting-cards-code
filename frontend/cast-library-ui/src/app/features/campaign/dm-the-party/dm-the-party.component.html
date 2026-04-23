@@ -34,6 +34,35 @@
             <div class="card-back-content">
               <div class="card-name card-back-name">{{ card.name }}</div>
               <div class="dv dv-mb"></div>
+              @if (goalsFor(card).length || fearsFor(card).length || flawsFor(card).length) {
+                <div class="fi-label fi-label-strong">Motivation</div>
+                <div class="currency-display-divider"></div>
+                @if (goalsFor(card).length) {
+                  <div class="pc-trait-section">
+                    <div class="pc-trait-label">Goals</div>
+                    @for (trait of goalsFor(card); track trait.id) {
+                      <div class="pc-trait-item" [class.pc-trait-item--completed]="trait.isCompleted">◉ {{ trait.content }}</div>
+                    }
+                  </div>
+                }
+                @if (fearsFor(card).length) {
+                  <div class="pc-trait-section">
+                    <div class="pc-trait-label">Fears</div>
+                    @for (trait of fearsFor(card); track trait.id) {
+                      <div class="pc-trait-item">⚡ {{ trait.content }}</div>
+                    }
+                  </div>
+                }
+                @if (flawsFor(card).length) {
+                  <div class="pc-trait-section">
+                    <div class="pc-trait-label">Flaws</div>
+                    @for (trait of flawsFor(card); track trait.id) {
+                      <div class="pc-trait-item">⬡ {{ trait.content }}</div>
+                    }
+                  </div>
+                }
+                <div class="dv dv-mb"></div>
+              }
               <app-currency-display [purse]="cardPurse(card)" [compact]="true" />
               @if (card.conditions.length) {
                 <div class="fi-label fi-label-strong">Conditions</div>
@@ -71,7 +100,7 @@
           @if (goldModalTarget()) {
             Award Treasures — {{ goldModalTarget()!.name }}
           } @else {
-            Award Treasures to Party
+            Award Treasure to be split amongst Party
           }
         </span>
         <button class="modal-close" (click)="goldModalOpen.set(false)">✕</button>

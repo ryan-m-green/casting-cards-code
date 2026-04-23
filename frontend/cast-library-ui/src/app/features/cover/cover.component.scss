@@ -31,9 +31,9 @@
 .cover-border {
   position: absolute;
   inset: 18px 16px 18px 10px;
-  border: 1px solid rgba(180,110,40,0.18);
+  border: 1px solid v.$color-ext-387;
   border-radius: 2px;
-  box-shadow: inset 0 0 0 1px rgba(0,0,0,0.5), 0 0 0 1px rgba(0,0,0,0.3);
+  box-shadow: inset 0 0 0 1px v.$color-shadow-light, 0 0 0 1px v.$color-ext-388;
   pointer-events: none;
   z-index: 3;
 
@@ -41,7 +41,7 @@
     content: '';
     position: absolute;
     inset: 5px;
-    border: 1px solid rgba(180,110,40,0.1);
+    border: 1px solid v.$color-ext-389;
     border-radius: 1px;
   }
 }
@@ -49,7 +49,7 @@
 .cover-vignette {
   position: absolute;
   inset: 0;
-  background: radial-gradient(ellipse 90% 80% at 50% 42%, transparent 35%, rgba(0,0,0,0.28) 100%);
+  background: radial-gradient(ellipse 90% 80% at 50% 42%, transparent 35%, v.$color-ext-390 100%);
   pointer-events: none;
   z-index: 4;
 }
@@ -73,25 +73,25 @@
 .corner-tl {
   top: 0; left: 0;
   width: 70px; height: 70px;
-  background: radial-gradient(circle at 0% 0%, rgba(0,0,0,0.5) 0%, transparent 70%);
+  background: radial-gradient(circle at 0% 0%, v.$color-shadow-light 0%, transparent 70%);
 }
 
 .corner-tr {
   top: 0; right: 0;
   width: 80px; height: 70px;
-  background: radial-gradient(circle at 100% 0%, rgba(0,0,0,0.55) 0%, transparent 70%);
+  background: radial-gradient(circle at 100% 0%, v.$color-ext-146 0%, transparent 70%);
 }
 
 .corner-bl {
   bottom: 0; left: 0;
   width: 70px; height: 80px;
-  background: radial-gradient(circle at 0% 100%, rgba(0,0,0,0.6) 0%, transparent 70%);
+  background: radial-gradient(circle at 0% 100%, v.$journal-spine-band-shadow 0%, transparent 70%);
 }
 
 .corner-br {
   bottom: 0; right: 0;
   width: 80px; height: 80px;
-  background: radial-gradient(circle at 100% 100%, rgba(0,0,0,0.7) 0%, transparent 70%);
+  background: radial-gradient(circle at 100% 100%, v.$journal-spine-shadow 0%, transparent 70%);
 }
 
 // ── Page edge ─────────────────────────────────────────────────────────────────
@@ -103,10 +103,10 @@
   width: 5px;
   background: repeating-linear-gradient(
     to bottom,
-    #E8DCCC 0px, #E2D4BE 2px, #D4C8A8 3px, #E8DCCC 4px
+    v.$color-ext-391 0px, v.$color-ext-392 2px, v.$color-ext-393 3px, v.$color-ext-391 4px
   );
   border-radius: 0 1px 1px 0;
-  box-shadow: 2px 0 4px rgba(0,0,0,0.5);
+  box-shadow: 2px 0 4px v.$color-shadow-light;
   pointer-events: none;
   z-index: 6;
 }
@@ -143,7 +143,7 @@
   margin-top: 100px;
   margin-bottom: 12px;
   opacity: 0.75;
-  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.8));
+  filter: drop-shadow(0 2px 4px v.$color-ext-155);
 }
 
 // ── Main title — embossed gold stamp ─────────────────────────────────────────
@@ -154,12 +154,12 @@
   letter-spacing: 0.1em;
   line-height: 1.1;
   margin-bottom: 5px;
-  background: linear-gradient(to bottom, #E8C060 0%, #C4922A 40%, #A07020 70%, #C4922A 100%);
+  background: linear-gradient(to bottom, v.$color-ext-394 0%, v.$journal-spine-cap-2 40%, v.$color-ext-395 70%, v.$journal-spine-cap-2 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
   text-shadow: none;
-  filter: drop-shadow(0 1px 3px rgba(0,0,0,0.9));
+  filter: drop-shadow(0 1px 3px v.$color-shadow-dark);
 }
 
 // ── Subtitle ──────────────────────────────────────────────────────────────────
@@ -167,10 +167,10 @@
   font-family: v.$font-body;
   font-size: clamp(10px, 1.4vw, 13px);
   font-style: italic;
-  color: rgba(180, 120, 40, 0.65);
+  color: v.$color-ext-396;
   letter-spacing: 0.05em;
   margin-bottom: 24px;
-  text-shadow: 0 1px 3px rgba(0,0,0,0.8);
+  text-shadow: 0 1px 3px v.$color-ext-155;
 }
 
 // ── Form spacer ───────────────────────────────────────────────────────────────
@@ -201,7 +201,7 @@
   font-size: 8px;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: rgb(199 175 170 / 90%);
+  color: v.$color-ext-397;
   margin-top: 4px;
 }
 
@@ -212,48 +212,48 @@
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.22em;
-  color: rgba(180, 120, 40, 0.6);
+  color: v.$color-ext-398;
   margin-bottom: 5px;
 }
 
 .cover-fi {
   width: 100%;
-  background: linear-gradient(to bottom, rgba(0,0,0,0.35) 0%, rgba(0,0,0,0.2) 100%),
-              radial-gradient(ellipse 80% 80% at 50% 50%, #200E07 0%, #180B05 100%);
-  border: 1px solid rgba(140, 80, 25, 0.28);
-  border-top-color: rgba(80, 35, 10, 0.5);
-  border-bottom-color: rgba(200, 140, 50, 0.15);
+  background: linear-gradient(to bottom, v.$color-overlay-darker 0%, v.$color-border-black-med 100%),
+              radial-gradient(ellipse 80% 80% at 50% 50%, v.$color-ext-399 0%, v.$color-ext-400 100%);
+  border: 1px solid v.$color-ext-401;
+  border-top-color: v.$color-ext-402;
+  border-bottom-color: v.$color-ext-403;
   border-radius: 2px;
   outline: none;
   font-family: v.$font-body;
   font-size: 13px;
   font-style: italic;
-  color: rgba(220, 190, 140, 0.85);
+  color: v.$color-ext-404;
   padding: 8px 12px;
-  box-shadow: inset 0 2px 5px rgba(0,0,0,0.5), inset 0 1px 2px rgba(0,0,0,0.4);
+  box-shadow: inset 0 2px 5px v.$color-shadow-light, inset 0 1px 2px v.$color-ext-405;
   margin-bottom: 0;
   transition: border-color v.$transition-std, box-shadow v.$transition-std;
 
-  &.input-error { border-color: rgba(180, 60, 40, 0.6); }
+  &.input-error { border-color: v.$color-ext-406; }
 
   &::placeholder {
-    color: rgba(160, 100, 35, 0.4);
+    color: v.$color-ext-407;
     font-style: italic;
   }
 
   &:focus {
-    border-color: rgba(180, 120, 40, 0.5);
-    box-shadow: inset 0 2px 5px rgba(0,0,0,0.5), 0 0 8px rgba(180,120,30,0.15);
+    border-color: v.$color-ext-408;
+    box-shadow: inset 0 2px 5px v.$color-shadow-light, 0 0 8px v.$color-ext-409;
   }
 }
 
 // ── Error box ─────────────────────────────────────────────────────────────────
 .cover-error-box {
   margin-bottom: 8px;
-  border-color: rgba(180, 60, 40, 0.6);
-  background: rgba(80, 20, 20, 0.2);
+  border-color: v.$color-ext-406;
+  background: v.$color-ext-410;
 
-  .wbd { color: rgba(200, 80, 60, 0.8); }
+  .wbd { color: v.$color-ext-411; }
 }
 
 // ── Knock button ──────────────────────────────────────────────────────────────
@@ -280,26 +280,26 @@
   font-size: 11px;
   font-weight: 600;
   letter-spacing: 0.3em;
-  color: #C4922A;
-  background: linear-gradient(to bottom, #2A1408 0%, #221008 40%, #1C0D06 60%, #2A1408 100%);
-  border: 1px solid rgba(160, 100, 30, 0.45);
-  border-top-color: rgba(200, 140, 50, 0.35);
-  border-bottom-color: rgba(80, 45, 10, 0.6);
+  color: v.$journal-spine-cap-2;
+  background: linear-gradient(to bottom, v.$color-ext-412 0%, v.$color-ext-413 40%, v.$color-ext-414 60%, v.$color-ext-412 100%);
+  border: 1px solid v.$color-ext-415;
+  border-top-color: v.$color-ext-416;
+  border-bottom-color: v.$color-ext-417;
   border-radius: 2px;
   cursor: pointer;
-  box-shadow: 0 3px 8px rgba(0,0,0,0.6), 0 1px 2px rgba(0,0,0,0.4),
-              inset 0 1px 1px rgba(255,200,80,0.08);
+  box-shadow: 0 3px 8px v.$journal-spine-band-shadow, 0 1px 2px v.$color-ext-405,
+              inset 0 1px 1px v.$color-ext-418;
   transition: all 0.15s;
 
   &:hover {
-    border-color: rgba(180, 120, 40, 0.6);
-    box-shadow: 0 3px 12px rgba(0,0,0,0.7), 0 0 12px rgba(180,120,30,0.12),
-                inset 0 1px 1px rgba(255,200,80,0.12);
-    color: #E8B840;
+    border-color: v.$color-ext-398;
+    box-shadow: 0 3px 12px v.$journal-spine-shadow, 0 0 12px v.$color-ext-419,
+                inset 0 1px 1px v.$color-ext-420;
+    color: v.$color-ext-421;
   }
 
   &:active {
-    box-shadow: 0 1px 3px rgba(0,0,0,0.6), inset 0 2px 5px rgba(0,0,0,0.4);
+    box-shadow: 0 1px 3px v.$journal-spine-band-shadow, inset 0 2px 5px v.$color-ext-405;
     transform: translateY(1px);
   }
 
@@ -319,12 +319,12 @@
   font-weight: 600;
   letter-spacing: 0.22em;
   text-transform: uppercase;
-  color: rgba(200, 140, 50, 0.85);
+  color: v.$color-ext-422;
   cursor: pointer;
   text-decoration: none;
   transition: color v.$transition-std;
 
-  &:hover { color: rgba(200, 140, 50, 0.75); }
+  &:hover { color: v.$color-ext-423; }
 }
 
 // ── Create account button ─────────────────────────────────────────────────────
@@ -338,17 +338,17 @@
   font-weight: 500;
   letter-spacing: 0.25em;
   text-transform: uppercase;
-  color: rgb(200, 140, 50);
+  color: v.$color-ext-424;
   background: transparent;
-  border: 1px solid rgb(140, 80, 25);
+  border: 1px solid v.$color-ext-425;
   border-radius: 2px;
   cursor: pointer;
   transition: all 0.2s;
 
   &:hover {
-    border-color: rgb(160, 100, 35);
-    color: rgb(200, 140, 50);
-    box-shadow: 0 0 8px rgba(180,120,30,0.08);
+    border-color: v.$color-ext-426;
+    color: v.$color-ext-424;
+    box-shadow: 0 0 8px v.$color-ext-427;
   }
 }
 
@@ -369,11 +369,11 @@
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.14em;
-  color: rgba(185, 150, 60, 0.5);
+  color: v.$color-ext-428;
   text-decoration: none;
   transition: color v.$transition-std;
 
-  &:hover { color: rgba(210, 175, 100, 0.75); }
+  &:hover { color: v.$color-ext-429; }
 }
 
 // ── Success overlay ───────────────────────────────────────────────────────────
@@ -385,7 +385,7 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  background: radial-gradient(ellipse 70% 60% at 50% 45%, #2A1208 0%, #120805 60%, #0D0603 100%);
+  background: radial-gradient(ellipse 70% 60% at 50% 45%, v.$journal-spine-band-1 0%, v.$color-ext-430 60%, v.$color-ext-431 100%);
   opacity: 0;
   pointer-events: none;
   transition: opacity 0.6s;
@@ -401,8 +401,8 @@
 .success-text {
   font-family: v.$font-header;
   font-size: clamp(14px, 2.5vw, 22px);
-  color: #C4922A;
-  text-shadow: 0 0 20px rgba(180,120,30,0.5);
+  color: v.$journal-spine-cap-2;
+  text-shadow: 0 0 20px v.$color-ext-432;
   margin-top: 16px;
   animation: flicker 2s infinite;
 }

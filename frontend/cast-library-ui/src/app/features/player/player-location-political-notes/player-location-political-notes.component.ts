@@ -306,15 +306,16 @@ export class PlayerLocationPoliticalNotesComponent implements OnInit, OnChanges,
     this.http.get<LocationPoliticalNotes>(
       `${environment.apiUrl}/api/campaigns/${this.campaignId}/location-political-notes/${this.locationInstanceId}`
     ).subscribe(n => {
-      this.notes.set(n);
-      this.generalText = n.generalNotes;
+      const notes = n ?? EMPTY_NOTES();
+      this.notes.set(notes);
+      this.generalText = notes.generalNotes;
       this.factionNameInputs.clear();
       this.relNotesInputs.clear();
       // Set text input values imperatively — no [value] binding on these inputs,
       // matching the cast-notes wantTextarea pattern and the relationships explanationTexts pattern.
       setTimeout(() => {
-        for (const f of n.factions)      this.setFactionNameDom(f.id, f.name);
-        for (const r of n.relationships) this.setRelNotesDom(r.id, r.notes);
+        for (const f of notes.factions)      this.setFactionNameDom(f.id, f.name);
+        for (const r of notes.relationships) this.setRelNotesDom(r.id, r.notes);
       }, 0);
     });
   }
@@ -341,10 +342,15 @@ export class PlayerLocationPoliticalNotesComponent implements OnInit, OnChanges,
         })),
         npcRoles: n.npcRoles,
       }
-    ).subscribe(() => {
-      this.factionNameInputs.clear();
-      this.relNotesInputs.clear();
-      this.saving.set(false);
+    ).subscribe({
+      next: () => {
+        this.factionNameInputs.clear();
+        this.relNotesInputs.clear();
+        this.saving.set(false);
+      },
+      error: () => {
+        this.saving.set(false);
+      },
     });
   }
 

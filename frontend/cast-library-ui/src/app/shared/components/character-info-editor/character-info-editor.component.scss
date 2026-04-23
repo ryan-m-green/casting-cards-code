@@ -3,7 +3,7 @@
 .info-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(6, 3, 1, 0.78);
+  background: v.$color-ext-648;
   z-index: 9999;
   display: flex;
   align-items: center;
@@ -12,15 +12,15 @@
 }
 
 .info-panel {
-  background: rgba(14, 8, 28, 0.97);
-  border: 1px solid rgba(110, 40, 208, 0.35);
+  background: v.$color-ext-649;
+  border: 1px solid v.$campaign-portal-border-accent;
   border-radius: 10px;
   padding: 32px 28px 28px;
   width: 100%;
   max-width: 500px;
   max-height: 90vh;
   overflow-y: auto;
-  box-shadow: 0 0 30px rgba(110, 40, 208, 0.15), 0 8px 32px rgba(0, 0, 0, 0.7);
+  box-shadow: 0 0 30px v.$campaign-portal-border-light, 0 8px 32px v.$journal-spine-shadow;
   display: flex;
   flex-direction: column;
   gap: 18px;
@@ -32,8 +32,8 @@
   font-weight: 600;
   letter-spacing: 0.22em;
   text-transform: uppercase;
-  color: rgb(220, 200, 255);
-  text-shadow: 0 0 18px rgba(110, 40, 208, 0.6);
+  color: v.$color-ext-457;
+  text-shadow: 0 0 18px v.$campaign-portal-border-focus;
   margin: 0;
 }
 
@@ -51,17 +51,17 @@
   font-size: 9px;
   letter-spacing: 0.18em;
   text-transform: uppercase;
-  color: rgb(180, 160, 220);
+  color: v.$color-ext-458;
 }
 
-.required { color: rgb(220, 80, 80); margin-left: 2px; }
-.optional { color: rgb(160, 140, 200); font-size: 8px; }
+.required { color: v.$color-ext-460; margin-left: 2px; }
+.optional { color: v.$color-ext-461; font-size: 8px; }
 
 .field-input {
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(110, 40, 208, 0.25);
+  background: v.$color-ext-346;
+  border: 1px solid v.$campaign-portal-border-medium;
   border-radius: 6px;
-  color: rgb(220, 200, 255);
+  color: v.$color-ext-457;
   font-family: v.$font-body;
   font-size: 15px;
   padding: 10px 12px;
@@ -70,11 +70,11 @@
   width: 100%;
   box-sizing: border-box;
 
-  &::placeholder { color: rgba(180, 160, 220, 0.35); }
+  &::placeholder { color: v.$color-ext-462; }
 
   &:focus {
-    border-color: rgba(110, 40, 208, 0.6);
-    box-shadow: 0 0 0 2px rgba(110, 40, 208, 0.15);
+    border-color: v.$campaign-portal-border-focus;
+    box-shadow: 0 0 0 2px v.$campaign-portal-border-light;
   }
 }
 
@@ -90,8 +90,8 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(110, 40, 208, 0.25);
+  background: v.$color-ext-346;
+  border: 1px solid v.$campaign-portal-border-medium;
   border-radius: 6px;
   padding: 8px 10px;
   cursor: pointer;
@@ -100,11 +100,11 @@
   user-select: none;
   transition: border-color 0.18s ease, box-shadow 0.18s ease;
 
-  &:hover { border-color: rgba(110, 40, 208, 0.45); }
+  &:hover { border-color: v.$color-ext-465; }
 
   &--open {
-    border-color: rgba(110, 40, 208, 0.6);
-    box-shadow: 0 0 0 2px rgba(110, 40, 208, 0.15);
+    border-color: v.$campaign-portal-border-focus;
+    box-shadow: 0 0 0 2px v.$campaign-portal-border-light;
   }
 }
 
@@ -120,13 +120,13 @@
   display: inline-flex;
   align-items: center;
   gap: 4px;
-  background: rgba(110, 40, 208, 0.2);
-  border: 1px solid rgba(110, 40, 208, 0.5);
+  background: v.$campaign-portal-bg-placeholder;
+  border: 1px solid v.$campaign-portal-border-hover;
   border-radius: 4px;
   padding: 2px 6px 2px 8px;
   font-family: v.$font-body;
   font-size: 13px;
-  color: rgb(210, 185, 255);
+  color: v.$color-ext-466;
 }
 
 .pill-remove {
@@ -135,24 +135,24 @@
   cursor: pointer;
   font-size: 14px;
   line-height: 1;
-  color: rgb(160, 130, 220);
+  color: v.$color-ext-467;
   padding: 0;
   display: flex;
   align-items: center;
   transition: color 0.15s ease;
 
-  &:hover { color: rgb(220, 180, 255); }
+  &:hover { color: v.$color-ext-468; }
 }
 
 .pill-placeholder {
   font-family: v.$font-body;
   font-size: 15px;
-  color: rgba(180, 160, 220, 0.35);
+  color: v.$color-ext-462;
 }
 
 .pill-chevron {
   font-size: 11px;
-  color: rgb(160, 130, 220);
+  color: v.$color-ext-467;
   flex-shrink: 0;
   transition: transform 0.18s ease;
 
@@ -164,10 +164,10 @@
   top: calc(100% + 4px);
   left: 0;
   right: 0;
-  background: rgb(18, 10, 36);
-  border: 1px solid rgba(110, 40, 208, 0.45);
+  background: v.$color-ext-469;
+  border: 1px solid v.$color-ext-465;
   border-radius: 6px;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6);
+  box-shadow: 0 8px 24px v.$journal-spine-band-shadow;
   z-index: 100;
   max-height: 200px;
   overflow-y: auto;
@@ -177,12 +177,12 @@
   padding: 9px 14px;
   font-family: v.$font-body;
   font-size: 14px;
-  color: rgb(200, 180, 240);
+  color: v.$color-ext-470;
   cursor: pointer;
   transition: background 0.12s ease;
 
-  &:hover { background: rgba(110, 40, 208, 0.18); color: rgb(220, 200, 255); }
-  &:not(:last-child) { border-bottom: 1px solid rgba(110, 40, 208, 0.1); }
+  &:hover { background: v.$color-ext-22; color: v.$color-ext-457; }
+  &:not(:last-child) { border-bottom: 1px solid v.$campaign-portal-bg-hover; }
 }
 
 .pill-dropdown-empty {
@@ -190,20 +190,20 @@
   font-family: v.$font-body;
   font-size: 13px;
   font-style: italic;
-  color: rgb(130, 110, 180);
+  color: v.$color-ext-471;
   text-align: center;
 }
 
 // ── Footer ────────────────────────────────────────────────────────────────────
 
 .error-banner {
-  background: rgba(200, 50, 50, 0.15);
-  border: 1px solid rgba(200, 50, 50, 0.3);
+  background: v.$color-ext-360;
+  border: 1px solid v.$color-ext-353;
   border-radius: 6px;
   padding: 10px 14px;
   font-family: v.$font-body;
   font-size: 13px;
-  color: rgb(255, 140, 130);
+  color: v.$color-ext-472;
 }
 
 .modal-footer {

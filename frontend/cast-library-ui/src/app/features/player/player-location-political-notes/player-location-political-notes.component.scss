@@ -1,15 +1,13 @@
 @use '../../../../styles/variables' as v;
 
-$accent: rgba(161, 216, 255, .9);
-
 // ── ADA district colors (accessible contrast, distinct even grayscale) ─────────
 :host {
-  --district-neutral: rgba(100, 120, 130, 0.35);
-  --district-0: rgba(154, 176, 184, 0.55);   // blue-grey
-  --district-1: rgba(180, 140, 100, 0.55);   // amber
-  --district-2: rgba(130, 170, 130, 0.55);   // sage
-  --district-3: rgba(180, 120, 140, 0.55);   // rose
-  --district-4: rgba(160, 150, 200, 0.55);   // lavender
+  --district-neutral: v.$color-ext-497;
+  --district-0: v.$color-ext-498;   // blue-grey
+  --district-1: v.$color-ext-499;   // amber
+  --district-2: v.$color-ext-500;   // sage
+  --district-3: v.$color-ext-501;   // rose
+  --district-4: v.$color-ext-502;   // lavender
 }
 
 // ── Screen-reader only ─────────────────────────────────────────────────────────
@@ -44,15 +42,15 @@ $accent: rgba(161, 216, 255, .9);
   font-size: 9px;
   letter-spacing: 0.22em;
   text-transform: uppercase;
-  color: rgba($accent, 0.92);
+  color: v.$campaign-portal-text-bright;
   white-space: nowrap;
-  text-shadow: 0 0 10px rgba($accent, 0.22);
+  text-shadow: 0 0 10px rgba(v.$accent, 0.22);
 }
 
 .political-line {
   flex: 1;
   height: 1px;
-  background: linear-gradient(to right, rgba($accent, 0.24), transparent);
+  background: linear-gradient(to right, rgba(v.$accent, 0.24), transparent);
 }
 
 .political-saving {
@@ -60,7 +58,7 @@ $accent: rgba(161, 216, 255, .9);
   font-size: 7px;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: rgba($accent, 0.85);
+  color: v.$campaign-portal-text-bright;
   animation: pulse-save 1.2s ease-in-out infinite;
 }
 
@@ -74,7 +72,7 @@ $accent: rgba(161, 216, 255, .9);
   display: flex;
   gap: 2px;
   margin-bottom: 24px;
-  border-bottom: 1px solid rgba($accent, 0.18);
+  border-bottom: 1px solid rgba(v.$accent, 0.18);
 }
 
 .pol-tab {
@@ -82,7 +80,7 @@ $accent: rgba(161, 216, 255, .9);
   font-size: 8px;
   letter-spacing: 0.18em;
   text-transform: uppercase;
-  color: rgba($accent, 0.82);
+  color: v.$campaign-portal-text-secondary;
   background: none;
   border: none;
   border-bottom: 2px solid transparent;
@@ -92,16 +90,16 @@ $accent: rgba(161, 216, 255, .9);
   margin-bottom: -1px;
 
   &:hover {
-    color: rgba($accent, 0.80);
+    color: v.$campaign-portal-text-bright;
   }
 
   &--active {
-    color: rgba($accent, 0.92);
-    border-bottom-color: rgba($accent, 0.70);
+    color: v.$campaign-portal-text-bright;
+    border-bottom-color: rgba(v.$accent, 0.70);
   }
 
   &:focus-visible {
-    outline: 2px solid rgba($accent, 0.80);
+    outline: 2px solid rgba(v.$accent, 0.80);
     outline-offset: 2px;
     border-radius: 2px;
   }
@@ -145,24 +143,24 @@ $accent: rgba(161, 216, 255, .9);
   font-weight: bolder;
   letter-spacing: 0.2em;
   text-transform: uppercase;
-  color: rgba($accent, 0.9);
+  color: v.$campaign-portal-text-bright;
 }
 
 .pol-section-line {
   height: 1px;
-  background: linear-gradient(to right, rgba($accent, 0.22), transparent);
+  background: linear-gradient(to right, rgba(v.$accent, 0.22), transparent);
 }
 
 .pol-divider {
   height: 1px;
-  background: rgba($accent, 0.08);
+  background: rgba(v.$accent, 0.08);
   margin: 12px 0;
 }
 
 .pol-hint {
   font-family: v.$font-body;
   font-size: 13px;
-  color: rgba($accent, 0.82);
+  color: v.$campaign-portal-text-secondary;
   font-style: italic;
   margin: 0;
 }
@@ -170,7 +168,7 @@ $accent: rgba(161, 216, 255, .9);
 .pol-empty {
   font-family: v.$font-body;
   font-size: 14px;
-  color: rgba($accent, 0.82);
+  color: v.$campaign-portal-text-secondary;
   font-style: italic;
   text-align: center;
   padding: 40px 0;
@@ -187,10 +185,10 @@ $accent: rgba(161, 216, 255, .9);
   align-items: center;
   justify-content: space-between;
   width: 100%;
-  background: rgba(14, 24, 32, 0.80);
-  border: 1px solid rgba($accent, 0.22);
+  background: v.$campaign-portal-bg-medium;
+  border: 1px solid rgba(v.$accent, 0.22);
   border-radius: 3px;
-  color: rgba(200, 225, 235, 0.95);
+  color: v.$campaign-portal-text-bright;
   font-family: v.$font-body;
   font-size: 13px;
   padding: 4px 8px;
@@ -198,10 +196,12 @@ $accent: rgba(161, 216, 255, .9);
   text-align: left;
   transition: border-color 0.15s;
 
-  &:hover { border-color: rgba($accent, 0.45); }
+  &:hover {
+    border-color: rgba(v.$accent, 0.45);
+  }
 
   &:focus-visible {
-    outline: 2px solid rgba($accent, 0.60);
+    outline: 2px solid rgba(v.$accent, 0.60);
     outline-offset: 1px;
   }
 }
@@ -227,31 +227,31 @@ $accent: rgba(161, 216, 255, .9);
   top: calc(100% + 2px);
   left: 0;
   right: 0;
-  background: #0c1820;
-  border: 1px solid rgba($accent, 0.28);
+  background: v.$campaign-portal-panel-dark;
+  border: 1px solid rgba(v.$accent, 0.28);
   border-radius: 3px;
   z-index: 50;
   max-height: 200px;
   overflow-y: auto;
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.55);
+  box-shadow: 0 6px 20px v.$color-ext-146;
 }
 
 .notes-dropdown-item {
   font-family: v.$font-body;
   font-size: 13px;
-  color: rgba(200, 225, 235, 0.95);
+  color: v.$campaign-portal-text-bright;
   padding: 6px 10px;
   cursor: pointer;
   transition: background 0.12s, color 0.12s;
 
   &:hover {
-    background: rgba($accent, 0.10);
-    color: rgba($accent, 0.90);
+    background: rgba(v.$accent, 0.10);
+    color: v.$campaign-portal-text-bright;
   }
 
   &--selected {
-    background: rgba($accent, 0.08);
-    color: rgba($accent, 0.85);
+    background: rgba(v.$accent, 0.08);
+    color: v.$campaign-portal-text-bright;
   }
 }
 
@@ -260,7 +260,7 @@ $accent: rgba(161, 216, 255, .9);
   font-size: 7px;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: rgba($accent, 0.75);
+  color: v.$campaign-portal-text-secondary;
   padding: 12px;
   text-align: center;
 }
@@ -274,15 +274,23 @@ $accent: rgba(161, 216, 255, .9);
 
 .influence-slider {
   width: 100%;
-  accent-color: rgba($accent, 0.80);
+  accent-color: rgba(v.$accent, 0.80);
   cursor: pointer;
 
-  &.slider-low  { accent-color: rgba(120, 200, 120, 0.80); }
-  &.slider-mid  { accent-color: rgba($accent, 0.80); }
-  &.slider-high { accent-color: rgba(220, 130, 80, 0.80); }
+  &.slider-low {
+    accent-color: v.$color-ext-519;
+  }
+
+  &.slider-mid {
+    accent-color: rgba(v.$accent, 0.80);
+  }
+
+  &.slider-high {
+    accent-color: v.$color-ext-520;
+  }
 
   &:focus-visible {
-    outline: 2px solid rgba($accent, 0.70);
+    outline: 2px solid rgba(v.$accent, 0.70);
     outline-offset: 2px;
     border-radius: 2px;
   }
@@ -294,35 +302,39 @@ $accent: rgba(161, 216, 255, .9);
   font-family: v.$font-header;
   font-size: 6px;
   letter-spacing: 0.10em;
-  color: rgba($accent, 0.85);
+  color: v.$campaign-portal-text-secondary;
 }
 
 .influence-label-center {
   font-weight: 600;
-  color: rgba($accent, 0.95);
+  color: v.$campaign-portal-text-bright;
   text-align: center;
 }
 
 // ── Shared controls ────────────────────────────────────────────────────────────
 .pol-input {
-  background: rgba(14, 24, 32, 0.80);
-  border: 1px solid rgba($accent, 0.22);
+  background: v.$campaign-portal-bg-medium;
+  border: 1px solid rgba(v.$accent, 0.22);
   border-radius: 3px;
-  color: rgba(200, 225, 235, 0.95);
+  color: v.$campaign-portal-text-bright;
   font-family: v.$font-body;
   font-size: 13px;
   padding: 4px 8px;
   width: 100%;
 
-  &::placeholder { color: rgba($accent, 0.30); }
-
-  &:focus {
-    outline: 2px solid rgba($accent, 0.60);
-    outline-offset: 1px;
-    border-color: rgba($accent, 0.50);
+  &::placeholder {
+    color: v.$campaign-portal-text-muted;
   }
 
-  &--notes { min-width: 80px; }
+  &:focus {
+    outline: 2px solid rgba(v.$accent, 0.60);
+    outline-offset: 1px;
+    border-color: rgba(v.$accent, 0.50);
+  }
+
+  &--notes {
+    min-width: 80px;
+  }
 }
 
 
@@ -330,10 +342,10 @@ $accent: rgba(161, 216, 255, .9);
   width: 16px;
   height: 16px;
   cursor: pointer;
-  accent-color: rgba($accent, 0.80);
+  accent-color: rgba(v.$accent, 0.80);
 
   &:focus-visible {
-    outline: 2px solid rgba($accent, 0.80);
+    outline: 2px solid rgba(v.$accent, 0.80);
     outline-offset: 2px;
   }
 }
@@ -341,7 +353,7 @@ $accent: rgba(161, 216, 255, .9);
 .pol-remove {
   background: none;
   border: none;
-  color: rgba($accent, 0.8);
+  color: v.$campaign-portal-text-secondary;
   font-size: 16px;
   cursor: pointer;
   padding: 0 4px;
@@ -349,10 +361,12 @@ $accent: rgba(161, 216, 255, .9);
   transition: color 0.15s;
   flex-shrink: 0;
 
-  &:hover { color: rgba(220, 80, 80, 0.80); }
+  &:hover {
+    color: v.$color-ext-525;
+  }
 
   &:focus-visible {
-    outline: 2px solid rgba($accent, 0.70);
+    outline: 2px solid rgba(v.$accent, 0.70);
     outline-offset: 2px;
     border-radius: 2px;
   }
@@ -364,32 +378,34 @@ $accent: rgba(161, 216, 255, .9);
   font-size: 7px;
   letter-spacing: 0.16em;
   text-transform: uppercase;
-  color: rgba($accent, 0.9);
+  color: v.$campaign-portal-text-bright;
   background: none;
-  border: 1px solid rgba($accent, 0.20);
+  border: 1px solid rgba(v.$accent, 0.20);
   border-radius: 3px;
   padding: 5px 12px;
   cursor: pointer;
   transition: color 0.15s, border-color 0.15s;
 
   &:hover {
-    color: rgba($accent, 0.90);
-    border-color: rgba($accent, 0.50);
+    color: v.$campaign-portal-text-bright;
+    border-color: rgba(v.$accent, 0.50);
   }
 
   &:focus-visible {
-    outline: 2px solid rgba($accent, 0.70);
+    outline: 2px solid rgba(v.$accent, 0.70);
     outline-offset: 2px;
   }
 
-  &--inline { padding: 4px 10px; }
+  &--inline {
+    padding: 4px 10px;
+  }
 }
 
 .pol-textarea {
-  background: rgba(14, 24, 32, 0.80);
-  border: 1px solid rgba($accent, 0.22);
+  background: v.$campaign-portal-bg-medium;
+  border: 1px solid rgba(v.$accent, 0.22);
   border-radius: 4px;
-  color: rgba(200, 225, 235, 0.95);
+  color: v.$campaign-portal-text-bright;
   font-family: v.$font-body;
   font-size: 13px;
   line-height: 1.6;
@@ -398,12 +414,14 @@ $accent: rgba(161, 216, 255, .9);
   width: 100%;
   box-sizing: border-box;
 
-  &::placeholder { color: rgba($accent, 0.30); }
+  &::placeholder {
+    color: v.$campaign-portal-text-muted;
+  }
 
   &:focus {
-    outline: 2px solid rgba($accent, 0.60);
+    outline: 2px solid rgba(v.$accent, 0.60);
     outline-offset: 1px;
-    border-color: rgba($accent, 0.50);
+    border-color: rgba(v.$accent, 0.50);
   }
 }
 
@@ -431,7 +449,7 @@ $accent: rgba(161, 216, 255, .9);
     font-weight: bolder;
     letter-spacing: 0.16em;
     text-transform: uppercase;
-    color: rgba($accent, 0.85);
+    color: v.$campaign-portal-text-bright;
   }
 }
 
@@ -445,9 +463,11 @@ $accent: rgba(161, 216, 255, .9);
   flex-direction: column;
   gap: 4px;
   padding: 6px 0;
-  border-bottom: 1px solid rgba($accent, 0.08);
+  border-bottom: 1px solid rgba(v.$accent, 0.08);
 
-  &:last-child { border-bottom: none; }
+  &:last-child {
+    border-bottom: none;
+  }
 }
 
 .rels-row-top {
@@ -471,7 +491,7 @@ $accent: rgba(161, 216, 255, .9);
   font-weight: bolder;
   letter-spacing: 0.16em;
   text-transform: uppercase;
-  color: rgba($accent, 0.85);
+  color: v.$campaign-portal-text-bright;
   white-space: nowrap;
   flex-shrink: 0;
 }
@@ -490,7 +510,7 @@ $accent: rgba(161, 216, 255, .9);
 .roles-cast-name {
   font-family: v.$font-body;
   font-size: 13px;
-  color: rgba(200, 225, 235, 0.95);
+  color: v.$campaign-portal-text-bright;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -513,8 +533,8 @@ $accent: rgba(161, 216, 255, .9);
   width: 100%;
   max-width: 420px;
   height: auto;
-  background: rgba(8, 16, 22, 0.60);
-  border: 1px solid rgba($accent, 0.16);
+  background: v.$color-ext-527;
+  border: 1px solid rgba(v.$accent, 0.16);
   border-radius: 6px;
 }
 
@@ -522,46 +542,46 @@ $accent: rgba(161, 216, 255, .9);
   fill: none;
   stroke-linecap: round;
 
-  &.edge--allied    { stroke: rgba(120, 200, 120, 0.80); stroke-dasharray: none; }
-  &.edge--rival     { stroke: rgba(220, 130, 80, 0.80);  stroke-dasharray: 6 3; }
-  &.edge--enemy     { stroke: rgba(210, 70, 70, 0.80);   stroke-dasharray: 2 4; }
-  &.edge--neutral   { stroke: rgba($accent, 0.40);       stroke-dasharray: none; }
-  &.edge--blackmail { stroke: rgba(180, 80, 180, 0.80);  stroke-dasharray: 8 3 2 3; }
-  &.edge--patronage { stroke: rgba(200, 190, 100, 0.80); stroke-dasharray: none; stroke-width: 3; }
+  &.edge--allied    { stroke: v.$color-ext-519; stroke-dasharray: none; }
+  &.edge--rival     { stroke: v.$color-ext-520;  stroke-dasharray: 6 3; }
+  &.edge--enemy     { stroke: v.$color-ext-529;   stroke-dasharray: 2 4; }
+  &.edge--neutral   { stroke: rgba(v.$accent, 0.40);       stroke-dasharray: none; }
+  &.edge--blackmail { stroke: v.$color-ext-531;  stroke-dasharray: 8 3 2 3; }
+  &.edge--patronage { stroke: v.$color-ext-532; stroke-dasharray: none; stroke-width: 3; }
 }
 
 .web-node-circle {
-  fill: rgba(14, 24, 32, 0.90);
-  stroke: rgba($accent, 0.60);
+  fill: v.$color-ext-533;
+  stroke: rgba(v.$accent, 0.60);
   stroke-width: 1.5;
   transition: stroke 0.2s;
 }
 
 .web-node--hidden .web-node-circle {
-  stroke: rgba($accent, 0.28);
+  stroke: rgba(v.$accent, 0.28);
   stroke-dasharray: 4 3;
-  fill: rgba(14, 24, 32, 0.60);
+  fill: v.$color-ext-534;
 }
 
 .web-node-label {
   font-family: v.$font-header;
   font-size: 9px;
-  fill: rgba(200, 225, 235, 0.95);
+  fill: v.$campaign-portal-text-bright;
   letter-spacing: 0.08em;
 }
 
 .web-node-hidden-icon {
   font-family: v.$font-header;
   font-size: 11px;
-  fill: rgba($accent, 0.85);
+  fill: rgba(v.$accent, 0.85);
   font-weight: bold;
 }
 
 .arrow {
-  &--allied    { fill: rgba(120, 200, 120, 0.80); }
-  &--rival     { fill: rgba(220, 130, 80, 0.80); }
-  &--enemy     { fill: rgba(210, 70, 70, 0.80); }
-  &--blackmail { fill: rgba(180, 80, 180, 0.80); }
+  &--allied    { fill: v.$color-ext-519; }
+  &--rival     { fill: v.$color-ext-520; }
+  &--enemy     { fill: v.$color-ext-529; }
+  &--blackmail { fill: v.$color-ext-531; }
 }
 
 .web-legend {
@@ -569,7 +589,7 @@ $accent: rgba(161, 216, 255, .9);
   flex-wrap: wrap;
   gap: 12px 24px;
   padding: 12px 0 4px;
-  border-top: 1px solid rgba($accent, 0.12);
+  border-top: 1px solid rgba(v.$accent, 0.12);
 }
 
 .legend-item {
@@ -578,7 +598,7 @@ $accent: rgba(161, 216, 255, .9);
   gap: 8px;
   font-family: v.$font-body;
   font-size: 12px;
-  color: rgba(185, 210, 220, 0.95);
+  color: v.$campaign-portal-text-bright;
 }
 
 .legend-swatch {
@@ -598,7 +618,7 @@ $accent: rgba(161, 216, 255, .9);
 .district-cell {
   position: relative;
   background: var(--district-color, var(--district-neutral));
-  border: 2px solid rgba($accent, 0.30);
+  border: 2px solid rgba(v.$accent, 0.30);
   border-radius: 4px;
   padding: 14px 12px;
   cursor: default;
@@ -618,19 +638,19 @@ $accent: rgba(161, 216, 255, .9);
     pointer-events: none;
   }
 
-  &.pattern-diagonal::before { background: repeating-linear-gradient(45deg, currentColor 0, currentColor 1px, transparent 0, transparent 50%) 0/8px 8px; color: rgba($accent, 0.22); }
-  &.pattern-dots::before     { background: radial-gradient(circle, rgba($accent, 0.30) 1.5px, transparent 1.5px) 0/8px 8px; }
-  &.pattern-lines::before    { background: repeating-linear-gradient(0deg, currentColor 0, currentColor 1px, transparent 0, transparent 50%) 0/8px 8px; color: rgba($accent, 0.18); }
-  &.pattern-solid::before    { background: rgba($accent, 0.08); }
-  &.pattern-cross::before    { background: repeating-linear-gradient(0deg, rgba($accent, 0.15) 0, rgba($accent, 0.15) 1px, transparent 0, transparent 50%) 0/8px 8px,
-                                             repeating-linear-gradient(90deg, rgba($accent, 0.15) 0, rgba($accent, 0.15) 1px, transparent 0, transparent 50%) 0/8px 8px; }
+  &.pattern-diagonal::before { background: repeating-linear-gradient(45deg, currentColor 0, currentColor 1px, transparent 0, transparent 50%) 0/8px 8px; color: rgba(v.$accent, 0.22); }
+  &.pattern-dots::before     { background: radial-gradient(circle, rgba(v.$accent, 0.30) 1.5px, transparent 1.5px) 0/8px 8px; }
+  &.pattern-lines::before    { background: repeating-linear-gradient(0deg, currentColor 0, currentColor 1px, transparent 0, transparent 50%) 0/8px 8px; color: rgba(v.$accent, 0.18); }
+  &.pattern-solid::before    { background: rgba(v.$accent, 0.08); }
+  &.pattern-cross::before    { background: repeating-linear-gradient(0deg, rgba(v.$accent, 0.15) 0, rgba(v.$accent, 0.15) 1px, transparent 0, transparent 50%) 0/8px 8px,
+                                             repeating-linear-gradient(90deg, rgba(v.$accent, 0.15) 0, rgba(v.$accent, 0.15) 1px, transparent 0, transparent 50%) 0/8px 8px; }
 
   &::after {
     content: '';
     position: absolute;
     inset: 0;
     border-radius: 3px;
-    background: rgba(8, 16, 22, 0.65);
+    background: v.$color-ext-538;
     z-index: 0;
     pointer-events: none;
   }
@@ -640,32 +660,32 @@ $accent: rgba(161, 216, 255, .9);
   }
 
   &:focus-visible {
-    outline: 3px solid rgba(255, 255, 255, 0.90);
+    outline: 3px solid v.$color-ext-539;
     outline-offset: 2px;
   }
 }
 
 .glow--light {
   box-shadow:
-    0 0  4px  1px rgba(255, 255, 255, 0.20),
-    0 0  8px  2px rgba(255, 255, 255, 0.12),
-    0 0 14px  4px rgba(255, 255, 255, 0.06);
+    0 0  4px  1px v.$color-ext-540,
+    0 0  8px  2px v.$color-ext-154,
+    0 0 14px  4px v.$color-ext-541;
 }
 
 .glow--medium {
   box-shadow:
-    0 0  4px  1px rgba(255, 255, 255, 0.40),
-    0 0 10px  3px rgba(255, 255, 255, 0.22),
-    0 0 20px  6px rgba(255, 255, 255, 0.12),
-    0 0 30px  8px rgba(255, 255, 255, 0.06);
+    0 0  4px  1px v.$color-ext-542,
+    0 0 10px  3px v.$color-ext-209,
+    0 0 20px  6px v.$color-ext-154,
+    0 0 30px  8px v.$color-ext-541;
 }
 
 .glow--heavy {
   box-shadow:
-    0 0  4px  1px rgba(255, 255, 255, 0.70),
-    0 0 10px  3px rgba(255, 255, 255, 0.40),
-    0 0 22px  7px rgba(255, 255, 255, 0.24),
-    0 0 36px 10px rgba(255, 255, 255, 0.12);
+    0 0  4px  1px v.$color-ext-543,
+    0 0 10px  3px v.$color-ext-542,
+    0 0 22px  7px v.$color-ext-544,
+    0 0 36px 10px v.$color-ext-154;
 }
 
 .district-name {
@@ -674,7 +694,7 @@ $accent: rgba(161, 216, 255, .9);
   font-size: 9px;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: rgba(200, 225, 235, 0.90);
+  color: v.$campaign-portal-text-bright;
   font-weight: 600;
   z-index: 1;
 }
@@ -683,7 +703,7 @@ $accent: rgba(161, 216, 255, .9);
   position: relative;
   font-family: v.$font-body;
   font-size: 11px;
-  color: rgba(185, 210, 220, 0.9);
+  color: v.$campaign-portal-text-secondary;
   z-index: 1;
 }
 
@@ -692,7 +712,7 @@ $accent: rgba(161, 216, 255, .9);
   font-family: v.$font-header;
   font-size: 8px;
   letter-spacing: 0.10em;
-  color: rgba($accent, 0.85);
+  color: v.$campaign-portal-text-secondary;
   z-index: 1;
 }
 
@@ -703,7 +723,7 @@ $accent: rgba(161, 216, 255, .9);
   font-family: v.$font-header;
   font-size: 11px;
   font-weight: bold;
-  color: rgba($accent, 0.85);
+  color: v.$campaign-portal-text-secondary;
   z-index: 1;
 }
 
@@ -712,7 +732,7 @@ $accent: rgba(161, 216, 255, .9);
   flex-direction: column;
   gap: 10px;
   padding-top: 12px;
-  border-top: 1px solid rgba($accent, 0.12);
+  border-top: 1px solid rgba(v.$accent, 0.12);
 }
 
 .map-legend-influence-title {
@@ -720,7 +740,7 @@ $accent: rgba(161, 216, 255, .9);
   font-size: 7px;
   letter-spacing: 0.2em;
   text-transform: uppercase;
-  color: rgba($accent, 0.85);
+  color: v.$campaign-portal-text-bright;
 }
 
 .map-legend-influence-items {
@@ -738,14 +758,14 @@ $accent: rgba(161, 216, 255, .9);
 .map-legend-influence-label {
   font-family: v.$font-body;
   font-size: 12px;
-  color: rgba(185, 210, 220, 0.95);
+  color: v.$campaign-portal-text-bright;
 }
 
 .map-legend-influence-swatch {
   display: inline-block;
   width: 20px;
   height: 20px;
-  border: 2px solid rgba($accent, 0.30);
+  border: 2px solid rgba(v.$accent, 0.30);
   border-radius: 4px;
   background: var(--district-neutral);
   flex-shrink: 0;
@@ -758,11 +778,11 @@ $accent: rgba(161, 216, 255, .9);
 // ── Social Compass ─────────────────────────────────────────────────────────────
 
 :host {
-  --compass-hostile: rgba(210,  70,  70, 0.85);
-  --compass-amber:   rgba(220, 150,  60, 0.85);
-  --compass-grey:    rgba(140, 160, 170, 0.75);
-  --compass-sage:    rgba(120, 180, 140, 0.85);
-  --compass-devoted: rgba( 80, 190, 110, 0.90);
+  --compass-hostile: v.$color-ext-546;
+  --compass-amber:   v.$color-ext-547;
+  --compass-grey:    v.$color-ext-548;
+  --compass-sage:    v.$color-ext-549;
+  --compass-devoted: v.$color-ext-550;
 }
 
 .compass-container {
@@ -776,14 +796,14 @@ $accent: rgba(161, 216, 255, .9);
   width: 100%;
   max-width: 480px;
   height: auto;
-  background: rgba(8, 16, 22, 0.60);
-  border: 1px solid rgba($accent, 0.16);
+  background: v.$color-ext-527;
+  border: 1px solid rgba(v.$accent, 0.16);
   border-radius: 6px;
 }
 
 // ── Compass background ─────────────────────────────────────────────────────────
 .compass-bg {
-  fill: rgba(12, 20, 28, 0.70);
+  fill: v.$color-ext-551;
   stroke: none;
 }
 
@@ -791,13 +811,13 @@ $accent: rgba(161, 216, 255, .9);
 .compass-band {
   stroke: none;
 
-  &--hostile { fill: rgba(200, 50, 50, 0.09); }
-  &--devoted { fill: rgba(70, 170, 90, 0.09); }
+  &--hostile { fill: v.$color-ext-552; }
+  &--devoted { fill: v.$color-ext-553; }
 }
 
 // ── True Neutral ring ──────────────────────────────────────────────────────────
 .compass-tn-ring {
-  fill: rgba(154, 176, 184, 0.08);
+  fill: v.$color-ext-554;
   stroke: none;
 }
 
@@ -806,10 +826,10 @@ $accent: rgba(161, 216, 255, .9);
   fill: none;
   stroke-linecap: round;
 
-  &--outer { stroke: rgba($accent, 0.50); stroke-width: 1.5; }
-  &--mid   { stroke: rgba($accent, 0.22); stroke-width: 1; stroke-dasharray: 4 4; }
-  &--tn    { stroke: rgba($accent, 0.35); stroke-width: 1; }
-  &--value { stroke: rgba($accent, 0.12); stroke-width: 0.75; }
+  &--outer { stroke: rgba(v.$accent, 0.50); stroke-width: 1.5; }
+  &--mid   { stroke: rgba(v.$accent, 0.22); stroke-width: 1; stroke-dasharray: 4 4; }
+  &--tn    { stroke: rgba(v.$accent, 0.35); stroke-width: 1; }
+  &--value { stroke: rgba(v.$accent, 0.12); stroke-width: 0.75; }
 }
 
 // ── Ring labels ────────────────────────────────────────────────────────────────
@@ -818,13 +838,13 @@ $accent: rgba(161, 216, 255, .9);
   font-size: 7px;
   letter-spacing: 0.18em;
   text-transform: uppercase;
-  fill: rgba(180, 210, 220, 0.75);
+  fill: v.$campaign-portal-text-secondary;
   pointer-events: none;
 }
 
 // ── Slice dividers ─────────────────────────────────────────────────────────────
 .compass-slice-line {
-  stroke: rgba($accent, 0.18);
+  stroke: rgba(v.$accent, 0.18);
   stroke-width: 1;
   stroke-dasharray: 3 5;
 }
@@ -836,28 +856,28 @@ $accent: rgba(161, 216, 255, .9);
   letter-spacing: 0.20em;
   text-transform: uppercase;
 
-  &--good    { fill: rgba(120, 200, 130, 0.90); }
-  &--evil    { fill: rgba(210,  70,  70, 0.90); }
-  &--neutral { fill: rgba($accent, 0.85); }
+  &--good    { fill: v.$color-ext-557; }
+  &--evil    { fill: v.$color-ext-558; }
+  &--neutral { fill: v.$campaign-portal-text-bright; }
 }
 
 // ── Alignment icons ────────────────────────────────────────────────────────────
 .compass-icon {
   font-size: 13px;
-  fill: rgba(200, 225, 235, 0.85);
+  fill: v.$campaign-portal-text-bright;
   dominant-baseline: middle;
 }
 
 .compass-tn-icon {
   font-size: 11px;
-  fill: rgba($accent, 0.85);
+  fill: v.$campaign-portal-text-bright;
   dominant-baseline: middle;
 }
 
 // ── Party center ───────────────────────────────────────────────────────────────
 .compass-center {
-  fill: rgba(12, 20, 28, 0.90);
-  stroke: rgba($accent, 0.65);
+  fill: v.$color-ext-559;
+  stroke: rgba(v.$accent, 0.65);
   stroke-width: 1.5;
 }
 
@@ -866,7 +886,7 @@ $accent: rgba(161, 216, 255, .9);
   font-size: 7px;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  fill: rgba($accent, 0.90);
+  fill: v.$campaign-portal-text-bright;
   dominant-baseline: middle;
 }
 
@@ -875,13 +895,13 @@ $accent: rgba(161, 216, 255, .9);
   outline: none;
 
   &:focus-visible .compass-node-circle {
-    stroke: rgba(255, 255, 255, 0.80);
+    stroke: v.$color-ext-561;
     stroke-width: 2;
   }
 }
 
 .compass-node-circle {
-  stroke: rgba(0, 0, 0, 0.45);
+  stroke: v.$journal-leather-cover-shadow;
   stroke-width: 1.5;
   transition: opacity 0.18s, stroke-width 0.12s;
 
@@ -891,7 +911,7 @@ $accent: rgba(161, 216, 255, .9);
 }
 
 .compass-node--unassessed .compass-node-circle {
-  stroke: rgba($accent, 0.45);
+  stroke: rgba(v.$accent, 0.45);
   stroke-dasharray: 4 3;
   stroke-width: 1.5;
   fill-opacity: 0.70;
@@ -901,7 +921,7 @@ $accent: rgba(161, 216, 255, .9);
   font-family: v.$font-header;
   font-weight: 700;
   letter-spacing: 0.04em;
-  fill: rgba(255, 255, 255, 0.90);
+  fill: v.$campaign-portal-text-bright;
   pointer-events: none;
 }
 
@@ -909,7 +929,7 @@ $accent: rgba(161, 216, 255, .9);
   font-family: v.$font-header;
   font-size: 7px;
   letter-spacing: 0.08em;
-  fill: rgba(200, 225, 235, 0.90);
+  fill: v.$campaign-portal-text-bright;
   pointer-events: none;
 }
 
@@ -922,7 +942,7 @@ $accent: rgba(161, 216, 255, .9);
 .compass-unassessed-notice {
   font-family: v.$font-body;
   font-size: 12px;
-  color: rgba($accent, 0.82);
+  color: v.$campaign-portal-text-secondary;
   font-style: italic;
   text-align: center;
   margin: 0;
@@ -935,7 +955,7 @@ $accent: rgba(161, 216, 255, .9);
   gap: 20px 40px;
   justify-content: center;
   padding: 12px 0 4px;
-  border-top: 1px solid rgba($accent, 0.12);
+  border-top: 1px solid rgba(v.$accent, 0.12);
   width: 100%;
 }
 
@@ -950,7 +970,7 @@ $accent: rgba(161, 216, 255, .9);
   font-size: 7px;
   letter-spacing: 0.18em;
   text-transform: uppercase;
-  color: rgba($accent, 0.85);
+  color: v.$campaign-portal-text-bright;
 }
 
 .compass-legend-items {
@@ -965,7 +985,7 @@ $accent: rgba(161, 216, 255, .9);
   height: 10px;
   border-radius: 50%;
   flex-shrink: 0;
-  border: 1px solid rgba(0, 0, 0, 0.30);
+  border: 1px solid v.$color-ext-484;
 
   &--nr { width:  9px; height:  9px; }   // unrated neutral
   &--sm { width:  7px; height:  7px; }   // 1 star
@@ -992,10 +1012,10 @@ $accent: rgba(161, 216, 255, .9);
   z-index: 201;
   opacity: 0;
   transition: none;
-  background: rgba(10, 18, 26, 0.96);
-  border: 1px solid rgba($accent, 0.22);
+  background: v.$color-ext-562;
+  border: 1px solid rgba(v.$accent, 0.22);
   border-radius: 6px;
-  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.70);
+  box-shadow: 0 16px 48px v.$color-ext-208;
   width: 260px;
   max-height: 90vh;
   overflow-y: auto;
@@ -1031,7 +1051,7 @@ $accent: rgba(161, 216, 255, .9);
 .cast-card-popout-placeholder {
   width: 100%;
   height: 100%;
-  background: linear-gradient(160deg, #c8b07a, #e0c98a, #c4a86a);
+  background: linear-gradient(160deg, v.$color-lib-cast-1, v.$color-lib-cast-2, v.$color-lib-cast-3);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1041,14 +1061,14 @@ $accent: rgba(161, 216, 255, .9);
   font-family: v.$font-header;
   font-size: 56px;
   font-weight: 700;
-  color: rgba(255, 255, 255, 0.85);
+  color: v.$campaign-portal-text-bright;
   line-height: 1;
 }
 
 .cast-card-popout-desc-overlay {
   position: absolute;
   inset: 0;
-  background: linear-gradient(to top, rgba(4, 8, 14, 0.88) 0%, transparent 55%);
+  background: linear-gradient(to top, v.$color-ext-564 0%, transparent 55%);
   display: flex;
   align-items: flex-end;
   padding: 10px 12px;
@@ -1058,7 +1078,7 @@ $accent: rgba(161, 216, 255, .9);
   font-family: v.$font-body;
   font-size: 12px;
   line-height: 1.45;
-  color: rgba(220, 235, 240, 0.95);
+  color: v.$campaign-portal-text-bright;
   font-style: italic;
   margin: 0;
   display: -webkit-box;
@@ -1069,7 +1089,7 @@ $accent: rgba(161, 216, 255, .9);
 
 .cast-card-popout-header {
   padding: 10px 14px 8px;
-  border-bottom: 1px solid rgba($accent, 0.12);
+  border-bottom: 1px solid rgba(v.$accent, 0.12);
 }
 
 .cast-card-popout-name {
@@ -1077,13 +1097,13 @@ $accent: rgba(161, 216, 255, .9);
   font-size: 12px;
   font-weight: 600;
   letter-spacing: 0.06em;
-  color: rgba(220, 235, 240, 0.92);
+  color: v.$campaign-portal-text-bright;
 }
 
 .cast-card-popout-role {
   font-family: v.$font-body;
   font-size: 13px;
-  color: rgba($accent, 0.90);
+  color: v.$campaign-portal-text-bright;
   margin-top: 2px;
 }
 
@@ -1118,28 +1138,28 @@ $accent: rgba(161, 216, 255, .9);
   font-size: 7px;
   letter-spacing: 0.20em;
   text-transform: uppercase;
-  color: rgba($accent, 0.85);
+  color: v.$campaign-portal-text-bright;
   white-space: nowrap;
 }
 
 .cast-card-popout-rule {
   flex: 1;
   height: 1px;
-  background: linear-gradient(to right, rgba($accent, 0.22), transparent);
+  background: linear-gradient(to right, rgba(v.$accent, 0.22), transparent);
   display: inline-block;
 }
 
 .cast-card-popout-value {
   font-family: v.$font-body;
   font-size: 14px;
-  color: rgba(200, 225, 235, 0.95);
+  color: v.$campaign-portal-text-bright;
 }
 
 .cast-card-popout-notes {
   font-family: v.$font-body;
   font-size: 13px;
   line-height: 1.5;
-  color: rgba(185, 210, 220, 0.90);
+  color: v.$campaign-portal-text-secondary;
   font-style: italic;
   display: -webkit-box;
   -webkit-line-clamp: 3;
@@ -1154,7 +1174,7 @@ $accent: rgba(161, 216, 255, .9);
   z-index: 1;
   background: none;
   border: none;
-  color: rgba(200, 225, 235, 0.85);
+  color: v.$campaign-portal-text-bright;
   font-size: 20px;
   line-height: 1;
   cursor: pointer;
@@ -1162,10 +1182,10 @@ $accent: rgba(161, 216, 255, .9);
   padding: 2px 4px;
   transition: color 0.15s;
 
-  &:hover { color: rgba(200, 225, 235, 0.95); }
+  &:hover { color: v.$campaign-portal-text-bright; }
 
   &:focus-visible {
-    outline: 2px solid rgba($accent, 0.70);
+    outline: 2px solid rgba(v.$accent, 0.70);
     outline-offset: 2px;
     border-radius: 2px;
   }
@@ -1175,12 +1195,12 @@ $accent: rgba(161, 216, 255, .9);
 .cast-spark {
   position: fixed;
   left: var(--spark-x);
-  top:  var(--spark-y);
+  top: var(--spark-y);
   width: 3px;
   height: 13px;
   border-radius: 99px;
-  background: var(--spark-color, #{$accent});
-  box-shadow: 0 0 4px 1px var(--spark-color, #{$accent});
+  background: var(--spark-color, #{v.$accent});
+  box-shadow: 0 0 4px 1px var(--spark-color, #{v.$accent});
   transform-origin: 50% 100%;
   z-index: 202;
   pointer-events: none;

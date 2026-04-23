@@ -16,8 +16,8 @@
 
 .join-ornament {
   font-size: 18px;
-  color: rgba(198, 152, 48, 0.65);
-  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
+  color: v.$color-ext-609;
+  text-shadow: 0 1px 4px v.$color-ext-388;
   margin-bottom: 0;
 }
 
@@ -55,7 +55,7 @@
 
 .join-error-box {
   margin-bottom: 10px;
-  border-color: rgba(130, 28, 28, 0.4);
+  border-color: v.$color-ext-21;
 }
 
 .join-submit-btn {

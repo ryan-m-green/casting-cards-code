@@ -1,7 +1,5 @@
 @use '../../../../styles/variables' as v;
 
-$subLoc-olive: #a8a070;
-
 :host {
   display: block;
   width: 100%;
@@ -11,7 +9,7 @@ $subLoc-olive: #a8a070;
 .void-canvas {
   width: 100%;
   min-height: 100%;
-  background: #000;
+  background: v.$color-black;
   position: relative;
   animation: portal-inward-breathe 6.4s ease-in-out infinite;
   overflow-y: auto;
@@ -21,17 +19,17 @@ $subLoc-olive: #a8a070;
 @keyframes portal-inward-breathe {
   0%, 100% {
     box-shadow:
-      inset 0 0 0    1px color-mix(in srgb, var(--portal-color, #{$subLoc-olive}) 40%, white 60%),
-      inset 0 0  6px  2px color-mix(in srgb, var(--portal-color, #{$subLoc-olive}), transparent 28%),
-      inset 0 0 14px  4px color-mix(in srgb, var(--portal-color, #{$subLoc-olive}), transparent 52%),
-      inset 0 0 25px  8px color-mix(in srgb, var(--portal-color, #{$subLoc-olive}), transparent 76%);
+      inset 0 0 0    1px color-mix(in srgb, var(--portal-color, #{v.$subLoc-olive}) 40%, white 60%),
+      inset 0 0  6px  2px color-mix(in srgb, var(--portal-color, #{v.$subLoc-olive}), transparent 28%),
+      inset 0 0 14px  4px color-mix(in srgb, var(--portal-color, #{v.$subLoc-olive}), transparent 52%),
+      inset 0 0 25px  8px color-mix(in srgb, var(--portal-color, #{v.$subLoc-olive}), transparent 76%);
   }
   50% {
     box-shadow:
-      inset 0 0 0    1px color-mix(in srgb, var(--portal-color, #{$subLoc-olive}) 25%, white 75%),
-      inset 0 0  9px  3px color-mix(in srgb, var(--portal-color, #{$subLoc-olive}), transparent 12%),
-      inset 0 0 19px  6px color-mix(in srgb, var(--portal-color, #{$subLoc-olive}), transparent 36%),
-      inset 0 0 35px 12px color-mix(in srgb, var(--portal-color, #{$subLoc-olive}), transparent 64%);
+      inset 0 0 0    1px color-mix(in srgb, var(--portal-color, #{v.$subLoc-olive}) 25%, white 75%),
+      inset 0 0  9px  3px color-mix(in srgb, var(--portal-color, #{v.$subLoc-olive}), transparent 12%),
+      inset 0 0 19px  6px color-mix(in srgb, var(--portal-color, #{v.$subLoc-olive}), transparent 36%),
+      inset 0 0 35px 12px color-mix(in srgb, var(--portal-color, #{v.$subLoc-olive}), transparent 64%);
   }
 }
 
@@ -57,17 +55,17 @@ $subLoc-olive: #a8a070;
   letter-spacing: 0.16em;
   text-transform: uppercase;
   padding: 7px 16px;
-  background: rgba(110, 40, 208, 0.18);
-  border: 1px solid rgba(110, 40, 208, 0.4);
+  background: v.$color-ext-22;
+  border: 1px solid v.$campaign-portal-border-bold;
   border-radius: 20px;
-  color: rgba(200, 180, 255, 0.85);
+  color: v.$campaign-portal-text-purple-light;
   cursor: pointer;
   transition: background 0.18s ease, border-color 0.18s ease, color 0.18s ease;
 
   &:hover {
-    background: rgba(110, 40, 208, 0.35);
-    border-color: rgba(110, 40, 208, 0.65);
-    color: rgba(220, 200, 255, 0.98);
+    background: v.$campaign-portal-border-accent;
+    border-color: v.$campaign-portal-border-strong-focus;
+    color: v.$campaign-portal-text-lavender-bright;
   }
 }
 
@@ -82,7 +80,7 @@ $subLoc-olive: #a8a070;
 .void-crumb-sep {
   font-family: v.$font-header;
   font-size: 9px;
-  color: color-mix(in srgb, var(--portal-color, #{$subLoc-olive}), white 55%);
+  color: color-mix(in srgb, var(--portal-color, #{v.$subLoc-olive}), white 55%);
   user-select: none;
   pointer-events: none;
 }
@@ -92,14 +90,14 @@ $subLoc-olive: #a8a070;
   font-size: 9px;
   letter-spacing: 0.18em;
   text-transform: uppercase;
-  color: color-mix(in srgb, var(--portal-color, #{$subLoc-olive}), white 75%);
+  color: color-mix(in srgb, var(--portal-color, #{v.$subLoc-olive}), white 75%);
   background: none;
   border: none;
   cursor: pointer;
   transition: color 0.2s ease;
   white-space: nowrap;
 
-  &:hover { color: color-mix(in srgb, var(--portal-color, #{$subLoc-olive}), white 92%); }
+  &:hover { color: color-mix(in srgb, var(--portal-color, #{v.$subLoc-olive}), white 92%); }
 }
 
 .void-title {
@@ -111,11 +109,11 @@ $subLoc-olive: #a8a070;
   font-weight: 600;
   letter-spacing: 0.28em;
   text-transform: uppercase;
-  color: rgba(200, 225, 235, 0.92);
+  color: v.$campaign-portal-text-softer;
   text-shadow:
-    0 0 20px color-mix(in srgb, var(--portal-color, #{$subLoc-olive}), white 35%),
-    0 0 50px color-mix(in srgb, var(--portal-color, #{$subLoc-olive}), transparent 38%),
-    0 1px 3px rgba(0, 0, 0, 0.95);
+    0 0 20px color-mix(in srgb, var(--portal-color, #{v.$subLoc-olive}), white 35%),
+    0 0 50px color-mix(in srgb, var(--portal-color, #{v.$subLoc-olive}), transparent 38%),
+    0 1px 3px v.$color-ext-23;
 }
 
 .subLoc-body {
@@ -134,8 +132,8 @@ $subLoc-olive: #a8a070;
 .subLoc-detail-panel {
   flex: 1;
   min-width: 0;
-  background: rgba(14, 24, 32, 0.96);
-  border: 1px solid rgba($subLoc-olive, 0.40);
+  background: v.$campaign-portal-bg-dark;
+  border: 1px solid rgba(v.$subLoc-olive, 0.40);
   border-radius: 6px;
   display: flex;
   flex-direction: column;
@@ -153,7 +151,7 @@ $subLoc-olive: #a8a070;
   flex-direction: column;
   gap: 6px;
   padding: 12px 16px;
-  border-bottom: 1px solid rgba($subLoc-olive, 0.12);
+  border-bottom: 1px solid rgba(v.$subLoc-olive, 0.12);
 }
 
 .detail-grid {
@@ -167,10 +165,10 @@ $subLoc-olive: #a8a070;
   flex-direction: column;
   gap: 6px;
   padding: 12px 16px;
-  border-bottom: 1px solid rgba($subLoc-olive, 0.08);
+  border-bottom: 1px solid rgba(v.$subLoc-olive, 0.08);
 
   &:nth-child(odd) {
-    border-right: 1px solid rgba($subLoc-olive, 0.08);
+    border-right: 1px solid rgba(v.$subLoc-olive, 0.08);
   }
 
   &--full {
@@ -184,7 +182,7 @@ $subLoc-olive: #a8a070;
   align-items: flex-start;
   gap: 10px;
   padding: 10px 16px;
-  border-top: 1px solid rgba($subLoc-olive, 0.08);
+  border-top: 1px solid rgba(v.$subLoc-olive, 0.08);
 }
 
 .secret-lock-icon {
@@ -197,11 +195,11 @@ $subLoc-olive: #a8a070;
 .secret-text {
   font-family: v.$font-body;
   font-size: 13px;
-  color: rgba(185, 210, 220, 0.9);
+  color: v.$campaign-portal-text-secondary;
   line-height: 1.5;
 
   &--revealed {
-    color: rgba(200, 225, 235, 0.95);
+    color: v.$campaign-portal-text-bright;
   }
 }
 
@@ -209,20 +207,20 @@ $subLoc-olive: #a8a070;
   flex-shrink: 0;
   width: 100%;
   padding: 5px 0;
-  background: rgba($subLoc-olive, 0.04);
+  background: rgba(v.$subLoc-olive, 0.04);
   border: none;
-  border-top: 1px solid rgba($subLoc-olive, 0.14);
+  border-top: 1px solid rgba(v.$subLoc-olive, 0.14);
   border-radius: 0 0 6px 6px;
   cursor: pointer;
   font-family: v.$font-header;
   font-size: 8px;
   letter-spacing: 0.12em;
-  color: rgba($subLoc-olive, 0.85);
+  color: rgba(v.$subLoc-olive, 0.85);
   transition: background 0.18s ease, color 0.18s ease;
 
   &:hover {
-    background: rgba($subLoc-olive, 0.10);
-    color: rgba($subLoc-olive, 0.95);
+    background: rgba(v.$subLoc-olive, 0.10);
+    color: rgba(v.$subLoc-olive, 0.95);
   }
 }
 
@@ -231,20 +229,20 @@ $subLoc-olive: #a8a070;
   font-size: 7px;
   letter-spacing: 0.2em;
   text-transform: uppercase;
-  color: rgba($subLoc-olive, 0.85);
+  color: rgba(v.$subLoc-olive, 0.85);
   white-space: nowrap;
 }
 
 .detail-line {
   height: 1px;
   width: 100%;
-  background: linear-gradient(to right, rgba($subLoc-olive, 0.22), transparent);
+  background: linear-gradient(to right, rgba(v.$subLoc-olive, 0.22), transparent);
 }
 
 .detail-value {
   font-family: v.$font-body;
   font-size: 14px;
-  color: rgba(200, 225, 235, 0.95);
+  color: v.$campaign-portal-text-bright;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -253,7 +251,7 @@ $subLoc-olive: #a8a070;
     white-space: normal;
     font-size: 13px;
     line-height: 1.6;
-    color: rgba(185, 210, 220, 0.9);
+    color: v.$campaign-portal-text-secondary;
     margin: 0;
   }
 }
@@ -269,8 +267,8 @@ $subLoc-olive: #a8a070;
   font-size: 7px;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: rgba($subLoc-olive, 0.80);
-  border: 1px solid rgba($subLoc-olive, 0.28);
+  color: rgba(v.$subLoc-olive, 0.80);
+  border: 1px solid rgba(v.$subLoc-olive, 0.28);
   border-radius: 2px;
   padding: 2px 8px;
 }
@@ -280,7 +278,7 @@ $subLoc-olive: #a8a070;
   flex-direction: column;
   gap: 8px;
   padding: 12px 16px;
-  border-bottom: 1px solid rgba($subLoc-olive, 0.08);
+  border-bottom: 1px solid rgba(v.$subLoc-olive, 0.08);
 }
 
 .detail-shop-grid {
@@ -296,13 +294,13 @@ $subLoc-olive: #a8a070;
   gap: 12px;
   width: calc(50% - 8px);
   padding: 6px 0;
-  border-bottom: 1px solid rgba($subLoc-olive, 0.28);
+  border-bottom: 1px solid rgba(v.$subLoc-olive, 0.28);
 }
 
 .detail-shop-item-name {
   font-family: v.$font-body;
   font-size: 14px;
-  color: rgba(200, 225, 235, 0.82);
+  color: v.$color-ext-608;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -312,7 +310,7 @@ $subLoc-olive: #a8a070;
   font-family: v.$font-header;
   font-size: 12px;
   letter-spacing: 0.12em;
-  color: rgba($subLoc-olive, 0.95);
+  color: rgba(v.$subLoc-olive, 0.95);
   white-space: nowrap;
   flex-shrink: 0;
 }
@@ -335,15 +333,15 @@ $subLoc-olive: #a8a070;
   font-size: 9px;
   letter-spacing: 0.22em;
   text-transform: uppercase;
-  color: rgba(200, 225, 235, 0.92);
+  color: v.$campaign-portal-text-softer;
   white-space: nowrap;
-  text-shadow: 0 0 10px color-mix(in srgb, var(--portal-color, #{$subLoc-olive}) 22%, transparent 78%);
+  text-shadow: 0 0 10px color-mix(in srgb, var(--portal-color, #{v.$subLoc-olive}) 22%, transparent 78%);
 }
 
 .cast-section-line {
   flex: 1;
   height: 1px;
-  background: linear-gradient(to right, rgba(200, 225, 235, 0.92), transparent);
+  background: linear-gradient(to right, v.$campaign-portal-text-softer, transparent);
 }
 
 .cast-grid {
@@ -363,10 +361,7 @@ $subLoc-olive: #a8a070;
 
   &:hover {
     .pc-card {
-      box-shadow:
-        0 8px 24px rgba(0, 0, 0, 0.5),
-        0 0 16px color-mix(in srgb, var(--portal-color, #{$subLoc-olive}) 22%, transparent 78%),
-        0 0 42px color-mix(in srgb, var(--portal-color, #{$subLoc-olive}) 10%, transparent 90%);
+      box-shadow: 0 8px 24px v.$color-shadow-light, 0 0 16px color-mix(in srgb, var(--portal-color, #{v.$subLoc-olive}) 22%, transparent 78%), 0 0 42px color-mix(in srgb, var(--portal-color, #{v.$subLoc-olive}) 10%, transparent 90%);
     }
   }
 }

@@ -10,10 +10,10 @@
   justify-content: space-between;
   width: 100%;
   box-sizing: border-box;
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(110, 40, 208, 0.25);
+  background: v.$color-ext-346;
+  border: 1px solid v.$campaign-portal-border-medium;
   border-radius: 5px;
-  color: rgb(65, 106, 135, 0.70);
+  color: v.$campaign-portal-text-bright;
   font-family: v.$font-body;
   font-size: var(--dd-font-size, 14px);
   padding: 8px 10px;
@@ -23,7 +23,7 @@
 
   &:hover,
   &:focus {
-    border-color: rgba(110, 40, 208, 0.55);
+    border-color: v.$campaign-portal-border-active;
     outline: none;
   }
 }
@@ -35,7 +35,7 @@
 .campaign-dropdown-caret {
   flex-shrink: 0;
   margin-left: 6px;
-  color: rgba(195, 170, 255, 0.8);
+  color: v.$campaign-portal-text-secondary;
   font-size: 12px;
   transition: transform 0.15s ease;
 
@@ -47,30 +47,30 @@
   top: calc(100% + 4px);
   left: 0;
   right: 0;
-  background: #1a0d2e;
-  border: 1px solid rgba(110, 40, 208, 0.4);
+  background: v.$color-ext-633;
+  border: 1px solid v.$campaign-portal-border-bold;
   border-radius: 5px;
   list-style: none;
   margin: 0;
   padding: 4px 0;
   z-index: 100;
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.6);
+  box-shadow: 0 6px 20px v.$journal-spine-band-shadow;
 }
 
 .campaign-dropdown-item {
   font-family: v.$font-body;
   font-size: var(--dd-font-size, 14px);
-  color: rgb(65, 106, 135, 0.70);
+  color: v.$campaign-portal-text-bright;
   padding: 9px 12px;
   cursor: pointer;
   transition: background 0.12s ease;
 
   &:hover {
-    background: rgba(110, 40, 208, 0.2);
+    background: v.$campaign-portal-bg-placeholder;
   }
 
   &--selected {
-    background: rgba(110, 40, 208, 0.25);
-    color: rgba(235, 220, 255, 1);
+    background: v.$campaign-portal-border-medium;
+    color: v.$campaign-portal-text-bright;
   }
 }

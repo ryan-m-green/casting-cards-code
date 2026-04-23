@@ -17,11 +17,12 @@ import {
 } from '../../../shared/components/card-reveal-overlay/card-reveal-overlay.component';
 import { WhisperCardComponent } from '../../../shared/components/whisper-card/whisper-card.component';
 import { CurrencyCardComponent } from '../../../shared/components/currency-card/currency-card.component';
+import { CurrencyDisplayComponent, CurrencyLine } from '../../../shared/components/currency-display/currency-display.component';
 
 @Component({
   selector: 'app-player-campaign-shell',
   standalone: true,
-  imports: [RouterOutlet, CommonModule, TimeOfDayBarComponent, CardRevealOverlayComponent, WhisperCardComponent, CurrencyCardComponent],
+  imports: [RouterOutlet, CommonModule, TimeOfDayBarComponent, CardRevealOverlayComponent, WhisperCardComponent, CurrencyCardComponent, CurrencyDisplayComponent],
   templateUrl: './player-campaign-shell.component.html',
   styleUrl: './player-campaign-shell.component.scss',
 })
@@ -40,6 +41,10 @@ export class PlayerCampaignShellComponent implements OnInit, OnDestroy {
   overlayData       = signal<CardRevealOverlayData | null>(null);
   wizardSecretContent   = signal<string | null>(null);
   wizardSecretRecipient = signal<string>('');
+
+  // ── Purse popover ──────────────────────────────────────────────────────────
+  showPurse        = signal(false);
+  purse            = signal<CurrencyLine[]>([]);
 
   // ── Currency card overlay ─────────────────────────────────────────────────
   showGoldCard     = signal(false);
@@ -110,13 +115,18 @@ export class PlayerCampaignShellComponent implements OnInit, OnDestroy {
 
     // Show currency card when the DM awards gold to this player or the party
     effect(() => {
-      const event = this.hub.goldAwarded();
-      if (!event || event.campaignId !== this.campaignId()) return;
+      const queue = this.hub.goldAwarded();
+      if (!queue.length) return;
       const myId = untracked(() => this.auth.currentUser()?.id);
-      if (event.playerUserId !== null && event.playerUserId !== myId) return;
-      this.goldCardAmount.set(event.amount);
-      this.goldCardCurrency.set(event.currency);
-      this.goldCardNote.set(event.note);
+      const mine = queue.find(e =>
+        e.campaignId === this.campaignId() &&
+        (e.playerUserId === null || e.playerUserId === myId)
+      );
+      this.hub.goldAwarded.set([]);
+      if (!mine) return;
+      this.goldCardAmount.set(mine.amount);
+      this.goldCardCurrency.set(mine.currency);
+      this.goldCardNote.set(mine.note);
       this.showGoldCard.set(true);
     });
   }
@@ -146,6 +156,17 @@ export class PlayerCampaignShellComponent implements OnInit, OnDestroy {
     this.http
       .get<CampaignDetail>(`${environment.apiUrl}/api/campaigns/${id}/player`)
       .subscribe(c => this.campaign.set(c));
+
+    this.http
+      .get<{ currencyBalances: { currency: string; amount: number }[] }>(
+        `${environment.apiUrl}/api/campaigns/${id}/player-cards/mine`
+      )
+      .pipe(catchError(() => EMPTY))
+      .subscribe(card => {
+        this.purse.set(
+          (card.currencyBalances ?? []).map(b => ({ type: b.currency, amount: b.amount }))
+        );
+      });
   }
 
   ngOnDestroy() {
@@ -169,6 +190,14 @@ export class PlayerCampaignShellComponent implements OnInit, OnDestroy {
     this.transition.quickCover();
     this.router.navigate(['/player/campaign', this.campaignId(), 'my-character'], { queryParams: { tab: 'secrets' } })
       .then(() => this.transition.hide());
+  }
+
+  togglePurse() {
+    this.showPurse.update(v => !v);
+  }
+
+  closePurse() {
+    this.showPurse.set(false);
   }
 
   goToMyCharacter() {

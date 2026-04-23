@@ -1,5 +1,5 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
-import { Sublocation } from '../../models/sublocation.model';
+import { Sublocation, CampaignSublocationInstance } from '../../models/sublocation.model';
 
 @Component({
   selector: 'app-sublocation-card',
@@ -9,7 +9,7 @@ import { Sublocation } from '../../models/sublocation.model';
   styleUrl: './sublocation-card.component.scss'
 })
 export class SublocationCardComponent {
-  @Input({ required: true }) sublocation!: Sublocation;
+  @Input({ required: true }) sublocation!: Sublocation | CampaignSublocationInstance;
   @Input() editable        = true;
   @Input() flippable       = true;
   @Input() queueable       = false;

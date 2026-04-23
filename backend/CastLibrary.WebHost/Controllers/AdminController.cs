@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using CastLibrary.Logic.Commands.Admin;
 using CastLibrary.Logic.Queries.Admin;
 using CastLibrary.Shared.Responses;
+using CastLibrary.WebHost.MetadataHelpers;
 
 namespace CastLibrary.WebHost.Controllers;
 
@@ -11,7 +12,10 @@ namespace CastLibrary.WebHost.Controllers;
 [Authorize(Roles = "Admin")]
 public class AdminController(
     IGetAdminInviteCodeQueryHandler getInviteCodeQuery,
-    IGenerateAdminInviteCodeCommandHandler generateInviteCodeCommand) : ControllerBase
+    IGenerateAdminInviteCodeCommandHandler generateInviteCodeCommand,
+    IGetAllUsersQueryHandler getAllUsersQuery,
+    IDeleteUserCommandHandler deleteUserCommand,
+    IUserRetriever userRetriever) : ControllerBase
 {
     [HttpGet("invite-code")]
     public async Task<IActionResult> GetInviteCode()
@@ -36,5 +40,35 @@ public class AdminController(
             Code = code.Code,
             ExpiresAt = code.ExpiresAt,
         });
+    }
+
+    [HttpGet("users")]
+    public async Task<IActionResult> GetAllUsers()
+    {
+        var users = await getAllUsersQuery.HandleAsync();
+        var response = users.Select(u => new UserManagementResponse
+        {
+            Id = u.Id,
+            Email = u.Email,
+            DisplayName = u.DisplayName,
+            Role = u.Role.ToString(),
+            CreatedAt = u.CreatedAt,
+        }).ToList();
+
+        return Ok(response);
+    }
+
+    [HttpDelete("users/{userId}")]
+    public async Task<IActionResult> DeleteUser(Guid userId)
+    {
+        var currentUserId = userRetriever.GetUserId(User);
+
+        if (currentUserId == userId)
+        {
+            return BadRequest(new { message = "Cannot delete your own account." });
+        }
+
+        await deleteUserCommand.HandleAsync(userId);
+        return Ok(new { message = "User deleted successfully." });
     }
 }

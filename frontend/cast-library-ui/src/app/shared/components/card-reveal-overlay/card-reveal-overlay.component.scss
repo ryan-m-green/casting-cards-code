@@ -8,8 +8,8 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: rgba(0, 0, 0, 0.72);
-  animation: cr-backdrop-in 0.35s ease forwards;
+  background: v.$color-ext-582;
+  animation: cr-backdrop-in 1.5s ease forwards;
 }
 
 @keyframes cr-backdrop-in {
@@ -23,7 +23,7 @@
   flex-direction: column;
   align-items: center;
   gap: 20px;
-  animation: cr-card-appear 0.6s cubic-bezier(0.2, 0, 0.3, 1) forwards;
+  animation: cr-card-appear 1.5s cubic-bezier(0.2, 0, 0.3, 1) forwards;
   will-change: transform, opacity;
 }
 
@@ -36,8 +36,8 @@
 /* ── Card wrapper ──────────────────────────────────────────────── */
 .cr-card-wrap {
   filter:
-    drop-shadow(0 0 18px rgba(160, 120, 255, 0.65))
-    drop-shadow(0 0 48px rgba(140, 100, 220, 0.35));
+    drop-shadow(0 0 18px v.$color-ext-635)
+    drop-shadow(0 0 48px v.$color-ext-636);
 }
 
 /* Scale the card up from its 150×220 base */
@@ -49,19 +49,19 @@
 
 /* ── Player card placeholder colour ───────────────────────────── */
 .pc-card-player .card-placeholder {
-  background: linear-gradient(160deg, #b8a8d4, #d4cce8, #a89ec4);
+  background: linear-gradient(160deg, v.$color-lib-player-1, v.$color-lib-player-2, v.$color-lib-player-3);
 }
 
 /* ── Secret block ──────────────────────────────────────────────── */
 .cr-secret-block {
   width: 260px;
-  background: rgba(12, 6, 28, 0.88);
-  border: 1px solid rgba(160, 120, 255, 0.35);
+  background: v.$color-ext-637;
+  border: 1px solid v.$color-ext-638;
   border-radius: 6px;
   padding: 14px 16px;
   box-shadow:
-    0 0 12px rgba(120, 80, 220, 0.28),
-    0 4px 18px rgba(0, 0, 0, 0.55);
+    0 0 12px v.$color-ext-639,
+    0 4px 18px v.$color-ext-146;
 }
 
 .cr-secret-label {
@@ -69,7 +69,7 @@
   font-size: 8px;
   letter-spacing: 0.22em;
   text-transform: uppercase;
-  color: rgba(200, 160, 255, 0.65);
+  color: v.$color-ext-640;
   margin-bottom: 8px;
 }
 
@@ -78,7 +78,7 @@
   font-size: 14px;
   font-style: italic;
   line-height: 1.55;
-  color: rgba(235, 220, 255, 0.92);
+  color: v.$color-ext-641;
   display: -webkit-box;
   -webkit-line-clamp: 5;
   -webkit-box-orient: vertical;
@@ -91,17 +91,17 @@
   font-size: 11px;
   letter-spacing: 0.2em;
   text-transform: uppercase;
-  color: rgba(220, 200, 255, 0.9);
-  background: rgba(120, 80, 200, 0.25);
-  border: 1px solid rgba(180, 140, 255, 0.5);
+  color: v.$color-ext-575;
+  background: v.$color-ext-642;
+  border: 1px solid v.$color-ext-643;
   border-radius: 4px;
   cursor: pointer;
   padding: 8px 20px;
   transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease;
 
   &:hover {
-    background: rgba(140, 100, 220, 0.45);
-    border-color: rgba(200, 160, 255, 0.8);
-    color: #fff;
+    background: v.$color-ext-644;
+    border-color: v.$color-ext-645;
+    color: v.$color-ext-152;
   }
 }

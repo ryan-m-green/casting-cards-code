@@ -10,8 +10,8 @@
   font-size: 8px;
   letter-spacing: 0.22em;
   text-transform: uppercase;
-  color: rgba(105, 72, 18, 0.9);
-  border-bottom: 0.5px solid rgba(110, 75, 22, 0.22);
+  color: v.$color-ext-129;
+  border-bottom: 0.5px solid v.$color-ext-50;
   padding-bottom: 4px;
   margin: 0 0 10px;
 
@@ -32,7 +32,7 @@
   font-family: v.$font-body;
   font-style: italic;
   font-size: 12px;
-  color: rgba(105, 72, 18, 0.9);
+  color: v.$color-ext-129;
   cursor: pointer;
 }
 
@@ -46,7 +46,7 @@
   font-family: v.$font-body;
   font-style: italic;
   font-size: 11px;
-  color: rgba(105, 72, 18, 0.85);
+  color: v.$color-ext-120;
 }
 
 // ── Preview ───────────────────────────────────────────────────────────────────
@@ -69,8 +69,8 @@
   align-items: center;
   gap: 7px;
   padding: 7px 10px;
-  background: rgba(248, 238, 210, 0.28);
-  border: 1px solid rgba(110, 75, 22, 0.18);
+  background: v.$color-ext-123;
+  border: 1px solid v.$color-ext-85;
   border-radius: 4px;
 
   &__reorder {
@@ -84,9 +84,9 @@
 // ── Reorder buttons ───────────────────────────────────────────────────────────
 .tod-reorder-btn {
   background: none;
-  border: 1px solid rgba(110, 75, 22, 0.28);
+  border: 1px solid v.$color-border;
   border-radius: 3px;
-  color: rgba(105, 72, 18, 0.85);
+  color: v.$color-ext-120;
   font-size: 9px;
   width: 20px;
   height: 20px;
@@ -99,8 +99,8 @@
 
   &:hover:not(:disabled),
   &:focus-visible:not(:disabled) {
-    color: rgba(72, 44, 8, 0.9);
-    border-color: rgba(110, 75, 22, 0.55);
+    color: v.$color-ext-130;
+    border-color: v.$color-ext-302;
     outline: none;
   }
 
@@ -117,7 +117,7 @@
   height: 30px;
   border-radius: 4px;
   overflow: hidden;
-  border: 1px solid rgba(110, 75, 22, 0.35);
+  border: 1px solid v.$color-ext-98;
 }
 
 .tod-color-input {
@@ -166,9 +166,9 @@
   font-size: 9px;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: rgba(34, 80, 38, 0.92);
-  background: rgba(38, 88, 42, 0.07);
-  border: 1.5px solid rgba(38, 88, 42, 0.42);
+  color: v.$color-ext-121;
+  background: v.$color-ext-138;
+  border: 1.5px solid v.$color-ext-139;
   border-radius: 6px;
   padding: 7px 18px;
   cursor: pointer;
@@ -176,8 +176,8 @@
   margin-bottom: 14px;
 
   &:hover {
-    background: rgba(38, 88, 42, 0.14);
-    border-color: rgba(38, 88, 42, 0.65);
+    background: v.$color-ext-115;
+    border-color: v.$color-ext-140;
   }
 }
 
@@ -193,24 +193,24 @@
   font-family: v.$font-body;
   font-style: italic;
   font-size: 12px;
-  color: rgba(105, 72, 18, 0.9);
+  color: v.$color-ext-129;
 
   strong {
-    color: rgba(72, 44, 8, 0.85);
+    color: v.$color-ext-128;
     font-style: normal;
   }
 
-  &--error strong { color: rgba(160, 40, 20, 0.85); }
+  &--error strong { color: v.$color-ext-118; }
 }
 
 .tod-delta {
   font-size: 11px;
-  color: rgba(160, 40, 20, 0.80);
+  color: v.$color-ext-384;
   margin-left: 4px;
 }
 
 .tod-check {
-  color: rgba(34, 100, 38, 0.80);
+  color: v.$color-ext-385;
   margin-left: 4px;
 }
 
@@ -219,5 +219,5 @@
   font-family: v.$font-body;
   font-style: italic;
   font-size: 11px;
-  color: rgba(105, 72, 18, 0.85);
+  color: v.$color-ext-120;
 }

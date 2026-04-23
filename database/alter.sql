@@ -123,6 +123,28 @@ DO $$ BEGIN
     END IF;
 END $$;
 
+-- [009] Bug reports — global across the application
+CREATE TABLE IF NOT EXISTS bug_reports (
+    id               UUID         PRIMARY KEY DEFAULT gen_random_uuid(),
+    user_id          UUID         NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    title            VARCHAR(255) NOT NULL,
+    description      TEXT         NOT NULL,
+    steps_to_reproduce TEXT,
+    severity         VARCHAR(10)  NOT NULL DEFAULT 'Medium'
+                                  CHECK (severity IN ('Low', 'Medium', 'High', 'Critical')),
+    page_url         VARCHAR(500),
+    device           VARCHAR(255),
+    browser          VARCHAR(255),
+    os               VARCHAR(255),
+    screen_resolution VARCHAR(50),
+    is_fixed         BOOLEAN      NOT NULL DEFAULT FALSE,
+    fixed_at         TIMESTAMPTZ,
+    reported_at      TIMESTAMPTZ  NOT NULL DEFAULT NOW()
+);
+
+CREATE INDEX IF NOT EXISTS idx_bug_reports_user    ON bug_reports(user_id);
+CREATE INDEX IF NOT EXISTS idx_bug_reports_is_fixed ON bug_reports(is_fixed);
+
 -- Private secrets delivered by the DM; shareable to the party.
 CREATE TABLE IF NOT EXISTS player_card_secrets (
     id             UUID        PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -170,3 +192,22 @@ ALTER TABLE player_card_memories
 -- [011] Campaign Day Counter — track how many in-game days have passed
 ALTER TABLE campaign_time_of_day
     ADD COLUMN IF NOT EXISTS days_passed INT NOT NULL DEFAULT 0;
+
+-- [012] Add missing unique constraint on location_political_notes required for ON CONFLICT upsert
+--       First deduplicate any rows sharing the same (campaign_id, location_instance_id), keeping the latest.
+DO $$ BEGIN
+    DELETE FROM location_political_notes a
+    USING location_political_notes b
+    WHERE a.campaign_id = b.campaign_id
+      AND a.location_instance_id = b.location_instance_id
+      AND a.updated_at < b.updated_at;
+
+    IF NOT EXISTS (
+        SELECT 1 FROM information_schema.table_constraints
+        WHERE table_name = 'location_political_notes'
+          AND constraint_name = 'uq_location_political_notes'
+    ) THEN
+        ALTER TABLE location_political_notes
+            ADD CONSTRAINT uq_location_political_notes UNIQUE (campaign_id, location_instance_id);
+    END IF;
+END $$;

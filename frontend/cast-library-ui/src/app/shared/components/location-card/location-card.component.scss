@@ -1,3 +1,5 @@
+@use '../../../../styles/variables' as v;
+
 // ── Host ─────────────────────────────────────────────────────────────────────
 :host {
   display: block;
@@ -63,13 +65,13 @@
   padding: 4px;
   background: linear-gradient(
     145deg,
-    #c8e080 0%, #7aaa30 15%, #3d6010 40%,
-    #a8c850 55%, #6a9828 70%, #2a4008 85%, #90b840 100%
+    v.$color-loc-green-1 0%, v.$color-loc-green-2 15%, v.$color-loc-green-3 40%,
+    v.$color-loc-green-4 55%, v.$color-loc-green-5 70%, v.$color-loc-green-6 85%, v.$color-loc-green-7 100%
   );
   box-shadow:
-    0 0 0 1px #1a0f00,
-    0 6px 22px rgba(0, 0, 0, 0.9),
-    inset 0 1px 0 rgba(200, 255, 100, 0.3);
+    0 0 0 1px v.$color-dark-frame,
+    0 6px 22px v.$color-shadow-dark,
+    inset 0 1px 0 v.$color-loc-frame-inset;
 }
 
 // ── Front Inner ───────────────────────────────────────────────────────────────
@@ -81,7 +83,7 @@
   overflow: hidden;
   display: flex;
   flex-direction: column;
-  background: linear-gradient(160deg, #eaf0d8 0%, #d8e5b8 50%, #c4d49a 100%);
+  background: linear-gradient(160deg, v.$color-loc-bg-light-1 0%, v.$color-loc-bg-light-2 50%, v.$color-loc-bg-light-3 100%);
 
   &::before {
     content: '';
@@ -113,8 +115,8 @@
   padding: 6px 8px 5px;
   position: relative;
   flex-shrink: 0;
-  background: linear-gradient(180deg, #1a2e0a 0%, #2d4f14 100%);
-  border-bottom: 1.5px solid #3d6010;
+  background: linear-gradient(180deg, v.$color-loc-banner-dark 0%, v.$color-loc-banner-mid 100%);
+  border-bottom: 1.5px solid v.$color-loc-green-3;
 
   &::after {
     content: '';
@@ -123,7 +125,7 @@
     left: 0;
     right: 0;
     height: 1.5px;
-    background: linear-gradient(90deg, transparent, rgba(180, 255, 80, 0.4), transparent);
+    background: linear-gradient(90deg, transparent, v.$color-loc-accent-glow, transparent);
   }
 }
 
@@ -133,18 +135,18 @@
   font-size: 8px;
   letter-spacing: 0.03em;
   line-height: 1.2;
-  color: #c8e080;
+  color: v.$color-loc-green-1;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.9);
+  text-shadow: 0 1px 4px v.$color-shadow-dark;
 }
 
 .loc-subtitle {
   font-family: 'Cinzel', serif;
   font-size: 6px;
   letter-spacing: 0.12em;
-  color: #a8d080;
+  color: v.$color-loc-green-8;
   margin-top: 1px;
   opacity: 0.8;
   white-space: nowrap;
@@ -156,7 +158,7 @@
 .loc-portrait {
   flex: 1;
   margin: 5px 5px 0;
-  border: 1.5px solid rgba(0, 0, 0, 0.25);
+  border: 1.5px solid v.$color-border-black-strong;
   border-bottom: none;
   border-radius: 3px 3px 0 0;
   position: relative;
@@ -164,7 +166,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(160deg, #c4d49a, #d8e5b8, #b8cc88);
+  background: linear-gradient(160deg, v.$color-loc-bg-light-3, v.$color-loc-portrait-2, v.$color-loc-portrait-3);
 }
 
 .loc-portrait-img {
@@ -196,7 +198,7 @@
 .loc-upload-overlay {
   position: absolute;
   inset: 0;
-  background: rgba(0, 0, 0, 0.45);
+  background: v.$color-overlay-dark;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -215,8 +217,8 @@
 
 // ── Flavor ────────────────────────────────────────────────────────────────────
 .loc-flavor {
-  border: 1.5px solid rgba(0, 0, 0, 0.2);
-  border-top: 1px solid rgba(0, 0, 0, 0.15);
+  border: 1.5px solid v.$color-border-black-med;
+  border-top: 1px solid v.$color-border-black-light;
   border-radius: 0 0 3px 3px;
   margin: 0 5px;
   padding: 4px 6px;
@@ -227,7 +229,7 @@
   font-family: 'IM Fell English', serif;
   font-style: italic;
   font-size: 6.5px;
-  color: #1e110a;
+  color: v.$color-text-dark;
   line-height: 1.45;
   opacity: 0.8;
   display: -webkit-box;
@@ -245,8 +247,8 @@
   flex-shrink: 0;
   margin-top: 2px;
   position: relative;
-  background: linear-gradient(180deg, #2d4f14 0%, #1a2e0a 100%);
-  border-top: 1.5px solid #3d6010;
+  background: linear-gradient(180deg, v.$color-loc-banner-mid 0%, v.$color-loc-banner-dark 100%);
+  border-top: 1.5px solid v.$color-loc-green-3;
   cursor: default;
   transition: filter 0.2s;
 
@@ -262,7 +264,7 @@
   font-size: 5px;
   letter-spacing: 0.15em;
   text-transform: uppercase;
-  color: #c8e080;
+  color: v.$color-loc-green-1;
   position: absolute;
   left: 50%;
   transform: translateX(-50%);
@@ -283,7 +285,7 @@
 .loc-pip {
   width: 3px;
   height: 3px;
-  background: #7aaa30;
+  background: v.$color-loc-green-2;
   transform: rotate(45deg);
   opacity: 0.7;
 }
@@ -295,7 +297,7 @@
   line-height: 1;
   padding: 0 2px;
   opacity: 0.85;
-  color: #f0e8d8;
+  color: v.$color-ext-646;
   pointer-events: none;
 }
 
@@ -309,7 +311,7 @@
   height: 25px;
   border: none;
   border-radius: 50%;
-  background: rgba(10, 20, 5, 0.75);
+  background: v.$color-secrets-bg;
   font-size: 13px;
   line-height: 1;
   cursor: pointer;
@@ -317,17 +319,17 @@
   align-items: center;
   justify-content: center;
   transition: background 0.15s, transform 0.15s;
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.6);
+  box-shadow: 0 1px 4px v.$color-shadow-medium;
   touch-action: manipulation;
   -webkit-tap-highlight-color: transparent;
   user-select: none;
 
-  &:hover  { background: rgba(20, 40, 10, 0.9); transform: scale(1.1); }
+  &:hover  { background: v.$color-secrets-hover; transform: scale(1.1); }
   &:active { transform: scale(0.95); }
 
   &--revealed {
-    background: rgba(30, 80, 10, 0.8);
-    &:hover  { background: rgba(40, 100, 15, 0.95); }
+    background: v.$color-secrets-revealed;
+    &:hover  { background: v.$color-secrets-revealed-hover; }
   }
 }
 
@@ -341,8 +343,8 @@
   height: 16px;
   border: none;
   border-radius: 50%;
-  background: rgba(90, 20, 20, 0.85);
-  color: #f0d0a0;
+  background: v.$color-delete-bg;
+  color: v.$color-ext-647;
   font-size: 10px;
   line-height: 1;
   cursor: pointer;
@@ -351,7 +353,7 @@
   justify-content: center;
   transition: background 0.15s;
 
-  &:hover { background: rgba(150, 30, 30, 0.95); }
+  &:hover { background: v.$color-delete-hover; }
 }
 
 // ── Back Inner ────────────────────────────────────────────────────────────────
@@ -364,7 +366,7 @@
   align-items: center;
   position: relative;
   overflow: hidden;
-  background: linear-gradient(160deg, #0e180a 0%, #182810 100%);
+  background: linear-gradient(160deg, v.$color-loc-back-dark-1 0%, v.$color-loc-back-dark-2 100%);
 
   &::before {
     content: '';
@@ -380,7 +382,7 @@
 .loc-back-border {
   position: absolute;
   inset: 6px;
-  border: 1px solid rgba(180, 220, 100, 0.3);
+  border: 1px solid v.$color-loc-back-border;
   border-radius: 3px;
   pointer-events: none;
 }
@@ -388,7 +390,7 @@
 .loc-back-border2 {
   position: absolute;
   inset: 9px;
-  border: 1px solid rgba(180, 220, 100, 0.15);
+  border: 1px solid v.$color-loc-back-border-2;
   border-radius: 2px;
   pointer-events: none;
 }
@@ -405,8 +407,8 @@
   font-size: 8px;
   letter-spacing: 0.05em;
   text-align: center;
-  color: #c8e080;
-  text-shadow: 0 0 12px #c8e080;
+  color: v.$color-loc-green-1;
+  text-shadow: 0 0 12px v.$color-loc-green-1;
   margin-top: 6px;
   padding: 0 12px;
   max-width: 130px;
@@ -421,7 +423,7 @@
   width: 75%;
   height: 1px;
   margin: 5px auto;
-  background: linear-gradient(90deg, transparent, #c8e080, transparent);
+  background: linear-gradient(90deg, transparent, v.$color-loc-green-1, transparent);
   opacity: 0.5;
   position: relative;
   z-index: 2;
@@ -442,7 +444,7 @@
 
   &::-webkit-scrollbar { width: 2px; }
   &::-webkit-scrollbar-thumb {
-    background: rgba(180, 220, 100, 0.2);
+    background: v.$color-loc-scrollbar;
     border-radius: 1px;
   }
 }
@@ -450,7 +452,7 @@
 .loc-stat-row {
   display: flex;
   flex-direction: column;
-  border-bottom: 1px solid rgba(180, 220, 100, 0.15);
+  border-bottom: 1px solid v.$color-loc-back-divider;
   padding-bottom: 3px;
 }
 
@@ -459,7 +461,7 @@
   font-size: 6px;
   letter-spacing: 0.2em;
   text-transform: uppercase;
-  color: #5a8020;
+  color: v.$color-loc-stat-key;
   opacity: 0.9;
 }
 
@@ -468,7 +470,7 @@
   font-style: italic;
   font-size: 9px;
   line-height: 1.2;
-  color: #d8f0a0;
+  color: v.$color-loc-stat-val;
 }
 
 // ── Back Action Buttons ───────────────────────────────────────────────────────
@@ -494,16 +496,16 @@
   transition: all 0.2s;
 
   &--gold {
-    background: linear-gradient(180deg, #e8c96a, #c9a84c);
-    color: #1a2e0a;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
-    &:hover { background: linear-gradient(180deg, #f8d870, #d9b850); transform: translateY(-1px); }
+    background: linear-gradient(180deg, v.$color-loc-btn-green-1, v.$color-loc-btn-green-2);
+    color: v.$color-loc-banner-dark;
+    box-shadow: 0 2px 4px v.$color-shadow-light;
+    &:hover { background: linear-gradient(180deg, v.$color-loc-btn-green-hover-1, v.$color-loc-btn-green-hover-2); transform: translateY(-1px); }
   }
 
   &--red {
-    background: linear-gradient(180deg, #8a2020, #5c1010);
-    color: #f0d0a0;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
-    &:hover { background: linear-gradient(180deg, #a02828, #6e1818); transform: translateY(-1px); }
+    background: linear-gradient(180deg, v.$color-loc-btn-red-1, v.$color-loc-btn-red-2);
+    color: v.$color-ext-647;
+    box-shadow: 0 2px 4px v.$color-shadow-light;
+    &:hover { background: linear-gradient(180deg, v.$color-loc-btn-red-hover-1, v.$color-loc-btn-red-hover-2); transform: translateY(-1px); }
   }
 }

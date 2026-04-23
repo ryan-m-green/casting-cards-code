@@ -12,6 +12,7 @@ import {
   PlayerCardWithDetails,
   PlayerCardCondition,
   PlayerCardSecret,
+  PlayerTrait,
 } from '../../../shared/models/player-card.model';
 import { CardFlipComponent } from '../../../shared/components/card-flip/card-flip.component';
 import { CurrencyDisplayComponent, CurrencyLine } from '../../../shared/components/currency-display/currency-display.component';
@@ -80,7 +81,7 @@ export class DmThePartyComponent implements OnInit {
     this.campaignId.set(id);
     this.shellSvc.setTitle('The Party');
     this.shellSvc.setCrumbs([
-      { label: '← Campaign', action: () => this.goBack() },
+      { label: '← Locations', action: () => this.goBack() },
     ]);
     this.http.get<CampaignDetail>(`${environment.apiUrl}/api/campaigns/${id}`)
       .subscribe(c => this.campaign.set(c));
@@ -94,7 +95,7 @@ export class DmThePartyComponent implements OnInit {
 
   goBack() {
     this.transition.quickCover();
-    this.router.navigate(['/campaign', this.campaignId()]);
+    this.router.navigate(['/campaign', this.campaignId()]).then(() => this.transition.hide());
   }
 
   // ── Gold ──────────────────────────────────────────────────────────────────────
@@ -123,17 +124,33 @@ export class DmThePartyComponent implements OnInit {
 
     const currency = this.goldCurrency();
 
-    this.http.post(`${environment.apiUrl}/api/campaigns/${id}/gold-award`, body)
+    this.http.post<{ currency: string; playerAwards: { playerUserId: string; amount: number }[] }>(
+      `${environment.apiUrl}/api/campaigns/${id}/gold-award`, body)
       .subscribe({
-        next: () => {
-          this.playerCards.update(list => list.map(c => {
-            if (target && c.id !== target.id) return c;
-            const existing = c.currencyBalances.find(b => b.currency === currency);
-            const updated = existing
-              ? c.currencyBalances.map(b => b.currency === currency ? { ...b, amount: b.amount + amount } : b)
-              : [...c.currencyBalances, { currency, amount }];
-            return { ...c, currencyBalances: updated };
-          }));
+        next: (response) => {
+          if (target) {
+            // Single-player award — add full amount to that card only
+            this.playerCards.update(list => list.map(c => {
+              if (c.id !== target.id) return c;
+              const existing = c.currencyBalances.find(b => b.currency === currency);
+              const updated = existing
+                ? c.currencyBalances.map(b => b.currency === currency ? { ...b, amount: b.amount + amount } : b)
+                : [...c.currencyBalances, { currency, amount }];
+              return { ...c, currencyBalances: updated };
+            }));
+          } else {
+            // Party award — apply exact per-player splits from the backend response
+            const splits = response.playerAwards;
+            this.playerCards.update(list => list.map(c => {
+              const split = splits.find(s => s.playerUserId === c.playerUserId);
+              if (!split || split.amount === 0) return c;
+              const existing = c.currencyBalances.find(b => b.currency === currency);
+              const updated = existing
+                ? c.currencyBalances.map(b => b.currency === currency ? { ...b, amount: b.amount + split.amount } : b)
+                : [...c.currencyBalances, { currency, amount: split.amount }];
+              return { ...c, currencyBalances: updated };
+            }));
+          }
           this.goldSaving.set(false);
           this.goldModalOpen.set(false);
         },
@@ -244,6 +261,10 @@ export class DmThePartyComponent implements OnInit {
   cardPurse(card: PlayerCardWithDetails): CurrencyLine[] {
     return card.currencyBalances.map(b => ({ type: b.currency, amount: b.amount }));
   }
+
+  goalsFor(card: PlayerCardWithDetails) { return (card.traits ?? []).filter(t => t.traitType === 'GOAL'); }
+  fearsFor(card: PlayerCardWithDetails) { return (card.traits ?? []).filter(t => t.traitType === 'FEAR'); }
+  flawsFor(card: PlayerCardWithDetails) { return (card.traits ?? []).filter(t => t.traitType === 'FLAW'); }
 
   initial(name: string) { return name.charAt(0).toUpperCase(); }
 }

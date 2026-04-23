@@ -15,6 +15,11 @@
       <div class="dm-nav__dropdown" role="menu">
         @if (auth.isAdmin()) {
           <a class="dm-nav__dropdown-item" role="menuitem" routerLink="/admin/invite-code" (click)="menuOpen.set(false)">Invite Code</a>
+          <a class="dm-nav__dropdown-item" role="menuitem" routerLink="/admin/user-management" (click)="menuOpen.set(false)">User Management</a>
+          <a class="dm-nav__dropdown-item" role="menuitem" routerLink="/admin/bug-reports" (click)="menuOpen.set(false)">Bug Reports</a>
+        }
+        @if (!auth.isAdmin()) {
+          <a class="dm-nav__dropdown-item" role="menuitem" routerLink="/dm/bug-report" (click)="menuOpen.set(false)">Report a Glitch</a>
         }
         <a class="dm-nav__dropdown-item" role="menuitem" routerLink="/dm/change-password" (click)="menuOpen.set(false)">Change Password</a>
         <button class="dm-nav__dropdown-item" role="menuitem" (click)="auth.logout()">Logout</button>

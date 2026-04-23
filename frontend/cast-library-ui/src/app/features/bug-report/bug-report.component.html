@@ -1,0 +1,65 @@
+<div class="pc">
+  <div class="player-nav">
+    <a class="player-nav__link" routerLink="/player/campaigns">Dashboard</a>
+    <a class="player-nav__link" routerLink="/about">About</a>
+    <div class="player-nav__account">
+      <button class="player-nav__account-trigger" (click)="menuOpen.set(!menuOpen())">Account
+        <span class="player-nav__caret" [class.player-nav__caret--open]="menuOpen()">▾</span>
+      </button>
+      @if (menuOpen()) {
+        <div class="player-nav__dropdown">
+          <a class="player-nav__dropdown-item" routerLink="/player/bug-report" (click)="menuOpen.set(false)">Report a Glitch</a>
+          <a class="player-nav__dropdown-item" routerLink="/forgot-password" (click)="menuOpen.set(false)">Forgot Password</a>
+          <button class="player-nav__dropdown-item" (click)="auth.logout()">Logout</button>
+        </div>
+      }
+    </div>
+  </div>
+  <h2 class="page-title page-title-sm">Report a Glitch in the Realm</h2>
+  <p class="pnum form-subtitle">Add your findings</p>
+
+  @if (!submitted()) {
+    <form [formGroup]="form" (ngSubmit)="submit()" class="form-narrow">
+
+      <label for="bug-title" class="fi-label">Title <span class="req">*</span></label>
+      <input id="bug-title" class="fi" type="text" formControlName="title"
+             placeholder="Brief summary of the issue" autocomplete="off" />
+
+      <label for="bug-description" class="fi-label">Description <span class="req">*</span></label>
+      <textarea id="bug-description" class="fi fi-textarea" formControlName="description"
+                rows="5" placeholder="Describe what went wrong..."></textarea>
+
+      <label for="bug-steps" class="fi-label">Steps to Reproduce</label>
+      <textarea id="bug-steps" class="fi fi-textarea" formControlName="stepsToReproduce"
+                rows="4" placeholder="1. Go to...&#10;2. Click on...&#10;3. Observe that..."></textarea>
+
+      <label for="bug-severity" class="fi-label">Severity <span class="req">*</span></label>
+      <select id="bug-severity" class="fi" formControlName="severity">
+        @for (s of severities; track s) {
+          <option [value]="s">{{ s }}</option>
+        }
+      </select>
+
+      <label for="bug-page" class="fi-label">Page Where Issue Occurred</label>
+      <input id="bug-page" class="fi" type="text" formControlName="pageUrl"
+             placeholder="Dashboard, Location Library..." autocomplete="off" />
+
+      @if (errorMsg()) {
+        <p class="error-msg">{{ errorMsg() }}</p>
+      }
+
+      <button class="btn-primary btn-form-submit" type="submit" [disabled]="loading() || form.invalid">
+        {{ loading() ? '…' : 'Submit Report' }}
+      </button>
+    </form>
+  } @else {
+    <div class="wb wb-narrow">
+      <p class="wbd success-msg">✓ Your report has been received. Thank you for helping improve the realm!</p>
+      <button class="btn-ghost btn-another" (click)="submitted.set(false); form.reset({ severity: 'Medium' })">
+        Report Another
+      </button>
+    </div>
+  }
+
+  <div class="orn orn-mt">· · ·</div>
+</div>

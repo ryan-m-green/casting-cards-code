@@ -60,10 +60,10 @@ public class UpsertLocationPoliticalNotesCommandHandler(
 
 public class UpsertLocationPoliticalNotesCommand
 {
-    public UpsertLocationPoliticalNotesCommand(Guid campaignId, Guid LocationInstanceId, UpsertLocationPoliticalNotesRequest request)
+    public UpsertLocationPoliticalNotesCommand(Guid campaignId, Guid locationInstanceId, UpsertLocationPoliticalNotesRequest request)
     {
         CampaignId = campaignId;
-        LocationInstanceId = LocationInstanceId;
+        LocationInstanceId = locationInstanceId;
         Request = request;
     }
 

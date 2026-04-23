@@ -1,0 +1,67 @@
+<div class="pc scroll-body">
+  <app-dm-nav />
+
+  <h2 class="page-title page-title-sm">User Management</h2>
+
+  <div class="wb wb-narrow">
+    <input 
+      class="fi search-input" 
+      type="text" 
+      placeholder="Search users..." 
+      [(ngModel)]="searchQuery"
+      (input)="filterUsers()"
+    />
+  </div>
+
+  @if (loading()) {
+    <div class="wb wb-narrow">
+      <p class="wbd">Loading users…</p>
+    </div>
+  } @else if (errorMsg()) {
+    <div class="wb wb-narrow error-box">
+      <p class="wbd text-error">{{ errorMsg() }}</p>
+    </div>
+  } @else {
+    <div class="user-list">
+      @for (user of filteredUsers(); track user.id) {
+        <div class="user-card">
+          <div class="user-info">
+            <div class="user-name">{{ user.displayName }}</div>
+            <div class="user-meta">{{ user.email }} · {{ user.role }}</div>
+            <div class="user-date">Joined {{ formatDate(user.createdAt) }}</div>
+          </div>
+          <button 
+            class="btn-delete" 
+            (click)="confirmDelete(user)"
+            [disabled]="deleting() === user.id"
+          >
+            {{ deleting() === user.id ? '…' : 'Delete' }}
+          </button>
+        </div>
+      }
+      @if (filteredUsers().length === 0) {
+        <div class="wb wb-narrow">
+          <p class="wbd">No users found matching "{{ searchQuery }}"</p>
+        </div>
+      }
+    </div>
+  }
+
+  @if (showConfirmDialog()) {
+    <div class="modal-overlay" (click)="cancelDelete()">
+      <div class="modal-content" (click)="$event.stopPropagation()">
+        <h3 class="modal-title">Confirm Delete</h3>
+        <p class="modal-message">
+          Are you sure you want to delete user <strong>{{ userToDelete()?.displayName }}</strong>?
+          This will permanently remove all data associated with this user, including campaigns, casts, locations, and more.
+        </p>
+        <div class="modal-actions">
+          <button class="btn-cancel" (click)="cancelDelete()">Cancel</button>
+          <button class="btn-confirm-delete" (click)="deleteUser()">Delete User</button>
+        </div>
+      </div>
+    </div>
+  }
+
+  <div class="orn orn-mt">· · ·</div>
+</div>

@@ -11,7 +11,18 @@
           <button class="void-back" (click)="crumb.action()">{{ crumb.label }}</button>
         }
       </div>
-      <button class="topbar-party-btn" (click)="goToMyCharacter()">⚔ My Character</button>
+      <div class="topbar-right">
+        <div class="purse-wrap">
+          <button class="topbar-purse-btn" (click)="togglePurse()"><span class="purse-icon">💰</span> Purse</button>
+          @if (showPurse()) {
+            <div class="purse-backdrop" (click)="closePurse()"></div>
+            <div class="purse-panel">
+              <app-currency-display [purse]="purse()" />
+            </div>
+          }
+        </div>
+        <button class="topbar-party-btn" (click)="goToMyCharacter()">⚔ My Character</button>
+      </div>
     </div>
     <span class="void-title">{{ shellSvc.title() }}</span>
   </div>

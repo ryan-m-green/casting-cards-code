@@ -6,7 +6,7 @@ public class CampaignCastInstanceDomain
 {
     public Guid InstanceId { get; set; }
     public Guid CampaignId { get; set; }
-    public Guid? SourceCastId { get; set; }
+    public Guid SourceCastId { get; set; }
     public Guid? LocationInstanceId { get; set; }
     public Guid? SublocationInstanceId { get; set; }
     public string Name { get; set; } = string.Empty;
@@ -24,13 +24,14 @@ public class CampaignCastInstanceDomain
     public List<CampaignCastCustomItemDomain> CustomItems { get; set; } = [];
     public string[] Keywords { get; set; } = [];
     public string DmNotes { get; set; } = string.Empty;
+    public string ImageUrl { get; set; } = string.Empty;
 }
 
 public class CampaignLocationInstanceDomain
 {
     public Guid InstanceId { get; set; }
     public Guid CampaignId { get; set; }
-    public Guid? SourceLocationId { get; set; }
+    public Guid SourceLocationId { get; set; }
     public string Name { get; set; } = string.Empty;
     public string Classification { get; set; } = string.Empty;
     public string Size { get; set; } = string.Empty;
@@ -53,7 +54,7 @@ public class CampaignSublocationInstanceDomain
 {
     public Guid InstanceId { get; set; }
     public Guid CampaignId { get; set; }
-    public Guid? SourceSublocationId { get; set; }
+    public Guid SourceSublocationId { get; set; }
     public Guid? LocationInstanceId { get; set; }
     public string Name { get; set; } = string.Empty;
     public string Description { get; set; } = string.Empty;

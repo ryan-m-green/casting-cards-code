@@ -13,6 +13,7 @@ export interface PlayerCard {
 export interface PlayerCardWithDetails extends PlayerCard {
   conditions: PlayerCardCondition[];
   currencyBalances: { currency: string; amount: number }[];
+  traits: PlayerTrait[];
 }
 
 export interface PlayerCardCondition {
@@ -92,6 +93,7 @@ export interface GoldAwardedEvent {
   amount: number;
   currency: string;
   note: string | null;
+  tickCount: number;
 }
 
 export interface ConditionRemovedEvent {

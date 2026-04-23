@@ -8,8 +8,8 @@
   font-size: 8px;
   letter-spacing: 0.22em;
   text-transform: uppercase;
-  color: rgba(105, 72, 18, 0.9);
-  border-bottom: 0.5px solid rgba(110, 75, 22, 0.22);
+  color: v.$color-ext-129;
+  border-bottom: 0.5px solid v.$color-ext-50;
   padding-bottom: 4px;
   margin: 8px 0 16px;
 }
@@ -28,8 +28,8 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  background: radial-gradient(ellipse at 50% 20%, #1c0e30 0%, #0c0618 50%, #050209 100%);
-  border: 1px solid color-mix(in srgb, var(--portal-color, #6e28d0), transparent 78%);
+  background: radial-gradient(ellipse at 50% 20%, v.$color-ext-161 0%, v.$color-ext-162 50%, v.$color-ext-163 100%);
+  border: 1px solid color-mix(in srgb, var(--portal-color, v.$campaign-portal-primary), transparent 78%);
   border-radius: 10px;
   padding: 16px 12px 12px;
   cursor: pointer;
@@ -37,8 +37,8 @@
   overflow: hidden;
   transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
   box-shadow:
-    0 4px 20px rgba(0, 0, 0, 0.75),
-    inset 0 0 40px rgba(70, 15, 130, 0.08);
+    0 4px 20px v.$color-ext-164,
+    inset 0 0 40px v.$color-ext-165;
 
   /* Storm cloud layers */
   &::before {
@@ -46,18 +46,18 @@
     position: absolute;
     inset: 0;
     background:
-      radial-gradient(ellipse 130% 45% at 50% 0%, rgba(55, 15, 95, 0.45) 0%, transparent 70%),
-      radial-gradient(ellipse 70% 35% at 15% 35%, rgba(70, 15, 110, 0.22) 0%, transparent 65%),
-      radial-gradient(ellipse 55% 28% at 85% 55%, rgba(95, 20, 75, 0.18) 0%, transparent 60%);
+      radial-gradient(ellipse 130% 45% at 50% 0%, v.$color-ext-166 0%, transparent 70%),
+      radial-gradient(ellipse 70% 35% at 15% 35%, v.$color-ext-167 0%, transparent 65%),
+      radial-gradient(ellipse 55% 28% at 85% 55%, v.$color-ext-168 0%, transparent 60%);
     pointer-events: none;
   }
 
   &:hover {
-    border-color: color-mix(in srgb, var(--portal-color, #6e28d0), transparent 60%);
+    border-color: color-mix(in srgb, var(--portal-color, v.$campaign-portal-primary), transparent 60%);
     box-shadow:
-      0 10px 36px rgba(0, 0, 0, 0.85),
-      0 0 22px color-mix(in srgb, var(--portal-color, #6e28d0), transparent 86%),
-      inset 0 0 40px rgba(0, 0, 0, 0.12);
+      0 10px 36px v.$color-ext-169,
+      0 0 22px color-mix(in srgb, var(--portal-color, v.$campaign-portal-primary), transparent 86%),
+      inset 0 0 40px v.$journal-parchment-shadow-front;
 
     .portal-rim {
       animation: portal-breathe 1.4s ease-in-out infinite;
@@ -76,11 +76,11 @@
   font-weight: 600;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: rgba(215, 195, 255, 0.92);
+  color: v.$color-ext-170;
   text-align: center;
   text-shadow:
-    0 0 14px color-mix(in srgb, var(--portal-color, #6e28d0), white 20%),
-    0 1px 4px rgba(0, 0, 0, 0.9);
+    0 0 14px color-mix(in srgb, var(--portal-color, v.$campaign-portal-primary), white 20%),
+    0 1px 4px v.$color-shadow-dark;
   margin-bottom: 14px;
   line-height: 1.45;
   min-height: 28px;
@@ -115,13 +115,13 @@
   inset: 5px;
   border-radius: 50%;
   background: radial-gradient(ellipse at 40% 35%,
-    #0e1f45 0%,
-    #07122a 40%,
-    #030a18 70%,
-    #010308 100%);
+    v.$color-ext-171 0%,
+    v.$color-ext-172 40%,
+    v.$color-ext-173 70%,
+    v.$color-ext-174 100%);
   box-shadow:
-    inset 0 0 24px rgba(15, 50, 130, 0.85),
-    inset 0 0 10px rgba(0, 0, 0, 0.95);
+    inset 0 0 24px v.$color-ext-175,
+    inset 0 0 10px v.$color-ext-23;
 }
 
 /* ── Portal rim (glowing edge) ─────────────────────────────────── */
@@ -136,19 +136,19 @@
 @keyframes portal-breathe {
   0%, 100% {
     box-shadow:
-      0 0 0 2px rgba(255, 255, 255, 0.82),
-      0 0 5px 3px color-mix(in srgb, var(--portal-color, #6e28d0) 40%, white 60%),
-      0 0 12px 6px color-mix(in srgb, var(--portal-color, #6e28d0), transparent 28%),
-      0 0 26px 10px color-mix(in srgb, var(--portal-color, #6e28d0), transparent 48%),
-      0 0 48px 16px color-mix(in srgb, var(--portal-color, #6e28d0), transparent 72%);
+      0 0 0 2px v.$color-ext-176,
+      0 0 5px 3px color-mix(in srgb, var(--portal-color, v.$campaign-portal-primary) 40%, white 60%),
+      0 0 12px 6px color-mix(in srgb, var(--portal-color, v.$campaign-portal-primary), transparent 28%),
+      0 0 26px 10px color-mix(in srgb, var(--portal-color, v.$campaign-portal-primary), transparent 48%),
+      0 0 48px 16px color-mix(in srgb, var(--portal-color, v.$campaign-portal-primary), transparent 72%);
   }
   50% {
     box-shadow:
-      0 0 0 2px rgba(255, 255, 255, 0.96),
-      0 0 8px 5px color-mix(in srgb, var(--portal-color, #6e28d0) 25%, white 75%),
-      0 0 18px 9px color-mix(in srgb, var(--portal-color, #6e28d0), transparent 12%),
-      0 0 38px 14px color-mix(in srgb, var(--portal-color, #6e28d0), transparent 34%),
-      0 0 68px 22px color-mix(in srgb, var(--portal-color, #6e28d0), transparent 62%);
+      0 0 0 2px v.$color-ext-177,
+      0 0 8px 5px color-mix(in srgb, var(--portal-color, v.$campaign-portal-primary) 25%, white 75%),
+      0 0 18px 9px color-mix(in srgb, var(--portal-color, v.$campaign-portal-primary), transparent 12%),
+      0 0 38px 14px color-mix(in srgb, var(--portal-color, v.$campaign-portal-primary), transparent 34%),
+      0 0 68px 22px color-mix(in srgb, var(--portal-color, v.$campaign-portal-primary), transparent 62%);
   }
 }
 
@@ -158,10 +158,10 @@
   width: 3px;
   height: 3px;
   border-radius: 50%;
-  background: color-mix(in srgb, var(--portal-color, #6e28d0), white 70%);
+  background: color-mix(in srgb, var(--portal-color, v.$campaign-portal-primary), white 70%);
   box-shadow:
-    0 0 4px color-mix(in srgb, var(--portal-color, #6e28d0), white 30%),
-    0 0 9px color-mix(in srgb, var(--portal-color, #6e28d0), transparent 45%);
+    0 0 4px color-mix(in srgb, var(--portal-color, v.$campaign-portal-primary), white 30%),
+    0 0 9px color-mix(in srgb, var(--portal-color, v.$campaign-portal-primary), transparent 45%);
   z-index: 2;
 }
 
@@ -228,24 +228,24 @@
   transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
 
   &--delete {
-    border: 1px solid rgba(190, 65, 65, 0.42);
-    color: rgba(255, 145, 125, 0.82);
+    border: 1px solid v.$color-ext-178;
+    color: v.$color-ext-179;
 
     &:hover {
-      background: rgba(140, 38, 38, 0.22);
-      border-color: rgba(210, 75, 75, 0.68);
-      color: rgba(255, 160, 140, 0.96);
+      background: v.$color-ext-180;
+      border-color: v.$color-ext-181;
+      color: v.$color-ext-182;
     }
   }
 
   &--edit {
-    border: 1px solid rgba(135, 75, 225, 0.42);
-    color: rgba(195, 165, 255, 0.82);
+    border: 1px solid v.$color-ext-183;
+    color: v.$color-ext-184;
 
     &:hover {
-      background: rgba(95, 45, 180, 0.22);
-      border-color: rgba(160, 95, 255, 0.68);
-      color: rgba(215, 185, 255, 0.96);
+      background: v.$color-ext-185;
+      border-color: v.$color-ext-186;
+      color: v.$color-ext-187;
     }
   }
 }

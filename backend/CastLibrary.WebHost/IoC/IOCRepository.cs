@@ -17,6 +17,7 @@ namespace CastLibrary.WebHost.IoC
             services.AddScoped<IUserReadRepository, UserReadRepository>();
             services.AddScoped<IUserInsertRepository, UserInsertRepository>();
             services.AddScoped<IUserUpdateRepository, UserUpdateRepository>();
+            services.AddScoped<IUserDeleteRepository, UserDeleteRepository>();
             services.AddScoped<ICastReadRepository, CastReadRepository>();
             services.AddScoped<ICastInsertRepository, CastInsertRepository>();
             services.AddScoped<ICastUpdateRepository, CastUpdateRepository>();
@@ -84,6 +85,10 @@ namespace CastLibrary.WebHost.IoC
             services.AddScoped<IPlayerCastPerceptionUpdateRepository, PlayerCastPerceptionUpdateRepository>();
             services.AddScoped<IGoldTransactionInsertRepository, GoldTransactionInsertRepository>();
             services.AddScoped<ICurrencyBalanceReadRepository, CurrencyBalanceReadRepository>();
+            services.AddScoped<IBugReportInsertRepository, BugReportInsertRepository>();
+            services.AddScoped<IBugReportReadRepository, BugReportReadRepository>();
+            services.AddScoped<IBugReportUpdateRepository, BugReportUpdateRepository>();
+            services.AddScoped<IBugReportDeleteRepository, BugReportDeleteRepository>();
             services.AddHealthChecks()
               .AddCheck<DatabaseHealthCheck>("postgres");
 
@@ -110,6 +115,7 @@ namespace CastLibrary.WebHost.IoC
             services.AddScoped<IPlayerCardTraitEntityMapper, PlayerCardTraitEntityMapper>();
             services.AddScoped<IPlayerCardSecretEntityMapper, PlayerCardSecretEntityMapper>();
             services.AddScoped<IPlayerCastPerceptionEntityMapper, PlayerCastPerceptionEntityMapper>();
+            services.AddScoped<IBugReportEntityMapper, BugReportEntityMapper>();
         }
     }
 }

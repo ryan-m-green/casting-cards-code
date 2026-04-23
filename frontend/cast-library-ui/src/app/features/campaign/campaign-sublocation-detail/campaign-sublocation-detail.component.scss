@@ -1,7 +1,5 @@
 @use '../../../../styles/variables' as v;
 
-$subLoc-olive: #a8a070;
-
 :host {
   display: block;
   width: 100%;
@@ -21,7 +19,7 @@ $subLoc-olive: #a8a070;
 .void-canvas {
   width: 100%;
   min-height: 100%;
-  background: #000;
+  background: v.$color-black;
   position: relative;
   animation: portal-inward-breathe 6.4s ease-in-out infinite;
   overflow-y: auto;
@@ -31,17 +29,17 @@ $subLoc-olive: #a8a070;
 @keyframes portal-inward-breathe {
   0%, 100% {
     box-shadow:
-      inset 0 0 0    1px color-mix(in srgb, var(--portal-color, #{$subLoc-olive}) 40%, white 60%),
-      inset 0 0  6px  2px color-mix(in srgb, var(--portal-color, #{$subLoc-olive}), transparent 28%),
-      inset 0 0 14px  4px color-mix(in srgb, var(--portal-color, #{$subLoc-olive}), transparent 52%),
-      inset 0 0 25px  8px color-mix(in srgb, var(--portal-color, #{$subLoc-olive}), transparent 76%);
+      inset 0 0 0    1px color-mix(in srgb, var(--portal-color, #{v.$subLoc-olive}) 40%, white 60%),
+      inset 0 0  6px  2px color-mix(in srgb, var(--portal-color, #{v.$subLoc-olive}), transparent 28%),
+      inset 0 0 14px  4px color-mix(in srgb, var(--portal-color, #{v.$subLoc-olive}), transparent 52%),
+      inset 0 0 25px  8px color-mix(in srgb, var(--portal-color, #{v.$subLoc-olive}), transparent 76%);
   }
   50% {
     box-shadow:
-      inset 0 0 0    1px color-mix(in srgb, var(--portal-color, #{$subLoc-olive}) 25%, white 75%),
-      inset 0 0  9px  3px color-mix(in srgb, var(--portal-color, #{$subLoc-olive}), transparent 12%),
-      inset 0 0 19px  6px color-mix(in srgb, var(--portal-color, #{$subLoc-olive}), transparent 36%),
-      inset 0 0 35px 12px color-mix(in srgb, var(--portal-color, #{$subLoc-olive}), transparent 64%);
+      inset 0 0 0    1px color-mix(in srgb, var(--portal-color, #{v.$subLoc-olive}) 25%, white 75%),
+      inset 0 0  9px  3px color-mix(in srgb, var(--portal-color, #{v.$subLoc-olive}), transparent 12%),
+      inset 0 0 19px  6px color-mix(in srgb, var(--portal-color, #{v.$subLoc-olive}), transparent 36%),
+      inset 0 0 35px 12px color-mix(in srgb, var(--portal-color, #{v.$subLoc-olive}), transparent 64%);
   }
 }
 
@@ -68,17 +66,17 @@ $subLoc-olive: #a8a070;
   letter-spacing: 0.16em;
   text-transform: uppercase;
   padding: 7px 16px;
-  background: rgba(110, 40, 208, 0.18);
-  border: 1px solid rgba(110, 40, 208, 0.4);
+  background: v.$color-ext-22;
+  border: 1px solid v.$campaign-portal-border-bold;
   border-radius: 20px;
-  color: rgba(200, 180, 255, 0.85);
+  color: v.$campaign-portal-text-purple-light;
   cursor: pointer;
   transition: background 0.18s ease, border-color 0.18s ease, color 0.18s ease;
 
   &:hover {
-    background: rgba(110, 40, 208, 0.35);
-    border-color: rgba(110, 40, 208, 0.65);
-    color: rgba(220, 200, 255, 0.98);
+    background: v.$campaign-portal-border-accent;
+    border-color: v.$campaign-portal-border-strong-focus;
+    color: v.$campaign-portal-text-lavender-bright;
   }
 }
 
@@ -94,7 +92,7 @@ $subLoc-olive: #a8a070;
 .void-crumb-sep {
   font-family: v.$font-header;
   font-size: 9px;
-  color: color-mix(in srgb, var(--portal-color, #{$subLoc-olive}), white 55%);
+  color: color-mix(in srgb, var(--portal-color, #{v.$subLoc-olive}), white 55%);
   user-select: none;
   pointer-events: none;
 }
@@ -104,14 +102,14 @@ $subLoc-olive: #a8a070;
   font-size: 9px;
   letter-spacing: 0.18em;
   text-transform: uppercase;
-  color: color-mix(in srgb, var(--portal-color, #{$subLoc-olive}), white 75%);
+  color: color-mix(in srgb, var(--portal-color, #{v.$subLoc-olive}), white 75%);
   background: none;
   border: none;
   cursor: pointer;
   transition: color 0.2s ease;
   white-space: nowrap;
 
-  &:hover { color: color-mix(in srgb, var(--portal-color, #{$subLoc-olive}), white 92%); }
+  &:hover { color: color-mix(in srgb, var(--portal-color, #{v.$subLoc-olive}), white 92%); }
 }
 
 .void-title {
@@ -123,11 +121,11 @@ $subLoc-olive: #a8a070;
   font-weight: 600;
   letter-spacing: 0.28em;
   text-transform: uppercase;
-  color: rgba(200, 225, 235, 0.92);
+  color: v.$campaign-portal-text-softer;
   text-shadow:
-    0 0 20px color-mix(in srgb, var(--portal-color, #{$subLoc-olive}), white 35%),
-    0 0 50px color-mix(in srgb, var(--portal-color, #{$subLoc-olive}), transparent 38%),
-    0 1px 3px rgba(0, 0, 0, 0.95);
+    0 0 20px color-mix(in srgb, var(--portal-color, #{v.$subLoc-olive}), white 35%),
+    0 0 50px color-mix(in srgb, var(--portal-color, #{v.$subLoc-olive}), transparent 38%),
+    0 1px 3px v.$color-ext-23;
 }
 
 /* ── Main body layout ────────────────────────────────────────────────────── */
@@ -148,8 +146,8 @@ $subLoc-olive: #a8a070;
 .subLoc-detail-panel {
   flex: 1;
   min-width: 0;
-  background: rgba(14, 24, 32, 0.96);
-  border: 1px solid rgba($subLoc-olive, 0.40);
+  background: v.$campaign-portal-bg-dark;
+  border: 1px solid rgba(v.$subLoc-olive, 0.40);
   border-radius: 6px;
   display: flex;
   flex-direction: column;
@@ -169,7 +167,7 @@ $subLoc-olive: #a8a070;
   flex-direction: column;
   gap: 6px;
   padding: 12px 16px;
-  border-bottom: 1px solid rgba($subLoc-olive, 0.12);
+  border-bottom: 1px solid rgba(v.$subLoc-olive, 0.12);
 }
 
 /* ── 2-col field grid ────────────────────────────────────────────────────── */
@@ -184,10 +182,10 @@ $subLoc-olive: #a8a070;
   flex-direction: column;
   gap: 6px;
   padding: 12px 16px;
-  border-bottom: 1px solid rgba($subLoc-olive, 0.08);
+  border-bottom: 1px solid rgba(v.$subLoc-olive, 0.08);
 
   &:nth-child(odd) {
-    border-right: 1px solid rgba($subLoc-olive, 0.08);
+    border-right: 1px solid rgba(v.$subLoc-olive, 0.08);
   }
 
   &--full {
@@ -198,8 +196,8 @@ $subLoc-olive: #a8a070;
 
 /* ── Secrets section ─────────────────────────────────────────────────────── */
 .detail-secrets-section {
-  border-top: 1px solid rgba($subLoc-olive, 0.22);
-  background: rgba($subLoc-olive, 0.03);
+  border-top: 1px solid rgba(v.$subLoc-olive, 0.22);
+  background: rgba(v.$subLoc-olive, 0.03);
 }
 
 .detail-secrets-header {
@@ -215,7 +213,7 @@ $subLoc-olive: #a8a070;
   align-items: flex-start;
   gap: 10px;
   padding: 10px 16px;
-  border-top: 1px solid rgba($subLoc-olive, 0.08);
+  border-top: 1px solid rgba(v.$subLoc-olive, 0.08);
 }
 
 .secret-lock-btn {
@@ -242,11 +240,11 @@ $subLoc-olive: #a8a070;
 .secret-text {
   font-family: v.$font-body;
   font-size: 13px;
-  color: rgba(185, 210, 220, 0.9);
+  color: v.$campaign-portal-text-secondary;
   line-height: 1.5;
 
   &--revealed {
-    color: rgba(200, 225, 235, 0.95);
+    color: v.$campaign-portal-text-bright;
   }
 }
 
@@ -255,20 +253,20 @@ $subLoc-olive: #a8a070;
   flex-shrink: 0;
   width: 100%;
   padding: 5px 0;
-  background: rgba($subLoc-olive, 0.04);
+  background: rgba(v.$subLoc-olive, 0.04);
   border: none;
-  border-top: 1px solid rgba($subLoc-olive, 0.14);
+  border-top: 1px solid rgba(v.$subLoc-olive, 0.14);
   border-radius: 0 0 6px 6px;
   cursor: pointer;
   font-family: v.$font-header;
   font-size: 8px;
   letter-spacing: 0.12em;
-  color: rgba($subLoc-olive, 0.85);
+  color: rgba(v.$subLoc-olive, 0.85);
   transition: background 0.18s ease, color 0.18s ease;
 
   &:hover {
-    background: rgba($subLoc-olive, 0.10);
-    color: rgba($subLoc-olive, 0.95);
+    background: rgba(v.$subLoc-olive, 0.10);
+    color: rgba(v.$subLoc-olive, 0.95);
   }
 }
 
@@ -277,20 +275,20 @@ $subLoc-olive: #a8a070;
   font-size: 7px;
   letter-spacing: 0.2em;
   text-transform: uppercase;
-  color: rgba($subLoc-olive, 0.85);
+  color: rgba(v.$subLoc-olive, 0.85);
   white-space: nowrap;
 }
 
 .detail-line {
   height: 1px;
   width: 100%;
-  background: linear-gradient(to right, rgba($subLoc-olive, 0.22), transparent);
+  background: linear-gradient(to right, rgba(v.$subLoc-olive, 0.22), transparent);
 }
 
 .detail-value {
   font-family: v.$font-body;
   font-size: 14px;
-  color: rgba(200, 225, 235, 0.95);
+  color: v.$campaign-portal-text-bright;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -299,7 +297,7 @@ $subLoc-olive: #a8a070;
     white-space: normal;
     font-size: 13px;
     line-height: 1.6;
-    color: rgba(185, 210, 220, 0.9);
+    color: v.$campaign-portal-text-secondary;
     margin: 0;
   }
 }
@@ -316,8 +314,8 @@ $subLoc-olive: #a8a070;
   font-size: 7px;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: rgba($subLoc-olive, 0.80);
-  border: 1px solid rgba($subLoc-olive, 0.28);
+  color: rgba(v.$subLoc-olive, 0.80);
+  border: 1px solid rgba(v.$subLoc-olive, 0.28);
   border-radius: 2px;
   padding: 2px 8px;
 }
@@ -333,83 +331,83 @@ $subLoc-olive: #a8a070;
 
 .detail-edit-btn {
   background: none;
-  border: 1px solid rgba($subLoc-olive, 0.30);
+  border: 1px solid rgba(v.$subLoc-olive, 0.30);
   border-radius: 4px;
   padding: 4px 12px;
   font-family: v.$font-header;
   font-size: 8px;
   letter-spacing: 0.16em;
   text-transform: uppercase;
-  color: rgba(200, 225, 235, 0.9);
+  color: v.$color-ext-33;
   cursor: pointer;
   transition: background 0.18s ease, border-color 0.18s ease, color 0.18s ease;
 
   &:hover {
-    background: rgba($subLoc-olive, 0.10);
-    border-color: rgba($subLoc-olive, 0.55);
-    color: rgba(200, 225, 235, 1.0);
+    background: rgba(v.$subLoc-olive, 0.10);
+    border-color: rgba(v.$subLoc-olive, 0.55);
+    color: v.$color-ext-36;
   }
 }
 
 .detail-save-btn {
-  background: rgba(40, 160, 80, 0.15);
-  border: 1px solid rgba(80, 200, 120, 0.30);
+  background: v.$color-ext-37;
+  border: 1px solid v.$color-ext-38;
   border-radius: 4px;
   padding: 4px 12px;
   font-family: v.$font-header;
   font-size: 8px;
   letter-spacing: 0.16em;
   text-transform: uppercase;
-  color: rgba(120, 210, 150, 0.85);
+  color: v.$color-ext-39;
   cursor: pointer;
   transition: background 0.18s ease, border-color 0.18s ease, color 0.18s ease;
 
   &:hover {
-    background: rgba(40, 160, 80, 0.30);
-    border-color: rgba(80, 200, 120, 0.55);
-    color: rgba(140, 220, 165, 1.0);
+    background: v.$color-ext-40;
+    border-color: v.$color-ext-41;
+    color: v.$campaign-portal-glow-bright;
   }
 }
 
 .detail-cancel-btn {
   background: none;
-  border: 1px solid rgba(255, 255, 255, 0.10);
+  border: 1px solid v.$color-border-white-light;
   border-radius: 4px;
   padding: 4px 12px;
   font-family: v.$font-header;
   font-size: 8px;
   letter-spacing: 0.16em;
   text-transform: uppercase;
-  color: rgba(200, 225, 235, 0.75);
+  color: v.$color-ext-42;
   cursor: pointer;
   transition: border-color 0.18s ease, color 0.18s ease;
 
   &:hover {
-    border-color: rgba(255, 255, 255, 0.25);
-    color: rgba(200, 225, 235, 0.95);
+    border-color: v.$color-border-white-med;
+    color: v.$campaign-portal-text-bright;
   }
 }
 
 /* ── Edit inputs ─────────────────────────────────────────────────────────── */
 .detail-input {
-  background: rgba(0, 0, 0, 0.35);
-  border: 1px solid rgba($subLoc-olive, 0.28);
+  background: v.$color-overlay-darker;
+  border: 1px solid rgba(v.$subLoc-olive, 0.28);
   border-radius: 3px;
   padding: 5px 8px;
   font-family: v.$font-body;
   font-size: 14px;
-  color: rgba(200, 225, 235, 0.88);
+  color: v.$campaign-portal-text-muted;
   width: 100%;
   box-sizing: border-box;
   outline: none;
   transition: border-color 0.18s ease;
 
   &::placeholder {
-    color: rgba($subLoc-olive, 0.30);
+    color: rgba(v.$subLoc-olive, 0.30);
   }
 
   &:focus {
-    border-color: rgba($subLoc-olive, 0.65);
+    border-color: rgba(v.$subLoc-olive, 0.65);
   }
 
   &--block {
@@ -426,7 +424,7 @@ $subLoc-olive: #a8a070;
   flex-direction: column;
   gap: 6px;
   padding: 12px 16px;
-  border-top: 1px solid rgba($subLoc-olive, 0.14);
+  border-top: 1px solid rgba(v.$subLoc-olive, 0.14);
   margin-top: 4px;
   min-height: 60px;
 }
@@ -434,7 +432,7 @@ $subLoc-olive: #a8a070;
 .detail-value--muted {
   font-family: v.$font-body;
   font-size: 13px;
-  color: rgba($subLoc-olive, 0.75);
+  color: rgba(v.$subLoc-olive, 0.75);
   font-style: italic;
   margin: 0;
 }
@@ -456,66 +454,66 @@ $subLoc-olive: #a8a070;
 
 .secret-textarea {
   flex: 1;
-  background: rgba(0, 0, 0, 0.35);
-  border: 1px solid rgba($subLoc-olive, 0.28);
+  background: v.$color-overlay-darker;
+  border: 1px solid rgba(v.$subLoc-olive, 0.28);
   border-radius: 3px;
   padding: 5px 8px;
   font-family: v.$font-body;
   font-size: 13px;
-  color: rgba(200, 225, 235, 0.88);
+  color: v.$campaign-portal-text-muted;
   resize: vertical;
   outline: none;
   transition: border-color 0.18s ease;
   min-height: 48px;
 
   &::placeholder {
-    color: rgba($subLoc-olive, 0.30);
+    color: rgba(v.$subLoc-olive, 0.30);
   }
 
   &:focus {
-    border-color: rgba($subLoc-olive, 0.65);
+    border-color: rgba(v.$subLoc-olive, 0.65);
   }
 }
 
 .secret-confirm-btn {
   flex-shrink: 0;
-  background: rgba(40, 160, 80, 0.15);
-  border: 1px solid rgba(80, 200, 120, 0.30);
+  background: v.$color-ext-37;
+  border: 1px solid v.$color-ext-38;
   border-radius: 4px;
   width: 28px;
   height: 28px;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: rgba(120, 210, 150, 0.85);
+  color: v.$color-ext-39;
   font-size: 13px;
   cursor: pointer;
   transition: background 0.18s ease, color 0.18s ease;
 
   &:hover {
-    background: rgba(40, 160, 80, 0.30);
-    color: rgba(140, 220, 165, 1.0);
+    background: v.$color-ext-40;
+    color: v.$campaign-portal-glow-bright;
   }
 }
 
 .secret-cancel-btn {
   flex-shrink: 0;
   background: none;
-  border: 1px solid rgba(255, 255, 255, 0.10);
+  border: 1px solid v.$color-border-white-light;
   border-radius: 4px;
   width: 28px;
   height: 28px;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: rgba(200, 225, 235, 0.40);
+  color: v.$color-ext-46;
   font-size: 13px;
   cursor: pointer;
   transition: border-color 0.18s ease, color 0.18s ease;
 
   &:hover {
-    border-color: rgba(255, 255, 255, 0.25);
-    color: rgba(200, 225, 235, 0.72);
+    border-color: v.$color-border-white-med;
+    color: v.$color-ext-47;
   }
 }
 
@@ -525,20 +523,20 @@ $subLoc-olive: #a8a070;
   margin: 4px 16px 8px;
   padding: 6px 0;
   background: none;
-  border: 1px dashed rgba($subLoc-olive, 0.22);
+  border: 1px dashed rgba(v.$subLoc-olive, 0.22);
   border-radius: 4px;
   font-family: v.$font-header;
   font-size: 8px;
   letter-spacing: 0.16em;
   text-transform: uppercase;
-  color: rgba($subLoc-olive, 0.85);
+  color: rgba(v.$subLoc-olive, 0.85);
   cursor: pointer;
   transition: border-color 0.18s ease, color 0.18s ease, background 0.18s ease;
 
   &:hover {
-    border-color: rgba($subLoc-olive, 0.55);
-    color: rgba($subLoc-olive, 0.80);
-    background: rgba($subLoc-olive, 0.05);
+    border-color: rgba(v.$subLoc-olive, 0.55);
+    color: rgba(v.$subLoc-olive, 0.80);
+    background: rgba(v.$subLoc-olive, 0.05);
   }
 }
 
@@ -548,7 +546,7 @@ $subLoc-olive: #a8a070;
   flex-direction: column;
   gap: 8px;
   padding: 12px 16px;
-  border-bottom: 1px solid rgba($subLoc-olive, 0.08);
+  border-bottom: 1px solid rgba(v.$subLoc-olive, 0.08);
 }
 
 .detail-shop-grid {
@@ -563,16 +561,16 @@ $subLoc-olive: #a8a070;
   align-items: center;
   gap: 12px;
   padding: 6px 0;
-  border-bottom: 1px solid rgba($subLoc-olive, 0.18);
+  border-bottom: 1px solid rgba(v.$subLoc-olive, 0.18);
 
   &--sold {
     .detail-shop-item-name {
       text-decoration: line-through;
-      color: rgba(200, 225, 235, 0.35);
+      color: v.$color-ext-255;
     }
 
     .detail-shop-item-price {
-      color: rgba($subLoc-olive, 0.30);
+      color: rgba(v.$subLoc-olive, 0.30);
     }
   }
 }
@@ -580,7 +578,7 @@ $subLoc-olive: #a8a070;
 .detail-shop-item-name {
   font-family: v.$font-body;
   font-size: 14px;
-  color: rgba(200, 225, 235, 0.95);
+  color: v.$campaign-portal-text-bright;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -598,7 +596,7 @@ $subLoc-olive: #a8a070;
   font-family: v.$font-header;
   font-size: 12px;
   letter-spacing: 0.12em;
-  color: rgba($subLoc-olive, 0.95);
+  color: rgba(v.$subLoc-olive, 0.95);
   white-space: nowrap;
 }
 
@@ -606,31 +604,31 @@ $subLoc-olive: #a8a070;
 .shop-scratch-btn {
   flex-shrink: 0;
   padding: 2px 8px;
-  background: rgba(0, 0, 0, 0.35);
-  border: 1px solid rgba($subLoc-olive, 0.28);
+  background: v.$color-overlay-darker;
+  border: 1px solid rgba(v.$subLoc-olive, 0.28);
   border-radius: 3px;
   font-family: v.$font-header;
   font-size: 7px;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: rgba($subLoc-olive, 0.85);
+  color: rgba(v.$subLoc-olive, 0.85);
   cursor: pointer;
   transition: background 0.18s ease, border-color 0.18s ease, color 0.18s ease;
 
   &:hover {
-    background: rgba($subLoc-olive, 0.12);
-    border-color: rgba($subLoc-olive, 0.55);
-    color: rgba($subLoc-olive, 0.85);
+    background: rgba(v.$subLoc-olive, 0.12);
+    border-color: rgba(v.$subLoc-olive, 0.55);
+    color: rgba(v.$subLoc-olive, 0.85);
   }
 
   &--sold {
-    background: rgba(180, 130, 40, 0.15);
-    border-color: rgba(220, 170, 60, 0.40);
-    color: rgba(220, 170, 60, 0.80);
+    background: v.$color-ext-256;
+    border-color: v.$color-ext-257;
+    color: v.$color-ext-258;
 
     &:hover {
-      background: rgba(180, 130, 40, 0.28);
-      color: rgba(230, 185, 80, 1.0);
+      background: v.$color-ext-259;
+      color: v.$color-ext-260;
     }
   }
 }
@@ -655,15 +653,25 @@ $subLoc-olive: #a8a070;
   .price-amount {
     width: 58px;
     flex: none;
-    background: rgba(14, 24, 32, 0.80);
-    border: 1px solid rgba($subLoc-olive, 0.28);
-    color: rgba(200, 225, 210, 0.82);
+    background: v.$campaign-portal-bg-medium;
+    border: 1px solid rgba(v.$subLoc-olive, 0.28);
+    color: v.$color-ext-261;
     font-family: v.$font-body;
     font-size: 13px;
 
-    &::placeholder { color: rgba(200, 225, 210, 0.35); }
-    &:hover { border-color: rgba($subLoc-olive, 0.50); }
-    &:focus { outline: 2px solid rgba($subLoc-olive, 0.60); outline-offset: 1px; border-color: rgba($subLoc-olive, 0.50); }
+    &::placeholder {
+      color: v.$color-ext-262;
+    }
+
+    &:hover {
+      border-color: rgba(v.$subLoc-olive, 0.50);
+    }
+
+    &:focus {
+      outline: 2px solid rgba(v.$subLoc-olive, 0.60);
+      outline-offset: 1px;
+      border-color: rgba(v.$subLoc-olive, 0.50);
+    }
   }
 }
 
@@ -682,10 +690,10 @@ $subLoc-olive: #a8a070;
   align-items: center;
   justify-content: space-between;
   width: 100%;
-  background: rgba(14, 24, 32, 0.80);
-  border: 1px solid rgba($subLoc-olive, 0.28);
+  background: v.$campaign-portal-bg-medium;
+  border: 1px solid rgba(v.$subLoc-olive, 0.28);
   border-radius: 3px;
-  color: rgba(200, 225, 210, 0.95);
+  color: v.$color-ext-265;
   font-family: v.$font-body;
   font-size: 13px;
   padding: 4px 8px;
@@ -693,10 +701,12 @@ $subLoc-olive: #a8a070;
   text-align: left;
   transition: border-color 0.15s;
 
-  &:hover { border-color: rgba($subLoc-olive, 0.50); }
+  &:hover {
+    border-color: rgba(v.$subLoc-olive, 0.50);
+  }
 
   &:focus-visible {
-    outline: 2px solid rgba($subLoc-olive, 0.60);
+    outline: 2px solid rgba(v.$subLoc-olive, 0.60);
     outline-offset: 1px;
   }
 }
@@ -722,31 +732,31 @@ $subLoc-olive: #a8a070;
   top: calc(100% + 2px);
   left: 0;
   right: 0;
-  background: #0c1820;
-  border: 1px solid rgba($subLoc-olive, 0.28);
+  background: v.$campaign-portal-panel-dark;
+  border: 1px solid rgba(v.$subLoc-olive, 0.28);
   border-radius: 3px;
   z-index: 50;
   max-height: 200px;
   overflow-y: auto;
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.55);
+  box-shadow: 0 6px 20px v.$color-ext-146;
 }
 
 .notes-dropdown-item {
   font-family: v.$font-body;
   font-size: 13px;
-  color: rgba(200, 225, 210, 0.95);
+  color: v.$color-ext-265;
   padding: 6px 10px;
   cursor: pointer;
   transition: background 0.12s, color 0.12s;
 
   &:hover {
-    background: rgba($subLoc-olive, 0.10);
-    color: rgba($subLoc-olive, 0.90);
+    background: rgba(v.$subLoc-olive, 0.10);
+    color: rgba(v.$subLoc-olive, 0.90);
   }
 
   &--selected {
-    background: rgba($subLoc-olive, 0.08);
-    color: rgba($subLoc-olive, 0.85);
+    background: rgba(v.$subLoc-olive, 0.08);
+    color: rgba(v.$subLoc-olive, 0.85);
   }
 }
 
@@ -769,15 +779,15 @@ $subLoc-olive: #a8a070;
   font-size: 9px;
   letter-spacing: 0.22em;
   text-transform: uppercase;
-  color: rgba(200, 225, 235, 0.92);
+  color: v.$campaign-portal-text-softer;
   white-space: nowrap;
-  text-shadow: 0 0 10px color-mix(in srgb, var(--portal-color, #{$subLoc-olive}) 22%, transparent 78%);
+  text-shadow: 0 0 10px color-mix(in srgb, var(--portal-color, #{v.$subLoc-olive}) 22%, transparent 78%);
 }
 
 .cast-section-line {
   flex: 1;
   height: 1px;
-  background: linear-gradient(to right, rgba(200, 225, 235, 0.92), transparent);
+  background: linear-gradient(to right, v.$campaign-portal-text-softer, transparent);
 }
 
 .cast-grid {
@@ -794,31 +804,31 @@ $subLoc-olive: #a8a070;
   align-items: center;
   gap: 6px;
   padding: 4px 12px;
-  background: rgba(0, 0, 0, 0.45);
-  border: 1px solid rgba(255, 255, 255, 0.10);
+  background: v.$journal-leather-cover-shadow;
+  border: 1px solid v.$color-border-white-light;
   border-radius: 6px;
   font-family: v.$font-header;
   font-size: 8px;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: rgba(200, 225, 235, 0.85);
+  color: v.$color-ext-207;
   cursor: pointer;
   transition: background 0.18s ease, border-color 0.18s ease, color 0.18s ease;
 
   &:hover {
-    background: rgba(0, 0, 0, 0.70);
-    border-color: rgba(255, 255, 255, 0.22);
-    color: rgba(200, 225, 235, 0.95);
+    background: v.$color-ext-208;
+    border-color: v.$color-ext-209;
+    color: v.$campaign-portal-text-bright;
   }
 
   &--visible {
-    background: rgba(40, 160, 80, 0.18);
-    border-color: rgba(80, 200, 120, 0.35);
-    color: rgba(120, 210, 150, 0.90);
+    background: v.$color-ext-210;
+    border-color: v.$color-ext-211;
+    color: v.$color-ext-212;
 
     &:hover {
-      background: rgba(40, 160, 80, 0.32);
-      color: rgba(140, 220, 165, 1.0);
+      background: v.$color-ext-213;
+      color: v.$campaign-portal-glow-bright;
     }
   }
 }

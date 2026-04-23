@@ -15,4 +15,5 @@ public class CampaignPlayerDomain
     public string Email { get; set; } = string.Empty;
     public int StartingGold { get; set; }
     public DateTime JoinedAt { get; set; }
+    public string ImageUrl { get; set; } = string.Empty;
 }

@@ -91,7 +91,7 @@ public class CampaignCastInstanceResponse
     public string[] VoicePlacement { get; set; } = [];
     public string Description { get; set; } = string.Empty;
     public string PublicDescription { get; set; } = string.Empty;
-    public string? ImageUrl { get; set; }
+    public string ImageUrl { get; set; }
     public bool IsVisibleToPlayers { get; set; }
     public List<CampaignCastCustomItemResponse> CustomItems { get; set; } = [];
     public string[] Keywords { get; set; } = [];
@@ -119,7 +119,7 @@ public class CampaignSublocationInstanceResponse
     public Guid? LocationInstanceId { get; set; }
     public string Name { get; set; } = string.Empty;
     public string Description { get; set; } = string.Empty;
-    public string ImagePath { get; set; }
+    public string ImageUrl { get; set; }
     public bool IsVisibleToPlayers { get; set; }
     public string DmNotes { get; set; } = string.Empty;
     public List<ShopItemResponse> ShopItems { get; set; } = [];

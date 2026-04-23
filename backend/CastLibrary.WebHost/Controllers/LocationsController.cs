@@ -37,13 +37,13 @@ public class LocationsController(
     [HttpGet("{id}")]
     public async Task<IActionResult> GetById(Guid id)
     {
-        var Location = await getLocationDetailQueryHandler.HandleAsync(id);
-        if (Location is null)
+        var location = await getLocationDetailQueryHandler.HandleAsync(id);
+        if (location is null)
         {
             return NotFound();
         }
 
-        var response = mapper.ToResponse(Location);
+        var response = mapper.ToResponse(location);
         return Ok(response);
     }
 

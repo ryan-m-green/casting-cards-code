@@ -44,7 +44,7 @@ export class CampaignHubService {
   readonly dmNotesUpdated            = signal<DmNotesUpdatedEvent | null>(null);
   readonly timeOfDayUpdated          = signal<TimeOfDay | null>(null);
   readonly dayAdvanced               = signal<DayAdvancedEvent | null>(null);
-  readonly goldAwarded               = signal<GoldAwardedEvent | null>(null);
+  readonly goldAwarded               = signal<GoldAwardedEvent[]>([]);
   readonly conditionRemoved          = signal<ConditionRemovedEvent | null>(null);
   readonly conditionAssigned         = signal<ConditionAssignedEvent | null>(null);
   readonly secretShared              = signal<SecretSharedEvent | null>(null);
@@ -106,7 +106,7 @@ export class CampaignHubService {
     });
 
     this.connection.on('GoldAwarded', (event: GoldAwardedEvent) => {
-      this.goldAwarded.set(event);
+      this.goldAwarded.update(q => [...q, event]);
     });
 
     this.connection.on('ConditionRemoved', (event: ConditionRemovedEvent) => {

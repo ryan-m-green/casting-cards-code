@@ -1,7 +1,5 @@
 @use '../../../../styles/variables' as v;
 
-$cast-gold: #c8b07a;
-
 :host {
   display: block;
   width: 100%;
@@ -10,8 +8,8 @@ $cast-gold: #c8b07a;
 // ── Panel container ────────────────────────────────────────────────────────────
 .cast-notes-panel {
   width: 100%;
-  background: rgba(14, 24, 32, 0.96);
-  border: 1px solid rgba($cast-gold, 0.40);
+  background: v.$campaign-portal-bg-dark;
+  border: 1px solid rgba(v.$cast-gold, 0.40);
   border-radius: 6px;
   overflow: hidden;
 }
@@ -22,7 +20,7 @@ $cast-gold: #c8b07a;
   align-items: center;
   gap: 12px;
   padding: 12px 16px 10px;
-  border-bottom: 1px solid rgba($cast-gold, 0.18);
+  border-bottom: 1px solid rgba(v.$cast-gold, 0.18);
 }
 
 .notes-panel-label {
@@ -30,14 +28,14 @@ $cast-gold: #c8b07a;
   font-size: 7px;
   letter-spacing: 0.22em;
   text-transform: uppercase;
-  color: rgba($cast-gold, 0.95);
+  color: rgba(v.$cast-gold, 0.95);
   white-space: nowrap;
 }
 
 .notes-panel-line {
   flex: 1;
   height: 1px;
-  background: linear-gradient(to right, rgba($cast-gold, 0.22), transparent);
+  background: linear-gradient(to right, rgba(v.$cast-gold, 0.22), transparent);
 }
 
 .notes-saving {
@@ -45,7 +43,7 @@ $cast-gold: #c8b07a;
   font-size: 7px;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: rgba($cast-gold, 0.8);
+  color: rgba(v.$cast-gold, 0.8);
   white-space: nowrap;
 }
 
@@ -59,7 +57,7 @@ $cast-gold: #c8b07a;
 
 .notes-section-divider {
   height: 1px;
-  background: rgba($cast-gold, 0.08);
+  background: rgba(v.$cast-gold, 0.08);
   margin: 0 16px;
 }
 
@@ -69,22 +67,22 @@ $cast-gold: #c8b07a;
   font-size: 7px;
   letter-spacing: 0.20em;
   text-transform: uppercase;
-  color: rgba($cast-gold, 0.9);
+  color: rgba(v.$cast-gold, 0.9);
 }
 
 .notes-field-line {
   height: 1px;
   width: 100%;
-  background: linear-gradient(to right, rgba($cast-gold, 0.18), transparent);
+  background: linear-gradient(to right, rgba(v.$cast-gold, 0.18), transparent);
 }
 
 // ── 1. Textarea ───────────────────────────────────────────────────────────────
 .notes-textarea {
   width: 100%;
-  background: rgba(0, 0, 0, 0.30);
-  border: 1px solid rgba($cast-gold, 0.20);
+  background: v.$color-ext-484;
+  border: 1px solid rgba(v.$cast-gold, 0.20);
   border-radius: 4px;
-  color: rgba(200, 225, 235, 0.95);
+  color: v.$campaign-portal-text-bright;
   font-family: v.$font-body;
   font-size: 14px;
   line-height: 1.6;
@@ -95,8 +93,13 @@ $cast-gold: #c8b07a;
   outline: none;
   transition: border-color 0.2s;
 
-  &::placeholder { color: rgba($cast-gold, 0.25); }
-  &:focus { border-color: rgba($cast-gold, 0.45); }
+  &::placeholder {
+    color: rgba(v.$cast-gold, 0.25);
+  }
+
+  &:focus {
+    border-color: rgba(v.$cast-gold, 0.45);
+  }
 }
 
 // ── 2. Connections ────────────────────────────────────────────────────────────
@@ -110,10 +113,10 @@ $cast-gold: #c8b07a;
   align-items: center;
   justify-content: space-between;
   width: 100%;
-  background: rgba(0, 0, 0, 0.30);
-  border: 1px solid rgba($cast-gold, 0.20);
+  background: v.$color-ext-484;
+  border: 1px solid rgba(v.$cast-gold, 0.20);
   border-radius: 4px;
-  color: rgba($cast-gold, 0.9);
+  color: rgba(v.$cast-gold, 0.9);
   font-family: v.$font-header;
   font-size: 8px;
   letter-spacing: 0.12em;
@@ -123,7 +126,9 @@ $cast-gold: #c8b07a;
   text-align: left;
   transition: border-color 0.15s;
 
-  &:hover { border-color: rgba($cast-gold, 0.40); }
+  &:hover {
+    border-color: rgba(v.$cast-gold, 0.40);
+  }
 }
 
 .notes-dropdown-placeholder {
@@ -142,13 +147,13 @@ $cast-gold: #c8b07a;
   top: calc(100% + 4px);
   left: 0;
   right: 0;
-  background: #0c1820;
-  border: 1px solid rgba($cast-gold, 0.28);
+  background: v.$campaign-portal-panel-dark;
+  border: 1px solid rgba(v.$cast-gold, 0.28);
   border-radius: 4px;
   z-index: 50;
   max-height: 220px;
   overflow-y: auto;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.55);
+  box-shadow: 0 8px 24px v.$color-ext-146;
 }
 
 .notes-dropdown-group-label {
@@ -156,24 +161,26 @@ $cast-gold: #c8b07a;
   font-size: 7px;
   letter-spacing: 0.20em;
   text-transform: uppercase;
-  color: rgba($cast-gold, 0.8);
+  color: rgba(v.$cast-gold, 0.8);
   padding: 8px 12px 4px;
-  border-top: 1px solid rgba($cast-gold, 0.08);
+  border-top: 1px solid rgba(v.$cast-gold, 0.08);
 
-  &:first-child { border-top: none; }
+  &:first-child {
+    border-top: none;
+  }
 }
 
 .notes-dropdown-item {
   font-family: v.$font-body;
   font-size: 14px;
-  color: rgba(200, 225, 235, 0.95);
+  color: v.$campaign-portal-text-bright;
   padding: 7px 14px;
   cursor: pointer;
   transition: background 0.12s, color 0.12s;
 
   &:hover {
-    background: rgba($cast-gold, 0.10);
-    color: rgba($cast-gold, 0.90);
+    background: rgba(v.$cast-gold, 0.10);
+    color: rgba(v.$cast-gold, 0.90);
   }
 }
 
@@ -182,7 +189,7 @@ $cast-gold: #c8b07a;
   font-size: 7px;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: rgba($cast-gold, 0.7);
+  color: rgba(v.$cast-gold, 0.7);
   padding: 12px;
   text-align: center;
 }
@@ -201,8 +208,8 @@ $cast-gold: #c8b07a;
   font-size: 7px;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: rgba($cast-gold, 0.85);
-  border: 1px solid rgba($cast-gold, 0.30);
+  color: rgba(v.$cast-gold, 0.85);
+  border: 1px solid rgba(v.$cast-gold, 0.30);
   border-radius: 3px;
   padding: 3px 8px 3px 10px;
 }
@@ -210,7 +217,7 @@ $cast-gold: #c8b07a;
 .notes-pill-remove {
   background: none;
   border: none;
-  color: rgba($cast-gold, 0.8);
+  color: rgba(v.$cast-gold, 0.8);
   font-size: 12px;
   line-height: 1;
   cursor: pointer;
@@ -219,7 +226,9 @@ $cast-gold: #c8b07a;
   align-items: center;
   transition: color 0.15s;
 
-  &:hover { color: rgba($cast-gold, 0.90); }
+  &:hover {
+    color: rgba(v.$cast-gold, 0.90);
+  }
 }
 
 // ── 3. Alignment grid ─────────────────────────────────────────────────────────
@@ -231,9 +240,9 @@ $cast-gold: #c8b07a;
 
 .alignment-cell {
   background: transparent;
-  border: 1px solid rgba($cast-gold, 0.14);
+  border: 1px solid rgba(v.$cast-gold, 0.14);
   border-radius: 3px;
-  color: rgba($cast-gold, 0.8);
+  color: rgba(v.$cast-gold, 0.8);
   font-family: v.$font-header;
   font-size: 8px;
   letter-spacing: 0.08em;
@@ -245,21 +254,21 @@ $cast-gold: #c8b07a;
   line-height: 1.3;
 
   &:hover {
-    background: rgba($cast-gold, 0.08);
-    color: rgba($cast-gold, 0.65);
+    background: rgba(v.$cast-gold, 0.08);
+    color: rgba(v.$cast-gold, 0.65);
   }
 
   &--selected {
-    border-color: var(--portal-color, #{$cast-gold});
-    background: color-mix(in srgb, var(--portal-color, #{$cast-gold}) 14%, transparent 86%);
-    color: color-mix(in srgb, var(--portal-color, #{$cast-gold}) 90%, white 10%);
+    border-color: var(--portal-color, #{v.$cast-gold});
+    background: color-mix(in srgb, var(--portal-color, #{v.$cast-gold}) 14%, transparent 86%);
+    color: color-mix(in srgb, var(--portal-color, #{v.$cast-gold}) 90%, white 10%);
   }
 }
 
 // ── 4. Perception slider ──────────────────────────────────────────────────────
 .perception-card {
-  background: rgba(0, 0, 0, 0.25);
-  border: 1px solid rgba($cast-gold, 0.16);
+  background: v.$color-border-black-strong;
+  border: 1px solid rgba(v.$cast-gold, 0.16);
   border-radius: 4px;
   padding: 14px 16px 10px;
   display: flex;
@@ -267,35 +276,40 @@ $cast-gold: #c8b07a;
   gap: 6px;
   transition: border-color 0.25s;
 
-  &--hostile  { border-color: rgba(154, 48, 48, 0.55); }
-  &--friendly { border-color: rgba(58, 96, 64, 0.55);  }
+  &--hostile {
+    border-color: v.$color-ext-491;
+  }
+
+  &--friendly {
+    border-color: v.$color-ext-492;
+  }
 }
 
 .perception-slider {
   width: 100%;
-  accent-color: #8a7040;
+  accent-color: v.$color-ext-337;
   cursor: pointer;
 
-  &.slider-friendly { accent-color: #4a9060; }
-  &.slider-hostile  { accent-color: #9a3030; }
+  &.slider-friendly { accent-color: v.$color-ext-338; }
+  &.slider-hostile  { accent-color: v.$color-ext-339; }
 }
 
 .perception-labels {
   display: flex;
   justify-content: space-between;
   font-size: 0.70rem;
-  color: rgba($cast-gold, 0.85);
+  color: rgba(v.$cast-gold, 0.85);
 }
 
 .perception-label-center {
   font-weight: 600;
-  color: rgba($cast-gold, 0.85);
+  color: rgba(v.$cast-gold, 0.85);
   text-align: center;
 }
 
 .perception-label-end {
   font-size: 0.68rem;
-  color: rgba($cast-gold, 0.8);
+  color: rgba(v.$cast-gold, 0.8);
 }
 
 // ── 5. Secrets grid ───────────────────────────────────────────────────────────
@@ -306,8 +320,8 @@ $cast-gold: #c8b07a;
 }
 
 .secret-card {
-  background: rgba($cast-gold, 0.04);
-  border: 1px solid rgba($cast-gold, 0.20);
+  background: rgba(v.$cast-gold, 0.04);
+  border: 1px solid rgba(v.$cast-gold, 0.20);
   border-radius: 4px;
   padding: 12px 16px;
 }
@@ -315,7 +329,7 @@ $cast-gold: #c8b07a;
 .secret-card-text {
   font-family: v.$font-body;
   font-size: 13px;
-  color: rgba(200, 225, 235, 0.95);
+  color: v.$campaign-portal-text-bright;
   line-height: 1.55;
   margin: 0;
 }

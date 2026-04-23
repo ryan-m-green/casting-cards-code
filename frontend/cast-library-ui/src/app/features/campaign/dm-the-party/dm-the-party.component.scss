@@ -10,7 +10,7 @@
 .void-canvas {
   width: 100%;
   min-height: 100%;
-  background: #000;
+  background: v.$color-black;
   position: relative;
   overflow-y: auto;
   overflow-x: hidden;
@@ -20,17 +20,17 @@
 @keyframes portal-inward-breathe {
   0%, 100% {
     box-shadow:
-      inset 0 0 0    1px color-mix(in srgb, var(--portal-color, #6e28d0) 40%, white 60%),
-      inset 0 0  6px  2px color-mix(in srgb, var(--portal-color, #6e28d0), transparent 28%),
-      inset 0 0 14px  4px color-mix(in srgb, var(--portal-color, #6e28d0), transparent 52%),
-      inset 0 0 25px  8px color-mix(in srgb, var(--portal-color, #6e28d0), transparent 76%);
+      inset 0 0 0    1px color-mix(in srgb, var(--portal-color, v.$campaign-portal-primary) 40%, white 60%),
+      inset 0 0  6px  2px color-mix(in srgb, var(--portal-color, v.$campaign-portal-primary), transparent 28%),
+      inset 0 0 14px  4px color-mix(in srgb, var(--portal-color, v.$campaign-portal-primary), transparent 52%),
+      inset 0 0 25px  8px color-mix(in srgb, var(--portal-color, v.$campaign-portal-primary), transparent 76%);
   }
   50% {
     box-shadow:
-      inset 0 0 0    1px color-mix(in srgb, var(--portal-color, #6e28d0) 25%, white 75%),
-      inset 0 0  9px  3px color-mix(in srgb, var(--portal-color, #6e28d0), transparent 12%),
-      inset 0 0 19px  6px color-mix(in srgb, var(--portal-color, #6e28d0), transparent 36%),
-      inset 0 0 35px 12px color-mix(in srgb, var(--portal-color, #6e28d0), transparent 64%);
+      inset 0 0 0    1px color-mix(in srgb, var(--portal-color, v.$campaign-portal-primary) 25%, white 75%),
+      inset 0 0  9px  3px color-mix(in srgb, var(--portal-color, v.$campaign-portal-primary), transparent 12%),
+      inset 0 0 19px  6px color-mix(in srgb, var(--portal-color, v.$campaign-portal-primary), transparent 36%),
+      inset 0 0 35px 12px color-mix(in srgb, var(--portal-color, v.$campaign-portal-primary), transparent 64%);
   }
 }
 
@@ -55,14 +55,14 @@
   font-size: 9px;
   letter-spacing: 0.18em;
   text-transform: uppercase;
-  color: color-mix(in srgb, var(--portal-color, #6e28d0), white 75%);
+  color: color-mix(in srgb, var(--portal-color, v.$campaign-portal-primary), white 75%);
   background: none;
   border: none;
   cursor: pointer;
   transition: color 0.2s ease;
   white-space: nowrap;
 
-  &:hover { color: color-mix(in srgb, var(--portal-color, #6e28d0), white 92%); }
+  &:hover { color: color-mix(in srgb, var(--portal-color, v.$campaign-portal-primary), white 92%); }
 }
 
 .void-title {
@@ -74,11 +74,11 @@
   font-weight: 600;
   letter-spacing: 0.28em;
   text-transform: uppercase;
-  color: rgba(220, 200, 255, 0.92);
+  color: v.$color-ext-160;
   text-shadow:
-    0 0 20px color-mix(in srgb, var(--portal-color, #6e28d0), white 35%),
-    0 0 50px color-mix(in srgb, var(--portal-color, #6e28d0), transparent 38%),
-    0 1px 3px rgba(0, 0, 0, 0.95);
+    0 0 20px color-mix(in srgb, var(--portal-color, v.$campaign-portal-primary), white 35%),
+    0 0 50px color-mix(in srgb, var(--portal-color, v.$campaign-portal-primary), transparent 38%),
+    0 1px 3px v.$color-ext-23;
 }
 
 /* ── Party actions ───────────────────────────────────────────── */
@@ -94,16 +94,16 @@
   letter-spacing: 0.14em;
   text-transform: uppercase;
   padding: 9px 20px;
-  background: rgba(180, 130, 40, 0.2);
-  border: 1px solid rgba(180, 130, 40, 0.4);
+  background: v.$color-ext-340;
+  border: 1px solid v.$color-ext-341;
   border-radius: 20px;
-  color: rgba(255, 210, 120, 0.95);
+  color: v.$color-ext-342;
   cursor: pointer;
   transition: all 0.18s ease;
 
   &:hover {
-    background: rgba(180, 130, 40, 0.35);
-    border-color: rgba(180, 130, 40, 0.65);
+    background: v.$color-ext-343;
+    border-color: v.$color-ext-344;
   }
 }
 
@@ -117,7 +117,7 @@
 
 /* ── Player card back specifics ──────────────────────────────── */
 .pc-card-player .card-placeholder {
-  background: linear-gradient(160deg, #b8a8d4, #d4cce8, #a89ec4);
+  background: linear-gradient(160deg, v.$color-lib-player-1, v.$color-lib-player-2, v.$color-lib-player-3);
 }
 
 .pc-conditions {
@@ -133,10 +133,10 @@
   letter-spacing: 0.1em;
   text-transform: uppercase;
   padding: 2px 5px;
-  background: rgba(130, 28, 28, 0.12);
-  border: 1px solid rgba(130, 28, 28, 0.35);
+  background: v.$color-dm-bg;
+  border: 1px solid v.$color-dm-border;
   border-radius: 2px;
-  color: rgba(110, 22, 22, 1.0);
+  color: v.$color-dm-text;
 }
 
 /* ── Action row (card back footer) ──────────────────────────── */
@@ -145,7 +145,34 @@
   display: flex;
   justify-content: space-around;
   padding: 5px 4px;
-  border-top: 1px solid rgba(110, 75, 22, 0.2);
+  border-top: 1px solid v.$color-lib-scrollbar;
+}
+
+/* ── Motivation traits (card back) ──────────────────────────── */
+.pc-trait-section {
+  margin-bottom: 6px;
+}
+
+.pc-trait-label {
+  font-family: v.$font-header;
+  font-size: 6px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: v.$color-dm-text;
+  opacity: 0.55;
+  margin-bottom: 2px;
+}
+
+.pc-trait-item {
+  font-size: 7px;
+  color: v.$color-dm-text;
+  line-height: 1.4;
+  padding-left: 2px;
+
+  &.pc-trait-item--completed {
+    opacity: 0.4;
+    text-decoration: line-through;
+  }
 }
 
 .pc-action-btn {
@@ -158,14 +185,14 @@
   line-height: 1;
   transition: background v.$transition-std;
 
-  &:hover { background: rgba(110, 75, 22, 0.12); }
+  &:hover { background: v.$color-ext-296; }
 }
 
 /* ── Modals ──────────────────────────────────────────────────── */
 .modal-backdrop {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.7);
+  background: v.$journal-spine-shadow;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -174,12 +201,12 @@
 }
 
 .modal-panel {
-  background: rgba(12, 6, 24, 0.97);
-  border: 1px solid color-mix(in srgb, var(--portal-color, #6e28d0) 55%, transparent 45%);
+  background: v.$campaign-portal-bg-dark;
+  border: 1px solid color-mix(in srgb, var(--portal-color, v.$campaign-portal-primary) 55%, transparent 45%);
   border-radius: 12px;
   width: 100%;
   max-width: 480px;
-  box-shadow: 0 0 40px rgba(110, 40, 208, 0.2), 0 16px 48px rgba(0, 0, 0, 0.8);
+  box-shadow: 0 0 40px v.$campaign-portal-bg-placeholder, 0 16px 48px v.$color-ext-155;
 }
 
 .modal-header {
@@ -187,7 +214,7 @@
   align-items: center;
   justify-content: space-between;
   padding: 18px 22px 14px;
-  border-bottom: 1px solid rgba(110, 40, 208, 0.2);
+  border-bottom: 1px solid v.$campaign-portal-bg-placeholder;
 }
 
 .modal-title {
@@ -195,18 +222,18 @@
   font-size: 11px;
   letter-spacing: 0.18em;
   text-transform: uppercase;
-  color: rgba(220, 200, 255, 0.9);
+  color: v.$campaign-portal-text-primary;
 }
 
 .modal-close {
   background: none;
   border: none;
-  color: rgba(180, 150, 255, 0.9);
+  color: v.$color-ext-345;
   font-size: 13px;
   cursor: pointer;
   transition: color 0.15s ease;
 
-  &:hover { color: rgba(220, 200, 255, 0.95); }
+  &:hover { color: v.$campaign-portal-text-lavender; }
 }
 
 .modal-body {
@@ -228,7 +255,7 @@
   justify-content: flex-end;
   gap: 10px;
   padding: 14px 22px 18px;
-  border-top: 1px solid rgba(110, 40, 208, 0.15);
+  border-top: 1px solid v.$campaign-portal-border-light;
 }
 
 .modal-field {
@@ -242,15 +269,15 @@
   font-size: 8px;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: rgba(195, 180, 235, 0.9);
+  color: v.$campaign-portal-text-primary;
 }
 
 .modal-input,
 .modal-textarea {
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(110, 40, 208, 0.25);
+  background: v.$color-ext-346;
+  border: 1px solid v.$campaign-portal-border-medium;
   border-radius: 6px;
-  color: rgba(220, 200, 255, 0.9);
+  color: v.$campaign-portal-text-primary;
   font-family: v.$font-body;
   font-size: 14px;
   padding: 9px 12px;
@@ -259,7 +286,9 @@
   box-sizing: border-box;
   transition: border-color 0.15s ease;
 
-  &:focus { border-color: rgba(110, 40, 208, 0.55); }
+  &:focus {
+    border-color: v.$campaign-portal-border-active;
+  }
 }
 
 .modal-textarea {
@@ -275,13 +304,13 @@
   text-transform: uppercase;
   padding: 9px 18px;
   background: none;
-  border: 1px solid rgba(180, 150, 255, 0.35);
+  border: 1px solid v.$color-ext-347;
   border-radius: 6px;
-  color: rgba(195, 170, 255, 0.9);
+  color: v.$color-ext-348;
   cursor: pointer;
   transition: all 0.15s ease;
 
-  &:hover { border-color: rgba(180, 150, 255, 0.6); color: rgba(220, 200, 255, 0.95); }
+  &:hover { border-color: v.$color-ext-349; color: v.$campaign-portal-text-lavender; }
 }
 
 .modal-confirm {
@@ -290,21 +319,26 @@
   letter-spacing: 0.14em;
   text-transform: uppercase;
   padding: 9px 18px;
-  background: rgba(110, 40, 208, 0.35);
-  border: 1px solid rgba(110, 40, 208, 0.6);
+  background: v.$color-ext-350;
+  border: 1px solid v.$campaign-portal-border-focus;
   border-radius: 6px;
-  color: rgba(220, 200, 255, 0.95);
+  color: v.$campaign-portal-text-primary;
   cursor: pointer;
   transition: all 0.18s ease;
 
   &:hover:not(:disabled) {
-    background: rgba(110, 40, 208, 0.55);
-    border-color: rgba(110, 40, 208, 0.85);
+    background: v.$campaign-portal-border-active;
+    border-color: v.$color-ext-351;
   }
 
-  &:disabled { opacity: 0.4; cursor: not-allowed; }
+  &:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+  }
 
-  &--sm { padding: 7px 14px; }
+  &--sm {
+    padding: 7px 14px;
+  }
 }
 
 /* ── Condition modal specifics ───────────────────────────────── */
@@ -319,36 +353,36 @@
   align-items: center;
   justify-content: space-between;
   padding: 6px 10px;
-  background: rgba(200, 50, 50, 0.12);
-  border: 1px solid rgba(200, 50, 50, 0.3);
+  background: v.$color-ext-352;
+  border: 1px solid v.$color-ext-353;
   border-radius: 6px;
   font-family: v.$font-body;
   font-size: 13px;
-  color: rgba(255, 160, 150, 0.9);
+  color: v.$color-ext-354;
 }
 
 .cond-remove-btn {
   background: none;
   border: none;
-  color: rgba(200, 80, 80, 0.85);
+  color: v.$color-ext-355;
   cursor: pointer;
   font-size: 11px;
   padding: 2px 4px;
   transition: color 0.15s ease;
 
-  &:hover { color: rgba(230, 100, 100, 0.95); }
+  &:hover { color: v.$color-ext-356; }
 }
 
 .cond-empty {
   font-family: v.$font-body;
   font-size: 12px;
-  color: rgba(195, 180, 230, 0.8);
+  color: v.$color-ext-357;
   font-style: italic;
 }
 
 .cond-divider {
   border: none;
-  border-top: 1px solid rgba(110, 40, 208, 0.15);
+  border-top: 1px solid v.$campaign-portal-border-light;
 }
 
 .cond-label {
@@ -356,7 +390,7 @@
   font-size: 8px;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: rgba(195, 180, 235, 0.9);
+  color: v.$color-ext-358;
 }
 
 .cond-standard-grid {
@@ -369,24 +403,24 @@
   font-family: v.$font-body;
   font-size: 12px;
   padding: 5px 11px;
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(110, 40, 208, 0.2);
+  background: v.$color-ext-346;
+  border: 1px solid v.$campaign-portal-bg-placeholder;
   border-radius: 20px;
-  color: rgba(210, 195, 255, 0.95);
+  color: v.$color-ext-359;
   cursor: pointer;
   transition: all 0.15s ease;
 
   &:hover:not(:disabled) {
-    background: rgba(110, 40, 208, 0.2);
-    border-color: rgba(110, 40, 208, 0.5);
-    color: rgba(220, 200, 255, 0.95);
+    background: v.$campaign-portal-bg-placeholder;
+    border-color: v.$campaign-portal-border-hover;
+    color: v.$campaign-portal-text-lavender;
   }
 
   &--active,
   &:disabled {
-    background: rgba(200, 50, 50, 0.15);
-    border-color: rgba(200, 50, 50, 0.35);
-    color: rgba(255, 160, 150, 0.9);
+    background: v.$color-ext-360;
+    border-color: v.$color-ext-361;
+    color: v.$color-ext-354;
     cursor: not-allowed;
     opacity: 0.6;
   }
@@ -413,19 +447,19 @@
 
 /* ── Secrets list modal ──────────────────────────────────────── */
 .secrets-list-entry {
-  background: rgba(255, 255, 255, 0.03);
-  border: 1px solid rgba(110, 40, 208, 0.15);
+  background: v.$color-ext-362;
+  border: 1px solid v.$campaign-portal-border-light;
   border-radius: 6px;
   padding: 12px 14px;
   transition: border-color 0.15s ease;
 
-  &:hover { border-color: rgba(110, 40, 208, 0.3); }
+  &:hover { border-color: v.$campaign-portal-border-strong; }
 }
 
 .sle-content {
   font-family: v.$font-body;
   font-size: 14px;
-  color: rgba(220, 200, 255, 0.95);
+  color: v.$campaign-portal-text-lavender;
   line-height: 1.55;
   margin-bottom: 8px;
 }
@@ -439,27 +473,27 @@
 .sle-date {
   font-family: v.$font-body;
   font-size: 11px;
-  color: rgba(200, 185, 235, 0.75);
+  color: v.$color-ext-363;
 }
 
 .sle-delete {
   background: none;
   border: none;
-  color: rgba(200, 80, 80, 0.75);
+  color: v.$color-ext-364;
   cursor: pointer;
   font-size: 11px;
   padding: 2px 4px;
   border-radius: 4px;
   transition: color 0.15s ease, background 0.15s ease;
 
-  &:hover { color: rgba(230, 100, 100, 0.95); background: rgba(200, 50, 50, 0.1); }
+  &:hover { color: v.$color-ext-356; background: v.$color-ext-365; }
 }
 
 .sle-empty,
 .sle-loading {
   font-family: v.$font-body;
   font-size: 13px;
-  color: rgba(195, 180, 230, 0.75);
+  color: v.$color-ext-366;
   font-style: italic;
   padding: 4px 0;
 }
@@ -476,10 +510,10 @@
   align-items: center;
   justify-content: space-between;
   width: 100%;
-  background: rgba(14, 8, 28, 0.80);
-  border: 1px solid color-mix(in srgb, var(--portal-color, #6e28d0), transparent 72%);
+  background: v.$color-ext-367;
+  border: 1px solid color-mix(in srgb, var(--portal-color, v.$campaign-portal-primary), transparent 72%);
   border-radius: 6px;
-  color: rgba(220, 200, 255, 0.95);
+  color: v.$campaign-portal-text-lavender;
   font-family: v.$font-body;
   font-size: 14px;
   padding: 9px 10px;
@@ -487,7 +521,7 @@
   transition: border-color 0.15s ease;
 
   &:hover {
-    border-color: color-mix(in srgb, var(--portal-color, #6e28d0), transparent 45%);
+    border-color: color-mix(in srgb, var(--portal-color, v.$campaign-portal-primary), transparent 45%);
   }
 }
 
@@ -496,7 +530,7 @@
   margin-left: 4px;
   flex-shrink: 0;
   transition: transform 0.15s ease;
-  color: rgba(195, 170, 255, 0.75);
+  color: v.$color-ext-368;
 
   &--open { transform: rotate(180deg); }
 }
@@ -506,28 +540,28 @@
   top: calc(100% + 2px);
   left: 0;
   right: 0;
-  background: rgba(10, 5, 22, 0.97);
-  border: 1px solid color-mix(in srgb, var(--portal-color, #6e28d0), transparent 65%);
+  background: v.$color-ext-369;
+  border: 1px solid color-mix(in srgb, var(--portal-color, v.$campaign-portal-primary), transparent 65%);
   border-radius: 6px;
   z-index: 300;
   overflow: hidden;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.6);
+  box-shadow: 0 4px 16px v.$journal-spine-band-shadow;
 }
 
 .currency-dropdown-item {
   font-family: v.$font-body;
   font-size: 13px;
-  color: rgba(210, 195, 255, 0.95);
+  color: v.$color-ext-359;
   padding: 7px 10px;
   cursor: pointer;
   transition: background 0.12s ease;
 
   &:hover {
-    background: color-mix(in srgb, var(--portal-color, #6e28d0), transparent 80%);
+    background: color-mix(in srgb, var(--portal-color, v.$campaign-portal-primary), transparent 80%);
   }
 
   &--selected {
-    color: rgba(240, 225, 255, 1);
-    background: color-mix(in srgb, var(--portal-color, #6e28d0), transparent 72%);
+    color: v.$color-ext-370;
+    background: color-mix(in srgb, var(--portal-color, v.$campaign-portal-primary), transparent 72%);
   }
 }

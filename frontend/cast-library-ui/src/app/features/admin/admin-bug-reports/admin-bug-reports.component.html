@@ -1,0 +1,109 @@
+<div class="pc scroll-body">
+  <app-dm-nav />
+
+  <h2 class="page-title page-title-sm">Report a Glitch in the Realm</h2>
+
+  <div class="toolbar">
+    <button class="btn-ghost btn-reload" (click)="loadBugs()" [disabled]="loading()">
+      {{ loading() ? '…' : 'Refresh' }}
+    </button>
+    <button class="btn-cleanup" (click)="cleanup()" [disabled]="cleaning()">
+      {{ cleaning() ? '…' : '🧹 Cleanup Fixed (30+ days)' }}
+    </button>
+  </div>
+
+  @if (errorMsg()) {
+    <div class="wb wb-narrow error-box">
+      <p class="wbd text-error">{{ errorMsg() }}</p>
+    </div>
+  }
+
+  @if (loading()) {
+    <div class="wb wb-narrow">
+      <p class="wbd">Loading reports…</p>
+    </div>
+  } @else {
+
+    <!-- Open bugs -->
+    <h3 class="section-heading">Open ({{ openBugs.length }})</h3>
+    @if (openBugs.length === 0) {
+      <div class="wb wb-narrow">
+        <p class="wbd">No open bug reports. The realm is at peace.</p>
+      </div>
+    } @else {
+      <div class="bug-list">
+        @for (bug of openBugs; track bug.id) {
+          <div class="bug-card">
+            <div class="bug-header">
+              <span class="bug-title">{{ bug.title }}</span>
+              <select class="severity-select severity-{{ bug.severity.toLowerCase() }}"
+                      [ngModel]="bug.severity"
+                      (ngModelChange)="changeSeverity(bug, $event)"
+                      [disabled]="updatingSeverity() === bug.id">
+                @for (s of severities; track s) {
+                  <option [value]="s">{{ s }}</option>
+                }
+              </select>
+            </div>
+            <p class="bug-description">{{ bug.description }}</p>
+            @if (bug.stepsToReproduce) {
+              <div class="bug-steps">
+                <span class="meta-label">Steps:</span> {{ bug.stepsToReproduce }}
+              </div>
+            }
+            <div class="bug-meta">
+              <span>{{ formatDate(bug.reportedAt) }}</span>
+              <span>· Reported by <strong>{{ bug.reporterDisplayName }}</strong></span>
+            </div>
+            <div class="bug-meta bug-meta--tech">
+              @if (bug.pageUrl) { <span>{{ bug.pageUrl }}</span> }
+              @if (bug.device)  { <span>· {{ bug.device }}</span> }
+              @if (bug.browser) { <span>· {{ bug.browser }}</span> }
+              @if (bug.os)      { <span>· {{ bug.os }}</span> }
+            </div>
+            <div class="bug-actions">
+              <button class="btn-mark-fixed"
+                      (click)="markFixed(bug)"
+                      [disabled]="marking() === bug.id || deleting() === bug.id">
+                {{ marking() === bug.id ? '…' : '✓ Mark as Fixed' }}
+              </button>
+              <button class="btn-not-doing"
+                      (click)="deleteBug(bug)"
+                      [disabled]="deleting() === bug.id || marking() === bug.id">
+                {{ deleting() === bug.id ? '…' : 'Not Doing' }}
+              </button>
+            </div>
+          </div>
+        }
+      </div>
+    }
+
+    <!-- Fixed bugs -->
+    @if (fixedBugs.length > 0) {
+      <h3 class="section-heading section-heading-fixed">Fixed ({{ fixedBugs.length }})</h3>
+      <div class="bug-list">
+        @for (bug of fixedBugs; track bug.id) {
+          <div class="bug-card bug-card--fixed">
+            <div class="bug-header">
+              <span class="bug-title bug-title--fixed">{{ bug.title }}</span>
+              <span class="fixed-badge">✓ Fixed</span>
+              <span class="severity-badge severity-{{ bug.severity.toLowerCase() }}">{{ bug.severity }}</span>
+            </div>
+            <p class="bug-description bug-description--fixed">{{ bug.description }}</p>
+            <div class="bug-meta">
+              <span>Reported {{ formatDate(bug.reportedAt) }}</span>
+              <span>· by <strong>{{ bug.reporterDisplayName }}</strong></span>
+              @if (bug.fixedAt) { <span>· Fixed {{ formatDate(bug.fixedAt) }}</span> }
+            </div>
+            <div class="bug-meta bug-meta--tech">
+              @if (bug.device)  { <span>{{ bug.device }}</span> }
+              @if (bug.browser) { <span>· {{ bug.browser }}</span> }
+            </div>
+          </div>
+        }
+      </div>
+    }
+  }
+
+  <div class="orn orn-mt">· · ·</div>
+</div>

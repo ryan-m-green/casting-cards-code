@@ -105,6 +105,10 @@ export const routes: Routes = [
             path: 'campaigns',
             loadComponent: () => import('./features/player/player-campaigns/player-campaigns.component').then(m => m.PlayerCampaignsComponent),
           },
+          {
+            path: 'bug-report',
+            loadComponent: () => import('./features/bug-report/bug-report.component').then(m => m.BugReportComponent),
+          },
           { path: '', redirectTo: 'campaigns', pathMatch: 'full' },
         ],
       },
@@ -184,6 +188,10 @@ export const routes: Routes = [
             path: 'player-invites',
             loadComponent: () => import('./features/player-invites/player-invites.component').then(m => m.PlayerInvitesComponent),
           },
+          {
+            path: 'bug-report',
+            loadComponent: () => import('./features/bug-report/bug-report.component').then(m => m.BugReportComponent),
+          },
           { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
         ],
       },
@@ -194,6 +202,14 @@ export const routes: Routes = [
           {
             path: 'invite-code',
             loadComponent: () => import('./features/admin/admin-invite-code/admin-invite-code.component').then(m => m.AdminInviteCodeComponent),
+          },
+          {
+            path: 'user-management',
+            loadComponent: () => import('./features/admin/user-management/user-management.component').then(m => m.UserManagementComponent),
+          },
+          {
+            path: 'bug-reports',
+            loadComponent: () => import('./features/admin/admin-bug-reports/admin-bug-reports.component').then(m => m.AdminBugReportsComponent),
           },
           { path: '', redirectTo: 'invite-code', pathMatch: 'full' },
         ],

@@ -9,6 +9,8 @@
       </button>
       @if (menuOpen()) {
         <div class="player-nav__dropdown">
+          <a class="player-nav__dropdown-item" routerLink="/player/bug-report" (click)="menuOpen.set(false)">Report a Glitch</a>
+          <a class="player-nav__dropdown-item" routerLink="/forgot-password" (click)="menuOpen.set(false)">Forgot Password</a>
           <button class="player-nav__dropdown-item" (click)="auth.logout()">Logout</button>
         </div>
       }

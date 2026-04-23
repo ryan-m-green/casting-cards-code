@@ -1,6 +1,9 @@
+using CastLibrary.Logic.Interfaces;
+using CastLibrary.Logic.Services;
 using CastLibrary.Repository.Repositories;
 using CastLibrary.Repository.Repositories.Read;
 using CastLibrary.Shared.Domain;
+using CastLibrary.Shared.Enums;
 
 namespace CastLibrary.Logic.Queries.Campaign;
 
@@ -15,11 +18,13 @@ public interface IGetPlayerCampaignDetailQueryHandler
 public class GetPlayerCampaignDetailQueryHandler(
     ICampaignReadRepository campaignRepository,
     ISecretReadRepository secretReadRepository,
-    ITimeOfDayReadRepository timeOfDayRepository) : IGetPlayerCampaignDetailQueryHandler
+    ITimeOfDayReadRepository timeOfDayRepository,
+    ICampaignPlayerReadRepository playerReadRepository,
+    IFilenameService filenameService) : IGetPlayerCampaignDetailQueryHandler
 {
     public async Task<(CampaignDomain Campaign, List<CampaignLocationInstanceDomain> locations,
         List<CampaignCastInstanceDomain> Casts, List<CampaignSublocationInstanceDomain> Locations,
-        List<CampaignSecretDomain> Secrets, TimeOfDayDomain? TimeOfDay)>
+        List<CampaignSecretDomain> Secrets, TimeOfDayDomain TimeOfDay)>
         HandleAsync(Guid campaignId)
     {
         var campaign = await campaignRepository.GetByIdAsync(campaignId);
@@ -54,6 +59,10 @@ public class GetPlayerCampaignDetailQueryHandler(
                             .ToList();
 
         var timeOfDay = await timeOfDayRepository.GetByCampaignIdAsync(campaignId);
+
+        var players = await playerReadRepository.GetByCampaignAsync(campaignId);
+
+        filenameService.AddImageUrls(campaign.DmUserId, locations, sublocations, casts, players);
 
         return (campaign, locations, casts, sublocations, secrets, timeOfDay);
     }

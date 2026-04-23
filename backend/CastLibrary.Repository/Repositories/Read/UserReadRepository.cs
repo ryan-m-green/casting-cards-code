@@ -11,6 +11,7 @@ public interface IUserReadRepository
     Task<UserDomain> GetByEmailAsync(string email);
     Task<UserDomain> GetByIdAsync(Guid id);
     Task<string[]> GetKeywordsAsync(Guid userId);
+    Task<List<UserDomain>> GetAllUsersAsync();
 }
 
 public class UserReadRepository(
@@ -48,5 +49,15 @@ public class UserReadRepository(
         var result = await conn.QueryFirstOrDefaultAsync<string[]>(
             "SELECT keywords FROM users WHERE id = @Id", new { Id = userId });
         return result ?? [];
+    }
+
+    public async Task<List<UserDomain>> GetAllUsersAsync()
+    {
+        using var conn = sqlConnectionFactory.GetConnection();
+        var entities = await conn.QueryAsync<UserEntity>(
+            @"SELECT id, email, password_hash AS PasswordHash, display_name AS DisplayName, role, keywords, created_at AS CreatedAt
+              FROM users
+              ORDER BY created_at DESC");
+        return entities.Select(e => mapper.ToDomain(e)).ToList();
     }
 }

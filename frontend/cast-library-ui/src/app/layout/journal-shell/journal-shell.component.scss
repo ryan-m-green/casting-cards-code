@@ -14,7 +14,7 @@
   width: min(96vw, 820px);
   height: min(88vh, 780px);
   position: relative; // anchor for absolutely-positioned strap
-  filter: drop-shadow(0 40px 70px rgba(0,0,0,0.92)) drop-shadow(0 8px 20px rgba(0,0,0,0.6));
+  filter: drop-shadow(0 40px 70px v.$color-shadow-dark) drop-shadow(0 8px 20px v.$color-shadow-medium);
 
   @media (max-width: 600px) {
     width: 100vw;
@@ -26,11 +26,11 @@
 .spine {
   width: 56px;
   flex-shrink: 0;
-  background: radial-gradient(ellipse 200% 60% at 60% 40%, #1C0B05 0%, #0E0603 100%);
+  background: radial-gradient(ellipse 200% 60% at 60% 40%, v.$journal-spine-dark-1 0%, v.$journal-spine-dark-2 100%);
   border-radius: 6px 0 0 6px;
   position: relative;
   overflow: hidden;
-  box-shadow: inset -4px 0 10px rgba(0,0,0,0.7);
+  box-shadow: inset -4px 0 10px v.$journal-spine-shadow;
   z-index: 10;
 
   &::before {
@@ -57,7 +57,7 @@
   left: 0;
   right: 0;
   height: 14px;
-  background: linear-gradient(to bottom, #8A6020, #C4922A, #6A4A18);
+  background: linear-gradient(to bottom, v.$journal-spine-cap-1, v.$journal-spine-cap-2, v.$journal-spine-cap-3);
   opacity: 0.8;
   z-index: 2;
 
@@ -70,9 +70,9 @@
   left: 0;
   right: 0;
   height: 18px;
-  background: linear-gradient(to bottom, #2A1208 0%, #3A1A0A 25%, #2E1308 55%, #180905 100%);
-  box-shadow: 0 2px 4px rgba(0,0,0,0.6), 0 -1px 2px rgba(255,160,60,0.08),
-              inset 0 1px 1px rgba(255,160,60,0.06);
+  background: linear-gradient(to bottom, v.$journal-spine-band-1 0%, v.$journal-spine-band-2 25%, v.$journal-spine-band-3 55%, v.$journal-spine-band-4 100%);
+  box-shadow: 0 2px 4px v.$journal-spine-band-shadow, 0 -1px 2px v.$journal-spine-band-highlight,
+              inset 0 1px 1px v.$journal-spine-band-highlight-2;
   z-index: 1;
 
   &::before {
@@ -80,7 +80,7 @@
     position: absolute;
     top: 0; left: 0; right: 0;
     height: 2px;
-    background: linear-gradient(to right, transparent, rgba(200,140,60,0.3), transparent);
+    background: linear-gradient(to right, transparent, v.$journal-spine-band-accent, transparent);
   }
 }
 
@@ -100,32 +100,32 @@
 @mixin parchment-bg {
   background:
     // ── Edge staining — binding shadow on the left ──
-    linear-gradient(to right,  rgba(90, 52, 10, 0.20) 0%, rgba(90, 52, 10, 0.06) 7%, transparent 18%),
+    linear-gradient(to right,  v.$journal-parchment-stain-binding 0%, v.$journal-parchment-stain-binding-fade 7%, transparent 18%),
     // ── Edge staining — slight darkening on all four sides ──
-    linear-gradient(to left,   rgba(90, 52, 10, 0.12) 0%, transparent 10%),
-    linear-gradient(to bottom, rgba(100, 60, 14, 0.16) 0%, rgba(100, 60, 14, 0.04) 6%, transparent 14%),
-    linear-gradient(to top,    rgba(100, 60, 14, 0.16) 0%, rgba(100, 60, 14, 0.04) 6%, transparent 14%),
+    linear-gradient(to left,   v.$journal-parchment-stain-edge 0%, transparent 10%),
+    linear-gradient(to bottom, v.$journal-parchment-stain-top-bottom 0%, v.$journal-parchment-stain-fade-2 6%, transparent 14%),
+    linear-gradient(to top,    v.$journal-parchment-stain-top-bottom 0%, v.$journal-parchment-stain-fade-2 6%, transparent 14%),
     // ── Corner foxing / water staining ──
-    radial-gradient(ellipse 110px 85px  at  2%  3%, rgba(108, 66, 14, 0.26) 0%, transparent 60%),
-    radial-gradient(ellipse  80px 68px  at 98%  2%, rgba(102, 62, 13, 0.20) 0%, transparent 60%),
-    radial-gradient(ellipse 115px 90px  at 98% 98%, rgba(105, 68, 15, 0.22) 0%, transparent 60%),
-    radial-gradient(ellipse  90px 105px at  2% 98%, rgba( 98, 60, 13, 0.22) 0%, transparent 60%),
+    radial-gradient(ellipse 110px 85px  at  2%  3%, v.$journal-parchment-foxing-1 0%, transparent 60%),
+    radial-gradient(ellipse  80px 68px  at 98%  2%, v.$journal-parchment-foxing-2 0%, transparent 60%),
+    radial-gradient(ellipse 115px 90px  at 98% 98%, v.$journal-parchment-foxing-3 0%, transparent 60%),
+    radial-gradient(ellipse  90px 105px at  2% 98%, v.$journal-parchment-foxing-4 0%, transparent 60%),
     // ── Scattered foxing / age spots ──
-    radial-gradient(ellipse 28px 22px at 70% 14%, rgba(92, 56, 11, 0.11) 0%, transparent 70%),
-    radial-gradient(ellipse 18px 26px at 38% 70%, rgba(88, 52, 10, 0.10) 0%, transparent 70%),
-    radial-gradient(ellipse 22px 16px at 56% 44%, rgba(84, 50, 10, 0.08) 0%, transparent 70%),
-    radial-gradient(ellipse 32px 20px at 14% 52%, rgba(78, 48, 10, 0.09) 0%, transparent 70%),
-    radial-gradient(ellipse 20px 28px at 84% 58%, rgba(86, 52, 11, 0.09) 0%, transparent 70%),
-    radial-gradient(ellipse 14px 10px at 62% 82%, rgba(80, 48, 10, 0.08) 0%, transparent 70%),
-    radial-gradient(ellipse 24px 18px at 25% 25%, rgba(90, 55, 12, 0.07) 0%, transparent 70%),
+    radial-gradient(ellipse 28px 22px at 70% 14%, v.$journal-parchment-spot-1 0%, transparent 70%),
+    radial-gradient(ellipse 18px 26px at 38% 70%, v.$journal-parchment-spot-2 0%, transparent 70%),
+    radial-gradient(ellipse 22px 16px at 56% 44%, v.$journal-parchment-spot-3 0%, transparent 70%),
+    radial-gradient(ellipse 32px 20px at 14% 52%, v.$journal-parchment-spot-4 0%, transparent 70%),
+    radial-gradient(ellipse 20px 28px at 84% 58%, v.$journal-parchment-spot-5 0%, transparent 70%),
+    radial-gradient(ellipse 14px 10px at 62% 82%, v.$journal-parchment-spot-6 0%, transparent 70%),
+    radial-gradient(ellipse 24px 18px at 25% 25%, v.$journal-parchment-spot-7 0%, transparent 70%),
     // ── Ghost compass / seal watermark (top-left) ──
-    radial-gradient(circle 38px at 7% 7%, rgba(88, 56, 12, 0.09) 0%, rgba(88, 56, 12, 0.04) 45%, transparent 70%),
-    radial-gradient(circle 22px at 7% 7%, rgba(88, 56, 12, 0.05) 0%, transparent 60%),
+    radial-gradient(circle 38px at 7% 7%, v.$journal-parchment-watermark-1 0%, v.$journal-parchment-watermark-2 45%, transparent 70%),
+    radial-gradient(circle 22px at 7% 7%, v.$journal-parchment-watermark-3 0%, transparent 60%),
     // ── Warm uneven toning across the surface ──
-    radial-gradient(ellipse 65% 52% at 32% 28%, rgba(248, 226, 162, 0.30) 0%, transparent 70%),
-    radial-gradient(ellipse 48% 62% at 72% 72%, rgba(228, 202, 132, 0.24) 0%, transparent 70%),
+    radial-gradient(ellipse 65% 52% at 32% 28%, v.$journal-parchment-toning-1 0%, transparent 70%),
+    radial-gradient(ellipse 48% 62% at 72% 72%, v.$journal-parchment-toning-2 0%, transparent 70%),
     // ── Base parchment — amber-toned aged paper ──
-    linear-gradient(112deg, #cbb970 0%, #dac888 28%, #e8d89e 52%, #e2d096 78%, #d2be78 100%);
+    linear-gradient(112deg, v.$journal-parchment-base-1 0%, v.$journal-parchment-base-2 28%, v.$journal-parchment-base-3 52%, v.$journal-parchment-base-4 78%, v.$journal-parchment-base-5 100%);
 }
 
 .page {
@@ -138,7 +138,7 @@
 .page-back  { z-index: 1; }
 .page-front {
   z-index: 2;
-  box-shadow: inset 8px 0 20px rgba(0,0,0,0.12), inset -4px 0 10px rgba(0,0,0,0.06);
+  box-shadow: inset 8px 0 20px v.$journal-parchment-shadow-front, inset -4px 0 10px v.$journal-parchment-shadow-front-light;
 
 }
 
@@ -164,16 +164,16 @@
 }
 
 .flip-face {
-  background: linear-gradient(108deg, #cbb970 0%, #daca88 30%, #e8d89e 55%, #e2d096 80%, #d2be78 100%);
-  box-shadow: inset 8px 0 20px rgba(0,0,0,0.12), inset -4px 0 10px rgba(0,0,0,0.06);
+  background: linear-gradient(108deg, v.$journal-parchment-base-1 0%, v.$journal-parchment-flip-1 30%, v.$journal-parchment-base-3 55%, v.$journal-parchment-base-4 80%, v.$journal-parchment-base-5 100%);
+  box-shadow: inset 8px 0 20px v.$journal-parchment-shadow-front, inset -4px 0 10px v.$journal-parchment-shadow-front-light;
 }
 
 // NOTE: NO filter/opacity/will-change here — any of those properties on a child
 // of a preserve-3d container flatten the 3D context and break backface-visibility.
 .flip-back-face {
-  background: linear-gradient(252deg, #c8b268 0%, #d8c484 30%, #e2d094 55%, #dcc888 80%, #cabb74 100%);
+  background: linear-gradient(252deg, v.$journal-parchment-flip-back-1 0%, v.$journal-parchment-flip-back-2 30%, v.$journal-parchment-flip-back-3 55%, v.$journal-parchment-flip-back-4 80%, v.$journal-parchment-flip-back-5 100%);
   transform: rotateY(180deg);
-  box-shadow: inset -8px 0 20px rgba(0,0,0,0.1);
+  box-shadow: inset -8px 0 20px v.$journal-parchment-shadow-flip-back;
 }
 
 // ─── Corner fold ──────────────────────────────────────────────────────────────
@@ -185,7 +185,7 @@
   height: 0;
   border-style: solid;
   border-width: 0 0 20px 20px;
-  border-color: transparent transparent rgba(100, 70, 18, 0.22) transparent;
+  border-color: transparent transparent v.$journal-parchment-fold transparent;
   z-index: 6;
   pointer-events: none;
 }
@@ -205,13 +205,13 @@
 // ─── Arcane accent — card & row hover on parchment pages ─────────────────────
 :host ::ng-deep .role-card:hover,
 :host ::ng-deep .wb.accent:hover {
-  border-color: rgba(90, 58, 154, 0.42);
-  box-shadow: 0 0 10px rgba(90, 58, 154, 0.10);
+  border-color: v.$color-arcane-border;
+  box-shadow: 0 0 10px v.$color-arcane-glow-card;
 }
 
 :host ::ng-deep .role-card.active {
-  border-color: rgba(90, 58, 154, 0.50);
-  background: rgba(46, 26, 94, 0.04);
+  border-color: v.$color-arcane-border-hover;
+  background: v.$color-arcane-bg-focus;
 }
 
 // ─── Cover mode — leather front cover ────────────────────────────────────────
@@ -220,75 +220,40 @@
 .journal-wrap.is-cover {
   .page-area {
     // Subtle leather ridge shadow along the spine edge
-    box-shadow: inset 8px 0 24px rgba(0,0,0,0.45), inset -2px 0 8px rgba(0,0,0,0.20);
+    box-shadow: inset 8px 0 24px v.$journal-leather-cover-shadow, inset -2px 0 8px v.$journal-leather-cover-shadow-light;
   }
 
   .page {
     background:
-      // ── Fine leather grain — two-axis micro-weave ──
-      repeating-linear-gradient(
-        71deg,
-        transparent 0px, transparent 3px,
-        rgba(0, 0, 0, 0.038) 3px, rgba(0, 0, 0, 0.038) 4px
-      ),
-      repeating-linear-gradient(
-        161deg,
-        transparent 0px, transparent 5px,
-        rgba(255, 255, 255, 0.013) 5px, rgba(255, 255, 255, 0.013) 6px
-      ),
-      // ── Long scratch marks — use scars from years of use ──
-      repeating-linear-gradient(
-        24deg,
-        transparent 0px, transparent 42px,
-        rgba(220, 135, 52, 0.042) 42px, rgba(220, 135, 52, 0.042) 43px,
-        transparent 43px, transparent 86px
-      ),
-      repeating-linear-gradient(
-        148deg,
-        transparent 0px, transparent 30px,
-        rgba(0, 0, 0, 0.05) 30px, rgba(0, 0, 0, 0.05) 31px,
-        transparent 31px, transparent 62px
-      ),
-      // ── Worn bright zones — fingers have rubbed these areas ──
-      radial-gradient(ellipse 28% 18% at 50% 48%, rgba(105, 58, 22, 0.38) 0%, transparent 70%),
-      radial-gradient(ellipse 14% 10% at 50% 88%, rgba(112, 62, 24, 0.28) 0%, transparent 60%),
-      radial-gradient(ellipse 10% 12% at 50%  8%, rgba(108, 60, 22, 0.24) 0%, transparent 60%),
-      // ── Worn corner highlights ──
-      radial-gradient(ellipse 22% 16% at  3%  3%, rgba(118, 68, 28, 0.35) 0%, transparent 62%),
-      radial-gradient(ellipse 22% 16% at 97%  3%, rgba(112, 64, 26, 0.32) 0%, transparent 62%),
-      radial-gradient(ellipse 22% 16% at  3% 97%, rgba(105, 58, 22, 0.32) 0%, transparent 62%),
-      radial-gradient(ellipse 22% 16% at 97% 97%, rgba(110, 62, 24, 0.34) 0%, transparent 62%),
-      // ── Heavy dark pockets — deep compression stains ──
-      radial-gradient(ellipse 28% 24% at 12% 52%, rgba(22,  8,  1, 0.48) 0%, transparent 70%),
-      radial-gradient(ellipse 22% 28% at 88% 28%, rgba(18,  6,  1, 0.52) 0%, transparent 70%),
-      radial-gradient(ellipse 24% 20% at 65% 78%, rgba(20,  7,  1, 0.40) 0%, transparent 70%),
-      radial-gradient(ellipse 18% 22% at 32% 15%, rgba(15,  5,  0, 0.38) 0%, transparent 70%),
-      // ── Subtle center lustre — leather sheen ──
-      radial-gradient(ellipse 55% 45% at 50% 45%, rgba(82, 44, 16, 0.28) 0%, transparent 70%),
-      // ── Base leather — dark tobacco-brown hide ──
-      linear-gradient(142deg, #3a1b07 0%, #5c2f12 18%, #4d2510 40%, #6a3618 62%, #3c1c08 82%, #281205 100%);
+    // ── Fine leather grain — two-axis micro-weave ──
+    repeating-linear-gradient( 71deg, transparent 0px, transparent 3px, v.$journal-leather-grain-dark 3px, v.$journal-leather-grain-dark 4px ), repeating-linear-gradient( 161deg, transparent 0px, transparent 5px, v.$journal-leather-grain-light 5px, v.$journal-leather-grain-light 6px ),
+    // ── Long scratch marks — use scars from years of use ──
+    repeating-linear-gradient( 24deg, transparent 0px, transparent 42px, v.$journal-leather-scratch-1 42px, v.$journal-leather-scratch-1 43px, transparent 43px, transparent 86px ), repeating-linear-gradient( 148deg, transparent 0px, transparent 30px, v.$journal-leather-scratch-2 30px, v.$journal-leather-scratch-2 31px, transparent 31px, transparent 62px ),
+    // ── Worn bright zones — fingers have rubbed these areas ──
+    radial-gradient(ellipse 28% 18% at 50% 48%, v.$journal-leather-worn-1 0%, transparent 70%), radial-gradient(ellipse 14% 10% at 50% 88%, v.$journal-leather-worn-2 0%, transparent 60%), radial-gradient(ellipse 10% 12% at 50% 8%, v.$journal-leather-worn-3 0%, transparent 60%),
+    // ── Worn corner highlights ──
+    radial-gradient(ellipse 22% 16% at 3% 3%, v.$journal-leather-worn-corner-1 0%, transparent 62%), radial-gradient(ellipse 22% 16% at 97% 3%, v.$journal-leather-worn-corner-2 0%, transparent 62%), radial-gradient(ellipse 22% 16% at 3% 97%, v.$journal-leather-worn-corner-3 0%, transparent 62%), radial-gradient(ellipse 22% 16% at 97% 97%, v.$journal-leather-worn-corner-4 0%, transparent 62%),
+    // ── Heavy dark pockets — deep compression stains ──
+    radial-gradient(ellipse 28% 24% at 12% 52%, v.$journal-leather-stain-1 0%, transparent 70%), radial-gradient(ellipse 22% 28% at 88% 28%, v.$journal-leather-stain-2 0%, transparent 70%), radial-gradient(ellipse 24% 20% at 65% 78%, v.$journal-leather-stain-3 0%, transparent 70%), radial-gradient(ellipse 18% 22% at 32% 15%, v.$journal-leather-stain-4 0%, transparent 70%),
+    // ── Subtle center lustre — leather sheen ──
+    radial-gradient(ellipse 55% 45% at 50% 45%, v.$journal-leather-lustre 0%, transparent 70%),
+    // ── Base leather — dark tobacco-brown hide ──
+    linear-gradient(142deg, v.$journal-leather-cover-base-1 0%, v.$journal-leather-cover-base-2 18%, v.$journal-leather-cover-base-3 40%, v.$journal-leather-cover-base-4 62%, v.$journal-leather-cover-base-5 82%, v.$journal-leather-cover-base-6 100%);
   }
-
   // The page-front gets an additional inner border — like a cover frame
   .page-front {
-    box-shadow:
-      inset 8px 0 24px rgba(0,0,0,0.45),
-      inset -2px 0 8px rgba(0,0,0,0.20),
-      inset 12px 12px 0 -10px rgba(200,140,50,0.08),
-      inset -12px -12px 0 -10px rgba(200,140,50,0.08);
+    box-shadow: inset 8px 0 24px v.$journal-leather-cover-shadow, inset -2px 0 8px v.$journal-leather-cover-shadow-light, inset 12px 12px 0 -10px v.$journal-leather-frame, inset -12px -12px 0 -10px v.$journal-leather-frame;
   }
-
   // Flip faces — keep simple gradients (no filter/opacity — breaks preserve-3d)
   .flip-face {
-    background: linear-gradient(142deg, #3a1b07 0%, #5c2f12 18%, #4d2510 40%, #6a3618 62%, #3c1c08 82%, #281205 100%);
+    background: linear-gradient(142deg, v.$journal-leather-cover-base-1 0%, v.$journal-leather-cover-base-2 18%, v.$journal-leather-cover-base-3 40%, v.$journal-leather-cover-base-4 62%, v.$journal-leather-cover-base-5 82%, v.$journal-leather-cover-base-6 100%);
   }
 
   .flip-back-face {
-    background: linear-gradient(108deg, #cbb970 0%, #daca88 30%, #e8d89e 55%, #e2d096 80%, #d2be78 100%);
+    background: linear-gradient(108deg, v.$journal-parchment-base-1 0%, v.$journal-parchment-flip-1 30%, v.$journal-parchment-base-3 55%, v.$journal-parchment-base-4 80%, v.$journal-parchment-base-5 100%);
     transform: rotateY(180deg);
-    box-shadow: inset -8px 0 20px rgba(0,0,0,0.1);
+    box-shadow: inset -8px 0 20px v.$journal-parchment-shadow-flip-back;
   }
-
 }
 
 // ─── Leather strap ────────────────────────────────────────────────────────────
@@ -300,10 +265,10 @@
   top: calc(62% - 138px);
   z-index: 20;
   background: linear-gradient(to bottom,
-    #0E0804 0%, #1A0C06 8%, #221008 30%,
-    #1C0D07 60%, #150A05 85%, #0C0604 100%);
-  box-shadow: 0 3px 8px rgba(0,0,0,0.7), 0 -1px 3px rgba(0,0,0,0.5),
-              inset 0 1px 1px rgba(255,180,80,0.05);
+    v.$color-ext-618 0%, v.$color-ext-619 8%, v.$color-ext-413 30%,
+    v.$color-ext-620 60%, v.$color-ext-621 85%, v.$color-ext-622 100%);
+  box-shadow: 0 3px 8px v.$journal-spine-shadow, 0 -1px 3px v.$color-shadow-light,
+              inset 0 1px 1px v.$color-ext-623;
   pointer-events: none;
 
   &::before, &::after {
@@ -314,7 +279,7 @@
     height: 1px;
     background: repeating-linear-gradient(
       to right,
-      rgba(140,80,30,0.35) 0px, rgba(140,80,30,0.35) 5px,
+      v.$color-ext-624 0px, v.$color-ext-624 5px,
       transparent 5px, transparent 9px
     );
   }
@@ -346,11 +311,11 @@
 .buckle-outer {
   width: 100%;
   height: 100%;
-  border: 3px solid #6A5020;
+  border: 3px solid v.$color-ext-625;
   border-radius: 3px;
-  background: linear-gradient(135deg, #7A6028 0%, #4A3818 40%, #8A7030 60%, #5A4820 100%);
-  box-shadow: 0 2px 4px rgba(0,0,0,0.7), inset 0 1px 1px rgba(255,220,100,0.15),
-              0 0 0 1px rgba(0,0,0,0.5);
+  background: linear-gradient(135deg, v.$color-ext-626 0%, v.$color-ext-627 40%, v.$color-ext-628 60%, v.$color-ext-629 100%);
+  box-shadow: 0 2px 4px v.$journal-spine-shadow, inset 0 1px 1px v.$color-ext-630,
+              0 0 0 1px v.$color-shadow-light;
   position: relative;
 }
 
@@ -361,7 +326,7 @@
   bottom: 3px;
   width: 3px;
   transform: translateX(-50%);
-  background: linear-gradient(to right, #4A3818, #8A7030, #4A3818);
+  background: linear-gradient(to right, v.$color-ext-627, v.$color-ext-628, v.$color-ext-627);
   border-radius: 1px;
 }
 
@@ -372,7 +337,7 @@
   top: 50%;
   height: 2px;
   transform: translateY(-50%);
-  background: linear-gradient(to bottom, #8A7030, #C4A050, #8A7030);
+  background: linear-gradient(to bottom, v.$color-ext-628, v.$color-ext-631, v.$color-ext-628);
   border-radius: 1px;
 }
 

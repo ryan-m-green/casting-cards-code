@@ -1,4 +1,4 @@
-namespace CastLibrary.Shared.Responses;
+﻿namespace CastLibrary.Shared.Responses;
 
 public record CurrencyBalanceResponse(string Currency, int Amount);
 
@@ -14,6 +14,7 @@ public class PlayerCardResponse
     public string? ImageUrl { get; set; }
     public List<PlayerCardConditionResponse> Conditions { get; set; } = [];
     public List<CurrencyBalanceResponse> CurrencyBalances { get; set; } = [];
+    public List<PlayerCardTraitResponse> Traits { get; set; } = [];
     public DateTime CreatedAt { get; set; }
     public DateTime UpdatedAt { get; set; }
 }

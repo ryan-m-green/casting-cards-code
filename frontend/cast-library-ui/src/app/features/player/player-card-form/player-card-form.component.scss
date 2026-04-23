@@ -11,7 +11,7 @@
 .gate-canvas {
   width: 100%;
   min-height: 100vh;
-  background: #000;
+  background: v.$color-black;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -23,28 +23,28 @@
 @keyframes gate-breathe {
   0%, 100% {
     box-shadow:
-      inset 0 0 0    1px rgba(110, 40, 208, 0.4),
-      inset 0 0  8px  3px rgba(110, 40, 208, 0.2),
-      inset 0 0 22px  8px rgba(110, 40, 208, 0.1);
+      inset 0 0 0    1px v.$campaign-portal-border-bold,
+      inset 0 0  8px  3px v.$campaign-portal-bg-placeholder,
+      inset 0 0 22px  8px v.$campaign-portal-bg-hover;
   }
   50% {
     box-shadow:
-      inset 0 0 0    1px rgba(110, 40, 208, 0.25),
-      inset 0 0 12px  4px rgba(110, 40, 208, 0.1),
-      inset 0 0 32px 12px rgba(110, 40, 208, 0.05);
+      inset 0 0 0    1px v.$campaign-portal-border-medium,
+      inset 0 0 12px  4px v.$campaign-portal-bg-hover,
+      inset 0 0 32px 12px v.$color-ext-455;
   }
 }
 
 .gate-card {
   width: 100%;
   max-width: 480px;
-  background: rgba(14, 8, 28, 0.92);
-  border: 1px solid rgba(110, 40, 208, 0.35);
+  background: v.$color-ext-456;
+  border: 1px solid v.$campaign-portal-border-accent;
   border-radius: 12px;
   padding: 40px 36px 36px;
   box-shadow:
-    0 0 30px rgba(110, 40, 208, 0.15),
-    0 8px 32px rgba(0, 0, 0, 0.7);
+    0 0 30px v.$campaign-portal-border-light,
+    0 8px 32px v.$journal-spine-shadow;
 
   &--wide {
     max-width: 560px;
@@ -70,17 +70,17 @@
   font-weight: 600;
   letter-spacing: 0.22em;
   text-transform: uppercase;
-  color: rgb(220, 200, 255);
+  color: v.$color-ext-457;
   text-shadow:
-    0 0 18px rgba(110, 40, 208, 0.6),
-    0 1px 3px rgba(0, 0, 0, 0.9);
+    0 0 18px v.$campaign-portal-border-focus,
+    0 1px 3px v.$color-shadow-dark;
   margin: 0 0 8px;
 }
 
 .gate-subtitle {
   font-family: v.$font-body;
   font-size: 14px;
-  color: rgb(180, 160, 220);
+  color: v.$color-ext-458;
   margin: 0;
 }
 
@@ -104,26 +104,26 @@
   font-size: 9px;
   letter-spacing: 0.18em;
   text-transform: uppercase;
-  color: rgb(118, 0, 255);
+  color: v.$color-ext-459;
 }
 
 .required {
-  color: rgb(220, 80, 80);
+  color: v.$color-ext-460;
   margin-left: 2px;
 }
 
 .optional {
-  color: rgb(160, 140, 200);
+  color: v.$color-ext-461;
   font-size: 8px;
 }
 
 // ─── Text inputs / textarea ───────────────────────────────────────────────────
 
 .field-input {
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(110, 40, 208, 0.25);
+  background: v.$color-ext-346;
+  border: 1px solid v.$campaign-portal-border-medium;
   border-radius: 6px;
-  color: rgb(220, 200, 255);
+  color: v.$color-ext-457;
   font-family: v.$font-body;
   font-size: 15px;
   padding: 10px 12px;
@@ -133,19 +133,19 @@
   box-sizing: border-box;
 
   &::placeholder {
-    color: rgba(180, 160, 220, 0.35);
+    color: v.$color-ext-462;
   }
 
   &:focus {
-    border-color: rgba(110, 40, 208, 0.6);
-    box-shadow: 0 0 0 2px rgba(110, 40, 208, 0.15);
+    border-color: v.$campaign-portal-border-focus;
+    box-shadow: 0 0 0 2px v.$campaign-portal-border-light;
   }
 
   &--error {
-    border-color: rgba(220, 60, 60, 0.55);
+    border-color: v.$color-ext-463;
 
     &:focus {
-      box-shadow: 0 0 0 2px rgba(220, 60, 60, 0.15);
+      box-shadow: 0 0 0 2px v.$color-ext-464;
     }
   }
 }
@@ -159,7 +159,7 @@
 .field-error {
   font-family: v.$font-body;
   font-size: 12px;
-  color: rgb(220, 80, 80);
+  color: v.$color-ext-460;
 }
 
 // ─── Multi-pill select ────────────────────────────────────────────────────────
@@ -169,8 +169,8 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(110, 40, 208, 0.25);
+  background: v.$color-ext-346;
+  border: 1px solid v.$campaign-portal-border-medium;
   border-radius: 6px;
   padding: 8px 10px;
   cursor: pointer;
@@ -180,19 +180,19 @@
   user-select: none;
 
   &:hover {
-    border-color: rgba(110, 40, 208, 0.45);
+    border-color: v.$color-ext-465;
   }
 
   &--open {
-    border-color: rgba(110, 40, 208, 0.6);
-    box-shadow: 0 0 0 2px rgba(110, 40, 208, 0.15);
+    border-color: v.$campaign-portal-border-focus;
+    box-shadow: 0 0 0 2px v.$campaign-portal-border-light;
   }
 
   &--error {
-    border-color: rgba(220, 60, 60, 0.55);
+    border-color: v.$color-ext-463;
 
     &.pill-select--open {
-      box-shadow: 0 0 0 2px rgba(220, 60, 60, 0.15);
+      box-shadow: 0 0 0 2px v.$color-ext-464;
     }
   }
 }
@@ -209,7 +209,7 @@
   background: transparent;
   border: none;
   outline: none;
-  color: rgb(220, 200, 255);
+  color: v.$color-ext-457;
   font-family: v.$font-body;
   font-size: 15px;
   flex: 1;
@@ -217,7 +217,7 @@
   padding: 4px 0;
 
   &::placeholder {
-    color: rgba(180, 160, 220, 0.35);
+    color: v.$color-ext-462;
   }
 }
 
@@ -225,13 +225,13 @@
   display: inline-flex;
   align-items: center;
   gap: 4px;
-  background: rgba(110, 40, 208, 0.2);
-  border: 1px solid rgba(110, 40, 208, 0.5);
+  background: v.$campaign-portal-bg-placeholder;
+  border: 1px solid v.$campaign-portal-border-hover;
   border-radius: 4px;
   padding: 2px 6px 2px 8px;
   font-family: v.$font-body;
   font-size: 13px;
-  color: rgb(210, 185, 255);
+  color: v.$color-ext-466;
   line-height: 1.4;
 }
 
@@ -241,26 +241,26 @@
   cursor: pointer;
   font-size: 14px;
   line-height: 1;
-  color: rgb(160, 130, 220);
+  color: v.$color-ext-467;
   padding: 0;
   display: flex;
   align-items: center;
   transition: color 0.15s ease;
 
   &:hover {
-    color: rgb(220, 180, 255);
+    color: v.$color-ext-468;
   }
 }
 
 .pill-placeholder {
   font-family: v.$font-body;
   font-size: 15px;
-  color: rgba(180, 160, 220, 0.35);
+  color: v.$color-ext-462;
 }
 
 .pill-chevron {
   font-size: 11px;
-  color: rgb(160, 130, 220);
+  color: v.$color-ext-467;
   flex-shrink: 0;
   transition: transform 0.18s ease;
 
@@ -274,10 +274,10 @@
   top: calc(100% + 4px);
   left: 0;
   right: 0;
-  background: rgb(18, 10, 36);
-  border: 1px solid rgba(110, 40, 208, 0.45);
+  background: v.$color-ext-469;
+  border: 1px solid v.$color-ext-465;
   border-radius: 6px;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6);
+  box-shadow: 0 8px 24px v.$journal-spine-band-shadow;
   z-index: 100;
   max-height: 220px;
   overflow-y: auto;
@@ -287,17 +287,17 @@
   padding: 9px 14px;
   font-family: v.$font-body;
   font-size: 14px;
-  color: rgb(200, 180, 240);
+  color: v.$color-ext-470;
   cursor: pointer;
   transition: background 0.12s ease;
 
   &:hover {
-    background: rgba(110, 40, 208, 0.18);
-    color: rgb(220, 200, 255);
+    background: v.$color-ext-22;
+    color: v.$color-ext-457;
   }
 
   &:not(:last-child) {
-    border-bottom: 1px solid rgba(110, 40, 208, 0.1);
+    border-bottom: 1px solid v.$campaign-portal-bg-hover;
   }
 }
 
@@ -306,20 +306,20 @@
   font-family: v.$font-body;
   font-size: 13px;
   font-style: italic;
-  color: rgb(130, 110, 180);
+  color: v.$color-ext-471;
   text-align: center;
 }
 
 // ─── Error banner ─────────────────────────────────────────────────────────────
 
 .form-error-banner {
-  background: rgba(200, 50, 50, 0.15);
-  border: 1px solid rgba(200, 50, 50, 0.3);
+  background: v.$color-ext-360;
+  border: 1px solid v.$color-ext-353;
   border-radius: 6px;
   padding: 10px 14px;
   font-family: v.$font-body;
   font-size: 13px;
-  color: rgb(255, 140, 130);
+  color: v.$color-ext-472;
 }
 
 // ─── Submit button ────────────────────────────────────────────────────────────
@@ -327,10 +327,10 @@
 .gate-submit-btn {
   margin-top: 8px;
   padding: 14px 24px;
-  background: rgba(110, 40, 208, 0.3);
-  border: 1px solid rgba(110, 40, 208, 0.55);
+  background: v.$campaign-portal-border-strong;
+  border: 1px solid v.$campaign-portal-border-active;
   border-radius: 8px;
-  color: rgb(220, 200, 255);
+  color: v.$color-ext-457;
   font-family: v.$font-header;
   font-size: 10px;
   letter-spacing: 0.2em;
@@ -339,9 +339,9 @@
   transition: background 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
 
   &:hover:not(:disabled) {
-    background: rgba(110, 40, 208, 0.5);
-    border-color: rgba(110, 40, 208, 0.8);
-    box-shadow: 0 0 16px rgba(110, 40, 208, 0.3);
+    background: v.$campaign-portal-border-hover;
+    border-color: v.$color-ext-473;
+    box-shadow: 0 0 16px v.$campaign-portal-border-strong;
   }
 
   &:disabled {
@@ -382,7 +382,7 @@
 
     &:hover {
       transform: translateY(-3px);
-      box-shadow: 0 8px 24px rgba(110, 40, 208, 0.25);
+      box-shadow: 0 8px 24px v.$campaign-portal-border-medium;
     }
   }
 }
