@@ -1,0 +1,8 @@
+<div class="void-breadcrumbs">
+  @for (crumb of crumbs(); track $index) {
+    @if ($index > 0) {
+      <span class="void-crumb-sep">›</span>
+    }
+    <button class="void-back" (click)="crumb.action()">{{ crumb.label }}</button>
+  }
+</div>

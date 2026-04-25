@@ -14,11 +14,12 @@ import { CampaignShellService } from '../../../core/campaign-shell.service';
 import { PortalTransitionService } from '../../../core/portal-transition.service';
 import { LocationCardComponent } from '../../../shared/components/location-card/location-card.component';
 import { SublocationCardComponent } from '../../../shared/components/sublocation-card/sublocation-card.component';
+import { PortalImportCardComponent } from '../../../shared/components/portal-import-card/portal-import-card.component';
 
 @Component({
   selector: 'app-campaign-location-detail',
   standalone: true,
-  imports: [CommonModule, FormsModule, LocationCardComponent, SublocationCardComponent],
+  imports: [CommonModule, FormsModule, LocationCardComponent, SublocationCardComponent, PortalImportCardComponent],
   templateUrl: './campaign-location-detail.component.html',
   styleUrl: './campaign-location-detail.component.scss'
 })
@@ -33,6 +34,22 @@ export class CampaignLocationDetailComponent implements OnInit {
 
   @ViewChild('detailContent') private detailContentRef!: ElementRef<HTMLElement>;
   @ViewChild('expandBtn')     private expandBtnRef!: ElementRef<HTMLElement>;
+
+  private _sublocationImportCard = signal<PortalImportCardComponent | null>(null);
+  @ViewChild('sublocationImportCard') set sublocationImportCardSetter(ref: PortalImportCardComponent | undefined) {
+    this._sublocationImportCard.set(ref ?? null);
+  }
+  get sublocationImportCardRef(): PortalImportCardComponent | null {
+    return this._sublocationImportCard();
+  }
+
+  sublocationDrawerOpen = signal(false);
+
+  private _sublocationsGridEl = signal<HTMLElement | null>(null);
+  @ViewChild('sublocationsGrid') set sublocationsGridRef(ref: ElementRef<HTMLElement> | undefined) {
+    this._sublocationsGridEl.set(ref?.nativeElement ?? null);
+  }
+  get sublocationsGridEl(): HTMLElement | null { return this._sublocationsGridEl(); }
 
   campaignId         = signal('');
   locationInstanceId = signal('');
@@ -334,4 +351,30 @@ export class CampaignLocationDetailComponent implements OnInit {
   }
 
   initial(name: string) { return name.charAt(0).toUpperCase(); }
+
+  // ── Import card handlers ────────────────────────────────────────────
+
+  onSublocationAdded(instance: CampaignSublocationInstance) {
+    this.campaign.update(c => {
+  
+      if (!c) return c;
+
+      const sublocations = c.sublocations ?? [];
+      if (sublocations.some(l => l.instanceId === instance.instanceId)) return c;
+
+      const tmpIdx = sublocations.findIndex(
+        l => l.instanceId.startsWith('tmp-') && l.sourceSublocationId === instance.sourceSublocationId
+      );
+      if (tmpIdx !== -1) {
+        const updated = [...sublocations];
+        updated[tmpIdx] = instance;
+        return { ...c, sublocations: updated };
+      }
+      return { ...c, sublocations: [...sublocations, instance] };
+    });
+  }
+
+  onSublocationRemoved(instanceId: string) {
+    this.campaign.update(c => c ? { ...c, sublocations: (c.sublocations ?? []).filter(l => l.instanceId !== instanceId) } : c);
+  }
 }

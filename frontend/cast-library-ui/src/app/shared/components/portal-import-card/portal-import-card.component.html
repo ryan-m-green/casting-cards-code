@@ -1,0 +1,375 @@
+<!-- ── Pulse bar + Accordion drawer ── -->
+<div class="pic-drawer-wrap">
+  @if (drawerPulsing()) {
+    <div class="pic-pulse-bar" [class.pic-pulse-bar--collapsing]="drawerCollapsing()"></div>
+  }
+
+  <div class="pic-drawer" [class.pic-drawer--open]="drawerOpen()" #drawerContainer>
+    <div class="pic-drawer-inner">
+
+      <!-- Tabs -->
+      <div class="pic-tabs">
+        <button class="pic-tab" [class.pic-tab--active]="activeTab() === 'select'"
+                (click)="setTab('select')" type="button">
+          {{ tabLabel().select }}
+        </button>
+        <button class="pic-tab" [class.pic-tab--active]="activeTab() === 'new'"
+                (click)="setTab('new')" type="button">
+          {{ tabLabel().new }}
+        </button>
+      </div>
+
+      <!-- ── Tab: Select ── -->
+      @if (activeTab() === 'select') {
+        @if (cardType === 'location') {
+          @if (availableLocations().length === 0) {
+            <p class="pic-tab-empty">All library locations are already in this campaign.</p>
+          } @else {
+            <div class="pic-search-row">
+              <input class="fi pic-search-input" type="search"
+                     placeholder="Search by name or type..."
+                     [value]="searchTerm()"
+                     (input)="searchTerm.set($any($event.target).value)" />
+            </div>
+            @if (filteredAvailable().length === 0) {
+              <p class="pic-tab-empty">No results for "{{ searchTerm() }}".</p>
+            } @else {
+              <div class="pic-selector-grid">
+                @for (loc of filteredAvailable(); track loc.id) {
+                  <div class="pic-selector-card-wrap" [attr.data-source-id]="loc.id" (click)="selectLocation(loc, $any($event.currentTarget))">
+                    <app-location-card
+                      [location]="loc"
+                      [flippable]="false"
+                      [editable]="false"
+                      [campaignMode]="true"
+                    />
+                  </div>
+                }
+              </div>
+            }
+          }
+        }
+        @if (cardType === 'sublocation') {
+          @if (availableSublocations().length === 0) {
+            <p class="pic-tab-empty">All library sublocations are already in this location.</p>
+          } @else {
+            <div class="pic-search-row">
+              <input class="fi pic-search-input" type="search"
+                     placeholder="Search by name..."
+                     [value]="searchTerm()"
+                     (input)="searchTerm.set($any($event.target).value)" />
+            </div>
+            @if (filteredAvailableSublocations().length === 0) {
+              <p class="pic-tab-empty">No results for "{{ searchTerm() }}".</p>
+            } @else {
+              <div class="pic-selector-grid">
+                @for (loc of filteredAvailableSublocations(); track loc.id) {
+                  <div class="pic-selector-card-wrap" [attr.data-source-id]="loc.id" (click)="selectSublocation(loc, $any($event.currentTarget))">
+                    <app-sublocation-card
+                      [sublocation]="loc"
+                      [flippable]="false"
+                      [editable]="false"
+                      [campaignMode]="true"
+                    />
+                  </div>
+                }
+              </div>
+            }
+          }
+        }
+        @if (cardType === 'cast') {
+          @if (availableCasts().length === 0) {
+            <p class="pic-tab-empty">All library cast members are already in this campaign.</p>
+          } @else {
+            <div class="pic-search-row">
+              <input class="fi pic-search-input" type="search"
+                     placeholder="Search by name..."
+                     [value]="searchTerm()"
+                     (input)="searchTerm.set($any($event.target).value)" />
+            </div>
+            @if (filteredAvailableCasts().length === 0) {
+              <p class="pic-tab-empty">No results for "{{ searchTerm() }}".</p>
+            } @else {
+              <div class="pic-selector-grid">
+                @for (cast of filteredAvailableCasts(); track cast.id) {
+                  <div class="pic-selector-card-wrap" [attr.data-source-id]="cast.id" (click)="selectCast(cast, $any($event.currentTarget))">
+                    <app-cast-card
+                      [cast]="$any(cast)"
+                      [flippable]="false"
+                      [editable]="false"
+                      [campaignMode]="true"
+                    />
+                  </div>
+                }
+              </div>
+            }
+          }
+        }
+      }
+
+      <!-- ── Tab: New ── -->
+      @if (activeTab() === 'new') {
+        @if (cardType === 'location') {
+          <div class="pic-new-form-wrap">
+            <form [formGroup]="form" class="pic-new-form">
+
+              <div class="wr form-row-gap">
+                <div class="form-field-wide">
+                  <label for="pic-name" class="fi-label">Location Name</label>
+                  <input id="pic-name" class="fi" formControlName="name" placeholder="Irongate" />
+                </div>
+                <div class="form-field">
+                  <label for="pic-classification" class="fi-label">Classification</label>
+                  <input id="pic-classification" class="fi" formControlName="classification" placeholder="Major Port" />
+                </div>
+              </div>
+
+              <div class="wr form-row-gap">
+                <div class="form-field">
+                  <label for="pic-size" class="fi-label">Size</label>
+                  <input id="pic-size" class="fi" formControlName="size" list="pic-size-opts" placeholder="Large" />
+                  <datalist id="pic-size-opts">
+                    @for (s of sizeOptions; track s) { <option [value]="s"></option> }
+                  </datalist>
+                </div>
+                <div class="form-field">
+                  <label for="pic-condition" class="fi-label">Condition</label>
+                  <input id="pic-condition" class="fi" formControlName="condition" list="pic-cond-opts" placeholder="Prosperous" />
+                  <datalist id="pic-cond-opts">
+                    @for (c of conditionOptions; track c) { <option [value]="c"></option> }
+                  </datalist>
+                </div>
+              </div>
+
+              <label for="pic-geography" class="fi-label">Geography</label>
+              <input id="pic-geography" class="fi" formControlName="geography" list="pic-geo-opts" placeholder="Coastal" />
+              <datalist id="pic-geo-opts">
+                @for (g of geographyOptions; track g) { <option [value]="g"></option> }
+              </datalist>
+
+              <label for="pic-architecture" class="fi-label">Architecture</label>
+              <input id="pic-architecture" class="fi" formControlName="architecture" list="pic-arch-opts" placeholder="Gothic" />
+              <datalist id="pic-arch-opts">
+                @for (a of architectureOptions; track a) { <option [value]="a"></option> }
+              </datalist>
+
+              <div class="wr form-row-gap">
+                <div class="form-field">
+                  <label for="pic-climate" class="fi-label">Climate</label>
+                  <input id="pic-climate" class="fi" formControlName="climate" list="pic-clim-opts" placeholder="Temperate" />
+                  <datalist id="pic-clim-opts">
+                    @for (cl of climateOptions; track cl) { <option [value]="cl"></option> }
+                  </datalist>
+                </div>
+                <div class="form-field">
+                  <label for="pic-religion" class="fi-label">Religion</label>
+                  <input id="pic-religion" class="fi" formControlName="religion" placeholder="Temple of Kord" />
+                </div>
+              </div>
+
+              <label for="pic-vibe" class="fi-label">Vibe / Atmosphere</label>
+              <textarea id="pic-vibe" class="fi" formControlName="vibe" rows="2" placeholder="Industrious and bustling..."></textarea>
+
+              <label class="fi-label">Languages</label>
+              <div class="lang-picker" role="group" aria-label="Select languages">
+                <div class="lang-col">
+                  <div class="lang-col-header">Available</div>
+                  <div class="lang-list">
+                    @for (lang of availableLanguages(); track lang) {
+                      <div class="lang-item" role="button" tabindex="0"
+                           (click)="addLanguage(lang)"
+                           (keydown.enter)="addLanguage(lang)"
+                           (keydown.space)="addLanguage(lang)">{{ lang }}</div>
+                    }
+                  </div>
+                </div>
+                <div class="lang-col">
+                  <div class="lang-col-header">Selected</div>
+                  <div class="lang-list lang-list--selected">
+                    @for (lang of selectedLanguages(); track lang) {
+                      <div class="lang-item lang-item--selected" role="button" tabindex="0"
+                           (click)="removeLanguage(lang)"
+                           (keydown.enter)="removeLanguage(lang)"
+                           (keydown.space)="removeLanguage(lang)">{{ lang }}</div>
+                    }
+                    @if (!selectedLanguages().length) {
+                      <div class="lang-empty">None selected</div>
+                    }
+                  </div>
+                </div>
+              </div>
+
+              <label for="pic-description" class="fi-label">Description</label>
+              <textarea id="pic-description" class="fi" formControlName="description" rows="4" placeholder="Full description..."></textarea>
+
+              <div class="pic-save-row">
+                <span class="save-label"
+                      [class.save-label--saving]="saveStatus() === 'saving'"
+                      [class.save-label--error]="saveStatus() === 'error'"
+                      [style.opacity]="labelVisible() ? 1 : 0">{{ labelText() }}</span>
+                <button class="btn-primary" type="button"
+                        [disabled]="form.invalid || saveStatus() === 'saving'"
+                        (click)="onSaveNewLocation()">Save</button>
+              </div>
+
+            </form>
+          </div>
+        }
+        @if (cardType === 'sublocation') {
+          <div class="pic-new-form-wrap">
+            <form [formGroup]="sublocationForm" class="pic-new-form">
+
+              <label for="pic-sub-name" class="fi-label">Sublocation Name</label>
+              <input id="pic-sub-name" class="fi" formControlName="name" placeholder="The Broken Anvil" />
+
+              <label for="pic-sub-description" class="fi-label">Description</label>
+              <textarea id="pic-sub-description" class="fi" formControlName="description" rows="3" placeholder="A dimly lit smithy…"></textarea>
+
+              <div class="wr shop-header-row">
+                <span class="section-label flex-1">Shop Inventory</span>
+                <button type="button" class="btn-ghost" (click)="addSublocationItem()">+ Add Item</button>
+              </div>
+
+              <div formArrayName="shopItems">
+                @for (item of sublocationShopItems.controls; track $index; let i = $index) {
+                  <div [formGroupName]="i" class="wb shop-item-card">
+                    <div class="wr shop-item-fields">
+                      <div class="form-field-wide">
+                        <label class="fi-label">Item Name</label>
+                        <input class="fi fi-no-mb" formControlName="name" placeholder="Iron Sword" />
+                      </div>
+                      <div class="form-field">
+                        <label class="fi-label">Price</label>
+                        <div class="price-input-group">
+                          <input class="fi fi-no-mb price-amount" type="number" formControlName="priceAmount"
+                                 min="1" max="9999" placeholder="15" />
+                          <select class="fi fi-no-mb price-currency" formControlName="priceCurrency">
+                            @for (c of currencies; track c) {
+                              <option [value]="c">{{ c }}</option>
+                            }
+                          </select>
+                        </div>
+                      </div>
+                      <button type="button" class="btn-ghost btn-item-remove" (click)="removeSublocationItem(i)">✕</button>
+                    </div>
+                    <label class="fi-label fi-label-mt">Description</label>
+                    <input class="fi" formControlName="description" placeholder="Well-balanced blade" />
+                  </div>
+                }
+              </div>
+
+              <div class="pic-save-row">
+                <span class="save-label"
+                      [class.save-label--saving]="sublocationSaveStatus() === 'saving'"
+                      [class.save-label--error]="sublocationSaveStatus() === 'error'"
+                      [style.opacity]="sublocationLabelVisible() ? 1 : 0">{{ sublocationLabelText() }}</span>
+                <button class="btn-primary" type="button"
+                        [disabled]="sublocationForm.invalid || sublocationSaveStatus() === 'saving'"
+                        (click)="onSaveNewSublocation()">Save</button>
+              </div>
+
+            </form>
+          </div>
+        }
+        @if (cardType === 'cast') {
+          <div class="pic-new-form-wrap">
+            <form [formGroup]="castForm" class="pic-new-form">
+
+              <div class="wr form-row-gap">
+                <div class="form-field-min">
+                  <label for="pic-cast-name" class="fi-label">Name</label>
+                  <input id="pic-cast-name" class="fi" formControlName="name" placeholder="Aldric the Bold" />
+                </div>
+                <div class="form-field-min">
+                  <label for="pic-cast-role" class="fi-label">Role / Class</label>
+                  <input id="pic-cast-role" class="fi" formControlName="role" placeholder="Blacksmith" />
+                </div>
+              </div>
+
+              <div class="wr form-row-gap">
+                <div class="form-field">
+                  <label for="pic-cast-race" class="fi-label">Race</label>
+                  <input id="pic-cast-race" class="fi" formControlName="race" placeholder="Human" />
+                </div>
+                <div class="form-field">
+                  <label for="pic-cast-age" class="fi-label">Age</label>
+                  <input id="pic-cast-age" class="fi" formControlName="age" placeholder="44" />
+                </div>
+                <div class="form-field">
+                  <label for="pic-cast-pronouns" class="fi-label">Pronouns</label>
+                  <input id="pic-cast-pronouns" class="fi" formControlName="pronouns" list="pic-cast-pronouns-opts" placeholder="he/him" />
+                  <datalist id="pic-cast-pronouns-opts">
+                    @for (p of pronounOptions; track p) { <option [value]="p"></option> }
+                  </datalist>
+                </div>
+              </div>
+
+              <div class="wr form-row-gap">
+                <div class="form-field">
+                  <label for="pic-cast-alignment" class="fi-label">Alignment</label>
+                  <input id="pic-cast-alignment" class="fi" formControlName="alignment" list="pic-cast-alignment-opts" placeholder="Neutral Good" />
+                  <datalist id="pic-cast-alignment-opts">
+                    @for (a of alignmentOptions; track a) { <option [value]="a"></option> }
+                  </datalist>
+                </div>
+                <div class="form-field">
+                  <label for="pic-cast-posture" class="fi-label">Posture</label>
+                  <input id="pic-cast-posture" class="fi" formControlName="posture" list="pic-cast-posture-opts" placeholder="Upright" />
+                  <datalist id="pic-cast-posture-opts">
+                    @for (p of postureOptions; track p) { <option [value]="p"></option> }
+                  </datalist>
+                </div>
+                <div class="form-field">
+                  <label for="pic-cast-speed" class="fi-label">Speed</label>
+                  <input id="pic-cast-speed" class="fi" formControlName="speed" list="pic-cast-speed-opts" placeholder="Average" />
+                  <datalist id="pic-cast-speed-opts">
+                    @for (s of speedOptions; track s) { <option [value]="s"></option> }
+                  </datalist>
+                </div>
+              </div>
+
+              <div class="voice-section">
+                <label class="fi-label voice-section-label">Voice Placement (select all that apply)</label>
+                <div class="wr" formArrayName="voicePlacement">
+                  @for (opt of voiceOptions; track opt; let i = $index) {
+                    <label class="wr checkbox-label">
+                      <input type="checkbox" [formControlName]="i" class="checkbox-input" />
+                      {{ opt }}
+                    </label>
+                  }
+                </div>
+              </div>
+
+              <label for="pic-cast-voice-notes" class="fi-label">Additional Voice Notes</label>
+              <textarea id="pic-cast-voice-notes" class="fi" formControlName="voiceNotes" rows="3" placeholder="Speaks with a slight stammer when nervous…"></textarea>
+
+              <label for="pic-cast-public-desc" class="fi-label">Public Description (visible to players)</label>
+              <textarea id="pic-cast-public-desc" class="fi" formControlName="publicDescription" rows="3" placeholder="What players observe…"></textarea>
+
+              <label for="pic-cast-dm-desc" class="fi-label">DM Description (private notes)</label>
+              <textarea id="pic-cast-dm-desc" class="fi" formControlName="description" rows="4" placeholder="Your private notes on this cast member…"></textarea>
+
+              <div class="pic-save-row">
+                <span class="save-label"
+                      [class.save-label--saving]="castSaveStatus() === 'saving'"
+                      [class.save-label--error]="castSaveStatus() === 'error'"
+                      [style.opacity]="castLabelVisible() ? 1 : 0">{{ castLabelText() }}</span>
+                <button class="btn-primary" type="button"
+                        [disabled]="castForm.invalid || castSaveStatus() === 'saving'"
+                        (click)="onSaveNewCast()">Save</button>
+              </div>
+
+            </form>
+          </div>
+        }
+      }
+
+    </div>
+  </div>
+</div>
+
+<!-- ── FAB ── -->
+<button class="pic-fab" [class.pic-fab--open]="drawerOpen()" (click)="toggleDrawer()"
+        type="button" aria-label="Toggle import drawer">
+  <span class="pic-fab-icon">✦</span>
+</button>

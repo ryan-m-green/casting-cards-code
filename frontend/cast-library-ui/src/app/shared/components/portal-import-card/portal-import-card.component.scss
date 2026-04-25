@@ -1,0 +1,247 @@
+@use '../../../../styles/variables' as v;
+
+:host { display: block; }
+
+/* ── Drawer wrap ─────────────────────────────────────────────── */
+.pic-drawer-wrap { position: relative; }
+
+/* ── Pulse bar ───────────────────────────────────────────────── */
+.pic-pulse-bar {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  right: 50%;
+  height: 2px;
+  background: var(--portal-color, v.$campaign-portal-primary);
+  border-radius: 2px;
+  pointer-events: none;
+  z-index: 9999;
+  animation:
+    pic-bar-expand 1.2s cubic-bezier(0.25, 0, 0.5, 1) forwards,
+    pic-bar-glow   6.4s ease-in-out 1.2s infinite;
+
+  &--collapsing {
+    animation: pic-bar-collapse 1.2s cubic-bezier(0.5, 0, 0.75, 1) forwards;
+  }
+}
+
+@keyframes pic-bar-expand {
+  0%   { left: 50%; right: 50%; opacity: 0.3; box-shadow: 0 0 4px 1px color-mix(in srgb, var(--portal-color, v.$campaign-portal-primary), transparent 40%); }
+  30%  { opacity: 1; box-shadow: 0 0 14px 5px color-mix(in srgb, var(--portal-color, v.$campaign-portal-primary), transparent 10%); }
+  100% { left: 0%; right: 0%; opacity: 1; box-shadow: 0 0 14px 5px color-mix(in srgb, var(--portal-color, v.$campaign-portal-primary), transparent 10%); }
+}
+
+@keyframes pic-bar-collapse {
+  0%   { left: 0%; right: 0%; opacity: 1; box-shadow: 0 0 14px 5px color-mix(in srgb, var(--portal-color, v.$campaign-portal-primary), transparent 10%); }
+  70%  { opacity: 1; box-shadow: 0 0 14px 5px color-mix(in srgb, var(--portal-color, v.$campaign-portal-primary), transparent 10%); }
+  100% { left: 50%; right: 50%; opacity: 0; box-shadow: 0 0 4px 1px color-mix(in srgb, var(--portal-color, v.$campaign-portal-primary), transparent 40%); }
+}
+
+@keyframes pic-bar-glow {
+  0%, 100% { opacity: 0.45; box-shadow: 0 0 5px 1px color-mix(in srgb, var(--portal-color, v.$campaign-portal-primary), transparent 45%); }
+  50%       { opacity: 1;    box-shadow: 0 0 16px 6px color-mix(in srgb, var(--portal-color, v.$campaign-portal-primary), transparent 8%); }
+}
+
+/* ── Accordion drawer ────────────────────────────────────────── */
+.pic-drawer {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.45s cubic-bezier(0, 0, 0.2, 1);
+  position: relative;
+
+  &--open {
+    max-height: 9999px;
+    transition: max-height 1.4s cubic-bezier(0, 0, 0.2, 1);
+  }
+}
+
+.pic-drawer-inner {
+  border-top: 2px solid v.$color-border-accent;
+  padding: 0 32px 120px;
+  background: v.$color-page-mid;
+  min-height: 100vh;
+}
+
+/* ── Tabs ────────────────────────────────────────────────────── */
+.pic-tabs {
+  display: flex;
+  padding: 24px 0 0;
+  border-bottom: 1px solid v.$color-border-light;
+  margin-bottom: 24px;
+}
+
+.pic-tab {
+  font-family: v.$font-header;
+  font-size: 10px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  padding: 9px 20px;
+  background: transparent;
+  border: 1px solid transparent;
+  border-bottom: none;
+  border-radius: 4px 4px 0 0;
+  color: v.$color-text-muted;
+  cursor: pointer;
+  transition: color 0.18s ease, background 0.18s ease, border-color 0.18s ease;
+  margin-bottom: -1px;
+
+  &:hover { color: v.$color-text-primary; }
+
+  &--active {
+    color: v.$color-text-primary;
+    background: v.$color-input-bg;
+    border-color: v.$color-border-light;
+  }
+}
+
+/* ── Tab empty / search ──────────────────────────────────────── */
+.pic-tab-empty {
+  color: v.$color-text-muted;
+  font-style: italic;
+  font-size: 13px;
+  padding: 16px 0;
+  text-align: center;
+}
+
+.pic-search-row   { margin-bottom: 20px; }
+.pic-search-input { max-width: 340px; }
+
+/* ── Selector grid ───────────────────────────────────────────── */
+.pic-selector-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 18px;
+  align-items: flex-start;
+  padding-bottom: 40px;
+}
+
+.pic-selector-card-wrap {
+  cursor: pointer;
+  transition: transform 0.15s ease, opacity 0.15s ease;
+  &:hover  { transform: translateY(-3px); opacity: 0.88; }
+  &:active { transform: scale(0.96); }
+}
+
+/* ── New form ────────────────────────────────────────────────── */
+.pic-new-form-wrap { max-width: 760px; }
+
+.pic-new-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.pic-save-row {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 16px;
+  margin-top: 20px;
+  padding-bottom: 8px;
+}
+
+/* ── Language picker ─────────────────────────────────────────── */
+.lang-picker {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.lang-col {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.lang-col-header {
+  font-family: v.$font-header;
+  font-size: 8px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: v.$color-ext-445;
+  margin-bottom: 4px;
+  padding-left: 2px;
+}
+
+.lang-list {
+  border: 1px solid v.$color-ext-446;
+  border-radius: 3px;
+  background: v.$color-ext-447;
+  min-height: 100px;
+  max-height: 150px;
+  overflow-y: auto;
+  padding: 2px 0;
+}
+
+.lang-list--selected {
+  background: v.$color-ext-448;
+  border-color: v.$color-ui-cancel-border;
+}
+
+.lang-item {
+  padding: 5px 10px;
+  font-size: 11px;
+  color: v.$color-ext-443;
+  cursor: pointer;
+  &:hover { background: v.$color-ext-296; }
+}
+
+.lang-item--selected {
+  color: v.$color-ext-449;
+  &:hover { background: v.$color-ext-450; }
+}
+
+.lang-empty {
+  padding: 8px 10px;
+  font-size: 10px;
+  color: v.$color-text-muted;
+  font-style: italic;
+}
+
+/* ── Save label ──────────────────────────────────────────────── */
+.save-label {
+  font-family: v.$font-header;
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: v.$color-text-muted;
+  transition: opacity 0.28s ease;
+
+  &--saving { color: v.$color-text-muted; }
+  &--error  { color: v.$color-ui-cancel-border; }
+}
+
+/* ── FAB ─────────────────────────────────────────────────────── */
+.pic-fab {
+  position: fixed;
+  bottom: 32px;
+  right: 32px;
+  z-index: 50;
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background: v.$color-border-accent;
+  border: 1px solid v.$campaign-portal-border-bold;
+  color: v.$campaign-portal-text-lavender-bright;
+  font-size: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background 0.2s ease, box-shadow 0.2s ease;
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.45);
+
+  &:hover {
+    background: v.$campaign-portal-border-accent;
+    box-shadow: 0 6px 24px rgba(0, 0, 0, 0.55);
+  }
+
+  &--open .pic-fab-icon { transform: rotate(45deg); }
+}
+
+.pic-fab-icon {
+  display: inline-block;
+  transition: transform 0.3s ease;
+}

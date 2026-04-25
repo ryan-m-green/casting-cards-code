@@ -71,8 +71,8 @@ export class PlayerCastDetailComponent implements OnInit {
       if (ca && parentSubLoc && parentLoc) {
         this.shellService.setCrumbs([
           { label: '← Locations', action: () => this.goToCampaign() },
-          { label: `← ${parentLoc.name}`, action: () => this.goToLocation() },
-          { label: `← ${parentSubLoc.name}`, action: () => this.goToSublocation() }
+          { label: '← Sublocations', action: () => this.goToLocation() },
+          { label: '← Cast',         action: () => this.goToSublocation() }
         ]);
         this.shellService.setTitle(ca.name);
       }

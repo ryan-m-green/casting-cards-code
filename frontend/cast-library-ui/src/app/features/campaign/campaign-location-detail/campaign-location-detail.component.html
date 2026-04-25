@@ -235,37 +235,65 @@
   </div>
 
   <!-- ── Sublocations section ── -->
-  @if (isDm() && locationSublocations().length) {
+  @if (isDm() && campaign()) {
     <div class="location-sublocations-section">
 
       <div class="sublocations-section-header">
         <span class="sublocations-section-label">Sublocations</span>
         <span class="sublocations-section-line"></span>
-        <button
-          class="subLoc-reveal-all-btn"
-          [class.subLoc-reveal-all-btn--visible]="allSublocationVisible()"
-          (click)="toggleAllSublocationVisibility()"
-          [title]="allSublocationVisible() ? 'Hide all sublocations from players' : 'Reveal all sublocations to players'"
-        >
-          {{ allSublocationVisible() ? '🔓 Hide All' : '🔒 Reveal All' }}
-        </button>
-      </div>
-
-      <div class="sublocations-grid">
-        @for (subLoc of locationSublocations(); track subLoc.instanceId) {
-          <app-sublocation-card
-            [sublocation]="subLoc"
-            [flippable]="false"
-            [editable]="false"
-            [secrets]="true"
-            [secretsRevealed]="subLoc.isVisibleToPlayers"
-            [campaignMode]="true"
-            [tilt]="sublocationTilt(subLoc.instanceId)"
-            (secretsClick)="toggleSublocationVisibility(subLoc)"
-            (cardClick)="goToSublocation(subLoc)"
-          />
+        @if (locationSublocations().length) {
+          <button
+            class="subLoc-reveal-all-btn"
+            [class.subLoc-reveal-all-btn--visible]="allSublocationVisible()"
+            (click)="toggleAllSublocationVisibility()"
+            [title]="allSublocationVisible() ? 'Hide all sublocations from players' : 'Reveal all sublocations to players'"
+          >
+            {{ allSublocationVisible() ? '🔓 Hide All' : '🔒 Reveal All' }}
+          </button>
         }
       </div>
+
+      <div class="sublocations-grid" #sublocationsGrid>
+        @for (subLoc of locationSublocations(); track subLoc.instanceId) {
+          <div class="cl-loc-wrap" [attr.data-instance-id]="subLoc.instanceId">
+            <app-sublocation-card
+              [sublocation]="subLoc"
+              [flippable]="false"
+              [editable]="false"
+              [secrets]="true"
+              [secretsRevealed]="subLoc.isVisibleToPlayers"
+              [campaignMode]="true"
+              [tilt]="sublocationTilt(subLoc.instanceId)"
+              [style.opacity]="sublocationImportCardRef?.pendingInstanceIds()?.has(subLoc.instanceId) ? 0 : 1"
+              (secretsClick)="toggleSublocationVisibility(subLoc)"
+              (cardClick)="goToSublocation(subLoc)"
+            />
+            @if (sublocationDrawerOpen() && sublocationImportCardRef?.removableInstanceIds()?.has(subLoc.instanceId)) {
+              <button
+                class="cl-loc-remove-btn"
+                (click)="sublocationImportCardRef!.removeCard(subLoc.instanceId, $event)"
+                type="button"
+                aria-label="Remove sublocation"
+              >✕</button>
+            }
+          </div>
+        }
+        @if (!locationSublocations().length) {
+          <p class="location-cards-empty">No sublocations yet — use the ✦ button below to add some.</p>
+        }
+      </div>
+
+      <app-portal-import-card
+        #sublocationImportCard
+        [campaign]="campaign()"
+        [cardType]="'sublocation'"
+        [targetGridEl]="sublocationsGridEl"
+        [initialInstances]="locationSublocations()"
+        [locationInstanceId]="locationInstanceId()"
+        (drawerOpenChange)="sublocationDrawerOpen.set($event)"
+        (sublocationAdded)="onSublocationAdded($event)"
+        (sublocationRemoved)="onSublocationRemoved($event)"
+      />
 
     </div>
   }

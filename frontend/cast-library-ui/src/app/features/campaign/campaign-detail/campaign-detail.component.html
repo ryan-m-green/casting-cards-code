@@ -1,22 +1,50 @@
 @if (campaign(); as camp) {
-  @if (isDm() && camp.locations.length) {
+  @if (isDm()) {
+    <!-- ── Locations grid ── -->
     <div class="location-cards-section">
-      <div class="location-cards-label">Locations</div>
-      <div class="location-cards-container">
+      <div class="location-cards-label-row">
+        <span class="location-cards-label">Locations</span>
+      </div>
+      <div class="cl-grid" #locationsGrid>
         @for (location of camp.locations; track location.instanceId) {
-          <app-location-card
-            [location]="location"
-            [flippable]="false"
-            [editable]="false"
-            [secrets]="true"
-            [secretsRevealed]="location.isVisibleToPlayers"
-            [campaignMode]="true"
-            [tilt]="locationTilt(location.instanceId)"
-            (secretsClick)="toggleLocationVisibility(location)"
-            (cardClick)="goToLocationDetail(location.instanceId)"
-          />
+          <div class="cl-loc-wrap" [attr.data-instance-id]="location.instanceId">
+            <app-location-card
+              [location]="location"
+              [flippable]="false"
+              [editable]="false"
+              [secrets]="true"
+              [secretsRevealed]="location.isVisibleToPlayers"
+              [campaignMode]="true"
+              [tilt]="locationTilt(location.instanceId)"
+              [style.opacity]="importCardRef?.pendingInstanceIds()?.has(location.instanceId) ? 0 : 1"
+              (secretsClick)="toggleLocationVisibility(location)"
+              (cardClick)="goToLocationDetail(location.instanceId)"
+            />
+            @if (importCardRef?.drawerOpen() && importCardRef?.removableInstanceIds()?.has(location.instanceId)) {
+              <button
+                class="cl-loc-remove-btn"
+                (click)="importCardRef!.removeCard(location.instanceId, $event)"
+                type="button"
+                aria-label="Remove location"
+              >✕</button>
+            }
+          </div>
+        }
+        @if (!camp.locations.length) {
+          <p class="location-cards-empty">No locations yet — use the ✦ button below to add some.</p>
         }
       </div>
     </div>
+
+    <app-portal-import-card
+      #importCard
+      [campaign]="campaign()"
+      [cardType]="'location'"
+      [targetGridEl]="locationsGridEl"
+      [initialInstances]="camp.locations"
+      (locationAdded)="onLocationAdded($event)"
+      (locationRemoved)="onLocationRemoved($event)"
+    />
   }
 }
+

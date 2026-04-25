@@ -32,4 +32,27 @@ export class SparkleService {
       spark.addEventListener('animationend', () => spark.remove(), { once: true });
     }
   }
+
+  triggerEdge(container: HTMLElement, points = 7): void {
+    const rect = container.getBoundingClientRect();
+    for (let p = 0; p < points; p++) {
+      const xFrac = (p + 0.5) / points;
+      const delay = p * 40 + Math.random() * 25;
+      setTimeout(() => {
+        const anchor = document.createElement('div');
+        Object.assign(anchor.style, {
+          position:      'fixed',
+          top:           `${rect.top}px`,
+          left:          `${rect.left + rect.width * xFrac}px`,
+          width:         '2px',
+          height:        '2px',
+          pointerEvents: 'none',
+          overflow:      'visible',
+        });
+        document.body.appendChild(anchor);
+        this.trigger(anchor);
+        setTimeout(() => anchor.remove(), 750);
+      }, delay);
+    }
+  }
 }

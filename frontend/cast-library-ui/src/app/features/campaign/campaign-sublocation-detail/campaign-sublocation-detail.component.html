@@ -27,8 +27,8 @@
             @if (!editing()) {
               <button class="detail-edit-btn" (click)="startEditing()">✎ Edit Details</button>
             } @else {
-              <button class="detail-save-btn" (click)="saveDetails()">✔ Save</button>
-              <button class="detail-cancel-btn" (click)="cancelEditing()">Cancel</button>
+              <button class="campaign-primary-btn" (click)="saveDetails()">✔ Save</button>
+              <button class="campaign-secondary-btn" (click)="cancelEditing()">Cancel</button>
             }
           </div>
         }
@@ -234,37 +234,66 @@
   </div>
 
   <!-- ── Cast section ── -->
-  @if (isDm() && sublocationCasts().length) {
+  @if (isDm() && campaign()) {
     <div class="subLoc-cast-section">
 
       <div class="cast-section-header">
-        <span class="cast-section-label">Cast</span>
+        <span class="cast-section-label">Cast of Characters</span>
         <span class="cast-section-line"></span>
-        <button
-          class="cast-reveal-all-btn"
-          [class.cast-reveal-all-btn--visible]="allCastsVisible()"
-          (click)="toggleAllCastVisibility()"
-          [title]="allCastsVisible() ? 'Hide all cast from players' : 'Reveal all cast to players'"
-        >
-          {{ allCastsVisible() ? '🔓 Hide All' : '🔒 Reveal All' }}
-        </button>
-      </div>
-
-      <div class="cast-grid">
-        @for (cast of sublocationCasts(); track cast.instanceId) {
-          <app-cast-card
-            [cast]="cast"
-            [flippable]="false"
-            [editable]="false"
-            [secrets]="true"
-            [secretsRevealed]="cast.isVisibleToPlayers"
-            [campaignMode]="true"
-            [tilt]="castTilt(cast.instanceId)"
-            (secretsClick)="toggleCastVisibility(cast)"
-            (cardClick)="goToCast(cast)"
-          />
+        @if (sublocationCasts().length) {
+          <button
+            class="cast-reveal-all-btn"
+            [class.cast-reveal-all-btn--visible]="allCastsVisible()"
+            (click)="toggleAllCastVisibility()"
+            [title]="allCastsVisible() ? 'Hide all cast from players' : 'Reveal all cast to players'"
+          >
+            {{ allCastsVisible() ? '🔓 Hide All' : '🔒 Reveal All' }}
+          </button>
         }
       </div>
+
+      <div class="cast-grid" #castGrid>
+        @for (cast of sublocationCasts(); track cast.instanceId) {
+          <div class="cl-cast-wrap" [attr.data-instance-id]="cast.instanceId">
+            <app-cast-card
+              [cast]="cast"
+              [flippable]="false"
+              [editable]="false"
+              [secrets]="true"
+              [secretsRevealed]="cast.isVisibleToPlayers"
+              [campaignMode]="true"
+              [tilt]="castTilt(cast.instanceId)"
+              [style.opacity]="castImportCardRef?.pendingInstanceIds()?.has(cast.instanceId) ? 0 : 1"
+              (secretsClick)="toggleCastVisibility(cast)"
+              (cardClick)="goToCast(cast)"
+            />
+            @if (castDrawerOpen()) {
+              <button
+                class="cl-cast-remove-btn"
+                (click)="castImportCardRef!.removeCard(cast.instanceId, $event)"
+                type="button"
+                aria-label="Remove cast member"
+              >✕</button>
+            }
+          </div>
+        }
+        @if (!sublocationCasts().length) {
+          <p class="cast-cards-empty">No cast members yet — use the ✦ button below to add some.</p>
+        }
+      </div>
+
+      <app-portal-import-card
+        #castImportCard
+        [campaign]="campaign()"
+        [cardType]="'cast'"
+        [targetGridEl]="castGridEl"
+        [initialInstances]="sublocationCasts()"
+        [sublocationInstanceId]="sublocationInstanceId()"
+        [locationInstanceId]="sublocation()?.locationInstanceId ?? null"
+        (drawerOpenChange)="castDrawerOpen.set($event)"
+        (castAdded)="onCastAdded($event)"
+        (castRemoved)="onCastRemoved($event)"
+      />
 
     </div>
   }

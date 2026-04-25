@@ -3,16 +3,9 @@
 
     <!-- ── Day counter label ── -->
     <div class="tod-day-counter" aria-live="polite">
-      Days Passed: {{ daysPassed() }}
-    </div>
-
-    <!-- ── Bar row (rewind button + bar + advance button) ── -->
-    <div class="tod-bar-row">
-
-      <!-- ── Rewind button (DM only) ── -->
       @if (isDm) {
         <button
-          class="tod-next-day"
+          class="tod-next-day tod-next-day--left"
           type="button"
           aria-label="Rewind to previous day"
           [disabled]="daysPassed() === 0"
@@ -20,6 +13,20 @@
           (touchend)="onRewindDayTouch($event)"
         ><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M18.5 5 11 12l7.5 7V5zm-7 0L4 12l7.5 7V5z"/></svg></button>
       }
+      Days Passed: {{ daysPassed() }}
+      @if (isDm) {
+        <button
+          class="tod-next-day tod-next-day--right"
+          type="button"
+          aria-label="Advance to next day"
+          (click)="onAdvanceDay()"
+          (touchend)="onAdvanceDay()"
+        ><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M5.5 5 13 12l-7.5 7V5zm7 0L20 12l-7.5 7V5z"/></svg></button>
+      }
+    </div>
+
+    <!-- ── Bar row (bar only) ── -->
+    <div class="tod-bar-row">
 
       <!-- ── Bar track ── -->
       <div
@@ -84,17 +91,6 @@
         </div>
 
       </div>
-
-      <!-- ── Advance button (DM only) ── -->
-      @if (isDm) {
-        <button
-          class="tod-next-day"
-          type="button"
-          aria-label="Advance to next day"
-          (click)="onAdvanceDay()"
-          (touchend)="onAdvanceDay()"
-        ><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M5.5 5 13 12l-7.5 7V5zm7 0L20 12l-7.5 7V5z"/></svg></button>
-      }
 
     </div><!-- end tod-bar-row -->
 

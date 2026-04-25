@@ -8,11 +8,12 @@ import { CampaignHubService } from '../../../core/hub/campaign-hub.service';
 import { PortalTransitionService } from '../../../core/portal-transition.service';
 import { CampaignShellService } from '../../../core/campaign-shell.service';
 import { TimeOfDayBarComponent } from '../../../shared/components/time-of-day-bar/time-of-day-bar.component';
+import { ShellBreadcrumbsComponent } from '../../../shared/components/shell-breadcrumbs/shell-breadcrumbs.component';
 
 @Component({
   selector: 'app-campaign-shell',
   standalone: true,
-  imports: [RouterOutlet, TimeOfDayBarComponent],
+  imports: [RouterOutlet, TimeOfDayBarComponent, ShellBreadcrumbsComponent],
   templateUrl: './campaign-shell.component.html',
   styleUrl: './campaign-shell.component.scss',
 })
@@ -26,6 +27,7 @@ export class CampaignShellComponent implements OnInit, OnDestroy {
   shellSvc           = inject(CampaignShellService);
 
   @HostBinding('class.portal-entry') portalEntry = false;
+  @HostBinding('style.--portal-color') get portalColor() { return this.safeColor(this.campaign()?.spineColor); }
 
   campaignId = signal('');
   campaign   = signal<CampaignDetail | null>(null);

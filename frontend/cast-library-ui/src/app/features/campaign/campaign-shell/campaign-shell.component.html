@@ -1,16 +1,9 @@
-<div class="void-canvas" [style.--portal-color]="safeColor(campaign()?.spineColor)">
+<div class="void-canvas">
 
   <!-- ── Top bar ── -->
   <div class="void-topbar">
     <div class="topbar-row">
-      <div class="void-breadcrumbs">
-        @for (crumb of shellSvc.crumbs(); track $index) {
-          @if ($index > 0) {
-            <span class="void-crumb-sep">›</span>
-          }
-          <button class="void-back" (click)="crumb.action()">{{ crumb.label }}</button>
-        }
-      </div>
+      <app-shell-breadcrumbs [crumbs]="shellSvc.crumbs()" />
       @if (isDm()) {
         <button class="topbar-party-btn" (click)="goToTheParty()">⚔ The Party</button>
       }

@@ -14,11 +14,12 @@ import { CampaignShellService } from '../../../core/campaign-shell.service';
 import { PortalTransitionService } from '../../../core/portal-transition.service';
 import { SublocationCardComponent } from '../../../shared/components/sublocation-card/sublocation-card.component';
 import { CastCardComponent } from '../../../shared/components/cast-card/cast-card.component';
+import { PortalImportCardComponent } from '../../../shared/components/portal-import-card/portal-import-card.component';
 
 @Component({
   selector: 'app-campaign-sublocation-detail',
   standalone: true,
-  imports: [CommonModule, FormsModule, SublocationCardComponent, CastCardComponent],
+  imports: [CommonModule, FormsModule, SublocationCardComponent, CastCardComponent, PortalImportCardComponent],
   templateUrl: './campaign-sublocation-detail.component.html',
   styleUrl: './campaign-sublocation-detail.component.scss'
 })
@@ -33,6 +34,22 @@ export class CampaignSublocationDetailComponent implements OnInit {
 
   @ViewChild('detailContent') private detailContentRef!: ElementRef<HTMLElement>;
   @ViewChild('expandBtn')     private expandBtnRef!: ElementRef<HTMLElement>;
+
+  private _castImportCard = signal<PortalImportCardComponent | null>(null);
+  @ViewChild('castImportCard') set castImportCardSetter(ref: PortalImportCardComponent | undefined) {
+    this._castImportCard.set(ref ?? null);
+  }
+  get castImportCardRef(): PortalImportCardComponent | null {
+    return this._castImportCard();
+  }
+
+  castDrawerOpen = signal(false);
+
+  private _castGridEl = signal<HTMLElement | null>(null);
+  @ViewChild('castGrid') set castGridRef(ref: ElementRef<HTMLElement> | undefined) {
+    this._castGridEl.set(ref?.nativeElement ?? null);
+  }
+  get castGridEl(): HTMLElement | null { return this._castGridEl(); }
 
   campaignId         = signal('');
   sublocationInstanceId = signal('');
@@ -121,7 +138,7 @@ export class CampaignSublocationDetailComponent implements OnInit {
         this.shellSvc.setTitle(subLoc?.name ?? '');
         this.shellSvc.setCrumbs([
           { label: '← Locations',                   action: () => this.goToCampaign() },
-          { label: `← ${parentLoc?.name ?? 'Location'}`, action: () => this.goToLocation() },
+          { label: '← Sublocations', action: () => this.goToLocation() },
         ]);
       });
   }
@@ -420,4 +437,27 @@ export class CampaignSublocationDetailComponent implements OnInit {
   }
 
   initial(name: string) { return name.charAt(0).toUpperCase(); }
+
+  // ── Import card handlers ──────────────────────────────────────────────────
+
+  onCastAdded(instance: CampaignCastInstance) {
+    this.campaign.update(c => {
+      if (!c) return c;
+      const casts = c.casts ?? [];
+      if (casts.some(ca => ca.instanceId === instance.instanceId)) return c;
+      const tmpIdx = casts.findIndex(
+        ca => ca.instanceId.startsWith('tmp-') && ca.sourceCastId === instance.sourceCastId
+      );
+      if (tmpIdx !== -1) {
+        const updated = [...casts];
+        updated[tmpIdx] = instance;
+        return { ...c, casts: updated };
+      }
+      return { ...c, casts: [...casts, instance] };
+    });
+  }
+
+  onCastRemoved(instanceId: string) {
+    this.campaign.update(c => c ? { ...c, casts: (c.casts ?? []).filter(ca => ca.instanceId !== instanceId) } : c);
+  }
 }

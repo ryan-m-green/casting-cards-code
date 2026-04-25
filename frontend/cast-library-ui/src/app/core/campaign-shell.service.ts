@@ -1,15 +1,13 @@
 import { Injectable, signal } from '@angular/core';
+import { ShellCrumb } from '../shared/components/shell-breadcrumbs/shell-breadcrumbs.component';
 
-export interface CampaignCrumb {
-  label: string;
-  action: () => void;
-}
+export type CampaignCrumb = ShellCrumb;
 
 @Injectable({ providedIn: 'root' })
 export class CampaignShellService {
   title  = signal('');
-  crumbs = signal<CampaignCrumb[]>([]);
+  crumbs = signal<ShellCrumb[]>([]);
 
   setTitle(title: string)  { this.title.set(title); }
-  setCrumbs(crumbs: CampaignCrumb[]) { this.crumbs.set(crumbs); }
+  setCrumbs(crumbs: ShellCrumb[]) { this.crumbs.set(crumbs); }
 }

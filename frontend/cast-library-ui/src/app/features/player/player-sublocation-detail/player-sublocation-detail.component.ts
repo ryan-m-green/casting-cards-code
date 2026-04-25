@@ -78,7 +78,7 @@ export class PlayerSublocationDetailComponent implements OnInit {
     if (subLoc && parentLoc) {
       this.shellService.setCrumbs([
         { label: '← Locations', action: () => this.goToCampaign() },
-        { label: `← ${parentLoc.name}`, action: () => this.goToLocation() }
+        { label: '← Sublocations', action: () => this.goToLocation() }
       ]);
       this.shellService.setTitle(subLoc.name);
 

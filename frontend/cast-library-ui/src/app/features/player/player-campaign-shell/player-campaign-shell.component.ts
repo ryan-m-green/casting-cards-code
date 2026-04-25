@@ -18,11 +18,12 @@ import {
 import { WhisperCardComponent } from '../../../shared/components/whisper-card/whisper-card.component';
 import { CurrencyCardComponent } from '../../../shared/components/currency-card/currency-card.component';
 import { CurrencyDisplayComponent, CurrencyLine } from '../../../shared/components/currency-display/currency-display.component';
+import { ShellBreadcrumbsComponent } from '../../../shared/components/shell-breadcrumbs/shell-breadcrumbs.component';
 
 @Component({
   selector: 'app-player-campaign-shell',
   standalone: true,
-  imports: [RouterOutlet, CommonModule, TimeOfDayBarComponent, CardRevealOverlayComponent, WhisperCardComponent, CurrencyCardComponent, CurrencyDisplayComponent],
+  imports: [RouterOutlet, CommonModule, TimeOfDayBarComponent, CardRevealOverlayComponent, WhisperCardComponent, CurrencyCardComponent, CurrencyDisplayComponent, ShellBreadcrumbsComponent],
   templateUrl: './player-campaign-shell.component.html',
   styleUrl: './player-campaign-shell.component.scss',
 })

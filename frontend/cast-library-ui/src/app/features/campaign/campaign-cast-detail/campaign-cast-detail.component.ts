@@ -111,8 +111,8 @@ export class CampaignCastDetailComponent implements OnInit {
         this.shellSvc.setTitle(cast?.name ?? '');
         this.shellSvc.setCrumbs([
           { label: '← Locations',     action: () => this.goToCampaign() },
-          { label: `← ${loc?.name ?? 'Location'}`, action: () => this.goToLocation() },
-          { label: '← Cast Members',  action: () => this.goBack() },
+          { label: '← Sublocations', action: () => this.goToLocation() },
+          { label: '← Cast',         action: () => this.goBack() },
         ]);
       });
   }

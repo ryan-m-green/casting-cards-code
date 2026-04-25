@@ -3,14 +3,7 @@
   <!-- ── Top bar ── -->
   <div class="void-topbar">
     <div class="topbar-row">
-      <div class="void-breadcrumbs">
-        @for (crumb of shellSvc.crumbs(); track $index) {
-          @if ($index > 0) {
-            <span class="void-crumb-sep">›</span>
-          }
-          <button class="void-back" (click)="crumb.action()">{{ crumb.label }}</button>
-        }
-      </div>
+      <app-shell-breadcrumbs [crumbs]="shellSvc.crumbs()" />
       <div class="topbar-right">
         <div class="purse-wrap">
           <button class="topbar-purse-btn" (click)="togglePurse()"><span class="purse-icon">💰</span> Purse</button>
