@@ -34,7 +34,9 @@
 
     <!-- ── Detail panel ── -->
     <div class="cast-detail-wrap">
-      <div class="cast-detail-panel">
+      <div class="cast-detail-panel" [style.height]="panelHeight()" [class.detail-panel--mobile-expanded]="detailExpanded()">
+
+        <div class="detail-panel-content" #detailContent>
 
         @if (ca.publicDescription) {
           <div class="detail-desc">
@@ -117,6 +119,12 @@
             </div>
           }
         </div>
+
+        </div>
+
+        <button class="detail-expand-btn" #expandBtn (click)="toggleDetail()">
+          {{ detailExpanded() ? '▲' : '▼' }}
+        </button>
 
       </div>
     </div>

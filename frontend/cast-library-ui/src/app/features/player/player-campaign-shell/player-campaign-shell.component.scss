@@ -72,6 +72,12 @@
   align-items: center;
   justify-content: space-between;
   width: 100%;
+
+  @media (max-width: 600px) {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
 }
 
 .topbar-party-btn {
@@ -142,6 +148,11 @@
   top: calc(100% + 8px);
   right: 0;
   z-index: 100;
+
+  @media (max-width: 600px) {
+    right: auto;
+    left: 0;
+  }
   background: v.$campaign-portal-bg-dark;
   border: 1px solid v.$campaign-portal-border-bold;
   border-radius: 10px;

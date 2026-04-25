@@ -102,13 +102,21 @@ export class PlayerSublocationDetailComponent implements OnInit {
   }
 
   toggleDetail() {
+    const panel = this.detailContentRef.nativeElement.parentElement as HTMLElement;
     if (this.detailExpanded()) {
       this.panelHeight.set('220px');
+      panel.style.marginLeft = '';
+      panel.style.width = '';
       this.detailExpanded.set(false);
     } else {
       const contentH = this.detailContentRef.nativeElement.scrollHeight;
       const btnH     = this.expandBtnRef.nativeElement.offsetHeight;
       this.panelHeight.set(`${contentH + btnH}px`);
+      if (window.innerWidth < 768) {
+        const left = panel.getBoundingClientRect().left;
+        panel.style.marginLeft = `${-(left - 20)}px`;
+        panel.style.width      = `${window.innerWidth - 40}px`;
+      }
       this.detailExpanded.set(true);
     }
   }

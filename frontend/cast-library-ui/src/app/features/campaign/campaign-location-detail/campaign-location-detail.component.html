@@ -17,7 +17,7 @@
     </div>
 
     <!-- Detail panel -->
-    <div class="location-detail-panel" [style.height]="panelHeight()">
+    <div class="location-detail-panel" [style.height]="panelHeight()" [class.detail-panel--mobile-expanded]="detailExpanded()">
 
       <div class="detail-panel-content" #detailContent>
 

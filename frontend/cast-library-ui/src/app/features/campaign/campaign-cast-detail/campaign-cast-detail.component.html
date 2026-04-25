@@ -17,7 +17,9 @@
 
   <!-- ── Detail panel ── -->
   <div class="cast-detail-wrap">
-    <div class="cast-detail-panel">
+    <div class="cast-detail-panel" [style.height]="panelHeight()" [class.detail-panel--mobile-expanded]="detailExpanded()">
+
+      <div class="detail-panel-content" #detailContent>
 
       <!-- Panel action bar (DM only) -->
       <div class="detail-panel-actions">
@@ -235,6 +237,12 @@
           <p class="detail-value detail-value--muted">No notes yet. Click Edit Details to add some.</p>
         }
       </div>
+
+      </div>
+
+      <button class="detail-expand-btn" #expandBtn (click)="toggleDetail()">
+        {{ detailExpanded() ? '▲' : '▼' }}
+      </button>
 
     </div>
   </div>

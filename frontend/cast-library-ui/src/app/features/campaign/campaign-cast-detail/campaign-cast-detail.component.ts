@@ -1,4 +1,4 @@
-import { Component, OnInit, signal, computed, inject, effect } from '@angular/core';
+import { Component, OnInit, signal, computed, inject, effect, ViewChild, ElementRef } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -30,6 +30,12 @@ export class CampaignCastDetailComponent implements OnInit {
   private auth     = inject(AuthService);
   private shellSvc = inject(CampaignShellService);
   private transition = inject(PortalTransitionService);
+
+  @ViewChild('detailContent') private detailContentRef!: ElementRef<HTMLElement>;
+  @ViewChild('expandBtn')     private expandBtnRef!: ElementRef<HTMLElement>;
+
+  detailExpanded = signal(false);
+  panelHeight    = signal('220px');
 
   campaignId         = signal('');
   sublocationInstanceId = signal('');
@@ -272,6 +278,18 @@ export class CampaignCastDetailComponent implements OnInit {
 
   goBack() {
     this.router.navigate(['/campaign', this.campaignId(), 'sublocations', this.sublocationInstanceId()]);
+  }
+
+  toggleDetail() {
+    if (this.detailExpanded()) {
+      this.panelHeight.set('220px');
+      this.detailExpanded.set(false);
+    } else {
+      const contentH = this.detailContentRef.nativeElement.scrollHeight;
+      const btnH     = this.expandBtnRef.nativeElement.offsetHeight;
+      this.panelHeight.set(`${contentH + btnH}px`);
+      this.detailExpanded.set(true);
+    }
   }
 
   initial(name: string) { return name.charAt(0).toUpperCase(); }
