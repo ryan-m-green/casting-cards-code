@@ -123,6 +123,8 @@
 }
 
 .portal-card {
+  --portal-breathe-duration: 3.2s;
+
   width: 170px;
   display: flex;
   flex-direction: column;
@@ -151,6 +153,8 @@
   }
 
   &:hover {
+    --portal-breathe-duration: 1.4s;
+
     border-color: color-mix(in srgb, var(--portal-color, v.$campaign-portal-primary), transparent 60%);
     box-shadow:
       0 10px 36px v.$color-ext-169,
@@ -158,7 +162,7 @@
       inset 0 0 40px v.$journal-parchment-shadow-front;
 
     .portal-rim {
-      animation: portal-breathe 1.4s ease-in-out infinite;
+      animation: portal-breathe var(--portal-breathe-duration) ease-in-out infinite;
     }
 
     .portal-spark {
@@ -200,7 +204,7 @@
 
 .portal-arch {
   position: relative;
-  width: 76px;
+  width: 84px;
   height: 118px;
   border-radius: 50%;
 }
@@ -224,7 +228,7 @@
   inset: 0;
   border-radius: 50%;
   background: transparent;
-  animation: portal-breathe 3.2s ease-in-out infinite;
+  animation: portal-breathe var(--portal-breathe-duration) ease-in-out infinite;
 }
 
 @keyframes portal-breathe {
@@ -233,16 +237,16 @@
       0 0 0 2px v.$color-ext-176,
       0 0 5px 3px color-mix(in srgb, var(--portal-color, v.$campaign-portal-primary) 40%, white 60%),
       0 0 12px 6px color-mix(in srgb, var(--portal-color, v.$campaign-portal-primary), transparent 28%),
-      0 0 26px 10px color-mix(in srgb, var(--portal-color, v.$campaign-portal-primary), transparent 48%),
-      0 0 48px 16px color-mix(in srgb, var(--portal-color, v.$campaign-portal-primary), transparent 72%);
+      0 0 18px 5px color-mix(in srgb, var(--portal-color, v.$campaign-portal-primary), transparent 65%),
+      0 0 32px 8px color-mix(in srgb, var(--portal-color, v.$campaign-portal-primary), transparent 82%);
   }
   50% {
     box-shadow:
       0 0 0 2px v.$color-ext-177,
       0 0 8px 5px color-mix(in srgb, var(--portal-color, v.$campaign-portal-primary) 25%, white 75%),
       0 0 18px 9px color-mix(in srgb, var(--portal-color, v.$campaign-portal-primary), transparent 12%),
-      0 0 38px 14px color-mix(in srgb, var(--portal-color, v.$campaign-portal-primary), transparent 34%),
-      0 0 68px 22px color-mix(in srgb, var(--portal-color, v.$campaign-portal-primary), transparent 62%);
+      0 0 26px 7px color-mix(in srgb, var(--portal-color, v.$campaign-portal-primary), transparent 55%),
+      0 0 46px 12px color-mix(in srgb, var(--portal-color, v.$campaign-portal-primary), transparent 75%);
   }
 }
 

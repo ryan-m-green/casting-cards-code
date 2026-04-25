@@ -298,7 +298,7 @@ export class PlayerCampaignsComponent implements OnInit, OnDestroy {
             this.isEntering = false;
             this.router.navigate(['/player/campaign', id], { state: { noFlip: true, portalEntry: true } });
             this.transition.hide();
-          }, 1600);
+          }, 800);
         }, 260);
       }, 150);
     }, 600);

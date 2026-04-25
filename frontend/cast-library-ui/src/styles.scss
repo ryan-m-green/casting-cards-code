@@ -2,6 +2,7 @@
 @use 'styles/typography';
 @use 'styles/animations';
 @use 'styles/components';
+@use 'styles/portal-card';
 
 :root {
   --color-lock-icon-locked: #{v.$color-lock-icon-locked};

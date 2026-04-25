@@ -252,6 +252,34 @@ $campaign-btn-secondary-text: rgba($color-base-mist-blue, 0.75);
 $campaign-btn-secondary-hover-border: rgba(255, 255, 255, 0.65);
 $campaign-btn-secondary-hover-text: rgba($color-base-mist-blue, 0.95);
 
+// ─── Portal Card (Campaign Library) ─────────────────────────────────────────
+$portal-card-frame-shadow:        #0a0620;                   // Outer 1px frame border
+$portal-card-frame-1:             #2c1a60;                   // Frame gradient stop 1
+$portal-card-frame-2:             #1a0e40;                   // Frame gradient stop 2
+$portal-card-frame-3:             #0c0828;                   // Frame gradient stop 3
+$portal-card-frame-4:             #261860;                   // Frame gradient stop 4
+$portal-card-bg-1:                #0e0830;                   // Inner bg gradient stop 1
+$portal-card-bg-2:                #060418;                   // Inner bg gradient stop 2
+$portal-card-oval-ring:           rgba(255, 255, 255, 0.22); // Oval ring border color
+$portal-card-oval-inner-1:        #0d1838;                   // Oval interior gradient stop 1
+$portal-card-oval-inner-2:        #04060e;                   // Oval interior gradient stop 2
+$portal-card-description:         rgba(200, 180, 255, 0.6);  // Description text color
+$portal-card-rune-stroke:         rgba(255, 255, 255, 0.35); // Rune white border stroke
+$portal-card-delete-border:       rgba(225, 75, 55, 0.75);   // Delete btn border
+$portal-card-delete-text:         #ff7868;                   // Delete btn text
+$portal-card-delete-glow:         rgba(225, 75, 55, 0.25);   // Delete btn glow
+$portal-card-delete-inset:        rgba(255, 120, 100, 0.1);  // Delete btn inset highlight
+$portal-card-delete-bg-hover:     rgba(160, 20, 10, 0.32);   // Delete btn hover background
+$portal-card-delete-glow-hover:   rgba(225, 75, 55, 0.55);   // Delete btn hover glow
+$portal-card-delete-inset-hover:  rgba(255, 120, 100, 0.15); // Delete btn hover inset
+$portal-card-edit-border:         rgba(90, 140, 255, 0.75);  // Edit btn border
+$portal-card-edit-text:           #92b8ff;                   // Edit btn text
+$portal-card-edit-glow:           rgba(90, 140, 255, 0.25);  // Edit btn glow
+$portal-card-edit-inset:          rgba(120, 160, 255, 0.1);  // Edit btn inset highlight
+$portal-card-edit-bg-hover:       rgba(30, 60, 200, 0.32);   // Edit btn hover background
+$portal-card-edit-glow-hover:     rgba(90, 140, 255, 0.55);  // Edit btn hover glow
+$portal-card-edit-inset-hover:    rgba(120, 160, 255, 0.15); // Edit btn hover inset
+
 // ═══════════════════════════════════════════════════════════════════════════
 // ║                         GLOBAL STYLES                                   ║
 // ═══════════════════════════════════════════════════════════════════════════

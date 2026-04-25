@@ -35,6 +35,7 @@ public class CampaignWebMapper(
         {
             Id = domain.Id,
             Name = domain.Name,
+            Description = domain.Description,
             FantasyType = domain.FantasyType,
             Status = domain.Status.ToString(),
             SpineColor = domain.SpineColor,

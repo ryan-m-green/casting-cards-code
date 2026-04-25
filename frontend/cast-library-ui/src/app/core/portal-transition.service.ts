@@ -31,9 +31,9 @@ export class PortalTransitionService {
       const vw    = window.innerWidth;
       const vh    = window.innerHeight;
 
-      if (originRect && ghost) {
-        const ghostW = originRect.width  || 170;
-        const ghostH = originRect.height || 240;
+      if (ghost) {
+        const ghostW = originRect?.width  || 170;
+        const ghostH = originRect?.height || 240;
 
         Object.assign(ghost.style, {
           position:      'fixed',
