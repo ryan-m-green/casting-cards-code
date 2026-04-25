@@ -3,6 +3,10 @@
 @use 'styles/animations';
 @use 'styles/components';
 
+:root {
+  --color-lock-icon-locked: #{v.$color-lock-icon-locked};
+}
+
 *, *::before, *::after {
   box-sizing: border-box;
   margin: 0;

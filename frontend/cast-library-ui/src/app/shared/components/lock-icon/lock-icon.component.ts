@@ -20,6 +20,10 @@ import { Component, Input } from '@angular/core';
       display: inline-block;
       vertical-align: middle;
       flex-shrink: 0;
+      color: var(--color-lock-icon-locked);
+    }
+    .lock-icon--open {
+      color: currentColor;
     }
   `]
 })

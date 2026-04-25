@@ -34,17 +34,16 @@
           <p class="location-cards-empty">No locations yet — use the ✦ button below to add some.</p>
         }
       </div>
+      <app-portal-import-card
+        #importCard
+        [campaign]="campaign()"
+        [cardType]="'location'"
+        [targetGridEl]="locationsGridEl"
+        [initialInstances]="camp.locations"
+        (locationAdded)="onLocationAdded($event)"
+        (locationRemoved)="onLocationRemoved($event)"
+      />
     </div>
-
-    <app-portal-import-card
-      #importCard
-      [campaign]="campaign()"
-      [cardType]="'location'"
-      [targetGridEl]="locationsGridEl"
-      [initialInstances]="camp.locations"
-      (locationAdded)="onLocationAdded($event)"
-      (locationRemoved)="onLocationRemoved($event)"
-    />
   }
 }
 
