@@ -15,11 +15,12 @@ import { PortalTransitionService } from '../../../core/portal-transition.service
 import { LocationCardComponent } from '../../../shared/components/location-card/location-card.component';
 import { SublocationCardComponent } from '../../../shared/components/sublocation-card/sublocation-card.component';
 import { PortalImportCardComponent } from '../../../shared/components/portal-import-card/portal-import-card.component';
+import { LockIconComponent } from '../../../shared/components/lock-icon/lock-icon.component';
 
 @Component({
   selector: 'app-campaign-location-detail',
   standalone: true,
-  imports: [CommonModule, FormsModule, LocationCardComponent, SublocationCardComponent, PortalImportCardComponent],
+  imports: [CommonModule, FormsModule, LocationCardComponent, SublocationCardComponent, PortalImportCardComponent, LockIconComponent],
   templateUrl: './campaign-location-detail.component.html',
   styleUrl: './campaign-location-detail.component.scss'
 })

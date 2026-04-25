@@ -1,10 +1,11 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { Sublocation, CampaignSublocationInstance } from '../../models/sublocation.model';
+import { LockIconComponent } from '../lock-icon/lock-icon.component';
 
 @Component({
   selector: 'app-sublocation-card',
   standalone: true,
-  imports: [],
+  imports: [LockIconComponent],
   templateUrl: './sublocation-card.component.html',
   styleUrl: './sublocation-card.component.scss'
 })

@@ -1,10 +1,11 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { Location } from '../../models/location.model';
+import { LockIconComponent } from '../lock-icon/lock-icon.component';
 
 @Component({
   selector: 'app-location-card',
   standalone: true,
-  imports: [],
+  imports: [LockIconComponent],
   templateUrl: './location-card.component.html',
   styleUrl: './location-card.component.scss'
 })

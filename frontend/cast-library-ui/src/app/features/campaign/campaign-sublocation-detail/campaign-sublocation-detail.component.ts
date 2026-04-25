@@ -15,11 +15,12 @@ import { PortalTransitionService } from '../../../core/portal-transition.service
 import { SublocationCardComponent } from '../../../shared/components/sublocation-card/sublocation-card.component';
 import { CastCardComponent } from '../../../shared/components/cast-card/cast-card.component';
 import { PortalImportCardComponent } from '../../../shared/components/portal-import-card/portal-import-card.component';
+import { LockIconComponent } from '../../../shared/components/lock-icon/lock-icon.component';
 
 @Component({
   selector: 'app-campaign-sublocation-detail',
   standalone: true,
-  imports: [CommonModule, FormsModule, SublocationCardComponent, CastCardComponent, PortalImportCardComponent],
+  imports: [CommonModule, FormsModule, SublocationCardComponent, CastCardComponent, PortalImportCardComponent, LockIconComponent],
   templateUrl: './campaign-sublocation-detail.component.html',
   styleUrl: './campaign-sublocation-detail.component.scss'
 })

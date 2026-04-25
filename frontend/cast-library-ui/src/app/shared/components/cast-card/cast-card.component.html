@@ -96,7 +96,7 @@
                     (click)="onSecretsClick($event)"
                     [attr.aria-label]="(secretsRevealed ? 'Hide ' : 'Reveal ') + cast.name + ' to players'"
                     [title]="secretsRevealed ? 'Hide from players' : 'Reveal to players'">
-              {{ secretsRevealed ? '🔓' : '🔒' }}
+              <app-lock-icon [open]="secretsRevealed" />
             </button>
           }
 

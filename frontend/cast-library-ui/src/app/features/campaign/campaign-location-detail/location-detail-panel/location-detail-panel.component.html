@@ -84,7 +84,7 @@
         @for (secret of secrets(); track secret.id) {
           <div class="secret-card" [class.secret-card--revealed]="secret.isRevealed">
             <div class="secret-card-header">
-              <span class="secret-card-icon">{{ secret.isRevealed ? '✦' : '🔒' }}</span>
+              <span class="secret-card-icon">@if (secret.isRevealed) { ✦ } @else { <app-lock-icon /> }</span>
               <span class="secret-card-status">{{ secret.isRevealed ? 'Revealed' : 'Sealed' }}</span>
             </div>
             <p class="secret-card-content">{{ secret.content }}</p>

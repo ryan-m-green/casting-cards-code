@@ -2,11 +2,12 @@ import { Component, input, output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { CampaignLocationInstance } from '../../../../shared/models/location.model';
 import { CampaignSecret } from '../../../../shared/models/secret.model';
+import { LockIconComponent } from '../../../../shared/components/lock-icon/lock-icon.component';
 
 @Component({
   selector: 'app-location-detail-panel',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, LockIconComponent],
   templateUrl: './location-detail-panel.component.html',
   styleUrl: './location-detail-panel.component.scss'
 })

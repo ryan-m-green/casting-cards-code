@@ -181,7 +181,7 @@
               @if (isDm()) {
                 <button class="secret-lock-btn" (click)="toggleSecret(secret)"
                         [title]="secret.isRevealed ? 'Reseal secret' : 'Reveal secret'">
-                  {{ secret.isRevealed ? '🔓' : '🔒' }}
+                  <app-lock-icon [open]="secret.isRevealed" />
                 </button>
               }
               <span class="secret-text" [class.secret-text--revealed]="secret.isRevealed">{{ secret.content }}</span>
@@ -247,7 +247,7 @@
             (click)="toggleAllCastVisibility()"
             [title]="allCastsVisible() ? 'Hide all cast from players' : 'Reveal all cast to players'"
           >
-            {{ allCastsVisible() ? '🔓 Hide All' : '🔒 Reveal All' }}
+            <app-lock-icon [open]="allCastsVisible()" />{{ allCastsVisible() ? ' Hide All' : ' Reveal All' }}
           </button>
         }
       </div>

@@ -13,11 +13,12 @@ import { AuthService } from '../../../core/auth/auth.service';
 import { CampaignShellService } from '../../../core/campaign-shell.service';
 import { PortalTransitionService } from '../../../core/portal-transition.service';
 import { CastCardComponent } from '../../../shared/components/cast-card/cast-card.component';
+import { LockIconComponent } from '../../../shared/components/lock-icon/lock-icon.component';
 
 @Component({
   selector: 'app-campaign-cast-detail',
   standalone: true,
-  imports: [CommonModule, FormsModule, CastCardComponent],
+  imports: [CommonModule, FormsModule, CastCardComponent, LockIconComponent],
   templateUrl: './campaign-cast-detail.component.html',
   styleUrl: './campaign-cast-detail.component.scss'
 })

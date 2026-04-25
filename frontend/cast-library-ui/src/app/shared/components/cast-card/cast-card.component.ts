@@ -1,10 +1,11 @@
 import { Component, Input, Output, EventEmitter, signal } from '@angular/core';
 import { Cast } from '../../models/cast.model';
+import { LockIconComponent } from '../lock-icon/lock-icon.component';
 
 @Component({
   selector: 'app-cast-card',
   standalone: true,
-  imports: [],
+  imports: [LockIconComponent],
   templateUrl: './cast-card.component.html',
   styleUrl: './cast-card.component.scss'
 })
