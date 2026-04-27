@@ -63,6 +63,7 @@ namespace CastLibrary.WebHost.IoC
             services.AddScoped<IUpdateLocationInstanceCommandHandler, UpdateLocationInstanceCommandHandler>();
             services.AddScoped<IUpdateLocationInstanceVisibilityCommandHandler, UpdateLocationInstanceVisibilityCommandHandler>();
             services.AddScoped<IUpdateCastInstanceCommandHandler, UpdateCastInstanceCommandHandler>();
+            services.AddScoped<ITravelCastInstanceCommandHandler, TravelCastInstanceCommandHandler>();
             services.AddScoped<IDeleteLocationInstanceCommandHandler, DeleteLocationInstanceCommandHandler>();
             services.AddScoped<IDeleteCastInstanceCommandHandler, DeleteCastInstanceCommandHandler>();
             services.AddScoped<IAddCampaignSecretCommandHandler, AddCampaignSecretCommandHandler>();
@@ -196,6 +197,7 @@ namespace CastLibrary.WebHost.IoC
             services.AddScoped<IJwtTokenService, JwtTokenService>();
             services.AddScoped<IImageKeyCreator, ImageKeyCreator>();
             services.AddScoped<IFilenameService, FilenameService>();
+            services.AddScoped<IPartyAnchorService, PartyAnchorService>();
             services.AddScoped<ITemplateZipService, TemplateZipService>();
             services.AddScoped<ISystemValuesService, SystemValuesService>();
             services.AddScoped<ILibraryImageExtractionService, LibraryImageExtractionService>();

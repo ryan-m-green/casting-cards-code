@@ -2,7 +2,7 @@
 
   <!-- ── Hero card ── -->
   <div class="cast-hero">
-    <div class="cast-hero-card">
+    <div class="cast-hero-card-wrap">
       <app-cast-card
         [cast]="ca"
         [flippable]="false"
@@ -10,10 +10,86 @@
         [secrets]="isDm()"
         [secretsRevealed]="ca.isVisibleToPlayers"
         [campaignMode]="false"
+        [readonlyStars]="true"
+        [dmMode]="isDm()"
         (secretsClick)="toggleCastVisibility()"
       />
     </div>
   </div>
+
+  @if (isDm()) {
+    <div class="travel-btn-row">
+      <button class="campaign-primary-btn" type="button" (click)="toggleTravelDrawer()">
+        Travel {{ travelDrawerOpen() ? '↑' : '↓' }}
+      </button>
+    </div>
+  }
+
+  <!-- ── Travel drawer ── -->
+  @if (isDm() && travelDrawerOpen()) {
+    <div class="travel-drawer">
+
+      @if (selectedLocationId() === null) {
+        <!-- Locations list -->
+        <div class="travel-list">
+
+          <!-- The Party -->
+          <button
+            class="travel-item travel-item--party"
+            type="button"
+            [disabled]="!partyAnchor()"
+            [class.travel-item--disabled]="!partyAnchor()"
+            (click)="partyAnchor() && travelCast(partyAnchor()!.locationInstanceId, partyAnchor()!.instanceId)">
+            <span class="travel-item-name">⚔ The Party</span>
+            @if (partyAnchor() && currentSublocationId() === partyAnchor()!.instanceId) {
+              <span class="travel-checkmark">✓</span>
+            }
+          </button>
+          <div class="travel-divider"></div>
+
+          <!-- Regular locations -->
+          @for (loc of travelLocations(); track loc.instanceId) {
+            @if (sublocationsByLocation()[loc.instanceId]?.length) {
+              <button
+                class="travel-item"
+                type="button"
+                (click)="selectLocation(loc.instanceId)">
+                <span class="travel-item-name">{{ loc.name }}</span>
+                @if (currentLocationId() === loc.instanceId && currentSublocationId() !== partyAnchor()?.instanceId) {
+                  <span class="travel-checkmark travel-checkmark--faint">✓</span>
+                }
+              </button>
+            } @else {
+              <span class="travel-item travel-item--disabled">
+                <span class="travel-item-name">{{ loc.name }}</span>
+              </span>
+            }
+          }
+          @if (!partyAnchor() && !travelLocations().length) {
+            <span class="travel-empty">No locations available.</span>
+          }
+
+        </div>
+      } @else {
+        <!-- Sublocations list -->
+        <div class="travel-list">
+          <button class="travel-back" type="button" (click)="selectedLocationId.set(null)">← Back</button>
+          @for (sub of sublocationsByLocation()[selectedLocationId()!]; track sub.instanceId) {
+            <button
+              class="travel-item"
+              type="button"
+              (click)="travelCast(sub.locationInstanceId, sub.instanceId)">
+              <span class="travel-item-name">{{ sub.name }}</span>
+              @if (currentSublocationId() === sub.instanceId) {
+                <span class="travel-checkmark">✓</span>
+              }
+            </button>
+          }
+        </div>
+      }
+
+    </div>
+  }
 
   <!-- ── Detail panel ── -->
   <div class="cast-detail-wrap">

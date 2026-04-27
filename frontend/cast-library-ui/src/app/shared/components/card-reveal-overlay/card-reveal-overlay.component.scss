@@ -40,51 +40,6 @@
     drop-shadow(0 0 48px v.$color-ext-636);
 }
 
-/* Scale the card up from its 150×220 base */
-.pc-card {
-  width: 170px;
-  height: 250px;
-  cursor: default;
-}
-
-/* ── Player card placeholder colour ───────────────────────────── */
-.pc-card-player .card-placeholder {
-  background: linear-gradient(160deg, v.$color-lib-player-1, v.$color-lib-player-2, v.$color-lib-player-3);
-}
-
-/* ── Secret block ──────────────────────────────────────────────── */
-.cr-secret-block {
-  width: 260px;
-  background: v.$color-ext-637;
-  border: 1px solid v.$color-ext-638;
-  border-radius: 6px;
-  padding: 14px 16px;
-  box-shadow:
-    0 0 12px v.$color-ext-639,
-    0 4px 18px v.$color-ext-146;
-}
-
-.cr-secret-label {
-  font-family: v.$font-header;
-  font-size: 8px;
-  letter-spacing: 0.22em;
-  text-transform: uppercase;
-  color: v.$color-ext-640;
-  margin-bottom: 8px;
-}
-
-.cr-secret-text {
-  font-family: v.$font-body;
-  font-size: 14px;
-  font-style: italic;
-  line-height: 1.55;
-  color: v.$color-ext-641;
-  display: -webkit-box;
-  -webkit-line-clamp: 5;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-}
-
 /* ── Dismiss button ────────────────────────────────────────────── */
 .cr-dismiss {
   font-family: v.$font-header;

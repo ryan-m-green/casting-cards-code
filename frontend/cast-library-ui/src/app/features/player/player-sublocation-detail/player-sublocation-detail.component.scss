@@ -367,6 +367,18 @@
       box-shadow: 0 8px 24px v.$color-shadow-light, 0 0 16px color-mix(in srgb, var(--portal-color, #{v.$subLoc-olive}) 22%, transparent 78%), 0 0 42px color-mix(in srgb, var(--portal-color, #{v.$subLoc-olive}) 10%, transparent 90%);
     }
   }
+
+  &--fading-out {
+    animation: cast-travel-fade-out 0.5s ease-out forwards;
+    pointer-events: none;
+    cursor: default;
+  }
+}
+
+@keyframes cast-travel-fade-out {
+  0%   { opacity: 1;   transform: scale(1)    translateY(0); }
+  60%  { opacity: 0.4; transform: scale(0.97) translateY(-6px); }
+  100% { opacity: 0;   transform: scale(0.94) translateY(-12px); }
 }
 
 /* ── Time-of-day bar section ─────────────────────────────────── */

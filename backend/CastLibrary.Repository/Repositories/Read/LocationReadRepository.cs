@@ -24,8 +24,8 @@ public class LocationReadRepository(
         const string sql =
             @"SELECT id, dm_user_id AS DmUserId, name, classification, size, condition, geography,
                      architecture, climate, religion, vibe, languages, description,
-                     created_at AS CreatedAt
-              FROM locations WHERE dm_user_id = @DmUserId ORDER BY name";
+                     campaign_id AS CampaignId, created_at AS CreatedAt
+              FROM locations WHERE dm_user_id = @DmUserId AND campaign_id IS NULL ORDER BY name";
 
         logging.LogDbOperation(correlation.TraceId, spanId, "SELECT", "locations", @params);
 
@@ -43,7 +43,7 @@ public class LocationReadRepository(
         const string sql =
             @"SELECT id, dm_user_id AS DmUserId, name, classification, size, condition, geography,
                      architecture, climate, religion, vibe, languages, description,
-                     created_at AS CreatedAt
+                     campaign_id AS CampaignId, created_at AS CreatedAt
               FROM locations WHERE id = @Id";
 
         logging.LogDbOperation(correlation.TraceId, spanId, "SELECT", "locations", @params);

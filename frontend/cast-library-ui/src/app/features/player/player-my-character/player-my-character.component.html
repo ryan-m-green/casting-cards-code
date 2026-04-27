@@ -122,57 +122,42 @@
 
         <div class="card-grid">
           @for (member of filteredParty(); track member.id) {
-            <div class="pc-card pc-card-player">
-              <app-card-flip>
-
-                <!-- Front -->
-                <div slot="front" class="card-slot-front">
-                  <div class="card-front-header">
-                    <div class="card-name">{{ member.name }}</div>
-                    <div class="card-descriptor">{{ member.race }} · {{ member.class }}</div>
-                  </div>
-                  <div class="dv dv-card"></div>
-                  <div class="card-image-area">
-                    @if (member.imageUrl) {
-                      <img [src]="member.imageUrl" alt="" class="card-img-fill" />
-                    } @else {
-                      <div class="card-placeholder">
-                        <span class="card-initial">{{ initial(member.name) }}</span>
-                      </div>
-                    }
-                  </div>
-                </div>
-
-                <!-- Back -->
-                <div slot="back" class="card-slot-back">
-                  <div class="card-back-content">
-                    <div class="card-name card-back-name">{{ member.name }}</div>
-                    <div class="dv dv-mb"></div>
-                    @if (member.description) {
-                      <div class="card-desc">{{ member.description }}</div>
-                    }
-                    @if (member.conditions?.length) {
-                      <div class="card-conditions">
-                        <div class="card-conditions-label">Conditions</div>
-                        <div class="dv dv-mb"></div>
-                        <div class="card-conditions-pills">
-                          @for (c of member.conditions; track c.id) {
-                            <span class="condition-pill">{{ c.conditionName }}</span>
-                          }
-                        </div>
-                      </div>
-                    }
-                  </div>
-                  <button class="view-secrets-btn" (click)="viewSecrets(member)">View Secrets</button>
-                </div>
-
-              </app-card-flip>
-            </div>
+            <app-casting-card-player
+              [member]="member"
+              [tilt]="partyMemberTiltFor(member.id)"
+              mode="player"
+              (viewSecrets)="viewSecrets($event)"
+            />
           }
         </div>
 
         @if (!filteredParty().length) {
           <div class="empty-state">No other party members yet.</div>
+        }
+
+        @if (discoveredCast()?.questingCompanions?.length) {
+          <div class="companions-section">
+            <div class="companions-header">
+              <span class="companions-label">Questing Companions</span>
+              <span class="companions-line"></span>
+            </div>
+            <div class="cast-grid">
+              @for (companion of discoveredCast()!.questingCompanions; track companion.instanceId) {
+                  <div class="cast-card-wrapper">
+                    <app-cast-card
+                      [cast]="castAsCompanion(companion)"
+                      [flippable]="false"
+                      [editable]="false"
+                      [secrets]="false"
+                      [campaignMode]="true"
+                      [tilt]="companionTiltFor(companion.instanceId)"
+                      [setStars]="companionRating(companion.instanceId)"
+                      (cardClick)="goToCompanion(companion)"
+                    />
+                  </div>
+                }
+            </div>
+          </div>
         }
 
       </div>

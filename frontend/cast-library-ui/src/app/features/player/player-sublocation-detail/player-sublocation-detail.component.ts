@@ -1,4 +1,4 @@
-import { Component, OnInit, signal, computed, inject, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, signal, computed, inject, ViewChild, ElementRef, effect } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
@@ -12,6 +12,7 @@ import { SublocationCardComponent } from '../../../shared/components/sublocation
 import { CastCardComponent } from '../../../shared/components/cast-card/cast-card.component';
 import { PlayerCampaignShellComponent } from '../player-campaign-shell/player-campaign-shell.component';
 import { PlayerCampaignShellService } from '../../../core/player-campaign-shell.service';
+import { CampaignHubService } from '../../../core/hub/campaign-hub.service';
 
 @Component({
   selector: 'app-player-sublocation-detail',
@@ -27,16 +28,20 @@ export class PlayerSublocationDetailComponent implements OnInit {
   private transition = inject(PortalTransitionService);
   private shell      = inject(PlayerCampaignShellComponent);
   private shellService = inject(PlayerCampaignShellService);
+  private hub        = inject(CampaignHubService);
 
   @ViewChild('detailContent') private detailContentRef!: ElementRef<HTMLElement>;
   @ViewChild('expandBtn')     private expandBtnRef!: ElementRef<HTMLElement>;
 
-  campaignId         = signal('');
+  campaignId            = signal('');
   sublocationInstanceId = signal('');
-  campaign           = () => this.shell.campaign();
-  detailExpanded     = signal(false);
-  panelHeight        = signal('220px');
-  castRatings        = signal<Map<string, number>>(new Map());
+  campaign              = () => this.shell.campaign();
+  detailExpanded        = signal(false);
+  panelHeight           = signal('220px');
+  castRatings           = signal<Map<string, number>>(new Map());
+
+  private fadingOutIds = signal<Set<string>>(new Set());
+  private localCasts   = signal<CampaignCastInstance[] | null>(null);
 
   sublocation = computed<CampaignSublocationInstance | null>(() => {
     const c = this.campaign();
@@ -50,21 +55,67 @@ export class PlayerSublocationDetailComponent implements OnInit {
     return c.secrets.filter(s => s.sublocationInstanceId === this.sublocationInstanceId());
   });
 
-  sublocationCasts = computed<CampaignCastInstance[]>(() => {
-    const c   = this.campaign();
+  private baseCasts = computed<CampaignCastInstance[]>(() => {
+    const override = this.localCasts();
+    if (override !== null) return override;
+    const c      = this.campaign();
     const subLoc = this.sublocation();
     if (!c || !subLoc) return [];
     return c.casts.filter(cast => cast.sublocationInstanceId === subLoc.instanceId);
   });
 
+  sublocationCasts = computed<CampaignCastInstance[]>(() =>
+    this.baseCasts().filter(cast => !this.fadingOutIds().has(cast.instanceId))
+  );
+
+  fadingOut = computed<CampaignCastInstance[]>(() =>
+    this.baseCasts().filter(cast => this.fadingOutIds().has(cast.instanceId))
+  );
+
   parentLocation = computed(() => {
-    const c   = this.campaign();
+    const c      = this.campaign();
     const subLoc = this.sublocation();
     if (!c || !subLoc) return null;
     return c.locations.find(ci => ci.instanceId === subLoc.locationInstanceId) ?? null;
   });
 
-  constructor() {}
+  constructor() {
+    effect(() => {
+      const event = this.hub.castTravelled();
+      if (!event) return;
+      const currentSub = this.sublocationInstanceId();
+      if (!currentSub) return;
+
+      const isLeaving  = event.fromSublocationInstanceId === currentSub;
+      const isArriving = event.toSublocationInstanceId   === currentSub;
+
+      if (isLeaving) {
+        this.fadingOutIds.update(s => new Set([...s, event.castInstanceId]));
+        setTimeout(() => {
+          // Initialise local override from base if not yet set
+          if (this.localCasts() === null) {
+            this.localCasts.set([...this.baseCasts()]);
+          }
+          this.localCasts.update(list => (list ?? []).filter(c => c.instanceId !== event.castInstanceId));
+          this.fadingOutIds.update(s => { const n = new Set(s); n.delete(event.castInstanceId); return n; });
+        }, 500);
+      }
+
+      if (isArriving) {
+        this.http.get<CampaignCastInstance>(
+          `${environment.apiUrl}/api/campaigns/${event.campaignId}/casts/${event.castInstanceId}`
+        ).subscribe(cast => {
+          if (this.localCasts() === null) {
+            this.localCasts.set([...this.baseCasts()]);
+          }
+          this.localCasts.update(list => {
+            const existing = (list ?? []).find(c => c.instanceId === cast.instanceId);
+            return existing ? (list ?? []) : [...(list ?? []), cast];
+          });
+        });
+      }
+    });
+  }
 
   ngOnInit() {
     this.transition.hide();

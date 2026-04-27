@@ -64,5 +64,6 @@ public class CampaignSublocationInstanceDomain
     public List<ShopItemDomain> ShopItems { get; set; } = [];
     public List<CampaignCastCustomItemDomain> CustomItems { get; set; } = [];
     public string[] Keywords { get; set; } = [];
+    public bool IsPartyAnchor { get; set; }
 }
 

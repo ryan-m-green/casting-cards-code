@@ -14,6 +14,7 @@
       <app-cast-card
         [cast]="cast"
         [tilt]="tiltFor(cast.id)"
+        [dmMode]="true"
         (editClick)="edit(cast.id)"
         (deleteClick)="confirmDelete(cast.id)">
       </app-cast-card>

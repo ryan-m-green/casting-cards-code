@@ -90,6 +90,19 @@
         </div>
 
         <div class="cast-grid">
+          @for (cast of fadingOut(); track cast.instanceId) {
+            <div class="cast-card-wrapper cast-card-wrapper--fading-out">
+              <app-cast-card
+                [cast]="cast"
+                [flippable]="false"
+                [editable]="false"
+                [secrets]="false"
+                [tilt]="tiltFor(cast.instanceId)"
+                [campaignMode]="true"
+                [setStars]="castRating(cast.instanceId)"
+              />
+            </div>
+          }
           @for (cast of sublocationCasts(); track cast.instanceId) {
             <div class="cast-card-wrapper" (click)="goToCast(cast)">
               <app-cast-card

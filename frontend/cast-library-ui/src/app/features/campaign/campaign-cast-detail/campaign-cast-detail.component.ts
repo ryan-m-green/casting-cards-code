@@ -59,6 +59,10 @@ export class CampaignCastDetailComponent implements OnInit {
   addingSecret     = signal(false);
   newSecretContent = signal('');
 
+  // Travel drawer
+  travelDrawerOpen   = signal(false);
+  selectedLocationId = signal<string | null>(null);
+
   isDm = computed(() => this.auth.isDm());
 
   cast = computed<CampaignCastInstance | null>(() => {
@@ -84,6 +88,41 @@ export class CampaignCastDetailComponent implements OnInit {
     const c = this.campaign();
     if (!c) return [];
     return c.secrets.filter(s => s.castInstanceId === this.castInstanceId());
+  });
+
+  partyAnchor = computed(() => {
+    const c = this.campaign();
+    if (!c) return null;
+    return c.sublocations.find(s => s.isPartyAnchor) ?? null;
+  });
+
+  travelLocations = computed(() => {
+    const c = this.campaign();
+    if (!c) return [];
+    const partyLocationId = this.partyAnchor()?.locationInstanceId;
+    return c.locations.filter(loc => loc.instanceId !== partyLocationId);
+  });
+
+  sublocationsByLocation = computed<Record<string, CampaignSublocationInstance[]>>(() => {
+    const c = this.campaign();
+    if (!c) return {};
+    return c.sublocations
+      .filter(s => !s.isPartyAnchor)
+      .reduce((acc, s) => {
+        const key = s.locationInstanceId;
+        acc[key] = acc[key] ? [...acc[key], s] : [s];
+        return acc;
+      }, {} as Record<string, CampaignSublocationInstance[]>);
+  });
+
+  currentSublocationId = computed(() => {
+    const ca = this.cast();
+    return ca?.sublocationInstanceId ?? null;
+  });
+
+  currentLocationId = computed(() => {
+    const ca = this.cast();
+    return ca?.locationInstanceId ?? null;
   });
 
   constructor() {
@@ -116,11 +155,17 @@ export class CampaignCastDetailComponent implements OnInit {
         const subLoc  = c.sublocations.find((l: CampaignSublocationInstance) => l.instanceId === subLocId);
         const loc     = subLoc ? c.locations.find(l => l.instanceId === subLoc.locationInstanceId) : null;
         this.shellSvc.setTitle(cast?.name ?? '');
-        this.shellSvc.setCrumbs([
-          { label: '← Locations',     action: () => this.goToCampaign() },
-          { label: '← Sublocations', action: () => this.goToLocation() },
-          { label: '← Cast',         action: () => this.goBack() },
-        ]);
+        if (subLoc?.isPartyAnchor) {
+          this.shellSvc.setCrumbs([
+            { label: '← The Party', action: () => this.goToTheParty() },
+          ]);
+        } else {
+          this.shellSvc.setCrumbs([
+            { label: '← Locations',     action: () => this.goToCampaign() },
+            { label: '← Sublocations', action: () => this.goToLocation() },
+            { label: '← Cast',         action: () => this.goBack() },
+          ]);
+        }
       });
   }
 
@@ -252,6 +297,58 @@ export class CampaignCastDetailComponent implements OnInit {
     ).subscribe(s => {
       this.campaign.update(c => c ? { ...c, secrets: [...c.secrets, s] } : c);
       this.addingSecret.set(false);
+    });
+  }
+
+  // ── Travel ───────────────────────────────────────────────────────────────
+
+  toggleTravelDrawer() {
+    this.travelDrawerOpen.update(o => !o);
+    this.selectedLocationId.set(null);
+  }
+
+  selectLocation(locationId: string) {
+    this.selectedLocationId.set(locationId);
+  }
+
+  travelCast(locationInstanceId: string, sublocationInstanceId: string) {
+    const castInstanceId = this.castInstanceId();
+    const fromSublocationInstanceId = this.sublocationInstanceId();
+    this.http.patch(
+      `${environment.apiUrl}/api/campaigns/${this.campaignId()}/casts/${castInstanceId}/travel`,
+      { locationInstanceId, sublocationInstanceId, fromSublocationInstanceId }
+    ).subscribe(() => {
+      const party = this.partyAnchor();
+      const isParty = party?.instanceId === sublocationInstanceId;
+      this.campaign.update(c => c ? {
+        ...c,
+        casts: c.casts.map(ca =>
+          ca.instanceId === castInstanceId
+            ? { ...ca, locationInstanceId, sublocationInstanceId }
+            : ca
+        )
+      } : c);
+      if (isParty) {
+        this.sublocationInstanceId.set(sublocationInstanceId);
+        this.shellSvc.setCrumbs([
+          { label: '← The Party', action: () => this.goToTheParty() },
+        ]);
+        this.router.navigate(
+          ['/campaign', this.campaignId(), 'sublocations', sublocationInstanceId, 'cast', castInstanceId],
+          { replaceUrl: true }
+        );
+      } else {
+        this.sublocationInstanceId.set(sublocationInstanceId);
+        this.shellSvc.setCrumbs([
+          { label: '← Locations',     action: () => this.goToCampaign() },
+          { label: '← Sublocations', action: () => this.goToLocation() },
+          { label: '← Cast',         action: () => this.goBack() },
+        ]);
+        this.router.navigate(
+          ['/campaign', this.campaignId(), 'sublocations', sublocationInstanceId, 'cast', castInstanceId],
+          { replaceUrl: true }
+        );
+      }
     });
   }
 

@@ -1,4 +1,5 @@
 using CastLibrary.Logic.Factories;
+using CastLibrary.Logic.Services;
 using CastLibrary.Repository.Repositories.Delete;
 using CastLibrary.Repository.Repositories.Read;
 using CastLibrary.Shared.Domain;
@@ -14,12 +15,15 @@ public class CreateCampaignCommandHandler(
     ICampaignInsertRepository campaignRepository,
     ILocationReadRepository locationReadRepository,
     ICampaignFactory campaignFactory,
-    ILocationInstanceFactory locationInstanceFactory) : ICreateCampaignCommandHandler
+    ILocationInstanceFactory locationInstanceFactory,
+    IPartyAnchorService partyAnchorService) : ICreateCampaignCommandHandler
 {
     public async Task<CampaignDomain> HandleAsync(CreateCampaignCommand command)
     {
         var campaign = campaignFactory.Create(command.Request, command.DmUserId);
         var saved    = await campaignRepository.InsertAsync(campaign);
+
+        await partyAnchorService.CreateAsync(saved);
 
         int sortOrder = 0;
         foreach (var LocationId in command.Request.LocationIds)

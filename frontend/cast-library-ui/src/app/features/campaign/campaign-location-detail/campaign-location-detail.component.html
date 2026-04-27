@@ -27,11 +27,26 @@
             @if (!editing()) {
               <button class="detail-edit-btn" (click)="startEditing()">✎ Edit Details</button>
             } @else {
-              <button class="campaign-primary-btn" (click)="saveDetails()">✔ Save</button>
+              <button class="campaign-primary-btn" (click)="saveDetails()">✔ Save For Campaign</button>
+              <button class="campaign-primary-btn" (click)="saveToLibrary()">✔ Save For Campaign & Library</button>
               <button class="campaign-secondary-btn" (click)="cancelEditing()">Cancel</button>
             }
           </div>
         }
+
+        <!-- Location Title -->
+        <div class="detail-desc">
+          <span class="detail-label">Location Title</span>
+          <span class="detail-line"></span>
+          @if (editing()) {
+            <input class="detail-input"
+                   [ngModel]="editName()"
+                   (ngModelChange)="editName.set($event)"
+                   placeholder="Location title…" />
+          } @else {
+            <span class="detail-value">{{ c.name }}</span>
+          }
+        </div>
 
         <!-- Description — full width -->
         <div class="detail-desc">

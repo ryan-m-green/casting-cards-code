@@ -60,6 +60,7 @@ export class CampaignLocationDetailComponent implements OnInit {
 
   // Edit mode
   editing          = signal(false);
+  editName           = signal('');
   editDescription    = signal('');
   editClassification = signal('');
   editSize           = signal('');
@@ -134,6 +135,7 @@ export class CampaignLocationDetailComponent implements OnInit {
   startEditing() {
     const c = this.location();
     if (!c) return;
+    this.editName.set(c.name ?? '');
     this.editDescription.set(c.description ?? '');
     this.editClassification.set(c.classification ?? '');
     this.editSize.set(c.size ?? '');
@@ -161,8 +163,9 @@ export class CampaignLocationDetailComponent implements OnInit {
     this.editing.set(false);
   }
 
-  saveDetails() {
+  saveDetails(syncLibrary = false) {
     const body = {
+      name:           this.editName(),
       description:    this.editDescription(),
       classification: this.editClassification(),
       size:           this.editSize(),
@@ -174,6 +177,7 @@ export class CampaignLocationDetailComponent implements OnInit {
       vibe:           this.editVibe(),
       languages:      this.editLanguages(),
       dmNotes:        this.editDmNotes(),
+      syncLibrary,
     };
     this.http.patch(
       `${environment.apiUrl}/api/campaigns/${this.campaignId()}/locations/${this.locationInstanceId()}`,
@@ -187,8 +191,13 @@ export class CampaignLocationDetailComponent implements OnInit {
             : ci
         )
       } : c);
+      this.shellSvc.setTitle(body.name);
       this.editing.set(false);
     });
+  }
+
+  saveToLibrary() {
+    this.saveDetails(true);
   }
 
   startAddingSecret() {

@@ -294,7 +294,7 @@ $color-dark-frame:   #1a0f00;  // Dark frame border
 
 // ─── Text Colors ────────────────────────────────────────────────────────────
 $color-text-primary:   rgba(42, 24, 4, 1.0);   // Primary text
-$color-text-secondary: rgba(72, 48, 14, 1.0);  // Secondary text
+$color-text-secondary: $color-text-primary;  // Secondary text
 $color-text-muted:     rgba(72, 48, 14, 1.0);  // Muted text
 $color-text-dark:      #1e110a;                // Dark text for flavor
 $color-text-placeholder: rgba(110, 75, 22, 1.0); // Input placeholder

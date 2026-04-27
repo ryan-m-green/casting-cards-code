@@ -263,6 +263,8 @@
               [secretsRevealed]="cast.isVisibleToPlayers"
               [campaignMode]="true"
               [tilt]="castTilt(cast.instanceId)"
+              [readonlyStars]="true"
+              [dmMode]="true"
               [style.opacity]="castImportCardRef?.pendingInstanceIds()?.has(cast.instanceId) ? 0 : 1"
               (secretsClick)="toggleCastVisibility(cast)"
               (cardClick)="goToCast(cast)"

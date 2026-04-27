@@ -297,8 +297,7 @@ export class PlayerCampaignsComponent implements OnInit, OnDestroy {
             sparks.forEach(s => s.remove());
             this.isEntering = false;
             this.router.navigate(['/player/campaign', id], { state: { noFlip: true, portalEntry: true } });
-            this.transition.hide();
-          }, 800);
+          }, 2000);
         }, 260);
       }, 150);
     }, 600);

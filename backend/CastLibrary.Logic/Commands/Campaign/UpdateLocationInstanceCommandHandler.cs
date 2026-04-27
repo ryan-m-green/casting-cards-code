@@ -1,4 +1,5 @@
-﻿using CastLibrary.Repository.Repositories.Read;
+﻿using CastLibrary.Logic.Commands.Location;
+using CastLibrary.Repository.Repositories.Read;
 using CastLibrary.Repository.Repositories.Update;
 using CastLibrary.Shared.Requests;
 
@@ -8,37 +9,63 @@ public interface IUpdateLocationInstanceCommandHandler
 {
     Task HandleAsync(UpdateLocationInstanceCommand command);
 }
-public class UpdateLocationInstanceCommandHandler(ICampaignReadRepository campaignReadRepository, ICampaignUpdateRepository campaignUpdateRepository) : IUpdateLocationInstanceCommandHandler
+public class UpdateLocationInstanceCommandHandler(
+    ICampaignReadRepository campaignReadRepository,
+    ICampaignUpdateRepository campaignUpdateRepository,
+    IUpdateLocationCommandHandler updateLocationHandler) : IUpdateLocationInstanceCommandHandler
 {
     public async Task HandleAsync(UpdateLocationInstanceCommand command)
     {
         var instance = await campaignReadRepository.GetLocationInstanceByIdAsync(command.InstanceId);
         if (instance is null) return;
 
-        instance.Description    = command.Request.Description;
+        instance.Name = command.Request.Name;
+        instance.Description = command.Request.Description;
         instance.Classification = command.Request.Classification;
-        instance.Size           = command.Request.Size;
-        instance.Condition      = command.Request.Condition;
-        instance.Geography      = command.Request.Geography;
-        instance.Architecture   = command.Request.Architecture;
-        instance.Climate        = command.Request.Climate;
-        instance.Religion       = command.Request.Religion;
-        instance.Vibe           = command.Request.Vibe;
-        instance.Languages      = command.Request.Languages;
-        instance.DmNotes        = command.Request.DmNotes;
+        instance.Size = command.Request.Size;
+        instance.Condition = command.Request.Condition;
+        instance.Geography = command.Request.Geography;
+        instance.Architecture = command.Request.Architecture;
+        instance.Climate = command.Request.Climate;
+        instance.Religion = command.Request.Religion;
+        instance.Vibe = command.Request.Vibe;
+        instance.Languages = command.Request.Languages;
+        instance.DmNotes = command.Request.DmNotes;
 
         await campaignUpdateRepository.UpdateLocationInstanceAsync(instance);
+
+        if (command.Request.SyncLibrary)
+        {
+            var libraryRequest = new CreateLocationRequest
+            {
+                Name = command.Request.Name,
+                Description = command.Request.Description,
+                Classification = command.Request.Classification,
+                Size = command.Request.Size,
+                Condition = command.Request.Condition,
+                Geography = command.Request.Geography,
+                Architecture = command.Request.Architecture,
+                Climate = command.Request.Climate,
+                Religion = command.Request.Religion,
+                Vibe = command.Request.Vibe,
+                Languages = command.Request.Languages,
+            };
+            await updateLocationHandler.HandleAsync(
+                new UpdateLocationCommand(instance.SourceLocationId, libraryRequest, command.DmUserId));
+        }
     }
 }
 
 public class UpdateLocationInstanceCommand
 {
-    public UpdateLocationInstanceCommand(Guid instanceId, UpdateLocationInstanceRequest request)
+    public UpdateLocationInstanceCommand(Guid instanceId, UpdateLocationInstanceRequest request, Guid dmUserId)
     {
         InstanceId = instanceId;
         Request = request;
+        DmUserId = dmUserId;
     }
 
     public Guid InstanceId { get; }
     public UpdateLocationInstanceRequest Request { get; }
+    public Guid DmUserId { get; }
 }

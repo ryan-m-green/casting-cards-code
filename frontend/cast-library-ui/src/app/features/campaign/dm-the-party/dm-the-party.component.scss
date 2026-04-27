@@ -115,80 +115,165 @@
   padding: 0 32px 48px;
 }
 
-/* ── Player card back specifics ──────────────────────────────── */
-.pc-card-player .card-placeholder {
-  background: linear-gradient(160deg, v.$color-lib-player-1, v.$color-lib-player-2, v.$color-lib-player-3);
+/* ── Questing Companions ─────────────────────────────────────── */
+.companions-section {
+  margin-top: 36px;
+  padding: 0 32px 48px;
 }
 
-.pc-conditions {
+.companions-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.companions-label {
+  font-family: v.$font-header;
+  font-size: 9px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: v.$campaign-portal-text-softer;
+  white-space: nowrap;
+}
+
+.companions-line {
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(to right, v.$campaign-portal-text-softer, transparent);
+}
+
+.companions-grid {
   display: flex;
   flex-wrap: wrap;
-  gap: 4px;
-  margin-bottom: 8px;
+  gap: 18px;
+  align-items: flex-start;
 }
 
-.pc-cond-pill {
-  font-family: v.$font-header;
-  font-size: 6px;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  padding: 2px 5px;
-  background: v.$color-dm-bg;
-  border: 1px solid v.$color-dm-border;
-  border-radius: 2px;
-  color: v.$color-dm-text;
-}
-
-/* ── Action row (card back footer) ──────────────────────────── */
-.pc-action-row {
-  flex-shrink: 0;
+.companion-card-wrap {
   display: flex;
-  justify-content: space-around;
-  padding: 5px 4px;
-  border-top: 1px solid v.$color-lib-scrollbar;
+  flex-direction: column;
+  align-items: center;
 }
 
-/* ── Motivation traits (card back) ──────────────────────────── */
-.pc-trait-section {
-  margin-bottom: 6px;
+.travel-btn-row {
+  display: flex;
+  justify-content: center;
+  margin-top: 4px;
+  position: relative;
+  z-index: 2;
+  width: 100%;
 }
 
-.pc-trait-label {
-  font-family: v.$font-header;
-  font-size: 6px;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: v.$color-dm-text;
-  opacity: 0.55;
-  margin-bottom: 2px;
+/* ── Travel drawer ─────────────────────────────────────────────── */
+.travel-drawer {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  position: relative;
+  z-index: 1;
+  margin-top: 8px;
+  animation: companion-travel-slide-down 0.25s ease-out both;
 }
 
-.pc-trait-item {
-  font-size: 7px;
-  color: v.$color-dm-text;
-  line-height: 1.4;
-  padding-left: 2px;
+@keyframes companion-travel-slide-down {
+  from { opacity: 0; transform: translateY(-8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
 
-  &.pc-trait-item--completed {
-    opacity: 0.4;
-    text-decoration: line-through;
+.travel-list {
+  width: 100%;
+  max-width: 260px;
+  background: v.$campaign-portal-bg-dark;
+  border: 1px solid v.$campaign-portal-border-bold;
+  border-radius: 6px;
+  overflow-y: auto;
+  min-height: 48px;
+  max-height: 260px;
+  display: flex;
+  flex-direction: column;
+}
+
+.travel-back {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 16px;
+  background: none;
+  border: none;
+  border-bottom: 1px solid v.$campaign-portal-border-light;
+  color: v.$campaign-portal-text-secondary;
+  font-size: 0.8rem;
+  cursor: pointer;
+  text-align: left;
+  transition: color 0.15s;
+
+  &:hover { color: v.$campaign-portal-text-primary; }
+}
+
+.travel-divider {
+  height: 1px;
+  background: v.$campaign-portal-border-light;
+  margin: 2px 0;
+}
+
+.travel-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 16px;
+  background: none;
+  border: none;
+  border-bottom: 1px solid v.$campaign-portal-border-light;
+  color: v.$campaign-portal-text-primary;
+  font-size: 0.85rem;
+  cursor: pointer;
+  text-align: left;
+  transition: background 0.15s;
+  width: 100%;
+
+  &:last-child { border-bottom: none; }
+  &:hover { background: v.$campaign-portal-bg-hover; }
+
+  &--party {
+    color: v.$campaign-portal-text-primary;
+    font-weight: 600;
+  }
+
+  &--disabled {
+    color: rgba(v.$campaign-portal-text-secondary, 0.4);
+    cursor: default;
+    pointer-events: none;
+
+    &:hover { background: none; }
   }
 }
 
-.pc-action-btn {
-  font-size: 13px;
-  background: none;
-  border: none;
-  cursor: pointer;
-  padding: 3px 5px;
-  border-radius: 2px;
-  line-height: 1;
-  transition: background v.$transition-std;
-
-  &:hover { background: v.$color-ext-296; }
+.travel-item-name {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
-/* ── Modals ──────────────────────────────────────────────────── */
+.travel-checkmark {
+  margin-left: 8px;
+  color: v.$campaign-portal-text-primary;
+  flex-shrink: 0;
+
+  &--faint { opacity: 0.3; }
+}
+
+.travel-empty {
+  padding: 12px 16px;
+  color: rgba(v.$campaign-portal-text-secondary, 0.5);
+  font-size: 0.8rem;
+  font-style: italic;
+}
+
+
+/* ── Modals
 .modal-backdrop {
   position: fixed;
   inset: 0;

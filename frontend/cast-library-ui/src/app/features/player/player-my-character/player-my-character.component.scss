@@ -434,27 +434,6 @@
   line-height: 1.5;
 }
 
-/* ── View Secrets button ─────────────────────────────────────── */
-.view-secrets-btn {
-  margin-top: 12px;
-  width: 100%;
-  font-family: v.$font-header;
-  font-size: 8px;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: v.$color-ext-571;
-  background: v.$campaign-portal-border-medium;
-  border: 1px solid v.$color-ext-465;
-  border-radius: 4px;
-  padding: 7px 0;
-  cursor: pointer;
-  transition: background 0.18s ease, border-color 0.18s ease;
-
-  &:hover {
-    background: v.$color-ext-465;
-    border-color: v.$color-ext-581;
-  }
-}
 
 /* ── Secrets modal ───────────────────────────────────────────── */
 .secrets-modal-backdrop {
@@ -538,35 +517,6 @@
   }
 }
 
-/* ── Party card conditions ───────────────────────────────────── */
-.card-desc {
-  margin-bottom: 15px;
-}
-
-.card-conditions {
-  margin-top: 10px;
-}
-
-.card-conditions-label {
-  font-family: v.$font-header;
-  font-size: 8px;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: v.$color-ext-585;
-  font-weight: bolder;
-  margin-bottom: 6px;
-}
-
-.card-conditions-pills {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 5px;
-}
-
-/* ── Party tab — player cards ────────────────────────────────── */
-.pc-card-player .card-placeholder {
-  background: linear-gradient(160deg, v.$color-lib-player-1, v.$color-lib-player-2, v.$color-lib-player-3);
-}
 
 .tab-content .card-grid {
   padding: 0;
@@ -939,4 +889,43 @@
   color: v.$color-ext-607;
   font-style: italic;
   text-align: center;
+}
+
+/* ── Questing Companions ─────────────────────────────────────── */
+.companions-section {
+  margin-top: 36px;
+}
+
+.companions-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.companions-label {
+  font-family: v.$font-header;
+  font-size: 9px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: v.$campaign-portal-text-softer;
+  white-space: nowrap;
+}
+
+.companions-line {
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(to right, v.$campaign-portal-text-softer, transparent);
+}
+
+.cast-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 18px;
+  align-items: flex-start;
+}
+
+.cast-card-wrapper {
+  position: relative;
+  cursor: pointer;
 }

@@ -177,6 +177,14 @@
             <div class="loc-flavor-text">{{ location.description ? '"' + location.description + '"' : '—' }}</div>
           </div>
 
+          <!-- secret content -->
+          @if (secretContent) {
+            <div class="card-secret-block">
+              <div class="card-secret-label">Secret Revealed</div>
+              <div class="card-secret-text">{{ secretContent }}</div>
+            </div>
+          }
+
           <!-- bottom strip -->
           <div class="loc-strip"
                [class.loc-strip--editable]="editable"

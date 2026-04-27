@@ -16,5 +16,6 @@ public class LocationDomain
     public string Languages { get; set; } = string.Empty;
     public string Description { get; set; } = string.Empty;
     public string ImageUrl { get; set; } = string.Empty;
+    public Guid? CampaignId { get; set; }
     public DateTime CreatedAt { get; set; }
 }

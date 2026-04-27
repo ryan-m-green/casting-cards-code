@@ -2,6 +2,7 @@ namespace CastLibrary.Shared.Requests;
 
 public class UpdateLocationInstanceRequest
 {
+    public string Name           { get; set; } = string.Empty;
     public string Description    { get; set; } = string.Empty;
     public string Classification { get; set; } = string.Empty;
     public string Size           { get; set; } = string.Empty;
@@ -13,4 +14,5 @@ public class UpdateLocationInstanceRequest
     public string Vibe           { get; set; } = string.Empty;
     public string Languages      { get; set; } = string.Empty;
     public string DmNotes        { get; set; } = string.Empty;
+    public bool   SyncLibrary    { get; set; } = false;
 }

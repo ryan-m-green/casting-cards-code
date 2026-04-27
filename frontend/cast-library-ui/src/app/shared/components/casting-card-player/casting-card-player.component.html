@@ -1,0 +1,178 @@
+<div class="cc-wrap" [class.cc-flipped]="flipped" [style.transform]="tiltTransform" (click)="flipped = !flipped">
+  <div class="cc-inner">
+
+    <!-- ── BACK FACE ── -->
+    <div class="cc-face cc-face--back">
+      <div class="cc-back-frame">
+        <div class="cc-back-inner">
+          <div class="cc-back-border"></div>
+          <div class="cc-back-border2"></div>
+
+          <!-- Emblem -->
+          <div class="cc-back-emblem">
+            <svg width="44" height="44" viewBox="0 0 80 80">
+              <circle cx="40" cy="40" r="36" fill="none" stroke="#e8c96a" stroke-width="1.2" opacity=".55"/>
+              <circle cx="40" cy="40" r="29" fill="none" stroke="#e8c96a" stroke-width=".5" opacity=".35"/>
+              <line x1="72" y1="40" x2="76" y2="40" stroke="#e8c96a" stroke-width="1" opacity=".4"/>
+              <line x1="62.63" y1="62.63" x2="65.46" y2="65.46" stroke="#e8c96a" stroke-width="1" opacity=".4"/>
+              <line x1="40" y1="72" x2="40" y2="76" stroke="#e8c96a" stroke-width="1" opacity=".4"/>
+              <line x1="17.37" y1="62.63" x2="14.54" y2="65.46" stroke="#e8c96a" stroke-width="1" opacity=".4"/>
+              <line x1="8" y1="40" x2="4" y2="40" stroke="#e8c96a" stroke-width="1" opacity=".4"/>
+              <line x1="17.37" y1="17.37" x2="14.54" y2="14.54" stroke="#e8c96a" stroke-width="1" opacity=".4"/>
+              <line x1="40" y1="8" x2="40" y2="4" stroke="#e8c96a" stroke-width="1" opacity=".4"/>
+              <line x1="62.63" y1="17.37" x2="65.46" y2="14.54" stroke="#e8c96a" stroke-width="1" opacity=".4"/>
+              <polygon points="40,4 43,11 40,8 37,11" fill="#e8c96a" opacity=".65"/>
+              <polygon points="40,76 43,69 40,72 37,69" fill="#e8c96a" opacity=".65"/>
+              <polygon points="4,40 11,37 8,40 11,43" fill="#e8c96a" opacity=".65"/>
+              <polygon points="76,40 69,37 72,40 69,43" fill="#e8c96a" opacity=".65"/>
+              <path d="M40 20L50 26L50 40Q50 52 40 58Q30 52 30 40L30 26Z" fill="#1e100a" stroke="#e8c96a" stroke-width="1.1" opacity=".9"/>
+              <text x="40" y="44" text-anchor="middle" font-family="'Cinzel Decorative',serif" font-size="14" fill="#e8c96a" opacity=".9">{{ initial(member.name) }}</text>
+            </svg>
+          </div>
+
+          <!-- Name -->
+          <div class="cc-back-name">{{ member.name }}</div>
+
+          <!-- Divider -->
+          <div class="cc-back-divider"></div>
+
+          <!-- Stats -->
+          <div class="cc-back-stats">
+            <div class="cc-stat-row">
+              <span class="cc-stat-key">Race</span>
+              <span class="cc-stat-val">{{ member.race }}</span>
+            </div>
+            <div class="cc-stat-row">
+              <span class="cc-stat-key">Class</span>
+              <span class="cc-stat-val">{{ member.class }}</span>
+            </div>
+            @if (member.description) {
+              <div class="cc-stat-row">
+                <span class="cc-stat-key">Description</span>
+                <span class="cc-stat-val cc-stat-val--clamp">{{ member.description }}</span>
+              </div>
+            }
+            @if (member.conditions.length) {
+              <div class="cc-stat-row">
+                <span class="cc-stat-key">Conditions</span>
+                <span class="cc-stat-val">{{ conditionNames() }}</span>
+              </div>
+            }
+          </div>
+
+          <!-- Actions -->
+          <div class="cc-back-actions">
+            @if (mode === 'player') {
+              <button class="cc-btn cc-btn--gold cc-btn--full"
+                (click)="viewSecrets.emit(member); $event.stopPropagation()">
+                ✦ View Secrets
+              </button>
+            }
+            @if (mode === 'dm') {
+              <button class="cc-btn cc-btn--gold cc-btn--icon"
+                title="Award Gold"
+                (click)="awardGold.emit(member); $event.stopPropagation()">💰</button>
+              <button class="cc-btn cc-btn--gold cc-btn--icon"
+                title="Manage Conditions"
+                (click)="manageConditions.emit(member); $event.stopPropagation()">⚑</button>
+              <button class="cc-btn cc-btn--gold cc-btn--icon"
+                title="Deliver Secret"
+                (click)="deliverSecret.emit(member); $event.stopPropagation()">🔒</button>
+              <button class="cc-btn cc-btn--gold cc-btn--icon"
+                title="View All Secrets"
+                (click)="viewAllSecrets.emit(member); $event.stopPropagation()">📜</button>
+            }
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- ── FRONT FACE ── -->
+    <div class="cc-face cc-face--front">
+      <div class="cc-frame">
+        <div class="cc-inner-parch">
+
+          <!-- Corner ornaments -->
+          <div class="cc-corner cc-corner--tl">
+            <svg viewBox="0 0 20 20" fill="none">
+              <path d="M2 18L2 2L18 2" stroke="#c9a84c" stroke-width="1.5" stroke-linecap="round"/>
+              <path d="M2 10L6 10" stroke="#c9a84c" stroke-width="1" stroke-linecap="round"/>
+              <path d="M10 2L10 6" stroke="#c9a84c" stroke-width="1" stroke-linecap="round"/>
+              <rect x="8" y="8" width="4" height="4" fill="#c9a84c" transform="rotate(45 10 10)" opacity="0.7"/>
+            </svg>
+          </div>
+          <div class="cc-corner cc-corner--tr">
+            <svg viewBox="0 0 20 20" fill="none">
+              <path d="M2 18L2 2L18 2" stroke="#c9a84c" stroke-width="1.5" stroke-linecap="round"/>
+              <path d="M2 10L6 10" stroke="#c9a84c" stroke-width="1" stroke-linecap="round"/>
+              <path d="M10 2L10 6" stroke="#c9a84c" stroke-width="1" stroke-linecap="round"/>
+              <rect x="8" y="8" width="4" height="4" fill="#c9a84c" transform="rotate(45 10 10)" opacity="0.7"/>
+            </svg>
+          </div>
+          <div class="cc-corner cc-corner--bl">
+            <svg viewBox="0 0 20 20" fill="none">
+              <path d="M2 18L2 2L18 2" stroke="#c9a84c" stroke-width="1.5" stroke-linecap="round"/>
+              <path d="M2 10L6 10" stroke="#c9a84c" stroke-width="1" stroke-linecap="round"/>
+              <path d="M10 2L10 6" stroke="#c9a84c" stroke-width="1" stroke-linecap="round"/>
+              <rect x="8" y="8" width="4" height="4" fill="#c9a84c" transform="rotate(45 10 10)" opacity="0.7"/>
+            </svg>
+          </div>
+          <div class="cc-corner cc-corner--br">
+            <svg viewBox="0 0 20 20" fill="none">
+              <path d="M2 18L2 2L18 2" stroke="#c9a84c" stroke-width="1.5" stroke-linecap="round"/>
+              <path d="M2 10L6 10" stroke="#c9a84c" stroke-width="1" stroke-linecap="round"/>
+              <path d="M10 2L10 6" stroke="#c9a84c" stroke-width="1" stroke-linecap="round"/>
+              <rect x="8" y="8" width="4" height="4" fill="#c9a84c" transform="rotate(45 10 10)" opacity="0.7"/>
+            </svg>
+          </div>
+
+          <!-- Banner -->
+          <div class="cc-banner">
+            <div class="cc-name">{{ member.name }}</div>
+            <div class="cc-sub">{{ member.race }} · {{ member.class }}</div>
+          </div>
+
+          <!-- Portrait -->
+          <div class="cc-portrait">
+            @if (member.imageUrl) {
+              <img [src]="member.imageUrl" [alt]="member.name" class="cc-portrait-img" />
+            } @else {
+              <div class="cc-portrait-inner">
+                <svg width="36" height="50" viewBox="0 0 58 80" opacity=".2">
+                  <ellipse cx="29" cy="17" rx="13" ry="14" fill="#3d2a10"/>
+                  <path d="M8 80Q8 52 29 44Q50 52 50 80" fill="#3d2a10"/>
+                </svg>
+                <div class="cc-portrait-label">{{ initial(member.name) }}</div>
+              </div>
+            }
+          </div>
+
+          <!-- Flavor -->
+          @if (member.description) {
+            <div class="cc-flavor">
+              <div class="cc-flavor-text">"{{ member.description }}"</div>
+            </div>
+          }
+
+          <!-- Strip -->
+          <div class="cc-strip">
+            <div class="cc-pip-row">
+              <div class="cc-pip"></div>
+              <div class="cc-pip"></div>
+              <div class="cc-pip"></div>
+            </div>
+            <span class="cc-strip-label">Player Character</span>
+            <div class="cc-pip-row">
+              <div class="cc-pip"></div>
+              <div class="cc-pip"></div>
+              <div class="cc-pip"></div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>

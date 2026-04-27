@@ -8,6 +8,10 @@ import { PortalTransitionService } from '../../../core/portal-transition.service
 import { AuthService } from '../../../core/auth/auth.service';
 import { CampaignShellService } from '../../../core/campaign-shell.service';
 import { CampaignDetail } from '../../../shared/models/campaign.model';
+import { CampaignCastInstance } from '../../../shared/models/cast.model';
+import { CampaignSublocationInstance } from '../../../shared/models/sublocation.model';
+import { CampaignLocationInstance } from '../../../shared/models/location.model';
+import { CastCardComponent } from '../../../shared/components/cast-card/cast-card.component';
 import {
   PlayerCardWithDetails,
   PlayerCardCondition,
@@ -15,6 +19,7 @@ import {
   PlayerTrait,
 } from '../../../shared/models/player-card.model';
 import { CardFlipComponent } from '../../../shared/components/card-flip/card-flip.component';
+import { CastingCardPlayerComponent } from '../../../shared/components/casting-card-player/casting-card-player.component';
 import { CurrencyDisplayComponent, CurrencyLine } from '../../../shared/components/currency-display/currency-display.component';
 
 const D5E_CONDITIONS = [
@@ -28,7 +33,7 @@ type Currency = 'cp' | 'sp' | 'ep' | 'gp' | 'pp';
 @Component({
   selector: 'app-dm-the-party',
   standalone: true,
-  imports: [CommonModule, FormsModule, DatePipe, CardFlipComponent, CurrencyDisplayComponent],
+  imports: [CommonModule, FormsModule, DatePipe, CardFlipComponent, CurrencyDisplayComponent, CastingCardPlayerComponent, CastCardComponent],
   templateUrl: './dm-the-party.component.html',
   styleUrl: './dm-the-party.component.scss',
 })
@@ -45,6 +50,94 @@ export class DmThePartyComponent implements OnInit {
   playerCards  = signal<PlayerCardWithDetails[]>([]);
 
   spineColor = computed(() => this.campaign()?.spineColor ?? '#6e28d0');
+
+  questingCompanions = computed<CampaignCastInstance[]>(() => {
+    const c = this.campaign();
+    if (!c) return [];
+    const partySubloc = c.sublocations.find(s => s.isPartyAnchor);
+    if (!partySubloc) return [];
+    return c.casts.filter(ca => ca.sublocationInstanceId === partySubloc.instanceId);
+  });
+
+  partySublocationInstanceId = computed(() => {
+    const c = this.campaign();
+    if (!c) return null;
+    return c.sublocations.find(s => s.isPartyAnchor)?.instanceId ?? null;
+  });
+
+  // ── Travel drawer ──────────────────────────────────────────────────────────
+  openTravelFor      = signal<string | null>(null);
+  travelSelectedLoc  = signal<string | null>(null);
+
+  partyAnchor = computed(() => {
+    const c = this.campaign();
+    if (!c) return null;
+    return c.sublocations.find(s => s.isPartyAnchor) ?? null;
+  });
+
+  travelLocations = computed(() => {
+    const c = this.campaign();
+    if (!c) return [];
+    const partyLocationId = this.partyAnchor()?.locationInstanceId;
+    return c.locations.filter((loc: CampaignLocationInstance) => loc.instanceId !== partyLocationId);
+  });
+
+  sublocationsByLocation = computed<Record<string, CampaignSublocationInstance[]>>(() => {
+    const c = this.campaign();
+    if (!c) return {};
+    return c.sublocations
+      .filter((s: CampaignSublocationInstance) => !s.isPartyAnchor)
+      .reduce((acc: Record<string, CampaignSublocationInstance[]>, s: CampaignSublocationInstance) => {
+        acc[s.locationInstanceId] = acc[s.locationInstanceId] ? [...acc[s.locationInstanceId], s] : [s];
+        return acc;
+      }, {});
+  });
+
+  toggleTravelFor(castInstanceId: string) {
+    if (this.openTravelFor() === castInstanceId) {
+      this.openTravelFor.set(null);
+    } else {
+      this.openTravelFor.set(castInstanceId);
+      this.travelSelectedLoc.set(null);
+    }
+  }
+
+  travelCast(cast: CampaignCastInstance, locationInstanceId: string, sublocationInstanceId: string) {
+    this.http.patch(
+      `${environment.apiUrl}/api/campaigns/${this.campaignId()}/casts/${cast.instanceId}/travel`,
+      { locationInstanceId, sublocationInstanceId, fromSublocationInstanceId: cast.sublocationInstanceId }
+    ).subscribe(() => {
+      this.campaign.update(c => c ? {
+        ...c,
+        casts: c.casts.map(ca =>
+          ca.instanceId === cast.instanceId
+            ? { ...ca, locationInstanceId, sublocationInstanceId }
+            : ca
+        )
+      } : c);
+      this.openTravelFor.set(null);
+      this.travelSelectedLoc.set(null);
+    });
+  }
+
+  private companionTiltMap = new Map<string, number>();
+  private playerCardTiltMap = new Map<string, number>();
+
+  companionTiltFor(instanceId: string): number {
+    if (!this.companionTiltMap.has(instanceId)) {
+      const magnitude = 2;
+      this.companionTiltMap.set(instanceId, Math.random() < 0.5 ? -magnitude : magnitude);
+    }
+    return this.companionTiltMap.get(instanceId)!;
+  }
+
+  playerCardTiltFor(id: string): number {
+    if (!this.playerCardTiltMap.has(id)) {
+      const magnitude = 2;
+      this.playerCardTiltMap.set(id, Math.random() < 0.5 ? -magnitude : magnitude);
+    }
+    return this.playerCardTiltMap.get(id)!;
+  }
 
   // ── Award Gold modal ──────────────────────────────────────────────────────────
   goldModalTarget      = signal<PlayerCardWithDetails | null>(null);
@@ -96,6 +189,12 @@ export class DmThePartyComponent implements OnInit {
   goBack() {
     this.transition.quickCover();
     this.router.navigate(['/campaign', this.campaignId()]).then(() => this.transition.hide());
+  }
+
+  goToCompanion(cast: CampaignCastInstance) {
+    const sublocationId = this.partySublocationInstanceId();
+    if (!sublocationId) return;
+    this.router.navigate(['/campaign', this.campaignId(), 'sublocations', sublocationId, 'cast', cast.instanceId]);
   }
 
   // ── Gold ──────────────────────────────────────────────────────────────────────

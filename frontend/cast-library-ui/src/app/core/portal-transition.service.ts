@@ -5,7 +5,24 @@ export class PortalTransitionService {
   readonly active   = signal(false);
   readonly instant  = signal(false);
   originRect: DOMRect | null = null;
-  ghostTemplate: HTMLElement | null = null;
+
+  private _ghostTemplate: HTMLElement | null = null;
+  get ghostTemplate(): HTMLElement | null {
+    if (this._ghostTemplate) return this._ghostTemplate;
+    const html = sessionStorage.getItem('portalGhostTemplate');
+    if (!html) return null;
+    const wrap = document.createElement('div');
+    wrap.innerHTML = html;
+    return wrap.firstElementChild as HTMLElement | null;
+  }
+  set ghostTemplate(value: HTMLElement | null) {
+    this._ghostTemplate = value;
+    if (value) {
+      sessionStorage.setItem('portalGhostTemplate', value.outerHTML);
+    } else {
+      sessionStorage.removeItem('portalGhostTemplate');
+    }
+  }
 
   get spineColor(): string {
     return sessionStorage.getItem('portalSpineColor') ?? '#6e28d0';
@@ -61,47 +78,121 @@ export class PortalTransitionService {
         setTimeout(() => ghost.remove(), 2500);
       } else {
         const color  = this.spineColor || '#6e28d0';
-        const ghostW = 170;
-        const ghostH = 240;
+        const ghostW = 150;
+        const ghostH = 220;
 
+        // Outer frame — replicates .card-wrap + .c-frame.frame-portal inline
         const exitGhost = document.createElement('div');
         Object.assign(exitGhost.style, {
-          position:       'fixed',
-          top:            (vh / 2 - ghostH / 2) + 'px',
-          left:           (vw / 2 - ghostW / 2) + 'px',
-          width:          ghostW + 'px',
-          height:         ghostH + 'px',
-          zIndex:         '9000',
-          pointerEvents:  'none',
-          borderRadius:   '10px',
-          background:     'radial-gradient(ellipse at 50% 20%, #1c0e30 0%, #0c0618 50%, #050209 100%)',
-          border:         `1px solid ${color}55`,
-          boxShadow:      `0 4px 20px rgba(0,0,0,0.75), 0 0 22px ${color}22`,
-          overflow:       'hidden',
-          opacity:        '1',
-          transform:      'scale(30)',
-          transition:     'none',
-          willChange:     'transform, opacity',
+          position:     'fixed',
+          top:          (vh / 2 - ghostH / 2) + 'px',
+          left:         (vw / 2 - ghostW / 2) + 'px',
+          width:        ghostW + 'px',
+          height:       ghostH + 'px',
+          zIndex:       '9000',
+          pointerEvents:'none',
+          opacity:      '1',
+          transform:    'scale(30)',
+          transition:   'none',
+          willChange:   'transform, opacity',
+          margin:       '0',
+          borderRadius: '12px',
+          padding:      '6px',
+          boxSizing:    'border-box',
+          background:   'linear-gradient(145deg, #2c1a60 0%, #1a0e40 30%, #0c0828 60%, #261860 100%)',
+          boxShadow:    `0 0 0 1px #0a0620, 0 10px 36px rgba(0,0,0,0.8), 0 0 32px ${color}55, inset 0 1px 0 ${color}33`,
+        });
+
+        // Inner dark area — replicates .c-inner.inner-portal
+        const inner = document.createElement('div');
+        Object.assign(inner.style, {
+          width:         '100%',
+          height:        '100%',
+          borderRadius:  '8px',
+          background:    'radial-gradient(ellipse at 50% 45%, #0e0830 0%, #060418 100%)',
+          display:       'flex',
+          flexDirection: 'column',
+          alignItems:    'center',
+          boxSizing:     'border-box',
+          overflow:      'hidden',
+        });
+
+        // Oval container — replicates .portal-oval-area + .portal-oval-outer
+        const ovalArea = document.createElement('div');
+        Object.assign(ovalArea.style, {
+          flex:           '1',
           display:        'flex',
           alignItems:     'center',
           justifyContent: 'center',
         });
 
-        const oval = document.createElement('div');
-        Object.assign(oval.style, {
-          width:        '76px',
-          height:       '118px',
-          borderRadius: '50%',
-          flexShrink:   '0',
-          background:   'radial-gradient(ellipse at 40% 35%, #0e1f45 0%, #07122a 40%, #030a18 70%, #010308 100%)',
-          boxShadow:    [
-            '0 0 0 2px rgba(255,255,255,0.82)',
-            `0 0 12px 6px ${color}b3`,
-            `0 0 26px 10px ${color}7a`,
-            `0 0 48px 16px ${color}4d`,
-          ].join(', '),
+        const ovalOuter = document.createElement('div');
+        Object.assign(ovalOuter.style, {
+          position: 'relative',
+          width:    '72px',
+          height:   '100px',
         });
-        exitGhost.appendChild(oval);
+
+        // Glow — replicates .portal-oval-glow
+        const ovalGlow = document.createElement('div');
+        Object.assign(ovalGlow.style, {
+          position:     'absolute',
+          top:          '-2px',
+          right:        '-2px',
+          bottom:       '-2px',
+          left:         '-2px',
+          borderRadius: '50%',
+          background:   color,
+          filter:       'blur(1px)',
+          opacity:      '0.55',
+        });
+
+        // Ring — replicates .portal-oval-ring
+        const ovalRing = document.createElement('div');
+        Object.assign(ovalRing.style, {
+          position:     'absolute',
+          top:          '0',
+          right:        '0',
+          bottom:       '0',
+          left:         '0',
+          borderRadius: '50%',
+          border:       '3px solid rgba(255,255,255,0.22)',
+          boxShadow:    `0 0 18px ${color}, 0 0 40px ${color}80`,
+        });
+
+        // Inner void — replicates .portal-oval-inner
+        const ovalInner = document.createElement('div');
+        Object.assign(ovalInner.style, {
+          position:     'absolute',
+          top:          '5px',
+          right:        '5px',
+          bottom:       '5px',
+          left:         '5px',
+          borderRadius: '50%',
+          background:   'radial-gradient(ellipse at 38% 32%, #0d1838 0%, #04060e 100%)',
+          boxShadow:    `inset 0 0 12px 20px ${color}22`,
+        });
+
+        ovalOuter.append(ovalGlow, ovalRing, ovalInner);
+        ovalArea.appendChild(ovalOuter);
+
+        // Footer — replicates .portal-footer-strip
+        const footer = document.createElement('div');
+        Object.assign(footer.style, {
+          padding:       '4px 10px',
+          textAlign:     'center',
+          fontFamily:    'inherit',
+          fontSize:      '7px',
+          letterSpacing: '0.25em',
+          textTransform: 'uppercase',
+          color:         `${color}99`,
+          borderTop:     `1px solid ${color}33`,
+        });
+        footer.textContent = 'Enter';
+
+        inner.append(ovalArea, footer);
+        exitGhost.appendChild(inner);
+
         document.body.appendChild(exitGhost);
         void exitGhost.offsetWidth;
 

@@ -150,6 +150,7 @@ public class CampaignWebMapper(
                            .Select(i => new CampaignCastCustomItemResponse(i.Name, i.Price))
                            .ToList(),
             Keywords = d.Keywords,
+            IsPartyAnchor = d.IsPartyAnchor,
         };
 
         logging.LogMapping(

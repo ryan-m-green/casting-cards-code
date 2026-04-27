@@ -30,4 +30,5 @@ export interface CampaignSublocationInstance {
   dmNotes: string;
   keywords: string[];
   customItems: { name: string; price: string }[];
+  isPartyAnchor: boolean;
 }

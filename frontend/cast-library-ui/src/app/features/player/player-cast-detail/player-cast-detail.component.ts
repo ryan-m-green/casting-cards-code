@@ -41,11 +41,12 @@ export class PlayerCastDetailComponent implements OnInit {
   playerNotes        = signal<CampaignCastPlayerNotes | null>(null);
   playerRating       = computed(() => this.playerNotes()?.rating ?? 0);
   starAnimating      = signal(false);
+  castOverride       = signal<CampaignCastInstance | null>(null);
 
   cast = computed<CampaignCastInstance | null>(() => {
     const c = this.campaign();
-    if (!c) return null;
-    return c.casts.find(ca => ca.instanceId === this.castInstanceId()) ?? null;
+    const fromShell = c?.casts.find(ca => ca.instanceId === this.castInstanceId()) ?? null;
+    return fromShell ?? this.castOverride();
   });
 
   castSecrets = computed<CampaignSecret[]>(() => {
@@ -67,15 +68,26 @@ export class PlayerCastDetailComponent implements OnInit {
     return c.locations.find(l => l.instanceId === parentSubLoc.locationInstanceId) ?? null;
   });
 
+  fromParty = false;
+
   constructor() {
     effect(() => {
       const ca = this.cast();
+      if (!ca) return;
+
+      if (this.fromParty) {
+        this.shellService.setCrumbs([
+          { label: '← The Party', action: () => this.goToMyCharacter() }
+        ]);
+        this.shellService.setTitle(ca.name);
+        return;
+      }
+
       const parentSubLoc = this.parentSublocation();
       const parentLoc = this.parentLocation();
-
-      if (ca && parentSubLoc && parentLoc) {
+      if (parentSubLoc && parentLoc) {
         this.shellService.setCrumbs([
-          { label: '← Locations', action: () => this.goToCampaign() },
+          { label: '← Locations',   action: () => this.goToCampaign() },
           { label: '← Sublocations', action: () => this.goToLocation() },
           { label: '← Cast',         action: () => this.goToSublocation() }
         ]);
@@ -89,6 +101,7 @@ export class PlayerCastDetailComponent implements OnInit {
     const id     = this.route.snapshot.paramMap.get('id')!;
     const locId  = this.route.snapshot.paramMap.get('sublocationInstanceId')!;
     const castId = this.route.snapshot.paramMap.get('castInstanceId')!;
+    this.fromParty = this.route.snapshot.queryParamMap.get('from') === 'party';
     this.campaignId.set(id);
     this.sublocationInstanceId.set(locId);
     this.castInstanceId.set(castId);
@@ -96,6 +109,14 @@ export class PlayerCastDetailComponent implements OnInit {
     this.http.get<CampaignCastPlayerNotes>(
       `${environment.apiUrl}/api/campaigns/${id}/cast-player-notes/${castId}`
     ).subscribe(n => this.playerNotes.set(n));
+
+    const shellCampaign = this.shell.campaign();
+    const alreadyInShell = shellCampaign?.casts.some(ca => ca.instanceId === castId) ?? false;
+    if (!alreadyInShell) {
+      this.http.get<CampaignCastInstance>(
+        `${environment.apiUrl}/api/campaigns/${id}/casts/${castId}`
+      ).subscribe(ca => this.castOverride.set(ca));
+    }
   }
 
   goToSublocation() {

@@ -29,6 +29,14 @@ export interface PlayerRemovedEvent {
   campaignId: string;
 }
 
+export interface CastTravelledEvent {
+  campaignId: string;
+  castInstanceId: string;
+  fromSublocationInstanceId: string | null;
+  toLocationInstanceId: string;
+  toSublocationInstanceId: string;
+}
+
 @Injectable({ providedIn: 'root' })
 export class CampaignHubService {
   private connection: signalR.HubConnection | null = null;
@@ -51,6 +59,7 @@ export class CampaignHubService {
   readonly playerSecretDeleted       = signal<PlayerSecretDeletedEvent | null>(null);
   readonly playerJoined              = signal<PlayerJoinedEvent | null>(null);
   readonly playerRemoved             = signal<PlayerRemovedEvent | null>(null);
+  readonly castTravelled             = signal<CastTravelledEvent | null>(null);
   readonly isConnected               = signal(false);
 
   async connect(token: string): Promise<void> {
@@ -131,6 +140,10 @@ export class CampaignHubService {
 
     this.connection.on('PlayerRemoved', (event: PlayerRemovedEvent) => {
       this.playerRemoved.set(event);
+    });
+
+    this.connection.on('CastTravelled', (event: CastTravelledEvent) => {
+      this.castTravelled.set(event);
     });
 
     this.connection.onclose(() => this.isConnected.set(false));

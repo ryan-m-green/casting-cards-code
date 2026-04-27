@@ -126,6 +126,7 @@ public class CampaignSublocationInstanceResponse
     public List<ShopItemResponse> ShopItems { get; set; } = [];
     public List<CampaignCastCustomItemResponse> CustomItems { get; set; } = [];
     public string[] Keywords { get; set; } = [];
+    public bool IsPartyAnchor { get; set; }
 }
 
 public class CampaignPlayerResponse

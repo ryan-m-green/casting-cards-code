@@ -133,6 +133,12 @@ export class PlayerCampaignShellComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
+    if (history.state?.portalEntry) {
+      setTimeout(() => this.transition.hide(), 300);
+    } else {
+      this.transition.hide();
+    }
+
     const id = this.route.snapshot.paramMap.get('id')!;
     this.campaignId.set(id);
 

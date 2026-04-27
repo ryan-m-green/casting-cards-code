@@ -22,6 +22,8 @@ public interface ICampaignReadRepository
     Task<List<CampaignSublocationInstanceDomain>> GetSublocationInstancesByCampaignAsync(Guid campaignId);
     Task<CampaignSublocationInstanceDomain> GetSublocationInstanceByIdAsync(Guid instanceId);
     Task<CampaignSublocationInstanceDomain> GetSublocationInstanceBySourceSublocationIdAsync(Guid campaignId, Guid sourceSublocationId);
+    Task<CampaignSublocationInstanceDomain> GetPartySublocationInstanceByCampaignAsync(Guid campaignId);
+    Task<List<CampaignCastInstanceDomain>> GetQuestingCompanionsBySublocationInstanceIdAsync(Guid sublocationInstanceId);
 }
 
 public class CampaignReadRepository(
@@ -309,7 +311,7 @@ public class CampaignReadRepository(
 
         using var conn = CreateConnection();
         var rows = (await conn.QueryAsync<dynamic>(
-            "SELECT cli.*, l.image_url FROM campaign_location_instances cli LEFT JOIN locations l ON l.id = cli.source_location_id WHERE cli.instance_id = @InstanceId",
+            "SELECT cli.* FROM campaign_location_instances cli LEFT JOIN locations l ON l.id = cli.source_location_id WHERE cli.instance_id = @InstanceId",
             @params)).ToList();
         logging.LogDbOperation(correlation.TraceId, spanId, "SELECT", "campaign_location_instances",
             @params, rows.Count);
@@ -384,11 +386,14 @@ public class CampaignReadRepository(
 
         using var conn = CreateConnection();
         var instances = (await conn.QueryAsync<dynamic>(
-            @"SELECT instance_id, campaign_id, source_sublocation_id, location_instance_id,
-                     is_visible_to_players, name, description, keywords, custom_items, dm_notes
-              FROM campaign_sublocation_instances
-              WHERE campaign_id = @CampaignId
-              ORDER BY name",
+            @"SELECT csi.instance_id, csi.campaign_id, csi.source_sublocation_id, csi.location_instance_id,
+                     csi.is_visible_to_players, csi.name, csi.description, csi.keywords, csi.custom_items, csi.dm_notes,
+                     (l.campaign_id IS NOT NULL) AS is_party_anchor
+              FROM campaign_sublocation_instances csi
+              LEFT JOIN sublocations s ON s.id = csi.source_sublocation_id
+              LEFT JOIN locations    l ON l.id = s.location_id
+              WHERE csi.campaign_id = @CampaignId
+              ORDER BY csi.name",
             @params)).ToList();
 
         if (instances.Count == 0)
@@ -403,7 +408,7 @@ public class CampaignReadRepository(
             InstanceId          = r.instance_id,
             CampaignId          = r.campaign_id,
             SourceSublocationId = r.source_sublocation_id,
-            LocationInstanceId      = r.location_instance_id,
+            LocationInstanceId  = r.location_instance_id,
             IsVisibleToPlayers  = r.is_visible_to_players,
             Name                = r.name,
             Description         = r.description ?? string.Empty,
@@ -411,6 +416,7 @@ public class CampaignReadRepository(
             CustomItems         = ParseCustomItems((string)r.custom_items),
             DmNotes             = r.dm_notes ?? string.Empty,
             ShopItems           = [],
+            IsPartyAnchor       = (bool)r.is_party_anchor,
         }).ToList();
 
         var instanceIds = domainInstances.Select(i => i.InstanceId).ToArray();
@@ -471,6 +477,85 @@ public class CampaignReadRepository(
             CustomItems         = ParseCustomItems((string)r.custom_items),
             ShopItems           = [],
         };
+    }
+
+    public async Task<CampaignSublocationInstanceDomain> GetPartySublocationInstanceByCampaignAsync(Guid campaignId)
+    {
+        var spanId = correlation.NewSpan();
+        var @params = new { CampaignId = campaignId };
+
+        logging.LogDbOperation(correlation.TraceId, spanId, "SELECT", "campaign_sublocation_instances", @params);
+
+        using var conn = CreateConnection();
+        var r = await conn.QueryFirstOrDefaultAsync<dynamic>(
+            @"SELECT csi.*
+              FROM campaign_sublocation_instances csi
+              JOIN sublocations s  ON s.id  = csi.source_sublocation_id
+              JOIN locations    l  ON l.id  = s.location_id
+              WHERE csi.campaign_id = @CampaignId
+                AND l.campaign_id   = @CampaignId
+              LIMIT 1",
+            @params);
+
+        logging.LogDbOperation(correlation.TraceId, spanId, "SELECT", "campaign_sublocation_instances",
+            @params, r is null ? 0 : 1);
+
+        if (r is null) return null;
+        return new CampaignSublocationInstanceDomain
+        {
+            InstanceId          = r.instance_id,
+            CampaignId          = r.campaign_id,
+            SourceSublocationId = r.source_sublocation_id,
+            LocationInstanceId  = r.location_instance_id,
+            Name                = r.name,
+            Description         = r.description ?? string.Empty,
+            Keywords            = r.keywords ?? Array.Empty<string>(),
+            CustomItems         = ParseCustomItems((string)r.custom_items),
+            ShopItems           = [],
+        };
+    }
+
+    public async Task<List<CampaignCastInstanceDomain>> GetQuestingCompanionsBySublocationInstanceIdAsync(Guid sublocationInstanceId)
+    {
+        var spanId = correlation.NewSpan();
+        var @params = new { SublocationInstanceId = sublocationInstanceId };
+
+        logging.LogDbOperation(correlation.TraceId, spanId, "SELECT", "campaign_cast_instances", @params);
+
+        using var conn = CreateConnection();
+        var rows = (await conn.QueryAsync<dynamic>(
+            @"SELECT * FROM campaign_cast_instances
+              WHERE sublocation_instance_id = @SublocationInstanceId
+                AND is_visible_to_players   = TRUE
+              ORDER BY name",
+            @params)).ToList();
+
+        logging.LogDbOperation(correlation.TraceId, spanId, "SELECT", "campaign_cast_instances",
+            @params, rows.Count);
+
+        return rows.Select(r => new CampaignCastInstanceDomain
+        {
+            InstanceId            = r.instance_id,
+            CampaignId            = r.campaign_id,
+            SourceCastId          = r.source_cast_id,
+            LocationInstanceId    = r.location_instance_id,
+            SublocationInstanceId = r.sublocation_instance_id,
+            Name                  = r.name,
+            Pronouns              = r.pronouns              ?? string.Empty,
+            Race                  = r.race                  ?? string.Empty,
+            Role                  = r.role                  ?? string.Empty,
+            Age                   = r.age                   ?? string.Empty,
+            Alignment             = r.alignment             ?? string.Empty,
+            Posture               = r.posture               ?? string.Empty,
+            Speed                 = r.speed                 ?? string.Empty,
+            VoicePlacement        = r.voice_placement       ?? Array.Empty<string>(),
+            Description           = r.description           ?? string.Empty,
+            PublicDescription     = r.public_description    ?? string.Empty,
+            IsVisibleToPlayers    = r.is_visible_to_players,
+            CustomItems           = ParseCustomItems((string)r.custom_items),
+            Keywords              = r.keywords              ?? Array.Empty<string>(),
+            DmNotes               = r.dm_notes              ?? string.Empty,
+        }).ToList();
     }
 
     // ── Private helpers ───────────────────────────────────────────────────────

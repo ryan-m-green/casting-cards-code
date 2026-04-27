@@ -15,5 +15,6 @@ public class LocationEntity
     public string Vibe { get; set; }
     public string Languages { get; set; }
     public string Description { get; set; }
+    public Guid? CampaignId { get; set; }
     public DateTime CreatedAt { get; set; }
 }

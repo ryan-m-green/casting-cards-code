@@ -23,6 +23,7 @@ public class LocationEntityMapper : ILocationEntityMapper
         Vibe = entity.Vibe ?? string.Empty,
         Languages = entity.Languages ?? string.Empty,
         Description = entity.Description ?? string.Empty,
+        CampaignId = entity.CampaignId,
         CreatedAt = entity.CreatedAt,
     };
 }

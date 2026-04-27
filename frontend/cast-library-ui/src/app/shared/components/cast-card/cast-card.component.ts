@@ -23,6 +23,8 @@ export class CastCardComponent {
   @Input() rating          = 0;
   @Input() readonlyStars   = false;
   @Input() setStars: number | null = null;
+  @Input() secretContent: string | null = null;
+  @Input() dmMode          = false;
 
   @Output() editClick    = new EventEmitter<void>();
   @Output() deleteClick  = new EventEmitter<void>();

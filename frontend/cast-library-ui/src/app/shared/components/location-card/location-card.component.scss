@@ -509,3 +509,40 @@
     &:hover { background: linear-gradient(180deg, v.$color-loc-btn-red-hover-1, v.$color-loc-btn-red-hover-2); transform: translateY(-1px); }
   }
 }
+
+// ── Secret content (overlay reveal) ──────────────────────────────────────────
+.card-secret-block {
+  position: absolute;
+  bottom: 26px;
+  left: 6px;
+  right: 6px;
+  z-index: 20;
+  background: v.$color-ext-637;
+  border: 1px solid v.$color-ext-638;
+  border-radius: 5px;
+  padding: 8px 10px;
+  box-shadow:
+    0 0 10px v.$color-ext-639,
+    0 4px 14px v.$color-ext-146;
+}
+
+.card-secret-label {
+  font-family: v.$font-header;
+  font-size: 7px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: v.$color-ext-640;
+  margin-bottom: 5px;
+}
+
+.card-secret-text {
+  font-family: v.$font-body;
+  font-size: 10px;
+  font-style: italic;
+  line-height: 1.45;
+  color: v.$color-ext-641;
+  display: -webkit-box;
+  -webkit-line-clamp: 4;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}

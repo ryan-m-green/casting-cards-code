@@ -184,7 +184,8 @@ public class CampaignsController(
     public async Task<IActionResult> UpdateLocationInstance(Guid id, Guid instanceId,
         [FromBody] UpdateLocationInstanceRequest request)
     {
-        await UpdateLocationInstanceCommand.HandleAsync(new UpdateLocationInstanceCommand(instanceId, request));
+        var dmUserId = userRetriever.GetDmUserId(User);
+        await UpdateLocationInstanceCommand.HandleAsync(new UpdateLocationInstanceCommand(instanceId, request, dmUserId));
 
         return NoContent();
     }

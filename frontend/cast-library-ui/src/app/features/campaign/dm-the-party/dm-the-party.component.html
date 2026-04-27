@@ -8,88 +8,108 @@
   <!-- ── Card grid ── -->
   <div class="card-grid">
     @for (card of playerCards(); track card.id) {
-      <div class="pc-card pc-card-player">
-        <app-card-flip>
-
-          <!-- Front -->
-          <div slot="front" class="card-slot-front">
-            <div class="card-front-header">
-              <div class="card-name">{{ card.name }}</div>
-              <div class="card-descriptor">{{ card.race }} · {{ card.class }}</div>
-            </div>
-            <div class="dv dv-card"></div>
-            <div class="card-image-area">
-              @if (card.imageUrl) {
-                <img [src]="card.imageUrl" [alt]="'Portrait of ' + card.name" class="card-img-fill" />
-              } @else {
-                <div class="card-placeholder">
-                  <span class="card-initial">{{ initial(card.name) }}</span>
-                </div>
-              }
-            </div>
-          </div>
-
-          <!-- Back -->
-          <div slot="back" class="card-slot-back">
-            <div class="card-back-content">
-              <div class="card-name card-back-name">{{ card.name }}</div>
-              <div class="dv dv-mb"></div>
-              @if (goalsFor(card).length || fearsFor(card).length || flawsFor(card).length) {
-                <div class="fi-label fi-label-strong">Motivation</div>
-                <div class="currency-display-divider"></div>
-                @if (goalsFor(card).length) {
-                  <div class="pc-trait-section">
-                    <div class="pc-trait-label">Goals</div>
-                    @for (trait of goalsFor(card); track trait.id) {
-                      <div class="pc-trait-item" [class.pc-trait-item--completed]="trait.isCompleted">◉ {{ trait.content }}</div>
-                    }
-                  </div>
-                }
-                @if (fearsFor(card).length) {
-                  <div class="pc-trait-section">
-                    <div class="pc-trait-label">Fears</div>
-                    @for (trait of fearsFor(card); track trait.id) {
-                      <div class="pc-trait-item">⚡ {{ trait.content }}</div>
-                    }
-                  </div>
-                }
-                @if (flawsFor(card).length) {
-                  <div class="pc-trait-section">
-                    <div class="pc-trait-label">Flaws</div>
-                    @for (trait of flawsFor(card); track trait.id) {
-                      <div class="pc-trait-item">⬡ {{ trait.content }}</div>
-                    }
-                  </div>
-                }
-                <div class="dv dv-mb"></div>
-              }
-              <app-currency-display [purse]="cardPurse(card)" [compact]="true" />
-              @if (card.conditions.length) {
-                <div class="fi-label fi-label-strong">Conditions</div>
-                <div class="currency-display-divider"></div>
-                <div class="pc-conditions">
-                  @for (cond of card.conditions; track cond.id) {
-                    <span class="pc-cond-pill">{{ cond.conditionName }}</span>
-                  }
-                </div>
-              }
-            </div>
-            <div class="pc-action-row">
-              <button class="pc-action-btn" aria-label="Award gold to {{ card.name }}" title="Award Gold" (click)="openGoldModal(card); $event.stopPropagation()">💰</button>
-              <button class="pc-action-btn" aria-label="Manage conditions for {{ card.name }}" title="Conditions" (click)="openCondModal(card); $event.stopPropagation()">⚑</button>
-              <button class="pc-action-btn" aria-label="Deliver secret to {{ card.name }}" title="Deliver Secret" (click)="openSecretModal(card); $event.stopPropagation()">🔒</button>
-              <button class="pc-action-btn" aria-label="View secrets for {{ card.name }}" title="View Secrets" (click)="openViewSecretsModal(card); $event.stopPropagation()">📜</button>
-            </div>
-          </div>
-
-        </app-card-flip>
-      </div>
+      <app-casting-card-player
+        [member]="card"
+        [tilt]="playerCardTiltFor(card.id)"
+        mode="dm"
+        (awardGold)="openGoldModal($event)"
+        (manageConditions)="openCondModal($event)"
+        (deliverSecret)="openSecretModal($event)"
+        (viewAllSecrets)="openViewSecretsModal($event)"
+      />
     }
 
     @if (playerCards().length === 0) {
       <p class="wbd empty-state-pad">No player cards yet. Players must enter the campaign first.</p>
     }
   </div>
+
+  <!-- ── Questing Companions ── -->
+  @if (questingCompanions().length) {
+    <div class="companions-section">
+      <div class="companions-header">
+        <span class="companions-label">Questing Companions</span>
+        <span class="companions-line"></span>
+      </div>
+      <div class="companions-grid">
+        @for (cast of questingCompanions(); track cast.instanceId) {
+          <div class="companion-card-wrap">
+            <app-cast-card
+              [cast]="cast"
+              [flippable]="false"
+              [editable]="false"
+              [secrets]="false"
+              [campaignMode]="true"
+              [readonlyStars]="true"
+              [dmMode]="true"
+              [tilt]="companionTiltFor(cast.instanceId)"
+              (cardClick)="goToCompanion(cast)"
+            />
+            <div class="travel-btn-row">
+              <button class="campaign-primary-btn" type="button" (click)="toggleTravelFor(cast.instanceId)">
+                Travel {{ openTravelFor() === cast.instanceId ? '↑' : '↓' }}
+              </button>
+            </div>
+            @if (openTravelFor() === cast.instanceId) {
+              <div class="travel-drawer">
+                @if (travelSelectedLoc() === null) {
+                  <div class="travel-list">
+                    <button
+                      class="travel-item travel-item--party"
+                      type="button"
+                      [disabled]="!partyAnchor()"
+                      [class.travel-item--disabled]="!partyAnchor()"
+                      (click)="partyAnchor() && travelCast(cast, partyAnchor()!.locationInstanceId, partyAnchor()!.instanceId)">
+                      <span class="travel-item-name">⚔ The Party</span>
+                      @if (partyAnchor() && cast.sublocationInstanceId === partyAnchor()!.instanceId) {
+                        <span class="travel-checkmark">✓</span>
+                      }
+                    </button>
+                    <div class="travel-divider"></div>
+                    @for (loc of travelLocations(); track loc.instanceId) {
+                      @if (sublocationsByLocation()[loc.instanceId]?.length) {
+                        <button
+                          class="travel-item"
+                          type="button"
+                          (click)="travelSelectedLoc.set(loc.instanceId)">
+                          <span class="travel-item-name">{{ loc.name }}</span>
+                          @if (cast.locationInstanceId === loc.instanceId && cast.sublocationInstanceId !== partyAnchor()?.instanceId) {
+                            <span class="travel-checkmark travel-checkmark--faint">✓</span>
+                          }
+                        </button>
+                      } @else {
+                        <span class="travel-item travel-item--disabled">
+                          <span class="travel-item-name">{{ loc.name }}</span>
+                        </span>
+                      }
+                    }
+                    @if (!partyAnchor() && !travelLocations().length) {
+                      <span class="travel-empty">No locations available.</span>
+                    }
+                  </div>
+                } @else {
+                  <div class="travel-list">
+                    <button class="travel-back" type="button" (click)="travelSelectedLoc.set(null)">← Back</button>
+                    @for (sub of sublocationsByLocation()[travelSelectedLoc()!]; track sub.instanceId) {
+                      <button
+                        class="travel-item"
+                        type="button"
+                        (click)="travelCast(cast, sub.locationInstanceId, sub.instanceId)">
+                        <span class="travel-item-name">{{ sub.name }}</span>
+                        @if (cast.sublocationInstanceId === sub.instanceId) {
+                          <span class="travel-checkmark">✓</span>
+                        }
+                      </button>
+                    }
+                  </div>
+                }
+              </div>
+            }
+          </div>
+        }
+      </div>
+    </div>
+  }
 
 <!-- ════════════════════ GOLD MODAL ══ -->
 @if (goldModalOpen()) {

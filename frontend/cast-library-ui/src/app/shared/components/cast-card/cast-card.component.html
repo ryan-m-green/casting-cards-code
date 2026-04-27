@@ -122,7 +122,8 @@
                 </div>
               </label>
             }
-            @if (setStars !== null) {
+            @if (!dmMode) {
+              @if (setStars !== null) {
               <div class="cast-stars cast-stars--readonly"
                    role="group"
                    [attr.aria-label]="'Importance of ' + cast.name + ': ' + setStars + ' out of 3 stars'">
@@ -167,6 +168,7 @@
                 }
               </div>
             }
+            }
             @if (cast.imageUrl) {
               <img [src]="cast.imageUrl" [alt]="'Portrait of ' + cast.name + ', ' + cast.role" class="cast-portrait-img" />
             } @else {
@@ -183,6 +185,14 @@
           <div class="cast-flavor">
             <div class="cast-flavor-text">{{ cast.publicDescription ? '"' + cast.publicDescription + '"' : '—' }}</div>
           </div>
+
+          <!-- secret content -->
+          @if (secretContent) {
+            <div class="card-secret-block">
+              <div class="card-secret-label">Secret Revealed</div>
+              <div class="card-secret-text">{{ secretContent }}</div>
+            </div>
+          }
 
           <!-- bottom strip -->
           <div class="cast-strip"

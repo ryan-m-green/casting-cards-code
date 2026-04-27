@@ -97,6 +97,8 @@
 // ─── Page layers ──────────────────────────────────────────────────────────────
 // Aged parchment — ruled lines, edge staining, scattered foxing marks,
 // a ghost-compass in the top-left, and decorative corner washes.
+// Static frame effects — edge staining, corner foxing, watermark, toning, base.
+// Applied to the fixed-size .page element (viewport-bounded).
 @mixin parchment-bg {
   background:
     // ── Edge staining — binding shadow on the left ──
@@ -110,14 +112,6 @@
     radial-gradient(ellipse  80px 68px  at 98%  2%, v.$journal-parchment-foxing-2 0%, transparent 60%),
     radial-gradient(ellipse 115px 90px  at 98% 98%, v.$journal-parchment-foxing-3 0%, transparent 60%),
     radial-gradient(ellipse  90px 105px at  2% 98%, v.$journal-parchment-foxing-4 0%, transparent 60%),
-    // ── Scattered foxing / age spots ──
-    radial-gradient(ellipse 28px 22px at 70% 14%, v.$journal-parchment-spot-1 0%, transparent 70%),
-    radial-gradient(ellipse 18px 26px at 38% 70%, v.$journal-parchment-spot-2 0%, transparent 70%),
-    radial-gradient(ellipse 22px 16px at 56% 44%, v.$journal-parchment-spot-3 0%, transparent 70%),
-    radial-gradient(ellipse 32px 20px at 14% 52%, v.$journal-parchment-spot-4 0%, transparent 70%),
-    radial-gradient(ellipse 20px 28px at 84% 58%, v.$journal-parchment-spot-5 0%, transparent 70%),
-    radial-gradient(ellipse 14px 10px at 62% 82%, v.$journal-parchment-spot-6 0%, transparent 70%),
-    radial-gradient(ellipse 24px 18px at 25% 25%, v.$journal-parchment-spot-7 0%, transparent 70%),
     // ── Ghost compass / seal watermark (top-left) ──
     radial-gradient(circle 38px at 7% 7%, v.$journal-parchment-watermark-1 0%, v.$journal-parchment-watermark-2 45%, transparent 70%),
     radial-gradient(circle 22px at 7% 7%, v.$journal-parchment-watermark-3 0%, transparent 60%),
@@ -126,6 +120,19 @@
     radial-gradient(ellipse 48% 62% at 72% 72%, v.$journal-parchment-toning-2 0%, transparent 70%),
     // ── Base parchment — amber-toned aged paper ──
     linear-gradient(112deg, v.$journal-parchment-base-1 0%, v.$journal-parchment-base-2 28%, v.$journal-parchment-base-3 52%, v.$journal-parchment-base-4 78%, v.$journal-parchment-base-5 100%);
+}
+
+// Scattered age spots — applied to the scrollable .pc container so they
+// travel with the content rather than sitting at fixed viewport positions.
+@mixin parchment-spots {
+  background:
+    radial-gradient(ellipse 28px 22px at 70% 14%, v.$journal-parchment-spot-1 0%, transparent 70%),
+    radial-gradient(ellipse 18px 26px at 38% 70%, v.$journal-parchment-spot-2 0%, transparent 70%),
+    radial-gradient(ellipse 22px 16px at 56% 44%, v.$journal-parchment-spot-3 0%, transparent 70%),
+    radial-gradient(ellipse 32px 20px at 14% 52%, v.$journal-parchment-spot-4 0%, transparent 70%),
+    radial-gradient(ellipse 20px 28px at 84% 58%, v.$journal-parchment-spot-5 0%, transparent 70%),
+    radial-gradient(ellipse 14px 10px at 62% 82%, v.$journal-parchment-spot-6 0%, transparent 70%),
+    radial-gradient(ellipse 24px 18px at 25% 25%, v.$journal-parchment-spot-7 0%, transparent 70%);
 }
 
 .page {
@@ -198,6 +205,8 @@
   display: flex;
   flex-direction: column;
   scrollbar-width: none;
+  @include parchment-spots;
+  background-attachment: local;
 
   &::-webkit-scrollbar { display: none; }
 }

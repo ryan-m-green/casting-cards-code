@@ -442,12 +442,8 @@ export class PortalImportCardComponent implements OnInit, OnChanges {
         dmNotes:             '',
         keywords:            [],
         customItems:         [],
+        isPartyAnchor:       false,
       };
-
-      this.pendingInstanceIds.update(s => new Set(s).add(tempId));
-      this.sublocationInstanceList.update(list => [...list, optimistic]);
-      this.sublocationAdded.emit(optimistic);
-      this._assembleCard(tempId, 'app-sublocation-card');
 
       animDone = true;
       applyResult();
@@ -658,6 +654,7 @@ export class PortalImportCardComponent implements OnInit, OnChanges {
             dmNotes:             '',
             keywords:            [],
             customItems:         [],
+            isPartyAnchor:       false,
           };
           this.pendingInstanceIds.update(s => new Set(s).add(tempId));
           this.sublocationInstanceList.update(list => [...list, optimistic]);

@@ -65,9 +65,34 @@ export interface PlayerCastPerception {
 
 export interface DiscoveredCastResponse {
   partyCards: PlayerCardWithDetails[];
+  questingCompanions: QuestingCompanion[];
   people: DiscoveredPerson[];
   locations: DiscoveredPlace[];
   sublocations: DiscoveredPlace[];
+  partyAnchorSublocationInstanceId: string | null;
+}
+
+export interface QuestingCompanion {
+  instanceId: string;
+  campaignId: string;
+  sourceCastId: string;
+  sublocationInstanceId: string;
+  name: string;
+  pronouns: string;
+  race: string;
+  role: string;
+  age: string;
+  alignment: string;
+  posture: string;
+  speed: string;
+  voicePlacement: string[];
+  voiceNotes: string;
+  description: string;
+  publicDescription: string;
+  imageUrl?: string;
+  isVisibleToPlayers: boolean;
+  keywords: string[];
+  dmNotes: string;
 }
 
 export interface DiscoveredPerson {

@@ -40,6 +40,7 @@ public class PlayerCardsController(
     IUpsertPlayerCastPerceptionCommandHandler upsertPerception,
     IAwardCurrencyCommandHandler awardGold,
     IPlayerCardWebMapper mapper,
+    ICampaignWebMapper campaignMapper,
     IHubContext<CampaignHub> hub,
     IUserRetriever userRetriever) : ControllerBase
 {
@@ -75,16 +76,18 @@ public class PlayerCardsController(
     [HttpGet("party")]
     public async Task<IActionResult> GetParty(Guid campaignId)
     {
-        var cards = await getDiscoveredCast.HandleAsync(campaignId);
-        var responses = new List<object>();
+        var data = await getDiscoveredCast.HandleAsync(campaignId);
 
-        foreach (var card in cards)
+        var partyCards = new List<object>();
+        foreach (var card in data.PartyCards)
         {
             var conditions = (await getPlayerConditions.HandleAsync(card.Id)).ToList();
-            responses.Add(mapper.ToResponse(card, conditions));
+            partyCards.Add(mapper.ToResponse(card, conditions));
         }
 
-        return Ok(responses);
+        var companions = data.QuestingCompanions.Select(c => campaignMapper.ToCastInstanceResponse(c)).ToList();
+
+        return Ok(new { partyCards, questingCompanions = companions, partyAnchorSublocationInstanceId = data.PartyAnchorSublocationInstanceId });
     }
 
     [HttpGet("{playerCardId}/memories")]

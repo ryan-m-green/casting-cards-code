@@ -31,15 +31,16 @@ namespace CastLibrary.Repository.Repositories.Insert
                 Location.Vibe,
                 Location.Languages,
                 Location.Description,
+                Location.CampaignId,
                 Location.CreatedAt,
             };
             const string sql =
                 @"INSERT INTO locations
                 (id, dm_user_id, name, classification, size, condition, geography, architecture,
-                 climate, religion, vibe, languages, description, created_at)
+                 climate, religion, vibe, languages, description, campaign_id, created_at)
               VALUES
                 (@Id, @DmUserId, @Name, @Classification, @Size, @Condition, @Geography,
-                 @Architecture, @Climate, @Religion, @Vibe, @Languages, @Description, @CreatedAt)";
+                 @Architecture, @Climate, @Religion, @Vibe, @Languages, @Description, @CampaignId, @CreatedAt)";
 
             logging.LogDbOperation(correlation.TraceId, spanId, "INSERT", "locations", @params);
 

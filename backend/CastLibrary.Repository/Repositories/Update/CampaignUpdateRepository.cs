@@ -23,6 +23,7 @@ public interface ICampaignUpdateRepository
     Task UpdateCastInstanceKeywordsAsync(Guid instanceId, string[] keywords);
     Task UpdateSublocationInstanceKeywordsAsync(Guid instanceId, string[] keywords);
     Task ToggleShopItemScratchAsync(Guid shopItemId, bool isScratchedOff);
+    Task TravelCastAsync(Guid instanceId, Guid locationInstanceId, Guid sublocationInstanceId);
 }
 
 public class CampaignUpdateRepository(
@@ -61,6 +62,7 @@ public class CampaignUpdateRepository(
         var @params = new
         {
             instance.InstanceId,
+            instance.Name,
             instance.Description,
             instance.Classification,
             instance.Size,
@@ -79,7 +81,7 @@ public class CampaignUpdateRepository(
         using var conn = CreateConnection();
         var rows = await conn.ExecuteAsync(
             @"UPDATE campaign_location_instances
-              SET description=@Description, classification=@Classification, size=@Size,
+              SET name=@Name, description=@Description, classification=@Classification, size=@Size,
                   condition=@Condition, geography=@Geography, architecture=@Architecture,
                   climate=@Climate, religion=@Religion, vibe=@Vibe,
                   languages=@Languages, dm_notes=@DmNotes
@@ -260,6 +262,24 @@ public class CampaignUpdateRepository(
         using var conn = CreateConnection();
         var rows = await conn.ExecuteAsync(
             "UPDATE campaign_cast_instances SET custom_items=@Items::jsonb WHERE instance_id=@InstanceId",
+            @params);
+
+        logging.LogDbOperation(correlation.TraceId, spanId, "UPDATE", "campaign_cast_instances", @params, rows);
+    }
+
+    public async Task TravelCastAsync(Guid instanceId, Guid locationInstanceId, Guid sublocationInstanceId)
+    {
+        var spanId = correlation.NewSpan();
+        var @params = new { InstanceId = instanceId, LocationInstanceId = locationInstanceId, SublocationInstanceId = sublocationInstanceId };
+
+        logging.LogDbOperation(correlation.TraceId, spanId, "UPDATE", "campaign_cast_instances", @params);
+
+        using var conn = CreateConnection();
+        var rows = await conn.ExecuteAsync(
+            @"UPDATE campaign_cast_instances
+              SET location_instance_id = @LocationInstanceId,
+                  sublocation_instance_id = @SublocationInstanceId
+              WHERE instance_id = @InstanceId",
             @params);
 
         logging.LogDbOperation(correlation.TraceId, spanId, "UPDATE", "campaign_cast_instances", @params, rows);

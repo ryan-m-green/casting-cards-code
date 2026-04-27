@@ -1,4 +1,5 @@
-﻿using CastLibrary.Repository.Repositories.Read;
+﻿using CastLibrary.Logic.Services;
+using CastLibrary.Repository.Repositories.Read;
 using CastLibrary.Repository.Repositories.Update;
 using CastLibrary.Shared.Domain;
 using CastLibrary.Shared.Requests;
@@ -10,8 +11,9 @@ public interface IUpdateCampaignCommandHandler
     Task<CampaignDomain> HandleAsync(UpdateCampaignCommand command);
 }
 public class UpdateCampaignCommandHandler(
-    ICampaignReadRepository campaignRepository, 
-    ICampaignUpdateRepository campaignUpdateRepository) : IUpdateCampaignCommandHandler
+    ICampaignReadRepository campaignRepository,
+    ICampaignUpdateRepository campaignUpdateRepository,
+    IPartyAnchorService partyAnchorService) : IUpdateCampaignCommandHandler
 {
     public async Task<CampaignDomain> HandleAsync(UpdateCampaignCommand command)
     {
@@ -25,6 +27,7 @@ public class UpdateCampaignCommandHandler(
             campaign.SpineColor = command.Request.SpineColor;
 
         await campaignUpdateRepository.UpdateAsync(campaign);
+        await partyAnchorService.EnsureExistsAsync(campaign);
         return campaign;
     }
 }

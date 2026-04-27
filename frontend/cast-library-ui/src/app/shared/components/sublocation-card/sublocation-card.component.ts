@@ -19,6 +19,7 @@ export class SublocationCardComponent {
   @Input() secrets         = false;
   @Input() secretsRevealed = false;
   @Input() campaignMode    = false;
+  @Input() secretContent: string | null = null;
 
   @Output() editClick    = new EventEmitter<void>();
   @Output() deleteClick  = new EventEmitter<void>();

@@ -193,6 +193,13 @@ ALTER TABLE player_card_memories
 ALTER TABLE campaign_time_of_day
     ADD COLUMN IF NOT EXISTS days_passed INT NOT NULL DEFAULT 0;
 
+-- [013] The Party: add campaign_id to locations so party anchor rows are scoped to a campaign
+--       and excluded from the DM's location library (WHERE campaign_id IS NULL).
+ALTER TABLE locations
+    ADD COLUMN IF NOT EXISTS campaign_id UUID REFERENCES campaigns(id) ON DELETE CASCADE;
+
+CREATE INDEX IF NOT EXISTS idx_locations_campaign ON locations(campaign_id);
+
 -- [012] Add missing unique constraint on location_political_notes required for ON CONFLICT upsert
 --       First deduplicate any rows sharing the same (campaign_id, location_instance_id), keeping the latest.
 DO $$ BEGIN

@@ -3,6 +3,8 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { CardFlipComponent } from '../../../shared/components/card-flip/card-flip.component';
+import { CastingCardPlayerComponent } from '../../../shared/components/casting-card-player/casting-card-player.component';
+import { CastCardComponent } from '../../../shared/components/cast-card/cast-card.component';
 import { CampaignDropdownComponent, CampaignDropdownOption } from '../../../shared/components/campaign-dropdown/campaign-dropdown.component';
 import { CharacterEditorComponent } from '../../../shared/components/character-editor/character-editor.component';
 import { CharacterInfoEditorComponent, PlayerCardInfoUpdate } from '../../../shared/components/character-info-editor/character-info-editor.component';
@@ -13,6 +15,7 @@ import { AuthService } from '../../../core/auth/auth.service';
 import { CampaignHubService } from '../../../core/hub/campaign-hub.service';
 import { PlayerCampaignShellComponent } from '../player-campaign-shell/player-campaign-shell.component';
 import { PlayerCampaignShellService } from '../../../core/player-campaign-shell.service';
+import { CampaignCastPlayerNotes } from '../../../shared/models/campaign.model';
 import {
   PlayerCard,
   PlayerCardWithDetails,
@@ -22,6 +25,7 @@ import {
   PlayerTrait,
   PlayerCastPerception,
   DiscoveredCastResponse,
+  QuestingCompanion,
 } from '../../../shared/models/player-card.model';
 
 type Tab = 'chronicle' | 'cast' | 'soul' | 'secrets';
@@ -38,7 +42,7 @@ const MEMORY_TYPE_META: Record<PlayerMemory['memoryType'], { icon: string; label
 @Component({
   selector: 'app-player-my-character',
   standalone: true,
-  imports: [CommonModule, FormsModule, CardFlipComponent, CampaignDropdownComponent, CharacterEditorComponent, CharacterInfoEditorComponent],
+  imports: [CommonModule, FormsModule, CardFlipComponent, CampaignDropdownComponent, CharacterEditorComponent, CharacterInfoEditorComponent, CastingCardPlayerComponent, CastCardComponent],
   templateUrl: './player-my-character.component.html',
   styleUrl: './player-my-character.component.scss',
 })
@@ -130,6 +134,41 @@ export class PlayerMyCharacterComponent implements OnInit, OnDestroy {
   castSearch      = signal('');
   editingPerceptionKey = signal<string | null>(null);
   editingPerceptionText = signal('');
+
+  // ── Questing Companions ───────────────────────────────────────────────────
+  companionRatings = signal<Map<string, number>>(new Map());
+  private companionTiltMap = new Map<string, number>();
+  private partyMemberTiltMap = new Map<string, number>();
+
+  companionTiltFor(instanceId: string): number {
+    if (!this.companionTiltMap.has(instanceId)) {
+      this.companionTiltMap.set(instanceId, parseFloat((Math.random() * 4 - 2).toFixed(2)));
+    }
+    return this.companionTiltMap.get(instanceId)!;
+  }
+
+  companionRating(instanceId: string): number {
+    return this.companionRatings().get(instanceId) ?? 0;
+  }
+
+  partyMemberTiltFor(id: string): number {
+    if (!this.partyMemberTiltMap.has(id)) {
+      this.partyMemberTiltMap.set(id, parseFloat((Math.random() * 4 - 2).toFixed(2)));
+    }
+    return this.partyMemberTiltMap.get(id)!;
+  }
+
+  goToCompanion(companion: QuestingCompanion) {
+    const partySublocationId = this.discoveredCast()?.partyAnchorSublocationInstanceId;
+    if (!partySublocationId) return;
+    this.transition.quickCover();
+    this.router.navigate(
+      ['/player/campaign', this.campaignId(), 'sublocations', partySublocationId, 'cast', companion.instanceId],
+      { queryParams: { from: 'party' } }
+    );
+  }
+
+  castAsCompanion(companion: QuestingCompanion): any { return companion; }
 
   filteredPeople = computed(() => {
     const cast = this.discoveredCast();
@@ -245,6 +284,36 @@ export class PlayerMyCharacterComponent implements OnInit, OnDestroy {
         });
       }
     });
+
+    effect(() => {
+      const event = this.hub.castTravelled();
+      if (!event) return;
+      const partySubId = untracked(() => this.discoveredCast()?.partyAnchorSublocationInstanceId);
+      if (!partySubId) return;
+
+      const leavingParty  = event.fromSublocationInstanceId === partySubId;
+      const arrivingParty = event.toSublocationInstanceId   === partySubId;
+
+      if (leavingParty) {
+        this.discoveredCast.update(cast => cast ? {
+          ...cast,
+          questingCompanions: cast.questingCompanions.filter(c => c.instanceId !== event.castInstanceId),
+        } : cast);
+      }
+
+      if (arrivingParty) {
+        this.http.get<any>(
+          `${environment.apiUrl}/api/campaigns/${event.campaignId}/casts/${event.castInstanceId}`
+        ).subscribe(cast => {
+          this.discoveredCast.update(d => {
+            if (!d) return d;
+            const already = d.questingCompanions.some(c => c.instanceId === cast.instanceId);
+            if (already) return d;
+            return { ...d, questingCompanions: [...d.questingCompanions, cast] };
+          });
+        });
+      }
+    });
   }
 
   ngOnInit() {
@@ -255,7 +324,7 @@ export class PlayerMyCharacterComponent implements OnInit, OnDestroy {
     this.shellService.setCrumbs([
       { label: '← Locations', action: () => this.goBack() }
     ]);
-    this.shellService.setTitle('My Character');
+    this.shellService.setTitle('The Party');
 
     this.loadPlayerCard(id);
     this.loadCast(id);
@@ -428,13 +497,29 @@ export class PlayerMyCharacterComponent implements OnInit, OnDestroy {
 
   // ── Cast ─────────────────────────────────────────────────────────────────────
   private loadCast(id: string) {
-    this.http.get<PlayerCardWithDetails[]>(`${environment.apiUrl}/api/campaigns/${id}/player-cards/party`)
-      .subscribe(cards => this.discoveredCast.set({
-        partyCards: cards,
-        people: [],
-        locations: [],
-        sublocations: [],
-      }));
+    this.http.get<{ partyCards: PlayerCardWithDetails[]; questingCompanions: QuestingCompanion[]; partyAnchorSublocationInstanceId: string | null }>(
+      `${environment.apiUrl}/api/campaigns/${id}/player-cards/party`
+    ).subscribe(data => {
+      this.discoveredCast.set({
+        partyCards:                          data.partyCards,
+        questingCompanions:                  data.questingCompanions,
+        people:                              [],
+        locations:                           [],
+        sublocations:                        [],
+        partyAnchorSublocationInstanceId:    data.partyAnchorSublocationInstanceId,
+      });
+
+      if (data.questingCompanions.length) {
+        const params = data.questingCompanions.map(c => `castInstanceId=${c.instanceId}`).join('&');
+        this.http.get<CampaignCastPlayerNotes[]>(
+          `${environment.apiUrl}/api/campaigns/${id}/cast-player-notes/by-cast-instances?${params}`
+        ).subscribe(notes => {
+          const map = new Map<string, number>();
+          notes.forEach(n => map.set(n.castInstanceId, n.rating));
+          this.companionRatings.set(map);
+        });
+      }
+    });
   }
 
   perceptionFor(key: string): string {

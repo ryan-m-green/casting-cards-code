@@ -45,6 +45,7 @@
             [cast]="currentCard()!"
             [flippable]="false"
             [editable]="false"
+            [dmMode]="true"
           />
         } @else {
           <div class="main-card-placeholder"></div>
@@ -81,6 +82,7 @@
               [flippable]="false"
               [editable]="false"
               [queueable]="true"
+              [dmMode]="true"
               (deleteClick)="removeCastSelected(i)"
             />
           }
