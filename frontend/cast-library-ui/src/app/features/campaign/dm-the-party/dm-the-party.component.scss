@@ -339,6 +339,8 @@
   color: v.$color-ext-345;
   font-size: 13px;
   cursor: pointer;
+  width: 32px;
+  height: 32px;
   transition: color 0.15s ease;
 
   &:hover { color: v.$campaign-portal-text-lavender; }

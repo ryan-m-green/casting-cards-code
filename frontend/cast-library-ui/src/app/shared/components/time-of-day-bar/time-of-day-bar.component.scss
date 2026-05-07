@@ -36,6 +36,9 @@ $spring-easing:       cubic-bezier(0.22, 1, 0.36, 1);
   align-items: center;
   gap: 8px;
   width: 100%;
+  touch-action: none;
+  -webkit-user-select: none;
+  user-select: none;
 }
 
 // ── Next Day button ───────────────────────────────────────────────────────────
@@ -349,6 +352,16 @@ $spring-easing:       cubic-bezier(0.22, 1, 0.36, 1);
     transform: rotate(180deg);
     filter: drop-shadow(0 0 5px v.$color-ext-730);
     transition: filter 0.15s ease;
+    pointer-events: none;
+    -webkit-user-select: none;
+    user-select: none;
+    -webkit-touch-callout: none;
+
+    svg, path, circle {
+      pointer-events: none;
+      -webkit-user-select: none;
+      user-select: none;
+    }
   }
 }
 
@@ -401,6 +414,8 @@ $spring-easing:       cubic-bezier(0.22, 1, 0.36, 1);
     color: v.$color-ext-698;
     font-size: 0.72rem;
     cursor: pointer;
+    width: 32px;
+    height: 32px;
     padding: 2px 7px;
     border-radius: 4px;
     transition: color 0.1s, background 0.1s, border-color 0.1s;
