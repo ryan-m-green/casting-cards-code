@@ -223,6 +223,22 @@ ALTER TABLE campaign_time_of_day
 ALTER TABLE locations
     ADD COLUMN IF NOT EXISTS campaign_id UUID REFERENCES campaigns(id) ON DELETE CASCADE;
 
+-- [014] Faction library tables (must exist before campaign_faction_instances references them)
+CREATE TABLE IF NOT EXISTS factions (
+    faction_id   UUID         PRIMARY KEY DEFAULT gen_random_uuid(),
+    dm_user_id   UUID         NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    name         VARCHAR(255) NOT NULL,
+    type         VARCHAR(50)  NOT NULL
+                 CHECK (type IN ('Criminal Syndicate','Guild','Military Order','Political Body','Religious Cult','Secret Society')),
+    influence    SMALLINT     NOT NULL DEFAULT 5
+                 CHECK (influence BETWEEN 0 AND 10),
+    perception   SMALLINT     NOT NULL DEFAULT 0
+                 CHECK (perception BETWEEN -5 AND 5),
+    hidden       BOOLEAN      NOT NULL DEFAULT FALSE,
+    created_at   TIMESTAMPTZ  NOT NULL DEFAULT NOW()
+);
+CREATE INDEX IF NOT EXISTS idx_factions_dm ON factions(dm_user_id);
+
 -- [014] Drop faction_participants table if it exists
 DROP TABLE IF EXISTS faction_participants CASCADE;
 
@@ -281,22 +297,7 @@ DO $$ BEGIN
     END IF;
 END $$;
 
--- [014] Faction library tables
-CREATE TABLE IF NOT EXISTS factions (
-    faction_id   UUID         PRIMARY KEY DEFAULT gen_random_uuid(),
-    dm_user_id   UUID         NOT NULL REFERENCES users(id) ON DELETE CASCADE,
-    name         VARCHAR(255) NOT NULL,
-    type         VARCHAR(50)  NOT NULL
-                 CHECK (type IN ('Criminal Syndicate','Guild','Military Order','Political Body','Religious Cult','Secret Society')),
-    influence    SMALLINT     NOT NULL DEFAULT 5
-                 CHECK (influence BETWEEN 0 AND 10),
-    perception   SMALLINT     NOT NULL DEFAULT 0
-                 CHECK (perception BETWEEN -5 AND 5),
-    hidden       BOOLEAN      NOT NULL DEFAULT FALSE,
-    created_at   TIMESTAMPTZ  NOT NULL DEFAULT NOW()
-);
-CREATE INDEX IF NOT EXISTS idx_factions_dm ON factions(dm_user_id);
-
+-- [014] faction_relationships and player faction relationships
 CREATE TABLE IF NOT EXISTS faction_relationships (
     faction_relationship_id UUID    PRIMARY KEY DEFAULT gen_random_uuid(),
     campaign_id             UUID    NOT NULL REFERENCES campaigns(id) ON DELETE CASCADE,
