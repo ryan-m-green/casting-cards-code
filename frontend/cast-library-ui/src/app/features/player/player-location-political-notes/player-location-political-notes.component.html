@@ -135,102 +135,6 @@
 
       <div class="pol-divider"></div>
 
-      <!-- ── Relationships ── -->
-      <div class="pol-section">
-        <div class="pol-section-label">Relationships</div>
-        <span class="pol-section-line"></span>
-
-        @if (notes().relationships.length) {
-          <div class="rels-table" role="table" aria-label="Faction relationships">
-            <div class="rels-thead-top" role="row">
-              <span role="columnheader">Faction A</span>
-              <span role="columnheader">Type</span>
-              <span role="columnheader">Faction B</span>
-            </div>
-            @for (rel of notes().relationships; track rel.id) {
-              <div class="rels-row" role="rowgroup">
-
-                <div class="rels-row-top">
-                  <!-- Faction A dropdown -->
-                  <app-campaign-dropdown
-                    [options]="factionOptions()"
-                    [value]="rel.factionAId"
-                    fontSize="12px"
-                    (valueChange)="setRelFactionA(rel.id, $event)"
-                  />
-
-                  <!-- Relationship Type dropdown -->
-                  <app-campaign-dropdown
-                    [options]="relTypeOptions"
-                    [value]="rel.relationshipType"
-                    fontSize="12px"
-                    (valueChange)="setRelType(rel.id, $event)"
-                  />
-
-                  <!-- Faction B dropdown -->
-                  <app-campaign-dropdown
-                    [options]="factionOptions()"
-                    [value]="rel.factionBId"
-                    fontSize="12px"
-                    (valueChange)="setRelFactionB(rel.id, $event)"
-                  />
-                </div>
-
-                <div class="rels-row-strength">
-                  <span class="rels-strength-label">Strength</span>
-                  <div class="influence-slider-wrap">
-                    <input
-                      type="range"
-                      min="0"
-                      max="5"
-                      step="1"
-                      [value]="rel.strength"
-                      class="influence-slider"
-                      [class]="strengthSliderClass(rel.strength)"
-                      [attr.aria-label]="'Strength: ' + rel.strength + ' out of 5'"
-                      (input)="onStrengthInput(rel.id, $event)"
-                      (change)="onStrengthRelease(rel.id, $event)"
-                    />
-                    <div class="influence-slider-labels">
-                      <span>0</span>
-                      <span class="influence-label-center">{{ rel.strength }}</span>
-                      <span>5</span>
-                    </div>
-                  </div>
-                </div>
-
-                <div class="rels-row-notes">
-                  <input
-                    class="pol-input pol-input--notes"
-                    type="text"
-                    placeholder="Notes…"
-                    [attr.aria-label]="'Notes for this relationship'"
-                    [attr.data-rel-notes-id]="rel.id"
-                    (input)="onRelNotesInput(rel.id, $any($event.target).value)"
-                  />
-                  <button
-                    class="pol-remove"
-                    [attr.aria-label]="'Remove relationship between ' + factionName(rel.factionAId) + ' and ' + factionName(rel.factionBId)"
-                    (click)="removeRelationship(rel.id)"
-                  >×</button>
-                </div>
-
-              </div>
-            }
-          </div>
-        }
-
-        @if (notes().factions.length >= 2) {
-          <button class="campaign-secondary-btn" (click)="addRelationship()" aria-label="Add a relationship">
-            + Add relationship
-          </button>
-        } @else {
-          <p class="pol-hint">Add at least two factions to link them.</p>
-        }
-      </div>
-
-      <div class="pol-divider"></div>
-
       <!-- ── NPC Political Roles ── -->
       <div class="pol-section">
         <div class="pol-section-label">NPC Political Roles</div>
@@ -348,18 +252,6 @@
               </marker>
             </defs>
 
-            <!-- Edges -->
-            @for (edge of webEdges(); track edge!.rel.id) {
-              <line
-                [attr.x1]="edge!.x1"
-                [attr.y1]="edge!.y1"
-                [attr.x2]="edge!.x2"
-                [attr.y2]="edge!.y2"
-                [attr.stroke-width]="edge!.rel.strength"
-                [class]="'web-edge ' + edgeClass(edge!.rel.relationshipType)"
-              />
-            }
-
             <!-- Nodes -->
             @for (node of webNodes(); track node.faction.id) {
               <g class="web-node" [class.web-node--hidden]="node.faction.isHidden">
@@ -386,18 +278,6 @@
               </g>
             }
           </svg>
-
-          <!-- Accessible text summary for screen readers -->
-          <div class="sr-only" aria-live="polite">
-            <p>Faction web with {{ notes().factions.length }} factions and {{ notes().relationships.length }} relationships.</p>
-            @for (rel of notes().relationships; track rel.id) {
-              <p>
-                {{ factionName(rel.factionAId) }} and {{ factionName(rel.factionBId) }}:
-                {{ rel.relationshipType }}, strength {{ rel.strength }} out of 5.
-                @if (rel.notes) { Notes: {{ rel.notes }}. }
-              </p>
-            }
-          </div>
 
           <!-- Legend -->
           <div class="web-legend" role="list" aria-label="Edge type legend">
@@ -464,6 +344,21 @@
 
         <!-- Live region for screen readers -->
         <div role="status" aria-live="polite" aria-atomic="false" class="sr-only" id="district-live"></div>
+
+        <!-- Faction cards with influence glow -->
+        <div class="map-faction-cards" role="list" aria-label="Faction influence cards">
+          @for (faction of notes().factions; track faction.id) {
+            <div role="listitem" [class.map-faction-card--hidden]="faction.isHidden">
+              <app-faction-card
+                [faction]="toFactionCard(faction)"
+                [influenceGlow]="faction.influence"
+                [flippable]="false"
+                [editable]="false"
+                [campaignMode]="true"
+              />
+            </div>
+          }
+        </div>
 
         <!-- District grid -->
         <div class="district-grid" role="list" aria-label="District control map">
@@ -728,44 +623,13 @@
     >
       <button class="cast-card-popout-close" (click)="closeCastCard()" aria-label="Close">×</button>
 
-      <!-- Cast image header -->
-      <div class="cast-card-popout-image-wrap">
-        @if (cast.imageUrl) {
-          <img [src]="cast.imageUrl" alt="" class="cast-card-popout-img" />
-        } @else {
-          <div class="cast-card-popout-placeholder">
-            <span class="cast-card-popout-initial">{{ cast.name.charAt(0) }}</span>
-          </div>
-        }
-        @if (cast.publicDescription) {
-          <div class="cast-card-popout-desc-overlay">
-            <p class="cast-card-popout-desc">{{ cast.publicDescription }}</p>
-          </div>
-        }
-      </div>
-
-      <!-- Name / role -->
-      <div class="cast-card-popout-header">
-        <div class="cast-card-popout-name">{{ cast.name }}</div>
-        <div class="cast-card-popout-role">{{ cast.role }}</div>
-      </div>
-
-      <!-- ── Alignment + Notes ── -->
-      <div class="cast-card-popout-details">
-
-        <div class="cast-card-popout-row">
-          <div class="cast-card-popout-label">Alignment<span class="cast-card-popout-rule"></span></div>
-          <div class="cast-card-popout-value">{{ selectedCastNotes()?.alignment || '—' }}</div>
-        </div>
-
-        @if (selectedCastNotes()?.want) {
-          <div class="cast-card-popout-row">
-            <div class="cast-card-popout-label">Notes<span class="cast-card-popout-rule"></span></div>
-            <div class="cast-card-popout-notes">{{ selectedCastNotes()!.want }}</div>
-          </div>
-        }
-
-      </div>
+      <app-cast-card
+        [cast]="cast"
+        [flippable]="false"
+        [showStars]="false"
+        [editable]="false"
+        [factionSymbols]="cast.factionSymbols ?? []"
+      ></app-cast-card>
     </div>
   }
 }

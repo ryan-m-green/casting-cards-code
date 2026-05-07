@@ -1,14 +1,22 @@
-<div class="void-canvas">
+<app-void-nav-drawer
+  [campaignId]="campaignId()"
+  [campaign]="shellSvc.campaign()"
+  [isDm]="isDm()"
+  mode="dm"
+  [style.--portal-color]="safeColor(shellSvc.campaign()?.spineColor)"
+/>
+
+<div class="void-canvas" [style.--portal-color]="safeColor(shellSvc.campaign()?.spineColor)">
 
   <!-- ── Top bar ── -->
   <div class="void-topbar">
-    <div class="topbar-row">
-      <app-shell-breadcrumbs [crumbs]="shellSvc.crumbs()" />
-      @if (isDm()) {
-        <button class="topbar-party-btn" (click)="goToTheParty()">⚔ The Party</button>
-      }
-    </div>
-    <span class="void-title">{{ shellSvc.title() }}</span>
+    @if (shellSvc.titleContext(); as ctx) {
+      <span class="void-title" [style.margin-top]="shellSvc.voidTitleTopMargin()">
+        <app-void-title-segments [context]="ctx" />
+      </span>
+    } @else {
+      <span class="void-title" [style.margin-top]="shellSvc.voidTitleTopMargin()">{{ shellSvc.title() }}</span>
+    }
   </div>
 
   <!-- ── Time of day bar ── -->

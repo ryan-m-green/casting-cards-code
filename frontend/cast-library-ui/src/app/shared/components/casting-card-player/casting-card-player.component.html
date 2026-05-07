@@ -4,9 +4,9 @@
     <!-- ── BACK FACE ── -->
     <div class="cc-face cc-face--back">
       <div class="cc-back-frame">
+        <div class="cc-back-border"></div>
+        <div class="cc-back-border2"></div>
         <div class="cc-back-inner">
-          <div class="cc-back-border"></div>
-          <div class="cc-back-border2"></div>
 
           <!-- Emblem -->
           <div class="cc-back-emblem">
@@ -55,32 +55,8 @@
             @if (member.conditions.length) {
               <div class="cc-stat-row">
                 <span class="cc-stat-key">Conditions</span>
-                <span class="cc-stat-val">{{ conditionNames() }}</span>
+                <span class="cc-stat-val cc-stat-val--conditions">{{ conditionNames() }}</span>
               </div>
-            }
-          </div>
-
-          <!-- Actions -->
-          <div class="cc-back-actions">
-            @if (mode === 'player') {
-              <button class="cc-btn cc-btn--gold cc-btn--full"
-                (click)="viewSecrets.emit(member); $event.stopPropagation()">
-                ✦ View Secrets
-              </button>
-            }
-            @if (mode === 'dm') {
-              <button class="cc-btn cc-btn--gold cc-btn--icon"
-                title="Award Gold"
-                (click)="awardGold.emit(member); $event.stopPropagation()">💰</button>
-              <button class="cc-btn cc-btn--gold cc-btn--icon"
-                title="Manage Conditions"
-                (click)="manageConditions.emit(member); $event.stopPropagation()">⚑</button>
-              <button class="cc-btn cc-btn--gold cc-btn--icon"
-                title="Deliver Secret"
-                (click)="deliverSecret.emit(member); $event.stopPropagation()">🔒</button>
-              <button class="cc-btn cc-btn--gold cc-btn--icon"
-                title="View All Secrets"
-                (click)="viewAllSecrets.emit(member); $event.stopPropagation()">📜</button>
             }
           </div>
 
@@ -175,4 +151,28 @@
     </div>
 
   </div>
+
+  <!-- ── BACK ACTION BUTTONS (outside card face, right side) ── -->
+  <div class="cc-back-actions" (click)="$event.stopPropagation()">
+    @if (mode === 'player') {
+      <button class="cc-btn cc-btn--gold cc-btn--icon"
+        title="View Secrets"
+        (click)="viewSecrets.emit(member)"><img class="cc-btn-icon" src="/old_paper_document_seal.svg" alt="View Secrets" /></button>
+    }
+    @if (mode === 'dm') {
+      <button class="cc-btn cc-btn--gold cc-btn--icon"
+        title="Award Gold"
+        (click)="awardGold.emit(member)"><img class="cc-btn-icon" src="/treasure_chest_gold_coins.svg" alt="Award Gold" /></button>
+      <button class="cc-btn cc-btn--gold cc-btn--icon"
+        title="Manage Conditions"
+        (click)="manageConditions.emit(member)">⚑</button>
+      <button class="cc-btn cc-btn--gold cc-btn--icon"
+        title="Deliver Secret"
+        (click)="deliverSecret.emit(member)"><img class="cc-btn-icon" src="/padlock_security_protection.svg" alt="Deliver Secret" /></button>
+      <button class="cc-btn cc-btn--gold cc-btn--icon"
+        title="View All Secrets"
+        (click)="viewAllSecrets.emit(member)"><img class="cc-btn-icon" src="/old_paper_document_seal.svg" alt="View All Secrets" /></button>
+    }
+  </div>
+
 </div>

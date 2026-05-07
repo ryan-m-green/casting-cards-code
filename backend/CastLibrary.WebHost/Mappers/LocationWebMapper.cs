@@ -35,6 +35,7 @@ public class LocationWebMapper(
             Vibe           = domain.Vibe,
             Languages      = domain.Languages,
             Description    = domain.Description,
+            DmNotes        = domain.DmNotes,
             ImageUrl       = domain.ImageUrl,
             CreatedAt      = domain.CreatedAt,
         };

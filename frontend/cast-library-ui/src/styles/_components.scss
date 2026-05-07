@@ -223,20 +223,52 @@ textarea.fi {
 }
 
 .sv {
+  position: relative;
   flex: 1;
   min-width: 80px;
-  border: 1px dashed v.$color-border;
+  aspect-ratio: 1;
+  border: none;
   border-radius: 3px;
   padding: v.$spacing-sm;
   text-align: center;
   cursor: pointer;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
   transition: background v.$transition-std;
 
   &:hover {
     background: v.$color-wb-hover;
   }
 
+  .sv-inner {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    border-radius: 2px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+  }
+
+  .sv-icon {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 90%;
+    height: 90%;
+    color: v.$color-text-secondary;
+    opacity: 0.08;
+    pointer-events: none;
+  }
+
   .sv-value {
+    position: relative;
     font-family: v.$font-header;
     font-size: 16px;
     font-weight: 700;
@@ -244,6 +276,7 @@ textarea.fi {
   }
 
   .sv-label {
+    position: relative;
     font-family: v.$font-header;
     font-size: 7px;
     text-transform: uppercase;
@@ -497,6 +530,15 @@ textarea.fi {
 
   &::placeholder { color: v.$color-text-muted; }
   &:focus { border-color: v.$color-gold-solid; }
+
+  &--header {
+    width: 320px;
+    margin-bottom: 0;
+
+    @media (max-width: 480px) {
+      width: 180px;
+    }
+  }
 }
 
 // ─── Card Grid ───────────────────────────────────────────────────────────────
@@ -509,6 +551,7 @@ textarea.fi {
 
 // ─── Page Layout Helpers ──────────────────────────────────────────────────────
 .wr-page-header { margin-bottom: 12px; }
+.wr-ml-auto { margin-left: auto; }
 
 .page-title-row {
   margin: 0 0 0 8px;
@@ -940,6 +983,15 @@ textarea.fi {
 .save-spark-host {
   position: relative;
   display: inline-flex;
+}
+
+// ─── Form save footer (save label + button floated right below form) ──────────
+.form-save-footer {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 12px;
+  margin-top: 20px;
 }
 
 // ─── Currency Display ─────────────────────────────────────────────────────────

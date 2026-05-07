@@ -9,7 +9,7 @@
 .cast-notes-panel {
   width: 100%;
   background: v.$campaign-portal-bg-dark;
-  border: 1px solid rgba(v.$cast-gold, 0.40);
+  border: 1px solid v.$color-player-section-border;
   border-radius: 6px;
   overflow: hidden;
 }
@@ -20,7 +20,7 @@
   align-items: center;
   gap: 12px;
   padding: 12px 16px 10px;
-  border-bottom: 1px solid rgba(v.$cast-gold, 0.18);
+  border-bottom: 1px solid v.$color-player-section-border;
 }
 
 .notes-panel-label {
@@ -28,14 +28,14 @@
   font-size: 7px;
   letter-spacing: 0.22em;
   text-transform: uppercase;
-  color: rgba(v.$cast-gold, 0.95);
+  color: rgba(v.$location-blue, 0.95);
   white-space: nowrap;
 }
 
 .notes-panel-line {
   flex: 1;
   height: 1px;
-  background: linear-gradient(to right, rgba(v.$cast-gold, 0.22), transparent);
+  background: linear-gradient(to right, v.$color-player-section-border, transparent);
 }
 
 .notes-saving {
@@ -43,7 +43,7 @@
   font-size: 7px;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: rgba(v.$cast-gold, 0.8);
+  color: rgba(v.$location-blue, 0.8);
   white-space: nowrap;
 }
 
@@ -57,7 +57,7 @@
 
 .notes-section-divider {
   height: 1px;
-  background: rgba(v.$cast-gold, 0.08);
+  background: v.$color-player-section-border;
   margin: 0 16px;
 }
 
@@ -67,22 +67,22 @@
   font-size: 7px;
   letter-spacing: 0.20em;
   text-transform: uppercase;
-  color: rgba(v.$cast-gold, 0.9);
+  color: rgba(v.$location-blue, 0.9);
 }
 
 .notes-field-line {
   height: 1px;
   width: 100%;
-  background: linear-gradient(to right, rgba(v.$cast-gold, 0.18), transparent);
+  background: linear-gradient(to right, v.$color-player-section-border, transparent);
 }
 
 // ── 1. Textarea ───────────────────────────────────────────────────────────────
 .notes-textarea {
   width: 100%;
   background: v.$color-ext-484;
-  border: 1px solid rgba(v.$cast-gold, 0.20);
+  border: 1px solid v.$color-player-section-border;
   border-radius: 4px;
-  color: v.$campaign-portal-text-bright;
+  color: v.$campaign-portal-text-secondary;
   font-family: v.$font-body;
   font-size: 14px;
   line-height: 1.6;
@@ -98,7 +98,7 @@
   }
 
   &:focus {
-    border-color: rgba(v.$cast-gold, 0.45);
+    border-color: v.$color-player-section-border;
   }
 }
 
@@ -114,9 +114,9 @@
   justify-content: space-between;
   width: 100%;
   background: v.$color-ext-484;
-  border: 1px solid rgba(v.$cast-gold, 0.20);
+  border: 1px solid v.$color-player-section-border;
   border-radius: 4px;
-  color: rgba(v.$cast-gold, 0.9);
+  color: rgba(v.$location-blue, 0.9);
   font-family: v.$font-header;
   font-size: 8px;
   letter-spacing: 0.12em;
@@ -127,7 +127,7 @@
   transition: border-color 0.15s;
 
   &:hover {
-    border-color: rgba(v.$cast-gold, 0.40);
+    border-color: v.$color-player-section-border;
   }
 }
 
@@ -148,7 +148,7 @@
   left: 0;
   right: 0;
   background: v.$campaign-portal-panel-dark;
-  border: 1px solid rgba(v.$cast-gold, 0.28);
+  border: 1px solid v.$color-player-section-border;
   border-radius: 4px;
   z-index: 50;
   max-height: 220px;
@@ -161,9 +161,9 @@
   font-size: 7px;
   letter-spacing: 0.20em;
   text-transform: uppercase;
-  color: rgba(v.$cast-gold, 0.8);
+  color: rgba(v.$location-blue, 0.8);
   padding: 8px 12px 4px;
-  border-top: 1px solid rgba(v.$cast-gold, 0.08);
+  border-top: 1px solid v.$color-player-section-border;
 
   &:first-child {
     border-top: none;
@@ -189,7 +189,7 @@
   font-size: 7px;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: rgba(v.$cast-gold, 0.7);
+  color: rgba(v.$location-blue, 0.7);
   padding: 12px;
   text-align: center;
 }
@@ -208,8 +208,9 @@
   font-size: 7px;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: rgba(v.$cast-gold, 0.85);
-  border: 1px solid rgba(v.$cast-gold, 0.30);
+  color: v.$campaign-portal-text-bright;
+  border: 1px solid v.$campaign-portal-border-strong-focus;
+  background: color-mix(in srgb, v.$campaign-portal-bg-dark 30%, v.$color-base-arcane-purple 70%);
   border-radius: 3px;
   padding: 3px 8px 3px 10px;
 }
@@ -217,7 +218,7 @@
 .notes-pill-remove {
   background: none;
   border: none;
-  color: rgba(v.$cast-gold, 0.8);
+  color: v.$campaign-portal-text-bright;
   font-size: 12px;
   line-height: 1;
   cursor: pointer;
@@ -227,7 +228,8 @@
   transition: color 0.15s;
 
   &:hover {
-    color: rgba(v.$cast-gold, 0.90);
+    color: v.$campaign-portal-text-bright;
+    opacity: 0.75;
   }
 }
 
@@ -240,9 +242,9 @@
 
 .alignment-cell {
   background: transparent;
-  border: 1px solid rgba(v.$cast-gold, 0.14);
+  border: 1px solid v.$color-player-section-border;
   border-radius: 3px;
-  color: rgba(v.$cast-gold, 0.8);
+  color: rgba(v.$location-blue, 0.8);
   font-family: v.$font-header;
   font-size: 8px;
   letter-spacing: 0.08em;
@@ -255,20 +257,20 @@
 
   &:hover {
     background: rgba(v.$cast-gold, 0.08);
-    color: rgba(v.$cast-gold, 0.65);
+    color: rgba(v.$location-blue, 0.65);
   }
 
   &--selected {
-    border-color: var(--portal-color, #{v.$cast-gold});
-    background: color-mix(in srgb, var(--portal-color, #{v.$cast-gold}) 14%, transparent 86%);
-    color: color-mix(in srgb, var(--portal-color, #{v.$cast-gold}) 90%, white 10%);
+    border-color: v.$campaign-portal-border-strong-focus;
+    background: color-mix(in srgb, v.$campaign-portal-bg-dark 30%, v.$color-base-arcane-purple 70%);
+    color: v.$campaign-portal-text-bright;
   }
 }
 
 // ── 4. Perception slider ──────────────────────────────────────────────────────
 .perception-card {
   background: v.$color-border-black-strong;
-  border: 1px solid rgba(v.$cast-gold, 0.16);
+  border: 1px solid v.$color-player-section-border;
   border-radius: 4px;
   padding: 14px 16px 10px;
   display: flex;
@@ -287,29 +289,43 @@
 
 .perception-slider {
   width: 100%;
-  accent-color: v.$color-ext-337;
+  accent-color: rgba(v.$color-faction-neutral-frame-2, 0.85);
   cursor: pointer;
 
   &.slider-friendly { accent-color: v.$color-ext-338; }
   &.slider-hostile  { accent-color: v.$color-ext-339; }
 }
 
+.perception-ticks {
+  display: flex;
+  justify-content: space-between;
+  padding: 0 7px;
+  margin-top: -2px;
+
+  span {
+    width: 1px;
+    height: 4px;
+    background: rgba(v.$location-blue, 0.30);
+    border-radius: 1px;
+  }
+}
+
 .perception-labels {
   display: flex;
   justify-content: space-between;
   font-size: 0.70rem;
-  color: rgba(v.$cast-gold, 0.85);
+  color: rgba(v.$location-blue, 0.85);
 }
 
 .perception-label-center {
   font-weight: 600;
-  color: rgba(v.$cast-gold, 0.85);
+  color: rgba(v.$location-blue, 0.85);
   text-align: center;
 }
 
 .perception-label-end {
   font-size: 0.68rem;
-  color: rgba(v.$cast-gold, 0.8);
+  color: rgba(v.$location-blue, 0.8);
 }
 
 // ── 5. Secrets grid ───────────────────────────────────────────────────────────
@@ -321,7 +337,7 @@
 
 .secret-card {
   background: rgba(v.$cast-gold, 0.04);
-  border: 1px solid rgba(v.$cast-gold, 0.20);
+  border: 1px solid v.$color-player-section-border;
   border-radius: 4px;
   padding: 12px 16px;
 }
@@ -329,7 +345,7 @@
 .secret-card-text {
   font-family: v.$font-body;
   font-size: 13px;
-  color: v.$campaign-portal-text-bright;
+  color: v.$campaign-portal-text-secondary;
   line-height: 1.55;
   margin: 0;
 }

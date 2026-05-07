@@ -2,7 +2,7 @@ import { Component, inject, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { AbstractControl, ReactiveFormsModule, FormBuilder, ValidationErrors, Validators } from '@angular/forms';
 import { AuthService } from '../../core/auth/auth.service';
-import { DmNavComponent } from '../../shared/components/dm-nav/dm-nav.component';
+import { JournalTitleComponent } from '../../shared/components/journal-title/journal-title.component';
 
 function passwordsMatch(control: AbstractControl): ValidationErrors | null {
   const newPassword     = control.get('newPassword')?.value;
@@ -13,7 +13,7 @@ function passwordsMatch(control: AbstractControl): ValidationErrors | null {
 @Component({
   selector: 'app-change-password',
   standalone: true,
-  imports: [ReactiveFormsModule, DmNavComponent],
+  imports: [ReactiveFormsModule, JournalTitleComponent],
   templateUrl: './change-password.component.html',
   styleUrl: './change-password.component.scss'
 })

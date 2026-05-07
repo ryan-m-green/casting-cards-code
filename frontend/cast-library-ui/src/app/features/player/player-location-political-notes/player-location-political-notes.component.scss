@@ -608,6 +608,18 @@
 }
 
 // ── Control Map ────────────────────────────────────────────────────────────────
+.map-faction-cards {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-bottom: 24px;
+  justify-content: flex-start;
+
+  .map-faction-card--hidden {
+    opacity: 0.5;
+  }
+}
+
 .district-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
@@ -1012,15 +1024,13 @@
   z-index: 201;
   opacity: 0;
   transition: none;
-  background: v.$color-ext-562;
-  border: 1px solid rgba(v.$accent, 0.22);
   border-radius: 6px;
-  box-shadow: 0 16px 48px v.$color-ext-208;
-  width: 260px;
-  max-height: 90vh;
-  overflow-y: auto;
-  display: flex;
-  flex-direction: column;
+
+  // Ensure the close button can be absolutely positioned over the card
+  app-cast-card {
+    display: block;
+    position: relative;
+  }
 
   &--open {
     animation: card-in 0.20s ease forwards;
@@ -1171,14 +1181,13 @@
   position: absolute;
   top: 6px;
   right: 8px;
-  z-index: 1;
+  z-index: 202;
   background: none;
   border: none;
   color: v.$campaign-portal-text-bright;
   font-size: 20px;
   line-height: 1;
   cursor: pointer;
-  z-index: 1;
   padding: 2px 4px;
   transition: color 0.15s;
 

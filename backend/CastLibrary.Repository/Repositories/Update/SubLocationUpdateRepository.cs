@@ -16,7 +16,7 @@ namespace CastLibrary.Repository.Repositories.Update
         public async Task<SublocationDomain> UpdateAsync(SublocationDomain sublocation)
         {
             var spanId = correlation.NewSpan();
-            var @params = new { sublocation.Id, sublocation.LocationId, sublocation.Name, sublocation.Description };
+            var @params = new { sublocation.Id, sublocation.LocationId, sublocation.Name, sublocation.Description, sublocation.DmNotes };
 
             logging.LogDbOperation(correlation.TraceId, spanId, "UPDATE", "sublocations", @params);
 
@@ -25,7 +25,7 @@ namespace CastLibrary.Repository.Repositories.Update
             using var tx = await conn.BeginTransactionAsync();
 
             var rows = await conn.ExecuteAsync(
-                "UPDATE sublocations SET location_id=@LocationId, name=@Name, description=@Description WHERE id=@Id",
+                "UPDATE sublocations SET location_id=@LocationId, name=@Name, description=@Description, dm_notes=@DmNotes WHERE id=@Id",
                 @params, tx);
 
             await conn.ExecuteAsync("DELETE FROM sublocation_shop_items WHERE sublocation_id = @Id",

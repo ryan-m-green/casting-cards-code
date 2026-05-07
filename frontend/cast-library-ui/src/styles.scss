@@ -21,6 +21,10 @@ html, body {
   color: v.$color-text-primary;
   user-select: none;
   -webkit-user-select: none;
+  scrollbar-gutter: stable;
+  scrollbar-width: none;
+
+  &::-webkit-scrollbar { display: none; }
 }
 
 input, textarea, select {

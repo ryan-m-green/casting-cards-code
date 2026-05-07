@@ -2,6 +2,7 @@
 using CastLibrary.Repository.Repositories.Read;
 using CastLibrary.Repository.Repositories.Update;
 using CastLibrary.Shared.Domain;
+using CastLibrary.Shared.Enums;
 using CastLibrary.Shared.Requests;
 
 namespace CastLibrary.Logic.Commands.Campaign;
@@ -25,6 +26,8 @@ public class UpdateCampaignCommandHandler(
         campaign.Description = command.Request.Description;
         if (!string.IsNullOrEmpty(command.Request.SpineColor))
             campaign.SpineColor = command.Request.SpineColor;
+        if (command.Request.Status is not null && Enum.TryParse<CampaignStatus>(command.Request.Status, out var status))
+            campaign.Status = status;
 
         await campaignUpdateRepository.UpdateAsync(campaign);
         await partyAnchorService.EnsureExistsAsync(campaign);

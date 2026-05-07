@@ -29,6 +29,7 @@ public class CampaignDetailResponse
     public List<CampaignCastRelationshipResponse> Relationships { get; set; } = [];
     public CampaignInviteCodeResponse? InviteCode { get; set; }
     public TimeOfDayResponse? TimeOfDay { get; set; }
+    public List<CampaignFactionInstanceResponse> Factions { get; set; } = [];
 }
 
 public class CampaignInviteCodeResponse
@@ -74,6 +75,8 @@ public class CampaignLocationInstanceResponse
 
 public record CampaignCastCustomItemResponse(string Name, string Price);
 
+public record FactionSymbolResponse(string FactionInstanceId, string SymbolPath);
+
 public class CampaignCastInstanceResponse
 {
     public Guid InstanceId { get; set; }
@@ -90,6 +93,7 @@ public class CampaignCastInstanceResponse
     public string Posture { get; set; } = string.Empty;
     public string Speed { get; set; } = string.Empty;
     public string[] VoicePlacement { get; set; } = [];
+    public string VoiceNotes { get; set; } = string.Empty;
     public string Description { get; set; } = string.Empty;
     public string PublicDescription { get; set; } = string.Empty;
     public string ImageUrl { get; set; }
@@ -97,6 +101,7 @@ public class CampaignCastInstanceResponse
     public List<CampaignCastCustomItemResponse> CustomItems { get; set; } = [];
     public string[] Keywords { get; set; } = [];
     public string DmNotes { get; set; } = string.Empty;
+    public List<FactionSymbolResponse> FactionSymbols { get; set; } = [];
 }
 
 public class CampaignSecretResponse
@@ -127,6 +132,8 @@ public class CampaignSublocationInstanceResponse
     public List<CampaignCastCustomItemResponse> CustomItems { get; set; } = [];
     public string[] Keywords { get; set; } = [];
     public bool IsPartyAnchor { get; set; }
+    public Guid? FactionInstanceId { get; set; }
+    public string? SymbolPath { get; set; }
 }
 
 public class CampaignPlayerResponse
@@ -143,5 +150,6 @@ public class DashboardStatsResponse
     public int LocationCount { get; set; }
     public int SublocationCount { get; set; }
     public int CastCount { get; set; }
+    public int FactionCount { get; set; }
     public CampaignListResponse ActiveCampaign { get; set; }
 }

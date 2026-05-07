@@ -40,8 +40,6 @@ namespace CastLibrary.WebHost.IoC
             services.AddScoped<ISecretDeleteRepository, SecretDeleteRepository>();
             services.AddScoped<IUserInsertRepository, UserInsertRepository>();
             services.AddScoped<IUserUpdateRepository, UserUpdateRepository>();
-            services.AddScoped<INoteReadRepository, NoteReadRepository>();
-            services.AddScoped<INoteUpdateRepository, NoteUpdateRepository>();
             services.AddScoped<IPasswordResetTokenReadRepository, PasswordResetTokenReadRepository>();
             services.AddScoped<IPasswordResetTokenInsertRepository, PasswordResetTokenInsertRepository>();
             services.AddScoped<IPasswordResetTokenUpdateRepository, PasswordResetTokenUpdateRepository>();
@@ -57,8 +55,8 @@ namespace CastLibrary.WebHost.IoC
             services.AddScoped<ICampaignPlayerDeleteRepository, CampaignPlayerDeleteRepository>();
             services.AddScoped<ICastPlayerNotesReadRepository, CastPlayerNotesReadRepository>();
             services.AddScoped<ICastPlayerNotesUpdateRepository, CastPlayerNotesUpdateRepository>();
-            services.AddScoped<ILocationPoliticalNotesReadRepository, LocationPoliticalNotesReadRepository>();
-            services.AddScoped<ILocationPoliticalNotesUpdateRepository, LocationPoliticalNotesUpdateRepository>();
+            services.AddScoped<ILocationPlayerNotesReadRepository, LocationPlayerNotesReadRepository>();
+            services.AddScoped<ILocationPlayerNotesUpdateRepository, LocationPlayerNotesUpdateRepository>();
             services.AddScoped<IAdminInviteCodeReadRepository, AdminInviteCodeReadRepository>();
             services.AddScoped<IAdminInviteCodeUpdateRepository, AdminInviteCodeUpdateRepository>();
             services.AddScoped<ITimeOfDayReadRepository, TimeOfDayReadRepository>();
@@ -89,6 +87,16 @@ namespace CastLibrary.WebHost.IoC
             services.AddScoped<IBugReportReadRepository, BugReportReadRepository>();
             services.AddScoped<IBugReportUpdateRepository, BugReportUpdateRepository>();
             services.AddScoped<IBugReportDeleteRepository, BugReportDeleteRepository>();
+            services.AddScoped<IFactionReadRepository, FactionReadRepository>();
+            services.AddScoped<IFactionInsertRepository, FactionInsertRepository>();
+            services.AddScoped<IFactionUpdateRepository, FactionUpdateRepository>();
+            services.AddScoped<IFactionDeleteRepository, FactionDeleteRepository>();
+            services.AddScoped<IFactionPlayerNotesReadRepository, FactionPlayerNotesReadRepository>();
+            services.AddScoped<IFactionPlayerNotesUpdateRepository, FactionPlayerNotesUpdateRepository>();
+            services.AddScoped<ISublocationPlayerNotesReadRepository, SublocationPlayerNotesReadRepository>();
+            services.AddScoped<ISublocationPlayerNotesUpdateRepository, SublocationPlayerNotesUpdateRepository>();
+            services.AddScoped<ICampaignPlayerNotesReadRepository, CampaignPlayerNotesReadRepository>();
+            services.AddScoped<ICampaignPlayerNotesUpdateRepository, CampaignPlayerNotesUpdateRepository>();
             services.AddHealthChecks()
               .AddCheck<DatabaseHealthCheck>("postgres");
 
@@ -105,7 +113,7 @@ namespace CastLibrary.WebHost.IoC
             services.AddScoped<IUserEntityMapper, UserEntityMapper>();
             services.AddScoped<ICampaignCastRelationshipEntityMapper, CampaignCastRelationshipEntityMapper>();
             services.AddScoped<ICampaignCastPlayerNotesEntityMapper, CampaignCastPlayerNotesEntityMapper>();
-            services.AddScoped<ILocationPoliticalNotesEntityMapper, LocationPoliticalNotesEntityMapper>();
+            services.AddScoped<ICampaignLocationPlayerNotesEntityMapper, CampaignLocationPlayerNotesEntityMapper>();
             services.AddScoped<ICampaignSecretEntityMapper, CampaignSecretEntityMapper>();
             services.AddScoped<ICampaignPlayerEntityMapper, CampaignPlayerEntityMapper>();
             services.AddScoped<IAdminInviteCodeEntityMapper, AdminInviteCodeEntityMapper>();
@@ -116,6 +124,16 @@ namespace CastLibrary.WebHost.IoC
             services.AddScoped<IPlayerCardSecretEntityMapper, PlayerCardSecretEntityMapper>();
             services.AddScoped<IPlayerCastPerceptionEntityMapper, PlayerCastPerceptionEntityMapper>();
             services.AddScoped<IBugReportEntityMapper, BugReportEntityMapper>();
+            services.AddScoped<IFactionEntityMapper, FactionEntityMapper>();
+            services.AddScoped<ICampaignFactionInstanceEntityMapper, CampaignFactionInstanceEntityMapper>();
+            services.AddScoped<ICampaignFactionPlayerNotesEntityMapper, CampaignFactionPlayerNotesEntityMapper>();
+            services.AddScoped<ICampaignSublocationPlayerNotesEntityMapper, CampaignSublocationPlayerNotesEntityMapper>();
+            services.AddScoped<ICampaignPlayerNotesEntityMapper, CampaignPlayerNotesEntityMapper>();
+            services.AddScoped<IPlayerQuicknoteQueueEntityMapper, PlayerQuicknoteQueueEntityMapper>();
+            services.AddScoped<IQuicknoteQueueReadRepository, QuicknoteQueueReadRepository>();
+            services.AddScoped<IQuicknoteQueueInsertRepository, QuicknoteQueueInsertRepository>();
+            services.AddScoped<IQuicknoteQueueUpdateRepository, QuicknoteQueueUpdateRepository>();
+            services.AddScoped<IQuicknoteQueueDeleteRepository, QuicknoteQueueDeleteRepository>();
         }
     }
 }

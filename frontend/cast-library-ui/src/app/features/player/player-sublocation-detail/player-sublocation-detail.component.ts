@@ -1,4 +1,4 @@
-import { Component, OnInit, signal, computed, inject, ViewChild, ElementRef, effect } from '@angular/core';
+import { Component, OnInit, signal, computed, inject, ViewChild, ElementRef, effect, untracked } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
@@ -13,11 +13,13 @@ import { CastCardComponent } from '../../../shared/components/cast-card/cast-car
 import { PlayerCampaignShellComponent } from '../player-campaign-shell/player-campaign-shell.component';
 import { PlayerCampaignShellService } from '../../../core/player-campaign-shell.service';
 import { CampaignHubService } from '../../../core/hub/campaign-hub.service';
+import { PlayerSublocationNotesComponent } from '../player-sublocation-notes/player-sublocation-notes.component';
+import { FactionSymbolPickerComponent, FactionSymbolAssignment } from '../../../shared/components/faction-symbol-picker/faction-symbol-picker.component';
 
 @Component({
   selector: 'app-player-sublocation-detail',
   standalone: true,
-  imports: [CommonModule, SublocationCardComponent, CastCardComponent],
+  imports: [CommonModule, SublocationCardComponent, CastCardComponent, PlayerSublocationNotesComponent, FactionSymbolPickerComponent],
   templateUrl: './player-sublocation-detail.component.html',
   styleUrl: './player-sublocation-detail.component.scss'
 })
@@ -39,6 +41,13 @@ export class PlayerSublocationDetailComponent implements OnInit {
   detailExpanded        = signal(false);
   panelHeight           = signal('220px');
   castRatings           = signal<Map<string, number>>(new Map());
+
+  sublocationSymbolPath = signal<string | null>(null);
+  sublocationFactionId  = signal<string | null>(null);
+
+  visibleFactions = computed(() =>
+    (this.campaign()?.factions ?? []).filter(f => f.isVisibleToPlayers)
+  );
 
   private fadingOutIds = signal<Set<string>>(new Set());
   private localCasts   = signal<CampaignCastInstance[] | null>(null);
@@ -81,6 +90,21 @@ export class PlayerSublocationDetailComponent implements OnInit {
 
   constructor() {
     effect(() => {
+      const subLoc    = this.sublocation();
+      const parentLoc = this.parentLocation();
+      if (!subLoc) return;
+      this.sublocationSymbolPath.set(subLoc.symbolPath ?? null);
+      this.sublocationFactionId.set(subLoc.factionInstanceId ?? null);
+      const id = this.campaignId();
+      this.shellService.setTitleContext({
+        pageType: 'sublocation',
+        campaignId: id,
+        baseRoute: '/player/campaign',
+        location: parentLoc,
+      });
+    });
+
+    effect(() => {
       const event = this.hub.castTravelled();
       if (!event) return;
       const currentSub = this.sublocationInstanceId();
@@ -115,6 +139,18 @@ export class PlayerSublocationDetailComponent implements OnInit {
         });
       }
     });
+
+    effect(() => {
+      const event = this.hub.cardVisibilityChanged();
+      if (!event || event.cardType !== 'sublocation') return;
+      const sublocId   = untracked(() => this.sublocationInstanceId());
+      const campaignId = untracked(() => this.campaignId());
+      if (!sublocId || !campaignId || event.instanceId !== sublocId) return;
+      if (!event.isVisible) {
+        this.transition.quickCover();
+        this.router.navigate(['/player/campaign', campaignId]);
+      }
+    });
   }
 
   ngOnInit() {
@@ -125,14 +161,7 @@ export class PlayerSublocationDetailComponent implements OnInit {
     this.sublocationInstanceId.set(locId);
 
     const subLoc = this.sublocation();
-    const parentLoc = this.parentLocation();
-    if (subLoc && parentLoc) {
-      this.shellService.setCrumbs([
-        { label: '← Locations', action: () => this.goToCampaign() },
-        { label: '← Sublocations', action: () => this.goToLocation() }
-      ]);
-      this.shellService.setTitle(subLoc.name);
-
+    if (subLoc) {
       const c = this.campaign();
       if (c) {
         const castIds = c.casts
@@ -191,7 +220,7 @@ export class PlayerSublocationDetailComponent implements OnInit {
 
   goToMyCharacter() {
     this.transition.quickCover();
-    this.router.navigate(['/player/campaign', this.campaignId(), 'my-character']);
+    this.router.navigate(['/player/campaign', this.campaignId(), 'the-party']);
   }
 
   goToCampaign() {
@@ -213,4 +242,22 @@ export class PlayerSublocationDetailComponent implements OnInit {
   }
 
   initial(name: string) { return name.charAt(0).toUpperCase(); }
+
+  onFactionAssigned(symbols: FactionSymbolAssignment[]): void {
+    const factionInstanceId = symbols.length ? symbols[0].factionInstanceId : null;
+    const symbolPath        = symbols.length ? symbols[0].symbolPath        : null;
+
+    this.sublocationSymbolPath.set(symbolPath);
+    this.sublocationFactionId.set(factionInstanceId);
+
+    const instanceId = this.sublocationInstanceId();
+    this.shell.campaign.update(c => c ? {
+      ...c,
+      sublocations: c.sublocations.map(sl =>
+        sl.instanceId === instanceId
+          ? { ...sl, factionInstanceId: factionInstanceId ?? undefined, symbolPath: symbolPath ?? undefined }
+          : sl
+      )
+    } : c);
+  }
 }

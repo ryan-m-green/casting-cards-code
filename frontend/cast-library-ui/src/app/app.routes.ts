@@ -30,6 +30,16 @@ export const routes: Routes = [
         path: 'sublocations/:sublocationInstanceId/cast/:castInstanceId',
         loadComponent: () => import('./features/campaign/campaign-cast-detail/campaign-cast-detail.component').then(m => m.CampaignCastDetailComponent),
       },
+      {
+        path: 'factions',
+        canActivate: [dmGuard],
+        loadComponent: () => import('./features/campaign/campaign-factions/campaign-factions.component').then(m => m.CampaignFactionsComponent),
+      },
+      {
+        path: 'factions/:factionInstanceId',
+        canActivate: [dmGuard],
+        loadComponent: () => import('./features/campaign/campaign-faction-detail/campaign-faction-detail.component').then(m => m.CampaignFactionDetailComponent),
+      },
     ],
   },
   {
@@ -55,12 +65,24 @@ export const routes: Routes = [
         loadComponent: () => import('./features/player/player-cast-detail/player-cast-detail.component').then(m => m.PlayerCastDetailComponent),
       },
       {
-        path: 'my-character',
-        loadComponent: () => import('./features/player/player-my-character/player-my-character.component').then(m => m.PlayerMyCharacterComponent),
+        path: 'factions/:factionInstanceId',
+        loadComponent: () => import('./features/player/player-faction-detail/player-faction-detail.component').then(m => m.PlayerFactionDetailComponent),
+      },
+      {
+        path: 'the-party',
+        loadComponent: () => import('./features/player/player-the-party/player-the-party.component').then(m => m.PlayerThePartyComponent),
       },
       {
         path: 'player-card/new',
         loadComponent: () => import('./features/player/player-card-form/player-card-form.component').then(m => m.PlayerCardFormComponent),
+      },
+      {
+        path: 'campaign-insight',
+        loadComponent: () => import('./features/player/player-campaign-insight/player-campaign-insight.component').then(m => m.PlayerCampaignInsightComponent),
+      },
+      {
+        path: 'quicknote-queue',
+        loadComponent: () => import('./features/player/player-quicknote-queue/player-quicknote-queue.component').then(m => m.PlayerQuicknoteQueueComponent),
       },
     ],
   },
@@ -156,14 +178,7 @@ export const routes: Routes = [
             path: 'campaigns/:id',
             loadComponent: () => import('./features/campaign/campaign-creator/campaign-creator.component').then(m => m.CampaignCreatorComponent),
           },
-          {
-            path: 'campaigns/:id/locations/:locationId/sublocations',
-            loadComponent: () => import('./features/campaign/campaign-sublocation-selector/campaign-sublocation-selector.component').then(m => m.CampaignSublocationSelectorComponent),
-          },
-          {
-            path: 'campaigns/:id/locations/:locationId/sublocations/:sublocationInstanceId/cast',
-            loadComponent: () => import('./features/campaign/campaign-cast-editor/campaign-cast-editor.component').then(m => m.CampaignCastEditorComponent),
-          },
+
           {
             path: 'sublocations',
             loadComponent: () => import('./features/sublocations/sublocation-library/sublocation-library.component').then(m => m.SublocationLibraryComponent),
@@ -177,12 +192,20 @@ export const routes: Routes = [
             loadComponent: () => import('./features/sublocations/sublocation-form/sublocation-form.component').then(m => m.SublocationFormComponent),
           },
           {
-            path: 'change-password',
-            loadComponent: () => import('./features/change-password/change-password.component').then(m => m.ChangePasswordComponent),
+            path: 'faction',
+            loadComponent: () => import('./features/faction/faction-library/faction-library.component').then(m => m.FactionLibraryComponent),
           },
           {
-            path: 'gold-ledger',
-            loadComponent: () => import('./features/gold-ledger/gold-ledger.component').then(m => m.GoldLedgerComponent),
+            path: 'faction/new',
+            loadComponent: () => import('./features/faction/faction-form/faction-form.component').then(m => m.FactionFormComponent),
+          },
+          {
+            path: 'faction/:id',
+            loadComponent: () => import('./features/faction/faction-form/faction-form.component').then(m => m.FactionFormComponent),
+          },
+          {
+            path: 'change-password',
+            loadComponent: () => import('./features/change-password/change-password.component').then(m => m.ChangePasswordComponent),
           },
           {
             path: 'player-invites',

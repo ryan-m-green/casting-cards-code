@@ -11,7 +11,7 @@ public interface IGetPlayerCampaignDetailQueryHandler
 {
     Task<(CampaignDomain Campaign, List<CampaignLocationInstanceDomain> locations,
         List<CampaignCastInstanceDomain> Casts, List<CampaignSublocationInstanceDomain> Locations,
-        List<CampaignSecretDomain> Secrets, TimeOfDayDomain? TimeOfDay)>
+        List<CampaignSecretDomain> Secrets, TimeOfDayDomain? TimeOfDay, List<CampaignFactionInstanceDomain> Factions)>
         HandleAsync(Guid campaignId);
 }
 
@@ -24,11 +24,11 @@ public class GetPlayerCampaignDetailQueryHandler(
 {
     public async Task<(CampaignDomain Campaign, List<CampaignLocationInstanceDomain> locations,
         List<CampaignCastInstanceDomain> Casts, List<CampaignSublocationInstanceDomain> Locations,
-        List<CampaignSecretDomain> Secrets, TimeOfDayDomain TimeOfDay)>
+        List<CampaignSecretDomain> Secrets, TimeOfDayDomain TimeOfDay, List<CampaignFactionInstanceDomain> Factions)>
         HandleAsync(Guid campaignId)
     {
         var campaign = await campaignRepository.GetByIdAsync(campaignId);
-        if (campaign is null) return (null, [], [], [], [], null);
+        if (campaign is null) return (null, [], [], [], [], null, []);
 
         var locations = (await campaignRepository.GetLocationInstancesByCampaignAsync(campaignId))
                             .Where(c => c.IsVisibleToPlayers)
@@ -36,16 +36,14 @@ public class GetPlayerCampaignDetailQueryHandler(
 
         var visibleLocationIds = locations.Select(c => c.InstanceId).ToHashSet();
 
-        var sublocations = (await campaignRepository.GetSublocationInstancesByCampaignAsync(campaignId))
+        var sublocations = (await campaignRepository.GetPlayerSublocationInstancesByCampaignAsync(campaignId))
                             .Where(l => l.IsVisibleToPlayers && l.LocationInstanceId.HasValue && visibleLocationIds.Contains(l.LocationInstanceId.Value))
                             .ToList();
 
         var visibleSublocationIds = sublocations.Select(l => l.InstanceId).ToHashSet();
 
-        var casts = (await campaignRepository.GetCastInstancesByCampaignAsync(campaignId))
-                            .Where(c => c.IsVisibleToPlayers
-                                && c.LocationInstanceId.HasValue && visibleLocationIds.Contains(c.LocationInstanceId.Value)
-                                && (!c.SublocationInstanceId.HasValue || visibleSublocationIds.Contains(c.SublocationInstanceId.Value)))
+        var casts = (await campaignRepository.GetPlayerCastInstancesByCampaignAsync(campaignId))
+                            .Where(c => c.IsVisibleToPlayers)
                             .Select(c => { c.Description = string.Empty; return c; })
                             .ToList();
 
@@ -62,9 +60,11 @@ public class GetPlayerCampaignDetailQueryHandler(
 
         var players = await playerReadRepository.GetByCampaignAsync(campaignId);
 
+        var factions = await campaignRepository.GetFactionInstancesForPlayerAsync(campaignId);
+
         filenameService.AddImageUrls(campaign.DmUserId, locations, sublocations, casts, players);
 
-        return (campaign, locations, casts, sublocations, secrets, timeOfDay);
+        return (campaign, locations, casts, sublocations, secrets, timeOfDay, factions);
     }
 }
 

@@ -1,4 +1,4 @@
-import { Component, OnInit, signal, computed, inject, ViewChild, ElementRef, effect } from '@angular/core';
+import { Component, OnInit, signal, computed, inject, ViewChild, ElementRef, effect, untracked } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
@@ -11,11 +11,14 @@ import { PlayerCastNotesComponent } from '../player-cast-notes/player-cast-notes
 import { CastCardComponent } from '../../../shared/components/cast-card/cast-card.component';
 import { PlayerCampaignShellComponent } from '../player-campaign-shell/player-campaign-shell.component';
 import { PlayerCampaignShellService } from '../../../core/player-campaign-shell.service';
+import { CampaignHubService } from '../../../core/hub/campaign-hub.service';
+import { catchError, EMPTY } from 'rxjs';
+import { FactionSymbolPickerComponent, FactionSymbolAssignment } from '../../../shared/components/faction-symbol-picker/faction-symbol-picker.component';
 
 @Component({
   selector: 'app-player-cast-detail',
   standalone: true,
-  imports: [CommonModule, PlayerCastNotesComponent, CastCardComponent],
+  imports: [CommonModule, PlayerCastNotesComponent, CastCardComponent, FactionSymbolPickerComponent],
   templateUrl: './player-cast-detail.component.html',
   styleUrl: './player-cast-detail.component.scss'
 })
@@ -24,8 +27,9 @@ export class PlayerCastDetailComponent implements OnInit {
   private router     = inject(Router);
   private http       = inject(HttpClient);
   private transition = inject(PortalTransitionService);
-  private shell      = inject(PlayerCampaignShellComponent);
+  private shell       = inject(PlayerCampaignShellComponent);
   private shellService = inject(PlayerCampaignShellService);
+  private hub          = inject(CampaignHubService);
 
   @ViewChild(PlayerCastNotesComponent) private notesComp?: PlayerCastNotesComponent;
   @ViewChild('detailContent') private detailContentRef!: ElementRef<HTMLElement>;
@@ -42,6 +46,12 @@ export class PlayerCastDetailComponent implements OnInit {
   playerRating       = computed(() => this.playerNotes()?.rating ?? 0);
   starAnimating      = signal(false);
   castOverride       = signal<CampaignCastInstance | null>(null);
+
+  castFactionSymbols = signal<{ factionInstanceId: string; symbolPath: string }[]>([]);
+
+  visibleFactions = computed(() =>
+    (this.campaign()?.factions ?? []).filter(f => f.isVisibleToPlayers)
+  );
 
   cast = computed<CampaignCastInstance | null>(() => {
     const c = this.campaign();
@@ -72,31 +82,75 @@ export class PlayerCastDetailComponent implements OnInit {
 
   constructor() {
     effect(() => {
+      const event = this.hub.cardVisibilityChanged();
+      if (!event || event.cardType !== 'cast') return;
+      const castId    = untracked(() => this.castInstanceId());
+      const campaignId = untracked(() => this.campaignId());
+      if (!castId || !campaignId) return;
+      if (event.instanceId !== castId) return;
+
+      if (event.isVisible) {
+        this.http.get<CampaignCastInstance>(
+          `${environment.apiUrl}/api/campaigns/${campaignId}/casts/${castId}`
+        ).subscribe(ca => this.castOverride.set(ca));
+      } else {
+        this.transition.quickCover();
+        this.router.navigate(['/player/campaign', campaignId]);
+      }
+    });
+
+    effect(() => {
+      const event = this.hub.factionRemoved();
+      if (!event) return;
+      const castId     = untracked(() => this.castInstanceId());
+      const campaignId = untracked(() => this.campaignId());
+      if (!castId || !campaignId || event.campaignId !== campaignId) return;
+
+      this.http.get<CampaignCastInstance>(
+        `${environment.apiUrl}/api/campaigns/${campaignId}/casts/${castId}`
+      ).subscribe(ca => {
+        this.castOverride.set(ca);
+        this.castFactionSymbols.set(ca.factionSymbols ?? []);
+      });
+    });
+
+    effect(() => {
+      debugger;
       const ca = this.cast();
       if (!ca) return;
 
-      if (this.fromParty) {
-        this.shellService.setCrumbs([
-          { label: '← The Party', action: () => this.goToMyCharacter() }
-        ]);
-        this.shellService.setTitle(ca.name);
+      const parentSubLoc = this.parentSublocation();
+      const parentLoc = this.parentLocation();
+
+      if (parentSubLoc?.isPartyAnchor) {
+        this.shellService.setTitleContext({
+          pageType:   'cast-party',
+          campaignId: this.campaignId(),
+          baseRoute:  '/player/campaign',
+          location:   null,
+          partyRoute: ['/player/campaign', this.campaignId(), 'the-party'],
+        });
         return;
       }
 
-      const parentSubLoc = this.parentSublocation();
-      const parentLoc = this.parentLocation();
-      if (parentSubLoc && parentLoc) {
-        this.shellService.setCrumbs([
-          { label: '← Locations',   action: () => this.goToCampaign() },
-          { label: '← Sublocations', action: () => this.goToLocation() },
-          { label: '← Cast',         action: () => this.goToSublocation() }
-        ]);
-        this.shellService.setTitle(ca.name);
-      }
+      this.shellService.setTitleContext({
+        pageType: 'cast',
+        campaignId: this.campaignId(),
+        baseRoute: '/player/campaign',
+        location: parentLoc,
+        sublocation: parentSubLoc,
+      });
+    });
+
+    effect(() => {
+      const event = this.hub.castTravelled();
+      if (!event || event.castInstanceId !== untracked(() => this.castInstanceId())) return;
+      this.sublocationInstanceId.set(event.toSublocationInstanceId);
     });
   }
 
   ngOnInit() {
+    debugger;
     this.transition.hide();
     const id     = this.route.snapshot.paramMap.get('id')!;
     const locId  = this.route.snapshot.paramMap.get('sublocationInstanceId')!;
@@ -108,14 +162,20 @@ export class PlayerCastDetailComponent implements OnInit {
 
     this.http.get<CampaignCastPlayerNotes>(
       `${environment.apiUrl}/api/campaigns/${id}/cast-player-notes/${castId}`
-    ).subscribe(n => this.playerNotes.set(n));
+    ).pipe(catchError(() => EMPTY)).subscribe(n => this.playerNotes.set(n));
 
     const shellCampaign = this.shell.campaign();
     const alreadyInShell = shellCampaign?.casts.some(ca => ca.instanceId === castId) ?? false;
     if (!alreadyInShell) {
       this.http.get<CampaignCastInstance>(
         `${environment.apiUrl}/api/campaigns/${id}/casts/${castId}`
-      ).subscribe(ca => this.castOverride.set(ca));
+      ).subscribe(ca => {
+        this.castOverride.set(ca);
+        this.castFactionSymbols.set(ca.factionSymbols ?? []);
+      });
+    } else {
+      const ca = this.cast();
+      if (ca) this.castFactionSymbols.set(ca.factionSymbols ?? []);
     }
   }
 
@@ -134,7 +194,7 @@ export class PlayerCastDetailComponent implements OnInit {
 
   goToMyCharacter() {
     this.transition.quickCover();
-    this.router.navigate(['/player/campaign', this.campaignId(), 'my-character']);
+    this.router.navigate(['/player/campaign', this.campaignId(), 'the-party']);
   }
 
   goToCampaign() {
@@ -152,7 +212,7 @@ export class PlayerCastDetailComponent implements OnInit {
     this.http.put<CampaignCastPlayerNotes>(
       `${environment.apiUrl}/api/campaigns/${this.campaignId()}/cast-player-notes/${this.castInstanceId()}`,
       {
-        want:        notes?.want        ?? '',
+        notes:       notes?.notes       ?? '',
         connections: notes?.connections ?? [],
         alignment:   notes?.alignment   ?? '',
         perception:  notes?.perception  ?? 0,
@@ -174,4 +234,11 @@ export class PlayerCastDetailComponent implements OnInit {
   }
 
   initial(name: string) { return name.charAt(0).toUpperCase(); }
+
+  onFactionAssigned(symbols: FactionSymbolAssignment[]): void {
+    this.castFactionSymbols.set(
+      symbols.map(s => ({ factionInstanceId: s.factionInstanceId, symbolPath: s.symbolPath }))
+    );
+  }
+
 }

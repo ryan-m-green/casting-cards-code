@@ -5,7 +5,7 @@ public class CampaignCastPlayerNotesResponse
     public Guid Id { get; set; }
     public Guid CampaignId { get; set; }
     public Guid CastInstanceId { get; set; }
-    public string Want { get; set; } = string.Empty;
+    public string Notes { get; set; } = string.Empty;
     public List<Guid> Connections { get; set; } = [];
     public string Alignment { get; set; } = string.Empty;
     public int Perception { get; set; }

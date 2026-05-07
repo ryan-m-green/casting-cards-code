@@ -2,6 +2,8 @@ namespace CastLibrary.Shared.Domain;
 
 public record CampaignCastCustomItemDomain(string Name, string Price);
 
+public record FactionSymbolDomain(string FactionInstanceId, string SymbolPath);
+
 public class CampaignCastInstanceDomain
 {
     public Guid InstanceId { get; set; }
@@ -18,6 +20,7 @@ public class CampaignCastInstanceDomain
     public string Posture { get; set; } = string.Empty;
     public string Speed { get; set; } = string.Empty;
     public string[] VoicePlacement { get; set; } = [];
+    public string VoiceNotes { get; set; } = string.Empty;
     public string Description { get; set; } = string.Empty;
     public string PublicDescription { get; set; } = string.Empty;
     public bool IsVisibleToPlayers { get; set; }
@@ -25,6 +28,7 @@ public class CampaignCastInstanceDomain
     public string[] Keywords { get; set; } = [];
     public string DmNotes { get; set; } = string.Empty;
     public string ImageUrl { get; set; } = string.Empty;
+    public List<FactionSymbolDomain> FactionSymbols { get; set; } = [];
 }
 
 public class CampaignLocationInstanceDomain
@@ -65,5 +69,7 @@ public class CampaignSublocationInstanceDomain
     public List<CampaignCastCustomItemDomain> CustomItems { get; set; } = [];
     public string[] Keywords { get; set; } = [];
     public bool IsPartyAnchor { get; set; }
+    public Guid? FactionInstanceId { get; set; }
+    public string? SymbolPath { get; set; }
 }
 

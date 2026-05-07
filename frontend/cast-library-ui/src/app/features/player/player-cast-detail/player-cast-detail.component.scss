@@ -11,9 +11,17 @@
   min-height: 100%;
   background: v.$color-black;
   position: relative;
-  animation: portal-inward-breathe 6.4s ease-in-out infinite;
   overflow-y: auto;
   overflow-x: hidden;
+}
+
+:host::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 9999;
+  animation: portal-inward-breathe 6.4s ease-in-out infinite;
 }
 
 @keyframes portal-inward-breathe {
@@ -116,21 +124,29 @@
     0 1px 3px v.$color-ext-23;
 }
 
-.cast-hero {
+/* ── Main body layout ────────────────────────────────────────────────────── */
+.cast-body {
   display: flex;
-  justify-content: center;
-  padding: 8px 40px 24px;
+  gap: 32px;
+  padding: 8px 40px 32px;
   position: relative;
   z-index: 1;
+  align-items: flex-start;
 }
 
+.cast-card-left {
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
 
 /* ── Star rating ─────────────────────────────────────────────────────────── */
 .cast-rating {
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 0 40px 20px;
+  padding: 12px 0 0;
   position: relative;
   z-index: 1;
 }
@@ -218,19 +234,11 @@
   .star:nth-child(3).star--lit { animation: star-ignite 560ms ease-out 240ms both; }
 }
 
-.cast-detail-wrap {
-  display: flex;
-  justify-content: center;
-  padding: 0 40px 48px;
-  position: relative;
-  z-index: 1;
-}
-
 .cast-detail-panel {
-  width: 100%;
-  max-width: 560px;
+  flex: 1;
+  min-width: 0;
   background: v.$campaign-portal-bg-dark;
-  border: 1px solid rgba(v.$cast-gold, 0.40);
+  border: 1px solid v.$color-player-section-border;
   border-radius: 6px;
   overflow: hidden;
   display: flex;
@@ -250,7 +258,7 @@
   flex-direction: column;
   gap: 6px;
   padding: 12px 16px;
-  border-bottom: 1px solid rgba(v.$cast-gold, 0.12);
+  border-bottom: 1px solid v.$color-player-section-border;
 }
 
 .detail-grid {
@@ -264,10 +272,10 @@
   flex-direction: column;
   gap: 6px;
   padding: 12px 16px;
-  border-bottom: 1px solid rgba(v.$cast-gold, 0.08);
+  border-bottom: 1px solid v.$color-player-section-border;
 
   &:nth-child(odd) {
-    border-right: 1px solid rgba(v.$cast-gold, 0.08);
+    border-right: 1px solid v.$color-player-section-border;
   }
 
   &--full {
@@ -282,14 +290,14 @@
   font-size: 7px;
   letter-spacing: 0.2em;
   text-transform: uppercase;
-  color: rgba(v.$cast-gold, 0.85);
+  color: rgba(v.$location-blue, 0.85);
   white-space: nowrap;
 }
 
 .detail-line {
   height: 1px;
   width: 100%;
-  background: linear-gradient(to right, rgba(v.$cast-gold, 0.22), transparent);
+  background: linear-gradient(to right, v.$color-player-section-border, transparent);
 }
 
 .detail-value {
@@ -316,16 +324,21 @@
 }
 
 .cast-notes-wrap {
-  display: flex;
-  justify-content: center;
-  padding: 16px 40px 48px;
+  padding: 0 40px 24px;
+  margin-top: 12px;
+  position: relative;
+  z-index: 1;
+}
+
+.cast-faction-picker {
+  padding: 0 40px;
+  margin-top: -18px;
   position: relative;
   z-index: 1;
 }
 
 .cast-notes-wrap app-player-cast-notes {
   width: 100%;
-  max-width: 560px;
 }
 
 .detail-keyword-pill {
@@ -333,8 +346,8 @@
   font-size: 7px;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: rgba(v.$cast-gold, 0.80);
-  border: 1px solid rgba(v.$cast-gold, 0.28);
+  color: rgba(v.$location-blue, 0.80);
+  border: 1px solid v.$color-player-section-border;
   border-radius: 2px;
   padding: 2px 8px;
 }
@@ -347,18 +360,18 @@
   padding: 0;
   background: rgba(v.$cast-gold, 0.04);
   border: none;
-  border-top: 1px solid rgba(v.$cast-gold, 0.14);
+  border-top: 1px solid v.$color-player-section-border;
   border-radius: 0 0 6px 6px;
   cursor: pointer;
   font-family: v.$font-header;
   font-size: 8px;
   letter-spacing: 0.12em;
-  color: rgba(v.$cast-gold, 0.85);
+  color: rgba(v.$location-blue, 0.85);
   transition: background 0.18s ease, color 0.18s ease;
 
   &:hover {
     background: rgba(v.$cast-gold, 0.10);
-    color: rgba(v.$cast-gold, 0.95);
+    color: rgba(v.$location-blue, 0.95);
   }
 }
 
@@ -370,12 +383,25 @@
 }
 
 @media (max-width: 767px) {
-  .cast-detail-wrap {
-    padding: 0 20px 48px;
+  .cast-body {
+    padding: 8px 20px 32px;
+    gap: 16px;
   }
 
   .cast-detail-panel {
-    max-width: none;
-    width: 100%;
+    &.detail-panel--mobile-expanded {
+      position: relative;
+      z-index: 10;
+      margin-left: -166px;
+      width: calc(100% + 166px);
+    }
+  }
+
+  .cast-faction-picker {
+    padding: 0 16px 0 16px;
+  }
+
+  .cast-notes-wrap {
+    padding: 0 16px 16px;
   }
 }

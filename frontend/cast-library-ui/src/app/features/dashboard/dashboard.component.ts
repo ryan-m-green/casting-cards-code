@@ -6,13 +6,14 @@ import { environment } from '../../../environments/environment';
 import { AuthService } from '../../core/auth/auth.service';
 import { Campaign } from '../../shared/models/campaign.model';
 import { PortalTransitionService } from '../../core/portal-transition.service';
-import { DmNavComponent } from '../../shared/components/dm-nav/dm-nav.component';
+import { JournalTitleComponent } from '../../shared/components/journal-title/journal-title.component';
 
 interface DashboardStats {
   campaignCount: number;
   locationCount: number;
   sublocationCount: number;
   castCount: number;
+  factionCount: number;
   activeCampaign: Campaign | null;
 }
 
@@ -32,7 +33,7 @@ interface ImportFailure {
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [CommonModule, DmNavComponent],
+  imports: [CommonModule, JournalTitleComponent],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.scss'
 })
@@ -46,7 +47,7 @@ export class DashboardComponent implements OnInit {
   private isEntering = false;
 
   stats = signal<DashboardStats>({
-    campaignCount: 0, locationCount: 0, sublocationCount: 0, castCount: 0, activeCampaign: null
+    campaignCount: 0, locationCount: 0, sublocationCount: 0, castCount: 0, factionCount: 0, activeCampaign: null
   });
 
   showImportPanel = signal(false);

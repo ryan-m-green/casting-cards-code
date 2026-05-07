@@ -1,0 +1,427 @@
+@use '../../../../../styles/variables' as v;
+
+$accent: v.$color-faction-neutral-frame-2;
+
+/* ── GM-only Box ─────────────────────────────────────────────────────────── */
+.detail-gm-box {
+  border: 1px solid rgba($accent, 0.2);
+  border-radius: 8px;
+  margin: 4px 0 0;
+  padding: 0;
+
+  &__legend {
+    font-family: v.$font-header;
+    font-size: 8px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: rgba($accent, 0.5);
+    padding: 0 8px;
+    margin-left: 8px;
+  }
+
+  .detail-desc,
+  .detail-cell,
+  .detail-dm-notes {
+    border-bottom: none;
+    border-right: none;
+  }
+
+  div {
+    border: none;
+  }
+}
+
+/* ── Symbol section (below fieldset) ────────────────────────────────────── */
+.detail-dm-notes.detail-symbol-section {
+  border-top: none;
+  margin-top: 12px;
+}
+
+
+/* ── Name + In Hiding row ────────────────────────────────────────────────── */
+.detail-name-row {
+  display: flex;
+  align-items: stretch;
+  border-bottom: 1px solid rgba($accent, 0.12);
+}
+
+.detail-desc--grow {
+  flex: 1;
+  border-bottom: none;
+}
+
+.detail-cell--inline {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 12px 16px;
+  border-left: 1px solid rgba($accent, 0.08);
+  flex-shrink: 0;
+}
+
+
+.detail-desc {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 12px 16px;
+}
+
+/* ── 2-col field grid ────────────────────────────────────────────────────── */
+.detail-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-content: start;
+}
+
+.detail-cell {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 12px 16px;
+  border-bottom: 1px solid rgba($accent, 0.08);
+
+  &:nth-child(odd) {
+    border-right: 1px solid rgba($accent, 0.08);
+  }
+
+  &--full {
+    grid-column: 1 / -1;
+    border-right: none !important;
+  }
+}
+
+/* ── Shared label / line / value ─────────────────────────────────────────── */
+.detail-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: v.$font-header;
+  font-size: 8px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgba($accent, 0.85);
+}
+
+.detail-line {
+  flex: 1;
+  height: 1px;
+  background: rgba($accent, 0.18);
+}
+
+.detail-value {
+  font-family: v.$font-body;
+  font-size: 14px;
+  color: v.$campaign-portal-text-muted;
+}
+
+.detail-value--block {
+  font-size: 13px;
+  line-height: 1.6;
+  margin: 0;
+}
+
+.detail-value--muted {
+  font-family: v.$font-body;
+  font-size: 13px;
+  color: rgba($accent, 0.75);
+  font-style: italic;
+  margin: 0;
+}
+
+/* ── Edit inputs ─────────────────────────────────────────────────────────── */
+.detail-input {
+  background: v.$color-overlay-darker;
+  border: 1px solid rgba($accent, 0.28);
+  border-radius: 3px;
+  padding: 5px 8px;
+  font-family: v.$font-body;
+  font-size: 14px;
+  color: v.$campaign-portal-text-muted;
+  width: 100%;
+  box-sizing: border-box;
+  outline: none;
+  transition: border-color 0.18s ease;
+
+  &::placeholder { color: rgba($accent, 0.30); }
+  &:focus        { border-color: rgba($accent, 0.65); }
+
+  &--block {
+    resize: vertical;
+    font-size: 13px;
+    line-height: 1.6;
+    min-height: 72px;
+  }
+}
+
+/* ── Range slider (shared) ───────────────────────────────────────────────── */
+.detail-range {
+  width: 100%;
+  accent-color: rgba($accent, 0.85);
+  cursor: pointer;
+}
+
+/* ── Influence slider ────────────────────────────────────────────────────── */
+.influence-slider-wrap {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.detail-range-value {
+  font-family: v.$font-header;
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  color: v.$campaign-portal-text-bright;
+  min-width: 18px;
+  text-align: center;
+}
+
+.detail-range-label {
+  font-family: v.$font-header;
+  font-size: 8px;
+  letter-spacing: 0.12em;
+  color: v.$campaign-portal-text-bright;
+  margin-left: auto;
+}
+
+/* ── Perception slider ───────────────────────────────────────────────────── */
+.perception-bar-wrap {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.perception-range {
+  flex: 1;
+}
+
+.perception-end-label {
+  font-family: v.$font-header;
+  font-size: 8px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  white-space: nowrap;
+
+  &--evil { color: v.$color-faction-evil-accent; }
+  &--good { color: v.$color-faction-good-accent; }
+}
+
+.perception-track-labels {
+  display: flex;
+  justify-content: space-between;
+  font-family: v.$font-header;
+  font-size: 7px;
+  letter-spacing: 0.08em;
+  color: rgba($accent, 0.55);
+  padding: 0 2px;
+}
+
+/* ── Perception card ─────────────────────────────────────────────────────── */
+.perception-card {
+  border: 1px solid rgba($accent, 0.25);
+  border-radius: 4px;
+  padding: 10px 12px 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  transition: border-color 0.25s;
+
+  &--hostile  { border-color: v.$color-faction-evil-accent; }
+  &--friendly { border-color: v.$color-faction-good-accent; }
+}
+
+.perception-slider {
+  width: 100%;
+  accent-color: rgba($accent, 0.85);
+  cursor: pointer;
+
+  &.slider-friendly { accent-color: v.$color-faction-good-accent; }
+  &.slider-hostile  { accent-color: v.$color-faction-evil-accent; }
+}
+
+.perception-ticks {
+  display: flex;
+  justify-content: space-between;
+  padding: 0 7px;
+  margin-top: -2px;
+
+  span {
+    width: 1px;
+    height: 4px;
+    background: rgba($accent, 0.30);
+    border-radius: 1px;
+  }
+}
+
+.perception-labels {
+  display: flex;
+  justify-content: space-between;
+  font-family: v.$font-header;
+  font-size: 7px;
+  letter-spacing: 0.10em;
+  color: rgba($accent, 0.60);
+}
+
+.perception-label-center {
+  font-weight: 600;
+  color: rgba($accent, 0.85);
+  text-align: center;
+}
+
+.perception-label-end {
+  color: rgba($accent, 0.55);
+}
+
+/* ── Slider row (influence edit mode) ───────────────────────────────────── */
+.detail-slider-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  .fi-slider-wrap {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+  }
+
+  .fi-slider {
+    flex: 1;
+    width: 100%;
+    accent-color: rgba($accent, 0.85);
+    cursor: pointer;
+    min-width: 0;
+  }
+}
+
+.fi-slider-ticks {
+  display: flex;
+  justify-content: space-between;
+  padding: 0 7px;
+
+  span {
+    width: 1px;
+    height: 4px;
+    background: rgba($accent, 0.35);
+    border-radius: 1px;
+  }
+}
+
+.detail-slider-value {
+  font-family: v.$font-header;
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  color: v.$campaign-portal-text-bright;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+/* ── Toggle switch (reuse global pattern) ────────────────────────────────── */
+.toggle-switch {
+  position: relative;
+  display: inline-block;
+  width: 36px;
+  height: 20px;
+
+  input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+  }
+
+  .toggle-slider {
+    position: absolute;
+    inset: 0;
+    background: rgba($accent, 0.20);
+    border-radius: 20px;
+    transition: background 0.2s ease;
+    cursor: pointer;
+
+    &::before {
+      content: '';
+      position: absolute;
+      left: 3px;
+      top: 3px;
+      width: 14px;
+      height: 14px;
+      background: v.$campaign-portal-text-secondary;
+      border-radius: 50%;
+      transition: transform 0.2s ease, background 0.2s ease;
+    }
+  }
+
+  input:checked + .toggle-slider {
+    background: rgba(v.$color-faction-good-accent, 0.55);
+
+    &::before {
+      transform: translateX(16px);
+      background: v.$color-faction-good-accent;
+    }
+  }
+}
+
+/* ── DM Notes section ────────────────────────────────────────────────────── */
+.detail-dm-notes {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 12px 16px;
+  border-top: 1px solid rgba($accent, 0.14);
+  margin-top: 4px;
+  min-height: 60px;
+}
+
+/* ── Icon picker overrides (edit mode) ───────────────────────────────────── */
+:host ::ng-deep app-icon-picker {
+  .ip-search {
+    background: v.$color-overlay-darker;
+    border: 1px solid rgba($accent, 0.28);
+    border-radius: 3px;
+    padding: 5px 8px;
+    font-family: v.$font-body;
+    font-size: 14px;
+    color: v.$campaign-portal-text-muted;
+    outline: none;
+    transition: border-color 0.18s ease;
+
+    &::placeholder { color: rgba($accent, 0.30); }
+    &:focus        { border-color: rgba($accent, 0.65); }
+  }
+
+  .ip-pill {
+    background: rgba($accent, 0.08);
+    border-color: rgba($accent, 0.28);
+    color: v.$campaign-portal-text-muted;
+    font-family: v.$font-body;
+
+    &:hover {
+      background: rgba($accent, 0.18);
+      border-color: rgba($accent, 0.65);
+      color: v.$campaign-portal-text-bright;
+    }
+  }
+
+  .ip-back {
+    color: v.$campaign-portal-text-muted;
+    font-family: v.$font-body;
+
+    &:hover { color: v.$campaign-portal-text-bright; }
+  }
+
+  .ip-icon-tile {
+    background: rgba(255, 255, 255, 0.92);
+    border-color: rgba($accent, 0.20);
+
+    &:hover {
+      background: #fff;
+      border-color: rgba($accent, 0.55);
+    }
+
+    &--selected {
+      background: #fff;
+      border-color: rgba($accent, 0.85);
+    }
+  }
+}

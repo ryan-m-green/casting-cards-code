@@ -1,0 +1,51 @@
+<div class="qnq-page">
+
+  @if (loading()) {
+    <div class="qnq-empty">Loading…</div>
+  } @else if (!items().length) {
+    <div class="qnq-empty">Your queue is empty.</div>
+  } @else {
+    <div class="qnq-list">
+      @for (state of items(); track state.item.id) {
+        <div class="qnq-card">
+          <button
+            class="qnq-delete-btn"
+            [disabled]="state.deleting || state.routing"
+            (click)="deleteItem(state)"
+            title="Delete"
+            aria-label="Delete"
+          >
+            <img src="/icons/chronicle/delete.svg" alt="Delete" class="qnq-delete-btn-img" />
+          </button>
+          <div class="qnq-content">{{ state.item.content }}</div>
+          <div class="qnq-meta">{{ state.item.createdAt | date:'MMM d, y, h:mm a' }}</div>
+
+          <div class="qnq-actions">
+            <app-note-destination-picker
+              [showQueue]="false"
+              [destType]="state.destType"
+              [entityId]="state.entityId"
+              [locations]="locations"
+              [sublocations]="sublocations"
+              [casts]="casts"
+              [factions]="factions"
+              (destTypeChange)="onDestTypeChange(state, $event)"
+              (entityIdChange)="state.entityId = $event"
+            />
+
+            <div class="qnq-btn-group">
+              <button
+                class="qnq-route-btn"
+                [disabled]="!canRoute(state) || state.routing || state.deleting"
+                (click)="fileNote(state)"
+              >
+                {{ state.routing ? 'Filing…' : 'File Note' }}
+              </button>
+            </div>
+          </div>
+        </div>
+      }
+    </div>
+  }
+
+</div>

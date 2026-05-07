@@ -11,6 +11,7 @@ import { CampaignSecret } from '../../../shared/models/secret.model';
 import { CampaignHubService } from '../../../core/hub/campaign-hub.service';
 import { AuthService } from '../../../core/auth/auth.service';
 import { CampaignShellService } from '../../../core/campaign-shell.service';
+
 import { PortalTransitionService } from '../../../core/portal-transition.service';
 import { SublocationCardComponent } from '../../../shared/components/sublocation-card/sublocation-card.component';
 import { CastCardComponent } from '../../../shared/components/cast-card/cast-card.component';
@@ -60,6 +61,7 @@ export class CampaignSublocationDetailComponent implements OnInit {
 
   // Edit mode
   editing         = signal(false);
+  editName        = signal('');
   editDescription = signal('');
   editDmNotes     = signal('');
 
@@ -124,6 +126,26 @@ export class CampaignSublocationDetailComponent implements OnInit {
         };
       });
     });
+
+    effect(() => {
+      const event = this.hub.factionLocked();
+      if (!event || event.campaignId !== this.campaignId()) return;
+      this.campaign.update(c => {
+        if (!c) return c;
+        return {
+          ...c,
+          sublocations: (c.sublocations ?? []).map(l =>
+            l.factionInstanceId === event.factionInstanceId
+              ? { ...l, factionInstanceId: undefined, symbolPath: undefined }
+              : l
+          ),
+          casts: (c.casts ?? []).map(ca => ({
+            ...ca,
+            factionSymbols: (ca.factionSymbols ?? []).filter(fs => fs.factionInstanceId !== event.factionInstanceId),
+          })),
+        };
+      });
+    });
   }
 
   ngOnInit() {
@@ -134,13 +156,17 @@ export class CampaignSublocationDetailComponent implements OnInit {
     this.http.get<CampaignDetail>(`${environment.apiUrl}/api/campaigns/${id}`)
       .subscribe(c => {
         this.campaign.set(c);
+        this.shellSvc.setCampaign(c);
         const subLoc    = c.sublocations.find(l => l.instanceId === locId);
         const parentLoc = subLoc ? c.locations.find(l => l.instanceId === subLoc.locationInstanceId) : null;
-        this.shellSvc.setTitle(subLoc?.name ?? '');
-        this.shellSvc.setCrumbs([
-          { label: '← Locations',                   action: () => this.goToCampaign() },
-          { label: '← Sublocations', action: () => this.goToLocation() },
-        ]);
+        if (subLoc) {
+          this.shellSvc.setTitleContext({
+            pageType: 'sublocation',
+            campaignId: id,
+            baseRoute: '/campaign',
+            location: parentLoc ?? null,
+          }, '56px');
+        }
       });
   }
 
@@ -149,20 +175,24 @@ export class CampaignSublocationDetailComponent implements OnInit {
   startEditing() {
     const subLoc = this.sublocation();
     if (!subLoc) return;
+    this.editName.set(subLoc.name ?? '');
     this.editDescription.set(subLoc.description ?? '');
     this.editDmNotes.set(subLoc.dmNotes ?? '');
+    const wasExpanded = this.detailExpanded();
     this.editing.set(true);
-    requestAnimationFrame(() => this.expandPanel());
+    requestAnimationFrame(() => this.expandPanel(!wasExpanded));
   }
 
   cancelEditing() {
     this.editing.set(false);
   }
 
-  saveDetails() {
+  saveDetails(syncLibrary = false) {
     const body = {
+      name:        this.editName(),
       description: this.editDescription(),
       dmNotes:     this.editDmNotes(),
+      syncLibrary,
     };
     this.http.patch(
       `${environment.apiUrl}/api/campaigns/${this.campaignId()}/sublocations/${this.sublocationInstanceId()}`,
@@ -174,14 +204,30 @@ export class CampaignSublocationDetailComponent implements OnInit {
           l.instanceId === this.sublocationInstanceId() ? { ...l, ...body } : l
         )
       } : c);
+      this.shellSvc.setTitleContext({
+        pageType: 'sublocation',
+        campaignId: this.campaignId(),
+        baseRoute: '/campaign',
+        location: this.parentLocation(),
+      }, '56px');
       this.editing.set(false);
     });
   }
 
-  private expandPanel() {
+  saveToLibrary() {
+    this.saveDetails(true);
+  }
+
+  private expandPanel(applyMobileWidth = false) {
+    const panel    = this.detailContentRef.nativeElement.parentElement as HTMLElement;
     const contentH = this.detailContentRef.nativeElement.scrollHeight;
     const btnH     = this.expandBtnRef.nativeElement.offsetHeight;
     this.panelHeight.set(`${contentH + btnH}px`);
+    if (applyMobileWidth && window.innerWidth < 768) {
+      const left = panel.getBoundingClientRect().left;
+      panel.style.marginLeft = `${-(left - 20)}px`;
+      panel.style.width      = `${window.innerWidth - 40}px`;
+    }
     this.detailExpanded.set(true);
   }
 
@@ -206,6 +252,17 @@ export class CampaignSublocationDetailComponent implements OnInit {
     ).subscribe(s => {
       this.campaign.update(c => c ? { ...c, secrets: [...c.secrets, s] } : c);
       this.addingSecret.set(false);
+    });
+  }
+
+  deleteSecret(secret: CampaignSecret) {
+    this.http.delete(
+      `${environment.apiUrl}/api/campaigns/${this.campaignId()}/secrets/${secret.id}`
+    ).subscribe(() => {
+      this.campaign.update(c => c ? {
+        ...c,
+        secrets: c.secrets.filter(s => s.id !== secret.id)
+      } : c);
     });
   }
 
@@ -333,12 +390,14 @@ export class CampaignSublocationDetailComponent implements OnInit {
       `${environment.apiUrl}/api/campaigns/${this.campaignId()}/sublocations/${this.sublocationInstanceId()}/visibility`,
       { isVisibleToPlayers: next }
     ).subscribe(() => {
-      this.campaign.update(c => c ? {
+      const updater = (c: CampaignDetail | null) => c ? {
         ...c,
         sublocations: c.sublocations.map(l =>
           l.instanceId === this.sublocationInstanceId() ? { ...l, isVisibleToPlayers: next } : l
         )
-      } : c);
+      } : c;
+      this.campaign.update(updater);
+      this.shellSvc.updateCampaign(updater);
     });
   }
 
@@ -387,12 +446,14 @@ export class CampaignSublocationDetailComponent implements OnInit {
       `${environment.apiUrl}/api/campaigns/${this.campaignId()}/casts/${cast.instanceId}/visibility`,
       { isVisibleToPlayers: next }
     ).subscribe(() => {
-      this.campaign.update(c => c ? {
+      const updater = (c: CampaignDetail | null) => c ? {
         ...c,
         casts: c.casts.map(ca =>
           ca.instanceId === cast.instanceId ? { ...ca, isVisibleToPlayers: next } : ca
         )
-      } : c);
+      } : c;
+      this.campaign.update(updater);
+      this.shellSvc.updateCampaign(updater);
     });
   }
 
@@ -404,12 +465,14 @@ export class CampaignSublocationDetailComponent implements OnInit {
       `${environment.apiUrl}/api/campaigns/${this.campaignId()}/sublocations/${subLoc.instanceId}/casts/visibility`,
       { isVisibleToPlayers: next }
     ).subscribe(() => {
-      this.campaign.update(c => c ? {
+      const updater = (c: CampaignDetail | null) => c ? {
         ...c,
         casts: c.casts.map(ca =>
           ca.sublocationInstanceId === subLoc.instanceId ? { ...ca, isVisibleToPlayers: next } : ca
         )
-      } : c);
+      } : c;
+      this.campaign.update(updater);
+      this.shellSvc.updateCampaign(updater);
     });
   }
 
@@ -450,7 +513,7 @@ export class CampaignSublocationDetailComponent implements OnInit {
   // ── Import card handlers ──────────────────────────────────────────────────
 
   onCastAdded(instance: CampaignCastInstance) {
-    this.campaign.update(c => {
+    const updater = (c: CampaignDetail | null) => {
       if (!c) return c;
       const casts = c.casts ?? [];
       if (casts.some(ca => ca.instanceId === instance.instanceId)) return c;
@@ -463,10 +526,14 @@ export class CampaignSublocationDetailComponent implements OnInit {
         return { ...c, casts: updated };
       }
       return { ...c, casts: [...casts, instance] };
-    });
+    };
+    this.campaign.update(updater);
+    this.shellSvc.updateCampaign(updater);
   }
 
   onCastRemoved(instanceId: string) {
-    this.campaign.update(c => c ? { ...c, casts: (c.casts ?? []).filter(ca => ca.instanceId !== instanceId) } : c);
+    const updater = (c: CampaignDetail | null) => c ? { ...c, casts: (c.casts ?? []).filter(ca => ca.instanceId !== instanceId) } : c;
+    this.campaign.update(updater);
+    this.shellSvc.updateCampaign(updater);
   }
 }

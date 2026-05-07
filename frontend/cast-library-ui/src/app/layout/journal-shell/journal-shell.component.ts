@@ -3,11 +3,12 @@ import { RouterOutlet, Router, NavigationStart, NavigationEnd } from '@angular/r
 import { CommonModule } from '@angular/common';
 import { Subscription } from 'rxjs';
 import { PortalTransitionService } from '../../core/portal-transition.service';
+import { JournalNavDrawerComponent } from '../../shared/components/journal-nav-drawer/journal-nav-drawer.component';
 
 @Component({
   selector: 'app-journal-shell',
   standalone: true,
-  imports: [RouterOutlet, CommonModule],
+  imports: [RouterOutlet, CommonModule, JournalNavDrawerComponent],
   templateUrl: './journal-shell.component.html',
   styleUrl: './journal-shell.component.scss'
 })

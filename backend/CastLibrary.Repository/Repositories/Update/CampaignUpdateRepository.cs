@@ -24,6 +24,16 @@ public interface ICampaignUpdateRepository
     Task UpdateSublocationInstanceKeywordsAsync(Guid instanceId, string[] keywords);
     Task ToggleShopItemScratchAsync(Guid shopItemId, bool isScratchedOff);
     Task TravelCastAsync(Guid instanceId, Guid locationInstanceId, Guid sublocationInstanceId);
+    Task UpdateFactionInstanceAsync(CampaignFactionInstanceDomain instance);
+    Task UpdateFactionInstanceVisibilityAsync(Guid instanceId, bool isVisibleToPlayers);
+    Task UpdateSublocationFactionSymbolAsync(Guid instanceId, Guid? factionInstanceId, string? symbolPath);
+    Task UpdateSublocationPlayerFactionSymbolAsync(Guid instanceId, Guid? factionInstanceId, string? symbolPath);
+    Task SyncPlayerFactionSublocationMembershipAsync(Guid sublocationInstanceId, Guid? factionInstanceId);
+    Task UpdateCastFactionSymbolsAsync(Guid instanceId, string factionSymbolsJson);
+    Task UpdateCastPlayerFactionSymbolsAsync(Guid instanceId, string factionSymbolsJson);
+    Task SyncPlayerFactionCastMembershipsAsync(Guid castInstanceId, List<Guid> factionInstanceIds);
+    Task ClearFactionFromSublocationInstancesAsync(Guid factionInstanceId);
+    Task ClearFactionFromCastInstancesAsync(Guid factionInstanceId);
 }
 
 public class CampaignUpdateRepository(
@@ -44,13 +54,14 @@ public class CampaignUpdateRepository(
             campaign.Description,
             campaign.FantasyType,
             campaign.SpineColor,
+            Status = campaign.Status.ToString(),
         };
 
         logging.LogDbOperation(correlation.TraceId, spanId, "UPDATE", "campaigns", @params);
 
         using var conn = CreateConnection();
         var rows = await conn.ExecuteAsync(
-            "UPDATE campaigns SET name=@Name, description=@Description, fantasy_type=@FantasyType, spine_color=@SpineColor WHERE id=@Id",
+            "UPDATE campaigns SET name=@Name, description=@Description, fantasy_type=@FantasyType, spine_color=@SpineColor, status=@Status WHERE id=@Id",
             @params);
 
         logging.LogDbOperation(correlation.TraceId, spanId, "UPDATE", "campaigns", @params, rows);
@@ -97,6 +108,7 @@ public class CampaignUpdateRepository(
         var @params = new
         {
             instance.InstanceId,
+            instance.Name,
             instance.PublicDescription,
             instance.Description,
             instance.Pronouns,
@@ -106,6 +118,8 @@ public class CampaignUpdateRepository(
             instance.Alignment,
             instance.Posture,
             instance.Speed,
+            instance.VoicePlacement,
+            instance.VoiceNotes,
             instance.DmNotes,
         };
 
@@ -114,7 +128,8 @@ public class CampaignUpdateRepository(
         using var conn = CreateConnection();
         var rows = await conn.ExecuteAsync(
             @"UPDATE campaign_cast_instances
-              SET public_description=@PublicDescription,
+              SET name=@Name,
+                  public_description=@PublicDescription,
                   description=@Description,
                   pronouns=@Pronouns,
                   race=@Race,
@@ -123,6 +138,8 @@ public class CampaignUpdateRepository(
                   alignment=@Alignment,
                   posture=@Posture,
                   speed=@Speed,
+                  voice_placement=@VoicePlacement,
+                  voice_notes=@VoiceNotes,
                   dm_notes=@DmNotes
               WHERE instance_id=@InstanceId",
             @params);
@@ -334,5 +351,232 @@ public class CampaignUpdateRepository(
             "UPDATE campaign_sublocation_instances SET keywords = @Keywords::text[] WHERE instance_id = @InstanceId",
             @params);
         logging.LogDbOperation(correlation.TraceId, spanId, "UPDATE", "campaign_sublocation_instances", @params, rows);
+    }
+
+    public async Task UpdateFactionInstanceAsync(CampaignFactionInstanceDomain instance)
+    {
+        var spanId = correlation.NewSpan();
+        var @params = new
+        {
+            instance.FactionInstanceId,
+            instance.Name,
+            instance.Type,
+            instance.Description,
+            instance.Hidden,
+            instance.DmNotes,
+            instance.Influence,
+            instance.Perception,
+        };
+
+        logging.LogDbOperation(correlation.TraceId, spanId, "UPDATE", "campaign_faction_instances", @params);
+
+        using var conn = CreateConnection();
+        var rows = await conn.ExecuteAsync(
+            @"UPDATE campaign_faction_instances
+              SET name=@Name, type=@Type, description=@Description, hidden=@Hidden, dm_notes=@DmNotes,
+                  influence=@Influence, perception=@Perception
+              WHERE faction_instance_id=@FactionInstanceId",
+            @params);
+
+        logging.LogDbOperation(correlation.TraceId, spanId, "UPDATE", "campaign_faction_instances", @params, rows);
+    }
+
+    public async Task UpdateFactionInstanceVisibilityAsync(Guid instanceId, bool isVisibleToPlayers)
+    {
+        var spanId = correlation.NewSpan();
+        var @params = new { InstanceId = instanceId, IsVisibleToPlayers = isVisibleToPlayers };
+
+        logging.LogDbOperation(correlation.TraceId, spanId, "UPDATE", "campaign_faction_instances", @params);
+
+        using var conn = CreateConnection();
+        var rows = await conn.ExecuteAsync(
+            @"UPDATE campaign_faction_instances
+              SET is_visible_to_players=@IsVisibleToPlayers
+              WHERE faction_instance_id=@InstanceId",
+            @params);
+
+        logging.LogDbOperation(correlation.TraceId, spanId, "UPDATE", "campaign_faction_instances", @params, rows);
+    }
+
+    public async Task UpdateSublocationFactionSymbolAsync(Guid instanceId, Guid? factionInstanceId, string? symbolPath)
+    {
+        var spanId = correlation.NewSpan();
+        var @params = new { InstanceId = instanceId, FactionInstanceId = factionInstanceId, SymbolPath = symbolPath };
+
+        logging.LogDbOperation(correlation.TraceId, spanId, "UPDATE", "campaign_sublocation_instances", @params);
+
+        using var conn = CreateConnection();
+        var rows = await conn.ExecuteAsync(
+            @"UPDATE campaign_sublocation_instances
+              SET faction_instance_id = @FactionInstanceId,
+                  symbol_path = @SymbolPath
+              WHERE instance_id = @InstanceId",
+            @params);
+
+        logging.LogDbOperation(correlation.TraceId, spanId, "UPDATE", "campaign_sublocation_instances", @params, rows);
+    }
+
+    public async Task UpdateSublocationPlayerFactionSymbolAsync(Guid instanceId, Guid? factionInstanceId, string? symbolPath)
+    {
+        var spanId = correlation.NewSpan();
+        var @params = new { InstanceId = instanceId, FactionInstanceId = factionInstanceId, SymbolPath = symbolPath };
+
+        logging.LogDbOperation(correlation.TraceId, spanId, "UPDATE", "campaign_sublocation_instances (player)", @params);
+
+        using var conn = CreateConnection();
+        var rows = await conn.ExecuteAsync(
+            @"UPDATE campaign_sublocation_instances
+              SET player_faction_instance_id = @FactionInstanceId,
+                  player_symbol_path = @SymbolPath
+              WHERE instance_id = @InstanceId",
+            @params);
+
+        logging.LogDbOperation(correlation.TraceId, spanId, "UPDATE", "campaign_sublocation_instances (player)", @params, rows);
+    }
+
+    public async Task SyncPlayerFactionSublocationMembershipAsync(Guid sublocationInstanceId, Guid? factionInstanceId)
+    {
+        var spanId = correlation.NewSpan();
+        var deleteParams = new { SublocationInstanceId = sublocationInstanceId };
+
+        logging.LogDbOperation(correlation.TraceId, spanId, "SYNC", "campaign_faction_sublocations (player)", deleteParams);
+
+        using var conn = CreateConnection();
+        await conn.OpenAsync();
+        using var tx = await conn.BeginTransactionAsync();
+
+        await conn.ExecuteAsync(
+            "DELETE FROM campaign_faction_sublocations WHERE sublocation_instance_id = @SublocationInstanceId AND dm_user_id IS NULL",
+            deleteParams, tx);
+
+        if (factionInstanceId.HasValue)
+        {
+            var insertParams = new
+            {
+                Id = Guid.NewGuid(),
+                FactionInstanceId = factionInstanceId.Value,
+                SublocationInstanceId = sublocationInstanceId
+            };
+
+            await conn.ExecuteAsync(
+                @"INSERT INTO campaign_faction_sublocations (id, faction_instance_id, sublocation_instance_id, dm_user_id)
+                  VALUES (@Id, @FactionInstanceId, @SublocationInstanceId, NULL)
+                  ON CONFLICT DO NOTHING",
+                insertParams, tx);
+        }
+
+        await tx.CommitAsync();
+
+        logging.LogDbOperation(correlation.TraceId, spanId, "SYNC", "campaign_faction_sublocations (player)", deleteParams, factionInstanceId.HasValue ? 1 : 0);
+    }
+
+    public async Task UpdateCastFactionSymbolsAsync(Guid instanceId, string factionSymbolsJson)
+    {
+        var spanId = correlation.NewSpan();
+        var @params = new { InstanceId = instanceId, Symbols = factionSymbolsJson };
+
+        logging.LogDbOperation(correlation.TraceId, spanId, "UPDATE", "campaign_cast_instances", @params);
+
+        using var conn = CreateConnection();
+        var rows = await conn.ExecuteAsync(
+            @"UPDATE campaign_cast_instances
+              SET faction_symbols = @Symbols::jsonb
+              WHERE instance_id = @InstanceId",
+            @params);
+
+        logging.LogDbOperation(correlation.TraceId, spanId, "UPDATE", "campaign_cast_instances", @params, rows);
+    }
+
+    public async Task UpdateCastPlayerFactionSymbolsAsync(Guid instanceId, string factionSymbolsJson)
+    {
+        var spanId = correlation.NewSpan();
+        var @params = new { InstanceId = instanceId, Symbols = factionSymbolsJson };
+
+        logging.LogDbOperation(correlation.TraceId, spanId, "UPDATE", "campaign_cast_instances (player_faction_symbols)", @params);
+
+        using var conn = CreateConnection();
+        var rows = await conn.ExecuteAsync(
+            @"UPDATE campaign_cast_instances
+              SET player_faction_symbols = @Symbols::jsonb
+              WHERE instance_id = @InstanceId",
+            @params);
+
+        logging.LogDbOperation(correlation.TraceId, spanId, "UPDATE", "campaign_cast_instances (player_faction_symbols)", @params, rows);
+    }
+
+    public async Task SyncPlayerFactionCastMembershipsAsync(Guid castInstanceId, List<Guid> factionInstanceIds)
+    {
+        var spanId = correlation.NewSpan();
+        var deleteParams = new { CastInstanceId = castInstanceId };
+
+        logging.LogDbOperation(correlation.TraceId, spanId, "SYNC", "campaign_faction_cast_members (player)", deleteParams);
+
+        using var conn = CreateConnection();
+        await conn.OpenAsync();
+        using var tx = await conn.BeginTransactionAsync();
+
+        await conn.ExecuteAsync(
+            "DELETE FROM campaign_faction_cast_members WHERE cast_instance_id = @CastInstanceId AND dm_user_id IS NULL",
+            deleteParams, tx);
+
+        if (factionInstanceIds.Count > 0)
+        {
+            var insertParams = factionInstanceIds.Select(fid => new
+            {
+                Id = Guid.NewGuid(),
+                FactionInstanceId = fid,
+                CastInstanceId = castInstanceId
+            });
+
+            await conn.ExecuteAsync(
+                @"INSERT INTO campaign_faction_cast_members (id, faction_instance_id, cast_instance_id, dm_user_id)
+                  VALUES (@Id, @FactionInstanceId, @CastInstanceId, NULL)
+                  ON CONFLICT DO NOTHING",
+                insertParams, tx);
+        }
+
+        await tx.CommitAsync();
+
+        logging.LogDbOperation(correlation.TraceId, spanId, "SYNC", "campaign_faction_cast_members (player)", deleteParams, factionInstanceIds.Count);
+    }
+
+    public async Task ClearFactionFromSublocationInstancesAsync(Guid factionInstanceId)
+    {
+        var spanId = correlation.NewSpan();
+        var @params = new { FactionInstanceId = factionInstanceId };
+
+        logging.LogDbOperation(correlation.TraceId, spanId, "UPDATE", "campaign_sublocation_instances", @params);
+
+        using var conn = CreateConnection();
+        var rows = await conn.ExecuteAsync(
+            @"UPDATE campaign_sublocation_instances
+              SET faction_instance_id = NULL,
+                  symbol_path = NULL
+              WHERE faction_instance_id = @FactionInstanceId",
+            @params);
+
+        logging.LogDbOperation(correlation.TraceId, spanId, "UPDATE", "campaign_sublocation_instances", @params, rows);
+    }
+
+    public async Task ClearFactionFromCastInstancesAsync(Guid factionInstanceId)
+    {
+        var spanId = correlation.NewSpan();
+        var @params = new { FactionInstanceId = factionInstanceId.ToString() };
+
+        logging.LogDbOperation(correlation.TraceId, spanId, "UPDATE", "campaign_cast_instances", @params);
+
+        using var conn = CreateConnection();
+        var rows = await conn.ExecuteAsync(
+            @"UPDATE campaign_cast_instances
+              SET faction_symbols = (
+                  SELECT COALESCE(jsonb_agg(elem), '[]'::jsonb)
+                  FROM jsonb_array_elements(COALESCE(faction_symbols, '[]'::jsonb)) AS elem
+                  WHERE elem->>'FactionInstanceId' <> @FactionInstanceId
+              )
+              WHERE faction_symbols IS NOT NULL
+                AND faction_symbols @> jsonb_build_array(jsonb_build_object('FactionInstanceId', @FactionInstanceId))",
+            @params);
+
+        logging.LogDbOperation(correlation.TraceId, spanId, "UPDATE", "campaign_cast_instances", @params, rows);
     }
 }

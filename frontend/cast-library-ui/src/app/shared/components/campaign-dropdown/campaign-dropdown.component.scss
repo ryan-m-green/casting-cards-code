@@ -30,6 +30,9 @@
 
 .campaign-dropdown-value {
   flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
 .campaign-dropdown-caret {
@@ -64,6 +67,9 @@
   padding: 9px 12px;
   cursor: pointer;
   transition: background 0.12s ease;
+  display: flex;
+  align-items: center;
+  gap: 8px;
 
   &:hover {
     background: v.$campaign-portal-bg-placeholder;
@@ -73,4 +79,13 @@
     background: v.$campaign-portal-border-medium;
     color: v.$campaign-portal-text-bright;
   }
+}
+
+.dd-icon-img {
+  width: 18px;
+  height: 18px;
+  object-fit: contain;
+  flex-shrink: 0;
+  opacity: 0.85;
+  filter: invert(1);
 }

@@ -21,6 +21,7 @@ public class UpdateSublocationCommandHandler(
         existing.LocationId = command.Request.LocationId;
         existing.Name = command.Request.Name;
         existing.Description = command.Request.Description;
+        existing.DmNotes = command.Request.DmNotes;
         existing.ShopItems = command.Request.ShopItems.Select((item, i) => new ShopItemDomain
         {
             Id = Guid.NewGuid(), SublocationId = command.Id, Name = item.Name,

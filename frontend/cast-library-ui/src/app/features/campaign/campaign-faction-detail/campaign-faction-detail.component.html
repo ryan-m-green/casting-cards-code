@@ -1,0 +1,220 @@
+@if (faction(); as f) {
+
+  <!-- ── Body ── -->
+  <div class="faction-body">
+
+    <!-- Card -->
+    <div class="faction-card-left">
+      <app-faction-card
+        [faction]="$any(f)"
+        [flippable]="false"
+        [editable]="false"
+        [secrets]="isDm()"
+        [secretsRevealed]="f.isVisibleToPlayers"
+        [campaignMode]="false"
+        [influenceGlow]="editing() ? editInfluence() : f.influence"
+        (secretsClick)="toggleFactionVisibility()"
+      />
+    </div>
+
+    <!-- Detail panel -->
+    <div class="faction-detail-panel" [style.--panel-height]="panelHeight()" [class.detail-panel--mobile-expanded]="detailExpanded()">
+
+      <div class="detail-panel-content" #detailContent>
+
+        <!-- Panel header with edit toggle -->
+        @if (isDm()) {
+          <div class="detail-panel-actions">
+            @if (!editing()) {
+              <button class="detail-edit-btn" (click)="startEditing()">✎ Edit Details</button>
+            } @else {
+              <button class="campaign-primary-btn" (click)="saveDetails()">✔ Save For Campaign</button>
+              <button class="campaign-primary-btn" (click)="saveToLibrary()">✔ Save For Campaign & Library</button>
+              <button class="campaign-secondary-btn" (click)="cancelEditing()">Cancel</button>
+            }
+          </div>
+        }
+
+        <app-faction-detail-panel
+          [faction]="f"
+          [editing]="editing()"
+          [isDm]="isDm()"
+          [editName]="editName()"
+          [editType]="editType()"
+          [editDescription]="editDescription()"
+          [editHidden]="editHidden()"
+          [editDmNotes]="editDmNotes()"
+          [editInfluence]="editInfluence()"
+          [editPerception]="editPerception()"
+          [editSymbolPath]="editSymbolPath()"
+          (editNameChange)="editName.set($event)"
+          (editTypeChange)="editType.set($event)"
+          (editDescriptionChange)="editDescription.set($event)"
+          (editHiddenChange)="editHidden.set($event)"
+          (editDmNotesChange)="editDmNotes.set($event)"
+          (editInfluenceChange)="editInfluence.set($event)"
+          (editPerceptionChange)="editPerception.set($event)"
+          (editSymbolPathChange)="editSymbolPath.set($event)"
+        />
+
+      </div>
+
+      <!-- Expand / collapse toggle -->
+      <button class="detail-expand-btn" #expandBtn (click)="toggleDetail()">
+        {{ detailExpanded() ? '▲' : '▼' }}
+      </button>
+
+    </div>
+
+  </div>
+
+  <!-- ── Known Sublocations ── -->
+  @if (isDm() && campaign()) {
+    <div class="faction-members-section">
+
+      <div class="faction-members-header">
+        <span class="faction-members-label">Known Sublocations</span>
+        <span class="faction-members-line"></span>
+      </div>
+
+      <div class="faction-relationship-btn-row">
+        <button class="campaign-primary-btn" type="button" (click)="sublocationDrawerOpen.set(!sublocationDrawerOpen())">
+          Sublocations {{ sublocationDrawerOpen() ? '↑' : '↓' }}
+        </button>
+      </div>
+
+      @if (sublocationDrawerOpen()) {
+        <div class="faction-relationship-drawer">
+          <div class="relationship-list">
+            @for (sub of campaign()!.sublocations; track sub.instanceId) {
+              <button
+                class="relationship-item"
+                [class.relationship-item--disabled]="isSublocationClaimed(sub.instanceId)"
+                type="button"
+                (click)="toggleSublocation(sub)"
+                [disabled]="isSublocationClaimed(sub.instanceId)"
+              >
+                @if (isSublocationMember(sub.instanceId)) {
+                  <input
+                    class="relationship-primary-checkbox"
+                    type="checkbox"
+                    [checked]="isPrimarySublocation(sub.instanceId)"
+                    [disabled]="hasPrimarySublocation() && !isPrimarySublocation(sub.instanceId)"
+                    (click)="$event.stopPropagation(); setPrimarySublocation(sub)"
+                  />
+                } @else {
+                  <span class="relationship-primary-checkbox-placeholder"></span>
+                }
+                <span class="relationship-item-name">{{ sub.name }}</span>
+                @if (isSublocationMember(sub.instanceId)) {
+                  <span class="relationship-checkmark">✓</span>
+                } @else if (isSublocationClaimed(sub.instanceId)) {
+                  <span class="relationship-claimed">In use</span>
+                }
+              </button>
+            }
+            @if (!campaign()!.sublocations.length) {
+              <span class="relationship-empty">No sublocations in this campaign.</span>
+            }
+          </div>
+        </div>
+      }
+
+      <div class="faction-members-grid">
+        @for (sub of factionSublocations(); track sub.instanceId) {
+          <app-sublocation-card
+            [sublocation]="sub"
+            [flippable]="false"
+            [editable]="false"
+            [campaignMode]="true"
+            [isPrimary]="isPrimarySublocation(sub.instanceId)"
+            [tilt]="sublocationTiltFor(sub.instanceId)"
+          />
+        }
+        @if (!factionSublocations().length) {
+          <p class="faction-members-empty">No sublocations yet — use the button above to add some.</p>
+        }
+      </div>
+
+    </div>
+  }
+
+  <!-- ── Known Cast ── -->
+  @if (isDm() && campaign()) {
+    <div class="faction-members-section">
+
+      <div class="faction-members-header">
+        <span class="faction-members-label">Known Cast Members</span>
+        <span class="faction-members-line"></span>
+      </div>
+
+      <div class="faction-relationship-btn-row">
+        <button class="campaign-primary-btn" type="button" (click)="castDrawerOpen.set(!castDrawerOpen())">
+          Cast {{ castDrawerOpen() ? '↑' : '↓' }}
+        </button>
+      </div>
+
+      @if (castDrawerOpen()) {
+        <div class="faction-relationship-drawer">
+          <div class="relationship-list">
+            @for (cast of campaign()!.casts; track cast.instanceId) {
+              <button class="relationship-item" type="button" (click)="toggleCastMember(cast)">
+                @if (isCastMember(cast.instanceId)) {
+                  <input
+                    class="relationship-primary-checkbox"
+                    type="checkbox"
+                    [checked]="isPrimaryCast(cast.instanceId)"
+                    [disabled]="hasPrimaryCast() && !isPrimaryCast(cast.instanceId)"
+                    (click)="$event.stopPropagation(); setPrimaryCast(cast)"
+                  />
+                } @else {
+                  <span class="relationship-primary-checkbox-placeholder"></span>
+                }
+                <span class="relationship-item-name">{{ cast.name }}</span>
+                @if (isCastMember(cast.instanceId)) {
+                  <span class="relationship-checkmark">✓</span>
+                }
+              </button>
+            }
+            @if (!campaign()!.casts.length) {
+              <span class="relationship-empty">No cast members in this campaign.</span>
+            }
+          </div>
+        </div>
+      }
+
+      <div class="faction-members-grid">
+        @for (cast of factionCast(); track cast.instanceId) {
+          <app-cast-card
+            [cast]="cast"
+            [flippable]="false"
+            [editable]="false"
+            [secrets]="false"
+            [campaignMode]="true"
+            [readonlyStars]="true"
+            [dmMode]="true"
+            [isPrimary]="isPrimaryCast(cast.instanceId)"
+            [tilt]="castTiltFor(cast.instanceId)"
+          />
+        }
+        @if (!factionCast().length) {
+          <p class="faction-members-empty">No cast members yet — use the button above to add some.</p>
+        }
+      </div>
+
+    </div>
+  }
+
+  <!-- ── Faction Relationships ── -->
+  <!-- ── Faction Relationships ── -->
+  @if (isDm() && campaign()) {
+    <app-faction-relationships-section
+      [relationships]="factionRelationships()"
+      [otherFactions]="otherFactions()"
+      [isDm]="true"
+      (removeRelationship)="removeRelationship($event)"
+      (saveRelationship)="saveRelationship($event)"
+    />
+  }
+
+}

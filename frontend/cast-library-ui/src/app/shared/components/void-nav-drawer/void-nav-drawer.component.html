@@ -1,0 +1,244 @@
+<!-- Toggle button (rendered inline by the parent via ng-content or as a standalone trigger) -->
+<button class="nav-toggle-btn" (click)="open()" [class.is-open]="isOpen()" aria-label="Open navigation">
+  <span class="nav-toggle-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </span>
+</button>
+
+<!-- Backdrop -->
+@if (isOpen()) {
+  <div class="nav-backdrop" [class.is-closing]="isClosing()" (click)="close()"></div>
+
+  <!-- Drawer panel -->
+  <div class="nav-drawer" [class.is-closing]="isClosing()" role="dialog" aria-label="Campaign navigation">
+
+    <!-- Header -->
+    <div class="nav-header">
+      <button class="nav-close-btn" (click)="close()" aria-label="Close navigation">✕</button>
+      <span class="nav-header-title">Navigate</span>
+      @if (!isDm()) {
+        <div class="nav-queue-wrap">
+          <button class="nav-queue-btn" (click)="goToQueue()" aria-label="View quicknote queue">
+            <svg class="nav-queue-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <polyline points="22 12 16 12 14 15 10 15 8 12 2 12"/>
+              <path d="M5.45 5.11L2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"/>
+            </svg>
+            <span class="nav-queue-count">{{ queueCount() }}</span>
+          </button>
+        </div>
+      }
+    </div>
+
+    <!-- Exit to library -->
+    <div class="nav-exit-wrap">
+      <button class="nav-exit-btn" (click)="exitToLibrary()">
+        <span class="nav-exit-arrow">←</span>
+        <span class="nav-exit-label">Campaign Library</span>
+      </button>
+    </div>
+
+    <!-- Search -->
+    <div class="nav-search-wrap">
+      <input
+        class="nav-search"
+        type="text"
+        placeholder="Search cards…"
+        [ngModel]="searchQuery()"
+        (ngModelChange)="searchQuery.set($event)"
+        autocomplete="off"
+      />
+    </div>
+
+    <!-- Scroll body -->
+    <div class="nav-body">
+
+      <!-- ── Top-level links ── -->
+      <div class="nav-section">
+        <button class="nav-item nav-item--home" [class.is-active]="isActiveHome()" (click)="goHome()">
+          <span class="nav-item-icon">◈</span>
+          <span class="nav-item-label">Campaign Home</span>
+        </button>
+
+        @if (isDm()) {
+          <button class="nav-item nav-item--top" [class.is-active]="isActiveParty()" (click)="goToParty()">
+            <span class="nav-item-icon">⚔</span>
+            <span class="nav-item-label">The Party</span>
+          </button>
+          @if (partyCasts().length > 0) {
+            <div class="nav-location-row">
+              <div class="nav-item nav-item--sublocation nav-item--sublocation-static">
+                <span class="nav-item-icon nav-item-icon--sublocation">◇</span>
+                <span class="nav-item-label">Questing Companions</span>
+              </div>
+              <button
+                class="nav-expand-btn"
+                (click)="questingCompanionsExpanded.update(v => !v)"
+                [class.expanded]="questingCompanionsExpanded()"
+                aria-label="Expand questing companions"
+              >›</button>
+            </div>
+            @if (questingCompanionsExpanded()) {
+              @for (cast of partyCasts(); track cast.instanceId) {
+                <div class="nav-item nav-item--cast nav-item--cast-static">
+                  <span class="nav-item-icon nav-item-icon--cast">◉</span>
+                  <span class="nav-item-label">{{ cast.name }}</span>
+                </div>
+              }
+            }
+          }
+          <div class="nav-location-row">
+            <button class="nav-item nav-item--top" [class.is-active]="isActiveFactions()" (click)="goToFactions()">
+              <span class="nav-item-icon">⚑</span>
+              <span class="nav-item-label">Factions</span>
+            </button>
+            @if (filteredFactions().length > 0) {
+              <button
+                class="nav-expand-btn"
+                (click)="toggleFactions()"
+                [class.expanded]="factionsExpanded()"
+                aria-label="Expand factions"
+              >›</button>
+            }
+          </div>
+          @if (factionsExpanded()) {
+            @for (faction of filteredFactions(); track faction.factionInstanceId) {
+              <button class="nav-item nav-item--faction" [class.is-active]="isActiveFactionDetail(faction.factionInstanceId)" (click)="goToFaction(faction.factionInstanceId)">
+                @if (faction.symbolPath) {
+                  <span class="nav-faction-symbol-wrap"><img class="nav-faction-symbol" [src]="faction.symbolPath" [alt]="faction.name" /></span>
+                } @else {
+                  <span class="nav-item-icon nav-item-icon--faction">⚑</span>
+                }
+                <span class="nav-item-label">{{ faction.name }}</span>
+                @if (faction.type) {
+                  <span class="nav-item-meta">{{ faction.type }}</span>
+                }
+              </button>
+            }
+          }
+        } @else {
+          <button class="nav-item nav-item--top" [class.is-active]="isActiveMyCharacter()" (click)="goToMyCharacter()">
+            <span class="nav-item-icon">⚔</span>
+            <span class="nav-item-label">The Party</span>
+          </button>
+          @if (partyCasts().length > 0) {
+            <div class="nav-location-row">
+              <div class="nav-item nav-item--sublocation nav-item--sublocation-static">
+                <span class="nav-item-icon nav-item-icon--sublocation">◇</span>
+                <span class="nav-item-label">Questing Companions</span>
+              </div>
+              <button
+                class="nav-expand-btn"
+                (click)="questingCompanionsExpanded.update(v => !v)"
+                [class.expanded]="questingCompanionsExpanded()"
+                aria-label="Expand questing companions"
+              >›</button>
+            </div>
+            @if (questingCompanionsExpanded()) {
+              @for (cast of partyCasts(); track cast.instanceId) {
+                <div class="nav-item nav-item--cast nav-item--cast-static">
+                  <span class="nav-item-icon nav-item-icon--cast">◉</span>
+                  <span class="nav-item-label">{{ cast.name }}</span>
+                </div>
+              }
+            }
+          }
+          <div class="nav-location-row">
+            <button class="nav-item nav-item--top" [class.is-active]="isActivePlayerFactions()" (click)="goToPlayerFactions()">
+              <span class="nav-item-icon">⚑</span>
+              <span class="nav-item-label">Factions</span>
+            </button>
+            @if (filteredFactions().length > 0) {
+              <button
+                class="nav-expand-btn"
+                (click)="toggleFactions()"
+                [class.expanded]="factionsExpanded()"
+                aria-label="Expand factions"
+              >›</button>
+            }
+          </div>
+          @if (factionsExpanded()) {
+            @for (faction of filteredFactions(); track faction.factionInstanceId) {
+              <button class="nav-item nav-item--faction" [class.is-active]="isActiveFactionDetail(faction.factionInstanceId)" (click)="goToFaction(faction.factionInstanceId)">
+                @if (faction.symbolPath) {
+                  <span class="nav-faction-symbol-wrap"><img class="nav-faction-symbol" [src]="faction.symbolPath" [alt]="faction.name" /></span>
+                } @else {
+                  <span class="nav-item-icon nav-item-icon--faction">⚑</span>
+                }
+                <span class="nav-item-label">{{ faction.name }}</span>
+                @if (faction.type) {
+                  <span class="nav-item-meta">{{ faction.type }}</span>
+                }
+              </button>
+            }
+          }
+        }
+      </div>
+
+      <!-- ── Locations tree ── -->
+      @if (filteredLocations().length > 0) {
+        <div class="nav-section">
+          <span class="nav-section-label">Locations</span>
+
+          @for (loc of filteredLocations(); track loc.instanceId) {
+            <div class="nav-tree-location">
+
+              <!-- Location row -->
+              <div class="nav-location-row">
+                <button class="nav-item nav-item--location" [class.is-active]="isActiveLocation(loc.instanceId)" (click)="goToLocation(loc)">
+                  <span class="nav-item-icon nav-item-icon--location">⬡</span>
+                  <span class="nav-item-label">{{ loc.name }}</span>
+                </button>
+                @if (sublocationsFor(loc.instanceId).length > 0) {
+                  <button
+                    class="nav-expand-btn"
+                    (click)="toggleLocation(loc.instanceId)"
+                    [class.expanded]="autoExpand(loc.instanceId)"
+                    aria-label="Expand sublocations"
+                  >›</button>
+                }
+              </div>
+
+              <!-- Sublocations -->
+              @if (autoExpand(loc.instanceId)) {
+                @for (sub of sublocationsFor(loc.instanceId); track sub.instanceId) {
+                  <div class="nav-tree-sublocation">
+
+                    <!-- Sublocation row -->
+                    <div class="nav-sublocation-row">
+                      <button class="nav-item nav-item--sublocation" [class.is-active]="isActiveSublocation(sub.instanceId)" (click)="goToSublocation(sub.instanceId)">
+                        <span class="nav-item-icon nav-item-icon--sublocation">◇</span>
+                        <span class="nav-item-label">{{ sub.name }}</span>
+                      </button>
+                    </div>
+
+                    <!-- Casts -->
+                    @for (cast of castsFor(sub.instanceId); track cast.instanceId) {
+                      <button class="nav-item nav-item--cast" [class.is-active]="isActiveCast(cast.instanceId)" (click)="goToCast(sub.instanceId, cast.instanceId)">
+                        <span class="nav-item-icon nav-item-icon--cast">◉</span>
+                        <span class="nav-item-label">{{ cast.name }}</span>
+                        @if (cast.role) {
+                          <span class="nav-item-meta">{{ cast.role }}</span>
+                        }
+                      </button>
+                    }
+                  </div>
+                }
+              }
+
+            </div>
+          }
+        </div>
+      }
+
+      <!-- ── Empty state ── -->
+      @if (searchQuery() && !hasResults()) {
+        <div class="nav-empty">
+          <span>No cards match "{{ searchQuery() }}"</span>
+        </div>
+      }
+
+    </div>
+  </div>
+}

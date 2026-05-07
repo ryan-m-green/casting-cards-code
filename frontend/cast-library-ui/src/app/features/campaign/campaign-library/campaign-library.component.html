@@ -12,11 +12,11 @@
 }
 
 <div class="pc scroll-body">
-  <app-dm-nav />
+  <app-journal-watermark pageType="campaign" />
+  <app-journal-title title="Campaign Library" />
   <div class="wr wr-page-header">
-    <a class="btn-primary ml-auto" routerLink="/dm/campaigns/new">+ New Campaign</a>
+    <a class="btn-primary wr-ml-auto" routerLink="/dm/campaigns/new">+ New Campaign</a>
   </div>
-  <div class="section-label">Campaigns — Library</div>
 
   <div class="portal-grid">
     @for (campaign of campaigns(); track campaign.id) {
@@ -72,8 +72,7 @@
                   <div class="portal-description">{{ campaign.description }}</div>
                 }
                 <div class="portal-btns">
-                  <button class="portal-btn portal-btn--delete" (click)="$event.stopPropagation(); requestDelete(campaign)" aria-label="Delete campaign">× Delete</button>
-                  <button class="portal-btn portal-btn--edit" (click)="$event.stopPropagation(); edit(campaign.id)" aria-label="Edit campaign">Edit →</button>
+                  <button class="portal-btn portal-btn--edit" (click)="$event.stopPropagation(); edit(campaign.id)" aria-label="Edit campaign">Settings →</button>
                 </div>
                 <div class="portal-footer-strip">Portal</div>
               </div>

@@ -25,7 +25,7 @@ public class CastPlayerNotesReadRepository(
             @"SELECT id,
                      campaign_id      AS CampaignId,
                      cast_instance_id AS CastInstanceId,
-                     want,
+                     notes,
                      connections,
                      alignment,
                      perception,
@@ -34,7 +34,8 @@ public class CastPlayerNotesReadRepository(
                      updated_at       AS UpdatedAt
               FROM campaign_cast_player_notes
               WHERE campaign_id      = @CampaignId
-                AND cast_instance_id = @CastInstanceId";
+                AND cast_instance_id = @CastInstanceId
+              LIMIT 1";
 
         logging.LogDbOperation(correlation.TraceId, spanId, "SELECT", "campaign_cast_player_notes", @params);
 
@@ -57,7 +58,7 @@ public class CastPlayerNotesReadRepository(
             @"SELECT id,
                      campaign_id      AS CampaignId,
                      cast_instance_id AS CastInstanceId,
-                     want,
+                     notes,
                      connections,
                      alignment,
                      perception,

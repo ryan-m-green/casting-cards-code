@@ -1,13 +1,11 @@
 <div class="pc scroll-body">
-  <app-dm-nav />
+  <app-journal-watermark pageType="cast" />
+  <app-journal-title title="Cast Library" />
   <div class="wr wr-page-header">
-    <button class="btn-ghost" routerLink="/dm/dashboard">← Back</button>
-    <h2 class="page-title page-title-row">Cast Library</h2>
-    <button class="btn-primary" routerLink="/dm/cast/new">+ Create Cast</button>
+    <input class="search-bar search-bar--header" type="text" placeholder="Name · Race · Role…"
+           [value]="searchTerm()" (input)="searchTerm.set($any($event.target).value)" />
+    <button class="btn-primary wr-ml-auto" routerLink="/dm/cast/new">+ Create Cast</button>
   </div>
-
-  <input class="search-bar" type="text" placeholder="Name · Race · Role…"
-         [value]="searchTerm()" (input)="searchTerm.set($any($event.target).value)" />
 
   <div class="card-grid">
     @for (cast of filtered(); track cast.id) {
@@ -30,7 +28,7 @@
     <div class="delete-panel" (click)="$event.stopPropagation()">
       <div class="delete-panel-title">Delete Cast Member?</div>
       <p class="delete-panel-message">
-        This will permanently delete this cast member and their portrait. This cannot be undone.
+        This will permanently delete this cast member and their portrait, and remove them from any campaigns. This cannot be undone.
       </p>
       <div class="delete-btn-row">
         <button class="btn-modal-cancel" (click)="cancelDelete()">Cancel</button>

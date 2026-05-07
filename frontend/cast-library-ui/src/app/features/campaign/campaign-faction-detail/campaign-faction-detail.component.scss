@@ -1,0 +1,496 @@
+@use '../../../../styles/variables' as v;
+
+:host {
+  display: block;
+  width: 100%;
+  min-height: 100%;
+}
+
+/* ── Main body layout ────────────────────────────────────────────────────── */
+.faction-body {
+  display: flex;
+  gap: 32px;
+  padding: 8px 40px 32px;
+  position: relative;
+  z-index: 1;
+  align-items: flex-start;
+}
+
+.faction-card-left {
+  flex-shrink: 0;
+}
+
+/* ── Detail panel ────────────────────────────────────────────────────────── */
+.faction-detail-panel {
+  flex: 1;
+  min-width: 0;
+  height: var(--panel-height);
+  background: v.$campaign-portal-bg-dark;
+  border: 1px solid rgba(v.$color-faction-neutral-frame-2, 0.40);
+  border-radius: 6px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  transition: height 0.35s cubic-bezier(0.4, 0, 0.2, 1),
+              margin-left 0.35s cubic-bezier(0.4, 0, 0.2, 1),
+              width 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.detail-panel-content {
+  flex: 1;
+  min-height: 0;
+  padding: 0 12px 16px;
+}
+
+/* ── Panel action bar (Edit / Save / Cancel) ─────────────────────────────── */
+.detail-panel-actions {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 16px 0;
+}
+
+.detail-edit-btn {
+  background: none;
+  border: 1px solid rgba(v.$color-faction-neutral-frame-2, 0.35);
+  border-radius: 4px;
+  padding: 4px 12px;
+  font-family: v.$font-header;
+  font-size: 8px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: v.$campaign-portal-text-bright;
+  cursor: pointer;
+  transition: background 0.18s ease, border-color 0.18s ease;
+
+  &:hover {
+    background: rgba(v.$color-faction-neutral-frame-2, 0.10);
+    border-color: rgba(v.$color-faction-neutral-frame-2, 0.60);
+  }
+}
+
+/* ── Expand / collapse button ────────────────────────────────────────────── */
+.detail-expand-btn {
+  flex-shrink: 0;
+  width: 100%;
+  height: 34px;
+  padding: 0;
+  background: rgba(v.$color-faction-neutral-frame-2, 0.04);
+  border: none;
+  border-top: 1px solid rgba(v.$color-faction-neutral-frame-2, 0.14);
+  border-radius: 0 0 6px 6px;
+  cursor: pointer;
+  font-family: v.$font-header;
+  font-size: 8px;
+  letter-spacing: 0.12em;
+  color: rgba(v.$color-faction-neutral-frame-2, 0.85);
+  transition: background 0.18s ease, color 0.18s ease;
+
+  &:hover {
+    background: rgba(v.$color-faction-neutral-frame-2, 0.10);
+    color: rgba(v.$color-faction-neutral-frame-2, 0.95);
+  }
+}
+
+/* ── Mobile expanded ─────────────────────────────────────────────────────── */
+.detail-panel--mobile-expanded {
+  position: relative;
+  z-index: 10;
+}
+
+/* ── Known Sublocations / Known Cast sections ────────────────────────────── */
+.faction-members-section {
+  padding: 0 40px 32px;
+}
+
+.faction-members-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.faction-members-label {
+  font-family: v.$font-header;
+  font-size: 9px;
+  letter-spacing: 0.20em;
+  text-transform: uppercase;
+  color: v.$campaign-portal-text-secondary;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.faction-members-line {
+  flex: 1;
+  height: 1px;
+  background: v.$campaign-portal-border-light;
+}
+
+.faction-members-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-bottom: 12px;
+}
+
+.faction-member-wrap {
+  position: relative;
+  cursor: default;
+
+  &--clickable {
+    cursor: pointer;
+  }
+
+  &--disabled {
+    opacity: 0.45;
+    pointer-events: none;
+  }
+
+  .pol-remove {
+    position: absolute;
+    top: 6px;
+    right: 6px;
+    z-index: 10;
+  }
+
+  .relationship-claimed {
+    position: absolute;
+    bottom: 6px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(0, 0, 0, 0.65);
+    color: v.$campaign-portal-text-muted;
+    font-size: 0.7rem;
+    padding: 2px 6px;
+    border-radius: 3px;
+    white-space: nowrap;
+    pointer-events: none;
+  }
+}
+
+.faction-members-empty {
+  color: v.$campaign-portal-text-muted;
+  font-size: 0.82rem;
+  font-style: italic;
+  padding: 4px 0 12px;
+}
+
+/* ── Relationship button row ────────────────────────────────────────────── */
+.faction-relationship-btn-row {
+  display: flex;
+  justify-content: flex-start;
+  margin-bottom: 8px;
+}
+
+/* ── relationship-style drawer ─────────────────────────────────────────────────── */
+.faction-relationship-drawer {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  margin-bottom: 8px;
+  animation: faction-slide-down 0.22s ease-out both;
+}
+
+@keyframes faction-slide-down {
+  from { opacity: 0; transform: translateY(-6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.relationship-list {
+  width: 100%;
+  max-width: 320px;
+  background: v.$campaign-portal-bg-dark;
+  border: 1px solid v.$campaign-portal-border-bold;
+  border-radius: 6px;
+  overflow-y: auto;
+  min-height: 48px;
+  max-height: 260px;
+  display: flex;
+  flex-direction: column;
+}
+
+.relationship-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 16px;
+  background: none;
+  border: none;
+  border-bottom: 1px solid v.$campaign-portal-border-light;
+  color: v.$campaign-portal-text-primary;
+  font-size: 0.85rem;
+  cursor: pointer;
+  text-align: left;
+  transition: background 0.15s;
+  width: 100%;
+
+  &:last-child { border-bottom: none; }
+  &:hover { background: v.$campaign-portal-bg-hover; }
+
+  &--disabled {
+    color: rgba(v.$campaign-portal-text-secondary, 0.4);
+    cursor: not-allowed;
+    pointer-events: none;
+
+    &:hover { background: none; }
+  }
+
+  &--linked {
+    .relationship-item-name { color: v.$campaign-portal-text-primary; }
+  }
+}
+
+/* ── Faction relationship grid ──────────────────────────────────────────── */
+.faction-relationship-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.faction-rel-card-wrap {
+  flex-shrink: 0;
+}
+
+[class^="faction-rel-type--"] {
+  text-transform: uppercase;
+}
+
+/* ── Faction wizard viewport (slide-left) ───────────────────────────────── */
+.faction-wizard-viewport {
+  position: relative;
+  width: 100%;
+  max-width: 320px;
+  overflow: hidden;
+  min-height: 48px;
+}
+
+.faction-wizard-panel {
+  display: none;
+  width: 100%;
+
+  &--active {
+    display: block;
+    animation: wizard-slide-in 0.22s cubic-bezier(0.4, 0, 0.2, 1) both;
+  }
+
+  &--slide-out {
+    display: none;
+  }
+}
+
+@keyframes wizard-slide-in {
+  from { opacity: 0; transform: translateX(40px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+/* ── Wizard back button ─────────────────────────────────────────────────── */
+.faction-wizard-back {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  padding: 8px 16px;
+  background: rgba(v.$campaign-portal-text-secondary, 0.05);
+  border: none;
+  border-bottom: 1px solid v.$campaign-portal-border-light;
+  color: v.$campaign-portal-text-secondary;
+  font-size: 0.78rem;
+  font-style: italic;
+  cursor: pointer;
+  text-align: left;
+  text-transform: capitalize;
+  transition: background 0.15s;
+
+  &:hover { background: rgba(v.$campaign-portal-text-secondary, 0.10); }
+}
+
+/* ── Wizard slider panel ────────────────────────────────────────────────── */
+.faction-wizard-slider-panel {
+  display: flex;
+  flex-direction: column;
+}
+
+.faction-wizard-slider-body {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 16px 16px 8px;
+}
+
+.faction-wizard-strength-label {
+  font-family: v.$font-header;
+  font-size: 9px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: v.$campaign-portal-text-primary;
+  text-align: center;
+}
+
+.faction-wizard-slider {
+  width: 100%;
+  accent-color: v.$campaign-portal-text-primary;
+  cursor: pointer;
+}
+
+.faction-wizard-slider-ticks {
+  display: flex;
+  justify-content: space-between;
+  padding: 0 2px;
+  font-size: 0.68rem;
+  color: rgba(v.$campaign-portal-text-secondary, 0.55);
+}
+
+.faction-wizard-confirm {
+  margin: 8px 16px 12px;
+  align-self: flex-start;
+}
+
+.relationship-arrow {
+  margin-left: 8px;
+  color: rgba(v.$campaign-portal-text-secondary, 0.45);
+  flex-shrink: 0;
+}
+
+.relationship-claimed {
+  margin-left: 8px;
+  font-size: 0.75rem;
+  color: rgba(v.$campaign-portal-text-muted, 0.6);
+  font-style: italic;
+  flex-shrink: 0;
+}
+
+.relationship-item-name {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.relationship-checkmark {
+  margin-left: 8px;
+  color: v.$campaign-portal-text-primary;
+  flex-shrink: 0;
+}
+
+.relationship-empty {
+  padding: 12px 16px;
+  color: rgba(v.$campaign-portal-text-secondary, 0.5);
+  font-size: 0.8rem;
+  font-style: italic;
+}
+
+/* ── Primary checkbox ─────────────────────────────────────────────────────── */
+
+.relationship-primary-checkbox {
+  flex-shrink: 0;
+  margin-right: 8px;
+  width: 15px;
+  height: 15px;
+  cursor: pointer;
+  accent-color: v.$campaign-portal-text-primary;
+
+  &:disabled {
+    opacity: 0.35;
+    cursor: not-allowed;
+  }
+}
+
+.relationship-primary-checkbox-placeholder {
+  flex-shrink: 0;
+  display: inline-block;
+  width: 15px;
+  height: 15px;
+  margin-right: 8px;
+}
+
+/* ── Existing relationships list ─────────────────────────────────────────── */
+.relationship-list--existing {
+  max-width: 480px;
+  margin-bottom: 12px;
+}
+
+.relationship-existing-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 16px;
+  border-bottom: 1px solid v.$campaign-portal-border-light;
+
+  &:last-child { border-bottom: none; }
+}
+
+.rel-type-badge {
+  flex-shrink: 0;
+  font-family: v.$font-header;
+  font-size: 8px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  padding: 2px 8px;
+  border-radius: 3px;
+  border: 1px solid currentColor;
+
+  &--allied  { color: #50c878; border-color: rgba(80,200,120,0.4); background: rgba(80,200,120,0.08); }
+  &--rival   { color: #dca032; border-color: rgba(220,160,50,0.4);  background: rgba(220,160,50,0.08);  }
+  &--enemy   { color: #d24646; border-color: rgba(210,70,70,0.4);   background: rgba(210,70,70,0.08);   }
+  &--neutral { color: rgba(v.$campaign-portal-text-secondary, 0.8); border-color: rgba(v.$campaign-portal-text-secondary, 0.25); background: transparent; }
+}
+
+.rel-target-name {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: v.$campaign-portal-text-primary;
+  font-size: 0.85rem;
+}
+
+.rel-strength-label {
+  flex-shrink: 0;
+  font-size: 0.75rem;
+  color: v.$campaign-portal-text-secondary;
+  font-style: italic;
+}
+
+/* ── Wizard label ─────────────────────────────────────────────────────────── */
+.wizard-label {
+  padding: 10px 16px 6px;
+  font-size: 0.82rem;
+  color: v.$campaign-portal-text-secondary;
+  font-style: italic;
+  margin: 0;
+
+  strong { color: v.$campaign-portal-text-primary; font-style: normal; }
+  em     { font-style: italic; color: v.$campaign-portal-text-primary; }
+}
+
+/* ── Relationship item selected state ────────────────────────────────────── */
+.relationship-item--selected {
+  background: rgba(v.$campaign-portal-text-primary, 0.08);
+  color: v.$campaign-portal-text-bright;
+  font-weight: 600;
+}
+
+/* ── Strength slider wrap ─────────────────────────────────────────────────── */
+.strength-slider-wrap {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+
+  input[type="range"] {
+    flex: 1;
+    cursor: pointer;
+  }
+}
+
+.strength-label {
+  flex-shrink: 0;
+  min-width: 80px;
+  font-size: 0.82rem;
+  color: v.$campaign-portal-text-primary;
+  font-style: italic;
+  text-align: right;
+}

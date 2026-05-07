@@ -5,10 +5,13 @@ import {
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { CampaignDropdownComponent, CampaignDropdownOption } from '../../../shared/components/campaign-dropdown/campaign-dropdown.component';
+import { FactionCardComponent } from '../../../shared/components/faction-card/faction-card.component';
+import { CastCardComponent } from '../../../shared/components/cast-card/cast-card.component';
+import { Faction } from '../../../shared/models/faction.model';
 import { environment } from '../../../../environments/environment';
 import { CampaignCastInstance } from '../../../shared/models/cast.model';
 import {
-  LocationPoliticalNotes, LocationFaction, LocationFactionRelationship, LocationNpcRole,
+  LocationPoliticalNotes, LocationFaction, LocationNpcRole,
   CampaignCastRelationship, CampaignCastPlayerNotes,
 } from '../../../shared/models/campaign.model';
 
@@ -24,7 +27,7 @@ export const NPC_MOTIVATIONS = ['Ambition', 'Fear', 'Loyalty', 'Greed', 'Surviva
 
 const EMPTY_NOTES = (): LocationPoliticalNotes => ({
   id: '', campaignId: '', locationInstanceId: '',
-  generalNotes: '', factions: [], relationships: [], npcRoles: [], updatedAt: '',
+  generalNotes: '', factions: [], npcRoles: [], updatedAt: '',
 });
 
 // ── Social Compass constants ───────────────────────────────────────────────
@@ -85,7 +88,7 @@ interface AlignmentIcon {
 @Component({
   selector: 'app-player-location-political-notes',
   standalone: true,
-  imports: [CommonModule, CampaignDropdownComponent],
+  imports: [CommonModule, CampaignDropdownComponent, FactionCardComponent, CastCardComponent],
   templateUrl: './player-location-political-notes.component.html',
   styleUrl: './player-location-political-notes.component.scss',
 })
@@ -133,7 +136,6 @@ export class PlayerLocationPoliticalNotesComponent implements OnInit, OnChanges,
   // cast-relationships-tab (explanationTexts Map).
   generalText = '';
   private factionNameInputs = new Map<string, string>();
-  private relNotesInputs    = new Map<string, string>();
 
   // Type alias for backwards compatibility
   private get cityCastNotes() {
@@ -188,16 +190,6 @@ export class PlayerLocationPoliticalNotesComponent implements OnInit, OnChanges,
       r:  8 + f.influence * 1.4,
     }))
   );
-
-  webEdges = computed(() => {
-    const nodes = this.webNodes();
-    return this.notes().relationships.map((r: any) => {
-      const a = nodes.find((n: any) => n.faction.id === r.factionAId);
-      const b = nodes.find((n: any) => n.faction.id === r.factionBId);
-      if (!a || !b) return null;
-      return { rel: r, x1: a.cx, y1: a.cy, x2: b.cx, y2: b.cy };
-    }).filter((e: any) => e !== null);
-  });
 
   compassNodes = computed((): CompassNode[] => {
     const notesMap  = new Map(this.cityCastNotes().map((n: any) => [n.castInstanceId, n]));
@@ -310,12 +302,10 @@ export class PlayerLocationPoliticalNotesComponent implements OnInit, OnChanges,
       this.notes.set(notes);
       this.generalText = notes.generalNotes;
       this.factionNameInputs.clear();
-      this.relNotesInputs.clear();
       // Set text input values imperatively — no [value] binding on these inputs,
       // matching the cast-notes wantTextarea pattern and the relationships explanationTexts pattern.
       setTimeout(() => {
         for (const f of notes.factions)      this.setFactionNameDom(f.id, f.name);
-        for (const r of notes.relationships) this.setRelNotesDom(r.id, r.notes);
       }, 0);
     });
   }
@@ -336,16 +326,11 @@ export class PlayerLocationPoliticalNotesComponent implements OnInit, OnChanges,
           ...f,
           name: this.factionNameInputs.has(f.id) ? this.factionNameInputs.get(f.id)! : f.name,
         })),
-        relationships: n.relationships.map((r: any) => ({
-          ...r,
-          notes: this.relNotesInputs.has(r.id) ? this.relNotesInputs.get(r.id)! : r.notes,
-        })),
         npcRoles: n.npcRoles,
       }
     ).subscribe({
       next: () => {
         this.factionNameInputs.clear();
-        this.relNotesInputs.clear();
         this.saving.set(false);
       },
       error: () => {
@@ -375,8 +360,6 @@ export class PlayerLocationPoliticalNotesComponent implements OnInit, OnChanges,
         const n = this.notes();
         for (const f of n.factions)
           this.setFactionNameDom(f.id, this.factionNameInputs.get(f.id) ?? f.name);
-        for (const r of n.relationships)
-          this.setRelNotesDom(r.id, this.relNotesInputs.get(r.id) ?? r.notes);
       }, 0);
     }
     if (tab === 'social') {
@@ -449,79 +432,7 @@ export class PlayerLocationPoliticalNotesComponent implements OnInit, OnChanges,
     this.notes.update(n => ({
       ...n,
       factions:      n.factions.filter((f: any) => f.id !== id),
-      relationships: n.relationships.filter((r: any) => r.factionAId !== id && r.factionBId !== id),
       npcRoles:      n.npcRoles.filter((nr: any) => nr.factionId !== id),
-    }));
-    this.save();
-  }
-
-  // ── Relationships ─────────────────────────────────────────────────────────
-
-  addRelationship() {
-    const factions = this.notes().factions;
-    if (factions.length < 2) return;
-    this.notes.update(n => ({
-      ...n,
-      relationships: [...n.relationships, {
-        id: crypto.randomUUID(),
-        factionAId: factions[0].id, factionBId: factions[1].id,
-        relationshipType: 'Rival', strength: 0, notes: '',
-      }],
-    }));
-    this.scheduleSave();
-  }
-
-  setRelFactionA(relId: string, factionId: string) {
-    this.notes.update(n => ({
-      ...n, relationships: n.relationships.map((r: any) => r.id === relId ? { ...r, factionAId: factionId } : r),
-    }));
-    this.scheduleSave();
-  }
-
-  setRelFactionB(relId: string, factionId: string) {
-    this.notes.update(n => ({
-      ...n, relationships: n.relationships.map((r: any) => r.id === relId ? { ...r, factionBId: factionId } : r),
-    }));
-    this.scheduleSave();
-  }
-
-  setRelType(relId: string, type: string) {
-    this.notes.update(n => ({
-      ...n, relationships: n.relationships.map((r: any) => r.id === relId ? { ...r, relationshipType: type } : r),
-    }));
-    this.scheduleSave();
-  }
-
-  onStrengthInput(relId: string, event: Event) {
-    const value = +(event.target as HTMLInputElement).value;
-    this.notes.update(n => ({
-      ...n, relationships: n.relationships.map(r => r.id === relId ? { ...r, strength: value } : r),
-    }));
-  }
-
-  onStrengthRelease(relId: string, event: Event) {
-    const value = +(event.target as HTMLInputElement).value;
-    this.notes.update(n => ({
-      ...n, relationships: n.relationships.map(r => r.id === relId ? { ...r, strength: value } : r),
-    }));
-    this.save();
-  }
-
-  strengthSliderClass(value: number): string {
-    if (value <= 1) return 'slider-low';
-    if (value <= 3) return 'slider-mid';
-    return 'slider-high';
-  }
-
-  onRelNotesInput(relId: string, value: string) {
-    this.relNotesInputs.set(relId, value);
-    this.scheduleSave();
-  }
-
-  removeRelationship(id: string) {
-    this.relNotesInputs.delete(id);
-    this.notes.update(n => ({
-      ...n, relationships: n.relationships.filter(r => r.id !== id),
     }));
     this.save();
   }
@@ -596,6 +507,19 @@ export class PlayerLocationPoliticalNotesComponent implements OnInit, OnChanges,
     if (influence >= 4) return 'glow--medium';
     if (influence >= 1) return 'glow--light';
     return '';
+  }
+
+  toFactionCard(f: LocationFaction): Faction {
+    return {
+      id:          f.id,
+      dmUserId:    '',
+      name:        f.name,
+      type:        f.type,
+      influence:   f.influence,
+      perception:  0,
+      hidden:      f.isHidden,
+      createdAt:   '',
+    };
   }
 
   districtColor(factionId: string | null): string {

@@ -12,6 +12,7 @@ export interface Location {
   vibe: string;
   languages: string;
   description: string;
+  dmNotes?: string;
   imageUrl?: string;
   createdAt: string;
 }

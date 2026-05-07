@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy, signal, computed, inject, HostBinding } from '@angular/core';
-import { ActivatedRoute, Router, RouterOutlet } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink, RouterOutlet } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../../environments/environment';
 import { CampaignDetail } from '../../../shared/models/campaign.model';
@@ -8,12 +8,13 @@ import { CampaignHubService } from '../../../core/hub/campaign-hub.service';
 import { PortalTransitionService } from '../../../core/portal-transition.service';
 import { CampaignShellService } from '../../../core/campaign-shell.service';
 import { TimeOfDayBarComponent } from '../../../shared/components/time-of-day-bar/time-of-day-bar.component';
-import { ShellBreadcrumbsComponent } from '../../../shared/components/shell-breadcrumbs/shell-breadcrumbs.component';
+import { VoidNavDrawerComponent } from '../../../shared/components/void-nav-drawer/void-nav-drawer.component';
+import { VoidTitleSegmentsComponent } from '../../../shared/components/void-title-segments/void-title-segments.component';
 
 @Component({
   selector: 'app-campaign-shell',
   standalone: true,
-  imports: [RouterOutlet, TimeOfDayBarComponent, ShellBreadcrumbsComponent],
+  imports: [RouterOutlet, TimeOfDayBarComponent, VoidNavDrawerComponent, VoidTitleSegmentsComponent],
   templateUrl: './campaign-shell.component.html',
   styleUrl: './campaign-shell.component.scss',
 })
@@ -52,6 +53,7 @@ export class CampaignShellComponent implements OnInit, OnDestroy {
     this.http.get<CampaignDetail>(`${environment.apiUrl}/api/campaigns/${id}`)
       .subscribe(c => {
         this.campaign.set(c);
+        this.shellSvc.setCampaign(c);
         this.transition.spineColor = c.spineColor;
       });
 
@@ -68,5 +70,9 @@ export class CampaignShellComponent implements OnInit, OnDestroy {
 
   goToTheParty() {
     this.router.navigate(['/campaign', this.campaignId(), 'the-party']);
+  }
+
+  goToFactions() {
+    this.router.navigate(['/campaign', this.campaignId(), 'factions']);
   }
 }

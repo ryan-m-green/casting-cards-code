@@ -3,7 +3,7 @@
 
     <!-- ── Header ──────────────────────────────────────────────────────────── -->
     <div class="web-header">
-      <span class="web-title">Relationship Web · {{ mainCast?.name }}</span>
+      <span class="web-title">Relationship Web · {{ mainCast.name }}</span>
       <button class="web-close" (click)="closed.emit()" aria-label="Close">✕</button>
     </div>
 
@@ -11,7 +11,7 @@
     @if (nodes.length === 0) {
       <div class="web-zero">
         <span class="web-zero-icon">🕸</span>
-        <p class="web-zero-title">No one has strong feelings about <em>{{ mainCast?.name }}</em> yet.</p>
+        <p class="web-zero-title">No one has strong feelings about <em>{{ mainCast.name }}</em> yet.</p>
         <p class="web-zero-sub">Use the relationship editor to record how other characters feel about this one.</p>
       </div>
     } @else {
@@ -72,7 +72,7 @@
                   <img [src]="mainCast.imageUrl" alt="cast card image" class="card-img-fill" />
                 } @else {
                   <div class="card-placeholder">
-                    <span class="card-initial">{{ mainCast.name?.[0]?.toUpperCase() }}</span>
+                    <span class="card-initial">{{ mainCast.name[0].toUpperCase() }}</span>
                   </div>
                 }
                 @if (mainCast.publicDescription) {

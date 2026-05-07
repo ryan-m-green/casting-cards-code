@@ -3,6 +3,17 @@
      [class.cast-card--no-flip]="!flippable"
      [style.transform]="tiltTransform"
      (click)="toggleFlip($event)">
+  @if (isPrimary || canSetPrimary) {
+    <img
+      class="cast-card__crown"
+      [class.cast-card__crown--active]="isPrimary"
+      [class.cast-card__crown--inactive]="canSetPrimary && !isPrimary && !primaryLocked"
+      [class.cast-card__crown--locked]="canSetPrimary && !isPrimary && primaryLocked"
+      src="crown_gems.svg"
+      alt="Primary"
+      (click)="onCrownClick($event)"
+    />
+  }
   <div class="cast-card__inner">
 
     <!-- ── BACK FACE (first in DOM so front paints on top when unflipped) ── -->
@@ -39,8 +50,8 @@
 
           @if (editable) {
             <div class="cast-back-actions">
-              <button class="cast-btn cast-btn--gold" (click)="onEditClick($event)">✦ Edit</button>
               <button class="cast-btn cast-btn--red" (click)="onDeleteClick($event)">✦ Delete</button>
+              <button class="cast-btn cast-btn--gold" (click)="onEditClick($event)">✦ Edit</button>
             </div>
           }
         </div>
@@ -51,6 +62,13 @@
     <div class="cast-card__face cast-card__face--front">
       <div class="cast-frame">
         <div class="cast-inner">
+
+          @for (sym of factionSymbols.slice(0, 4); track sym.factionInstanceId; let i = $index) {
+            <img class="cast-faction-symbol"
+                 [src]="sym.symbolPath"
+                 [style]="symbolStyle(i)"
+                 alt="Faction symbol" />
+          }
 
           <!-- corner flourishes -->
           <div class="cast-corner cast-corner--tl">

@@ -1,19 +1,7 @@
 <div class="pc scroll-body">
-  <app-dm-nav />
+  <app-journal-title [title]="castId() ? 'Edit Cast Member' : 'Cast Member Creation'" />
   <div class="wr wr-page-header">
     <a class="btn-ghost" routerLink="/dm/cast">← Library</a>
-    <h2 class="page-title page-title-row">
-      {{ castId() ? 'Edit Cast Member' : 'Cast Member Creation' }}
-    </h2>
-    <span class="save-label"
-          [class.save-label--saving]="labelText() === 'Saving…'"
-          [class.save-label--error]="labelText() === 'Error'"
-          [style.opacity]="labelVisible() ? 1 : 0">{{ labelText() }}</span>
-    <div class="save-spark-host" #sparkHost>
-      <button class="btn-primary"
-              [disabled]="form.invalid || saveStatus() === 'saving'"
-              (click)="onSave($event)">Save</button>
-    </div>
   </div>
 
   @if (castId()) {
@@ -33,26 +21,26 @@
     <div class="wr form-row-gap">
       <div class="form-field-min">
         <label for="cast-name-input" class="fi-label">Name</label>
-        <input id="cast-name-input" class="fi" formControlName="name" placeholder="Aldric the Bold" />
+        <input id="cast-name-input" class="fi" formControlName="name" placeholder="Aldric the Bold" autocomplete="off" />
       </div>
       <div class="form-field-min">
         <label for="cast-role-input" class="fi-label">Role / Class</label>
-        <input id="cast-role-input" class="fi" formControlName="role" placeholder="Blacksmith" />
+        <input id="cast-role-input" class="fi" formControlName="role" placeholder="Blacksmith" autocomplete="off" />
       </div>
     </div>
 
     <div class="wr form-row-gap">
       <div class="form-field">
         <label for="cast-race-input" class="fi-label">Race</label>
-        <input id="cast-race-input" class="fi" formControlName="race" placeholder="Human" />
+        <input id="cast-race-input" class="fi" formControlName="race" placeholder="Human" autocomplete="off" />
       </div>
       <div class="form-field">
         <label for="cast-age-input" class="fi-label">Age</label>
-        <input id="cast-age-input" class="fi" formControlName="age" placeholder="44" />
+        <input id="cast-age-input" class="fi" formControlName="age" placeholder="44" autocomplete="off" />
       </div>
       <div class="form-field">
         <label for="cast-pronouns-input" class="fi-label">Pronouns</label>
-        <input id="cast-pronouns-input" class="fi" formControlName="pronouns" list="pronouns-options" placeholder="he/him" />
+        <input id="cast-pronouns-input" class="fi" formControlName="pronouns" list="pronouns-options" placeholder="he/him" autocomplete="off" />
         <datalist id="pronouns-options">
           @for (p of pronounOptions; track p) {
             <option [value]="p"></option>
@@ -63,17 +51,8 @@
 
     <div class="wr form-row-gap">
       <div class="form-field">
-        <label for="cast-alignment-input" class="fi-label">Alignment</label>
-        <input id="cast-alignment-input" class="fi" formControlName="alignment" list="alignment-options" placeholder="Neutral Good" />
-        <datalist id="alignment-options">
-          @for (a of alignmentOptions; track a) {
-            <option [value]="a"></option>
-          }
-        </datalist>
-      </div>
-      <div class="form-field">
         <label for="cast-posture-input" class="fi-label">Posture</label>
-        <input id="cast-posture-input" class="fi" formControlName="posture" list="posture-options" placeholder="Upright" />
+        <input id="cast-posture-input" class="fi" formControlName="posture" list="posture-options" placeholder="Upright" autocomplete="off" />
         <datalist id="posture-options">
           @for (p of postureOptions; track p) {
             <option [value]="p"></option>
@@ -82,7 +61,7 @@
       </div>
       <div class="form-field">
         <label for="cast-speed-input" class="fi-label">Speed</label>
-        <input id="cast-speed-input" class="fi" formControlName="speed" list="speed-options" placeholder="Average" />
+        <input id="cast-speed-input" class="fi" formControlName="speed" list="speed-options" placeholder="Average" autocomplete="off" />
         <datalist id="speed-options">
           @for (s of speedOptions; track s) {
             <option [value]="s"></option>
@@ -91,27 +70,57 @@
       </div>
     </div>
 
-    <div class="voice-section">
-      <label class="fi-label voice-section-label">Voice Placement (select all that apply)</label>
-      <div class="wr" formArrayName="voicePlacement">
-        @for (opt of voiceOptions; track opt; let i = $index) {
-          <label class="wr checkbox-label">
-            <input type="checkbox" [formControlName]="i" class="checkbox-input" />
-            {{ opt }}
-          </label>
-        }
-      </div>
-    </div>
-
-    <label for="cast-voice-notes-textarea" class="fi-label">Additional Voice Notes</label>
-    <textarea id="cast-voice-notes-textarea" class="fi" formControlName="voiceNotes" rows="3" placeholder="Speaks with a slight stammer when nervous…"></textarea>
-
     <label for="cast-public-desc-textarea" class="fi-label">Public Description (visible to players)</label>
-    <textarea id="cast-public-desc-textarea" class="fi" formControlName="publicDescription" rows="3" placeholder="What players observe…"></textarea>
+    <textarea id="cast-public-desc-textarea" class="fi" formControlName="publicDescription" rows="3" placeholder="What players observe…" autocomplete="off"></textarea>
 
-    <label for="cast-dm-desc-textarea" class="fi-label">DM Description (private notes)</label>
-    <textarea id="cast-dm-desc-textarea" class="fi" formControlName="description" rows="4" placeholder="Your private notes on this cast member…"></textarea>
+    <fieldset class="form-gm-box">
+      <legend class="form-gm-box__legend">FOR GM EYES ONLY</legend>
+
+      <div class="wr form-row-gap">
+        <div class="form-field">
+          <label for="cast-alignment-input" class="fi-label">Alignment</label>
+          <input id="cast-alignment-input" class="fi" formControlName="alignment" list="alignment-options" placeholder="Neutral Good" autocomplete="off" />
+          <datalist id="alignment-options">
+            @for (a of alignmentOptions; track a) {
+              <option [value]="a"></option>
+            }
+          </datalist>
+        </div>
+        <div class="form-field"></div>
+      </div>
+
+      <div class="voice-section">
+        <label class="fi-label voice-section-label">Voice Placement (select all that apply)</label>
+        <div class="wr" formArrayName="voicePlacement">
+          @for (opt of voiceOptions; track opt; let i = $index) {
+            <label class="wr checkbox-label">
+              <input type="checkbox" [formControlName]="i" class="checkbox-input" />
+              {{ opt }}
+            </label>
+          }
+        </div>
+      </div>
+
+      <label for="cast-voice-notes-textarea" class="fi-label">Additional Voice Notes</label>
+      <textarea id="cast-voice-notes-textarea" class="fi" formControlName="voiceNotes" rows="3" placeholder="Speaks with a slight stammer when nervous…" autocomplete="off"></textarea>
+
+      <label for="cast-dm-desc-textarea" class="fi-label">DM Description (private notes)</label>
+      <textarea id="cast-dm-desc-textarea" class="fi" formControlName="description" rows="4" placeholder="Your private notes on this cast member…" autocomplete="off"></textarea>
+
+    </fieldset>
   </form>
+
+  <div class="form-save-footer">
+    <span class="save-label"
+          [class.save-label--saving]="labelText() === 'Saving…'"
+          [class.save-label--error]="labelText() === 'Error'"
+          [style.opacity]="labelVisible() ? 1 : 0">{{ labelText() }}</span>
+    <div class="save-spark-host" #sparkHost>
+      <button class="btn-primary"
+              [disabled]="form.invalid || saveStatus() === 'saving'"
+              (click)="onSave($event)">Save</button>
+    </div>
+  </div>
 
 </div>
 

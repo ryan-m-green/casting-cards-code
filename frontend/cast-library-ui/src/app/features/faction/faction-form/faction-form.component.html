@@ -1,0 +1,122 @@
+<div class="pc scroll-body">
+  <app-journal-title [title]="factionId() ? 'Edit Faction' : 'Create Faction'" />
+  <div class="wr wr-page-header">
+    <a class="btn-ghost" routerLink="/dm/faction">← Library</a>
+  </div>
+
+  @if (factionId() || imageUrl()) {
+    <div class="form-card-preview">
+      <app-faction-card
+        [faction]="previewFaction()"
+        [editable]="false"
+        [flippable]="false"
+        [imageUpload]="false" />
+    </div>
+  }
+
+  <form [formGroup]="form">
+    <div class="wr form-row-gap faction-form-fields">
+
+      <div class="wr form-row-gap faction-name-row">
+        <div class="form-field">
+          <label for="faction-name-input" class="fi-label">Name</label>
+          <input id="faction-name-input" class="fi" formControlName="name" placeholder="The Iron Veil" autocomplete="off" />
+        </div>
+
+        <div class="form-field form-field--toggle">
+          <label class="fi-label" for="faction-hidden-toggle">Faction is in hiding</label>
+          <label class="toggle-switch">
+            <input id="faction-hidden-toggle" type="checkbox" formControlName="hidden" />
+            <span class="toggle-slider"></span>
+          </label>
+          <span class="toggle-hint">{{ form.value.hidden ? 'Hidden - faction operates in the shadows' : 'Visible - faction is out in the open' }}</span>
+        </div>
+      </div>
+
+      <div class="form-field-min">
+        <label for="faction-description-input" class="fi-label">Description</label>
+        <textarea id="faction-description-input" class="fi fi--textarea" formControlName="description" placeholder="A shadowy guild operating across three kingdoms…" rows="4" autocomplete="off"></textarea>
+      </div>
+
+      <fieldset class="form-gm-box">
+        <legend class="form-gm-box__legend">FOR GM EYES ONLY</legend>
+
+        <div class="wr form-row-gap">
+          <div class="form-field">
+            <label for="faction-type-input" class="fi-label">Type</label>
+            <input id="faction-type-input" class="fi" formControlName="type" list="faction-type-options" placeholder="Guild" autocomplete="off" />
+            <datalist id="faction-type-options">
+              @for (opt of typeOptions; track opt) {
+                <option [value]="opt"></option>
+              }
+            </datalist>
+          </div>
+          <div class="form-field"></div>
+        </div>
+
+        <div class="form-field-min">
+          <label for="faction-dm-notes-input" class="fi-label">DM Notes</label>
+          <textarea id="faction-dm-notes-input" class="fi fi--textarea" formControlName="dmNotes" placeholder="Secret objectives, key contacts…" rows="4" autocomplete="off"></textarea>
+        </div>
+
+        <div class="form-field-min">
+          <div class="fi-label">Political Influence</div>
+          <div class="detail-slider-row">
+            <div class="fi-slider-wrap">
+              <input id="faction-influence-input" type="range" class="fi-slider" formControlName="influence" min="0" max="10" step="1" />
+              <div class="fi-slider-ticks">
+                @for (t of [0,1,2,3,4,5,6,7,8,9,10]; track t) {
+                  <span></span>
+                }
+              </div>
+            </div>
+            <span class="detail-slider-value">{{ form.value.influence }} out of 10</span>
+          </div>
+        </div>
+
+        <div class="form-field-min">
+          <div class="fi-label">Perception</div>
+          <div class="perception-card"
+               [class.perception-card--hostile]="(form.value.perception ?? 0) < 0"
+               [class.perception-card--friendly]="(form.value.perception ?? 0) > 0">
+            <input id="faction-perception-input"
+                   type="range" min="-5" max="5" step="1"
+                   formControlName="perception"
+                   class="perception-slider"
+                   [class.slider-friendly]="(form.value.perception ?? 0) > 0"
+                   [class.slider-hostile]="(form.value.perception ?? 0) < 0" />
+            <div class="perception-ticks">
+              @for (t of [-5,-4,-3,-2,-1,0,1,2,3,4,5]; track t) {
+                <span></span>
+              }
+            </div>
+            <div class="perception-labels">
+              <span class="perception-label-end">Hostile</span>
+              <span class="perception-label-center">{{ perceptionLabel(form.value.perception ?? 0) }}</span>
+              <span class="perception-label-end">Devoted</span>
+            </div>
+          </div>
+        </div>
+
+      </fieldset>
+
+    </div>
+  </form>
+
+  <div class="form-save-footer">
+    <span class="save-label"
+          [class.save-label--saving]="labelText() === 'Saving…'"
+          [class.save-label--error]="labelText() === 'Error'"
+          [style.opacity]="labelVisible() ? 1 : 0">{{ labelText() }}</span>
+    <div class="save-spark-host" #sparkHost>
+      <button class="btn-primary"
+              [disabled]="form.invalid || saveStatus() === 'saving'"
+              (click)="onSave($event)">Save</button>
+    </div>
+  </div>
+
+  <div class="symbol-section">
+    <h3 class="section-label">Faction Symbol</h3>
+    <app-icon-picker [selectedIcon]="selectedIcon()" (iconSelected)="onIconSelected($event)" />
+  </div>
+</div>

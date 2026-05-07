@@ -12,6 +12,7 @@
         [secrets]="isDm()"
         [secretsRevealed]="subLoc.isVisibleToPlayers"
         [campaignMode]="false"
+        [symbolPath]="subLoc.symbolPath ?? null"
         (secretsClick)="toggleSublocationVisibility()"
       />
     </div>
@@ -27,11 +28,27 @@
             @if (!editing()) {
               <button class="detail-edit-btn" (click)="startEditing()">✎ Edit Details</button>
             } @else {
-              <button class="campaign-primary-btn" (click)="saveDetails()">✔ Save</button>
+              <button class="campaign-primary-btn" (click)="saveDetails()">✔ Save For Campaign</button>
+              <button class="campaign-primary-btn" (click)="saveToLibrary()">✔ Save For Campaign & Library</button>
               <button class="campaign-secondary-btn" (click)="cancelEditing()">Cancel</button>
             }
           </div>
         }
+
+        <!-- Sublocation Title -->
+        <div class="detail-desc">
+          <span class="detail-label">Sublocation Title</span>
+          <span class="detail-line"></span>
+          @if (editing()) {
+            <input class="detail-input"
+                   [ngModel]="editName()"
+                   (ngModelChange)="editName.set($event)"
+                   placeholder="Sublocation title…"
+                   autocomplete="off" />
+          } @else {
+            <span class="detail-value">{{ subLoc.name }}</span>
+          }
+        </div>
 
         <!-- Description — full width -->
         <div class="detail-desc">
@@ -42,7 +59,8 @@
                       [ngModel]="editDescription()"
                       (ngModelChange)="editDescription.set($event)"
                       rows="3"
-                      placeholder="Description…"></textarea>
+                      placeholder="Description…"
+                      autocomplete="off"></textarea>
           } @else if (subLoc.description) {
             <p class="detail-value detail-value--block">{{ subLoc.description }}</p>
           }
@@ -50,7 +68,7 @@
 
         <!-- 2-col field grid -->
         <div class="detail-grid">
-          @if (!editing() && subLoc.keywords?.length) {
+          @if (!editing() && subLoc.keywords.length) {
             <div class="detail-cell detail-cell--full">
               <span class="detail-label">Keywords</span>
               <span class="detail-line"></span>
@@ -64,7 +82,7 @@
         </div>
 
         <!-- Shop items — grid with scratch toggle -->
-        @if (subLoc.shopItems?.length || addingShopItem()) {
+        @if (subLoc.shopItems.length || (isDm() && editing())) {
           <div class="detail-shop-section">
             <span class="detail-label">Shop Items</span>
             <span class="detail-line"></span>
@@ -87,14 +105,15 @@
               }
             </div>
 
-            <!-- Add shop item inline form -->
-            @if (isDm()) {
+            <!-- Add shop item inline form (edit mode only) -->
+            @if (isDm() && editing()) {
               @if (addingShopItem()) {
                 <div class="shop-add-row">
                   <input class="detail-input shop-add-input"
                          [ngModel]="newShopItemName()"
                          (ngModelChange)="newShopItemName.set($event)"
-                         placeholder="Item name…" />
+                         placeholder="Item name…"
+                         autocomplete="off" />
                   <div class="price-input-group">
                     <input class="fi fi-sm price-amount"
                            type="number" min="1" max="9999"
@@ -127,47 +146,6 @@
               <button class="secret-add-btn" (click)="startAddingShopItem()" type="button">+ Add Item</button>
             }
           </div>
-        } @else if (isDm()) {
-          <div class="detail-shop-section">
-            <span class="detail-label">Shop Items</span>
-            <span class="detail-line"></span>
-            @if (addingShopItem()) {
-              <div class="shop-add-row">
-                <input class="detail-input shop-add-input"
-                       [ngModel]="newShopItemName()"
-                       (ngModelChange)="newShopItemName.set($event)"
-                       placeholder="Item name…" />
-                <div class="price-input-group">
-                  <input class="fi fi-sm price-amount"
-                         type="number" min="1" max="9999"
-                         [ngModel]="newShopItemAmount()"
-                         (ngModelChange)="newShopItemAmount.set($event)"
-                         placeholder="0" />
-                  <div class="notes-dropdown price-currency-dropdown">
-                    <button class="notes-dropdown-trigger"
-                            (click)="toggleCurrencyDropdown($event)"
-                            type="button">
-                      <span class="notes-dropdown-placeholder">{{ newShopItemCurrency() }}</span>
-                      <span class="notes-dropdown-caret"
-                            [class.notes-dropdown-caret--open]="isDropdownOpen('currency')">▾</span>
-                    </button>
-                    @if (isDropdownOpen('currency')) {
-                      <div class="notes-dropdown-panel">
-                        @for (c of currencies; track c) {
-                          <div class="notes-dropdown-item"
-                               [class.notes-dropdown-item--selected]="newShopItemCurrency() === c"
-                               (click)="setCurrency(c)">{{ c }}</div>
-                        }
-                      </div>
-                    }
-                  </div>
-                </div>
-                <button class="secret-confirm-btn" (click)="confirmAddShopItem()" type="button">✔</button>
-                <button class="secret-cancel-btn"  (click)="cancelAddingShopItem()" type="button">✕</button>
-              </div>
-            }
-            <button class="secret-add-btn" (click)="startAddingShopItem()" type="button">+ Add Item</button>
-          </div>
         }
 
         <!-- Secrets — full width -->
@@ -185,16 +163,22 @@
                 </button>
               }
               <span class="secret-text" [class.secret-text--revealed]="secret.isRevealed">{{ secret.content }}</span>
+              @if (isDm() && editing()) {
+                <button class="secret-delete-btn" (click)="deleteSecret(secret)" type="button" title="Delete secret" aria-label="Delete secret">
+                  <img src="/icons/chronicle/delete.svg" alt="Delete" class="secret-delete-btn-img" />
+                </button>
+              }
             </div>
           }
-          @if (isDm()) {
+          @if (isDm() && editing()) {
             @if (addingSecret()) {
               <div class="secret-row secret-row-edit">
                 <textarea class="fi fi-sm secret-textarea"
                           [ngModel]="newSecretContent()"
                           (ngModelChange)="newSecretContent.set($event)"
                           placeholder="Enter secret…"
-                          rows="2"></textarea>
+                          rows="2"
+                          autocomplete="off"></textarea>
                 <button class="secret-confirm-btn" (click)="confirmAddSecret()" type="button">✔</button>
                 <button class="secret-cancel-btn"  (click)="cancelAddingSecret()" type="button">✕</button>
               </div>
@@ -213,7 +197,8 @@
                         [ngModel]="editDmNotes()"
                         (ngModelChange)="editDmNotes.set($event)"
                         rows="4"
-                        placeholder="Jot down whatever is on your mind…"></textarea>
+                        placeholder="Jot down whatever is on your mind…"
+                        autocomplete="off"></textarea>
             } @else if (subLoc.dmNotes) {
               <p class="detail-value detail-value--block">{{ subLoc.dmNotes }}</p>
             } @else {
@@ -262,9 +247,8 @@
               [secrets]="true"
               [secretsRevealed]="cast.isVisibleToPlayers"
               [campaignMode]="true"
-              [tilt]="castTilt(cast.instanceId)"
-              [readonlyStars]="true"
               [dmMode]="true"
+              [tilt]="castTilt(cast.instanceId)"
               [style.opacity]="castImportCardRef?.pendingInstanceIds()?.has(cast.instanceId) ? 0 : 1"
               (secretsClick)="toggleCastVisibility(cast)"
               (cardClick)="goToCast(cast)"
@@ -275,12 +259,12 @@
                 (click)="castImportCardRef!.removeCard(cast.instanceId, $event)"
                 type="button"
                 aria-label="Remove cast member"
-              >✕</button>
+              >✘</button>
             }
           </div>
         }
         @if (!sublocationCasts().length) {
-          <p class="cast-cards-empty">No cast members yet — use the ✦ button below to add some.</p>
+          <p class="cast-cards-empty">No cast members yet — use the ✪ button below to add some.</p>
         }
       </div>
 

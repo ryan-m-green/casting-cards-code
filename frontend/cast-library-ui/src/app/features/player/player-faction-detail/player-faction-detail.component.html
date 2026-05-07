@@ -1,0 +1,181 @@
+@if (faction(); as f) {
+
+  <!-- ── Body ── -->
+  <div class="faction-body">
+
+    <!-- Card -->
+    <div class="faction-card-left">
+      <app-faction-card
+        [faction]="$any(f)"
+        [flippable]="false"
+        [editable]="false"
+        [secrets]="false"
+        [campaignMode]="false"
+        [influenceGlow]="assessmentInfluence() ?? 0"
+      />
+    </div>
+
+    <!-- Detail panel -->
+    <div class="faction-detail-panel" [style.height]="panelHeight()" [class.detail-panel--mobile-expanded]="detailExpanded()">
+
+      <div class="detail-panel-content" #detailContent>
+
+        <!-- Name -->
+        <div class="detail-desc">
+          <span class="detail-label">Faction Name</span>
+          <span class="detail-line"></span>
+          <span class="detail-value">{{ f.name }}</span>
+        </div>
+
+        <!-- Description -->
+        @if (f.description) {
+          <div class="detail-desc">
+            <span class="detail-label">Description</span>
+            <span class="detail-line"></span>
+            <p class="detail-value detail-value--block">{{ f.description }}</p>
+          </div>
+        }
+
+        <!-- Type (only if visible to players) -->
+        @if (f.isVisibleToPlayers && f.type) {
+          <div class="detail-desc">
+            <span class="detail-label">Type</span>
+            <span class="detail-line"></span>
+            <span class="detail-value">{{ f.type }}</span>
+          </div>
+        }
+
+      </div>
+
+      <!-- Expand / collapse toggle -->
+      <button class="detail-expand-btn" #expandBtn (click)="toggleDetail()">
+        {{ detailExpanded() ? '▲' : '▼' }}
+      </button>
+
+    </div>
+
+  </div>
+
+  <!-- ── Assessment panel ── -->
+  <div class="faction-assessment-panel">
+    <div class="detail-dm-notes">
+      <span class="detail-label">Political Influence</span>
+      <span class="detail-line"></span>
+      <div class="detail-slider-row">
+        <div class="fi-slider-wrap">
+          <input type="range" class="fi-slider"
+                 [value]="assessmentInfluence() ?? 0"
+                 (input)="onInfluenceChange(+$any($event.target).value)"
+                 min="0" max="10" step="1" />
+          <div class="fi-slider-ticks">
+            @for (t of [0,1,2,3,4,5,6,7,8,9,10]; track t) {
+              <span></span>
+            }
+          </div>
+        </div>
+        <span class="detail-slider-value">{{ assessmentInfluence() ?? 0 }}</span>
+      </div>
+    </div>
+    <div class="detail-dm-notes">
+      <span class="detail-label">Perception</span>
+      <span class="detail-line"></span>
+      <div class="perception-card"
+           [class.perception-card--hostile]="(assessmentPerception() ?? 0) < 0"
+           [class.perception-card--friendly]="(assessmentPerception() ?? 0) > 0">
+        <input type="range"
+               min="-5" max="5" step="1"
+               [value]="assessmentPerception() ?? 0"
+               (input)="onPerceptionChange(+$any($event.target).value)"
+               class="perception-slider"
+               [class.slider-friendly]="(assessmentPerception() ?? 0) > 0"
+               [class.slider-hostile]="(assessmentPerception() ?? 0) < 0" />
+        <div class="perception-ticks">
+          @for (t of [-5,-4,-3,-2,-1,0,1,2,3,4,5]; track t) {
+            <span></span>
+          }
+        </div>
+        <div class="perception-labels">
+          <span class="perception-label-end">Hostile</span>
+          <span class="perception-label-center">{{ perceptionLabel(assessmentPerception() ?? 0) }}</span>
+          <span class="perception-label-end">Devoted</span>
+        </div>
+      </div>
+    </div>
+    @if (notesSaving()) {
+      <span class="assessment-saving">saving…</span>
+    }
+  </div>
+
+  <!-- ── Player Notes ── -->
+  <div class="faction-notes-panel">
+    <app-player-faction-notes
+      [notesText]="notesText()"
+      [saving]="notesSaving()"
+      (notesChange)="onNotesChange($event)"
+    />
+  </div>
+
+  <!-- ── Known Sublocations ── -->
+  @if (factionSublocations().length) {
+    <div class="faction-members-section">
+      <div class="faction-members-header">
+        <span class="faction-members-label">Known Sublocations</span>
+        <span class="faction-members-line"></span>
+      </div>
+      <div class="faction-members-grid">
+        @for (sub of factionSublocations(); track sub.instanceId) {
+          <app-sublocation-card
+            [sublocation]="sub"
+            [flippable]="false"
+            [editable]="false"
+            [campaignMode]="true"
+            [isPrimary]="isPrimarySublocation(sub.instanceId)"
+            [canSetPrimary]="true"
+            [primaryLocked]="hasPrimarySublocation() && !isPrimarySublocation(sub.instanceId)"
+            [tilt]="sublocationTiltFor(sub.instanceId)"
+            [symbolPath]="sub.symbolPath ?? null"
+            (primaryToggled)="setPrimarySublocation(sub)"
+          />
+        }
+      </div>
+    </div>
+  }
+
+  <!-- ── Known Cast ── -->
+  @if (factionCast().length) {
+    <div class="faction-members-section">
+      <div class="faction-members-header">
+        <span class="faction-members-label">Known Cast Members</span>
+        <span class="faction-members-line"></span>
+      </div>
+      <div class="faction-members-grid">
+        @for (cast of factionCast(); track cast.instanceId) {
+          <app-cast-card
+            [cast]="cast"
+            [flippable]="false"
+            [editable]="false"
+            [secrets]="false"
+            [campaignMode]="true"
+            [readonlyStars]="true"
+            [setStars]="castRating(cast.instanceId)"
+            [tilt]="castTiltFor(cast.instanceId)"
+            [factionSymbols]="cast.factionSymbols ?? []"
+            [isPrimary]="isPrimaryCast(cast.instanceId)"
+            [canSetPrimary]="true"
+            [primaryLocked]="hasPrimaryCast() && !isPrimaryCast(cast.instanceId)"
+            (primaryToggled)="setPrimaryCast(cast)"
+          />
+        }
+      </div>
+    </div>
+  }
+
+  <!-- ── Faction Relationships ── -->
+  @if (factionRelationships().length) {
+    <app-faction-relationships-section
+      [relationships]="factionRelationships()"
+      [otherFactions]="visibleFactions()"
+    />
+  }
+
+}

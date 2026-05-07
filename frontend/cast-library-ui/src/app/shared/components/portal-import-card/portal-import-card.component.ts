@@ -12,12 +12,16 @@ import { Location, CampaignLocationInstance } from '../../models/location.model'
 import { CampaignSublocationInstance } from '../../models/sublocation.model';
 import { Cast, CampaignCastInstance } from '../../models/cast.model';
 import { CampaignDetail } from '../../models/campaign.model';
+import { Faction, CampaignFactionInstance } from '../../models/faction.model';
 import { LocationCardComponent } from '../location-card/location-card.component';
 import { SublocationCardComponent } from '../sublocation-card/sublocation-card.component';
 import { CastCardComponent } from '../cast-card/cast-card.component';
+import { FactionCardComponent } from '../faction-card/faction-card.component';
+import { IconPickerComponent } from '../icon-picker/icon-picker.component';
 import { Sublocation } from '../../models/sublocation.model';
+import { FACTION_TYPE_OPTIONS, perceptionLabel } from '../../../features/faction/faction-form/faction-form.component';
 
-export type ImportCardType = 'location' | 'sublocation' | 'cast';
+export type ImportCardType = 'location' | 'sublocation' | 'cast' | 'faction';
 
 const VOICE_OPTIONS        = ['Chest', 'Throat', 'Mouth / Oral', 'Nasal', 'Head / Sinus'];
 const POSTURE_OPTIONS      = ['Upright','Puffed Chest','Slouched','Hunched','Relaxed','Tense','Swaggering','Cowering','Guarded','Leaning'];
@@ -34,7 +38,7 @@ const ALL_LANGUAGES        = ['Common','Dwarvish','Elvish','Giant','Gnomish','Go
 @Component({
   selector: 'app-portal-import-card',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, LocationCardComponent, SublocationCardComponent, CastCardComponent],
+  imports: [CommonModule, ReactiveFormsModule, LocationCardComponent, SublocationCardComponent, CastCardComponent, FactionCardComponent, IconPickerComponent],
   templateUrl: './portal-import-card.component.html',
   styleUrl: './portal-import-card.component.scss',
 })
@@ -50,7 +54,7 @@ export class PortalImportCardComponent implements OnInit, OnChanges {
    * One-time seed of existing instances for this card type.
    * The component takes ownership from this point — mutations are tracked internally.
    */
-  @Input() initialInstances: (CampaignLocationInstance | CampaignSublocationInstance | CampaignCastInstance)[] = [];
+  @Input() initialInstances: (CampaignLocationInstance | CampaignSublocationInstance | CampaignCastInstance | CampaignFactionInstance)[] = [];
   /** Sublocation scoping — required when cardType="sublocation" */
   @Input() locationInstanceId: string | null = null;
   /** Cast scoping — required when cardType="cast" */
@@ -63,6 +67,8 @@ export class PortalImportCardComponent implements OnInit, OnChanges {
   @Output() sublocationRemoved = new EventEmitter<string>();
   @Output() castAdded   = new EventEmitter<CampaignCastInstance>();
   @Output() castRemoved = new EventEmitter<string>();
+  @Output() factionAdded   = new EventEmitter<CampaignFactionInstance>();
+  @Output() factionRemoved = new EventEmitter<string>();
   @Output() drawerOpenChange   = new EventEmitter<boolean>();
 
   // ── ViewChild ─────────────────────────────────────────────────────────────
@@ -89,6 +95,9 @@ export class PortalImportCardComponent implements OnInit, OnChanges {
   sublocationInstanceList  = signal<CampaignSublocationInstance[]>([]);
   /** Internal live list for casts */
   castInstanceList         = signal<CampaignCastInstance[]>([]);
+  /** Internal live list for factions */
+  factionInstanceList      = signal<CampaignFactionInstance[]>([]);
+  libraryFactions          = signal<Faction[]>([]);
 
   // ── New-form state ────────────────────────────────────────────────────────
   saveStatus        = signal<'idle' | 'saving' | 'saved' | 'error'>('idle');
@@ -103,6 +112,24 @@ export class PortalImportCardComponent implements OnInit, OnChanges {
   castSaveStatus   = signal<'idle' | 'saving' | 'saved' | 'error'>('idle');
   castLabelText    = signal<'Saved' | 'Saving...' | 'Error'>('Saved');
   castLabelVisible = signal(true);
+
+  factionSaveStatus   = signal<'idle' | 'saving' | 'saved' | 'error'>('idle');
+  factionLabelText    = signal<'Saved' | 'Saving...' | 'Error'>('Saved');
+  factionLabelVisible = signal(true);
+  selectedFactionIcon = signal<string | null>(null);
+
+  factionTypeOptions = FACTION_TYPE_OPTIONS;
+  perceptionLabel    = perceptionLabel;
+
+  factionForm = this.fb.group({
+    name:        ['', Validators.required],
+    type:        [FACTION_TYPE_OPTIONS[0], Validators.required],
+    description: [''],
+    dmNotes:     [''],
+    influence:   [0],
+    perception:  [0],
+    hidden:      [false],
+  });
 
   sizeOptions         = SIZE_OPTIONS;
   conditionOptions    = CONDITION_OPTIONS;
@@ -127,11 +154,13 @@ export class PortalImportCardComponent implements OnInit, OnChanges {
     vibe:           [''],
     languages:      [''],
     description:    [''],
+    dmNotes:        [''],
   });
 
   sublocationForm = this.fb.group({
     name:        ['', Validators.required],
     description: [''],
+    dmNotes:     [''],
     shopItems:   this.fb.array([]),
   });
 
@@ -166,7 +195,29 @@ export class PortalImportCardComponent implements OnInit, OnChanges {
     if (this.cardType === 'sublocation') {
       return new Set(this.sublocationInstanceList().map(l => l.sourceSublocationId).filter(Boolean));
     }
+    if (this.cardType === 'faction') {
+      return new Set(this.factionInstanceList().map(f => f.sourceFactionId).filter(Boolean));
+    }
     return new Set(this.instanceList().map(l => l.sourceLocationId).filter(Boolean));
+  });
+
+  campaignWideAddedFactionSourceIds = computed(() =>
+    new Set((this._campaign()?.factions ?? []).map(f => f.sourceFactionId).filter(Boolean))
+  );
+
+  availableFactions = computed(() => {
+    const campaignAdded = this.campaignWideAddedFactionSourceIds();
+    return this.libraryFactions().filter(f => !campaignAdded.has(f.id));
+  });
+
+  filteredAvailableFactions = computed(() => {
+    const term  = this.searchTerm().toLowerCase().trim();
+    const avail = this.availableFactions();
+    if (!term) return avail;
+    return avail.filter(f =>
+      f.name.toLowerCase().includes(term) ||
+      f.type.toLowerCase().includes(term)
+    );
   });
 
   availableLocations = computed(() =>
@@ -249,6 +300,9 @@ export class PortalImportCardComponent implements OnInit, OnChanges {
     if (this.cardType === 'cast') {
       return new Set(this.castInstanceList().map(c => c.instanceId));
     }
+    if (this.cardType === 'faction') {
+      return new Set(this.factionInstanceList().map(f => f.factionInstanceId));
+    }
     return new Set<string>();
   });
 
@@ -256,6 +310,7 @@ export class PortalImportCardComponent implements OnInit, OnChanges {
     switch (this.cardType) {
       case 'sublocation': return { select: 'Select Sublocation', new: '+ New Sublocation' };
       case 'cast':        return { select: 'Select Cast',        new: '+ New Cast' };
+      case 'faction':     return { select: 'Select Faction',     new: '+ New Faction' };
       default:            return { select: 'Select Location',    new: '+ New Location' };
     }
   });
@@ -274,6 +329,9 @@ export class PortalImportCardComponent implements OnInit, OnChanges {
     } else if (this.cardType === 'cast') {
       this.castInstanceList.set(this.initialInstances as CampaignCastInstance[]);
       this._fetchLibraryCasts();
+    } else if (this.cardType === 'faction') {
+      this.factionInstanceList.set(this.initialInstances as CampaignFactionInstance[]);
+      this._fetchLibraryFactions();
     } else {
       this.instanceList.set(this.initialInstances as CampaignLocationInstance[]);
       if (this.cardType === 'location') this._fetchLibraryLocations();
@@ -285,6 +343,7 @@ export class PortalImportCardComponent implements OnInit, OnChanges {
       if (this.cardType === 'location')    this._fetchLibraryLocations();
       if (this.cardType === 'sublocation') this._fetchLibrarySublocations();
       if (this.cardType === 'cast')        this._fetchLibraryCasts();
+      if (this.cardType === 'faction')     this._fetchLibraryFactions();
     }
   }
 
@@ -303,11 +362,20 @@ export class PortalImportCardComponent implements OnInit, OnChanges {
       .subscribe(list => this.libraryCasts.set(list));
   }
 
+  private _fetchLibraryFactions() {
+    this.http.get<Faction[]>(`${environment.apiUrl}/api/factions`)
+      .subscribe(list => this.libraryFactions.set(list));
+  }
+
   // ── Drawer / FAB ──────────────────────────────────────────────────────────
 
   toggleDrawer() {
     const opening = !this.drawerOpen();
     if (opening) {
+      const scrollEl = document.querySelector('.void-canvas') as HTMLElement | null;
+      if (scrollEl) {
+        scrollEl.scrollTo({ top: scrollEl.scrollHeight, behavior: 'smooth' });
+      }
       this.drawerPulsing.set(true);
       setTimeout(() => {
         this.drawerOpen.set(true);
@@ -519,6 +587,8 @@ export class PortalImportCardComponent implements OnInit, OnChanges {
       sourceId = this.sublocationInstanceList().find(l => l.instanceId === instanceId)?.sourceSublocationId ?? null;
     } else if (this.cardType === 'cast') {
       sourceId = this.castInstanceList().find(c => c.instanceId === instanceId)?.sourceCastId ?? null;
+    } else if (this.cardType === 'faction') {
+      sourceId = this.factionInstanceList().find(f => f.factionInstanceId === instanceId)?.sourceFactionId ?? null;
     }
 
     // Find the grid card wrapper element via data-instance-id attribute
@@ -550,6 +620,7 @@ export class PortalImportCardComponent implements OnInit, OnChanges {
   private _cardSelector(): string {
     if (this.cardType === 'sublocation') return 'app-sublocation-card';
     if (this.cardType === 'cast')        return 'app-cast-card';
+    if (this.cardType === 'faction')     return 'app-faction-card';
     return 'app-location-card';
   }
 
@@ -584,6 +655,12 @@ export class PortalImportCardComponent implements OnInit, OnChanges {
       this.http.delete(
         `${environment.apiUrl}/api/campaigns/${this._campaign()?.id}/casts/${instanceId}`
       ).subscribe();
+    } else if (this.cardType === 'faction') {
+      this.factionInstanceList.update(list => list.filter(f => f.factionInstanceId !== instanceId));
+      this.factionRemoved.emit(instanceId);
+      this.http.delete(
+        `${environment.apiUrl}/api/campaigns/${this._campaign()?.id}/factions/${instanceId}`
+      ).subscribe();
     }
   }
 
@@ -612,6 +689,7 @@ export class PortalImportCardComponent implements OnInit, OnChanges {
     const payload = {
       name:        formVal.name,
       description: formVal.description,
+      dmNotes:     formVal.dmNotes,
       shopItems:   (formVal.shopItems ?? []).map((item: any) => ({
         name:        item.name,
         price:       item.priceAmount != null ? `${item.priceAmount} ${item.priceCurrency}` : '',
@@ -745,6 +823,66 @@ export class PortalImportCardComponent implements OnInit, OnChanges {
       this.castInstanceList.update(list => [...list, optimistic]);
       this.castAdded.emit(optimistic);
       this._assembleCard(tempId, 'app-cast-card');
+
+      animDone = true;
+      applyResult();
+    });
+  }
+
+  selectFaction(faction: Faction, cardEl: HTMLElement) {
+    if (this._inFlightSourceIds.has(faction.id)) return;
+    this._inFlightSourceIds.add(faction.id);
+
+    const tempId = 'tmp-' + crypto.randomUUID();
+
+    let apiResult: CampaignFactionInstance | null = null;
+    let apiError  = false;
+    let animDone  = false;
+
+    const applyResult = () => {
+      if (!animDone) return;
+      if (apiError) {
+        this.factionInstanceList.update(list => list.filter(f => f.factionInstanceId !== tempId));
+        this.factionRemoved.emit(tempId);
+      } else if (apiResult) {
+        this.factionInstanceList.update(list => list.map(f => f.factionInstanceId === tempId ? apiResult! : f));
+        this.factionAdded.emit(apiResult!);
+      }
+    };
+
+    this.http.post<CampaignFactionInstance>(
+      `${environment.apiUrl}/api/campaigns/${this._campaign()?.id}/factions`,
+      { factionId: faction.id }
+    ).subscribe({
+      next:  instance => { apiResult = instance; applyResult(); },
+      error: ()       => { apiError  = true;     applyResult(); },
+    });
+
+    this._explodeCard(cardEl, () => {
+      this._inFlightSourceIds.delete(faction.id);
+
+      const optimistic: CampaignFactionInstance = {
+        factionInstanceId:      tempId,
+        sourceFactionId:        faction.id,
+        campaignId:             this._campaign()?.id ?? '',
+        dmUserId:               '',
+        name:                   faction.name,
+        type:                   faction.type,
+        influence:              faction.influence,
+        perception:             faction.perception ?? 0,
+        hidden:                 faction.hidden,
+        isVisibleToPlayers:     false,
+        symbolPath:             faction.symbolPath,
+        createdAt:              faction.createdAt,
+        subLocationInstanceIds: [],
+        castInstanceIds:        [],
+        factionRelationships:   [],
+      };
+
+      this.pendingInstanceIds.update(s => new Set(s).add(tempId));
+      this.factionInstanceList.update(list => [...list, optimistic]);
+      this.factionAdded.emit(optimistic);
+      this._assembleCard(tempId, 'app-faction-card');
 
       animDone = true;
       applyResult();
@@ -1029,6 +1167,97 @@ export class PortalImportCardComponent implements OnInit, OnChanges {
   private _fadeCastLabelTo(text: 'Saved' | 'Saving...' | 'Error') {
     this.castLabelVisible.set(false);
     setTimeout(() => { this.castLabelText.set(text); this.castLabelVisible.set(true); }, 280);
+  }
+
+  private _fadeFactionLabelTo(text: 'Saved' | 'Saving...' | 'Error') {
+    this.factionLabelVisible.set(false);
+    setTimeout(() => { this.factionLabelText.set(text); this.factionLabelVisible.set(true); }, 280);
+  }
+
+  onSaveNewFaction() {
+    if (this.factionForm.invalid || !this.selectedFactionIcon() || this.factionSaveStatus() === 'saving') return;
+    this.factionSaveStatus.set('saving');
+    this._fadeFactionLabelTo('Saving...');
+
+    const raw = this.factionForm.value;
+    const payload = {
+      name:        raw.name,
+      type:        raw.type,
+      description: raw.description ?? undefined,
+      dmNotes:     raw.dmNotes ?? undefined,
+      hidden:      raw.hidden ?? false,
+      influence:   raw.influence ?? 0,
+      perception:  raw.perception ?? 0,
+      symbolPath:  this.selectedFactionIcon() ?? undefined,
+    };
+
+    this.http.post<Faction>(`${environment.apiUrl}/api/factions`, payload)
+      .pipe(catchError(() => {
+        this.factionSaveStatus.set('error');
+        this._fadeFactionLabelTo('Error');
+        setTimeout(() => this.factionSaveStatus.set('idle'), 2000);
+        return EMPTY;
+      }))
+      .subscribe(faction => {
+        this.http.post<CampaignFactionInstance>(
+          `${environment.apiUrl}/api/campaigns/${this._campaign()?.id}/factions`,
+          { factionId: faction.id }
+        ).pipe(catchError(() => {
+          this.factionSaveStatus.set('error');
+          this._fadeFactionLabelTo('Error');
+          setTimeout(() => this.factionSaveStatus.set('idle'), 2000);
+          return EMPTY;
+        }))
+        .subscribe(instance => {
+          this.factionSaveStatus.set('saved');
+          this._fadeFactionLabelTo('Saved');
+          setTimeout(() => this.factionSaveStatus.set('idle'), 2000);
+          this.libraryFactions.update(list => [...list, faction]);
+          const influence = raw.influence ?? 0;
+          // Patch the instance influence immediately after creation
+          this.http.patch(
+            `${environment.apiUrl}/api/campaigns/${this._campaign()?.id}/factions/${instance.factionInstanceId}`,
+            { name: instance.name, type: instance.type, description: instance.description ?? '', hidden: instance.hidden, dmNotes: instance.dmNotes ?? '', influence, perception: raw.perception ?? 0, syncLibrary: false }
+          ).subscribe();
+          const tempId = 'tmp-' + crypto.randomUUID();
+          const optimistic: CampaignFactionInstance = {
+            factionInstanceId:      tempId,
+            sourceFactionId:        instance.sourceFactionId,
+            campaignId:             this._campaign()?.id ?? '',
+            dmUserId:               '',
+            name:                   instance.name,
+            type:                   instance.type,
+            influence:              influence,
+            perception:             raw.perception ?? 0,
+            hidden:                 instance.hidden,
+            isVisibleToPlayers:     false,
+            symbolPath:             instance.symbolPath,
+            createdAt:              instance.createdAt,
+            subLocationInstanceIds: [],
+            castInstanceIds:        [],
+            factionRelationships:   [],
+          };
+          this.pendingInstanceIds.update(s => new Set(s).add(tempId));
+          this.factionInstanceList.update(list => [...list, optimistic]);
+          this.factionAdded.emit(optimistic);
+          this._assembleCard(tempId, 'app-faction-card', () => {
+            this.pendingInstanceIds.update(s => { const n = new Set(s); n.delete(tempId); return n; });
+            const resolved = { ...instance, perception: raw.perception ?? 0, influence };
+            this.factionInstanceList.update(list => list.map(f => f.factionInstanceId === tempId ? resolved : f));
+            this.factionAdded.emit(resolved);
+          });
+          this.factionForm.reset({
+            name:        '',
+            type:        FACTION_TYPE_OPTIONS[0],
+            description: '',
+            dmNotes:     '',
+            influence:   0,
+            perception:  0,
+            hidden:      false,
+          });
+          this.selectedFactionIcon.set(null);
+        });
+      });
   }
 
   onSaveNewCast() {

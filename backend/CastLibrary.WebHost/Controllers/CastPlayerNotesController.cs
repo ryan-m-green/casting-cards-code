@@ -2,9 +2,11 @@ using CastLibrary.Logic.Commands.Cast;
 using CastLibrary.Logic.Queries.Cast;
 using CastLibrary.Logic.Validators;
 using CastLibrary.Shared.Requests;
+using CastLibrary.WebHost.Hubs;
 using CastLibrary.WebHost.Mappers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 
 namespace CastLibrary.WebHost.Controllers;
 
@@ -14,7 +16,8 @@ namespace CastLibrary.WebHost.Controllers;
 public class CastPlayerNotesController(
     IGetCastPlayerNotesQueryHandler getQuery,
     IUpsertCastPlayerNotesCommandHandler upsertCommand,
-    ICampaignCastPlayerNotesMapper mapper) : ControllerBase
+    ICampaignCastPlayerNotesMapper mapper,
+    IHubContext<CampaignHub> hubContext) : ControllerBase
 {
 
     [HttpGet("by-cast-instances")]
@@ -30,7 +33,9 @@ public class CastPlayerNotesController(
     public async Task<IActionResult> Get(Guid campaignId, Guid castInstanceId)
     {
         var domain = await getQuery.HandleAsync(campaignId, castInstanceId);
-        var response = mapper.ToResponse(domain);
+        var response = domain is null
+            ? mapper.ToEmpty(campaignId, castInstanceId)
+            : mapper.ToResponse(domain);
 
         return Ok(response);
     }
@@ -49,6 +54,9 @@ public class CastPlayerNotesController(
 
         var domain = await upsertCommand.HandleAsync(new UpsertCastPlayerNotesCommand(campaignId, castInstanceId, request));
         var response = mapper.ToResponse(domain);
+
+        await hubContext.Clients.Group(campaignId.ToString())
+            .SendAsync("NoteUpdated", new { entityType = "cast", instanceId = castInstanceId, campaignId });
 
         return Ok(response);
     }

@@ -1,0 +1,248 @@
+<div class="fac-card"
+     [class.fac-card--flipped]="flipped"
+     [class.fac-card--no-flip]="!flippable"
+     [class.fac-card--good]="isGood"
+     [class.fac-card--neutral]="isNeutral"
+     [class.fac-card--evil]="isEvil"
+     [class.fac-card--hidden]="faction.hidden"
+     [class.fac-card--glow]="influenceGlow != null && influenceGlow > 0"
+     [style.box-shadow]="glowBoxShadow"
+     [style.transform]="tiltTransform"
+     (click)="toggleFlip($event)">
+  <div class="fac-card__inner">
+
+    <!-- ── BACK FACE ── -->
+    <div class="fac-card__face fac-card__face--back">
+      <div class="fac-frame">
+        <div class="fac-back-inner">
+          <div class="fac-back-border"></div>
+          <div class="fac-back-border2"></div>
+
+          <div class="fac-back-emblem">
+            <!-- Good emblem: shield + cross -->
+            @if (isGood) {
+              <svg width="44" height="44" viewBox="0 0 80 80">
+                <circle cx="40" cy="40" r="35" fill="none" stroke="currentColor" stroke-width=".8" opacity=".25"/>
+                <path d="M40 8L58 20V44Q58 60 40 70Q22 60 22 44V20Z" fill="none" stroke="currentColor" stroke-width="1.4" opacity=".65"/>
+                <line x1="40" y1="22" x2="40" y2="58" stroke="currentColor" stroke-width="1.2" opacity=".55"/>
+                <line x1="27" y1="40" x2="53" y2="40" stroke="currentColor" stroke-width="1.2" opacity=".55"/>
+                <circle cx="40" cy="8"  r="3" fill="currentColor" opacity=".6"/>
+                <circle cx="58" cy="20" r="2" fill="currentColor" opacity=".4"/>
+                <circle cx="22" cy="20" r="2" fill="currentColor" opacity=".4"/>
+                <line x1="44.2" y1="11.0" x2="46.7" y2="15.3" stroke="currentColor" stroke-width=".7" opacity=".3"/>
+                <line x1="49.5" y1="14.0" x2="51.3" y2="18.5" stroke="currentColor" stroke-width=".7" opacity=".3"/>
+                <line x1="53.5" y1="18.9" x2="54.4" y2="23.7" stroke="currentColor" stroke-width=".7" opacity=".3"/>
+                <line x1="55.7" y1="25.0" x2="55.6" y2="30.0" stroke="currentColor" stroke-width=".7" opacity=".3"/>
+                <line x1="55.3" y1="31.3" x2="54.1" y2="36.0" stroke="currentColor" stroke-width=".7" opacity=".3"/>
+                <line x1="52.5" y1="37.0" x2="50.2" y2="41.4" stroke="currentColor" stroke-width=".7" opacity=".3"/>
+              </svg>
+            }
+            <!-- Neutral emblem: eye / veil -->
+            @if (isNeutral) {
+              <svg width="44" height="44" viewBox="0 0 80 80">
+                <circle cx="40" cy="40" r="35" fill="none" stroke="currentColor" stroke-width=".7" opacity=".18" stroke-dasharray="2 5"/>
+                <circle cx="40" cy="40" r="28" fill="none" stroke="currentColor" stroke-width=".5" opacity=".12" stroke-dasharray="1 4"/>
+                <path d="M 14,40 Q 20,20 40,18 Q 60,20 66,40 Q 60,58 40,60 Q 20,58 14,40 Z"
+                      fill="none" stroke="currentColor" stroke-width="1.2" opacity=".45"/>
+                <ellipse cx="40" cy="40" rx="11" ry="9" fill="none" stroke="currentColor" stroke-width="1.1" opacity=".6"/>
+                <ellipse cx="40" cy="40" rx="5"  ry="5" fill="currentColor" opacity=".22"/>
+                <ellipse cx="40" cy="40" rx="2.5" ry="2.5" fill="currentColor" opacity=".45"/>
+                <ellipse cx="37" cy="37.5" rx="1.5" ry="1" fill="white" opacity=".35"/>
+                <path d="M 14,40 Q 27,34 40,40 Q 53,46 66,40" fill="none" stroke="currentColor" stroke-width=".6" opacity=".22"/>
+                <path d="M 14,40 Q 27,46 40,40 Q 53,34 66,40" fill="none" stroke="currentColor" stroke-width=".6" opacity=".18"/>
+                <line x1="40" y1="5"  x2="40" y2="10" stroke="currentColor" stroke-width=".6" opacity=".2"/>
+                <line x1="70" y1="40" x2="65" y2="40" stroke="currentColor" stroke-width=".6" opacity=".2"/>
+                <line x1="40" y1="75" x2="40" y2="70" stroke="currentColor" stroke-width=".6" opacity=".2"/>
+                <line x1="10" y1="40" x2="15" y2="40" stroke="currentColor" stroke-width=".6" opacity=".2"/>
+                <line x1="62.5" y1="14.0" x2="59.2" y2="17.7" stroke="currentColor" stroke-width=".6" opacity=".2"/>
+                <line x1="17.5" y1="14.0" x2="20.8" y2="17.7" stroke="currentColor" stroke-width=".6" opacity=".2"/>
+              </svg>
+            }
+            <!-- Evil emblem: triangle + eye -->
+            @if (isEvil) {
+              <svg width="44" height="44" viewBox="0 0 80 80">
+                <circle cx="40" cy="40" r="35" fill="none" stroke="currentColor" stroke-width=".8" opacity=".22" stroke-dasharray="3 4"/>
+                <polygon points="40,10 66,56 14,56" fill="none" stroke="currentColor" stroke-width="1.4" opacity=".65"/>
+                <ellipse cx="40" cy="46" rx="11" ry="7"  fill="none" stroke="currentColor" stroke-width="1" opacity=".55"/>
+                <circle  cx="40" cy="46" r="3.5" fill="currentColor" opacity=".4"/>
+                <circle  cx="40" cy="46" r="1.5" fill="currentColor" opacity=".7"/>
+                <ellipse cx="38" cy="44.5" rx="1.2" ry=".8" fill="white" opacity=".3"/>
+                <line x1="40" y1="10" x2="40" y2="38" stroke="currentColor" stroke-width=".8" opacity=".3"/>
+                <line x1="14.2" y1="11.0" x2="16.7" y2="15.3" stroke="currentColor" stroke-width=".6" opacity=".22"/>
+                <line x1="63.8" y1="11.0" x2="61.3" y2="15.3" stroke="currentColor" stroke-width=".6" opacity=".22"/>
+                <line x1="10"  y1="56" x2="15"  y2="56" stroke="currentColor" stroke-width=".6" opacity=".22"/>
+                <line x1="70"  y1="56" x2="65"  y2="56" stroke="currentColor" stroke-width=".6" opacity=".22"/>
+              </svg>
+            }
+          </div>
+
+          <div class="fac-back-name">{{ faction.name }}</div>
+          <div class="fac-back-divider"></div>
+
+          <div class="fac-back-stats">
+            @for (stat of stats; track stat.k) {
+              @if (stat.v) {
+                <div class="fac-stat-row">
+                  <span class="fac-stat-key">{{ stat.k }}</span>
+                  <span class="fac-stat-val">{{ stat.v }}</span>
+                </div>
+              }
+            }
+          </div>
+
+          @if (editable) {
+            <div class="fac-back-actions">
+              <button class="fac-btn fac-btn--gold" (click)="onEditClick($event)">✦ Edit</button>
+              <button class="fac-btn fac-btn--red"  (click)="onDeleteClick($event)">✦ Delete</button>
+            </div>
+          }
+        </div>
+      </div>
+    </div>
+
+    <!-- ── FRONT FACE ── -->
+    <div class="fac-card__face fac-card__face--front">
+      <div class="fac-frame">
+        <div class="fac-inner">
+
+          <div class="fac-corner fac-corner--tl">
+            <svg viewBox="0 0 20 20" fill="none" width="12" height="12">
+              <path d="M2 18L2 2L18 2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+              <path d="M2 10L6 10"     stroke="currentColor" stroke-width="1"   stroke-linecap="round"/>
+              <path d="M10 2L10 6"     stroke="currentColor" stroke-width="1"   stroke-linecap="round"/>
+              <rect x="8" y="8" width="4" height="4" fill="currentColor" transform="rotate(45 10 10)" opacity=".7"/>
+            </svg>
+          </div>
+          <div class="fac-corner fac-corner--tr">
+            <svg viewBox="0 0 20 20" fill="none" width="12" height="12">
+              <path d="M2 18L2 2L18 2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+              <path d="M2 10L6 10"     stroke="currentColor" stroke-width="1"   stroke-linecap="round"/>
+              <path d="M10 2L10 6"     stroke="currentColor" stroke-width="1"   stroke-linecap="round"/>
+              <rect x="8" y="8" width="4" height="4" fill="currentColor" transform="rotate(45 10 10)" opacity=".7"/>
+            </svg>
+          </div>
+          <div class="fac-corner fac-corner--bl">
+            <svg viewBox="0 0 20 20" fill="none" width="12" height="12">
+              <path d="M2 18L2 2L18 2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+              <path d="M2 10L6 10"     stroke="currentColor" stroke-width="1"   stroke-linecap="round"/>
+              <path d="M10 2L10 6"     stroke="currentColor" stroke-width="1"   stroke-linecap="round"/>
+              <rect x="8" y="8" width="4" height="4" fill="currentColor" transform="rotate(45 10 10)" opacity=".7"/>
+            </svg>
+          </div>
+          <div class="fac-corner fac-corner--br">
+            <svg viewBox="0 0 20 20" fill="none" width="12" height="12">
+              <path d="M2 18L2 2L18 2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+              <path d="M2 10L6 10"     stroke="currentColor" stroke-width="1"   stroke-linecap="round"/>
+              <path d="M10 2L10 6"     stroke="currentColor" stroke-width="1"   stroke-linecap="round"/>
+              <rect x="8" y="8" width="4" height="4" fill="currentColor" transform="rotate(45 10 10)" opacity=".7"/>
+            </svg>
+          </div>
+
+          @if (secrets) {
+            <button class="fac-secrets-btn"
+                    [class.fac-secrets-btn--revealed]="secretsRevealed"
+                    (click)="onSecretsClick($event)"
+                    [attr.aria-label]="(secretsRevealed ? 'Hide ' : 'Reveal ') + faction.name + ' to players'"
+                    [title]="secretsRevealed ? 'Hide from players' : 'Reveal to players'">
+              <app-lock-icon [open]="secretsRevealed" />
+            </button>
+          }
+
+          <!-- Banner -->
+          <div class="fac-banner">
+            <div class="fac-name">{{ faction.name }}</div>
+            <div class="fac-sub">{{ alignLabel }}</div>
+          </div>
+
+          <!-- Portrait / emblem area -->
+          <div class="fac-portrait"
+               [class.fac-portrait--uploadable]="imageUpload">
+            @if (imageUpload) {
+              <label class="fac-upload-label">
+                <input type="file" accept="image/jpeg,image/png,image/webp"
+                       [attr.aria-label]="'Upload emblem image for ' + faction.name"
+                       class="fac-upload-input" (change)="onFileInputChange($event)" />
+                <div class="fac-upload-overlay">
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
+                    <circle cx="12" cy="13" r="4"/>
+                  </svg>
+                </div>
+              </label>
+            }
+            @if (faction.imageUrl || faction.symbolPath) {
+              <img [src]="faction.imageUrl || faction.symbolPath" [alt]="'Emblem of ' + faction.name" class="fac-portrait-img" />
+            } @else {
+              <div class="fac-portrait-inner">
+                <!-- Good emblem (small) -->
+                @if (isGood) {
+                  <svg width="60" height="60" viewBox="0 0 80 80">
+                    <circle cx="40" cy="40" r="35" fill="none" stroke="currentColor" stroke-width=".8" opacity=".25"/>
+                    <path d="M40 8L58 20V44Q58 60 40 70Q22 60 22 44V20Z" fill="none" stroke="currentColor" stroke-width="1.4" opacity=".65"/>
+                    <line x1="40" y1="22" x2="40" y2="58" stroke="currentColor" stroke-width="1.2" opacity=".55"/>
+                    <line x1="27" y1="40" x2="53" y2="40" stroke="currentColor" stroke-width="1.2" opacity=".55"/>
+                    <circle cx="40" cy="8"  r="3" fill="currentColor" opacity=".6"/>
+                    <circle cx="58" cy="20" r="2" fill="currentColor" opacity=".4"/>
+                    <circle cx="22" cy="20" r="2" fill="currentColor" opacity=".4"/>
+                  </svg>
+                }
+                <!-- Neutral emblem (small) -->
+                @if (isNeutral) {
+                  <svg width="60" height="60" viewBox="0 0 80 80">
+                    <circle cx="40" cy="40" r="35" fill="none" stroke="currentColor" stroke-width=".7" opacity=".18" stroke-dasharray="2 5"/>
+                    <path d="M 14,40 Q 20,20 40,18 Q 60,20 66,40 Q 60,58 40,60 Q 20,58 14,40 Z"
+                          fill="none" stroke="currentColor" stroke-width="1.2" opacity=".45"/>
+                    <ellipse cx="40" cy="40" rx="11" ry="9" fill="none" stroke="currentColor" stroke-width="1.1" opacity=".6"/>
+                    <ellipse cx="40" cy="40" rx="5"  ry="5" fill="currentColor" opacity=".22"/>
+                    <ellipse cx="40" cy="40" rx="2.5" ry="2.5" fill="currentColor" opacity=".45"/>
+                    <ellipse cx="37" cy="37.5" rx="1.5" ry="1" fill="white" opacity=".35"/>
+                  </svg>
+                }
+                <!-- Evil emblem (small) -->
+                @if (isEvil) {
+                  <svg width="60" height="60" viewBox="0 0 80 80">
+                    <circle cx="40" cy="40" r="35" fill="none" stroke="currentColor" stroke-width=".8" opacity=".22" stroke-dasharray="3 4"/>
+                    <polygon points="40,10 66,56 14,56" fill="none" stroke="currentColor" stroke-width="1.4" opacity=".65"/>
+                    <ellipse cx="40" cy="46" rx="11" ry="7" fill="none" stroke="currentColor" stroke-width="1" opacity=".55"/>
+                    <circle  cx="40" cy="46" r="3.5" fill="currentColor" opacity=".4"/>
+                    <circle  cx="40" cy="46" r="1.5" fill="currentColor" opacity=".7"/>
+                    <ellipse cx="38" cy="44.5" rx="1.2" ry=".8" fill="white" opacity=".3"/>
+                    <line x1="40" y1="10" x2="40" y2="38" stroke="currentColor" stroke-width=".8" opacity=".3"/>
+                  </svg>
+                }
+                <div class="fac-portrait-label">{{ portraitHint }}</div>
+              </div>
+            }
+            @if (relationshipType) {
+              <div class="fac-rel-overlay fac-rel-overlay--{{ relationshipType }}">
+                <div class="fac-rel-overlay-bar" [style.width.%]="((relationshipStrength ?? 0) / 5) * 100"></div>
+                <span class="fac-rel-overlay-label">{{ relationshipType }}</span>
+              </div>
+            }
+          </div>
+
+          <!-- Flavor -->
+          <div class="fac-flavor">
+            <div class="fac-flavor-text">{{ faction.type }}</div>
+          </div>
+
+          <!-- Bottom strip -->
+          <div class="fac-strip" (click)="$event.stopPropagation()">
+            <div class="fac-pip-row">
+              <div class="fac-pip"></div>
+              <div class="fac-pip"></div>
+              <div class="fac-pip"></div>
+            </div>
+            <span class="fac-strip-label">Faction</span>
+            <div class="fac-pip-row">
+              <div class="fac-pip"></div>
+              <div class="fac-pip"></div>
+              <div class="fac-pip"></div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

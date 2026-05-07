@@ -24,7 +24,7 @@ namespace CastLibrary.Repository.Repositories.Update
                 domain.Id,
                 domain.CampaignId,
                 domain.CastInstanceId,
-                domain.Want,
+                domain.Notes,
                 Connections = domain.Connections.Select(g => g.ToString()).ToArray(),
                 domain.Alignment,
                 domain.Perception,
@@ -34,17 +34,17 @@ namespace CastLibrary.Repository.Repositories.Update
             };
             const string sql =
                 @"INSERT INTO campaign_cast_player_notes
-                (id, campaign_id, cast_instance_id, want, connections, alignment, perception, rating, created_at, updated_at)
+                (id, campaign_id, cast_instance_id, notes, connections, alignment, perception, rating, created_at, updated_at)
               VALUES
-                (@Id, @CampaignId, @CastInstanceId, @Want, @Connections::text[], @Alignment, @Perception, @Rating, @CreatedAt, @UpdatedAt)
+                (@Id, @CampaignId, @CastInstanceId, @Notes, @Connections::text[], @Alignment, @Perception, @Rating, @CreatedAt, @UpdatedAt)
               ON CONFLICT (campaign_id, cast_instance_id) DO UPDATE SET
-                want             = EXCLUDED.want,
+                notes            = EXCLUDED.notes,
                 connections      = EXCLUDED.connections,
                 alignment        = EXCLUDED.alignment,
                 perception       = EXCLUDED.perception,
                 rating           = EXCLUDED.rating,
                 updated_at       = EXCLUDED.updated_at
-              RETURNING id, campaign_id, cast_instance_id, want, connections, alignment, perception, rating, created_at, updated_at";
+              RETURNING id, campaign_id, cast_instance_id, notes, connections, alignment, perception, rating, created_at, updated_at";
 
             logging.LogDbOperation(correlation.TraceId, spanId, "UPSERT", "campaign_cast_player_notes", @params);
 

@@ -8,8 +8,8 @@ import { EMPTY } from 'rxjs';
 import { environment } from '../../../../environments/environment';
 import { Location } from '../../../shared/models/location.model';
 import { SparkleService } from '../../../shared/services/sparkle.service';
-import { DmNavComponent } from '../../../shared/components/dm-nav/dm-nav.component';
 import { LocationCardComponent } from '../../../shared/components/location-card/location-card.component';
+import { JournalTitleComponent } from '../../../shared/components/journal-title/journal-title.component';
 
 const SIZE_OPTIONS = ['Hamlet', 'Village', 'Town', 'Large Town', 'Location', 'Large Location', 'Metropolis'];
 
@@ -70,7 +70,7 @@ const CLIMATE_OPTIONS = [
 @Component({
   selector: 'app-location-form',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, RouterLink, DmNavComponent, LocationCardComponent],
+  imports: [CommonModule, ReactiveFormsModule, RouterLink, LocationCardComponent, JournalTitleComponent],
   templateUrl: './location-form.component.html',
   styleUrl: './location-form.component.scss'
 })
@@ -114,6 +114,7 @@ export class LocationFormComponent implements OnInit {
     vibe:           [''],
     languages:      [''],
     description:    [''],
+    dmNotes:        [''],
   });
 
   previewLocation = computed<Location>(() => {

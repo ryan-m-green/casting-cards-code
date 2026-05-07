@@ -2,15 +2,16 @@ import { Component, OnInit, signal, inject } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
+import { JournalTitleComponent } from '../../../shared/components/journal-title/journal-title.component';
+import { JournalWatermarkComponent } from '../../../shared/components/journal-watermark/journal-watermark.component';
 import { environment } from '../../../../environments/environment';
 import { Campaign } from '../../../shared/models/campaign.model';
 import { PortalTransitionService } from '../../../core/portal-transition.service';
-import { DmNavComponent } from '../../../shared/components/dm-nav/dm-nav.component';
 
 @Component({
   selector: 'app-campaign-library',
   standalone: true,
-  imports: [CommonModule, RouterLink, DmNavComponent],
+  imports: [CommonModule, RouterLink, JournalTitleComponent, JournalWatermarkComponent],
   templateUrl: './campaign-library.component.html',
   styleUrl: './campaign-library.component.scss'
 })

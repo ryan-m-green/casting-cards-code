@@ -1,40 +1,41 @@
 @if (cast(); as ca) {
-  <!-- ── Hero card ── -->
-  <div class="cast-hero">
-      <div class="cast-hero-card">
-        <app-cast-card
-          [cast]="ca"
-          [flippable]="false"
-          [editable]="false"
-          [secrets]="false"
-          [tilt]="0"
-          [campaignMode]="false"
-          [setStars]="playerRating()"
-        />
+  <!-- ── Body ── -->
+  <div class="cast-body">
+
+    <!-- Card + star rating -->
+    <div class="cast-card-left">
+      <app-cast-card
+        [cast]="ca"
+        [flippable]="false"
+        [editable]="false"
+        [secrets]="false"
+        [tilt]="0"
+        [campaignMode]="false"
+        [setStars]="playerRating()"
+        [factionSymbols]="castFactionSymbols()"
+      />
+
+      <!-- ── Star rating ── -->
+      <div class="cast-rating">
+        <span class="cast-rating-label">Influential Impact</span>
+        <div class="star-row" [class.star-row--animating]="starAnimating()">
+          @for (n of [1, 2, 3]; track n) {
+            <button
+              class="star"
+              [class.star--lit]="playerRating() >= n"
+              (click)="setRating(n)"
+            >
+              <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path d="M12 2l2.09 6.26L22 9.27l-5 4.73 1.18 6.74L12 17.77l-6.18 2.97L7 14.0 2 9.27l7.91-1.01z"/>
+              </svg>
+            </button>
+          }
+        </div>
       </div>
     </div>
 
-    <!-- ── Star rating ── -->
-    <div class="cast-rating">
-      <span class="cast-rating-label">Influential Impact</span>
-      <div class="star-row" [class.star-row--animating]="starAnimating()">
-        @for (n of [1, 2, 3]; track n) {
-          <button
-            class="star"
-            [class.star--lit]="playerRating() >= n"
-            (click)="setRating(n)"
-          >
-            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-              <path d="M12 2l2.09 6.26L22 9.27l-5 4.73 1.18 6.74L12 17.77l-6.18 2.97L7 14.0 2 9.27l7.91-1.01z"/>
-            </svg>
-          </button>
-        }
-      </div>
-    </div>
-
-    <!-- ── Detail panel ── -->
-    <div class="cast-detail-wrap">
-      <div class="cast-detail-panel" [style.height]="panelHeight()" [class.detail-panel--mobile-expanded]="detailExpanded()">
+    <!-- Detail panel -->
+    <div class="cast-detail-panel" [style.height]="panelHeight()" [class.detail-panel--mobile-expanded]="detailExpanded()">
 
         <div class="detail-panel-content" #detailContent>
 
@@ -75,13 +76,6 @@
               <span class="detail-value">{{ ca.age }}</span>
             </div>
           }
-          @if (ca.alignment) {
-            <div class="detail-cell">
-              <span class="detail-label">Alignment</span>
-              <span class="detail-line"></span>
-              <span class="detail-value">{{ ca.alignment }}</span>
-            </div>
-          }
           @if (ca.posture) {
             <div class="detail-cell">
               <span class="detail-label">Posture</span>
@@ -96,18 +90,7 @@
               <span class="detail-value">{{ ca.speed }}</span>
             </div>
           }
-          @if (ca.voicePlacement?.length) {
-            <div class="detail-cell">
-              <span class="detail-label">Voice Placement</span>
-              <span class="detail-line"></span>
-              <div class="detail-keywords">
-                @for (vp of ca.voicePlacement; track vp) {
-                  <span class="detail-keyword-pill">{{ vp }}</span>
-                }
-              </div>
-            </div>
-          }
-          @if (ca.keywords?.length) {
+          @if (ca.keywords.length) {
             <div class="detail-cell detail-cell--full">
               <span class="detail-label">Keywords</span>
               <span class="detail-line"></span>
@@ -127,16 +110,29 @@
         </button>
 
       </div>
-    </div>
 
-    <!-- ── Cast notes panel ── -->
-    <div class="cast-notes-wrap">
-      <app-player-cast-notes
-        [campaignId]="campaignId()"
-        [castInstance]="ca"
-        [allCasts]="campaign()?.casts ?? []"
-        [allLocations]="campaign()?.locations ?? []"
-        [castSecrets]="castSecrets()"
-      />
-    </div>
+  </div>
+
+  <!-- ── Faction Symbol Picker ── -->
+  <div class="cast-faction-picker">
+    <app-faction-symbol-picker
+      [campaignId]="campaignId()"
+      [targetDropInstanceId]="castInstanceId()"
+      [targetType]="'cast'"
+      [factions]="visibleFactions()"
+      [assignedFactionIds]="castFactionSymbols().map(s => s.factionInstanceId)"
+      (assigned)="onFactionAssigned($event)"
+    />
+  </div>
+
+  <!-- ── Cast notes panel ── -->
+  <div class="cast-notes-wrap">
+    <app-player-cast-notes
+      [campaignId]="campaignId()"
+      [castInstance]="ca"
+      [allCasts]="campaign()?.casts ?? []"
+      [allLocations]="campaign()?.locations ?? []"
+      [castSecrets]="castSecrets()"
+    />
+  </div>
 }

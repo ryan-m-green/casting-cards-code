@@ -1,5 +1,4 @@
 <div class="pc scroll-body">
-  <app-dm-nav />
   <div class="wr wr-page-header">
     <button class="btn-ghost" (click)="goBack()" type="button">← Sublocations</button>
   </div>
@@ -126,7 +125,7 @@
             <p class="detail-desc-text">{{ added.cast.description }}</p>
           }
 
-          @if ((added.keywords?.length ?? 0) > 0) {
+          @if (added.keywords.length > 0) {
             <div class="detail-keywords">
               <div class="fi-label">Keywords</div>
               <div class="keyword-chips-readonly">

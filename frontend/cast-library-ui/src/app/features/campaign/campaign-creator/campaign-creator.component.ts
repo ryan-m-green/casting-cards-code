@@ -9,12 +9,8 @@ import { Location, CampaignLocationInstance } from '../../../shared/models/locat
 import { CampaignDetail, CampaignInviteCode, CampaignPlayer } from '../../../shared/models/campaign.model';
 import { CampaignCastInstance } from '../../../shared/models/cast.model';
 import { CampaignSublocationInstance } from '../../../shared/models/sublocation.model';
-import { CardFlipComponent } from '../../../shared/components/card-flip/card-flip.component';
-import { LocationCardComponent } from '../../../shared/components/location-card/location-card.component';
-import { CastRelationshipsTabComponent } from '../cast-relationships-tab/cast-relationships-tab.component';
-import { KeywordInputComponent } from '../../../shared/components/keyword-input/keyword-input.component';
-import { DmNavComponent } from '../../../shared/components/dm-nav/dm-nav.component';
 import { TimeOfDayEditorComponent } from '../time-of-day-editor/time-of-day-editor.component';
+import { JournalTitleComponent } from '../../../shared/components/journal-title/journal-title.component';
 import { AuthService } from '../../../core/auth/auth.service';
 import { CampaignHubService } from '../../../core/hub/campaign-hub.service';
 
@@ -40,7 +36,7 @@ interface LocationDraft {
 @Component({
   selector: 'app-campaign-creator',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, RouterLink, CardFlipComponent, LocationCardComponent, CastRelationshipsTabComponent, KeywordInputComponent, DmNavComponent, TimeOfDayEditorComponent],
+  imports: [CommonModule, ReactiveFormsModule, RouterLink, TimeOfDayEditorComponent, JournalTitleComponent],
   templateUrl: './campaign-creator.component.html',
   styleUrl: './campaign-creator.component.scss'
 })
@@ -690,5 +686,39 @@ export class CampaignCreatorComponent implements OnInit, OnDestroy {
     ghost.style.transform  = `translate(${dx}px,${dy}px) scale(0.76)`;
     ghost.style.opacity    = '0';
     setTimeout(() => { ghost.remove(); onDone(); }, 520);
+  }
+
+  confirmingDelete = signal(false);
+  deleting         = signal(false);
+  settingPrimary   = signal(false);
+
+  requestDelete() { this.confirmingDelete.set(true); }
+  cancelDelete()  { this.confirmingDelete.set(false); }
+
+  confirmDelete() {
+    const id = this.campaignId();
+    if (!id) return;
+    this.deleting.set(true);
+    this.http.delete(`${environment.apiUrl}/api/campaigns/${id}`).subscribe({
+      next: () => this.router.navigate(['/dm/campaigns']),
+      error: () => this.deleting.set(false),
+    });
+  }
+
+  setAsPrimary() {
+    const id = this.campaignId();
+    if (!id) return;
+    this.settingPrimary.set(true);
+    const f = this.form.value;
+    this.http.patch(`${environment.apiUrl}/api/campaigns/${id}`, {
+      name: f.name ?? '',
+      fantasyType: f.fantasyType ?? '',
+      description: f.description ?? '',
+      spineColor: f.spineColor ?? '',
+      status: 'Active',
+    }).subscribe({
+      next: () => this.settingPrimary.set(false),
+      error: () => this.settingPrimary.set(false),
+    });
   }
 }

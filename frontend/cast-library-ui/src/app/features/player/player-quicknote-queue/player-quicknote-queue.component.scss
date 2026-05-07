@@ -1,0 +1,130 @@
+@use '../../../../styles/variables' as v;
+
+:host {
+  display: block;
+  width: 100%;
+}
+
+/* ── Page wrapper ────────────────────────────────────────────── */
+.qnq-page {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 24px 24px 60px;
+}
+
+/* ── Empty / loading state ───────────────────────────────────── */
+.qnq-empty {
+  text-align: center;
+  padding: 60px 0;
+  font-family: v.$font-body;
+  font-size: 16px;
+  color: v.$campaign-portal-text-muted;
+  letter-spacing: 0.04em;
+}
+
+/* ── List ────────────────────────────────────────────────────── */
+.qnq-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* ── Card ────────────────────────────────────────────────────── */
+.qnq-card {
+  background: v.$campaign-portal-bg-dark;
+  border: 1px solid v.$campaign-portal-border-bold;
+  border-radius: 10px;
+  padding: 16px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  position: relative;
+}
+
+.qnq-content {
+  font-family: v.$font-body;
+  font-size: 15px;
+  line-height: 1.6;
+  color: v.$campaign-portal-text-bright;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.qnq-meta {
+  font-size: 11px;
+  color: v.$campaign-portal-text-muted;
+  letter-spacing: 0.05em;
+}
+
+/* ── Actions row ─────────────────────────────────────────────── */
+.qnq-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  padding-top: 4px;
+  border-top: 1px solid v.$campaign-portal-border;
+}
+
+/* ── Button group ────────────────────────────────────────────── */
+.qnq-btn-group {
+  display: flex;
+  gap: 8px;
+  margin-left: auto;
+}
+
+.qnq-route-btn {
+  padding: 7px 18px;
+  background: v.$campaign-btn-primary-bg;
+  border: 1px solid v.$campaign-btn-primary-border;
+  border-radius: 6px;
+  color: v.$campaign-btn-primary-text;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  letter-spacing: 0.05em;
+  transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+
+  &:hover:not(:disabled) {
+    background: v.$campaign-btn-primary-hover-bg;
+    border-color: v.$campaign-btn-primary-hover-border;
+    color: v.$campaign-btn-primary-hover-text;
+  }
+
+  &:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+  }
+}
+
+.qnq-delete-btn {
+  position: absolute;
+  top: 8px;
+  right: 10px;
+  flex-shrink: 0;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 4px;
+  opacity: 0.45;
+  transition: opacity 0.18s ease, background 0.15s ease;
+
+  &:hover:not(:disabled) {
+    opacity: 1;
+    background: v.$campaign-portal-bg-hover;
+  }
+
+  &:disabled {
+    opacity: 0.2;
+    cursor: not-allowed;
+  }
+}
+
+.qnq-delete-btn-img {
+  width: 20px;
+  height: 20px;
+  object-fit: contain;
+  display: block;
+  filter: invert(1);
+}

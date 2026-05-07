@@ -1,0 +1,57 @@
+@use '../../../../styles/variables' as v;
+
+:host {
+  display: block;
+  margin-top: 56px;
+  margin-bottom: 8px;
+}
+
+.jt-wrap {
+  padding-bottom: 4px;
+}
+
+.jt-heading {
+  font-family: v.$font-header;
+  font-size: 17px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: v.$journal-leather-cover-base-1;
+  margin-bottom: 5px;
+}
+
+.jt-center .jt-heading {
+  text-align: center;
+}
+
+.jt-orn {
+  color: v.$journal-spine-cap-2;
+}
+
+.jt-rule {
+  height: 1px;
+  background: linear-gradient(to right, v.$journal-spine-cap-2, transparent);
+  opacity: 0.55;
+  margin-bottom: 6px;
+}
+
+.jt-center .jt-rule {
+  background: linear-gradient(to right, transparent, v.$journal-spine-cap-2, transparent);
+}
+
+.jt-subtitle {
+  font-family: v.$font-body;
+  font-style: italic;
+  font-size: 13px;
+  color: v.$journal-leather-cover-base-2;
+  margin-top: 4px;
+}
+
+.jt-username {
+  font-family: v.$font-body;
+  font-style: italic;
+  font-size: 13px;
+  color: v.$journal-leather-cover-base-2;
+  margin-top: 4px;
+  letter-spacing: 0.02em;
+}

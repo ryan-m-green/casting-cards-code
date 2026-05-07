@@ -2,22 +2,24 @@ using CastLibrary.Logic.Commands.Admin;
 using CastLibrary.Logic.Commands.Auth;
 using CastLibrary.Logic.Commands.BugReport;
 using CastLibrary.Logic.Commands.Campaign;
-using CastLibrary.Logic.Commands.CampaignNote;
 using CastLibrary.Logic.Commands.Cast;
+using CastLibrary.Logic.Commands.Faction;
 using CastLibrary.Logic.Commands.Location;
 using CastLibrary.Logic.Commands.Library;
 using CastLibrary.Logic.Commands.PlayerCard;
+using CastLibrary.Logic.Commands.QuicknoteQueue;
 using CastLibrary.Logic.Commands.Sublocation;
 using CastLibrary.Logic.Factories;
 using CastLibrary.Logic.Interfaces;
 using CastLibrary.Logic.Queries.Admin;
 using CastLibrary.Logic.Queries.BugReport;
 using CastLibrary.Logic.Queries.Campaign;
-using CastLibrary.Logic.Queries.CampaignNote;
 using CastLibrary.Logic.Queries.Cast;
+using CastLibrary.Logic.Queries.Faction;
 using CastLibrary.Logic.Queries.Location;
 using CastLibrary.Logic.Queries.Library;
 using CastLibrary.Logic.Queries.PlayerCard;
+using CastLibrary.Logic.Queries.QuicknoteQueue;
 using CastLibrary.Logic.Queries.Sublocation;
 using CastLibrary.Logic.Services;
 
@@ -81,8 +83,6 @@ namespace CastLibrary.WebHost.IoC
             services.AddScoped<IUpdateCastInstanceVisibilityCommandHandler, UpdateCastInstanceVisibilityCommandHandler>();
             services.AddScoped<IUpdateSublocationCastsVisibilityCommandHandler, UpdateSublocationCastsVisibilityCommandHandler>();
 
-            services.AddScoped<IUpsertCampaignNoteCommandHandler, UpsertCampaignNoteCommandHandler>();
-
             services.AddScoped<IAddCastRelationshipCommandHandler, AddCastRelationshipCommandHandler>();
             services.AddScoped<IUpdateCastRelationshipCommandHandler, UpdateCastRelationshipCommandHandler>();
             services.AddScoped<IDeleteCastRelationshipCommandHandler, DeleteCastRelationshipCommandHandler>();
@@ -91,7 +91,9 @@ namespace CastLibrary.WebHost.IoC
             services.AddScoped<IZipLibraryImportCommandHandler, ZipLibraryImportCommandHandler>();
 
             services.AddScoped<IUpsertCastPlayerNotesCommandHandler, UpsertCastPlayerNotesCommandHandler>();
-            services.AddScoped<IUpsertLocationPoliticalNotesCommandHandler, UpsertLocationPoliticalNotesCommandHandler>();
+            services.AddScoped<IUpsertLocationPlayerNotesCommandHandler, UpsertLocationPlayerNotesCommandHandler>();
+            services.AddScoped<IUpsertSublocationPlayerNotesCommandHandler, UpsertSublocationPlayerNotesCommandHandler>();
+            services.AddScoped<IUpsertCampaignPlayerNotesCommandHandler, UpsertCampaignPlayerNotesCommandHandler>();
 
             services.AddScoped<IUpdateLocationInstanceKeywordsCommandHandler, UpdateLocationInstanceKeywordsCommandHandler>();
             services.AddScoped<IUpdateCastInstanceKeywordsCommandHandler, UpdateCastInstanceKeywordsCommandHandler>();
@@ -136,6 +138,31 @@ namespace CastLibrary.WebHost.IoC
             services.AddScoped<IDeleteBugReportCommandHandler, DeleteBugReportCommandHandler>();
             services.AddScoped<IUpdateBugSeverityCommandHandler, UpdateBugSeverityCommandHandler>();
 
+            services.AddScoped<ICreateFactionCommandHandler, CreateFactionCommandHandler>();
+            services.AddScoped<IUpdateFactionCommandHandler, UpdateFactionCommandHandler>();
+            services.AddScoped<IDeleteFactionCommandHandler, DeleteFactionCommandHandler>();
+            services.AddScoped<IUploadFactionImageCommandHandler, UploadFactionImageCommandHandler>();
+            services.AddScoped<IAddFactionToCampaignCommandHandler, AddFactionToCampaignCommandHandler>();
+            services.AddScoped<IDeleteFactionInstanceCommandHandler, DeleteFactionInstanceCommandHandler>();
+            services.AddScoped<IUpdateFactionInstanceCommandHandler, UpdateFactionInstanceCommandHandler>();
+            services.AddScoped<IAddFactionSublocationCommandHandler, AddFactionSublocationCommandHandler>();
+            services.AddScoped<IRemoveFactionSublocationCommandHandler, RemoveFactionSublocationCommandHandler>();
+            services.AddScoped<ISetFactionSublocationPrimaryCommandHandler, SetFactionSublocationPrimaryCommandHandler>();
+            services.AddScoped<IClearFactionSublocationPrimaryCommandHandler, ClearFactionSublocationPrimaryCommandHandler>();
+            services.AddScoped<IAddFactionCastMemberCommandHandler, AddFactionCastMemberCommandHandler>();
+            services.AddScoped<IRemoveFactionCastMemberCommandHandler, RemoveFactionCastMemberCommandHandler>();
+            services.AddScoped<ISetFactionCastMemberPrimaryCommandHandler, SetFactionCastMemberPrimaryCommandHandler>();
+            services.AddScoped<IClearFactionCastMemberPrimaryCommandHandler, ClearFactionCastMemberPrimaryCommandHandler>();
+            services.AddScoped<IAddFactionRelationshipCommandHandler, AddFactionRelationshipCommandHandler>();
+            services.AddScoped<IRemoveFactionRelationshipCommandHandler, RemoveFactionRelationshipCommandHandler>();
+            services.AddScoped<IUpdateFactionInstanceVisibilityCommandHandler, UpdateFactionInstanceVisibilityCommandHandler>();
+            services.AddScoped<IUpsertFactionPlayerNotesCommandHandler, UpsertFactionPlayerNotesCommandHandler>();
+            services.AddScoped<ICreateQuicknoteQueueItemCommandHandler, CreateQuicknoteQueueItemCommandHandler>();
+            services.AddScoped<IUpdateQuicknoteQueueItemCommandHandler, UpdateQuicknoteQueueItemCommandHandler>();
+            services.AddScoped<IDeleteQuicknoteQueueItemCommandHandler, DeleteQuicknoteQueueItemCommandHandler>();
+            services.AddScoped<IAssignFactionToSublocationCommandHandler, AssignFactionToSublocationCommandHandler>();
+            services.AddScoped<IAssignFactionToCastCommandHandler, AssignFactionToCastCommandHandler>();
+
             return services;
         }
 
@@ -156,8 +183,6 @@ namespace CastLibrary.WebHost.IoC
             services.AddScoped<IGetPlayerCampaignDetailQueryHandler, GetPlayerCampaignDetailQueryHandler>();
             services.AddScoped<IGetCampaignInviteCodeQueryHandler, GetCampaignInviteCodeQueryHandler>();
 
-            services.AddScoped<IGetCampaignNotesQueryHandler, GetCampaignNotesQueryHandler>();
-
             services.AddScoped<IGetCastRelationshipsQueryHandler, GetCastRelationshipsQueryHandler>();
             services.AddScoped<IGetCastRelationshipByIdQueryHandler, GetCastRelationshipByIdQueryHandler>();
 
@@ -170,7 +195,9 @@ namespace CastLibrary.WebHost.IoC
             services.AddScoped<IGetUserKeywordsQueryHandler, GetUserKeywordsQueryHandler>();
 
             services.AddScoped<IGetCastPlayerNotesQueryHandler, GetCastPlayerNotesQueryHandler>();
-            services.AddScoped<IGetLocationPoliticalNotesQueryHandler, GetLocationPoliticalNotesQueryHandler>();
+            services.AddScoped<IGetLocationPlayerNotesQueryHandler, GetLocationPlayerNotesQueryHandler>();
+            services.AddScoped<IGetSublocationPlayerNotesQueryHandler, GetSublocationPlayerNotesQueryHandler>();
+            services.AddScoped<IGetCampaignPlayerNotesQueryHandler, GetCampaignPlayerNotesQueryHandler>();
 
             services.AddScoped<IGetAdminInviteCodeQueryHandler, GetAdminInviteCodeQueryHandler>();
             services.AddScoped<IGetAllUsersQueryHandler, GetAllUsersQueryHandler>();
@@ -187,6 +214,13 @@ namespace CastLibrary.WebHost.IoC
             services.AddScoped<IGetPlayerCastPerceptionsQueryHandler, GetPlayerCastPerceptionsQueryHandler>();
             services.AddScoped<IGetCastInstancePerceptionsQueryHandler, GetCastInstancePerceptionsQueryHandler>();
             services.AddScoped<IGetBugReportsQueryHandler, GetBugReportsQueryHandler>();
+
+            services.AddScoped<IGetFactionLibraryQueryHandler, GetFactionLibraryQueryHandler>();
+            services.AddScoped<IGetFactionDetailQueryHandler, GetFactionDetailQueryHandler>();
+            services.AddScoped<IGetCampaignFactionInstancesQueryHandler, GetCampaignFactionInstancesQueryHandler>();
+            services.AddScoped<IGetPlayerCampaignFactionInstancesQueryHandler, GetPlayerCampaignFactionInstancesQueryHandler>();
+            services.AddScoped<IGetFactionPlayerNotesQueryHandler, GetFactionPlayerNotesQueryHandler>();
+            services.AddScoped<IGetQuicknoteQueueQueryHandler, GetQuicknoteQueueQueryHandler>();
 
             return services;
         }
@@ -209,6 +243,7 @@ namespace CastLibrary.WebHost.IoC
         {
             services.AddScoped<ICastFactory, CastFactory>();
             services.AddScoped<ICastInstanceFactory, CastInstanceFactory>();
+            services.AddScoped<IFactionFactory, FactionFactory>();
             services.AddScoped<ILocationInstanceFactory, LocationInstanceFactory>();
             services.AddScoped<ISublocationInstanceFactory, SublocationInstanceFactory>();
             services.AddScoped<ICampaignFactory, CampaignFactory>();

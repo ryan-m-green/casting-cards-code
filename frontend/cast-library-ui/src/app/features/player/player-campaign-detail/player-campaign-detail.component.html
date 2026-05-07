@@ -1,7 +1,15 @@
+
+
+
 @if (campaign(); as camp) {
   @if (camp.locations.length) {
+    
     <div class="location-cards-section">
+      <div class="campaign-notes-panel">
+        <app-player-campaign-notes [campaignId]="campaignId()" />
+      </div>
       <div class="location-cards-label">Locations</div>
+      
       <div class="location-cards-container">
         @for (location of camp.locations; track location.instanceId) {
           <div [class.is-locking]="isLocking(location.instanceId)">

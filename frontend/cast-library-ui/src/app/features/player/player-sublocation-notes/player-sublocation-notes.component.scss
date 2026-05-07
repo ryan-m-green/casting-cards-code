@@ -1,0 +1,72 @@
+@use '../../../../styles/variables' as v;
+
+:host {
+  display: block;
+  width: 100%;
+}
+
+.sublocation-notes-panel {
+  width: 100%;
+  background: v.$campaign-portal-bg-dark;
+  border: 1px solid v.$color-player-section-border;
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.notes-panel-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px 10px;
+  border-bottom: 1px solid v.$color-player-section-border;
+}
+
+.notes-panel-label {
+  font-family: v.$font-header;
+  font-size: 7px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: v.$color-player-section-label;
+  white-space: nowrap;
+}
+
+.notes-saving {
+  font-family: v.$font-header;
+  font-size: 7px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(v.$subLoc-olive, 0.8);
+  white-space: nowrap;
+}
+
+.notes-section {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 14px 16px;
+}
+
+.notes-textarea {
+  width: 100%;
+  background: v.$color-overlay-darker;
+  border: 1px solid v.$color-player-section-border;
+  border-radius: 3px;
+  color: v.$campaign-portal-text-muted;
+  font-family: v.$font-body;
+  font-size: 14px;
+  line-height: 1.6;
+  padding: 5px 8px;
+  resize: vertical;
+  min-height: 80px;
+  box-sizing: border-box;
+  outline: none;
+  transition: border-color 0.2s;
+
+  &::placeholder {
+    color: rgba(v.$subLoc-olive, 0.30);
+  }
+
+  &:focus {
+    border-color: v.$color-player-section-border;
+  }
+}

@@ -224,6 +224,7 @@
 // ─── Portal Buttons ───────────────────────────────────────────────────────────
 .portal-btns {
   display: flex;
+  justify-content: center;
   gap: 6px;
   padding: 0 8px 8px;
   position: relative;
@@ -256,6 +257,8 @@
   }
 
   &--edit {
+    flex: none;
+    width: 64px;
     border: 1.5px solid v.$portal-card-edit-border;
     color: v.$portal-card-edit-text;
     box-shadow: 0 0 8px v.$portal-card-edit-glow, inset 0 1px 0 v.$portal-card-edit-inset;
@@ -276,7 +279,8 @@
   font-size: 7px;
   letter-spacing: 0.25em;
   text-transform: uppercase;
-  color: color-mix(in srgb, var(--portal-color, v.$campaign-portal-primary), transparent 60%);
+  font-weight: bolder;
+  color: rgba(154, 176, 184, 0.85);
   border-top: 1px solid color-mix(in srgb, var(--portal-color, v.$campaign-portal-primary), transparent 82%);
   position: relative;
   z-index: 1;

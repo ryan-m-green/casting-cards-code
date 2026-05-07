@@ -1,0 +1,286 @@
+@use '../../../../styles/variables' as v;
+
+:host {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+/* ── Main body layout ────────────────────────────────────────────────────── */
+.faction-body {
+  display: flex;
+  gap: 32px;
+  padding: 8px 40px 32px;
+  position: relative;
+  z-index: 1;
+  align-items: flex-start;
+}
+
+.faction-card-left {
+  flex-shrink: 0;
+}
+
+/* ── Detail panel ────────────────────────────────────────────────────────── */
+.faction-detail-panel {
+  flex: 1;
+  min-width: 0;
+  background: v.$campaign-portal-bg-dark;
+  border: 1px solid rgba(v.$color-faction-neutral-frame-2, 0.40);
+  border-radius: 6px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  transition: height 0.35s cubic-bezier(0.4, 0, 0.2, 1),
+              margin-left 0.35s cubic-bezier(0.4, 0, 0.2, 1),
+              width 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.detail-panel-content {
+  flex: 1;
+  min-height: 0;
+}
+
+.detail-desc {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 12px 16px;
+  border-bottom: 1px solid rgba(v.$color-faction-neutral-frame-2, 0.12);
+}
+
+.detail-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: v.$font-header;
+  font-size: 8px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgba(v.$color-faction-neutral-frame-2, 0.85);
+}
+
+.detail-line {
+  flex: 1;
+  height: 1px;
+  background: rgba(v.$color-faction-neutral-frame-2, 0.18);
+}
+
+.detail-value {
+  font-family: v.$font-body;
+  font-size: 14px;
+  color: v.$campaign-portal-text-bright;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+
+  &--block {
+    white-space: normal;
+    font-size: 13px;
+    line-height: 1.6;
+    color: v.$campaign-portal-text-secondary;
+    margin: 0;
+  }
+}
+
+/* ── Expand / collapse button ────────────────────────────────────────────── */
+.detail-expand-btn {
+  flex-shrink: 0;
+  width: 100%;
+  height: 34px;
+  padding: 0;
+  background: rgba(v.$color-faction-neutral-frame-2, 0.04);
+  border: none;
+  border-top: 1px solid rgba(v.$color-faction-neutral-frame-2, 0.14);
+  border-radius: 0 0 6px 6px;
+  cursor: pointer;
+  font-family: v.$font-header;
+  font-size: 8px;
+  letter-spacing: 0.12em;
+  color: rgba(v.$color-faction-neutral-frame-2, 0.85);
+  transition: background 0.18s ease, color 0.18s ease;
+
+  &:hover {
+    background: rgba(v.$color-faction-neutral-frame-2, 0.10);
+    color: rgba(v.$color-faction-neutral-frame-2, 0.95);
+  }
+}
+
+/* ── Mobile expanded ─────────────────────────────────────────────────────── */
+.detail-panel--mobile-expanded {
+  position: relative;
+  z-index: 10;
+}
+
+/* ── Notes panel ─────────────────────────────────────────────────────────── */
+.faction-notes-panel {
+  margin: 0 38px 32px;
+}
+
+/* ── Assessment panel ────────────────────────────────────────────────────── */
+.faction-assessment-panel {
+  margin: 0 38px 16px;
+  background: v.$campaign-portal-bg-dark;
+  border: 1px solid rgba(v.$color-faction-neutral-frame-2, 0.40);
+  border-radius: 6px;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+.detail-dm-notes {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 12px 16px;
+  border-top: 1px solid rgba(v.$color-faction-neutral-frame-2, 0.14);
+  min-height: 60px;
+
+  &:first-child {
+    border-top: none;
+  }
+}
+
+/* ── Perception card ────────────────────────────────────────────────────── */
+.perception-card {
+  border: 1px solid rgba(v.$color-faction-neutral-frame-2, 0.25);
+  border-radius: 4px;
+  padding: 10px 12px 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  transition: border-color 0.25s;
+
+  &--hostile  { border-color: v.$color-faction-evil-accent; }
+  &--friendly { border-color: v.$color-faction-good-accent; }
+}
+
+.perception-slider {
+  width: 100%;
+  accent-color: rgba(v.$color-faction-neutral-frame-2, 0.85);
+  cursor: pointer;
+
+  &.slider-friendly { accent-color: v.$color-faction-good-accent; }
+  &.slider-hostile  { accent-color: v.$color-faction-evil-accent; }
+}
+
+.perception-ticks {
+  display: flex;
+  justify-content: space-between;
+  padding: 0 7px;
+  margin-top: -2px;
+
+  span {
+    width: 1px;
+    height: 4px;
+    background: rgba(v.$color-faction-neutral-frame-2, 0.30);
+    border-radius: 1px;
+  }
+}
+
+.perception-labels {
+  display: flex;
+  justify-content: space-between;
+  font-family: v.$font-header;
+  font-size: 7px;
+  letter-spacing: 0.10em;
+  color: rgba(v.$color-faction-neutral-frame-2, 0.60);
+}
+
+.perception-label-center {
+  font-weight: 600;
+  color: rgba(v.$color-faction-neutral-frame-2, 0.85);
+  text-align: center;
+}
+
+.perception-label-end {
+  color: rgba(v.$color-faction-neutral-frame-2, 0.55);
+}
+
+.detail-slider-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  .fi-slider-wrap {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+  }
+
+  .fi-slider {
+    flex: 1;
+    width: 100%;
+    accent-color: rgba(v.$color-faction-neutral-frame-2, 0.85);
+    cursor: pointer;
+    min-width: 0;
+  }
+}
+
+.fi-slider-ticks {
+  display: flex;
+  justify-content: space-between;
+  padding: 0 7px;
+
+  span {
+    width: 1px;
+    height: 4px;
+    background: rgba(v.$color-faction-neutral-frame-2, 0.35);
+    border-radius: 1px;
+  }
+}
+
+.detail-slider-value {
+  font-family: v.$font-header;
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  color: v.$campaign-portal-text-bright;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.assessment-saving {
+  position: absolute;
+  top: 10px;
+  right: 14px;
+  font-family: v.$font-header;
+  font-size: 7px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: rgba(v.$color-faction-neutral-frame-2, 0.50);
+}
+
+/* ── Known Sublocations / Known Cast sections ────────────────────────────── */
+.faction-members-section {
+  padding: 0 40px 32px;
+}
+
+.faction-members-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.faction-members-label {
+  font-family: v.$font-header;
+  font-size: 9px;
+  letter-spacing: 0.20em;
+  text-transform: uppercase;
+  color: v.$campaign-portal-text-secondary;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.faction-members-line {
+  flex: 1;
+  height: 1px;
+  background: v.$campaign-portal-border-light;
+}
+
+.faction-members-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+}

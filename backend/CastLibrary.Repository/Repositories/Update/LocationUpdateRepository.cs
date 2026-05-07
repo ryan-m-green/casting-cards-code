@@ -30,12 +30,14 @@ namespace CastLibrary.Repository.Repositories.Update
                 Location.Vibe,
                 Location.Languages,
                 Location.Description,
+                Location.DmNotes,
             };
             const string sql =
                 @"UPDATE locations
               SET name=@Name, classification=@Classification, size=@Size, condition=@Condition,
                   geography=@Geography, architecture=@Architecture, climate=@Climate,
-                  religion=@Religion, vibe=@Vibe, languages=@Languages, description=@Description
+                  religion=@Religion, vibe=@Vibe, languages=@Languages, description=@Description,
+                  dm_notes=@DmNotes
               WHERE id=@Id";
 
             logging.LogDbOperation(correlation.TraceId, spanId, "UPDATE", "locations", @params);

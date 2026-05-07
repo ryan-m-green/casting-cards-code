@@ -41,6 +41,16 @@
                 [secretContent]="data.secretContent ?? null" />
             }
           }
+          @case ('faction') {
+            @if (factionModel) {
+              <app-faction-card
+                [faction]="factionModel"
+                [flippable]="false"
+                [editable]="false"
+                [secrets]="false"
+                [campaignMode]="false" />
+            }
+          }
         }
       </div>
 

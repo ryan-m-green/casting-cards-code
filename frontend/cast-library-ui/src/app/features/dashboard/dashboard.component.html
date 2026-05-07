@@ -1,29 +1,63 @@
 <div class="pc scroll-body">
-  <app-dm-nav />
 
-  <p class="pnum dashboard-welcome">Welcome Back, {{ auth.currentUser()?.displayName }}</p>
+  <div class="dashboard-main">
+    <app-journal-title [title]="'Welcome back, ' + (auth.currentUser()?.displayName ?? '')" />
 
   <!-- Stats -->
   <div class="sc section-label-mb">
-    <div class="sv" (click)="goto('/dm/cast')" (keydown.enter)="goto('/dm/cast')" (keydown.space)="goto('/dm/cast')" role="button" tabindex="0" aria-label="Go to Cast page. You have {{ stats().castCount }} cast members.">
-      <div class="sv-value" aria-hidden="true">{{ stats().castCount }}</div>
-      <div class="sv-label" aria-hidden="true">Cast</div>
+    <div class="sv sv--cast" (click)="goto('/dm/cast')" (keydown.enter)="goto('/dm/cast')" (keydown.space)="goto('/dm/cast')" role="button" tabindex="0" aria-label="Go to Cast page. You have {{ stats().castCount }} cast members.">
+      <div class="sv-inner">
+        <svg class="sv-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+          <circle cx="12" cy="7" r="4"/>
+        </svg>
+        <div class="sv-value" aria-hidden="true">{{ stats().castCount }}</div>
+        <div class="sv-label" aria-hidden="true">Cast</div>
+      </div>
     </div>
-    <div class="sv" (click)="goto('/dm/locations')" (keydown.enter)="goto('/dm/locations')" (keydown.space)="goto('/dm/locations')" role="button" tabindex="0" aria-label="Go to Locations page. You have {{ stats().locationCount }} locations.">
-      <div class="sv-value" aria-hidden="true">{{ stats().locationCount }}</div>
-      <div class="sv-label" aria-hidden="true">Locations</div>
+    <div class="sv sv--sublocation" (click)="goto('/dm/sublocations')" (keydown.enter)="goto('/dm/sublocations')" (keydown.space)="goto('/dm/sublocations')" role="button" tabindex="0" aria-label="Go to Sublocations page. You have {{ stats().sublocationCount }} sublocations.">
+      <div class="sv-inner">
+        <svg class="sv-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+          <polyline points="9 22 9 12 15 12 15 22"/>
+        </svg>
+        <div class="sv-value" aria-hidden="true">{{ stats().sublocationCount }}</div>
+        <div class="sv-label" aria-hidden="true">Sublocations</div>
+      </div>
     </div>
-    <div class="sv" (click)="goto('/dm/sublocations')" (keydown.enter)="goto('/dm/sublocations')" (keydown.space)="goto('/dm/sublocations')" role="button" tabindex="0" aria-label="Go to Sublocations page. You have {{ stats().sublocationCount }} sublocations.">
-      <div class="sv-value" aria-hidden="true">{{ stats().sublocationCount }}</div>
-      <div class="sv-label" aria-hidden="true">Sublocations</div>
+    <div class="sv sv--location" (click)="goto('/dm/locations')" (keydown.enter)="goto('/dm/locations')" (keydown.space)="goto('/dm/locations')" role="button" tabindex="0" aria-label="Go to Locations page. You have {{ stats().locationCount }} locations.">
+      <div class="sv-inner">
+        <svg class="sv-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
+          <circle cx="12" cy="10" r="3"/>
+        </svg>
+        <div class="sv-value" aria-hidden="true">{{ stats().locationCount }}</div>
+        <div class="sv-label" aria-hidden="true">Locations</div>
+      </div>
     </div>
-    <div class="sv" (click)="goto('/dm/campaigns')" (keydown.enter)="goto('/dm/campaigns')" (keydown.space)="goto('/dm/campaigns')" role="button" tabindex="0" aria-label="Go to Campaigns page. You have {{ stats().campaignCount }} campaigns.">
-      <div class="sv-value" aria-hidden="true">{{ stats().campaignCount }}</div>
-      <div class="sv-label" aria-hidden="true">Campaigns</div>
+    <div class="sv sv--faction" (click)="goto('/dm/faction')" (keydown.enter)="goto('/dm/faction')" (keydown.space)="goto('/dm/faction')" role="button" tabindex="0" aria-label="Go to Factions page. You have {{ stats().factionCount }} factions.">
+      <div class="sv-inner">
+        <svg class="sv-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+        </svg>
+        <div class="sv-value" aria-hidden="true">{{ stats().factionCount }}</div>
+        <div class="sv-label" aria-hidden="true">Factions</div>
+      </div>
+    </div>
+    <div class="sv sv--campaign" (click)="goto('/dm/campaigns')" (keydown.enter)="goto('/dm/campaigns')" (keydown.space)="goto('/dm/campaigns')" role="button" tabindex="0" aria-label="Go to Campaigns page. You have {{ stats().campaignCount }} campaigns.">
+      <div class="sv-inner">
+        <svg class="sv-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/>
+          <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
+        </svg>
+        <div class="sv-value" aria-hidden="true">{{ stats().campaignCount }}</div>
+        <div class="sv-label" aria-hidden="true">Campaigns</div>
+      </div>
     </div>
   </div>
 
-  <div class="section-label section-label-mb">Quick Actions</div>
+  <div class="quick-actions">
+    <div class="section-label section-label-mb">Quick Actions</div>
 
   <!-- Active Campaign -->
   @if (stats().activeCampaign) {
@@ -39,8 +73,9 @@
     </div>
     <div class="wr section-label-mb">
       <button class="btn-ghost" (click)="goto('/dm/cast/new')">+ New Cast</button>
-      <button class="btn-ghost" (click)="goto('/dm/locations/new')">+ New Location</button>
       <button class="btn-ghost" (click)="goto('/dm/sublocations/new')">+ New Sublocation</button>
+      <button class="btn-ghost" (click)="goto('/dm/locations/new')">+ New Location</button>
+      <button class="btn-ghost" (click)="goto('/dm/faction/new')">+ New Faction</button>
       <button class="btn-ghost" (click)="goto('/dm/campaigns/new')">+ New Campaign</button>
     </div>
 
@@ -76,8 +111,7 @@
                 <div class="portal-description">{{ stats().activeCampaign!.description }}</div>
               }
               <div class="portal-btns">
-                <button class="portal-btn portal-btn--delete" aria-label="Delete campaign">× Delete</button>
-                <button class="portal-btn portal-btn--edit" aria-label="Edit campaign">Edit →</button>
+                <button class="portal-btn portal-btn--edit" aria-label="Edit campaign">Settings →</button>
               </div>
               <div class="portal-footer-strip">Portal</div>
             </div>
@@ -87,8 +121,13 @@
     </div>
   }
 
+  </div><!-- /.quick-actions -->
+
+  </div><!-- /.dashboard-main -->
+
   <!-- Library Import / Export -->
-  <div class="section-label section-label-mb import-section-label">Library</div>
+  <div class="import-section">
+    <div class="section-label section-label-mb import-section-label">Library</div>
   <div class="wr">
     <button class="btn-ghost" (click)="downloadTemplate()" aria-label="Download template">↓ Template</button>
     <button class="btn-ghost" (click)="exportLibrary()" aria-label="Export library">↓ Export</button>
@@ -140,6 +179,8 @@
       }
     </div>
   }
+
+  </div>
 
   <div class="orn orn-mt">· · ·</div>
 </div>

@@ -13,7 +13,7 @@ public interface IGetCampaignDetailQueryHandler
         List<CampaignCastInstanceDomain> Casts, List<CampaignSublocationInstanceDomain> Locations,
         List<CampaignSecretDomain> Secrets, List<CampaignCastRelationshipDomain> Relationships,
         List<CampaignPlayerDomain> Players, CampaignInviteCodeDomain InviteCode,
-        TimeOfDayDomain? TimeOfDay)>
+        TimeOfDayDomain? TimeOfDay, List<CampaignFactionInstanceDomain> Factions)>
         HandleAsync(Guid campaignId);
 }
 
@@ -30,15 +30,16 @@ public class GetCampaignDetailQueryHandler(
         List<CampaignCastInstanceDomain> Casts, List<CampaignSublocationInstanceDomain> Locations,
         List<CampaignSecretDomain> Secrets, List<CampaignCastRelationshipDomain> Relationships,
         List<CampaignPlayerDomain> Players, CampaignInviteCodeDomain InviteCode,
-        TimeOfDayDomain TimeOfDay)>
+        TimeOfDayDomain TimeOfDay, List<CampaignFactionInstanceDomain> Factions)>
         HandleAsync(Guid campaignId)
     {
         var campaign = await campaignRepository.GetByIdAsync(campaignId);
-        if (campaign is null) return (null, [], [], [], [], [], [], null, null);
+        if (campaign is null) return (null, [], [], [], [], [], [], null, null, []);
 
         var locations = await campaignRepository.GetLocationInstancesByCampaignAsync(campaignId);
         var casts = await campaignRepository.GetCastInstancesByCampaignAsync(campaignId);
         var sublocations = await campaignRepository.GetSublocationInstancesByCampaignAsync(campaignId);
+        var factions = await campaignRepository.GetFactionInstancesByCampaignAsync(campaignId, campaign.DmUserId);
 
         var secrets = await secretReadRepository.GetByCampaignAsync(campaignId);
         var relationships = await relationshipRepository.GetByCampaignAsync(campaignId);
@@ -48,7 +49,7 @@ public class GetCampaignDetailQueryHandler(
 
         filenameService.AddImageUrls(campaign.DmUserId, locations, sublocations, casts, players);
 
-        return (campaign, locations, casts, sublocations, secrets, relationships, players, inviteCode, timeOfDay);
+        return (campaign, locations, casts, sublocations, secrets, relationships, players, inviteCode, timeOfDay, factions);
     }
 }
 

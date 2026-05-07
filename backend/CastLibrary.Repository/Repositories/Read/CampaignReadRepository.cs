@@ -17,13 +17,18 @@ public interface ICampaignReadRepository
     Task<CampaignCastInstanceDomain> GetCastInstanceBySourceCastIdAsync(Guid campaignId, Guid sourceCastId);
     Task<CampaignCastInstanceDomain> GetCastInstanceByIdAsync(Guid instanceId);
     Task<List<CampaignCastInstanceDomain>> GetCastInstancesByCampaignAsync(Guid campaignId);
+    Task<List<CampaignCastInstanceDomain>> GetPlayerCastInstancesByCampaignAsync(Guid campaignId);
     Task<List<CampaignLocationInstanceDomain>> GetLocationInstancesByCampaignAsync(Guid campaignId);
     Task<CampaignLocationInstanceDomain> GetLocationInstanceByIdAsync(Guid instanceId);
     Task<List<CampaignSublocationInstanceDomain>> GetSublocationInstancesByCampaignAsync(Guid campaignId);
+    Task<List<CampaignSublocationInstanceDomain>> GetPlayerSublocationInstancesByCampaignAsync(Guid campaignId);
     Task<CampaignSublocationInstanceDomain> GetSublocationInstanceByIdAsync(Guid instanceId);
     Task<CampaignSublocationInstanceDomain> GetSublocationInstanceBySourceSublocationIdAsync(Guid campaignId, Guid sourceSublocationId);
     Task<CampaignSublocationInstanceDomain> GetPartySublocationInstanceByCampaignAsync(Guid campaignId);
     Task<List<CampaignCastInstanceDomain>> GetQuestingCompanionsBySublocationInstanceIdAsync(Guid sublocationInstanceId);
+    Task<List<CampaignFactionInstanceDomain>> GetFactionInstancesByCampaignAsync(Guid campaignId, Guid dmUserId);
+    Task<CampaignFactionInstanceDomain> GetFactionInstanceByIdAsync(Guid instanceId);
+    Task<List<CampaignFactionInstanceDomain>> GetFactionInstancesForPlayerAsync(Guid campaignId);
 }
 
 public class CampaignReadRepository(
@@ -218,6 +223,7 @@ public class CampaignReadRepository(
             CustomItems = ParseCustomItems((string)r.custom_items),
             Keywords = r.keywords ?? Array.Empty<string>(),
             DmNotes = r.dm_notes ?? string.Empty,
+            FactionSymbols = ParseFactionSymbols((string)r.faction_symbols),
         };
     }
 
@@ -253,12 +259,14 @@ public class CampaignReadRepository(
             Posture = r.posture ?? string.Empty,
             Speed = r.speed ?? string.Empty,
             VoicePlacement = r.voice_placement ?? Array.Empty<string>(),
+            VoiceNotes = r.voice_notes ?? string.Empty,
             Description = r.description ?? string.Empty,
             PublicDescription = r.public_description ?? string.Empty,
             IsVisibleToPlayers = r.is_visible_to_players,
             CustomItems = ParseCustomItems((string)r.custom_items),
             Keywords = r.keywords ?? Array.Empty<string>(),
             DmNotes = r.dm_notes ?? string.Empty,
+            FactionSymbols = ParseFactionSymbols((string)r.faction_symbols),
         };
     }
 
@@ -293,12 +301,56 @@ public class CampaignReadRepository(
             Posture = r.posture ?? string.Empty,
             Speed = r.speed ?? string.Empty,
             VoicePlacement = r.voice_placement ?? Array.Empty<string>(),
+            VoiceNotes = r.voice_notes ?? string.Empty,
             Description = r.description ?? string.Empty,
             PublicDescription = r.public_description ?? string.Empty,
             IsVisibleToPlayers = r.is_visible_to_players,
             CustomItems = ParseCustomItems((string)r.custom_items),
             Keywords = r.keywords ?? Array.Empty<string>(),
             DmNotes = r.dm_notes ?? string.Empty,
+            FactionSymbols = ParseFactionSymbols((string)r.faction_symbols),
+        }).ToList();
+    }
+
+    public async Task<List<CampaignCastInstanceDomain>> GetPlayerCastInstancesByCampaignAsync(Guid campaignId)
+    {
+        var spanId = correlation.NewSpan();
+        var @params = new { CampaignId = campaignId };
+
+        logging.LogDbOperation(correlation.TraceId, spanId, "SELECT", "campaign_cast_instances (player)", @params);
+
+        using var conn = CreateConnection();
+        var rows = (await conn.QueryAsync<dynamic>(
+            "SELECT * FROM campaign_cast_instances WHERE campaign_id = @CampaignId ORDER BY name",
+            @params)).ToList();
+
+        logging.LogDbOperation(correlation.TraceId, spanId, "SELECT", "campaign_cast_instances (player)",
+            @params, rows.Count);
+
+        return rows.Select(r => new CampaignCastInstanceDomain
+        {
+            InstanceId = r.instance_id,
+            CampaignId = r.campaign_id,
+            SourceCastId = r.source_cast_id,
+            LocationInstanceId = r.location_instance_id,
+            SublocationInstanceId = r.sublocation_instance_id,
+            Name = r.name,
+            Pronouns = r.pronouns ?? string.Empty,
+            Race = r.race ?? string.Empty,
+            Role = r.role ?? string.Empty,
+            Age = r.age ?? string.Empty,
+            Alignment = r.alignment ?? string.Empty,
+            Posture = r.posture ?? string.Empty,
+            Speed = r.speed ?? string.Empty,
+            VoicePlacement = r.voice_placement ?? Array.Empty<string>(),
+            VoiceNotes = r.voice_notes ?? string.Empty,
+            Description = r.description ?? string.Empty,
+            PublicDescription = r.public_description ?? string.Empty,
+            IsVisibleToPlayers = r.is_visible_to_players,
+            CustomItems = ParseCustomItems((string)r.custom_items),
+            Keywords = r.keywords ?? Array.Empty<string>(),
+            DmNotes = r.dm_notes ?? string.Empty,
+            FactionSymbols = ParseFactionSymbols((string)r.player_faction_symbols),
         }).ToList();
     }
 
@@ -352,7 +404,8 @@ public class CampaignReadRepository(
         using var conn = CreateConnection();
         var r = await conn.QueryFirstOrDefaultAsync<dynamic>(
             @"SELECT instance_id, campaign_id, source_sublocation_id, location_instance_id,
-                     is_visible_to_players, name, description, keywords, custom_items, dm_notes
+                     is_visible_to_players, name, description, keywords, custom_items, dm_notes,
+                     faction_instance_id, symbol_path
               FROM campaign_sublocation_instances
               WHERE instance_id = @InstanceId",
             @params);
@@ -363,17 +416,19 @@ public class CampaignReadRepository(
         if (r is null) return null;
         return new CampaignSublocationInstanceDomain
         {
-            InstanceId           = r.instance_id,
-            CampaignId           = r.campaign_id,
-            SourceSublocationId  = r.source_sublocation_id,
-            LocationInstanceId       = r.location_instance_id,
-            IsVisibleToPlayers   = r.is_visible_to_players,
-            Name                 = r.name,
-            Description          = r.description ?? string.Empty,
-            Keywords             = r.keywords ?? Array.Empty<string>(),
-            CustomItems          = ParseCustomItems((string)r.custom_items),
-            DmNotes              = r.dm_notes ?? string.Empty,
-            ShopItems            = [],
+            InstanceId = r.instance_id,
+            CampaignId = r.campaign_id,
+            SourceSublocationId = r.source_sublocation_id,
+            LocationInstanceId = r.location_instance_id,
+            IsVisibleToPlayers = r.is_visible_to_players,
+            Name = r.name,
+            Description = r.description ?? string.Empty,
+            Keywords = r.keywords ?? Array.Empty<string>(),
+            CustomItems = ParseCustomItems((string)r.custom_items),
+            DmNotes = r.dm_notes ?? string.Empty,
+            ShopItems = [],
+            FactionInstanceId = r.faction_instance_id,
+            SymbolPath = r.symbol_path,
         };
     }
 
@@ -388,6 +443,7 @@ public class CampaignReadRepository(
         var instances = (await conn.QueryAsync<dynamic>(
             @"SELECT csi.instance_id, csi.campaign_id, csi.source_sublocation_id, csi.location_instance_id,
                      csi.is_visible_to_players, csi.name, csi.description, csi.keywords, csi.custom_items, csi.dm_notes,
+                     csi.faction_instance_id, csi.symbol_path,
                      (l.campaign_id IS NOT NULL) AS is_party_anchor
               FROM campaign_sublocation_instances csi
               LEFT JOIN sublocations s ON s.id = csi.source_sublocation_id
@@ -405,18 +461,20 @@ public class CampaignReadRepository(
 
         var domainInstances = instances.Select(r => new CampaignSublocationInstanceDomain
         {
-            InstanceId          = r.instance_id,
-            CampaignId          = r.campaign_id,
+            InstanceId = r.instance_id,
+            CampaignId = r.campaign_id,
             SourceSublocationId = r.source_sublocation_id,
-            LocationInstanceId  = r.location_instance_id,
-            IsVisibleToPlayers  = r.is_visible_to_players,
-            Name                = r.name,
-            Description         = r.description ?? string.Empty,
-            Keywords            = r.keywords ?? Array.Empty<string>(),
-            CustomItems         = ParseCustomItems((string)r.custom_items),
-            DmNotes             = r.dm_notes ?? string.Empty,
-            ShopItems           = [],
-            IsPartyAnchor       = (bool)r.is_party_anchor,
+            LocationInstanceId = r.location_instance_id,
+            IsVisibleToPlayers = r.is_visible_to_players,
+            Name = r.name,
+            Description = r.description ?? string.Empty,
+            Keywords = r.keywords ?? Array.Empty<string>(),
+            CustomItems = ParseCustomItems((string)r.custom_items),
+            DmNotes = r.dm_notes ?? string.Empty,
+            ShopItems = [],
+            IsPartyAnchor = (bool)r.is_party_anchor,
+            FactionInstanceId = r.faction_instance_id,
+            SymbolPath = r.symbol_path,
         }).ToList();
 
         var instanceIds = domainInstances.Select(i => i.InstanceId).ToArray();
@@ -449,6 +507,81 @@ public class CampaignReadRepository(
         return domainInstances;
     }
 
+    public async Task<List<CampaignSublocationInstanceDomain>> GetPlayerSublocationInstancesByCampaignAsync(Guid campaignId)
+    {
+        var spanId = correlation.NewSpan();
+        var @params = new { CampaignId = campaignId };
+
+        logging.LogDbOperation(correlation.TraceId, spanId, "SELECT", "campaign_sublocation_instances (player)", @params);
+
+        using var conn = CreateConnection();
+        var instances = (await conn.QueryAsync<dynamic>(
+            @"SELECT csi.instance_id, csi.campaign_id, csi.source_sublocation_id, csi.location_instance_id,
+                     csi.is_visible_to_players, csi.name, csi.description, csi.keywords, csi.custom_items, csi.dm_notes,
+                     csi.player_faction_instance_id, csi.player_symbol_path,
+                     (l.campaign_id IS NOT NULL) AS is_party_anchor
+              FROM campaign_sublocation_instances csi
+              LEFT JOIN sublocations s ON s.id = csi.source_sublocation_id
+              LEFT JOIN locations    l ON l.id = s.location_id
+              WHERE csi.campaign_id = @CampaignId
+              ORDER BY csi.name",
+            @params)).ToList();
+
+        if (instances.Count == 0)
+        {
+            logging.LogDbOperation(correlation.TraceId, spanId, "SELECT", "campaign_sublocation_instances (player)",
+                @params, 0);
+            return [];
+        }
+
+        var domainInstances = instances.Select(r => new CampaignSublocationInstanceDomain
+        {
+            InstanceId = r.instance_id,
+            CampaignId = r.campaign_id,
+            SourceSublocationId = r.source_sublocation_id,
+            LocationInstanceId = r.location_instance_id,
+            IsVisibleToPlayers = r.is_visible_to_players,
+            Name = r.name,
+            Description = r.description ?? string.Empty,
+            Keywords = r.keywords ?? Array.Empty<string>(),
+            CustomItems = ParseCustomItems((string)r.custom_items),
+            DmNotes = r.dm_notes ?? string.Empty,
+            ShopItems = [],
+            IsPartyAnchor = (bool)r.is_party_anchor,
+            FactionInstanceId = r.player_faction_instance_id,
+            SymbolPath = r.player_symbol_path,
+        }).ToList();
+
+        var instanceIds = domainInstances.Select(i => i.InstanceId).ToArray();
+        var shopItems = (await conn.QueryAsync<dynamic>(
+            @"SELECT id, sublocation_instance_id, name, price, description, sort_order, is_scratched_off
+              FROM campaign_sublocation_shop_items
+              WHERE sublocation_instance_id = ANY(@Ids)
+              ORDER BY sort_order",
+            new { Ids = instanceIds })).ToList();
+
+        foreach (var inst in domainInstances)
+        {
+            inst.ShopItems = shopItems
+                .Where(s => (Guid)s.sublocation_instance_id == inst.InstanceId)
+                .Select(s => new ShopItemDomain
+                {
+                    Id = s.id,
+                    SublocationId = s.sublocation_instance_id,
+                    Name = s.name,
+                    Price = s.price ?? string.Empty,
+                    Description = s.description ?? string.Empty,
+                    SortOrder = s.sort_order,
+                    IsScratchedOff = s.is_scratched_off,
+                }).ToList();
+        }
+
+        logging.LogDbOperation(correlation.TraceId, spanId, "SELECT", "campaign_sublocation_instances (player)",
+            @params, domainInstances.Count);
+
+        return domainInstances;
+    }
+
     public async Task<CampaignSublocationInstanceDomain> GetSublocationInstanceBySourceSublocationIdAsync(Guid campaignId, Guid sourceSublocationId)
     {
         var spanId = correlation.NewSpan();
@@ -467,15 +600,17 @@ public class CampaignReadRepository(
         if (r is null) return null;
         return new CampaignSublocationInstanceDomain
         {
-            InstanceId          = r.instance_id,
-            CampaignId          = r.campaign_id,
+            InstanceId = r.instance_id,
+            CampaignId = r.campaign_id,
             SourceSublocationId = r.source_sublocation_id,
-            LocationInstanceId      = r.location_instance_id,
-            Name                = r.name,
-            Description         = r.description ?? string.Empty,
-            Keywords            = r.keywords ?? Array.Empty<string>(),
-            CustomItems         = ParseCustomItems((string)r.custom_items),
-            ShopItems           = [],
+            LocationInstanceId = r.location_instance_id,
+            Name = r.name,
+            Description = r.description ?? string.Empty,
+            Keywords = r.keywords ?? Array.Empty<string>(),
+            CustomItems = ParseCustomItems((string)r.custom_items),
+            ShopItems = [],
+            FactionInstanceId = r.faction_instance_id,
+            SymbolPath = r.symbol_path,
         };
     }
 
@@ -503,15 +638,18 @@ public class CampaignReadRepository(
         if (r is null) return null;
         return new CampaignSublocationInstanceDomain
         {
-            InstanceId          = r.instance_id,
-            CampaignId          = r.campaign_id,
+            InstanceId = r.instance_id,
+            CampaignId = r.campaign_id,
             SourceSublocationId = r.source_sublocation_id,
-            LocationInstanceId  = r.location_instance_id,
-            Name                = r.name,
-            Description         = r.description ?? string.Empty,
-            Keywords            = r.keywords ?? Array.Empty<string>(),
-            CustomItems         = ParseCustomItems((string)r.custom_items),
-            ShopItems           = [],
+            LocationInstanceId = r.location_instance_id,
+            IsVisibleToPlayers = r.is_visible_to_players,
+            Name = r.name,
+            Description = r.description ?? string.Empty,
+            Keywords = r.keywords ?? Array.Empty<string>(),
+            CustomItems = ParseCustomItems((string)r.custom_items),
+            ShopItems = [],
+            FactionInstanceId = r.faction_instance_id,
+            SymbolPath = r.symbol_path,
         };
     }
 
@@ -535,30 +673,182 @@ public class CampaignReadRepository(
 
         return rows.Select(r => new CampaignCastInstanceDomain
         {
-            InstanceId            = r.instance_id,
-            CampaignId            = r.campaign_id,
-            SourceCastId          = r.source_cast_id,
-            LocationInstanceId    = r.location_instance_id,
+            InstanceId = r.instance_id,
+            CampaignId = r.campaign_id,
+            SourceCastId = r.source_cast_id,
+            LocationInstanceId = r.location_instance_id,
             SublocationInstanceId = r.sublocation_instance_id,
-            Name                  = r.name,
-            Pronouns              = r.pronouns              ?? string.Empty,
-            Race                  = r.race                  ?? string.Empty,
-            Role                  = r.role                  ?? string.Empty,
-            Age                   = r.age                   ?? string.Empty,
-            Alignment             = r.alignment             ?? string.Empty,
-            Posture               = r.posture               ?? string.Empty,
-            Speed                 = r.speed                 ?? string.Empty,
-            VoicePlacement        = r.voice_placement       ?? Array.Empty<string>(),
-            Description           = r.description           ?? string.Empty,
-            PublicDescription     = r.public_description    ?? string.Empty,
-            IsVisibleToPlayers    = r.is_visible_to_players,
-            CustomItems           = ParseCustomItems((string)r.custom_items),
-            Keywords              = r.keywords              ?? Array.Empty<string>(),
-            DmNotes               = r.dm_notes              ?? string.Empty,
+            Name = r.name,
+            Pronouns = r.pronouns ?? string.Empty,
+            Race = r.race ?? string.Empty,
+            Role = r.role ?? string.Empty,
+            Age = r.age ?? string.Empty,
+            Alignment = r.alignment ?? string.Empty,
+            Posture = r.posture ?? string.Empty,
+            Speed = r.speed ?? string.Empty,
+            VoicePlacement = r.voice_placement ?? Array.Empty<string>(),
+            Description = r.description ?? string.Empty,
+            PublicDescription = r.public_description ?? string.Empty,
+            IsVisibleToPlayers = r.is_visible_to_players,
+            CustomItems = ParseCustomItems((string)r.custom_items),
+            Keywords = r.keywords ?? Array.Empty<string>(),
+            DmNotes = r.dm_notes ?? string.Empty,
+            FactionSymbols = ParseFactionSymbols((string)r.faction_symbols),
         }).ToList();
     }
 
     // ── Private helpers ───────────────────────────────────────────────────────
+
+    public async Task<List<CampaignFactionInstanceDomain>> GetFactionInstancesByCampaignAsync(Guid campaignId, Guid dmUserId)
+    {
+        var spanId = correlation.NewSpan();
+        var @params = new { CampaignId = campaignId, DmUserId = dmUserId };
+        const string sql =
+            @"SELECT cfi.faction_instance_id, cfi.source_faction_id, cfi.campaign_id, cfi.dm_user_id,
+                     cfi.name, cfi.type, cfi.hidden, cfi.is_visible_to_players, cfi.description, cfi.dm_notes, cfi.symbol_path, cfi.created_at,
+                     COALESCE(pn.influence, cfi.influence) AS influence,
+                     COALESCE(pn.perception, cfi.perception) AS perception
+              FROM campaign_faction_instances cfi
+              LEFT JOIN campaign_faction_player_notes pn
+                     ON pn.faction_instance_id = cfi.faction_instance_id
+                    AND pn.campaign_id = cfi.campaign_id
+              WHERE cfi.campaign_id = @CampaignId
+              ORDER BY cfi.created_at";
+
+        const string sublocationSql =
+            @"SELECT faction_instance_id, sublocation_instance_id, is_primary
+              FROM campaign_faction_sublocations
+              WHERE dm_user_id = @DmUserId
+                AND faction_instance_id IN (
+                  SELECT faction_instance_id FROM campaign_faction_instances WHERE campaign_id = @CampaignId
+              )";
+
+        const string castSql =
+            @"SELECT faction_instance_id, cast_instance_id, is_primary
+              FROM campaign_faction_cast_members
+              WHERE dm_user_id = @DmUserId
+                AND faction_instance_id IN (
+                  SELECT faction_instance_id FROM campaign_faction_instances WHERE campaign_id = @CampaignId
+              )";
+
+        const string relSql =
+            @"SELECT id, campaign_id, faction_instance_id_a, faction_instance_id_b, relationship_type, strength, created_at, dm_user_id
+              FROM campaign_faction_instance_relationships
+              WHERE campaign_id = @CampaignId
+                AND dm_user_id = @DmUserId";
+
+        logging.LogDbOperation(correlation.TraceId, spanId, "SELECT", "campaign_faction_instances", @params);
+
+        using var conn = CreateConnection();
+        var rows = (await conn.QueryAsync<dynamic>(sql, @params)).ToList();
+
+        var sublocationRows = (await conn.QueryAsync<dynamic>(sublocationSql, @params)).ToList();
+        var castRows = (await conn.QueryAsync<dynamic>(castSql, @params)).ToList();
+        var relRows = (await conn.QueryAsync<dynamic>(relSql, @params)).ToList();
+
+        logging.LogDbOperation(correlation.TraceId, spanId, "SELECT", "campaign_faction_instances", @params, rows.Count);
+
+        var sublocationMap = sublocationRows
+            .GroupBy((dynamic r) => (Guid)r.faction_instance_id)
+            .ToDictionary(g => g.Key, g => g.Select((dynamic r) => (Guid)r.sublocation_instance_id).ToList());
+
+        var primarySublocationMap = sublocationRows
+            .Where((dynamic r) => (bool)r.is_primary)
+            .GroupBy((dynamic r) => (Guid)r.faction_instance_id)
+            .ToDictionary(g => g.Key, g => (Guid?)((dynamic)g.First()).sublocation_instance_id);
+
+        var castMap = castRows
+            .GroupBy((dynamic r) => (Guid)r.faction_instance_id)
+            .ToDictionary(g => g.Key, g => g.Select((dynamic r) => (Guid)r.cast_instance_id).ToList());
+
+        var primaryCastMap = castRows
+            .Where((dynamic r) => (bool)r.is_primary)
+            .GroupBy((dynamic r) => (Guid)r.faction_instance_id)
+            .ToDictionary(g => g.Key, g => (Guid?)((dynamic)g.First()).cast_instance_id);
+
+        var relsByFactionA = relRows
+            .GroupBy((dynamic r) => (Guid)r.faction_instance_id_a)
+            .ToDictionary(g => g.Key, g => g.Select((dynamic r) => new CampaignFactionRelationshipDomain
+            {
+                Id = (Guid)r.id,
+                CampaignId = (Guid)r.campaign_id,
+                FactionInstanceIdA = (Guid)r.faction_instance_id_a,
+                FactionInstanceIdB = (Guid)r.faction_instance_id_b,
+                RelationshipType = (string)(r.relationship_type ?? string.Empty),
+                Strength = (short)r.strength,
+                CreatedAt = (DateTime)r.created_at,
+                DmUserId = r.dm_user_id is DBNull || r.dm_user_id is null ? (Guid?)null : (Guid)r.dm_user_id,
+            }).ToList());
+
+        return rows.Select(r =>
+        {
+            var fid = (Guid)r.faction_instance_id;
+            return new CampaignFactionInstanceDomain
+            {
+                FactionInstanceId = fid,
+                SourceFactionId = r.source_faction_id,
+                CampaignId = r.campaign_id,
+                DmUserId = r.dm_user_id,
+                Name = r.name,
+                Type = r.type ?? string.Empty,
+                Influence = r.influence,
+                Hidden = r.hidden,
+                IsVisibleToPlayers = r.is_visible_to_players,
+                Description = r.description ?? string.Empty,
+                DmNotes = r.dm_notes ?? string.Empty,
+                Perception = r.perception,
+                SymbolPath = r.symbol_path,
+                CreatedAt = r.created_at,
+                SubLocationInstanceIds = sublocationMap.TryGetValue(fid, out var subs) ? subs : [],
+                CastInstanceIds = castMap.TryGetValue(fid, out var casts) ? casts : [],
+                PrimarySublocationInstanceId = primarySublocationMap.TryGetValue(fid, out var ps) ? ps : null,
+                PrimaryCastInstanceId = primaryCastMap.TryGetValue(fid, out var pc) ? pc : null,
+                FactionRelationships = relsByFactionA.TryGetValue(fid, out var rels) ? rels : [],
+            };
+        }).ToList();
+    }
+
+    public async Task<CampaignFactionInstanceDomain> GetFactionInstanceByIdAsync(Guid instanceId)
+    {
+        var spanId = correlation.NewSpan();
+        var @params = new { InstanceId = instanceId };
+        const string sql =
+            @"SELECT cfi.faction_instance_id, cfi.source_faction_id, cfi.campaign_id, cfi.dm_user_id,
+                     cfi.name, cfi.type, cfi.hidden, cfi.is_visible_to_players, cfi.description, cfi.dm_notes, cfi.symbol_path, cfi.created_at,
+                     COALESCE(pn.influence, cfi.influence) AS influence,
+                     COALESCE(pn.perception, cfi.perception) AS perception
+              FROM campaign_faction_instances cfi
+              LEFT JOIN campaign_faction_player_notes pn
+                     ON pn.faction_instance_id = cfi.faction_instance_id
+                    AND pn.campaign_id = cfi.campaign_id
+              WHERE cfi.faction_instance_id = @InstanceId";
+
+        logging.LogDbOperation(correlation.TraceId, spanId, "SELECT", "campaign_faction_instances", @params);
+
+        using var conn = CreateConnection();
+        var r = await conn.QueryFirstOrDefaultAsync<dynamic>(sql, @params);
+
+        logging.LogDbOperation(correlation.TraceId, spanId, "SELECT", "campaign_faction_instances", @params, r is null ? 0 : 1);
+
+        if (r is null) return null;
+        return new CampaignFactionInstanceDomain
+        {
+            FactionInstanceId = r.faction_instance_id,
+            SourceFactionId = r.source_faction_id,
+            CampaignId = r.campaign_id,
+            DmUserId = r.dm_user_id,
+            Name = r.name,
+            Type = r.type ?? string.Empty,
+            Influence = r.influence,
+            Perception = r.perception,
+            Hidden = r.hidden,
+            IsVisibleToPlayers = r.is_visible_to_players,
+            Description = r.description ?? string.Empty,
+            DmNotes = r.dm_notes ?? string.Empty,
+            SymbolPath = r.symbol_path,
+            CreatedAt = r.created_at,
+        };
+    }
 
     private static List<CampaignCastCustomItemDomain> ParseCustomItems(string json)
     {
@@ -569,6 +859,139 @@ public class CampaignReadRepository(
                 new JsonSerializerOptions { PropertyNameCaseInsensitive = true }) ?? [];
         }
         catch { return []; }
+    }
+
+    private static List<FactionSymbolDomain> ParseFactionSymbols(string json)
+    {
+        if (string.IsNullOrEmpty(json) || json == "[]") return [];
+        try
+        {
+            return JsonSerializer.Deserialize<List<FactionSymbolDomain>>(json,
+                new JsonSerializerOptions { PropertyNameCaseInsensitive = true }) ?? [];
+        }
+        catch { return []; }
+    }
+
+    public async Task<List<CampaignFactionInstanceDomain>> GetFactionInstancesForPlayerAsync(Guid campaignId)
+    {
+        var spanId = correlation.NewSpan();
+        var @params = new { CampaignId = campaignId };
+
+        // Only factions the DM has made visible
+        const string sql =
+            @"SELECT cfi.faction_instance_id, 
+                                cfi.source_faction_id, 
+                                cfi.campaign_id, 
+                                cfi.dm_user_id,
+                                cfi.name, 
+                                pn.type, 
+                                cfi.hidden, 
+                                cfi.is_visible_to_players, 
+                                cfi.description,
+                                cfi.symbol_path, 
+                                cfi.created_at,
+                                pn.influence AS influence,
+                                pn.perception AS perception
+              FROM campaign_faction_instances cfi
+              LEFT JOIN campaign_faction_player_notes pn
+                     ON pn.faction_instance_id = cfi.faction_instance_id
+                    AND pn.campaign_id = cfi.campaign_id
+              WHERE cfi.campaign_id = @CampaignId
+                AND cfi.is_visible_to_players = TRUE
+              ORDER BY cfi.created_at";
+
+        const string sublocationSql =
+            @"SELECT faction_instance_id, sublocation_instance_id, is_primary
+              FROM campaign_faction_sublocations
+              WHERE dm_user_id IS NULL
+                AND faction_instance_id IN (
+                  SELECT faction_instance_id FROM campaign_faction_instances
+                  WHERE campaign_id = @CampaignId AND is_visible_to_players = TRUE
+              )";
+
+        const string castSql =
+            @"SELECT faction_instance_id, cast_instance_id, is_primary
+              FROM campaign_faction_cast_members
+              WHERE dm_user_id IS NULL
+                AND faction_instance_id IN (
+                  SELECT faction_instance_id FROM campaign_faction_instances
+                  WHERE campaign_id = @CampaignId AND is_visible_to_players = TRUE
+              )";
+
+        // All relationships (DM-created and player-created) for visible factions
+        const string relSql =
+            @"SELECT id, campaign_id, faction_instance_id_a, faction_instance_id_b, relationship_type, strength, created_at, dm_user_id
+              FROM campaign_faction_instance_relationships
+              WHERE campaign_id = @CampaignId";
+
+        logging.LogDbOperation(correlation.TraceId, spanId, "SELECT", "campaign_faction_instances (player)", @params);
+
+        using var conn = CreateConnection();
+        var rows = (await conn.QueryAsync<dynamic>(sql, @params)).ToList();
+        var sublocationRows = (await conn.QueryAsync<dynamic>(sublocationSql, @params)).ToList();
+        var castRows = (await conn.QueryAsync<dynamic>(castSql, @params)).ToList();
+        var relRows = (await conn.QueryAsync<dynamic>(relSql, @params)).ToList();
+
+        logging.LogDbOperation(correlation.TraceId, spanId, "SELECT", "campaign_faction_instances (player)", @params, rows.Count);
+
+        var sublocationMap = sublocationRows
+            .GroupBy((dynamic r) => (Guid)r.faction_instance_id)
+            .ToDictionary(g => g.Key, g => g.Select((dynamic r) => (Guid)r.sublocation_instance_id).ToList());
+
+        var primarySublocationMap = sublocationRows
+            .Where((dynamic r) => (bool)r.is_primary)
+            .GroupBy((dynamic r) => (Guid)r.faction_instance_id)
+            .ToDictionary(g => g.Key, g => (Guid?)((dynamic)g.First()).sublocation_instance_id);
+
+        var castMap = castRows
+            .GroupBy((dynamic r) => (Guid)r.faction_instance_id)
+            .ToDictionary(g => g.Key, g => g.Select((dynamic r) => (Guid)r.cast_instance_id).ToList());
+
+        var primaryCastMap = castRows
+            .Where((dynamic r) => (bool)r.is_primary)
+            .GroupBy((dynamic r) => (Guid)r.faction_instance_id)
+            .ToDictionary(g => g.Key, g => (Guid?)((dynamic)g.First()).cast_instance_id);
+
+        var relsByFactionA = relRows
+            .GroupBy((dynamic r) => (Guid)r.faction_instance_id_a)
+            .ToDictionary(g => g.Key, g => g.Select((dynamic r) => new CampaignFactionRelationshipDomain
+            {
+                Id = (Guid)r.id,
+                CampaignId = (Guid)r.campaign_id,
+                FactionInstanceIdA = (Guid)r.faction_instance_id_a,
+                FactionInstanceIdB = (Guid)r.faction_instance_id_b,
+                RelationshipType = (string)(r.relationship_type ?? string.Empty),
+                Strength = (short)r.strength,
+                CreatedAt = (DateTime)r.created_at,
+                DmUserId = null,
+            }).ToList());
+
+        return rows.Select(r =>
+        {
+            var fid = (Guid)r.faction_instance_id;
+            return new CampaignFactionInstanceDomain
+            {
+                FactionInstanceId = fid,
+                SourceFactionId = r.source_faction_id,
+                CampaignId = r.campaign_id,
+                DmUserId = r.dm_user_id,
+                Name = r.name,
+                Type = r.type ?? string.Empty,
+                Influence = r.influence ?? (short)0,
+                Perception = r.perception ?? (short)0,
+                Hidden = r.hidden,
+                IsVisibleToPlayers = r.is_visible_to_players,
+                Description = r.description ?? string.Empty,
+                DmNotes = string.Empty,
+                SymbolPath = r.symbol_path,
+                CreatedAt = r.created_at,
+                SubLocationInstanceIds = sublocationMap.TryGetValue(fid, out var subs) ? subs : [],
+                CastInstanceIds = castMap.TryGetValue(fid, out var casts) ? casts : [],
+                PrimarySublocationInstanceId = primarySublocationMap.TryGetValue(fid, out var ps) ? ps : null,
+                PrimaryCastInstanceId = primaryCastMap.TryGetValue(fid, out var pc) ? pc : null,
+                FactionRelationships = relsByFactionA.TryGetValue(fid, out var rels) ? rels : [],
+            };
+        }).ToList();
     }
 }
 

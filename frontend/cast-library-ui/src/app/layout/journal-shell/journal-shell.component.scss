@@ -199,6 +199,7 @@
 
 // ─── Scrollable page content ──────────────────────────────────────────────────
 :host ::ng-deep .pc {
+  position: relative;
   padding: 20px 22px;
   height: 100%;
   overflow-y: auto;

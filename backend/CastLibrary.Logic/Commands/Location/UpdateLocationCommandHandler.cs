@@ -22,7 +22,7 @@ public class UpdateLocationCommandHandler(
         existing.Geography = command.Request.Geography; existing.Architecture = command.Request.Architecture;
         existing.Climate = command.Request.Climate; existing.Religion = command.Request.Religion;
         existing.Vibe = command.Request.Vibe; existing.Languages = command.Request.Languages;
-        existing.Description = command.Request.Description;
+        existing.Description = command.Request.Description; existing.DmNotes = command.Request.DmNotes;
         return await locationUpdateRepository.UpdateAsync(existing);
     }
 }

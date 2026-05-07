@@ -11,9 +11,17 @@
   min-height: 100%;
   background: v.$color-black;
   position: relative;
-  animation: portal-inward-breathe 6.4s ease-in-out infinite;
   overflow-y: auto;
   overflow-x: hidden;
+}
+
+:host::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 9999;
+  animation: portal-inward-breathe 6.4s ease-in-out infinite;
 }
 
 @keyframes portal-inward-breathe {
@@ -133,7 +141,7 @@
   flex: 1;
   min-width: 0;
   background: v.$campaign-portal-bg-dark;
-  border: 1px solid rgba(v.$subLoc-olive, 0.40);
+  border: 1px solid v.$color-player-section-border;
   border-radius: 6px;
   display: flex;
   flex-direction: column;
@@ -153,7 +161,7 @@
   flex-direction: column;
   gap: 6px;
   padding: 12px 16px;
-  border-bottom: 1px solid rgba(v.$subLoc-olive, 0.12);
+  border-bottom: 1px solid v.$color-player-section-border;
 }
 
 .detail-grid {
@@ -167,10 +175,10 @@
   flex-direction: column;
   gap: 6px;
   padding: 12px 16px;
-  border-bottom: 1px solid rgba(v.$subLoc-olive, 0.08);
+  border-bottom: 1px solid v.$color-player-section-border;
 
   &:nth-child(odd) {
-    border-right: 1px solid rgba(v.$subLoc-olive, 0.08);
+    border-right: 1px solid v.$color-player-section-border;
   }
 
   &--full {
@@ -184,7 +192,7 @@
   align-items: flex-start;
   gap: 10px;
   padding: 10px 16px;
-  border-top: 1px solid rgba(v.$subLoc-olive, 0.08);
+  border-top: 1px solid v.$color-player-section-border;
 }
 
 .secret-lock-icon {
@@ -212,18 +220,18 @@
   padding: 0;
   background: rgba(v.$subLoc-olive, 0.04);
   border: none;
-  border-top: 1px solid rgba(v.$subLoc-olive, 0.14);
+  border-top: 1px solid v.$color-player-section-border;
   border-radius: 0 0 6px 6px;
   cursor: pointer;
   font-family: v.$font-header;
   font-size: 8px;
   letter-spacing: 0.12em;
-  color: rgba(v.$subLoc-olive, 0.85);
+  color: rgba(v.$location-blue, 0.85);
   transition: background 0.18s ease, color 0.18s ease;
 
   &:hover {
     background: rgba(v.$subLoc-olive, 0.10);
-    color: rgba(v.$subLoc-olive, 0.95);
+    color: rgba(v.$location-blue, 0.95);
   }
 }
 
@@ -232,14 +240,14 @@
   font-size: 7px;
   letter-spacing: 0.2em;
   text-transform: uppercase;
-  color: rgba(v.$subLoc-olive, 0.85);
+  color: rgba(v.$location-blue, 0.85);
   white-space: nowrap;
 }
 
 .detail-line {
   height: 1px;
   width: 100%;
-  background: linear-gradient(to right, rgba(v.$subLoc-olive, 0.22), transparent);
+  background: linear-gradient(to right, v.$color-player-section-border, transparent);
 }
 
 .detail-value {
@@ -270,8 +278,8 @@
   font-size: 7px;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: rgba(v.$subLoc-olive, 0.80);
-  border: 1px solid rgba(v.$subLoc-olive, 0.28);
+  color: rgba(v.$location-blue, 0.80);
+  border: 1px solid v.$color-player-section-border;
   border-radius: 2px;
   padding: 2px 8px;
 }
@@ -281,7 +289,7 @@
   flex-direction: column;
   gap: 8px;
   padding: 12px 16px;
-  border-bottom: 1px solid rgba(v.$subLoc-olive, 0.08);
+  border-bottom: 1px solid v.$color-player-section-border;
 }
 
 .detail-shop-grid {
@@ -297,7 +305,7 @@
   gap: 12px;
   width: calc(50% - 8px);
   padding: 6px 0;
-  border-bottom: 1px solid rgba(v.$subLoc-olive, 0.28);
+  border-bottom: 1px solid v.$color-player-section-border;
 }
 
 .detail-shop-item-name {
@@ -320,6 +328,19 @@
 
 .subLoc-cast-section {
   padding: 0 40px 48px;
+  position: relative;
+  z-index: 1;
+}
+
+.subLoc-notes-panel {
+  padding: 0 40px 24px;
+  margin-top: 12px;
+  position: relative;
+  z-index: 1;
+}
+
+.subLoc-faction-picker {
+  padding: 0 40px;
   position: relative;
   z-index: 1;
 }
@@ -404,5 +425,13 @@
 
   .subLoc-cast-section {
     padding: 0 16px 32px;
+  }
+
+  .subLoc-notes-panel {
+    padding: 0 16px 16px;
+  }
+
+  .subLoc-faction-picker {
+    padding: 0 16px 0 16px;
   }
 }

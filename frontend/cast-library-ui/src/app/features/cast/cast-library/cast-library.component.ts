@@ -6,12 +6,13 @@ import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../../environments/environment';
 import { Cast } from '../../../shared/models/cast.model';
 import { CastCardComponent } from '../../../shared/components/cast-card/cast-card.component';
-import { DmNavComponent } from '../../../shared/components/dm-nav/dm-nav.component';
+import { JournalTitleComponent } from '../../../shared/components/journal-title/journal-title.component';
+import { JournalWatermarkComponent } from '../../../shared/components/journal-watermark/journal-watermark.component';
 
 @Component({
   selector: 'app-cast-library',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterLink, CastCardComponent, DmNavComponent],
+  imports: [CommonModule, FormsModule, RouterLink, CastCardComponent, JournalTitleComponent, JournalWatermarkComponent],
   templateUrl: './cast-library.component.html',
   styleUrl: './cast-library.component.scss'
 })

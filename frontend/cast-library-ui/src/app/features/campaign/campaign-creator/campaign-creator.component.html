@@ -1,8 +1,7 @@
 <div class="pc scroll-body">
-  <app-dm-nav />
+  <app-journal-title [title]="isEditMode() ? 'Edit Campaign' : 'New Campaign'" [subtitle]="isEditMode() ? (form.controls.name.value || '') : ''" />
   <div class="wr wr-page-header">
-    <a class="btn-ghost" routerLink="/dm/campaigns">← Campaigns</a>
-    <h2 class="page-title page-title-flush">{{ isEditMode() ? 'Edit Campaign — ' + (form.controls.name.value || '') : 'New Campaign' }}</h2>
+    <a class="btn-ghost" routerLink="/dm/campaigns">← Library</a>
   </div>
   <div class="title-divider"></div>
 
@@ -13,16 +12,7 @@
       [class.tab-btn-active]="activeTab() === 'world-setup'"
       (click)="activeTab.set('world-setup')"
     >
-      1 — World Setup
-    </button>
-    <button
-      class="tab-btn"
-      [class.tab-btn-active]="activeTab() === 'cast-relationships'"
-      [disabled]="!campaignId()"
-      (click)="activeTab.set('cast-relationships')"
-      [title]="!campaignId() ? 'Save a campaign name first' : ''"
-    >
-      2 — Cast Disposition
+      World Setup
     </button>
     <button
       class="tab-btn"
@@ -31,7 +21,7 @@
       (click)="activeTab.set('day-cycle')"
       [title]="!campaignId() ? 'Save a campaign name first' : ''"
     >
-      3 — Day Cycle
+      Day Cycle
     </button>
     <button
       class="tab-btn"
@@ -40,7 +30,7 @@
       (click)="activeTab.set('players')"
       [title]="!campaignId() ? 'Save a campaign name first' : ''"
     >
-      4 — Players
+      Players
     </button>
   </div>
 
@@ -109,14 +99,6 @@
     <app-time-of-day-editor [campaignId]="campaignId()!" />
   }
 
-  <!-- ── Tab 2: Cast Relationships ─────────────────────────────────────────────── -->
-  @if (activeTab() === 'cast-relationships') {
-    <app-cast-relationships-tab
-      [campaignId]="campaignId()"
-      [castInstances]="campaignCast()"
-    />
-  }
-
   <!-- ── Tab 1: World Setup (existing content) ─────────────────────────────────── -->
   @if (activeTab() === 'world-setup') {
 
@@ -139,232 +121,19 @@
     <textarea class="fi" formControlName="description" rows="3" placeholder="A brief synopsis…"></textarea>
   </form>
 
-  @if (locations().length) {
-    <div class="locations-section-label">Available Locations</div>
-
-    <div class="location-search-row">
-      <input
-        class="fi location-search-input"
-        type="search"
-        placeholder="Search by name, type, climate, vibe…"
-        [value]="locationSearch()"
-        (input)="setLocationSearch($any($event.target).value)"
-      />
-    </div>
-
-    <div class="location-picker-row">
-      @if (filteredDeckLocations().length > 0) {
-        <div class="deck-stack" #deckStack (click)="swapLocationCard()">
-          <div class="deck-shadow deck-shadow-far"></div>
-          <div class="deck-shadow deck-shadow-near"></div>
-          <div class="deck-face">
-            <div class="deck-inner-border"></div>
-            <span class="deck-castle">🏰</span>
-            <div class="deck-count">
-              {{ filteredDeckLocations().length }}<br>remaining
-            </div>
-          </div>
-        </div>
-      } @else {
-        <div class="deck-stack deck-stack-empty" #deckStack></div>
-      }
-
-      <div class="main-card-area" #mainCardWrapper>
-        @if (filteredDeckLocations().length > 0) {
-          <app-location-card
-            #mainCard
-            [location]="currentCard()!"
-            [flippable]="false"
-            [editable]="false"
-          />
-        } @else {
-          <div class="main-card-placeholder"></div>
-        }
-      </div>
-    </div>
-
-    @if (filteredDeckLocations().length > 0) {
-      <div class="add-btn-row">
-        <div class="deck-stack-spacer"></div>
-        <button class="add-btn" (click)="addLocationToSelected()">
-          Add to Campaign
-          <span class="add-arrow">⬇</span>
-        </button>
-      </div>
-    }
-
-    <div class="dv"></div>
-    <div class="sel-header">
-      Campaign Locations — <span>{{ selectedDrafts().length }}</span> added
-    </div>
-
-    <div class="sel-layout">
-      @if (selectedDrafts().length > 0) {
-        <div class="sel-stack-container" #selectedStack [style.height.px]="selContainerHeight()">
-          @for (draft of selectedDrafts(); track draft.location.id; let i = $index) {
-            <app-location-card
-                 [attr.data-sel-idx]="i"
-                 [style.top.px]="selTopsList()[i]"
-                 [style.z-index]="i + 1"
-                 [style.position]="'absolute'"
-                 (click)="toggleExpanded(i)"
-                 [location]="draft.location"
-                 [flippable]="false"
-                 [editable]="false"
-                 [queueable]="true"
-                 (deleteClick)="removeLocationSelected(i)"
-            />
-          }
-        </div>
-      } @else {
-        <div class="sel-stack-placeholder" #selectedStack></div>
-      }
-
-      <!-- Detail panel -->
-      <div class="detail-panel">
-        @if (expandedDraft(); as draft) {
-          <div class="detail-panel-header">
-            <div class="detail-location-name">{{ draft.location.name }}</div>
-            <div class="detail-location-label">campaign copy</div>
-            @if (draft.instanceId && campaignId()) {
-              <button class="add-casts-btn" (click)="goToSublocations()">+ Add Sublocation</button>
-            }
-          </div>
-          <div class="dv dv-mb"></div>
-
-          @if (expandedLocationSublocations().length > 0) {
-            <div class="subLoc-cast-section-label">Sublocations</div>
-            <div class="subLoc-cast-summary">
-              @for (subLoc of expandedLocationSublocations(); track subLoc.instanceId) {
-                <div class="sublocation-outline-item">
-                  <div class="sublocation-outline-main">
-                    <span class="sublocation-bullet-icon" [class.sublocation-bullet-icon--active]="castCountForSublocation(subLoc.instanceId) > 0">
-                      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" width="13" height="13" fill="none">
-                        <circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.4"/>
-                        <polyline points="4.5,8.2 6.8,10.5 11.5,5.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
-                      </svg>
-                    </span>
-                    <span class="subLoc-outline-name">{{ subLoc.name }}</span>
-                  </div>
-                  <div class="subLoc-outline-child">
-                    <span class="subLoc-outline-child-connector">└</span>
-                    <span class="subLoc-outline-child-label">Cast Members</span>
-                    <span class="subLoc-outline-child-count">{{ castCountForSublocation(subLoc.instanceId) }}</span>
-                  </div>
-                </div>
-              }
-            </div>
-            <div class="dv dv-mb"></div>
-          }
-
-          <div class="detail-grid">
-            <div class="detail-field">
-              <label class="fi-label">Condition</label>
-              <input class="fi fi-sm" list="condition-options-detail"
-                     [value]="draft.condition ?? ''"
-                     (input)="updateDraftField('condition', $any($event.target).value)"
-                     placeholder="e.g. Prosperous" />
-              <datalist id="condition-options-detail">
-                @for (opt of conditionOptions; track opt) {
-                  <option [value]="opt"></option>
-                }
-              </datalist>
-            </div>
-            <div class="detail-field">
-              <label class="fi-label">Geographic Region</label>
-              <input class="fi fi-sm"
-                     data-location-field="geography"
-                      (input)="onLocationTextInput('geography', $any($event.target).value)"
-                     placeholder="e.g. Northern coast" />
-            </div>
-            <div class="detail-field">
-              <label class="fi-label">Climate &amp; Weather</label>
-              <input class="fi fi-sm"
-                     data-location-field="climate"
-                      (input)="onLocationTextInput('climate', $any($event.target).value)"
-                     placeholder="e.g. Temperate, foggy" />
-            </div>
-            <div class="detail-field">
-              <label class="fi-label">Dominant Religion</label>
-              <input class="fi fi-sm"
-                     data-location-field="religion"
-                      (input)="onLocationTextInput('religion', $any($event.target).value)"
-                     placeholder="e.g. Church of the Light" />
-            </div>
-            <div class="detail-field">
-              <label class="fi-label">Overall Vibe</label>
-              <input class="fi fi-sm"
-                     data-location-field="vibe"
-                      (input)="onLocationTextInput('vibe', $any($event.target).value)"
-                     placeholder="e.g. Gritty, mercantile" />
-            </div>
-            <div class="detail-field">
-              <label class="fi-label">Languages Spoken</label>
-              <input class="fi fi-sm"
-                     data-location-field="languages"
-                      (input)="onLocationTextInput('languages', $any($event.target).value)"
-                     placeholder="e.g. Common, Elvish" />
-            </div>
-          </div>
-
-          @if ((draft.keywords?.length ?? 0) > 0) {
-            <div class="detail-keywords">
-              <div class="fi-label">Keywords</div>
-              <div class="keyword-chips-readonly">
-                @for (kw of draft.keywords; track kw) {
-                  <span class="keyword-chip-readonly">{{ kw }}</span>
-                }
-              </div>
-            </div>
-          }
-
-          <div class="detail-secrets-header">🔒 Location Secrets</div>
-          @for (secret of draft.secrets; track $index; let si = $index) {
-            @if (secret.editing) {
-              <div class="secret-row secret-row-edit">
-                <textarea class="fi fi-sm secret-textarea"
-                          [value]="secret.content"
-                          (input)="updateSecretContent(si, $any($event.target).value)"
-                          (blur)="confirmSecret(si)"
-                          (keydown.enter)="confirmSecret(si); $event.preventDefault()"
-                          placeholder="Enter secret…"
-                          rows="2"></textarea>
-                <button class="secret-cancel-btn"
-                        (mousedown)="$event.preventDefault()"
-                        (click)="cancelSecret(si)" type="button">✕</button>
-              </div>
-            } @else {
-              <div class="secret-row">
-                <span class="secret-text">{{ secret.content }}</span>
-                <button class="secret-delete-btn" (click)="deleteSecret(si)" type="button">✕</button>
-              </div>
-            }
-          }
-          @if (draft.instanceId) {
-            <button class="secret-add-btn" (click)="addSecret()" type="button">+ Add Secret</button>
-          }
-        } @else {
-          <p class="detail-panel-empty">Tap a location card to view its campaign details.</p>
-        }
-      </div>
-    </div>
-  }
-
-  @else {
-    <div class="locations-section-label">Available Locations</div>
-    <div class="no-locations-state">
-      <div class="no-locations-icon">🏙</div>
-      <p class="no-locations-headline">Your atlas is empty — no locations yet</p>
-      <p class="no-locations-sub">Every great campaign begins with a location.</p>
-      <a class="no-locations-link" routerLink="/dm/locations/new">✦ Forge your first location</a>
-    </div>
-  }
-
   @if (saving()) {
     <div class="autosave-indicator">Saving…</div>
   }
 
   } <!-- end @if world-setup -->
+
+  @if (isEditMode()) {
+    <div class="campaign-danger-zone">
+      <button class="campaign-primary-btn campaign-primary-btn--delete" (click)="requestDelete()" type="button">
+        × Delete Campaign
+      </button>
+    </div>
+  }
 
 </div>
 
@@ -383,5 +152,21 @@
     </div>
   </div>
 }
+
+@if (confirmingDelete()) {
+  <div class="modal-backdrop" (click)="cancelDelete()">
+    <div class="modal-box" (click)="$event.stopPropagation()">
+      <div class="modal-title">Delete Campaign?</div>
+      <p class="modal-body">This will permanently delete the campaign, including all location, cast, faction, and sublocation instances within it. Your library cards will not be affected — only the campaign and its session data will be removed. This cannot be undone.</p>
+      <div class="modal-actions">
+        <button class="btn-ghost" (click)="cancelDelete()" type="button">Cancel</button>
+        <button class="btn-danger" (click)="confirmDelete()" [disabled]="deleting()" type="button">
+          {{ deleting() ? 'Deleting…' : 'Delete' }}
+        </button>
+      </div>
+    </div>
+  </div>
+}
+
 
 

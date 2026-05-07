@@ -1,35 +1,6 @@
 <div class="pc scroll-body">
-  @if (auth.isDm()) {
-    <app-dm-nav />
-  } @else if (auth.isLoggedIn()) {
-    <div class="player-nav">
-      <a class="player-nav__link" routerLink="/player/campaigns">Dashboard</a>
-      <span class="player-nav__link">Legal</span>
-      <div class="player-nav__spacer"></div>
-      <div class="player-nav__account">
-        <button class="player-nav__account-trigger" (click)="menuOpen.set(!menuOpen())">
-          Account
-          <span class="player-nav__caret" [class.player-nav__caret--open]="menuOpen()">▾</span>
-        </button>
-        @if (menuOpen()) {
-          <div class="player-nav__dropdown">
-            <a class="player-nav__dropdown-item" routerLink="/about" (click)="menuOpen.set(false)">About</a>
-            <button class="player-nav__dropdown-item" (click)="auth.logout()">Logout</button>
-          </div>
-        }
-      </div>
-    </div>
-  } @else {
-    <div class="player-nav">
-      <a class="player-nav__link" routerLink="/">Home</a>
-      <span class="player-nav__link">Legal</span>
-    </div>
-  }
-
+  <app-journal-title title="Legal" />
   <div class="legal-content">
-
-    <h1 class="legal-title">Legal</h1>
-    <div class="dv"></div>
 
     <!-- Copyright Notice -->
     <div class="copyright-notice">

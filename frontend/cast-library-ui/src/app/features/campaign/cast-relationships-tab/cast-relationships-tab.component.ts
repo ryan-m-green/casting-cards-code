@@ -1,4 +1,4 @@
-﻿import {
+import {
   Component, Input, OnChanges, OnDestroy, SimpleChanges,
   ViewChild, ElementRef, signal, computed, inject,
 } from '@angular/core';
@@ -8,8 +8,7 @@ import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../../environments/environment';
 import { CampaignCastInstance } from '../../../shared/models/cast.model';
 import { CampaignCastRelationship } from '../../../shared/models/campaign.model';
-import { CardFlipComponent } from '../../../shared/components/card-flip/card-flip.component';
-import { RelationshipWebModalComponent } from '../relationship-web-modal/relationship-web-modal.component';
+import { CastCardComponent } from '../../../shared/components/cast-card/cast-card.component';
 
 interface RelationshipDraft {
   value: number;
@@ -20,7 +19,7 @@ interface RelationshipDraft {
 @Component({
   selector: 'app-cast-relationships-tab',
   standalone: true,
-  imports: [CommonModule, FormsModule, CardFlipComponent, RelationshipWebModalComponent],
+  imports: [CommonModule, FormsModule, CastCardComponent],
   templateUrl: './cast-relationships-tab.component.html',
   styleUrl: './cast-relationships-tab.component.scss',
 })
@@ -39,6 +38,52 @@ export class CastRelationshipsTabComponent implements OnChanges, OnDestroy {
   filterText    = signal('');
   showWebModal  = signal(false);
   isSwapping    = false;
+
+  // ── Bulk edit ────────────────────────────────────────────────────────────────
+  checkedIds      = signal<Set<string>>(new Set());
+  globalValue     = signal(0);
+  globalExplanation = signal('');
+
+  isChecked(id: string): boolean { return this.checkedIds().has(id); }
+
+  toggleChecked(id: string): void {
+    const s = new Set(this.checkedIds());
+    s.has(id) ? s.delete(id) : s.add(id);
+    this.checkedIds.set(s);
+  }
+
+  allSelected = computed(() => {
+    const visible = this.filteredOtherCast();
+    return visible.length > 0 && visible.every(c => this.checkedIds().has(c.instanceId));
+  });
+
+  toggleSelectAll(): void {
+    if (this.allSelected()) {
+      this.checkedIds.set(new Set());
+    } else {
+      this.checkedIds.set(new Set(this.filteredOtherCast().map(c => c.instanceId)));
+    }
+  }
+
+  applyGlobalToChecked(): void {
+    const ids = this.checkedIds();
+    if (!ids.size) return;
+    const value       = this.globalValue();
+    const explanation = this.globalExplanation().trim();
+
+    const map = new Map(this.drafts());
+    for (const id of ids) {
+      const draft = map.get(id) ?? { value: 0, explanation: '' };
+      map.set(id, { ...draft, value, explanation });
+      this.explanationTexts.set(id, explanation);
+      this.setExplanationDom(id, explanation);
+    }
+    this.drafts.set(map);
+
+    for (const id of ids) {
+      this.persistRelationship(id);
+    }
+  }
 
   // ── Computed ────────────────────────────────────────────────────────────────
 
@@ -114,14 +159,7 @@ export class CastRelationshipsTabComponent implements OnChanges, OnDestroy {
   }
 
   onSliderRelease(targetInstanceId: string, event: Event): void {
-    const value = +(event.target as HTMLInputElement).value;
-    if (value !== 0) return;
-    const map   = new Map(this.drafts());
-    const draft = map.get(targetInstanceId) ?? { value: 0, explanation: '' };
-    map.set(targetInstanceId, { ...draft, explanation: '' });
-    this.drafts.set(map);
-    this.explanationTexts.set(targetInstanceId, '');
-    this.setExplanationDom(targetInstanceId, '');
+    this.scheduleSave(targetInstanceId);
   }
 
   onExplanationInput(targetInstanceId: string, event: Event): void {

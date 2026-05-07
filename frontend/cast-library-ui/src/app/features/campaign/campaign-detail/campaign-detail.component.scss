@@ -14,9 +14,17 @@
   background: v.$color-black;
   overflow-y: auto;
   scrollbar-width: none;
-  animation: portal-inward-breathe 6.4s ease-in-out infinite;
 
   &::-webkit-scrollbar { display: none; }
+}
+
+:host::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 9999;
+  animation: portal-inward-breathe 6.4s ease-in-out infinite;
 }
 
 @keyframes portal-inward-breathe {

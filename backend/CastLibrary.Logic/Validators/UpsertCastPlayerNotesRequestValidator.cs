@@ -7,7 +7,7 @@ public class UpsertCastPlayerNotesRequestValidator : AbstractValidator<UpsertCas
 {
     public UpsertCastPlayerNotesRequestValidator()
     {
-        RuleFor(x => x.Want).MaximumLength(5000);
+        RuleFor(x => x.Notes).MaximumLength(10000);
         RuleFor(x => x.Alignment).MaximumLength(30);
         RuleFor(x => x.Perception).InclusiveBetween(-5, 5);
         RuleFor(x => x.Rating).InclusiveBetween(0, 3);

@@ -2,16 +2,76 @@
 
 :host { display: block; height: 100%; }
 
-.dashboard-welcome {
-  text-align: center;
-  margin-bottom: 16px;
-  font-size: 16pt;
-  font-family: v.$font-header;
-  opacity: 1;
+// ─── Stat tile borders matched to card type ───────────────────────────────────
+// Each tile uses a 4px gradient frame via padding + background, matching the
+// card's own frame gradient.
+
+.sv--cast {
+  background: linear-gradient(145deg,
+    v.$color-cast-gold-1 0%, v.$color-cast-gold-2 20%, v.$color-cast-gold-3 45%,
+    v.$color-cast-gold-4 55%, v.$color-cast-gold-2 70%, v.$color-cast-gold-5 85%, v.$color-cast-gold-6 100%
+  );
+  padding: 3px;
+
+  .sv-inner { background: v.$journal-parchment-base-3; }
+}
+
+.sv--sublocation {
+  background: linear-gradient(145deg,
+    v.$color-ext-675 0%, v.$color-ext-676 15%, v.$color-ext-677 40%,
+    v.$color-ext-678 55%, v.$color-ext-679 70%, v.$color-ext-680 85%, v.$color-ext-681 100%
+  );
+  padding: 3px;
+
+  .sv-inner { background: v.$journal-parchment-base-3; }
+}
+
+.sv--location {
+  background: linear-gradient(145deg,
+    v.$color-loc-green-1 0%, v.$color-loc-green-2 15%, v.$color-loc-green-3 40%,
+    v.$color-loc-green-4 55%, v.$color-loc-green-5 70%, v.$color-loc-green-6 85%, v.$color-loc-green-7 100%
+  );
+  padding: 3px;
+
+  .sv-inner { background: v.$journal-parchment-base-3; }
+}
+
+.sv--faction {
+  background: linear-gradient(145deg,
+    v.$color-faction-neutral-frame-1 0%, v.$color-faction-neutral-frame-2 15%,
+    v.$color-faction-neutral-frame-3 40%, v.$color-faction-neutral-frame-4 55%,
+    v.$color-faction-neutral-frame-5 70%, v.$color-faction-neutral-frame-6 85%,
+    v.$color-faction-neutral-frame-7 100%
+  );
+  padding: 3px;
+
+  .sv-inner { background: v.$journal-parchment-base-3; }
+}
+
+.sv--campaign {
+  background: linear-gradient(145deg,
+    v.$portal-card-frame-1 0%, v.$portal-card-frame-2 30%,
+    v.$portal-card-frame-3 60%, v.$portal-card-frame-4 100%
+  );
+  padding: 3px;
+
+  .sv-inner { background: v.$journal-parchment-base-3; }
 }
 
 .active-campaign-item {
   margin-bottom: 16px;
+}
+
+.dashboard-main {
+  flex: 1;
+}
+
+.quick-actions {
+  margin-top: 44px;
+}
+
+.import-section {
+  margin-bottom: -44px;
 }
 
 // ─── Portal ghost (hidden off-screen; cloned for animation) ───────────────────

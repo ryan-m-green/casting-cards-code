@@ -14,12 +14,16 @@ namespace CastLibrary.WebHost.IoC
             services.AddScoped<ILocationWebMapper, LocationWebMapper>();
             services.AddScoped<ISublocationWebMapper, SublocationWebMapper>();
             services.AddScoped<ICampaignWebMapper, CampaignWebMapper>();
-            services.AddScoped<ILocationPoliticalNotesMapper, LocationPoliticalNotesMapper>();
-            services.AddScoped<ILocationFactionMapper, LocationFactionMapper>();
-            services.AddScoped<ILocationFactionRelationshipMapper, LocationFactionRelationshipMapper>();
             services.AddScoped<ILocationNpcRolesMapper, LocationNpcRolesMapper>();
             services.AddScoped<ICampaignCastPlayerNotesMapper, CampaignCastPlayerNotesMapper>();
+            services.AddScoped<ICampaignLocationPlayerNotesMapper, CampaignLocationPlayerNotesMapper>();
             services.AddScoped<IPlayerCardWebMapper, PlayerCardWebMapper>();
+            services.AddScoped<IFactionWebMapper, FactionWebMapper>();
+            services.AddScoped<ICampaignFactionInstanceWebMapper, CampaignFactionInstanceWebMapper>();
+            services.AddScoped<ICampaignFactionPlayerNotesMapper, CampaignFactionPlayerNotesMapper>();
+            services.AddScoped<ICampaignSublocationPlayerNotesMapper, CampaignSublocationPlayerNotesMapper>();
+            services.AddScoped<ICampaignPlayerNotesMapper, CampaignPlayerNotesMapper>();
+            services.AddScoped<IPlayerQuicknoteQueueMapper, PlayerQuicknoteQueueMapper>();
             services.AddScoped<IZipArchiveMapper, ZipArchiveMapper>();
 
             services.AddScoped<IUserRetriever, UserRetriever>();

@@ -3,7 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../../environments/environment';
-import { CampaignDetail, CampaignNote } from '../../../shared/models/campaign.model';
+import { CampaignDetail } from '../../../shared/models/campaign.model';
 import { CampaignSecret } from '../../../shared/models/secret.model';
 import { CampaignLocationInstance } from '../../../shared/models/location.model';
 import { AuthService } from '../../../core/auth/auth.service';
@@ -75,15 +75,31 @@ export class CampaignDetailComponent implements OnInit {
         };
       });
     });
+
+    effect(() => {
+      const event = this.hub.factionLocked();
+      if (!event || event.campaignId !== this.campaignId()) return;
+      this.campaign.update(c => {
+        if (!c) return c;
+        return {
+          ...c,
+          sublocations: c.sublocations.map(l =>
+            l.factionInstanceId === event.factionInstanceId
+              ? { ...l, factionInstanceId: undefined, symbolPath: undefined }
+              : l
+          ),
+          casts: c.casts.map(ca => ({
+            ...ca,
+            factionSymbols: (ca.factionSymbols ?? []).filter(fs => fs.factionInstanceId !== event.factionInstanceId),
+          })),
+        };
+      });
+    });
   }
 
   ngOnInit() {
     const id = this.route.snapshot.paramMap.get('id')!;
     this.campaignId.set(id);
-
-    this.shellSvc.setCrumbs([
-      { label: '<- Campaign Library', action: () => this.exitPortal() },
-    ]);
 
     this.loadCampaign(id);
   }
@@ -92,7 +108,8 @@ export class CampaignDetailComponent implements OnInit {
     this.http.get<CampaignDetail>(`${environment.apiUrl}/api/campaigns/${id}`)
       .subscribe(campaign => {
         this.campaign.set(campaign);
-        this.shellSvc.setTitle(campaign.name);
+        this.shellSvc.setCampaign(campaign);
+        this.shellSvc.setTitle(campaign.name, '56px');
       });
   }
 
@@ -151,18 +168,21 @@ export class CampaignDetailComponent implements OnInit {
       `${environment.apiUrl}/api/campaigns/${this.campaignId()}/locations/${location.instanceId}/visibility`,
       { isVisibleToPlayers: next }
     ).subscribe(() => {
-      this.campaign.update(c => c ? {
+      const updater = (c: CampaignDetail | null) => c ? {
         ...c,
         locations: c.locations.map(ci => ci.instanceId === location.instanceId
           ? { ...ci, isVisibleToPlayers: next }
           : ci)
-      } : c);
+      } : c;
+      this.campaign.update(updater);
+      this.shellSvc.updateCampaign(updater);
     });
   }
 
   goToLocationDetail(instanceId: string) {
     this.router.navigate(['locations', instanceId], { relativeTo: this.route });
   }
+
 
   exitPortal() {
     this.transition.exitToLibrary(() =>
@@ -176,9 +196,11 @@ export class CampaignDetailComponent implements OnInit {
 
   onLocationAdded(instance: CampaignLocationInstance) {
     if (instance.instanceId.startsWith('tmp-')) {
-      this.campaign.update(c => c ? { ...c, locations: [...c.locations, instance] } : c);
+      const updater = (c: CampaignDetail | null) => c ? { ...c, locations: [...c.locations, instance] } : c;
+      this.campaign.update(updater);
+      this.shellSvc.updateCampaign(updater);
     } else {
-      this.campaign.update(c => {
+      const updater = (c: CampaignDetail | null) => {
         if (!c) return c;
         const locations = c.locations.some(l => l.instanceId === instance.instanceId)
           ? c.locations
@@ -186,11 +208,15 @@ export class CampaignDetailComponent implements OnInit {
             ? c.locations.map(l => l.instanceId.startsWith('tmp-') && l.sourceLocationId === instance.sourceLocationId ? instance : l)
             : [...c.locations, instance];
         return { ...c, locations };
-      });
+      };
+      this.campaign.update(updater);
+      this.shellSvc.updateCampaign(updater);
     }
   }
 
   onLocationRemoved(instanceId: string) {
-    this.campaign.update(c => c ? { ...c, locations: c.locations.filter(l => l.instanceId !== instanceId) } : c);
+    const updater = (c: CampaignDetail | null) => c ? { ...c, locations: c.locations.filter(l => l.instanceId !== instanceId) } : c;
+    this.campaign.update(updater);
+    this.shellSvc.updateCampaign(updater);
   }
 }

@@ -20,6 +20,11 @@ namespace CastLibrary.Repository.Repositories.Delete
             logging.LogDbOperation(correlation.TraceId, spanId, "DELETE", "locations", @params);
 
             using var conn = sqlConnectinFactory.GetConnection();
+            await conn.ExecuteAsync(
+                "DELETE FROM campaign_sublocation_instances WHERE source_sublocation_id IN (SELECT id FROM sublocations WHERE location_id = @Id)",
+                @params);
+            await conn.ExecuteAsync("DELETE FROM campaign_location_instances WHERE source_location_id = @Id", @params);
+            await conn.ExecuteAsync("DELETE FROM sublocations WHERE location_id = @Id", @params);
             var rows = await conn.ExecuteAsync("DELETE FROM locations WHERE id = @Id", @params);
 
             logging.LogDbOperation(correlation.TraceId, spanId, "DELETE", "locations", @params, rows);

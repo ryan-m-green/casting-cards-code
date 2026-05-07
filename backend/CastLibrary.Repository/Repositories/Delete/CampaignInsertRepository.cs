@@ -13,6 +13,14 @@ public interface ICampaignInsertRepository
     Task<CampaignLocationInstanceDomain> InsertLocationInstanceAsync(CampaignLocationInstanceDomain instance);
     Task<CampaignSublocationInstanceDomain> InsertSublocationInstanceAsync(CampaignSublocationInstanceDomain instance);
     Task<ShopItemDomain> InsertSublocationShopItemAsync(Guid sublocationInstanceId, ShopItemDomain item);
+    Task<CampaignFactionInstanceDomain> InsertFactionInstanceAsync(CampaignFactionInstanceDomain instance);
+    Task AddFactionSublocationAsync(Guid factionInstanceId, Guid sublocationInstanceId, Guid? dmUserId);
+    Task AddFactionCastMemberAsync(Guid factionInstanceId, Guid castInstanceId, Guid? dmUserId);
+    Task SetFactionSublocationPrimaryAsync(Guid factionInstanceId, Guid sublocationInstanceId);
+    Task SetFactionCastMemberPrimaryAsync(Guid factionInstanceId, Guid castInstanceId);
+    Task ClearFactionSublocationPrimaryAsync(Guid factionInstanceId);
+    Task ClearFactionCastMemberPrimaryAsync(Guid factionInstanceId);
+    Task<CampaignFactionRelationshipDomain> InsertFactionRelationshipAsync(CampaignFactionRelationshipDomain domain);
 }
 
 public class CampaignInsertRepository(
@@ -218,7 +226,213 @@ public class CampaignInsertRepository(
         logging.LogDbOperation(correlation.TraceId, spanId, "INSERT", "campaign_sublocation_shop_items", @params, rows);
         return item;
     }
-}
+
+    public async Task<CampaignFactionInstanceDomain> InsertFactionInstanceAsync(CampaignFactionInstanceDomain instance)
+    {
+        var spanId = correlation.NewSpan();
+        var @params = new
+        {
+            instance.FactionInstanceId,
+            instance.SourceFactionId,
+            instance.CampaignId,
+            instance.DmUserId,
+            instance.Name,
+            instance.Type,
+            instance.Influence,
+            instance.Hidden,
+            instance.IsVisibleToPlayers,
+            instance.Description,
+            instance.DmNotes,
+            instance.SymbolPath,
+            instance.CreatedAt,
+        };
+        const string sql =
+            @"INSERT INTO campaign_faction_instances
+                (faction_instance_id, source_faction_id, campaign_id, dm_user_id,
+                 name, type, influence, hidden, is_visible_to_players, description, dm_notes, symbol_path, created_at)
+              VALUES
+                (@FactionInstanceId, @SourceFactionId, @CampaignId, @DmUserId,
+                 @Name, @Type, @Influence, @Hidden, @IsVisibleToPlayers, @Description, @DmNotes, @SymbolPath, @CreatedAt)";
+
+        logging.LogDbOperation(correlation.TraceId, spanId, "INSERT", "campaign_faction_instances", @params);
+
+        using var conn = CreateConnection();
+        var rows = await conn.ExecuteAsync(sql, @params);
+
+        logging.LogDbOperation(correlation.TraceId, spanId, "INSERT", "campaign_faction_instances", @params, rows);
+        return instance;
+    }
+
+    public async Task AddFactionSublocationAsync(Guid factionInstanceId, Guid sublocationInstanceId, Guid? dmUserId)
+    {
+        var spanId = correlation.NewSpan();
+        using var conn = CreateConnection();
+
+        if (dmUserId.HasValue)
+        {
+            var @params = new { Id = Guid.NewGuid(), FactionInstanceId = factionInstanceId, SublocationInstanceId = sublocationInstanceId, DmUserId = dmUserId.Value };
+            const string sql =
+                @"INSERT INTO campaign_faction_sublocations (id, faction_instance_id, sublocation_instance_id, dm_user_id)
+                  VALUES (@Id, @FactionInstanceId, @SublocationInstanceId, @DmUserId)
+                  ON CONFLICT DO NOTHING";
+
+            logging.LogDbOperation(correlation.TraceId, spanId, "INSERT", "campaign_faction_sublocations", @params);
+            var rows = await conn.ExecuteAsync(sql, @params);
+            logging.LogDbOperation(correlation.TraceId, spanId, "INSERT", "campaign_faction_sublocations", @params, rows);
+        }
+        else
+        {
+            var @params = new { Id = Guid.NewGuid(), FactionInstanceId = factionInstanceId, SublocationInstanceId = sublocationInstanceId };
+            const string sql =
+                @"INSERT INTO campaign_faction_sublocations (id, faction_instance_id, sublocation_instance_id, dm_user_id)
+                  SELECT @Id, @FactionInstanceId, @SublocationInstanceId, NULL
+                  WHERE NOT EXISTS (
+                      SELECT 1 FROM campaign_faction_sublocations
+                      WHERE faction_instance_id = @FactionInstanceId
+                        AND sublocation_instance_id = @SublocationInstanceId
+                        AND dm_user_id IS NULL
+                  )";
+
+            logging.LogDbOperation(correlation.TraceId, spanId, "INSERT", "campaign_faction_sublocations", @params);
+            var rows = await conn.ExecuteAsync(sql, @params);
+            logging.LogDbOperation(correlation.TraceId, spanId, "INSERT", "campaign_faction_sublocations", @params, rows);
+        }
+    }
+
+    public async Task AddFactionCastMemberAsync(Guid factionInstanceId, Guid castInstanceId, Guid? dmUserId)
+    {
+        var spanId = correlation.NewSpan();
+        using var conn = CreateConnection();
+
+        if (dmUserId.HasValue)
+        {
+            var @params = new { Id = Guid.NewGuid(), FactionInstanceId = factionInstanceId, CastInstanceId = castInstanceId, DmUserId = dmUserId.Value };
+            const string sql =
+                @"INSERT INTO campaign_faction_cast_members (id, faction_instance_id, cast_instance_id, dm_user_id)
+                  VALUES (@Id, @FactionInstanceId, @CastInstanceId, @DmUserId)
+                  ON CONFLICT DO NOTHING";
+
+            logging.LogDbOperation(correlation.TraceId, spanId, "INSERT", "campaign_faction_cast_members", @params);
+            var rows = await conn.ExecuteAsync(sql, @params);
+            logging.LogDbOperation(correlation.TraceId, spanId, "INSERT", "campaign_faction_cast_members", @params, rows);
+        }
+        else
+        {
+            var @params = new { Id = Guid.NewGuid(), FactionInstanceId = factionInstanceId, CastInstanceId = castInstanceId };
+            const string sql =
+                @"INSERT INTO campaign_faction_cast_members (id, faction_instance_id, cast_instance_id, dm_user_id)
+                  SELECT @Id, @FactionInstanceId, @CastInstanceId, NULL
+                  WHERE NOT EXISTS (
+                      SELECT 1 FROM campaign_faction_cast_members
+                      WHERE faction_instance_id = @FactionInstanceId
+                        AND cast_instance_id = @CastInstanceId
+                        AND dm_user_id IS NULL
+                  )";
+
+            logging.LogDbOperation(correlation.TraceId, spanId, "INSERT", "campaign_faction_cast_members", @params);
+            var rows = await conn.ExecuteAsync(sql, @params);
+            logging.LogDbOperation(correlation.TraceId, spanId, "INSERT", "campaign_faction_cast_members", @params, rows);
+        }
+    }
+
+    public async Task SetFactionSublocationPrimaryAsync(Guid factionInstanceId, Guid sublocationInstanceId)
+    {
+        var spanId = correlation.NewSpan();
+        var @params = new { FactionInstanceId = factionInstanceId, SublocationInstanceId = sublocationInstanceId };
+        const string sql =
+            @"UPDATE campaign_faction_sublocations
+                 SET is_primary = (sublocation_instance_id = @SublocationInstanceId)
+               WHERE faction_instance_id = @FactionInstanceId";
+
+        logging.LogDbOperation(correlation.TraceId, spanId, "UPDATE", "campaign_faction_sublocations", @params);
+
+        using var conn = CreateConnection();
+        var rows = await conn.ExecuteAsync(sql, @params);
+
+        logging.LogDbOperation(correlation.TraceId, spanId, "UPDATE", "campaign_faction_sublocations", @params, rows);
+    }
+
+    public async Task SetFactionCastMemberPrimaryAsync(Guid factionInstanceId, Guid castInstanceId)
+    {
+        var spanId = correlation.NewSpan();
+        var @params = new { FactionInstanceId = factionInstanceId, CastInstanceId = castInstanceId };
+        const string sql =
+            @"UPDATE campaign_faction_cast_members
+                 SET is_primary = (cast_instance_id = @CastInstanceId)
+               WHERE faction_instance_id = @FactionInstanceId";
+
+        logging.LogDbOperation(correlation.TraceId, spanId, "UPDATE", "campaign_faction_cast_members", @params);
+
+        using var conn = CreateConnection();
+        var rows = await conn.ExecuteAsync(sql, @params);
+
+        logging.LogDbOperation(correlation.TraceId, spanId, "UPDATE", "campaign_faction_cast_members", @params, rows);
+    }
+
+    public async Task ClearFactionSublocationPrimaryAsync(Guid factionInstanceId)
+    {
+        var spanId = correlation.NewSpan();
+        var @params = new { FactionInstanceId = factionInstanceId };
+        const string sql =
+            @"UPDATE campaign_faction_sublocations
+                 SET is_primary = FALSE
+               WHERE faction_instance_id = @FactionInstanceId";
+
+        logging.LogDbOperation(correlation.TraceId, spanId, "UPDATE", "campaign_faction_sublocations", @params);
+
+        using var conn = CreateConnection();
+        var rows = await conn.ExecuteAsync(sql, @params);
+
+        logging.LogDbOperation(correlation.TraceId, spanId, "UPDATE", "campaign_faction_sublocations", @params, rows);
+    }
+
+    public async Task ClearFactionCastMemberPrimaryAsync(Guid factionInstanceId)
+    {
+        var spanId = correlation.NewSpan();
+        var @params = new { FactionInstanceId = factionInstanceId };
+        const string sql =
+            @"UPDATE campaign_faction_cast_members
+                 SET is_primary = FALSE
+               WHERE faction_instance_id = @FactionInstanceId";
+
+        logging.LogDbOperation(correlation.TraceId, spanId, "UPDATE", "campaign_faction_cast_members", @params);
+
+        using var conn = CreateConnection();
+        var rows = await conn.ExecuteAsync(sql, @params);
+
+        logging.LogDbOperation(correlation.TraceId, spanId, "UPDATE", "campaign_faction_cast_members", @params, rows);
+    }
+
+    public async Task<CampaignFactionRelationshipDomain> InsertFactionRelationshipAsync(CampaignFactionRelationshipDomain domain)
+    {
+        var spanId = correlation.NewSpan();
+        var @params = new
+        {
+            domain.Id,
+            domain.CampaignId,
+            domain.FactionInstanceIdA,
+            domain.FactionInstanceIdB,
+            domain.RelationshipType,
+            domain.Strength,
+            domain.CreatedAt,
+            domain.DmUserId,
+        };
+        const string sql =
+            @"INSERT INTO campaign_faction_instance_relationships
+                (id, campaign_id, faction_instance_id_a, faction_instance_id_b, relationship_type, strength, created_at, dm_user_id)
+              VALUES
+                (@Id, @CampaignId, @FactionInstanceIdA, @FactionInstanceIdB, @RelationshipType, @Strength, @CreatedAt, @DmUserId)";
+
+        logging.LogDbOperation(correlation.TraceId, spanId, "INSERT", "campaign_faction_instance_relationships", @params);
+
+        using var conn = CreateConnection();
+        var rows = await conn.ExecuteAsync(sql, @params);
+
+        logging.LogDbOperation(correlation.TraceId, spanId, "INSERT", "campaign_faction_instance_relationships", @params, rows);
+        return domain;
+    }
+
+    }
 
 
 

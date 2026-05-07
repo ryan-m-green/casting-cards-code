@@ -1,0 +1,62 @@
+<div class="icon-picker">
+
+  <!-- ── Search Bar ─────────────────────────────────────── -->
+  <div class="ip-search-wrap">
+    <input
+      class="ip-search fi"
+      type="text"
+      placeholder="Search icons…"
+      [ngModel]="searchQuery()"
+      (ngModelChange)="onSearch($event)" />
+    @if (searchQuery()) {
+      <button class="ip-search-clear" (click)="clearSearch()" aria-label="Clear search">✕</button>
+    }
+  </div>
+
+  <!-- ── Search Results ────────────────────────────────── -->
+  @if (searchQuery()) {
+    @if (searchResults().length === 0) {
+      <p class="ip-empty">No icons match "{{ searchQuery() }}"</p>
+    } @else {
+      <div class="ip-icon-grid">
+        @for (result of searchResults(); track result.path) {
+          <button class="ip-icon-tile" [class.ip-icon-tile--selected]="selectedIcon() === result.path" (click)="selectSearchResult(result)" [title]="result.label">
+            <img [src]="result.path" [alt]="result.label" class="ip-icon-img" />
+            @if (selectedIcon() === result.path) {
+              <span class="ip-icon-check">✓</span>
+            }
+          </button>
+        }
+      </div>
+    }
+  }
+
+  <!-- ── Category Pills ─────────────────────────────────── -->
+  @if (!searchQuery() && view() === 'categories') {
+    <div class="ip-pill-row">
+      @for (cat of categories; track cat) {
+        <button class="ip-pill" (click)="selectCategory(cat)">{{ displayName(cat) }}</button>
+      }
+    </div>
+  }
+
+  <!-- ── Icon Grid ──────────────────────────────────────── -->
+  @if (!searchQuery() && view() === 'icons') {
+    <div class="ip-nav">
+      <button class="ip-back btn-ghost" (click)="backToCategories()">← {{ displayName(activeCategory()!) }}</button>
+    </div>
+    <div class="ip-icon-grid">
+      @for (icon of icons; track icon) {
+        <button class="ip-icon-tile" [class.ip-icon-tile--selected]="selectedIcon() === '/icons/' + activeCategory() + '/' + icon" (click)="selectIcon(icon)" [title]="iconLabel(icon)">
+          <img [src]="'/icons/' + activeCategory() + '/' + icon"
+               [alt]="iconLabel(icon)"
+               class="ip-icon-img" />
+          @if (selectedIcon() === '/icons/' + activeCategory() + '/' + icon) {
+            <span class="ip-icon-check">✓</span>
+          }
+        </button>
+      }
+    </div>
+  }
+
+</div>

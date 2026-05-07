@@ -21,9 +21,17 @@
   min-height: 100%;
   background: v.$color-black;
   position: relative;
-  animation: portal-inward-breathe 6.4s ease-in-out infinite;
   overflow-y: auto;
   overflow-x: hidden;
+}
+
+:host::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 9999;
+  animation: portal-inward-breathe 6.4s ease-in-out infinite;
 }
 
 @keyframes portal-inward-breathe {
@@ -128,25 +136,32 @@
     0 1px 3px v.$color-ext-23;
 }
 
-/* ── Hero card ───────────────────────────────────────────────────────────── */
-.cast-hero {
+/* ── Main body layout ────────────────────────────────────────────────────── */
+.cast-body {
   display: flex;
-  justify-content: center;
-  padding: 8px 40px 24px;
+  gap: 32px;
+  padding: 8px 40px 32px;
   position: relative;
   z-index: 1;
+  align-items: flex-start;
 }
 
-.cast-hero-card-wrap {
+.cast-card-left {
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+}
+
+.travel-anchor {
   position: relative;
-  display: inline-flex;
+  margin-top: 8px;
+  width: calc(100% + 120px);
 }
 
 .travel-btn-row {
   display: flex;
-  justify-content: center;
-  padding: 0 40px;
-  margin-top: -8px;
+  justify-content: flex-start;
   position: relative;
   z-index: 2;
 }
@@ -155,10 +170,12 @@
 .travel-drawer {
   display: flex;
   justify-content: center;
-  padding: 0 40px;
-  position: relative;
-  z-index: 1;
-  margin-top: 8px;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  margin-top: 4px;
   animation: travel-slide-down 0.25s ease-out both;
 }
 
@@ -259,19 +276,12 @@
   font-style: italic;
 }
 
-/* ── Detail panel wrap ───────────────────────────────────────────────────── */
-.cast-detail-wrap {
-  display: flex;
-  justify-content: center;
-  padding: 0 40px 48px;
-  position: relative;
-  z-index: 1;
-  margin-top: 12px;
-}
-
+/* ── Detail panel ────────────────────────────────────────────────────────── */
 .cast-detail-panel {
-  width: 100%;
-  max-width: 560px;
+  flex: 1;
+  min-width: 0;
+  position: relative;
+  z-index: 101;
   background: v.$campaign-portal-bg-dark;
   border: 1px solid rgba(v.$color-lib-cast-1, 0.40);
   border-radius: 6px;
@@ -356,6 +366,31 @@
   &:hover { opacity: 1; }
 }
 
+.secret-delete-btn {
+  flex-shrink: 0;
+  margin-left: auto;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 3px;
+  border-radius: 4px;
+  opacity: 0.4;
+  transition: opacity 0.18s ease, background 0.15s ease;
+
+  &:hover {
+    opacity: 1;
+    background: rgba(v.$color-lib-cast-1, 0.06);
+  }
+}
+
+.secret-delete-btn-img {
+  width: 18px;
+  height: 18px;
+  object-fit: contain;
+  display: block;
+  filter: invert(1);
+}
+
 .secret-text {
   font-family: v.$font-body;
   font-size: 13px;
@@ -373,7 +408,7 @@
   font-size: 7px;
   letter-spacing: 0.2em;
   text-transform: uppercase;
-  color: rgba(v.$color-lib-cast-1, 0.85);
+  color: rgba(v.$location-blue, 0.85);
   white-space: nowrap;
 }
 
@@ -412,10 +447,27 @@
   font-size: 7px;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: rgba(v.$color-lib-cast-1, 0.80);
+  color: rgba(v.$location-blue, 0.80);
   border: 1px solid rgba(v.$color-lib-cast-1, 0.28);
   border-radius: 2px;
   padding: 2px 8px;
+}
+
+.detail-voice-checkboxes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 18px;
+  margin-top: 4px;
+}
+
+.detail-voice-checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-family: v.$font-body;
+  font-size: 11px;
+  color: v.$campaign-portal-text-secondary;
+  cursor: pointer;
 }
 
 /* ── Panel action bar (Edit / Save / Cancel) ─────────────────────────────── */
@@ -530,7 +582,7 @@
 .detail-value--muted {
   font-family: v.$font-body;
   font-size: 13px;
-  color: rgba(v.$color-lib-cast-1, 0.75);
+  color: rgba(v.$location-blue, 0.75);
   font-style: italic;
   margin: 0;
 }
@@ -670,12 +722,17 @@
 
 /* ── Mobile: left-slide + downward accordion ─────────────────────────────── */
 @media (max-width: 767px) {
-  .cast-detail-wrap {
-    padding: 0 20px 48px;
+  .cast-body {
+    padding: 8px 20px 32px;
+    gap: 16px;
   }
 
   .cast-detail-panel {
-    max-width: none;
-    width: 100%;
+    &.detail-panel--mobile-expanded {
+      position: relative;
+      z-index: 102;
+      margin-left: -166px;
+      width: calc(100% + 166px);
+    }
   }
 }

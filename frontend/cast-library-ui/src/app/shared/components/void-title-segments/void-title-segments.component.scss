@@ -1,0 +1,54 @@
+@use '../../../../styles/variables' as v;
+
+:host {
+  font-size: 14px;
+}
+
+.void-title__cast {
+  font-size: 1.25em;
+}
+
+.void-title__label {
+  display: block;
+  text-align: left;
+  padding-left: 34px;
+}
+
+.void-title__indented {
+  display: block;
+  padding-left: calc(34px + 1.2em);
+  text-align: left;
+}
+
+.void-title__link {
+  color: color-mix(in srgb, var(--portal-color, v.$campaign-portal-primary), v.$color-ext-160 45%);
+  text-decoration: underline;
+  text-underline-offset: 5px;
+  cursor: pointer;
+  animation: void-link-pulse 5s ease-in-out infinite;
+
+  &:hover {
+    animation: none;
+    color: color-mix(in srgb, var(--portal-color, v.$campaign-portal-primary), white 60%);
+    text-decoration-color: color-mix(in srgb, var(--portal-color, v.$campaign-portal-primary), white 92%);
+    text-shadow:
+      0 0 14px color-mix(in srgb, var(--portal-color, v.$campaign-portal-primary), white 92%),
+      0 0 36px color-mix(in srgb, var(--portal-color, v.$campaign-portal-primary), white 65%),
+      0 1px 3px v.$color-ext-23;
+  }
+}
+
+@keyframes void-link-pulse {
+  0%, 100% {
+    text-decoration-color: color-mix(in srgb, var(--portal-color, v.$campaign-portal-primary), white 55%);
+    text-shadow:
+      0 0 10px color-mix(in srgb, var(--portal-color, v.$campaign-portal-primary), white 85%),
+      0 0 22px color-mix(in srgb, var(--portal-color, v.$campaign-portal-primary), transparent 65%);
+  }
+  50% {
+    text-decoration-color: color-mix(in srgb, var(--portal-color, v.$campaign-portal-primary), white 90%);
+    text-shadow:
+      0 0 22px color-mix(in srgb, var(--portal-color, v.$campaign-portal-primary), white 88%),
+      0 0 48px color-mix(in srgb, var(--portal-color, v.$campaign-portal-primary), transparent 15%);
+  }
+}

@@ -1,0 +1,69 @@
+@use '../../../../styles/variables' as v;
+
+:host {
+  display: block;
+  width: 100%;
+}
+
+/* ── Destination type icon buttons ───────────────────────────── */
+.ndp-dest-btns {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  width: 100%;
+}
+
+.ndp-dest-btn {
+  flex: 1;
+  min-width: 56px;
+  max-width: 78px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 7px 4px 6px;
+  background: v.$campaign-portal-bg-medium;
+  border: 1px solid v.$campaign-portal-border-bold;
+  border-radius: 6px;
+  color: v.$campaign-portal-text-muted;
+  cursor: pointer;
+  transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+
+  span {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+
+  &:hover {
+    background: color-mix(in srgb, v.$campaign-portal-bg-medium 50%, v.$color-base-arcane-purple 50%);
+    border-color: v.$campaign-portal-border-strong-focus;
+    color: v.$campaign-portal-text-bright;
+  }
+
+  &.active {
+    background: color-mix(in srgb, v.$campaign-portal-bg-dark 30%, v.$color-base-arcane-purple 70%);
+    border-color: v.$campaign-portal-border-strong-focus;
+    color: v.$campaign-portal-text-bright;
+  }
+}
+
+.ndp-dest-icon {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+}
+
+/* ── Entity select row ───────────────────────────────────────── */
+.ndp-entity-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 8px;
+}
+
+.ndp-entity-dropdown {
+  flex: 1;
+}

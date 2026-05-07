@@ -1,6 +1,7 @@
 using CastLibrary.Logic.Commands.Library;
 using CastLibrary.Logic.Queries.Campaign;
 using CastLibrary.Logic.Queries.Cast;
+using CastLibrary.Logic.Queries.Faction;
 using CastLibrary.Logic.Queries.Library;
 using CastLibrary.Logic.Queries.Location;
 using CastLibrary.Logic.Queries.Sublocation;
@@ -19,7 +20,8 @@ public class DashboardController(
     IGetCampaignLibraryQueryHandler getCampaignLibraryQuery,
     IGetLocationLibraryQueryHandler getLocationLibraryQuery,
     IGetSublocationLibraryQueryHandler getSublocationLibraryQuery,
-    IGetCastLibraryQueryHandler getCastLibraryQuery, 
+    IGetCastLibraryQueryHandler getCastLibraryQuery,
+    IGetFactionLibraryQueryHandler getFactionLibraryQuery,
     IExportLibraryQueryHandler exportLibraryQuery,
     ICampaignWebMapper campaignMapper,
     IUserRetriever userRetriever,
@@ -35,7 +37,9 @@ public class DashboardController(
         var locations = await getLocationLibraryQuery.HandleAsync(userId);
         var sublocations = await getSublocationLibraryQuery.HandleAsync(userId);
         var casts = await getCastLibraryQuery.HandleAsync(userId);
-        var active = campaigns.FirstOrDefault(c => c.Status == Shared.Enums.CampaignStatus.Active);
+        var factions = await getFactionLibraryQuery.HandleAsync(userId);
+        var active = campaigns.FirstOrDefault(c => c.Status == Shared.Enums.CampaignStatus.Active)
+                  ?? campaigns.OrderByDescending(c => c.CreatedAt).FirstOrDefault();
 
         var response = new DashboardStatsResponse
         {
@@ -43,6 +47,7 @@ public class DashboardController(
             LocationCount = locations.Count,
             SublocationCount = sublocations.Count,
             CastCount = casts.Count,
+            FactionCount = factions.Count,
             ActiveCampaign = active is null ? null : campaignMapper.ToListResponse(active),
         };
 

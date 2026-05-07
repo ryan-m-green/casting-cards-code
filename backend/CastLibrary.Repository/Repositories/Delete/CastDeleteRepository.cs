@@ -20,6 +20,7 @@ namespace CastLibrary.Repository.Repositories.Delete
             logging.LogDbOperation(correlation.TraceId, spanId, "DELETE", "casts", @params);
 
             using var conn = sqlConnectionFactory.GetConnection();
+            await conn.ExecuteAsync("DELETE FROM campaign_cast_instances WHERE source_cast_id = @Id", @params);
             var rows = await conn.ExecuteAsync("DELETE FROM casts WHERE id = @Id", @params);
 
             logging.LogDbOperation(correlation.TraceId, spanId, "DELETE", "casts", @params, rows);

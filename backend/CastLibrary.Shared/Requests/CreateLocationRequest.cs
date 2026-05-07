@@ -13,4 +13,5 @@ public class CreateLocationRequest
     public string Vibe { get; set; } = string.Empty;
     public string Languages { get; set; } = string.Empty;
     public string Description { get; set; } = string.Empty;
+    public string DmNotes { get; set; } = string.Empty;
 }

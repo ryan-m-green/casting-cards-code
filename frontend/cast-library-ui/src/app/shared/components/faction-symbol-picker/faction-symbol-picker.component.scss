@@ -1,0 +1,174 @@
+@use '../../../../styles/variables' as v;
+
+// ── Host ─────────────────────────────────────────────────────────────────────
+:host {
+  display: block;
+  position: relative;
+}
+
+// ── Trigger button ────────────────────────────────────────────────────────────
+.fsp-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.fsp-caret {
+  transition: transform 0.2s ease;
+
+  &--open {
+    transform: rotate(180deg);
+  }
+}
+
+// ── Panel ─────────────────────────────────────────────────────────────────────
+.fsp-panel {
+  margin-top: 6px;
+  background: v.$campaign-portal-bg-dark;
+  border: 1px solid v.$campaign-btn-primary-border;
+  border-radius: 6px;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  animation: fspSlideDown 0.18s ease;
+  max-width: 404px;
+}
+
+@keyframes fspSlideDown {
+  from { opacity: 0; transform: translateY(-6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.fsp-panel-label {
+  font-family: v.$font-header;
+  font-size: 7px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(v.$location-blue, 0.85);
+}
+
+.fsp-empty {
+  font-family: v.$font-header;
+  font-size: 8px;
+  color: rgba(v.$location-blue, 0.85);
+  text-align: center;
+  padding: 8px 0;
+}
+
+// ── Faction card grid ─────────────────────────────────────────────────────────
+.fsp-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(64px, 1fr));
+  gap: 6px;
+}
+
+// ── Individual faction card ───────────────────────────────────────────────────
+.fsp-card-wrap {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 6px 4px;
+  border: 1px solid rgba(v.$location-blue, 0.20);
+  border-radius: 4px;
+  cursor: grab;
+  background: rgba(255, 255, 255, 0.92);
+  transition: border-color 0.15s, background 0.15s, transform 0.12s;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: none;
+
+  &:hover {
+    background: #fff;
+    border-color: rgba(v.$location-blue, 0.55);
+    transform: translateY(-2px);
+  }
+
+  &:active {
+    cursor: grabbing;
+    transform: scale(0.96);
+  }
+
+  &--assigned {
+    border-color: rgba(v.$location-blue, 0.85);
+    background: #fff;
+  }
+
+  &--no-symbol {
+    opacity: 0.5;
+    cursor: not-allowed;
+
+    &:hover {
+      transform: none;
+    }
+  }
+
+  &--disabled {
+    opacity: 0.35;
+    cursor: not-allowed;
+    pointer-events: none;
+
+    &:hover {
+      transform: none;
+      border-color: rgba(v.$location-blue, 0.20);
+      background: rgba(255, 255, 255, 0.92);
+    }
+  }
+}
+
+// ── Symbol preview ────────────────────────────────────────────────────────────
+.fsp-symbol-preview {
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
+}
+
+.fsp-symbol-placeholder {
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: v.$color-text-muted;
+}
+
+// ── Card name label ───────────────────────────────────────────────────────────
+.fsp-card-name {
+  font-family: v.$font-header;
+  font-size: 7px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: rgba(v.$location-blue, 0.85);
+  text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 64px;
+}
+
+// ── Checkmark badge ───────────────────────────────────────────────────────────
+.fsp-check {
+  position: absolute;
+  top: 3px;
+  right: 3px;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: v.$color-open-text;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #0a1018;
+  pointer-events: none;
+}
+

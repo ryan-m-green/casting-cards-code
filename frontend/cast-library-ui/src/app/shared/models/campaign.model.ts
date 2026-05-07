@@ -3,6 +3,7 @@ import { CampaignCastInstance } from './cast.model';
 import { CampaignSecret } from './secret.model';
 import { CampaignSublocationInstance } from './sublocation.model';
 import { TimeOfDay } from './time-of-day.model';
+import { CampaignFactionInstance } from './faction.model';
 
 export interface CampaignCastRelationship {
   id: string;
@@ -57,29 +58,48 @@ export interface CampaignDetail {
   relationships: CampaignCastRelationship[];
   inviteCode: CampaignInviteCode | null;
   timeOfDay: TimeOfDay | null;
-}
-
-export interface CampaignNote {
-  id: string;
-  campaignId: string;
-  entityType: 'Cast' | 'Location' | 'Sublocation';
-  instanceId: string;
-  content: string;
-  createdByDisplayName: string;
-  createdAt: string;
-  updatedAt: string;
+  factions: CampaignFactionInstance[];
 }
 
 export interface CampaignCastPlayerNotes {
   id: string;
   campaignId: string;
   castInstanceId: string;
-  want: string;
+  notes: string;
   connections: string[];
   alignment: string;
   perception: number;
   rating: number;
   updatedAt: string;
+}
+
+export interface CampaignLocationPlayerNotes {
+  id: string;
+  campaignId: string;
+  locationInstanceId: string;
+  notes: string;
+}
+
+export interface CampaignSublocationPlayerNotes {
+  id: string;
+  campaignId: string;
+  sublocationInstanceId: string;
+  notes: string;
+}
+
+export interface CampaignFactionPlayerNotes {
+  id: string;
+  campaignId: string;
+  factionInstanceId: string;
+  notes: string;
+  influence: number | null;
+  perception: number | null;
+}
+
+export interface CampaignPlayerNotes {
+  id: string;
+  campaignId: string;
+  notes: string;
 }
 
 export interface LocationFaction {
@@ -89,15 +109,6 @@ export interface LocationFaction {
   influence: number;
   isHidden: boolean;
   sortOrder: number;
-}
-
-export interface LocationFactionRelationship {
-  id: string;
-  factionAId: string;
-  factionBId: string;
-  relationshipType: string;
-  strength: number;
-  notes: string;
 }
 
 export interface LocationNpcRole {
@@ -114,7 +125,6 @@ export interface LocationPoliticalNotes {
   locationInstanceId: string;
   generalNotes: string;
   factions: LocationFaction[];
-  relationships: LocationFactionRelationship[];
   npcRoles: LocationNpcRole[];
   updatedAt: string;
 }

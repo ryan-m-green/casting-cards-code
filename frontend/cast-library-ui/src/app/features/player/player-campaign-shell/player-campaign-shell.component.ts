@@ -1,11 +1,12 @@
 import { Component, OnInit, OnDestroy, signal, computed, inject, effect, untracked } from '@angular/core';
-import { RouterOutlet, ActivatedRoute, Router } from '@angular/router';
+import { RouterOutlet, RouterLink, ActivatedRoute, Router, NavigationEnd } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
-import { catchError } from 'rxjs/operators';
+import { catchError, filter } from 'rxjs/operators';
 import { EMPTY } from 'rxjs';
 import { environment } from '../../../../environments/environment';
 import { CampaignDetail } from '../../../shared/models/campaign.model';
+import { CampaignFactionInstance } from '../../../shared/models/faction.model';
 import { CampaignHubService } from '../../../core/hub/campaign-hub.service';
 import { AuthService } from '../../../core/auth/auth.service';
 import { PortalTransitionService } from '../../../core/portal-transition.service';
@@ -17,13 +18,15 @@ import {
 } from '../../../shared/components/card-reveal-overlay/card-reveal-overlay.component';
 import { WhisperCardComponent } from '../../../shared/components/whisper-card/whisper-card.component';
 import { CurrencyCardComponent } from '../../../shared/components/currency-card/currency-card.component';
+import { VoidTitleSegmentsComponent } from '../../../shared/components/void-title-segments/void-title-segments.component';
 import { CurrencyDisplayComponent, CurrencyLine } from '../../../shared/components/currency-display/currency-display.component';
-import { ShellBreadcrumbsComponent } from '../../../shared/components/shell-breadcrumbs/shell-breadcrumbs.component';
+import { VoidNavDrawerComponent } from '../../../shared/components/void-nav-drawer/void-nav-drawer.component';
+import { QuicknotesComponent } from '../../../shared/components/quicknotes/quicknotes.component';
 
 @Component({
   selector: 'app-player-campaign-shell',
   standalone: true,
-  imports: [RouterOutlet, CommonModule, TimeOfDayBarComponent, CardRevealOverlayComponent, WhisperCardComponent, CurrencyCardComponent, CurrencyDisplayComponent, ShellBreadcrumbsComponent],
+  imports: [RouterOutlet, CommonModule, TimeOfDayBarComponent, CardRevealOverlayComponent, WhisperCardComponent, CurrencyCardComponent, CurrencyDisplayComponent, VoidNavDrawerComponent, VoidTitleSegmentsComponent, QuicknotesComponent],
   templateUrl: './player-campaign-shell.component.html',
   styleUrl: './player-campaign-shell.component.scss',
 })
@@ -65,8 +68,85 @@ export class PlayerCampaignShellComponent implements OnInit, OnDestroy {
         .get<CampaignDetail>(`${environment.apiUrl}/api/campaigns/${this.campaignId()}/player`)
         .subscribe(c => {
           this.campaign.set(c);
+          this.shellSvc.setCampaign(c);
           const data = this.buildOverlayFromVisibilityEvent(c, event.instanceId, event.cardType);
           if (data) this.overlayData.set(data);
+        });
+    });
+
+    // Re-fetch campaign when a card is hidden so the nav drawer removes the node
+    effect(() => {
+      const event = this.hub.cardVisibilityChanged();
+      if (!event || event.campaignId !== this.campaignId()) return;
+      if (event.isVisible) return;
+
+      this.http
+        .get<CampaignDetail>(`${environment.apiUrl}/api/campaigns/${this.campaignId()}/player`)
+        .subscribe(c => {
+          this.campaign.set(c);
+          this.shellSvc.setCampaign(c);
+        });
+    });
+
+    // Show overlay when a faction is unlocked; remove it when locked
+    effect(() => {
+      const event = this.hub.cardVisibilityChanged();
+      if (!event || event.cardType !== 'faction' || event.campaignId !== this.campaignId()) return;
+
+      if (event.isVisible) {
+        this.http
+          .get<CampaignFactionInstance[]>(`${environment.apiUrl}/api/campaigns/${this.campaignId()}/factions/player`)
+          .subscribe(factions => {
+            const faction = factions.find(f => f.factionInstanceId === event.instanceId);
+            if (faction) {
+              this.overlayData.set({
+                cardType:   'faction',
+                name:       faction.name,
+                descriptor: faction.type ?? '',
+                symbolPath: faction.symbolPath ?? '',
+              });
+            }
+          });
+      }
+    });
+
+    // Re-fetch campaign when a faction is removed (clears faction symbols from sublocation/cast cards)
+    effect(() => {
+      const event = this.hub.factionRemoved();
+      if (!event || event.campaignId !== this.campaignId()) return;
+
+      this.http
+        .get<CampaignDetail>(`${environment.apiUrl}/api/campaigns/${this.campaignId()}/player`)
+        .subscribe(c => {
+          this.campaign.set(c);
+          this.shellSvc.setCampaign(c);
+        });
+    });
+
+    // Re-fetch campaign when a faction is locked (clears faction symbols from sublocation/cast cards)
+    effect(() => {
+      const event = this.hub.factionLocked();
+      if (!event || event.campaignId !== this.campaignId()) return;
+
+      this.http
+        .get<CampaignDetail>(`${environment.apiUrl}/api/campaigns/${this.campaignId()}/player`)
+        .subscribe(c => {
+          this.campaign.set(c);
+          this.shellSvc.setCampaign(c);
+        });
+    });
+
+    // Re-fetch campaign when a bulk card visibility change occurs (e.g. unlock all casts)
+    effect(() => {
+      const event = this.hub.bulkCardVisibilityChanged();
+      if (!event || event.campaignId !== this.campaignId()) return;
+      if (!event.isVisible) return;
+
+      this.http
+        .get<CampaignDetail>(`${environment.apiUrl}/api/campaigns/${this.campaignId()}/player`)
+        .subscribe(c => {
+          this.campaign.set(c);
+          this.shellSvc.setCampaign(c);
         });
     });
 
@@ -130,6 +210,24 @@ export class PlayerCampaignShellComponent implements OnInit, OnDestroy {
       this.goldCardNote.set(mine.note);
       this.showGoldCard.set(true);
     });
+
+    // Update cast's sublocation in campaign when a cast travels — keeps the nav drawer in sync
+    effect(() => {
+      const event = this.hub.castTravelled();
+      if (!event || event.campaignId !== this.campaignId()) return;
+
+      const update = (c: CampaignDetail): CampaignDetail => ({
+        ...c,
+        casts: c.casts.map(ca =>
+          ca.instanceId === event.castInstanceId
+            ? { ...ca, sublocationInstanceId: event.toSublocationInstanceId, locationInstanceId: event.toLocationInstanceId }
+            : ca
+        ),
+      });
+
+      this.campaign.update(c => c ? update(c) : c);
+      this.shellSvc.setCampaign(update(untracked(() => this.shellSvc.campaign())!));
+    });
   }
 
   ngOnInit() {
@@ -141,6 +239,12 @@ export class PlayerCampaignShellComponent implements OnInit, OnDestroy {
 
     const id = this.route.snapshot.paramMap.get('id')!;
     this.campaignId.set(id);
+
+    this.loadQueueCount(id);
+
+    this.router.events.pipe(
+      filter(e => e instanceof NavigationEnd)
+    ).subscribe(() => this.loadQueueCount(this.campaignId()));
 
     const token = this.auth.getToken();
     const connectAndJoin = token && !this.hub.isConnected()
@@ -162,7 +266,10 @@ export class PlayerCampaignShellComponent implements OnInit, OnDestroy {
 
     this.http
       .get<CampaignDetail>(`${environment.apiUrl}/api/campaigns/${id}/player`)
-      .subscribe(c => this.campaign.set(c));
+      .subscribe(c => {
+        this.campaign.set(c);
+        this.shellSvc.setCampaign(c);
+      });
 
     this.http
       .get<{ currencyBalances: { currency: string; amount: number }[] }>(
@@ -180,6 +287,13 @@ export class PlayerCampaignShellComponent implements OnInit, OnDestroy {
     this.hub.leaveCampaign(this.campaignId()).catch(console.warn);
   }
 
+  private loadQueueCount(id: string) {
+    this.http
+      .get<{ id: string }[]>(`${environment.apiUrl}/api/campaigns/${id}/quicknote-queue`)
+      .pipe(catchError(() => EMPTY))
+      .subscribe(items => this.shellSvc.quicknoteQueueCount.set(items.length));
+  }
+
   dismissOverlay() {
     this.overlayData.set(null);
   }
@@ -195,7 +309,7 @@ export class PlayerCampaignShellComponent implements OnInit, OnDestroy {
   navigateToSecrets() {
     this.wizardSecretContent.set(null);
     this.transition.quickCover();
-    this.router.navigate(['/player/campaign', this.campaignId(), 'my-character'], { queryParams: { tab: 'secrets' } })
+    this.router.navigate(['/player/campaign', this.campaignId(), 'the-party'], { queryParams: { tab: 'secrets' } })
       .then(() => this.transition.hide());
   }
 
@@ -208,7 +322,11 @@ export class PlayerCampaignShellComponent implements OnInit, OnDestroy {
   }
 
   goToMyCharacter() {
-    this.router.navigate(['/player/campaign', this.campaignId(), 'my-character']);
+    this.router.navigate(['/player/campaign', this.campaignId(), 'the-party']);
+  }
+
+  goToCampaignInsight() {
+    this.router.navigate(['/player/campaign', this.campaignId(), 'campaign-insight']);
   }
 
   exitPortal() {
@@ -224,7 +342,7 @@ export class PlayerCampaignShellComponent implements OnInit, OnDestroy {
   private buildOverlayFromVisibilityEvent(
     campaign: CampaignDetail,
     instanceId: string,
-    cardType: 'location' | 'sublocation' | 'cast',
+    cardType: 'location' | 'sublocation' | 'cast' | 'faction',
   ): CardRevealOverlayData | null {
     if (cardType === 'location') {
       const location = campaign.locations.find((c: any) => c.instanceId === instanceId);

@@ -1,0 +1,38 @@
+<div class="pc scroll-body">
+  <app-journal-watermark pageType="faction" />
+  <app-journal-title title="Factions Library" />
+  <div class="wr wr-page-header">
+    <input class="search-bar search-bar--header" type="text" placeholder="Name · Type…"
+           [value]="searchTerm()" (input)="searchTerm.set($any($event.target).value)" />
+    <button class="btn-primary wr-ml-auto" routerLink="/dm/faction/new">+ Create Faction</button>
+  </div>
+
+  <div class="card-grid">
+    @for (faction of filtered(); track faction.id) {
+      <app-faction-card
+        [faction]="faction"
+        [tilt]="tiltFor(faction.id)"
+        (editClick)="edit(faction.id)"
+        (deleteClick)="confirmDelete(faction.id)">
+      </app-faction-card>
+    }
+    @empty {
+      <p class="wbd empty-state-pad">No factions found. Create your first faction to get started.</p>
+    }
+  </div>
+</div>
+
+@if (pendingDeleteId()) {
+  <div class="delete-overlay" (click)="cancelDelete()">
+    <div class="delete-panel" (click)="$event.stopPropagation()">
+      <div class="delete-panel-title">Delete Faction?</div>
+      <p class="delete-panel-message">
+        This will permanently delete this faction and its image, and remove it from any campaigns. This cannot be undone.
+      </p>
+      <div class="delete-btn-row">
+        <button class="btn-modal-cancel" (click)="cancelDelete()">Cancel</button>
+        <button class="btn-modal-delete" (click)="executeDelete()">Delete</button>
+      </div>
+    </div>
+  </div>
+}

@@ -32,9 +32,9 @@ public class DeleteLocationCommandHandler(
 
 public class DeleteLocationCommand
 {
-    public DeleteLocationCommand(Guid LocationId, Guid dmUserId)
+    public DeleteLocationCommand(Guid locationId, Guid dmUserId)
     {
-        LocationId = LocationId;
+        LocationId = locationId;
         DmUserId = dmUserId;
     }
 

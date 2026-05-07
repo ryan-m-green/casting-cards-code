@@ -1,0 +1,7 @@
+@for (seg of segments(); track $index) {
+  @if (seg.route) {
+    <a [class]="'void-title__link' + (seg.cssClass ? ' ' + seg.cssClass : '')" [routerLink]="seg.route">{{ seg.text }}</a>
+  } @else {
+    <span [class]="seg.cssClass ?? ''">{{ seg.text }}</span>
+  }
+}

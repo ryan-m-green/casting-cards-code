@@ -1,13 +1,14 @@
 <div class="pc scroll-body">
-  <app-dm-nav />
+  <app-journal-watermark pageType="sublocation" />
+  <app-journal-title title="Sublocation Library" />
   <div class="wr wr-page-header">
-    <button class="btn-ghost" routerLink="/dm/dashboard">← Back</button>
-    <h2 class="page-title page-title-row">Sublocation Library</h2>
-    <button class="btn-primary" routerLink="/dm/sublocations/new">+ Create Sublocation</button>
+    <input class="search-bar search-bar--header" type="text" placeholder="Name · Description…"
+           [value]="searchTerm()" (input)="searchTerm.set($any($event.target).value)" />
+    <button class="btn-primary wr-ml-auto" routerLink="/dm/sublocations/new">+ Create Sublocation</button>
   </div>
 
   <div class="card-grid">
-    @for (subloc of sublocations(); track subloc.id) {
+    @for (subloc of filtered(); track subloc.id) {
       <app-sublocation-card
         [sublocation]="subloc"
         [tilt]="tiltFor(subloc.id)"
@@ -26,7 +27,7 @@
     <div class="delete-panel" (click)="$event.stopPropagation()">
       <div class="delete-panel-title">Delete Sublocation?</div>
       <p class="delete-panel-message">
-        This will permanently delete this sublocation and its portrait. This cannot be undone.
+        This will permanently delete this sublocation and its portrait, and remove it from any campaigns. This cannot be undone.
       </p>
       <div class="delete-btn-row">
         <button class="btn-modal-cancel" (click)="cancelDelete()">Cancel</button>

@@ -22,7 +22,7 @@ public class UpsertCastPlayerNotesCommandHandler(
             Id             = existing?.Id ?? Guid.NewGuid(),
             CampaignId     = command.CampaignId,
             CastInstanceId = command.CastInstanceId,
-            Want           = command.Request.Want,
+            Notes          = command.Request.Notes,
             Connections    = command.Request.Connections,
             Alignment      = command.Request.Alignment,
             Perception     = command.Request.Perception,

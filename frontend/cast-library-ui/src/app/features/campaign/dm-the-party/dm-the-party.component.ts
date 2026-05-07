@@ -33,7 +33,7 @@ type Currency = 'cp' | 'sp' | 'ep' | 'gp' | 'pp';
 @Component({
   selector: 'app-dm-the-party',
   standalone: true,
-  imports: [CommonModule, FormsModule, DatePipe, CardFlipComponent, CurrencyDisplayComponent, CastingCardPlayerComponent, CastCardComponent],
+  imports: [CommonModule, FormsModule, DatePipe, CastingCardPlayerComponent, CastCardComponent],
   templateUrl: './dm-the-party.component.html',
   styleUrl: './dm-the-party.component.scss',
 })
@@ -125,16 +125,14 @@ export class DmThePartyComponent implements OnInit {
 
   companionTiltFor(instanceId: string): number {
     if (!this.companionTiltMap.has(instanceId)) {
-      const magnitude = 2;
-      this.companionTiltMap.set(instanceId, Math.random() < 0.5 ? -magnitude : magnitude);
+      this.companionTiltMap.set(instanceId, parseFloat((Math.random() * 4 - 2).toFixed(2)));
     }
     return this.companionTiltMap.get(instanceId)!;
   }
 
   playerCardTiltFor(id: string): number {
     if (!this.playerCardTiltMap.has(id)) {
-      const magnitude = 2;
-      this.playerCardTiltMap.set(id, Math.random() < 0.5 ? -magnitude : magnitude);
+      this.playerCardTiltMap.set(id, parseFloat((Math.random() * 4 - 2).toFixed(2)));
     }
     return this.playerCardTiltMap.get(id)!;
   }
@@ -172,10 +170,7 @@ export class DmThePartyComponent implements OnInit {
   ngOnInit() {
     const id = this.route.snapshot.paramMap.get('id')!;
     this.campaignId.set(id);
-    this.shellSvc.setTitle('The Party');
-    this.shellSvc.setCrumbs([
-      { label: '← Locations', action: () => this.goBack() },
-    ]);
+    this.shellSvc.setTitleContext({ pageType: 'gm-party', campaignId: id, baseRoute: '/campaign', location: null }, '56px');
     this.http.get<CampaignDetail>(`${environment.apiUrl}/api/campaigns/${id}`)
       .subscribe(c => this.campaign.set(c));
     this.loadCards(id);
@@ -198,6 +193,12 @@ export class DmThePartyComponent implements OnInit {
   }
 
   // ── Gold ──────────────────────────────────────────────────────────────────────
+  onGoldAmountChange(value: string): void {
+    const stripped = value.replace(/[^0-9]/g, '');
+    const num = parseInt(stripped, 10);
+    this.goldAmount.set(isNaN(num) ? 0 : num);
+  }
+
   openGoldModal(card: PlayerCardWithDetails | null) {
     this.goldModalTarget.set(card);
     this.goldAmount.set(0);

@@ -3,6 +3,17 @@
      [class.sub-card--no-flip]="!flippable"
      [style.transform]="tiltTransform"
      (click)="toggleFlip($event)">
+  @if (isPrimary || canSetPrimary) {
+    <img
+      class="sub-card__crown"
+      [class.sub-card__crown--active]="isPrimary"
+      [class.sub-card__crown--inactive]="canSetPrimary && !isPrimary && !primaryLocked"
+      [class.sub-card__crown--locked]="canSetPrimary && !isPrimary && primaryLocked"
+      src="crown_gems.svg"
+      alt="Primary"
+      (click)="onCrownClick($event)"
+    />
+  }
   <div class="sub-card__inner">
 
     <!-- ── BACK FACE ── -->
@@ -45,8 +56,8 @@
 
           @if (editable) {
             <div class="sub-back-actions">
-              <button class="sub-btn sub-btn--gold" (click)="onEditClick($event)">✦ Edit</button>
               <button class="sub-btn sub-btn--red" (click)="onDeleteClick($event)">✦ Delete</button>
+              <button class="sub-btn sub-btn--gold" (click)="onEditClick($event)">✦ Edit</button>
             </div>
           }
         </div>
@@ -57,6 +68,10 @@
     <div class="sub-card__face sub-card__face--front">
       <div class="sub-frame">
         <div class="sub-inner">
+
+          @if (symbolPath) {
+            <img class="sub-faction-symbol" [src]="symbolPath" alt="Faction symbol" />
+          }
 
           <div class="sub-corner sub-corner--tl">
             <svg viewBox="0 0 20 20" fill="none" width="12" height="12">

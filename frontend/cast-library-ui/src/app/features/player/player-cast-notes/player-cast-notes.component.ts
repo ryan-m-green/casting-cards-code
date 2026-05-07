@@ -1,14 +1,16 @@
 import {
   Component, Input, OnInit, OnChanges, OnDestroy, SimpleChanges,
-  signal, computed, inject, ViewChild, ElementRef,
+  signal, computed, inject, ViewChild, ElementRef, Injector, effect,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
+import { catchError, of } from 'rxjs';
 import { environment } from '../../../../environments/environment';
 import { CampaignCastInstance } from '../../../shared/models/cast.model';
 import { CampaignLocationInstance } from '../../../shared/models/location.model';
 import { CampaignSecret } from '../../../shared/models/secret.model';
 import { CampaignCastPlayerNotes } from '../../../shared/models/campaign.model';
+import { CampaignHubService } from '../../../core/hub/campaign-hub.service';
 
 const ALIGNMENTS: string[][] = [
   ['Lawful Good',    'Neutral Good',  'Chaotic Good'   ],
@@ -50,7 +52,12 @@ export class PlayerCastNotesComponent implements OnInit, OnChanges, OnDestroy {
   @Input() allLocations: CampaignLocationInstance[] = [];
   @Input() castSecrets: CampaignSecret[] = [];
 
+  private allCasts$    = signal<CampaignCastInstance[]>([]);
+  private allLocations$ = signal<CampaignLocationInstance[]>([]);
+
   private http = inject(HttpClient);
+  private hub      = inject(CampaignHubService);
+  private injector = inject(Injector);
 
   @ViewChild('wantTextarea') private wantRef?: ElementRef<HTMLTextAreaElement>;
 
@@ -60,7 +67,7 @@ export class PlayerCastNotesComponent implements OnInit, OnChanges, OnDestroy {
     id: '',
     campaignId: '',
     castInstanceId: '',
-    want: '',
+    notes: '',
     connections: [],
     alignment: '',
     perception: 0,
@@ -81,12 +88,12 @@ export class PlayerCastNotesComponent implements OnInit, OnChanges, OnDestroy {
   };
 
   connectedCasts = computed(() =>
-    this.allCasts.filter(c => this.notes().connections.includes(c.instanceId))
+    this.allCasts$().filter(c => this.notes().connections.includes(c.instanceId))
   );
 
   locationsWithCasts = computed((): LocationGroup[] => {
     const connected = new Set(this.notes().connections);
-    const available = this.allCasts.filter(
+    const available = this.allCasts$().filter(
       c => c.instanceId !== this.castInstance?.instanceId && !connected.has(c.instanceId)
     );
 
@@ -113,7 +120,7 @@ export class PlayerCastNotesComponent implements OnInit, OnChanges, OnDestroy {
       locationId,
       locationName: locationId === 'none'
         ? 'Unknown'
-        : (this.allLocations.find(c => c.instanceId === locationId)?.name ?? 'Unknown'),
+        : (this.allLocations$().find(c => c.instanceId === locationId)?.name ?? 'Unknown'),
       casts: byLocation.get(locationId) ?? [],
     }));
   });
@@ -123,6 +130,12 @@ export class PlayerCastNotesComponent implements OnInit, OnChanges, OnDestroy {
   ngOnInit() {
     this.load();
     document.addEventListener('click', this.outsideClickHandler);
+    effect(() => {
+      const e = this.hub.noteUpdated();
+      if (e?.entityType === 'cast' && e.instanceId === this.castInstance?.instanceId) {
+        this.load();
+      }
+    }, { injector: this.injector });
   }
 
   ngOnDestroy() {
@@ -130,19 +143,27 @@ export class PlayerCastNotesComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   ngOnChanges(changes: SimpleChanges) {
+    if (changes['allCasts'])    this.allCasts$.set(this.allCasts);
+    if (changes['allLocations']) this.allLocations$.set(this.allLocations);
     if (changes['castInstance'] && !changes['castInstance'].firstChange) {
       this.load();
     }
   }
 
   private load() {
+    const defaultNotes: CampaignCastPlayerNotes = {
+      id: '', campaignId: this.campaignId, castInstanceId: this.castInstance.instanceId,
+      notes: '', connections: [], alignment: '', perception: 0, rating: 0, updatedAt: '',
+    };
     this.http.get<CampaignCastPlayerNotes>(
       `${environment.apiUrl}/api/campaigns/${this.campaignId}/cast-player-notes/${this.castInstance.instanceId}`
+    ).pipe(
+      catchError(() => of(defaultNotes))
     ).subscribe(n => {
       this.notes.set(n);
-      this.wantText = n.want;
+      this.wantText = n.notes;
       setTimeout(() => {
-        if (this.wantRef) this.wantRef.nativeElement.value = n.want;
+        if (this.wantRef) this.wantRef.nativeElement.value = n.notes;
       }, 0);
     });
   }
@@ -153,7 +174,7 @@ export class PlayerCastNotesComponent implements OnInit, OnChanges, OnDestroy {
     this.http.put<CampaignCastPlayerNotes>(
       `${environment.apiUrl}/api/campaigns/${this.campaignId}/cast-player-notes/${this.castInstance.instanceId}`,
       {
-        want:        this.wantText,
+        notes:       this.wantText,
         connections: n.connections,
         alignment:   n.alignment,
         perception:  n.perception,

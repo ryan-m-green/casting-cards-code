@@ -1,0 +1,163 @@
+@if (isLoggedIn()) {
+  <!-- Spine trigger — hamburger when closed, X when open -->
+  <button
+    class="jnd-bookmark"
+    (click)="isOpen() ? close() : open()"
+    [class.is-open]="isOpen()"
+    [attr.aria-label]="isOpen() ? 'Close navigation' : 'Open navigation'"
+  >
+    <span class="jnd-hamburger" [class.is-open]="isOpen()">
+      <span></span>
+      <span></span>
+      <span></span>
+    </span>
+  </button>
+}
+
+@if (isOpen()) {
+  <!-- Backdrop (clipped to journal bounds) -->
+  <div class="jnd-backdrop" [class.is-closing]="isClosing()" (click)="close()"></div>
+
+  <!-- Drawer — parchment page that flips out from the spine -->
+  <div class="jnd-drawer" [class.is-closing]="isClosing()" role="dialog" aria-label="Site navigation">
+    <div class="jnd-page-inner">
+
+      <!-- Header -->
+      <div class="jnd-header">
+        <div class="jnd-header-rule"></div>
+        <span class="jnd-header-title">✦ Contents ✦</span>
+        <div class="jnd-header-rule"></div>
+      </div>
+
+      <!-- Scrollable nav body -->
+      <div class="jnd-body">
+
+        @if (isDm()) {
+          <!-- Dashboard — standalone link -->
+          <div class="jnd-section jnd-section--standalone">
+            <button class="jnd-item jnd-item--dashboard" [class.is-active]="isActive('/dm/dashboard')" (click)="navigate('/dm/dashboard')">
+              <span class="jnd-item-marker">◈</span>
+              <span class="jnd-item-label">Dashboard</span>
+            </button>
+          </div>
+
+          <!-- DM: Library -->
+          <div class="jnd-section">
+            <span class="jnd-section-label">Library</span>
+            <button class="jnd-item" [class.is-active]="isActive('/dm/campaigns')" (click)="navigate('/dm/campaigns')">
+              <span class="jnd-item-marker">◈</span>
+              <span class="jnd-item-label">Campaign Library</span>
+            </button>
+            <button class="jnd-item" [class.is-active]="isActive('/dm/cast')" (click)="navigate('/dm/cast')">
+              <span class="jnd-item-marker">◈</span>
+              <span class="jnd-item-label">Cast Library</span>
+            </button>
+            <button class="jnd-item" [class.is-active]="isActive('/dm/sublocations')" (click)="navigate('/dm/sublocations')">
+              <span class="jnd-item-marker">◈</span>
+              <span class="jnd-item-label">Sublocation Library</span>
+            </button>
+            <button class="jnd-item" [class.is-active]="isActive('/dm/locations')" (click)="navigate('/dm/locations')">
+              <span class="jnd-item-marker">◈</span>
+              <span class="jnd-item-label">Location Library</span>
+            </button>
+            <button class="jnd-item" [class.is-active]="isActive('/dm/faction')" (click)="navigate('/dm/faction')">
+              <span class="jnd-item-marker">◈</span>
+              <span class="jnd-item-label">Faction Library</span>
+            </button>
+          </div>
+        }
+
+        @if (!isDm()) {
+          <!-- Player: Library -->
+          <div class="jnd-section">
+            <span class="jnd-section-label">Library</span>
+            <button class="jnd-item" [class.is-active]="isActive('/player/campaigns')" (click)="navigate('/player/campaigns')">
+              <span class="jnd-item-marker">◈</span>
+              <span class="jnd-item-label">Campaign Library</span>
+            </button>
+          </div>
+        }
+
+        @if (isAdmin()) {
+          <!-- Admin -->
+          <div class="jnd-section">
+            <span class="jnd-section-label">Admin</span>
+            <button class="jnd-item" [class.is-active]="isActive('/dm/player-invites')" (click)="navigate('/dm/player-invites')">
+              <span class="jnd-item-marker">◈</span>
+              <span class="jnd-item-label">Player Invites</span>
+            </button>
+            <button class="jnd-item" [class.is-active]="isActive('/admin/invite-code')" (click)="navigate('/admin/invite-code')">
+              <span class="jnd-item-marker">◈</span>
+              <span class="jnd-item-label">Invite Codes</span>
+            </button>
+            <button class="jnd-item" [class.is-active]="isActive('/admin/user-management')" (click)="navigate('/admin/user-management')">
+              <span class="jnd-item-marker">◈</span>
+              <span class="jnd-item-label">User Management</span>
+            </button>
+            <button class="jnd-item" [class.is-active]="isActive('/admin/bug-reports')" (click)="navigate('/admin/bug-reports')">
+              <span class="jnd-item-marker">◈</span>
+              <span class="jnd-item-label">Bug Reports</span>
+            </button>
+          </div>
+        }
+
+        <!-- Info (always visible) -->
+        <div class="jnd-section">
+          <span class="jnd-section-label">Info</span>
+          <button class="jnd-item" [class.is-active]="isActiveExact('/about')" (click)="navigate('/about')">
+            <span class="jnd-item-marker">◈</span>
+            <span class="jnd-item-label">About</span>
+          </button>
+          <button class="jnd-item" [class.is-active]="isActiveExact('/subscribe')" (click)="navigate('/subscribe')">
+            <span class="jnd-item-marker">◈</span>
+            <span class="jnd-item-label">Subscribe</span>
+          </button>
+          <button class="jnd-item" [class.is-active]="isActiveExact('/legal')" (click)="navigate('/legal')">
+            <span class="jnd-item-marker">◈</span>
+            <span class="jnd-item-label">Legal</span>
+          </button>
+        </div>
+
+        @if (isDm()) {
+          <!-- DM: Account -->
+          <div class="jnd-section">
+            <span class="jnd-section-label">Account</span>
+            <button class="jnd-item" [class.is-active]="isActive('/dm/change-password')" (click)="navigate('/dm/change-password')">
+              <span class="jnd-item-marker">◈</span>
+              <span class="jnd-item-label">Change Password</span>
+            </button>
+            <button class="jnd-item" [class.is-active]="isActive('/dm/bug-report')" (click)="navigate('/dm/bug-report')">
+              <span class="jnd-item-marker">◈</span>
+              <span class="jnd-item-label">Report A Bug</span>
+            </button>
+          </div>
+        }
+
+        @if (!isDm()) {
+          <!-- Player: Account -->
+          <div class="jnd-section">
+            <span class="jnd-section-label">Account</span>
+            <button class="jnd-item" [class.is-active]="isActive('/player/bug-report')" (click)="navigate('/player/bug-report')">
+              <span class="jnd-item-marker">◈</span>
+              <span class="jnd-item-label">Report a Glitch</span>
+            </button>
+            <button class="jnd-item" [class.is-active]="isActiveExact('/forgot-password')" (click)="navigate('/forgot-password')">
+              <span class="jnd-item-marker">◈</span>
+              <span class="jnd-item-label">Forgot Password</span>
+            </button>
+          </div>
+        }
+
+      </div>
+
+      <!-- Footer -->
+      <div class="jnd-footer">
+        <button class="jnd-signout-btn" (click)="logout()">
+          <span class="jnd-signout-icon">↩</span>
+          <span>Sign Out</span>
+        </button>
+      </div>
+
+    </div>
+  </div>
+}

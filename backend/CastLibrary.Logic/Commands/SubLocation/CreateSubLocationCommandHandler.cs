@@ -17,7 +17,7 @@ public class CreateSublocationCommandHandler(ISublocationInsertRepository subloc
             Id = Guid.NewGuid(),
             DmUserId = command.DmUserId,
             LocationId = command.Request.LocationId,
-            Name = command.Request.Name, Description = command.Request.Description,
+            Name = command.Request.Name, Description = command.Request.Description, DmNotes = command.Request.DmNotes,
             CreatedAt = DateTime.UtcNow,
             ShopItems = command.Request.ShopItems.Select((item, i) => new ShopItemDomain
             {

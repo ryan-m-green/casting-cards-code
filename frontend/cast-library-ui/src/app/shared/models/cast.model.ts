@@ -41,4 +41,5 @@ export interface CampaignCastInstance extends Cast {
   isVisibleToPlayers: boolean;
   keywords: string[];
   dmNotes: string;
+  factionSymbols?: { factionInstanceId: string; symbolPath: string }[];
 }

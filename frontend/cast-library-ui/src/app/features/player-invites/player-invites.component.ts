@@ -5,12 +5,12 @@ import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../environments/environment';
 import { CampaignPlayer } from '../../shared/models/campaign.model';
-import { DmNavComponent } from '../../shared/components/dm-nav/dm-nav.component';
+import { JournalTitleComponent } from '../../shared/components/journal-title/journal-title.component';
 
 @Component({
   selector: 'app-player-invites',
   standalone: true,
-  imports: [CommonModule, RouterLink, ReactiveFormsModule, DmNavComponent],
+  imports: [CommonModule, RouterLink, ReactiveFormsModule, JournalTitleComponent],
   templateUrl: './player-invites.component.html',
   styleUrl: './player-invites.component.scss'
 })

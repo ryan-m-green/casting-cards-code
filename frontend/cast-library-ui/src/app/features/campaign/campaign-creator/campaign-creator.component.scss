@@ -822,3 +822,26 @@
 
   &:hover { background: v.$color-ext-153; }
 }
+
+// ─── Campaign danger zone (edit mode only) ────────────────────────────────────
+.campaign-danger-zone {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  padding: 16px 0 8px;
+}
+
+.campaign-primary-btn--set-active,
+.campaign-primary-btn--delete {
+  background: #c0392b;
+  border-color: #a93226;
+  color: #fff;
+
+  &:hover:not(:disabled) {
+    background: #a93226;
+    border-color: #922b21;
+    color: #fff;
+  }
+
+  &:disabled { opacity: 0.6; cursor: default; }
+}

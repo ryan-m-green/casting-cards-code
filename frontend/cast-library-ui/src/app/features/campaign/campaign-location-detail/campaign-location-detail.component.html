@@ -42,7 +42,8 @@
             <input class="detail-input"
                    [ngModel]="editName()"
                    (ngModelChange)="editName.set($event)"
-                   placeholder="Location title…" />
+                   placeholder="Location title…"
+                   autocomplete="off" />
           } @else {
             <span class="detail-value">{{ c.name }}</span>
           }
@@ -57,7 +58,8 @@
                       [ngModel]="editDescription()"
                       (ngModelChange)="editDescription.set($event)"
                       rows="3"
-                      placeholder="Description…"></textarea>
+                      placeholder="Description…"
+                      autocomplete="off"></textarea>
           } @else if (c.description) {
             <p class="detail-value detail-value--block">{{ c.description }}</p>
           }
@@ -72,7 +74,8 @@
               <input class="detail-input"
                      [ngModel]="editClassification()"
                      (ngModelChange)="editClassification.set($event)"
-                     placeholder="Classification…" />
+                     placeholder="Classification…"
+                     autocomplete="off" />
             } @else if (c.classification) {
               <span class="detail-value">{{ c.classification }}</span>
             }
@@ -84,7 +87,8 @@
               <input class="detail-input"
                      [ngModel]="editSize()"
                      (ngModelChange)="editSize.set($event)"
-                     placeholder="Size…" />
+                     placeholder="Size…"
+                     autocomplete="off" />
             } @else if (c.size) {
               <span class="detail-value">{{ c.size }}</span>
             }
@@ -96,7 +100,8 @@
               <input class="detail-input"
                      [ngModel]="editCondition()"
                      (ngModelChange)="editCondition.set($event)"
-                     placeholder="Condition…" />
+                     placeholder="Condition…"
+                     autocomplete="off" />
             } @else if (c.condition) {
               <span class="detail-value">{{ c.condition }}</span>
             }
@@ -108,7 +113,8 @@
               <input class="detail-input"
                      [ngModel]="editGeography()"
                      (ngModelChange)="editGeography.set($event)"
-                     placeholder="Geography…" />
+                     placeholder="Geography…"
+                     autocomplete="off" />
             } @else if (c.geography) {
               <span class="detail-value">{{ c.geography }}</span>
             }
@@ -120,7 +126,8 @@
               <input class="detail-input"
                      [ngModel]="editArchitecture()"
                      (ngModelChange)="editArchitecture.set($event)"
-                     placeholder="Architecture…" />
+                     placeholder="Architecture…"
+                     autocomplete="off" />
             } @else if (c.architecture) {
               <span class="detail-value">{{ c.architecture }}</span>
             }
@@ -132,7 +139,8 @@
               <input class="detail-input"
                      [ngModel]="editClimate()"
                      (ngModelChange)="editClimate.set($event)"
-                     placeholder="Climate…" />
+                     placeholder="Climate…"
+                     autocomplete="off" />
             } @else if (c.climate) {
               <span class="detail-value">{{ c.climate }}</span>
             }
@@ -144,7 +152,8 @@
               <input class="detail-input"
                      [ngModel]="editReligion()"
                      (ngModelChange)="editReligion.set($event)"
-                     placeholder="Religion…" />
+                     placeholder="Religion…"
+                     autocomplete="off" />
             } @else if (c.religion) {
               <span class="detail-value">{{ c.religion }}</span>
             }
@@ -156,24 +165,54 @@
               <input class="detail-input"
                      [ngModel]="editVibe()"
                      (ngModelChange)="editVibe.set($event)"
-                     placeholder="Vibe…" />
+                     placeholder="Vibe…"
+                     autocomplete="off" />
             } @else if (c.vibe) {
               <span class="detail-value">{{ c.vibe }}</span>
             }
           </div>
-          <div class="detail-cell">
+          <div class="detail-cell detail-cell--full">
             <span class="detail-label">Languages</span>
             <span class="detail-line"></span>
             @if (editing()) {
-              <input class="detail-input"
-                     [ngModel]="editLanguages()"
-                     (ngModelChange)="editLanguages.set($event)"
-                     placeholder="Languages…" />
+              <div class="lang-picker" role="group" aria-label="Select languages spoken in this location">
+                <div class="lang-col">
+                  <div class="lang-col-header">Available</div>
+                  <div class="lang-list">
+                    @for (lang of editAvailableLanguages(); track lang) {
+                      <div class="lang-item" role="button" tabindex="0"
+                           [attr.aria-label]="'Add ' + lang"
+                           (click)="addEditLanguage(lang)"
+                           (keydown.enter)="addEditLanguage(lang)"
+                           (keydown.space)="addEditLanguage(lang)">{{ lang }}</div>
+                    }
+                  </div>
+                </div>
+                <div class="lang-col">
+                  <div class="lang-col-header">Selected</div>
+                  <div class="lang-list lang-list--selected">
+                    @for (lang of editSelectedLanguages(); track lang) {
+                      <div class="lang-item lang-item--selected" role="button" tabindex="0"
+                           [attr.aria-label]="'Remove ' + lang"
+                           (click)="removeEditLanguage(lang)"
+                           (keydown.enter)="removeEditLanguage(lang)"
+                           (keydown.space)="removeEditLanguage(lang)">{{ lang }}</div>
+                    }
+                    @if (!editSelectedLanguages().length) {
+                      <div class="lang-empty">None selected</div>
+                    }
+                  </div>
+                </div>
+              </div>
             } @else if (c.languages) {
-              <span class="detail-value">{{ c.languages }}</span>
+              <div class="detail-lang-pills">
+                @for (lang of c.languages.split(','); track lang) {
+                  <span class="detail-keyword-pill">{{ lang.trim() }}</span>
+                }
+              </div>
             }
           </div>
-          @if (!editing() && c.keywords?.length) {
+          @if (!editing() && c.keywords.length) {
             <div class="detail-cell">
               <span class="detail-label">Keywords</span>
               <span class="detail-line"></span>
@@ -201,16 +240,22 @@
                 </button>
               }
               <span class="secret-text" [class.secret-text--revealed]="secret.isRevealed">{{ secret.content }}</span>
+              @if (isDm() && editing()) {
+                <button class="secret-delete-btn" (click)="deleteSecret(secret)" type="button" title="Delete secret" aria-label="Delete secret">
+                  <img src="/icons/chronicle/delete.svg" alt="Delete" class="secret-delete-btn-img" />
+                </button>
+              }
             </div>
           }
-          @if (isDm()) {
+          @if (isDm() && editing()) {
             @if (addingSecret()) {
               <div class="secret-row secret-row-edit">
                 <textarea class="fi fi-sm secret-textarea"
                           [ngModel]="newSecretContent()"
                           (ngModelChange)="newSecretContent.set($event)"
                           placeholder="Enter secret…"
-                          rows="2"></textarea>
+                          rows="2"
+                          autocomplete="off"></textarea>
                 <button class="secret-confirm-btn" (click)="confirmAddSecret()" type="button">✔</button>
                 <button class="secret-cancel-btn"  (click)="cancelAddingSecret()" type="button">✕</button>
               </div>
@@ -229,7 +274,8 @@
                         [ngModel]="editDmNotes()"
                         (ngModelChange)="editDmNotes.set($event)"
                         rows="4"
-                        placeholder="Jot down whatever is on your mind…"></textarea>
+                        placeholder="Jot down whatever is on your mind…"
+                        autocomplete="off"></textarea>
             } @else if (c.dmNotes) {
               <p class="detail-value detail-value--block">{{ c.dmNotes }}</p>
             } @else {

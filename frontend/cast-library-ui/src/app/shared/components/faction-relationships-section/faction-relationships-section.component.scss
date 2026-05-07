@@ -1,0 +1,224 @@
+@use '../../../../styles/variables' as v;
+
+:host {
+  display: block;
+  padding: 0 40px 32px;
+}
+
+/* ── Section header ──────────────────────────────────────────────────────── */
+.faction-members-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.faction-members-label {
+  font-family: v.$font-header;
+  font-size: 9px;
+  letter-spacing: 0.20em;
+  text-transform: uppercase;
+  color: v.$campaign-portal-text-secondary;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.faction-members-line {
+  flex: 1;
+  height: 1px;
+  background: v.$campaign-portal-border-light;
+}
+
+/* ── Cards grid ──────────────────────────────────────────────────────────── */
+.faction-members-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-bottom: 12px;
+}
+
+.faction-member-wrap {
+  position: relative;
+  cursor: default;
+}
+
+.pol-remove {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  z-index: 10;
+}
+
+.faction-members-empty {
+  color: v.$campaign-portal-text-muted;
+  font-size: 0.82rem;
+  font-style: italic;
+  padding: 4px 0 12px;
+}
+
+/* ── Button row ──────────────────────────────────────────────────────────── */
+.faction-relationship-btn-row {
+  display: flex;
+  justify-content: flex-start;
+  margin-bottom: 8px;
+}
+
+/* ── Drawer ──────────────────────────────────────────────────────────────── */
+.faction-relationship-drawer {
+  display: flex;
+  flex-direction: column;
+  max-width: 320px;
+  margin-bottom: 8px;
+  background: v.$campaign-portal-bg-dark;
+  color: v.$campaign-portal-text-bright;
+  animation: faction-slide-down 0.22s ease-out both;
+}
+
+@keyframes faction-slide-down {
+  from { opacity: 0; transform: translateY(-6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ── Wizard viewport ─────────────────────────────────────────────────────── */
+.faction-wizard-viewport {
+  position: relative;
+  width: 100%;
+  max-width: 320px;
+  overflow: hidden;
+  min-height: 48px;
+}
+
+.faction-wizard-panel {
+  display: none;
+  width: 100%;
+
+  &--active {
+    display: block;
+    animation: wizard-slide-in 0.22s cubic-bezier(0.4, 0, 0.2, 1) both;
+  }
+}
+
+@keyframes wizard-slide-in {
+  from { opacity: 0; transform: translateX(40px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+.faction-wizard-back {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  padding: 8px 16px;
+  background: rgba(v.$campaign-portal-text-secondary, 0.05);
+  border: none;
+  border-bottom: 1px solid v.$campaign-portal-border-light;
+  color: v.$campaign-portal-text-secondary;
+  font-size: 0.78rem;
+  font-style: italic;
+  cursor: pointer;
+  text-align: left;
+  text-transform: capitalize;
+  transition: background 0.15s;
+
+  &:hover { background: rgba(v.$campaign-portal-text-secondary, 0.10); }
+}
+
+/* ── Slider panel ────────────────────────────────────────────────────────── */
+.faction-wizard-slider-panel {
+  display: flex;
+  flex-direction: column;
+}
+
+.faction-wizard-slider-body {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 16px 16px 8px;
+}
+
+.faction-wizard-strength-label {
+  font-family: v.$font-header;
+  font-size: 9px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: v.$campaign-portal-text-primary;
+  text-align: center;
+}
+
+.faction-wizard-slider {
+  width: 100%;
+  accent-color: v.$campaign-portal-text-primary;
+  cursor: pointer;
+}
+
+.faction-wizard-slider-ticks {
+  display: flex;
+  justify-content: space-between;
+  padding: 0 2px;
+  font-size: 0.68rem;
+  color: rgba(v.$campaign-portal-text-secondary, 0.55);
+}
+
+.faction-wizard-confirm {
+  margin: 8px 16px 12px;
+  align-self: flex-start;
+}
+
+/* ── Relationship list ───────────────────────────────────────────────────── */
+.relationship-list {
+  width: 100%;
+  max-width: 320px;
+  background: v.$campaign-portal-bg-dark;
+  border: 1px solid v.$campaign-portal-border-bold;
+  border-radius: 6px;
+  overflow-y: auto;
+  min-height: 48px;
+  max-height: 260px;
+  display: flex;
+  flex-direction: column;
+}
+
+.relationship-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 16px;
+  background: none;
+  border: none;
+  border-bottom: 1px solid v.$campaign-portal-border-light;
+  color: v.$campaign-portal-text-primary;
+  font-size: 0.85rem;
+  cursor: pointer;
+  text-align: left;
+  transition: background 0.15s;
+  width: 100%;
+
+  &:last-child { border-bottom: none; }
+  &:hover { background: v.$campaign-portal-bg-hover; }
+}
+
+.relationship-item-name {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.relationship-checkmark {
+  margin-left: 8px;
+  color: v.$campaign-portal-text-primary;
+  flex-shrink: 0;
+}
+
+.relationship-arrow {
+  margin-left: 8px;
+  color: rgba(v.$campaign-portal-text-secondary, 0.45);
+  flex-shrink: 0;
+}
+
+.relationship-empty {
+  padding: 12px 16px;
+  color: rgba(v.$campaign-portal-text-secondary, 0.5);
+  font-size: 0.8rem;
+  font-style: italic;
+}

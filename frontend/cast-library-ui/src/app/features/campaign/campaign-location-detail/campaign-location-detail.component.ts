@@ -8,6 +8,17 @@ import { CampaignDetail } from '../../../shared/models/campaign.model';
 import { CampaignLocationInstance } from '../../../shared/models/location.model';
 import { CampaignSecret } from '../../../shared/models/secret.model';
 import { CampaignSublocationInstance } from '../../../shared/models/sublocation.model';
+import { VoidTitleContext } from '../../../shared/components/void-title-segments/void-title-segments.component';
+
+const ALL_LANGUAGES = [
+  'Common', 'Dwarvish', 'Elvish', 'Giant', 'Gnomish', 'Goblin', 'Halfling', 'Orc',
+  'Abyssal', 'Celestial', 'Draconic', 'Deep Speech', 'Infernal',
+  'Primordial', 'Aquan', 'Auran', 'Ignan', 'Terran',
+  'Sylvan', 'Undercommon', 'Druidic', "Thieves' Cant",
+  'Aarakocra', 'Gith', 'Modron', 'Slaad', 'Sphinx',
+  'Bullywug', 'Hook Horror', 'Sahuagin', 'Troglodyte',
+  'Drow Sign Language', 'Ixitxachitl',
+];
 import { CampaignHubService } from '../../../core/hub/campaign-hub.service';
 import { AuthService } from '../../../core/auth/auth.service';
 import { CampaignShellService } from '../../../core/campaign-shell.service';
@@ -70,7 +81,10 @@ export class CampaignLocationDetailComponent implements OnInit {
   editClimate        = signal('');
   editReligion       = signal('');
   editVibe           = signal('');
-  editLanguages      = signal('');
+  editSelectedLanguages = signal<string[]>([]);
+  editAvailableLanguages = computed(() =>
+    ALL_LANGUAGES.filter(l => !this.editSelectedLanguages().includes(l))
+  );
   editDmNotes        = signal('');
 
   // Add secret
@@ -114,6 +128,26 @@ export class CampaignLocationDetailComponent implements OnInit {
         };
       });
     });
+
+    effect(() => {
+      const event = this.hub.factionLocked();
+      if (!event || event.campaignId !== this.campaignId()) return;
+      this.campaign.update(c => {
+        if (!c) return c;
+        return {
+          ...c,
+          sublocations: (c.sublocations ?? []).map(l =>
+            l.factionInstanceId === event.factionInstanceId
+              ? { ...l, factionInstanceId: undefined, symbolPath: undefined }
+              : l
+          ),
+          casts: (c.casts ?? []).map(ca => ({
+            ...ca,
+            factionSymbols: (ca.factionSymbols ?? []).filter(fs => fs.factionInstanceId !== event.factionInstanceId),
+          })),
+        };
+      });
+    });
   }
 
   ngOnInit() {
@@ -124,11 +158,14 @@ export class CampaignLocationDetailComponent implements OnInit {
     this.http.get<CampaignDetail>(`${environment.apiUrl}/api/campaigns/${id}`)
       .subscribe(c => {
         this.campaign.set(c);
+        this.shellSvc.setCampaign(c);
         const loc = c.locations.find(l => l.instanceId === locationInstId);
-        this.shellSvc.setTitle(loc?.name ?? '');
-        this.shellSvc.setCrumbs([
-          { label: '← Locations', action: () => this.goToCampaign() },
-        ]);
+        this.shellSvc.setTitleContext({
+          pageType: 'location',
+          campaignId: id,
+          baseRoute: '/campaign',
+          location: loc ?? null,
+        }, '56px');
       });
   }
 
@@ -145,18 +182,35 @@ export class CampaignLocationDetailComponent implements OnInit {
     this.editClimate.set(c.climate ?? '');
     this.editReligion.set(c.religion ?? '');
     this.editVibe.set(c.vibe ?? '');
-    this.editLanguages.set(c.languages ?? '');
+    this.editSelectedLanguages.set(
+      (c.languages ?? '').split(',').map(l => l.trim()).filter(Boolean)
+    );
     this.editDmNotes.set(c.dmNotes ?? '');
+    const wasExpanded = this.detailExpanded();
     this.editing.set(true);
     // Expand after browser layout is complete so scrollHeight includes min-heights and padding
-    requestAnimationFrame(() => this.expandPanel());
+    requestAnimationFrame(() => this.expandPanel(!wasExpanded));
   }
 
-  private expandPanel() {
+  private expandPanel(applyMobileWidth = false) {
+    const panel    = this.detailContentRef.nativeElement.parentElement as HTMLElement;
     const contentH = this.detailContentRef.nativeElement.scrollHeight;
     const btnH     = this.expandBtnRef.nativeElement.offsetHeight;
     this.panelHeight.set(`${contentH + btnH}px`);
+    if (applyMobileWidth && window.innerWidth < 768) {
+      const left = panel.getBoundingClientRect().left;
+      panel.style.marginLeft = `${-(left - 20)}px`;
+      panel.style.width      = `${window.innerWidth - 40}px`;
+    }
     this.detailExpanded.set(true);
+  }
+
+  addEditLanguage(lang: string) {
+    this.editSelectedLanguages.update(list => [...list, lang]);
+  }
+
+  removeEditLanguage(lang: string) {
+    this.editSelectedLanguages.update(list => list.filter(l => l !== lang));
   }
 
   cancelEditing() {
@@ -175,7 +229,7 @@ export class CampaignLocationDetailComponent implements OnInit {
       climate:        this.editClimate(),
       religion:       this.editReligion(),
       vibe:           this.editVibe(),
-      languages:      this.editLanguages(),
+      languages:      this.editSelectedLanguages().join(', '),
       dmNotes:        this.editDmNotes(),
       syncLibrary,
     };
@@ -191,7 +245,12 @@ export class CampaignLocationDetailComponent implements OnInit {
             : ci
         )
       } : c);
-      this.shellSvc.setTitle(body.name);
+      this.shellSvc.setTitleContext({
+        pageType: 'location',
+        campaignId: this.campaignId(),
+        baseRoute: '/campaign',
+        location: this.location() ? { ...this.location()!, name: body.name } : null,
+      }, '56px');
       this.editing.set(false);
     });
   }
@@ -218,6 +277,17 @@ export class CampaignLocationDetailComponent implements OnInit {
     ).subscribe(s => {
       this.campaign.update(c => c ? { ...c, secrets: [...c.secrets, s] } : c);
       this.addingSecret.set(false);
+    });
+  }
+
+  deleteSecret(secret: CampaignSecret) {
+    this.http.delete(
+      `${environment.apiUrl}/api/campaigns/${this.campaignId()}/secrets/${secret.id}`
+    ).subscribe(() => {
+      this.campaign.update(c => c ? {
+        ...c,
+        secrets: c.secrets.filter(s => s.id !== secret.id)
+      } : c);
     });
   }
 
@@ -291,12 +361,14 @@ export class CampaignLocationDetailComponent implements OnInit {
       `${environment.apiUrl}/api/campaigns/${this.campaignId()}/locations/${this.locationInstanceId()}/visibility`,
       { isVisibleToPlayers: next }
     ).subscribe(() => {
-      this.campaign.update(c => c ? {
+      const updater = (c: CampaignDetail | null) => c ? {
         ...c,
         locations: c.locations.map(ci =>
           ci.instanceId === this.locationInstanceId() ? { ...ci, isVisibleToPlayers: next } : ci
         )
-      } : c);
+      } : c;
+      this.campaign.update(updater);
+      this.shellSvc.updateCampaign(updater);
     });
   }
 
@@ -306,12 +378,14 @@ export class CampaignLocationDetailComponent implements OnInit {
       `${environment.apiUrl}/api/campaigns/${this.campaignId()}/sublocations/${subLoc.instanceId}/visibility`,
       { isVisibleToPlayers: next }
     ).subscribe(() => {
-      this.campaign.update(c => c ? {
+      const updater = (c: CampaignDetail | null) => c ? {
         ...c,
         sublocations: c.sublocations.map((l: CampaignSublocationInstance) =>
           l.instanceId === subLoc.instanceId ? { ...l, isVisibleToPlayers: next } : l
         )
-      } : c);
+      } : c;
+      this.campaign.update(updater);
+      this.shellSvc.updateCampaign(updater);
     });
   }
 
@@ -323,12 +397,14 @@ export class CampaignLocationDetailComponent implements OnInit {
       `${environment.apiUrl}/api/campaigns/${this.campaignId()}/locations/${this.locationInstanceId()}/sublocations/visibility`,
       { isVisibleToPlayers: next }
     ).subscribe(() => {
-      this.campaign.update(c => c ? {
+      const updater = (c: CampaignDetail | null) => c ? {
         ...c,
         sublocations: c.sublocations.map((l: CampaignSublocationInstance) =>
           l.locationInstanceId === this.locationInstanceId() ? { ...l, isVisibleToPlayers: next } : l
         )
-      } : c);
+      } : c;
+      this.campaign.update(updater);
+      this.shellSvc.updateCampaign(updater);
     });
   }
 
@@ -373,13 +449,10 @@ export class CampaignLocationDetailComponent implements OnInit {
   // ── Import card handlers ────────────────────────────────────────────
 
   onSublocationAdded(instance: CampaignSublocationInstance) {
-    this.campaign.update(c => {
-  
+    const updater = (c: CampaignDetail | null) => {
       if (!c) return c;
-
       const sublocations = c.sublocations ?? [];
       if (sublocations.some(l => l.instanceId === instance.instanceId)) return c;
-
       const tmpIdx = sublocations.findIndex(
         l => l.instanceId.startsWith('tmp-') && l.sourceSublocationId === instance.sourceSublocationId
       );
@@ -389,10 +462,14 @@ export class CampaignLocationDetailComponent implements OnInit {
         return { ...c, sublocations: updated };
       }
       return { ...c, sublocations: [...sublocations, instance] };
-    });
+    };
+    this.campaign.update(updater);
+    this.shellSvc.updateCampaign(updater);
   }
 
   onSublocationRemoved(instanceId: string) {
-    this.campaign.update(c => c ? { ...c, sublocations: (c.sublocations ?? []).filter(l => l.instanceId !== instanceId) } : c);
+    const updater = (c: CampaignDetail | null) => c ? { ...c, sublocations: (c.sublocations ?? []).filter(l => l.instanceId !== instanceId) } : c;
+    this.campaign.update(updater);
+    this.shellSvc.updateCampaign(updater);
   }
 }

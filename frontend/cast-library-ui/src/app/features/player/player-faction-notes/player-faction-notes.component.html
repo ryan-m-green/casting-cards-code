@@ -1,0 +1,20 @@
+<div class="faction-notes-panel">
+
+  <div class="notes-panel-header">
+    <span class="notes-panel-label">Faction Notes</span>
+    @if (saving) {
+      <span class="notes-saving">saving…</span>
+    }
+  </div>
+
+  <div class="notes-section">
+    <textarea
+      class="notes-textarea"
+      rows="5"
+      placeholder="Jot down anything you want to remember about this faction…"
+      [value]="notesText"
+      (input)="onNotesInput($any($event.target).value)"
+    ></textarea>
+  </div>
+
+</div>

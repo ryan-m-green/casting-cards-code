@@ -1,0 +1,221 @@
+@use '../../../../styles/variables' as v;
+
+:host {
+  display: block;
+  width: 100%;
+}
+
+/* ── Zero state ──────────────────────────────────────────────────────────── */
+.fweb-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 20px;
+  gap: 12px;
+}
+
+.fweb-empty-icon {
+  font-size: 40px;
+  color: v.$campaign-portal-text-muted;
+}
+
+.fweb-empty-msg {
+  font-family: v.$font-header;
+  font-size: 13px;
+  letter-spacing: 0.12em;
+  color: v.$campaign-portal-text-muted;
+  text-align: center;
+  margin: 0;
+}
+
+/* ── Scroll host ─────────────────────────────────────────────────────────── */
+.fweb-host {
+  width: 100%;
+  overflow-x: visible;
+  overflow-y: visible;
+  padding-left: 30px;
+  box-sizing: border-box;
+}
+
+/* ── SVG canvas ──────────────────────────────────────────────────────────── */
+.fweb-svg {
+  display: block;
+  width: 100%;
+  max-width: 875px;
+  overflow: visible;
+}
+
+/* ── Left spine ──────────────────────────────────────────────────────────── */
+.fweb-spine {
+  stroke: rgba(v.$color-base-portal-violet, 0.28);
+  stroke-width: 1.5;
+  stroke-linecap: square;
+}
+
+.fweb-spine-tick {
+  stroke: rgba(v.$color-base-portal-violet, 0.22);
+  stroke-width: 1;
+  stroke-linecap: square;
+}
+
+/* ── Spine relationship segments ─────────────────────────────────────────── */
+.fweb-spine-rel {
+  // colour set inline via [attr.stroke]
+}
+
+.fweb-spine-rel-label-bg {
+  fill: rgba(14, 8, 28, 0.88);
+  stroke: rgba(v.$color-base-portal-violet, 0.50);
+  stroke-width: 1;
+  pointer-events: none;
+}
+
+.fweb-rel-label-bg {
+  fill: rgba(14, 8, 28, 0.92);
+  stroke-width: 0.8;
+  pointer-events: none;
+}
+
+.fweb-rel-label {
+  font-family: v.$font-header;
+  font-size: 6px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  pointer-events: none;
+  user-select: none;
+}
+
+.fweb-spine-rel-label {
+  font-family: v.$font-header;
+  font-size: 7px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  fill: v.$color-base-lavender-pale;
+  pointer-events: none;
+  user-select: none;
+}
+
+/* ── Faction nodes ───────────────────────────────────────────────────────── */
+.fweb-faction-node {
+  cursor: default;
+}
+
+.fweb-node-rect {
+  fill: rgba(14, 8, 28, 0.88);
+  stroke: rgba(v.$color-base-portal-violet, 0.50);
+  stroke-width: 1.5;
+}
+
+.fweb-node-align-icon {
+  font-size: 11px;
+  pointer-events: none;
+  user-select: none;
+}
+
+.fweb-node-name {
+  font-family: v.$font-header;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.07em;
+  fill: v.$color-base-lavender-pale;
+  pointer-events: none;
+  user-select: none;
+}
+
+.fweb-node-dots {
+  font-size: 5px;
+  letter-spacing: 0.06em;
+  fill: rgba(v.$color-base-lavender-light, 0.50);
+  pointer-events: none;
+  user-select: none;
+}
+
+/* ── Tree nodes (cast & subloc) ──────────────────────────────────────────── */
+.fweb-tree-node {
+  pointer-events: none;
+}
+
+.fweb-tree-icon {
+  font-size: 9px;
+  pointer-events: none;
+  user-select: none;
+}
+
+.fweb-tree-label {
+  font-family: v.$font-body;
+  font-size: 7.5px;
+  letter-spacing: 0.03em;
+  pointer-events: none;
+  user-select: none;
+
+  &--primary {
+    font-weight: 600;
+    font-size: 8px;
+  }
+
+  &--link {
+    pointer-events: all;
+    cursor: pointer;
+    text-decoration: underline;
+    text-underline-offset: 1px;
+  }
+}
+
+/* ── Crown image ─────────────────────────────────────────────────────────── */
+.fweb-crown {
+  pointer-events: none;
+  // gold tint matching cast-card crown filter
+  filter: brightness(0) saturate(100%) invert(80%) sepia(60%) saturate(700%)
+          hue-rotate(5deg) brightness(105%) drop-shadow(0 1px 2px rgba(0,0,0,0.6));
+}
+
+/* ── Legend ──────────────────────────────────────────────────────────────── */
+.fweb-legend {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 10px 16px 12px 0;
+  font-family: v.$font-body;
+  font-size: 9px;
+  letter-spacing: 0.05em;
+  color: v.$campaign-portal-text-muted;
+}
+
+.fweb-legend-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.fweb-legend-label {
+  font-family: v.$font-header;
+  font-size: 8px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: v.$campaign-portal-text-muted;
+  min-width: 72px;
+}
+
+.fweb-legend-sep {
+  opacity: 0.3;
+  align-self: center;
+}
+
+.fweb-legend-rel         { color: v.$campaign-portal-text-bright; }
+.fweb-legend-allied      { color: v.$campaign-portal-text-bright; }
+.fweb-legend-rival       { color: v.$campaign-portal-text-bright; }
+.fweb-legend-enemy       { color: v.$campaign-portal-text-bright; }
+.fweb-legend-neutral     { color: v.$campaign-portal-text-bright; }
+.fweb-legend-cast        { color: rgba(160, 120, 255, 0.85); }
+.fweb-legend-subloc      { color: rgba(80, 195, 110, 0.85); }
+.fweb-legend-good        { color: #6ecf88; }
+.fweb-legend-neutral-align { color: #a898c8; }
+.fweb-legend-evil        { color: #d05858; }
+
+/* ── Mobile ──────────────────────────────────────────────────────────────── */
+@media (max-width: 600px) {
+  .fweb-svg {
+    min-width: 420px;
+  }
+}

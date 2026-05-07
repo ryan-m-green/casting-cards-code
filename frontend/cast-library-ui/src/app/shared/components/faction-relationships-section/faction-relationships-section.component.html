@@ -1,0 +1,110 @@
+<div class="faction-members-header">
+  <span class="faction-members-label">Faction Relationships</span>
+  <span class="faction-members-line"></span>
+</div>
+
+<div class="faction-relationship-btn-row">
+  <button class="campaign-primary-btn" type="button" (click)="toggleDrawer()">
+    Faction Relationships {{ drawerOpen() ? '↑' : '↓' }}
+  </button>
+</div>
+
+@if (drawerOpen()) {
+    <div class="faction-relationship-drawer">
+      <div class="faction-wizard-viewport">
+
+        @if (wizardStep() === 1) {
+          <div class="faction-wizard-panel faction-wizard-panel--active">
+            <div class="relationship-list">
+              @for (other of otherFactions(); track other.factionInstanceId) {
+                <button
+                  class="relationship-item"
+                  type="button"
+                  (click)="relatedFactionIds().has(other.factionInstanceId) ? removeRelationship.emit(relForFaction(other.factionInstanceId)!) : selectTarget(other)"
+                >
+                  <span class="relationship-item-name">{{ other.name }}</span>
+                  @if (relatedFactionIds().has(other.factionInstanceId)) {
+                    <span class="relationship-checkmark">✓</span>
+                  } @else {
+                    <span class="relationship-arrow">›</span>
+                  }
+                </button>
+              }
+              @if (!otherFactions().length) {
+                <span class="relationship-empty">No other factions in this campaign.</span>
+              }
+            </div>
+          </div>
+        }
+
+        @if (wizardStep() === 2) {
+          <div class="faction-wizard-panel faction-wizard-panel--active">
+            <button class="faction-wizard-back" type="button" (click)="wizardStep.set(1)">
+              ‹ {{ wizardTarget()?.name }}
+            </button>
+            <div class="relationship-list">
+              @for (type of relTypeOptions; track type) {
+                <button
+                  class="relationship-item"
+                  type="button"
+                  (click)="confirmRelType(type)"
+                >
+                  <span class="relationship-item-name">{{ type }}</span>
+                  <span class="relationship-arrow">›</span>
+                </button>
+              }
+            </div>
+          </div>
+        }
+
+        @if (wizardStep() === 3) {
+          <div class="faction-wizard-panel faction-wizard-panel--active faction-wizard-slider-panel">
+            <button class="faction-wizard-back" type="button" (click)="wizardStep.set(2)">
+              ‹ {{ wizardRelType() }}
+            </button>
+            <div class="faction-wizard-slider-body">
+              <input
+                class="faction-wizard-slider"
+                type="range" min="0" max="5"
+                [value]="wizardStrength()"
+                (input)="onStrengthInput($event)"
+              />
+              <div class="faction-wizard-slider-ticks">
+                @for (l of strengthLabels; track $index) {
+                  <span>{{ $index }}</span>
+                }
+              </div>
+              <span class="faction-wizard-strength-label">{{ strengthLabel(wizardStrength()) }}</span>
+            </div>
+            <button class="campaign-primary-btn faction-wizard-confirm" type="button" (click)="save()">✔ Save</button>
+          </div>
+        }
+
+      </div>
+    </div>
+}
+
+@if (relationships().length) {
+  <div class="faction-members-grid">
+    @for (rel of relationships(); track rel.id) {
+      @if (relTargetFaction(rel); as target) {
+        <div class="faction-member-wrap">
+          <app-faction-card
+            [faction]="$any(target)"
+            [flippable]="false"
+            [editable]="false"
+            [campaignMode]="true"
+            [relationshipType]="rel.relationshipType"
+            [relationshipStrength]="rel.strength"
+            [tilt]="tiltFor(rel.id)"
+          />
+          @if (isDm()) {
+            <button class="pol-remove" type="button" (click)="removeRelationship.emit(rel)" aria-label="Remove relationship">×</button>
+          }
+        </div>
+      }
+    }
+  </div>
+} @else {
+  <p class="faction-members-empty">No relationships defined yet.</p>
+}

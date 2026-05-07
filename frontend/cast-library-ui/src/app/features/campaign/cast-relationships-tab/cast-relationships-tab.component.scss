@@ -141,9 +141,91 @@
   }
 }
 
-// ── Search filter ─────────────────────────────────────────────────────────────
-.rel-search-row  { margin-bottom: 20px; }
-.rel-search-input { max-width: 320px; }
+// ── Search filter + global controls ──────────────────────────────────────────
+.rel-search-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 20px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+.rel-search-input { max-width: 320px; flex-shrink: 0; color: v.$color-ext-317; }
+
+// ── Global bulk controls ──────────────────────────────────────────────────────
+.rel-global-controls {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  flex-wrap: wrap;
+  flex: 1;
+  padding: 10px 14px;
+  background: v.$color-ext-334;
+  border: 1px solid v.$color-ext-330;
+  border-radius: 8px;
+}
+
+.rel-global-slider-wrap {
+  flex: 1;
+  min-width: 160px;
+}
+
+.rel-global-explanation {
+  flex: 1;
+  min-width: 160px;
+  resize: vertical;
+  color: v.$color-ext-317;
+}
+
+.rel-global-btn {
+  cursor: pointer;
+  border-radius: 5px;
+  font-family: v.$font-header;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  transition: background 0.15s, transform 0.1s;
+
+  &--toggle {
+    padding: 5px 12px;
+    font-size: 10px;
+    position: relative;
+    background: rgba(200, 225, 235, 0.1);
+    border: 1px solid rgba(200, 225, 235, 0.3);
+    color: v.$color-ext-152;
+    align-self: center;
+    white-space: nowrap;
+    &:hover { background: rgba(200, 225, 235, 0.18); }
+  }
+
+  &--toggle-on {
+    background: v.$color-ext-638;
+    border-color: v.$color-ext-638;
+  }
+
+  &--apply {
+    padding: 6px 14px;
+    font-size: 11px;
+    background: v.$color-ext-638;
+    border: 1px solid v.$color-ext-638;
+    color: v.$campaign-portal-text-bright;
+    align-self: flex-end;
+    &:hover:not(:disabled) { filter: brightness(1.2); transform: translateY(-1px); }
+    &:disabled { opacity: 0.45; cursor: not-allowed; }
+  }
+}
+
+.rel-toggle-label {
+  display: block;
+
+  &--over {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    white-space: nowrap;
+  }
+}
+
+
 
 // ── No match message ──────────────────────────────────────────────────────────
 .rel-no-match {
@@ -168,12 +250,26 @@
   display: flex;
   flex-direction: column;
   gap: 8px;
-  transition: border-color 0.2s;
+  transition: border-color 0.2s, box-shadow 0.2s;
   position: relative;
   overflow: hidden;
+  cursor: pointer;
 
   &.rel-friendly { border-color: v.$color-ext-335; }
   &.rel-hostile  { border-color: v.$color-ext-336; }
+  &.rel-checked  { box-shadow: 0 0 0 2px v.$color-ext-638; }
+}
+
+.rel-avatar-checkbox-input {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  z-index: 3;
+  width: 15px;
+  height: 15px;
+  cursor: pointer;
+  accent-color: v.$color-ext-638;
+  pointer-events: auto;
 }
 
 .rel-avatar-icon {
@@ -200,6 +296,7 @@
   font-weight: 600;
   color: v.$color-ext-317;
   text-align: center;
+  margin-top: 18px;
 }
 
 .rel-avatar-sub {
@@ -240,9 +337,9 @@
   resize: vertical;
   min-height: 48px;
   color: v.$color-ext-317;
+  background: v.$color-ext-761;
 
-  &[readonly] {
-    opacity: 0.35;
-    cursor: not-allowed;
+  &:not(:focus) {
+    background: v.$color-ext-761;
   }
 }

@@ -1,7 +1,7 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../../environments/environment';
-import { DmNavComponent } from '../../../shared/components/dm-nav/dm-nav.component';
+import { JournalTitleComponent } from '../../../shared/components/journal-title/journal-title.component';
 
 interface AdminInviteCodeResponse {
   code: string;
@@ -11,7 +11,7 @@ interface AdminInviteCodeResponse {
 @Component({
   selector: 'app-admin-invite-code',
   standalone: true,
-  imports: [DmNavComponent],
+  imports: [JournalTitleComponent],
   templateUrl: './admin-invite-code.component.html',
   styleUrl: './admin-invite-code.component.scss',
 })

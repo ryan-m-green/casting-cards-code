@@ -2,6 +2,7 @@ import { Component, inject, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { ReactiveFormsModule, FormBuilder, Validators, AbstractControl, ValidationErrors } from '@angular/forms';
 import { AuthService } from '../../core/auth/auth.service';
+import { JournalTitleComponent } from '../../shared/components/journal-title/journal-title.component';
 
 function passwordsMatch(group: AbstractControl): ValidationErrors | null {
   const password        = group.get('password')?.value;
@@ -12,7 +13,7 @@ function passwordsMatch(group: AbstractControl): ValidationErrors | null {
 @Component({
   selector: 'app-role-selection',
   standalone: true,
-  imports: [ReactiveFormsModule],
+  imports: [ReactiveFormsModule, JournalTitleComponent],
   templateUrl: './role-selection.component.html',
   styleUrl: './role-selection.component.scss'
 })

@@ -23,7 +23,7 @@ public class LocationReadRepository(
         var @params = new { DmUserId = dmUserId };
         const string sql =
             @"SELECT id, dm_user_id AS DmUserId, name, classification, size, condition, geography,
-                     architecture, climate, religion, vibe, languages, description,
+                     architecture, climate, religion, vibe, languages, description, dm_notes AS DmNotes,
                      campaign_id AS CampaignId, created_at AS CreatedAt
               FROM locations WHERE dm_user_id = @DmUserId AND campaign_id IS NULL ORDER BY name";
 
@@ -42,7 +42,7 @@ public class LocationReadRepository(
         var @params = new { Id = id };
         const string sql =
             @"SELECT id, dm_user_id AS DmUserId, name, classification, size, condition, geography,
-                     architecture, climate, religion, vibe, languages, description,
+                     architecture, climate, religion, vibe, languages, description, dm_notes AS DmNotes,
                      campaign_id AS CampaignId, created_at AS CreatedAt
               FROM locations WHERE id = @Id";
 

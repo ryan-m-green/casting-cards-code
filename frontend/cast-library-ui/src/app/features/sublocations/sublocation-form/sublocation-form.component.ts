@@ -8,13 +8,13 @@ import { EMPTY } from 'rxjs';
 import { environment } from '../../../../environments/environment';
 import { Sublocation } from '../../../shared/models/sublocation.model';
 import { SparkleService } from '../../../shared/services/sparkle.service';
-import { DmNavComponent } from '../../../shared/components/dm-nav/dm-nav.component';
 import { SublocationCardComponent } from '../../../shared/components/sublocation-card/sublocation-card.component';
+import { JournalTitleComponent } from '../../../shared/components/journal-title/journal-title.component';
 
 @Component({
   selector: 'app-sublocation-form',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, RouterLink, DmNavComponent, SublocationCardComponent],
+  imports: [CommonModule, ReactiveFormsModule, RouterLink, SublocationCardComponent, JournalTitleComponent],
   templateUrl: './sublocation-form.component.html',
   styleUrl: './sublocation-form.component.scss'
 })
@@ -37,6 +37,7 @@ export class SublocationFormComponent implements OnInit {
   form = this.fb.group({
     name:        ['', Validators.required],
     description: [''],
+    dmNotes:     [''],
     shopItems:   this.fb.array([]),
   });
 
@@ -67,7 +68,7 @@ export class SublocationFormComponent implements OnInit {
     if (id) {
       this.sublocationId.set(id);
       this.http.get<Sublocation>(`${environment.apiUrl}/api/sublocations/${id}`).subscribe(l => {
-        this.form.patchValue({ name: l.name, description: l.description });
+        this.form.patchValue({ name: l.name, description: l.description, dmNotes: l.dmNotes ?? '' });
         l.shopItems?.forEach(item => this.shopItems.push(this.newItem(item.name, item.price, item.description)));
         this.imageUrl.set(l.imageUrl ?? null);
       });

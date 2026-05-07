@@ -1,14 +1,14 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { DmNavComponent } from '../../../shared/components/dm-nav/dm-nav.component';
 import { BugReportService } from '../../../shared/services/bug-report.service';
 import { BugReport } from '../../../shared/models/bug-report.model';
+import { JournalTitleComponent } from '../../../shared/components/journal-title/journal-title.component';
 
 @Component({
   selector: 'app-admin-bug-reports',
   standalone: true,
-  imports: [CommonModule, FormsModule, DmNavComponent],
+  imports: [CommonModule, FormsModule, JournalTitleComponent],
   templateUrl: './admin-bug-reports.component.html',
   styleUrl: './admin-bug-reports.component.scss',
 })

@@ -3,16 +3,19 @@ import { CommonModule } from '@angular/common';
 import { Cast } from '../../models/cast.model';
 import { Location } from '../../models/location.model';
 import { Sublocation } from '../../models/sublocation.model';
+import { Faction } from '../../models/faction.model';
 import { CastCardComponent } from '../cast-card/cast-card.component';
 import { LocationCardComponent } from '../location-card/location-card.component';
 import { SublocationCardComponent } from '../sublocation-card/sublocation-card.component';
+import { FactionCardComponent } from '../faction-card/faction-card.component';
 
 export interface CardRevealOverlayData {
-  cardType: 'location' | 'sublocation' | 'cast' | 'player';
+  cardType: 'location' | 'sublocation' | 'cast' | 'player' | 'faction';
   name: string;
   descriptor: string;
   imageUrl?: string;
   secretContent?: string;
+  symbolPath?: string;
 }
 
 const EMPTY_CAST_BASE: Omit<Cast, 'name' | 'imageUrl'> = {
@@ -32,10 +35,15 @@ const EMPTY_SUBLOCATION_BASE: Omit<Sublocation, 'name' | 'imageUrl'> = {
   shopItems: [], createdAt: '',
 };
 
+const EMPTY_FACTION_BASE: Omit<Faction, 'name' | 'imageUrl'> = {
+  id: '', dmUserId: '', type: '', influence: 0, perception: 0,
+  hidden: false, description: '', dmNotes: '', symbolPath: '', createdAt: '',
+};
+
 @Component({
   selector: 'app-card-reveal-overlay',
   standalone: true,
-  imports: [CommonModule, CastCardComponent, LocationCardComponent, SublocationCardComponent],
+  imports: [CommonModule, CastCardComponent, LocationCardComponent, SublocationCardComponent, FactionCardComponent],
   templateUrl: './card-reveal-overlay.component.html',
   styleUrl: './card-reveal-overlay.component.scss',
 })
@@ -56,6 +64,11 @@ export class CardRevealOverlayComponent {
   get sublocationModel(): Sublocation | null {
     if (!this.data) return null;
     return { ...EMPTY_SUBLOCATION_BASE, name: this.data.name, imageUrl: this.data.imageUrl };
+  }
+
+  get factionModel(): Faction | null {
+    if (!this.data) return null;
+    return { ...EMPTY_FACTION_BASE, name: this.data.name, symbolPath: this.data.symbolPath ?? '' };
   }
 
   dismiss() {

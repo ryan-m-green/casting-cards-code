@@ -83,6 +83,18 @@
   background: v.$color-ext-5;
 }
 
+.about-signature {
+  font-family: v.$font-header;
+  font-size: 11px;
+  font-style: italic;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  color: v.$color-ext-4;
+  text-align: right;
+  margin-top: 10px;
+  opacity: 0.85;
+}
+
 // ── Player nav (mirrors player-campaigns nav styles) ──────────────────────────
 
 .player-nav {

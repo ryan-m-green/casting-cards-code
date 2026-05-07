@@ -15,6 +15,7 @@ public class LocationResponse
     public string Vibe { get; set; } = string.Empty;
     public string Languages { get; set; } = string.Empty;
     public string Description { get; set; } = string.Empty;
+    public string DmNotes { get; set; } = string.Empty;
     public string ImageUrl { get; set; }
     public DateTime CreatedAt { get; set; }
 }

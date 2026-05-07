@@ -6,4 +6,5 @@ public class UpdateCampaignRequest
     public string FantasyType { get; set; } = string.Empty;
     public string Description { get; set; } = string.Empty;
     public string SpineColor  { get; set; } = string.Empty;
+    public string? Status     { get; set; }
 }

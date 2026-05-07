@@ -11,6 +11,7 @@
           [secrets]="false"
           [tilt]="0"
           [campaignMode]="false"
+          [symbolPath]="sublocationSymbolPath()"
         />
       </div>
 
@@ -28,7 +29,7 @@
           }
 
           <div class="detail-grid">
-            @if (subLoc.keywords?.length) {
+            @if (subLoc.keywords.length) {
               <div class="detail-cell detail-cell--full">
                 <span class="detail-label">Keywords</span>
                 <span class="detail-line"></span>
@@ -41,7 +42,7 @@
             }
           </div>
 
-          @if (subLoc.shopItems?.length) {
+          @if (subLoc.shopItems.length) {
             <div class="detail-shop-section">
               <span class="detail-label">Shop Items</span>
               <span class="detail-line"></span>
@@ -80,6 +81,24 @@
 
     </div>
 
+    <!-- ── Faction Symbol Picker ── -->
+    <div class="subLoc-faction-picker">
+      <app-faction-symbol-picker
+        [campaignId]="campaignId()"
+        [targetDropInstanceId]="sublocationInstanceId()"
+        [targetType]="'sublocation'"
+        [factions]="visibleFactions()"
+        [assignedFactionIds]="sublocationFactionId() ? [sublocationFactionId()!] : []"
+        (assigned)="onFactionAssigned($event)"
+      />
+    </div>
+
+    <!-- ── Player Notes section ── -->
+    <div class="subLoc-notes-panel">
+      <app-player-sublocation-notes [campaignId]="campaignId()"
+                                    [sublocationInstanceId]="sublocationInstanceId()" />
+    </div>
+
     <!-- ── Cast section ── -->
     @if (sublocationCasts().length) {
       <div class="subLoc-cast-section">
@@ -100,6 +119,7 @@
                 [tilt]="tiltFor(cast.instanceId)"
                 [campaignMode]="true"
                 [setStars]="castRating(cast.instanceId)"
+                [factionSymbols]="cast.factionSymbols ?? []"
               />
             </div>
           }
@@ -113,6 +133,7 @@
                 [tilt]="tiltFor(cast.instanceId)"
                 [campaignMode]="true"
                 [setStars]="castRating(cast.instanceId)"
+                [factionSymbols]="cast.factionSymbols ?? []"
                 (cardClick)="goToCast(cast)"
               />
             </div>

@@ -21,9 +21,17 @@
   min-height: 100%;
   background: v.$color-black;
   position: relative;
-  animation: portal-inward-breathe 6.4s ease-in-out infinite;
   overflow-y: auto;
   overflow-x: hidden;
+}
+
+:host::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 9999;
+  animation: portal-inward-breathe 6.4s ease-in-out infinite;
 }
 
 @keyframes portal-inward-breathe {
@@ -199,6 +207,10 @@
   &:nth-child(odd) {
     border-right: 1px solid rgba(v.$location-blue, 0.08);
   }
+
+  &--full {
+    grid-column: 1 / -1;
+  }
 }
 
 /* ── Secrets section ─────────────────────────────────────────────────────── */
@@ -235,6 +247,31 @@
   transition: opacity 0.15s ease;
 
   &:hover { opacity: 1; }
+}
+
+.secret-delete-btn {
+  flex-shrink: 0;
+  margin-left: auto;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 3px;
+  border-radius: 4px;
+  opacity: 0.4;
+  transition: opacity 0.18s ease, background 0.15s ease;
+
+  &:hover {
+    opacity: 1;
+    background: rgba(v.$location-blue, 0.06);
+  }
+}
+
+.secret-delete-btn-img {
+  width: 18px;
+  height: 18px;
+  object-fit: contain;
+  display: block;
+  filter: invert(1);
 }
 
 .secret-lock-icon {
@@ -546,6 +583,72 @@
   border: 1px solid rgba(v.$location-blue, 0.28);
   border-radius: 2px;
   padding: 2px 8px;
+}
+
+.detail-lang-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.lang-picker {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 4px;
+  width: 100%;
+}
+
+.lang-col {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.lang-col-header {
+  font-family: v.$font-header;
+  font-size: 8px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(v.$color-parchment, 0.50);
+  margin-bottom: 4px;
+  padding-left: 2px;
+}
+
+.lang-list {
+  border: 1px solid rgba(v.$color-parchment, 0.15);
+  border-radius: 3px;
+  background: rgba(v.$color-black, 0.35);
+  min-height: 120px;
+  max-height: 180px;
+  overflow-y: auto;
+  padding: 2px 0;
+}
+
+.lang-list--selected {
+  background: rgba(v.$location-blue, 0.08);
+  border-color: rgba(v.$location-blue, 0.30);
+}
+
+.lang-item {
+  padding: 5px 10px;
+  font-size: 11px;
+  color: rgba(v.$color-parchment, 0.80);
+  cursor: pointer;
+  &:hover { background: rgba(v.$color-parchment, 0.08); }
+}
+
+.lang-item--selected {
+  color: rgba(v.$location-blue, 0.90);
+  &:hover { background: rgba(v.$location-blue, 0.12); }
+}
+
+.lang-empty {
+  padding: 8px 10px;
+  font-size: 10px;
+  font-style: italic;
+  color: rgba(v.$color-parchment, 0.35);
 }
 
 /* ── Sublocations section ─────────────────────────────────────────────────── */

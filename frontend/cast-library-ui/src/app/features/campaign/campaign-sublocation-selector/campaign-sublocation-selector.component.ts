@@ -4,9 +4,7 @@ import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { forkJoin, catchError, of } from 'rxjs';
 import { environment } from '../../../../environments/environment';
-import { KeywordInputComponent } from '../../../shared/components/keyword-input/keyword-input.component';
-import { DmNavComponent } from '../../../shared/components/dm-nav/dm-nav.component';
-import { SublocationCardComponent } from '../../../shared/components/sublocation-card/sublocation-card.component';
+
 
 interface ShopItem {
   id: string;
@@ -39,7 +37,7 @@ interface AddedSublocation {
 @Component({
   selector: 'app-campaign-sublocation-selector',
   standalone: true,
-  imports: [CommonModule, KeywordInputComponent, DmNavComponent, SublocationCardComponent],
+  imports: [CommonModule],
   templateUrl: './campaign-sublocation-selector.component.html',
   styleUrl: './campaign-sublocation-selector.component.scss'
 })

@@ -7,7 +7,13 @@
     (click)="toggle($event)"
   >
     <span class="campaign-dropdown-value" aria-hidden="true">
-      @if (selected?.icon) { {{ selected?.icon }} }{{ selected?.label ?? '' }}
+      @if (selected?.icon) {
+        @if (selected!.icon!.startsWith('/')) {
+          <img [src]="selected!.icon" [alt]="selected!.label" class="dd-icon-img" />
+        } @else {
+          {{ selected?.icon }}
+        }
+      }{{ selected?.label ?? '' }}
     </span>
     <span class="campaign-dropdown-caret" [class.campaign-dropdown-caret--open]="isOpen()" aria-hidden="true">▾</span>
   </button>
@@ -21,7 +27,13 @@
           [attr.aria-selected]="value === option.value"
           (click)="select(option)"
         >
-          @if (option.icon) { {{ option.icon }} }{{ option.label }}
+          @if (option.icon) {
+            @if (option.icon.startsWith('/')) {
+              <img [src]="option.icon" [alt]="option.label" class="dd-icon-img" />
+            } @else {
+              {{ option.icon }}
+            }
+          }{{ option.label }}
         </li>
       }
     </ul>

@@ -1,0 +1,248 @@
+@if (!nodes().length) {
+  <div class="fweb-empty">
+    <span class="fweb-empty-icon">⚜</span>
+    <p class="fweb-empty-msg">No factions in this campaign yet</p>
+  </div>
+} @else {
+  <div class="fweb-host">
+    <!-- ── Legend ─────────────────────────────────────────────────────────── -->
+    <div class="fweb-legend" aria-label="Legend">
+      <div class="fweb-legend-row">
+        <span class="fweb-legend-label">Relationships</span>
+        <span class="fweb-legend-item fweb-legend-rel">─── Allied</span>
+        <span class="fweb-legend-item fweb-legend-rel">- - - Rival</span>
+        <span class="fweb-legend-item fweb-legend-rel">─ · ─ Enemy</span>
+        <span class="fweb-legend-item fweb-legend-rel">· · · Neutral</span>
+      </div>
+      <div class="fweb-legend-row">
+        <span class="fweb-legend-label">Members</span>
+        <span class="fweb-legend-item fweb-legend-cast">👤 Cast</span>
+        <span class="fweb-legend-item fweb-legend-subloc">📍 Sublocation</span>
+      </div>
+      <div class="fweb-legend-row">
+        <span class="fweb-legend-label">Alignment</span>
+        <span class="fweb-legend-item fweb-legend-good">🕊 Good</span>
+        <span class="fweb-legend-item fweb-legend-neutral-align">⚖ Neutral</span>
+        <span class="fweb-legend-item fweb-legend-evil">🗑 Evil</span>
+      </div>
+    </div>
+
+    <svg
+      class="fweb-svg"
+      [attr.viewBox]="viewBox()"
+      [attr.height]="svgHeight()"
+      xmlns="http://www.w3.org/2000/svg"
+      aria-label="Faction registry web"
+      role="img"
+    >
+
+
+      <!-- ── Relationship segments ─────────────────────────────────────── -->
+      <g aria-hidden="true">
+        @for (seg of spineSegments(); track $index) {
+          <path
+            [attr.d]="seg.d"
+            fill="none"
+            [attr.stroke]="relColor(seg.relType)"
+            [attr.stroke-dasharray]="relDash(seg.relType)"
+            stroke-width="1.5"
+          />
+        }
+      </g>
+      <!-- ── Relationship labels (drawn after all lines so they paint on top) ── -->
+      <g aria-hidden="true">
+        @for (seg of spineSegments(); track $index) {
+          <!-- connector line from label right edge to the vertical segment -->
+          <line
+            [attr.x1]="relLabelConnector(seg).x1"
+            [attr.y1]="relLabelConnector(seg).y1"
+            [attr.x2]="relLabelConnector(seg).x2"
+            [attr.y2]="relLabelConnector(seg).y2"
+            [attr.stroke]="relColor(seg.relType)"
+            stroke-width="1"
+          />
+          <rect
+            [attr.x]="relLabelBox(seg).x - relLabelRect(seg.relType).w / 2"
+            [attr.y]="relLabelBox(seg).y - relLabelRect(seg.relType).h / 2"
+            [attr.width]="relLabelRect(seg.relType).w"
+            [attr.height]="relLabelRect(seg.relType).h"
+            [attr.stroke]="relColor(seg.relType)"
+            class="fweb-rel-label-bg"
+          />
+          <text
+            [attr.x]="relLabelBox(seg).x"
+            [attr.y]="relLabelBox(seg).y"
+            text-anchor="middle"
+            dominant-baseline="middle"
+            class="fweb-rel-label"
+            [attr.fill]="relColor(seg.relType)"
+          >{{ relLabel(seg.relType) }}</text>
+        }
+      </g>
+
+      <!-- ── Cast groups: L-elbow from bottom-left + vertical spine ──────────── -->
+      @for (g of castGroups(); track g.factionId) {
+        <g aria-hidden="true">
+          <!-- horizontal elbow along bottom of faction box -->
+          <line
+            [attr.x1]="g.elbowStartX"
+            [attr.y1]="g.elbowY"
+            [attr.x2]="g.spineX"
+            [attr.y2]="g.elbowY"
+            stroke="rgba(120,90,200,0.55)"
+            stroke-width="1"
+          />
+          <!-- vertical cast spine -->
+          <line
+            [attr.x1]="g.spineX"
+            [attr.y1]="g.spineY1"
+            [attr.x2]="g.spineX"
+            [attr.y2]="g.spineY2"
+            stroke="rgba(120,90,200,0.55)"
+            stroke-width="1"
+          />
+        </g>
+        <!-- child rows: crown (primary) + icon + label -->
+        @for (c of g.children; track c.id) {
+          <g class="fweb-tree-node">
+            <text
+              [attr.x]="g.iconX"
+              [attr.y]="c.cy"
+              dominant-baseline="middle"
+              class="fweb-tree-icon fweb-tree-icon--cast"
+              [attr.fill]="c.isPrimary ? '#c0a0ff' : '#9070c8'"
+            >👤</text>
+            @if (c.isPrimary) {
+              <image
+                href="crown_gems.svg"
+                [attr.x]="g.iconX - (crownSize / 2) + 6"
+                [attr.y]="c.cy - 3 - (crownSize * 0.75)"
+                [attr.width]="crownSize"
+                [attr.height]="crownSize * 0.75"
+                class="fweb-crown"
+              />
+            }
+            <text
+              [attr.x]="g.iconX + 14"
+              [attr.y]="c.cy"
+              dominant-baseline="middle"
+              class="fweb-tree-label fweb-tree-label--link"
+              [class.fweb-tree-label--primary]="c.isPrimary"
+              [attr.fill]="c.isPrimary ? '#c8aeff' : '#9878d0'"
+              (click)="navigateToCast(c.id)"
+            >{{ c.label }}</text>
+          </g>
+        }
+      }
+
+      <!-- ── Subloc groups: L-elbow from top-right + vertical spine + ticks ────── -->
+      @for (g of sublocGroups(); track g.factionId) {
+        <g aria-hidden="true">
+          <!-- horizontal elbow from faction top-right -->
+          <line
+            [attr.x1]="g.elbowStartX"
+            [attr.y1]="g.elbowY"
+            [attr.x2]="g.spineX"
+            [attr.y2]="g.elbowY"
+            stroke="rgba(60,150,85,0.55)"
+            stroke-width="1"
+          />
+          <!-- vertical subloc spine -->
+          <line
+            [attr.x1]="g.spineX"
+            [attr.y1]="g.spineY1"
+            [attr.x2]="g.spineX"
+            [attr.y2]="g.spineY2"
+            stroke="rgba(60,150,85,0.55)"
+            stroke-width="1"
+          />
+          <!-- horizontal tick per child -->
+          @for (c of g.children; track c.id) {
+            <line
+              [attr.x1]="g.spineX"
+              [attr.y1]="c.cy"
+              [attr.x2]="g.iconX"
+              [attr.y2]="c.cy"
+              stroke="rgba(60,150,85,0.45)"
+              stroke-width="1"
+            />
+          }
+        </g>
+        @for (c of g.children; track c.id) {
+          <g class="fweb-tree-node">
+            <text
+              [attr.x]="g.iconX"
+              [attr.y]="c.cy"
+              dominant-baseline="middle"
+              class="fweb-tree-icon fweb-tree-icon--subloc"
+              [attr.fill]="c.isPrimary ? '#70d890' : '#4aaa68'"
+            >📍</text>
+            @if (c.isPrimary) {
+              <image
+                href="crown_gems.svg"
+                [attr.x]="g.iconX - (crownSize / 2) + 6"
+                [attr.y]="c.cy - 3 - (crownSize * 0.75)"
+                [attr.width]="crownSize"
+                [attr.height]="crownSize * 0.75"
+                class="fweb-crown"
+              />
+            }
+            <text
+              [attr.x]="g.iconX + 14"
+              [attr.y]="c.cy"
+              dominant-baseline="middle"
+              class="fweb-tree-label fweb-tree-label--link"
+              [class.fweb-tree-label--primary]="c.isPrimary"
+              [attr.fill]="c.isPrimary ? '#7ad898' : '#52a068'"
+              (click)="navigateToSublocation(c.id)"
+            >{{ c.label }}</text>
+          </g>
+        }
+      }
+
+
+
+      <!-- ── Faction nodes ─────────────────────────────────────────────────── -->
+      @for (node of nodes(); track node.id) {
+        <g
+          class="fweb-faction-node"
+          [attr.aria-label]="node.faction.name + ' — influence ' + node.faction.influence"
+          [attr.filter]="influenceGlow(node.faction.influence)"
+        >
+          <!-- node body -->
+          <rect
+            [attr.x]="node.x"
+            [attr.y]="node.y"
+            [attr.width]="nodeW"
+            [attr.height]="nodeH"
+            rx="4"
+            class="fweb-node-rect"
+          />
+          <!-- alignment icon -->
+          <text
+            [attr.x]="node.x + 10"
+            [attr.y]="node.cy"
+            dominant-baseline="middle"
+            class="fweb-node-align-icon"
+            [attr.fill]="alignColor(node.faction)"
+          >{{ alignIcon(node.faction) }}</text>
+          <!-- faction name -->
+          <text
+            [attr.x]="node.x + 26"
+            [attr.y]="node.cy - 5"
+            dominant-baseline="middle"
+            class="fweb-node-name"
+          >{{ node.faction.name }}</text>
+          <!-- influence dots -->
+          <text
+            [attr.x]="node.x + 26"
+            [attr.y]="node.cy + 8"
+            dominant-baseline="middle"
+            class="fweb-node-dots"
+          >{{ influenceDots(node.faction.influence) }}</text>
+        </g>
+      }
+
+    </svg>
+  </div>
+}

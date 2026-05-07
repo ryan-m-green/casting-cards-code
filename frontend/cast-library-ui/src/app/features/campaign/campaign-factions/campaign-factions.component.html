@@ -1,0 +1,549 @@
+<!-- ── DM: Factions grid ── -->
+@if (campaign(); as camp) {
+  @if (isDm()) {
+<div class="factions-section">
+  <!-- ── Tabs ── -->
+  <div class="factions-tabs" role="tablist" aria-label="Factions views">
+    <button
+      class="factions-tab"
+      [class.factions-tab--active]="activeTab() === 'factions'"
+      role="tab"
+      [attr.aria-selected]="activeTab() === 'factions'"
+      aria-controls="factions-panel-factions"
+      id="factions-tab-factions"
+      (click)="setTab('factions')"
+    >Factions</button>
+    <button
+      class="factions-tab"
+      [class.factions-tab--active]="activeTab() === 'registry'"
+      role="tab"
+      [attr.aria-selected]="activeTab() === 'registry'"
+      aria-controls="factions-panel-registry"
+      id="factions-tab-registry"
+      (click)="setTab('registry')"
+    >Faction Registry</button>
+    <button
+      class="factions-tab"
+      [class.factions-tab--active]="activeTab() === 'social'"
+      role="tab"
+      [attr.aria-selected]="activeTab() === 'social'"
+      aria-controls="factions-panel-social"
+      id="factions-tab-social"
+      (click)="setTab('social')"
+    >Social Compass</button>
+    <button
+      class="factions-tab"
+      [class.factions-tab--active]="activeTab() === 'set-social'"
+      role="tab"
+      [attr.aria-selected]="activeTab() === 'set-social'"
+      aria-controls="factions-panel-set-social"
+      id="factions-tab-set-social"
+      (click)="setTab('set-social')"
+    >Set Social Compass</button>
+  </div>
+
+  <!-- ── Tab: Factions ── -->
+  @if (activeTab() === 'factions') {
+  <div id="factions-panel-factions" role="tabpanel" aria-labelledby="factions-tab-factions">
+  <div class="cl-grid" #factionsGrid>
+    @for (faction of camp.factions; track faction.factionInstanceId) {
+      <div class="cl-loc-wrap" [attr.data-instance-id]="faction.factionInstanceId">
+        <app-faction-card
+          [faction]="$any(faction)"
+          [flippable]="false"
+          [editable]="false"
+          [secrets]="true"
+          [secretsRevealed]="faction.isVisibleToPlayers"
+          [campaignMode]="true"
+          [tilt]="factionTilt(faction.factionInstanceId)"
+          [influenceGlow]="faction.influence"
+          [style.opacity]="importCardRef?.pendingInstanceIds()?.has(faction.factionInstanceId) ? 0 : 1"
+          (secretsClick)="toggleFactionVisibility(faction)"
+          (cardClick)="goToFaction(faction)"
+        />
+        @if (importCardRef?.drawerOpen() && importCardRef?.removableInstanceIds()?.has(faction.factionInstanceId)) {
+          <button
+            class="cl-loc-remove-btn"
+            (click)="importCardRef!.removeCard(faction.factionInstanceId, $event)"
+            type="button"
+            aria-label="Remove faction"
+          >✕</button>
+        }
+      </div>
+    }
+    @if (!camp.factions.length) {
+      <p class="factions-empty">No factions yet — use the ✦ button below to add some.</p>
+    }
+  </div>
+  </div>
+  }
+
+  <!-- ── Tab: Faction Registry ── -->
+  @if (activeTab() === 'registry') {
+  <div id="factions-panel-registry" role="tabpanel" aria-labelledby="factions-tab-registry">
+    <app-faction-web
+      [factions]="resolvedFactions()"
+      [allCast]="resolvedCasts()"
+      [allSublocations]="resolvedSublocations()"
+      [campaignId]="campaignId()"
+    />
+  </div>
+  }
+
+  <!-- ── Tab: Set Social Compass (DM only) ── -->
+  @if (activeTab() === 'set-social') {
+  <div id="factions-panel-set-social" role="tabpanel" aria-labelledby="factions-tab-set-social">
+    <app-cast-relationships-tab
+      [campaignId]="campaignId()"
+      [castInstances]="resolvedCasts()"
+    />
+  </div>
+  }
+
+  <!-- ── Tab: Social Compass ── -->
+  @if (activeTab() === 'social') {
+  <div id="factions-panel-social" role="tabpanel" aria-labelledby="factions-tab-social">
+
+    @if (!resolvedCasts().length) {
+      <p class="factions-empty" style="padding: 40px 0; text-align: center;">No cast members in this campaign yet.</p>
+    } @else {
+
+      <!-- Cast selector dropdown -->
+      <div class="compass-cast-selector">
+        <span class="compass-cast-selector-label">View compass from perspective of</span>
+        <div class="compass-cast-selector-dropdown">
+          <app-campaign-dropdown
+            [options]="castDropdownOptions()"
+            [value]="selectedCompassCastId()"
+            fontSize="13px"
+            (valueChange)="selectedCompassCastId.set($event)"
+          />
+        </div>
+      </div>
+
+      @if (!selectedCompassCastId()) {
+        <!-- Empty state -->
+        <div class="compass-empty-state">
+          <div class="compass-empty-icon">⊙</div>
+          <p class="compass-empty-label">Select a cast member above to render their Social Compass.</p>
+        </div>
+      } @else {
+
+        <div class="compass-container" role="region" aria-label="Social compass">
+
+          <svg class="compass-svg" viewBox="0 0 560 560" aria-hidden="true" focusable="false">
+            <defs>
+              <marker id="fsc-arrow-allied"    markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto">
+                <path d="M0,0 L0,6 L6,3 z" class="arrow arrow--allied"/>
+              </marker>
+              <marker id="fsc-arrow-rival"     markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto">
+                <path d="M0,0 L0,6 L6,3 z" class="arrow arrow--rival"/>
+              </marker>
+              <marker id="fsc-arrow-enemy"     markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto">
+                <path d="M0,0 L0,6 L6,3 z" class="arrow arrow--enemy"/>
+              </marker>
+              <marker id="fsc-arrow-blackmail" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto">
+                <path d="M0,0 L0,6 L6,3 z" class="arrow arrow--blackmail"/>
+              </marker>
+            </defs>
+
+            <!-- Compass background -->
+            <circle cx="280" cy="280" r="224" class="compass-bg"/>
+
+            <!-- Hostile band -->
+            <path fill-rule="evenodd" class="compass-band compass-band--hostile"
+              d="M 504,280 A 224,224 0 1 0 56,280 A 224,224 0 1 0 504,280 Z M 442,280 A 162,162 0 1 0 118,280 A 162,162 0 1 0 442,280 Z"/>
+
+            <!-- Devoted band -->
+            <path fill-rule="evenodd" class="compass-band compass-band--devoted"
+              d="M 380,280 A 100,100 0 1 0 180,280 A 100,100 0 1 0 380,280 Z M 318,280 A 38,38 0 1 0 242,280 A 38,38 0 1 0 318,280 Z"/>
+
+            <!-- Value rings -->
+            <circle cx="280" cy="280" r="205" class="compass-ring compass-ring--value"/>
+            <circle cx="280" cy="280" r="187" class="compass-ring compass-ring--value"/>
+            <circle cx="280" cy="280" r="168" class="compass-ring compass-ring--value"/>
+            <circle cx="280" cy="280" r="150" class="compass-ring compass-ring--value"/>
+            <circle cx="280" cy="280" r="131" class="compass-ring compass-ring--value"/>
+            <circle cx="280" cy="280" r="112" class="compass-ring compass-ring--value"/>
+            <circle cx="280" cy="280" r=" 94" class="compass-ring compass-ring--value"/>
+            <circle cx="280" cy="280" r=" 75" class="compass-ring compass-ring--value"/>
+            <circle cx="280" cy="280" r=" 57" class="compass-ring compass-ring--value"/>
+            <circle cx="280" cy="280" r=" 38" class="compass-ring compass-ring--value"/>
+
+            <!-- Ring boundary circles -->
+            <circle cx="280" cy="280" r="224" class="compass-ring compass-ring--outer"/>
+            <circle cx="280" cy="280" r="162" class="compass-ring compass-ring--mid"/>
+            <circle cx="280" cy="280" r="100" class="compass-ring compass-ring--mid"/>
+
+            <!-- Slice lines -->
+            @for (line of compassSliceLines; track $index) {
+              <line
+                [attr.x1]="line.x1" [attr.y1]="line.y1"
+                [attr.x2]="line.x2" [attr.y2]="line.y2"
+                class="compass-slice-line"
+              />
+            }
+
+            <!-- Ring labels -->
+            <text x="280" y="87"  text-anchor="middle" class="compass-ring-label">Hostile</text>
+            <text x="280" y="149" text-anchor="middle" class="compass-ring-label">Indifferent</text>
+            <text x="280" y="211" text-anchor="middle" class="compass-ring-label">Devoted</text>
+
+            <!-- Cast nodes -->
+            @for (node of compassNodes(); track node.castInstanceId) {
+              <g
+                class="compass-node"
+                [class.compass-node--unassessed]="node.isUnassessed"
+                role="button"
+                tabindex="0"
+                style="cursor:pointer"
+                [attr.aria-label]="'View ' + node.name + (node.isUnassessed ? ' (alignment unassessed)' : '')"
+                (click)="openCastOverlay(node, $event)"
+                (keydown.enter)="openCastOverlay(node, $event)"
+                (keydown.space)="openCastOverlay(node, $event)"
+              >
+                <circle
+                  [attr.cx]="node.cx"
+                  [attr.cy]="node.cy"
+                  [attr.r]="node.r"
+                  [attr.fill]="node.fill"
+                  class="compass-node-circle"
+                />
+                <text
+                  [attr.x]="node.cx"
+                  [attr.y]="node.cy + 3"
+                  font-size="8"
+                  text-anchor="middle"
+                  class="compass-node-code"
+                >{{ node.alignmentCode }}</text>
+                <text
+                  [attr.x]="node.cx"
+                  [attr.y]="node.cy + node.r + 10"
+                  text-anchor="middle"
+                  class="compass-node-label"
+                >{{ node.firstName }}</text>
+                @if (node.lastName) {
+                  <text
+                    [attr.x]="node.cx"
+                    [attr.y]="node.cy + node.r + 19"
+                    text-anchor="middle"
+                    class="compass-node-label"
+                  >{{ node.lastName }}</text>
+                }
+              </g>
+            }
+
+            <!-- Center node — selected cast (clickable) -->
+            <g
+              class="compass-node"
+              role="button"
+              tabindex="0"
+              style="cursor:pointer"
+              [attr.aria-label]="'View ' + (selectedCast()?.name ?? '')"
+              (click)="openCastOverlay(null, $event)"
+              (keydown.enter)="openCastOverlay(null, $event)"
+              (keydown.space)="openCastOverlay(null, $event)"
+            >
+              <circle cx="280" cy="280" r="22" class="compass-center"/>
+              <text x="280" y="284" text-anchor="middle" class="compass-center-label">
+                {{ (selectedCast()?.name ?? '').split(' ')[0] }}
+              </text>
+            </g>
+
+          </svg>
+
+          <!-- Disposition summary -->
+          @if (compassDispositionSummary()) {
+            <p class="compass-unassessed-notice">{{ compassDispositionSummary() }}</p>
+          }
+
+          <!-- Screen reader summary -->
+          <div class="sr-only" aria-live="polite">
+            <p>Social compass showing {{ compassNodes().length }} cast members around {{ selectedCast()?.name }}.</p>
+            @for (node of compassNodes(); track node.castInstanceId) {
+              <p>{{ node.name }}{{ node.isUnassessed ? ' — alignment unassessed, shown at Lawful Neutral' : '' }}.</p>
+            }
+          </div>
+
+        </div>
+      }
+    }
+
+  </div>
+  }
+
+  <app-portal-import-card
+    #importCard
+    [campaign]="campaign()"
+    [cardType]="'faction'"
+    [targetGridEl]="factionsGridEl"
+    [initialInstances]="camp.factions"
+    (factionAdded)="onFactionAdded($event)"
+    (factionRemoved)="onFactionRemoved($event)"
+  />
+</div>
+  } <!-- end @if (isDm()) -->
+} <!-- end @if (campaign(); as camp) -->
+
+<!-- ── Player: Factions grid (3 tabs) ── -->
+@if (!isDm()) {
+<div class="factions-section">
+  <!-- ── Tabs ── -->
+  <div class="factions-tabs" role="tablist" aria-label="Factions views">
+    <button
+      class="factions-tab"
+      [class.factions-tab--active]="activeTab() === 'factions'"
+      role="tab"
+      [attr.aria-selected]="activeTab() === 'factions'"
+      aria-controls="factions-panel-factions"
+      id="factions-tab-factions"
+      (click)="setTab('factions')"
+    >Factions</button>
+    <button
+      class="factions-tab"
+      [class.factions-tab--active]="activeTab() === 'registry'"
+      role="tab"
+      [attr.aria-selected]="activeTab() === 'registry'"
+      aria-controls="factions-panel-registry"
+      id="factions-tab-registry"
+      (click)="setTab('registry')"
+    >Faction Registry</button>
+    <button
+      class="factions-tab"
+      [class.factions-tab--active]="activeTab() === 'social'"
+      role="tab"
+      [attr.aria-selected]="activeTab() === 'social'"
+      aria-controls="factions-panel-social"
+      id="factions-tab-social"
+      (click)="setTab('social')"
+    >Social Compass</button>
+  </div>
+
+  <!-- ── Tab: Factions ── -->
+  @if (activeTab() === 'factions') {
+  <div id="factions-panel-factions" role="tabpanel" aria-labelledby="factions-tab-factions">
+  <div class="cl-grid">
+    @for (faction of resolvedFactions(); track faction.factionInstanceId) {
+      <div class="cl-loc-wrap" [attr.data-instance-id]="faction.factionInstanceId">
+        <app-faction-card
+          [faction]="$any(faction)"
+          [flippable]="false"
+          [editable]="false"
+          [secrets]="false"
+          [campaignMode]="true"
+          [tilt]="factionTilt(faction.factionInstanceId)"
+          [influenceGlow]="faction.influence"
+          (cardClick)="goToFaction(faction)"
+        />
+      </div>
+    }
+    @if (!resolvedFactions().length) {
+      <p class="factions-empty">No factions have been revealed yet.</p>
+    }
+  </div>
+  </div>
+  }
+
+  <!-- ── Tab: Faction Registry ── -->
+  @if (activeTab() === 'registry') {
+  <div id="factions-panel-registry" role="tabpanel" aria-labelledby="factions-tab-registry">
+    <app-faction-web
+      [factions]="resolvedFactions()"
+      [allCast]="resolvedCasts()"
+      [allSublocations]="resolvedSublocations()"
+      [campaignId]="campaignId()"
+      [playerMode]="true"
+    />
+  </div>
+  }
+
+  <!-- ── Tab: Social Compass ── -->
+  @if (activeTab() === 'social') {
+  <div id="factions-panel-social" role="tabpanel" aria-labelledby="factions-tab-social">
+
+    @if (!resolvedCasts().length) {
+      <p class="factions-empty" style="padding: 40px 0; text-align: center;">No cast members in this campaign yet.</p>
+    } @else {
+
+      <div class="compass-container" role="region" aria-label="Social compass">
+
+        <svg class="compass-svg" viewBox="0 0 560 560" aria-hidden="true" focusable="false">
+          <defs>
+            <marker id="fsc-arrow-allied"    markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto">
+              <path d="M0,0 L0,6 L6,3 z" class="arrow arrow--allied"/>
+            </marker>
+            <marker id="fsc-arrow-rival"     markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto">
+              <path d="M0,0 L0,6 L6,3 z" class="arrow arrow--rival"/>
+            </marker>
+            <marker id="fsc-arrow-enemy"     markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto">
+              <path d="M0,0 L0,6 L6,3 z" class="arrow arrow--enemy"/>
+            </marker>
+            <marker id="fsc-arrow-blackmail" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto">
+              <path d="M0,0 L0,6 L6,3 z" class="arrow arrow--blackmail"/>
+            </marker>
+          </defs>
+
+          <!-- Compass background -->
+          <circle cx="280" cy="280" r="224" class="compass-bg"/>
+
+          <!-- Hostile band -->
+          <path fill-rule="evenodd" class="compass-band compass-band--hostile"
+            d="M 504,280 A 224,224 0 1 0 56,280 A 224,224 0 1 0 504,280 Z M 442,280 A 162,162 0 1 0 118,280 A 162,162 0 1 0 442,280 Z"/>
+
+          <!-- Devoted band -->
+          <path fill-rule="evenodd" class="compass-band compass-band--devoted"
+            d="M 380,280 A 100,100 0 1 0 180,280 A 100,100 0 1 0 380,280 Z M 318,280 A 38,38 0 1 0 242,280 A 38,38 0 1 0 318,280 Z"/>
+
+          <!-- Value rings -->
+          <circle cx="280" cy="280" r="205" class="compass-ring compass-ring--value"/>
+          <circle cx="280" cy="280" r="187" class="compass-ring compass-ring--value"/>
+          <circle cx="280" cy="280" r="168" class="compass-ring compass-ring--value"/>
+          <circle cx="280" cy="280" r="150" class="compass-ring compass-ring--value"/>
+          <circle cx="280" cy="280" r="131" class="compass-ring compass-ring--value"/>
+          <circle cx="280" cy="280" r="112" class="compass-ring compass-ring--value"/>
+          <circle cx="280" cy="280" r=" 94" class="compass-ring compass-ring--value"/>
+          <circle cx="280" cy="280" r=" 75" class="compass-ring compass-ring--value"/>
+          <circle cx="280" cy="280" r=" 57" class="compass-ring compass-ring--value"/>
+          <circle cx="280" cy="280" r=" 38" class="compass-ring compass-ring--value"/>
+
+          <!-- Ring boundary circles -->
+          <circle cx="280" cy="280" r="224" class="compass-ring compass-ring--outer"/>
+          <circle cx="280" cy="280" r="162" class="compass-ring compass-ring--mid"/>
+          <circle cx="280" cy="280" r="100" class="compass-ring compass-ring--mid"/>
+
+          <!-- Slice lines -->
+          @for (line of compassSliceLines; track $index) {
+            <line
+              [attr.x1]="line.x1" [attr.y1]="line.y1"
+              [attr.x2]="line.x2" [attr.y2]="line.y2"
+              class="compass-slice-line"
+            />
+          }
+
+          <!-- Ring labels -->
+          <text x="280" y="87"  text-anchor="middle" class="compass-ring-label">Hostile</text>
+          <text x="280" y="149" text-anchor="middle" class="compass-ring-label">Indifferent</text>
+          <text x="280" y="211" text-anchor="middle" class="compass-ring-label">Devoted</text>
+
+          <!-- Connection edges between cast nodes -->
+          @for (edge of playerCompassEdges(); track edge.id) {
+            <line
+              [attr.x1]="edge.x1" [attr.y1]="edge.y1"
+              [attr.x2]="edge.x2" [attr.y2]="edge.y2"
+              [class]="'compass-edge ' + edge.edgeClass"
+            />
+          }
+
+          <!-- Cast nodes -->
+          @for (node of playerCompassNodes(); track node.castInstanceId) {
+            <g
+              class="compass-node"
+              [class.compass-node--unassessed]="node.isUnassessed"
+              role="button"
+              tabindex="0"
+              style="cursor:pointer"
+              [attr.aria-label]="'View ' + node.name + (node.isUnassessed ? ' (alignment unassessed)' : '')"
+              (click)="openCastOverlay(node, $event)"
+              (keydown.enter)="openCastOverlay(node, $event)"
+              (keydown.space)="openCastOverlay(node, $event)"
+            >
+              <circle
+                [attr.cx]="node.cx"
+                [attr.cy]="node.cy"
+                [attr.r]="node.r"
+                [attr.fill]="node.fill"
+                class="compass-node-circle"
+              />
+              <text
+                [attr.x]="node.cx"
+                [attr.y]="node.cy + 3"
+                font-size="8"
+                text-anchor="middle"
+                class="compass-node-code"
+              >{{ node.alignmentCode }}</text>
+              <text
+                [attr.x]="node.cx"
+                [attr.y]="node.cy + node.r + 10"
+                text-anchor="middle"
+                class="compass-node-label"
+              >{{ node.firstName }}</text>
+              @if (node.lastName) {
+                <text
+                  [attr.x]="node.cx"
+                  [attr.y]="node.cy + node.r + 19"
+                  text-anchor="middle"
+                  class="compass-node-label"
+                >{{ node.lastName }}</text>
+              }
+            </g>
+          }
+
+          <!-- Center node — the party -->
+          <g class="compass-node">
+            <circle cx="280" cy="280" r="22" class="compass-center"/>
+            <text x="280" y="284" text-anchor="middle" class="compass-center-label">Party</text>
+          </g>
+
+        </svg>
+
+        <!-- Screen reader summary -->
+        <div class="sr-only" aria-live="polite">
+          <p>Social compass showing {{ playerCompassNodes().length }} cast members around the party.</p>
+          @for (node of playerCompassNodes(); track node.castInstanceId) {
+            <p>{{ node.name }}{{ node.isUnassessed ? ' — alignment unassessed, shown at Lawful Neutral' : '' }}.</p>
+          }
+        </div>
+
+      </div>
+    }
+
+  </div>
+  }
+</div>
+} <!-- end @if (!isDm()) -->
+
+<!-- ── Cast card popout overlay ── -->
+@if (overlayState() !== 'closed') {
+
+  @for (angle of sparkAngles; track angle) {
+    <span
+      class="cast-spark"
+      [class.cast-spark--closing]="overlayState() === 'closing'"
+      [style.--spark-angle]="angle + 'deg'"
+      [style.--spark-x]="sparkOriginX() + 'px'"
+      [style.--spark-y]="sparkOriginY() + 'px'"
+      aria-hidden="true"
+    ></span>
+  }
+
+  <div
+    class="cast-card-backdrop"
+    [class.cast-card-backdrop--closing]="overlayState() === 'closing'"
+    (click)="closeCastOverlay()"
+    aria-hidden="true"
+  ></div>
+
+  @if (selectedCastOverlay(); as cast) {
+    <div
+      class="cast-card-popout"
+      [class.cast-card-popout--open]="overlayState() === 'open'"
+      [class.cast-card-popout--closing]="overlayState() === 'closing'"
+      role="dialog"
+      aria-modal="true"
+      [attr.aria-label]="cast.name + ' quick view'"
+    >
+      <button class="cast-card-popout-close" (click)="closeCastOverlay()" aria-label="Close">×</button>
+      <app-cast-card
+        [cast]="cast"
+        [flippable]="false"
+        [editable]="false"
+        [showStars]="false"
+        [dmMode]="true"
+        [campaignMode]="false"
+      />
+      @if (selectedCompassRelExplanation()) {
+        <div class="compass-rel-explanation">{{ selectedCompassRelExplanation() }}</div>
+      }
+    </div>
+  }
+}

@@ -105,6 +105,7 @@ public class CampaignWebMapper(
             Posture = d.Posture,
             Speed = d.Speed,
             VoicePlacement = d.VoicePlacement,
+            VoiceNotes = d.VoiceNotes,
             Description = d.Description,
             PublicDescription = d.PublicDescription,
             IsVisibleToPlayers = d.IsVisibleToPlayers,
@@ -114,6 +115,9 @@ public class CampaignWebMapper(
                                   .ToList(),
             Keywords = d.Keywords,
             DmNotes = d.DmNotes,
+            FactionSymbols = d.FactionSymbols
+                               .Select(f => new FactionSymbolResponse(f.FactionInstanceId, f.SymbolPath))
+                               .ToList(),
         };
 
         logging.LogMapping(
@@ -151,6 +155,8 @@ public class CampaignWebMapper(
                            .ToList(),
             Keywords = d.Keywords,
             IsPartyAnchor = d.IsPartyAnchor,
+            FactionInstanceId = d.FactionInstanceId,
+            SymbolPath = d.SymbolPath,
         };
 
         logging.LogMapping(

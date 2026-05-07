@@ -6,12 +6,13 @@ import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../../environments/environment';
 import { Location } from '../../../shared/models/location.model';
 import { LocationCardComponent } from '../../../shared/components/location-card/location-card.component';
-import { DmNavComponent } from '../../../shared/components/dm-nav/dm-nav.component';
+import { JournalTitleComponent } from '../../../shared/components/journal-title/journal-title.component';
+import { JournalWatermarkComponent } from '../../../shared/components/journal-watermark/journal-watermark.component';
 
 @Component({
   selector: 'app-location-library',
   standalone: true,
-  imports: [CommonModule, FormsModule, LocationCardComponent, RouterLink, DmNavComponent],
+  imports: [CommonModule, FormsModule, LocationCardComponent, RouterLink, JournalTitleComponent, JournalWatermarkComponent],
   templateUrl: './location-library.component.html',
   styleUrl: './location-library.component.scss'
 })

@@ -8,8 +8,8 @@ import { EMPTY } from 'rxjs';
 import { environment } from '../../../../environments/environment';
 import { Cast } from '../../../shared/models/cast.model';
 import { SparkleService } from '../../../shared/services/sparkle.service';
-import { DmNavComponent } from '../../../shared/components/dm-nav/dm-nav.component';
 import { CastCardComponent } from '../../../shared/components/cast-card/cast-card.component';
+import { JournalTitleComponent } from '../../../shared/components/journal-title/journal-title.component';
 
 const VOICE_OPTIONS = ['Chest', 'Throat', 'Mouth / Oral', 'Nasal', 'Head / Sinus'];
 
@@ -36,7 +36,7 @@ const PRONOUN_OPTIONS = [
 @Component({
   selector: 'app-cast-form',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, RouterLink, DmNavComponent, CastCardComponent],
+  imports: [CommonModule, ReactiveFormsModule, RouterLink, CastCardComponent, JournalTitleComponent],
   templateUrl: './cast-form.component.html',
   styleUrl: './cast-form.component.scss'
 })

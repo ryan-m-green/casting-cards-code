@@ -1,39 +1,34 @@
-import { Component, OnInit, signal, computed, inject, effect, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, signal, computed, inject, ViewChild, ElementRef, effect, untracked } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { HttpClient } from '@angular/common/http';
-import { environment } from '../../../../environments/environment';
-import { CampaignDetail } from '../../../shared/models/campaign.model';
 import { CampaignLocationInstance } from '../../../shared/models/location.model';
 import { CampaignSublocationInstance } from '../../../shared/models/sublocation.model';
 import { CampaignSecret } from '../../../shared/models/secret.model';
-import { CampaignHubService } from '../../../core/hub/campaign-hub.service';
 import { PortalTransitionService } from '../../../core/portal-transition.service';
 import { PlayerCampaignShellComponent } from '../player-campaign-shell/player-campaign-shell.component';
 import { PlayerCampaignShellService } from '../../../core/player-campaign-shell.service';
-import { PlayerLocationPoliticalNotesComponent } from '../player-location-political-notes/player-location-political-notes.component';
+import { CampaignHubService } from '../../../core/hub/campaign-hub.service';
+import { PlayerLocationNotesComponent } from '../player-location-notes/player-location-notes.component';
 import { LocationCardComponent } from '../../../shared/components/location-card/location-card.component';
 import { SublocationCardComponent } from '../../../shared/components/sublocation-card/sublocation-card.component';
 
 @Component({
   selector: 'app-player-location-detail',
   standalone: true,
-  imports: [CommonModule, PlayerLocationPoliticalNotesComponent, LocationCardComponent, SublocationCardComponent],
+  imports: [CommonModule, PlayerLocationNotesComponent, LocationCardComponent, SublocationCardComponent],
   templateUrl: './player-location-detail.component.html',
   styleUrl: './player-location-detail.component.scss'
 })
 export class PlayerLocationDetailComponent implements OnInit {
   private route      = inject(ActivatedRoute);
   private router     = inject(Router);
-  private http       = inject(HttpClient);
-  private hub        = inject(CampaignHubService);
   private transition = inject(PortalTransitionService);
   private shell      = inject(PlayerCampaignShellComponent);
   private shellSvc   = inject(PlayerCampaignShellService);
+  private hub        = inject(CampaignHubService);
 
   @ViewChild('detailContent')   private detailContentRef!: ElementRef<HTMLElement>;
   @ViewChild('expandBtn')       private expandBtnRef!: ElementRef<HTMLElement>;
-  @ViewChild('politicalNotes')  private politicalNotesRef!: ElementRef<HTMLElement>;
 
   campaignId     = signal('');
   locationInstanceId = signal('');
@@ -41,7 +36,6 @@ export class PlayerLocationDetailComponent implements OnInit {
   panelHeight    = signal('220px');
 
   campaign = () => this.shell.campaign();
-  portalColor = computed(() => this.campaign()?.spineColor ?? '#9ab0b8');
 
   location = computed<CampaignLocationInstance | null>(() => {
     const c = this.campaign();
@@ -61,14 +55,18 @@ export class PlayerLocationDetailComponent implements OnInit {
     return (c.sublocations ?? []).filter((l: CampaignSublocationInstance) => l.locationInstanceId === this.locationInstanceId());
   });
 
-  locationCasts = computed(() => {
-    const c = this.campaign();
-    if (!c) return [];
-    return c.casts.filter(cast => cast.locationInstanceId === this.locationInstanceId());
-  });
-
   constructor() {
-    // Shell handles secret reveal events and campaign updates
+    effect(() => {
+      const event = this.hub.cardVisibilityChanged();
+      if (!event || event.cardType !== 'location') return;
+      const locationId = untracked(() => this.locationInstanceId());
+      const campaignId = untracked(() => this.campaignId());
+      if (!locationId || !campaignId || event.instanceId !== locationId) return;
+      if (!event.isVisible) {
+        this.transition.quickCover();
+        this.router.navigate(['/player/campaign', campaignId]);
+      }
+    });
   }
 
   ngOnInit() {
@@ -80,8 +78,12 @@ export class PlayerLocationDetailComponent implements OnInit {
 
     const loc = this.location();
     if (loc) {
-      this.shellSvc.setTitle(loc.name);
-      this.shellSvc.setCrumbs([{ label: '← Locations', action: () => this.goToCampaign() }]);
+      this.shellSvc.setTitleContext({
+        pageType: 'location',
+        campaignId: id,
+        baseRoute: '/player/campaign',
+        location: loc,
+      });
     }
   }
 
@@ -113,13 +115,6 @@ export class PlayerLocationDetailComponent implements OnInit {
   goToCampaign() {
     this.transition.quickCover();
     this.router.navigate(['/player/campaign', this.campaignId()]);
-  }
-
-  scrollToNotes() {
-    const el = this.politicalNotesRef?.nativeElement;
-    if (!el) return;
-    const targetScroll = window.scrollY + el.getBoundingClientRect().top - 20;
-    window.scrollTo({ top: targetScroll, behavior: 'smooth' });
   }
 
   private tiltMap = new Map<string, number>();

@@ -19,13 +19,18 @@ export class SublocationCardComponent {
   @Input() secrets         = false;
   @Input() secretsRevealed = false;
   @Input() campaignMode    = false;
+  @Input() isPrimary        = false;
+  @Input() canSetPrimary    = false;
+  @Input() primaryLocked    = false;
   @Input() secretContent: string | null = null;
+  @Input() symbolPath: string | null = null;
 
-  @Output() editClick    = new EventEmitter<void>();
-  @Output() deleteClick  = new EventEmitter<void>();
-  @Output() fileSelected = new EventEmitter<File>();
-  @Output() secretsClick = new EventEmitter<void>();
-  @Output() cardClick    = new EventEmitter<void>();
+  @Output() editClick      = new EventEmitter<void>();
+  @Output() deleteClick    = new EventEmitter<void>();
+  @Output() fileSelected   = new EventEmitter<File>();
+  @Output() secretsClick   = new EventEmitter<void>();
+  @Output() cardClick      = new EventEmitter<void>();
+  @Output() primaryToggled = new EventEmitter<void>();
 
   flipped = false;
 
@@ -45,6 +50,12 @@ export class SublocationCardComponent {
   onSecretsClick(e: Event): void {
     e.stopPropagation();
     this.secretsClick.emit();
+  }
+
+  onCrownClick(e: Event): void {
+    e.stopPropagation();
+    if (!this.canSetPrimary || this.primaryLocked) return;
+    this.primaryToggled.emit();
   }
 
   onEditClick(e: Event): void {

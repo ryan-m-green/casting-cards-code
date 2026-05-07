@@ -2,7 +2,7 @@
 <!-- ── Body ── -->
 <div class="location-body">
 
-  <!-- Card + notes button -->
+  <!-- Card -->
   <div class="location-card-left">
     <app-location-card [location]="c"
                        [flippable]="false"
@@ -10,10 +10,6 @@
                        [secrets]="false"
                        [tilt]="0"
                        [campaignMode]="false" />
-
-    <button class="campaign-secondary-btn" (click)="scrollToNotes()" aria-label="Scroll to political intelligence notes">
-      ↓ Political Intelligence
-    </button>
   </div>
   <!-- Detail panel -->
   <div class="location-detail-panel" [style.height]="panelHeight()" [class.detail-panel--mobile-expanded]="detailExpanded()">
@@ -92,7 +88,7 @@
           <span class="detail-value">{{ c.languages }}</span>
         </div>
         }
-        @if (c.keywords?.length) {
+        @if (c.keywords.length) {
         <div class="detail-cell">
           <span class="detail-label">Keywords</span>
           <span class="detail-line"></span>
@@ -129,6 +125,12 @@
 
 </div>
 
+<!-- ── Player Notes section ── -->
+<div class="location-notes-panel">
+  <app-player-location-notes [campaignId]="campaignId()"
+                             [locationInstanceId]="locationInstanceId()" />
+</div>
+
 <!-- ── Sublocations section ── -->
       @if (locationSublocations().length) {
 <div class="location-sublocations-section">
@@ -146,21 +148,13 @@
                           [secrets]="false"
                           [tilt]="tiltFor(subLoc.instanceId)"
                           [campaignMode]="true"
+                          [symbolPath]="subLoc.symbolPath ?? null"
                           (cardClick)="goToSublocation(subLoc)" />
     }
   </div>
 
 </div>
     }
-
-<!-- ── Political notes section ── -->
-<div #politicalNotes>
-  <app-player-location-political-notes [campaignId]="campaignId()"
-                                       [locationInstanceId]="locationInstanceId()"
-                                       [allCasts]="locationCasts()"
-                                       [relationships]="campaign()?.relationships ?? []"
-                                       [spineColor]="portalColor()" />
-</div>
 
 }
 

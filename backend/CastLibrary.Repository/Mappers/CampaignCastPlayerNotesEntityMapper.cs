@@ -22,10 +22,10 @@ namespace CastLibrary.Repository.Mappers
                 Connections = entity.Connections.Length > 0 ? entity.Connections.Select(o => Guid.Parse(o)).ToList() : new List<Guid>(),
                 CreatedAt = entity.CreatedAt,
                 Id = entity.Id,
+                Notes = entity.Notes ?? string.Empty,
                 Perception = entity.Perception,
                 Rating = entity.Rating,
-                UpdatedAt = entity.UpdatedAt,
-                Want = entity.Want ?? string.Empty
+                UpdatedAt = entity.UpdatedAt
             };
         }
     }

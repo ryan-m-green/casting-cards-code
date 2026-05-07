@@ -1,21 +1,5 @@
 <div class="pc">
-  <div class="player-nav">
-    <a class="player-nav__link" routerLink="/player/campaigns">Dashboard</a>
-    <a class="player-nav__link" routerLink="/about">About</a>
-    <div class="player-nav__account">
-      <button class="player-nav__account-trigger" (click)="menuOpen.set(!menuOpen())">Account
-        <span class="player-nav__caret" [class.player-nav__caret--open]="menuOpen()">▾</span>
-      </button>
-      @if (menuOpen()) {
-        <div class="player-nav__dropdown">
-          <a class="player-nav__dropdown-item" routerLink="/player/bug-report" (click)="menuOpen.set(false)">Report a Glitch</a>
-          <a class="player-nav__dropdown-item" routerLink="/forgot-password" (click)="menuOpen.set(false)">Forgot Password</a>
-          <button class="player-nav__dropdown-item" (click)="auth.logout()">Logout</button>
-        </div>
-      }
-    </div>
-  </div>
-  <h2 class="page-title page-title-sm">Report a Glitch in the Realm</h2>
+  <app-journal-title title="Report a Glitch in the Realm" />
   <p class="pnum form-subtitle">Add your findings</p>
 
   @if (!submitted()) {

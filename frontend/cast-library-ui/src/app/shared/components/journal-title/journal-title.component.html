@@ -1,0 +1,14 @@
+<div class="jt-wrap" [class.jt-center]="align() === 'center'">
+  @if (align() === 'center') {
+    <div class="jt-heading"><span class="jt-orn">✦</span> {{ title() }} <span class="jt-orn">✦</span></div>
+  } @else {
+    <div class="jt-heading">{{ title() }}</div>
+  }
+  <div class="jt-rule"></div>
+  @if (username()) {
+    <div class="jt-username">Welcome back, {{ username() }}</div>
+  }
+  @if (subtitle()) {
+    <div class="jt-subtitle">{{ subtitle() }}</div>
+  }
+</div>

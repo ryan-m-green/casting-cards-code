@@ -140,6 +140,8 @@ CREATE TABLE IF NOT EXISTS campaign_sublocation_instances (
     is_visible_to_players BOOLEAN      NOT NULL DEFAULT FALSE,
     custom_items          JSONB        NOT NULL DEFAULT '[]',
     keywords              TEXT[]       NOT NULL DEFAULT '{}',
+    faction_instance_id   UUID         REFERENCES campaign_faction_instances(faction_instance_id) ON DELETE SET NULL,
+    symbol_path           TEXT,
     created_at            TIMESTAMPTZ  NOT NULL DEFAULT NOW()
 );
 
@@ -170,6 +172,7 @@ CREATE TABLE IF NOT EXISTS campaign_cast_instances (
     is_visible_to_players    BOOLEAN      NOT NULL DEFAULT FALSE,
     custom_items             JSONB        NOT NULL DEFAULT '[]',
     keywords                 TEXT[]       NOT NULL DEFAULT '{}',
+    faction_symbols          JSONB        NOT NULL DEFAULT '[]',
     created_at               TIMESTAMPTZ  NOT NULL DEFAULT NOW()
 );
 
@@ -199,27 +202,6 @@ CREATE TABLE IF NOT EXISTS campaign_secrets (
     revealed_at             TIMESTAMPTZ,
     created_at              TIMESTAMPTZ  NOT NULL DEFAULT NOW(),
     CONSTRAINT chk_secrets_exactly_one_entity CHECK (
-        (cast_instance_id        IS NOT NULL)::int +
-        (location_instance_id    IS NOT NULL)::int +
-        (sublocation_instance_id IS NOT NULL)::int = 1
-    )
-);
-
--- ─── Campaign Notes ───────────────────────────────────────────────────────────
--- Replaces the former polymorphic design (entity_type + instance_id) with typed FK columns.
--- Exactly one FK column must be non-null — enforced by chk_notes_exactly_one_entity.
--- ON DELETE CASCADE on each FK: deleting any instance type automatically removes its notes.
-CREATE TABLE IF NOT EXISTS campaign_notes (
-    id                      UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    campaign_id             UUID         NOT NULL REFERENCES campaigns(id)                              ON DELETE CASCADE,
-    cast_instance_id        UUID         REFERENCES campaign_cast_instances(instance_id)               ON DELETE CASCADE,
-    location_instance_id    UUID         REFERENCES campaign_location_instances(instance_id)           ON DELETE CASCADE,
-    sublocation_instance_id UUID         REFERENCES campaign_sublocation_instances(instance_id)        ON DELETE CASCADE,
-    content                 TEXT         NOT NULL,
-    created_by_user_id      UUID         NOT NULL REFERENCES users(id),
-    created_at              TIMESTAMPTZ  NOT NULL DEFAULT NOW(),
-    updated_at              TIMESTAMPTZ  NOT NULL DEFAULT NOW(),
-    CONSTRAINT chk_notes_exactly_one_entity CHECK (
         (cast_instance_id        IS NOT NULL)::int +
         (location_instance_id    IS NOT NULL)::int +
         (sublocation_instance_id IS NOT NULL)::int = 1
@@ -291,12 +273,6 @@ CREATE INDEX IF NOT EXISTS idx_camp_secrets_cast          ON campaign_secrets(ca
 CREATE INDEX IF NOT EXISTS idx_camp_secrets_location      ON campaign_secrets(location_instance_id);
 CREATE INDEX IF NOT EXISTS idx_camp_secrets_sublocation   ON campaign_secrets(sublocation_instance_id);
 
--- Campaign notes (typed FKs replace former instance_id index)
-CREATE INDEX IF NOT EXISTS idx_camp_notes_campaign        ON campaign_notes(campaign_id);
-CREATE INDEX IF NOT EXISTS idx_camp_notes_cast            ON campaign_notes(cast_instance_id);
-CREATE INDEX IF NOT EXISTS idx_camp_notes_location        ON campaign_notes(location_instance_id);
-CREATE INDEX IF NOT EXISTS idx_camp_notes_sublocation     ON campaign_notes(sublocation_instance_id);
-
 -- Currency transactions
 CREATE INDEX IF NOT EXISTS idx_currency_campaign          ON currency_transactions(campaign_id);
 
@@ -327,14 +303,14 @@ CREATE INDEX IF NOT EXISTS idx_cast_rel_target    ON campaign_cast_relationships
 
 -- ─── Campaign Cast Player Notes ───────────────────────────────────────────────
 -- One shared record per cast instance per campaign, writable by any campaign player.
--- Stores structured player observations: want, connections, alignment, perception.
+-- Stores structured player observations: notes, connections, alignment, perception.
 -- connections: text[] of cast instance UUID strings the player links to this cast.
 -- perception: -5 (hateful) .. +5 (devoted). 0 = indifferent baseline.
 CREATE TABLE IF NOT EXISTS campaign_cast_player_notes (
     id               UUID         PRIMARY KEY DEFAULT gen_random_uuid(),
     campaign_id      UUID         NOT NULL REFERENCES campaigns(id)                        ON DELETE CASCADE,
     cast_instance_id UUID         NOT NULL REFERENCES campaign_cast_instances(instance_id) ON DELETE CASCADE,
-    want             TEXT         NOT NULL DEFAULT '',
+    notes             TEXT         NOT NULL DEFAULT '',
     connections      TEXT[]       NOT NULL DEFAULT '{}',
     alignment        VARCHAR(30)  NOT NULL DEFAULT '',
     perception       SMALLINT     NOT NULL DEFAULT 0 CHECK (perception >= -5 AND perception <= 5),

@@ -12,6 +12,7 @@ export interface Sublocation {
   dmUserId: string;
   name: string;
   description: string;
+  dmNotes?: string;
   imageUrl?: string;
   shopItems: ShopItem[];
   createdAt: string;
@@ -31,4 +32,6 @@ export interface CampaignSublocationInstance {
   keywords: string[];
   customItems: { name: string; price: string }[];
   isPartyAnchor: boolean;
+  factionInstanceId?: string;
+  symbolPath?: string;
 }

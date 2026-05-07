@@ -1,13 +1,11 @@
 <div class="pc scroll-body">
-  <app-dm-nav />
+  <app-journal-watermark pageType="location" />
+  <app-journal-title title="Location Library" />
   <div class="wr wr-page-header">
-    <button class="btn-ghost" routerLink="/dm/dashboard">← Back</button>
-    <h2 class="page-title page-title-row">Location Library</h2>
-    <button class="btn-primary" routerLink="/dm/locations/new">+ Create Location</button>
+    <input class="search-bar search-bar--header" type="text" placeholder="Location name · Type…"
+           [value]="searchTerm()" (input)="searchTerm.set($any($event.target).value)" />
+    <button class="btn-primary wr-ml-auto" routerLink="/dm/locations/new">+ Create Location</button>
   </div>
-
-  <input class="search-bar" type="text" placeholder="Location name · Type…"
-         [value]="searchTerm()" (input)="searchTerm.set($any($event.target).value)" />
 
   <div class="card-grid">
     @for (location of filtered(); track location.id) {
@@ -29,7 +27,7 @@
     <div class="delete-panel" (click)="$event.stopPropagation()">
       <div class="delete-panel-title">Delete Location?</div>
       <p class="delete-panel-message">
-        This will permanently delete this location and its portrait. This cannot be undone.
+        This will permanently delete this location and its portrait, and remove it from any campaigns. This cannot be undone.
       </p>
       <div class="delete-btn-row">
         <button class="btn-modal-cancel" (click)="cancelDelete()">Cancel</button>

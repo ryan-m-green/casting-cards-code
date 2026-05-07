@@ -104,6 +104,11 @@
         (input)="onPerceptionInput($event)"
         (change)="onPerceptionRelease($event)"
       />
+      <div class="perception-ticks">
+        @for (t of [-5,-4,-3,-2,-1,0,1,2,3,4,5]; track t) {
+          <span></span>
+        }
+      </div>
       <div class="perception-labels">
         <span class="perception-label-end">Hostile</span>
         <span class="perception-label-center">{{ perceptionLabel() }}</span>

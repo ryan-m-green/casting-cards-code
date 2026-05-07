@@ -19,7 +19,7 @@ public class CreateLocationCommandHandler(ILocationInsertRepository locationInse
             Condition = command.Request.Condition, Geography = command.Request.Geography,
             Architecture = command.Request.Architecture, Climate = command.Request.Climate,
             Religion = command.Request.Religion, Vibe = command.Request.Vibe, Languages = command.Request.Languages,
-            Description = command.Request.Description, CreatedAt = DateTime.UtcNow,
+            Description = command.Request.Description, DmNotes = command.Request.DmNotes, CreatedAt = DateTime.UtcNow,
         };
         return await locationInsertRepository.InsertAsync(domain);
     }

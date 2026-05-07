@@ -1,6 +1,7 @@
 using CastLibrary.Repository.Repositories.Delete;
 using CastLibrary.Repository.Repositories.Insert;
 using CastLibrary.Repository.Repositories.Read;
+using CastLibrary.Repository.Repositories.Update;
 using CastLibrary.Shared.Domain;
 
 namespace CastLibrary.Logic.Services;
@@ -15,7 +16,8 @@ public class PartyAnchorService(
     ILocationInsertRepository locationInsertRepository,
     ISublocationInsertRepository sublocationInsertRepository,
     ICampaignInsertRepository campaignInsertRepository,
-    ICampaignReadRepository campaignReadRepository) : IPartyAnchorService
+    ICampaignReadRepository campaignReadRepository,
+    ICampaignUpdateRepository campaignUpdateRepository) : IPartyAnchorService
 {
     public async Task CreateAsync(CampaignDomain campaign)
     {
@@ -51,7 +53,7 @@ public class PartyAnchorService(
             CampaignId         = campaign.Id,
             SourceLocationId   = locationId,
             Name               = $"The {campaign.Name} Party",
-            IsVisibleToPlayers = false,
+            IsVisibleToPlayers = true,
             SortOrder          = 0,
         };
         await campaignInsertRepository.InsertLocationInstanceAsync(locationInstance);
@@ -63,6 +65,7 @@ public class PartyAnchorService(
             SourceSublocationId = sublocationId,
             LocationInstanceId  = locInstanceId,
             Name                = "The Party",
+            IsVisibleToPlayers  = true,
             ShopItems           = [],
         };
         await campaignInsertRepository.InsertSublocationInstanceAsync(sublocationInstance);
@@ -72,6 +75,16 @@ public class PartyAnchorService(
     {
         var existing = await campaignReadRepository.GetPartySublocationInstanceByCampaignAsync(campaign.Id);
         if (existing is null)
+        {
             await CreateAsync(campaign);
+            return;
+        }
+
+        if (!existing.IsVisibleToPlayers)
+        {
+            await campaignUpdateRepository.UpdateSublocationInstanceVisibilityAsync(existing.InstanceId, true);
+            if (existing.LocationInstanceId.HasValue)
+                await campaignUpdateRepository.UpdateLocationInstanceVisibilityAsync(existing.LocationInstanceId.Value, true);
+        }
     }
 }

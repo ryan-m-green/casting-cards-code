@@ -1,8 +1,8 @@
-import { Component, OnInit, OnDestroy, signal, inject, ElementRef, HostListener, effect } from '@angular/core';
+import { Component, OnInit, OnDestroy, signal, inject, ElementRef, effect } from '@angular/core';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { RouterLink } from '@angular/router';
+import { JournalTitleComponent } from '../../../shared/components/journal-title/journal-title.component';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../../environments/environment';
 import { Campaign } from '../../../shared/models/campaign.model';
@@ -13,7 +13,7 @@ import { CampaignHubService } from '../../../core/hub/campaign-hub.service';
 @Component({
   selector: 'app-player-campaigns',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterLink],
+  imports: [CommonModule, FormsModule, JournalTitleComponent],
   templateUrl: './player-campaigns.component.html',
   styleUrl: './player-campaigns.component.scss'
 })
@@ -30,7 +30,6 @@ export class PlayerCampaignsComponent implements OnInit, OnDestroy {
   joinCode        = signal('');
   joinLoading     = signal(false);
   joinError       = signal('');
-  menuOpen        = signal(false);
   private isEntering = false;
 
   constructor() {
@@ -42,15 +41,6 @@ export class PlayerCampaignsComponent implements OnInit, OnDestroy {
       // Remove the campaign from the list
       this.campaigns.update(list => list.filter(c => c.id !== event.campaignId));
     });
-  }
-
-  toggleMenu() { this.menuOpen.update(v => !v); }
-
-  @HostListener('document:click', ['$event'])
-  onDocumentClick(event: MouseEvent) {
-    if (!this.el.nativeElement.contains(event.target)) {
-      this.menuOpen.set(false);
-    }
   }
 
   cardStyle(campaign: Campaign): string {

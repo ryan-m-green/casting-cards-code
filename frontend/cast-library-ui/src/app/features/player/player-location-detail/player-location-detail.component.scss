@@ -11,9 +11,17 @@
   min-height: 100%;
   background: v.$color-black;
   position: relative;
-  animation: portal-inward-breathe 6.4s ease-in-out infinite;
   overflow-y: auto;
   overflow-x: hidden;
+}
+
+:host::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 9999;
+  animation: portal-inward-breathe 6.4s ease-in-out infinite;
 }
 
 @keyframes portal-inward-breathe {
@@ -31,6 +39,10 @@
       inset 0 0 19px  6px color-mix(in srgb, var(--portal-color, #{v.$color-lib-location-1}), transparent 36%),
       inset 0 0 35px 12px color-mix(in srgb, var(--portal-color, #{v.$color-lib-location-1}), transparent 64%);
   }
+}
+
+.location-notes-panel {
+  margin: 0 38px 12px;
 }
 
 .void-topbar {

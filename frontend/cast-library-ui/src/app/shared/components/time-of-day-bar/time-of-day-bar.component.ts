@@ -19,17 +19,19 @@ import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../../environments/environment';
 import { TimeOfDay, TimeOfDaySlice } from '../../models/time-of-day.model';
 import { CampaignHubService } from '../../../core/hub/campaign-hub.service';
+import { LockIconComponent } from '../lock-icon/lock-icon.component';
 
 @Component({
   selector: 'app-time-of-day-bar',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, LockIconComponent],
   templateUrl: './time-of-day-bar.component.html',
   styleUrl: './time-of-day-bar.component.scss',
 })
 export class TimeOfDayBarComponent implements OnInit, OnChanges, OnDestroy {
   @Input() campaignId!: string;
   @Input() isDm = false;
+  @Input() allowInteraction = false;
   @Input() panelTheme: 'light' | 'dark' = 'light';
   @Input() todInput: TimeOfDay | null = null;
   @Input() previewOnly = false;
@@ -44,6 +46,7 @@ export class TimeOfDayBarComponent implements OnInit, OnChanges, OnDestroy {
   daysPassed      = signal(0);
   isDragging      = signal(false);
   isShimmering    = signal(false);
+  isLocked        = signal(true);
   activeSliceId   = signal<string | null>(null);
   dmNotesEdit     = signal<Record<string, string>>({});
   playerNotesEdit = signal<Record<string, string>>({});
@@ -62,10 +65,11 @@ export class TimeOfDayBarComponent implements OnInit, OnChanges, OnDestroy {
   });
 
   constructor() {
-    // React to DM moving cursor (player view receives shimmering + glide)
+    // React to any user moving cursor — broadcast updates all connected clients
     effect(() => {
       const event = this.hub.timeCursorMoved();
       if (!event || event.campaignId !== this.campaignId) return;
+      if (this.isDragging()) return; // don't override an in-progress local drag
       this.animateCursorTo(event.positionPercent);
     });
 
@@ -154,21 +158,25 @@ export class TimeOfDayBarComponent implements OnInit, OnChanges, OnDestroy {
 
   // ── Cursor dragging (DM only) ─────────────────────────────────────────────
 
+  toggleLock() {
+    this.isLocked.update(v => !v);
+  }
+
   onCursorMouseDown(event: MouseEvent) {
-    if (!this.isDm) return;
+    if (this.isLocked() || (!this.isDm && !this.allowInteraction)) return;
     event.preventDefault();
     this.isDragging.set(true);
     this.dragStart = event.clientX;
   }
 
   onCursorTouchStart(event: TouchEvent) {
-    if (!this.isDm) return;
+    if (this.isLocked() || (!this.isDm && !this.allowInteraction)) return;
     event.preventDefault();
     this.isDragging.set(true);
   }
 
   onCursorKeyDown(event: KeyboardEvent) {
-    if (!this.isDm) return;
+    if (this.isLocked() || (!this.isDm && !this.allowInteraction)) return;
     const step = event.shiftKey ? 5 : 1;
     if (event.key === 'ArrowRight') {
       event.preventDefault();
@@ -201,6 +209,7 @@ export class TimeOfDayBarComponent implements OnInit, OnChanges, OnDestroy {
     if (!this.previewOnly) {
       this.broadcastCursorPosition();
     }
+    this.triggerDayActionIfAtEdge();
   }
 
   @HostListener('document:touchmove', ['$event'])
@@ -221,10 +230,21 @@ export class TimeOfDayBarComponent implements OnInit, OnChanges, OnDestroy {
     if (!this.previewOnly) {
       this.broadcastCursorPosition();
     }
+    this.triggerDayActionIfAtEdge();
+  }
+
+  private triggerDayActionIfAtEdge() {
+    if (this.isLocked() || (!this.isDm && !this.allowInteraction)) return;
+    const pct = this.cursorPercent();
+    if (pct === 0) {
+      this.onRewindDay();
+    } else if (pct === 100) {
+      this.onAdvanceDay();
+    }
   }
 
   onRewindDay() {
-    if (!this.isDm || this.daysPassed() === 0) return;
+    if (this.isLocked() || (!this.isDm && !this.allowInteraction) || this.daysPassed() === 0) return;
     if (this.previewOnly) {
       this.daysPassed.update(d => Math.max(0, d - 1));
       return;
@@ -241,7 +261,7 @@ export class TimeOfDayBarComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   onAdvanceDay() {
-    if (!this.isDm) return;
+    if (this.isLocked() || (!this.isDm && !this.allowInteraction)) return;
     if (this.previewOnly) {
       this.daysPassed.update(d => d + 1);
       return;

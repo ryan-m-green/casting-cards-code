@@ -8,13 +8,13 @@ import { TimeOfDay } from '../../../shared/models/time-of-day.model';
 import { PortalTransitionService } from '../../../core/portal-transition.service';
 import { CampaignHubService } from '../../../core/hub/campaign-hub.service';
 import { PlayerCampaignShellService } from '../../../core/player-campaign-shell.service';
-import { TimeOfDayBarComponent } from '../../../shared/components/time-of-day-bar/time-of-day-bar.component';
 import { LocationCardComponent } from '../../../shared/components/location-card/location-card.component';
+import { PlayerCampaignNotesComponent } from '../player-campaign-notes/player-campaign-notes.component';
 
 @Component({
   selector: 'app-player-campaign-detail',
   standalone: true,
-  imports: [CommonModule, TimeOfDayBarComponent, LocationCardComponent],
+  imports: [CommonModule, LocationCardComponent, PlayerCampaignNotesComponent],
   templateUrl: './player-campaign-detail.component.html',
   styleUrl: './player-campaign-detail.component.scss'
 })
@@ -50,7 +50,8 @@ export class PlayerCampaignDetailComponent implements OnInit {
               ...c,
               locations:    c.locations.filter((x: any) => x.instanceId !== event.instanceId),
               sublocations: c.sublocations.filter((x: any) => x.instanceId !== event.instanceId),
-              casts:     c.casts.filter((x: any) => x.instanceId !== event.instanceId),
+              casts:        c.casts.filter((x: any) => x.instanceId !== event.instanceId),
+              factions:     c.factions.filter((x: any) => x.factionInstanceId !== event.instanceId),
             };
           });
           this.lockingIds.update(s => { const n = new Set(s); n.delete(event.instanceId); return n; });
@@ -91,7 +92,6 @@ export class PlayerCampaignDetailComponent implements OnInit {
         this.campaign.set(c);
         this.transition.spineColor = c.spineColor;
         this.shellSvc.setTitle(c.name);
-        this.shellSvc.setCrumbs([{ label: '← Campaigns', action: () => this.goToCampaigns() }]);
       });
   }
 

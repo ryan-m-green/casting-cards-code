@@ -2,7 +2,7 @@ import { Component, inject, OnInit, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 import { environment } from '../../../../environments/environment';
-import { DmNavComponent } from '../../../shared/components/dm-nav/dm-nav.component';
+import { JournalTitleComponent } from '../../../shared/components/journal-title/journal-title.component';
 
 interface UserManagementResponse {
   id: string;
@@ -15,7 +15,7 @@ interface UserManagementResponse {
 @Component({
   selector: 'app-user-management',
   standalone: true,
-  imports: [DmNavComponent, FormsModule],
+  imports: [FormsModule, JournalTitleComponent],
   templateUrl: './user-management.component.html',
   styleUrl: './user-management.component.scss',
 })

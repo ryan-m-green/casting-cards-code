@@ -50,7 +50,7 @@ $spring-easing:       cubic-bezier(0.22, 1, 0.36, 1);
   min-height: 44px;
   padding: 0;
   border-radius: 6px;
-  border: 1px solid v.$color-ext-98;
+  border: 1px solid color-mix(in srgb, var(--portal-color, v.$campaign-portal-primary), transparent 35%);
   background: v.$color-ext-700;
   color: v.$color-ext-701;
   font-family: v.$font-header;
@@ -61,7 +61,7 @@ $spring-easing:       cubic-bezier(0.22, 1, 0.36, 1);
   white-space: nowrap;
   touch-action: manipulation;
   -webkit-tap-highlight-color: transparent;
-  transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+  transition: background 0.15s ease, color 0.15s ease;
 
   &--left  { float: left; }
   &--right { float: right; }
@@ -70,7 +70,7 @@ $spring-easing:       cubic-bezier(0.22, 1, 0.36, 1);
   &:focus-visible,
   &:active {
     background: v.$color-ext-702;
-    border-color: v.$color-ext-703;
+    border-color: color-mix(in srgb, var(--portal-color, v.$campaign-portal-primary), transparent 10%);
     color: v.$color-ext-704;
   }
 
@@ -80,21 +80,75 @@ $spring-easing:       cubic-bezier(0.22, 1, 0.36, 1);
   }
 
   &:disabled {
-    opacity: 0.35;
+    opacity: 0.55;
     cursor: not-allowed;
     pointer-events: none;
   }
 
   .tod-wrapper--dark & {
     background: v.$color-ext-706;
-    border-color: v.$color-ext-707;
     color: v.$color-ext-708;
 
     &:hover,
     &:focus-visible {
       background: v.$color-ext-709;
-      border-color: v.$color-ext-710;
+      border-color: color-mix(in srgb, var(--portal-color, v.$campaign-portal-primary), transparent 10%);
       color: v.$campaign-portal-text-lavender;
+    }
+  }
+}
+
+// ── Lock button ──────────────────────────────────────────────────────────────
+.tod-lock-btn {
+  display: inline-flex;
+  vertical-align: middle;
+  align-items: center;
+  justify-content: center;
+  height: 32px;
+  width: 32px;
+  min-width: 44px;
+  min-height: 44px;
+  padding: 0;
+  margin-right: 8px;
+  border-radius: 6px;
+  border: 1px solid color-mix(in srgb, var(--portal-color, v.$campaign-portal-primary), transparent 35%);
+  background: v.$color-tod-lock-unlocked;
+  cursor: pointer;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+  transition: background 0.15s ease, box-shadow 0.15s ease;
+
+  &--locked {
+    background: rgba(212, 168, 67, 0.18);
+    border-color: color-mix(in srgb, var(--portal-color, v.$campaign-portal-primary), transparent 35%);
+    box-shadow: 0 0 6px rgba(212, 168, 67, 0.35);
+  }
+
+  &:hover,
+  &:focus-visible {
+    background: v.$color-ext-702;
+    border-color: color-mix(in srgb, var(--portal-color, v.$campaign-portal-primary), transparent 10%);
+  }
+
+  &:focus-visible {
+    outline: 2px solid v.$color-ext-705;
+    outline-offset: 2px;
+  }
+
+  .tod-wrapper--dark & {
+    background: v.$color-tod-lock-unlocked;
+    border-color: color-mix(in srgb, var(--portal-color, v.$campaign-portal-primary), transparent 35%);
+
+    &--locked {
+      background: rgba(212, 168, 67, 0.18);
+      border-color: color-mix(in srgb, var(--portal-color, v.$campaign-portal-primary), transparent 35%);
+      box-shadow: 0 0 6px rgba(212, 168, 67, 0.35);
+    }
+
+    &:hover,
+    &:focus-visible {
+      background: v.$color-ext-709;
+      border-color: color-mix(in srgb, var(--portal-color, v.$campaign-portal-primary), transparent 10%);
     }
   }
 }
@@ -278,6 +332,7 @@ $spring-easing:       cubic-bezier(0.22, 1, 0.36, 1);
   &--readonly {
     cursor: default;
     pointer-events: none;
+    opacity: 0.55;
   }
 
   &:focus-visible {

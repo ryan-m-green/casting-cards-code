@@ -1,17 +1,7 @@
 <div class="pc scroll-body">
-  <app-dm-nav />
+  <app-journal-title [title]="sublocationId() ? 'Edit Sublocation' : 'Sublocation Creation'" />
   <div class="wr wr-page-header">
     <a class="btn-ghost" routerLink="/dm/sublocations">← Library</a>
-    <h2 class="page-title page-title-row">{{ sublocationId() ? 'Edit Sublocation' : 'Sublocation Creation' }}</h2>
-    <span class="save-label"
-          [class.save-label--saving]="labelText() === 'Saving…'"
-          [class.save-label--error]="labelText() === 'Error'"
-          [style.opacity]="labelVisible() ? 1 : 0">{{ labelText() }}</span>
-    <div class="save-spark-host" #sparkHost>
-      <button class="btn-primary"
-              [disabled]="form.invalid || saveStatus() === 'saving'"
-              (click)="onSave($event)">Save</button>
-    </div>
   </div>
 
   @if (sublocationId()) {
@@ -27,11 +17,16 @@
 
   <form [formGroup]="form">
     <label class="fi-label">Sublocation Name</label>
-    <input class="fi" formControlName="name" placeholder="The Broken Anvil" />
+    <input class="fi" formControlName="name" placeholder="The Broken Anvil" autocomplete="off" />
     <label class="fi-label">Description</label>
-    <textarea class="fi" formControlName="description" rows="3" placeholder="A dimly lit smithy…"></textarea>
+    <textarea class="fi" formControlName="description" rows="3" placeholder="A dimly lit smithy…" autocomplete="off"></textarea>
+    <fieldset class="form-gm-box">
+      <legend class="form-gm-box__legend">FOR GM EYES ONLY</legend>
+      <label class="fi-label">GM Notes</label>
+      <textarea class="fi" formControlName="dmNotes" rows="3" placeholder="Private notes…" autocomplete="off"></textarea>
+    </fieldset>
 
-    <div class="wr shop-header-row">
+    <div class="wr shop-header-row shop-header-row--spaced">
       <span class="section-label flex-1">Shop Inventory</span>
       <button type="button" class="btn-ghost" (click)="addItem()">+ Add Item</button>
     </div>
@@ -42,7 +37,7 @@
           <div class="wr shop-item-fields">
             <div class="form-field-wide">
               <label class="fi-label">Item Name</label>
-              <input class="fi fi-no-mb" formControlName="name" placeholder="Iron Sword" />
+              <input class="fi fi-no-mb" formControlName="name" placeholder="Iron Sword" autocomplete="off" />
             </div>
             <div class="form-field">
               <label class="fi-label">Price</label>
@@ -61,11 +56,23 @@
             <button type="button" class="btn-ghost btn-item-remove" (click)="removeItem(i)">✕</button>
           </div>
           <label class="fi-label fi-label-mt">Description</label>
-          <input class="fi" formControlName="description" placeholder="Well-balanced blade" />
+          <input class="fi" formControlName="description" placeholder="Well-balanced blade" autocomplete="off" />
         </div>
       }
     </div>
   </form>
+
+  <div class="form-save-footer">
+    <span class="save-label"
+          [class.save-label--saving]="labelText() === 'Saving…'"
+          [class.save-label--error]="labelText() === 'Error'"
+          [style.opacity]="labelVisible() ? 1 : 0">{{ labelText() }}</span>
+    <div class="save-spark-host" #sparkHost>
+      <button class="btn-primary"
+              [disabled]="form.invalid || saveStatus() === 'saving'"
+              (click)="onSave($event)">Save</button>
+    </div>
+  </div>
 
 </div>
 

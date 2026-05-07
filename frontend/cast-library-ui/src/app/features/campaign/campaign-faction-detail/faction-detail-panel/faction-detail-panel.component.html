@@ -1,0 +1,160 @@
+<!-- Faction Name + In Hiding -->
+<div class="detail-name-row">
+  <div class="detail-desc detail-desc--grow">
+    <span class="detail-label">Faction Name</span>
+    <span class="detail-line"></span>
+    @if (editing()) {
+      <input class="detail-input"
+             [ngModel]="editName()"
+             (ngModelChange)="editNameChange.emit($event)"
+             placeholder="Faction name…"
+             autocomplete="off" />
+    } @else {
+      <span class="detail-value">{{ faction().name }}</span>
+    }
+  </div>
+
+  <div class="detail-cell detail-cell--inline">
+    <span class="detail-label">In Hiding</span>
+    @if (editing()) {
+      <label class="toggle-switch">
+        <input type="checkbox"
+               [ngModel]="editHidden()"
+               (ngModelChange)="editHiddenChange.emit($event)" />
+        <span class="toggle-slider"></span>
+      </label>
+    } @else {
+      <span class="detail-value">{{ faction().hidden ? 'Yes' : 'No' }}</span>
+    }
+  </div>
+</div>
+
+<!-- Description -->
+<div class="detail-desc">
+  <span class="detail-label">Description</span>
+  <span class="detail-line"></span>
+  @if (editing()) {
+    <textarea class="detail-input detail-input--block"
+              [ngModel]="editDescription()"
+              (ngModelChange)="editDescriptionChange.emit($event)"
+              rows="3"
+              placeholder="Description…"
+              autocomplete="off"></textarea>
+  } @else if (faction().description) {
+    <p class="detail-value detail-value--block">{{ faction().description }}</p>
+  }
+</div>
+
+<!-- GM divider -->
+<fieldset class="detail-gm-box">
+  <legend class="detail-gm-box__legend">FOR STORY TELLER EYES ONLY</legend>
+
+  <!-- Type -->
+  <div class="detail-desc">
+    <span class="detail-label">Type</span>
+    <span class="detail-line"></span>
+    @if (editing()) {
+      <input class="detail-input"
+             [ngModel]="editType()"
+             (ngModelChange)="editTypeChange.emit($event)"
+             list="faction-detail-type-options"
+             placeholder="Type…"
+             autocomplete="off" />
+      <datalist id="faction-detail-type-options">
+        @for (opt of typeOptions; track opt) {
+          <option [value]="opt"></option>
+        }
+      </datalist>
+    } @else if (faction().type) {
+      <span class="detail-value">{{ faction().type }}</span>
+    }
+  </div>
+
+  <!-- DM Notes (DM only) -->
+  @if (isDm()) {
+    <div class="detail-dm-notes">
+      <span class="detail-label">DM Notes</span>
+      <span class="detail-line"></span>
+      @if (editing()) {
+        <textarea class="detail-input detail-input--block"
+                  [ngModel]="editDmNotes()"
+                  (ngModelChange)="editDmNotesChange.emit($event)"
+                  rows="4"
+                  placeholder="Jot down whatever is on your mind…"
+                  autocomplete="off"></textarea>
+      } @else if (faction().dmNotes) {
+        <p class="detail-value detail-value--block">{{ faction().dmNotes }}</p>
+      } @else {
+        <p class="detail-value detail-value--muted">No notes yet. Click Edit Details to add some.</p>
+      }
+    </div>
+
+    <!-- Political Influence -->
+    <div class="detail-dm-notes">
+      <span class="detail-label">Political Influence</span>
+      <span class="detail-line"></span>
+      @if (editing()) {
+        <div class="detail-slider-row">
+          <div class="fi-slider-wrap">
+            <input type="range" class="fi-slider"
+                   [ngModel]="editInfluence()"
+                   (ngModelChange)="editInfluenceChange.emit(+$event)"
+                   min="0" max="10" step="1" />
+            <div class="fi-slider-ticks">
+              @for (t of [0,1,2,3,4,5,6,7,8,9,10]; track t) {
+                <span></span>
+              }
+            </div>
+          </div>
+          <span class="detail-slider-value">{{ editInfluence() }} out of 10</span>
+        </div>
+      } @else {
+        <span class="detail-value">{{ faction().influence }} out of 10</span>
+      }
+    </div>
+
+    <!-- Perception -->
+    <div class="detail-dm-notes">
+      <span class="detail-label">Perception</span>
+      <span class="detail-line"></span>
+      @if (editing()) {
+        <div class="perception-card"
+             [class.perception-card--hostile]="editPerception() < 0"
+             [class.perception-card--friendly]="editPerception() > 0">
+          <input type="range"
+                 min="-5" max="5" step="1"
+                 [ngModel]="editPerception()"
+                 (ngModelChange)="editPerceptionChange.emit(+$event)"
+                 class="perception-slider"
+                 [class.slider-friendly]="editPerception() > 0"
+                 [class.slider-hostile]="editPerception() < 0" />
+          <div class="perception-ticks">
+            @for (t of [-5,-4,-3,-2,-1,0,1,2,3,4,5]; track t) {
+              <span></span>
+            }
+          </div>
+          <div class="perception-labels">
+            <span class="perception-label-end">Hostile</span>
+            <span class="perception-label-center">{{ perceptionLabel(editPerception()) }}</span>
+            <span class="perception-label-end">Devoted</span>
+          </div>
+        </div>
+      } @else {
+        <span class="detail-value">{{ perceptionLabel(faction().perception) }}</span>
+      }
+    </div>
+  }
+
+</fieldset>
+
+<!-- Symbol / Icon (edit mode only, outside fieldset) -->
+@if (isDm() && editing()) {
+  <div class="detail-dm-notes detail-symbol-section">
+    <span class="detail-label">Symbol / Icon</span>
+    <span class="detail-line"></span>
+    <app-icon-picker
+      [selectedIcon]="editSymbolPath()"
+      (iconSelected)="editSymbolPathChange.emit($event)"
+    />
+  </div>
+}

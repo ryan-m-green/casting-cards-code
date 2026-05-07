@@ -1,8 +1,10 @@
 @if (cast(); as ca) {
 
-  <!-- ── Hero card ── -->
-  <div class="cast-hero">
-    <div class="cast-hero-card-wrap">
+  <!-- ── Body ── -->
+  <div class="cast-body">
+
+    <!-- Card + travel -->
+    <div class="cast-card-left">
       <app-cast-card
         [cast]="ca"
         [flippable]="false"
@@ -14,85 +16,85 @@
         [dmMode]="isDm()"
         (secretsClick)="toggleCastVisibility()"
       />
-    </div>
-  </div>
 
-  @if (isDm()) {
-    <div class="travel-btn-row">
-      <button class="campaign-primary-btn" type="button" (click)="toggleTravelDrawer()">
-        Travel {{ travelDrawerOpen() ? '↑' : '↓' }}
-      </button>
-    </div>
-  }
+      @if (isDm()) {
+        <div class="travel-anchor">
+          <div class="travel-btn-row">
+            <button class="campaign-primary-btn" type="button" (click)="toggleTravelDrawer()">
+              Travel {{ travelDrawerOpen() ? '↑' : '↓' }}
+            </button>
+          </div>
 
-  <!-- ── Travel drawer ── -->
-  @if (isDm() && travelDrawerOpen()) {
-    <div class="travel-drawer">
+          <!-- ── Travel drawer ── -->
+          @if (travelDrawerOpen()) {
+            <div class="travel-drawer">
 
-      @if (selectedLocationId() === null) {
-        <!-- Locations list -->
-        <div class="travel-list">
+          @if (selectedLocationId() === null) {
+            <!-- Locations list -->
+            <div class="travel-list">
 
-          <!-- The Party -->
-          <button
-            class="travel-item travel-item--party"
-            type="button"
-            [disabled]="!partyAnchor()"
-            [class.travel-item--disabled]="!partyAnchor()"
-            (click)="partyAnchor() && travelCast(partyAnchor()!.locationInstanceId, partyAnchor()!.instanceId)">
-            <span class="travel-item-name">⚔ The Party</span>
-            @if (partyAnchor() && currentSublocationId() === partyAnchor()!.instanceId) {
-              <span class="travel-checkmark">✓</span>
-            }
-          </button>
-          <div class="travel-divider"></div>
-
-          <!-- Regular locations -->
-          @for (loc of travelLocations(); track loc.instanceId) {
-            @if (sublocationsByLocation()[loc.instanceId]?.length) {
+              <!-- The Party -->
               <button
-                class="travel-item"
+                class="travel-item travel-item--party"
                 type="button"
-                (click)="selectLocation(loc.instanceId)">
-                <span class="travel-item-name">{{ loc.name }}</span>
-                @if (currentLocationId() === loc.instanceId && currentSublocationId() !== partyAnchor()?.instanceId) {
-                  <span class="travel-checkmark travel-checkmark--faint">✓</span>
+                [disabled]="!partyAnchor()"
+                [class.travel-item--disabled]="!partyAnchor()"
+                (click)="partyAnchor() && travelCast(partyAnchor()!.locationInstanceId, partyAnchor()!.instanceId)">
+                <span class="travel-item-name">⚔ The Party</span>
+                @if (partyAnchor() && currentSublocationId() === partyAnchor()!.instanceId) {
+                  <span class="travel-checkmark">✓</span>
                 }
               </button>
-            } @else {
-              <span class="travel-item travel-item--disabled">
-                <span class="travel-item-name">{{ loc.name }}</span>
-              </span>
-            }
-          }
-          @if (!partyAnchor() && !travelLocations().length) {
-            <span class="travel-empty">No locations available.</span>
+              <div class="travel-divider"></div>
+
+              <!-- Regular locations -->
+              @for (loc of travelLocations(); track loc.instanceId) {
+                @if (sublocationsByLocation()[loc.instanceId]?.length) {
+                  <button
+                    class="travel-item"
+                    type="button"
+                    (click)="selectLocation(loc.instanceId)">
+                    <span class="travel-item-name">{{ loc.name }}</span>
+                    @if (currentLocationId() === loc.instanceId && currentSublocationId() !== partyAnchor()?.instanceId) {
+                      <span class="travel-checkmark travel-checkmark--faint">✓</span>
+                    }
+                  </button>
+                } @else {
+                  <span class="travel-item travel-item--disabled">
+                    <span class="travel-item-name">{{ loc.name }}</span>
+                  </span>
+                }
+              }
+              @if (!partyAnchor() && !travelLocations().length) {
+                <span class="travel-empty">No locations available.</span>
+              }
+
+            </div>
+          } @else {
+            <!-- Sublocations list -->
+            <div class="travel-list">
+              <button class="travel-back" type="button" (click)="selectedLocationId.set(null)">← Back</button>
+              @for (sub of sublocationsByLocation()[selectedLocationId()!]; track sub.instanceId) {
+                <button
+                  class="travel-item"
+                  type="button"
+                  (click)="travelCast(sub.locationInstanceId, sub.instanceId)">
+                  <span class="travel-item-name">{{ sub.name }}</span>
+                  @if (currentSublocationId() === sub.instanceId) {
+                    <span class="travel-checkmark">✓</span>
+                  }
+                </button>
+              }
+            </div>
           }
 
-        </div>
-      } @else {
-        <!-- Sublocations list -->
-        <div class="travel-list">
-          <button class="travel-back" type="button" (click)="selectedLocationId.set(null)">← Back</button>
-          @for (sub of sublocationsByLocation()[selectedLocationId()!]; track sub.instanceId) {
-            <button
-              class="travel-item"
-              type="button"
-              (click)="travelCast(sub.locationInstanceId, sub.instanceId)">
-              <span class="travel-item-name">{{ sub.name }}</span>
-              @if (currentSublocationId() === sub.instanceId) {
-                <span class="travel-checkmark">✓</span>
-              }
-            </button>
+            </div>
           }
         </div>
       }
-
     </div>
-  }
 
-  <!-- ── Detail panel ── -->
-  <div class="cast-detail-wrap">
+    <!-- Detail panel -->
     <div class="cast-detail-panel" [style.height]="panelHeight()" [class.detail-panel--mobile-expanded]="detailExpanded()">
 
       <div class="detail-panel-content" #detailContent>
@@ -102,8 +104,24 @@
         @if (!editing()) {
           <button class="detail-edit-btn" (click)="startEditing()">✎ Edit Details</button>
         } @else {
-          <button class="detail-save-btn" (click)="saveDetails()">✔ Save</button>
+          <button class="campaign-primary-btn" (click)="saveDetails()">✔ Save For Campaign</button>
+          <button class="campaign-primary-btn" (click)="saveToLibrary()">✔ Save For Campaign & Library</button>
           <button class="detail-cancel-btn" (click)="cancelEditing()">Cancel</button>
+        }
+      </div>
+
+      <!-- Cast Name -->
+      <div class="detail-desc">
+        <span class="detail-label">Cast Name</span>
+        <span class="detail-line"></span>
+        @if (editing()) {
+          <input class="detail-input"
+                 [ngModel]="editName()"
+                 (ngModelChange)="editName.set($event)"
+                 placeholder="Cast name…"
+                 autocomplete="off" />
+        } @else {
+          <span class="detail-value">{{ ca.name }}</span>
         }
       </div>
 
@@ -117,7 +135,8 @@
                       [ngModel]="editPublicDescription()"
                       (ngModelChange)="editPublicDescription.set($event)"
                       rows="3"
-                      placeholder="Public description…"></textarea>
+                      placeholder="Public description…"
+                      autocomplete="off"></textarea>
           } @else {
             <p class="detail-value detail-value--block">{{ ca.publicDescription }}</p>
           }
@@ -134,7 +153,8 @@
                       [ngModel]="editDescription()"
                       (ngModelChange)="editDescription.set($event)"
                       rows="3"
-                      placeholder="Description…"></textarea>
+                      placeholder="Description…"
+                      autocomplete="off"></textarea>
           } @else {
             <p class="detail-value detail-value--block">{{ ca.description }}</p>
           }
@@ -151,7 +171,12 @@
               <input class="detail-input"
                      [ngModel]="editPronouns()"
                      (ngModelChange)="editPronouns.set($event)"
-                     placeholder="Pronouns…" />
+                     list="cast-detail-pronouns-options"
+                     placeholder="Pronouns…"
+                     autocomplete="off" />
+              <datalist id="cast-detail-pronouns-options">
+                @for (p of pronounOptions; track p) { <option [value]="p"></option> }
+              </datalist>
             } @else {
               <span class="detail-value">{{ ca.pronouns }}</span>
             }
@@ -165,7 +190,8 @@
               <input class="detail-input"
                      [ngModel]="editRace()"
                      (ngModelChange)="editRace.set($event)"
-                     placeholder="Race…" />
+                     placeholder="Race…"
+                     autocomplete="off" />
             } @else {
               <span class="detail-value">{{ ca.race }}</span>
             }
@@ -179,7 +205,8 @@
               <input class="detail-input"
                      [ngModel]="editRole()"
                      (ngModelChange)="editRole.set($event)"
-                     placeholder="Role…" />
+                     placeholder="Role…"
+                     autocomplete="off" />
             } @else {
               <span class="detail-value">{{ ca.role }}</span>
             }
@@ -193,7 +220,8 @@
               <input class="detail-input"
                      [ngModel]="editAge()"
                      (ngModelChange)="editAge.set($event)"
-                     placeholder="Age…" />
+                     placeholder="Age…"
+                     autocomplete="off" />
             } @else {
               <span class="detail-value">{{ ca.age }}</span>
             }
@@ -207,7 +235,12 @@
               <input class="detail-input"
                      [ngModel]="editAlignment()"
                      (ngModelChange)="editAlignment.set($event)"
-                     placeholder="Alignment…" />
+                     list="cast-detail-alignment-options"
+                     placeholder="Alignment…"
+                     autocomplete="off" />
+              <datalist id="cast-detail-alignment-options">
+                @for (a of alignmentOptions; track a) { <option [value]="a"></option> }
+              </datalist>
             } @else {
               <span class="detail-value">{{ ca.alignment }}</span>
             }
@@ -221,7 +254,12 @@
               <input class="detail-input"
                      [ngModel]="editPosture()"
                      (ngModelChange)="editPosture.set($event)"
-                     placeholder="Posture…" />
+                     list="cast-detail-posture-options"
+                     placeholder="Posture…"
+                     autocomplete="off" />
+              <datalist id="cast-detail-posture-options">
+                @for (p of postureOptions; track p) { <option [value]="p"></option> }
+              </datalist>
             } @else {
               <span class="detail-value">{{ ca.posture }}</span>
             }
@@ -235,24 +273,58 @@
               <input class="detail-input"
                      [ngModel]="editSpeed()"
                      (ngModelChange)="editSpeed.set($event)"
-                     placeholder="Speed…" />
+                     list="cast-detail-speed-options"
+                     placeholder="Speed…"
+                     autocomplete="off" />
+              <datalist id="cast-detail-speed-options">
+                @for (s of speedOptions; track s) { <option [value]="s"></option> }
+              </datalist>
             } @else {
               <span class="detail-value">{{ ca.speed }}</span>
             }
           </div>
         }
-        @if (ca.voicePlacement?.length) {
-          <div class="detail-cell">
+        @if (ca.voicePlacement.length || editing()) {
+          <div class="detail-cell detail-cell--full">
             <span class="detail-label">Voice Placement</span>
             <span class="detail-line"></span>
-            <div class="detail-keywords">
-              @for (vp of ca.voicePlacement; track vp) {
-                <span class="detail-keyword-pill">{{ vp }}</span>
-              }
-            </div>
+            @if (editing()) {
+              <div class="detail-voice-checkboxes">
+                @for (opt of voiceOptions; track opt) {
+                  <label class="detail-voice-checkbox-label">
+                    <input type="checkbox"
+                           [checked]="editVoicePlacement().includes(opt)"
+                           (change)="toggleVoicePlacement(opt)" />
+                    {{ opt }}
+                  </label>
+                }
+              </div>
+            } @else {
+              <div class="detail-keywords">
+                @for (vp of ca.voicePlacement; track vp) {
+                  <span class="detail-keyword-pill">{{ vp }}</span>
+                }
+              </div>
+            }
           </div>
         }
-        @if (ca.keywords?.length) {
+        @if (ca.voiceNotes || editing()) {
+          <div class="detail-cell detail-cell--full">
+            <span class="detail-label">Voice Notes</span>
+            <span class="detail-line"></span>
+            @if (editing()) {
+              <textarea class="detail-input detail-input--block"
+                        [ngModel]="editVoiceNotes()"
+                        (ngModelChange)="editVoiceNotes.set($event)"
+                        rows="2"
+                        placeholder="Speaks with a slight stammer when nervous…"
+                        autocomplete="off"></textarea>
+            } @else {
+              <p class="detail-value detail-value--block">{{ ca.voiceNotes }}</p>
+            }
+          </div>
+        }
+        @if (ca.keywords.length) {
           <div class="detail-cell detail-cell--full">
             <span class="detail-label">Keywords</span>
             <span class="detail-line"></span>
@@ -281,20 +353,28 @@
               <app-lock-icon [open]="secret.isRevealed" />
             </button>
             <span class="secret-text" [class.secret-text--revealed]="secret.isRevealed">{{ secret.content }}</span>
+            @if (editing()) {
+              <button class="secret-delete-btn" (click)="deleteSecret(secret)" type="button" title="Delete secret" aria-label="Delete secret">
+                <img src="/icons/chronicle/delete.svg" alt="Delete" class="secret-delete-btn-img" />
+              </button>
+            }
           </div>
         }
-        @if (addingSecret()) {
-          <div class="secret-row secret-row-edit">
-            <textarea class="fi fi-sm secret-textarea"
-                      [ngModel]="newSecretContent()"
-                      (ngModelChange)="newSecretContent.set($event)"
-                      placeholder="Enter secret…"
-                      rows="2"></textarea>
-            <button class="secret-confirm-btn" (click)="confirmAddSecret()" type="button">✔</button>
-            <button class="secret-cancel-btn"  (click)="cancelAddingSecret()" type="button">✕</button>
-          </div>
+        @if (editing()) {
+          @if (addingSecret()) {
+            <div class="secret-row secret-row-edit">
+              <textarea class="fi fi-sm secret-textarea"
+                        [ngModel]="newSecretContent()"
+                        (ngModelChange)="newSecretContent.set($event)"
+                        placeholder="Enter secret…"
+                        rows="2"
+                        autocomplete="off"></textarea>
+              <button class="secret-confirm-btn" (click)="confirmAddSecret()" type="button">✔</button>
+              <button class="secret-cancel-btn"  (click)="cancelAddingSecret()" type="button">✕</button>
+            </div>
+          }
+          <button class="secret-add-btn" (click)="startAddingSecret()" type="button">+ Add Secret</button>
         }
-        <button class="secret-add-btn" (click)="startAddingSecret()" type="button">+ Add Secret</button>
       </div>
 
       <!-- DM Notes -->
@@ -306,7 +386,8 @@
                     [ngModel]="editDmNotes()"
                     (ngModelChange)="editDmNotes.set($event)"
                     rows="4"
-                    placeholder="Jot down whatever is on your mind…"></textarea>
+                    placeholder="Jot down whatever is on your mind…"
+                    autocomplete="off"></textarea>
         } @else if (ca.dmNotes) {
           <p class="detail-value detail-value--block">{{ ca.dmNotes }}</p>
         } @else {
@@ -321,6 +402,7 @@
       </button>
 
     </div>
+
   </div>
 
 }

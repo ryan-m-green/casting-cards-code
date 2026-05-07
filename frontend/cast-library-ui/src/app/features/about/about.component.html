@@ -1,34 +1,6 @@
 <div class="pc scroll-body">
-  @if (auth.isDm()) {
-    <app-dm-nav />
-  } @else if (auth.isLoggedIn()) {
-    <div class="player-nav">
-      <a class="player-nav__link" routerLink="/player/campaigns">Dashboard</a>
-      <span class="player-nav__link">About</span>
-      <div class="player-nav__spacer"></div>
-      <div class="player-nav__account">
-        <button class="player-nav__account-trigger" (click)="menuOpen.set(!menuOpen())">
-          Account
-          <span class="player-nav__caret" [class.player-nav__caret--open]="menuOpen()">▾</span>
-        </button>
-        @if (menuOpen()) {
-          <div class="player-nav__dropdown">
-            <button class="player-nav__dropdown-item" (click)="auth.logout()">Logout</button>
-          </div>
-        }
-      </div>
-    </div>
-  } @else {
-    <div class="player-nav">
-      <a class="player-nav__link" routerLink="/">Home</a>
-      <span class="player-nav__link">About</span>
-    </div>
-  }
-
+  <app-journal-title title="About" />
   <div class="about-content">
-
-    <h1 class="about-title">About</h1>
-    <div class="dv"></div>
 
     <p class="about-body">Every great story begins with people — their bonds, their grudges, their loyalties, and the quiet threads that tie them together. As a storyteller, you're constantly tracking those threads: who trusts whom, which factions are shifting, what rumors are spreading, and how each choice reshapes the world.</p>
     <p class="about-body">This app is a calm, structured hearth for all of that. A place where NPCs, factions, relationships, secrets, and political tensions settle into view, giving you a clearer sense of the story beneath the story. It helps you understand the people who make your world feel alive and run richer sessions with less prep.</p>
@@ -65,7 +37,13 @@
 
     <div class="about-section-label section-label">From the Creator</div>
     <div class="wb about-creator">
-      <p class="about-body about-body--creator">I'm awful at taking notes, and my dyslexia makes it even harder to keep track of story details. When I'm playing, I can focus on the moment or try to write things down, but I can't do both. My notes were scattered and incomplete, and I kept losing track of how everything fit together. I built this app to fix that for myself, and it grew into a tool meant to help storytellers and players stay organized and understand the world they're creating.</p>
+      <p class="about-body about-body--creator">I'm awful at taking notes, and my dyslexia makes
+        it even harder to keep track of story details. When I'm playing, I can focus on the moment
+        or try to write things down, but I can't do both. My notes were scattered and incomplete,
+        and I kept losing track of how everything fit together. I built this app to fix that for
+        myself, and it grew into a tool meant to help storytellers and players stay organized and
+        understand the world they're creating.</p>
+      <div class="about-signature">~ Ryan Green</div>
     </div>
 
     <div class="orn orn-mt">· · ·</div>

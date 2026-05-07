@@ -1,0 +1,68 @@
+<div class="qn-bar" (click)="toggle()" [class.open]="isOpen() && !isClosing()">
+  <span class="qn-icon-wrap">
+    <span class="qn-icon" [class.qn-icon--hidden]="isOpen() && !isClosing()">&#9776;</span>
+    <img class="qn-parchment-icon" [class.qn-parchment-icon--visible]="isOpen() && !isClosing()" src="/old_paper_document_feather_pen.svg" alt="" aria-hidden="true" />
+  </span>
+  <span class="qn-label">QUICKNOTES</span>
+  <span class="qn-spacer"></span>
+  <span class="qn-chevron" [class.rotated]="isOpen() && !isClosing()">&#9660;</span>
+</div>
+
+@if (isOpen()) {
+  <div class="qn-panel-clip">
+    <div class="qn-panel" [class.qn-panel--closing]="isClosing()">
+      <div class="qn-panel-header">
+        <button class="qn-view-queue-btn" (click)="goToQueue()">
+          View
+          <svg class="qn-queue-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <polyline points="22 12 16 12 14 15 10 15 8 12 2 12"/>
+            <path d="M5.45 5.11L2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"/>
+          </svg>
+        </button>
+      </div>
+      <textarea
+        #noteArea
+        id="quicknotes-note"
+        aria-label="Quicknote add new note"
+        class="qn-textarea"
+        placeholder="Type your note here..."
+        [value]="noteContent()"
+        (input)="noteContent.set($any($event.target).value)"
+        rows="4"
+        tabindex="1"
+      ></textarea>
+
+      <div class="qn-controls">
+        <div class="qn-route-row">
+          <label class="qn-route-label">Route to:</label>
+          <app-note-destination-picker
+            [destType]="destType()"
+            [entityId]="entityId()"
+            [showQueue]="true"
+            [locations]="locations"
+            [sublocations]="sublocations"
+            [casts]="casts"
+            [factions]="factions"
+            (destTypeChange)="onDestTypeChange($event)"
+            (entityIdChange)="entityId.set($event)"
+          />
+        </div>
+
+        <div class="qn-save-row">
+          @if (saveSuccess()) {
+            <span class="qn-success">&#10003; Saved</span>
+          }
+          <button type="button" class="qn-close-btn" (click)="toggle()" tabindex="4">Close</button>
+          <button
+            class="qn-save-btn"
+            [disabled]="!canSave || isSaving()"
+            (click)="save()"
+            tabindex="5"
+          >
+            {{ isSaving() ? 'Saving…' : 'Save' }}
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+}

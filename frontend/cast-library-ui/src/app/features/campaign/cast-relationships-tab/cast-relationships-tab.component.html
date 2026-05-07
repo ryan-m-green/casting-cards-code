@@ -32,45 +32,14 @@
     <!-- Main cast card (animated) -->
     <div class="rel-main-card-area">
       @if (currentCast(); as cast) {
-        <div class="pc-card pc-card-cast" #mainCard>
-          <app-card-flip>
-            <div slot="front" class="card-slot-front">
-              <div class="card-front-header">
-                <div class="card-name">{{ cast.name }}</div>
-                <div class="card-descriptor">{{ cast.role }} · {{ cast.race }}</div>
-              </div>
-              <div class="dv dv-card"></div>
-              <div class="card-image-area">
-                @if (cast.imageUrl) {
-                  <img [src]="cast.imageUrl" alt="" class="card-img-fill" />
-                } @else {
-                  <div class="card-placeholder">
-                    <span class="card-initial">{{ cast.name?.[0]?.toUpperCase() }}</span>
-                  </div>
-                }
-                @if (cast.publicDescription) {
-                  <div class="card-desc-overlay">
-                    <p class="card-desc-text">{{ cast.publicDescription }}</p>
-                  </div>
-                }
-              </div>
-            </div>
-            <div slot="back" class="card-slot-back">
-              <div class="card-back-content">
-                <div class="card-name card-back-name">{{ cast.name }}</div>
-                <div class="dv dv-mb"></div>
-                <div class="fi-label fi-label-strong">Pronouns</div><p class="wbd card-field-value">{{ cast.pronouns || '—' }}</p>
-                <div class="fi-label fi-label-strong">Age</div><p class="wbd card-field-value">{{ cast.age || '—' }}</p>
-                <div class="fi-label fi-label-strong">Race</div><p class="wbd card-field-value">{{ cast.race || '—' }}</p>
-                <div class="fi-label fi-label-strong">Alignment</div><p class="wbd card-field-value">{{ cast.alignment || '—' }}</p>
-                <div class="fi-label fi-label-strong">Posture</div><p class="wbd card-field-value">{{ cast.posture || '—' }}</p>
-                <div class="fi-label fi-label-strong">Speed</div><p class="wbd card-field-value">{{ cast.speed || '—' }}</p>
-                @if (cast.voicePlacement?.length) {
-                  <div class="fi-label fi-label-strong">Voice</div><p class="wbd card-field-value">{{ cast.voicePlacement.join(', ') }}</p>
-                }
-              </div>
-            </div>
-          </app-card-flip>
+        <div #mainCard>
+          <app-cast-card
+            [cast]="cast"
+            [flippable]="false"
+            [showStars]="false"
+            [editable]="false"
+            [dmMode]="true"
+          />
         </div>
       }
     </div>
@@ -81,13 +50,10 @@
   @if (currentCast(); as cast) {
     <div class="rel-section-header">
       <span>HOW OTHERS FEEL ABOUT {{ cast.name | uppercase }}</span>
-      <button class="rel-web-btn" (click)="showWebModal.set(true)" title="View Relationship Web">
-        🕸 Disposition Web
-      </button>
     </div>
   }
 
-  <!-- ── Search filter ─────────────────────────────────────────────────────────── -->
+  <!-- ── Search filter + Global bulk controls ──────────────────────────────────── -->
   <div class="rel-search-row">
     <input
       class="fi rel-search-input"
@@ -96,6 +62,48 @@
       [value]="filterText()"
       (input)="filterText.set($any($event.target).value)"
     />
+
+    <div class="rel-global-controls">
+      <button
+        class="rel-global-btn rel-global-btn--toggle"
+        [class.rel-global-btn--toggle-on]="allSelected()"
+        type="button"
+        (click)="toggleSelectAll()"
+      >
+        <span [style.visibility]="allSelected() ? 'visible' : 'hidden'" class="rel-toggle-label">Deselect All</span>
+        <span [style.visibility]="allSelected() ? 'hidden' : 'visible'" class="rel-toggle-label rel-toggle-label--over">Select All</span>
+      </button>
+      <div class="rel-global-slider-wrap">
+        <input
+          type="range"
+          min="-5"
+          max="5"
+          step="1"
+          [value]="globalValue()"
+          class="rel-slider"
+          [class]="sliderClass(globalValue())"
+          (input)="globalValue.set(+$any($event.target).value)"
+        />
+        <div class="rel-slider-labels">
+          <span class="hostile-label">Hostile</span>
+          <span class="neutral-label">{{ sliderLabel(globalValue()) }}</span>
+          <span class="friendly-label">Friendly</span>
+        </div>
+      </div>
+      <textarea
+        class="fi rel-global-explanation"
+        rows="2"
+        placeholder="Global explanation…"
+        [value]="globalExplanation()"
+        (input)="globalExplanation.set($any($event.target).value)"
+      ></textarea>
+      <button
+        class="rel-global-btn rel-global-btn--apply"
+        type="button"
+        [disabled]="!checkedIds().size"
+        (click)="applyGlobalToChecked()"
+      >Apply to {{ checkedIds().size }} checked</button>
+    </div>
   </div>
 
   <!-- ── Avatar grid ────────────────────────────────────────────────────────────── -->
@@ -110,12 +118,13 @@
   <div class="rel-avatar-grid">
     @for (cast of filteredOtherCast(); track cast.instanceId) {
       @let draft = getDraft(cast.instanceId);
-      <div class="rel-avatar-card" [class.rel-hostile]="draft.value < 0" [class.rel-friendly]="draft.value > 0">
+      <label class="rel-avatar-card" [class.rel-hostile]="draft.value < 0" [class.rel-friendly]="draft.value > 0" [class.rel-checked]="isChecked(cast.instanceId)">
+        <input class="rel-avatar-checkbox-input" type="checkbox" [checked]="isChecked(cast.instanceId)" (change)="toggleChecked(cast.instanceId)" />
         <div class="rel-avatar-icon">{{ raceIcon(cast.race) }}</div>
         <div class="rel-avatar-name">{{ cast.name }}</div>
         <div class="rel-avatar-sub">{{ cast.race }} · {{ cast.role }}</div>
 
-        <div class="rel-slider-wrap">
+        <div class="rel-slider-wrap" (click)="$event.stopPropagation()">
           <input
             type="range"
             min="-5"
@@ -139,23 +148,13 @@
           rows="2"
           placeholder="What caused this feeling?"
           [attr.data-expl-id]="cast.instanceId"
-          [readonly]="draft.value === 0"
+          (click)="$event.stopPropagation()"
           (input)="onExplanationInput(cast.instanceId, $event)"
         ></textarea>
-      </div>
+      </label>
     }
   </div>
 
 }
 
-<!-- ── Relationship Web Modal ──────────────────────────────────────────────── -->
-@if (showWebModal()) {
-  @if (currentCast(); as cast) {
-    <app-relationship-web-modal
-      [mainCast]="cast"
-      [allCast]="castInstances"
-      [relationships]="relationships()"
-      (closed)="showWebModal.set(false)"
-    />
-  }
-}
+

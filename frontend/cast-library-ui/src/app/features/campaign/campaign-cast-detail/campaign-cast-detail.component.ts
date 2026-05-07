@@ -42,8 +42,27 @@ export class CampaignCastDetailComponent implements OnInit {
   castInstanceId     = signal('');
   campaign           = signal<CampaignDetail | null>(null);
 
+  readonly voiceOptions = ['Chest', 'Throat', 'Mouth / Oral', 'Nasal', 'Head / Sinus'];
+  readonly postureOptions = [
+    'Upright', 'Puffed Chest', 'Slouched', 'Hunched', 'Relaxed',
+    'Tense', 'Swaggering', 'Cowering', 'Guarded', 'Leaning',
+  ];
+  readonly speedOptions = [
+    'Slow & Deliberate', 'Steady Drumbeat', 'Brisk', 'Quick & Hurried',
+    'Nervous & Rushed', 'Measured', 'Lumbering', 'Graceful',
+  ];
+  readonly alignmentOptions = [
+    'Lawful Good', 'Neutral Good', 'Chaotic Good',
+    'Lawful Neutral', 'True Neutral', 'Chaotic Neutral',
+    'Lawful Evil', 'Neutral Evil', 'Chaotic Evil',
+  ];
+  readonly pronounOptions = [
+    'he/him', 'she/her', 'they/them', 'he/they', 'she/they', 'it/its', 'any pronouns',
+  ];
+
   // Edit mode
   editing              = signal(false);
+  editName             = signal('');
   editPublicDescription = signal('');
   editDescription      = signal('');
   editPronouns         = signal('');
@@ -53,6 +72,8 @@ export class CampaignCastDetailComponent implements OnInit {
   editAlignment        = signal('');
   editPosture          = signal('');
   editSpeed            = signal('');
+  editVoicePlacement   = signal<string[]>([]);
+  editVoiceNotes       = signal('');
   editDmNotes          = signal('');
 
   // Add secret
@@ -75,6 +96,11 @@ export class CampaignCastDetailComponent implements OnInit {
     const c = this.campaign();
     if (!c) return null;
     return c.sublocations.find((l: CampaignSublocationInstance) => l.instanceId === this.sublocationInstanceId()) ?? null;
+  });
+
+  allCampaignCasts = computed<CampaignCastInstance[]>(() => {
+    const c = this.campaign();
+    return c?.casts ?? [];
   });
 
   parentLocation = computed(() => {
@@ -154,19 +180,26 @@ export class CampaignCastDetailComponent implements OnInit {
         const cast    = c.casts.find(ca => ca.instanceId === castId);
         const subLoc  = c.sublocations.find((l: CampaignSublocationInstance) => l.instanceId === subLocId);
         const loc     = subLoc ? c.locations.find(l => l.instanceId === subLoc.locationInstanceId) : null;
-        this.shellSvc.setTitle(cast?.name ?? '');
+      if (cast) {
         if (subLoc?.isPartyAnchor) {
-          this.shellSvc.setCrumbs([
-            { label: '← The Party', action: () => this.goToTheParty() },
-          ]);
+          this.shellSvc.setTitleContext({
+            pageType:   'cast-party',
+            campaignId: id,
+            baseRoute:  '/campaign',
+            location:   null,
+            partyRoute: ['/campaign', id, 'the-party'],
+          }, '56px');
         } else {
-          this.shellSvc.setCrumbs([
-            { label: '← Locations',     action: () => this.goToCampaign() },
-            { label: '← Sublocations', action: () => this.goToLocation() },
-            { label: '← Cast',         action: () => this.goBack() },
-          ]);
+          this.shellSvc.setTitleContext({
+            pageType: 'cast',
+            campaignId: id,
+            baseRoute: '/campaign',
+            location: loc ?? null,
+            sublocation: subLoc ?? null,
+          }, '56px');
         }
-      });
+      }
+    });
   }
 
   toggleCastVisibility() {
@@ -233,6 +266,7 @@ export class CampaignCastDetailComponent implements OnInit {
   startEditing() {
     const ca = this.cast();
     if (!ca) return;
+    this.editName.set(ca.name ?? '');
     this.editPublicDescription.set(ca.publicDescription ?? '');
     this.editDescription.set(ca.description ?? '');
     this.editPronouns.set(ca.pronouns ?? '');
@@ -242,16 +276,30 @@ export class CampaignCastDetailComponent implements OnInit {
     this.editAlignment.set(ca.alignment ?? '');
     this.editPosture.set(ca.posture ?? '');
     this.editSpeed.set(ca.speed ?? '');
+    this.editVoicePlacement.set([...(ca.voicePlacement ?? [])]);
+    this.editVoiceNotes.set(ca.voiceNotes ?? '');
     this.editDmNotes.set(ca.dmNotes ?? '');
+    const wasExpanded = this.detailExpanded();
     this.editing.set(true);
+    requestAnimationFrame(() => this.expandPanel(!wasExpanded));
   }
 
   cancelEditing() {
     this.editing.set(false);
   }
 
-  saveDetails() {
+  toggleVoicePlacement(option: string) {
+    const current = this.editVoicePlacement();
+    if (current.includes(option)) {
+      this.editVoicePlacement.set(current.filter(v => v !== option));
+    } else {
+      this.editVoicePlacement.set([...current, option]);
+    }
+  }
+
+  saveDetails(syncLibrary = false) {
     const body = {
+      name:              this.editName(),
       publicDescription: this.editPublicDescription(),
       description:       this.editDescription(),
       pronouns:          this.editPronouns(),
@@ -261,7 +309,10 @@ export class CampaignCastDetailComponent implements OnInit {
       alignment:         this.editAlignment(),
       posture:           this.editPosture(),
       speed:             this.editSpeed(),
+      voicePlacement:    this.editVoicePlacement(),
+      voiceNotes:        this.editVoiceNotes(),
       dmNotes:           this.editDmNotes(),
+      syncLibrary,
     };
     this.http.patch(
       `${environment.apiUrl}/api/campaigns/${this.campaignId()}/casts/${this.castInstanceId()}`,
@@ -273,11 +324,33 @@ export class CampaignCastDetailComponent implements OnInit {
           ca.instanceId === this.castInstanceId() ? { ...ca, ...body } : ca
         )
       } : c);
+      const subLocAfterSave = this.parentSublocation();
+      if (subLocAfterSave?.isPartyAnchor) {
+        this.shellSvc.setTitleContext({
+          pageType:   'cast-party',
+          campaignId: this.campaignId(),
+          baseRoute:  '/campaign',
+          location:   null,
+          partyRoute: ['/campaign', this.campaignId(), 'the-party'],
+        }, '56px');
+      } else {
+        this.shellSvc.setTitleContext({
+          pageType: 'cast',
+          campaignId: this.campaignId(),
+          baseRoute: '/campaign',
+          location: this.parentLocation(),
+          sublocation: subLocAfterSave,
+        }, '56px');
+      }
       this.editing.set(false);
     });
   }
 
-  // ── Secrets ───────────────────────────────────────────────────────────────
+  saveToLibrary() {
+    this.saveDetails(true);
+  }
+
+  // ── Secrets
 
   startAddingSecret() {
     this.newSecretContent.set('');
@@ -297,6 +370,17 @@ export class CampaignCastDetailComponent implements OnInit {
     ).subscribe(s => {
       this.campaign.update(c => c ? { ...c, secrets: [...c.secrets, s] } : c);
       this.addingSecret.set(false);
+    });
+  }
+
+  deleteSecret(secret: CampaignSecret) {
+    this.http.delete(
+      `${environment.apiUrl}/api/campaigns/${this.campaignId()}/secrets/${secret.id}`
+    ).subscribe(() => {
+      this.campaign.update(c => c ? {
+        ...c,
+        secrets: c.secrets.filter(s => s.id !== secret.id)
+      } : c);
     });
   }
 
@@ -328,26 +412,30 @@ export class CampaignCastDetailComponent implements OnInit {
             : ca
         )
       } : c);
+      this.sublocationInstanceId.set(sublocationInstanceId);
+      this.router.navigate(
+        ['/campaign', this.campaignId(), 'sublocations', sublocationInstanceId, 'cast', castInstanceId],
+        { replaceUrl: true }
+      );
       if (isParty) {
-        this.sublocationInstanceId.set(sublocationInstanceId);
-        this.shellSvc.setCrumbs([
-          { label: '← The Party', action: () => this.goToTheParty() },
-        ]);
-        this.router.navigate(
-          ['/campaign', this.campaignId(), 'sublocations', sublocationInstanceId, 'cast', castInstanceId],
-          { replaceUrl: true }
-        );
+        this.shellSvc.setTitleContext({
+          pageType:   'cast-party',
+          campaignId: this.campaignId(),
+          baseRoute:  '/campaign',
+          location:   null,
+          partyRoute: ['/campaign', this.campaignId(), 'the-party'],
+        }, '56px');
       } else {
-        this.sublocationInstanceId.set(sublocationInstanceId);
-        this.shellSvc.setCrumbs([
-          { label: '← Locations',     action: () => this.goToCampaign() },
-          { label: '← Sublocations', action: () => this.goToLocation() },
-          { label: '← Cast',         action: () => this.goBack() },
-        ]);
-        this.router.navigate(
-          ['/campaign', this.campaignId(), 'sublocations', sublocationInstanceId, 'cast', castInstanceId],
-          { replaceUrl: true }
-        );
+        const c = this.campaign();
+        const newSubLoc = c?.sublocations.find(s => s.instanceId === sublocationInstanceId) ?? null;
+        const newLoc    = c?.locations.find(l => l.instanceId === locationInstanceId) ?? null;
+        this.shellSvc.setTitleContext({
+          pageType:    'cast',
+          campaignId:  this.campaignId(),
+          baseRoute:   '/campaign',
+          location:    newLoc,
+          sublocation: newSubLoc,
+        }, '56px');
       }
     });
   }
@@ -378,16 +466,30 @@ export class CampaignCastDetailComponent implements OnInit {
   }
 
   toggleDetail() {
+    const panel = this.detailContentRef.nativeElement.parentElement as HTMLElement;
     if (this.detailExpanded()) {
       this.panelHeight.set('220px');
+      panel.style.marginLeft = '';
+      panel.style.width = '';
       this.detailExpanded.set(false);
     } else {
-      const contentH = this.detailContentRef.nativeElement.scrollHeight;
-      const btnH     = this.expandBtnRef.nativeElement.offsetHeight;
-      this.panelHeight.set(`${contentH + btnH}px`);
-      this.detailExpanded.set(true);
+      this.expandPanel(true);
     }
   }
 
+  private expandPanel(applyMobileWidth = false) {
+    const panel    = this.detailContentRef.nativeElement.parentElement as HTMLElement;
+    const contentH = this.detailContentRef.nativeElement.scrollHeight;
+    const btnH     = this.expandBtnRef.nativeElement.offsetHeight;
+    this.panelHeight.set(`${contentH + btnH}px`);
+    if (applyMobileWidth && window.innerWidth < 768) {
+      const left = panel.getBoundingClientRect().left;
+      panel.style.marginLeft = `${-(left - 20)}px`;
+      panel.style.width      = `${window.innerWidth - 40}px`;
+    }
+    this.detailExpanded.set(true);
+  }
+
   initial(name: string) { return name.charAt(0).toUpperCase(); }
+
 }

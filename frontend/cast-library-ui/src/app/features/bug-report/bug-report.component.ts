@@ -1,15 +1,15 @@
 import { Component, inject, signal, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
-import { RouterLink } from '@angular/router';
 import { BugReportService } from '../../shared/services/bug-report.service';
 import { SubmitBugReportRequest } from '../../shared/models/bug-report.model';
 import { AuthService } from '../../core/auth/auth.service';
+import { JournalTitleComponent } from '../../shared/components/journal-title/journal-title.component';
 
 @Component({
   selector: 'app-bug-report',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, RouterLink],
+  imports: [CommonModule, ReactiveFormsModule, JournalTitleComponent],
   templateUrl: './bug-report.component.html',
   styleUrl: './bug-report.component.scss',
 })
@@ -17,8 +17,6 @@ export class BugReportComponent implements OnInit {
   private fb             = inject(FormBuilder);
   private bugReportSvc   = inject(BugReportService);
   auth                   = inject(AuthService);
-
-  menuOpen = signal(false);
 
   readonly severities = ['Low', 'Medium', 'High', 'Critical'] as const;
 

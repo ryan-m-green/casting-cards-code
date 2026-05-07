@@ -20,6 +20,8 @@ namespace CastLibrary.Logic.Services
                     return $"{dmUserId}/locations/{playerCardId}.png";
                 case EntityType.PlayerCard:
                     return $"{dmUserId}/player-cards/{playerCardId}.png";
+                case EntityType.Faction:
+                    return $"{dmUserId}/factions/{playerCardId}.png";
                 default: return string.Empty;
             }
         }
