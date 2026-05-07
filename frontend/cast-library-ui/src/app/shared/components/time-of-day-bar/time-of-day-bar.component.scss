@@ -222,6 +222,7 @@ $spring-easing:       cubic-bezier(0.22, 1, 0.36, 1);
   overflow: visible;
   box-shadow: 0 2px 12px v.$color-ext-722;
   isolation: isolate;
+  -webkit-tap-highlight-color: transparent;
 
   // Square bottom corners when the notes panel is attached below
   &--panel-open {
@@ -276,6 +277,7 @@ $spring-easing:       cubic-bezier(0.22, 1, 0.36, 1);
   overflow: hidden;
   transition: filter 0.15s ease;
   background: transparent; // overridden by [style]
+  -webkit-tap-highlight-color: transparent;
 
   // Rounded corners on first and last
   &:first-child { border-radius: 8px 0 0 8px; }
@@ -311,6 +313,8 @@ $spring-easing:       cubic-bezier(0.22, 1, 0.36, 1);
   z-index: 20;
   cursor: ew-resize;
   touch-action: none;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
 
   // Smooth glide for player-received cursor moves
   &--glide {
