@@ -39,6 +39,7 @@ export class QuicknotesComponent {
 
   isOpen      = signal(false);
   isClosing   = signal(false);
+  isAnimating = signal(false);
   noteContent = signal('');
   destType    = signal<DestinationType>('queue');
   entityId    = signal<string>('');
@@ -60,7 +61,11 @@ export class QuicknotesComponent {
       }, this.SLIDE_DURATION);
     } else if (!this.isOpen()) {
       this.isOpen.set(true);
-      setTimeout(() => this.noteArea?.nativeElement?.focus(), 0);
+      this.isAnimating.set(true);
+      setTimeout(() => {
+        this.isAnimating.set(false);
+        this.noteArea?.nativeElement?.focus();
+      }, this.SLIDE_DURATION);
     }
   }
 

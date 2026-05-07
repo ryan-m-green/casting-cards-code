@@ -9,7 +9,7 @@
 </div>
 
 @if (isOpen()) {
-  <div class="qn-panel-clip">
+  <div class="qn-panel-clip" [class.qn-panel-clip--animating]="isAnimating() || isClosing()">
     <div class="qn-panel" [class.qn-panel--closing]="isClosing()">
       <div class="qn-panel-header">
         <button class="qn-view-queue-btn" (click)="goToQueue()">

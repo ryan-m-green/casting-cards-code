@@ -56,7 +56,9 @@
         @for (cast of connectedCasts(); track cast.instanceId) {
           <span class="notes-pill">
             {{ cast.name }}
-            <button class="notes-pill-remove" (click)="removeConnection(cast.instanceId)">×</button>
+            <button class="notes-pill-remove" (click)="removeConnection(cast.instanceId)" title="Remove" aria-label="Remove">
+              <img src="/icons/chronicle/delete.svg" alt="Remove" class="notes-pill-remove-img" />
+            </button>
           </span>
         }
       </div>

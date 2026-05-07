@@ -20,6 +20,10 @@
   text-align: left;
 }
 
+.void-title__indented + .void-title__label {
+  margin-top: 8px;
+}
+
 .void-title__link {
   color: color-mix(in srgb, var(--portal-color, v.$campaign-portal-primary), v.$color-ext-160 45%);
   text-decoration: underline;

@@ -115,7 +115,6 @@ export class PlayerCastDetailComponent implements OnInit {
     });
 
     effect(() => {
-      debugger;
       const ca = this.cast();
       if (!ca) return;
 
@@ -150,7 +149,6 @@ export class PlayerCastDetailComponent implements OnInit {
   }
 
   ngOnInit() {
-    debugger;
     this.transition.hide();
     const id     = this.route.snapshot.paramMap.get('id')!;
     const locId  = this.route.snapshot.paramMap.get('sublocationInstanceId')!;

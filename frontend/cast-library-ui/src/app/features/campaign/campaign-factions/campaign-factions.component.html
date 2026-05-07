@@ -272,6 +272,7 @@
   </div>
   }
 
+  @if (activeTab() === 'factions') {
   <app-portal-import-card
     #importCard
     [campaign]="campaign()"
@@ -281,6 +282,7 @@
     (factionAdded)="onFactionAdded($event)"
     (factionRemoved)="onFactionRemoved($event)"
   />
+  }
 </div>
   } <!-- end @if (isDm()) -->
 } <!-- end @if (campaign(); as camp) -->

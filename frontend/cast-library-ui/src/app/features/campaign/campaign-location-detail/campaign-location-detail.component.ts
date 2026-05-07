@@ -332,6 +332,7 @@ export class CampaignLocationDetailComponent implements OnInit {
       panel.style.marginLeft = '';
       panel.style.width = '';
       this.detailExpanded.set(false);
+      this.editing.set(false);
     } else {
       const contentH = this.detailContentRef.nativeElement.scrollHeight;
       const btnH     = this.expandBtnRef.nativeElement.offsetHeight;

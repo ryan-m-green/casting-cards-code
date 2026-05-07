@@ -343,3 +343,15 @@
     background: v.$color-ext-761;
   }
 }
+
+// ── Mobile ────────────────────────────────────────────────────────────────────
+@media (max-width: 600px) {
+  .rel-global-controls {
+    padding: 10px 2px;
+    max-width: calc(100% - 6px);
+  }
+
+  .rel-avatar-grid {
+    grid-template-columns: repeat(auto-fill, minmax(124px, 1fr));
+  }
+}

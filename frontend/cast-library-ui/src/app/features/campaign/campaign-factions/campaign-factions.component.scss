@@ -175,12 +175,16 @@ app-portal-import-card {
 }
 
 .compass-svg {
-  width: 100%;
-  max-width: 480px;
+  width: 136%;
+  max-width: 552px;
   height: auto;
   background: v.$color-ext-527;
   border: 1px solid rgba(v.$accent, 0.16);
   border-radius: 6px;
+
+  @media (max-width: 600px) {
+    width: 480px;
+  }
 }
 
 .compass-bg {

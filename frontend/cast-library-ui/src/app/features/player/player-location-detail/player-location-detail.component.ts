@@ -1,6 +1,7 @@
-import { Component, OnInit, signal, computed, inject, ViewChild, ElementRef, effect, untracked } from '@angular/core';
+import { Component, OnInit, OnDestroy, signal, computed, inject, ViewChild, ElementRef, effect, untracked } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
+import { Subscription } from 'rxjs';
 import { CampaignLocationInstance } from '../../../shared/models/location.model';
 import { CampaignSublocationInstance } from '../../../shared/models/sublocation.model';
 import { CampaignSecret } from '../../../shared/models/secret.model';
@@ -19,13 +20,14 @@ import { SublocationCardComponent } from '../../../shared/components/sublocation
   templateUrl: './player-location-detail.component.html',
   styleUrl: './player-location-detail.component.scss'
 })
-export class PlayerLocationDetailComponent implements OnInit {
+export class PlayerLocationDetailComponent implements OnInit, OnDestroy {
   private route      = inject(ActivatedRoute);
   private router     = inject(Router);
   private transition = inject(PortalTransitionService);
   private shell      = inject(PlayerCampaignShellComponent);
   private shellSvc   = inject(PlayerCampaignShellService);
   private hub        = inject(CampaignHubService);
+  private paramSub?: Subscription;
 
   @ViewChild('detailContent')   private detailContentRef!: ElementRef<HTMLElement>;
   @ViewChild('expandBtn')       private expandBtnRef!: ElementRef<HTMLElement>;
@@ -71,20 +73,28 @@ export class PlayerLocationDetailComponent implements OnInit {
 
   ngOnInit() {
     this.transition.hide();
-    const id         = this.route.snapshot.paramMap.get('id')!;
-    const locationInstId = this.route.snapshot.paramMap.get('locationInstanceId')!;
-    this.campaignId.set(id);
-    this.locationInstanceId.set(locationInstId);
+    this.paramSub = this.route.paramMap.subscribe(params => {
+      const id             = params.get('id')!;
+      const locationInstId = params.get('locationInstanceId')!;
+      this.campaignId.set(id);
+      this.locationInstanceId.set(locationInstId);
+      this.detailExpanded.set(false);
+      this.panelHeight.set('220px');
 
-    const loc = this.location();
-    if (loc) {
-      this.shellSvc.setTitleContext({
-        pageType: 'location',
-        campaignId: id,
-        baseRoute: '/player/campaign',
-        location: loc,
-      });
-    }
+      const loc = this.location();
+      if (loc) {
+        this.shellSvc.setTitleContext({
+          pageType: 'location',
+          campaignId: id,
+          baseRoute: '/player/campaign',
+          location: loc,
+        });
+      }
+    });
+  }
+
+  ngOnDestroy() {
+    this.paramSub?.unsubscribe();
   }
 
   toggleDetail() {

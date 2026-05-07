@@ -4,14 +4,14 @@
 
 .nav-toggle-btn {
   position: fixed;
-  top: 20px;
-  left: 32px;
+  top: 24px;
+  left: 24px;
   z-index: 10000;
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 36px;
-  height: 36px;
+  width: 44px;
+  height: 44px;
   padding: 0;
   background: v.$campaign-portal-bg-dark;
   border: 1px solid color-mix(in srgb, var(--portal-color, v.$campaign-portal-primary), transparent 50%);
@@ -346,6 +346,8 @@
   align-items: center;
   gap: 10px;
   width: 100%;
+  min-width: 0;
+  overflow: hidden;
   padding: 9px 20px;
   background: none;
   border: none;
@@ -474,17 +476,19 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 32px;
-  height: 36px;
+  width: 28px;
+  height: 28px;
   padding: 0;
-  background: none;
-  border: none;
+  background: v.$campaign-portal-bg-medium;
+  border: 1px solid v.$campaign-portal-border-bold;
+  border-radius: 6px;
   color: v.$campaign-portal-text-purple-light;
-  font-size: 16px;
+  font-size: 14px;
   cursor: pointer;
-  transition: color 0.15s ease, transform 0.2s ease;
+  transition: color 0.15s ease, background 0.15s ease, border-color 0.15s ease, transform 0.2s ease;
   flex-shrink: 0;
-  margin-right: 4px;
+  margin-right: 6px;
+  align-self: center;
 
   &.expanded {
     transform: rotate(90deg);
@@ -492,6 +496,8 @@
 
   &:hover {
     color: v.$campaign-portal-text-lavender-bright;
+    background: v.$campaign-portal-border-accent;
+    border-color: v.$campaign-portal-border-strong-focus;
   }
 }
 

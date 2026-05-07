@@ -8,7 +8,7 @@
   pointer-events: none;
   perspective: 1200px;
   // Vanishing point sits on the spine's right edge — the hinge axis
-  perspective-origin: 56px 50%;
+  perspective-origin: 96px 50%;
 }
 
 // ── Bookmark trigger — parchment tab on the spine ─────────────────────────────
@@ -17,8 +17,8 @@
   position: absolute;
   top: 16px;
   left: 0;
-  width: 56px;
-  height: 44px;
+  width: 96px;
+  aspect-ratio: 1;
   z-index: 2;
   pointer-events: auto;
   display: flex;
@@ -126,7 +126,7 @@
 .jnd-drawer {
   position: absolute;
   top: 0;
-  left: 56px;
+  left: 96px;
   bottom: 0;
   width: 264px;
   z-index: 2;
@@ -356,11 +356,11 @@
 
 @media (max-width: 600px) {
   :host {
-    perspective-origin: 24px 50%;
+    perspective-origin: 56px 50%;
   }
 
   .jnd-bookmark {
-    width: 24px;
+    width: 56px;
   }
 
   .jnd-hamburger span {
@@ -368,7 +368,7 @@
   }
 
   .jnd-drawer {
-    left: 24px;
+    left: 56px;
     width: min(240px, 78vw);
   }
 }

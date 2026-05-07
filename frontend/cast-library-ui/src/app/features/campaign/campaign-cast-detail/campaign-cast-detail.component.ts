@@ -472,6 +472,7 @@ export class CampaignCastDetailComponent implements OnInit {
       panel.style.marginLeft = '';
       panel.style.width = '';
       this.detailExpanded.set(false);
+      this.editing.set(false);
     } else {
       this.expandPanel(true);
     }

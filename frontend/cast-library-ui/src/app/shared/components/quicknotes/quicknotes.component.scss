@@ -108,7 +108,10 @@
   left: 0;
   right: 0;
   z-index: 300;
-  overflow: hidden;
+
+  &--animating {
+    overflow: hidden;
+  }
 }
 
 .qn-panel {

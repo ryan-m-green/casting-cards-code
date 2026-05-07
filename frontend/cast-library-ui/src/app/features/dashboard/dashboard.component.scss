@@ -158,6 +158,17 @@
   margin-top: 8px;
 }
 
+// ─── Mobile ───────────────────────────────────────────────────────────────────
+@media (max-width: 600px) {
+  .sv {
+    flex: 0 0 98px;
+    width: 98px;
+    height: 98px;
+    min-width: unset;
+    aspect-ratio: unset;
+  }
+}
+
 .import-summary {
   font-family: v.$font-header;
   font-size: 9px;
