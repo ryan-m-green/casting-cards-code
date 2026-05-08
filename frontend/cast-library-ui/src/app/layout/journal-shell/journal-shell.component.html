@@ -4,7 +4,10 @@
     @for (pct of spineBands; track pct) {
       <div class="spine-band" [style.top.%]="pct"></div>
     }
-    @if (isCover()) {
+    @if (!isLoggedIn() && !isCover()) {
+      <a class="spine-link spine-link--top" routerLink="/">Log in</a>
+    }
+    @if (showSpineLinks()) {
       <div class="spine-links">
         <a class="spine-link" routerLink="/about">About</a>
         <a class="spine-link" routerLink="/legal">Legal</a>

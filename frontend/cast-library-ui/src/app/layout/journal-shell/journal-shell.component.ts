@@ -4,6 +4,7 @@ import { CommonModule } from '@angular/common';
 import { Subscription } from 'rxjs';
 import { PortalTransitionService } from '../../core/portal-transition.service';
 import { JournalNavDrawerComponent } from '../../shared/components/journal-nav-drawer/journal-nav-drawer.component';
+import { AuthService } from '../../core/auth/auth.service';
 
 @Component({
   selector: 'app-journal-shell',
@@ -14,10 +15,19 @@ import { JournalNavDrawerComponent } from '../../shared/components/journal-nav-d
 })
 export class JournalShellComponent implements OnInit, OnDestroy {
   private router = inject(Router);
+  private auth   = inject(AuthService);
   protected transition = inject(PortalTransitionService);
 
   readonly spineBands = [18, 30, 45, 60, 72];
-  isCover = signal(false);
+  isCover       = signal(false);
+  showSpineLinks = signal(false);
+  readonly isLoggedIn = this.auth.isLoggedIn;
+
+  private computeShowSpineLinks(url: string): boolean {
+    const isCover = url === '/' || url === '';
+    const isInfoPage = url.startsWith('/about') || url.startsWith('/legal');
+    return isCover || (isInfoPage && !this.auth.isLoggedIn());
+  }
 
   @ViewChild('pageFlip') private pageFlipRef!: ElementRef<HTMLDivElement>;
 
@@ -26,6 +36,7 @@ export class JournalShellComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.isCover.set(this.router.url === '/' || this.router.url === '');
+    this.showSpineLinks.set(this.computeShowSpineLinks(this.router.url));
 
     this.sub = this.router.events.subscribe(event => {
       if (event instanceof NavigationStart) {
@@ -37,6 +48,7 @@ export class JournalShellComponent implements OnInit, OnDestroy {
       if (event instanceof NavigationEnd) {
         const url = event.urlAfterRedirects;
         this.isCover.set(url === '/' || url === '');
+        this.showSpineLinks.set(this.computeShowSpineLinks(url));
       }
     });
   }

@@ -96,6 +96,15 @@
   z-index: 3;
 }
 
+.spine-link--top {
+  position: absolute;
+  top: 28px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 3;
+  white-space: nowrap;
+}
+
 .spine-link {
   font-family: v.$font-header;
   font-size: 12px;
