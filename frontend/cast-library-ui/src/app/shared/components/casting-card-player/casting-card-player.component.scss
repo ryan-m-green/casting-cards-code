@@ -13,6 +13,7 @@
   cursor: pointer;
   transition: transform .2s ease;
   position: relative;
+  perspective: 700px;
 }
 
 .cc-wrap:hover {
@@ -24,12 +25,12 @@
   height: 100%;
   position: relative;
   transform-style: preserve-3d;
-  transform: perspective(700px) rotateY(0deg);
+  transform: rotateY(0deg);
   transition: transform .65s cubic-bezier(.4,.2,.2,1);
 }
 
 .cc-wrap.cc-flipped .cc-inner {
-  transform: perspective(700px) rotateY(180deg);
+  transform: rotateY(180deg);
 }
 
 .cc-face {

@@ -1,5 +1,6 @@
 import {
   Component,
+  computed,
   signal,
   inject,
   HostListener,
@@ -35,6 +36,11 @@ export class JournalNavDrawerComponent {
     ),
     { initialValue: this.router.url },
   );
+
+  readonly isOnCover = computed(() => {
+    const url = this.currentUrl();
+    return url === '/' || url === '';
+  });
 
   isActive(path: string): boolean {
     return this.currentUrl().startsWith(path);
