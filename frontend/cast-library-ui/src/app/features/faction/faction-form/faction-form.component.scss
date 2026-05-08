@@ -33,6 +33,17 @@
   padding: 0 16px;
 }
 
+.symbol-section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+
+  .section-label {
+    margin: 0;
+  }
+}
+
 // ── Section Label ──────────────────────────────────────────────────────────────
 .section-label {
   font-family: 'Cinzel', serif;

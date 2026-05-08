@@ -25,10 +25,6 @@
     cursor: default;
   }
 
-  &--hidden {
-    opacity: 0.7;
-  }
-
   &--glow {
     transition: box-shadow 0.4s ease;
   }
@@ -161,6 +157,37 @@
       v.$color-faction-evil-inner-2 60%,
       v.$color-faction-evil-inner-3 100%
     );
+  }
+}
+
+// ── Hidden Faction Icon ──────────────────────────────────────────────────────
+.fac-hidden-label {
+  font-family: 'Cinzel', serif;
+  font-size: 6.5px;
+  font-style: normal;
+  letter-spacing: 0.15em;
+  text-align: center;
+  text-transform: uppercase;
+  font-weight: bolder;
+  margin-top: 3px;
+  padding: 1px 5px;
+  border-radius: 2px;
+  display: block;
+  text-align: center;
+
+  .fac-card--good & {
+    background: rgba(30, 5, 20, 0.75);
+    color: v.$color-faction-good-accent;
+  }
+
+  .fac-card--neutral & {
+    background: rgba(10, 14, 20, 0.8);
+    color: v.$color-faction-neutral-accent;
+  }
+
+  .fac-card--evil & {
+    background: rgba(10, 8, 0, 0.8);
+    color: v.$color-faction-evil-accent;
   }
 }
 

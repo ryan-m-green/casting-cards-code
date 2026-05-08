@@ -164,7 +164,7 @@
               <div class="dv dv-mb"></div>
             </div>
             @if (imageUrl()) {
-              <img [src]="imageUrl()!" alt="Character portrait" class="card-form-image" />
+              <img [src]="imageUrl()!" alt="Character portrait" class="card-form-image" (error)="$any($event.target).style.display='none'" />
             } @else {
               <div class="card-form-placeholder">
                 <div class="card-initial">{{ savedCard()!.name[0].toUpperCase() }}</div>

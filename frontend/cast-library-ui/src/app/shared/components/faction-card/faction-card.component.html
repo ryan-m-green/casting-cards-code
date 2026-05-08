@@ -171,7 +171,7 @@
               </label>
             }
             @if (faction.imageUrl || faction.symbolPath) {
-              <img [src]="faction.imageUrl || faction.symbolPath" [alt]="'Emblem of ' + faction.name" class="fac-portrait-img" />
+              <img [src]="faction.imageUrl || faction.symbolPath" [alt]="'Emblem of ' + faction.name" class="fac-portrait-img" (error)="$any($event.target).style.display='none'" />
             } @else {
               <div class="fac-portrait-inner">
                 <!-- Good emblem (small) -->
@@ -224,6 +224,9 @@
           <!-- Flavor -->
           <div class="fac-flavor">
             <div class="fac-flavor-text">{{ faction.type }}</div>
+            @if (faction.hidden) {
+              <div class="fac-hidden-label">Hidden</div>
+            }
           </div>
 
           <!-- Bottom strip -->

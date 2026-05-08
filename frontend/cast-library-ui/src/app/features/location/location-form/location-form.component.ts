@@ -100,7 +100,7 @@ export class LocationFormComponent implements OnInit {
   imageUploading = signal(false);
 
   labelText    = signal<'Saved' | 'Saving…' | 'Error'>('Saved');
-  labelVisible = signal(true);
+  labelVisible = signal(false);
 
   form = this.fb.group({
     name:           ['', Validators.required],
@@ -187,13 +187,13 @@ export class LocationFormComponent implements OnInit {
       catchError(() => {
         this.saveStatus.set('error');
         this.fadeLabelTo('Error');
-        setTimeout(() => this.saveStatus.set('idle'), 2000);
+        setTimeout(() => { this.saveStatus.set('idle'); this.labelVisible.set(false); }, 2000);
         return EMPTY;
       })
     ).subscribe(location => {
       this.saveStatus.set('saved');
       this.fadeLabelTo('Saved');
-      setTimeout(() => this.saveStatus.set('idle'), 2000);
+      setTimeout(() => { this.saveStatus.set('idle'); this.labelVisible.set(false); }, 2000);
       if (!this.locationId()) {
         this.locationId.set(location.id);
         this.router.navigate(['/dm/locations', location.id], { replaceUrl: true, queryParams: { upload: 'true' }, state: { noFlip: true } });

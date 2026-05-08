@@ -312,16 +312,20 @@ $spring-easing:       cubic-bezier(0.22, 1, 0.36, 1);
 .tod-cursor {
   position: absolute;
   top: 28px;
-  transform: translateX(-50%);
+  transform: translateX(-50%) translateZ(0);
   z-index: 20;
   cursor: ew-resize;
   touch-action: none;
   -webkit-tap-highlight-color: transparent;
   user-select: none;
+  will-change: left;
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
 
   // Smooth glide for player-received cursor moves
   &--glide {
     transition: left 0.7s $spring-easing;
+    will-change: left, transform;
 
     @media (prefers-reduced-motion: reduce) {
       transition: none;

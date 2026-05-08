@@ -10,7 +10,7 @@ const SPARK_COLORS = [
 
 @Injectable({ providedIn: 'root' })
 export class SparkleService {
-  trigger(host: HTMLElement): void {
+  trigger(host: HTMLElement, colors: string[] = SPARK_COLORS): void {
     const count = 30;
     for (let i = 0; i < count; i++) {
       const angle = (i / count) * 360 + Math.random() * (360 / count);
@@ -18,7 +18,7 @@ export class SparkleService {
       const dist  = 56 + Math.random() * 64;
       const dx    = Math.round(Math.cos(rad) * dist);
       const dy    = Math.round(Math.sin(rad) * dist);
-      const color = SPARK_COLORS[i % SPARK_COLORS.length];
+      const color = colors[i % colors.length];
       const delay = Math.random() * 80;
 
       const spark = document.createElement('div');

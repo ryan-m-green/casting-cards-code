@@ -1,6 +1,7 @@
-import { Component, inject, signal, ElementRef, ViewChild } from '@angular/core';
+import { Component, inject, signal, ElementRef, ViewChild, DestroyRef } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { AuthService } from '../../core/auth/auth.service';
 import { SparkleService } from '../../shared/services/sparkle.service';
 
@@ -14,15 +15,26 @@ import { SparkleService } from '../../shared/services/sparkle.service';
 export class CoverComponent {
   @ViewChild('sparkHost') sparkHost!: ElementRef<HTMLElement>;
 
-  private fb      = inject(FormBuilder);
-  private auth    = inject(AuthService);
-  private router  = inject(Router);
-  private sparkle = inject(SparkleService);
+  private fb        = inject(FormBuilder);
+  private auth      = inject(AuthService);
+  private router    = inject(Router);
+  private sparkle   = inject(SparkleService);
+  private destroyRef = inject(DestroyRef);
 
   loginForm = this.fb.group({
     email:    ['', [Validators.required, Validators.email]],
     password: ['', Validators.required],
   });
+
+  constructor() {
+    this.loginForm.get('email')!.valueChanges
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(value => {
+        if (value && value !== value.toLowerCase()) {
+          this.loginForm.get('email')!.setValue(value.toLowerCase(), { emitEvent: false });
+        }
+      });
+  }
 
   errorMsg    = signal('');
   loading     = signal(false);
@@ -109,10 +121,12 @@ export class CoverComponent {
   knock(): void {
     if (this.loginForm.invalid) {
       this.loginForm.markAllAsTouched();
+      this.sparkle.trigger(this.sparkHost.nativeElement, ['#8B0000', '#CC2200', '#FF4422', '#FF6644', '#FF2200']);
       return;
     }
     this.loading.set(true);
     this.errorMsg.set('');
+    this.sparkle.trigger(this.sparkHost.nativeElement);
     const { email, password } = this.loginForm.value;
     const sparkStart = Date.now();
     this.auth.login({ email: email!, password: password! }).subscribe({
@@ -134,6 +148,7 @@ export class CoverComponent {
       error: (e) => {
         this.errorMsg.set(e.error?.message || 'Login failed');
         this.loading.set(false);
+        this.sparkle.trigger(this.sparkHost.nativeElement, ['#8B0000', '#CC2200', '#FF4422', '#FF6644', '#FF2200']);
       }
     });
   }

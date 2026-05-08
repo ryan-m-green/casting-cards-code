@@ -60,7 +60,7 @@ export class CastFormComponent implements OnInit {
   speedOptions     = SPEED_OPTIONS;
 
   labelText    = signal<'Saved' | 'Saving…' | 'Error'>('Saved');
-  labelVisible = signal(true);
+  labelVisible = signal(false);
 
   form = this.fb.group({
     name:              ['', Validators.required],
@@ -147,13 +147,13 @@ export class CastFormComponent implements OnInit {
       catchError(() => {
         this.saveStatus.set('error');
         this.fadeLabelTo('Error');
-        setTimeout(() => this.saveStatus.set('idle'), 2000);
+        setTimeout(() => { this.saveStatus.set('idle'); this.labelVisible.set(false); }, 2000);
         return EMPTY;
       })
     ).subscribe(cast => {
       this.saveStatus.set('saved');
       this.fadeLabelTo('Saved');
-      setTimeout(() => this.saveStatus.set('idle'), 2000);
+      setTimeout(() => { this.saveStatus.set('idle'); this.labelVisible.set(false); }, 2000);
       if (!this.castId()) {
         this.castId.set(cast.id);
         this.router.navigate(['/dm/cast', cast.id], { replaceUrl: true, queryParams: { upload: 'true' }, state: { noFlip: true } });

@@ -4,6 +4,10 @@
     @for (pct of spineBands; track pct) {
       <div class="spine-band" [style.top.%]="pct"></div>
     }
+    <div class="spine-links">
+      <a class="spine-link" routerLink="/about">About</a>
+      <a class="spine-link" routerLink="/legal">Legal</a>
+    </div>
     <div class="spine-cap bottom"></div>
   </div>
   <div class="page-area">

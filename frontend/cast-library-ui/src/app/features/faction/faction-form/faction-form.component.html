@@ -103,20 +103,20 @@
     </div>
   </form>
 
-  <div class="form-save-footer">
-    <span class="save-label"
-          [class.save-label--saving]="labelText() === 'Saving…'"
-          [class.save-label--error]="labelText() === 'Error'"
-          [style.opacity]="labelVisible() ? 1 : 0">{{ labelText() }}</span>
-    <div class="save-spark-host" #sparkHost>
-      <button class="btn-primary"
-              [disabled]="form.invalid || saveStatus() === 'saving'"
-              (click)="onSave($event)">Save</button>
-    </div>
-  </div>
-
   <div class="symbol-section">
-    <h3 class="section-label">Faction Symbol</h3>
+    <div class="symbol-section-header">
+      <h3 class="section-label">Faction Symbol</h3>
+      <div class="save-spark-host" #sparkHost>
+        <span class="save-label"
+              [class.save-label--saving]="labelText() === 'Saving…'"
+              [class.save-label--error]="labelText() === 'Error'"
+              [style.opacity]="labelVisible() ? 1 : 0">{{ labelText() }}</span>
+        <button class="campaign-primary-btn"
+                [disabled]="form.invalid || saveStatus() === 'saving'"
+                (click)="onSave($event)">Save</button>
+      </div>
+    </div>
     <app-icon-picker [selectedIcon]="selectedIcon()" (iconSelected)="onIconSelected($event)" />
   </div>
+
 </div>

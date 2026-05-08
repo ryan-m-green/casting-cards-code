@@ -112,7 +112,7 @@
           <!-- Portrait -->
           <div class="cc-portrait">
             @if (member.imageUrl) {
-              <img [src]="member.imageUrl" [alt]="member.name" class="cc-portrait-img" />
+              <img [src]="member.imageUrl" [alt]="member.name" class="cc-portrait-img" (error)="$any($event.target).style.display='none'" />
             } @else {
               <div class="cc-portrait-inner">
                 <svg width="36" height="50" viewBox="0 0 58 80" opacity=".2">

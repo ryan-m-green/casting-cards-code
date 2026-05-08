@@ -149,6 +149,7 @@ export class PlayerFactionDetailComponent implements OnInit, OnDestroy {
 
   onPerceptionChange(value: number) {
     this.playerNotes.update(n => n ? { ...n, perception: value } : n);
+    this.faction.update(f => f ? { ...f, perception: value } : f);
     this.scheduleSave();
   }
 
@@ -270,6 +271,9 @@ export class PlayerFactionDetailComponent implements OnInit, OnDestroy {
       this.notesText.set(n.notes);
       if (n.influence != null) {
         this.faction.update(f => f ? { ...f, influence: n.influence! } : f);
+      }
+      if (n.perception != null) {
+        this.faction.update(f => f ? { ...f, perception: n.perception! } : f);
       }
     });
   }

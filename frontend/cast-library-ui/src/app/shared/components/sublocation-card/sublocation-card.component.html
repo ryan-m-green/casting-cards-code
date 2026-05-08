@@ -143,7 +143,7 @@
               </label>
             }
             @if (sublocation.imageUrl) {
-              <img [src]="sublocation.imageUrl" [alt]="'Image of ' + sublocation.name + ' sublocation'" class="sub-portrait-img" />
+              <img [src]="sublocation.imageUrl" [alt]="'Image of ' + sublocation.name + ' sublocation'" class="sub-portrait-img" (error)="$any($event.target).style.display='none'" />
             } @else {
               <div class="sub-portrait-placeholder">
                 <svg width="44" height="44" viewBox="0 0 60 60" opacity=".25">

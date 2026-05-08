@@ -1,5 +1,7 @@
-import { Component, inject } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+import { Component, inject, OnInit, OnDestroy } from '@angular/core';
+import { Router, RouterOutlet, NavigationCancel, NavigationError } from '@angular/router';
+import { Subscription } from 'rxjs';
+import { filter } from 'rxjs/operators';
 import { PortalTransitionService } from './core/portal-transition.service';
 
 @Component({
@@ -34,6 +36,20 @@ import { PortalTransitionService } from './core/portal-transition.service';
     }
   `]
 })
-export class App {
+export class App implements OnInit, OnDestroy {
   transition = inject(PortalTransitionService);
+  private router = inject(Router);
+  private _navSub: Subscription | null = null;
+
+  ngOnInit() {
+    this._navSub = this.router.events.pipe(
+      filter(e => e instanceof NavigationCancel || e instanceof NavigationError)
+    ).subscribe(() => {
+      if (this.transition.active()) this.transition.hide();
+    });
+  }
+
+  ngOnDestroy() {
+    this._navSub?.unsubscribe();
+  }
 }

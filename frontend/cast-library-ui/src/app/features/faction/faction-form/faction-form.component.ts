@@ -62,11 +62,11 @@ export class FactionFormComponent implements OnInit {
   perceptionLabel  = perceptionLabel;
 
   labelText    = signal<'Saved' | 'Saving…' | 'Error'>('Saved');
-  labelVisible = signal(true);
+  labelVisible = signal(false);
 
   form = this.fb.group({
     name:        ['', Validators.required],
-    type:        [FACTION_TYPE_OPTIONS[0], Validators.required],
+    type:        ['', Validators.required],
     hidden:      [false],
     description: [''],
     dmNotes:     [''],
@@ -173,41 +173,6 @@ export class FactionFormComponent implements OnInit {
   onIconSelected(path: string): void {
     this.selectedIcon.set(path);
     this.imageUrl.set(path);
-
-    if (this.form.invalid) return;
-    this.fadeLabelTo('Saving…');
-    this.saveStatus.set('saving');
-
-    const value = this.form.value;
-    const payload = {
-      name:        value.name,
-      type:        value.type,
-      hidden:      value.hidden ?? false,
-      description: value.description ?? undefined,
-      dmNotes:     value.dmNotes ?? undefined,
-      symbolPath:  path,
-    };
-
-    const req = this.factionId()
-      ? this.http.put<Faction>(`${environment.apiUrl}/api/factions/${this.factionId()}`, payload)
-      : this.http.post<Faction>(`${environment.apiUrl}/api/factions`, payload);
-
-    req.pipe(
-      catchError(() => {
-        this.saveStatus.set('error');
-        this.fadeLabelTo('Error');
-        setTimeout(() => this.saveStatus.set('idle'), 2000);
-        return EMPTY;
-      })
-    ).subscribe(faction => {
-      this.saveStatus.set('saved');
-      this.fadeLabelTo('Saved');
-      setTimeout(() => this.saveStatus.set('idle'), 2000);
-      if (!this.factionId()) {
-        this.factionId.set(faction.id);
-        this.router.navigate(['/dm/faction', faction.id], { replaceUrl: true, queryParams: { upload: 'true' }, state: { noFlip: true } });
-      }
-    });
   }
 
   }

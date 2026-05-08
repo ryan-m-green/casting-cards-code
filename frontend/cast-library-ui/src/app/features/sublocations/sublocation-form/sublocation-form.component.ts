@@ -33,7 +33,7 @@ export class SublocationFormComponent implements OnInit {
   imageUploading = signal(false);
 
   labelText    = signal<'Saved' | 'Saving…' | 'Error'>('Saved');
-  labelVisible = signal(true);
+  labelVisible = signal(false);
   form = this.fb.group({
     name:        ['', Validators.required],
     description: [''],
@@ -155,13 +155,13 @@ export class SublocationFormComponent implements OnInit {
       catchError(() => {
         this.saveStatus.set('error');
         this.fadeLabelTo('Error');
-        setTimeout(() => this.saveStatus.set('idle'), 2000);
+        setTimeout(() => { this.saveStatus.set('idle'); this.labelVisible.set(false); }, 2000);
         return EMPTY;
       })
     ).subscribe(subLoc => {
       this.saveStatus.set('saved');
       this.fadeLabelTo('Saved');
-      setTimeout(() => this.saveStatus.set('idle'), 2000);
+      setTimeout(() => { this.saveStatus.set('idle'); this.labelVisible.set(false); }, 2000);
       if (!this.sublocationId()) {
         this.sublocationId.set(subLoc.id);
         this.router.navigate(['/dm/sublocations', subLoc.id], { replaceUrl: true, queryParams: { upload: 'true' }, state: { noFlip: true } });

@@ -84,6 +84,54 @@
   }
 }
 
+.spine-links {
+  position: absolute;
+  bottom: 20px;
+  left: 0;
+  right: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  z-index: 3;
+}
+
+.spine-link {
+  font-family: v.$font-header;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  text-decoration: none;
+  text-align: center;
+  padding: 3px 8px;
+  border: 1px solid v.$journal-spine-cap-2;
+  border-radius: 6px;
+  background: linear-gradient(to bottom, v.$journal-spine-cap-1 0%, v.$journal-spine-cap-2 40%, v.$journal-spine-cap-3 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  filter: drop-shadow(0 1px 2px v.$journal-spine-shadow);
+  transition: filter 0.15s, border-color 0.15s, font-size 0.15s, padding 0.15s;
+
+  &:hover {
+    border-color: v.$journal-spine-cap-1;
+    filter: drop-shadow(0 1px 4px v.$journal-spine-shadow) brightness(1.3);
+  }
+
+  @media (max-width: 900px) {
+    font-size: 8px;
+    letter-spacing: 0.06em;
+    padding: 2px 4px;
+  }
+
+  @media (max-width: 600px) {
+    font-size: 12px;
+    letter-spacing: 0.03em;
+    padding: 1px 3px;
+  }
+}
+
 // ─── Page Area ────────────────────────────────────────────────────────────────
 .page-area {
   flex: 1;
@@ -272,7 +320,7 @@
   left: -8px;
   right: -4px;
   height: 38px;
-  top: calc(62% - 138px);
+  top: calc(62% - 128px);
   z-index: 20;
   background: linear-gradient(to bottom,
     v.$color-ext-618 0%, v.$color-ext-619 8%, v.$color-ext-413 30%,
@@ -297,6 +345,7 @@
   &::after  { bottom: 6px; }
 
   @media (max-width: 600px) { display: none; }
+  @media (min-width: 601px) and (max-width: 900px) { display: none; }
 }
 
 .strap-grain {

@@ -42,16 +42,22 @@
         </datalist>
       </div>
     </div>
-    <label for="location-geography-input" class="fi-label">Geography</label>
-    <input id="location-geography-input" class="fi" formControlName="geography" list="geography-options" placeholder="Coastal" autocomplete="off" />
-    <datalist id="geography-options">
-      @for (g of geographyOptions; track g) { <option [value]="g"></option> }
-    </datalist>
-    <label for="location-architecture-input" class="fi-label">Architecture</label>
-    <input id="location-architecture-input" class="fi" formControlName="architecture" list="architecture-options" placeholder="Gothic" autocomplete="off" />
-    <datalist id="architecture-options">
-      @for (a of architectureOptions; track a) { <option [value]="a"></option> }
-    </datalist>
+    <div class="wr form-row-gap">
+      <div class="form-field">
+        <label for="location-geography-input" class="fi-label">Geography</label>
+        <input id="location-geography-input" class="fi" formControlName="geography" list="geography-options" placeholder="Coastal" autocomplete="off" />
+        <datalist id="geography-options">
+          @for (g of geographyOptions; track g) { <option [value]="g"></option> }
+        </datalist>
+      </div>
+      <div class="form-field">
+        <label for="location-architecture-input" class="fi-label">Architecture</label>
+        <input id="location-architecture-input" class="fi" formControlName="architecture" list="architecture-options" placeholder="Gothic" autocomplete="off" />
+        <datalist id="architecture-options">
+          @for (a of architectureOptions; track a) { <option [value]="a"></option> }
+        </datalist>
+      </div>
+    </div>
     <div class="wr form-row-gap">
       <div class="form-field">
         <label for="location-climate-input" class="fi-label">Climate</label>
@@ -104,7 +110,7 @@
           [class.save-label--error]="labelText() === 'Error'"
           [style.opacity]="labelVisible() ? 1 : 0">{{ labelText() }}</span>
     <div class="save-spark-host" #sparkHost>
-      <button class="btn-primary"
+      <button class="campaign-primary-btn"
               [disabled]="form.invalid || saveStatus() === 'saving'"
               (click)="onSave($event)">Save</button>
     </div>

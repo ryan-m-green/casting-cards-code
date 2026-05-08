@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy, ViewChild, ElementRef, inject, signal } from '@angular/core';
-import { RouterOutlet, Router, NavigationStart, NavigationEnd } from '@angular/router';
+import { RouterOutlet, RouterLink, Router, NavigationStart, NavigationEnd } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { Subscription } from 'rxjs';
 import { PortalTransitionService } from '../../core/portal-transition.service';
@@ -8,7 +8,7 @@ import { JournalNavDrawerComponent } from '../../shared/components/journal-nav-d
 @Component({
   selector: 'app-journal-shell',
   standalone: true,
-  imports: [RouterOutlet, CommonModule, JournalNavDrawerComponent],
+  imports: [RouterOutlet, RouterLink, CommonModule, JournalNavDrawerComponent],
   templateUrl: './journal-shell.component.html',
   styleUrl: './journal-shell.component.scss'
 })

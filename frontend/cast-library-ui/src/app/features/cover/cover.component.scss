@@ -115,38 +115,90 @@
 
 .cover-center {
   display: flex;
+  flex-direction: column;
   align-items: center;
-  justify-content: center;
-  height: 100%;
   position: relative;
+  height: 100%;
+  overflow-y: auto;
   z-index: 8;
-  overflow: hidden;
   scrollbar-width: none;
+  padding-bottom: 24px;
 
   &::-webkit-scrollbar {
     display: none;
   }
 }
 
-.cover-content {
-  text-align: center;
+.cover-header {
+  width: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 0;
-  min-width: 270px;
-  padding: 28px 40px 16px;
+  padding-top: 40px;
+  pointer-events: none;
+  flex-shrink: 0;
+}
+
+.cover-form-area {
+  width: 300px;
+  max-width: calc(100% - 80px);
+  flex-shrink: 0;
+  margin-top: 36px;
+
+  // tablet portrait narrow (e.g. iPad Air)
+  @media (min-width: 601px) and (max-width: 900px) and (orientation: portrait) {
+    margin-top: 100px;
+  }
+
+  // tablet portrait wide (e.g. iPad Pro 12.9" portrait: 1024×1366)
+  @media (min-width: 901px) and (orientation: portrait) and (max-width: 1400px) {
+    margin-top: 120px;
+  }
+
+  // tablet landscape — covers all tablets including iPad Pro 12.9" (1024px viewport height)
+  @media (orientation: landscape) and (max-height: 1100px) and (min-width: 601px) and (max-width: 1199px) {
+    margin-top: 120px;
+  }
 }
 
 // ── Arcane crest ──────────────────────────────────────────────────────────────
 .crest {
-  margin-top: 100px;
-  margin-bottom: 12px;
+  width: 52px;
+  height: 52px;
+  margin-top: -22px;
+  margin-bottom: 0;
   opacity: 0.75;
   filter: drop-shadow(0 2px 4px v.$color-ext-155);
 }
 
 // ── Main title — embossed gold stamp ─────────────────────────────────────────
+.cover-title-svg {
+  display: block;
+  margin: 0 auto;
+  width: 600px;
+  max-width: 90vw;
+  height: auto;
+  margin-bottom: 0;
+  overflow: visible;
+
+  @media (max-width: 900px) {
+    max-width: 100%;
+  }
+
+  @media (max-width: 600px) {
+    max-width: 100%;
+  }
+
+  .title-text {
+    font-family: v.$font-header;
+    font-size: 48px;
+    font-weight: 700;
+    letter-spacing: 4px;
+    fill: url(#titleGold);
+    filter: url(#titleShadow);
+  }
+}
+
 .cover-title {
   font-family: v.$font-header;
   font-size: clamp(36px, 6.4vw, 60px);
@@ -167,25 +219,19 @@
   font-family: v.$font-body;
   font-size: clamp(10px, 1.4vw, 13px);
   font-style: italic;
-  color: v.$color-ext-396;
+  color: rgb(180, 120, 40);
   letter-spacing: 0.05em;
+  margin-top: -1px;
   margin-bottom: 24px;
   text-shadow: 0 1px 3px v.$color-ext-155;
-}
-
-// ── Form spacer ───────────────────────────────────────────────────────────────
-.cover-form-spacer {
-  height: 44px;
 }
 
 // ── Login form ────────────────────────────────────────────────────────────────
 .cover-login-form {
   width: 100%;
-  max-width: 300px;
   display: flex;
   flex-direction: column;
   text-align: left;
-  margin-bottom: 180px;
 }
 
 .field {
@@ -193,16 +239,23 @@
 }
 
 .field-passphrase {
-    margin-bottom:50px;
+  margin-bottom: 12px;
+}
+
+.field-label-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin-bottom: 5px;
 }
 
 .field-error {
   font-family: v.$font-header;
   font-size: 8px;
+  font-weight: bolder;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: v.$color-ext-397;
-  margin-top: 4px;
+  color: #a0d4ec;
 }
 
 .cover-fi-label {
@@ -212,8 +265,7 @@
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.22em;
-  color: v.$color-ext-398;
-  margin-bottom: 5px;
+  color: rgb(180, 120, 40);
 }
 
 .cover-fi {
@@ -248,27 +300,42 @@
 }
 
 // ── Error box ─────────────────────────────────────────────────────────────────
-.cover-error-box {
-  margin-bottom: 8px;
-  border-color: v.$color-ext-406;
-  background: v.$color-ext-410;
+.cover-error-box-wrap {
+  width: 100%;
+  min-height: 28px;
+}
 
-  .wbd { color: v.$color-ext-411; }
+.cover-error-box {
+  margin-top: 8px;
+  margin-bottom: 4px;
+  padding: 7px 12px;
+  background: rgba(50, 12, 8, 0.82);
+  border: 1px solid rgba(180, 60, 40, 0.75);
+  border-radius: 2px;
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.5), 0 1px 2px rgba(0, 0, 0, 0.4);
+
+  p {
+    margin: 0;
+    font-family: v.$font-header;
+    font-size: 9px;
+    font-weight: 600;
+    font-style: normal;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: rgba(240, 175, 130, 0.95);
+    line-height: 1.5;
+  }
 }
 
 // ── Knock button ──────────────────────────────────────────────────────────────
 .knock-group {
-  position: absolute;
-  top: calc(62% + 64px);
-  width: 300px;
-  max-width: calc(100% - 80px);
-  left: 50%;
-  transform: translateX(-50%);
+  width: 100%;
+  margin-top: -22px;
 }
 
 .knock-spark-host {
   position: relative;
-  margin-top: 0;
+  margin-top: 24px;
   display: flex;
   justify-content: stretch;
 }
@@ -309,40 +376,32 @@
   }
 }
 
+// ── Forgot + Create row ───────────────────────────────────────────────────────
+.btn-row {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 24px;
+}
+
 // ── Forgot passphrase link ────────────────────────────────────────────────────
 .link-subtle {
   display: block;
   text-align: center;
-  margin-top: 10px;
-  font-family: v.$font-header;
-  font-size: 7.5px;
-  font-weight: 600;
-  letter-spacing: 0.22em;
-  text-transform: uppercase;
-  color: v.$color-ext-422;
-  cursor: pointer;
-  text-decoration: none;
-  transition: color v.$transition-std;
-
-  &:hover { color: v.$color-ext-423; }
-}
-
-// ── Create account button ─────────────────────────────────────────────────────
-.btn-create {
-  width: 100%;
-  max-width: 300px;
+  flex: 1;
   padding: 9px 0;
-  margin-top:8px;
   font-family: v.$font-header;
   font-size: 9px;
-  font-weight: 500;
+  font-weight: bolder;
   letter-spacing: 0.25em;
   text-transform: uppercase;
   color: v.$color-ext-424;
-  background: transparent;
-  border: 1px solid v.$color-ext-425;
+  background: #3a1b07;
+  border: 4px solid v.$color-ext-425;
   border-radius: 2px;
   cursor: pointer;
+  text-decoration: none;
   transition: all 0.2s;
 
   &:hover {
@@ -352,28 +411,32 @@
   }
 }
 
-// ── About link ────────────────────────────────────────────────────────────────
-.cover-links {
-  position: absolute;
-  bottom: 4px;
-  left: 50%;
-  transform: translateX(-50%);
-  display: flex;
-  gap: 16px;
-  justify-content: center;
-}
-
-.cover-about-link {
+// ── Create account button ─────────────────────────────────────────────────────
+.btn-create {
+  flex: 1;
+  max-width: 300px;
+  padding: 9px 0;
+  margin-top: 0;
+  margin-left: 0;
+  margin-right: 0;
+  display: block;
   font-family: v.$font-header;
-  font-size: 8px;
-  font-weight: 600;
+  font-size: 9px;
+  font-weight: bolder;
+  letter-spacing: 0.25em;
   text-transform: uppercase;
-  letter-spacing: 0.14em;
-  color: v.$color-ext-428;
-  text-decoration: none;
-  transition: color v.$transition-std;
+  color: v.$color-ext-424;
+  background: #3a1b07;
+  border: 4px solid v.$color-ext-425;
+  border-radius: 2px;
+  cursor: pointer;
+  transition: all 0.2s;
 
-  &:hover { color: v.$color-ext-429; }
+  &:hover {
+    border-color: v.$color-ext-426;
+    color: v.$color-ext-424;
+    box-shadow: 0 0 8px v.$color-ext-427;
+  }
 }
 
 // ── Success overlay ───────────────────────────────────────────────────────────

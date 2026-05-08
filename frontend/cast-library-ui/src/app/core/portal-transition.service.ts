@@ -31,9 +31,29 @@ export class PortalTransitionService {
     sessionStorage.setItem('portalSpineColor', value);
   }
 
-  show()        { this.active.set(true); }
-  hide()        { this.instant.set(false); this.active.set(false); }
-  quickCover()  { this.instant.set(true);  this.active.set(true); }
+  private _safetyTimer: ReturnType<typeof setTimeout> | null = null;
+
+  show() {
+    this.active.set(true);
+    this._resetSafetyTimer();
+  }
+
+  hide() {
+    if (this._safetyTimer) { clearTimeout(this._safetyTimer); this._safetyTimer = null; }
+    this.instant.set(false);
+    this.active.set(false);
+  }
+
+  quickCover() {
+    this.instant.set(true);
+    this.active.set(true);
+    this._resetSafetyTimer();
+  }
+
+  private _resetSafetyTimer() {
+    if (this._safetyTimer) clearTimeout(this._safetyTimer);
+    this._safetyTimer = setTimeout(() => this.hide(), 8000);
+  }
 
   exitToLibrary(navigate: () => void): void {
     const originRect = this.originRect;
