@@ -61,7 +61,7 @@ export class CampaignDetailComponent implements OnInit {
     return this.locationTilts.get(instanceId)!;
   }
 
-  isDm = computed(() => this.auth.isDm());
+  isDm = computed(() => this.campaign()?.dmUserId === this.auth.currentUser()?.id);
 
   constructor() {
     effect(() => {

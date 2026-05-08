@@ -235,6 +235,7 @@ namespace CastLibrary.WebHost.IoC
             services.AddScoped<ITemplateZipService, TemplateZipService>();
             services.AddScoped<ISystemValuesService, SystemValuesService>();
             services.AddScoped<ILibraryImageExtractionService, LibraryImageExtractionService>();
+            services.AddScoped<ICampaignAccessService, CampaignAccessService>();
 
             return services;
         }

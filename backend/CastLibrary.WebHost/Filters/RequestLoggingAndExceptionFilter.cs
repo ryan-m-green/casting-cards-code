@@ -82,7 +82,7 @@ public class RequestLoggingAndExceptionFilter(
         loggingService.LogExceptionStructured(traceId, correlation.SpanId, ex, route);
     }
 
-    private static object? GetRequestBody(ActionExecutingContext context)
+    private static object GetRequestBody(ActionExecutingContext context)
     {
         if (context.ActionArguments.Count == 0)
             return null;
@@ -99,7 +99,7 @@ public class RequestLoggingAndExceptionFilter(
         return context.ActionArguments.Count == 1 ? context.ActionArguments.Values.First() : context.ActionArguments;
     }
 
-    private static object? GetResponseBody(ActionExecutedContext context)
+    private static object GetResponseBody(ActionExecutedContext context)
     {
         if (context.Result is ObjectResult objectResult)
             return objectResult.Value;

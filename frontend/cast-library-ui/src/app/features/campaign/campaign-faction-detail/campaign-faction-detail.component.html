@@ -211,7 +211,7 @@
     <app-faction-relationships-section
       [relationships]="factionRelationships()"
       [otherFactions]="otherFactions()"
-      [isDm]="true"
+      [isDm]="isDm()"
       (removeRelationship)="removeRelationship($event)"
       (saveRelationship)="saveRelationship($event)"
     />

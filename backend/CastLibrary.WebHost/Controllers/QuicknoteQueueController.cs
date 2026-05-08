@@ -1,6 +1,7 @@
 using System.Security.Claims;
 using CastLibrary.Logic.Commands.QuicknoteQueue;
 using CastLibrary.Logic.Queries.QuicknoteQueue;
+using CastLibrary.Logic.Services;
 using CastLibrary.Logic.Validators;
 using CastLibrary.Shared.Requests;
 using CastLibrary.WebHost.Hubs;
@@ -20,14 +21,19 @@ public class QuicknoteQueueController(
     IUpdateQuicknoteQueueItemCommandHandler updateCommand,
     IDeleteQuicknoteQueueItemCommandHandler deleteCommand,
     IPlayerQuicknoteQueueMapper mapper,
-    IHubContext<CampaignHub> hubContext) : ControllerBase
+    IHubContext<CampaignHub> hubContext,
+    ICampaignAccessService campaignAccess) : ControllerBase
 {
     private Guid CurrentUserId =>
         Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
 
+    private Task<bool> CallerCanAccess(Guid campaignId) =>
+        campaignAccess.IsMemberOrOwnerAsync(campaignId, CurrentUserId);
+
     [HttpGet]
     public async Task<IActionResult> GetQueue(Guid campaignId)
     {
+        if (!await CallerCanAccess(campaignId)) return Forbid();
         var items = await getQuery.HandleAsync(campaignId, CurrentUserId);
         return Ok(items.Select(mapper.ToResponse));
     }
@@ -35,6 +41,7 @@ public class QuicknoteQueueController(
     [HttpPost]
     public async Task<IActionResult> Create(Guid campaignId, [FromBody] CreateQuicknoteQueueItemRequest request)
     {
+        if (!await CallerCanAccess(campaignId)) return Forbid();
         var v = new CreateQuicknoteQueueItemRequestValidator();
         var r = v.Validate(request);
         if (!r.IsValid)
@@ -52,6 +59,7 @@ public class QuicknoteQueueController(
     [HttpPut("{id}")]
     public async Task<IActionResult> Update(Guid campaignId, Guid id, [FromBody] UpdateQuicknoteQueueItemRequest request)
     {
+        if (!await CallerCanAccess(campaignId)) return Forbid();
         var v = new UpdateQuicknoteQueueItemRequestValidator();
         var r = v.Validate(request);
         if (!r.IsValid)
@@ -68,6 +76,7 @@ public class QuicknoteQueueController(
     [HttpDelete("{id}")]
     public async Task<IActionResult> Delete(Guid campaignId, Guid id)
     {
+        if (!await CallerCanAccess(campaignId)) return Forbid();
         await deleteCommand.HandleAsync(new DeleteQuicknoteQueueItemCommand(id, CurrentUserId));
         return NoContent();
     }

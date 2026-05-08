@@ -79,7 +79,7 @@ export class CampaignSublocationDetailComponent implements OnInit {
   readonly currencies      = ['cp', 'sp', 'ep', 'gp', 'pp'];
   openDropdownId           = signal<string | null>(null);
 
-  isDm = computed(() => this.auth.isDm());
+  isDm = computed(() => this.campaign()?.dmUserId === this.auth.currentUser()?.id);
 
   sublocation = computed<CampaignSublocationInstance | null>(() => {
     const c = this.campaign();

@@ -45,6 +45,7 @@ export interface CampaignInviteCode {
 
 export interface CampaignDetail {
   id: string;
+  dmUserId: string;
   name: string;
   fantasyType: string;
   description: string;

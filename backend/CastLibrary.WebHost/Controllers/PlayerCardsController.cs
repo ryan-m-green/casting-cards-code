@@ -1,5 +1,6 @@
 ﻿using CastLibrary.Logic.Commands.PlayerCard;
 using CastLibrary.Logic.Queries.PlayerCard;
+using CastLibrary.Logic.Services;
 using CastLibrary.Shared.Requests;
 using CastLibrary.WebHost.Hubs;
 using CastLibrary.WebHost.Mappers;
@@ -42,12 +43,19 @@ public class PlayerCardsController(
     IPlayerCardWebMapper mapper,
     ICampaignWebMapper campaignMapper,
     IHubContext<CampaignHub> hub,
-    IUserRetriever userRetriever) : ControllerBase
+    IUserRetriever userRetriever,
+    ICampaignAccessService campaignAccess) : ControllerBase
 {
+    private Task<bool> CallerCanAccess(Guid campaignId) =>
+        campaignAccess.IsMemberOrOwnerAsync(campaignId, userRetriever.GetUserId(User));
+
+    private Task<bool> CallerOwns(Guid campaignId) =>
+        campaignAccess.IsOwnerAsync(campaignId, userRetriever.GetUserId(User));
 
     [HttpGet("mine")]
     public async Task<IActionResult> GetMine(Guid campaignId)
     {
+        if (!await CallerCanAccess(campaignId)) return Forbid();
         var userId = userRetriever.GetUserId(User);
         var card = await getPlayerCard.HandleAsync(campaignId, userId);
         if (card is null) return NotFound();
@@ -60,6 +68,7 @@ public class PlayerCardsController(
     [HttpGet]
     public async Task<IActionResult> GetAll(Guid campaignId)
     {
+        if (!await CallerCanAccess(campaignId)) return Forbid();
         var cards = await getAllPlayerCards.HandleAsync(campaignId);
         var responses = new List<object>();
 
@@ -76,6 +85,7 @@ public class PlayerCardsController(
     [HttpGet("party")]
     public async Task<IActionResult> GetParty(Guid campaignId)
     {
+        if (!await CallerCanAccess(campaignId)) return Forbid();
         var data = await getDiscoveredCast.HandleAsync(campaignId);
 
         var partyCards = new List<object>();
@@ -91,43 +101,49 @@ public class PlayerCardsController(
     }
 
     [HttpGet("{playerCardId}/memories")]
-    public async Task<IActionResult> GetMemories(Guid playerCardId)
+    public async Task<IActionResult> GetMemories(Guid campaignId, Guid playerCardId)
     {
+        if (!await CallerCanAccess(campaignId)) return Forbid();
         var memories = await getPlayerMemories.HandleAsync(playerCardId);
         return Ok(memories.Select(mapper.ToResponse));
     }
 
     [HttpGet("{playerCardId}/traits")]
-    public async Task<IActionResult> GetTraits(Guid playerCardId)
+    public async Task<IActionResult> GetTraits(Guid campaignId, Guid playerCardId)
     {
+        if (!await CallerCanAccess(campaignId)) return Forbid();
         var traits = await getPlayerTraits.HandleAsync(playerCardId);
         return Ok(traits.Select(mapper.ToResponse));
     }
 
     [HttpGet("{playerCardId}/secrets")]
-    public async Task<IActionResult> GetSecrets(Guid playerCardId)
+    public async Task<IActionResult> GetSecrets(Guid campaignId, Guid playerCardId)
     {
+        if (!await CallerCanAccess(campaignId)) return Forbid();
         var secrets = await getPlayerSecrets.HandleAsync(playerCardId);
         return Ok(secrets.Select(mapper.ToResponse));
     }
 
     [HttpGet("{playerCardId}/secrets/shared")]
-    public async Task<IActionResult> GetSharedSecrets(Guid playerCardId)
+    public async Task<IActionResult> GetSharedSecrets(Guid campaignId, Guid playerCardId)
     {
+        if (!await CallerCanAccess(campaignId)) return Forbid();
         var secrets = await getSharedPlayerSecrets.HandleAsync(playerCardId);
         return Ok(secrets.Select(mapper.ToResponse));
     }
 
     [HttpGet("{playerCardId}/perceptions")]
-    public async Task<IActionResult> GetPerceptions(Guid playerCardId)
+    public async Task<IActionResult> GetPerceptions(Guid campaignId, Guid playerCardId)
     {
+        if (!await CallerCanAccess(campaignId)) return Forbid();
         var perceptions = await getPlayerCastPerceptions.HandleAsync(playerCardId);
         return Ok(perceptions.Select(mapper.ToResponse));
     }
 
     [HttpGet("cast-instance/{castInstanceId}/perceptions")]
-    public async Task<IActionResult> GetCastInstancePerceptions(Guid castInstanceId)
+    public async Task<IActionResult> GetCastInstancePerceptions(Guid campaignId, Guid castInstanceId)
     {
+        if (!await CallerCanAccess(campaignId)) return Forbid();
         var perceptions = await getCastInstancePerceptions.HandleAsync(castInstanceId);
         return Ok(perceptions.Select(mapper.ToResponse));
     }
@@ -135,14 +151,16 @@ public class PlayerCardsController(
     [HttpPost]
     public async Task<IActionResult> Create(Guid campaignId, [FromBody] CreatePlayerCardRequest request)
     {
+        if (!await CallerCanAccess(campaignId)) return Forbid();
         var userId = userRetriever.GetUserId(User);
         var card = await createPlayerCard.HandleAsync(new CreatePlayerCardCommand(campaignId, userId, request));
         return Created(string.Empty, mapper.ToResponse(card));
     }
 
     [HttpPut("{playerCardId}")]
-    public async Task<IActionResult> Update(Guid playerCardId, [FromBody] UpdatePlayerCardRequest request)
+    public async Task<IActionResult> Update(Guid campaignId, Guid playerCardId, [FromBody] UpdatePlayerCardRequest request)
     {
+        if (!await CallerCanAccess(campaignId)) return Forbid();
         var userId = userRetriever.GetUserId(User);
         var card = await updatePlayerCard.HandleAsync(new UpdatePlayerCardCommand(playerCardId, userId, request));
         if (card is null) return NotFound();
@@ -154,6 +172,7 @@ public class PlayerCardsController(
     [Consumes("multipart/form-data")]
     public async Task<IActionResult> UploadImage(Guid campaignId, Guid playerCardId, IFormFile file)
     {
+        if (!await CallerCanAccess(campaignId)) return Forbid();
         if (file is null || file.Length == 0)
             return BadRequest("No file provided.");
 
@@ -177,6 +196,7 @@ public class PlayerCardsController(
     [HttpPost("{playerCardId}/conditions")]
     public async Task<IActionResult> AssignCondition(Guid campaignId, Guid playerCardId, [FromBody] AssignConditionRequest request)
     {
+        if (!await CallerOwns(campaignId)) return Forbid();
         var condition = await assignCondition.HandleAsync(new AssignConditionCommand(playerCardId, campaignId, request));
         if (condition is null) return NotFound();
 
@@ -189,6 +209,7 @@ public class PlayerCardsController(
     [HttpDelete("{playerCardId}/conditions/{conditionId}")]
     public async Task<IActionResult> RemoveCondition(Guid campaignId, Guid playerCardId, Guid conditionId)
     {
+        if (!await CallerOwns(campaignId)) return Forbid();
         var success = await removeCondition.HandleAsync(new RemoveConditionCommand(playerCardId, conditionId, campaignId));
         if (!success) return NotFound();
 
@@ -200,8 +221,9 @@ public class PlayerCardsController(
 
 
     [HttpPost("{playerCardId}/memories")]
-    public async Task<IActionResult> AddMemory(Guid playerCardId, [FromBody] AddMemoryRequest request)
+    public async Task<IActionResult> AddMemory(Guid campaignId, Guid playerCardId, [FromBody] AddMemoryRequest request)
     {
+        if (!await CallerCanAccess(campaignId)) return Forbid();
         var userId = userRetriever.GetUserId(User);
         var memory = await addMemory.HandleAsync(new AddMemoryCommand(playerCardId, userId, request));
         if (memory is null) return NotFound();
@@ -210,8 +232,9 @@ public class PlayerCardsController(
     }
 
     [HttpDelete("{playerCardId}/memories/{memoryId}")]
-    public async Task<IActionResult> DeleteMemory(Guid playerCardId, Guid memoryId)
+    public async Task<IActionResult> DeleteMemory(Guid campaignId, Guid playerCardId, Guid memoryId)
     {
+        if (!await CallerCanAccess(campaignId)) return Forbid();
         var userId = userRetriever.GetUserId(User);
         var success = await deleteMemory.HandleAsync(new DeleteMemoryCommand(playerCardId, memoryId, userId));
         return success ? NoContent() : NotFound();
@@ -219,8 +242,9 @@ public class PlayerCardsController(
 
 
     [HttpPost("{playerCardId}/traits")]
-    public async Task<IActionResult> UpsertTrait(Guid playerCardId, [FromBody] UpsertTraitRequest request)
+    public async Task<IActionResult> UpsertTrait(Guid campaignId, Guid playerCardId, [FromBody] UpsertTraitRequest request)
     {
+        if (!await CallerCanAccess(campaignId)) return Forbid();
         var userId = userRetriever.GetUserId(User);
         var trait = await upsertTrait.HandleAsync(new UpsertTraitCommand(playerCardId, userId, request));
         if (trait is null) return NotFound();
@@ -229,16 +253,18 @@ public class PlayerCardsController(
     }
 
     [HttpDelete("{playerCardId}/traits/{traitId}")]
-    public async Task<IActionResult> DeleteTrait(Guid playerCardId, Guid traitId)
+    public async Task<IActionResult> DeleteTrait(Guid campaignId, Guid playerCardId, Guid traitId)
     {
+        if (!await CallerCanAccess(campaignId)) return Forbid();
         var userId = userRetriever.GetUserId(User);
         var success = await deleteTrait.HandleAsync(new DeleteTraitCommand(playerCardId, traitId, userId));
         return success ? NoContent() : NotFound();
     }
 
     [HttpPost("{playerCardId}/traits/{traitId}/toggle")]
-    public async Task<IActionResult> ToggleGoal(Guid playerCardId, Guid traitId)
+    public async Task<IActionResult> ToggleGoal(Guid campaignId, Guid playerCardId, Guid traitId)
     {
+        if (!await CallerCanAccess(campaignId)) return Forbid();
         var userId = userRetriever.GetUserId(User);
         var trait = await toggleGoalComplete.HandleAsync(new ToggleGoalCompleteCommand(playerCardId, traitId, userId));
         if (trait is null) return NotFound();
@@ -250,6 +276,7 @@ public class PlayerCardsController(
     [HttpPost("{playerCardId}/secrets")]
     public async Task<IActionResult> DeliverSecret(Guid campaignId, Guid playerCardId, [FromBody] DeliverSecretRequest request)
     {
+        if (!await CallerOwns(campaignId)) return Forbid();
         var result = await deliverSecret.HandleAsync(new DeliverSecretCommand(playerCardId, campaignId, request));
         if (result is null) return NotFound();
 
@@ -267,6 +294,7 @@ public class PlayerCardsController(
     [HttpPost("{playerCardId}/secrets/{secretId}/share")]
     public async Task<IActionResult> ShareSecret(Guid campaignId, Guid playerCardId, Guid secretId, [FromQuery] string sharedBy = "PLAYER")
     {
+        if (!await CallerCanAccess(campaignId)) return Forbid();
         var secret = await shareSecret.HandleAsync(new ShareSecretCommand(playerCardId, secretId, sharedBy));
         if (secret is null) return NotFound();
 
@@ -291,6 +319,7 @@ public class PlayerCardsController(
     [HttpDelete("{playerCardId}/secrets/{secretId}")]
     public async Task<IActionResult> DeleteSecret(Guid campaignId, Guid playerCardId, Guid secretId)
     {
+        if (!await CallerCanAccess(campaignId)) return Forbid();
         var success = await deletePlayerCardSecret.HandleAsync(
             new DeletePlayerCardSecretCommand(playerCardId, secretId, campaignId));
 
@@ -304,8 +333,9 @@ public class PlayerCardsController(
 
 
     [HttpPost("{playerCardId}/perceptions")]
-    public async Task<IActionResult> UpsertPerception(Guid playerCardId, [FromBody] UpsertPlayerCastPerceptionRequest request)
+    public async Task<IActionResult> UpsertPerception(Guid campaignId, Guid playerCardId, [FromBody] UpsertPlayerCastPerceptionRequest request)
     {
+        if (!await CallerCanAccess(campaignId)) return Forbid();
         var userId = userRetriever.GetUserId(User);
         var perception = await upsertPerception.HandleAsync(new UpsertPlayerCastPerceptionCommand(playerCardId, userId, request));
         if (perception is null) return NotFound();
@@ -317,6 +347,7 @@ public class PlayerCardsController(
     [HttpPost("/api/campaigns/{campaignId}/gold-award")]
     public async Task<IActionResult> AwardGold(Guid campaignId, [FromBody] AwardCurrencyRequest request)
     {
+        if (!await CallerOwns(campaignId)) return Forbid();
         var userId = userRetriever.GetUserId(User);
         var result = await awardGold.HandleAsync(new AwardCurrencyCommand(campaignId, userId, request));
         if (result is null) return NotFound();

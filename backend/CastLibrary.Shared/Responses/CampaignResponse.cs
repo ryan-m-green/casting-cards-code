@@ -16,6 +16,7 @@ public class CampaignListResponse
 public class CampaignDetailResponse
 {
     public Guid Id { get; set; }
+    public Guid DmUserId { get; set; }
     public string Name { get; set; } = string.Empty;
     public string FantasyType { get; set; } = string.Empty;
     public string Description { get; set; } = string.Empty;

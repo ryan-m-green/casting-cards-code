@@ -33,6 +33,7 @@ export class QuicknotesComponent {
   @Input() campaign: CampaignDetail | null = null;
 
   @ViewChild('noteArea') noteArea!: ElementRef<HTMLTextAreaElement>;
+  @ViewChild('saveBtn') saveBtn!: ElementRef<HTMLButtonElement>;
 
   private http   = inject(HttpClient);
   private router  = inject(Router);
@@ -96,6 +97,18 @@ export class QuicknotesComponent {
 
   onDestTypeChange(value: string) {
     this.destType.set(value as DestinationType);
+  }
+
+  onPickerEnter(_type: string) {
+    this.save();
+  }
+
+  trapTab(event: Event) {
+    const ke = event as KeyboardEvent;
+    if (!ke.shiftKey) {
+      ke.preventDefault();
+      this.noteArea?.nativeElement?.focus();
+    }
   }
 
   save() {

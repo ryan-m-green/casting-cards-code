@@ -36,9 +36,8 @@ export class CoverComponent {
       });
   }
 
-  errorMsg    = signal('');
-  loading     = signal(false);
-  showSuccess = signal(false);
+  errorMsg = signal('');
+  loading  = signal(false);
 
   private readonly SPARK_DURATION_MS = 700;
 
@@ -69,8 +68,6 @@ export class CoverComponent {
       stopMid2: `rgba(255,200,140,${s.op})`,
     };
   });
-  private readonly SUCCESS_HOLD_MS   = 1400;
-
   readonly crestStarLines = [0, 45, 90, 135, 180, 225, 270, 315].map((angle, i) => {
     const rad   = angle * Math.PI / 180;
     const long  = i % 2 === 0 ? 36 : 28;
@@ -135,14 +132,11 @@ export class CoverComponent {
         const remaining = Math.max(0, this.SPARK_DURATION_MS - elapsed);
         setTimeout(() => {
           this.loading.set(false);
-          this.showSuccess.set(true);
-          setTimeout(() => {
-            if (res.user.role === 'DM' || res.user.role === 'Admin') {
-              this.router.navigate(['/dm/dashboard']);
-            } else {
-              this.router.navigate(['/player/campaigns']);
-            }
-          }, this.SUCCESS_HOLD_MS);
+          if (res.user.role === 'DM' || res.user.role === 'Admin') {
+            this.router.navigate(['/dm/dashboard']);
+          } else {
+            this.router.navigate(['/player/campaigns']);
+          }
         }, remaining);
       },
       error: (e) => {

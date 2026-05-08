@@ -1,9 +1,11 @@
 using CastLibrary.Logic.Commands.Cast;
 using CastLibrary.Logic.Queries.Cast;
+using CastLibrary.Logic.Services;
 using CastLibrary.Logic.Validators;
 using CastLibrary.Shared.Requests;
 using CastLibrary.WebHost.Hubs;
 using CastLibrary.WebHost.Mappers;
+using CastLibrary.WebHost.MetadataHelpers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
@@ -17,12 +19,17 @@ public class CastPlayerNotesController(
     IGetCastPlayerNotesQueryHandler getQuery,
     IUpsertCastPlayerNotesCommandHandler upsertCommand,
     ICampaignCastPlayerNotesMapper mapper,
-    IHubContext<CampaignHub> hubContext) : ControllerBase
+    IHubContext<CampaignHub> hubContext,
+    ICampaignAccessService campaignAccess,
+    IUserRetriever userRetriever) : ControllerBase
 {
+    private Task<bool> CallerCanAccess(Guid campaignId) =>
+        campaignAccess.IsMemberOrOwnerAsync(campaignId, userRetriever.GetUserId(User));
 
     [HttpGet("by-cast-instances")]
     public async Task<IActionResult> GetByCastInstances(Guid campaignId, [FromQuery] List<Guid> castInstanceId)
     {
+        if (!await CallerCanAccess(campaignId)) return Forbid();
         var domains = await getQuery.HandleByCastInstancesAsync(campaignId, castInstanceId);
         var response = domains.Select(o => mapper.ToResponse(o)).ToList();
 
@@ -32,6 +39,7 @@ public class CastPlayerNotesController(
     [HttpGet("{castInstanceId}")]
     public async Task<IActionResult> Get(Guid campaignId, Guid castInstanceId)
     {
+        if (!await CallerCanAccess(campaignId)) return Forbid();
         var domain = await getQuery.HandleAsync(campaignId, castInstanceId);
         var response = domain is null
             ? mapper.ToEmpty(campaignId, castInstanceId)
@@ -44,6 +52,7 @@ public class CastPlayerNotesController(
     public async Task<IActionResult> Upsert(
         Guid campaignId, Guid castInstanceId, [FromBody] UpsertCastPlayerNotesRequest request)
     {
+        if (!await CallerCanAccess(campaignId)) return Forbid();
         var validator = new UpsertCastPlayerNotesRequestValidator();
         var validationResult = validator.Validate(request);
         if (!validationResult.IsValid)

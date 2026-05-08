@@ -1,8 +1,10 @@
 using CastLibrary.Logic.Commands.Campaign;
 using CastLibrary.Logic.Queries.Campaign;
+using CastLibrary.Logic.Services;
 using CastLibrary.Shared.Requests;
 using CastLibrary.Shared.Responses;
 using CastLibrary.WebHost.Hubs;
+using CastLibrary.WebHost.MetadataHelpers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
@@ -20,11 +22,19 @@ public class TimeOfDayController(
     IUpdateSliceDmNotesCommandHandler updateDmNotesCommand,
     IAdvanceDayCommandHandler advanceDayCommand,
     IRewindDayCommandHandler rewindDayCommand,
-    IHubContext<CampaignHub> hubContext) : ControllerBase
+    IHubContext<CampaignHub> hubContext,
+    ICampaignAccessService campaignAccess,
+    IUserRetriever userRetriever) : ControllerBase
 {
+    private Task<bool> CallerCanAccess(Guid campaignId) =>
+        campaignAccess.IsMemberOrOwnerAsync(campaignId, userRetriever.GetUserId(User));
+
+    private Task<bool> CallerOwns(Guid campaignId) =>
+        campaignAccess.IsOwnerAsync(campaignId, userRetriever.GetUserId(User));
     [HttpGet]
     public async Task<IActionResult> Get(Guid campaignId)
     {
+        if (!await CallerCanAccess(campaignId)) return Forbid();
         var tod = await getQuery.HandleAsync(campaignId);
         if (tod is null) return NotFound();
         return Ok(ToResponse(tod));
@@ -33,6 +43,7 @@ public class TimeOfDayController(
     [HttpPut]
     public async Task<IActionResult> Upsert(Guid campaignId, [FromBody] UpsertTimeOfDayRequest request)
     {
+        if (!await CallerOwns(campaignId)) return Forbid();
         if (request.DayLengthHours <= 0)
             return BadRequest("Day length must be greater than zero.");
 
@@ -56,6 +67,7 @@ public class TimeOfDayController(
     public async Task<IActionResult> UpdateCursor(Guid campaignId,
         [FromBody] UpdateCursorPositionRequest request)
     {
+        if (!await CallerCanAccess(campaignId)) return Forbid();
         var clamped = Math.Max(0, Math.Min(100, request.PositionPercent));
         await updateCursorCommand.HandleAsync(new UpdateCursorPositionCommand(campaignId, clamped));
 
@@ -68,6 +80,7 @@ public class TimeOfDayController(
     [HttpPatch("advance-day")]
     public async Task<IActionResult> AdvanceDay(Guid campaignId)
     {
+        if (!await CallerCanAccess(campaignId)) return Forbid();
         var daysPassed = await advanceDayCommand.HandleAsync(new AdvanceDayCommand(campaignId));
 
         await hubContext.Clients.Group(campaignId.ToString())
@@ -82,6 +95,7 @@ public class TimeOfDayController(
     [HttpPatch("rewind-day")]
     public async Task<IActionResult> RewindDay(Guid campaignId)
     {
+        if (!await CallerCanAccess(campaignId)) return Forbid();
         var daysPassed = await rewindDayCommand.HandleAsync(new RewindDayCommand(campaignId));
 
         await hubContext.Clients.Group(campaignId.ToString())
@@ -97,6 +111,7 @@ public class TimeOfDayController(
     public async Task<IActionResult> UpdatePlayerNotes(Guid campaignId, Guid sliceId,
         [FromBody] UpdateSlicePlayerNotesRequest request)
     {
+        if (!await CallerCanAccess(campaignId)) return Forbid();
         await updatePlayerNotesCommand.HandleAsync(
             new UpdateSlicePlayerNotesCommand(sliceId, request.PlayerNotes));
 
@@ -110,6 +125,7 @@ public class TimeOfDayController(
     public async Task<IActionResult> UpdateDmNotes(Guid campaignId, Guid sliceId,
         [FromBody] UpdateSliceDmNotesRequest request)
     {
+        if (!await CallerOwns(campaignId)) return Forbid();
         await updateDmNotesCommand.HandleAsync(
             new UpdateSliceDmNotesCommand(sliceId, request.DmNotes));
 

@@ -75,6 +75,6 @@ export class JournalNavDrawerComponent {
 
   logout() {
     this.close();
-    setTimeout(() => this.auth.logout(), 480);
+    setTimeout(() => this.auth.requestLogout(), 480);
   }
 }

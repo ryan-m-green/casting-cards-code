@@ -87,7 +87,7 @@ export class CampaignFactionDetailComponent implements OnInit {
     return this.castTiltMap.get(id)!;
   }
 
-  isDm = computed(() => this.auth.isDm());
+  isDm = computed(() => this.campaign()?.dmUserId === this.auth.currentUser()?.id);
 
   faction = computed<CampaignFactionInstance | null>(() => {
     const c = this.campaign();

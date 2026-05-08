@@ -105,7 +105,7 @@ export class CampaignFactionsComponent implements OnInit, OnChanges {
   resolvedSublocations = signal<CampaignSublocationInstance[]>([]);
   resolvedRelationships = signal<CampaignCastRelationship[]>([]);
 
-  isDm = computed(() => this.auth.isDm());
+  isDm = computed(() => this.campaign()?.dmUserId === this.auth.currentUser()?.id);
 
   activeTab = signal<'factions' | 'registry' | 'social' | 'set-social'>('factions');
   setTab(tab: 'factions' | 'registry' | 'social' | 'set-social') {

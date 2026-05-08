@@ -4,7 +4,10 @@
     aria-haspopup="listbox"
     [attr.aria-expanded]="isOpen()"
     [attr.aria-label]="'Select campaign: ' + (selected?.label ?? 'None selected')"
+    [attr.aria-activedescendant]="isOpen() && activeIndex() >= 0 ? 'dd-opt-' + activeIndex() : null"
+    [tabIndex]="triggerTabIndex"
     (click)="toggle($event)"
+    (keydown)="onTriggerKeydown($event)"
   >
     <span class="campaign-dropdown-value" aria-hidden="true">
       @if (selected?.icon) {
@@ -19,13 +22,17 @@
   </button>
   @if (isOpen()) {
     <ul class="campaign-dropdown-panel" role="listbox">
-      @for (option of options; track option.value) {
+      @for (option of options; track option.value; let i = $index) {
         <li
+          #optionItem
+          [id]="'dd-opt-' + i"
           class="campaign-dropdown-item"
           [class.campaign-dropdown-item--selected]="value === option.value"
+          [class.campaign-dropdown-item--active]="activeIndex() === i"
           role="option"
           [attr.aria-selected]="value === option.value"
           (click)="select(option)"
+          (mouseenter)="activeIndex.set(i)"
         >
           @if (option.icon) {
             @if (option.icon.startsWith('/')) {

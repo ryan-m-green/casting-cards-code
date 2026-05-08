@@ -1,8 +1,10 @@
 using CastLibrary.Logic.Commands.Faction;
 using CastLibrary.Logic.Queries.Faction;
+using CastLibrary.Logic.Services;
 using CastLibrary.Shared.Requests;
 using CastLibrary.WebHost.Hubs;
 using CastLibrary.WebHost.Mappers;
+using CastLibrary.WebHost.MetadataHelpers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
@@ -16,11 +18,16 @@ public class FactionPlayerNotesController(
     IGetFactionPlayerNotesQueryHandler getQuery,
     IUpsertFactionPlayerNotesCommandHandler upsertCommand,
     ICampaignFactionPlayerNotesMapper mapper,
-    IHubContext<CampaignHub> hubContext) : ControllerBase
+    IHubContext<CampaignHub> hubContext,
+    ICampaignAccessService campaignAccess,
+    IUserRetriever userRetriever) : ControllerBase
 {
+    private Task<bool> CallerCanAccess(Guid campaignId) =>
+        campaignAccess.IsMemberOrOwnerAsync(campaignId, userRetriever.GetUserId(User));
     [HttpGet("{factionInstanceId}")]
     public async Task<IActionResult> Get(Guid campaignId, Guid factionInstanceId)
     {
+        if (!await CallerCanAccess(campaignId)) return Forbid();
         var domain = await getQuery.HandleAsync(campaignId, factionInstanceId);
         var response = domain is null
             ? mapper.ToEmpty(campaignId, factionInstanceId)

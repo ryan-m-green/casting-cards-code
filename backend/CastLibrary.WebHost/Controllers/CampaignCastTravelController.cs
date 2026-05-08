@@ -21,11 +21,18 @@ public class CampaignCastTravelController(
     ICampaignReadRepository campaignReadRepository,
     ICampaignWebMapper campaignMapper,
     IFilenameService filenameService,
-    IHubContext<CampaignHub> hubContext) : ControllerBase
+    IHubContext<CampaignHub> hubContext,
+    ICampaignAccessService campaignAccess) : ControllerBase
 {
+    private Task<bool> CallerCanAccess(Guid campaignId) =>
+        campaignAccess.IsMemberOrOwnerAsync(campaignId, userRetriever.GetUserId(User));
+
+    private Task<bool> CallerOwns(Guid campaignId) =>
+        campaignAccess.IsOwnerAsync(campaignId, userRetriever.GetUserId(User));
     [HttpGet]
     public async Task<IActionResult> GetCastInstance(Guid campaignId, Guid castInstanceId)
     {
+        if (!await CallerCanAccess(campaignId)) return Forbid();
         var cast = await campaignReadRepository.GetCastInstanceByIdAsync(castInstanceId);
         if (cast is null || cast.CampaignId != campaignId)
             return NotFound();
@@ -41,8 +48,7 @@ public class CampaignCastTravelController(
     [HttpPatch("travel")]
     public async Task<IActionResult> Travel(Guid campaignId, Guid castInstanceId, [FromBody] TravelCastRequest request)
     {
-        if (userRetriever.IsPlayer(User))
-            return Forbid();
+        if (!await CallerOwns(campaignId)) return Forbid();
 
         await travelCommand.HandleAsync(new TravelCastInstanceCommand(castInstanceId, request));
 

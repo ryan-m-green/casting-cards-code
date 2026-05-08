@@ -91,7 +91,7 @@ export class CampaignLocationDetailComponent implements OnInit {
   addingSecret     = signal(false);
   newSecretContent = signal('');
 
-  isDm = computed(() => this.auth.isDm());
+  isDm = computed(() => this.campaign()?.dmUserId === this.auth.currentUser()?.id);
 
   location = computed<CampaignLocationInstance | null>(() => {
     const c = this.campaign();

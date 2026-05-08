@@ -84,7 +84,7 @@ export class CampaignCastDetailComponent implements OnInit {
   travelDrawerOpen   = signal(false);
   selectedLocationId = signal<string | null>(null);
 
-  isDm = computed(() => this.auth.isDm());
+  isDm = computed(() => this.campaign()?.dmUserId === this.auth.currentUser()?.id);
 
   cast = computed<CampaignCastInstance | null>(() => {
     const c = this.campaign();

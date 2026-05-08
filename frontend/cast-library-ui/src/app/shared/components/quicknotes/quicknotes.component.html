@@ -29,7 +29,6 @@
         [value]="noteContent()"
         (input)="noteContent.set($any($event.target).value)"
         rows="4"
-        tabindex="1"
       ></textarea>
 
       <div class="qn-controls">
@@ -45,6 +44,7 @@
             [factions]="factions"
             (destTypeChange)="onDestTypeChange($event)"
             (entityIdChange)="entityId.set($event)"
+            (enterOnDestType)="onPickerEnter($event)"
           />
         </div>
 
@@ -52,12 +52,14 @@
           @if (saveSuccess()) {
             <span class="qn-success">&#10003; Saved</span>
           }
-          <button type="button" class="qn-close-btn" (click)="toggle()" tabindex="4">Close</button>
+          <button type="button" class="qn-close-btn" (click)="toggle()">Close</button>
           <button
+            #saveBtn
             class="qn-save-btn"
-            [disabled]="!canSave || isSaving()"
+            [attr.aria-disabled]="!canSave || isSaving()"
+            [class.qn-save-btn--disabled]="!canSave || isSaving()"
             (click)="save()"
-            tabindex="5"
+            (keydown.tab)="trapTab($event)"
           >
             {{ isSaving() ? 'Saving…' : 'Save' }}
           </button>

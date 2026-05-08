@@ -33,7 +33,7 @@ export class CampaignShellComponent implements OnInit, OnDestroy {
   campaignId = signal('');
   campaign   = signal<CampaignDetail | null>(null);
 
-  isDm = computed(() => this.auth.isDm());
+  isDm = computed(() => this.campaign()?.dmUserId === this.auth.currentUser()?.id);
 
   safeColor(color: string | undefined): string {
     return color && /^#[0-9a-fA-F]{6}$/.test(color) ? color : '#6e28d0';

@@ -14,7 +14,9 @@ export const dmGuard: CanActivateFn = () => {
   const router = inject(Router);
   if (auth.isDm() || auth.isAdmin()) return true;
   if (!auth.isLoggedIn()) return router.createUrlTree(['/']);
-  return router.createUrlTree(['/']);
+  // Logged-in player attempting a DM page — log them out and send to login
+  auth.logout();
+  return false;
 };
 
 export const playerGuard: CanActivateFn = () => {

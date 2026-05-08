@@ -42,6 +42,7 @@ export class PlayerCampaignShellComponent implements OnInit, OnDestroy {
   campaignId        = signal('');
   campaign          = signal<CampaignDetail | null>(null);
   timeOfDay         = computed(() => this.campaign()?.timeOfDay ?? null);
+  isDm              = computed(() => this.campaign()?.dmUserId === this.auth.currentUser()?.id);
   overlayData       = signal<CardRevealOverlayData | null>(null);
   wizardSecretContent   = signal<string | null>(null);
   wizardSecretRecipient = signal<string>('');

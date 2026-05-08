@@ -1,8 +1,10 @@
 using CastLibrary.Logic.Commands.Sublocation;
 using CastLibrary.Logic.Queries.Sublocation;
+using CastLibrary.Logic.Services;
 using CastLibrary.Shared.Requests;
 using CastLibrary.WebHost.Hubs;
 using CastLibrary.WebHost.Mappers;
+using CastLibrary.WebHost.MetadataHelpers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
@@ -16,11 +18,16 @@ public class SublocationPlayerNotesController(
     IGetSublocationPlayerNotesQueryHandler getQuery,
     IUpsertSublocationPlayerNotesCommandHandler upsertCommand,
     ICampaignSublocationPlayerNotesMapper mapper,
-    IHubContext<CampaignHub> hubContext) : ControllerBase
+    IHubContext<CampaignHub> hubContext,
+    ICampaignAccessService campaignAccess,
+    IUserRetriever userRetriever) : ControllerBase
 {
+    private Task<bool> CallerCanAccess(Guid campaignId) =>
+        campaignAccess.IsMemberOrOwnerAsync(campaignId, userRetriever.GetUserId(User));
     [HttpGet("{sublocationInstanceId}")]
     public async Task<IActionResult> Get(Guid campaignId, Guid sublocationInstanceId)
     {
+        if (!await CallerCanAccess(campaignId)) return Forbid();
         var domain = await getQuery.HandleAsync(campaignId, sublocationInstanceId);
         var response = domain is null
             ? mapper.ToEmpty(campaignId, sublocationInstanceId)
@@ -33,6 +40,7 @@ public class SublocationPlayerNotesController(
     public async Task<IActionResult> Upsert(
         Guid campaignId, Guid sublocationInstanceId, [FromBody] UpsertSublocationPlayerNotesRequest request)
     {
+        if (!await CallerCanAccess(campaignId)) return Forbid();
         var domain = await upsertCommand.HandleAsync(
             new UpsertSublocationPlayerNotesCommand(campaignId, sublocationInstanceId, request));
         var response = mapper.ToResponse(domain);

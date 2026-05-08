@@ -79,6 +79,11 @@
     background: v.$campaign-portal-border-medium;
     color: v.$campaign-portal-text-bright;
   }
+
+  &--active {
+    background: v.$campaign-portal-bg-placeholder;
+    outline: none;
+  }
 }
 
 .dd-icon-img {

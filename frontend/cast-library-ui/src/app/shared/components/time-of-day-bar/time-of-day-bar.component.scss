@@ -391,7 +391,7 @@ $spring-easing:       cubic-bezier(0.22, 1, 0.36, 1);
   &__header {
     display: flex;
     align-items: baseline;
-    gap: 8px;
+    gap: 6px;
     margin-bottom: 12px;
     border-bottom: 0.5px solid v.$color-ext-85;
     padding-bottom: 10px;
@@ -402,7 +402,6 @@ $spring-easing:       cubic-bezier(0.22, 1, 0.36, 1);
     font-size: 0.8rem;
     letter-spacing: 0.08em;
     color: v.$color-ext-124;
-    flex: 1;
   }
 
   &__duration {
@@ -410,6 +409,7 @@ $spring-easing:       cubic-bezier(0.22, 1, 0.36, 1);
     font-style: italic;
     font-size: 0.82rem;
     color: v.$color-ext-698;
+    margin-right: auto;
   }
 
   &__close {

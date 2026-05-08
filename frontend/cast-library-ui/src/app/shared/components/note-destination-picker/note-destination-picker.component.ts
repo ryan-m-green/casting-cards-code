@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { Component, Input, Output, EventEmitter, ElementRef, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { CampaignLocationInstance } from '../../models/location.model';
 import { CampaignSublocationInstance } from '../../models/sublocation.model';
@@ -25,6 +25,9 @@ export class NoteDestinationPickerComponent {
 
   @Output() destTypeChange = new EventEmitter<string>();
   @Output() entityIdChange = new EventEmitter<string>();
+  @Output() enterOnDestType = new EventEmitter<string>();
+
+  private elRef = inject(ElementRef);
 
   get showEntitySelect(): boolean {
     return this.destType === 'location' || this.destType === 'sublocation'
@@ -62,5 +65,17 @@ export class NoteDestinationPickerComponent {
   onDestTypeChange(value: string): void {
     this.destTypeChange.emit(value);
     this.entityIdChange.emit('');
+  }
+
+  onKeyEnter(type: string): void {
+    this.onDestTypeChange(type);
+    if (type === 'queue' || type === 'campaign') {
+      this.enterOnDestType.emit(type);
+    } else {
+      setTimeout(() => {
+        const trigger = this.elRef.nativeElement.querySelector('.campaign-dropdown-trigger') as HTMLElement | null;
+        trigger?.focus();
+      });
+    }
   }
 }

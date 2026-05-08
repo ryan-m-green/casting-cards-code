@@ -1,7 +1,7 @@
 ﻿import { Injectable, signal, computed } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
-import { Observable, tap } from 'rxjs';
+import { Observable, Subject, tap } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { AuthResponse, LoginRequest, RegisterRequest, User } from '../../shared/models/user.model';
 
@@ -15,6 +15,8 @@ export class AuthService {
   readonly isDm        = computed(() => this._currentUser()?.role === 'DM' || this._currentUser()?.role === 'Admin');
   readonly isAdmin     = computed(() => this._currentUser()?.role === 'Admin');
   readonly isLoggedIn  = computed(() => this._currentUser() !== null);
+
+  readonly closeCoverRequest$ = new Subject<void>();
 
   constructor(private http: HttpClient, private router: Router) {}
 
@@ -42,11 +44,16 @@ export class AuthService {
     return this.http.post<void>(`${environment.apiUrl}/api/auth/change-password`, { currentPassword, newPassword });
   }
 
-  logout(): void {
+  /** Signals the shell to animate the cover closed first, then navigates. */
+  requestLogout(): void {
+    this.closeCoverRequest$.next();
+  }
+
+  logout(): Promise<boolean> {
     localStorage.removeItem(this.TOKEN_KEY);
     localStorage.removeItem(this.USER_KEY);
     this._currentUser.set(null);
-    this.router.navigate(['/']);
+    return this.router.navigate(['/'], { state: { noFlip: true } });
   }
 
   getToken(): string | null {

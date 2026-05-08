@@ -6,7 +6,7 @@ namespace CastLibrary.WebHost.Mappers;
 
 public interface IPlayerCardWebMapper
 {
-    PlayerCardResponse ToResponse(PlayerCardDomain domain, List<PlayerCardConditionDomain>? conditions = null, List<PlayerCardTraitDomain>? traits = null);
+    PlayerCardResponse ToResponse(PlayerCardDomain domain, List<PlayerCardConditionDomain> conditions = null, List<PlayerCardTraitDomain> traits = null);
     PlayerCardMemoryResponse ToResponse(PlayerCardMemoryDomain domain);
     PlayerCardTraitResponse ToResponse(PlayerCardTraitDomain domain);
     PlayerCardSecretResponse ToResponse(PlayerCardSecretDomain domain);
@@ -19,7 +19,7 @@ public class PlayerCardWebMapper(
 {
     private const string Ns = "CastLibrary.WebHost.Mappers";
 
-    public PlayerCardResponse ToResponse(PlayerCardDomain domain, List<PlayerCardConditionDomain>? conditions = null, List<PlayerCardTraitDomain>? traits = null)
+    public PlayerCardResponse ToResponse(PlayerCardDomain domain, List<PlayerCardConditionDomain> conditions = null, List<PlayerCardTraitDomain> traits = null)
     {
         var response = new PlayerCardResponse
         {

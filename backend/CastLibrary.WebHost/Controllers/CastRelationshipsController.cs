@@ -1,8 +1,10 @@
 ﻿using CastLibrary.Logic.Commands.Campaign;
 using CastLibrary.Logic.Queries.Campaign;
+using CastLibrary.Logic.Services;
 using CastLibrary.Logic.Validators;
 using CastLibrary.Shared.Requests;
 using CastLibrary.WebHost.Mappers;
+using CastLibrary.WebHost.MetadataHelpers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -17,12 +19,20 @@ public class CastRelationshipsController(
     IAddCastRelationshipCommandHandler addCommand,
     IUpdateCastRelationshipCommandHandler updateCommand,
     IDeleteCastRelationshipCommandHandler deleteCommand,
-    ICampaignWebMapper campaignMapper) : ControllerBase
+    ICampaignWebMapper campaignMapper,
+    ICampaignAccessService campaignAccess,
+    IUserRetriever userRetriever) : ControllerBase
 {
+    private Task<bool> CallerCanAccess(Guid campaignId) =>
+        campaignAccess.IsMemberOrOwnerAsync(campaignId, userRetriever.GetUserId(User));
+
+    private Task<bool> CallerOwns(Guid campaignId) =>
+        campaignAccess.IsOwnerAsync(campaignId, userRetriever.GetUserId(User));
 
     [HttpGet]
     public async Task<IActionResult> GetAll(Guid campaignId, [FromQuery] Guid? sourceCastInstanceId)
     {
+        if (!await CallerCanAccess(campaignId)) return Forbid();
         var relationships = await getRelationshipsQuery.HandleAsync(campaignId, sourceCastInstanceId);
         var response = relationships.Select(campaignMapper.ToRelationshipResponse).ToList();
 
@@ -32,6 +42,7 @@ public class CastRelationshipsController(
     [HttpGet("{id}")]
     public async Task<IActionResult> GetById(Guid campaignId, Guid id)
     {
+        if (!await CallerCanAccess(campaignId)) return Forbid();
         var relationship = await getByIdQuery.HandleAsync(id);
         if (relationship is null)
         {
@@ -45,6 +56,7 @@ public class CastRelationshipsController(
     [HttpPost]
     public async Task<IActionResult> Add(Guid campaignId, [FromBody] AddCastRelationshipRequest request)
     {
+        if (!await CallerOwns(campaignId)) return Forbid();
         var v = new AddCastRelationshipRequestValidator();
         var r = v.Validate(request);
         if (!r.IsValid)
@@ -63,6 +75,7 @@ public class CastRelationshipsController(
     public async Task<IActionResult> Update(Guid campaignId, Guid id,
         [FromBody] UpdateCastRelationshipRequest request)
     {
+        if (!await CallerOwns(campaignId)) return Forbid();
         var validator = new UpdateCastRelationshipRequestValidator();
         var validationResult = validator.Validate(request);
         if (!validationResult.IsValid)
@@ -84,6 +97,7 @@ public class CastRelationshipsController(
     [HttpDelete("{id}")]
     public async Task<IActionResult> Delete(Guid campaignId, Guid id)
     {
+        if (!await CallerOwns(campaignId)) return Forbid();
         var deleted = await deleteCommand.HandleAsync(new DeleteCastRelationshipCommand(id));
         var status = deleted ? 204 : 404;
 

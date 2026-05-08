@@ -1,7 +1,7 @@
 <app-void-nav-drawer
   [campaignId]="campaignId()"
   [campaign]="shellSvc.campaign()"
-  [isDm]="false"
+  [isDm]="isDm()"
   mode="player"
   [queueCount]="shellSvc.quicknoteQueueCount()"
   [style.--portal-color]="safeColor(campaign()?.spineColor)"
@@ -46,7 +46,7 @@
     <div class="tod-bar-section">
       <app-time-of-day-bar
         [campaignId]="campaignId()"
-        [isDm]="false"
+        [isDm]="isDm()"
         [allowInteraction]="true"
         [panelTheme]="'dark'"
         [todInput]="timeOfDay()"

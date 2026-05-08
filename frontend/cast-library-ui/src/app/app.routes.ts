@@ -5,7 +5,7 @@ import { JournalShellComponent } from './layout/journal-shell/journal-shell.comp
 export const routes: Routes = [
   {
     path: 'campaign/:id',
-    canActivate: [authGuard],
+    canActivate: [dmGuard],
     loadComponent: () => import('./features/campaign/campaign-shell/campaign-shell.component').then(m => m.CampaignShellComponent),
     children: [
       {

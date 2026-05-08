@@ -240,6 +240,78 @@
   box-shadow: inset -8px 0 20px v.$journal-parchment-shadow-flip-back;
 }
 
+// ─── Cover-flip: leather front face when flipping away from the cover page ────
+.page-flip.cover-flip {
+  .flip-face {
+    background: linear-gradient(142deg, v.$journal-leather-cover-base-1 0%, v.$journal-leather-cover-base-2 18%, v.$journal-leather-cover-base-3 40%, v.$journal-leather-cover-base-4 62%, v.$journal-leather-cover-base-5 82%, v.$journal-leather-cover-base-6 100%);
+  }
+
+  .flip-back-face {
+    background: linear-gradient(108deg, v.$journal-parchment-base-1 0%, v.$journal-parchment-flip-1 30%, v.$journal-parchment-base-3 55%, v.$journal-parchment-base-4 80%, v.$journal-parchment-base-5 100%);
+    box-shadow: inset -8px 0 20px v.$journal-parchment-shadow-flip-back;
+  }
+}
+
+// ─── Journal-opens overlay — fades in behind the cover flip, holds, then fades out ─
+.journal-open-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: radial-gradient(ellipse 70% 60% at 50% 45%, v.$journal-spine-band-1 0%, v.$color-ext-430 60%, v.$color-ext-431 100%);
+  opacity: 0;
+  pointer-events: none;
+
+  // Appear instantly — flip is covering it anyway
+  &.show {
+    opacity: 1;
+  }
+
+  // Fade out smoothly
+  &.fading {
+    opacity: 0;
+    transition: opacity 1.5s ease;
+  }
+}
+
+.journal-open-crest {
+  margin-bottom: 0;
+}
+
+.journal-open-text {
+  font-family: v.$font-header;
+  font-size: clamp(14px, 2.5vw, 22px);
+  color: v.$journal-spine-cap-2;
+  text-shadow: 0 0 20px v.$color-ext-432;
+  margin-top: 16px;
+  animation: journal-open-flicker 2s infinite;
+}
+
+@keyframes journal-open-flicker {
+  0%, 100% { opacity: 1; }
+  92%       { opacity: 1; }
+  93%       { opacity: 0.85; }
+  94%       { opacity: 1; }
+  96%       { opacity: 0.9; }
+  97%       { opacity: 1; }
+}
+
+// ─── Close-flip: leather sweeps in from the left edge to cover the page ─────
+.page-flip.close-flip {
+  .flip-face {
+    background: linear-gradient(142deg, v.$journal-leather-cover-base-1 0%, v.$journal-leather-cover-base-2 18%, v.$journal-leather-cover-base-3 40%, v.$journal-leather-cover-base-4 62%, v.$journal-leather-cover-base-5 82%, v.$journal-leather-cover-base-6 100%);
+    box-shadow: inset 8px 0 24px v.$journal-leather-cover-shadow, inset -2px 0 8px v.$journal-leather-cover-shadow-light;
+  }
+
+  .flip-back-face {
+    background: linear-gradient(108deg, v.$journal-parchment-base-1 0%, v.$journal-parchment-flip-1 30%, v.$journal-parchment-base-3 55%, v.$journal-parchment-base-4 80%, v.$journal-parchment-base-5 100%);
+    box-shadow: inset -8px 0 20px v.$journal-parchment-shadow-flip-back;
+  }
+}
+
 // ─── Corner fold ──────────────────────────────────────────────────────────────
 .page-fold {
   position: absolute;
