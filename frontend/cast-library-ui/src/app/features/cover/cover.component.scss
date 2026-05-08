@@ -167,7 +167,7 @@
   height: 52px;
   margin-top: -22px;
   margin-bottom: 0;
-  opacity: 0.75;
+  opacity: 1;
   filter: drop-shadow(0 2px 4px v.$color-ext-155);
 }
 
@@ -217,7 +217,7 @@
 // ── Subtitle ──────────────────────────────────────────────────────────────────
 .cover-subtitle {
   font-family: v.$font-body;
-  font-size: clamp(10px, 1.4vw, 13px);
+  font-size: 16px;
   font-style: italic;
   color: rgb(180, 120, 40);
   letter-spacing: 0.05em;
