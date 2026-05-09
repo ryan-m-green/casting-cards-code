@@ -4,6 +4,7 @@ import { CampaignLocationInstance } from '../../models/location.model';
 import { CampaignSublocationInstance } from '../../models/sublocation.model';
 import { CampaignCastInstance } from '../../models/cast.model';
 import { CampaignFactionInstance } from '../../models/faction.model';
+import { CampaignPlayer } from '../../models/campaign.model';
 import { CampaignDropdownComponent, CampaignDropdownOption } from '../campaign-dropdown/campaign-dropdown.component';
 
 @Component({
@@ -17,10 +18,12 @@ export class NoteDestinationPickerComponent {
   @Input() destType = 'queue';
   @Input() entityId = '';
   @Input() showQueue = true;
+  @Input() showPlayer = true;
   @Input() locations: CampaignLocationInstance[] = [];
   @Input() sublocations: CampaignSublocationInstance[] = [];
   @Input() casts: CampaignCastInstance[] = [];
   @Input() factions: CampaignFactionInstance[] = [];
+  @Input() players: CampaignPlayer[] = [];
   @Input() tabIndexBase = 2;
 
   @Output() destTypeChange = new EventEmitter<string>();
@@ -31,7 +34,8 @@ export class NoteDestinationPickerComponent {
 
   get showEntitySelect(): boolean {
     return this.destType === 'location' || this.destType === 'sublocation'
-      || this.destType === 'cast' || this.destType === 'faction';
+      || this.destType === 'cast' || this.destType === 'faction'
+      || this.destType === 'player';
   }
 
   get locationOptions(): CampaignDropdownOption[] {
@@ -59,6 +63,13 @@ export class NoteDestinationPickerComponent {
     return [
       { value: '', label: '— select faction —' },
       ...this.factions.map(f => ({ value: f.factionInstanceId, label: f.name })),
+    ];
+  }
+
+  get playerOptions(): CampaignDropdownOption[] {
+    return [
+      { value: '', label: '— select player —' },
+      ...this.players.map(p => ({ value: p.userId, label: p.displayName })),
     ];
   }
 

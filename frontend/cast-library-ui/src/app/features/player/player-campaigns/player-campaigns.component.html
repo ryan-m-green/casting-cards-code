@@ -1,25 +1,11 @@
 <div class="pc scroll-body">
   <app-journal-title title="Your Campaigns" [username]="auth.currentUser()?.displayName ?? ''" />
 
-  <div class="join-section">
-    <div class="join-label">Have a code from your DM?</div>
-    <div class="join-row">
-      <input
-        class="fi join-input"
-        type="text"
-        placeholder="e.g. EMBER-GRYPHON-7734"
-        [ngModel]="joinCode()"
-        (ngModelChange)="joinCode.set($event.toUpperCase()); joinError.set('')"
-        (keydown.enter)="redeemCode()"
-      />
-      <button class="join-btn" (click)="redeemCode()" [disabled]="!joinCode().trim() || joinLoading()">
-        {{ joinLoading() ? '…' : 'Join' }}
-      </button>
-    </div>
-    @if (joinError()) {
-      <p class="join-error">{{ joinError() }}</p>
-    }
-  </div>
+  <app-campaign-join-input
+    [loading]="joinLoading()"
+    [error]="joinError()"
+    (joinSubmit)="redeemCode($event)"
+  />
 
   <div class="section-label">Your Campaigns</div>
 

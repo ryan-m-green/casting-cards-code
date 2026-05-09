@@ -1,0 +1,271 @@
+@use '../../../../styles/variables' as v;
+
+.ev-item {
+  background: v.$campaign-portal-bg-dark;
+  border: 1px solid v.$campaign-portal-border-bold;
+  border-radius: 8px;
+  overflow: hidden;
+  cursor: pointer;
+
+  &--expanded {
+    border-color: v.$color-border-accent;
+  }
+}
+
+.ev-item-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  cursor: pointer;
+  user-select: none;
+
+  &:hover {
+    background: v.$campaign-portal-bg-hover;
+  }
+}
+
+.ev-badge {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 8px 8px;
+  border-radius: 4px;
+  font-family: v.$font-header;
+  font-size: 9px;
+  font-weight: bolder;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  flex-shrink: 0;
+  background: rgba(v.$color-base-portal-violet, 0.18);
+  border: 1px solid rgba(v.$color-base-portal-violet, 0.35);
+  color: v.$campaign-portal-text-lavender;
+}
+
+.ev-badge-icon {
+  width: 13px;
+  height: 13px;
+  flex-shrink: 0;
+}
+
+.ev-badge-label {
+  max-width: 120px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ev-title {
+  flex: 1;
+  font-family: v.$font-body;
+  font-size: 14px;
+  color: v.$campaign-portal-text-bright;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ev-chevron {
+  font-size: 10px;
+  color: v.$campaign-portal-text-softer;
+  flex-shrink: 0;
+  transition: transform 0.2s ease;
+
+  &--open { transform: rotate(180deg); }
+}
+
+.ev-body-wrapper {
+  position: relative;
+}
+
+.ev-body {
+  padding: 12px 14px 14px;
+  font-family: v.$font-body;
+  font-size: 14px;
+  line-height: 1.7;
+  color: v.$campaign-portal-text-muted;
+  white-space: pre-wrap;
+  border-top: 1px solid v.$campaign-portal-border;
+}
+
+.ev-handout-wrapper {
+  padding: 12px 14px 14px;
+  border-top: 1px solid v.$campaign-portal-border;
+}
+
+.ev-handout-img {
+  display: block;
+  max-width: 100%;
+  border-radius: 6px;
+  border: 1px solid v.$campaign-portal-border-bold;
+}
+
+
+// ── Frame ─────────────────────────────────────────────────────────────────────
+.pec-frame {
+  border-radius: 8px;
+  padding: 4px;
+  background: linear-gradient(
+    145deg,
+    v.$color-ext-737 0%, v.$color-ext-738 15%, v.$color-ext-739 40%,
+    v.$color-ext-740 55%, v.$color-ext-741 70%, v.$color-ext-742 85%, v.$color-ext-743 100%
+  );
+  box-shadow:
+    0 0 0 1px v.$color-dark-frame,
+    0 6px 22px v.$color-shadow-dark,
+    inset 0 1px 0 v.$color-ext-744;
+  transition: box-shadow 0.2s ease;
+}
+
+// ── Inner Parchment ───────────────────────────────────────────────────────────
+.pec-inner {
+  border-radius: 5px;
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(160deg, v.$color-ext-745 0%, v.$color-ext-746 50%, v.$color-ext-747 100%);
+
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='250' height='250'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='250' height='250' filter='url(%23n)' opacity='.1'/%3E%3C/svg%3E");
+    mix-blend-mode: multiply;
+  }
+}
+
+// ── Corner Flourishes ─────────────────────────────────────────────────────────
+.pec-corner {
+  position: absolute;
+  width: 12px;
+  height: 12px;
+  z-index: 2;
+  pointer-events: none;
+
+  &--tl { top: 6px;    left: 6px; }
+  &--tr { top: 6px;    right: 6px;   transform: scaleX(-1); }
+  &--bl { bottom: 6px; left: 6px;   transform: scaleY(-1); }
+  &--br { bottom: 6px; right: 6px;  transform: scale(-1); }
+}
+
+// ── Banner ────────────────────────────────────────────────────────────────────
+.pec-banner {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 14px 10px 12px;
+  background: linear-gradient(180deg, v.$color-ext-748 0%, v.$color-ext-742 100%);
+  border-bottom: 1.5px solid v.$color-ext-739;
+  user-select: none;
+
+  &::after {
+    content: '';
+    position: absolute;
+    bottom: -3px;
+    left: 0;
+    right: 0;
+    height: 1.5px;
+    background: linear-gradient(90deg, transparent, v.$color-ext-749, transparent);
+  }
+}
+
+.pec-banner-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+
+// ── Events Icon ───────────────────────────────────────────────────────────────
+.pec-icon-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  flex-shrink: 0;
+  border-radius: 4px;
+  background: rgba(v.$color-base-portal-violet, 0.18);
+  border: 1px solid rgba(v.$color-base-portal-violet, 0.35);
+}
+
+.pec-icon {
+  width: 20px;
+  height: 20px;
+  filter: brightness(0) invert(1);
+  opacity: 0.75;
+}
+
+// ── Banner Text ───────────────────────────────────────────────────────────────
+.pec-banner-text {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.pec-title {
+  font-family: 'Cinzel', serif;
+  font-weight: 700;
+  font-size: 13px;
+  letter-spacing: 0.03em;
+  color: v.$color-ext-737;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-shadow: 0 1px 4px v.$color-shadow-dark;
+}
+
+.pec-subtitle {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.pec-type-badge {
+  font-family: 'Cinzel', serif;
+  font-size: 9px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: v.$color-ext-750;
+  opacity: 0.85;
+}
+
+// ── Chevron ───────────────────────────────────────────────────────────────────
+.pec-chevron {
+  font-size: 10px;
+  color: v.$color-ext-750;
+  flex-shrink: 0;
+  transition: transform 0.2s ease;
+  margin-left: 8px;
+
+  &--open { transform: rotate(180deg); }
+}
+
+// ── Body ──────────────────────────────────────────────────────────────────────
+.pec-body {
+  position: relative;
+  z-index: 1;
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.3s ease;
+
+  &--visible {
+    max-height: 600px;
+  }
+}
+
+.pec-body-text {
+  border-top: 1px solid v.$color-ext-739;
+  padding: 12px 14px 14px;
+  font-family: 'IM Fell English', serif;
+  font-style: italic;
+  font-size: 13px;
+  line-height: 1.7;
+  color: v.$color-ext-751;
+  white-space: pre-wrap;
+}

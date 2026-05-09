@@ -97,6 +97,10 @@ namespace CastLibrary.WebHost.IoC
             services.AddScoped<ISublocationPlayerNotesUpdateRepository, SublocationPlayerNotesUpdateRepository>();
             services.AddScoped<ICampaignPlayerNotesReadRepository, CampaignPlayerNotesReadRepository>();
             services.AddScoped<ICampaignPlayerNotesUpdateRepository, CampaignPlayerNotesUpdateRepository>();
+            services.AddScoped<ICampaignEventInsertRepository, CampaignEventInsertRepository>();
+            services.AddScoped<ICampaignEventReadRepository, CampaignEventReadRepository>();
+            services.AddScoped<ICampaignEventUpdateRepository, CampaignEventUpdateRepository>();
+            services.AddScoped<ICampaignEventDeleteRepository, CampaignEventDeleteRepository>();
             services.AddHealthChecks()
               .AddCheck<DatabaseHealthCheck>("postgres");
 
@@ -130,6 +134,7 @@ namespace CastLibrary.WebHost.IoC
             services.AddScoped<ICampaignSublocationPlayerNotesEntityMapper, CampaignSublocationPlayerNotesEntityMapper>();
             services.AddScoped<ICampaignPlayerNotesEntityMapper, CampaignPlayerNotesEntityMapper>();
             services.AddScoped<IPlayerQuicknoteQueueEntityMapper, PlayerQuicknoteQueueEntityMapper>();
+            services.AddScoped<ICampaignEventEntityMapper, CampaignEventEntityMapper>();
             services.AddScoped<IQuicknoteQueueReadRepository, QuicknoteQueueReadRepository>();
             services.AddScoped<IQuicknoteQueueInsertRepository, QuicknoteQueueInsertRepository>();
             services.AddScoped<IQuicknoteQueueUpdateRepository, QuicknoteQueueUpdateRepository>();

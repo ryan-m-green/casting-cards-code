@@ -195,23 +195,26 @@ export class CampaignDetailComponent implements OnInit {
   // ── Import card handlers ─────────────────────────────────────────────────
 
   onLocationAdded(instance: CampaignLocationInstance) {
-    if (instance.instanceId.startsWith('tmp-')) {
-      const updater = (c: CampaignDetail | null) => c ? { ...c, locations: [...c.locations, instance] } : c;
-      this.campaign.update(updater);
-      this.shellSvc.updateCampaign(updater);
-    } else {
-      const updater = (c: CampaignDetail | null) => {
-        if (!c) return c;
-        const locations = c.locations.some(l => l.instanceId === instance.instanceId)
-          ? c.locations
-          : c.locations.some(l => l.instanceId.startsWith('tmp-') && l.sourceLocationId === instance.sourceLocationId)
-            ? c.locations.map(l => l.instanceId.startsWith('tmp-') && l.sourceLocationId === instance.sourceLocationId ? instance : l)
-            : [...c.locations, instance];
-        return { ...c, locations };
-      };
-      this.campaign.update(updater);
-      this.shellSvc.updateCampaign(updater);
-    }
+    const updater = (c: CampaignDetail | null) => {
+      if (!c) return c;
+      const existingIdx = c.locations.findIndex(l => l.instanceId === instance.instanceId);
+      if (existingIdx !== -1) {
+        const updated = [...c.locations];
+        updated[existingIdx] = instance;
+        return { ...c, locations: updated };
+      }
+      const tmpIdx = c.locations.findIndex(
+        l => l.instanceId.startsWith('tmp-') && l.sourceLocationId === instance.sourceLocationId
+      );
+      if (tmpIdx !== -1) {
+        const updated = [...c.locations];
+        updated[tmpIdx] = instance;
+        return { ...c, locations: updated };
+      }
+      return { ...c, locations: [...c.locations, instance] };
+    };
+    this.campaign.update(updater);
+    this.shellSvc.updateCampaign(updater);
   }
 
   onLocationRemoved(instanceId: string) {

@@ -18,8 +18,18 @@
     <div class="nav-header">
       <button class="nav-close-btn" (click)="close()" aria-label="Close navigation">✕</button>
       <span class="nav-header-title">Navigate</span>
-      @if (!isDm()) {
-        <div class="nav-queue-wrap">
+      <div class="nav-header-actions">
+        @if (!isDm()) {
+          <button class="nav-events-btn" (click)="goToEvents()" [class.is-active]="isActiveEvents()" aria-label="View events">
+            <img class="nav-events-icon" src="/open_book_star_moon_storytelling.svg" alt="Events" />
+          </button>
+        }
+        @if (isDm()) {
+          <button class="nav-events-btn" (click)="goToEvents()" [class.is-active]="isActiveEvents()" aria-label="View events">
+            <img class="nav-events-icon" src="/open_book_star_moon_storytelling.svg" alt="Events" />
+          </button>
+        }
+        @if (!isDm()) {
           <button class="nav-queue-btn" (click)="goToQueue()" aria-label="View quicknote queue">
             <svg class="nav-queue-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
               <polyline points="22 12 16 12 14 15 10 15 8 12 2 12"/>
@@ -27,8 +37,8 @@
             </svg>
             <span class="nav-queue-count">{{ queueCount() }}</span>
           </button>
-        </div>
-      }
+        }
+      </div>
     </div>
 
     <!-- Exit to library -->

@@ -47,6 +47,12 @@ export interface FactionLockedEvent {
   factionInstanceId: string;
 }
 
+export interface CampaignEventVisibilityChangedEvent {
+  campaignId: string;
+  eventId: string;
+  isVisibleToPlayers: boolean;
+}
+
 @Injectable({ providedIn: 'root' })
 export class CampaignHubService {
   private connection: signalR.HubConnection | null = null;
@@ -73,6 +79,7 @@ export class CampaignHubService {
   readonly castTravelled             = signal<CastTravelledEvent | null>(null);
   readonly factionRemoved            = signal<FactionRemovedEvent | null>(null);
   readonly factionLocked             = signal<FactionLockedEvent | null>(null);
+  readonly campaignEventVisibilityChanged = signal<CampaignEventVisibilityChangedEvent | null>(null);
   readonly isConnected               = signal(false);
 
   async connect(token: string): Promise<void> {
@@ -169,6 +176,10 @@ export class CampaignHubService {
 
     this.connection.on('FactionLocked', (event: FactionLockedEvent) => {
       this.factionLocked.set(event);
+    });
+
+    this.connection.on('CampaignEventVisibilityChanged', (event: CampaignEventVisibilityChangedEvent) => {
+      this.campaignEventVisibilityChanged.set(event);
     });
 
     this.connection.onclose(() => this.isConnected.set(false));

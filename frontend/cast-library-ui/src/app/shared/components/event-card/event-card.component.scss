@@ -1,0 +1,266 @@
+@use '../../../../styles/variables' as v;
+
+// ── Backdrop ──────────────────────────────────────────────────────────────────
+.ec-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 8100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: v.$color-ext-650;
+  animation: ec-fade-in 0.3s ease forwards;
+}
+
+@keyframes ec-fade-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+// ── Card Shell ────────────────────────────────────────────────────────────────
+.ec-card {
+  width: v.$card-width;
+  height: v.$card-height;
+  position: relative;
+  border-radius: 8px;
+  overflow: hidden;
+  animation: ec-appear 0.65s cubic-bezier(0.2, 0, 0.3, 1) forwards;
+  will-change: transform, opacity;
+}
+
+@keyframes ec-appear {
+  0%   { transform: scale(6); opacity: 0; }
+  55%  { opacity: 1; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+
+
+// ── Frame ─────────────────────────────────────────────────────────────────────
+.ec-frame {
+  position: absolute;
+  inset: 0;
+  border-radius: 8px;
+  padding: 4px;
+  background: linear-gradient(
+    145deg,
+    v.$color-ext-737 0%, v.$color-ext-738 15%, v.$color-ext-739 40%,
+    v.$color-ext-740 55%, v.$color-ext-741 70%, v.$color-ext-742 85%, v.$color-ext-743 100%
+  );
+  box-shadow:
+    0 0 0 1px v.$color-dark-frame,
+    0 6px 22px v.$color-shadow-dark,
+    inset 0 1px 0 v.$color-ext-744;
+}
+
+// ── Inner Parchment ───────────────────────────────────────────────────────────
+.ec-inner {
+  width: 100%;
+  height: 100%;
+  border-radius: 5px;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  background: linear-gradient(160deg, v.$color-ext-745 0%, v.$color-ext-746 50%, v.$color-ext-747 100%);
+
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 10;
+    pointer-events: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='250' height='250'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='250' height='250' filter='url(%23n)' opacity='.1'/%3E%3C/svg%3E");
+    mix-blend-mode: multiply;
+  }
+}
+
+// ── Corner Flourishes ─────────────────────────────────────────────────────────
+.ec-corner {
+  position: absolute;
+  width: 12px;
+  height: 12px;
+  z-index: 5;
+  pointer-events: none;
+
+  &--tl { top: 29px;    left: 3px; }
+  &--tr { top: 29px;    right: 3px;   transform: scaleX(-1); }
+  &--bl { bottom: 18px; left: 3px;   transform: scaleY(-1); }
+  &--br { bottom: 18px; right: 3px;  transform: scale(-1); }
+}
+
+// ── Banner ────────────────────────────────────────────────────────────────────
+.ec-banner {
+  padding: 6px 8px 5px;
+  position: relative;
+  flex-shrink: 0;
+  background: linear-gradient(180deg, v.$color-ext-748 0%, v.$color-ext-742 100%);
+  border-bottom: 1.5px solid v.$color-ext-739;
+
+  &::after {
+    content: '';
+    position: absolute;
+    bottom: -3px;
+    left: 0;
+    right: 0;
+    height: 1.5px;
+    background: linear-gradient(90deg, transparent, v.$color-ext-749, transparent);
+  }
+}
+
+.ec-name {
+  font-family: 'Cinzel', serif;
+  font-weight: 700;
+  font-size: 8px;
+  letter-spacing: 0.03em;
+  line-height: 1.2;
+  color: v.$color-ext-737;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-shadow: 0 1px 4px v.$color-shadow-dark;
+}
+
+.ec-subtitle {
+  font-family: 'Cinzel', serif;
+  font-size: 6px;
+  letter-spacing: 0.12em;
+  color: v.$color-ext-750;
+  margin-top: 1px;
+  opacity: 0.8;
+}
+
+// ── Portrait ──────────────────────────────────────────────────────────────────
+.ec-portrait {
+  flex: 1;
+  margin: 5px 5px 0;
+  border: 1.5px solid v.$color-border-black-strong;
+  border-bottom: none;
+  border-radius: 3px 3px 0 0;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(160deg, v.$color-ext-748 0%, v.$color-ext-742 60%, v.$color-ext-745 100%);
+}
+
+.ec-portrait-img {
+  width: 55%;
+  height: 55%;
+  object-fit: contain;
+  display: block;
+  opacity: 0.85;
+  filter: brightness(0) invert(1);
+}
+
+// ── Content ───────────────────────────────────────────────────────────────────
+.ec-flavor {
+  border: 1.5px solid v.$color-border-black-med;
+  border-top: 1px solid v.$color-border-black-light;
+  border-radius: 0 0 3px 3px;
+  margin: 0 5px;
+  padding: 4px 6px;
+  flex-shrink: 0;
+}
+
+.ec-tagline {
+  font-family: 'Cinzel', serif;
+  font-size: 8px;
+  font-weight: bolder;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: #000;
+  text-align: center;
+  margin-bottom: 3px;
+}
+
+.ec-secret {
+  font-family: 'Crimson Text', serif;
+  font-style: normal;
+  font-size: 9px;
+  color: #000;
+  line-height: 1.5;
+  text-align: center;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+// ── Go to Events Button ───────────────────────────────────────────────────────
+.ec-reveal-btn {
+  flex-shrink: 0;
+  width: calc(100% - 10px);
+  margin: 2px 5px 0;
+  padding: 4px 3px;
+  font-family: 'Cinzel', serif;
+  font-size: 8px;
+  letter-spacing: 0.1em;
+  border: 1px solid black;
+  border-radius: 2px;
+  cursor: pointer;
+  transition: all 0.2s;
+  background: linear-gradient(180deg, v.$color-ext-738, v.$color-ext-752);
+  color: v.$color-ext-753;
+  box-shadow: 0 2px 4px v.$color-shadow-light;
+
+  &:hover { background: linear-gradient(180deg, v.$color-ext-754, v.$color-ext-755); transform: translateY(-1px); }
+}
+
+// ── Dismiss Button ────────────────────────────────────────────────────────────
+.ec-dismiss-btn {
+  flex-shrink: 0;
+  width: calc(100% - 10px);
+  margin: 2px 5px 0;
+  padding: 4px 3px;
+  font-family: 'Cinzel', serif;
+  font-size: 6px;
+  letter-spacing: 0.1em;
+  border: none;
+  border-radius: 2px;
+  cursor: pointer;
+  transition: all 0.2s;
+  background: linear-gradient(180deg, v.$color-ext-756, v.$color-ext-757);
+  color: v.$color-ext-758;
+  box-shadow: 0 2px 4px v.$color-shadow-light;
+
+  &:hover { background: linear-gradient(180deg, v.$color-ext-759, v.$color-ext-760); transform: translateY(-1px); }
+}
+
+// ── Strip ─────────────────────────────────────────────────────────────────────
+.ec-strip {
+  padding: 3px 8px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-shrink: 0;
+  margin-top: 2px;
+  position: relative;
+  background: linear-gradient(180deg, v.$color-ext-742 0%, v.$color-ext-748 100%);
+  border-top: 1.5px solid v.$color-ext-739;
+}
+
+.ec-strip-label {
+  font-family: 'Cinzel', serif;
+  font-size: 5px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: v.$color-ext-737;
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  white-space: nowrap;
+}
+
+.ec-pip-row {
+  display: flex;
+  gap: 1.5px;
+}
+
+.ec-pip {
+  width: 3px;
+  height: 3px;
+  background: v.$color-ext-738;
+  transform: rotate(45deg);
+  opacity: 0.7;
+}

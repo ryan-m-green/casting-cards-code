@@ -2,7 +2,7 @@
 
 
 @if (campaign(); as camp) {
-  @if (camp.locations.length) {
+  @if (camp.locations.some(l => !l.isPartyAnchor)) {
     
     <div class="location-cards-section">
       <div class="campaign-notes-panel">
@@ -12,6 +12,7 @@
       
       <div class="location-cards-container">
         @for (location of camp.locations; track location.instanceId) {
+          @if (!location.isPartyAnchor) {
           <div [class.is-locking]="isLocking(location.instanceId)">
             <app-location-card
               [location]="location"
@@ -23,6 +24,7 @@
               (cardClick)="goToLocationDetail(location.instanceId)"
             />
           </div>
+          }
         }
       </div>
     </div>

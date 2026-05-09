@@ -2,6 +2,72 @@
 
 :host { display: block; height: 100%; }
 
+// ─── Stat tile lift on hover ──────────────────────────────────────────────────
+.sv {
+  transition: background v.$transition-std, transform 0.2s ease;
+
+  &:hover {
+    transform: translateY(-6px) scale(1.03);
+  }
+}
+
+// ─── Quick action buttons ─────────────────────────────────────────────────────
+.qa-btn {
+  border: none;
+  padding: 3px;
+  transition: background v.$transition-std, transform 0.2s ease;
+
+  &:hover {
+    transform: translateY(-6px) scale(1.03);
+  }
+
+  &__inner {
+    padding: 4px 10px;
+    background: v.$journal-parchment-base-3;
+    border-radius: 1px;
+    height: 100%;
+    display: inline-flex;
+    align-items: center;
+  }
+
+  &--cast {
+    background: linear-gradient(145deg,
+      v.$color-cast-gold-1 0%, v.$color-cast-gold-2 20%, v.$color-cast-gold-3 45%,
+      v.$color-cast-gold-4 55%, v.$color-cast-gold-2 70%, v.$color-cast-gold-5 85%, v.$color-cast-gold-6 100%
+    ) !important;
+  }
+
+  &--sublocation {
+    background: linear-gradient(145deg,
+      v.$color-ext-675 0%, v.$color-ext-676 15%, v.$color-ext-677 40%,
+      v.$color-ext-678 55%, v.$color-ext-679 70%, v.$color-ext-680 85%, v.$color-ext-681 100%
+    ) !important;
+  }
+
+  &--location {
+    background: linear-gradient(145deg,
+      v.$color-loc-green-1 0%, v.$color-loc-green-2 15%, v.$color-loc-green-3 40%,
+      v.$color-loc-green-4 55%, v.$color-loc-green-5 70%, v.$color-loc-green-6 85%, v.$color-loc-green-7 100%
+    ) !important;
+  }
+
+  &--faction {
+    background: linear-gradient(145deg,
+      v.$color-faction-neutral-frame-1 0%, v.$color-faction-neutral-frame-2 15%,
+      v.$color-faction-neutral-frame-3 40%, v.$color-faction-neutral-frame-4 55%,
+      v.$color-faction-neutral-frame-5 70%, v.$color-faction-neutral-frame-6 85%,
+      v.$color-faction-neutral-frame-7 100%
+    ) !important;
+  }
+
+  &--campaign {
+    background: linear-gradient(145deg,
+      v.$portal-card-frame-1 0%, v.$portal-card-frame-2 30%,
+      v.$portal-card-frame-3 60%, v.$portal-card-frame-4 100%
+    ) !important;
+  }
+}
+
 // ─── Stat tile borders matched to card type ───────────────────────────────────
 // Each tile uses a 4px gradient frame via padding + background, matching the
 // card's own frame gradient.
@@ -60,6 +126,43 @@
 
 .active-campaign-item {
   margin-bottom: 16px;
+  max-width: 50%;
+  transition: transform 0.2s ease;
+  background: linear-gradient(145deg,
+    v.$portal-card-frame-1 0%, v.$portal-card-frame-2 30%,
+    v.$portal-card-frame-3 60%, v.$portal-card-frame-4 100%
+  ) !important;
+  padding: 3px;
+
+  &:hover {
+    transform: translateY(-6px) scale(1.03);
+  }
+
+  .sv-inner {
+    background: v.$journal-parchment-base-3;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 16px;
+    padding: 0;
+  }
+
+  .active-campaign-icon {
+    align-self: stretch;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    padding: 4px 0 4px 4px;
+    margin: 0 14px 0 18px;
+    color: v.$color-text-primary;
+  }
+
+  .active-campaign-content {
+    flex: 1;
+    min-width: 0;
+    margin: 4px 0;
+  }
 }
 
 .dashboard-main {
@@ -72,6 +175,19 @@
 
 .import-section {
   margin-bottom: -44px;
+}
+
+.import-fieldset {
+  border: 1px dashed v.$color-border;
+  border-radius: 3px;
+  padding: 12px;
+  margin: 0;
+  display: inline-block;
+
+  .import-section-label {
+    padding: 0 4px;
+    margin: 0;
+  }
 }
 
 // ─── Portal ghost (hidden off-screen; cloned for animation) ───────────────────
@@ -89,10 +205,6 @@
   .portal-btn--edit {
     visibility: hidden;
   }
-}
-
-.import-section-label {
-  margin-top: 12px;
 }
 
 // ─── Import Panel ─────────────────────────────────────────────────────────────

@@ -517,7 +517,12 @@ export class CampaignSublocationDetailComponent implements OnInit {
     const updater = (c: CampaignDetail | null) => {
       if (!c) return c;
       const casts = c.casts ?? [];
-      if (casts.some(ca => ca.instanceId === instance.instanceId)) return c;
+      const existingIdx = casts.findIndex(ca => ca.instanceId === instance.instanceId);
+      if (existingIdx !== -1) {
+        const updated = [...casts];
+        updated[existingIdx] = instance;
+        return { ...c, casts: updated };
+      }
       const tmpIdx = casts.findIndex(
         ca => ca.instanceId.startsWith('tmp-') && ca.sourceCastId === instance.sourceCastId
       );

@@ -53,7 +53,7 @@ export class RoleSelectionComponent {
     }).subscribe({
       next: () => {
         if (this.selectedRole() === 'DM') {
-          this.router.navigate(['/subscribe']);
+          this.router.navigate(['/dm/dashboard']);
         } else {
           this.router.navigate(['/player/campaigns']);
         }

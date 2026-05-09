@@ -7,6 +7,7 @@
       </div>
       <div class="cl-grid" #locationsGrid>
         @for (location of camp.locations; track location.instanceId) {
+          @if (!location.isPartyAnchor) {
           <div class="cl-loc-wrap" [attr.data-instance-id]="location.instanceId">
             <app-location-card
               [location]="location"
@@ -29,8 +30,9 @@
               >✕</button>
             }
           </div>
+          }
         }
-        @if (!camp.locations.length) {
+        @if (!camp.locations.some(l => !l.isPartyAnchor)) {
           <p class="location-cards-empty">No locations yet — use the ✦ button below to add some.</p>
         }
       </div>

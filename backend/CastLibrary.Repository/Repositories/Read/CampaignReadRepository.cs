@@ -182,6 +182,7 @@ public class CampaignReadRepository(
             SortOrder = r.sort_order,
             Keywords = r.keywords ?? Array.Empty<string>(),
             DmNotes = r.dm_notes ?? string.Empty,
+            IsPartyAnchor = (bool)(r.is_party_anchor ?? false),
         }).ToList();
     }
 
@@ -391,6 +392,7 @@ public class CampaignReadRepository(
             ImageUrl = r.image_url ?? string.Empty,
             Keywords = r.keywords ?? Array.Empty<string>(),
             DmNotes = r.dm_notes ?? string.Empty,
+            IsPartyAnchor = (bool)(r.is_party_anchor ?? false),
         };
     }
 

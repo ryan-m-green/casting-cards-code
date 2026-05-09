@@ -25,4 +25,5 @@ export interface CampaignLocationInstance extends Location {
   sortOrder: number;
   keywords: string[];
   dmNotes: string;
+  isPartyAnchor: boolean;
 }

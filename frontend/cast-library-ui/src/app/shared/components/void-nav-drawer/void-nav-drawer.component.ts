@@ -59,7 +59,7 @@ export class VoidNavDrawerComponent implements OnChanges {
     const query = this.searchQuery().trim().toLowerCase();
     if (!c) return [];
 
-    const locations = c.locations.filter(l => this.isDm() || l.isVisibleToPlayers);
+    const locations = c.locations.filter(l => !l.isPartyAnchor && (this.isDm() || l.isVisibleToPlayers));
 
     if (!query) return locations;
 
@@ -110,6 +110,7 @@ export class VoidNavDrawerComponent implements OnChanges {
   isActiveMyCharacter    = computed(() => this.currentUrl().includes('/the-party'));
   isActiveParty          = computed(() => this.currentUrl().includes('/the-party'));
   isActivePlayerFactions = computed(() => this.currentUrl().includes('/campaign-insight'));
+  isActiveEvents         = computed(() => this.currentUrl().includes('/plot'));
 
   isActiveFactions = computed(() => {
     const url = this.currentUrl();
@@ -288,6 +289,11 @@ export class VoidNavDrawerComponent implements OnChanges {
 
   goToQueue() {
     this.router.navigate([this.base, 'quicknote-queue']);
+    this.close();
+  }
+
+  goToEvents() {
+    this.router.navigate([this.base, 'plot']);
     this.close();
   }
 }

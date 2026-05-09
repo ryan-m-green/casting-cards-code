@@ -1,0 +1,527 @@
+<div class="events-page">
+
+  <div class="tabs-bar" role="tablist" aria-label="Storyline views">
+    <button
+      class="tab-btn"
+      [class.tab-btn--active]="activeTab() === 'events'"
+      role="tab"
+      [attr.aria-selected]="activeTab() === 'events'"
+      aria-controls="events-panel-events"
+      id="events-tab-events"
+      (click)="setTab('events')"
+    >Storyline</button>
+    <button
+      class="tab-btn"
+      [class.tab-btn--active]="activeTab() === 'create-events'"
+      role="tab"
+      [attr.aria-selected]="activeTab() === 'create-events'"
+      aria-controls="events-panel-create-events"
+      id="events-tab-create-events"
+      (click)="setTab('create-events')"
+    >Create Scenes</button>
+    <button
+      class="tab-btn"
+      [class.tab-btn--active]="activeTab() === 'create-handout'"
+      role="tab"
+      [attr.aria-selected]="activeTab() === 'create-handout'"
+      aria-controls="events-panel-create-handout"
+      id="events-tab-create-handout"
+      (click)="setTab('create-handout')"
+    >Create Handout</button>
+  </div>
+
+  @if (activeTab() === 'events') {
+    <div class="tab-content" id="events-panel-events" role="tabpanel" aria-labelledby="events-tab-events">
+
+      @if (loadingEvents()) {
+        <div class="ev-empty">Loading…</div>
+      } @else if (!events().length) {
+        <div class="ev-empty">No storyline yet. Create one in the Create Scenes tab.</div>
+      } @else {
+
+        <!-- Filter bar -->
+        <fieldset class="ev-filters">
+          <legend class="ev-filters-legend">Filters</legend>
+          <div class="ev-filter-group">
+            <button type="button" class="ev-filter-btn" [class.ev-filter-btn--active]="typeFilters().includes('cast')" (click)="toggleTypeFilter('cast')" title="Cast">
+              <svg class="ev-filter-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>
+              </svg>
+            </button>
+            <button type="button" class="ev-filter-btn" [class.ev-filter-btn--active]="typeFilters().includes('faction')" (click)="toggleTypeFilter('faction')" title="Faction">
+              <svg class="ev-filter-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+              </svg>
+            </button>
+            <button type="button" class="ev-filter-btn" [class.ev-filter-btn--active]="typeFilters().includes('location')" (click)="toggleTypeFilter('location')" title="Location">
+              <svg class="ev-filter-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/>
+              </svg>
+            </button>
+            <button type="button" class="ev-filter-btn" [class.ev-filter-btn--active]="typeFilters().includes('sublocation')" (click)="toggleTypeFilter('sublocation')" title="Sublocation">
+              <svg class="ev-filter-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/>
+              </svg>
+            </button>
+            <button type="button" class="ev-filter-btn" [class.ev-filter-btn--active]="typeFilters().includes('player')" (click)="toggleTypeFilter('player')" title="Player">
+              <svg class="ev-filter-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/>
+                <path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+              </svg>
+            </button>
+            <button type="button" class="ev-filter-btn" [class.ev-filter-btn--active]="typeFilters().includes('campaign')" (click)="toggleTypeFilter('campaign')" title="Campaign">
+              <svg class="ev-filter-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
+              </svg>
+            </button>
+            <button type="button" class="ev-filter-btn" [class.ev-filter-btn--active]="typeFilters().includes('handout')" (click)="toggleTypeFilter('handout')" title="Handout">
+              <svg class="ev-filter-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+                <circle cx="8.5" cy="8.5" r="1.5"/>
+                <polyline points="21 15 16 10 5 21"/>
+              </svg>
+            </button>
+          </div>
+
+          <div class="ev-filter-divider"></div>
+
+          <div class="ev-filter-group">
+            <button type="button" class="ev-filter-btn ev-filter-btn--lock-locked" [class.ev-filter-btn--active]="visibilityFilters().includes('locked')" (click)="toggleVisibilityFilter('locked')" title="Locked">
+              <svg class="ev-filter-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 14 16" fill="none">
+                <path d="M3 7 L3 4 C3 0.5 11 0.5 11 4 L11 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <rect x="1" y="7" width="12" height="9" rx="2" fill="currentColor"/>
+              </svg>
+            </button>
+            <button type="button" class="ev-filter-btn ev-filter-btn--lock-unlocked" [class.ev-filter-btn--active]="visibilityFilters().includes('unlocked')" (click)="toggleVisibilityFilter('unlocked')" title="Unlocked">
+              <svg class="ev-filter-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 14 16" fill="none">
+                <path d="M3 7 L3 4 C3 0.5 11 0.5 11 4 L11 1" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <rect x="1" y="7" width="12" height="9" rx="2" fill="currentColor"/>
+              </svg>
+            </button>
+          </div>
+        </fieldset>
+
+        @if (!filteredEvents().length) {
+          <div class="ev-empty">No events match the current filters.</div>
+        } @else {
+        <div
+          #evList
+          class="ev-list"
+          (dragover)="$event.preventDefault()"
+          (dragleave)="onListDragLeave($event)"
+          (drop)="onDrop($event)"
+        >
+          @for (ev of filteredEvents(); track ev.id; let i = $index) {
+            @if (dropLineIndex() === i) {
+              <div class="ev-drop-line"></div>
+            }
+            <div
+              class="ev-item"
+              [class.ev-item--expanded]="expandedId() === ev.id"
+              [class.ev-item--dragging]="draggingIndex() === i"
+              draggable="true"
+              (dragstart)="onDragStart(i, $event)"
+              (dragover)="onItemDragOver($event, i)"
+              (dragend)="onDragEnd()"
+            >
+              <div class="ev-item-header" (click)="toggleExpand(ev.id)">
+
+                <span
+                  class="ev-drag-handle"
+                  title="Drag to reorder"
+                  (touchstart)="onHandleTouchStart(i, $event)"
+                >⠿</span>
+
+                <span class="ev-badge ev-badge--{{ ev.imageUrl ? 'handout' : (ev.linkedEntityType ?? 'campaign') }}">
+                  @if (ev.imageUrl) {
+                    <svg class="ev-badge-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                      <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+                      <circle cx="8.5" cy="8.5" r="1.5"/>
+                      <polyline points="21 15 16 10 5 21"/>
+                    </svg>
+                  }
+                  @switch (ev.linkedEntityType) {
+                    @case ('cast') {
+                      <svg class="ev-badge-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                        <circle cx="12" cy="7" r="4"/>
+                      </svg>
+                    }
+                    @case ('faction') {
+                      <svg class="ev-badge-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                      </svg>
+                    }
+                    @case ('location') {
+                      <svg class="ev-badge-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
+                        <circle cx="12" cy="10" r="3"/>
+                      </svg>
+                    }
+                    @case ('sublocation') {
+                      <svg class="ev-badge-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+                        <polyline points="9 22 9 12 15 12 15 22"/>
+                      </svg>
+                    }
+                    @case ('player') {
+                      <svg class="ev-badge-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+                        <circle cx="9" cy="7" r="4"/>
+                        <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+                        <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+                      </svg>
+                    }
+                    @default {
+                      <svg class="ev-badge-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/>
+                        <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
+                      </svg>
+                    }
+                  }
+                  <span class="ev-badge-label">{{ entityNameFor(ev) }}</span>
+                </span>
+
+                <span class="ev-title">{{ ev.title }}</span>
+
+                <button
+                  class="ev-lock-btn"
+                  [class.ev-lock-btn--revealed]="ev.visibleToPlayers"
+                  (click)="toggleVisibility(ev, $event)"
+                  [title]="ev.visibleToPlayers ? 'Hide from players' : 'Reveal to players'"
+                  [attr.aria-label]="ev.visibleToPlayers ? 'Hide from players' : 'Reveal to players'"
+                >
+                  <app-lock-icon [open]="ev.visibleToPlayers" />
+                </button>
+
+                <span class="ev-chevron" [class.ev-chevron--open]="expandedId() === ev.id">&#9660;</span>
+              </div>
+
+              @if (expandedId() === ev.id) {
+                <div class="ev-item-edit-bar">
+                  @if (editSaveSuccess() && editingId() === ev.id) {
+                    <span class="ev-autosave-status ev-autosave-status--saved">Saved</span>
+                  }
+                  @if (confirmDeleteId() === ev.id) {
+                    <span class="ev-delete-confirm">
+                      <span class="ev-delete-confirm-label">Delete?</span>
+                      <button type="button" class="ev-delete-confirm-yes" [disabled]="deleting()" (click)="confirmDelete(ev.id, $event)">{{ deleting() ? '…' : 'Yes' }}</button>
+                      <button type="button" class="ev-delete-confirm-no" (click)="cancelDelete($event)">No</button>
+                    </span>
+                  } @else {
+                    <button type="button" class="ev-delete-btn" (click)="requestDelete(ev.id, $event)" title="Delete">
+                      <img src="/icons/chronicle/delete.svg" alt="Delete" class="ev-delete-btn-img" />
+                    </button>
+                  }
+                  <button
+                    class="ev-edit-btn"
+                    [class.ev-edit-btn--close]="editingId() === ev.id"
+                    (click)="toggleEdit(ev, $event)"
+                    [title]="editingId() === ev.id ? 'Close edit mode' : 'Edit'"
+                  >{{ editingId() === ev.id ? 'Close' : 'Edit' }}</button>
+                </div>
+                <div class="ev-body-wrapper">
+
+                  @if (editingId() !== ev.id) {
+                    <!-- Read-only view -->
+                    <div class="ev-body">{{ ev.body }}</div>
+                    @if (ev.imageUrl) {
+                      <div class="ev-handout-wrapper">
+                        <img class="ev-handout-img" [src]="ev.imageUrl" [alt]="ev.title" />
+                      </div>
+                    }
+                  } @else if (ev.imageUrl !== undefined && ev.linkedEntityType === 'handout' || ev.imageUrl) {
+                    <!-- Handout edit form -->
+                    <div class="ev-edit-form">
+                      <div class="event-form-field">
+                        <label class="event-label">Title</label>
+                        <input class="fi event-title-input" type="text" maxlength="200" autocomplete="off"
+                          [ngModel]="editTitle()" (ngModelChange)="editTitle.set($event)" />
+                      </div>
+                      <div class="event-form-field">
+                        <label class="event-label">Caption (optional)</label>
+                        <textarea class="fi event-body-textarea handout-caption-textarea" rows="3" maxlength="2000"
+                          [ngModel]="editDraft()" (ngModelChange)="editDraft.set($event)"></textarea>
+                      </div>
+                      <div class="event-panel-divider"></div>
+                      <div class="event-form-field">
+                        <label class="event-label">Associate with</label>
+                        <app-note-destination-picker
+                          [showQueue]="false"
+                          [destType]="editDestType() ?? ''"
+                          [entityId]="editEntityId()"
+                          [locations]="locations"
+                          [sublocations]="sublocations"
+                          [casts]="casts"
+                          [factions]="factions"
+                          [players]="players"
+                          (destTypeChange)="onEditDestTypeChange($event)"
+                          (entityIdChange)="editEntityId.set($event)"
+                        />
+                      </div>
+                      <div class="event-panel-divider"></div>
+                      <div class="event-form-field">
+                        <label class="event-label">Replace image (optional)</label>
+                        @if (editPreviewUrl()) {
+                          <div class="handout-preview">
+                            <img class="handout-preview-img" [src]="editPreviewUrl()!" alt="Handout preview" />
+                          </div>
+                        }
+                        <label class="handout-upload-label">
+                          <input type="file" accept="image/jpeg,image/png,image/webp,application/pdf"
+                            class="handout-upload-input" (change)="onEditFileSelected($event)" />
+                          <div class="handout-upload-btn">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                              <polyline points="17 8 12 3 7 8"/>
+                              <line x1="12" y1="3" x2="12" y2="15"/>
+                            </svg>
+                            {{ editFile() ? editFile()!.name : 'Choose new image or PDF…' }}
+                          </div>
+                        </label>
+                      </div>
+                      <div class="event-form-actions">
+                        @if (editSaveError()) {
+                          <span class="event-error">{{ editSaveError() }}</span>
+                        }
+                        <button class="campaign-primary-btn" [disabled]="editSaving() || !editTitle().trim() || !editDestType()"
+                          (click)="saveEditDetails(ev)">{{ editSaving() ? 'Saving…' : 'Save' }}</button>
+                      </div>
+                    </div>
+                  } @else {
+                    <!-- Scene edit form -->
+                    <div class="ev-edit-form">
+                      <div class="event-form-field">
+                        <label class="event-label">Title</label>
+                        <input class="fi event-title-input" type="text" maxlength="200" autocomplete="off"
+                          [ngModel]="editTitle()" (ngModelChange)="editTitle.set($event)" />
+                      </div>
+                      <div class="event-form-field">
+                        <label class="event-label">Scene</label>
+                        <textarea class="fi event-body-textarea" rows="10" maxlength="50000"
+                          [ngModel]="editDraft()" (ngModelChange)="editDraft.set($event)"></textarea>
+                      </div>
+                      <div class="event-panel-divider"></div>
+                      <div class="event-form-field">
+                        <label class="event-label">Associate with</label>
+                        <app-note-destination-picker
+                          [showQueue]="false"
+                          [destType]="editDestType() ?? ''"
+                          [entityId]="editEntityId()"
+                          [locations]="locations"
+                          [sublocations]="sublocations"
+                          [casts]="casts"
+                          [factions]="factions"
+                          [players]="players"
+                          (destTypeChange)="onEditDestTypeChange($event)"
+                          (entityIdChange)="editEntityId.set($event)"
+                        />
+                      </div>
+                      <div class="event-form-actions">
+                        @if (editSaveError()) {
+                          <span class="event-error">{{ editSaveError() }}</span>
+                        }
+                        <button class="campaign-primary-btn" [disabled]="editSaving() || !editTitle().trim() || !editDraft().trim() || !editDestType()"
+                          (click)="saveEditDetails(ev)">{{ editSaving() ? 'Saving…' : 'Save' }}</button>
+                      </div>
+                    </div>
+                  }
+
+                </div>
+              }
+            </div>
+          }
+          @if (dropLineIndex() === filteredEvents().length) {
+            <div class="ev-drop-line"></div>
+          }
+        </div>
+        }
+      }
+
+    </div>
+  }
+
+  @if (activeTab() === 'create-events') {
+    <div class="tab-content" id="events-panel-create-events" role="tabpanel" aria-labelledby="events-tab-create-events">
+
+      <div class="event-form">
+
+        <div class="event-panel">
+          <div class="event-form-field">
+            <label class="event-label" for="event-title">Title</label>
+            <input
+              id="event-title"
+              class="fi event-title-input"
+              type="text"
+              placeholder="Scene title…"
+              [ngModel]="eventTitle()"
+              (ngModelChange)="eventTitle.set($event)"
+              maxlength="200"
+              autocomplete="off"
+            />
+          </div>
+
+          <div class="event-form-field">
+            <label class="event-label" for="event-body">Scene</label>
+            <textarea
+              id="event-body"
+              class="fi event-body-textarea"
+              placeholder="Write your story scene here…"
+              [ngModel]="eventBody()"
+              (ngModelChange)="eventBody.set($event)"
+              maxlength="50000"
+              rows="18"
+            ></textarea>
+          </div>
+
+          <div class="event-panel-divider"></div>
+
+          <div class="event-form-field">
+            <label class="event-label">Associate with</label>
+            <app-note-destination-picker
+              [showQueue]="false"
+              [destType]="destType() ?? ''"
+              [entityId]="entityId()"
+              [locations]="locations"
+              [sublocations]="sublocations"
+              [casts]="casts"
+              [factions]="factions"
+              [players]="players"
+              (destTypeChange)="onDestTypeChange($event)"
+              (entityIdChange)="entityId.set($event)"
+            />
+          </div>
+
+          <div class="event-form-actions">
+            @if (saveError()) {
+              <span class="event-error">{{ saveError() }}</span>
+            }
+            @if (saveSuccess()) {
+              <span class="event-success">Event saved.</span>
+            }
+            <button
+              class="campaign-primary-btn"
+              [disabled]="saving() || !canSave()"
+              (click)="saveEvent()"
+            >{{ saving() ? 'Saving…' : 'Save Event' }}</button>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  }
+
+  @if (activeTab() === 'create-handout') {
+    <div class="tab-content" id="events-panel-create-handout" role="tabpanel" aria-labelledby="events-tab-create-handout">
+
+      <div class="event-form">
+        <div class="event-panel">
+
+          <div class="event-form-field">
+            <label class="event-label" for="handout-title">Title</label>
+            <input
+              id="handout-title"
+              class="fi event-title-input"
+              type="text"
+              placeholder="Handout title…"
+              [ngModel]="handoutTitle()"
+              (ngModelChange)="handoutTitle.set($event)"
+              maxlength="200"
+              autocomplete="off"
+            />
+          </div>
+
+          <div class="event-form-field">
+            <label class="event-label" for="handout-caption">Caption (optional)</label>
+            <textarea
+              id="handout-caption"
+              class="fi event-body-textarea handout-caption-textarea"
+              placeholder="Optional caption or description…"
+              [ngModel]="handoutBody()"
+              (ngModelChange)="handoutBody.set($event)"
+              maxlength="2000"
+              rows="4"
+            ></textarea>
+          </div>
+
+          <div class="event-panel-divider"></div>
+
+          <div class="event-form-field">
+            <label class="event-label">File</label>
+            <label class="handout-upload-label">
+              <input
+                type="file"
+                accept="image/jpeg,image/png,image/webp,application/pdf"
+                class="handout-upload-input"
+                aria-label="Select image or PDF to upload as handout"
+                (change)="onHandoutFileSelected($event)"
+              />
+              <div class="handout-upload-btn">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                  <polyline points="17 8 12 3 7 8"/>
+                  <line x1="12" y1="3" x2="12" y2="15"/>
+                </svg>
+                {{ handoutFile() ? handoutFile()!.name : 'Choose image or PDF…' }}
+              </div>
+            </label>
+          </div>
+
+          @if (handoutPreviewUrl()) {
+            <div class="handout-preview">
+              <img class="handout-preview-img" [src]="handoutPreviewUrl()!" alt="Handout preview" />
+            </div>
+          } @else if (handoutFile() && !handoutPreviewUrl()) {
+            <div class="handout-pdf-indicator">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                <polyline points="14 2 14 8 20 8"/>
+                <line x1="16" y1="13" x2="8" y2="13"/>
+                <line x1="16" y1="17" x2="8" y2="17"/>
+                <polyline points="10 9 9 9 8 9"/>
+              </svg>
+              <span>{{ handoutFile()!.name }}</span>
+              <span class="handout-pdf-note">Will be converted to image on upload</span>
+            </div>
+          }
+
+          <div class="event-panel-divider"></div>
+
+          <div class="event-form-field">
+            <label class="event-label">Associate with</label>
+            <app-note-destination-picker
+              [showQueue]="false"
+              [destType]="handoutDestType() ?? ''"
+              [entityId]="handoutEntityId()"
+              [locations]="locations"
+              [sublocations]="sublocations"
+              [casts]="casts"
+              [factions]="factions"
+              [players]="players"
+              (destTypeChange)="onHandoutDestTypeChange($event)"
+              (entityIdChange)="handoutEntityId.set($event)"
+            />
+          </div>
+
+          <div class="event-form-actions">
+            @if (handoutError()) {
+              <span class="event-error">{{ handoutError() }}</span>
+            }
+            @if (handoutSuccess()) {
+              <span class="event-success">Handout uploaded.</span>
+            }
+            <button
+              class="campaign-primary-btn"
+              [disabled]="handoutUploading() || !canUploadHandout()"
+              (click)="uploadHandout()"
+            >{{ handoutUploading() ? 'Uploading…' : 'Upload Handout' }}</button>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+  }
+
+</div>

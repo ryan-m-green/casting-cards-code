@@ -163,6 +163,14 @@ namespace CastLibrary.WebHost.IoC
             services.AddScoped<IAssignFactionToSublocationCommandHandler, AssignFactionToSublocationCommandHandler>();
             services.AddScoped<IAssignFactionToCastCommandHandler, AssignFactionToCastCommandHandler>();
 
+            services.AddScoped<ICreateCampaignEventCommandHandler, CreateCampaignEventCommandHandler>();
+            services.AddScoped<IUpdateCampaignEventVisibilityCommandHandler, UpdateCampaignEventVisibilityCommandHandler>();
+            services.AddScoped<IUpdateCampaignEventBodyCommandHandler, UpdateCampaignEventBodyCommandHandler>();
+            services.AddScoped<IUploadCampaignEventHandoutCommandHandler, UploadCampaignEventHandoutCommandHandler>();
+            services.AddScoped<IUploadCampaignEventHandoutImageCommandHandler, UploadCampaignEventHandoutImageCommandHandler>();
+            services.AddScoped<IUpdateCampaignEventDetailsCommandHandler, UpdateCampaignEventDetailsCommandHandler>();
+            services.AddScoped<IDeleteCampaignEventCommandHandler, DeleteCampaignEventCommandHandler>();
+
             return services;
         }
 
@@ -221,6 +229,8 @@ namespace CastLibrary.WebHost.IoC
             services.AddScoped<IGetPlayerCampaignFactionInstancesQueryHandler, GetPlayerCampaignFactionInstancesQueryHandler>();
             services.AddScoped<IGetFactionPlayerNotesQueryHandler, GetFactionPlayerNotesQueryHandler>();
             services.AddScoped<IGetQuicknoteQueueQueryHandler, GetQuicknoteQueueQueryHandler>();
+            services.AddScoped<IGetCampaignEventsQueryHandler, GetCampaignEventsQueryHandler>();
+            services.AddScoped<IGetVisibleCampaignEventsQueryHandler, GetVisibleCampaignEventsQueryHandler>();
 
             return services;
         }

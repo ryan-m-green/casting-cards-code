@@ -525,3 +525,47 @@ BEGIN
         ALTER TABLE campaign_cast_player_notes RENAME COLUMN want TO notes;
     END IF;
 END $$;
+
+-- [030] Add is_party_anchor to campaign_location_instances
+--       Marks the auto-generated party anchor location as a system record so the
+--       frontend can filter it out of the campaign locations grid.
+ALTER TABLE campaign_location_instances
+    ADD COLUMN IF NOT EXISTS is_party_anchor BOOLEAN NOT NULL DEFAULT FALSE;
+
+-- [031] Back-fill is_party_anchor for existing party anchor location instances.
+--       Party anchor locations are identifiable because their source location record
+--       has a non-null campaign_id (set by migration [013]).
+UPDATE campaign_location_instances cli
+SET    is_party_anchor = TRUE
+FROM   locations l
+WHERE  cli.source_location_id = l.id
+  AND  l.campaign_id IS NOT NULL
+  AND  cli.is_party_anchor = FALSE;
+
+-- [032] Campaign Storyline — rename campaign_events → campaign_storyline
+-- If campaign_events still exists, drop the empty shell init.sql may have created and rename.
+DO $$ BEGIN
+    IF EXISTS (SELECT 1 FROM pg_tables WHERE schemaname = 'public' AND tablename = 'campaign_events') THEN
+        DROP TABLE IF EXISTS campaign_storyline;
+        ALTER TABLE campaign_events RENAME TO campaign_storyline;
+    END IF;
+END $$;
+
+-- [032] Ensure visible_to_players exists (for databases that already had campaign_events)
+ALTER TABLE IF EXISTS campaign_storyline
+    ADD COLUMN IF NOT EXISTS visible_to_players BOOLEAN NOT NULL DEFAULT FALSE;
+
+-- [033] Drop event_completed and date_added columns (created_at serves the same purpose)
+ALTER TABLE IF EXISTS campaign_storyline
+    DROP COLUMN IF EXISTS event_completed;
+ALTER TABLE IF EXISTS campaign_storyline
+    DROP COLUMN IF EXISTS date_added;
+
+DO $$ BEGIN
+    IF NOT EXISTS (
+        SELECT 1 FROM pg_indexes
+        WHERE tablename = 'campaign_storyline' AND indexname = 'idx_campaign_storyline_campaign'
+    ) THEN
+        CREATE INDEX idx_campaign_storyline_campaign ON campaign_storyline(campaign_id);
+    END IF;
+END $$;

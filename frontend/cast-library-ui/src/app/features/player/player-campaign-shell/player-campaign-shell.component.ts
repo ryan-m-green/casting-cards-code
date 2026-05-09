@@ -17,6 +17,7 @@ import {
   CardRevealOverlayData,
 } from '../../../shared/components/card-reveal-overlay/card-reveal-overlay.component';
 import { WhisperCardComponent } from '../../../shared/components/whisper-card/whisper-card.component';
+import { EventCardComponent } from '../../../shared/components/event-card/event-card.component';
 import { CurrencyCardComponent } from '../../../shared/components/currency-card/currency-card.component';
 import { VoidTitleSegmentsComponent } from '../../../shared/components/void-title-segments/void-title-segments.component';
 import { CurrencyDisplayComponent, CurrencyLine } from '../../../shared/components/currency-display/currency-display.component';
@@ -26,7 +27,7 @@ import { QuicknotesComponent } from '../../../shared/components/quicknotes/quick
 @Component({
   selector: 'app-player-campaign-shell',
   standalone: true,
-  imports: [RouterOutlet, CommonModule, TimeOfDayBarComponent, CardRevealOverlayComponent, WhisperCardComponent, CurrencyCardComponent, CurrencyDisplayComponent, VoidNavDrawerComponent, VoidTitleSegmentsComponent, QuicknotesComponent],
+  imports: [RouterOutlet, CommonModule, TimeOfDayBarComponent, CardRevealOverlayComponent, WhisperCardComponent, EventCardComponent, CurrencyCardComponent, CurrencyDisplayComponent, VoidNavDrawerComponent, VoidTitleSegmentsComponent, QuicknotesComponent],
   templateUrl: './player-campaign-shell.component.html',
   styleUrl: './player-campaign-shell.component.scss',
 })
@@ -46,6 +47,9 @@ export class PlayerCampaignShellComponent implements OnInit, OnDestroy {
   overlayData       = signal<CardRevealOverlayData | null>(null);
   wizardSecretContent   = signal<string | null>(null);
   wizardSecretRecipient = signal<string>('');
+
+  // ── Event card notification ───────────────────────────────────────────────
+  eventCardTitle = signal<string | null>(null);
 
   // ── Purse popover ──────────────────────────────────────────────────────────
   showPurse        = signal(false);
@@ -212,6 +216,20 @@ export class PlayerCampaignShellComponent implements OnInit, OnDestroy {
       this.showGoldCard.set(true);
     });
 
+    // Show event card when the DM unlocks an event for players
+    effect(() => {
+      const event = this.hub.campaignEventVisibilityChanged();
+      if (!event || event.campaignId !== this.campaignId()) return;
+      if (!event.isVisibleToPlayers) return;
+      // Fetch the event title from the API
+      this.http
+        .get<{ title: string }[]>(`${environment.apiUrl}/api/campaigns/${this.campaignId()}/events/player`)
+        .subscribe(events => {
+          const found = events.find((e: any) => e.id === event.eventId);
+          this.eventCardTitle.set(found?.title ?? 'New Event');
+        });
+    });
+
     // Update cast's sublocation in campaign when a cast travels — keeps the nav drawer in sync
     effect(() => {
       const event = this.hub.castTravelled();
@@ -303,6 +321,15 @@ export class PlayerCampaignShellComponent implements OnInit, OnDestroy {
     this.wizardSecretContent.set(null);
   }
 
+  dismissEventCard() {
+    this.eventCardTitle.set(null);
+  }
+
+  navigateToEvents() {
+    this.eventCardTitle.set(null);
+    this.router.navigate(['/player/campaign', this.campaignId(), 'plot']);
+  }
+
   dismissGoldCard() {
     this.showGoldCard.set(false);
   }
@@ -331,8 +358,9 @@ export class PlayerCampaignShellComponent implements OnInit, OnDestroy {
   }
 
   exitPortal() {
+    const destination = this.auth.isDm() ? '/dm/campaigns' : '/player/campaigns';
     this.transition.exitToLibrary(() =>
-      this.router.navigate(['/player/campaigns'], { state: { noFlip: true } })
+      this.router.navigate([destination], { state: { noFlip: true } })
     );
   }
 

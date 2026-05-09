@@ -118,6 +118,13 @@ export class PortalImportCardComponent implements OnInit, OnChanges {
   factionLabelVisible = signal(true);
   selectedFactionIcon = signal<string | null>(null);
 
+  castImageFile            = signal<File | null>(null);
+  castImagePreviewUrl      = signal<string | null>(null);
+  locationImageFile        = signal<File | null>(null);
+  locationImagePreviewUrl  = signal<string | null>(null);
+  sublocationImageFile        = signal<File | null>(null);
+  sublocationImagePreviewUrl  = signal<string | null>(null);
+
   factionTypeOptions = FACTION_TYPE_OPTIONS;
   perceptionLabel    = perceptionLabel;
 
@@ -349,22 +356,34 @@ export class PortalImportCardComponent implements OnInit, OnChanges {
 
   private _fetchLibraryLocations() {
     this.http.get<Location[]>(`${environment.apiUrl}/api/locations`)
-      .subscribe(list => this.libraryLocations.set(list));
+      .subscribe(list => {
+        this.libraryLocations.set(list);
+        if (!this.availableLocations().length) this.activeTab.set('new');
+      });
   }
 
   private _fetchLibrarySublocations() {
     this.http.get<Sublocation[]>(`${environment.apiUrl}/api/sublocations`)
-      .subscribe(list => this.librarySublocations.set(list));
+      .subscribe(list => {
+        this.librarySublocations.set(list);
+        if (!this.availableSublocations().length) this.activeTab.set('new');
+      });
   }
 
   private _fetchLibraryCasts() {
     this.http.get<Cast[]>(`${environment.apiUrl}/api/cast`)
-      .subscribe(list => this.libraryCasts.set(list));
+      .subscribe(list => {
+        this.libraryCasts.set(list);
+        if (!this.availableCasts().length) this.activeTab.set('new');
+      });
   }
 
   private _fetchLibraryFactions() {
     this.http.get<Faction[]>(`${environment.apiUrl}/api/factions`)
-      .subscribe(list => this.libraryFactions.set(list));
+      .subscribe(list => {
+        this.libraryFactions.set(list);
+        if (!this.availableFactions().length) this.activeTab.set('new');
+      });
   }
 
   // ── Drawer / FAB ──────────────────────────────────────────────────────────
@@ -560,9 +579,33 @@ export class PortalImportCardComponent implements OnInit, OnChanges {
           this.locationAdded.emit(optimistic);
           this._assembleCard(tempId, 'app-location-card', () => {
             this.pendingInstanceIds.update(s => { const n = new Set(s); n.delete(tempId); return n; });
-            this.instanceList.update(list => list.map(l => l.instanceId === tempId ? instance : l));
-            this.locationAdded.emit(instance);
+            this.instanceList.update(list => list.map(l => {
+              if (l.instanceId !== tempId) return l;
+              const merged = { ...instance, imageUrl: l.imageUrl || instance.imageUrl };
+              return merged;
+            }));
+            const emitted = this.instanceList().find(l => l.sourceLocationId === instance.sourceLocationId) ?? instance;
+            this.locationAdded.emit(emitted);
           });
+          const locImageFile  = this.locationImageFile();
+          const locPreviewUrl = this.locationImagePreviewUrl();
+          this.locationImageFile.set(null);
+          this.locationImagePreviewUrl.set(null);
+          if (locPreviewUrl) URL.revokeObjectURL(locPreviewUrl);
+          if (locImageFile) {
+            const formData = new FormData();
+            formData.append('file', locImageFile);
+            this.http.post<{ imageUrl: string }>(
+              `${environment.apiUrl}/api/locations/${location.id}/image`, formData
+            ).subscribe({
+              next: res => {
+                this.libraryLocations.update(list => list.map(l => l.id === location.id ? { ...l, imageUrl: res.imageUrl } : l));
+                this.instanceList.update(list => list.map(l => l.sourceLocationId === location.id ? { ...l, imageUrl: res.imageUrl } : l));
+                const updated = this.instanceList().find(l => l.sourceLocationId === location.id);
+                if (updated) this.locationAdded.emit(updated);
+              },
+            });
+          }
           this.form.reset();
           this.selectedLanguages.set([]);
         });
@@ -739,9 +782,32 @@ export class PortalImportCardComponent implements OnInit, OnChanges {
           this.sublocationAdded.emit(optimistic);
           this._assembleCard(tempId, 'app-sublocation-card', () => {
             this.pendingInstanceIds.update(s => { const n = new Set(s); n.delete(tempId); return n; });
-            this.sublocationInstanceList.update(list => list.map(l => l.instanceId === tempId ? instance : l));
-            this.sublocationAdded.emit(instance);
+            this.sublocationInstanceList.update(list => list.map(l => {
+              if (l.instanceId !== tempId) return l;
+              return { ...instance, imageUrl: l.imageUrl || instance.imageUrl };
+            }));
+            const emitted = this.sublocationInstanceList().find(l => l.sourceSublocationId === instance.sourceSublocationId) ?? instance;
+            this.sublocationAdded.emit(emitted);
           });
+          const subImageFile  = this.sublocationImageFile();
+          const subPreviewUrl = this.sublocationImagePreviewUrl();
+          this.sublocationImageFile.set(null);
+          this.sublocationImagePreviewUrl.set(null);
+          if (subPreviewUrl) URL.revokeObjectURL(subPreviewUrl);
+          if (subImageFile) {
+            const formData = new FormData();
+            formData.append('file', subImageFile);
+            this.http.post<{ imageUrl: string }>(
+              `${environment.apiUrl}/api/sublocations/${sublocation.id}/image`, formData
+            ).subscribe({
+              next: res => {
+                this.librarySublocations.update(list => list.map(l => l.id === sublocation.id ? { ...l, imageUrl: res.imageUrl } : l));
+                this.sublocationInstanceList.update(list => list.map(l => l.sourceSublocationId === sublocation.id ? { ...l, imageUrl: res.imageUrl } : l));
+                const updated = this.sublocationInstanceList().find(l => l.sourceSublocationId === sublocation.id);
+                if (updated) this.sublocationAdded.emit(updated);
+              },
+            });
+          }
           this.sublocationForm.reset();
           while (this.sublocationShopItems.length) { this.sublocationShopItems.removeAt(0); }
         });
@@ -1174,6 +1240,33 @@ export class PortalImportCardComponent implements OnInit, OnChanges {
     setTimeout(() => { this.factionLabelText.set(text); this.factionLabelVisible.set(true); }, 280);
   }
 
+  onNewCastFileSelected(event: Event) {
+    const file = (event.target as HTMLInputElement).files?.[0];
+    if (!file) return;
+    const prev = this.castImagePreviewUrl();
+    if (prev) URL.revokeObjectURL(prev);
+    this.castImageFile.set(file);
+    this.castImagePreviewUrl.set(URL.createObjectURL(file));
+  }
+
+  onNewLocationFileSelected(event: Event) {
+    const file = (event.target as HTMLInputElement).files?.[0];
+    if (!file) return;
+    const prev = this.locationImagePreviewUrl();
+    if (prev) URL.revokeObjectURL(prev);
+    this.locationImageFile.set(file);
+    this.locationImagePreviewUrl.set(URL.createObjectURL(file));
+  }
+
+  onNewSublocationFileSelected(event: Event) {
+    const file = (event.target as HTMLInputElement).files?.[0];
+    if (!file) return;
+    const prev = this.sublocationImagePreviewUrl();
+    if (prev) URL.revokeObjectURL(prev);
+    this.sublocationImageFile.set(file);
+    this.sublocationImagePreviewUrl.set(URL.createObjectURL(file));
+  }
+
   onSaveNewFaction() {
     if (this.factionForm.invalid || !this.selectedFactionIcon() || this.factionSaveStatus() === 'saving') return;
     this.factionSaveStatus.set('saving');
@@ -1325,9 +1418,32 @@ export class PortalImportCardComponent implements OnInit, OnChanges {
           this.castAdded.emit(optimistic);
           this._assembleCard(tempId, 'app-cast-card', () => {
             this.pendingInstanceIds.update(s => { const n = new Set(s); n.delete(tempId); return n; });
-            this.castInstanceList.update(list => list.map(c => c.instanceId === tempId ? instance : c));
-            this.castAdded.emit(instance);
+            this.castInstanceList.update(list => list.map(c => {
+              if (c.instanceId !== tempId) return c;
+              return { ...instance, imageUrl: c.imageUrl || instance.imageUrl };
+            }));
+            const emitted = this.castInstanceList().find(c => c.sourceCastId === instance.sourceCastId) ?? instance;
+            this.castAdded.emit(emitted);
           });
+          const castImageFile  = this.castImageFile();
+          const castPreviewUrl = this.castImagePreviewUrl();
+          this.castImageFile.set(null);
+          this.castImagePreviewUrl.set(null);
+          if (castPreviewUrl) URL.revokeObjectURL(castPreviewUrl);
+          if (castImageFile) {
+            const formData = new FormData();
+            formData.append('file', castImageFile);
+            this.http.post<{ imageUrl: string }>(
+              `${environment.apiUrl}/api/cast/${cast.id}/image`, formData
+            ).subscribe({
+              next: res => {
+                this.libraryCasts.update(list => list.map(c => c.id === cast.id ? { ...c, imageUrl: res.imageUrl } : c));
+                this.castInstanceList.update(list => list.map(c => c.sourceCastId === cast.id ? { ...c, imageUrl: res.imageUrl } : c));
+                const updated = this.castInstanceList().find(c => c.sourceCastId === cast.id);
+                if (updated) this.castAdded.emit(updated);
+              },
+            });
+          }
           this.castForm.reset();
           const vpArr = this.castVoicePlacementArray;
           VOICE_OPTIONS.forEach((_, i) => vpArr.at(i).setValue(false));

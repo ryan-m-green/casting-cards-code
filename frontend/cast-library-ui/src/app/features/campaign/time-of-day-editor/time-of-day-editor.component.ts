@@ -90,6 +90,7 @@ export class TimeOfDayEditorComponent implements OnInit, OnDestroy {
             { label: 'Midday',  color: '#3b82f6', durationHours: 12, dmNotes: '', playerNotes: '' },
             { label: 'Night',   color: '#1e1b4b', durationHours: 6,  dmNotes: '', playerNotes: '' },
           ]);
+          this.scheduleAutosave();
         },
       });
   }

@@ -42,8 +42,9 @@ public class LocalFileImageStorageOperator(IConfiguration configuration, IImageC
 
         if (!File.Exists(fullPath)) return null;
 
+        var urlKey  = key.EndsWith(".png", StringComparison.OrdinalIgnoreCase) ? key : key + ".png";
         var version = File.GetLastWriteTimeUtc(fullPath).Ticks;
-        return $"{_baseUrl.TrimEnd('/')}/{key}?v={version}";
+        return $"{_baseUrl.TrimEnd('/')}/{urlKey}?v={version}";
     }
 
     public async Task<byte[]?> ReadAsync(string key)

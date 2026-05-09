@@ -75,6 +75,13 @@
   (goToSecrets)="navigateToSecrets()"
 />
 
+<app-event-card
+  [eventTitle]="eventCardTitle()"
+  [portalColor]="campaign()?.spineColor ?? '#6e28d0'"
+  (dismissed)="dismissEventCard()"
+  (goToEvents)="navigateToEvents()"
+/>
+
 @if (showGoldCard()) {
   <app-currency-card
     [amount]="goldCardAmount()"

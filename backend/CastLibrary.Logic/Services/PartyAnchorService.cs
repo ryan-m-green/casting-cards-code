@@ -31,7 +31,7 @@ public class PartyAnchorService(
         {
             Id         = locationId,
             DmUserId   = campaign.DmUserId,
-            Name       = $"The {campaign.Name} Party",
+            Name       = $"{campaign.Name} Party",
             CampaignId = campaign.Id,
             CreatedAt  = now,
         };
@@ -52,9 +52,10 @@ public class PartyAnchorService(
             InstanceId         = locInstanceId,
             CampaignId         = campaign.Id,
             SourceLocationId   = locationId,
-            Name               = $"The {campaign.Name} Party",
+            Name               = $"{campaign.Name} Party",
             IsVisibleToPlayers = true,
             SortOrder          = 0,
+            IsPartyAnchor      = true,
         };
         await campaignInsertRepository.InsertLocationInstanceAsync(locationInstance);
 

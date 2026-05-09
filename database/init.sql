@@ -344,3 +344,21 @@ CREATE TABLE IF NOT EXISTS location_political_notes (
 
 CREATE INDEX IF NOT EXISTS idx_location_pol_notes_campaign ON location_political_notes(campaign_id);
 CREATE INDEX IF NOT EXISTS idx_location_pol_notes_location ON location_political_notes(location_instance_id);
+
+-- ─── Campaign Storyline ───────────────────────────────────────────────────────
+-- DM story scene entries per campaign.
+CREATE TABLE IF NOT EXISTS campaign_storyline (
+    id                  UUID         PRIMARY KEY DEFAULT gen_random_uuid(),
+    campaign_id         UUID         NOT NULL REFERENCES campaigns(id) ON DELETE CASCADE,
+    title               VARCHAR(200) NOT NULL,
+    body                TEXT         NOT NULL CHECK (char_length(body) <= 50000),
+    sort_order          INT          NOT NULL DEFAULT 0,
+    linked_entity_id    UUID,
+    linked_entity_type  VARCHAR(50),
+    file_path           VARCHAR(500),
+    visible_to_players  BOOLEAN      NOT NULL DEFAULT FALSE,
+    created_at          TIMESTAMPTZ  NOT NULL DEFAULT NOW(),
+    updated_at          TIMESTAMPTZ  NOT NULL DEFAULT NOW()
+);
+
+CREATE INDEX IF NOT EXISTS idx_campaign_storyline_campaign ON campaign_storyline(campaign_id);

@@ -7,6 +7,7 @@ import { AuthService } from '../../core/auth/auth.service';
 import { Campaign } from '../../shared/models/campaign.model';
 import { PortalTransitionService } from '../../core/portal-transition.service';
 import { JournalTitleComponent } from '../../shared/components/journal-title/journal-title.component';
+import { IconComponent } from '../../shared/components/icon/icon.component';
 
 interface DashboardStats {
   campaignCount: number;
@@ -33,7 +34,7 @@ interface ImportFailure {
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [CommonModule, JournalTitleComponent],
+  imports: [CommonModule, JournalTitleComponent, IconComponent],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.scss'
 })

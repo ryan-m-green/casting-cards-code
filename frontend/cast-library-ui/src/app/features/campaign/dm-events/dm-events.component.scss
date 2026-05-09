@@ -1,0 +1,668 @@
+@use '../../../../styles/variables' as v;
+
+.events-page {
+  padding: 32px 24px 300px;
+}
+
+.tabs-bar {
+  display: flex;
+  gap: 0;
+  border-bottom: 1px solid v.$color-border-accent;
+  padding: 0 8px;
+  margin-bottom: 0;
+}
+
+.tab-btn {
+  font-family: v.$font-header;
+  font-size: 9px;
+  font-weight: bolder;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: v.$campaign-portal-text-softer;
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  padding: 6px 16px 8px;
+  cursor: pointer;
+  transition: color 0.18s ease, border-color 0.18s ease;
+  margin-bottom: -1px;
+
+  &:hover {
+    color: v.$campaign-portal-text-bright;
+  }
+
+  &--active {
+    color: v.$campaign-portal-text-bright;
+    border-bottom-color: v.$color-border-accent;
+  }
+}
+
+.tab-content {
+  padding: 24px 0;
+}
+
+// ── Create event form ─────────────────────────────────────────────────────────
+
+.event-form {
+  max-width: 760px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+.event-panel {
+  background: v.$campaign-portal-bg-dark;
+  border: 1px solid v.$campaign-portal-border-bold;
+  border-radius: 10px;
+  padding: 20px 24px 80px;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+.event-panel-divider {
+  height: 1px;
+  background: v.$campaign-portal-border;
+  margin: 4px 0;
+}
+
+.ev-edit-form {
+  padding: 6px;
+}
+
+.event-form-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 12px;
+}
+
+.event-label {
+  font-family: v.$font-header;
+  font-size: 9px;
+  font-weight: bolder;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: v.$campaign-portal-text-softer;
+}
+
+.event-title-input {
+  font-size: 14px;
+  font-style: normal;
+  padding: 8px 12px;
+  margin-bottom: 0;
+  background: v.$color-overlay-darker;
+  border: 1px solid v.$campaign-portal-border-bold;
+  color: v.$campaign-portal-text-muted;
+
+  &::placeholder {
+    color: v.$campaign-portal-text-softer;
+    font-style: normal;
+  }
+
+  &:focus {
+    border-color: v.$color-border-accent;
+    background: v.$color-overlay-darker;
+  }
+}
+
+.event-body-textarea {
+  font-size: 14px;
+  font-style: normal;
+  font-family: v.$font-body;
+  line-height: 1.7;
+  padding: 14px 16px;
+  min-height: 320px;
+  resize: vertical;
+  margin-bottom: 0;
+  background: v.$color-overlay-darker;
+  border: 1px solid v.$campaign-portal-border-bold;
+  color: v.$campaign-portal-text-muted;
+
+  &::placeholder {
+    color: v.$campaign-portal-text-softer;
+    font-style: normal;
+  }
+
+  &:focus {
+    border-color: v.$color-border-accent;
+    background: v.$color-overlay-darker;
+  }
+}
+
+.event-form-actions {
+  position: absolute;
+  bottom: 12px;
+  right: 12px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.event-error {
+  font-family: v.$font-body;
+  font-size: 12px;
+  color: v.$color-ui-error-text;
+}
+
+.event-success {
+  font-family: v.$font-body;
+  font-size: 12px;
+  color: v.$campaign-portal-text-bright;
+}
+
+.events-title {
+  font-size: 2rem;
+  font-weight: 600;
+  margin: 0;
+}
+
+// ── Events List ────────────────────────────────────────────────────────────────────
+
+.ev-empty {
+  font-family: v.$font-body;
+  font-size: 14px;
+  color: v.$campaign-portal-text-softer;
+  padding: 32px 0;
+  text-align: center;
+}
+
+// ── Filter bar ────────────────────────────────────────────────────────────────
+
+.ev-filters {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 14px;
+  width: fit-content;
+  border: 1px solid v.$campaign-portal-border-bold;
+  border-radius: 8px;
+  padding: 10px 12px 12px;
+}
+
+.ev-filters-legend {
+  font-family: v.$font-body;
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: v.$campaign-portal-text-softer;
+  padding: 0 6px;
+}
+
+.ev-filter-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.ev-filter-divider {
+  width: 1px;
+  height: 36px;
+  background: v.$campaign-portal-border-bold;
+  flex-shrink: 0;
+}
+
+.ev-filter-btn {
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  background: v.$campaign-portal-bg-medium;
+  border: 1px solid v.$campaign-portal-border-bold;
+  border-radius: 6px;
+  color: v.$campaign-portal-text-muted;
+  cursor: pointer;
+  outline: none;
+  flex-shrink: 0;
+  transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+
+  &:focus-visible {
+    outline: 2px solid v.$campaign-portal-border-strong-focus;
+    outline-offset: 2px;
+  }
+
+  &:hover {
+    background: v.$campaign-portal-bg-hover;
+    border-color: v.$campaign-portal-border-bold;
+    color: v.$campaign-portal-text-bright;
+  }
+
+  &--active {
+    background: color-mix(in srgb, v.$campaign-portal-bg-dark 30%, v.$color-base-arcane-purple 70%);
+    border-color: v.$campaign-portal-border-strong-focus;
+    color: v.$campaign-portal-text-bright;
+
+    &:hover {
+      background: color-mix(in srgb, v.$campaign-portal-bg-dark 20%, v.$color-base-arcane-purple 80%);
+    }
+  }
+
+  // Locked filter button — matches ev-lock-btn default bg, gold icon
+  &--lock-locked {
+    background: v.$color-secrets-bg;
+    color: v.$color-lock-icon-locked;
+
+    &:hover {
+      background: v.$color-secrets-hover;
+      color: v.$color-lock-icon-locked;
+    }
+
+    &.ev-filter-btn--active {
+      background: v.$color-secrets-bg;
+      color: v.$color-lock-icon-locked;
+
+      &:hover {
+        background: v.$color-secrets-hover;
+      }
+    }
+  }
+
+  // Unlocked filter button — green bg matching ev-lock-btn--revealed
+  &--lock-unlocked {
+    background: v.$color-secrets-revealed;
+    color: #000;
+
+    &:hover {
+      background: v.$color-secrets-revealed-hover;
+      color: #000;
+    }
+
+    &.ev-filter-btn--active {
+      background: v.$color-secrets-revealed;
+      color: #000;
+
+      &:hover {
+        background: v.$color-secrets-revealed-hover;
+        color: #000;
+      }
+    }
+  }
+}
+
+.ev-filter-icon {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+}
+
+// ── Drop line ─────────────────────────────────────────────────────────────────
+.ev-drop-line {
+  height: 2px;
+  background: v.$color-border-accent;
+  border-radius: 2px;
+  margin: 2px 0;
+  box-shadow: 0 0 6px v.$color-border-accent;
+  pointer-events: none;
+}
+
+.ev-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  max-width: 760px;
+  margin-top: 28px;
+}
+
+.ev-item {
+  background: v.$campaign-portal-bg-dark;
+  border: 1px solid v.$campaign-portal-border-bold;
+  border-radius: 8px;
+  overflow: hidden;
+  cursor: grab;
+
+  &:active { cursor: grabbing; }
+
+  &--expanded {
+    border-color: v.$color-border-accent;
+  }
+
+  &--dragging {
+    opacity: 0.35;
+    pointer-events: none;
+  }
+}
+
+.ev-item-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  cursor: pointer;
+  user-select: none;
+
+  &:hover {
+    background: v.$campaign-portal-bg-hover;
+  }
+}
+
+.ev-drag-handle {
+  font-size: 16px;
+  color: v.$campaign-portal-text-softer;
+  opacity: 0.45;
+  flex-shrink: 0;
+  line-height: 1;
+  cursor: grab;
+}
+
+.ev-badge {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 8px 8px;
+  border-radius: 4px;
+  font-family: v.$font-header;
+  font-size: 9px;
+  font-weight: bolder;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  flex-shrink: 0;
+  background: rgba(v.$color-base-portal-violet, 0.18);
+  border: 1px solid rgba(v.$color-base-portal-violet, 0.35);
+  color: v.$campaign-portal-text-lavender;
+}
+
+.ev-badge-icon {
+  width: 13px;
+  height: 13px;
+  flex-shrink: 0;
+}
+
+.ev-badge-label {
+  max-width: 120px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ev-title {
+  flex: 1;
+  font-family: v.$font-body;
+  font-size: 14px;
+  color: v.$campaign-portal-text-bright;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ev-lock-btn {
+  flex-shrink: 0;
+  width: 28px;
+  height: 28px;
+  border: none;
+  border-radius: 50%;
+  background: v.$color-secrets-bg;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background 0.15s, transform 0.15s;
+  box-shadow: 0 1px 4px v.$color-shadow-medium;
+
+  &:hover  { background: v.$color-secrets-hover; transform: scale(1.1); }
+  &:active { transform: scale(0.95); }
+
+  &--revealed {
+    background: v.$color-secrets-revealed;
+    &:hover { background: v.$color-secrets-revealed-hover; }
+  }
+}
+
+.ev-chevron {
+  font-size: 10px;
+  color: v.$campaign-portal-text-softer;
+  flex-shrink: 0;
+  transition: transform 0.2s ease;
+
+  &--open { transform: rotate(180deg); }
+}
+
+.ev-body-wrapper {
+  position: relative;
+}
+
+.ev-body {
+  padding: 12px 14px 14px;
+  font-family: v.$font-body;
+  font-size: 14px;
+  line-height: 1.7;
+  color: v.$campaign-portal-text-muted;
+  white-space: pre-wrap;
+  border-top: 1px solid v.$campaign-portal-border;
+
+  &--hidden {
+    visibility: hidden;
+  }
+}
+
+.ev-item-edit-bar {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 12px;
+  padding: 6px 14px;
+  border-top: 1px solid v.$campaign-portal-border;
+  background: v.$campaign-portal-bg-medium;
+}
+
+.ev-autosave-status {
+  font-family: v.$font-body;
+  font-size: 11px;
+  color: v.$campaign-portal-text-softer;
+
+  &--saved {
+    color: v.$campaign-portal-text-bright;
+  }
+}
+
+.ev-edit-btn {
+  display: inline-flex;
+  align-items: center;
+  font-family: v.$font-header;
+  font-size: 9px;
+  font-weight: bolder;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  padding: 5px 10px;
+  background: v.$campaign-portal-bg-dark;
+  border: 1px solid v.$campaign-portal-border-bold;
+  border-radius: 4px;
+  color: v.$campaign-portal-text-softer;
+  cursor: pointer;
+  transition: color 0.15s ease, border-color 0.15s ease, background 0.15s ease;
+
+  &:hover {
+    color: v.$campaign-portal-text-bright;
+    border-color: v.$color-border-accent;
+  }
+
+  &--close {
+    &:hover {
+      color: v.$color-ui-error-text;
+      border-color: v.$color-ui-error-text;
+    }
+  }
+}
+
+.ev-delete-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 5px 8px;
+  background: transparent;
+  border: 1px solid v.$campaign-portal-border-bold;
+  border-radius: 4px;
+  color: v.$campaign-portal-text-softer;
+  cursor: pointer;
+  transition: color 0.15s ease, border-color 0.15s ease;
+
+  &:hover {
+    border-color: v.$color-ui-error-text;
+  }
+
+  &-img {
+    width: 14px;
+    height: 14px;
+    display: block;
+    filter: brightness(0) invert(1);
+  }
+}
+
+.ev-delete-confirm {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+
+  &-label {
+    font-family: v.$font-header;
+    font-size: 9px;
+    font-weight: bolder;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: v.$color-ui-error-text;
+  }
+
+  &-yes {
+    font-family: v.$font-header;
+    font-size: 9px;
+    font-weight: bolder;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    padding: 4px 8px;
+    background: transparent;
+    border: 1px solid v.$color-ui-error-text;
+    border-radius: 4px;
+    color: v.$color-ui-error-text;
+    cursor: pointer;
+
+    &:disabled { opacity: 0.5; cursor: default; }
+  }
+
+  &-no {
+    font-family: v.$font-header;
+    font-size: 9px;
+    font-weight: bolder;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    padding: 4px 8px;
+    background: transparent;
+    border: 1px solid v.$campaign-portal-border-bold;
+    border-radius: 4px;
+    color: v.$campaign-portal-text-softer;
+    cursor: pointer;
+
+    &:hover {
+      color: v.$campaign-portal-text-bright;
+      border-color: v.$color-border-accent;
+    }
+  }
+}
+
+.ev-body-textarea {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  box-sizing: border-box;
+  padding: 12px 14px;
+  font-family: v.$font-body;
+  font-size: 14px;
+  line-height: 1.7;
+  color: v.$campaign-portal-text-muted;
+  background: v.$color-overlay-darker;
+  border: none;
+  border-top: 1px solid v.$campaign-portal-border;
+  resize: none;
+
+  &:focus {
+    outline: none;
+    border-top-color: v.$color-border-accent;
+  }
+}
+
+// ── Handout image display (in expanded storyline item) ────────────────────────
+
+.ev-handout-wrapper {
+  padding: 12px 14px 14px;
+  border-top: 1px solid v.$campaign-portal-border;
+}
+
+.ev-handout-img {
+  display: block;
+  max-width: 100%;
+  border-radius: 6px;
+  border: 1px solid v.$campaign-portal-border-bold;
+}
+
+// ── Handout upload form ───────────────────────────────────────────────────────
+
+.handout-caption-textarea {
+  min-height: auto !important;
+}
+
+.handout-upload-input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+.handout-upload-label {
+  display: block;
+  cursor: pointer;
+}
+
+.handout-upload-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: v.$font-body;
+  font-size: 13px;
+  color: v.$campaign-portal-text-muted;
+  background: v.$color-overlay-darker;
+  border: 1px dashed v.$campaign-portal-border-bold;
+  border-radius: 6px;
+  padding: 10px 16px;
+  transition: border-color 0.15s ease, color 0.15s ease;
+
+  .handout-upload-label:hover & {
+    border-color: v.$color-border-accent;
+    color: v.$campaign-portal-text-bright;
+  }
+}
+
+.handout-preview {
+  border-radius: 6px;
+  overflow: hidden;
+  border: 1px solid v.$campaign-portal-border-bold;
+  max-width: 480px;
+}
+
+.handout-preview-img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.handout-pdf-indicator {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  background: v.$color-overlay-darker;
+  border: 1px solid v.$campaign-portal-border-bold;
+  border-radius: 6px;
+  color: v.$campaign-portal-text-muted;
+  font-family: v.$font-body;
+  font-size: 13px;
+}
+
+.handout-pdf-note {
+  font-size: 11px;
+  color: v.$campaign-portal-text-softer;
+  margin-left: auto;
+}

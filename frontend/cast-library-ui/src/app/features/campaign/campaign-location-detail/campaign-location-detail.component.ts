@@ -108,7 +108,9 @@ export class CampaignLocationDetailComponent implements OnInit {
   locationSublocations = computed<CampaignSublocationInstance[]>(() => {
     const c = this.campaign();
     if (!c) return [];
-    return (c.sublocations ?? []).filter((l: CampaignSublocationInstance) => l.locationInstanceId === this.locationInstanceId());
+    return (c.sublocations ?? []).filter((l: CampaignSublocationInstance) =>
+      l.locationInstanceId === this.locationInstanceId() && !l.isPartyAnchor
+    );
   });
 
   sealedCount   = computed(() => this.locationSecrets().filter(s => !s.isRevealed).length);
@@ -453,7 +455,12 @@ export class CampaignLocationDetailComponent implements OnInit {
     const updater = (c: CampaignDetail | null) => {
       if (!c) return c;
       const sublocations = c.sublocations ?? [];
-      if (sublocations.some(l => l.instanceId === instance.instanceId)) return c;
+      const existingIdx = sublocations.findIndex(l => l.instanceId === instance.instanceId);
+      if (existingIdx !== -1) {
+        const updated = [...sublocations];
+        updated[existingIdx] = instance;
+        return { ...c, sublocations: updated };
+      }
       const tmpIdx = sublocations.findIndex(
         l => l.instanceId.startsWith('tmp-') && l.sourceSublocationId === instance.sourceSublocationId
       );

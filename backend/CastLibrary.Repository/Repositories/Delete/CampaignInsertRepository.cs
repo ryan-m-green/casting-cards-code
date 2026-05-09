@@ -81,16 +81,17 @@ public class CampaignInsertRepository(
             instance.Description,
             instance.IsVisibleToPlayers,
             instance.SortOrder,
+            instance.IsPartyAnchor,
         };
         const string sql =
             @"INSERT INTO campaign_location_instances
                 (instance_id, campaign_id, source_location_id, name, classification, size, condition,
                  geography, architecture, climate, religion, vibe, languages, description,
-                 is_visible_to_players, sort_order, created_at)
+                 is_visible_to_players, sort_order, is_party_anchor, created_at)
               VALUES
                 (@InstanceId, @CampaignId, @SourceLocationId, @Name, @Classification, @Size, @Condition,
                  @Geography, @Architecture, @Climate, @Religion, @Vibe, @Languages, @Description,
-                 @IsVisibleToPlayers, @SortOrder, NOW())";
+                 @IsVisibleToPlayers, @SortOrder, @IsPartyAnchor, NOW())";
 
         logging.LogDbOperation(correlation.TraceId, spanId, "INSERT", "campaign_location_instances", @params);
 

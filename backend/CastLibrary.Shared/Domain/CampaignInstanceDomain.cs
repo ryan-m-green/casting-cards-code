@@ -52,6 +52,7 @@ public class CampaignLocationInstanceDomain
     public int SortOrder { get; set; }
     public string[] Keywords { get; set; } = [];
     public string DmNotes { get; set; } = string.Empty;
+    public bool IsPartyAnchor { get; set; }
 }
 
 public class CampaignSublocationInstanceDomain

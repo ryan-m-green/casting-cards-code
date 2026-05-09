@@ -1,0 +1,80 @@
+@if (eventTitle) {
+  <div class="ec-backdrop" (click)="dismiss()">
+    <div class="ec-card" [style.--portal-color]="portalColor" (click)="$event.stopPropagation()">
+      <div class="ec-frame">
+        <div class="ec-inner">
+
+          <!-- corner flourishes -->
+          <div class="ec-corner ec-corner--tl">
+            <svg viewBox="0 0 20 20" fill="none" width="12" height="12">
+              <path d="M2 18L2 2L18 2" stroke="#9060d0" stroke-width="1.5" stroke-linecap="round"/>
+              <path d="M2 10L6 10" stroke="#9060d0" stroke-width="1" stroke-linecap="round"/>
+              <path d="M10 2L10 6" stroke="#9060d0" stroke-width="1" stroke-linecap="round"/>
+              <rect x="8" y="8" width="4" height="4" fill="#9060d0" transform="rotate(45 10 10)" opacity="0.7"/>
+            </svg>
+          </div>
+          <div class="ec-corner ec-corner--tr">
+            <svg viewBox="0 0 20 20" fill="none" width="12" height="12">
+              <path d="M2 18L2 2L18 2" stroke="#9060d0" stroke-width="1.5" stroke-linecap="round"/>
+              <path d="M2 10L6 10" stroke="#9060d0" stroke-width="1" stroke-linecap="round"/>
+              <path d="M10 2L10 6" stroke="#9060d0" stroke-width="1" stroke-linecap="round"/>
+              <rect x="8" y="8" width="4" height="4" fill="#9060d0" transform="rotate(45 10 10)" opacity="0.7"/>
+            </svg>
+          </div>
+          <div class="ec-corner ec-corner--bl">
+            <svg viewBox="0 0 20 20" fill="none" width="12" height="12">
+              <path d="M2 18L2 2L18 2" stroke="#9060d0" stroke-width="1.5" stroke-linecap="round"/>
+              <path d="M2 10L6 10" stroke="#9060d0" stroke-width="1" stroke-linecap="round"/>
+              <path d="M10 2L10 6" stroke="#9060d0" stroke-width="1" stroke-linecap="round"/>
+              <rect x="8" y="8" width="4" height="4" fill="#9060d0" transform="rotate(45 10 10)" opacity="0.7"/>
+            </svg>
+          </div>
+          <div class="ec-corner ec-corner--br">
+            <svg viewBox="0 0 20 20" fill="none" width="12" height="12">
+              <path d="M2 18L2 2L18 2" stroke="#9060d0" stroke-width="1.5" stroke-linecap="round"/>
+              <path d="M2 10L6 10" stroke="#9060d0" stroke-width="1" stroke-linecap="round"/>
+              <path d="M10 2L10 6" stroke="#9060d0" stroke-width="1" stroke-linecap="round"/>
+              <rect x="8" y="8" width="4" height="4" fill="#9060d0" transform="rotate(45 10 10)" opacity="0.7"/>
+            </svg>
+          </div>
+
+          <!-- banner -->
+          <div class="ec-banner">
+            <div class="ec-name">{{ eventTitle }}</div>
+            <div class="ec-subtitle">New Scene · Game Master</div>
+          </div>
+
+          <!-- portrait -->
+          <div class="ec-portrait">
+            <img src="/open_book_star_moon_storytelling.svg" alt="events icon" class="ec-portrait-img" />
+          </div>
+
+          <!-- content -->
+          <div class="ec-flavor">
+            <div class="ec-tagline">An event unfolds…</div>
+            <div class="ec-secret">A new scene has been revealed to you by the Game Master.</div>
+          </div>
+
+          <!-- go to events button -->
+          <button class="ec-reveal-btn" (click)="goToEvents.emit()">✦ Go to Plot</button>
+
+          <!-- strip -->
+          <div class="ec-strip">
+            <div class="ec-pip-row">
+              <div class="ec-pip"></div>
+              <div class="ec-pip"></div>
+              <div class="ec-pip"></div>
+            </div>
+            <span class="ec-strip-label">Scene</span>
+            <div class="ec-pip-row">
+              <div class="ec-pip"></div>
+              <div class="ec-pip"></div>
+              <div class="ec-pip"></div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+}

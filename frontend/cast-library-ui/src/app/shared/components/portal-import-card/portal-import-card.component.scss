@@ -149,8 +149,10 @@
 
 .pic-new-form {
   display: flex;
-  flex-direction: column;
-  gap: 0;
+  gap: 16px;
+  align-items: flex-start;
+  padding-left: 12px;
+  padding-right: 12px;
 }
 
 .pic-save-row {
@@ -160,6 +162,21 @@
   gap: 16px;
   margin-top: 20px;
   padding-bottom: 8px;
+}
+
+.price-input-group {
+  display: flex;
+  gap: 4px;
+}
+
+.price-amount {
+  flex: 1;
+  min-width: 0;
+}
+
+.price-currency {
+  width: 60px;
+  flex-shrink: 0;
 }
 
 /* ── Language picker ─────────────────────────────────────────── */
@@ -363,4 +380,106 @@
 .pic-fab-icon {
   display: inline-block;
   transition: transform 0.3s ease;
+}
+
+/* ── New-form portrait upload ─────────────────────────────────── */
+.pic-new-form--wrap {
+  display: block;
+}
+
+.pic-new-form-top {
+  display: flex;
+  gap: 16px;
+  align-items: flex-start;
+  margin-bottom: 12px;
+}
+
+.pic-new-form-header-fields {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.pic-new-portrait-label {
+  flex-shrink: 0;
+  display: inline-flex;
+  position: relative;
+  width: 80px;
+  height: 112px;
+  margin-bottom: 4px;
+  border-radius: 6px;
+  border: 1px dashed rgba(v.$color-text-primary, 0.25);
+  cursor: pointer;
+  overflow: hidden;
+  background: rgba(v.$color-input-bg, 0.5);
+  transition: border-color 0.18s ease;
+
+  &:hover {
+    border-color: rgba(v.$color-text-primary, 0.5);
+
+    .pic-new-portrait-overlay { opacity: 1; }
+    .pic-new-portrait-empty   { opacity: 0.85; }
+  }
+
+  &--filled {
+    border-style: solid;
+    border-color: rgba(v.$color-text-primary, 0.3);
+  }
+}
+
+.pic-portrait-file-input {
+  position: absolute;
+  width: 0;
+  height: 0;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.pic-new-portrait-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.pic-new-portrait-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.45);
+  color: v.$color-text-primary;
+  opacity: 0;
+  transition: opacity 0.18s ease;
+}
+
+.pic-new-portrait-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  width: 100%;
+  height: 100%;
+  color: rgba(v.$color-text-primary, 0.4);
+  transition: opacity 0.18s ease;
+}
+
+.pic-new-portrait-hint {
+  font-size: 9px;
+  text-align: center;
+  line-height: 1.4;
+  font-family: v.$font-header;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+
+  em {
+    font-style: italic;
+    font-size: 8px;
+    opacity: 0.75;
+    text-transform: none;
+  }
 }

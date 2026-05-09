@@ -1,8 +1,8 @@
 import { Component, OnInit, OnDestroy, signal, inject, ElementRef, effect } from '@angular/core';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
 import { JournalTitleComponent } from '../../../shared/components/journal-title/journal-title.component';
+import { CampaignJoinInputComponent } from '../../../shared/components/campaign-join-input/campaign-join-input.component';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../../environments/environment';
 import { Campaign } from '../../../shared/models/campaign.model';
@@ -13,7 +13,7 @@ import { CampaignHubService } from '../../../core/hub/campaign-hub.service';
 @Component({
   selector: 'app-player-campaigns',
   standalone: true,
-  imports: [CommonModule, FormsModule, JournalTitleComponent],
+  imports: [CommonModule, JournalTitleComponent, CampaignJoinInputComponent],
   templateUrl: './player-campaigns.component.html',
   styleUrl: './player-campaigns.component.scss'
 })
@@ -27,7 +27,6 @@ export class PlayerCampaignsComponent implements OnInit, OnDestroy {
 
   campaigns       = signal<Campaign[]>([]);
   materializingId = signal<string | null>(null);
-  joinCode        = signal('');
   joinLoading     = signal(false);
   joinError       = signal('');
   private isEntering = false;
@@ -66,15 +65,13 @@ export class PlayerCampaignsComponent implements OnInit, OnDestroy {
     this.hub.disconnect().catch(console.warn);
   }
 
-  redeemCode() {
-    const code = this.joinCode().trim();
+  redeemCode(code: string) {
     if (!code) return;
     this.joinLoading.set(true);
     this.joinError.set('');
 
     this.http.post<Campaign>(`${environment.apiUrl}/api/campaigns/redeem`, { code }).subscribe({
       next: campaign => {
-        this.joinCode.set('');
         this.joinLoading.set(false);
         const alreadyPresent = this.campaigns().some(c => c.id === campaign.id);
         if (!alreadyPresent) {

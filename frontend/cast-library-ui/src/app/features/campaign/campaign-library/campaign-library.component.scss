@@ -13,9 +13,53 @@
   margin: 8px 0 16px;
 }
 
+.grid-section-title {
+  font-family: v.$font-header;
+  font-size: 13px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: v.$color-ext-129;
+  margin-bottom: 14px;
+}
+
 .portal-grid {
   display: flex;
   flex-wrap: wrap;
   gap: 20px;
   padding: 4px 0 20px;
+}
+
+.tab-bar {
+  display: flex;
+  gap: 0;
+  border-bottom: 1px solid v.$color-ext-436;
+  padding: 0 20px;
+  margin-bottom: 24px;
+}
+
+.tab-btn {
+  font-family: v.$font-header;
+  font-size: 9px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: v.$color-ext-437;
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  padding: 14px 18px 12px;
+  cursor: pointer;
+  transition: color 0.18s ease, border-color 0.18s ease;
+
+  &:hover {
+    color: v.$color-ext-438;
+  }
+
+  &--active {
+    color: v.$color-ext-439;
+    border-bottom-color: v.$color-ext-440;
+  }
+}
+
+.tab-panel {
+  padding-top: 4px;
 }

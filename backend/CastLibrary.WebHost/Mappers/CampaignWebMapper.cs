@@ -76,6 +76,7 @@ public class CampaignWebMapper(
             SortOrder = d.SortOrder,
             Keywords = d.Keywords,
             DmNotes = d.DmNotes,
+            IsPartyAnchor = d.IsPartyAnchor,
         };
 
         logging.LogMapping(

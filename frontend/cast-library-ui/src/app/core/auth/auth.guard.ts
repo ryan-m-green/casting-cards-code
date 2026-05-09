@@ -23,7 +23,7 @@ export const playerGuard: CanActivateFn = () => {
   const auth   = inject(AuthService);
   const router = inject(Router);
   if (!auth.isLoggedIn()) return router.createUrlTree(['/']);
-  if (auth.isDm()) return router.createUrlTree(['/dm/dashboard']);
+  if (auth.isDm()) return router.createUrlTree(['/dm/campaigns']);
   return true;
 };
 

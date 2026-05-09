@@ -96,6 +96,15 @@ public class CampaignsController(
         return Ok(response);
     }
 
+    // Returns campaigns the caller has joined as a player (works for any role)
+    [HttpGet("joined")]
+    public async Task<IActionResult> GetJoined()
+    {
+        var userId = userRetriever.GetUserId(User);
+        var campaigns = await getPlayerLibraryQuery.HandleAsync(userId);
+        return Ok(campaigns.Select(campaignMapper.ToListResponse).ToList());
+    }
+
     [HttpPost]
     [Authorize(Roles = "DM,Admin")]
     public async Task<IActionResult> Create([FromBody] CreateCampaignRequest request)

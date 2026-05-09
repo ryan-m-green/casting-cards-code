@@ -40,6 +40,11 @@ export const routes: Routes = [
         canActivate: [dmGuard],
         loadComponent: () => import('./features/campaign/campaign-faction-detail/campaign-faction-detail.component').then(m => m.CampaignFactionDetailComponent),
       },
+      {
+        path: 'plot',
+        canActivate: [dmGuard],
+        loadComponent: () => import('./features/campaign/dm-events/dm-events.component').then(m => m.DmEventsComponent),
+      },
     ],
   },
   {
@@ -83,6 +88,10 @@ export const routes: Routes = [
       {
         path: 'quicknote-queue',
         loadComponent: () => import('./features/player/player-quicknote-queue/player-quicknote-queue.component').then(m => m.PlayerQuicknoteQueueComponent),
+      },
+      {
+        path: 'plot',
+        loadComponent: () => import('./features/player/player-events/player-events.component').then(m => m.PlayerEventsComponent),
       },
     ],
   },
@@ -206,10 +215,6 @@ export const routes: Routes = [
           {
             path: 'change-password',
             loadComponent: () => import('./features/change-password/change-password.component').then(m => m.ChangePasswordComponent),
-          },
-          {
-            path: 'player-invites',
-            loadComponent: () => import('./features/player-invites/player-invites.component').then(m => m.PlayerInvitesComponent),
           },
           {
             path: 'bug-report',

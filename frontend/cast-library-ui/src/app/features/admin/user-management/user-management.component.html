@@ -29,13 +29,15 @@
             <div class="user-meta">{{ user.email }} · {{ user.role }}</div>
             <div class="user-date">Joined {{ formatDate(user.createdAt) }}</div>
           </div>
-          <button 
-            class="btn-delete" 
-            (click)="confirmDelete(user)"
-            [disabled]="deleting() === user.id"
-          >
-            {{ deleting() === user.id ? '…' : 'Delete' }}
-          </button>
+          @if (user.role !== 'Admin') {
+            <button 
+              class="btn-delete" 
+              (click)="confirmDelete(user)"
+              [disabled]="deleting() === user.id"
+            >
+              {{ deleting() === user.id ? '…' : 'Delete' }}
+            </button>
+          }
         </div>
       }
       @if (filteredUsers().length === 0) {
