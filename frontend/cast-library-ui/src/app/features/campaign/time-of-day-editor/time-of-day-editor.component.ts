@@ -32,13 +32,15 @@ interface SliceDraft {
 })
 export class TimeOfDayEditorComponent implements OnInit, OnDestroy {
   @Input() campaignId!: string;
+  @Input() portalColor = '';
 
   private http      = inject(HttpClient);
   private saveTimer?: ReturnType<typeof setTimeout>;
 
-  dayLengthHours  = signal(24);
-  slices          = signal<SliceDraft[]>([]);
-  autoSaveStatus  = signal<'idle' | 'saving' | 'saved'>('idle');
+  dayLengthHours    = signal(24);
+  slices            = signal<SliceDraft[]>([]);
+  autoSaveStatus    = signal<'idle' | 'saving' | 'saved'>('idle');
+  addSliceWarning   = signal<string>('');
 
   hasSlices = computed(() => this.slices().length > 0);
 
@@ -105,9 +107,17 @@ export class TimeOfDayEditorComponent implements OnInit, OnDestroy {
   }
 
   addSlice() {
+    const remaining = this.dayLengthHours() - this.sliceTotal();
+
+    if (remaining < 1) {
+      this.addSliceWarning.set('Increase the day length to add more slices.');
+      return;
+    }
+
+    this.addSliceWarning.set('');
     this.slices.update(s => [
       ...s,
-      { label: '', color: '#6366f1', durationHours: 0, dmNotes: '', playerNotes: '' },
+      { label: '', color: '#6366f1', durationHours: 1, dmNotes: '', playerNotes: '' },
     ]);
     this.scheduleAutosave();
   }
@@ -142,6 +152,14 @@ export class TimeOfDayEditorComponent implements OnInit, OnDestroy {
       s.map((d, i) => i === index ? { ...d, [field]: value } : d)
     );
     this.scheduleAutosave();
+  }
+
+  updateDuration(index: number, value: number) {
+    const current  = this.slices()[index].durationHours;
+    const otherSum = this.sliceTotal() - current;
+    const max      = this.dayLengthHours() - otherSum;
+    const clamped  = Math.max(0, Math.min(value, max));
+    this.updateSliceField(index, 'durationHours', clamped);
   }
 
   // ── Private ──────────────────────────────────────────────────────────────────

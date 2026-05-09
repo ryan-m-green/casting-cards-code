@@ -1,5 +1,5 @@
 <div class="pc scroll-body">
-  <app-journal-title [title]="isEditMode() ? 'Edit Campaign' : 'New Campaign'" [subtitle]="isEditMode() ? (form.controls.name.value || '') : ''" />
+  <app-journal-title [title]="(form.controls.name.value || '') || (isEditMode() ? 'Edit Campaign' : 'New Campaign')" [subtitle]="isEditMode() ? 'Campaign Settings' : ''" />
   <div class="wr wr-page-header">
     <a class="btn-ghost" routerLink="/dm/campaigns">← Library</a>
   </div>
@@ -96,7 +96,7 @@
 
   <!-- ── Tab 3: Day Cycle ─────────────────────────────────────────────────────── -->
   @if (activeTab() === 'day-cycle') {
-    <app-time-of-day-editor [campaignId]="campaignId()!" />
+    <app-time-of-day-editor [campaignId]="campaignId()!" [portalColor]="form.controls.spineColor.value ?? ''" />
   }
 
   <!-- ── Tab 1: World Setup (existing content) ─────────────────────────────────── -->
@@ -123,6 +123,11 @@
 
   @if (saving()) {
     <div class="autosave-indicator">Saving…</div>
+  }
+  @if (formSaveStatus() === 'saving') {
+    <div class="autosave-indicator saving">Saving…</div>
+  } @else if (formSaveStatus() === 'saved') {
+    <div class="autosave-indicator saved">Saved</div>
   }
 
   } <!-- end @if world-setup -->

@@ -370,15 +370,190 @@
                 grid-template-columns: 1fr;
             }
         }
+
+        /* ── Marketing / Features Section ── */
+        .features-section {
+            margin-bottom: 40px;
+        }
+
+        .features-section h2 {
+            color: #2c3e50;
+            border-bottom: 3px solid #e67e22;
+            padding-bottom: 10px;
+            margin-top: 0;
+            margin-bottom: 8px;
+            font-size: 1.8em;
+        }
+
+        .features-tagline {
+            font-size: 1.1em;
+            color: #555;
+            margin-bottom: 24px;
+        }
+
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 18px;
+        }
+
+        @media (max-width: 1024px) {
+            .feature-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 640px) {
+            .feature-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .feature-card {
+            background: linear-gradient(135deg, #ffffff 0%, #f8f9ff 100%);
+            border: 1px solid #dde3f0;
+            border-top: 4px solid #3498db;
+            border-radius: 6px;
+            padding: 20px;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 18px rgba(0,0,0,0.12);
+        }
+
+        .feature-card.accent-orange { border-top-color: #e67e22; }
+        .feature-card.accent-green  { border-top-color: #27ae60; }
+        .feature-card.accent-purple { border-top-color: #8e44ad; }
+        .feature-card.accent-red    { border-top-color: #e74c3c; }
+        .feature-card.accent-teal   { border-top-color: #16a085; }
+
+        .feature-icon {
+            font-size: 2em;
+            margin-bottom: 10px;
+            display: block;
+        }
+
+        .feature-card h3 {
+            color: #2c3e50;
+            font-size: 1.1em;
+            margin-top: 0;
+            margin-bottom: 8px;
+        }
+
+        .feature-card h3::before {
+            display: none;
+        }
+
+        .feature-card p {
+            font-size: 0.92em;
+            color: #555;
+            line-height: 1.55;
+            margin: 0;
+        }
+
+        .feature-card ul {
+            margin: 8px 0 0 16px;
+            padding: 0;
+            font-size: 0.9em;
+            color: #555;
+            line-height: 1.7;
+        }
     </style>
 </head>
 <body>
     <div class="container">
         <h1>📚 Cast Library Application Summary</h1>
-        
+
+        <!-- ═══════════════════════════════════════════════════════════ -->
+        <!--  MARKETING FEATURES HIGHLIGHT                               -->
+        <!-- ═══════════════════════════════════════════════════════════ -->
+        <div id="features" class="features-section">
+            <h2>✨ Key Features</h2>
+            <p class="features-tagline">Everything a Dungeon Master needs to run an immersive, organised, and collaborative campaign — all in one place.</p>
+
+            <div class="feature-grid">
+
+                <div class="feature-card">
+                    <span class="feature-icon">🧙</span>
+                    <h3>NPC & Character Library</h3>
+                    <p>Build a reusable library of fully detailed NPCs. Capture race, role, voice notes, appearance, backstory, and a custom portrait — then drop them into any campaign with one click.</p>
+                </div>
+
+                <div class="feature-card accent-orange">
+                    <span class="feature-icon">🗺️</span>
+                    <h3>Location & Sublocation Library</h3>
+                    <p>Create richly described locations and nested sublocations (taverns, shops, dungeons). Attach images, shop inventories, and political notes. Reuse locations across multiple campaigns.</p>
+                </div>
+
+                <div class="feature-card accent-green">
+                    <span class="feature-icon">📖</span>
+                    <h3>Campaign Management</h3>
+                    <p>Organise entire campaigns with locations, NPCs, secrets, relationships, and a live time-of-day clock. Import and export full campaign libraries as ZIP packages for backup or sharing.</p>
+                </div>
+
+                <div class="feature-card accent-purple">
+                    <span class="feature-icon">⚔️</span>
+                    <h3>Factions & Power Groups</h3>
+                    <p>Model guilds, armies, cults, and political factions with influence and perception ratings. Link member NPCs, faction headquarters, and inter-faction relationships — all visible in a live relationship web.</p>
+                </div>
+
+                <div class="feature-card accent-teal">
+                    <span class="feature-icon">📜</span>
+                    <h3>Plot Events & Handouts</h3>
+                    <p>Track story beats with a structured plot-event timeline. Reveal events to players in real time, attach rich-text handout documents with images, and link events to specific NPCs or locations.</p>
+                </div>
+
+                <div class="feature-card accent-red">
+                    <span class="feature-icon">🔴</span>
+                    <h3>Real-Time Collaboration</h3>
+                    <p>Powered by SignalR WebSockets. DM actions — revealing secrets, toggling NPC visibility, moving NPCs between locations, updating the time-of-day clock, assigning conditions — broadcast instantly to all connected players.</p>
+                </div>
+
+                <div class="feature-card">
+                    <span class="feature-icon">🃏</span>
+                    <h3>Player Character Cards</h3>
+                    <p>Players manage their own character card with a custom portrait, traits, goals, memories, and status conditions. Conditions assigned by the DM push live to the player's screen.</p>
+                </div>
+
+                <div class="feature-card accent-orange">
+                    <span class="feature-icon">🕯️</span>
+                    <h3>Time-of-Day Clock</h3>
+                    <p>Design a fully custom day cycle with named time-slices (Dawn, Midday, Dusk, etc.). Drag the cursor to advance time and broadcast the change live. Advance or rewind whole days with a single action.</p>
+                </div>
+
+                <div class="feature-card accent-green">
+                    <span class="feature-icon">🗝️</span>
+                    <h3>Secrets & Reveal System</h3>
+                    <p>Create campaign secrets attached to any entity. Reveal or reseal them to individual players in real time. Players see only what the DM has deliberately uncovered.</p>
+                </div>
+
+                <div class="feature-card accent-purple">
+                    <span class="feature-icon">🏪</span>
+                    <h3>Shop & Inventory Tracking</h3>
+                    <p>Sublocations support item shop inventories. Players can mark items as purchased (scratch them off) and the state updates live across all connected clients.</p>
+                </div>
+
+                <div class="feature-card accent-teal">
+                    <span class="feature-icon">📝</span>
+                    <h3>Quicknote Queue</h3>
+                    <p>During a session, any participant can push a quicknote into the shared queue. Notes are broadcast instantly via SignalR so the DM can capture ideas or reminders without interrupting the flow.</p>
+                </div>
+
+                <div class="feature-card accent-red">
+                    <span class="feature-icon">🔐</span>
+                    <h3>Role-Based Access Control</h3>
+                    <p>Three distinct roles — DM, Player, and Admin — each with their own guarded routes and permissions. Invite-code-gated registration keeps your campaign server private.</p>
+                </div>
+
+            </div>
+        </div>
+        <!-- ═══════════════════════════════════════════════════════════ -->
+
         <div class="intro">
             <h3 style="margin-top: 0;">Overview</h3>
-            <p>The Cast Library is a comprehensive D&D campaign management tool that enables Dungeon Masters (DMs) to create, manage, and share campaign content including characters (casts), locations, sublocations, and player cards. The application features real-time collaboration through SignalR, robust role-based access control, and a rich Angular-based UI.</p>
+            <p>Cast Library is a comprehensive D&amp;D campaign management platform that enables Dungeon Masters (DMs) to create, manage, and run immersive campaigns. It supports a reusable library of characters (casts), locations, sublocations, and factions — all deployable into live campaigns as tracked instances. During play, a structured plot-event timeline, a real-time time-of-day clock, secrets &amp; reveal mechanics, and a quicknote queue keep everyone engaged. Players have their own character cards, party view, campaign insight panel, and full note-taking support. Everything is connected via SignalR for live, zero-refresh collaboration. The application features robust role-based access control (DM, Player, Admin) and an invite-code registration system.</p>
         </div>
         
         <div class="tech-stack">
@@ -405,6 +580,7 @@
         <div class="toc">
             <h3>📋 Table of Contents</h3>
             <ul>
+                <li><a href="#features">Key Features</a></li>
                 <li><a href="#architecture">Architecture Overview</a></li>
                 <li><a href="#domain-classes">Domain Classes & Entities</a></li>
                 <li><a href="#api-endpoints">API Endpoints</a></li>
@@ -673,6 +849,66 @@
                     <td><span class="class-type domain">Domain</span><span class="class-type entity">Entity</span></td>
                     <td>Campaign-specific invitation codes for players</td>
                     <td>Code, CampaignId, ExpiresAt, IsActive</td>
+                </tr>
+                <tr>
+                    <td class="class-name">FactionDomain / FactionEntity / FactionResponse</td>
+                    <td><span class="class-type domain">Domain</span><span class="class-type entity">Entity</span><span class="class-type response">Response</span></td>
+                    <td>Reusable faction (guild, army, cult, etc.) in the DM's library</td>
+                    <td>Name, Type, Influence, Perception, Hidden, Description, DmNotes, ImageUrl</td>
+                </tr>
+                <tr>
+                    <td class="class-name">CampaignFactionInstanceDomain / Entity / Response</td>
+                    <td><span class="class-type domain">Domain</span><span class="class-type entity">Entity</span><span class="class-type response">Response</span></td>
+                    <td>Campaign-specific instance of a faction with visibility control, linked cast members, and linked sublocations</td>
+                    <td>SourceFactionId, CampaignId, IsVisibleToPlayers, CastInstanceIds, SubLocationInstanceIds, PrimaryCastInstanceId, PrimarySublocationInstanceId, FactionRelationships</td>
+                </tr>
+                <tr>
+                    <td class="class-name">CampaignFactionRelationshipDomain / Entity</td>
+                    <td><span class="class-type domain">Domain</span><span class="class-type entity">Entity</span></td>
+                    <td>Relationship between two faction instances in a campaign (ally, rival, etc.)</td>
+                    <td>FactionInstanceIdA, FactionInstanceIdB, RelationshipType, Strength</td>
+                </tr>
+                <tr>
+                    <td class="class-name">CampaignEventDomain / Entity / Response</td>
+                    <td><span class="class-type domain">Domain</span><span class="class-type entity">Entity</span><span class="class-type response">Response</span></td>
+                    <td>Plot event or handout in a campaign's story timeline</td>
+                    <td>Title, Body, SortOrder, LinkedEntityId, LinkedEntityType, FilePath, ImageUrl, VisibleToPlayers</td>
+                </tr>
+                <tr>
+                    <td class="class-name">PlayerQuicknoteQueueDomain / Entity / Response</td>
+                    <td><span class="class-type domain">Domain</span><span class="class-type entity">Entity</span><span class="class-type response">Response</span></td>
+                    <td>Short note pushed to the shared quicknote queue during a session</td>
+                    <td>CampaignId, PlayerUserId, Content, CreatedAt, UpdatedAt</td>
+                </tr>
+                <tr>
+                    <td class="class-name">BugReportDomain / Entity / Response</td>
+                    <td><span class="class-type domain">Domain</span><span class="class-type entity">Entity</span><span class="class-type response">Response</span></td>
+                    <td>In-app bug report submitted by a DM or player</td>
+                    <td>UserId, Title, Description, StepsToReproduce, Severity, PageUrl, Device, Browser, Os, IsFixed, FixedAt</td>
+                </tr>
+                <tr>
+                    <td class="class-name">CampaignPlayerNotesDomain / Entity / Response</td>
+                    <td><span class="class-type domain">Domain</span><span class="class-type entity">Entity</span><span class="class-type response">Response</span></td>
+                    <td>Player-visible and DM-only notes scoped to the campaign as a whole</td>
+                    <td>CampaignId, PlayerNotes, DmNotes</td>
+                </tr>
+                <tr>
+                    <td class="class-name">CampaignLocationPlayerNotesDomain / Entity / Response</td>
+                    <td><span class="class-type domain">Domain</span><span class="class-type entity">Entity</span><span class="class-type response">Response</span></td>
+                    <td>Player and DM notes attached to a specific location instance in a campaign</td>
+                    <td>CampaignId, LocationInstanceId, PlayerNotes, DmNotes</td>
+                </tr>
+                <tr>
+                    <td class="class-name">CampaignSublocationPlayerNotesDomain / Entity / Response</td>
+                    <td><span class="class-type domain">Domain</span><span class="class-type entity">Entity</span><span class="class-type response">Response</span></td>
+                    <td>Player and DM notes attached to a specific sublocation instance in a campaign</td>
+                    <td>CampaignId, SublocationInstanceId, PlayerNotes, DmNotes</td>
+                </tr>
+                <tr>
+                    <td class="class-name">CampaignFactionPlayerNotesDomain / Entity / Response</td>
+                    <td><span class="class-type domain">Domain</span><span class="class-type entity">Entity</span><span class="class-type response">Response</span></td>
+                    <td>Player and DM notes attached to a specific faction instance in a campaign</td>
+                    <td>CampaignId, FactionInstanceId, PlayerNotes, DmNotes</td>
                 </tr>
             </tbody>
         </table>
@@ -1154,7 +1390,302 @@
                 <div class="endpoint-description">Retrieves list of keywords associated with current user's content (for autocomplete/search).</div>
             </li>
         </ul>
-        
+
+        <h3>FactionsController (Authorized - DM Only)</h3>
+        <p><strong>Route Prefix:</strong> <code>api/factions</code></p>
+        <ul class="endpoint-list">
+            <li class="endpoint-item">
+                <span class="endpoint-method get">GET</span>
+                <span class="endpoint-path">/</span>
+                <div class="endpoint-description">Retrieves all factions in the DM's library. Returns list of faction summaries including influence, perception, and type.</div>
+            </li>
+            <li class="endpoint-item">
+                <span class="endpoint-method get">GET</span>
+                <span class="endpoint-path">/{id}</span>
+                <div class="endpoint-description">Retrieves full detail for a specific faction including description and DM notes.</div>
+            </li>
+            <li class="endpoint-item">
+                <span class="endpoint-method post">POST</span>
+                <span class="endpoint-path">/</span>
+                <div class="endpoint-description">Creates a new faction in the library. Requires name; influence and perception default to 0.</div>
+            </li>
+            <li class="endpoint-item">
+                <span class="endpoint-method put">PUT</span>
+                <span class="endpoint-path">/{id}</span>
+                <div class="endpoint-description">Updates an existing faction's properties.</div>
+            </li>
+            <li class="endpoint-item">
+                <span class="endpoint-method delete">DELETE</span>
+                <span class="endpoint-path">/{id}</span>
+                <div class="endpoint-description">Deletes a faction from the library.</div>
+            </li>
+            <li class="endpoint-item">
+                <span class="endpoint-method post">POST</span>
+                <span class="endpoint-path">/{id}/image</span>
+                <div class="endpoint-description">Uploads a faction symbol or image. Accepts JPEG, PNG, WebP up to 5 MB.</div>
+            </li>
+        </ul>
+
+        <h3>Factions – Campaign Instance Endpoints (Authorized)</h3>
+        <p><strong>Route Prefix:</strong> <code>api/campaigns/{campaignId}</code></p>
+        <ul class="endpoint-list">
+            <li class="endpoint-item">
+                <span class="endpoint-method get">GET</span>
+                <span class="endpoint-path">/faction-instances</span>
+                <div class="endpoint-description">Retrieves all faction instances in the campaign (DM view). Includes cast members, sublocation links, and relationships.</div>
+            </li>
+            <li class="endpoint-item">
+                <span class="endpoint-method get">GET</span>
+                <span class="endpoint-path">/faction-instances/player</span>
+                <div class="endpoint-description">Retrieves faction instances visible to players in the campaign.</div>
+            </li>
+            <li class="endpoint-item">
+                <span class="endpoint-method post">POST</span>
+                <span class="endpoint-path">/factions/{factionId}</span>
+                <div class="endpoint-description">Adds a faction from the library to the campaign, creating a campaign-specific instance.</div>
+            </li>
+            <li class="endpoint-item">
+                <span class="endpoint-method patch">PATCH</span>
+                <span class="endpoint-path">/faction-instances/{factionInstanceId}</span>
+                <div class="endpoint-description">Updates a faction instance's campaign-specific properties.</div>
+            </li>
+            <li class="endpoint-item">
+                <span class="endpoint-method patch">PATCH</span>
+                <span class="endpoint-path">/faction-instances/{factionInstanceId}/visibility</span>
+                <div class="endpoint-description">Toggles whether a faction instance is visible to players. Broadcasts change via SignalR.</div>
+            </li>
+            <li class="endpoint-item">
+                <span class="endpoint-method delete">DELETE</span>
+                <span class="endpoint-path">/faction-instances/{factionInstanceId}</span>
+                <div class="endpoint-description">Removes a faction instance from the campaign.</div>
+            </li>
+            <li class="endpoint-item">
+                <span class="endpoint-method post">POST</span>
+                <span class="endpoint-path">/faction-instances/{factionInstanceId}/cast-members/{castInstanceId}</span>
+                <div class="endpoint-description">Adds an NPC (cast instance) as a member of the faction.</div>
+            </li>
+            <li class="endpoint-item">
+                <span class="endpoint-method delete">DELETE</span>
+                <span class="endpoint-path">/faction-instances/{factionInstanceId}/cast-members/{castInstanceId}</span>
+                <div class="endpoint-description">Removes an NPC from the faction's member list.</div>
+            </li>
+            <li class="endpoint-item">
+                <span class="endpoint-method patch">PATCH</span>
+                <span class="endpoint-path">/faction-instances/{factionInstanceId}/cast-members/{castInstanceId}/primary</span>
+                <div class="endpoint-description">Sets the primary NPC representative of the faction.</div>
+            </li>
+            <li class="endpoint-item">
+                <span class="endpoint-method post">POST</span>
+                <span class="endpoint-path">/faction-instances/{factionInstanceId}/sublocations/{sublocationInstanceId}</span>
+                <div class="endpoint-description">Links a sublocation (e.g. faction headquarters) to a faction instance.</div>
+            </li>
+            <li class="endpoint-item">
+                <span class="endpoint-method delete">DELETE</span>
+                <span class="endpoint-path">/faction-instances/{factionInstanceId}/sublocations/{sublocationInstanceId}</span>
+                <div class="endpoint-description">Removes a sublocation link from a faction instance.</div>
+            </li>
+            <li class="endpoint-item">
+                <span class="endpoint-method post">POST</span>
+                <span class="endpoint-path">/faction-relationships</span>
+                <div class="endpoint-description">Creates a relationship between two faction instances (ally, rival, neutral, etc.) with a strength rating.</div>
+            </li>
+            <li class="endpoint-item">
+                <span class="endpoint-method delete">DELETE</span>
+                <span class="endpoint-path">/faction-relationships/{id}</span>
+                <div class="endpoint-description">Removes a faction relationship.</div>
+            </li>
+            <li class="endpoint-item">
+                <span class="endpoint-method post">POST</span>
+                <span class="endpoint-path">/cast/{castInstanceId}/factions/{factionInstanceId}</span>
+                <div class="endpoint-description">Assigns an NPC to a faction directly from the cast side.</div>
+            </li>
+        </ul>
+
+        <h3>CampaignEventsController – Plot Timeline (Authorized)</h3>
+        <p><strong>Route Prefix:</strong> <code>api/campaigns/{campaignId}/events</code></p>
+        <ul class="endpoint-list">
+            <li class="endpoint-item">
+                <span class="endpoint-method get">GET</span>
+                <span class="endpoint-path">/</span>
+                <div class="endpoint-description">DM-only. Retrieves all campaign plot events in sort order. Includes hidden events not yet revealed to players.</div>
+            </li>
+            <li class="endpoint-item">
+                <span class="endpoint-method get">GET</span>
+                <span class="endpoint-path">/player</span>
+                <div class="endpoint-description">Retrieves events that are currently visible to players. Accessible by DM and players.</div>
+            </li>
+            <li class="endpoint-item">
+                <span class="endpoint-method post">POST</span>
+                <span class="endpoint-path">/</span>
+                <div class="endpoint-description">Creates a new plot event with title, body, linked entity, and sort order.</div>
+            </li>
+            <li class="endpoint-item">
+                <span class="endpoint-method post">POST</span>
+                <span class="endpoint-path">/handout</span>
+                <div class="endpoint-description">Creates a handout-type event (document with rich text). Linked to a specific entity (location, cast, etc.).</div>
+            </li>
+            <li class="endpoint-item">
+                <span class="endpoint-method post">POST</span>
+                <span class="endpoint-path">/{eventId}/handout-image</span>
+                <div class="endpoint-description">Uploads an illustrative image for a handout event. Accepts JPEG, PNG, WebP up to 5 MB.</div>
+            </li>
+            <li class="endpoint-item">
+                <span class="endpoint-method patch">PATCH</span>
+                <span class="endpoint-path">/{eventId}</span>
+                <div class="endpoint-description">Updates the body/content of an existing event.</div>
+            </li>
+            <li class="endpoint-item">
+                <span class="endpoint-method patch">PATCH</span>
+                <span class="endpoint-path">/{eventId}/details</span>
+                <div class="endpoint-description">Updates the title, linked entity, and sort order of an event.</div>
+            </li>
+            <li class="endpoint-item">
+                <span class="endpoint-method patch">PATCH</span>
+                <span class="endpoint-path">/{eventId}/visibility</span>
+                <div class="endpoint-description">Toggles player visibility for a plot event. Broadcasts <code>CampaignEventVisibilityChanged</code> via SignalR.</div>
+            </li>
+            <li class="endpoint-item">
+                <span class="endpoint-method delete">DELETE</span>
+                <span class="endpoint-path">/{eventId}</span>
+                <div class="endpoint-description">Deletes a plot event.</div>
+            </li>
+        </ul>
+
+        <h3>QuicknoteQueueController (Authorized - DM &amp; Player)</h3>
+        <p><strong>Route Prefix:</strong> <code>api/campaigns/{campaignId}/quicknote-queue</code></p>
+        <ul class="endpoint-list">
+            <li class="endpoint-item">
+                <span class="endpoint-method get">GET</span>
+                <span class="endpoint-path">/</span>
+                <div class="endpoint-description">Retrieves all quicknotes for the current user in this campaign session.</div>
+            </li>
+            <li class="endpoint-item">
+                <span class="endpoint-method post">POST</span>
+                <span class="endpoint-path">/</span>
+                <div class="endpoint-description">Adds a new quicknote. Broadcasts <code>QuickNoteQueued</code> to all campaign participants via SignalR.</div>
+            </li>
+            <li class="endpoint-item">
+                <span class="endpoint-method put">PUT</span>
+                <span class="endpoint-path">/{id}</span>
+                <div class="endpoint-description">Updates the content of an existing quicknote.</div>
+            </li>
+            <li class="endpoint-item">
+                <span class="endpoint-method delete">DELETE</span>
+                <span class="endpoint-path">/{id}</span>
+                <div class="endpoint-description">Deletes a quicknote.</div>
+            </li>
+        </ul>
+
+        <h3>BugReportsController (Authorized)</h3>
+        <p><strong>Route Prefix:</strong> <code>api/bug-reports</code></p>
+        <ul class="endpoint-list">
+            <li class="endpoint-item">
+                <span class="endpoint-method post">POST</span>
+                <span class="endpoint-path">/</span>
+                <div class="endpoint-description">Submits a new bug report. Available to DM and Player roles. Captures title, description, steps to reproduce, severity, URL, and device/browser/OS metadata.</div>
+            </li>
+            <li class="endpoint-item">
+                <span class="endpoint-method get">GET</span>
+                <span class="endpoint-path">/</span>
+                <div class="endpoint-description">Admin-only. Retrieves all submitted bug reports.</div>
+            </li>
+            <li class="endpoint-item">
+                <span class="endpoint-method patch">PATCH</span>
+                <span class="endpoint-path">/{id}/mark-fixed</span>
+                <div class="endpoint-description">Admin-only. Marks a bug report as fixed and records the fixed timestamp.</div>
+            </li>
+            <li class="endpoint-item">
+                <span class="endpoint-method patch">PATCH</span>
+                <span class="endpoint-path">/{id}/severity</span>
+                <div class="endpoint-description">Admin-only. Updates the severity classification of a bug report.</div>
+            </li>
+            <li class="endpoint-item">
+                <span class="endpoint-method delete">DELETE</span>
+                <span class="endpoint-path">/cleanup</span>
+                <div class="endpoint-description">Admin-only. Removes all resolved/old bug reports in bulk.</div>
+            </li>
+            <li class="endpoint-item">
+                <span class="endpoint-method delete">DELETE</span>
+                <span class="endpoint-path">/{id}</span>
+                <div class="endpoint-description">Admin-only. Deletes a specific bug report.</div>
+            </li>
+        </ul>
+
+        <h3>CampaignCastTravelController (Authorized)</h3>
+        <p><strong>Route Prefix:</strong> <code>api/campaigns/{campaignId}/casts/{castInstanceId}</code></p>
+        <ul class="endpoint-list">
+            <li class="endpoint-item">
+                <span class="endpoint-method get">GET</span>
+                <span class="endpoint-path">/</span>
+                <div class="endpoint-description">Retrieves the current state of a specific cast instance including location and sublocation assignment.</div>
+            </li>
+            <li class="endpoint-item">
+                <span class="endpoint-method patch">PATCH</span>
+                <span class="endpoint-path">/travel</span>
+                <div class="endpoint-description">DM-only. Moves a cast instance from one sublocation to another (or to a top-level location). Broadcasts <code>CastTravelled</code> event via SignalR with from/to location details.</div>
+            </li>
+        </ul>
+
+        <h3>CampaignPlayerNotesController (Authorized)</h3>
+        <p><strong>Route Prefix:</strong> <code>api/campaigns/{campaignId}/campaign-player-notes</code></p>
+        <ul class="endpoint-list">
+            <li class="endpoint-item">
+                <span class="endpoint-method get">GET</span>
+                <span class="endpoint-path">/</span>
+                <div class="endpoint-description">Retrieves campaign-level player notes (shared notes about the campaign as a whole).</div>
+            </li>
+            <li class="endpoint-item">
+                <span class="endpoint-method put">PUT</span>
+                <span class="endpoint-path">/</span>
+                <div class="endpoint-description">Creates or updates campaign-level player notes. Broadcasts <code>NoteUpdated</code> via SignalR.</div>
+            </li>
+        </ul>
+
+        <h3>LocationPlayerNotesController (Authorized)</h3>
+        <p><strong>Route Prefix:</strong> <code>api/campaigns/{campaignId}/location-player-notes</code></p>
+        <ul class="endpoint-list">
+            <li class="endpoint-item">
+                <span class="endpoint-method get">GET</span>
+                <span class="endpoint-path">/{locationInstanceId}</span>
+                <div class="endpoint-description">Retrieves player and DM notes for a specific location instance.</div>
+            </li>
+            <li class="endpoint-item">
+                <span class="endpoint-method put">PUT</span>
+                <span class="endpoint-path">/{locationInstanceId}</span>
+                <div class="endpoint-description">Creates or updates location player notes. Broadcasts <code>NoteUpdated</code> via SignalR.</div>
+            </li>
+        </ul>
+
+        <h3>SublocationPlayerNotesController (Authorized)</h3>
+        <p><strong>Route Prefix:</strong> <code>api/campaigns/{campaignId}/sublocation-player-notes</code></p>
+        <ul class="endpoint-list">
+            <li class="endpoint-item">
+                <span class="endpoint-method get">GET</span>
+                <span class="endpoint-path">/{sublocationInstanceId}</span>
+                <div class="endpoint-description">Retrieves player and DM notes for a specific sublocation instance.</div>
+            </li>
+            <li class="endpoint-item">
+                <span class="endpoint-method put">PUT</span>
+                <span class="endpoint-path">/{sublocationInstanceId}</span>
+                <div class="endpoint-description">Creates or updates sublocation player notes. Broadcasts <code>NoteUpdated</code> via SignalR.</div>
+            </li>
+        </ul>
+
+        <h3>FactionPlayerNotesController (Authorized)</h3>
+        <p><strong>Route Prefix:</strong> <code>api/campaigns/{campaignId}/faction-player-notes</code></p>
+        <ul class="endpoint-list">
+            <li class="endpoint-item">
+                <span class="endpoint-method get">GET</span>
+                <span class="endpoint-path">/{factionInstanceId}</span>
+                <div class="endpoint-description">Retrieves player and DM notes for a specific faction instance.</div>
+            </li>
+            <li class="endpoint-item">
+                <span class="endpoint-method put">PUT</span>
+                <span class="endpoint-path">/{factionInstanceId}</span>
+                <div class="endpoint-description">Creates or updates faction player notes. Broadcasts <code>NoteUpdated</code> via SignalR.</div>
+            </li>
+        </ul>
+
         <div id="frontend-routes" class="section-separator"></div>
         <h2>🎨 Frontend Routes & Components</h2>
         
@@ -1193,6 +1724,11 @@
                 <div class="route-component">Component: ResetPasswordComponent</div>
                 <div class="route-description">Password reset form. Validates reset token from email link before allowing new password.</div>
             </li>
+            <li class="route-item">
+                <div class="route-path">/legal</div>
+                <div class="route-component">Component: LegalComponent</div>
+                <div class="route-description">Legal information page (terms of service, privacy policy, etc.).</div>
+            </li>
         </ul>
         
         <h3>Player Routes (/player)</h3>
@@ -1224,9 +1760,34 @@
                 <div class="route-description">Displays NPC details from player perspective. Shows public description, voice notes, and player-discovered information.</div>
             </li>
             <li class="route-item">
-                <div class="route-path">/player/campaign/{id}/the-company</div>
-                <div class="route-component">Component: PlayerTheCompanyComponent</div>
+                <div class="route-path">/player/campaign/{id}/the-party</div>
+                <div class="route-component">Component: PlayerThePartyComponent</div>
                 <div class="route-description">Shows all discovered party members and other players' character cards the player has encountered.</div>
+            </li>
+            <li class="route-item">
+                <div class="route-path">/player/campaign/{id}/factions/{factionInstanceId}</div>
+                <div class="route-component">Component: PlayerFactionDetailComponent</div>
+                <div class="route-description">Shows a faction's player-visible details — description, influence, member NPCs, and HQ sublocation.</div>
+            </li>
+            <li class="route-item">
+                <div class="route-path">/player/campaign/{id}/campaign-insight</div>
+                <div class="route-component">Component: PlayerCampaignInsightComponent</div>
+                <div class="route-description">Player campaign overview panel with campaign-level notes, summary information, and session context.</div>
+            </li>
+            <li class="route-item">
+                <div class="route-path">/player/campaign/{id}/quicknote-queue</div>
+                <div class="route-component">Component: PlayerQuicknoteQueueComponent</div>
+                <div class="route-description">Real-time quicknote queue for capturing session ideas. Notes are shared live with other campaign participants.</div>
+            </li>
+            <li class="route-item">
+                <div class="route-path">/player/campaign/{id}/plot</div>
+                <div class="route-component">Component: PlayerEventsComponent</div>
+                <div class="route-description">Player view of the campaign plot timeline. Shows only events the DM has revealed, including handout documents and images.</div>
+            </li>
+            <li class="route-item">
+                <div class="route-path">/player/bug-report</div>
+                <div class="route-component">Component: BugReportComponent</div>
+                <div class="route-description">In-app bug report submission form. Automatically captures URL, device, browser, and OS metadata.</div>
             </li>
         </ul>
         
@@ -1323,6 +1884,26 @@
                 <div class="route-component">Component: PlayerInvitesComponent</div>
                 <div class="route-description">Manage player invitations and invites to campaigns. View pending and accepted invites.</div>
             </li>
+            <li class="route-item">
+                <div class="route-path">/dm/faction</div>
+                <div class="route-component">Component: FactionLibraryComponent</div>
+                <div class="route-description">Faction library. Lists all factions with influence/perception ratings, type, and quick actions to create, edit, or delete.</div>
+            </li>
+            <li class="route-item">
+                <div class="route-path">/dm/faction/new</div>
+                <div class="route-component">Component: FactionFormComponent</div>
+                <div class="route-description">Create a new faction. Form for name, type, influence, perception, description, DM notes, and symbol upload.</div>
+            </li>
+            <li class="route-item">
+                <div class="route-path">/dm/faction/{id}</div>
+                <div class="route-component">Component: FactionFormComponent</div>
+                <div class="route-description">Edit existing faction. Pre-populated form with current faction data and image replacement.</div>
+            </li>
+            <li class="route-item">
+                <div class="route-path">/dm/bug-report</div>
+                <div class="route-component">Component: BugReportComponent</div>
+                <div class="route-description">In-app bug report submission form. Automatically captures URL, device, browser, and OS metadata.</div>
+            </li>
         </ul>
         
         <h3>Admin Routes (/admin)</h3>
@@ -1332,6 +1913,16 @@
                 <div class="route-path">/admin/invite-code</div>
                 <div class="route-component">Component: AdminInviteCodeComponent</div>
                 <div class="route-description">Admin panel for managing system-wide invite codes. View current code, generate new codes, manage expiration.</div>
+            </li>
+            <li class="route-item">
+                <div class="route-path">/admin/user-management</div>
+                <div class="route-component">Component: UserManagementComponent</div>
+                <div class="route-description">Admin view of all registered users. Manage roles, account status, and view user activity.</div>
+            </li>
+            <li class="route-item">
+                <div class="route-path">/admin/bug-reports</div>
+                <div class="route-component">Component: AdminBugReportsComponent</div>
+                <div class="route-description">Admin bug report dashboard. View all submitted reports, update severity, mark as fixed, and clean up resolved issues.</div>
             </li>
         </ul>
         
@@ -1344,8 +1935,8 @@
                 <div class="route-description">Main campaign detail view. Shows campaign overview, locations, casts, and available actions. Context-aware based on user role.</div>
             </li>
             <li class="route-item">
-                <div class="route-path">/campaign/{id}/the-company</div>
-                <div class="route-component">Component: DmTheCompanyComponent</div>
+                <div class="route-path">/campaign/{id}/the-party</div>
+                <div class="route-component">Component: DmThePartyComponent</div>
                 <div class="route-description">DM view of all characters (both casts and player cards) in campaign. Manage relationships and visibility.</div>
             </li>
             <li class="route-item">
@@ -1362,6 +1953,21 @@
                 <div class="route-path">/campaign/{id}/sublocations/{sublocationInstanceId}/cast/{castInstanceId}</div>
                 <div class="route-component">Component: CampaignCastDetailComponent</div>
                 <div class="route-description">NPC detail view with full information (appearance, voice, relationships, notes). DM can edit all properties.</div>
+            </li>
+            <li class="route-item">
+                <div class="route-path">/campaign/{id}/factions</div>
+                <div class="route-component">Component: CampaignFactionsComponent</div>
+                <div class="route-description">DM view of all faction instances in the campaign. Add/remove factions, manage visibility, and navigate to individual faction details.</div>
+            </li>
+            <li class="route-item">
+                <div class="route-path">/campaign/{id}/factions/{factionInstanceId}</div>
+                <div class="route-component">Component: CampaignFactionDetailComponent</div>
+                <div class="route-description">Full faction detail panel for DMs. Manage member NPCs, linked sublocations, faction relationships, and the live relationship web.</div>
+            </li>
+            <li class="route-item">
+                <div class="route-path">/campaign/{id}/plot</div>
+                <div class="route-component">Component: DmEventsComponent</div>
+                <div class="route-description">DM plot event timeline. Create, reorder, and reveal/hide campaign events. Manage handout documents and images. Broadcasts visibility changes in real time.</div>
             </li>
         </ul>
         
@@ -1424,18 +2030,18 @@
         </ul>
         
         <div class="note">
-            <strong>📝 Note on Real-time Features:</strong> The application uses SignalR for live updates in campaigns. When DMs or players perform certain actions (reveal secrets, assign conditions, update time of day), connected clients in the same campaign receive real-time notifications through the CampaignHub WebSocket connection.
+            <strong>📝 Note on Real-time Features:</strong> The application uses SignalR for live updates in campaigns. Broadcast events include: <code>CastTravelled</code> (NPC moves location), <code>CampaignEventVisibilityChanged</code> (plot event revealed/hidden), <code>QuickNoteQueued</code> (new quicknote added), <code>NoteUpdated</code> (any entity note saved), and updates for cast visibility changes, time-of-day cursor movement, condition assignments, and secret reveals. All connected clients in the same campaign group receive these events in real time through the CampaignHub WebSocket connection.
         </div>
         
         <div class="note">
-            <strong>🔐 Note on Role-Based Access:</strong> The application supports three user roles: Player, DM, and Admin. Each role has distinct capabilities and visible routes. Players see only campaign and character content. DMs have full library management and campaign control. Admins manage system-level features like invite codes.
+            <strong>🔐 Note on Role-Based Access:</strong> The application supports three user roles: Player, DM, and Admin. Each role has distinct capabilities and visible routes. Players see only campaign and character content. DMs have full library management (casts, locations, sublocations, factions) and campaign control. Admins manage system-level features including invite codes, user management, and bug reports.
         </div>
         
         <div class="section-separator"></div>
         
         <div class="footer">
-            <p>Cast Library Application Summary | Generated for development reference</p>
-            <p>This document provides an overview of the system architecture, domain models, and API endpoints.</p>
+            <p>Cast Library Application Summary | Updated May 2026</p>
+            <p>This document provides an overview of the system architecture, domain models, API endpoints, and frontend routes.</p>
             <p>For detailed implementation specifics, refer to source code and inline documentation.</p>
         </div>
     </div>

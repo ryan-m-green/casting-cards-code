@@ -35,6 +35,7 @@ export class TimeOfDayBarComponent implements OnInit, OnChanges, OnDestroy {
   @Input() panelTheme: 'light' | 'dark' = 'light';
   @Input() todInput: TimeOfDay | null = null;
   @Input() previewOnly = false;
+  @Input() portalColor = '';
 
   @ViewChild('barTrack') barTrackRef!: ElementRef<HTMLElement>;
 

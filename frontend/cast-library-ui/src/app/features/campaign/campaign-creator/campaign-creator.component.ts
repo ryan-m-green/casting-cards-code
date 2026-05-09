@@ -74,6 +74,7 @@ export class CampaignCreatorComponent implements OnInit, OnDestroy {
   deckIdx        = signal(0);
   expandedIdx    = signal(0);
   saving         = signal(false);
+  formSaveStatus = signal<'idle' | 'saving' | 'saved'>('idle');
   isSwapping     = false;
   activeTab      = signal<'world-setup' | 'cast-relationships' | 'day-cycle' | 'players'>('world-setup');
   players        = signal<CampaignPlayer[]>([]);
@@ -184,13 +185,24 @@ export class CampaignCreatorComponent implements OnInit, OnDestroy {
     this.form.valueChanges.subscribe(() => {
       if (!this.form.controls.name.valid) return;
       clearTimeout(this.formSaveTimer);
+      this.formSaveStatus.set('saving');
       this.formSaveTimer = setTimeout(() => {
         const cid = this.campaignId();
+        const onSuccess = () => {
+          this.formSaveStatus.set('saved');
+          setTimeout(() => this.formSaveStatus.set('idle'), 2000);
+        };
+        const onError = () => this.formSaveStatus.set('idle');
         if (cid) {
-          this.http.patch(`${environment.apiUrl}/api/campaigns/${cid}`, this.form.value).subscribe();
+          this.http.patch(`${environment.apiUrl}/api/campaigns/${cid}`, this.form.value)
+            .subscribe({ next: onSuccess, error: onError });
         } else {
           this.http.post<{ id: string }>(`${environment.apiUrl}/api/campaigns`, { ...this.form.value, locationIds: [] })
-            .subscribe({ next: campaign => this.campaignId.set(campaign.id) });
+            .subscribe({ next: campaign => {
+              this.campaignId.set(campaign.id);
+              this.router.navigate(['/dm/campaigns', campaign.id], { replaceUrl: true });
+              onSuccess();
+            }, error: onError });
         }
       }, 800);
     });
