@@ -12,21 +12,13 @@ public class UploadFactionImageCommandHandler(
     IFactionReadRepository factionReadRepository,
     IImageStorageOperator imageStorage) : IUploadFactionImageCommandHandler
 {
-    private static readonly Dictionary<string, string> ContentTypeExtensions = new()
-    {
-        { "image/jpeg", ".jpg" },
-        { "image/png",  ".png" },
-        { "image/webp", ".webp" },
-    };
-
     public async Task<(bool Success, string ImageKey)> HandleAsync(UploadFactionImageCommand command)
     {
         var faction = await factionReadRepository.GetByIdAsync(command.FactionId);
         if (faction is null || faction.DmUserId != command.DmUserId)
             return (false, string.Empty);
 
-        var ext = ContentTypeExtensions.GetValueOrDefault(command.ContentType, ".jpg");
-        var key = $"{faction.DmUserId}/factions/{command.FactionId}{ext}";
+        var key = $"{faction.DmUserId}/factions/{command.FactionId}.png";
 
         await imageStorage.SaveAsync(key, command.Stream, command.ContentType);
 

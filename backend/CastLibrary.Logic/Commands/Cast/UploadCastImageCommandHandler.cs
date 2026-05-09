@@ -12,21 +12,13 @@ public class UploadCastImageCommandHandler(
     ICastReadRepository castReadRepository,
     IImageStorageOperator imageStorage) : IUploadCastImageCommandHandler
 {
-    private static readonly Dictionary<string, string> ContentTypeExtensions = new()
-    {
-        { "image/jpeg", ".jpg" },
-        { "image/png",  ".png" },
-        { "image/webp", ".webp" }
-    };
-
     public async Task<(bool Success, string ImageKey)> HandleAsync(UploadCastImageCommand command)
     {
         var cast = await castReadRepository.GetByIdAsync(command.CastId);
         if (cast is null || cast.DmUserId != command.DmUserId)
             return (false, null);
 
-        var ext = ContentTypeExtensions.GetValueOrDefault(command.ContentType, ".jpg");
-        var key = $"{cast.DmUserId}/casts/{command.CastId}{ext}";
+        var key = $"{cast.DmUserId}/casts/{command.CastId}.png";
 
         await imageStorage.SaveAsync(key, command.Stream, command.ContentType);
 
