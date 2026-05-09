@@ -9,14 +9,14 @@ public record DeliverSecretResult(PlayerCardSecretDomain Secret, Guid PlayerUser
 
 public interface IDeliverSecretCommandHandler
 {
-    Task<DeliverSecretResult?> HandleAsync(DeliverSecretCommand command);
+    Task<DeliverSecretResult> HandleAsync(DeliverSecretCommand command);
 }
 
 public class DeliverSecretCommandHandler(
     IPlayerCardReadRepository playerCardReadRepository,
     IPlayerCardSecretInsertRepository secretInsertRepository) : IDeliverSecretCommandHandler
 {
-    public async Task<DeliverSecretResult?> HandleAsync(DeliverSecretCommand command)
+    public async Task<DeliverSecretResult> HandleAsync(DeliverSecretCommand command)
     {
         var card = await playerCardReadRepository.GetByIdAsync(command.PlayerCardId);
         if (card is null || card.CampaignId != command.CampaignId) return null;

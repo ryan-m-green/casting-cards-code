@@ -47,7 +47,7 @@ public class LocalFileImageStorageOperator(IConfiguration configuration, IImageC
         return $"{_baseUrl.TrimEnd('/')}/{urlKey}?v={version}";
     }
 
-    public async Task<byte[]?> ReadAsync(string key)
+    public async Task<byte[]> ReadAsync(string key)
     {
         if (string.IsNullOrEmpty(key))
             return null;

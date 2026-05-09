@@ -188,7 +188,7 @@
             }
             }
             @if (cast.imageUrl) {
-              <img [src]="cast.imageUrl" [alt]="'Portrait of ' + cast.name + ', ' + cast.role" class="cast-portrait-img" (error)="$any($event.target).style.display='none'" />
+              <img [src]="cast.imageUrl" [alt]="'Portrait of ' + cast.name + ', ' + cast.role" class="cast-portrait-img" (error)="$any($event.target).style.display='none'" (load)="$any($event.target).style.display=''" />
             } @else {
               <div class="cast-portrait-placeholder">
                 <svg width="36" height="50" viewBox="0 0 58 80" opacity=".2">

@@ -8,8 +8,8 @@ public class CampaignEventEntity
     public string Body { get; set; } = string.Empty;
     public int SortOrder { get; set; }
     public Guid? LinkedEntityId { get; set; }
-    public string? LinkedEntityType { get; set; }
-    public string? FilePath { get; set; }
+    public string LinkedEntityType { get; set; }
+    public string FilePath { get; set; }
     public bool VisibleToPlayers { get; set; }
     public DateTime CreatedAt { get; set; }
     public DateTime UpdatedAt { get; set; }

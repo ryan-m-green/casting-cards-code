@@ -8,7 +8,7 @@ namespace CastLibrary.Repository.Repositories.Read;
 
 public interface IPlayerCardSecretReadRepository
 {
-    Task<PlayerCardSecretDomain?> GetByIdAsync(Guid id);
+    Task<PlayerCardSecretDomain> GetByIdAsync(Guid id);
     Task<List<PlayerCardSecretDomain>> GetByPlayerCardAsync(Guid playerCardId);
 }
 
@@ -22,7 +22,7 @@ public class PlayerCardSecretReadRepository(
         @"id, player_card_id as PlayerCardId, content, is_shared as IsShared,
           shared_at as SharedAt, shared_by as SharedBy, created_at as CreatedAt";
 
-    public async Task<PlayerCardSecretDomain?> GetByIdAsync(Guid id)
+    public async Task<PlayerCardSecretDomain> GetByIdAsync(Guid id)
     {
         var spanId = correlation.NewSpan();
         var @params = new { Id = id };

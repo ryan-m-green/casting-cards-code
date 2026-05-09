@@ -7,7 +7,7 @@ public class CreateFactionRequest
     public short Influence { get; set; } = 0;
     public short Perception { get; set; } = 0;
     public bool Hidden { get; set; }
-    public string? Description { get; set; }
-    public string? DmNotes { get; set; }
-    public string? SymbolPath { get; set; }
+    public string Description { get; set; }
+    public string DmNotes { get; set; }
+    public string SymbolPath { get; set; }
 }

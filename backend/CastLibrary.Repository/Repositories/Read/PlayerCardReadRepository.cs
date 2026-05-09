@@ -8,8 +8,8 @@ namespace CastLibrary.Repository.Repositories.Read;
 
 public interface IPlayerCardReadRepository
 {
-    Task<PlayerCardDomain?> GetByIdAsync(Guid id);
-    Task<PlayerCardDomain?> GetByCampaignAndPlayerAsync(Guid campaignId, Guid playerUserId);
+    Task<PlayerCardDomain> GetByIdAsync(Guid id);
+    Task<PlayerCardDomain> GetByCampaignAndPlayerAsync(Guid campaignId, Guid playerUserId);
     Task<List<PlayerCardDomain>> GetByCampaignAsync(Guid campaignId);
 }
 
@@ -27,7 +27,7 @@ public class PlayerCardReadRepository(
     private const string FromJoin =
         @"FROM player_cards pc";
 
-    public async Task<PlayerCardDomain?> GetByIdAsync(Guid id)
+    public async Task<PlayerCardDomain> GetByIdAsync(Guid id)
     {
         var spanId = correlation.NewSpan();
         var @params = new { Id = id };
@@ -43,7 +43,7 @@ public class PlayerCardReadRepository(
         return entity is null ? null : mapper.ToDomain(entity);
     }
 
-    public async Task<PlayerCardDomain?> GetByCampaignAndPlayerAsync(Guid campaignId, Guid playerUserId)
+    public async Task<PlayerCardDomain> GetByCampaignAndPlayerAsync(Guid campaignId, Guid playerUserId)
     {
         var spanId = correlation.NewSpan();
         var @params = new { CampaignId = campaignId, PlayerUserId = playerUserId };

@@ -6,7 +6,7 @@ namespace CastLibrary.Logic.Commands.PlayerCard;
 
 public interface IToggleGoalCompleteCommandHandler
 {
-    Task<PlayerCardTraitDomain?> HandleAsync(ToggleGoalCompleteCommand command);
+    Task<PlayerCardTraitDomain> HandleAsync(ToggleGoalCompleteCommand command);
 }
 
 public class ToggleGoalCompleteCommandHandler(
@@ -14,7 +14,7 @@ public class ToggleGoalCompleteCommandHandler(
     IPlayerCardReadRepository playerCardReadRepository,
     IPlayerCardTraitUpdateRepository traitUpdateRepository) : IToggleGoalCompleteCommandHandler
 {
-    public async Task<PlayerCardTraitDomain?> HandleAsync(ToggleGoalCompleteCommand command)
+    public async Task<PlayerCardTraitDomain> HandleAsync(ToggleGoalCompleteCommand command)
     {
         var trait = await traitReadRepository.GetByIdAsync(command.TraitId);
         if (trait is null || trait.PlayerCardId != command.PlayerCardId) return null;

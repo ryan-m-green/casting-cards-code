@@ -12,9 +12,9 @@ public class CampaignFactionInstanceEntity
     public short Perception { get; set; }
     public bool Hidden { get; set; }
     public bool IsVisibleToPlayers { get; set; }
-    public string? Description { get; set; }
-    public string? DmNotes { get; set; }
-    public string? SymbolPath { get; set; }
+    public string Description { get; set; }
+    public string DmNotes { get; set; }
+    public string SymbolPath { get; set; }
     public DateTime CreatedAt { get; set; }
     public List<Guid> SubLocationInstanceIds { get; set; } = [];
     public List<Guid> CastInstanceIds { get; set; } = [];

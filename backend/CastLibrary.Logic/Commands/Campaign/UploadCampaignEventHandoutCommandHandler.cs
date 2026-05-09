@@ -38,7 +38,7 @@ public class UploadCampaignEventHandoutCommandHandler(
 
 public class UploadCampaignEventHandoutCommand
 {
-    public UploadCampaignEventHandoutCommand(Guid campaignId, string title, string? body, string linkedEntityType, Guid? linkedEntityId)
+    public UploadCampaignEventHandoutCommand(Guid campaignId, string title, string body, string linkedEntityType, Guid? linkedEntityId)
     {
         CampaignId       = campaignId;
         Title            = title;
@@ -49,7 +49,7 @@ public class UploadCampaignEventHandoutCommand
 
     public Guid    CampaignId       { get; }
     public string  Title            { get; }
-    public string? Body             { get; }
+    public string Body             { get; }
     public string  LinkedEntityType { get; }
     public Guid?   LinkedEntityId   { get; }
 }

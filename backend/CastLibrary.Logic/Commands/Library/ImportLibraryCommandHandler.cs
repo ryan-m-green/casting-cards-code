@@ -165,7 +165,7 @@ public class ImportLibraryCommandHandler(
         return response;
     }
 
-    private async Task TrySaveImageAsync(string? imageFileName, Dictionary<string, Stream> images,
+    private async Task TrySaveImageAsync(string imageFileName, Dictionary<string, Stream> images,
         Guid entityId, Guid dmUserId, EntityType entityType, string cardName, string cardType,
         List<ImportFailure> failures)
     {

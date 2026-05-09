@@ -10,7 +10,7 @@ public interface ICampaignPlayerReadRepository
 {
     Task<List<CampaignPlayerDomain>> GetByCampaignAsync(Guid campaignId);
     Task<bool> IsPlayerInCampaignAsync(Guid campaignId, Guid playerUserId);
-    Task<CampaignPlayerDomain?> GetByUserAndCampaignAsync(Guid campaignId, Guid playerUserId);
+    Task<CampaignPlayerDomain> GetByUserAndCampaignAsync(Guid campaignId, Guid playerUserId);
 }
 
 public class CampaignPlayerReadRepository(
@@ -65,7 +65,7 @@ public class CampaignPlayerReadRepository(
         return count > 0;
     }
 
-    public async Task<CampaignPlayerDomain?> GetByUserAndCampaignAsync(Guid campaignId, Guid playerUserId)
+    public async Task<CampaignPlayerDomain> GetByUserAndCampaignAsync(Guid campaignId, Guid playerUserId)
     {
         var spanId = correlation.NewSpan();
         var @params = new { CampaignId = campaignId, PlayerUserId = playerUserId };

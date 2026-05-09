@@ -7,14 +7,14 @@ namespace CastLibrary.Logic.Commands.Faction;
 
 public interface IUpdateFactionCommandHandler
 {
-    Task<FactionDomain?> HandleAsync(UpdateFactionCommand command);
+    Task<FactionDomain> HandleAsync(UpdateFactionCommand command);
 }
 
 public class UpdateFactionCommandHandler(
     IFactionReadRepository factionReadRepository,
     IFactionUpdateRepository factionUpdateRepository) : IUpdateFactionCommandHandler
 {
-    public async Task<FactionDomain?> HandleAsync(UpdateFactionCommand command)
+    public async Task<FactionDomain> HandleAsync(UpdateFactionCommand command)
     {
         var existing = await factionReadRepository.GetByIdAsync(command.FactionId);
         if (existing is null || existing.DmUserId != command.DmUserId)

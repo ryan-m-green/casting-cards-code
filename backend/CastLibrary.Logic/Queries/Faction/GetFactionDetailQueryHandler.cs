@@ -8,7 +8,7 @@ namespace CastLibrary.Logic.Queries.Faction;
 
 public interface IGetFactionDetailQueryHandler
 {
-    Task<FactionDomain?> HandleAsync(Guid factionId);
+    Task<FactionDomain> HandleAsync(Guid factionId);
 }
 
 public class GetFactionDetailQueryHandler(
@@ -16,7 +16,7 @@ public class GetFactionDetailQueryHandler(
     IImageKeyCreator imageKeyCreator,
     IImageStorageOperator imageStorageOperator) : IGetFactionDetailQueryHandler
 {
-    public async Task<FactionDomain?> HandleAsync(Guid factionId)
+    public async Task<FactionDomain> HandleAsync(Guid factionId)
     {
         var faction = await factionReadRepository.GetByIdAsync(factionId);
         if (faction is null) return null;

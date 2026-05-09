@@ -7,14 +7,14 @@ namespace CastLibrary.Logic.Commands.PlayerCard;
 
 public interface IAddMemoryCommandHandler
 {
-    Task<PlayerCardMemoryDomain?> HandleAsync(AddMemoryCommand command);
+    Task<PlayerCardMemoryDomain> HandleAsync(AddMemoryCommand command);
 }
 
 public class AddMemoryCommandHandler(
     IPlayerCardReadRepository playerCardReadRepository,
     IPlayerCardMemoryInsertRepository memoryInsertRepository) : IAddMemoryCommandHandler
 {
-    public async Task<PlayerCardMemoryDomain?> HandleAsync(AddMemoryCommand command)
+    public async Task<PlayerCardMemoryDomain> HandleAsync(AddMemoryCommand command)
     {
         var card = await playerCardReadRepository.GetByIdAsync(command.PlayerCardId);
         if (card is null || card.PlayerUserId != command.PlayerUserId) return null;

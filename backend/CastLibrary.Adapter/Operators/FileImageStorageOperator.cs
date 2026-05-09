@@ -63,7 +63,7 @@ public class FileImageStorageOperator(IFileStorageConfiguration config, IImageCo
         return $"{_publicUrl.TrimEnd('/')}/{s3Key}";
     }
 
-    public async Task<byte[]?> ReadAsync(string key)
+    public async Task<byte[]> ReadAsync(string key)
     {
         if (string.IsNullOrEmpty(key))
             return null;

@@ -5,13 +5,13 @@ namespace CastLibrary.Logic.Queries.Admin;
 
 public interface IGetAdminInviteCodeQueryHandler
 {
-    Task<AdminInviteCodeDomain?> HandleAsync();
+    Task<AdminInviteCodeDomain> HandleAsync();
 }
 
 public class GetAdminInviteCodeQueryHandler(
     IAdminInviteCodeReadRepository readRepository) : IGetAdminInviteCodeQueryHandler
 {
-    public async Task<AdminInviteCodeDomain?> HandleAsync()
+    public async Task<AdminInviteCodeDomain> HandleAsync()
     {
         var code = await readRepository.GetCurrentAsync();
         if (code is null) return null;

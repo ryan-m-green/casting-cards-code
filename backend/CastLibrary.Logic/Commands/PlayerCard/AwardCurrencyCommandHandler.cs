@@ -112,6 +112,6 @@ public class AwardCurrencyResult
     public Guid? TargetPlayerUserId { get; set; }
     public int Amount { get; set; }
     public string Currency { get; set; } = "gp";
-    public string? Note { get; set; }
+    public string Note { get; set; }
     public List<PlayerAwardSplit> PlayerAwards { get; set; } = [];
 }

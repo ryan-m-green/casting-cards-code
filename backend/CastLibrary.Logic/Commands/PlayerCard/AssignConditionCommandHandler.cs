@@ -7,14 +7,14 @@ namespace CastLibrary.Logic.Commands.PlayerCard;
 
 public interface IAssignConditionCommandHandler
 {
-    Task<PlayerCardConditionDomain?> HandleAsync(AssignConditionCommand command);
+    Task<PlayerCardConditionDomain> HandleAsync(AssignConditionCommand command);
 }
 
 public class AssignConditionCommandHandler(
     IPlayerCardReadRepository playerCardReadRepository,
     IPlayerCardConditionInsertRepository conditionInsertRepository) : IAssignConditionCommandHandler
 {
-    public async Task<PlayerCardConditionDomain?> HandleAsync(AssignConditionCommand command)
+    public async Task<PlayerCardConditionDomain> HandleAsync(AssignConditionCommand command)
     {
         var card = await playerCardReadRepository.GetByIdAsync(command.PlayerCardId);
         if (card is null || card.CampaignId != command.CampaignId) return null;

@@ -271,10 +271,11 @@ export class CampaignLocationDetailComponent implements OnInit {
         this.imagePreviewUrl.set(null);
         this.http.post<{ imageUrl: string }>(`${environment.apiUrl}/api/locations/${locationLibId}/image`, formData)
           .subscribe(res => {
+            const freshUrl = res.imageUrl + '?v=' + Date.now();
             this.campaign.update(c => c ? {
               ...c,
               locations: c.locations.map(l =>
-                l.instanceId === this.locationInstanceId() ? { ...l, imageUrl: res.imageUrl } : l
+                l.instanceId === this.locationInstanceId() ? { ...l, imageUrl: freshUrl } : l
               )
             } : c);
           });

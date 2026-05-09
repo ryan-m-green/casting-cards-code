@@ -5,12 +5,12 @@ namespace CastLibrary.Logic.Queries.Campaign;
 
 public interface IGetTimeOfDayQueryHandler
 {
-    Task<TimeOfDayDomain?> HandleAsync(Guid campaignId);
+    Task<TimeOfDayDomain> HandleAsync(Guid campaignId);
 }
 
 public class GetTimeOfDayQueryHandler(
     ITimeOfDayReadRepository readRepository) : IGetTimeOfDayQueryHandler
 {
-    public Task<TimeOfDayDomain?> HandleAsync(Guid campaignId) =>
+    public Task<TimeOfDayDomain> HandleAsync(Guid campaignId) =>
         readRepository.GetByCampaignIdAsync(campaignId);
 }

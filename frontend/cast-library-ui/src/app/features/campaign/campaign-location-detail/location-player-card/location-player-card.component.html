@@ -9,7 +9,7 @@
         <div class="dv dv-card"></div>
         <div class="card-image-area">
           @if (location().imageUrl) {
-            <img [src]="location().imageUrl" alt="" class="card-img-fill" (error)="$any($event.target).style.display='none'" />
+            <img [src]="location().imageUrl" alt="" class="card-img-fill" (error)="$any($event.target).style.display='none'" (load)="$any($event.target).style.display=''" />
           } @else {
             <div class="card-placeholder">
               <span class="card-initial location-card-initial-lg">{{ initial(location().name) }}</span>

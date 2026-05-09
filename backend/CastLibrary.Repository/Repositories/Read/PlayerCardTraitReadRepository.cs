@@ -8,7 +8,7 @@ namespace CastLibrary.Repository.Repositories.Read;
 
 public interface IPlayerCardTraitReadRepository
 {
-    Task<PlayerCardTraitDomain?> GetByIdAsync(Guid id);
+    Task<PlayerCardTraitDomain> GetByIdAsync(Guid id);
     Task<List<PlayerCardTraitDomain>> GetByPlayerCardAsync(Guid playerCardId);
 }
 
@@ -18,7 +18,7 @@ public class PlayerCardTraitReadRepository(
     ICorrelationContext correlation,
     IPlayerCardTraitEntityMapper mapper) : IPlayerCardTraitReadRepository
 {
-    public async Task<PlayerCardTraitDomain?> GetByIdAsync(Guid id)
+    public async Task<PlayerCardTraitDomain> GetByIdAsync(Guid id)
     {
         var spanId = correlation.NewSpan();
         var @params = new { Id = id };

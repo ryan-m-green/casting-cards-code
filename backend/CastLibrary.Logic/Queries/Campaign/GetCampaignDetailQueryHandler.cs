@@ -13,7 +13,7 @@ public interface IGetCampaignDetailQueryHandler
         List<CampaignCastInstanceDomain> Casts, List<CampaignSublocationInstanceDomain> Locations,
         List<CampaignSecretDomain> Secrets, List<CampaignCastRelationshipDomain> Relationships,
         List<CampaignPlayerDomain> Players, CampaignInviteCodeDomain InviteCode,
-        TimeOfDayDomain? TimeOfDay, List<CampaignFactionInstanceDomain> Factions)>
+        TimeOfDayDomain TimeOfDay, List<CampaignFactionInstanceDomain> Factions)>
         HandleAsync(Guid campaignId);
 }
 

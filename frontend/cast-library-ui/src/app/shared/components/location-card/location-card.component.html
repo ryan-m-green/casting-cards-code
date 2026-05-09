@@ -122,7 +122,7 @@
               </label>
             }
             @if (location.imageUrl) {
-              <img [src]="location.imageUrl" [alt]="'Image of ' + location.name + ', a ' + location.classification" class="loc-portrait-img" (error)="$any($event.target).style.display='none'" />
+              <img [src]="location.imageUrl" [alt]="'Image of ' + location.name + ', a ' + location.classification" class="loc-portrait-img" (error)="$any($event.target).style.display='none'" (load)="$any($event.target).style.display=''" />
             } @else {
               <div class="loc-portrait-placeholder">
                 @if (terrainType === 'city') {

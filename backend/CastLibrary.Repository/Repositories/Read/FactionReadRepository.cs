@@ -9,7 +9,7 @@ namespace CastLibrary.Repository.Repositories.Read;
 public interface IFactionReadRepository
 {
     Task<List<FactionDomain>> GetAllByDmAsync(Guid dmUserId);
-    Task<FactionDomain?> GetByIdAsync(Guid factionId);
+    Task<FactionDomain> GetByIdAsync(Guid factionId);
 }
 
 public class FactionReadRepository(
@@ -39,7 +39,7 @@ public class FactionReadRepository(
         return entities.Select(mapper.ToDomain).ToList();
     }
 
-    public async Task<FactionDomain?> GetByIdAsync(Guid factionId)
+    public async Task<FactionDomain> GetByIdAsync(Guid factionId)
     {
         var spanId = correlation.NewSpan();
         var @params = new { FactionId = factionId };

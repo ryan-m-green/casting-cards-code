@@ -6,7 +6,7 @@ namespace CastLibrary.Repository.Repositories.Update;
 
 public interface IFactionUpdateRepository
 {
-    Task<FactionDomain?> UpdateAsync(FactionDomain faction);
+    Task<FactionDomain> UpdateAsync(FactionDomain faction);
 }
 
 public class FactionUpdateRepository(
@@ -14,7 +14,7 @@ public class FactionUpdateRepository(
     ILoggingService logging,
     ICorrelationContext correlation) : IFactionUpdateRepository
 {
-    public async Task<FactionDomain?> UpdateAsync(FactionDomain faction)
+    public async Task<FactionDomain> UpdateAsync(FactionDomain faction)
     {
         var spanId = correlation.NewSpan();
         var @params = new

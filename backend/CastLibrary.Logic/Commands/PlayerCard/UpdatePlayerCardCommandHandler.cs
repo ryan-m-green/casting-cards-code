@@ -7,14 +7,14 @@ namespace CastLibrary.Logic.Commands.PlayerCard;
 
 public interface IUpdatePlayerCardCommandHandler
 {
-    Task<PlayerCardDomain?> HandleAsync(UpdatePlayerCardCommand command);
+    Task<PlayerCardDomain> HandleAsync(UpdatePlayerCardCommand command);
 }
 
 public class UpdatePlayerCardCommandHandler(
     IPlayerCardReadRepository playerCardReadRepository,
     IPlayerCardUpdateRepository playerCardUpdateRepository) : IUpdatePlayerCardCommandHandler
 {
-    public async Task<PlayerCardDomain?> HandleAsync(UpdatePlayerCardCommand command)
+    public async Task<PlayerCardDomain> HandleAsync(UpdatePlayerCardCommand command)
     {
         var card = await playerCardReadRepository.GetByIdAsync(command.PlayerCardId);
         if (card is null || card.PlayerUserId != command.PlayerUserId) return null;

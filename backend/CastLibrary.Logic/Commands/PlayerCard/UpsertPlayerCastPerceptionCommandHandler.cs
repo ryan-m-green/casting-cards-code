@@ -8,7 +8,7 @@ namespace CastLibrary.Logic.Commands.PlayerCard;
 
 public interface IUpsertPlayerCastPerceptionCommandHandler
 {
-    Task<PlayerCastPerceptionDomain?> HandleAsync(UpsertPlayerCastPerceptionCommand command);
+    Task<PlayerCastPerceptionDomain> HandleAsync(UpsertPlayerCastPerceptionCommand command);
 }
 
 public class UpsertPlayerCastPerceptionCommandHandler(
@@ -17,7 +17,7 @@ public class UpsertPlayerCastPerceptionCommandHandler(
     IPlayerCastPerceptionInsertRepository perceptionInsertRepository,
     IPlayerCastPerceptionUpdateRepository perceptionUpdateRepository) : IUpsertPlayerCastPerceptionCommandHandler
 {
-    public async Task<PlayerCastPerceptionDomain?> HandleAsync(UpsertPlayerCastPerceptionCommand command)
+    public async Task<PlayerCastPerceptionDomain> HandleAsync(UpsertPlayerCastPerceptionCommand command)
     {
         var card = await playerCardReadRepository.GetByIdAsync(command.PlayerCardId);
         if (card is null || card.PlayerUserId != command.PlayerUserId) return null;

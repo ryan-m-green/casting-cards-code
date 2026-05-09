@@ -5,7 +5,7 @@ namespace CastLibrary.Repository.Repositories.Update;
 
 public interface IPlayerCardUpdateRepository
 {
-    Task UpdateAsync(Guid id, string name, string race, string @class, string? description, DateTime updatedAt);
+    Task UpdateAsync(Guid id, string name, string race, string @class, string description, DateTime updatedAt);
 }
 
 public class PlayerCardUpdateRepository(
@@ -13,7 +13,7 @@ public class PlayerCardUpdateRepository(
     ILoggingService logging,
     ICorrelationContext correlation) : IPlayerCardUpdateRepository
 {
-    public async Task UpdateAsync(Guid id, string name, string race, string @class, string? description, DateTime updatedAt)
+    public async Task UpdateAsync(Guid id, string name, string race, string @class, string description, DateTime updatedAt)
     {
         var spanId = correlation.NewSpan();
         var @params = new { Id = id, Name = name, Race = race, Class = @class, Description = description, UpdatedAt = updatedAt };

@@ -8,7 +8,7 @@ namespace CastLibrary.Repository.Repositories.Read;
 
 public interface IFactionPlayerNotesReadRepository
 {
-    Task<CampaignFactionPlayerNotesDomain?> GetByFactionInstanceAsync(Guid campaignId, Guid factionInstanceId);
+    Task<CampaignFactionPlayerNotesDomain> GetByFactionInstanceAsync(Guid campaignId, Guid factionInstanceId);
 }
 
 public class FactionPlayerNotesReadRepository(
@@ -17,7 +17,7 @@ public class FactionPlayerNotesReadRepository(
     ICorrelationContext correlation,
     ICampaignFactionPlayerNotesEntityMapper mapper) : IFactionPlayerNotesReadRepository
 {
-    public async Task<CampaignFactionPlayerNotesDomain?> GetByFactionInstanceAsync(Guid campaignId, Guid factionInstanceId)
+    public async Task<CampaignFactionPlayerNotesDomain> GetByFactionInstanceAsync(Guid campaignId, Guid factionInstanceId)
     {
         var spanId  = correlation.NewSpan();
         var @params = new { CampaignId = campaignId, FactionInstanceId = factionInstanceId };

@@ -8,7 +8,7 @@ namespace CastLibrary.Logic.Queries.PlayerCard;
 
 public interface IGetPlayerCardQueryHandler
 {
-    Task<PlayerCardDomain?> HandleAsync(Guid campaignId, Guid playerUserId);
+    Task<PlayerCardDomain> HandleAsync(Guid campaignId, Guid playerUserId);
 }
 
 public class GetPlayerCardQueryHandler(
@@ -17,7 +17,7 @@ public class GetPlayerCardQueryHandler(
     IImageKeyCreator imageKeyCreator,
     IImageStorageOperator imageStorageOperator) : IGetPlayerCardQueryHandler
 {
-    public async Task<PlayerCardDomain?> HandleAsync(Guid campaignId, Guid playerUserId)
+    public async Task<PlayerCardDomain> HandleAsync(Guid campaignId, Guid playerUserId)
     {
         var card = await playerCardReadRepository.GetByCampaignAndPlayerAsync(campaignId, playerUserId);
         if (card is null) return null;

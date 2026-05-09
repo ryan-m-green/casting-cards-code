@@ -8,7 +8,7 @@ namespace CastLibrary.Repository.Repositories.Read;
 
 public interface IPlayerCastPerceptionReadRepository
 {
-    Task<PlayerCastPerceptionDomain?> GetByPlayerCardAndInstanceAsync(Guid playerCardId, Guid? castInstanceId, Guid? locationInstanceId, Guid? sublocationInstanceId);
+    Task<PlayerCastPerceptionDomain> GetByPlayerCardAndInstanceAsync(Guid playerCardId, Guid? castInstanceId, Guid? locationInstanceId, Guid? sublocationInstanceId);
     Task<List<PlayerCastPerceptionDomain>> GetByPlayerCardAsync(Guid playerCardId);
     Task<List<PlayerCastPerceptionDomain>> GetByCastInstanceAsync(Guid castInstanceId);
 }
@@ -24,7 +24,7 @@ public class PlayerCastPerceptionReadRepository(
           location_instance_id as LocationInstanceId, sublocation_instance_id as SublocationInstanceId,
           impression, created_at as CreatedAt, updated_at as UpdatedAt";
 
-    public async Task<PlayerCastPerceptionDomain?> GetByPlayerCardAndInstanceAsync(
+    public async Task<PlayerCastPerceptionDomain> GetByPlayerCardAndInstanceAsync(
         Guid playerCardId, Guid? castInstanceId, Guid? locationInstanceId, Guid? sublocationInstanceId)
     {
         var spanId = correlation.NewSpan();

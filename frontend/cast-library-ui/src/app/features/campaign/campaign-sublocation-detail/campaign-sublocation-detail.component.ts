@@ -228,10 +228,11 @@ export class CampaignSublocationDetailComponent implements OnInit {
         this.imagePreviewUrl.set(null);
         this.http.post<{ imageUrl: string }>(`${environment.apiUrl}/api/sublocations/${sublocationLibId}/image`, formData)
           .subscribe(res => {
+            const freshUrl = res.imageUrl + '?v=' + Date.now();
             this.campaign.update(c => c ? {
               ...c,
               sublocations: c.sublocations.map(l =>
-                l.instanceId === this.sublocationInstanceId() ? { ...l, imageUrl: res.imageUrl } : l
+                l.instanceId === this.sublocationInstanceId() ? { ...l, imageUrl: freshUrl } : l
               )
             } : c);
           });

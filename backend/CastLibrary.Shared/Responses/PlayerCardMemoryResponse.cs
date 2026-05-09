@@ -9,7 +9,7 @@ public class PlayerCardMemoryResponse
     public MemoryType MemoryType { get; set; }
     public int? SessionNumber { get; set; }
     public string Title { get; set; } = string.Empty;
-    public string? Detail { get; set; }
+    public string Detail { get; set; }
     public DateOnly MemoryDate { get; set; }
     public DateTime CreatedAt { get; set; }
 }

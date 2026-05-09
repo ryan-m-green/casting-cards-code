@@ -71,6 +71,6 @@ public class CampaignSublocationInstanceDomain
     public string[] Keywords { get; set; } = [];
     public bool IsPartyAnchor { get; set; }
     public Guid? FactionInstanceId { get; set; }
-    public string? SymbolPath { get; set; }
+    public string SymbolPath { get; set; }
 }
 

@@ -8,7 +8,7 @@ namespace CastLibrary.Repository.Repositories.Read;
 
 public interface ITimeOfDayReadRepository
 {
-    Task<TimeOfDayDomain?> GetByCampaignIdAsync(Guid campaignId);
+    Task<TimeOfDayDomain> GetByCampaignIdAsync(Guid campaignId);
 }
 
 public class TimeOfDayReadRepository(
@@ -19,7 +19,7 @@ public class TimeOfDayReadRepository(
     private NpgsqlConnection CreateConnection() =>
         new(configuration.GetConnectionString("DefaultConnection"));
 
-    public async Task<TimeOfDayDomain?> GetByCampaignIdAsync(Guid campaignId)
+    public async Task<TimeOfDayDomain> GetByCampaignIdAsync(Guid campaignId)
     {
         var spanId  = correlation.NewSpan();
         var @params = new { CampaignId = campaignId };

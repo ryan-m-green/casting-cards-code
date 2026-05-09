@@ -11,7 +11,7 @@ public interface IGetPlayerCampaignDetailQueryHandler
 {
     Task<(CampaignDomain Campaign, List<CampaignLocationInstanceDomain> locations,
         List<CampaignCastInstanceDomain> Casts, List<CampaignSublocationInstanceDomain> Locations,
-        List<CampaignSecretDomain> Secrets, TimeOfDayDomain? TimeOfDay, List<CampaignFactionInstanceDomain> Factions)>
+        List<CampaignSecretDomain> Secrets, TimeOfDayDomain TimeOfDay, List<CampaignFactionInstanceDomain> Factions)>
         HandleAsync(Guid campaignId);
 }
 

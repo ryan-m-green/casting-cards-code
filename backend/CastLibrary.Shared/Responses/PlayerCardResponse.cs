@@ -10,8 +10,8 @@ public class PlayerCardResponse
     public string Name { get; set; } = string.Empty;
     public string Race { get; set; } = string.Empty;
     public string Class { get; set; } = string.Empty;
-    public string? Description { get; set; }
-    public string? ImageUrl { get; set; }
+    public string Description { get; set; }
+    public string ImageUrl { get; set; }
     public List<PlayerCardConditionResponse> Conditions { get; set; } = [];
     public List<CurrencyBalanceResponse> CurrencyBalances { get; set; } = [];
     public List<PlayerCardTraitResponse> Traits { get; set; } = [];

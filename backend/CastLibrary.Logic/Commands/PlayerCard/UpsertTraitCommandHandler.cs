@@ -8,7 +8,7 @@ namespace CastLibrary.Logic.Commands.PlayerCard;
 
 public interface IUpsertTraitCommandHandler
 {
-    Task<PlayerCardTraitDomain?> HandleAsync(UpsertTraitCommand command);
+    Task<PlayerCardTraitDomain> HandleAsync(UpsertTraitCommand command);
 }
 
 public class UpsertTraitCommandHandler(
@@ -17,7 +17,7 @@ public class UpsertTraitCommandHandler(
     IPlayerCardTraitInsertRepository traitInsertRepository,
     IPlayerCardTraitUpdateRepository traitUpdateRepository) : IUpsertTraitCommandHandler
 {
-    public async Task<PlayerCardTraitDomain?> HandleAsync(UpsertTraitCommand command)
+    public async Task<PlayerCardTraitDomain> HandleAsync(UpsertTraitCommand command)
     {
         var card = await playerCardReadRepository.GetByIdAsync(command.PlayerCardId);
         if (card is null || card.PlayerUserId != command.PlayerUserId) return null;

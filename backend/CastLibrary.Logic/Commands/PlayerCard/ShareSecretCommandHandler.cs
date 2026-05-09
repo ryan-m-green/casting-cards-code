@@ -6,14 +6,14 @@ namespace CastLibrary.Logic.Commands.PlayerCard;
 
 public interface IShareSecretCommandHandler
 {
-    Task<PlayerCardSecretDomain?> HandleAsync(ShareSecretCommand command);
+    Task<PlayerCardSecretDomain> HandleAsync(ShareSecretCommand command);
 }
 
 public class ShareSecretCommandHandler(
     IPlayerCardSecretReadRepository secretReadRepository,
     IPlayerCardSecretUpdateRepository secretUpdateRepository) : IShareSecretCommandHandler
 {
-    public async Task<PlayerCardSecretDomain?> HandleAsync(ShareSecretCommand command)
+    public async Task<PlayerCardSecretDomain> HandleAsync(ShareSecretCommand command)
     {
         var secret = await secretReadRepository.GetByIdAsync(command.SecretId);
         if (secret is null || secret.PlayerCardId != command.PlayerCardId) return null;

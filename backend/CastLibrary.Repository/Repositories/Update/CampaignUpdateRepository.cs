@@ -26,8 +26,8 @@ public interface ICampaignUpdateRepository
     Task TravelCastAsync(Guid instanceId, Guid locationInstanceId, Guid sublocationInstanceId);
     Task UpdateFactionInstanceAsync(CampaignFactionInstanceDomain instance);
     Task UpdateFactionInstanceVisibilityAsync(Guid instanceId, bool isVisibleToPlayers);
-    Task UpdateSublocationFactionSymbolAsync(Guid instanceId, Guid? factionInstanceId, string? symbolPath);
-    Task UpdateSublocationPlayerFactionSymbolAsync(Guid instanceId, Guid? factionInstanceId, string? symbolPath);
+    Task UpdateSublocationFactionSymbolAsync(Guid instanceId, Guid? factionInstanceId, string symbolPath);
+    Task UpdateSublocationPlayerFactionSymbolAsync(Guid instanceId, Guid? factionInstanceId, string symbolPath);
     Task SyncPlayerFactionSublocationMembershipAsync(Guid sublocationInstanceId, Guid? factionInstanceId);
     Task UpdateCastFactionSymbolsAsync(Guid instanceId, string factionSymbolsJson);
     Task UpdateCastPlayerFactionSymbolsAsync(Guid instanceId, string factionSymbolsJson);
@@ -398,7 +398,7 @@ public class CampaignUpdateRepository(
         logging.LogDbOperation(correlation.TraceId, spanId, "UPDATE", "campaign_faction_instances", @params, rows);
     }
 
-    public async Task UpdateSublocationFactionSymbolAsync(Guid instanceId, Guid? factionInstanceId, string? symbolPath)
+    public async Task UpdateSublocationFactionSymbolAsync(Guid instanceId, Guid? factionInstanceId, string symbolPath)
     {
         var spanId = correlation.NewSpan();
         var @params = new { InstanceId = instanceId, FactionInstanceId = factionInstanceId, SymbolPath = symbolPath };
@@ -416,7 +416,7 @@ public class CampaignUpdateRepository(
         logging.LogDbOperation(correlation.TraceId, spanId, "UPDATE", "campaign_sublocation_instances", @params, rows);
     }
 
-    public async Task UpdateSublocationPlayerFactionSymbolAsync(Guid instanceId, Guid? factionInstanceId, string? symbolPath)
+    public async Task UpdateSublocationPlayerFactionSymbolAsync(Guid instanceId, Guid? factionInstanceId, string symbolPath)
     {
         var spanId = correlation.NewSpan();
         var @params = new { InstanceId = instanceId, FactionInstanceId = factionInstanceId, SymbolPath = symbolPath };

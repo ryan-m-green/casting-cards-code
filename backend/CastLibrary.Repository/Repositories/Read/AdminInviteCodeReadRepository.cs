@@ -8,7 +8,7 @@ namespace CastLibrary.Repository.Repositories.Read;
 
 public interface IAdminInviteCodeReadRepository
 {
-    Task<AdminInviteCodeDomain?> GetCurrentAsync();
+    Task<AdminInviteCodeDomain> GetCurrentAsync();
 }
 
 public class AdminInviteCodeReadRepository(
@@ -17,7 +17,7 @@ public class AdminInviteCodeReadRepository(
     ICorrelationContext correlation,
     IAdminInviteCodeEntityMapper mapper) : IAdminInviteCodeReadRepository
 {
-    public async Task<AdminInviteCodeDomain?> GetCurrentAsync()
+    public async Task<AdminInviteCodeDomain> GetCurrentAsync()
     {
         var spanId = correlation.NewSpan();
         const string sql =

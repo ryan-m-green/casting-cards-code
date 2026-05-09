@@ -28,8 +28,8 @@ public class CampaignDetailResponse
     public List<CampaignSecretResponse> Secrets { get; set; } = [];
     public List<CampaignPlayerResponse> Players { get; set; } = [];
     public List<CampaignCastRelationshipResponse> Relationships { get; set; } = [];
-    public CampaignInviteCodeResponse? InviteCode { get; set; }
-    public TimeOfDayResponse? TimeOfDay { get; set; }
+    public CampaignInviteCodeResponse InviteCode { get; set; }
+    public TimeOfDayResponse TimeOfDay { get; set; }
     public List<CampaignFactionInstanceResponse> Factions { get; set; } = [];
 }
 
@@ -46,7 +46,7 @@ public class CampaignCastRelationshipResponse
     public Guid SourceCastInstanceId { get; set; }
     public Guid TargetCastInstanceId { get; set; }
     public int Value { get; set; }
-    public string? Explanation { get; set; }
+    public string Explanation { get; set; }
     public DateTime CreatedAt { get; set; }
     public DateTime UpdatedAt { get; set; }
 }
@@ -135,7 +135,7 @@ public class CampaignSublocationInstanceResponse
     public string[] Keywords { get; set; } = [];
     public bool IsPartyAnchor { get; set; }
     public Guid? FactionInstanceId { get; set; }
-    public string? SymbolPath { get; set; }
+    public string SymbolPath { get; set; }
 }
 
 public class CampaignPlayerResponse

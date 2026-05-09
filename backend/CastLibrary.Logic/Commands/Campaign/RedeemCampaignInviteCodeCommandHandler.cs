@@ -10,7 +10,7 @@ public record RedeemCampaignInviteCodeResult(CampaignDomain Campaign, CampaignPl
 public interface IRedeemCampaignInviteCodeCommandHandler
 {
     /// <returns>The campaign and player that joined, or null if the code was invalid/expired/forbidden.</returns>
-    Task<RedeemCampaignInviteCodeResult?> HandleAsync(RedeemCampaignInviteCodeCommand command);
+    Task<RedeemCampaignInviteCodeResult> HandleAsync(RedeemCampaignInviteCodeCommand command);
 }
 
 public class RedeemCampaignInviteCodeCommandHandler(
@@ -19,7 +19,7 @@ public class RedeemCampaignInviteCodeCommandHandler(
     ICampaignPlayerInsertRepository playerInsertRepository,
     ICampaignReadRepository campaignRepository) : IRedeemCampaignInviteCodeCommandHandler
 {
-    public async Task<RedeemCampaignInviteCodeResult?> HandleAsync(RedeemCampaignInviteCodeCommand command)
+    public async Task<RedeemCampaignInviteCodeResult> HandleAsync(RedeemCampaignInviteCodeCommand command)
     {
         var invite = await inviteCodeRepository.GetByCodeAsync(command.Request.Code);
         if (invite is null) return null;

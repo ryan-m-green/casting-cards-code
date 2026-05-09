@@ -360,10 +360,11 @@ export class CampaignCastDetailComponent implements OnInit {
         this.imagePreviewUrl.set(null);
         this.http.post<{ imageUrl: string }>(`${environment.apiUrl}/api/cast/${castId}/image`, formData)
           .subscribe(res => {
+            const freshUrl = res.imageUrl + '?v=' + Date.now();
             this.campaign.update(c => c ? {
               ...c,
               casts: c.casts.map(ca =>
-                ca.instanceId === this.castInstanceId() ? { ...ca, imageUrl: res.imageUrl } : ca
+                ca.instanceId === this.castInstanceId() ? { ...ca, imageUrl: freshUrl } : ca
               )
             } : c);
           });
