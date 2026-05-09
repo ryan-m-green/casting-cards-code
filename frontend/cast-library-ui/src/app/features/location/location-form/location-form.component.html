@@ -16,30 +16,50 @@
   }
 
   <form [formGroup]="form">
-    <div class="wr form-row-gap">
-      <div class="form-field-wide">
-        <label for="location-name-input" class="fi-label">Location Name</label>
-        <input id="location-name-input" class="fi" formControlName="name" placeholder="Irongate" autocomplete="off" />
-      </div>
-      <div class="form-field">
-        <label for="location-classification-input" class="fi-label">Classification</label>
-        <input id="location-classification-input" class="fi" formControlName="classification" placeholder="Major Port Location" autocomplete="off" />
-      </div>
-    </div>
-    <div class="wr form-row-gap">
-      <div class="form-field">
-        <label for="location-size-input" class="fi-label">Size</label>
-        <input id="location-size-input" class="fi" formControlName="size" list="size-options" placeholder="Large" autocomplete="off" />
-        <datalist id="size-options">
-          @for (s of sizeOptions; track s) { <option [value]="s"></option> }
-        </datalist>
-      </div>
-      <div class="form-field">
-        <label for="location-condition-input" class="fi-label">Condition</label>
-        <input id="location-condition-input" class="fi" formControlName="condition" list="condition-options" placeholder="Prosperous" autocomplete="off" />
-        <datalist id="condition-options">
-          @for (c of conditionOptions; track c) { <option [value]="c"></option> }
-        </datalist>
+    <div class="form-portrait-new-row">
+      @if (!locationId()) {
+        <label class="form-portrait-label" [class.form-portrait-label--filled]="imagePreviewUrl()">
+          <input type="file" accept="image/jpeg,image/png,image/webp" class="form-portrait-file-input" (change)="onPortraitFileSelected($event)" />
+          @if (imagePreviewUrl()) {
+            <img [src]="imagePreviewUrl()!" class="form-portrait-img" alt="Portrait preview" />
+            <div class="form-portrait-overlay">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+            </div>
+          } @else {
+            <div class="form-portrait-empty">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+              <span class="form-portrait-hint">Portrait<br><em>optional</em></span>
+            </div>
+          }
+        </label>
+      }
+      <div class="form-portrait-fields">
+        <div class="wr form-row-gap">
+          <div class="form-field-wide">
+            <label for="location-name-input" class="fi-label">Location Name</label>
+            <input id="location-name-input" class="fi" formControlName="name" placeholder="Irongate" autocomplete="off" />
+          </div>
+          <div class="form-field">
+            <label for="location-classification-input" class="fi-label">Classification</label>
+            <input id="location-classification-input" class="fi" formControlName="classification" placeholder="Major Port Location" autocomplete="off" />
+          </div>
+        </div>
+        <div class="wr form-row-gap">
+          <div class="form-field">
+            <label for="location-size-input" class="fi-label">Size</label>
+            <input id="location-size-input" class="fi" formControlName="size" list="size-options" placeholder="Large" autocomplete="off" />
+            <datalist id="size-options">
+              @for (s of sizeOptions; track s) { <option [value]="s"></option> }
+            </datalist>
+          </div>
+          <div class="form-field">
+            <label for="location-condition-input" class="fi-label">Condition</label>
+            <input id="location-condition-input" class="fi" formControlName="condition" list="condition-options" placeholder="Prosperous" autocomplete="off" />
+            <datalist id="condition-options">
+              @for (c of conditionOptions; track c) { <option [value]="c"></option> }
+            </datalist>
+          </div>
+        </div>
       </div>
     </div>
     <div class="wr form-row-gap">

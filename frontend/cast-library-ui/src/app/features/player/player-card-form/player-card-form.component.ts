@@ -1,11 +1,10 @@
-import { Component, OnInit, signal, computed, inject, HostListener, ElementRef } from '@angular/core';
+import { Component, OnInit, signal, computed, inject, HostListener } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../../environments/environment';
 import { PlayerCard } from '../../../shared/models/player-card.model';
-import { CharacterEditorComponent } from '../../../shared/components/character-editor/character-editor.component';
 
 const RACE_OPTIONS = [
   'Human', 'Elf', 'Half-Elf', 'Dwarf', 'Halfling', 'Gnome', 'Half-Orc', 'Tiefling',
@@ -22,7 +21,7 @@ const CLASS_OPTIONS = [
 @Component({
   selector: 'app-player-card-form',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, CharacterEditorComponent],
+  imports: [CommonModule, ReactiveFormsModule],
   templateUrl: './player-card-form.component.html',
   styleUrl: './player-card-form.component.scss',
 })
@@ -31,11 +30,14 @@ export class PlayerCardFormComponent implements OnInit {
   private router  = inject(Router);
   private http    = inject(HttpClient);
   private fb      = inject(FormBuilder);
-  private elRef   = inject(ElementRef);
 
   campaignId = signal('');
   saving     = signal(false);
   error      = signal('');
+
+  // ── Portrait (in-memory until card is saved) ────────────────────────────
+  imageFile       = signal<File | null>(null);
+  imagePreviewUrl = signal<string | null>(null);
 
   // ── Multi-pill state ────────────────────────────────────────────────────
   selectedRaces    = signal<string[]>([]);
@@ -63,9 +65,7 @@ export class PlayerCardFormComponent implements OnInit {
   classError  = signal(false);
 
   // ── Post-save state ────────────────────────────────────────────────────
-  savedCard      = signal<PlayerCard | null>(null);
-  imageUrl       = signal<string | null>(null);
-  showImageModal = signal(false);
+  savedCard = signal<PlayerCard | null>(null);
 
   form = this.fb.group({
     name:        ['', [Validators.required, Validators.maxLength(80)]],
@@ -181,6 +181,16 @@ export class PlayerCardFormComponent implements OnInit {
     }
   }
 
+  // ── Portrait file selection ─────────────────────────────────────────────
+  onPortraitFileSelected(event: Event) {
+    const file = (event.target as HTMLInputElement).files?.[0];
+    if (!file) return;
+    const prev = this.imagePreviewUrl();
+    if (prev) URL.revokeObjectURL(prev);
+    this.imageFile.set(file);
+    this.imagePreviewUrl.set(URL.createObjectURL(file));
+  }
+
   // ── Form submit ─────────────────────────────────────────────────────────
   submit() {
     this.form.markAllAsTouched();
@@ -206,8 +216,25 @@ export class PlayerCardFormComponent implements OnInit {
       `${environment.apiUrl}/api/campaigns/${this.campaignId()}/player-cards`, body
     ).subscribe({
       next: card => {
-        this.saving.set(false);
-        this.savedCard.set(card);
+        const file = this.imageFile();
+        if (file) {
+          const formData = new FormData();
+          formData.append('file', file);
+          const prev = this.imagePreviewUrl();
+          if (prev) URL.revokeObjectURL(prev);
+          this.imageFile.set(null);
+          this.imagePreviewUrl.set(null);
+          this.http.post<{ imageUrl: string }>(
+            `${environment.apiUrl}/api/campaigns/${this.campaignId()}/player-cards/${card.id}/image`,
+            formData
+          ).subscribe({
+            next:  () => { this.saving.set(false); this.savedCard.set(card); },
+            error: () => { this.saving.set(false); this.savedCard.set(card); },
+          });
+        } else {
+          this.saving.set(false);
+          this.savedCard.set(card);
+        }
       },
       error: () => {
         this.saving.set(false);
@@ -215,9 +242,6 @@ export class PlayerCardFormComponent implements OnInit {
       },
     });
   }
-
-  // ── Image upload ────────────────────────────────────────────────────────
-  onPortraitUploaded(url: string) { this.imageUrl.set(url); }
 
   enterCampaign() {
     this.router.navigate(['/player/campaign', this.campaignId()]);

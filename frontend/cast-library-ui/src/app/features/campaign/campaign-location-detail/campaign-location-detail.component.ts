@@ -86,6 +86,8 @@ export class CampaignLocationDetailComponent implements OnInit {
     ALL_LANGUAGES.filter(l => !this.editSelectedLanguages().includes(l))
   );
   editDmNotes        = signal('');
+  imageFile          = signal<File | null>(null);
+  imagePreviewUrl    = signal<string | null>(null);
 
   // Add secret
   addingSecret     = signal(false);
@@ -216,10 +218,15 @@ export class CampaignLocationDetailComponent implements OnInit {
   }
 
   cancelEditing() {
+    const prev = this.imagePreviewUrl();
+    if (prev) URL.revokeObjectURL(prev);
+    this.imageFile.set(null);
+    this.imagePreviewUrl.set(null);
     this.editing.set(false);
   }
 
   saveDetails(syncLibrary = false) {
+    const locationLibId = this.location()?.sourceLocationId;
     const body = {
       name:           this.editName(),
       description:    this.editDescription(),
@@ -254,7 +261,34 @@ export class CampaignLocationDetailComponent implements OnInit {
         location: this.location() ? { ...this.location()!, name: body.name } : null,
       }, '56px');
       this.editing.set(false);
+      const file = this.imageFile();
+      if (file && locationLibId) {
+        const formData = new FormData();
+        formData.append('file', file);
+        const prev = this.imagePreviewUrl();
+        if (prev) URL.revokeObjectURL(prev);
+        this.imageFile.set(null);
+        this.imagePreviewUrl.set(null);
+        this.http.post<{ imageUrl: string }>(`${environment.apiUrl}/api/locations/${locationLibId}/image`, formData)
+          .subscribe(res => {
+            this.campaign.update(c => c ? {
+              ...c,
+              locations: c.locations.map(l =>
+                l.instanceId === this.locationInstanceId() ? { ...l, imageUrl: res.imageUrl } : l
+              )
+            } : c);
+          });
+      }
     });
+  }
+
+  onPortraitFileSelected(event: Event) {
+    const file = (event.target as HTMLInputElement).files?.[0];
+    if (!file) return;
+    const prev = this.imagePreviewUrl();
+    if (prev) URL.revokeObjectURL(prev);
+    this.imageFile.set(file);
+    this.imagePreviewUrl.set(URL.createObjectURL(file));
   }
 
   saveToLibrary() {

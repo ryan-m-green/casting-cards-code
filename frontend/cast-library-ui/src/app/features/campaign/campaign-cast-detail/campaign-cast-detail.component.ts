@@ -75,6 +75,8 @@ export class CampaignCastDetailComponent implements OnInit {
   editVoicePlacement   = signal<string[]>([]);
   editVoiceNotes       = signal('');
   editDmNotes          = signal('');
+  imageFile            = signal<File | null>(null);
+  imagePreviewUrl      = signal<string | null>(null);
 
   // Add secret
   addingSecret     = signal(false);
@@ -285,6 +287,10 @@ export class CampaignCastDetailComponent implements OnInit {
   }
 
   cancelEditing() {
+    const prev = this.imagePreviewUrl();
+    if (prev) URL.revokeObjectURL(prev);
+    this.imageFile.set(null);
+    this.imagePreviewUrl.set(null);
     this.editing.set(false);
   }
 
@@ -298,6 +304,7 @@ export class CampaignCastDetailComponent implements OnInit {
   }
 
   saveDetails(syncLibrary = false) {
+    const castId = this.cast()?.id;
     const body = {
       name:              this.editName(),
       publicDescription: this.editPublicDescription(),
@@ -343,7 +350,34 @@ export class CampaignCastDetailComponent implements OnInit {
         }, '56px');
       }
       this.editing.set(false);
+      const file = this.imageFile();
+      if (file && castId) {
+        const formData = new FormData();
+        formData.append('file', file);
+        const prev = this.imagePreviewUrl();
+        if (prev) URL.revokeObjectURL(prev);
+        this.imageFile.set(null);
+        this.imagePreviewUrl.set(null);
+        this.http.post<{ imageUrl: string }>(`${environment.apiUrl}/api/cast/${castId}/image`, formData)
+          .subscribe(res => {
+            this.campaign.update(c => c ? {
+              ...c,
+              casts: c.casts.map(ca =>
+                ca.instanceId === this.castInstanceId() ? { ...ca, imageUrl: res.imageUrl } : ca
+              )
+            } : c);
+          });
+      }
     });
+  }
+
+  onPortraitFileSelected(event: Event) {
+    const file = (event.target as HTMLInputElement).files?.[0];
+    if (!file) return;
+    const prev = this.imagePreviewUrl();
+    if (prev) URL.revokeObjectURL(prev);
+    this.imageFile.set(file);
+    this.imagePreviewUrl.set(URL.createObjectURL(file));
   }
 
   saveToLibrary() {

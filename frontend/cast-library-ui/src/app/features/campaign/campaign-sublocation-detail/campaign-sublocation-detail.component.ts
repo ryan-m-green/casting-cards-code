@@ -64,6 +64,8 @@ export class CampaignSublocationDetailComponent implements OnInit {
   editName        = signal('');
   editDescription = signal('');
   editDmNotes     = signal('');
+  imageFile       = signal<File | null>(null);
+  imagePreviewUrl = signal<string | null>(null);
 
   // Add secret
   addingSecret     = signal(false);
@@ -184,10 +186,15 @@ export class CampaignSublocationDetailComponent implements OnInit {
   }
 
   cancelEditing() {
+    const prev = this.imagePreviewUrl();
+    if (prev) URL.revokeObjectURL(prev);
+    this.imageFile.set(null);
+    this.imagePreviewUrl.set(null);
     this.editing.set(false);
   }
 
   saveDetails(syncLibrary = false) {
+    const sublocationLibId = this.sublocation()?.sourceSublocationId;
     const body = {
       name:        this.editName(),
       description: this.editDescription(),
@@ -211,7 +218,34 @@ export class CampaignSublocationDetailComponent implements OnInit {
         location: this.parentLocation(),
       }, '56px');
       this.editing.set(false);
+      const file = this.imageFile();
+      if (file && sublocationLibId) {
+        const formData = new FormData();
+        formData.append('file', file);
+        const prev = this.imagePreviewUrl();
+        if (prev) URL.revokeObjectURL(prev);
+        this.imageFile.set(null);
+        this.imagePreviewUrl.set(null);
+        this.http.post<{ imageUrl: string }>(`${environment.apiUrl}/api/sublocations/${sublocationLibId}/image`, formData)
+          .subscribe(res => {
+            this.campaign.update(c => c ? {
+              ...c,
+              sublocations: c.sublocations.map(l =>
+                l.instanceId === this.sublocationInstanceId() ? { ...l, imageUrl: res.imageUrl } : l
+              )
+            } : c);
+          });
+      }
     });
+  }
+
+  onPortraitFileSelected(event: Event) {
+    const file = (event.target as HTMLInputElement).files?.[0];
+    if (!file) return;
+    const prev = this.imagePreviewUrl();
+    if (prev) URL.revokeObjectURL(prev);
+    this.imageFile.set(file);
+    this.imagePreviewUrl.set(URL.createObjectURL(file));
   }
 
   saveToLibrary() {

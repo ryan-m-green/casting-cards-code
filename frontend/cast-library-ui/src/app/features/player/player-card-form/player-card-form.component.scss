@@ -1,4 +1,4 @@
-@use '../../../../styles/variables' as v;
+﻿@use '../../../../styles/variables' as v;
 
 :host {
   display: block;
@@ -6,7 +6,7 @@
   min-height: 100%;
 }
 
-// ─── Gate canvas ────────────────────────────────────────────────────────────
+// â”€â”€â”€ Canvas â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 .gate-canvas {
   width: 100%;
@@ -17,94 +17,218 @@
   justify-content: center;
   padding: 40px 20px;
   box-sizing: border-box;
-  animation: gate-breathe 6s ease-in-out infinite;
 }
 
-@keyframes gate-breathe {
-  0%, 100% {
-    box-shadow:
-      inset 0 0 0    1px v.$campaign-portal-border-bold,
-      inset 0 0  8px  3px v.$campaign-portal-bg-placeholder,
-      inset 0 0 22px  8px v.$campaign-portal-bg-hover;
-  }
-  50% {
-    box-shadow:
-      inset 0 0 0    1px v.$campaign-portal-border-medium,
-      inset 0 0 12px  4px v.$campaign-portal-bg-hover,
-      inset 0 0 32px 12px v.$color-ext-455;
-  }
-}
+// â”€â”€â”€ Panel container â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 .gate-card {
   width: 100%;
-  max-width: 480px;
-  background: v.$color-ext-456;
-  border: 1px solid v.$campaign-portal-border-accent;
-  border-radius: 12px;
-  padding: 40px 36px 36px;
-  box-shadow:
-    0 0 30px v.$campaign-portal-border-light,
-    0 8px 32px v.$journal-spine-shadow;
+  max-width: 520px;
+  background: v.$campaign-portal-bg-dark;
+  border: 1px solid rgba(v.$location-blue, 0.40);
+  border-radius: 6px;
+  overflow: hidden;
+  position: relative;
 
   &--wide {
     max-width: 560px;
   }
+
+  &::before,
+  &::after {
+    content: '';
+    position: absolute;
+    width: 14px;
+    height: 14px;
+    border-color: rgba(v.$location-blue, 0.45);
+    border-style: solid;
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  &::before {
+    top: -1px;
+    left: -1px;
+    border-width: 2px 0 0 2px;
+    border-radius: 4px 0 0 0;
+  }
+
+  &::after {
+    bottom: -1px;
+    right: -1px;
+    border-width: 0 2px 2px 0;
+    border-radius: 0 0 4px 0;
+  }
 }
 
-// ─── Header ─────────────────────────────────────────────────────────────────
+// â”€â”€â”€ Header â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 .gate-header {
-  text-align: center;
-  margin-bottom: 32px;
+  padding: 20px 16px 16px;
+  border-bottom: 1px solid rgba(v.$location-blue, 0.12);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
 }
 
 .gate-rune {
-  font-size: 28px;
-  opacity: 0.6;
-  margin-bottom: 10px;
+  font-size: 18px;
+  opacity: 0.45;
+  color: rgba(v.$location-blue, 0.9);
 }
 
 .gate-title {
   font-family: v.$font-header;
-  font-size: 20px;
+  font-size: 13px;
   font-weight: 600;
-  letter-spacing: 0.22em;
+  letter-spacing: 0.28em;
   text-transform: uppercase;
-  color: v.$color-ext-457;
+  color: v.$campaign-portal-text-softer;
   text-shadow:
-    0 0 18px v.$campaign-portal-border-focus,
+    0 0 18px rgba(v.$location-blue, 0.35),
     0 1px 3px v.$color-shadow-dark;
-  margin: 0 0 8px;
+  margin: 0;
 }
 
 .gate-subtitle {
   font-family: v.$font-body;
-  font-size: 14px;
-  color: v.$color-ext-458;
+  font-size: 12px;
+  color: v.$campaign-portal-text-secondary;
   margin: 0;
 }
 
-// ─── Form layout ─────────────────────────────────────────────────────────────
+// â”€â”€â”€ Form layout â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 .gate-form {
   display: flex;
   flex-direction: column;
-  gap: 20px;
 }
 
 .field-group {
   display: flex;
   flex-direction: column;
   gap: 6px;
+  padding: 12px 16px;
+  border-bottom: 1px solid rgba(v.$location-blue, 0.08);
   position: relative;
+
+  &--flex {
+    flex: 1;
+    min-width: 0;
+    border-bottom: none;
+    padding: 0;
+  }
 }
+
+// ─── Name + Portrait row ──────────────────────────────────────────────────────
+
+.name-portrait-row {
+  display: flex;
+  gap: 12px;
+  align-items: stretch;
+  padding: 12px 16px;
+  border-bottom: 1px solid rgba(v.$location-blue, 0.08);
+  margin-bottom: 12px;
+}
+
+.portrait-label {
+  flex-shrink: 0;
+  display: inline-flex;
+  position: relative;
+  width: 68px;
+  height: 96px;
+  border-radius: 4px;
+  border: 1px dashed rgba(v.$location-blue, 0.28);
+  cursor: pointer;
+  overflow: hidden;
+  background: v.$color-overlay-darker;
+  transition: border-color 0.18s ease;
+
+  &:hover {
+    border-color: rgba(v.$location-blue, 0.55);
+
+    .portrait-overlay { opacity: 1; }
+    .portrait-empty   { opacity: 0.9; }
+  }
+
+  &--filled {
+    border-style: solid;
+    border-color: rgba(v.$location-blue, 0.40);
+  }
+}
+
+.portrait-file-input {
+  position: absolute;
+  width: 0;
+  height: 0;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.portrait-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.portrait-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.50);
+  color: rgba(v.$location-blue, 0.9);
+  opacity: 0;
+  transition: opacity 0.18s ease;
+}
+
+.portrait-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  width: 100%;
+  height: 100%;
+  color: rgba(v.$location-blue, 0.35);
+  transition: opacity 0.18s ease;
+}
+
+.portrait-hint {
+  font-size: 8px;
+  text-align: center;
+  line-height: 1.4;
+  font-family: v.$font-header;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+
+  em {
+    font-style: italic;
+    font-size: 7px;
+    opacity: 0.75;
+    text-transform: none;
+  }
+}
+
+// â”€â”€â”€ Label + divider â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 .field-label {
   font-family: v.$font-header;
-  font-size: 9px;
-  letter-spacing: 0.18em;
+  font-size: 7px;
+  letter-spacing: 0.2em;
   text-transform: uppercase;
-  color: v.$color-ext-459;
+  color: rgba(v.$location-blue, 0.85);
+  white-space: nowrap;
+}
+
+.detail-line {
+  height: 1px;
+  width: 100%;
+  background: linear-gradient(to right, rgba(v.$location-blue, 0.22), transparent);
+  margin-bottom: 2px;
 }
 
 .required {
@@ -113,94 +237,85 @@
 }
 
 .optional {
-  color: v.$color-ext-461;
+  color: rgba(v.$location-blue, 0.45);
   font-size: 8px;
 }
 
-// ─── Text inputs / textarea ───────────────────────────────────────────────────
+// â”€â”€â”€ Inputs â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
-.field-input {
-  background: v.$color-ext-346;
-  border: 1px solid v.$campaign-portal-border-medium;
-  border-radius: 6px;
-  color: v.$color-ext-457;
+.detail-input {
+  background: v.$color-overlay-darker;
+  border: 1px solid rgba(v.$location-blue, 0.28);
+  border-radius: 3px;
+  padding: 5px 8px;
   font-family: v.$font-body;
-  font-size: 15px;
-  padding: 10px 12px;
-  outline: none;
-  transition: border-color 0.18s ease, box-shadow 0.18s ease;
+  font-size: 14px;
+  color: v.$campaign-portal-text-muted;
   width: 100%;
   box-sizing: border-box;
+  outline: none;
+  transition: border-color 0.18s ease;
 
   &::placeholder {
-    color: v.$color-ext-462;
+    color: rgba(v.$location-blue, 0.30);
   }
 
   &:focus {
-    border-color: v.$campaign-portal-border-focus;
-    box-shadow: 0 0 0 2px v.$campaign-portal-border-light;
+    border-color: rgba(v.$location-blue, 0.65);
+  }
+
+  &--block {
+    resize: vertical;
+    font-size: 13px;
+    line-height: 1.6;
+    min-height: 72px;
   }
 
   &--error {
     border-color: v.$color-ext-463;
-
-    &:focus {
-      box-shadow: 0 0 0 2px v.$color-ext-464;
-    }
   }
-}
-
-.field-textarea {
-  resize: vertical;
-  min-height: 90px;
-  line-height: 1.55;
 }
 
 .field-error {
   font-family: v.$font-body;
-  font-size: 12px;
+  font-size: 11px;
   color: v.$color-ext-460;
 }
 
-// ─── Multi-pill select ────────────────────────────────────────────────────────
+// â”€â”€â”€ Multi-pill select â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 .pill-select {
   position: relative;
   display: flex;
   align-items: center;
   gap: 8px;
-  background: v.$color-ext-346;
-  border: 1px solid v.$campaign-portal-border-medium;
-  border-radius: 6px;
-  padding: 8px 10px;
+  background: v.$color-overlay-darker;
+  border: 1px solid rgba(v.$location-blue, 0.28);
+  border-radius: 3px;
+  padding: 5px 8px;
   cursor: pointer;
-  transition: border-color 0.18s ease, box-shadow 0.18s ease;
-  min-height: 42px;
+  transition: border-color 0.18s ease;
+  min-height: 34px;
   box-sizing: border-box;
   user-select: none;
 
   &:hover {
-    border-color: v.$color-ext-465;
+    border-color: rgba(v.$location-blue, 0.45);
   }
 
   &--open {
-    border-color: v.$campaign-portal-border-focus;
-    box-shadow: 0 0 0 2px v.$campaign-portal-border-light;
+    border-color: rgba(v.$location-blue, 0.65);
   }
 
   &--error {
     border-color: v.$color-ext-463;
-
-    &.pill-select--open {
-      box-shadow: 0 0 0 2px v.$color-ext-464;
-    }
   }
 }
 
 .pill-select-inner {
   display: flex;
   flex-wrap: wrap;
-  gap: 5px;
+  gap: 4px;
   flex: 1;
   align-items: center;
 }
@@ -209,15 +324,15 @@
   background: transparent;
   border: none;
   outline: none;
-  color: v.$color-ext-457;
+  color: v.$campaign-portal-text-muted;
   font-family: v.$font-body;
-  font-size: 15px;
+  font-size: 13px;
   flex: 1;
-  min-width: 120px;
-  padding: 4px 0;
+  min-width: 100px;
+  padding: 2px 0;
 
   &::placeholder {
-    color: v.$color-ext-462;
+    color: rgba(v.$location-blue, 0.30);
   }
 }
 
@@ -225,42 +340,38 @@
   display: inline-flex;
   align-items: center;
   gap: 4px;
-  background: v.$campaign-portal-bg-placeholder;
-  border: 1px solid v.$campaign-portal-border-hover;
-  border-radius: 4px;
-  padding: 2px 6px 2px 8px;
-  font-family: v.$font-body;
-  font-size: 13px;
-  color: v.$color-ext-466;
-  line-height: 1.4;
+  background: rgba(v.$location-blue, 0.08);
+  border: 1px solid rgba(v.$location-blue, 0.25);
+  border-radius: 2px;
+  padding: 1px 6px 1px 8px;
+  font-family: v.$font-header;
+  font-size: 7px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(v.$location-blue, 0.90);
+  line-height: 1.6;
 }
 
 .pill-remove {
   background: none;
   border: none;
   cursor: pointer;
-  font-size: 14px;
+  font-size: 13px;
   line-height: 1;
-  color: v.$color-ext-467;
+  color: rgba(v.$location-blue, 0.50);
   padding: 0;
   display: flex;
   align-items: center;
   transition: color 0.15s ease;
 
   &:hover {
-    color: v.$color-ext-468;
+    color: rgba(v.$location-blue, 0.85);
   }
 }
 
-.pill-placeholder {
-  font-family: v.$font-body;
-  font-size: 15px;
-  color: v.$color-ext-462;
-}
-
 .pill-chevron {
-  font-size: 11px;
-  color: v.$color-ext-467;
+  font-size: 10px;
+  color: rgba(v.$location-blue, 0.50);
   flex-shrink: 0;
   transition: transform 0.18s ease;
 
@@ -274,84 +385,115 @@
   top: calc(100% + 4px);
   left: 0;
   right: 0;
-  background: v.$color-ext-469;
-  border: 1px solid v.$color-ext-465;
-  border-radius: 6px;
-  box-shadow: 0 8px 24px v.$journal-spine-band-shadow;
+  background: v.$campaign-portal-bg-dark;
+  border: 1px solid rgba(v.$location-blue, 0.35);
+  border-radius: 4px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
   z-index: 100;
-  max-height: 220px;
+  max-height: 200px;
   overflow-y: auto;
 }
 
 .pill-dropdown-item {
-  padding: 9px 14px;
+  padding: 8px 12px;
   font-family: v.$font-body;
-  font-size: 14px;
-  color: v.$color-ext-470;
+  font-size: 13px;
+  color: v.$campaign-portal-text-secondary;
   cursor: pointer;
-  transition: background 0.12s ease;
+  transition: background 0.12s ease, color 0.12s ease;
 
   &:hover {
-    background: v.$color-ext-22;
-    color: v.$color-ext-457;
+    background: rgba(v.$location-blue, 0.08);
+    color: v.$campaign-portal-text-bright;
   }
 
   &:not(:last-child) {
-    border-bottom: 1px solid v.$campaign-portal-bg-hover;
+    border-bottom: 1px solid rgba(v.$location-blue, 0.06);
   }
 }
 
 .pill-dropdown-empty {
-  padding: 10px 14px;
+  padding: 10px 12px;
   font-family: v.$font-body;
-  font-size: 13px;
+  font-size: 12px;
   font-style: italic;
-  color: v.$color-ext-471;
+  color: rgba(v.$location-blue, 0.45);
   text-align: center;
 }
 
-// ─── Error banner ─────────────────────────────────────────────────────────────
+// â”€â”€â”€ Error banner â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 .form-error-banner {
+  margin: 0 16px;
   background: v.$color-ext-360;
   border: 1px solid v.$color-ext-353;
-  border-radius: 6px;
-  padding: 10px 14px;
+  border-radius: 4px;
+  padding: 8px 12px;
   font-family: v.$font-body;
-  font-size: 13px;
+  font-size: 12px;
   color: v.$color-ext-472;
 }
 
-// ─── Submit button ────────────────────────────────────────────────────────────
+// ─── Form action bar ──────────────────────────────────────────────────────────
 
-.gate-submit-btn {
-  margin-top: 8px;
-  padding: 14px 24px;
-  background: v.$campaign-portal-border-strong;
-  border: 1px solid v.$campaign-portal-border-active;
-  border-radius: 8px;
-  color: v.$color-ext-457;
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  padding: 10px 16px 14px;
+}
+
+.form-submit-btn {
+  font-size: 8px;
+  padding: 4px 14px;
+  letter-spacing: 0.16em;
+}
+
+// â”€â”€â”€ Save / action button â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+
+.detail-save-btn {
+  display: block;
+  width: calc(100% - 32px);
+  margin: 14px 16px 16px;
+  padding: 8px 24px;
+  background: v.$color-ext-37;
+  border: 1px solid v.$color-ext-38;
+  border-radius: 4px;
+  color: v.$color-ext-39;
   font-family: v.$font-header;
-  font-size: 10px;
+  font-size: 8px;
   letter-spacing: 0.2em;
   text-transform: uppercase;
   cursor: pointer;
-  transition: background 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+  transition: background 0.18s ease, border-color 0.18s ease, color 0.18s ease;
+  box-sizing: border-box;
 
   &:hover:not(:disabled) {
-    background: v.$campaign-portal-border-hover;
-    border-color: v.$color-ext-473;
-    box-shadow: 0 0 16px v.$campaign-portal-border-strong;
+    background: v.$color-ext-40;
+    border-color: v.$color-ext-41;
+    color: v.$campaign-portal-glow-bright;
   }
 
   &:disabled {
-    opacity: 0.55;
+    opacity: 0.45;
     cursor: not-allowed;
   }
 
-  &--enter {
+  &--wide {
     width: 100%;
-    margin-top: 0;
+    margin: 0;
+    border-radius: 0;
+    border-top: 1px solid rgba(v.$location-blue, 0.12);
+    border-left: none;
+    border-right: none;
+    border-bottom: none;
+    background: rgba(v.$location-blue, 0.04);
+    padding: 14px;
+    color: rgba(v.$location-blue, 0.85);
+
+    &:hover {
+      background: rgba(v.$location-blue, 0.10);
+      color: rgba(v.$location-blue, 1);
+    }
   }
 }
 
@@ -369,12 +511,13 @@
   40%           { opacity: 1; }
 }
 
-// ─── Post-save card preview ───────────────────────────────────────────────────
+// â”€â”€â”€ Post-save card preview â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 .card-preview-area {
   display: flex;
   justify-content: center;
-  margin-bottom: 28px;
+  padding: 24px 16px;
+  border-bottom: 1px solid rgba(v.$location-blue, 0.08);
 
   .pc-card {
     cursor: pointer;
@@ -382,7 +525,8 @@
 
     &:hover {
       transform: translateY(-3px);
-      box-shadow: 0 8px 24px v.$campaign-portal-border-medium;
+      box-shadow: 0 8px 24px rgba(v.$location-blue, 0.15);
     }
   }
 }
+

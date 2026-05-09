@@ -41,3 +41,97 @@
 .checkbox-input {
   margin: 0;
 }
+
+// ── Portrait picker (new creation only) ──────────────────────────────────────────
+
+.form-portrait-new-row {
+  display: flex;
+  gap: 16px;
+  align-items: flex-start;
+  margin-bottom: 12px;
+}
+
+.form-portrait-fields {
+  flex: 1;
+  min-width: 0;
+}
+
+.form-portrait-label {
+  flex-shrink: 0;
+  display: inline-flex;
+  position: relative;
+  width: 72px;
+  height: 100px;
+  border-radius: 4px;
+  border: 1px dashed rgba(v.$color-text-primary, 0.25);
+  cursor: pointer;
+  overflow: hidden;
+  background: rgba(v.$color-input-bg, 0.5);
+  transition: border-color 0.18s ease;
+
+  &:hover {
+    border-color: rgba(v.$color-text-primary, 0.5);
+    .form-portrait-overlay { opacity: 1; }
+    .form-portrait-empty   { opacity: 0.85; }
+  }
+
+  &--filled {
+    border-style: solid;
+    border-color: rgba(v.$color-text-primary, 0.3);
+  }
+}
+
+.form-portrait-file-input {
+  position: absolute;
+  width: 0;
+  height: 0;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.form-portrait-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.form-portrait-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.45);
+  color: v.$color-text-primary;
+  opacity: 0;
+  transition: opacity 0.18s ease;
+}
+
+.form-portrait-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  width: 100%;
+  height: 100%;
+  color: rgba(v.$color-text-primary, 0.35);
+  transition: opacity 0.18s ease;
+}
+
+.form-portrait-hint {
+  font-size: 8px;
+  text-align: center;
+  line-height: 1.4;
+  font-family: v.$font-header;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+
+  em {
+    font-style: italic;
+    font-size: 7px;
+    opacity: 0.75;
+    text-transform: none;
+  }
+}

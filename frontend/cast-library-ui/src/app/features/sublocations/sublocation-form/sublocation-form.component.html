@@ -16,8 +16,28 @@
   }
 
   <form [formGroup]="form">
-    <label class="fi-label">Sublocation Name</label>
-    <input class="fi" formControlName="name" placeholder="The Broken Anvil" autocomplete="off" />
+    <div class="form-portrait-new-row">
+      @if (!sublocationId()) {
+        <label class="form-portrait-label" [class.form-portrait-label--filled]="imagePreviewUrl()">
+          <input type="file" accept="image/jpeg,image/png,image/webp" class="form-portrait-file-input" (change)="onPortraitFileSelected($event)" />
+          @if (imagePreviewUrl()) {
+            <img [src]="imagePreviewUrl()!" class="form-portrait-img" alt="Portrait preview" />
+            <div class="form-portrait-overlay">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+            </div>
+          } @else {
+            <div class="form-portrait-empty">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+              <span class="form-portrait-hint">Portrait<br><em>optional</em></span>
+            </div>
+          }
+        </label>
+      }
+      <div class="form-portrait-fields">
+        <label class="fi-label">Sublocation Name</label>
+        <input class="fi" formControlName="name" placeholder="The Broken Anvil" autocomplete="off" />
+      </div>
+    </div>
     <label class="fi-label">Description</label>
     <textarea class="fi" formControlName="description" rows="3" placeholder="A dimly lit smithy…" autocomplete="off"></textarea>
     <fieldset class="form-gm-box">

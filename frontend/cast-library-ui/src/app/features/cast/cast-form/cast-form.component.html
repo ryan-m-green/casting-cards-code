@@ -18,34 +18,53 @@
   }
 
   <form [formGroup]="form">
-    <div class="wr form-row-gap">
-      <div class="form-field-min">
-        <label for="cast-name-input" class="fi-label">Name</label>
-        <input id="cast-name-input" class="fi" formControlName="name" placeholder="Aldric the Bold" autocomplete="off" />
-      </div>
-      <div class="form-field-min">
-        <label for="cast-role-input" class="fi-label">Role / Class</label>
-        <input id="cast-role-input" class="fi" formControlName="role" placeholder="Blacksmith" autocomplete="off" />
-      </div>
-    </div>
-
-    <div class="wr form-row-gap">
-      <div class="form-field">
-        <label for="cast-race-input" class="fi-label">Race</label>
-        <input id="cast-race-input" class="fi" formControlName="race" placeholder="Human" autocomplete="off" />
-      </div>
-      <div class="form-field">
-        <label for="cast-age-input" class="fi-label">Age</label>
-        <input id="cast-age-input" class="fi" formControlName="age" placeholder="44" autocomplete="off" />
-      </div>
-      <div class="form-field">
-        <label for="cast-pronouns-input" class="fi-label">Pronouns</label>
-        <input id="cast-pronouns-input" class="fi" formControlName="pronouns" list="pronouns-options" placeholder="he/him" autocomplete="off" />
-        <datalist id="pronouns-options">
-          @for (p of pronounOptions; track p) {
-            <option [value]="p"></option>
+    <div class="form-portrait-new-row">
+      @if (!castId()) {
+        <label class="form-portrait-label" [class.form-portrait-label--filled]="imagePreviewUrl()">
+          <input type="file" accept="image/jpeg,image/png,image/webp" class="form-portrait-file-input" (change)="onPortraitFileSelected($event)" />
+          @if (imagePreviewUrl()) {
+            <img [src]="imagePreviewUrl()!" class="form-portrait-img" alt="Portrait preview" />
+            <div class="form-portrait-overlay">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+            </div>
+          } @else {
+            <div class="form-portrait-empty">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+              <span class="form-portrait-hint">Portrait<br><em>optional</em></span>
+            </div>
           }
-        </datalist>
+        </label>
+      }
+      <div class="form-portrait-fields">
+        <div class="wr form-row-gap">
+          <div class="form-field-min">
+            <label for="cast-name-input" class="fi-label">Name</label>
+            <input id="cast-name-input" class="fi" formControlName="name" placeholder="Aldric the Bold" autocomplete="off" />
+          </div>
+          <div class="form-field-min">
+            <label for="cast-role-input" class="fi-label">Role / Class</label>
+            <input id="cast-role-input" class="fi" formControlName="role" placeholder="Blacksmith" autocomplete="off" />
+          </div>
+        </div>
+        <div class="wr form-row-gap">
+          <div class="form-field">
+            <label for="cast-race-input" class="fi-label">Race</label>
+            <input id="cast-race-input" class="fi" formControlName="race" placeholder="Human" autocomplete="off" />
+          </div>
+          <div class="form-field">
+            <label for="cast-age-input" class="fi-label">Age</label>
+            <input id="cast-age-input" class="fi" formControlName="age" placeholder="44" autocomplete="off" />
+          </div>
+          <div class="form-field">
+            <label for="cast-pronouns-input" class="fi-label">Pronouns</label>
+            <input id="cast-pronouns-input" class="fi" formControlName="pronouns" list="pronouns-options" placeholder="he/him" autocomplete="off" />
+            <datalist id="pronouns-options">
+              @for (p of pronounOptions; track p) {
+                <option [value]="p"></option>
+              }
+            </datalist>
+          </div>
+        </div>
       </div>
     </div>
 

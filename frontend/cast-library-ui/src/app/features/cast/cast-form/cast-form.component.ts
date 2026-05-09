@@ -51,8 +51,10 @@ export class CastFormComponent implements OnInit {
 
   castId         = signal<string | null>(null);
   saveStatus     = signal<'idle' | 'saving' | 'saved' | 'error'>('idle');
-  imageUrl       = signal<string | null>(null);
-  imageUploading = signal(false);
+  imageUrl        = signal<string | null>(null);
+  imageUploading  = signal(false);
+  imageFile       = signal<File | null>(null);
+  imagePreviewUrl = signal<string | null>(null);
   voiceOptions     = VOICE_OPTIONS;
   pronounOptions   = PRONOUN_OPTIONS;
   alignmentOptions = ALIGNMENT_OPTIONS;
@@ -156,9 +158,31 @@ export class CastFormComponent implements OnInit {
       setTimeout(() => { this.saveStatus.set('idle'); this.labelVisible.set(false); }, 2000);
       if (!this.castId()) {
         this.castId.set(cast.id);
-        this.router.navigate(['/dm/cast', cast.id], { replaceUrl: true, queryParams: { upload: 'true' }, state: { noFlip: true } });
+        const file = this.imageFile();
+        if (file) {
+          const formData = new FormData();
+          formData.append('file', file);
+          const prev = this.imagePreviewUrl();
+          if (prev) URL.revokeObjectURL(prev);
+          this.imageFile.set(null);
+          this.imagePreviewUrl.set(null);
+          this.http.post<{ imageUrl: string }>(`${environment.apiUrl}/api/cast/${cast.id}/image`, formData).subscribe(() => {
+            this.router.navigate(['/dm/cast', cast.id], { replaceUrl: true, state: { noFlip: true } });
+          });
+        } else {
+          this.router.navigate(['/dm/cast', cast.id], { replaceUrl: true, state: { noFlip: true } });
+        }
       }
     });
+  }
+
+  onPortraitFileSelected(event: Event) {
+    const file = (event.target as HTMLInputElement).files?.[0];
+    if (!file) return;
+    const prev = this.imagePreviewUrl();
+    if (prev) URL.revokeObjectURL(prev);
+    this.imageFile.set(file);
+    this.imagePreviewUrl.set(URL.createObjectURL(file));
   }
 
   onFileSelected(file: File) {
