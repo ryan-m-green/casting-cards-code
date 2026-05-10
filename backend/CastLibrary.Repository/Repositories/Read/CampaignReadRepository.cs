@@ -154,6 +154,7 @@ public class CampaignReadRepository(
               FROM campaign_location_instances ci
               LEFT JOIN locations c ON c.id = ci.source_location_id
               WHERE ci.campaign_id = @CampaignId
+                AND ci.is_party_anchor = FALSE
               ORDER BY ci.sort_order";
 
         logging.LogDbOperation(correlation.TraceId, spanId, "SELECT", "campaign_location_instances", @params);

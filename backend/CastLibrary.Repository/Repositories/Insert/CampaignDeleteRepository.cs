@@ -33,7 +33,32 @@ public class CampaignDeleteRepository(
         logging.LogDbOperation(correlation.TraceId, spanId, "DELETE", "campaigns", @params);
 
         using var conn = CreateConnection();
-        var rows = await conn.ExecuteAsync("DELETE FROM campaigns WHERE id = @Id", @params);
+        await conn.OpenAsync();
+        using var tx = await conn.BeginTransactionAsync();
+
+        // Collect party anchor sublocation IDs before the campaign cascade removes their parent locations.
+        // (locations.campaign_id FK is ON DELETE CASCADE, so locations will be deleted with the campaign.)
+        var partySublocationIds = (await conn.QueryAsync<Guid>(
+            @"SELECT s.id FROM sublocations s
+              JOIN locations l ON l.id = s.location_id
+              WHERE l.campaign_id = @Id",
+            @params, transaction: tx)).ToList();
+
+        // Deleting the campaign cascades to: campaign_*_instances, player_cards, invite codes, etc.
+        // It also cascades to party anchor locations (via locations.campaign_id FK from migration [013]).
+        var rows = await conn.ExecuteAsync("DELETE FROM campaigns WHERE id = @Id", @params, transaction: tx);
+
+        // Remove the orphaned party anchor sublocations. Their location_id was SET NULL when the
+        // parent location was cascade-deleted above, and campaign_sublocation_instances are now gone
+        // so the ON DELETE RESTRICT constraint is cleared.
+        if (partySublocationIds.Count > 0)
+        {
+            await conn.ExecuteAsync(
+                "DELETE FROM sublocations WHERE id = ANY(@Ids)",
+                new { Ids = partySublocationIds.ToArray() }, transaction: tx);
+        }
+
+        await tx.CommitAsync();
 
         logging.LogDbOperation(correlation.TraceId, spanId, "DELETE", "campaigns", @params, rows);
     }

@@ -1,6 +1,8 @@
+using CastLibrary.Adapter.Operators;
 using CastLibrary.Repository.Repositories.Insert;
 using CastLibrary.Shared.Domain;
 using CastLibrary.Shared.Requests;
+using Microsoft.Extensions.Logging;
 
 namespace CastLibrary.Logic.Commands.BugReport;
 
@@ -10,7 +12,9 @@ public interface ISubmitBugReportCommandHandler
 }
 
 public class SubmitBugReportCommandHandler(
-    IBugReportInsertRepository bugReportRepository) : ISubmitBugReportCommandHandler
+    IBugReportInsertRepository bugReportRepository,
+    IEmailOperator emailOperator,
+    ILogger<SubmitBugReportCommandHandler> logger) : ISubmitBugReportCommandHandler
 {
     public async Task<BugReportDomain> HandleAsync(SubmitBugReportCommand command)
     {
@@ -31,7 +35,31 @@ public class SubmitBugReportCommandHandler(
             ReportedAt = DateTime.UtcNow,
         };
 
-        return await bugReportRepository.InsertAsync(domain);
+        var result = await bugReportRepository.InsertAsync(domain);
+
+        try
+        {
+            await emailOperator.SendBugReportNotificationAsync(new BugReportNotificationEmailDomain
+            {
+                Title = result.Title,
+                Description = result.Description,
+                StepsToReproduce = result.StepsToReproduce ?? string.Empty,
+                Severity = result.Severity,
+                ReporterDisplayName = result.ReporterDisplayName,
+                PageUrl = result.PageUrl ?? string.Empty,
+                Device = result.Device ?? string.Empty,
+                Browser = result.Browser ?? string.Empty,
+                Os = result.Os ?? string.Empty,
+                ScreenResolution = result.ScreenResolution ?? string.Empty,
+                ReportedAt = result.ReportedAt,
+            });
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Failed to send bug report notification email for bug {BugId}", result.Id);
+        }
+
+        return result;
     }
 }
 

@@ -16,6 +16,7 @@
 .ndp-dest-btn {
   flex: 1 1 0;
   min-width: 72px;
+  max-width: 82px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -46,6 +47,12 @@
     background: color-mix(in srgb, v.$campaign-portal-bg-dark 30%, v.$color-base-arcane-purple 70%);
     border-color: v.$campaign-portal-border-strong-focus;
     color: v.$campaign-portal-text-bright;
+  }
+
+  &:disabled {
+    opacity: 0.35;
+    cursor: not-allowed;
+    pointer-events: none;
   }
 }
 

@@ -10,7 +10,7 @@
     </button>
   }
 
-  <button type="button" class="ndp-dest-btn" [class.active]="destType === 'cast'" (click)="onDestTypeChange('cast')" (keydown.enter)="onKeyEnter('cast')" title="Cast Member">
+  <button type="button" class="ndp-dest-btn" [class.active]="destType === 'cast'" [disabled]="casts.length === 0" (click)="onDestTypeChange('cast')" (keydown.enter)="onKeyEnter('cast')" title="Cast Member">
     <svg class="ndp-dest-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
       <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
       <circle cx="12" cy="7" r="4"/>
@@ -18,7 +18,7 @@
     <span>Cast</span>
   </button>
 
-  <button type="button" class="ndp-dest-btn" [class.active]="destType === 'faction'" (click)="onDestTypeChange('faction')" (keydown.enter)="onKeyEnter('faction')" title="Faction">
+  <button type="button" class="ndp-dest-btn" [class.active]="destType === 'faction'" [disabled]="factions.length === 0" (click)="onDestTypeChange('faction')" (keydown.enter)="onKeyEnter('faction')" title="Faction">
     <svg class="ndp-dest-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
       <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
     </svg>
@@ -33,7 +33,7 @@
     <span>Campaign</span>
   </button>
 
-  <button type="button" class="ndp-dest-btn" [class.active]="destType === 'sublocation'" (click)="onDestTypeChange('sublocation')" (keydown.enter)="onKeyEnter('sublocation')" title="Sublocation">
+  <button type="button" class="ndp-dest-btn" [class.active]="destType === 'sublocation'" [disabled]="sublocations.length === 0" (click)="onDestTypeChange('sublocation')" (keydown.enter)="onKeyEnter('sublocation')" title="Sublocation">
     <svg class="ndp-dest-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
       <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
       <polyline points="9 22 9 12 15 12 15 22"/>
@@ -41,7 +41,7 @@
     <span>Sublocation</span>
   </button>
 
-  <button type="button" class="ndp-dest-btn" [class.active]="destType === 'location'" (click)="onDestTypeChange('location')" (keydown.enter)="onKeyEnter('location')" title="Location">
+  <button type="button" class="ndp-dest-btn" [class.active]="destType === 'location'" [disabled]="locations.length === 0" (click)="onDestTypeChange('location')" (keydown.enter)="onKeyEnter('location')" title="Location">
     <svg class="ndp-dest-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
       <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
       <circle cx="12" cy="10" r="3"/>
@@ -50,7 +50,7 @@
   </button>
 
   @if (showPlayer) {
-  <button type="button" class="ndp-dest-btn" [class.active]="destType === 'player'" (click)="onDestTypeChange('player')" (keydown.enter)="onKeyEnter('player')" title="Player">
+  <button type="button" class="ndp-dest-btn" [class.active]="destType === 'player'" [disabled]="players.length === 0" (click)="onDestTypeChange('player')" (keydown.enter)="onKeyEnter('player')" title="Player">
     <svg class="ndp-dest-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
       <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
       <circle cx="9" cy="7" r="4"/>

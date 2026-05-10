@@ -9,6 +9,7 @@ namespace CastLibrary.Adapter.Operators;
 public interface IEmailOperator
 {
     Task SendPasswordResetEmailAsync(PasswordResetEmailDomain emailData);
+    Task SendBugReportNotificationAsync(BugReportNotificationEmailDomain emailData);
 }
 public class EmailOperator(IConfiguration configuration) : IEmailOperator
 {
@@ -22,6 +23,25 @@ public class EmailOperator(IConfiguration configuration) : IEmailOperator
         var fromName = configuration["Email:FromName"]!;
 
         var message = EmailMessageMapper.ToMimeMessage(emailData, fromAddress, fromName);
+
+        using var client = new SmtpClient();
+        await client.ConnectAsync(host, port, SecureSocketOptions.StartTls);
+        await client.AuthenticateAsync(username, password);
+        await client.SendAsync(message);
+        await client.DisconnectAsync(quit: true);
+    }
+
+    public async Task SendBugReportNotificationAsync(BugReportNotificationEmailDomain emailData)
+    {
+        var host = configuration["Email:SmtpHost"]!;
+        var port = int.Parse(configuration["Email:SmtpPort"]!);
+        var username = configuration["Email:SmtpUsername"]!;
+        var password = configuration["Email:SmtpPassword"]!;
+        var fromAddress = configuration["Email:FromAddress"]!;
+        var fromName = configuration["Email:FromName"]!;
+        var adminAddress = configuration["Email:AdminAddress"]!;
+
+        var message = EmailMessageMapper.ToBugReportMimeMessage(emailData, fromAddress, fromName, adminAddress);
 
         using var client = new SmtpClient();
         await client.ConnectAsync(host, port, SecureSocketOptions.StartTls);

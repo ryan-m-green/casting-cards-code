@@ -19,13 +19,11 @@ public class SublocationReadRepository(
         var spanId  = correlation.NewSpan();
         var @params = new { DmUserId = dmUserId };
         const string sql =
-            @"SELECT s.id, s.location_id AS LocationId, s.dm_user_id AS DmUserId,
-                     s.name, s.description, s.dm_notes AS DmNotes, s.created_at AS CreatedAt
-              FROM sublocations s
-              LEFT JOIN locations l ON l.id = s.location_id
-              WHERE s.dm_user_id = @DmUserId
-                AND (s.location_id IS NULL OR l.campaign_id IS NULL)
-              ORDER BY s.name";
+            @"SELECT id, dm_user_id AS DmUserId,
+                     name, description, dm_notes AS DmNotes, created_at AS CreatedAt
+              FROM sublocations 
+              WHERE dm_user_id = @DmUserId AND location_id IS NULL
+              ORDER BY name";
 
         logging.LogDbOperation(correlation.TraceId, spanId, "SELECT", "sublocations", @params);
 
@@ -40,8 +38,10 @@ public class SublocationReadRepository(
 
         var sublocationIds = sublocations.Select(l => l.Id).ToArray();
         var shopItems = (await conn.QueryAsync<ShopItemDomain>(
-            @"SELECT id, sublocation_id AS SublocationId, name, price_amount AS PriceAmount, price_currency_type AS PriceCurrencyType, description, sort_order AS SortOrder
-              FROM sublocation_shop_items WHERE sublocation_id = ANY(@Ids) ORDER BY sort_order",
+            @"SELECT id, sublocation_id AS SublocationId, name, price_amount AS PriceAmount, 
+                                price_currency_type AS PriceCurrencyType, description, sort_order AS SortOrder
+              FROM sublocation_shop_items 
+             WHERE sublocation_id = ANY(@Ids) ORDER BY sort_order",
             new { Ids = sublocationIds })).ToList();
 
         foreach (var sublocation in sublocations)
