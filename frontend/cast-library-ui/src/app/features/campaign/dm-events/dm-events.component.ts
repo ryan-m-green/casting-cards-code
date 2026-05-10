@@ -400,7 +400,7 @@ export class DmEventsComponent implements OnInit, OnDestroy {
     this.http.patch(`${environment.apiUrl}/api/campaigns/${this.campaignId}/events/${event.id}/visibility`, { isVisibleToPlayers: next })
       .subscribe({
         next: () => {
-          event.visibleToPlayers = next;
+          this.events.update(evs => evs.map(e => e.id === event.id ? { ...e, visibleToPlayers: next } : e));
           if (next && event.linkedEntityId && event.linkedEntityType && this.getUnlockCard(event.id)) {
             this._unlockLinkedEntity(event.linkedEntityType, event.linkedEntityId);
           }
