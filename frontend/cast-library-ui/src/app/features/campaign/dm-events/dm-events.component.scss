@@ -387,6 +387,89 @@
   white-space: nowrap;
 }
 
+.ev-unlock-card-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  cursor: pointer;
+  flex-shrink: 0;
+  user-select: none;
+
+  &__input {
+    position: absolute;
+    opacity: 0;
+    width: 0;
+    height: 0;
+    pointer-events: none;
+  }
+
+  &__track {
+    position: relative;
+    display: inline-block;
+    width: 30px;
+    height: 16px;
+    border-radius: 8px;
+    background: v.$campaign-portal-border-bold;
+    border: 1px solid v.$campaign-portal-border-bold;
+    transition: background 0.18s ease, border-color 0.18s ease;
+    flex-shrink: 0;
+
+    &::after {
+      content: '';
+      position: absolute;
+      top: 2px;
+      left: 2px;
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: v.$campaign-portal-text-softer;
+      transition: transform 0.18s ease, background 0.18s ease;
+    }
+  }
+
+  &__input:checked + &__track {
+    background: v.$color-secrets-revealed;
+    border-color: v.$color-secrets-revealed;
+
+    &::after {
+      transform: translateX(14px);
+      background: #000;
+    }
+  }
+
+  &__label {
+    font-family: v.$font-header;
+    font-size: 8px;
+    font-weight: bolder;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: v.$campaign-portal-text-softer;
+    white-space: nowrap;
+    transition: color 0.18s ease, text-decoration-color 0.18s ease;
+
+    &--struck {
+      text-decoration: line-through;
+      text-decoration-color: v.$campaign-portal-text-softer;
+    }
+  }
+
+  &:hover &__label {
+    color: v.$campaign-portal-text-bright;
+  }
+
+  &__icon {
+    width: 16px;
+    height: 16px;
+    color: v.$campaign-portal-text-softer;
+    flex-shrink: 0;
+    transition: color 0.18s ease;
+  }
+
+  &:hover &__icon {
+    color: v.$campaign-portal-text-bright;
+  }
+}
+
 .ev-lock-btn {
   flex-shrink: 0;
   width: 28px;

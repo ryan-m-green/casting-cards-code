@@ -184,6 +184,42 @@
 
                 <span class="ev-title">{{ ev.title }}</span>
 
+                @if (!ev.visibleToPlayers && (ev.linkedEntityType === 'cast' || ev.linkedEntityType === 'location' || ev.linkedEntityType === 'sublocation' || ev.linkedEntityType === 'faction')) {
+                  <label class="ev-unlock-card-toggle" (click)="$event.stopPropagation()" [title]="'Also unlock the associated card'">
+                    <input
+                      type="checkbox"
+                      class="ev-unlock-card-toggle__input"
+                      [checked]="getUnlockCard(ev.id)"
+                      (change)="setUnlockCard(ev.id, $any($event.target).checked)"
+                    />
+                    
+                    <span class="ev-unlock-card-toggle__track"></span>
+                    <span class="ev-unlock-card-toggle__label" [class.ev-unlock-card-toggle__label--struck]="!getUnlockCard(ev.id)">unlocks</span>
+                    @switch (ev.linkedEntityType) {
+                      @case ('cast') {
+                        <svg class="ev-unlock-card-toggle__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                          <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>
+                        </svg>
+                      }
+                      @case ('location') {
+                        <svg class="ev-unlock-card-toggle__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                          <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/>
+                        </svg>
+                      }
+                      @case ('sublocation') {
+                        <svg class="ev-unlock-card-toggle__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                          <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/>
+                        </svg>
+                      }
+                      @case ('faction') {
+                        <svg class="ev-unlock-card-toggle__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                          <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                        </svg>
+                      }
+                    }
+                  </label>
+                }
+
                 <button
                   class="ev-lock-btn"
                   [class.ev-lock-btn--revealed]="ev.visibleToPlayers"

@@ -15,6 +15,7 @@ public interface ICampaignUpdateRepository
     Task UpdateLocationInstanceVisibilityAsync(Guid instanceId, bool isVisibleToPlayers);
     Task UpdateSublocationInstanceVisibilityAsync(Guid instanceId, bool isVisibleToPlayers);
     Task UpdateLocationSublocationsVisibilityAsync(Guid locationInstanceId, bool isVisibleToPlayers);
+    Task UpdateLocationCastsVisibilityAsync(Guid locationInstanceId, bool isVisibleToPlayers);
     Task UpdateCastInstanceVisibilityAsync(Guid instanceId, bool isVisibleToPlayers);
     Task UpdateSublocationCastsVisibilityAsync(Guid sublocationInstanceId, bool isVisibleToPlayers);
     Task UpdateCastCustomItemsAsync(Guid instanceId, string itemsJson);
@@ -251,6 +252,23 @@ public class CampaignUpdateRepository(
             @params);
 
         logging.LogDbOperation(correlation.TraceId, spanId, "UPDATE", "campaign_sublocation_instances", @params, rows);
+    }
+
+    public async Task UpdateLocationCastsVisibilityAsync(Guid locationInstanceId, bool isVisibleToPlayers)
+    {
+        var spanId = correlation.NewSpan();
+        var @params = new { LocationInstanceId = locationInstanceId, IsVisibleToPlayers = isVisibleToPlayers };
+
+        logging.LogDbOperation(correlation.TraceId, spanId, "UPDATE", "campaign_cast_instances", @params);
+
+        using var conn = CreateConnection();
+        var rows = await conn.ExecuteAsync(
+            @"UPDATE campaign_cast_instances
+              SET is_visible_to_players=@IsVisibleToPlayers
+              WHERE location_instance_id=@LocationInstanceId",
+            @params);
+
+        logging.LogDbOperation(correlation.TraceId, spanId, "UPDATE", "campaign_cast_instances", @params, rows);
     }
 
     public async Task UpdateCastInstanceVisibilityAsync(Guid instanceId, bool isVisibleToPlayers)

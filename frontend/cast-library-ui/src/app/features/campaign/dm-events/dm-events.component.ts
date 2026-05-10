@@ -64,6 +64,18 @@ export class DmEventsComponent implements OnInit, OnDestroy {
   autoSaveStatus   = signal<'idle' | 'saving' | 'saved'>('idle');
   private saveTimer: ReturnType<typeof setTimeout> | undefined;
 
+  // Per-event "also unlock card" toggle (defaults to true)
+  unlockCardMap = signal<Record<string, boolean>>({});
+
+  getUnlockCard(eventId: string): boolean {
+    const val = this.unlockCardMap()[eventId];
+    return val === undefined ? true : val;
+  }
+
+  setUnlockCard(eventId: string, value: boolean) {
+    this.unlockCardMap.update(m => ({ ...m, [eventId]: value }));
+  }
+
   // Delete confirm state
   confirmDeleteId  = signal<string | null>(null);
   deleting         = signal(false);
@@ -370,7 +382,46 @@ export class DmEventsComponent implements OnInit, OnDestroy {
     domEvent.stopPropagation();
     const next = !event.visibleToPlayers;
     this.http.patch(`${environment.apiUrl}/api/campaigns/${this.campaignId}/events/${event.id}/visibility`, { isVisibleToPlayers: next })
-      .subscribe({ next: () => { event.visibleToPlayers = next; } });
+      .subscribe({
+        next: () => {
+          event.visibleToPlayers = next;
+          if (next && event.linkedEntityId && event.linkedEntityType && this.getUnlockCard(event.id)) {
+            this._unlockLinkedEntity(event.linkedEntityType, event.linkedEntityId);
+          }
+        },
+      });
+  }
+
+  private _unlockLinkedEntity(entityType: string, entityId: string) {
+    const urlMap: Record<string, string> = {
+      cast:        `${environment.apiUrl}/api/campaigns/${this.campaignId}/casts/${entityId}/visibility`,
+      location:    `${environment.apiUrl}/api/campaigns/${this.campaignId}/locations/${entityId}/visibility`,
+      sublocation: `${environment.apiUrl}/api/campaigns/${this.campaignId}/sublocations/${entityId}/visibility`,
+      faction:     `${environment.apiUrl}/api/campaigns/${this.campaignId}/factions/${entityId}/visibility`,
+    };
+    const url = urlMap[entityType];
+    if (!url) return;
+
+    this.http.patch(url, { isVisibleToPlayers: true }).subscribe({
+      next: () => {
+        this.shellSvc.updateCampaign(c => {
+          if (!c) return c;
+          if (entityType === 'cast') {
+            return { ...c, casts: c.casts.map(ca => ca.instanceId === entityId ? { ...ca, isVisibleToPlayers: true } : ca) };
+          }
+          if (entityType === 'location') {
+            return { ...c, locations: c.locations.map(l => l.instanceId === entityId ? { ...l, isVisibleToPlayers: true } : l) };
+          }
+          if (entityType === 'sublocation') {
+            return { ...c, sublocations: c.sublocations.map(s => s.instanceId === entityId ? { ...s, isVisibleToPlayers: true } : s) };
+          }
+          if (entityType === 'faction') {
+            return { ...c, factions: c.factions.map(f => f.factionInstanceId === entityId ? { ...f, isVisibleToPlayers: true } : f) };
+          }
+          return c;
+        });
+      },
+    });
   }
 
   entityNameFor(event: CampaignEvent): string {

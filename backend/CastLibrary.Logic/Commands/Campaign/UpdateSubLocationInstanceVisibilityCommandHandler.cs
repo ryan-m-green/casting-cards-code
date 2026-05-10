@@ -14,6 +14,11 @@ public class UpdateSublocationInstanceVisibilityCommandHandler(ICampaignUpdateRe
     public async Task HandleAsync(UpdateSublocationInstanceVisibilityCommand command)
     {
         await campaignRepository.UpdateSublocationInstanceVisibilityAsync(command.InstanceId, command.Request.IsVisibleToPlayers);
+
+        if (!command.Request.IsVisibleToPlayers)
+        {
+            await campaignRepository.UpdateSublocationCastsVisibilityAsync(command.InstanceId, false);
+        }
     }
 }
 
