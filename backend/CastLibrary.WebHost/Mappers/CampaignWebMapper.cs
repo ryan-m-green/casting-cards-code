@@ -39,6 +39,7 @@ public class CampaignWebMapper(
             FantasyType = domain.FantasyType,
             Status = domain.Status.ToString(),
             SpineColor = domain.SpineColor,
+            IsDemo = domain.IsDemo,
             LocationCount = domain.LocationCount,
             PlayerCount = domain.PlayerCount,
             CreatedAt = domain.CreatedAt,
@@ -147,7 +148,8 @@ public class CampaignWebMapper(
             {
                 Id = s.Id,
                 Name = s.Name,
-                Price = s.Price,
+                PriceAmount = s.PriceAmount,
+                PriceCurrencyType = s.PriceCurrencyType,
                 Description = s.Description,
                 IsScratchedOff = s.IsScratchedOff,
             }).ToList(),
@@ -223,7 +225,6 @@ public class CampaignWebMapper(
             UserId = d.UserId,
             DisplayName = d.DisplayName,
             Email = d.Email,
-            StartingGold = d.StartingGold,
         };
 
         logging.LogMapping(

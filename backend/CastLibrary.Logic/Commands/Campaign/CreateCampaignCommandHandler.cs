@@ -20,7 +20,7 @@ public class CreateCampaignCommandHandler(
 {
     public async Task<CampaignDomain> HandleAsync(CreateCampaignCommand command)
     {
-        var campaign = campaignFactory.Create(command.Request, command.DmUserId);
+        var campaign = campaignFactory.Create(command.Request, command.DmUserId, command.IsCallerAdmin);
         var saved    = await campaignRepository.InsertAsync(campaign);
 
         await partyAnchorService.CreateAsync(saved);
@@ -40,14 +40,16 @@ public class CreateCampaignCommandHandler(
 
 public class CreateCampaignCommand
 {
-    public CreateCampaignCommand(Guid dmUserId, CreateCampaignRequest request)
+    public CreateCampaignCommand(Guid dmUserId, CreateCampaignRequest request, bool isCallerAdmin = false)
     {
         DmUserId = dmUserId;
         Request = request;
+        IsCallerAdmin = isCallerAdmin;
     }
 
     public Guid DmUserId { get; }
     public CreateCampaignRequest Request { get; }
+    public bool IsCallerAdmin { get; }
 }
 
 

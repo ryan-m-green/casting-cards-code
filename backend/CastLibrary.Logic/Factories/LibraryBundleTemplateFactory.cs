@@ -24,7 +24,7 @@ namespace CastLibrary.Logic.Factories
                         Alignment = "Neutral Good",
                         Posture = "Slouched",
                         Speed = "Slow",
-                        VoicePlacement = ["Low", "Raspy"],
+                        VoicePlacement = ["Chest", "Throat"],
                         Description = "Private DM notes about this Cast.",
                         PublicDescription = "What the players see and know.",
                         ImageFileName = "cast_aldric_vane.png",
@@ -57,8 +57,8 @@ namespace CastLibrary.Logic.Factories
                         ImageFileName = "loc_rusty_flagon.png",
                         ShopItems =
                         [
-                            new ShopItemCard { Name = "Ale", Price = "2cp", Description = "Warm and flat." },
-                            new ShopItemCard { Name = "Stew", Price = "4cp", Description = "Mystery meat." },
+                            new ShopItemCard { Name = "Ale", PriceAmount = 2, PriceCurrencyType = "cp", Description = "Warm and flat." },
+                            new ShopItemCard { Name = "Stew", PriceAmount = 4, PriceCurrencyType = "cp", Description = "Mystery meat." },
                         ],
                     },
                 ],

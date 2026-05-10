@@ -25,7 +25,8 @@ public class UpdateSublocationCommandHandler(
         existing.ShopItems = command.Request.ShopItems.Select((item, i) => new ShopItemDomain
         {
             Id = Guid.NewGuid(), SublocationId = command.Id, Name = item.Name,
-            Price = item.Price, Description = item.Description, SortOrder = i,
+            PriceAmount = item.PriceAmount, PriceCurrencyType = item.PriceCurrencyType,
+            Description = item.Description, SortOrder = i,
         }).ToList();
 
         return await sublocationUpdateRepository.UpdateAsync(existing);

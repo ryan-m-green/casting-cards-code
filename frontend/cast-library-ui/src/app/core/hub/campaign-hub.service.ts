@@ -53,6 +53,39 @@ export interface CampaignEventVisibilityChangedEvent {
   isVisibleToPlayers: boolean;
 }
 
+export interface ShopItemUpdatedEvent {
+  campaignId: string;
+  sublocationInstanceId: string;
+  shopItemId: string;
+}
+
+export interface ShopItemScratchToggledEvent {
+  campaignId: string;
+  sublocationInstanceId: string;
+  shopItemId: string;
+  isScratchedOff: boolean;
+}
+
+export interface CastInstanceUpdatedEvent {
+  campaignId: string;
+  castInstanceId: string;
+}
+
+export interface LocationInstanceUpdatedEvent {
+  campaignId: string;
+  locationInstanceId: string;
+}
+
+export interface SublocationInstanceUpdatedEvent {
+  campaignId: string;
+  sublocationInstanceId: string;
+}
+
+export interface FactionInstanceUpdatedEvent {
+  campaignId: string;
+  factionInstanceId: string;
+}
+
 @Injectable({ providedIn: 'root' })
 export class CampaignHubService {
   private connection: signalR.HubConnection | null = null;
@@ -80,6 +113,12 @@ export class CampaignHubService {
   readonly factionRemoved            = signal<FactionRemovedEvent | null>(null);
   readonly factionLocked             = signal<FactionLockedEvent | null>(null);
   readonly campaignEventVisibilityChanged = signal<CampaignEventVisibilityChangedEvent | null>(null);
+  readonly shopItemUpdated            = signal<ShopItemUpdatedEvent | null>(null);
+  readonly shopItemScratchToggled     = signal<ShopItemScratchToggledEvent | null>(null);
+  readonly castInstanceUpdated        = signal<CastInstanceUpdatedEvent | null>(null);
+  readonly locationInstanceUpdated    = signal<LocationInstanceUpdatedEvent | null>(null);
+  readonly sublocationInstanceUpdated = signal<SublocationInstanceUpdatedEvent | null>(null);
+  readonly factionInstanceUpdated     = signal<FactionInstanceUpdatedEvent | null>(null);
   readonly isConnected               = signal(false);
 
   async connect(token: string): Promise<void> {
@@ -180,6 +219,30 @@ export class CampaignHubService {
 
     this.connection.on('CampaignEventVisibilityChanged', (event: CampaignEventVisibilityChangedEvent) => {
       this.campaignEventVisibilityChanged.set(event);
+    });
+
+    this.connection.on('ShopItemUpdated', (event: ShopItemUpdatedEvent) => {
+      this.shopItemUpdated.set(event);
+    });
+
+    this.connection.on('ShopItemScratchToggled', (event: ShopItemScratchToggledEvent) => {
+      this.shopItemScratchToggled.set(event);
+    });
+
+    this.connection.on('CastInstanceUpdated', (event: CastInstanceUpdatedEvent) => {
+      this.castInstanceUpdated.set(event);
+    });
+
+    this.connection.on('LocationInstanceUpdated', (event: LocationInstanceUpdatedEvent) => {
+      this.locationInstanceUpdated.set(event);
+    });
+
+    this.connection.on('SublocationInstanceUpdated', (event: SublocationInstanceUpdatedEvent) => {
+      this.sublocationInstanceUpdated.set(event);
+    });
+
+    this.connection.on('FactionInstanceUpdated', (event: FactionInstanceUpdatedEvent) => {
+      this.factionInstanceUpdated.set(event);
     });
 
     this.connection.onclose(() => this.isConnected.set(false));

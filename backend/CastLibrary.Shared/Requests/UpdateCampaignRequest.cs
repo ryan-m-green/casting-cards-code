@@ -7,4 +7,5 @@ public class UpdateCampaignRequest
     public string Description { get; set; } = string.Empty;
     public string SpineColor  { get; set; } = string.Empty;
     public string Status     { get; set; }
+    public bool? IsDemo { get; set; }
 }

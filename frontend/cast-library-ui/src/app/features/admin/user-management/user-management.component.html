@@ -2,49 +2,153 @@
 
   <app-journal-title title="User Management" />
 
-  <div class="wb wb-narrow">
-    <input 
-      class="fi search-input" 
-      type="text" 
-      placeholder="Search users..." 
-      [(ngModel)]="searchQuery"
-      (input)="filterUsers()"
-    />
+  <div class="tabs-bar" role="tablist" aria-label="User management views">
+    <button
+      class="tab-btn"
+      [class.tab-btn--active]="activeTab() === 'users'"
+      role="tab"
+      [attr.aria-selected]="activeTab() === 'users'"
+      aria-controls="um-panel-users"
+      id="um-tab-users"
+      (click)="setTab('users')"
+    >Users</button>
+    <button
+      class="tab-btn"
+      [class.tab-btn--active]="activeTab() === 'add-player'"
+      role="tab"
+      [attr.aria-selected]="activeTab() === 'add-player'"
+      aria-controls="um-panel-add-player"
+      id="um-tab-add-player"
+      (click)="setTab('add-player')"
+    >Add Player</button>
   </div>
 
-  @if (loading()) {
-    <div class="wb wb-narrow">
-      <p class="wbd">Loading users…</p>
-    </div>
-  } @else if (errorMsg()) {
-    <div class="wb wb-narrow error-box">
-      <p class="wbd text-error">{{ errorMsg() }}</p>
-    </div>
-  } @else {
-    <div class="user-list">
-      @for (user of filteredUsers(); track user.id) {
-        <div class="user-card">
-          <div class="user-info">
-            <div class="user-name">{{ user.displayName }}</div>
-            <div class="user-meta">{{ user.email }} · {{ user.role }}</div>
-            <div class="user-date">Joined {{ formatDate(user.createdAt) }}</div>
-          </div>
-          @if (user.role !== 'Admin') {
-            <button 
-              class="btn-delete" 
-              (click)="confirmDelete(user)"
-              [disabled]="deleting() === user.id"
-            >
-              {{ deleting() === user.id ? '…' : 'Delete' }}
-            </button>
+  @if (activeTab() === 'users') {
+    <div class="tab-content" id="um-panel-users" role="tabpanel" aria-labelledby="um-tab-users">
+
+      <div class="wb wb-narrow">
+        <input 
+          class="fi search-input" 
+          type="text" 
+          placeholder="Search users..." 
+          [(ngModel)]="searchQuery"
+          (input)="filterUsers()"
+        />
+      </div>
+
+      @if (loading()) {
+        <div class="wb wb-narrow">
+          <p class="wbd">Loading users…</p>
+        </div>
+      } @else if (errorMsg()) {
+        <div class="wb wb-narrow error-box">
+          <p class="wbd text-error">{{ errorMsg() }}</p>
+        </div>
+      } @else {
+        <div class="user-list">
+          @for (user of filteredUsers(); track user.id) {
+            <div class="user-card">
+              <div class="user-info">
+                <div class="user-name">{{ user.displayName }}</div>
+                <div class="user-meta">{{ user.email }} · {{ user.role }}</div>
+                <div class="user-date">Joined {{ formatDate(user.createdAt) }}</div>
+                @if (demoPlayerIds().includes(user.id)) {
+                  <div class="user-demo-label">In Demo</div>
+                }
+              </div>
+              @if (user.role !== 'Admin') {
+                <div class="user-card-actions">
+                  <div class="demo-assign">
+                    <app-campaign-dropdown
+                      [options]="demoCampaignOptions()"
+                      [value]="getSelectedCampaign(user.id)"
+                      (valueChange)="setSelectedCampaign(user.id, $event)"
+                    />
+                    @if (assignDemoSuccess()[user.id]) {
+                      <span class="demo-assign-success">{{ assignDemoSuccess()[user.id] }}</span>
+                    } @else {
+                      <button
+                        class="btn-demo-save"
+                        [disabled]="!getSelectedCampaign(user.id) || assigningDemo() === user.id"
+                        (click)="assignToDemo(user.id)"
+                      >{{ assigningDemo() === user.id ? '…' : 'Add' }}</button>
+                    }
+                  </div>
+                  <button
+                    class="btn-delete"
+                    (click)="confirmDelete(user)"
+                    [disabled]="deleting() === user.id"
+                  >
+                    {{ deleting() === user.id ? '…' : 'Delete' }}
+                  </button>
+                </div>
+              }
+            </div>
+          }
+          @if (filteredUsers().length === 0) {
+            <div class="wb wb-narrow">
+              <p class="wbd">No users found matching "{{ searchQuery }}"</p>
+            </div>
           }
         </div>
       }
-      @if (filteredUsers().length === 0) {
-        <div class="wb wb-narrow">
-          <p class="wbd">No users found matching "{{ searchQuery }}"</p>
+
+    </div>
+  }
+
+  @if (activeTab() === 'add-player') {
+    <div class="tab-content" id="um-panel-add-player" role="tabpanel" aria-labelledby="um-tab-add-player">
+
+      <div class="add-player-form">
+        <div class="form-field">
+          <label class="form-label" for="ap-display-name">Display Name</label>
+          <input
+            id="ap-display-name"
+            class="fi"
+            type="text"
+            placeholder="Player's display name"
+            [(ngModel)]="addPlayerDisplayName"
+          />
         </div>
-      }
+
+        <div class="form-field">
+          <label class="form-label" for="ap-email">Email</label>
+          <input
+            id="ap-email"
+            class="fi"
+            type="email"
+            placeholder="player@example.com"
+            [(ngModel)]="addPlayerEmail"
+          />
+        </div>
+
+        <div class="form-field">
+          <label class="form-label" for="ap-role">Role</label>
+          <select id="ap-role" class="fi" [(ngModel)]="addPlayerRole">
+            <option value="DM">GM</option>
+            <option value="Player">Player</option>
+          </select>
+        </div>
+
+        <p class="form-hint">The account will be created with the default password. The player can change it after logging in.</p>
+
+        <div class="form-submit-row">
+          <button
+            class="btn-submit"
+            (click)="submitAddPlayer()"
+            [disabled]="addPlayerSubmitting() || !addPlayerEmail || !addPlayerDisplayName"
+          >
+            {{ addPlayerSubmitting() ? 'Creating…' : 'Create Player' }}
+          </button>
+          @if (addPlayerSuccess()) {
+            <div class="add-player-success">{{ addPlayerSuccess() }}</div>
+          }
+          @if (addPlayerError()) {
+            <div class="add-player-error">{{ addPlayerError() }}</div>
+          }
+        </div>
+      </div>
+
     </div>
   }
 

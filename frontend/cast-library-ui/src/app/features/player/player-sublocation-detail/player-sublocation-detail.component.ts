@@ -4,10 +4,19 @@ import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../../environments/environment';
 import { CampaignCastPlayerNotes } from '../../../shared/models/campaign.model';
-import { CampaignSublocationInstance } from '../../../shared/models/sublocation.model';
+import { CampaignSublocationInstance, ShopItem } from '../../../shared/models/sublocation.model';
 import { CampaignCastInstance } from '../../../shared/models/cast.model';
 import { CampaignSecret } from '../../../shared/models/secret.model';
 import { PortalTransitionService } from '../../../core/portal-transition.service';
+
+interface PurchaseResult {
+  success: boolean;
+  itemName: string;
+  priceAmount: number;
+  priceCurrencyType: string;
+  playerDisplayName: string;
+  denialReason: string;
+}
 import { SublocationCardComponent } from '../../../shared/components/sublocation-card/sublocation-card.component';
 import { CastCardComponent } from '../../../shared/components/cast-card/cast-card.component';
 import { PlayerCampaignShellComponent } from '../player-campaign-shell/player-campaign-shell.component';
@@ -41,6 +50,10 @@ export class PlayerSublocationDetailComponent implements OnInit {
   detailExpanded        = signal(false);
   panelHeight           = signal('220px');
   castRatings           = signal<Map<string, number>>(new Map());
+
+  purchasingItemId     = signal<string | null>(null);
+  purchaseResult       = signal<PurchaseResult | null>(null);
+  purchasePopupVisible = signal(false);
 
   sublocationSymbolPath = signal<string | null>(null);
   sublocationFactionId  = signal<string | null>(null);
@@ -226,6 +239,30 @@ export class PlayerSublocationDetailComponent implements OnInit {
   goToCampaign() {
     this.transition.quickCover();
     this.router.navigate(['/player/campaign', this.campaignId()]);
+  }
+
+  buyItem(item: ShopItem) {
+    if (this.purchasingItemId()) return;
+    this.purchasingItemId.set(item.id);
+    this.http.post<PurchaseResult>(
+      `${environment.apiUrl}/api/campaigns/${this.campaignId()}/sublocations/${this.sublocationInstanceId()}/shop-items/${item.id}/purchase`,
+      {}
+    ).subscribe({
+      next: result => {
+        this.purchaseResult.set(result);
+        this.purchasePopupVisible.set(true);
+        this.purchasingItemId.set(null);
+        if (result.success) {
+          this.shell.refreshPurse();
+        }
+      },
+      error: () => this.purchasingItemId.set(null),
+    });
+  }
+
+  closeReceipt() {
+    this.purchasePopupVisible.set(false);
+    this.purchaseResult.set(null);
   }
 
   castRating(instanceId: string): number {

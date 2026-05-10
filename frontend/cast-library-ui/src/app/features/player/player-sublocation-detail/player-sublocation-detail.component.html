@@ -6,7 +6,7 @@
       <div class="subLoc-card-left">
         <app-sublocation-card
           [sublocation]="subLoc"
-          [flippable]="false"
+          [flippable]="true"
           [editable]="false"
           [secrets]="false"
           [tilt]="0"
@@ -49,8 +49,18 @@
               <div class="detail-shop-grid">
                 @for (item of subLoc.shopItems; track item.id) {
                   <div class="detail-shop-item">
-                    <span class="detail-shop-item-name">{{ item.name }}</span>
-                    <span class="detail-shop-item-price">{{ item.price }}</span>
+                    <span class="detail-shop-item-name" [class.detail-shop-item-name--sold]="item.isScratchedOff">{{ item.name }}</span>
+                    <div class="detail-shop-item-right">
+                      <span class="detail-shop-item-price">{{ item.priceAmount }} {{ item.priceCurrencyType }}</span>
+                      @if (item.priceAmount > 0 && !item.isScratchedOff) {
+                        <button class="shop-buy-btn"
+                          [class.shop-buy-btn--loading]="purchasingItemId() === item.id"
+                          [disabled]="purchasingItemId() !== null"
+                          (click)="buyItem(item)">
+                          {{ purchasingItemId() === item.id ? '…' : 'Buy' }}
+                        </button>
+                      }
+                    </div>
                   </div>
                 }
               </div>
@@ -142,4 +152,110 @@
 
       </div>
     }
+}
+
+<!-- ── Receipt Popup ── -->
+@if (purchasePopupVisible()) {
+  <div class="receipt-overlay" (click)="closeReceipt()">
+    <div class="receipt-parchment" [class.receipt-parchment--denied]="purchaseResult() && !purchaseResult()!.success" (click)="$event.stopPropagation()">
+
+      <svg class="receipt-corner receipt-corner--tl" viewBox="0 0 60 60" fill="none">
+        <path d="M8 52 C8 8 8 8 52 8" stroke="currentColor" stroke-width="1.5"/>
+        <circle cx="8" cy="52" r="3.5" fill="currentColor"/>
+        <circle cx="52" cy="8" r="3.5" fill="currentColor"/>
+        <line x1="14" y1="52" x2="8" y2="46" stroke="currentColor" stroke-width="1"/>
+        <line x1="52" y1="14" x2="46" y2="8" stroke="currentColor" stroke-width="1"/>
+      </svg>
+      <svg class="receipt-corner receipt-corner--tr" viewBox="0 0 60 60" fill="none">
+        <path d="M52 52 C52 8 52 8 8 8" stroke="currentColor" stroke-width="1.5"/>
+        <circle cx="52" cy="52" r="3.5" fill="currentColor"/>
+        <circle cx="8" cy="8" r="3.5" fill="currentColor"/>
+        <line x1="46" y1="52" x2="52" y2="46" stroke="currentColor" stroke-width="1"/>
+        <line x1="8" y1="14" x2="14" y2="8" stroke="currentColor" stroke-width="1"/>
+      </svg>
+      <svg class="receipt-corner receipt-corner--bl" viewBox="0 0 60 60" fill="none">
+        <path d="M8 8 C8 52 8 52 52 52" stroke="currentColor" stroke-width="1.5"/>
+        <circle cx="8" cy="8" r="3.5" fill="currentColor"/>
+        <circle cx="52" cy="52" r="3.5" fill="currentColor"/>
+        <line x1="14" y1="8" x2="8" y2="14" stroke="currentColor" stroke-width="1"/>
+        <line x1="52" y1="46" x2="46" y2="52" stroke="currentColor" stroke-width="1"/>
+      </svg>
+      <svg class="receipt-corner receipt-corner--br" viewBox="0 0 60 60" fill="none">
+        <path d="M52 8 C52 52 52 52 8 52" stroke="currentColor" stroke-width="1.5"/>
+        <circle cx="52" cy="8" r="3.5" fill="currentColor"/>
+        <circle cx="8" cy="52" r="3.5" fill="currentColor"/>
+        <line x1="46" y1="8" x2="52" y2="14" stroke="currentColor" stroke-width="1"/>
+        <line x1="8" y1="46" x2="14" y2="52" stroke="currentColor" stroke-width="1"/>
+      </svg>
+
+      @if (purchaseResult()?.success) {
+        <p class="receipt-title">Bill of Sale</p>
+        <svg class="receipt-divider-svg" viewBox="0 0 240 12" preserveAspectRatio="none">
+          <path d="M0 6 Q60 1 120 6 Q180 11 240 6" stroke="currentColor" fill="none" stroke-width="1"/>
+          <circle cx="0" cy="6" r="2" fill="currentColor"/>
+          <circle cx="240" cy="6" r="2" fill="currentColor"/>
+        </svg>
+        <p class="receipt-subtitle">~ Official Record of Transaction ~</p>
+
+        <div class="receipt-body">
+          <div class="receipt-row">
+            <span class="receipt-label">Sold To</span>
+            <span class="receipt-value">{{ purchaseResult()!.playerDisplayName }}</span>
+          </div>
+          <div class="receipt-row">
+            <span class="receipt-label">Item</span>
+            <span class="receipt-value">{{ purchaseResult()!.itemName }}</span>
+          </div>
+          <div class="receipt-row">
+            <span class="receipt-label">Price Paid</span>
+            <span class="receipt-value">{{ purchaseResult()!.priceAmount }}&nbsp;{{ purchaseResult()!.priceCurrencyType }}</span>
+          </div>
+        </div>
+
+        <div class="receipt-seal-row">
+          <svg class="receipt-seal-svg" viewBox="0 0 100 100">
+            <polygon points="50,4 57,34 86,18 67,42 98,40 73,56 94,78 64,67 67,98 50,80 33,98 36,67 6,78 27,56 2,40 33,42 14,18 43,34" fill="#2d5a1b" opacity="0.82"/>
+            <circle cx="50" cy="50" r="27" fill="#2d5a1b"/>
+            <circle cx="50" cy="50" r="24" fill="none" stroke="#5a9e38" stroke-width="1.5"/>
+            <text x="50" y="46" text-anchor="middle" fill="#c8e6a0" font-family="serif" font-size="10" font-style="italic">Merchant</text>
+            <text x="50" y="59" text-anchor="middle" fill="#c8e6a0" font-family="serif" font-size="10" font-style="italic">Approved</text>
+          </svg>
+          <p class="receipt-paid-text">PAID IN FULL</p>
+        </div>
+
+      } @else {
+        <p class="receipt-title">Notice of Denial</p>
+        <svg class="receipt-divider-svg" viewBox="0 0 240 12" preserveAspectRatio="none">
+          <path d="M0 6 Q60 1 120 6 Q180 11 240 6" stroke="currentColor" fill="none" stroke-width="1"/>
+          <circle cx="0" cy="6" r="2" fill="currentColor"/>
+          <circle cx="240" cy="6" r="2" fill="currentColor"/>
+        </svg>
+        <p class="receipt-subtitle">~ From the Office of Commerce ~</p>
+
+        <div class="receipt-body">
+          <div class="receipt-row">
+            <span class="receipt-label">Petitioner</span>
+            <span class="receipt-value">{{ purchaseResult()!.playerDisplayName }}</span>
+          </div>
+          <div class="receipt-row">
+            <span class="receipt-label">Requested Item</span>
+            <span class="receipt-value">{{ purchaseResult()!.itemName }}</span>
+          </div>
+        </div>
+
+        <p class="receipt-denial-notice">{{ purchaseResult()!.denialReason }}</p>
+
+        <div class="receipt-stamp-row">
+          <svg class="receipt-stamp-svg" viewBox="0 0 200 76">
+            <rect x="3" y="3" width="194" height="70" rx="5" fill="none" stroke="currentColor" stroke-width="3.5" opacity="0.88"/>
+            <rect x="8" y="8" width="184" height="60" rx="3" fill="none" stroke="currentColor" stroke-width="1" opacity="0.5"/>
+            <text x="100" y="34" text-anchor="middle" fill="currentColor" font-family="serif" font-weight="bold" font-size="20" letter-spacing="4" opacity="0.92">INSUFFICIENT</text>
+            <text x="100" y="60" text-anchor="middle" fill="currentColor" font-family="serif" font-weight="bold" font-size="20" letter-spacing="8" opacity="0.92">FUNDS</text>
+          </svg>
+        </div>
+      }
+
+      <button class="receipt-dismiss-btn" (click)="closeReceipt()">Dismiss</button>
+    </div>
+  </div>
 }

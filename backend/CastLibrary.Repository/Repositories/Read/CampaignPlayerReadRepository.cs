@@ -11,6 +11,7 @@ public interface ICampaignPlayerReadRepository
     Task<List<CampaignPlayerDomain>> GetByCampaignAsync(Guid campaignId);
     Task<bool> IsPlayerInCampaignAsync(Guid campaignId, Guid playerUserId);
     Task<CampaignPlayerDomain> GetByUserAndCampaignAsync(Guid campaignId, Guid playerUserId);
+    Task<List<Guid>> GetDemoPlayerUserIdsAsync();
 }
 
 public class CampaignPlayerReadRepository(
@@ -29,7 +30,6 @@ public class CampaignPlayerReadRepository(
                      cp.player_user_id AS PlayerUserId,
                      u.display_name    AS DisplayName,
                      u.email,
-                     cp.starting_gold  AS StartingGold,
                      cp.joined_at      AS JoinedAt
               FROM campaign_players cp
               JOIN users u ON u.id = cp.player_user_id
@@ -74,7 +74,6 @@ public class CampaignPlayerReadRepository(
                      cp.player_user_id AS PlayerUserId,
                      u.display_name    AS DisplayName,
                      u.email,
-                     cp.starting_gold  AS StartingGold,
                      cp.joined_at      AS JoinedAt
               FROM campaign_players cp
               JOIN users u ON u.id = cp.player_user_id
@@ -89,5 +88,24 @@ public class CampaignPlayerReadRepository(
             @params, entity is not null ? 1 : 0);
 
         return entity is not null ? mapper.ToDomain(entity) : null;
+    }
+
+    public async Task<List<Guid>> GetDemoPlayerUserIdsAsync()
+    {
+        var spanId = correlation.NewSpan();
+        const string sql =
+            @"SELECT DISTINCT cp.player_user_id
+              FROM campaign_players cp
+              JOIN campaigns c ON c.id = cp.campaign_id
+              WHERE c.is_demo = TRUE";
+
+        logging.LogDbOperation(correlation.TraceId, spanId, "SELECT", "campaign_players", null);
+
+        using var conn = sqlConnectionFactory.GetConnection();
+        var ids = (await conn.QueryAsync<Guid>(sql)).ToList();
+
+        logging.LogDbOperation(correlation.TraceId, spanId, "SELECT", "campaign_players", null, ids.Count);
+
+        return ids;
     }
 }

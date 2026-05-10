@@ -7,7 +7,7 @@
     <div class="subLoc-card-left">
       <app-sublocation-card
         [sublocation]="subLoc"
-        [flippable]="false"
+        [flippable]="true"
         [editable]="false"
         [secrets]="isDm()"
         [secretsRevealed]="subLoc.isVisibleToPlayers"
@@ -115,20 +115,66 @@
             <span class="detail-line"></span>
             <div class="detail-shop-grid">
               @for (item of subLoc.shopItems; track item.id) {
-                <div class="detail-shop-item" [class.detail-shop-item--sold]="item.isScratchedOff">
-                  <span class="detail-shop-item-name">{{ item.name }}</span>
-                  <div class="detail-shop-item-right">
-                    <span class="detail-shop-item-price">{{ item.price }}</span>
-                    @if (isDm()) {
-                      <button
-                        class="shop-scratch-btn"
-                        [class.shop-scratch-btn--sold]="item.isScratchedOff"
-                        (click)="toggleScratch(item)"
-                        [title]="item.isScratchedOff ? 'Mark as available' : 'Mark as sold'"
-                      >{{ item.isScratchedOff ? 'SOLD' : 'SELL' }}</button>
-                    }
+                @if (isDm() && editing() && editingShopItemId() === item.id) {
+                  <!-- ── Inline edit row ── -->
+                  <div class="detail-shop-item detail-shop-item--editing">
+                    <input class="detail-input shop-edit-name"
+                           [ngModel]="editShopItemName()"
+                           (ngModelChange)="editShopItemName.set($event)"
+                           placeholder="Item name…"
+                           autocomplete="off" />
+                    <div class="shop-edit-right">
+                      <div class="price-input-group">
+                        <input class="fi fi-sm price-amount"
+                               type="number" min="0" max="9999"
+                               [ngModel]="editShopItemAmount()"
+                               (ngModelChange)="editShopItemAmount.set($event)"
+                               placeholder="0" />
+                        <div class="notes-dropdown price-currency-dropdown">
+                          <button class="notes-dropdown-trigger"
+                                  (click)="toggleEditItemCurrencyDropdown($event, item.id)"
+                                  type="button">
+                            <span class="notes-dropdown-placeholder">{{ editShopItemCurrency() }}</span>
+                            <span class="notes-dropdown-caret"
+                                  [class.notes-dropdown-caret--open]="isEditItemDropdownOpen(item.id)">▾</span>
+                          </button>
+                          @if (isEditItemDropdownOpen(item.id)) {
+                            <div class="notes-dropdown-panel">
+                              @for (c of currencies; track c) {
+                                <div class="notes-dropdown-item"
+                                     [class.notes-dropdown-item--selected]="editShopItemCurrency() === c"
+                                     (click)="setEditItemCurrency(c, item.id)">{{ c }}</div>
+                              }
+                            </div>
+                          }
+                        </div>
+                      </div>
+                      <button class="secret-confirm-btn" (click)="saveShopItem(item)" type="button">✔</button>
+                      <button class="secret-cancel-btn"  (click)="cancelEditingShopItem()" type="button">✕</button>
+                    </div>
                   </div>
-                </div>
+                } @else {
+                  <!-- ── Read row ── -->
+                  <div class="detail-shop-item" [class.detail-shop-item--sold]="item.isScratchedOff">
+                    <span class="detail-shop-item-name">{{ item.name }}</span>
+                    <div class="detail-shop-item-right">
+                      <span class="detail-shop-item-price">{{ item.priceAmount }} {{ item.priceCurrencyType }}</span>
+                      @if (isDm()) {
+                        @if (editing()) {
+                          <button class="shop-edit-btn"
+                                  (click)="startEditingShopItem(item)"
+                                  title="Edit item">✎</button>
+                        }
+                        <button
+                          class="shop-scratch-btn"
+                          [class.shop-scratch-btn--sold]="item.isScratchedOff"
+                          (click)="toggleScratch(item)"
+                          [title]="item.isScratchedOff ? 'Mark as available' : 'Mark as sold'"
+                        >{{ item.isScratchedOff ? 'SOLD' : 'SELL' }}</button>
+                      }
+                    </div>
+                  </div>
+                }
               }
             </div>
 

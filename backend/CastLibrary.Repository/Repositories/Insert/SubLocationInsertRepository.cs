@@ -42,8 +42,8 @@ namespace CastLibrary.Repository.Repositories.Insert
                 item.Id = item.Id == Guid.Empty ? Guid.NewGuid() : item.Id;
                 item.SublocationId = sublocation.Id;
                 await conn.ExecuteAsync(
-                    "INSERT INTO sublocation_shop_items (id, sublocation_id, name, price, description, sort_order) VALUES (@Id, @SublocationId, @Name, @Price, @Description, @SortOrder)",
-                    new { item.Id, item.SublocationId, item.Name, item.Price, item.Description, item.SortOrder }, tx);
+                    "INSERT INTO sublocation_shop_items (id, sublocation_id, name, price_amount, price_currency_type, description, sort_order) VALUES (@Id, @SublocationId, @Name, @PriceAmount, @PriceCurrencyType, @Description, @SortOrder)",
+                    new { item.Id, item.SublocationId, item.Name, item.PriceAmount, item.PriceCurrencyType, item.Description, item.SortOrder }, tx);
             }
 
             await tx.CommitAsync();

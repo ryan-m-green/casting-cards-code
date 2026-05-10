@@ -13,7 +13,6 @@ public class CampaignPlayerDomain
     public Guid UserId { get; set; }
     public string DisplayName { get; set; } = string.Empty;
     public string Email { get; set; } = string.Empty;
-    public int StartingGold { get; set; }
     public DateTime JoinedAt { get; set; }
     public string ImageUrl { get; set; } = string.Empty;
 }

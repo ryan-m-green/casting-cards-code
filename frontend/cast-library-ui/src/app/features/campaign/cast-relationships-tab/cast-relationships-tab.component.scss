@@ -154,9 +154,8 @@
 // ── Global bulk controls ──────────────────────────────────────────────────────
 .rel-global-controls {
   display: flex;
-  align-items: flex-start;
+  align-items: stretch;
   gap: 12px;
-  flex-wrap: wrap;
   flex: 1;
   padding: 10px 14px;
   background: v.$color-ext-334;
@@ -164,16 +163,30 @@
   border-radius: 8px;
 }
 
-.rel-global-slider-wrap {
+.rel-global-left {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  flex-shrink: 0;
+}
+
+.rel-global-right {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
   flex: 1;
-  min-width: 160px;
+  min-width: 0;
+}
+
+.rel-global-slider-wrap {
+  width: 100%;
 }
 
 .rel-global-explanation {
-  flex: 1;
-  min-width: 160px;
+  width: 100%;
   resize: vertical;
   color: v.$color-ext-317;
+  box-sizing: border-box;
 }
 
 .rel-global-btn {
@@ -191,25 +204,14 @@
     background: rgba(200, 225, 235, 0.1);
     border: 1px solid rgba(200, 225, 235, 0.3);
     color: v.$color-ext-152;
-    align-self: center;
     white-space: nowrap;
+    align-self: flex-start;
     &:hover { background: rgba(200, 225, 235, 0.18); }
   }
 
   &--toggle-on {
     background: v.$color-ext-638;
     border-color: v.$color-ext-638;
-  }
-
-  &--apply {
-    padding: 6px 14px;
-    font-size: 11px;
-    background: v.$color-ext-638;
-    border: 1px solid v.$color-ext-638;
-    color: v.$campaign-portal-text-bright;
-    align-self: flex-end;
-    &:hover:not(:disabled) { filter: brightness(1.2); transform: translateY(-1px); }
-    &:disabled { opacity: 0.45; cursor: not-allowed; }
   }
 }
 

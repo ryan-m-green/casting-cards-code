@@ -42,14 +42,18 @@ public class ImportLibraryCommandHandler(
 
         foreach (var card in command.Bundle.Casts)
         {
+            if (existingCastNames.Contains(card.Name) || insertedCastNames.Contains(card.Name))
+            {
+                response.CastsSkipped++;
+                continue;
+            }
             try
             {
-                var name = ResolveName(card.Name, existingCastNames, insertedCastNames);
                 var domain = new CastDomain
                 {
                     Id = Guid.NewGuid(),
                     DmUserId = command.DmUserId,
-                    Name = name,
+                    Name = card.Name,
                     Pronouns = card.Pronouns,
                     Race = card.Race,
                     Role = card.Role,
@@ -64,11 +68,11 @@ public class ImportLibraryCommandHandler(
                 };
 
                 await castInsertRepository.InsertAsync(domain);
-                insertedCastNames.Add(name);
+                insertedCastNames.Add(card.Name);
                 response.CastsImported++;
 
                 await TrySaveImageAsync(card.ImageFileName, command.Images, domain.Id, command.DmUserId,
-                    EntityType.Cast, name, "Cast", response.Failures);
+                    EntityType.Cast, card.Name, "Cast", response.Failures);
             }
             catch (Exception ex)
             {
@@ -83,14 +87,18 @@ public class ImportLibraryCommandHandler(
 
         foreach (var card in command.Bundle.Locations)
         {
+            if (existingLocationNames.Contains(card.Name) || insertedLocationNames.Contains(card.Name))
+            {
+                response.LocationsSkipped++;
+                continue;
+            }
             try
             {
-                var name = ResolveName(card.Name, existingLocationNames, insertedLocationNames);
                 var domain = new LocationDomain
                 {
                     Id = Guid.NewGuid(),
                     DmUserId = command.DmUserId,
-                    Name = name,
+                    Name = card.Name,
                     Classification = card.Classification,
                     Size = card.Size,
                     Condition = card.Condition,
@@ -105,11 +113,11 @@ public class ImportLibraryCommandHandler(
                 };
 
                 await locationInsertRepository.InsertAsync(domain);
-                insertedLocationNames.Add(name);
+                insertedLocationNames.Add(card.Name);
                 response.LocationsImported++;
 
                 await TrySaveImageAsync(card.ImageFileName, command.Images, domain.Id, command.DmUserId,
-                    EntityType.Location, name, "Location", response.Failures);
+                    EntityType.Location, card.Name, "Location", response.Failures);
             }
             catch (Exception ex)
             {
@@ -124,32 +132,37 @@ public class ImportLibraryCommandHandler(
 
         foreach (var card in command.Bundle.Sublocations)
         {
+            if (existingLocNames.Contains(card.Name) || insertedLocNames.Contains(card.Name))
+            {
+                response.SublocationsSkipped++;
+                continue;
+            }
             try
             {
-                var name = ResolveName(card.Name, existingLocNames, insertedLocNames);
                 var domain = new SublocationDomain
                 {
                     Id = Guid.NewGuid(),
                     DmUserId = command.DmUserId,
-                    Name = name,
+                    Name = card.Name,
                     Description = card.Description,
                     CreatedAt = DateTime.UtcNow,
                     ShopItems = card.ShopItems.Select((item, i) => new ShopItemDomain
                     {
                         Id = Guid.NewGuid(),
                         Name = item.Name,
-                        Price = item.Price,
+                        PriceAmount = item.PriceAmount,
+                        PriceCurrencyType = item.PriceCurrencyType,
                         Description = item.Description,
                         SortOrder = i,
                     }).ToList(),
                 };
 
                 await sublocationInsertRepository.InsertAsync(domain);
-                insertedLocNames.Add(name);
+                insertedLocNames.Add(card.Name);
                 response.SublocationsImported++;
 
                 await TrySaveImageAsync(card.ImageFileName, command.Images, domain.Id, command.DmUserId,
-                    EntityType.Sublocation, name, "Sublocation", response.Failures);
+                    EntityType.Sublocation, card.Name, "Sublocation", response.Failures);
             }
             catch (Exception ex)
             {
@@ -188,17 +201,7 @@ public class ImportLibraryCommandHandler(
         }
     }
 
-    private static string ResolveName(string raw, HashSet<string> existing, HashSet<string> inserted)
-    {
-        var allKnown = new HashSet<string>(existing, StringComparer.OrdinalIgnoreCase);
-        allKnown.UnionWith(inserted);
 
-        if (!allKnown.Contains(raw)) return raw;
-
-        var suffix = 2;
-        while (allKnown.Contains($"{raw} - {suffix}")) suffix++;
-        return $"{raw} - {suffix}";
-    }
 }
 
 public class ImportLibraryCommand

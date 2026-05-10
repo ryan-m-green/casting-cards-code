@@ -114,7 +114,10 @@ export class CastFormComponent implements OnInit {
           voiceNotes: cast.voiceNotes,
         });
         const vpArray = this.form.get('voicePlacement') as FormArray;
-        VOICE_OPTIONS.forEach((opt, i) => vpArray.at(i).setValue(cast.voicePlacement?.includes(opt) ?? false));
+        const normalize = (s: string) => s.toLowerCase().replace(/\s*\/\s*/g, '/').trim();
+        VOICE_OPTIONS.forEach((opt, i) => {
+          vpArray.at(i).setValue(cast.voicePlacement?.some(v => normalize(v) === normalize(opt)) ?? false);
+        });
         this.imageUrl.set(cast.imageUrl ?? null);
       });
     }

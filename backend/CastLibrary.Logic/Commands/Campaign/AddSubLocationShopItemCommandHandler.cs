@@ -16,10 +16,11 @@ public class AddSublocationShopItemCommandHandler(
     {
         var item = new ShopItemDomain
         {
-            Name        = command.Request.Name,
-            Price       = command.Request.Price,
-            Description = command.Request.Description,
-            SortOrder   = 0,
+            Name             = command.Request.Name,
+            PriceAmount      = command.Request.PriceAmount,
+            PriceCurrencyType = command.Request.PriceCurrencyType,
+            Description      = command.Request.Description,
+            SortOrder        = 0,
         };
 
         return await campaignInsertRepository.InsertSublocationShopItemAsync(command.SublocationInstanceId, item);

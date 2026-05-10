@@ -54,7 +54,30 @@
 .tod-preview-section {
   margin-bottom: 42px; // 34px cursor overhang below bar + 8px clearance
 }
+.tod-preview-shell {
+  padding: 20px;
+  height: 162px;
+  border-radius: 8px;
+  background: v.$color-black;
+  animation: tod-preview-breathe 8.4s ease-in-out infinite;
+}
 
+@keyframes tod-preview-breathe {
+  0%, 100% {
+    box-shadow:
+      inset 0 0 0    1px color-mix(in srgb, var(--portal-color, v.$campaign-portal-primary) 40%, white 60%),
+      inset 0 0  6px  2px color-mix(in srgb, var(--portal-color, v.$campaign-portal-primary), transparent 28%),
+      inset 0 0 14px  4px color-mix(in srgb, var(--portal-color, v.$campaign-portal-primary), transparent 52%),
+      inset 0 0 25px  8px color-mix(in srgb, var(--portal-color, v.$campaign-portal-primary), transparent 76%);
+  }
+  50% {
+    box-shadow:
+      inset 0 0 0    1px color-mix(in srgb, var(--portal-color, v.$campaign-portal-primary) 25%, white 75%),
+      inset 0 0  9px  3px color-mix(in srgb, var(--portal-color, v.$campaign-portal-primary), transparent 12%),
+      inset 0 0 19px  6px color-mix(in srgb, var(--portal-color, v.$campaign-portal-primary), transparent 36%),
+      inset 0 0 35px 12px color-mix(in srgb, var(--portal-color, v.$campaign-portal-primary), transparent 64%);
+  }
+}
 // ── Slice list ────────────────────────────────────────────────────────────────
 .tod-slices {
   list-style: none;

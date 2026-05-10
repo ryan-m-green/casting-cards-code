@@ -23,7 +23,8 @@ public class CreateSublocationCommandHandler(ISublocationInsertRepository subloc
             {
                 Id = Guid.NewGuid(),
                 Name = item.Name,
-                Price = item.Price,
+                PriceAmount = item.PriceAmount,
+                PriceCurrencyType = item.PriceCurrencyType,
                 Description = item.Description, SortOrder = i,
             }).ToList(),
         };

@@ -17,7 +17,11 @@ namespace CastLibrary.Logic.Queries.Library
         public async Task<byte[]> HandleAsync()
         {
             var template = templateFactory.Create();
-            var templateJson = JsonSerializer.Serialize(template, new JsonSerializerOptions { WriteIndented = true });
+            var templateJson = JsonSerializer.Serialize(template, new JsonSerializerOptions
+            {
+                WriteIndented = true,
+                PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+            });
             var readMe = templateReadMeFactory.Create();
 
             var zipContainer = templateZipService.GetZip(templateJson, readMe);

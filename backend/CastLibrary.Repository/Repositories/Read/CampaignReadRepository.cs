@@ -13,6 +13,7 @@ public interface ICampaignReadRepository
 {
     Task<List<CampaignDomain>> GetAllByDmAsync(Guid dmUserId);
     Task<List<CampaignDomain>> GetAllByPlayerAsync(Guid playerUserId);
+    Task<List<CampaignDomain>> GetAllDemoAsync();
     Task<CampaignDomain> GetByIdAsync(Guid id);
     Task<CampaignCastInstanceDomain> GetCastInstanceBySourceCastIdAsync(Guid campaignId, Guid sourceCastId);
     Task<CampaignCastInstanceDomain> GetCastInstanceByIdAsync(Guid instanceId);
@@ -52,6 +53,7 @@ public class CampaignReadRepository(
                 c.fantasy_type   AS FantasyType,
                 c.status,
                 c.spine_color    AS SpineColor,
+                c.is_demo        AS IsDemo,
                 c.created_at     AS CreatedAt,
                 COALESCE(ci.location_count, 0)   AS LocationCount,
                 COALESCE(cp.player_count, 0) AS PlayerCount
@@ -128,6 +130,7 @@ public class CampaignReadRepository(
                 fantasy_type AS FantasyType,
                 status,
                 spine_color  AS SpineColor,
+                is_demo      AS IsDemo,
                 created_at   AS CreatedAt
               FROM campaigns WHERE id = @Id";
 
@@ -416,7 +419,7 @@ public class CampaignReadRepository(
             @params, r is null ? 0 : 1);
 
         if (r is null) return null;
-        return new CampaignSublocationInstanceDomain
+        var domain = new CampaignSublocationInstanceDomain
         {
             InstanceId = r.instance_id,
             CampaignId = r.campaign_id,
@@ -432,6 +435,27 @@ public class CampaignReadRepository(
             FactionInstanceId = r.faction_instance_id,
             SymbolPath = r.symbol_path,
         };
+
+        var shopItems = (await conn.QueryAsync<dynamic>(
+            @"SELECT id, sublocation_instance_id, name, price_amount, price_currency_type, description, sort_order, is_scratched_off
+              FROM campaign_sublocation_shop_items
+              WHERE sublocation_instance_id = @InstanceId
+              ORDER BY sort_order",
+            @params)).ToList();
+
+        domain.ShopItems = shopItems.Select(s => new ShopItemDomain
+        {
+            Id = s.id,
+            SublocationId = s.sublocation_instance_id,
+            Name = s.name,
+            PriceAmount = (int)s.price_amount,
+            PriceCurrencyType = s.price_currency_type ?? "gp",
+            Description = s.description ?? string.Empty,
+            SortOrder = s.sort_order,
+            IsScratchedOff = s.is_scratched_off,
+        }).ToList();
+
+        return domain;
     }
 
     public async Task<List<CampaignSublocationInstanceDomain>> GetSublocationInstancesByCampaignAsync(Guid campaignId)
@@ -481,7 +505,7 @@ public class CampaignReadRepository(
 
         var instanceIds = domainInstances.Select(i => i.InstanceId).ToArray();
         var shopItems = (await conn.QueryAsync<dynamic>(
-            @"SELECT id, sublocation_instance_id, name, price, description, sort_order, is_scratched_off
+            @"SELECT id, sublocation_instance_id, name, price_amount, price_currency_type, description, sort_order, is_scratched_off
               FROM campaign_sublocation_shop_items
               WHERE sublocation_instance_id = ANY(@Ids)
               ORDER BY sort_order",
@@ -496,7 +520,8 @@ public class CampaignReadRepository(
                     Id = s.id,
                     SublocationId = s.sublocation_instance_id,
                     Name = s.name,
-                    Price = s.price ?? string.Empty,
+                    PriceAmount = (int)s.price_amount,
+                    PriceCurrencyType = s.price_currency_type ?? "gp",
                     Description = s.description ?? string.Empty,
                     SortOrder = s.sort_order,
                     IsScratchedOff = s.is_scratched_off,
@@ -556,7 +581,7 @@ public class CampaignReadRepository(
 
         var instanceIds = domainInstances.Select(i => i.InstanceId).ToArray();
         var shopItems = (await conn.QueryAsync<dynamic>(
-            @"SELECT id, sublocation_instance_id, name, price, description, sort_order, is_scratched_off
+            @"SELECT id, sublocation_instance_id, name, price_amount, price_currency_type, description, sort_order, is_scratched_off
               FROM campaign_sublocation_shop_items
               WHERE sublocation_instance_id = ANY(@Ids)
               ORDER BY sort_order",
@@ -571,7 +596,8 @@ public class CampaignReadRepository(
                     Id = s.id,
                     SublocationId = s.sublocation_instance_id,
                     Name = s.name,
-                    Price = s.price ?? string.Empty,
+                    PriceAmount = (int)s.price_amount,
+                    PriceCurrencyType = s.price_currency_type ?? "gp",
                     Description = s.description ?? string.Empty,
                     SortOrder = s.sort_order,
                     IsScratchedOff = s.is_scratched_off,
@@ -994,6 +1020,34 @@ public class CampaignReadRepository(
                 FactionRelationships = relsByFactionA.TryGetValue(fid, out var rels) ? rels : [],
             };
         }).ToList();
+    }
+
+    public async Task<List<CampaignDomain>> GetAllDemoAsync()
+    {
+        var spanId = correlation.NewSpan();
+        const string sql =
+            @"SELECT id,
+                dm_user_id   AS DmUserId,
+                name,
+                description,
+                fantasy_type AS FantasyType,
+                status,
+                spine_color  AS SpineColor,
+                is_demo      AS IsDemo,
+                created_at   AS CreatedAt,
+                0            AS LocationCount,
+                0            AS PlayerCount
+              FROM campaigns
+              WHERE is_demo = TRUE
+              ORDER BY name";
+
+        logging.LogDbOperation(correlation.TraceId, spanId, "SELECT", "campaigns", null);
+
+        using var conn = CreateConnection();
+        var entities = (await conn.QueryAsync<CampaignEntity>(sql)).ToList();
+
+        logging.LogDbOperation(correlation.TraceId, spanId, "SELECT", "campaigns", null, entities.Count);
+        return entities.Select(mapper.ToDomain).ToList();
     }
 }
 

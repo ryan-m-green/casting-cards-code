@@ -28,6 +28,7 @@ export interface Campaign {
   spineColor: string;
   playerCount: number;
   locationCount: number;
+  isDemo?: boolean | null;
   createdAt: string;
 }
 
@@ -35,7 +36,6 @@ export interface CampaignPlayer {
   userId: string;
   displayName: string;
   email: string;
-  startingGold: number;
 }
 
 export interface CampaignInviteCode {
@@ -51,6 +51,7 @@ export interface CampaignDetail {
   description: string;
   spineColor: string;
   status: CampaignStatus;
+  isDemo?: boolean | null;
   locations: CampaignLocationInstance[];
   casts: CampaignCastInstance[];
   sublocations: CampaignSublocationInstance[];

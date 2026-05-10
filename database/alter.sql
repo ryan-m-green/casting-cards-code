@@ -489,6 +489,25 @@ ALTER TABLE campaign_sublocation_instances
     ADD COLUMN IF NOT EXISTS player_faction_instance_id UUID REFERENCES campaign_faction_instances(faction_instance_id) ON DELETE SET NULL,
     ADD COLUMN IF NOT EXISTS player_symbol_path TEXT;
 
+-- [027] Split price string into structured amount + currency_type on shop item tables
+ALTER TABLE sublocation_shop_items
+    ADD COLUMN IF NOT EXISTS price_amount        INT          NOT NULL DEFAULT 0,
+    ADD COLUMN IF NOT EXISTS price_currency_type VARCHAR(5)   NOT NULL DEFAULT 'gp'
+        CHECK (price_currency_type IN ('cp','sp','ep','gp','pp'));
+ALTER TABLE sublocation_shop_items
+    DROP COLUMN IF EXISTS price;
+
+ALTER TABLE campaign_sublocation_shop_items
+    ADD COLUMN IF NOT EXISTS price_amount        INT          NOT NULL DEFAULT 0,
+    ADD COLUMN IF NOT EXISTS price_currency_type VARCHAR(5)   NOT NULL DEFAULT 'gp'
+        CHECK (price_currency_type IN ('cp','sp','ep','gp','pp'));
+ALTER TABLE campaign_sublocation_shop_items
+    DROP COLUMN IF EXISTS price;
+
+-- [028] Remove starting_gold from campaign_players (superseded by currency_transactions)
+ALTER TABLE campaign_players
+    DROP COLUMN IF EXISTS starting_gold;
+
 -- [027] Create player_quicknote_queue table
 --       Stores per-player unsorted notes that can be routed later.
 CREATE TABLE IF NOT EXISTS player_quicknote_queue (
@@ -569,3 +588,7 @@ DO $$ BEGIN
         CREATE INDEX idx_campaign_storyline_campaign ON campaign_storyline(campaign_id);
     END IF;
 END $$;
+
+-- [034] Add is_demo flag to campaigns — admin-only flag to mark showcase/demo campaigns
+ALTER TABLE campaigns
+    ADD COLUMN IF NOT EXISTS is_demo BOOLEAN NULL;

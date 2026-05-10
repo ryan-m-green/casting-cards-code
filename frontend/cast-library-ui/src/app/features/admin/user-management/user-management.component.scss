@@ -1,5 +1,42 @@
 @use '../../../../styles/variables' as v;
 
+.tabs-bar {
+  display: flex;
+  gap: 0;
+  border-bottom: 1px solid v.$color-border-accent;
+  padding: 0 8px;
+  margin-bottom: 0;
+}
+
+.tab-btn {
+  font-family: v.$font-header;
+  font-size: 9px;
+  font-weight: bolder;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: v.$color-text-secondary;
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  padding: 6px 16px 8px;
+  cursor: pointer;
+  transition: color 0.18s ease, border-color 0.18s ease;
+  margin-bottom: -1px;
+
+  &:hover {
+    color: v.$color-text-primary;
+  }
+
+  &--active {
+    color: v.$color-text-primary;
+    border-bottom-color: v.$color-border-accent;
+  }
+}
+
+.tab-content {
+  padding: 24px 0;
+}
+
 .search-input {
   margin-bottom: 16px;
 }
@@ -47,6 +84,15 @@
   color: v.$color-text-muted;
 }
 
+.user-demo-label {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: v.$color-base-mint-green;
+  margin-top: 4px;
+}
+
 .btn-delete {
   padding: 8px 16px;
   background: transparent;
@@ -68,10 +114,139 @@
   }
 }
 
+.user-card-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+}
+
+.demo-assign {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.demo-assign app-campaign-dropdown {
+  min-width: 200px;
+}
+
+.btn-demo-save {
+  padding: 6px 12px;
+  background: transparent;
+  color: v.$color-text-secondary;
+  border: 1px solid v.$color-border;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 12px;
+  transition: all 0.2s;
+  white-space: nowrap;
+
+  &:hover:not(:disabled) {
+    border-color: v.$color-border-accent;
+    color: v.$color-text-primary;
+  }
+
+  &:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+  }
+}
+
+.demo-assign-success {
+  font-size: 12px;
+  color: v.$color-base-mint-green;
+  white-space: nowrap;
+}
+
 .error-box {
   margin-top: 12px;
   border-color: v.$color-dm-border;
 }
+
+// ── Add Player form ───────────────────────────────────────────────────────────
+
+.add-player-form {
+  max-width: 480px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.form-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.form-label {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: v.$color-text-secondary;
+}
+
+.form-hint {
+  font-size: 12px;
+  color: v.$color-text-muted;
+  margin: 0;
+}
+
+.form-submit-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.btn-submit {
+  flex-shrink: 0;
+  padding: 8px 20px;
+  background: transparent;
+  color: v.$color-text-primary;
+  border: 1px solid v.$color-border-accent;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 13px;
+  transition: all 0.2s;
+
+  &:hover:not(:disabled) {
+    background: v.$color-border-accent;
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
+
+@keyframes fade-out {
+  0%   { opacity: 1; }
+  66%  { opacity: 1; }
+  100% { opacity: 0; }
+}
+
+.add-player-success {
+  animation: fade-out 3s forwards;
+  font-size: 13px;
+  color: v.$color-text-secondary;
+  padding: 10px 14px;
+  border: 1px solid v.$color-border;
+  border-radius: 4px;
+  background: v.$color-page-mid;
+}
+
+.add-player-error {
+  animation: fade-out 3s forwards;
+  font-size: 13px;
+  color: v.$color-dm-text;
+  padding: 10px 14px;
+  border: 1px solid v.$color-dm-border;
+  border-radius: 4px;
+  background: v.$color-page-mid;
+}
+
+// ── Modal ─────────────────────────────────────────────────────────────────────
 
 .modal-overlay {
   position: fixed;
@@ -151,4 +326,5 @@
     border-color: v.$color-delete-hover;
   }
 }
+
 

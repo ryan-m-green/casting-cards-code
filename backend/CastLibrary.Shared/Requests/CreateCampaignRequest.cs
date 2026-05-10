@@ -6,4 +6,5 @@ public class CreateCampaignRequest
     public string FantasyType { get; set; } = "High Fantasy";
     public string Description { get; set; } = string.Empty;
     public List<Guid> LocationIds { get; set; } = [];
+    public bool? IsDemo { get; set; }
 }

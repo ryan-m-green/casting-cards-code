@@ -1,13 +1,11 @@
-@if (purse.length) {
-  <div class="currency-display" [class.currency-display--compact]="compact">
-    <div class="fi-label fi-label-strong">Fortune</div>
-    <div class="currency-display-divider"></div>
-    @for (line of purse; track line.type) {
-      <div class="currency-row">
-        <span class="currency-row-type">{{ line.type }}</span>
-        <span class="currency-row-sep">:</span>
-        <span class="currency-row-amount">{{ line.amount }}</span>
-      </div>
-    }
-  </div>
-}
+<div class="currency-display" [class.currency-display--compact]="compact">
+  <div class="fi-label fi-label-strong">Fortune</div>
+  <div class="currency-display-divider"></div>
+  @for (line of normalizedPurse; track line.label) {
+    <div class="currency-row">
+      <span class="currency-row-type">{{ line.label }}</span>
+      <span class="currency-row-sep">:</span>
+      <span class="currency-row-amount">{{ line.amount }}</span>
+    </div>
+  }
+</div>

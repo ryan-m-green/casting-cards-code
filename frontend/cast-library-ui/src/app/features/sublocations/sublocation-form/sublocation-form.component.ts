@@ -57,7 +57,8 @@ export class SublocationFormComponent implements OnInit {
       shopItems: (v.shopItems ?? []).map((item: any, i: number) => ({
         id: String(i),
         name: item.name ?? '',
-        price: item.priceAmount != null ? `${item.priceAmount} ${item.priceCurrency}` : '',
+        priceAmount: item.priceAmount ?? 0,
+        priceCurrencyType: item.priceCurrencyType ?? 'gp',
         description: item.description ?? '',
         isScratchedOff: false,
       })),
@@ -71,7 +72,7 @@ export class SublocationFormComponent implements OnInit {
       this.sublocationId.set(id);
       this.http.get<Sublocation>(`${environment.apiUrl}/api/sublocations/${id}`).subscribe(l => {
         this.form.patchValue({ name: l.name, description: l.description, dmNotes: l.dmNotes ?? '' });
-        l.shopItems?.forEach(item => this.shopItems.push(this.newItem(item.name, item.price, item.description)));
+        l.shopItems?.forEach(item => this.shopItems.push(this.newItem(item.name, item.priceAmount, item.priceCurrencyType, item.description)));
         this.imageUrl.set(l.imageUrl ?? null);
       });
     }
@@ -110,22 +111,13 @@ export class SublocationFormComponent implements OnInit {
     });
   }
 
-  newItem(name = '', price = '', description = ''): FormGroup {
-    const { amount, currency } = this.parsePrice(price);
+  newItem(name = '', priceAmount: number | null = null, priceCurrencyType = 'gp', description = ''): FormGroup {
     return this.fb.group({
-      name:          [name],
-      priceAmount:   [amount, [Validators.min(1), Validators.max(9999)]],
-      priceCurrency: [currency],
-      description:   [description],
+      name:             [name],
+      priceAmount:      [priceAmount, [Validators.min(1), Validators.max(9999)]],
+      priceCurrencyType:[priceCurrencyType],
+      description:      [description],
     });
-  }
-
-  private parsePrice(price: string): { amount: number | null; currency: string } {
-    if (!price) return { amount: null, currency: 'gp' };
-    const parts = price.trim().split(/\s+/);
-    const amount = parseInt(parts[0], 10);
-    const currency = parts[1] ?? 'gp';
-    return { amount: isNaN(amount) ? null : amount, currency };
   }
 
   addItem()             { this.shopItems.push(this.newItem()); }
@@ -153,9 +145,10 @@ export class SublocationFormComponent implements OnInit {
     const payload = {
       ...formValue,
       shopItems: formValue.shopItems?.map((item: any) => ({
-        name:        item.name,
-        price:       item.priceAmount != null ? `${item.priceAmount} ${item.priceCurrency}` : '',
-        description: item.description,
+        name:             item.name,
+        priceAmount:      item.priceAmount ?? 0,
+        priceCurrencyType: item.priceCurrencyType ?? 'gp',
+        description:      item.description,
       })),
     };
     const req = this.sublocationId()

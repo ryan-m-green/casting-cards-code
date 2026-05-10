@@ -102,9 +102,13 @@ namespace CastLibrary.WebHost.IoC
             services.AddScoped<IUpdateSublocationInstanceCommandHandler, UpdateSublocationInstanceCommandHandler>();
             services.AddScoped<IAddSublocationShopItemCommandHandler, AddSublocationShopItemCommandHandler>();
             services.AddScoped<IToggleShopItemScratchCommandHandler, ToggleShopItemScratchCommandHandler>();
+            services.AddScoped<IUpdateShopItemCommandHandler, UpdateShopItemCommandHandler>();
 
             services.AddScoped<IGenerateAdminInviteCodeCommandHandler, GenerateAdminInviteCodeCommandHandler>();
             services.AddScoped<IDeleteUserCommandHandler, DeleteUserCommandHandler>();
+            services.AddScoped<ICreatePlayerCommandHandler, CreatePlayerCommandHandler>();
+            services.AddScoped<ISetCampaignIsDemoCommandHandler, SetCampaignIsDemoCommandHandler>();
+            services.AddScoped<IAddUserToDemoCampaignCommandHandler, AddUserToDemoCampaignCommandHandler>();
 
             services.AddScoped<IGenerateCampaignInviteCodeCommandHandler, GenerateCampaignInviteCodeCommandHandler>();
             services.AddScoped<IRedeemCampaignInviteCodeCommandHandler, RedeemCampaignInviteCodeCommandHandler>();
@@ -132,6 +136,7 @@ namespace CastLibrary.WebHost.IoC
             services.AddScoped<IDeletePlayerCardSecretCommandHandler, DeletePlayerCardSecretCommandHandler>();
             services.AddScoped<IUpsertPlayerCastPerceptionCommandHandler, UpsertPlayerCastPerceptionCommandHandler>();
             services.AddScoped<IAwardCurrencyCommandHandler, AwardCurrencyCommandHandler>();
+            services.AddScoped<IPurchaseShopItemCommandHandler, PurchaseShopItemCommandHandler>();
             services.AddScoped<ISubmitBugReportCommandHandler, SubmitBugReportCommandHandler>();
             services.AddScoped<IMarkBugFixedCommandHandler, MarkBugFixedCommandHandler>();
             services.AddScoped<ICleanupBugReportsCommandHandler, CleanupBugReportsCommandHandler>();
@@ -209,6 +214,8 @@ namespace CastLibrary.WebHost.IoC
 
             services.AddScoped<IGetAdminInviteCodeQueryHandler, GetAdminInviteCodeQueryHandler>();
             services.AddScoped<IGetAllUsersQueryHandler, GetAllUsersQueryHandler>();
+            services.AddScoped<IGetDemoCampaignsQueryHandler, GetDemoCampaignsQueryHandler>();
+            services.AddScoped<IGetDemoPlayersQueryHandler, GetDemoPlayersQueryHandler>();
             services.AddScoped<IGetTimeOfDayQueryHandler, GetTimeOfDayQueryHandler>();
 
             services.AddScoped<IGetPlayerCardQueryHandler, GetPlayerCardQueryHandler>();

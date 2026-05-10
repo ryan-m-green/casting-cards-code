@@ -77,6 +77,12 @@ export class CampaignSublocationDetailComponent implements OnInit {
   newShopItemAmount    = signal('');
   newShopItemCurrency  = signal('gp');
 
+  // Edit existing shop item
+  editingShopItemId    = signal<string | null>(null);
+  editShopItemName     = signal('');
+  editShopItemAmount   = signal('');
+  editShopItemCurrency = signal('gp');
+
   // Currency dropdown
   readonly currencies      = ['cp', 'sp', 'ep', 'gp', 'pp'];
   openDropdownId           = signal<string | null>(null);
@@ -373,6 +379,21 @@ export class CampaignSublocationDetailComponent implements OnInit {
     this.openDropdownId.update(id => id === 'currency' ? null : 'currency');
   }
 
+  toggleEditItemCurrencyDropdown(e: MouseEvent, itemId: string) {
+    e.stopPropagation();
+    const dropId = `edit-currency-${itemId}`;
+    this.openDropdownId.update(id => id === dropId ? null : dropId);
+  }
+
+  isEditItemDropdownOpen(itemId: string): boolean {
+    return this.openDropdownId() === `edit-currency-${itemId}`;
+  }
+
+  setEditItemCurrency(value: string, itemId: string) {
+    this.editShopItemCurrency.set(value);
+    this.openDropdownId.set(null);
+  }
+
   isDropdownOpen(id: string): boolean { return this.openDropdownId() === id; }
 
   setCurrency(value: string) {
@@ -397,8 +418,7 @@ export class CampaignSublocationDetailComponent implements OnInit {
     if (!name) return;
     const amount   = String(this.newShopItemAmount() ?? '').trim();
     const currency = this.newShopItemCurrency();
-    const price    = amount ? `${amount} ${currency}` : '';
-    const body = { name, price, description: '' };
+    const body = { name, priceAmount: parseInt(amount) || 0, priceCurrencyType: currency, description: '' };
      this.http.post<ShopItem>(
       `${environment.apiUrl}/api/campaigns/${this.campaignId()}/sublocations/${this.sublocationInstanceId()}/shop-items`,
       body
@@ -412,6 +432,43 @@ export class CampaignSublocationDetailComponent implements OnInit {
         )
       } : c);
       this.addingShopItem.set(false);
+    });
+  }
+
+  startEditingShopItem(item: ShopItem) {
+    this.editingShopItemId.set(item.id);
+    this.editShopItemName.set(item.name);
+    this.editShopItemAmount.set(String(item.priceAmount));
+    this.editShopItemCurrency.set(item.priceCurrencyType);
+    this.openDropdownId.set(null);
+  }
+
+  cancelEditingShopItem() {
+    this.editingShopItemId.set(null);
+    this.openDropdownId.set(null);
+  }
+
+  saveShopItem(item: ShopItem) {
+    const name = this.editShopItemName().trim();
+    if (!name) return;
+    const body = {
+      name,
+      priceAmount: parseInt(this.editShopItemAmount()) || 0,
+      priceCurrencyType: this.editShopItemCurrency(),
+    };
+    this.http.patch(
+      `${environment.apiUrl}/api/campaigns/${this.campaignId()}/sublocations/${this.sublocationInstanceId()}/shop-items/${item.id}`,
+      body
+    ).subscribe(() => {
+      this.campaign.update(c => c ? {
+        ...c,
+        sublocations: c.sublocations.map(l =>
+          l.instanceId === this.sublocationInstanceId()
+            ? { ...l, shopItems: l.shopItems.map(s => s.id === item.id ? { ...s, ...body } : s) }
+            : l
+        )
+      } : c);
+      this.editingShopItemId.set(null);
     });
   }
 

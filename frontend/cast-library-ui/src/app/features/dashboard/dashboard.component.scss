@@ -288,6 +288,11 @@
   letter-spacing: 0.1em;
   color: v.$color-text-primary;
   margin-bottom: 6px;
+
+  &--skipped {
+    color: v.$color-text-muted;
+    font-weight: 400;
+  }
 }
 
 .import-failures-label {

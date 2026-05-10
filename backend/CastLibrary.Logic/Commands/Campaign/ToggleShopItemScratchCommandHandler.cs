@@ -5,23 +5,25 @@ namespace CastLibrary.Logic.Commands.Campaign;
 
 public interface IToggleShopItemScratchCommandHandler
 {
-    Task HandleAsync(ToggleShopItemScratchCommand command);
+    Task<bool> HandleAsync(ToggleShopItemScratchCommand command);
 }
 
 public class ToggleShopItemScratchCommandHandler(
     ICampaignReadRepository campaignReadRepository,
     ICampaignUpdateRepository campaignUpdateRepository) : IToggleShopItemScratchCommandHandler
 {
-    public async Task HandleAsync(ToggleShopItemScratchCommand command)
+    public async Task<bool> HandleAsync(ToggleShopItemScratchCommand command)
     {
         var instances = await campaignReadRepository.GetSublocationInstancesByCampaignAsync(command.CampaignId);
         var item = instances
             .SelectMany(i => i.ShopItems)
             .FirstOrDefault(s => s.Id == command.ShopItemId);
 
-        if (item is null) return;
+        if (item is null) return false;
 
-        await campaignUpdateRepository.ToggleShopItemScratchAsync(command.ShopItemId, !item.IsScratchedOff);
+        var newValue = !item.IsScratchedOff;
+        await campaignUpdateRepository.ToggleShopItemScratchAsync(command.ShopItemId, newValue);
+        return newValue;
     }
 }
 

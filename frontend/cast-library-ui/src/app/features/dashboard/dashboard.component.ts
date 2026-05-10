@@ -22,6 +22,9 @@ interface ImportResult {
   castsImported: number;
   locationsImported: number;
   sublocationsImported: number;
+  castsSkipped: number;
+  locationsSkipped: number;
+  sublocationsSkipped: number;
   failures: ImportFailure[];
 }
 

@@ -34,7 +34,8 @@ public class SublocationWebMapper(
             {
                 Id = s.Id,
                 Name = s.Name,
-                Price = s.Price,
+                PriceAmount = s.PriceAmount,
+                PriceCurrencyType = s.PriceCurrencyType,
                 Description = s.Description,
             }).ToList(),
         };

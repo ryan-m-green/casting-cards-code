@@ -1,5 +1,6 @@
 ﻿using CastLibrary.Logic.Services;
 using CastLibrary.Repository.Repositories;
+using CastLibrary.Repository.Repositories.Delete;
 using CastLibrary.Repository.Repositories.Insert;
 using CastLibrary.Repository.Repositories.Read;
 using CastLibrary.Repository.Repositories.Update;
@@ -18,6 +19,7 @@ public class RegisterUserCommandHandler(
     IUserReadRepository userReadRepository,
     IUserInsertRepository userInsertRepository,
     IAdminInviteCodeReadRepository adminInviteCodeReadRepository,
+    IAdminInviteCodeDeleteRepository adminInviteCodeDeleteRepository,
     IPasswordHashingService passwordHashingService,
     IJwtTokenService jwtTokenService) : IRegisterUserCommandHandler
 {
@@ -43,6 +45,7 @@ public class RegisterUserCommandHandler(
         };
 
         var saved = await userInsertRepository.InsertAsync(user);
+        await adminInviteCodeDeleteRepository.DeleteAsync();
 
         return (new AuthResponse
         {

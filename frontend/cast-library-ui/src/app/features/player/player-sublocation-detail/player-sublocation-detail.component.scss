@@ -301,7 +301,7 @@
 .detail-shop-item {
   display: flex;
   justify-content: space-between;
-  align-items: baseline;
+  align-items: center;
   gap: 12px;
   width: calc(50% - 8px);
   padding: 6px 0;
@@ -315,6 +315,13 @@
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  flex: 1;
+  min-width: 0;
+
+  &--sold {
+    text-decoration: line-through;
+    opacity: 0.45;
+  }
 }
 
 .detail-shop-item-price {
@@ -433,5 +440,255 @@
 
   .subLoc-faction-picker {
     padding: 0 16px 0 16px;
+  }
+}
+
+// ── Shop buy button ──────────────────────────────────────────────────────────
+
+.detail-shop-item-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.shop-buy-btn {
+  font-family: v.$font-header;
+  font-size: 8px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  padding: 3px 10px;
+  background: rgba(v.$subLoc-olive, 0.12);
+  border: 1px solid rgba(v.$subLoc-olive, 0.45);
+  border-radius: 2px;
+  color: rgba(v.$subLoc-olive, 0.95);
+  cursor: pointer;
+  transition: background 0.16s ease, border-color 0.16s ease, color 0.16s ease;
+  white-space: nowrap;
+
+  &:hover:not(:disabled) {
+    background: rgba(v.$subLoc-olive, 0.26);
+    border-color: rgba(v.$subLoc-olive, 0.75);
+    color: #fff;
+  }
+
+  &:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+  }
+
+  &--loading {
+    opacity: 0.65;
+  }
+}
+
+// ── Receipt overlay ──────────────────────────────────────────────────────────
+
+.receipt-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 10000;
+  background: rgba(0, 0, 0, 0.72);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: receipt-overlay-in 0.22s ease;
+}
+
+@keyframes receipt-overlay-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+.receipt-parchment {
+  position: relative;
+  width: min(380px, 92vw);
+  padding: 40px 36px 28px;
+  background:
+    radial-gradient(ellipse at 20% 15%, #f5e9c8 0%, transparent 60%),
+    radial-gradient(ellipse at 80% 85%, #e8d5a0 0%, transparent 55%),
+    linear-gradient(160deg, #f0e0b0 0%, #e6d090 40%, #dcc880 70%, #c8b060 100%);
+  border-radius: 2px;
+  box-shadow:
+    0 0 0 1px rgba(139, 100, 20, 0.35),
+    0 4px 32px rgba(0, 0, 0, 0.6),
+    inset 0 0 40px rgba(180, 140, 50, 0.12);
+  color: #3a2a0a;
+  text-align: center;
+  animation: receipt-card-in 0.28s cubic-bezier(0.34, 1.56, 0.64, 1);
+
+  // Noise / texture overlay
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 2px;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)' opacity='0.07'/%3E%3C/svg%3E");
+    pointer-events: none;
+  }
+
+  &--denied {
+    background:
+      radial-gradient(ellipse at 20% 15%, #f5e0c8 0%, transparent 60%),
+      radial-gradient(ellipse at 80% 85%, #e8c8a0 0%, transparent 55%),
+      linear-gradient(160deg, #f0ddb0 0%, #e6c890 40%, #dcb880 70%, #c8a060 100%);
+    color: #3a1a0a;
+  }
+}
+
+@keyframes receipt-card-in {
+  from { opacity: 0; transform: scale(0.88) translateY(12px); }
+  to   { opacity: 1; transform: scale(1)   translateY(0); }
+}
+
+.receipt-corner {
+  position: absolute;
+  width: 52px;
+  height: 52px;
+  color: rgba(139, 100, 20, 0.55);
+
+  &--tl { top: 6px;  left: 6px;  }
+  &--tr { top: 6px;  right: 6px; transform: scaleX(-1); }
+  &--bl { bottom: 6px; left: 6px;  transform: scaleY(-1); }
+  &--br { bottom: 6px; right: 6px; transform: scale(-1, -1); }
+}
+
+.receipt-title {
+  font-family: v.$font-header;
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: #2a1a04;
+  margin: 0 0 10px;
+  text-shadow: 0 1px 2px rgba(200, 160, 50, 0.4);
+}
+
+.receipt-divider-svg {
+  display: block;
+  width: 100%;
+  height: 12px;
+  color: rgba(139, 100, 20, 0.6);
+  margin-bottom: 6px;
+}
+
+.receipt-subtitle {
+  font-family: v.$font-body;
+  font-size: 11px;
+  font-style: italic;
+  color: rgba(58, 42, 10, 0.7);
+  margin: 0 0 18px;
+  letter-spacing: 0.06em;
+}
+
+.receipt-body {
+  margin: 0 0 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  border-top: 1px solid rgba(139, 100, 20, 0.3);
+  border-bottom: 1px solid rgba(139, 100, 20, 0.3);
+  padding: 12px 0;
+}
+
+.receipt-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 12px;
+}
+
+.receipt-label {
+  font-family: v.$font-header;
+  font-size: 8px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: rgba(58, 42, 10, 0.6);
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.receipt-value {
+  font-family: v.$font-body;
+  font-size: 13px;
+  color: #2a1a04;
+  font-style: italic;
+  text-align: right;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+// ── Bill of Sale specific ────────────────────────────────────────────────────
+
+.receipt-seal-row {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  margin: 4px 0 16px;
+}
+
+.receipt-seal-svg {
+  width: 72px;
+  height: 72px;
+  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
+}
+
+.receipt-paid-text {
+  font-family: v.$font-header;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: #2d5a1b;
+  text-shadow: 0 1px 2px rgba(45, 90, 27, 0.25);
+  margin: 0;
+}
+
+// ── Notice of Denial specific ────────────────────────────────────────────────
+
+.receipt-denial-notice {
+  font-family: v.$font-body;
+  font-size: 12px;
+  font-style: italic;
+  color: rgba(58, 26, 10, 0.8);
+  margin: 0 0 14px;
+  line-height: 1.5;
+}
+
+.receipt-stamp-row {
+  display: flex;
+  justify-content: center;
+  margin: 4px 0 16px;
+}
+
+.receipt-stamp-svg {
+  width: 200px;
+  height: 76px;
+  color: #8b1a1a;
+  filter: drop-shadow(0 1px 3px rgba(139, 26, 26, 0.3));
+  transform: rotate(-3deg);
+}
+
+// ── Dismiss button ───────────────────────────────────────────────────────────
+
+.receipt-dismiss-btn {
+  font-family: v.$font-header;
+  font-size: 8px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  padding: 6px 20px;
+  background: rgba(139, 100, 20, 0.12);
+  border: 1px solid rgba(139, 100, 20, 0.4);
+  border-radius: 2px;
+  color: rgba(58, 42, 10, 0.75);
+  cursor: pointer;
+  transition: background 0.16s ease, color 0.16s ease;
+
+  &:hover {
+    background: rgba(139, 100, 20, 0.22);
+    color: #2a1a04;
   }
 }

@@ -141,6 +141,92 @@ export class PlayerCampaignShellComponent implements OnInit, OnDestroy {
         });
     });
 
+    // Re-fetch campaign when a shop item is updated (refreshes sublocation shop items for players)
+    effect(() => {
+      const event = this.hub.shopItemUpdated();
+      if (!event || event.campaignId !== this.campaignId()) return;
+
+      this.http
+        .get<CampaignDetail>(`${environment.apiUrl}/api/campaigns/${this.campaignId()}/player`)
+        .subscribe(c => {
+          this.campaign.set(c);
+          this.shellSvc.setCampaign(c);
+        });
+    });
+
+    // Update a shop item's isScratchedOff flag in-place when the DM toggles the scratch state
+    effect(() => {
+      const event = this.hub.shopItemScratchToggled();
+      if (!event || event.campaignId !== this.campaignId()) return;
+
+      const update = (c: CampaignDetail): CampaignDetail => ({
+        ...c,
+        sublocations: c.sublocations.map((s: any) =>
+          s.instanceId !== event.sublocationInstanceId ? s : {
+            ...s,
+            shopItems: (s.shopItems ?? []).map((item: any) =>
+              item.id !== event.shopItemId ? item : { ...item, isScratchedOff: event.isScratchedOff }
+            ),
+          }
+        ),
+      });
+
+      this.campaign.update(c => c ? update(c) : c);
+      this.shellSvc.setCampaign(update(untracked(() => this.shellSvc.campaign())!));
+    });
+
+    // Re-fetch campaign when a cast instance is updated (refreshes cast detail panels)
+    effect(() => {
+      const event = this.hub.castInstanceUpdated();
+      if (!event || event.campaignId !== this.campaignId()) return;
+
+      this.http
+        .get<CampaignDetail>(`${environment.apiUrl}/api/campaigns/${this.campaignId()}/player`)
+        .subscribe(c => {
+          this.campaign.set(c);
+          this.shellSvc.setCampaign(c);
+        });
+    });
+
+    // Re-fetch campaign when a location instance is updated (refreshes location detail panels)
+    effect(() => {
+      const event = this.hub.locationInstanceUpdated();
+      if (!event || event.campaignId !== this.campaignId()) return;
+
+      this.http
+        .get<CampaignDetail>(`${environment.apiUrl}/api/campaigns/${this.campaignId()}/player`)
+        .subscribe(c => {
+          this.campaign.set(c);
+          this.shellSvc.setCampaign(c);
+        });
+    });
+
+    // Re-fetch campaign when a sublocation instance is updated (refreshes sublocation detail panels)
+    effect(() => {
+      const event = this.hub.sublocationInstanceUpdated();
+      if (!event || event.campaignId !== this.campaignId()) return;
+
+      this.http
+        .get<CampaignDetail>(`${environment.apiUrl}/api/campaigns/${this.campaignId()}/player`)
+        .subscribe(c => {
+          this.campaign.set(c);
+          this.shellSvc.setCampaign(c);
+        });
+    });
+
+    // Re-fetch campaign when a faction instance is updated (refreshes faction cards in nav/shell)
+    effect(() => {
+      const event = this.hub.factionInstanceUpdated();
+      if (!event || event.campaignId !== this.campaignId()) return;
+
+      this.http
+        .get<CampaignDetail>(`${environment.apiUrl}/api/campaigns/${this.campaignId()}/player`)
+        .subscribe(c => {
+          this.campaign.set(c);
+          this.shellSvc.setCampaign(c);
+        });
+    });
+
     // Re-fetch campaign when a bulk card visibility change occurs (e.g. unlock all casts)
     effect(() => {
       const event = this.hub.bulkCardVisibilityChanged();
@@ -214,6 +300,14 @@ export class PlayerCampaignShellComponent implements OnInit, OnDestroy {
       this.goldCardCurrency.set(mine.currency);
       this.goldCardNote.set(mine.note);
       this.showGoldCard.set(true);
+      // Update purse balance for the awarded currency type
+      this.purse.update(lines => {
+        const existing = lines.find(l => l.type === mine.currency);
+        if (existing) {
+          return lines.map(l => l.type === mine.currency ? { ...l, amount: l.amount + mine.amount } : l);
+        }
+        return [...lines, { type: mine.currency, amount: mine.amount }];
+      });
     });
 
     // Show event card when the DM unlocks an event for players
@@ -290,6 +384,21 @@ export class PlayerCampaignShellComponent implements OnInit, OnDestroy {
         this.shellSvc.setCampaign(c);
       });
 
+    this.http
+      .get<{ currencyBalances: { currency: string; amount: number }[] }>(
+        `${environment.apiUrl}/api/campaigns/${id}/player-cards/mine`
+      )
+      .pipe(catchError(() => EMPTY))
+      .subscribe(card => {
+        this.purse.set(
+          (card.currencyBalances ?? []).map(b => ({ type: b.currency, amount: b.amount }))
+        );
+      });
+  }
+
+  refreshPurse() {
+    const id = this.campaignId();
+    if (!id) return;
     this.http
       .get<{ currencyBalances: { currency: string; amount: number }[] }>(
         `${environment.apiUrl}/api/campaigns/${id}/player-cards/mine`

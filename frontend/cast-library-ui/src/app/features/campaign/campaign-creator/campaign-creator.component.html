@@ -121,6 +121,32 @@
     <textarea class="fi" formControlName="description" rows="3" placeholder="A brief synopsis…"></textarea>
   </form>
 
+  @if (isAdmin()) {
+    <div class="demo-control">
+      <button
+        class="demo-lock-btn"
+        [class.demo-lock-btn--unlocked]="!isDemoLocked()"
+        (click)="unlockDemo()"
+        [title]="isDemoLocked() ? 'Click to enable editing' : 'Click to lock'"
+        type="button"
+      >
+        {{ isDemoLocked() ? '🔒' : '🔓' }}
+      </button>
+      <span class="demo-label" [class.demo-label--locked]="isDemoLocked()">Demo Campaign</span>
+      <input
+        type="checkbox"
+        class="demo-checkbox"
+        [class.demo-checkbox--unlocked]="!isDemoLocked()"
+        [checked]="isDemoChecked()"
+        [disabled]="isDemoLocked()"
+        (change)="toggleDemo()"
+      />
+      @if (isDemoChecked()) {
+        <span class="demo-checked-indicator">✓</span>
+      }
+    </div>
+  }
+
   @if (saving()) {
     <div class="autosave-indicator">Saving…</div>
   }

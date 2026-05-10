@@ -43,13 +43,14 @@ public class CampaignInsertRepository(
             campaign.FantasyType,
             Status = campaign.Status.ToString(),
             campaign.SpineColor,
+            campaign.IsDemo,
             campaign.CreatedAt,
         };
         const string sql =
             @"INSERT INTO campaigns
-                (id, dm_user_id, name, description, fantasy_type, status, spine_color, created_at)
+                (id, dm_user_id, name, description, fantasy_type, status, spine_color, is_demo, created_at)
               VALUES
-                (@Id, @DmUserId, @Name, @Description, @FantasyType, @Status, @SpineColor, @CreatedAt)";
+                (@Id, @DmUserId, @Name, @Description, @FantasyType, @Status, @SpineColor, @IsDemo, @CreatedAt)";
 
         logging.LogDbOperation(correlation.TraceId, spanId, "INSERT", "campaigns", @params);
 
@@ -176,15 +177,16 @@ public class CampaignInsertRepository(
         {
             await conn.ExecuteAsync(
                 @"INSERT INTO campaign_sublocation_shop_items
-                    (id, sublocation_instance_id, name, price, description, sort_order)
+                    (id, sublocation_instance_id, name, price_amount, price_currency_type, description, sort_order)
                   VALUES
-                    (@Id, @SublocationInstanceId, @Name, @Price, @Description, @SortOrder)",
+                    (@Id, @SublocationInstanceId, @Name, @PriceAmount, @PriceCurrencyType, @Description, @SortOrder)",
                 new
                 {
                     Id = Guid.NewGuid(),
                     SublocationInstanceId = instance.InstanceId,
                     item.Name,
-                    item.Price,
+                    item.PriceAmount,
+                    item.PriceCurrencyType,
                     item.Description,
                     item.SortOrder,
                 }, tx);
@@ -209,7 +211,8 @@ public class CampaignInsertRepository(
             Id = item.Id,
             SublocationInstanceId = sublocationInstanceId,
             item.Name,
-            item.Price,
+            item.PriceAmount,
+            item.PriceCurrencyType,
             item.Description,
             item.SortOrder,
         };
@@ -219,9 +222,9 @@ public class CampaignInsertRepository(
         using var conn = CreateConnection();
         var rows = await conn.ExecuteAsync(
             @"INSERT INTO campaign_sublocation_shop_items
-                (id, sublocation_instance_id, name, price, description, sort_order)
+                (id, sublocation_instance_id, name, price_amount, price_currency_type, description, sort_order)
               VALUES
-                (@Id, @SublocationInstanceId, @Name, @Price, @Description, @SortOrder)",
+                (@Id, @SublocationInstanceId, @Name, @PriceAmount, @PriceCurrencyType, @Description, @SortOrder)",
             @params);
 
         logging.LogDbOperation(correlation.TraceId, spanId, "INSERT", "campaign_sublocation_shop_items", @params, rows);

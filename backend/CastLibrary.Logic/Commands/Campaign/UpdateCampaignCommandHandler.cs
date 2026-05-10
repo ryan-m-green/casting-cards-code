@@ -28,6 +28,8 @@ public class UpdateCampaignCommandHandler(
             campaign.SpineColor = command.Request.SpineColor;
         if (command.Request.Status is not null && Enum.TryParse<CampaignStatus>(command.Request.Status, out var status))
             campaign.Status = status;
+        if (command.IsCallerAdmin)
+            campaign.IsDemo = command.Request.IsDemo;
 
         await campaignUpdateRepository.UpdateAsync(campaign);
         await partyAnchorService.EnsureExistsAsync(campaign);
@@ -37,14 +39,16 @@ public class UpdateCampaignCommandHandler(
 
 public class UpdateCampaignCommand
 {
-    public UpdateCampaignCommand(Guid campaignId, UpdateCampaignRequest request, Guid userId)
+    public UpdateCampaignCommand(Guid campaignId, UpdateCampaignRequest request, Guid userId, bool isCallerAdmin = false)
     {
         CampaignId = campaignId;
         Request = request;
         UserId = userId;
+        IsCallerAdmin = isCallerAdmin;
     }
 
     public Guid CampaignId { get; }
     public UpdateCampaignRequest Request { get; }
     public Guid UserId { get; }
+    public bool IsCallerAdmin { get; }
 }

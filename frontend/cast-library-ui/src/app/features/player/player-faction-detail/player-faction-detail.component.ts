@@ -257,6 +257,21 @@ export class PlayerFactionDetailComponent implements OnInit, OnDestroy {
         this.loadPlayerNotes();
       }
     }, { injector: this.injector });
+
+    effect(() => {
+      const event = this.hub.factionInstanceUpdated();
+      if (!event || event.factionInstanceId !== untracked(() => this.factionInstanceId())) return;
+      const id            = untracked(() => this.campaignId());
+      const factionInstId = untracked(() => this.factionInstanceId());
+      this.http.get<CampaignFactionInstance[]>(
+        `${environment.apiUrl}/api/campaigns/${id}/factions/player`
+      ).pipe(
+        catchError(() => of([] as CampaignFactionInstance[]))
+      ).subscribe(factions => {
+        const f = factions.find(x => x.factionInstanceId === factionInstId) ?? null;
+        if (f) this.faction.set(f);
+      });
+    }, { injector: this.injector });
   }
 
   private loadPlayerNotes() {

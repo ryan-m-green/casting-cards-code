@@ -59,6 +59,7 @@ namespace CastLibrary.WebHost.IoC
             services.AddScoped<ILocationPlayerNotesUpdateRepository, LocationPlayerNotesUpdateRepository>();
             services.AddScoped<IAdminInviteCodeReadRepository, AdminInviteCodeReadRepository>();
             services.AddScoped<IAdminInviteCodeUpdateRepository, AdminInviteCodeUpdateRepository>();
+            services.AddScoped<IAdminInviteCodeDeleteRepository, AdminInviteCodeDeleteRepository>();
             services.AddScoped<ITimeOfDayReadRepository, TimeOfDayReadRepository>();
             services.AddScoped<ITimeOfDayWriteRepository, TimeOfDayWriteRepository>();
             services.AddScoped<IPlayerCardReadRepository, PlayerCardReadRepository>();
@@ -83,6 +84,7 @@ namespace CastLibrary.WebHost.IoC
             services.AddScoped<IPlayerCastPerceptionUpdateRepository, PlayerCastPerceptionUpdateRepository>();
             services.AddScoped<IGoldTransactionInsertRepository, GoldTransactionInsertRepository>();
             services.AddScoped<ICurrencyBalanceReadRepository, CurrencyBalanceReadRepository>();
+            services.AddScoped<ICurrencyTransactionUpdateRepository, CurrencyTransactionUpdateRepository>();
             services.AddScoped<IBugReportInsertRepository, BugReportInsertRepository>();
             services.AddScoped<IBugReportReadRepository, BugReportReadRepository>();
             services.AddScoped<IBugReportUpdateRepository, BugReportUpdateRepository>();

@@ -158,9 +158,16 @@
     <div class="wb import-result">
       <div class="import-summary">
         {{ importResult()!.castsImported }} cast member{{ importResult()!.castsImported !== 1 ? 's' : '' }} ·
-        {{ importResult()!.locationsImported }} {{ importResult()!.locationsImported === 1 ? 'Location' : 'Locations' }} ·
-        {{ importResult()!.sublocationsImported }} Sublocation{{ importResult()!.sublocationsImported !== 1 ? 's' : '' }} imported
+        {{ importResult()!.locationsImported }} {{ importResult()!.locationsImported === 1 ? 'location' : 'locations' }} ·
+        {{ importResult()!.sublocationsImported }} sublocation{{ importResult()!.sublocationsImported !== 1 ? 's' : '' }} imported
       </div>
+      @if ((importResult()!.castsSkipped + importResult()!.locationsSkipped + importResult()!.sublocationsSkipped) > 0) {
+        <div class="import-summary import-summary--skipped">
+          {{ importResult()!.castsSkipped }} cast member{{ importResult()!.castsSkipped !== 1 ? 's' : '' }} ·
+          {{ importResult()!.locationsSkipped }} {{ importResult()!.locationsSkipped === 1 ? 'location' : 'locations' }} ·
+          {{ importResult()!.sublocationsSkipped }} sublocation{{ importResult()!.sublocationsSkipped !== 1 ? 's' : '' }} skipped (name already exists)
+        </div>
+      }
 
       @if (importResult()!.failures.length > 0) {
         <div class="import-failures-label">Failed to import:</div>

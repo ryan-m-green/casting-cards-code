@@ -64,45 +64,49 @@
     />
 
     <div class="rel-global-controls">
-      <button
-        class="rel-global-btn rel-global-btn--toggle"
-        [class.rel-global-btn--toggle-on]="allSelected()"
-        type="button"
-        (click)="toggleSelectAll()"
-      >
-        <span [style.visibility]="allSelected() ? 'visible' : 'hidden'" class="rel-toggle-label">Deselect All</span>
-        <span [style.visibility]="allSelected() ? 'hidden' : 'visible'" class="rel-toggle-label rel-toggle-label--over">Select All</span>
-      </button>
-      <div class="rel-global-slider-wrap">
-        <input
-          type="range"
-          min="-5"
-          max="5"
-          step="1"
-          [value]="globalValue()"
-          class="rel-slider"
-          [class]="sliderClass(globalValue())"
-          (input)="globalValue.set(+$any($event.target).value)"
-        />
-        <div class="rel-slider-labels">
-          <span class="hostile-label">Hostile</span>
-          <span class="neutral-label">{{ sliderLabel(globalValue()) }}</span>
-          <span class="friendly-label">Friendly</span>
-        </div>
+      <div class="rel-global-left">
+        <button
+          class="rel-global-btn rel-global-btn--toggle"
+          [class.rel-global-btn--toggle-on]="allSelected()"
+          type="button"
+          (click)="toggleSelectAll()"
+        >
+          <span [style.visibility]="allSelected() ? 'visible' : 'hidden'" class="rel-toggle-label">Deselect All</span>
+          <span [style.visibility]="allSelected() ? 'hidden' : 'visible'" class="rel-toggle-label rel-toggle-label--over">Select All</span>
+        </button>
+        <button
+          class="campaign-primary-btn"
+          type="button"
+          [disabled]="!checkedIds().size"
+          (click)="applyGlobalToChecked()"
+        >Apply to {{ checkedIds().size }} checked</button>
       </div>
-      <textarea
-        class="fi rel-global-explanation"
-        rows="2"
-        placeholder="Global explanation…"
-        [value]="globalExplanation()"
-        (input)="globalExplanation.set($any($event.target).value)"
-      ></textarea>
-      <button
-        class="rel-global-btn rel-global-btn--apply"
-        type="button"
-        [disabled]="!checkedIds().size"
-        (click)="applyGlobalToChecked()"
-      >Apply to {{ checkedIds().size }} checked</button>
+      <div class="rel-global-right">
+        <div class="rel-global-slider-wrap">
+          <input
+            type="range"
+            min="-5"
+            max="5"
+            step="1"
+            [value]="globalValue()"
+            class="rel-slider"
+            [class]="sliderClass(globalValue())"
+            (input)="globalValue.set(+$any($event.target).value)"
+          />
+          <div class="rel-slider-labels">
+            <span class="hostile-label">Hostile</span>
+            <span class="neutral-label">{{ sliderLabel(globalValue()) }}</span>
+            <span class="friendly-label">Friendly</span>
+          </div>
+        </div>
+        <textarea
+          class="fi rel-global-explanation"
+          rows="2"
+          placeholder="Global explanation…"
+          [value]="globalExplanation()"
+          (input)="globalExplanation.set($any($event.target).value)"
+        ></textarea>
+      </div>
     </div>
   </div>
 

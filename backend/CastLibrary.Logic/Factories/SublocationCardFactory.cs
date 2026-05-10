@@ -18,9 +18,10 @@ namespace CastLibrary.Logic.Factories
                 ImageFileName = imageFileName,
                 ShopItems = sublocation.ShopItems.Select(s => new ShopItemCard
                 {
-                    Name = s.Name,
-                    Price = s.Price,
-                    Description = s.Description
+                    Name             = s.Name,
+                    PriceAmount      = s.PriceAmount,
+                    PriceCurrencyType = s.PriceCurrencyType,
+                    Description      = s.Description
                 }).ToList()
             };
         }

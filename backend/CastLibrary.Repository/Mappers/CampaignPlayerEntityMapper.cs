@@ -17,7 +17,6 @@ namespace CastLibrary.Repository.Mappers
                 UserId = entity.PlayerUserId,
                 DisplayName = entity.DisplayName,
                 Email = entity.Email,
-                StartingGold = entity.StartingGold,
                 JoinedAt = entity.JoinedAt
             };
         }

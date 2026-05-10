@@ -10,6 +10,7 @@ public class CampaignListResponse
     public string SpineColor { get; set; } = string.Empty;
     public int PlayerCount { get; set; }
     public int LocationCount { get; set; }
+    public bool? IsDemo { get; set; }
     public DateTime CreatedAt { get; set; }
 }
 
@@ -22,6 +23,7 @@ public class CampaignDetailResponse
     public string Description { get; set; } = string.Empty;
     public string SpineColor { get; set; } = string.Empty;
     public string Status { get; set; } = string.Empty;
+    public bool? IsDemo { get; set; }
     public List<CampaignLocationInstanceResponse> Locations { get; set; } = [];
     public List<CampaignCastInstanceResponse> Casts { get; set; } = [];
     public List<CampaignSublocationInstanceResponse> Sublocations { get; set; } = [];
@@ -143,7 +145,6 @@ public class CampaignPlayerResponse
     public Guid UserId { get; set; }
     public string DisplayName { get; set; } = string.Empty;
     public string Email { get; set; } = string.Empty;
-    public int StartingGold { get; set; }
 }
 
 public class DashboardStatsResponse

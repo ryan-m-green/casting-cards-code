@@ -13,6 +13,5 @@ public class CampaignPlayerEntity
     public Guid PlayerUserId { get; set; }
     public string DisplayName { get; set; } = string.Empty;
     public string Email { get; set; } = string.Empty;
-    public int StartingGold { get; set; }
     public DateTime JoinedAt { get; set; }
 }

@@ -21,7 +21,9 @@
   @if (previewTod()) {
     <div class="tod-preview-section">
       <div class="tod-section-label tod-section-label--sub">Preview</div>
-      <app-time-of-day-bar [campaignId]="campaignId" [isDm]="true" [todInput]="previewTod()" [previewOnly]="true" [portalColor]="portalColor" />
+      <div class="tod-preview-shell" [style.--portal-color]="portalColor || null">
+        <app-time-of-day-bar [campaignId]="campaignId" [isDm]="true" [todInput]="previewTod()" [previewOnly]="true" />
+      </div>
     </div>
   }
 

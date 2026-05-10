@@ -679,6 +679,43 @@
   }
 }
 
+/* ── Shop item edit (pencil) button ──────────────────────────────────────── */
+.shop-edit-btn {
+  flex-shrink: 0;
+  padding: 2px 7px;
+  background: transparent;
+  border: 1px solid rgba(v.$subLoc-olive, 0.22);
+  border-radius: 3px;
+  font-size: 11px;
+  color: rgba(v.$subLoc-olive, 0.65);
+  cursor: pointer;
+  transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+
+  &:hover {
+    background: rgba(v.$subLoc-olive, 0.10);
+    border-color: rgba(v.$subLoc-olive, 0.5);
+    color: rgba(v.$subLoc-olive, 0.95);
+  }
+}
+
+/* ── Editing row ─────────────────────────────────────────────────────────── */
+.detail-shop-item--editing {
+  flex-direction: column;
+  align-items: stretch;
+  gap: 6px;
+  width: 100%;
+}
+
+.shop-edit-name {
+  width: 100%;
+}
+
+.shop-edit-right {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
 /* ── Add shop item inline form ───────────────────────────────────────────── */
 .shop-add-row {
   display: flex;

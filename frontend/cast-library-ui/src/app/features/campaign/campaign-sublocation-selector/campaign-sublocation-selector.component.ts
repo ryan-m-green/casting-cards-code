@@ -135,7 +135,7 @@ export class CampaignSublocationSelectorComponent implements OnInit, OnDestroy {
         name:        l.name,
         description: l.description ?? '',
         imageUrl:    l.imageUrl ?? undefined,
-        shopItems:   (l.shopItems ?? []).map((s: any) => ({ id: s.id, name: s.name, price: s.price ?? '' })),
+        shopItems:   (l.shopItems ?? []).map((s: any) => ({ id: s.id, name: s.name, priceAmount: s.priceAmount ?? 0, priceCurrencyType: s.priceCurrencyType ?? 'gp', description: s.description ?? '', isScratchedOff: s.isScratchedOff ?? false })),
       }));
       this.allSublocations.set(sublocations);
 
@@ -151,7 +151,7 @@ export class CampaignSublocationSelectorComponent implements OnInit, OnDestroy {
               name:        l.name,
               description: l.description ?? '',
               imageUrl:    l.imageUrl ?? undefined,
-              shopItems:   (l.shopItems ?? []).map((s: any) => ({ id: s.id, name: s.name, price: s.price ?? '' })),
+              shopItems:   (l.shopItems ?? []).map((s: any) => ({ id: s.id, name: s.name, priceAmount: s.priceAmount ?? 0, priceCurrencyType: s.priceCurrencyType ?? 'gp', description: s.description ?? '', isScratchedOff: s.isScratchedOff ?? false })),
             };
             return {
               subLoc,

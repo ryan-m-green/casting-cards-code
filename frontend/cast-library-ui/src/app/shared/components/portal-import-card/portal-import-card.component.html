@@ -330,7 +330,7 @@
                         <div class="price-input-group">
                           <input class="fi fi-no-mb price-amount" type="number" formControlName="priceAmount"
                                  min="1" max="9999" placeholder="15" />
-                          <select class="fi fi-no-mb price-currency" formControlName="priceCurrency">
+                          <select class="fi fi-no-mb price-currency" formControlName="priceCurrencyType">
                             @for (c of currencies; track c) {
                               <option [value]="c">{{ c }}</option>
                             }

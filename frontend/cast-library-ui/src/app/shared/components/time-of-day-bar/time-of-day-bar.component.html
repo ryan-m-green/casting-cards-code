@@ -1,6 +1,5 @@
 @if (tod(); as tod) {
-  <div class="tod-bar-shell" [style.--portal-color]="portalColor || null">
-    <div class="tod-wrapper" [class.tod-wrapper--dark]="panelTheme === 'dark'">
+  <div class="tod-wrapper" [class.tod-wrapper--dark]="panelTheme === 'dark'" [style.--portal-color]="portalColor || null">
 
     <!-- ── Day counter label ── -->
     <div class="tod-day-counter" aria-live="polite">
@@ -171,7 +170,6 @@
     }
 
     </div>
-  </div>
 } @else {
   <p class="tod-empty">No day/night cycle configured for this campaign.</p>
 }

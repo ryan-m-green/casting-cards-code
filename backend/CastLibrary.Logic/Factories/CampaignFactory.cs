@@ -5,11 +5,11 @@ namespace CastLibrary.Logic.Factories;
 
 public interface ICampaignFactory
 {
-    CampaignDomain Create(CreateCampaignRequest request, Guid dmUserId);
+    CampaignDomain Create(CreateCampaignRequest request, Guid dmUserId, bool isCallerAdmin);
 }
 public class CampaignFactory : ICampaignFactory
 {
-    public CampaignDomain Create(CreateCampaignRequest request, Guid dmUserId) => new()
+    public CampaignDomain Create(CreateCampaignRequest request, Guid dmUserId, bool isCallerAdmin) => new()
     {
         Id = Guid.NewGuid(),
         DmUserId = dmUserId,
@@ -17,6 +17,7 @@ public class CampaignFactory : ICampaignFactory
         Description = request.Description,
         FantasyType = request.FantasyType,
         Status = CampaignStatus.Active,
+        IsDemo = isCallerAdmin ? request.IsDemo : null,
         CreatedAt = DateTime.UtcNow,
     };
 }

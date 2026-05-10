@@ -49,6 +49,9 @@ export class CampaignCreatorComponent implements OnInit, OnDestroy {
   router         = inject(Router);
   fb             = inject(FormBuilder);
   isEditMode     = signal(false);
+  isAdmin        = this.auth.isAdmin;
+  isDemoLocked   = signal(true);
+  isDemoChecked  = signal(false);
 
   constructor() {
     effect(() => {
@@ -197,7 +200,11 @@ export class CampaignCreatorComponent implements OnInit, OnDestroy {
           this.http.patch(`${environment.apiUrl}/api/campaigns/${cid}`, this.form.value)
             .subscribe({ next: onSuccess, error: onError });
         } else {
-          this.http.post<{ id: string }>(`${environment.apiUrl}/api/campaigns`, { ...this.form.value, locationIds: [] })
+          this.http.post<{ id: string }>(`${environment.apiUrl}/api/campaigns`, {
+            ...this.form.value,
+            locationIds: [],
+            ...(this.isAdmin() ? { isDemo: this.isDemoChecked() } : {}),
+          })
             .subscribe({ next: campaign => {
               this.campaignId.set(campaign.id);
               this.router.navigate(['/dm/campaigns', campaign.id], { replaceUrl: true });
@@ -450,6 +457,19 @@ export class CampaignCreatorComponent implements OnInit, OnDestroy {
     }
   }
 
+  unlockDemo() {
+    this.isDemoLocked.update(v => !v);
+  }
+
+  toggleDemo() {
+    if (this.isDemoLocked()) return;
+    this.isDemoChecked.update(v => !v);
+    const cid = this.campaignId();
+    if (cid) {
+      this.http.patch(`${environment.apiUrl}/api/admin/campaigns/${cid}/demo`, { isDemo: this.isDemoChecked() }).subscribe();
+    }
+  }
+
   generateInviteCode() {
     const cid = this.campaignId();
     if (!cid) return;
@@ -509,6 +529,9 @@ export class CampaignCreatorComponent implements OnInit, OnDestroy {
   private loadExistingCampaign(detail: CampaignDetail, locations: Location[]) {
     this.campaignId.set(detail.id);
     this.isEditMode.set(true);
+    if (this.isAdmin()) {
+      this.isDemoChecked.set(detail.isDemo ?? false);
+    }
 
     this.form.patchValue({
       name:        detail.name,

@@ -23,6 +23,7 @@ public interface ICampaignUpdateRepository
     Task UpdateCastInstanceKeywordsAsync(Guid instanceId, string[] keywords);
     Task UpdateSublocationInstanceKeywordsAsync(Guid instanceId, string[] keywords);
     Task ToggleShopItemScratchAsync(Guid shopItemId, bool isScratchedOff);
+    Task UpdateShopItemAsync(Guid shopItemId, string name, int priceAmount, string priceCurrencyType);
     Task TravelCastAsync(Guid instanceId, Guid locationInstanceId, Guid sublocationInstanceId);
     Task UpdateFactionInstanceAsync(CampaignFactionInstanceDomain instance);
     Task UpdateFactionInstanceVisibilityAsync(Guid instanceId, bool isVisibleToPlayers);
@@ -34,6 +35,7 @@ public interface ICampaignUpdateRepository
     Task SyncPlayerFactionCastMembershipsAsync(Guid castInstanceId, List<Guid> factionInstanceIds);
     Task ClearFactionFromSublocationInstancesAsync(Guid factionInstanceId);
     Task ClearFactionFromCastInstancesAsync(Guid factionInstanceId);
+    Task SetIsDemoAsync(Guid campaignId, bool? isDemo);
 }
 
 public class CampaignUpdateRepository(
@@ -54,6 +56,7 @@ public class CampaignUpdateRepository(
             campaign.Description,
             campaign.FantasyType,
             campaign.SpineColor,
+            campaign.IsDemo,
             Status = campaign.Status.ToString(),
         };
 
@@ -61,7 +64,7 @@ public class CampaignUpdateRepository(
 
         using var conn = CreateConnection();
         var rows = await conn.ExecuteAsync(
-            "UPDATE campaigns SET name=@Name, description=@Description, fantasy_type=@FantasyType, spine_color=@SpineColor, status=@Status WHERE id=@Id",
+            "UPDATE campaigns SET name=@Name, description=@Description, fantasy_type=@FantasyType, spine_color=@SpineColor, status=@Status, is_demo=@IsDemo WHERE id=@Id",
             @params);
 
         logging.LogDbOperation(correlation.TraceId, spanId, "UPDATE", "campaigns", @params, rows);
@@ -179,6 +182,21 @@ public class CampaignUpdateRepository(
         using var conn = CreateConnection();
         var rows = await conn.ExecuteAsync(
             "UPDATE campaign_sublocation_shop_items SET is_scratched_off=@IsScratchedOff WHERE id=@ShopItemId",
+            @params);
+
+        logging.LogDbOperation(correlation.TraceId, spanId, "UPDATE", "campaign_sublocation_shop_items", @params, rows);
+    }
+
+    public async Task UpdateShopItemAsync(Guid shopItemId, string name, int priceAmount, string priceCurrencyType)
+    {
+        var spanId = correlation.NewSpan();
+        var @params = new { ShopItemId = shopItemId, Name = name, PriceAmount = priceAmount, PriceCurrencyType = priceCurrencyType };
+
+        logging.LogDbOperation(correlation.TraceId, spanId, "UPDATE", "campaign_sublocation_shop_items", @params);
+
+        using var conn = CreateConnection();
+        var rows = await conn.ExecuteAsync(
+            "UPDATE campaign_sublocation_shop_items SET name=@Name, price_amount=@PriceAmount, price_currency_type=@PriceCurrencyType WHERE id=@ShopItemId",
             @params);
 
         logging.LogDbOperation(correlation.TraceId, spanId, "UPDATE", "campaign_sublocation_shop_items", @params, rows);
@@ -578,5 +596,20 @@ public class CampaignUpdateRepository(
             @params);
 
         logging.LogDbOperation(correlation.TraceId, spanId, "UPDATE", "campaign_cast_instances", @params, rows);
+    }
+
+    public async Task SetIsDemoAsync(Guid campaignId, bool? isDemo)
+    {
+        var spanId = correlation.NewSpan();
+        var @params = new { Id = campaignId, IsDemo = isDemo };
+
+        logging.LogDbOperation(correlation.TraceId, spanId, "UPDATE", "campaigns", @params);
+
+        using var conn = CreateConnection();
+        var rows = await conn.ExecuteAsync(
+            "UPDATE campaigns SET is_demo=@IsDemo WHERE id=@Id",
+            @params);
+
+        logging.LogDbOperation(correlation.TraceId, spanId, "UPDATE", "campaigns", @params, rows);
     }
 }

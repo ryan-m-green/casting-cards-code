@@ -53,6 +53,8 @@ public class CampaignsController(
     IUpdateSublocationInstanceCommandHandler updateSublocationInstanceCommand,
     IAddSublocationShopItemCommandHandler addSublocationShopItemCommand,
     IToggleShopItemScratchCommandHandler toggleShopItemScratchCommand,
+    IUpdateShopItemCommandHandler updateShopItemCommand,
+    IPurchaseShopItemCommandHandler purchaseShopItemCommand,
     ICampaignWebMapper campaignMapper,
     IUserRetriever userRetriever,
     IHubContext<CampaignHub> hubContext,
@@ -118,7 +120,7 @@ public class CampaignsController(
         }
 
         var campaign = await createCommand.HandleAsync(
-            new CreateCampaignCommand(userRetriever.GetUserId(User), request));
+            new CreateCampaignCommand(userRetriever.GetUserId(User), request, User.IsInRole("Admin")));
         var response = campaignMapper.ToListResponse(campaign);
 
         return CreatedAtAction(nameof(GetById), new { id = campaign.Id }, response);
@@ -130,7 +132,7 @@ public class CampaignsController(
     {
         if (!await CallerOwns(id)) return Forbid();
         var result = await updateCampaignCommand.HandleAsync(
-            new UpdateCampaignCommand(id, request, userRetriever.GetUserId(User)));
+            new UpdateCampaignCommand(id, request, userRetriever.GetUserId(User), User.IsInRole("Admin")));
         if (result is null)
         {
             return NotFound();
@@ -169,6 +171,7 @@ public class CampaignsController(
             Description = campaign.Description,
             SpineColor = campaign.SpineColor,
             Status = campaign.Status.ToString(),
+            IsDemo = campaign.IsDemo,
             Locations = locations.Select(o => campaignMapper.ToLocationInstanceResponse(o)).ToList(),
             Casts = casts.Select(campaignMapper.ToCastInstanceResponse).ToList(),
             Sublocations = sublocations.Select(campaignMapper.ToSublocationInstanceResponse).ToList(),
@@ -237,6 +240,12 @@ public class CampaignsController(
         var dmUserId = userRetriever.GetDmUserId(User);
         await UpdateLocationInstanceCommand.HandleAsync(new UpdateLocationInstanceCommand(instanceId, request, dmUserId));
 
+        await hubContext.Clients.Group(id.ToString()).SendAsync("LocationInstanceUpdated", new
+        {
+            campaignId          = id,
+            locationInstanceId  = instanceId,
+        });
+
         return NoContent();
     }
 
@@ -292,6 +301,12 @@ public class CampaignsController(
         if (!await CallerOwns(id)) return Forbid();
         var dmUserId = userRetriever.GetDmUserId(User);
         await updateCastInstanceCommand.HandleAsync(new UpdateCastInstanceCommand(instanceId, request, dmUserId));
+
+        await hubContext.Clients.Group(id.ToString()).SendAsync("CastInstanceUpdated", new
+        {
+            campaignId     = id,
+            castInstanceId = instanceId,
+        });
 
         return NoContent();
     }
@@ -353,6 +368,12 @@ public class CampaignsController(
         var dmUserId = userRetriever.GetDmUserId(User);
         await updateSublocationInstanceCommand.HandleAsync(new UpdateSublocationInstanceCommand(instanceId, request, dmUserId));
 
+        await hubContext.Clients.Group(id.ToString()).SendAsync("SublocationInstanceUpdated", new
+        {
+            campaignId              = id,
+            sublocationInstanceId   = instanceId,
+        });
+
         return NoContent();
     }
 
@@ -367,12 +388,32 @@ public class CampaignsController(
 
         return Ok(new ShopItemResponse
         {
-            Id            = item.Id,
-            Name          = item.Name,
-            Price         = item.Price,
-            Description   = item.Description,
-            IsScratchedOff = item.IsScratchedOff,
+            Id              = item.Id,
+            Name            = item.Name,
+            PriceAmount     = item.PriceAmount,
+            PriceCurrencyType = item.PriceCurrencyType,
+            Description     = item.Description,
+            IsScratchedOff  = item.IsScratchedOff,
         });
+    }
+
+    [HttpPatch("{id}/sublocations/{instanceId}/shop-items/{shopItemId}")]
+    [Authorize(Roles = "DM,Admin")]
+    public async Task<IActionResult> UpdateShopItem(Guid id, Guid instanceId, Guid shopItemId,
+        [FromBody] UpdateSublocationShopItemRequest request)
+    {
+        if (!await CallerOwns(id)) return Forbid();
+        await updateShopItemCommand.HandleAsync(new UpdateShopItemCommand(
+            shopItemId, request.Name, request.PriceAmount, request.PriceCurrencyType));
+
+        await hubContext.Clients.Group(id.ToString()).SendAsync("ShopItemUpdated", new
+        {
+            campaignId            = id,
+            sublocationInstanceId = instanceId,
+            shopItemId,
+        });
+
+        return NoContent();
     }
 
     [HttpPatch("{id}/sublocations/{instanceId}/shop-items/{shopItemId}/scratch")]
@@ -380,9 +421,27 @@ public class CampaignsController(
     public async Task<IActionResult> ToggleShopItemScratch(Guid id, Guid instanceId, Guid shopItemId)
     {
         if (!await CallerOwns(id)) return Forbid();
-        await toggleShopItemScratchCommand.HandleAsync(new ToggleShopItemScratchCommand(id, shopItemId));
+        var isScratchedOff = await toggleShopItemScratchCommand.HandleAsync(new ToggleShopItemScratchCommand(id, shopItemId));
+
+        await hubContext.Clients.Group(id.ToString()).SendAsync("ShopItemScratchToggled", new
+        {
+            campaignId            = id,
+            sublocationInstanceId = instanceId,
+            shopItemId,
+            isScratchedOff,
+        });
 
         return NoContent();
+    }
+
+    [HttpPost("{id}/sublocations/{instanceId}/shop-items/{shopItemId}/purchase")]
+    public async Task<IActionResult> PurchaseShopItem(Guid id, Guid instanceId, Guid shopItemId)
+    {
+        if (!await CallerCanView(id)) return Forbid();
+        var playerUserId = userRetriever.GetUserId(User);
+        var result = await purchaseShopItemCommand.HandleAsync(
+            new PurchaseShopItemCommand(id, instanceId, shopItemId, playerUserId));
+        return Ok(result);
     }
 
     [HttpDelete("{id}/sublocations/{instanceId}")]
@@ -724,6 +783,13 @@ public class CampaignsController(
         if (!await CallerOwns(id)) return Forbid();
         var dmUserId = userRetriever.GetDmUserId(User);
         await updateFactionInstanceCommand.HandleAsync(new UpdateFactionInstanceCommand(factionInstanceId, dmUserId, request));
+
+        await hubContext.Clients.Group(id.ToString()).SendAsync("FactionInstanceUpdated", new
+        {
+            campaignId          = id,
+            factionInstanceId,
+        });
+
         return NoContent();
     }
 

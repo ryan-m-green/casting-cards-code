@@ -5,6 +5,9 @@ public class ImportLibraryResponse
     public int CastsImported { get; set; }
     public int LocationsImported { get; set; }
     public int SublocationsImported { get; set; }
+    public int CastsSkipped { get; set; }
+    public int LocationsSkipped { get; set; }
+    public int SublocationsSkipped { get; set; }
     public List<ImportFailure> Failures { get; set; } = [];
 }
 

@@ -711,10 +711,10 @@ export class PortalImportCardComponent implements OnInit, OnChanges {
 
   private newSublocationItem() {
     return this.fb.group({
-      name:          [''],
-      priceAmount:   [null as number | null],
-      priceCurrency: ['gp'],
-      description:   [''],
+      name:             [''],
+      priceAmount:      [null as number | null],
+      priceCurrencyType:['gp'],
+      description:      [''],
     });
   }
 
@@ -734,9 +734,10 @@ export class PortalImportCardComponent implements OnInit, OnChanges {
       description: formVal.description,
       dmNotes:     formVal.dmNotes,
       shopItems:   (formVal.shopItems ?? []).map((item: any) => ({
-        name:        item.name,
-        price:       item.priceAmount != null ? `${item.priceAmount} ${item.priceCurrency}` : '',
-        description: item.description,
+        name:             item.name,
+        priceAmount:      item.priceAmount ?? 0,
+        priceCurrencyType: item.priceCurrencyType ?? 'gp',
+        description:      item.description,
       })),
     };
 

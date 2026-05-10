@@ -46,7 +46,7 @@
             @for (item of sublocation.shopItems; track item.id) {
               <div class="sub-shop-item">
                 <span class="sub-shop-item-name">{{ item.name }}</span>
-                <span class="sub-shop-item-price">{{ item.price }}</span>
+                <span class="sub-shop-item-price">{{ item.priceAmount }} {{ item.priceCurrencyType }}</span>
               </div>
             }
             @empty {

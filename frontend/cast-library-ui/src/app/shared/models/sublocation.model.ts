@@ -1,7 +1,8 @@
 export interface ShopItem {
   id: string;
   name: string;
-  price: string;
+  priceAmount: number;
+  priceCurrencyType: string;
   description: string;
   isScratchedOff: boolean;
 }
@@ -30,7 +31,7 @@ export interface CampaignSublocationInstance {
   isVisibleToPlayers: boolean;
   dmNotes: string;
   keywords: string[];
-  customItems: { name: string; price: string }[];
+  customItems: { name: string; priceAmount: number; priceCurrencyType: string }[];
   isPartyAnchor: boolean;
   factionInstanceId?: string;
   symbolPath?: string;
