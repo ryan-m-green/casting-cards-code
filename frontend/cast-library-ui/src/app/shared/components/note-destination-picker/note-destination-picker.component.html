@@ -1,5 +1,15 @@
 <div class="ndp-dest-btns">
 
+  @if (showNone) {
+    <button type="button" class="ndp-dest-btn" [class.active]="destType === 'none'" (click)="onDestTypeChange('none')" (keydown.enter)="onKeyEnter('none')" title="GM Note (no association)">
+      <svg class="ndp-dest-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="10"/>
+        <line x1="8" y1="12" x2="16" y2="12"/>
+      </svg>
+      <span>None</span>
+    </button>
+  }
+
   @if (showQueue) {
     <button type="button" class="ndp-dest-btn" [class.active]="destType === 'queue'" (click)="onDestTypeChange('queue')" (keydown.enter)="onKeyEnter('queue')" title="Unsorted Queue">
       <svg class="ndp-dest-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">

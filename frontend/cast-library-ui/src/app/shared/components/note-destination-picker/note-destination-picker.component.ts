@@ -19,6 +19,7 @@ export class NoteDestinationPickerComponent {
   @Input() entityId = '';
   @Input() showQueue = true;
   @Input() showPlayer = true;
+  @Input() showNone = false;
   @Input() locations: CampaignLocationInstance[] = [];
   @Input() sublocations: CampaignSublocationInstance[] = [];
   @Input() casts: CampaignCastInstance[] = [];
@@ -80,7 +81,7 @@ export class NoteDestinationPickerComponent {
 
   onKeyEnter(type: string): void {
     this.onDestTypeChange(type);
-    if (type === 'queue' || type === 'campaign') {
+    if (type === 'queue' || type === 'campaign' || type === 'none') {
       this.enterOnDestType.emit(type);
     } else {
       setTimeout(() => {

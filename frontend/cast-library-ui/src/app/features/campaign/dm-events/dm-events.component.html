@@ -119,7 +119,7 @@
               class="ev-item"
               [class.ev-item--expanded]="expandedId() === ev.id"
               [class.ev-item--dragging]="draggingIndex() === i"
-              draggable="true"
+              [draggable]="editingId() === null"
               (dragstart)="onDragStart(i, $event)"
               (dragover)="onItemDragOver($event, i)"
               (dragend)="onDragEnd()"
@@ -132,7 +132,7 @@
                   (touchstart)="onHandleTouchStart(i, $event)"
                 >⠿</span>
 
-                <span class="ev-badge ev-badge--{{ ev.imageUrl ? 'handout' : (ev.linkedEntityType ?? 'campaign') }}">
+                <span class="ev-badge ev-badge--{{ ev.imageUrl ? 'handout' : (ev.linkedEntityType ?? 'none') }}">
                   @if (ev.imageUrl) {
                     <svg class="ev-badge-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
                       <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
@@ -141,6 +141,12 @@
                     </svg>
                   }
                   @switch (ev.linkedEntityType) {
+                    @case (null) {
+                      <svg class="ev-badge-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="10"/>
+                        <line x1="8" y1="12" x2="16" y2="12"/>
+                      </svg>
+                    }
                     @case ('cast') {
                       <svg class="ev-badge-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
                         <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
@@ -220,6 +226,7 @@
                   </label>
                 }
 
+                @if (ev.linkedEntityType !== null) {
                 <button
                   class="ev-lock-btn"
                   [class.ev-lock-btn--revealed]="ev.visibleToPlayers"
@@ -229,6 +236,7 @@
                 >
                   <app-lock-icon [open]="ev.visibleToPlayers" />
                 </button>
+                }
 
                 <span class="ev-chevron" [class.ev-chevron--open]="expandedId() === ev.id">&#9660;</span>
               </div>
@@ -284,7 +292,8 @@
                         <label class="event-label">Associate with</label>
                         <app-note-destination-picker
                           [showQueue]="false"
-                          [destType]="editDestType() ?? ''"
+                          [showNone]="true"
+                          [destType]="editDestType() ?? 'none'"
                           [entityId]="editEntityId()"
                           [locations]="locations"
                           [sublocations]="sublocations"
@@ -342,7 +351,8 @@
                         <label class="event-label">Associate with</label>
                         <app-note-destination-picker
                           [showQueue]="false"
-                          [destType]="editDestType() ?? ''"
+                          [showNone]="true"
+                          [destType]="editDestType() ?? 'none'"
                           [entityId]="editEntityId()"
                           [locations]="locations"
                           [sublocations]="sublocations"
@@ -416,7 +426,8 @@
             <label class="event-label">Associate with</label>
             <app-note-destination-picker
               [showQueue]="false"
-              [destType]="destType() ?? ''"
+              [showNone]="true"
+              [destType]="destType()"
               [entityId]="entityId()"
               [locations]="locations"
               [sublocations]="sublocations"
@@ -528,7 +539,8 @@
             <label class="event-label">Associate with</label>
             <app-note-destination-picker
               [showQueue]="false"
-              [destType]="handoutDestType() ?? ''"
+              [showNone]="true"
+              [destType]="handoutDestType()"
               [entityId]="handoutEntityId()"
               [locations]="locations"
               [sublocations]="sublocations"

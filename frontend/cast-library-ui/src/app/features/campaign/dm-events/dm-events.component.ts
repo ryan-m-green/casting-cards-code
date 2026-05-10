@@ -14,7 +14,7 @@ import { CampaignFactionInstance } from '../../../shared/models/faction.model';
 import { CampaignPlayer } from '../../../shared/models/campaign.model';
 
 type EventsTab = 'events' | 'create-events' | 'create-handout';
-type DestType = 'cast' | 'faction' | 'campaign' | 'sublocation' | 'location' | 'player';
+type DestType = 'cast' | 'faction' | 'campaign' | 'sublocation' | 'location' | 'player' | 'none';
 
 interface CampaignEvent {
   id: string;
@@ -80,16 +80,29 @@ export class DmEventsComponent implements OnInit, OnDestroy {
   confirmDeleteId  = signal<string | null>(null);
   deleting         = signal(false);
 
-  // Filter state — empty array = show all
+  // Filter state — empty array = show all (persisted to localStorage per campaign)
   typeFilters       = signal<string[]>([]);
   visibilityFilters = signal<string[]>([]);
+
+  private filterStorageKey(suffix: string): string {
+    return `dm-events-filter-${this.campaignId}-${suffix}`;
+  }
+
+  private loadFilters(): void {
+    try {
+      const types = localStorage.getItem(this.filterStorageKey('types'));
+      const vis   = localStorage.getItem(this.filterStorageKey('visibility'));
+      if (types) this.typeFilters.set(JSON.parse(types));
+      if (vis)   this.visibilityFilters.set(JSON.parse(vis));
+    } catch { /* ignore parse errors */ }
+  }
 
   filteredEvents = computed(() => {
     const types = this.typeFilters();
     const vis   = this.visibilityFilters();
     return this.events().filter(ev => {
       if (types.length > 0) {
-        const effectiveType = ev.imageUrl ? 'handout' : (ev.linkedEntityType ?? 'campaign');
+        const effectiveType = ev.imageUrl ? 'handout' : (ev.linkedEntityType ?? 'none');
         if (!types.includes(effectiveType)) return false;
       }
       if (vis.length > 0) {
@@ -102,16 +115,16 @@ export class DmEventsComponent implements OnInit, OnDestroy {
 
   toggleTypeFilter(type: string) {
     const current = this.typeFilters();
-    this.typeFilters.set(
-      current.includes(type) ? current.filter(t => t !== type) : [...current, type]
-    );
+    const next = current.includes(type) ? current.filter(t => t !== type) : [...current, type];
+    this.typeFilters.set(next);
+    localStorage.setItem(this.filterStorageKey('types'), JSON.stringify(next));
   }
 
   toggleVisibilityFilter(v: string) {
     const current = this.visibilityFilters();
-    this.visibilityFilters.set(
-      current.includes(v) ? current.filter(f => f !== v) : [...current, v]
-    );
+    const next = current.includes(v) ? current.filter(f => f !== v) : [...current, v];
+    this.visibilityFilters.set(next);
+    localStorage.setItem(this.filterStorageKey('visibility'), JSON.stringify(next));
   }
 
   // Drag state
@@ -123,7 +136,7 @@ export class DmEventsComponent implements OnInit, OnDestroy {
   // Create event form
   eventTitle = signal('');
   eventBody  = signal('');
-  destType   = signal<DestType | null>(null);
+  destType   = signal<DestType>('none');
   entityId   = signal('');
   saving     = signal(false);
   saveError  = signal<string | null>(null);
@@ -137,7 +150,7 @@ export class DmEventsComponent implements OnInit, OnDestroy {
   handoutUploading  = signal(false);
   handoutError      = signal<string | null>(null);
   handoutSuccess    = signal(false);
-  handoutDestType   = signal<DestType | null>(null);
+  handoutDestType   = signal<DestType>('none');
   handoutEntityId   = signal('');
 
   canUploadHandout = computed(() => {
@@ -146,7 +159,6 @@ export class DmEventsComponent implements OnInit, OnDestroy {
     const d     = this.handoutDestType();
     const eId   = this.handoutEntityId();
     if (!title.trim() || !file) return false;
-    if (!d) return false;
     const needsEntity = d === 'cast' || d === 'faction' || d === 'location' || d === 'sublocation' || d === 'player';
     if (needsEntity && !eId) return false;
     return true;
@@ -180,7 +192,6 @@ export class DmEventsComponent implements OnInit, OnDestroy {
     const d     = this.destType();
     const eId   = this.entityId();
     if (!title.trim() || !body.trim()) return false;
-    if (!d) return false;
     const needsEntity = d === 'cast' || d === 'faction' || d === 'location' || d === 'sublocation' || d === 'player';
     if (needsEntity && !eId) return false;
     return true;
@@ -204,6 +215,7 @@ export class DmEventsComponent implements OnInit, OnDestroy {
     const id = this.route.snapshot.paramMap.get('id')!;
     this.campaignId = id;
     this.shellSvc.setTitleContext({ pageType: 'gm-events', campaignId: id, baseRoute: '/campaign', location: null }, '56px');
+    this.loadFilters();
     this.loadEvents();
   }
 
@@ -217,6 +229,7 @@ export class DmEventsComponent implements OnInit, OnDestroy {
   }
 
   toggleExpand(id: string) {
+    if (this.editingId() !== null) return;
     if (this.expandedId() === id) {
       this.expandedId.set(null);
       this.editingId.set(null);
@@ -233,7 +246,7 @@ export class DmEventsComponent implements OnInit, OnDestroy {
       this.editingId.set(ev.id);
       this.editTitle.set(ev.title);
       this.editDraft.set(ev.body);
-      this.editDestType.set((ev.linkedEntityType as DestType) ?? null);
+      this.editDestType.set((ev.linkedEntityType as DestType) ?? 'none');
       this.editEntityId.set(ev.linkedEntityId ?? '');
       this.editFile.set(null);
       const prev = this.editPreviewUrl();
@@ -290,11 +303,14 @@ export class DmEventsComponent implements OnInit, OnDestroy {
     this.editSaving.set(true);
     this.editSaveError.set(null);
 
+    const resolvedType = destType === 'none' ? null : destType;
+    const resolvedId   = destType === 'none' ? undefined : (entityId || undefined);
+
     const payload = {
       title,
       body:             this.editDraft(),
-      linkedEntityType: destType,
-      linkedEntityId:   entityId || undefined,
+      linkedEntityType: resolvedType,
+      linkedEntityId:   resolvedId,
     };
 
     this.http.patch(
@@ -312,13 +328,13 @@ export class DmEventsComponent implements OnInit, OnDestroy {
           ).subscribe({
             next: (res: any) => {
               this.events.update(evs => evs.map(e => e.id === ev.id
-                ? { ...e, title, body: this.editDraft(), linkedEntityType: destType, linkedEntityId: entityId || null, imageUrl: res.imageUrl }
+                ? { ...e, title, body: this.editDraft(), linkedEntityType: resolvedType, linkedEntityId: resolvedId ?? null, imageUrl: res.imageUrl }
                 : e));
               this._finishEditSave(ev.id);
             },
             error: () => {
               this.events.update(evs => evs.map(e => e.id === ev.id
-                ? { ...e, title, body: this.editDraft(), linkedEntityType: destType, linkedEntityId: entityId || null }
+                ? { ...e, title, body: this.editDraft(), linkedEntityType: resolvedType, linkedEntityId: resolvedId ?? null }
                 : e));
               this.editSaving.set(false);
               this.editSaveError.set('Details saved but image upload failed.');
@@ -326,7 +342,7 @@ export class DmEventsComponent implements OnInit, OnDestroy {
           });
         } else {
           this.events.update(evs => evs.map(e => e.id === ev.id
-            ? { ...e, title, body: this.editDraft(), linkedEntityType: destType, linkedEntityId: entityId || null }
+            ? { ...e, title, body: this.editDraft(), linkedEntityType: resolvedType, linkedEntityId: resolvedId ?? null }
             : e));
           this._finishEditSave(ev.id);
         }
@@ -425,7 +441,8 @@ export class DmEventsComponent implements OnInit, OnDestroy {
   }
 
   entityNameFor(event: CampaignEvent): string {
-    if (!event.linkedEntityType || event.linkedEntityType === 'campaign') return 'Campaign';
+    if (!event.linkedEntityType) return 'GM Note';
+    if (event.linkedEntityType === 'campaign') return 'Campaign';
     const id = event.linkedEntityId;
     if (!id) return '';
     if (event.linkedEntityType === 'cast')        return this.casts.find(c => c.instanceId === id)?.name ?? id;
@@ -437,6 +454,7 @@ export class DmEventsComponent implements OnInit, OnDestroy {
   }
 
   onDragStart(index: number, event: DragEvent) {
+    if (this.editingId() !== null) { event.preventDefault(); return; }
     this.draggingIndex.set(index);
     event.dataTransfer!.effectAllowed = 'move';
   }
@@ -444,6 +462,7 @@ export class DmEventsComponent implements OnInit, OnDestroy {
   // ── Touch drag (same pattern as TimeOfDayBarComponent) ──────────────────────
 
   onHandleTouchStart(index: number, event: TouchEvent) {
+    if (this.editingId() !== null) return;
     event.preventDefault(); // prevent scroll while dragging
     this.draggingIndex.set(index);
   }
@@ -525,10 +544,10 @@ export class DmEventsComponent implements OnInit, OnDestroy {
 
   saveEvent() {
     if (!this.canSave()) return;
-    const d   = this.destType()!;
+    const d   = this.destType();
     const eId = this.entityId();
-    const linkedEntityId   = d === 'campaign' ? this.campaignId : (eId || null);
-    const linkedEntityType = d;
+    const linkedEntityId   = d === 'none' ? null : d === 'campaign' ? this.campaignId : (eId || null);
+    const linkedEntityType = d === 'none' ? null : d;
 
     this.saving.set(true);
     this.saveError.set(null);
@@ -541,7 +560,7 @@ export class DmEventsComponent implements OnInit, OnDestroy {
       next: () => {
         this.eventTitle.set('');
         this.eventBody.set('');
-        this.destType.set(null);
+        this.destType.set('none');
         this.entityId.set('');
         this.saving.set(false);
         this.saveSuccess.set(true);
@@ -575,10 +594,11 @@ export class DmEventsComponent implements OnInit, OnDestroy {
     this.handoutError.set(null);
     this.handoutSuccess.set(false);
 
-    const payload: { title: string; body?: string; linkedEntityType: string; linkedEntityId?: string } = {
-      title:            this.handoutTitle().trim(),
-      linkedEntityType: this.handoutDestType()!,
+    const hDest    = this.handoutDestType();
+    const payload: { title: string; body?: string; linkedEntityType?: string; linkedEntityId?: string } = {
+      title: this.handoutTitle().trim(),
     };
+    if (hDest !== 'none') payload.linkedEntityType = hDest;
     const body     = this.handoutBody().trim();
     const entityId = this.handoutEntityId();
     if (body)     payload.body             = body;
@@ -628,7 +648,7 @@ export class DmEventsComponent implements OnInit, OnDestroy {
     this.handoutBody.set('');
     this.handoutFile.set(null);
     this.handoutPreviewUrl.set(null);
-    this.handoutDestType.set(null);
+    this.handoutDestType.set('none');
     this.handoutEntityId.set('');
     this.handoutUploading.set(false);
     this.handoutSuccess.set(true);
