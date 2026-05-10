@@ -36,7 +36,7 @@ public class CampaignEventReadRepository(
                      updated_at           AS UpdatedAt
               FROM campaign_storyline
               WHERE campaign_id = @CampaignId
-              ORDER BY sort_order ASC, created_at DESC";
+              ORDER BY sort_order ASC, created_at ASC";
 
         logging.LogDbOperation(correlation.TraceId, spanId, "SELECT", "campaign_storyline", @params);
 
@@ -67,7 +67,7 @@ public class CampaignEventReadRepository(
               FROM campaign_storyline
               WHERE campaign_id         = @CampaignId
                 AND visible_to_players  = TRUE
-              ORDER BY sort_order ASC, created_at DESC";
+              ORDER BY sort_order ASC, created_at ASC";
 
         logging.LogDbOperation(correlation.TraceId, spanId, "SELECT", "campaign_storyline", @params);
 

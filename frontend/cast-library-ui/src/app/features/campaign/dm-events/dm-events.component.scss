@@ -239,38 +239,25 @@
     }
   }
 
-  // Locked filter button — matches ev-lock-btn default bg, gold icon
+  // Locked filter button — inactive: muted; active: gold bg
   &--lock-locked {
-    background: v.$color-secrets-bg;
-    color: v.$color-lock-icon-locked;
-
-    &:hover {
-      background: v.$color-secrets-hover;
-      color: v.$color-lock-icon-locked;
-    }
-
     &.ev-filter-btn--active {
       background: v.$color-secrets-bg;
+      border-color: v.$color-lock-icon-locked;
       color: v.$color-lock-icon-locked;
 
       &:hover {
         background: v.$color-secrets-hover;
+        color: v.$color-lock-icon-locked;
       }
     }
   }
 
-  // Unlocked filter button — green bg matching ev-lock-btn--revealed
+  // Unlocked filter button — inactive: muted; active: green bg
   &--lock-unlocked {
-    background: v.$color-secrets-revealed;
-    color: #000;
-
-    &:hover {
-      background: v.$color-secrets-revealed-hover;
-      color: #000;
-    }
-
     &.ev-filter-btn--active {
       background: v.$color-secrets-revealed;
+      border-color: v.$color-secrets-revealed-hover;
       color: #000;
 
       &:hover {

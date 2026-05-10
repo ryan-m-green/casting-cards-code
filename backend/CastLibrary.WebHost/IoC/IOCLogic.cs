@@ -175,6 +175,7 @@ namespace CastLibrary.WebHost.IoC
             services.AddScoped<IUploadCampaignEventHandoutImageCommandHandler, UploadCampaignEventHandoutImageCommandHandler>();
             services.AddScoped<IUpdateCampaignEventDetailsCommandHandler, UpdateCampaignEventDetailsCommandHandler>();
             services.AddScoped<IDeleteCampaignEventCommandHandler, DeleteCampaignEventCommandHandler>();
+            services.AddScoped<IReorderCampaignEventsCommandHandler, ReorderCampaignEventsCommandHandler>();
 
             return services;
         }

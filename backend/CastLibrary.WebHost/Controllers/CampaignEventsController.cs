@@ -21,6 +21,7 @@ public class CampaignEventsController(
     IUpdateCampaignEventBodyCommandHandler updateBodyCommand,
     IUpdateCampaignEventDetailsCommandHandler updateDetailsCommand,
     IDeleteCampaignEventCommandHandler deleteEventCommand,
+    IReorderCampaignEventsCommandHandler reorderCommand,
     IGetCampaignEventsQueryHandler getEventsQuery,
     IGetVisibleCampaignEventsQueryHandler getVisibleEventsQuery,
     IUploadCampaignEventHandoutCommandHandler uploadHandoutCommand,
@@ -171,6 +172,20 @@ public class CampaignEventsController(
             new UploadCampaignEventHandoutImageCommand(campaignId, eventId, file.OpenReadStream(), resolvedContentType));
 
         return Ok(new { imageUrl });
+    }
+
+    [HttpPatch("reorder")]
+    [Authorize(Roles = "DM,Admin")]
+    public async Task<IActionResult> Reorder(Guid campaignId, [FromBody] ReorderCampaignEventsRequest request)
+    {
+        if (!await CallerOwns(campaignId)) return Forbid();
+
+        if (request.EventIds is null || request.EventIds.Count == 0)
+            return BadRequest("EventIds must not be empty.");
+
+        await reorderCommand.HandleAsync(new ReorderCampaignEventsCommand(request));
+
+        return NoContent();
     }
 
     [HttpDelete("{eventId}")]
