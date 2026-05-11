@@ -11,8 +11,7 @@ import { CommonModule } from '@angular/common';
 export class EventCardComponent {
   @Input() eventTitle: string | null = null;
   @Input() portalColor: string = '#6e28d0';
-  @Output() dismissed    = new EventEmitter<void>();
-  @Output() goToEvents   = new EventEmitter<void>();
+  @Output() dismissed = new EventEmitter<void>();
 
   dismiss() { this.dismissed.emit(); }
 }

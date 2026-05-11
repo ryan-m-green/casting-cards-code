@@ -1,4 +1,5 @@
 import { Injectable, signal } from '@angular/core';
+import { Subject } from 'rxjs';
 import * as signalR from '@microsoft/signalr';
 import { environment } from '../../../environments/environment';
 import {
@@ -113,6 +114,8 @@ export class CampaignHubService {
   readonly factionRemoved            = signal<FactionRemovedEvent | null>(null);
   readonly factionLocked             = signal<FactionLockedEvent | null>(null);
   readonly campaignEventVisibilityChanged = signal<CampaignEventVisibilityChangedEvent | null>(null);
+  private readonly _campaignEventRevealSubject = new Subject<CampaignEventVisibilityChangedEvent>();
+  readonly campaignEventReveal$ = this._campaignEventRevealSubject.asObservable();
   readonly shopItemUpdated            = signal<ShopItemUpdatedEvent | null>(null);
   readonly shopItemScratchToggled     = signal<ShopItemScratchToggledEvent | null>(null);
   readonly castInstanceUpdated        = signal<CastInstanceUpdatedEvent | null>(null);
@@ -219,6 +222,7 @@ export class CampaignHubService {
 
     this.connection.on('CampaignEventVisibilityChanged', (event: CampaignEventVisibilityChangedEvent) => {
       this.campaignEventVisibilityChanged.set(event);
+      this._campaignEventRevealSubject.next(event);
     });
 
     this.connection.on('ShopItemUpdated', (event: ShopItemUpdatedEvent) => {

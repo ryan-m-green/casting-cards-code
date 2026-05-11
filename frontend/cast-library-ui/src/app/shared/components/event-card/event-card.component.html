@@ -1,6 +1,7 @@
 @if (eventTitle) {
   <div class="ec-backdrop" (click)="dismiss()">
-    <div class="ec-card" [style.--portal-color]="portalColor" (click)="$event.stopPropagation()">
+    <div class="ec-panel" (click)="$event.stopPropagation()">
+    <div class="ec-card" [style.--portal-color]="portalColor">
       <div class="ec-frame">
         <div class="ec-inner">
 
@@ -55,9 +56,6 @@
             <div class="ec-secret">A new scene has been revealed to you by the Game Master.</div>
           </div>
 
-          <!-- go to events button -->
-          <button class="ec-reveal-btn" (click)="goToEvents.emit()">✦ Go to Plot</button>
-
           <!-- strip -->
           <div class="ec-strip">
             <div class="ec-pip-row">
@@ -75,6 +73,8 @@
 
         </div>
       </div>
+    </div>
+    <button class="ec-dismiss-btn" (click)="dismiss()" aria-label="Dismiss">✕ Dismiss</button>
     </div>
   </div>
 }

@@ -17,15 +17,21 @@
   to   { opacity: 1; }
 }
 
+// ── Panel ────────────────────────────────────────────────────────────────
+.currency-panel {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  animation: currency-appear 0.65s cubic-bezier(0.2, 0, 0.3, 1) forwards;
+  will-change: transform, opacity;
+}
+
 // ── Card Shell ────────────────────────────────────────────────────────────────
 .currency-card {
   width: v.$card-width;
   height: v.$card-height;
   position: relative;
-  animation:
-    currency-appear 0.65s cubic-bezier(0.2, 0, 0.3, 1) forwards,
-    currency-pulse  3.2s ease-in-out infinite;
-  will-change: transform, opacity, box-shadow;
 }
 
 @keyframes currency-appear {
@@ -203,22 +209,23 @@
 
 // ── Dismiss Button ────────────────────────────────────────────────────────────
 .currency-dismiss-btn {
-  flex-shrink: 0;
-  width: calc(100% - 10px);
-  margin: 2px 5px 0;
-  padding: 4px 3px;
-  font-family: 'Cinzel', serif;
-  font-size: 6px;
-  letter-spacing: 0.1em;
-  border: none;
-  border-radius: 2px;
+  font-family: v.$font-header;
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: v.$color-ext-575;
+  background: v.$color-ext-642;
+  border: 1px solid v.$color-ext-643;
+  border-radius: 4px;
   cursor: pointer;
-  transition: all 0.2s;
-  background: linear-gradient(180deg, v.$color-cast-btn-gold-1, v.$color-cast-btn-gold-2);
-  color: v.$color-cast-banner-dark;
-  box-shadow: 0 2px 4px v.$color-shadow-light;
+  padding: 8px 20px;
+  transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease;
 
-  &:hover { background: linear-gradient(180deg, v.$color-cast-btn-gold-hover-1, v.$color-cast-btn-gold-hover-2); transform: translateY(-1px); }
+  &:hover {
+    background: v.$color-ext-644;
+    border-color: v.$color-ext-645;
+    color: v.$color-ext-152;
+  }
 }
 
 // ── Strip ─────────────────────────────────────────────────────────────────────

@@ -1,5 +1,6 @@
 <div class="currency-backdrop" (click)="dismiss()">
-  <div class="currency-card" [style.--portal-color]="portalColor" (click)="$event.stopPropagation()">
+  <div class="currency-panel" (click)="$event.stopPropagation()">
+    <div class="currency-card" [style.--portal-color]="portalColor">
     <div class="currency-frame">
       <div class="currency-inner">
 
@@ -58,10 +59,6 @@
           }
         </div>
 
-        @if (dismissable) {
-          <button class="currency-dismiss-btn" (click)="dismiss()">Acknowledge</button>
-        }
-
         <!-- strip -->
         <div class="currency-strip">
           <div class="currency-pip-row">
@@ -79,5 +76,9 @@
 
       </div>
     </div>
+    </div>
+    @if (dismissable) {
+      <button class="currency-dismiss-btn" (click)="dismiss()" aria-label="Dismiss">✕ Dismiss</button>
+    }
   </div>
 </div>

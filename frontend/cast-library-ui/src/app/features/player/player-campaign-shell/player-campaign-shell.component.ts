@@ -3,7 +3,7 @@ import { RouterOutlet, RouterLink, ActivatedRoute, Router, NavigationEnd } from 
 import { HttpClient } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
 import { catchError, filter } from 'rxjs/operators';
-import { EMPTY } from 'rxjs';
+import { EMPTY, Subscription } from 'rxjs';
 import { environment } from '../../../../environments/environment';
 import { CampaignDetail } from '../../../shared/models/campaign.model';
 import { CampaignFactionInstance } from '../../../shared/models/faction.model';
@@ -50,6 +50,10 @@ export class PlayerCampaignShellComponent implements OnInit, OnDestroy {
 
   // ── Event card notification ───────────────────────────────────────────────
   eventCardTitle = signal<string | null>(null);
+  private eventRevealQueue: string[] = [];
+  private eventRevealProcessing = false;
+  private eventRevealSub?: Subscription;
+  private pendingOverlayData: CardRevealOverlayData | null = null;
 
   // ── Purse popover ──────────────────────────────────────────────────────────
   showPurse        = signal(false);
@@ -75,7 +79,13 @@ export class PlayerCampaignShellComponent implements OnInit, OnDestroy {
           this.campaign.set(c);
           this.shellSvc.setCampaign(c);
           const data = this.buildOverlayFromVisibilityEvent(c, event.instanceId, event.cardType);
-          if (data) this.overlayData.set(data);
+          if (data) {
+            if (this.eventCardTitle() !== null) {
+              this.pendingOverlayData = data;
+            } else {
+              this.overlayData.set(data);
+            }
+          }
         });
     });
 
@@ -104,12 +114,17 @@ export class PlayerCampaignShellComponent implements OnInit, OnDestroy {
           .subscribe(factions => {
             const faction = factions.find(f => f.factionInstanceId === event.instanceId);
             if (faction) {
-              this.overlayData.set({
+              const data: CardRevealOverlayData = {
                 cardType:   'faction',
                 name:       faction.name,
                 descriptor: faction.type ?? '',
                 symbolPath: faction.symbolPath ?? '',
-              });
+              };
+              if (this.eventCardTitle() !== null) {
+                this.pendingOverlayData = data;
+              } else {
+                this.overlayData.set(data);
+              }
             }
           });
       }
@@ -310,18 +325,13 @@ export class PlayerCampaignShellComponent implements OnInit, OnDestroy {
       });
     });
 
-    // Show event card when the DM unlocks an event for players
-    effect(() => {
-      const event = this.hub.campaignEventVisibilityChanged();
-      if (!event || event.campaignId !== this.campaignId()) return;
-      if (!event.isVisibleToPlayers) return;
-      // Fetch the event title from the API
-      this.http
-        .get<{ title: string }[]>(`${environment.apiUrl}/api/campaigns/${this.campaignId()}/events/player`)
-        .subscribe(events => {
-          const found = events.find((e: any) => e.id === event.eventId);
-          this.eventCardTitle.set(found?.title ?? 'New Event');
-        });
+    // Show event card when the DM unlocks an event for players.
+    // Uses a Subject (not a signal effect) so rapid-fire events are never deduplicated/dropped.
+    this.eventRevealSub = this.hub.campaignEventReveal$.pipe(
+      filter(e => !!e && e.campaignId === this.campaignId() && e.isVisibleToPlayers)
+    ).subscribe(e => {
+      this.eventRevealQueue.push(e.eventId);
+      this._processEventRevealQueue();
     });
 
     // Update cast's sublocation in campaign when a cast travels — keeps the nav drawer in sync
@@ -412,6 +422,7 @@ export class PlayerCampaignShellComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
+    this.eventRevealSub?.unsubscribe();
     this.hub.leaveCampaign(this.campaignId()).catch(console.warn);
   }
 
@@ -424,6 +435,9 @@ export class PlayerCampaignShellComponent implements OnInit, OnDestroy {
 
   dismissOverlay() {
     this.overlayData.set(null);
+    if (this.eventRevealQueue.length > 0) {
+      setTimeout(() => this._processEventRevealQueue(), 400);
+    }
   }
 
   dismissWizardSecret() {
@@ -432,11 +446,26 @@ export class PlayerCampaignShellComponent implements OnInit, OnDestroy {
 
   dismissEventCard() {
     this.eventCardTitle.set(null);
+    this.eventRevealProcessing = false;
+    if (this.pendingOverlayData) {
+      const pending = this.pendingOverlayData;
+      this.pendingOverlayData = null;
+      setTimeout(() => this.overlayData.set(pending), 400);
+    } else if (this.eventRevealQueue.length > 0) {
+      setTimeout(() => this._processEventRevealQueue(), 400);
+    }
   }
 
-  navigateToEvents() {
-    this.eventCardTitle.set(null);
-    this.router.navigate(['/player/campaign', this.campaignId(), 'plot']);
+  private _processEventRevealQueue() {
+    if (this.eventRevealProcessing || this.eventRevealQueue.length === 0) return;
+    this.eventRevealProcessing = true;
+    const eventId = this.eventRevealQueue.shift()!;
+    this.http
+      .get<{ id: string; title: string }[]>(`${environment.apiUrl}/api/campaigns/${this.campaignId()}/events/player`)
+      .subscribe(events => {
+        const found = events.find(e => e.id === eventId);
+        this.eventCardTitle.set(found?.title ?? 'New Event');
+      });
   }
 
   dismissGoldCard() {
