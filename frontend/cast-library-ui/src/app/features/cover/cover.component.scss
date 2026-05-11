@@ -143,7 +143,6 @@
   width: 300px;
   max-width: calc(100% - 80px);
   flex-shrink: 0;
-  margin-top: 36px;
 
   // tablet portrait narrow (e.g. iPad Air)
   @media (min-width: 601px) and (max-width: 900px) and (orientation: portrait) {
@@ -152,12 +151,10 @@
 
   // tablet portrait wide (e.g. iPad Pro 12.9" portrait: 1024×1366)
   @media (min-width: 901px) and (orientation: portrait) and (max-width: 1400px) {
-    margin-top: 120px;
   }
 
   // tablet landscape — covers all tablets including iPad Pro 12.9" (1024px viewport height)
   @media (orientation: landscape) and (max-height: 1100px) and (min-width: 601px) and (max-width: 1199px) {
-    margin-top: 120px;
   }
 }
 
@@ -221,7 +218,7 @@
   font-style: italic;
   color: rgb(180, 120, 40);
   letter-spacing: 0.05em;
-  margin-top: -1px;
+  margin-top: 10px;
   margin-bottom: 24px;
   text-shadow: 0 1px 3px v.$color-ext-155;
 }
