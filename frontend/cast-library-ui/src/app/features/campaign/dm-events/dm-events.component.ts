@@ -430,6 +430,16 @@ export class DmEventsComponent implements OnInit, OnDestroy {
   }
 
   private _unlockLinkedEntity(entityType: string, entityId: string) {
+    const campaign = this.shellSvc.campaign();
+    if (campaign) {
+      const alreadyVisible =
+        (entityType === 'cast'        && campaign.casts.find(c => c.instanceId === entityId)?.isVisibleToPlayers) ||
+        (entityType === 'location'    && campaign.locations.find(l => l.instanceId === entityId)?.isVisibleToPlayers) ||
+        (entityType === 'sublocation' && campaign.sublocations.find(s => s.instanceId === entityId)?.isVisibleToPlayers) ||
+        (entityType === 'faction'     && campaign.factions.find(f => f.factionInstanceId === entityId)?.isVisibleToPlayers);
+      if (alreadyVisible) return;
+    }
+
     const urlMap: Record<string, string> = {
       cast:        `${environment.apiUrl}/api/campaigns/${this.campaignId}/casts/${entityId}/visibility`,
       location:    `${environment.apiUrl}/api/campaigns/${this.campaignId}/locations/${entityId}/visibility`,
