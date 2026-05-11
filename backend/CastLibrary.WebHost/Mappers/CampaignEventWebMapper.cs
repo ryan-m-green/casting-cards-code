@@ -22,6 +22,7 @@ public class CampaignEventWebMapper(IImageStorageOperator imageStorage) : ICampa
         LinkedEntityType = domain.LinkedEntityType,
         VisibleToPlayers = domain.VisibleToPlayers,
         ImageUrl         = !string.IsNullOrEmpty(domain.FilePath) ? imageStorage.GetPublicUrl(domain.FilePath) : null,
+        TodPositionPercent = domain.TodPositionPercent,
         CreatedAt        = domain.CreatedAt,
     };
 }

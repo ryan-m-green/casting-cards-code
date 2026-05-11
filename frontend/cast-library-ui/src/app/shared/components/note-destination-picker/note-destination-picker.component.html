@@ -71,6 +71,16 @@
   </button>
   }
 
+  @if (showTimeOfDay) {
+  <button type="button" class="ndp-dest-btn" [class.active]="destType === 'time-of-day'" [disabled]="!tod" (click)="onDestTypeChange('time-of-day')" (keydown.enter)="onKeyEnter('time-of-day')" title="Time of Day">
+    <svg class="ndp-dest-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="12" cy="12" r="10"/>
+      <polyline points="12 6 12 12 16 14"/>
+    </svg>
+    <span>Time</span>
+  </button>
+  }
+
 </div>
 
 @if (showEntitySelect) {
@@ -124,6 +134,33 @@
         [triggerTabIndex]="0"
         (valueChange)="entityIdChange.emit($event)"
       />
+    }
+    @if (destType === 'time-of-day') {
+      <div class="ndp-mini-tod">
+        <div
+          class="ndp-mini-tod__bar"
+          role="slider"
+          aria-label="Set time of day position"
+          [attr.aria-valuenow]="todPositionPercent ?? 0"
+          aria-valuemin="0"
+          aria-valuemax="100"
+          (click)="onMiniBarClick($event)"
+        >
+          @for (slice of (tod?.slices ?? []); track slice.id; let i = $index) {
+            <div class="ndp-mini-tod__slice" [style]="sliceMiniStyle(slice, i)">
+              <span class="ndp-mini-tod__label">{{ slice.label }}</span>
+            </div>
+          }
+          @if (todPositionPercent !== null) {
+            <div class="ndp-mini-tod__cursor" [style.left.%]="todPositionPercent"></div>
+          }
+        </div>
+        @if (todPositionPercent === null) {
+          <span class="ndp-mini-tod__hint">Click to set time position</span>
+        } @else {
+          <button type="button" class="ndp-mini-tod__clear" (click)="onMiniBarClear()">Clear position</button>
+        }
+      </div>
     }
   </div>
 }

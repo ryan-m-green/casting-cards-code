@@ -23,6 +23,7 @@ public class CreateCampaignEventCommandHandler(
             SortOrder        = 0,
             LinkedEntityId   = command.Request.LinkedEntityId,
             LinkedEntityType = command.Request.LinkedEntityType,
+            TodPositionPercent = command.Request.TodPositionPercent,
             VisibleToPlayers = false,
             CreatedAt        = DateTime.UtcNow,
             UpdatedAt        = DateTime.UtcNow,

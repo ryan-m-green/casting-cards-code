@@ -2,6 +2,7 @@ using CastLibrary.Logic.Commands.Campaign;
 using CastLibrary.Logic.Queries.Campaign;
 using CastLibrary.Logic.Services;
 using CastLibrary.Logic.Validators;
+using CastLibrary.Repository.Repositories.Update;
 using CastLibrary.Shared.Requests;
 using CastLibrary.WebHost.Hubs;
 using CastLibrary.WebHost.Mappers;
@@ -29,6 +30,7 @@ public class CampaignEventsController(
     ICampaignEventWebMapper mapper,
     ICampaignAccessService campaignAccess,
     IUserRetriever userRetriever,
+    ITimeOfDayWriteRepository timeOfDayRepo,
     IHubContext<CampaignHub> hubContext) : ControllerBase
 {
     private Task<bool> CallerOwns(Guid campaignId) =>
@@ -78,9 +80,6 @@ public class CampaignEventsController(
         if (string.IsNullOrWhiteSpace(request.Title) || request.Title.Length > 200)
             return BadRequest("Title is required and must not exceed 200 characters.");
 
-        if (string.IsNullOrWhiteSpace(request.LinkedEntityType))
-            return BadRequest("LinkedEntityType is required.");
-
         await updateDetailsCommand.HandleAsync(new UpdateCampaignEventDetailsCommand(eventId, request));
 
         return NoContent();
@@ -95,12 +94,22 @@ public class CampaignEventsController(
 
         await updateVisibilityCommand.HandleAsync(new UpdateCampaignEventVisibilityCommand(eventId, request));
 
-        await hubContext.Clients.Group(campaignId.ToString()).SendAsync("CampaignEventVisibilityChanged", new
+        if (request.IsVisibleToPlayers && request.TodPositionPercent.HasValue)
         {
-            campaignId         = campaignId,
-            eventId            = eventId,
-            isVisibleToPlayers = request.IsVisibleToPlayers,
-        });
+            var clamped = Math.Max(0m, Math.Min(100m, request.TodPositionPercent.Value));
+            await timeOfDayRepo.UpdateCursorAsync(campaignId, clamped);
+            await hubContext.Clients.Group(campaignId.ToString())
+                .SendAsync("TimeCursorMoved", new { campaignId, positionPercent = clamped });
+        }
+        else
+        {
+            await hubContext.Clients.Group(campaignId.ToString()).SendAsync("CampaignEventVisibilityChanged", new
+            {
+                campaignId         = campaignId,
+                eventId            = eventId,
+                isVisibleToPlayers = request.IsVisibleToPlayers,
+            });
+        }
 
         return NoContent();
     }

@@ -12,9 +12,10 @@ import { CampaignSublocationInstance } from '../../../shared/models/sublocation.
 import { CampaignCastInstance } from '../../../shared/models/cast.model';
 import { CampaignFactionInstance } from '../../../shared/models/faction.model';
 import { CampaignPlayer } from '../../../shared/models/campaign.model';
+import { TimeOfDay } from '../../../shared/models/time-of-day.model';
 
 type EventsTab = 'events' | 'create-events' | 'create-handout';
-type DestType = 'cast' | 'faction' | 'campaign' | 'sublocation' | 'location' | 'player' | 'none';
+type DestType = 'cast' | 'faction' | 'campaign' | 'sublocation' | 'location' | 'player' | 'none' | 'time-of-day';
 
 interface CampaignEvent {
   id: string;
@@ -27,6 +28,7 @@ interface CampaignEvent {
   sortOrder: number;
   createdAt: string;
   imageUrl?: string;
+  todPositionPercent: number | null;
 }
 
 @Component({
@@ -56,6 +58,7 @@ export class DmEventsComponent implements OnInit, OnDestroy {
   editDraft        = signal('');
   editDestType     = signal<DestType | null>(null);
   editEntityId     = signal('');
+  editTodPositionPercent = signal<number | null>(null);
   editFile         = signal<File | null>(null);
   editPreviewUrl   = signal<string | null>(null);
   editSaving       = signal(false);
@@ -138,6 +141,7 @@ export class DmEventsComponent implements OnInit, OnDestroy {
   eventBody  = signal('');
   destType   = signal<DestType>('none');
   entityId   = signal('');
+  todPositionPercent = signal<number | null>(null);
   saving     = signal(false);
   saveError  = signal<string | null>(null);
   saveSuccess = signal(false);
@@ -152,6 +156,7 @@ export class DmEventsComponent implements OnInit, OnDestroy {
   handoutSuccess    = signal(false);
   handoutDestType   = signal<DestType>('none');
   handoutEntityId   = signal('');
+  handoutTodPositionPercent = signal<number | null>(null);
 
   canUploadHandout = computed(() => {
     const title = this.handoutTitle();
@@ -185,6 +190,9 @@ export class DmEventsComponent implements OnInit, OnDestroy {
   get players(): CampaignPlayer[] {
     return this.shellSvc.campaign()?.players ?? [];
   }
+  get tod(): TimeOfDay | null {
+    return this.shellSvc.campaign()?.timeOfDay ?? null;
+  }
 
   canSave = computed(() => {
     const title = this.eventTitle();
@@ -205,6 +213,7 @@ export class DmEventsComponent implements OnInit, OnDestroy {
   onDestTypeChange(value: string) {
     this.destType.set(value as DestType);
     this.entityId.set('');
+    if (value !== 'time-of-day') this.todPositionPercent.set(null);
   }
 
   ngOnDestroy() {
@@ -248,6 +257,7 @@ export class DmEventsComponent implements OnInit, OnDestroy {
       this.editDraft.set(ev.body);
       this.editDestType.set((ev.linkedEntityType as DestType) ?? 'none');
       this.editEntityId.set(ev.linkedEntityId ?? '');
+      this.editTodPositionPercent.set(ev.todPositionPercent ?? null);
       this.editFile.set(null);
       const prev = this.editPreviewUrl();
       if (prev) URL.revokeObjectURL(prev);
@@ -263,6 +273,7 @@ export class DmEventsComponent implements OnInit, OnDestroy {
     this.editDraft.set('');
     this.editDestType.set(null);
     this.editEntityId.set('');
+    this.editTodPositionPercent.set(null);
     this.editFile.set(null);
     const prev = this.editPreviewUrl();
     if (prev) URL.revokeObjectURL(prev);
@@ -275,6 +286,7 @@ export class DmEventsComponent implements OnInit, OnDestroy {
   onEditDestTypeChange(value: string) {
     this.editDestType.set(value as DestType);
     this.editEntityId.set('');
+    if (value !== 'time-of-day') this.editTodPositionPercent.set(null);
   }
 
   onEditFileSelected(event: Event) {
@@ -304,13 +316,15 @@ export class DmEventsComponent implements OnInit, OnDestroy {
     this.editSaveError.set(null);
 
     const resolvedType = destType === 'none' ? null : destType;
-    const resolvedId   = destType === 'none' ? undefined : (entityId || undefined);
+    const resolvedId   = (destType === 'none' || destType === 'time-of-day') ? undefined : (entityId || undefined);
+    const resolvedTodPercent = destType === 'time-of-day' ? this.editTodPositionPercent() : null;
 
     const payload = {
       title,
       body:             this.editDraft(),
       linkedEntityType: resolvedType,
       linkedEntityId:   resolvedId,
+      todPositionPercent: resolvedTodPercent,
     };
 
     this.http.patch(
@@ -328,13 +342,13 @@ export class DmEventsComponent implements OnInit, OnDestroy {
           ).subscribe({
             next: (res: any) => {
               this.events.update(evs => evs.map(e => e.id === ev.id
-                ? { ...e, title, body: this.editDraft(), linkedEntityType: resolvedType, linkedEntityId: resolvedId ?? null, imageUrl: res.imageUrl }
+                ? { ...e, title, body: this.editDraft(), linkedEntityType: resolvedType, linkedEntityId: resolvedId ?? null, todPositionPercent: resolvedTodPercent, imageUrl: res.imageUrl }
                 : e));
               this._finishEditSave(ev.id);
             },
             error: () => {
               this.events.update(evs => evs.map(e => e.id === ev.id
-                ? { ...e, title, body: this.editDraft(), linkedEntityType: resolvedType, linkedEntityId: resolvedId ?? null }
+                ? { ...e, title, body: this.editDraft(), linkedEntityType: resolvedType, linkedEntityId: resolvedId ?? null, todPositionPercent: resolvedTodPercent }
                 : e));
               this.editSaving.set(false);
               this.editSaveError.set('Details saved but image upload failed.');
@@ -342,7 +356,7 @@ export class DmEventsComponent implements OnInit, OnDestroy {
           });
         } else {
           this.events.update(evs => evs.map(e => e.id === ev.id
-            ? { ...e, title, body: this.editDraft(), linkedEntityType: resolvedType, linkedEntityId: resolvedId ?? null }
+            ? { ...e, title, body: this.editDraft(), linkedEntityType: resolvedType, linkedEntityId: resolvedId ?? null, todPositionPercent: resolvedTodPercent }
             : e));
           this._finishEditSave(ev.id);
         }
@@ -397,7 +411,11 @@ export class DmEventsComponent implements OnInit, OnDestroy {
   toggleVisibility(event: CampaignEvent, domEvent: Event) {
     domEvent.stopPropagation();
     const next = !event.visibleToPlayers;
-    this.http.patch(`${environment.apiUrl}/api/campaigns/${this.campaignId}/events/${event.id}/visibility`, { isVisibleToPlayers: next })
+    const body: Record<string, unknown> = { isVisibleToPlayers: next };
+    if (next && event.todPositionPercent !== null) {
+      body['todPositionPercent'] = event.todPositionPercent;
+    }
+    this.http.patch(`${environment.apiUrl}/api/campaigns/${this.campaignId}/events/${event.id}/visibility`, body)
       .subscribe({
         next: () => {
           this.events.update(evs => evs.map(e => e.id === event.id ? { ...e, visibleToPlayers: next } : e));
@@ -443,6 +461,7 @@ export class DmEventsComponent implements OnInit, OnDestroy {
   entityNameFor(event: CampaignEvent): string {
     if (!event.linkedEntityType) return 'GM Note';
     if (event.linkedEntityType === 'campaign') return 'Campaign';
+    if (event.linkedEntityType === 'time-of-day') return 'Time of Day';
     const id = event.linkedEntityId;
     if (!id) return '';
     if (event.linkedEntityType === 'cast')        return this.casts.find(c => c.instanceId === id)?.name ?? id;
@@ -546,8 +565,9 @@ export class DmEventsComponent implements OnInit, OnDestroy {
     if (!this.canSave()) return;
     const d   = this.destType();
     const eId = this.entityId();
-    const linkedEntityId   = d === 'none' ? null : d === 'campaign' ? this.campaignId : (eId || null);
+    const linkedEntityId   = d === 'none' ? null : d === 'campaign' ? this.campaignId : d === 'time-of-day' ? null : (eId || null);
     const linkedEntityType = d === 'none' ? null : d;
+    const todPct = d === 'time-of-day' ? this.todPositionPercent() : null;
 
     this.saving.set(true);
     this.saveError.set(null);
@@ -555,13 +575,14 @@ export class DmEventsComponent implements OnInit, OnDestroy {
 
     this.http.post(
       `${environment.apiUrl}/api/campaigns/${this.campaignId}/events`,
-      { title: this.eventTitle().trim(), body: this.eventBody().trim(), linkedEntityId, linkedEntityType }
+      { title: this.eventTitle().trim(), body: this.eventBody().trim(), linkedEntityId, linkedEntityType, todPositionPercent: todPct }
     ).subscribe({
       next: () => {
         this.eventTitle.set('');
         this.eventBody.set('');
         this.destType.set('none');
         this.entityId.set('');
+        this.todPositionPercent.set(null);
         this.saving.set(false);
         this.saveSuccess.set(true);
         setTimeout(() => this.saveSuccess.set(false), 3000);

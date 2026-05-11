@@ -5,6 +5,7 @@ import { CampaignSublocationInstance } from '../../models/sublocation.model';
 import { CampaignCastInstance } from '../../models/cast.model';
 import { CampaignFactionInstance } from '../../models/faction.model';
 import { CampaignPlayer } from '../../models/campaign.model';
+import { TimeOfDay, TimeOfDaySlice } from '../../models/time-of-day.model';
 import { CampaignDropdownComponent, CampaignDropdownOption } from '../campaign-dropdown/campaign-dropdown.component';
 
 @Component({
@@ -20,6 +21,9 @@ export class NoteDestinationPickerComponent {
   @Input() showQueue = true;
   @Input() showPlayer = true;
   @Input() showNone = false;
+  @Input() showTimeOfDay = false;
+  @Input() tod: TimeOfDay | null = null;
+  @Input() todPositionPercent: number | null = null;
   @Input() locations: CampaignLocationInstance[] = [];
   @Input() sublocations: CampaignSublocationInstance[] = [];
   @Input() casts: CampaignCastInstance[] = [];
@@ -29,6 +33,7 @@ export class NoteDestinationPickerComponent {
 
   @Output() destTypeChange = new EventEmitter<string>();
   @Output() entityIdChange = new EventEmitter<string>();
+  @Output() todPositionPercentChange = new EventEmitter<number | null>();
   @Output() enterOnDestType = new EventEmitter<string>();
 
   private elRef = inject(ElementRef);
@@ -36,7 +41,7 @@ export class NoteDestinationPickerComponent {
   get showEntitySelect(): boolean {
     return this.destType === 'location' || this.destType === 'sublocation'
       || this.destType === 'cast' || this.destType === 'faction'
-      || this.destType === 'player';
+      || this.destType === 'player' || this.destType === 'time-of-day';
   }
 
   get locationOptions(): CampaignDropdownOption[] {
@@ -75,13 +80,16 @@ export class NoteDestinationPickerComponent {
   }
 
   onDestTypeChange(value: string): void {
+    if (this.destType === 'time-of-day' && value !== 'time-of-day') {
+      this.todPositionPercentChange.emit(null);
+    }
     this.destTypeChange.emit(value);
     this.entityIdChange.emit('');
   }
 
   onKeyEnter(type: string): void {
     this.onDestTypeChange(type);
-    if (type === 'queue' || type === 'campaign' || type === 'none') {
+    if (type === 'queue' || type === 'campaign' || type === 'none' || type === 'time-of-day') {
       this.enterOnDestType.emit(type);
     } else {
       setTimeout(() => {
@@ -89,5 +97,30 @@ export class NoteDestinationPickerComponent {
         trigger?.focus();
       });
     }
+  }
+
+  sliceMiniStyle(slice: TimeOfDaySlice, index: number): Record<string, string> {
+    const slices = this.tod?.slices ?? [];
+    const widthPct = slice.endPercent - slice.startPercent;
+    const nextColor = slices[(index + 1) % slices.length]?.color ?? slice.color;
+    const isLast = index === slices.length - 1;
+    const gradient = isLast
+      ? `linear-gradient(to right, ${slice.color}, ${slice.color} calc(100% - 12px), ${nextColor} 100%)`
+      : `linear-gradient(to right, ${slice.color}, ${nextColor})`;
+    return {
+      'flex-basis': `${widthPct}%`,
+      'background-image': gradient,
+    };
+  }
+
+  onMiniBarClick(event: MouseEvent): void {
+    const el = event.currentTarget as HTMLElement;
+    const rect = el.getBoundingClientRect();
+    const pct = Math.max(0, Math.min(100, ((event.clientX - rect.left) / rect.width) * 100));
+    this.todPositionPercentChange.emit(pct);
+  }
+
+  onMiniBarClear(): void {
+    this.todPositionPercentChange.emit(null);
   }
 }

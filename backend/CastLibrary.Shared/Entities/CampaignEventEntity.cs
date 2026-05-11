@@ -10,6 +10,7 @@ public class CampaignEventEntity
     public Guid? LinkedEntityId { get; set; }
     public string LinkedEntityType { get; set; }
     public string FilePath { get; set; }
+    public decimal? TodPositionPercent { get; set; }
     public bool VisibleToPlayers { get; set; }
     public DateTime CreatedAt { get; set; }
     public DateTime UpdatedAt { get; set; }

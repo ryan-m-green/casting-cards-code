@@ -20,6 +20,7 @@ public class CampaignEventEntityMapper : ICampaignEventEntityMapper
         LinkedEntityId    = entity.LinkedEntityId,
         LinkedEntityType  = entity.LinkedEntityType,
         FilePath          = entity.FilePath,
+        TodPositionPercent = entity.TodPositionPercent,
         VisibleToPlayers  = entity.VisibleToPlayers,
         CreatedAt         = entity.CreatedAt,
         UpdatedAt         = entity.UpdatedAt,

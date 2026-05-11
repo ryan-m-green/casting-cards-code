@@ -356,6 +356,7 @@ CREATE TABLE IF NOT EXISTS campaign_storyline (
     linked_entity_id    UUID,
     linked_entity_type  VARCHAR(50),
     file_path           VARCHAR(500),
+    tod_position_percent DECIMAL(5,2),
     visible_to_players  BOOLEAN      NOT NULL DEFAULT FALSE,
     created_at          TIMESTAMPTZ  NOT NULL DEFAULT NOW(),
     updated_at          TIMESTAMPTZ  NOT NULL DEFAULT NOW()

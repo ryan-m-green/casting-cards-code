@@ -178,6 +178,12 @@
                         <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
                       </svg>
                     }
+                    @case ('time-of-day') {
+                      <svg class="ev-badge-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="10"/>
+                        <polyline points="12 6 12 12 16 14"/>
+                      </svg>
+                    }
                     @default {
                       <svg class="ev-badge-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
                         <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/>
@@ -324,9 +330,6 @@
                         </label>
                       </div>
                       <div class="event-form-actions">
-                        @if (editSaveError()) {
-                          <span class="event-error">{{ editSaveError() }}</span>
-                        }
                         <button class="campaign-primary-btn" [disabled]="editSaving() || !editTitle().trim() || !editDestType()"
                           (click)="saveEditDetails(ev)">{{ editSaving() ? 'Saving…' : 'Save' }}</button>
                       </div>
@@ -350,8 +353,11 @@
                         <app-note-destination-picker
                           [showQueue]="false"
                           [showNone]="true"
+                          [showTimeOfDay]="true"
                           [destType]="editDestType() ?? 'none'"
                           [entityId]="editEntityId()"
+                          [tod]="tod"
+                          [todPositionPercent]="editTodPositionPercent()"
                           [locations]="locations"
                           [sublocations]="sublocations"
                           [casts]="casts"
@@ -359,12 +365,10 @@
                           [players]="players"
                           (destTypeChange)="onEditDestTypeChange($event)"
                           (entityIdChange)="editEntityId.set($event)"
+                          (todPositionPercentChange)="editTodPositionPercent.set($event)"
                         />
                       </div>
                       <div class="event-form-actions">
-                        @if (editSaveError()) {
-                          <span class="event-error">{{ editSaveError() }}</span>
-                        }
                         <button class="campaign-primary-btn" [disabled]="editSaving() || !editTitle().trim() || !editDraft().trim() || !editDestType()"
                           (click)="saveEditDetails(ev)">{{ editSaving() ? 'Saving…' : 'Save' }}</button>
                       </div>
@@ -425,8 +429,11 @@
             <app-note-destination-picker
               [showQueue]="false"
               [showNone]="true"
+              [showTimeOfDay]="true"
               [destType]="destType()"
               [entityId]="entityId()"
+              [tod]="tod"
+              [todPositionPercent]="todPositionPercent()"
               [locations]="locations"
               [sublocations]="sublocations"
               [casts]="casts"
@@ -434,6 +441,7 @@
               [players]="players"
               (destTypeChange)="onDestTypeChange($event)"
               (entityIdChange)="entityId.set($event)"
+              (todPositionPercentChange)="todPositionPercent.set($event)"
             />
           </div>
 

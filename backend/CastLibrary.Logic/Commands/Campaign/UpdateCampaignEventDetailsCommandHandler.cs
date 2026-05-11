@@ -17,7 +17,8 @@ public class UpdateCampaignEventDetailsCommandHandler(
             command.Request.Title.Trim(),
             command.Request.Body,
             command.Request.LinkedEntityType,
-            command.Request.LinkedEntityId);
+            command.Request.LinkedEntityId,
+            command.Request.TodPositionPercent);
 }
 
 public class UpdateCampaignEventDetailsCommand

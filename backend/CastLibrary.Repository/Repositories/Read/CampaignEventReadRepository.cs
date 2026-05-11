@@ -31,6 +31,7 @@ public class CampaignEventReadRepository(
                      linked_entity_id     AS LinkedEntityId,
                      linked_entity_type   AS LinkedEntityType,
                      file_path            AS FilePath,
+                     tod_position_percent AS TodPositionPercent,
                      visible_to_players   AS VisibleToPlayers,
                      created_at           AS CreatedAt,
                      updated_at           AS UpdatedAt
@@ -61,6 +62,7 @@ public class CampaignEventReadRepository(
                      linked_entity_id     AS LinkedEntityId,
                      linked_entity_type   AS LinkedEntityType,
                      file_path            AS FilePath,
+                     tod_position_percent AS TodPositionPercent,
                      visible_to_players   AS VisibleToPlayers,
                      created_at           AS CreatedAt,
                      updated_at           AS UpdatedAt

@@ -11,5 +11,6 @@ public class CampaignEventResponse
     public string LinkedEntityType { get; set; }
     public bool VisibleToPlayers { get; set; }
     public string ImageUrl { get; set; }
+    public decimal? TodPositionPercent { get; set; }
     public DateTime CreatedAt { get; set; }
 }

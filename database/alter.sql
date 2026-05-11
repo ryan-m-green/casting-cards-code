@@ -596,3 +596,7 @@ ALTER TABLE campaigns
 -- [035] Add sort_order to campaign_storyline — enables drag-and-drop reordering of storyline events
 ALTER TABLE campaign_storyline
     ADD COLUMN IF NOT EXISTS sort_order INT NOT NULL DEFAULT 0;
+
+-- [036] Add tod_position_percent to campaign_storyline — stores time-of-day cursor position to fire on storyline unlock
+ALTER TABLE campaign_storyline
+    ADD COLUMN IF NOT EXISTS tod_position_percent DECIMAL(5,2) NULL;

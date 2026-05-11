@@ -73,3 +73,95 @@
 .ndp-entity-dropdown {
   flex: 1;
 }
+
+/* ── Mini Time-of-Day bar ────────────────────────────────────── */
+.ndp-mini-tod {
+  width: 100%;
+}
+
+.ndp-mini-tod__bar {
+  position: relative;
+  display: flex;
+  height: 28px;
+  border-radius: 6px;
+  overflow: visible;
+  cursor: crosshair;
+  isolation: isolate;
+  box-shadow: 0 1px 6px rgba(0, 0, 0, 0.35);
+}
+
+.ndp-mini-tod__slice {
+  flex-shrink: 0;
+  height: 100%;
+  pointer-events: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+
+  &:first-child { border-radius: 6px 0 0 6px; }
+  &:last-child  { border-radius: 0 6px 6px 6px; }
+}
+
+.ndp-mini-tod__label {
+  font-size: 0.52rem;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.85);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.55);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  padding: 0 3px;
+  pointer-events: none;
+}
+
+.ndp-mini-tod__cursor {
+  position: absolute;
+  top: -4px;
+  bottom: -4px;
+  transform: translateX(-50%);
+  width: 2px;
+  background: rgba(255, 240, 180, 0.95);
+  box-shadow: 0 0 5px rgba(212, 168, 67, 0.85);
+  border-radius: 1px;
+  pointer-events: none;
+  z-index: 5;
+
+  &::before {
+    content: '';
+    position: absolute;
+    bottom: -1px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 0;
+    height: 0;
+    border-left: 4px solid transparent;
+    border-right: 4px solid transparent;
+    border-top: 5px solid rgba(255, 240, 180, 0.95);
+  }
+}
+
+.ndp-mini-tod__hint {
+  display: block;
+  font-size: 0.68rem;
+  color: v.$campaign-portal-text-muted;
+  font-style: italic;
+  margin-top: 5px;
+  text-align: center;
+}
+
+.ndp-mini-tod__clear {
+  display: block;
+  margin: 5px auto 0;
+  background: none;
+  border: none;
+  color: v.$campaign-portal-text-muted;
+  font-size: 0.68rem;
+  cursor: pointer;
+  text-decoration: underline;
+  padding: 0;
+
+  &:hover {
+    color: v.$campaign-portal-text-bright;
+  }
+}
