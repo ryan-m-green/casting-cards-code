@@ -94,12 +94,16 @@ public class CampaignEventsController(
 
         await updateVisibilityCommand.HandleAsync(new UpdateCampaignEventVisibilityCommand(eventId, request));
 
-        if (request.IsVisibleToPlayers && request.TodPositionPercent.HasValue)
+        if (request.IsVisibleToPlayers && request.IsTodScene)
         {
-            var clamped = Math.Max(0m, Math.Min(100m, request.TodPositionPercent.Value));
-            await timeOfDayRepo.UpdateCursorAsync(campaignId, clamped);
-            await hubContext.Clients.Group(campaignId.ToString())
-                .SendAsync("TimeCursorMoved", new { campaignId, positionPercent = clamped });
+            if (request.TodPositionPercent.HasValue)
+            {
+                var clamped = Math.Max(0m, Math.Min(100m, request.TodPositionPercent.Value));
+                await timeOfDayRepo.UpdateCursorAsync(campaignId, clamped);
+                await hubContext.Clients.Group(campaignId.ToString())
+                    .SendAsync("TimeCursorMoved", new { campaignId, positionPercent = clamped });
+            }
+            // time-of-day scenes never send CampaignEventVisibilityChanged to players
         }
         else
         {

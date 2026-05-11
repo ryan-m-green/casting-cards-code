@@ -412,8 +412,11 @@ export class DmEventsComponent implements OnInit, OnDestroy {
     domEvent.stopPropagation();
     const next = !event.visibleToPlayers;
     const body: Record<string, unknown> = { isVisibleToPlayers: next };
-    if (next && event.todPositionPercent !== null) {
-      body['todPositionPercent'] = event.todPositionPercent;
+    if (event.linkedEntityType === 'time-of-day') {
+      body['isTodScene'] = true;
+      if (next && event.todPositionPercent !== null) {
+        body['todPositionPercent'] = event.todPositionPercent;
+      }
     }
     this.http.patch(`${environment.apiUrl}/api/campaigns/${this.campaignId}/events/${event.id}/visibility`, body)
       .subscribe({
