@@ -48,13 +48,26 @@ export class CharacterInfoEditorComponent implements OnChanges {
   draftDescription = signal('');
   selectedRaces    = signal<string[]>([]);
   selectedClasses  = signal<string[]>([]);
+  raceInputValue   = signal('');
+  classInputValue  = signal('');
   showRaceDropdown  = signal(false);
   showClassDropdown = signal(false);
   saving           = signal(false);
   error            = signal('');
 
-  availableRaces   = computed(() => RACE_OPTIONS.filter(r => !this.selectedRaces().includes(r)));
-  availableClasses = computed(() => CLASS_OPTIONS.filter(c => !this.selectedClasses().includes(c)));
+  availableRaces   = computed(() => {
+    const unselected = RACE_OPTIONS.filter(r => !this.selectedRaces().includes(r));
+    const search = this.raceInputValue().trim().toLowerCase();
+    if (!search) return unselected;
+    return unselected.filter(r => r.toLowerCase().includes(search));
+  });
+
+  availableClasses = computed(() => {
+    const unselected = CLASS_OPTIONS.filter(c => !this.selectedClasses().includes(c));
+    const search = this.classInputValue().trim().toLowerCase();
+    if (!search) return unselected;
+    return unselected.filter(c => c.toLowerCase().includes(search));
+  });
 
   ngOnChanges() {
     if (this.visible) {
@@ -62,6 +75,8 @@ export class CharacterInfoEditorComponent implements OnChanges {
       this.draftDescription.set(this.description ?? '');
       this.selectedRaces.set(this.race ? this.race.split(', ').map(r => r.trim()).filter(Boolean) : []);
       this.selectedClasses.set(this.classValue ? this.classValue.split(', ').map(c => c.trim()).filter(Boolean) : []);
+      this.raceInputValue.set('');
+      this.classInputValue.set('');
       this.error.set('');
       this.showRaceDropdown.set(false);
       this.showClassDropdown.set(false);
@@ -79,9 +94,40 @@ export class CharacterInfoEditorComponent implements OnChanges {
   toggleRaceDropdown(e: MouseEvent)  { e.stopPropagation(); this.showClassDropdown.set(false); this.showRaceDropdown.update(v => !v); }
   toggleClassDropdown(e: MouseEvent) { e.stopPropagation(); this.showRaceDropdown.set(false);  this.showClassDropdown.update(v => !v); }
 
+  onRaceInputFocus() { this.showRaceDropdown.set(true); this.showClassDropdown.set(false); }
+  onRaceInputChange(value: string) { this.raceInputValue.set(value); if (value.trim()) this.showRaceDropdown.set(true); }
+  onRaceInputBlur() { setTimeout(() => this.showRaceDropdown.set(false), 150); }
+  onRaceInputKeydown(e: KeyboardEvent) {
+    const value = this.raceInputValue().trim();
+    if (e.key === 'Enter' && value) {
+      e.preventDefault();
+      if (!this.selectedRaces().includes(value)) this.selectedRaces.update(l => [...l, value]);
+      this.raceInputValue.set('');
+    } else if (e.key === 'Backspace' && !value && this.selectedRaces().length) {
+      e.preventDefault();
+      this.selectedRaces.update(l => l.slice(0, -1));
+    }
+  }
+
+  onClassInputFocus() { this.showClassDropdown.set(true); this.showRaceDropdown.set(false); }
+  onClassInputChange(value: string) { this.classInputValue.set(value); if (value.trim()) this.showClassDropdown.set(true); }
+  onClassInputBlur() { setTimeout(() => this.showClassDropdown.set(false), 150); }
+  onClassInputKeydown(e: KeyboardEvent) {
+    const value = this.classInputValue().trim();
+    if (e.key === 'Enter' && value) {
+      e.preventDefault();
+      if (!this.selectedClasses().includes(value)) this.selectedClasses.update(l => [...l, value]);
+      this.classInputValue.set('');
+    } else if (e.key === 'Backspace' && !value && this.selectedClasses().length) {
+      e.preventDefault();
+      this.selectedClasses.update(l => l.slice(0, -1));
+    }
+  }
+
   addRace(race: string, e: MouseEvent) {
     e.stopPropagation();
     this.selectedRaces.update(l => [...l, race]);
+    this.raceInputValue.set('');
     if (!this.availableRaces().length) this.showRaceDropdown.set(false);
   }
 
@@ -90,6 +136,7 @@ export class CharacterInfoEditorComponent implements OnChanges {
   addClassItem(cls: string, e: MouseEvent) {
     e.stopPropagation();
     this.selectedClasses.update(l => [...l, cls]);
+    this.classInputValue.set('');
     if (!this.availableClasses().length) this.showClassDropdown.set(false);
   }
 

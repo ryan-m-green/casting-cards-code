@@ -124,6 +124,8 @@ export class PlayerCardFormComponent implements OnInit {
     this.showClassDropdown.set(false);
   }
 
+  onRaceInputBlur() { setTimeout(() => this.showRaceDropdown.set(false), 150); }
+
   // ── Class pill methods ──────────────────────────────────────────────────
   toggleClassDropdown(e: MouseEvent) {
     e.stopPropagation();
@@ -170,6 +172,8 @@ export class PlayerCardFormComponent implements OnInit {
     this.showClassDropdown.set(true);
     this.showRaceDropdown.set(false);
   }
+
+  onClassInputBlur() { setTimeout(() => this.showClassDropdown.set(false), 150); }
 
   // ── Close dropdowns on outside click ───────────────────────────────────
   @HostListener('document:click', ['$event'])

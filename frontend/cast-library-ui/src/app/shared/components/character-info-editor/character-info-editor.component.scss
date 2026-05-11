@@ -12,151 +12,226 @@
 }
 
 .info-panel {
-  background: v.$color-ext-649;
-  border: 1px solid v.$campaign-portal-border-accent;
-  border-radius: 10px;
-  padding: 32px 28px 28px;
+  background: v.$campaign-portal-bg-dark;
+  border: 1px solid rgba(v.$location-blue, 0.40);
+  border-radius: 6px;
   width: 100%;
   max-width: 500px;
   max-height: 90vh;
   overflow-y: auto;
-  box-shadow: 0 0 30px v.$campaign-portal-border-light, 0 8px 32px v.$journal-spine-shadow;
+  overflow-x: hidden;
+  position: relative;
   display: flex;
   flex-direction: column;
-  gap: 18px;
+
+  &::before,
+  &::after {
+    content: '';
+    position: absolute;
+    width: 14px;
+    height: 14px;
+    border-color: rgba(v.$location-blue, 0.45);
+    border-style: solid;
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  &::before {
+    top: -1px;
+    left: -1px;
+    border-width: 2px 0 0 2px;
+    border-radius: 4px 0 0 0;
+  }
+
+  &::after {
+    bottom: -1px;
+    right: -1px;
+    border-width: 0 2px 2px 0;
+    border-radius: 0 0 4px 0;
+  }
+}
+
+// ── Header ────────────────────────────────────────────────────────────────────
+
+.info-panel-header {
+  padding: 10px 16px 8px;
+  border-bottom: 1px solid rgba(v.$location-blue, 0.12);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+}
+
+.info-panel-rune {
+  font-size: 14px;
+  opacity: 0.45;
+  color: rgba(v.$location-blue, 0.9);
 }
 
 .info-panel-title {
   font-family: v.$font-header;
   font-size: 13px;
   font-weight: 600;
-  letter-spacing: 0.22em;
+  letter-spacing: 0.28em;
   text-transform: uppercase;
-  color: v.$color-ext-457;
-  text-shadow: 0 0 18px v.$campaign-portal-border-focus;
+  color: v.$campaign-portal-text-softer;
+  text-shadow:
+    0 0 18px rgba(v.$location-blue, 0.35),
+    0 1px 3px v.$color-shadow-dark;
   margin: 0;
 }
 
-// ── Fields ───────────────────────────────────────────────────────────────────
+// ── Fields ────────────────────────────────────────────────────────────────────
 
 .field-group {
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 4px;
+  padding: 8px 16px;
+  border-bottom: 1px solid rgba(v.$location-blue, 0.08);
   position: relative;
 }
 
 .field-label {
   font-family: v.$font-header;
-  font-size: 9px;
-  letter-spacing: 0.18em;
+  font-size: 7px;
+  letter-spacing: 0.2em;
   text-transform: uppercase;
-  color: v.$color-ext-458;
+  color: rgba(v.$location-blue, 0.85);
+  white-space: nowrap;
 }
 
 .required { color: v.$color-ext-460; margin-left: 2px; }
-.optional { color: v.$color-ext-461; font-size: 8px; }
+.optional { color: rgba(v.$location-blue, 0.45); font-size: 8px; }
 
-.field-input {
-  background: v.$color-ext-346;
-  border: 1px solid v.$campaign-portal-border-medium;
-  border-radius: 6px;
-  color: v.$color-ext-457;
-  font-family: v.$font-body;
-  font-size: 15px;
-  padding: 10px 12px;
-  outline: none;
-  transition: border-color 0.18s ease, box-shadow 0.18s ease;
+.detail-line {
+  height: 1px;
   width: 100%;
-  box-sizing: border-box;
-
-  &::placeholder { color: v.$color-ext-462; }
-
-  &:focus {
-    border-color: v.$campaign-portal-border-focus;
-    box-shadow: 0 0 0 2px v.$campaign-portal-border-light;
-  }
+  background: linear-gradient(to right, rgba(v.$location-blue, 0.22), transparent);
+  margin-bottom: 2px;
 }
 
-.field-textarea {
-  resize: vertical;
-  min-height: 90px;
-  line-height: 1.55;
+.detail-input {
+  background: v.$color-overlay-darker;
+  border: 1px solid rgba(v.$location-blue, 0.28);
+  border-radius: 3px;
+  padding: 5px 8px;
+  font-family: v.$font-body;
+  font-size: 14px;
+  color: v.$campaign-portal-text-muted;
+  width: 100%;
+  box-sizing: border-box;
+  outline: none;
+  transition: border-color 0.18s ease;
+
+  &::placeholder {
+    color: rgba(v.$location-blue, 0.30);
+  }
+
+  &:focus {
+    border-color: rgba(v.$location-blue, 0.65);
+  }
+
+  &--block {
+    resize: vertical;
+    font-size: 13px;
+    line-height: 1.6;
+    min-height: 72px;
+  }
 }
 
 // ── Multi-pill select ─────────────────────────────────────────────────────────
 
 .pill-select {
+  position: relative;
   display: flex;
   align-items: center;
   gap: 8px;
-  background: v.$color-ext-346;
-  border: 1px solid v.$campaign-portal-border-medium;
-  border-radius: 6px;
-  padding: 8px 10px;
+  background: v.$color-overlay-darker;
+  border: 1px solid rgba(v.$location-blue, 0.28);
+  border-radius: 3px;
+  padding: 5px 8px;
   cursor: pointer;
-  min-height: 42px;
+  transition: border-color 0.18s ease;
+  min-height: 34px;
   box-sizing: border-box;
   user-select: none;
-  transition: border-color 0.18s ease, box-shadow 0.18s ease;
 
-  &:hover { border-color: v.$color-ext-465; }
+  &:hover {
+    border-color: rgba(v.$location-blue, 0.45);
+  }
 
   &--open {
-    border-color: v.$campaign-portal-border-focus;
-    box-shadow: 0 0 0 2px v.$campaign-portal-border-light;
+    border-color: rgba(v.$location-blue, 0.65);
   }
 }
 
 .pill-select-inner {
   display: flex;
   flex-wrap: wrap;
-  gap: 5px;
+  gap: 4px;
   flex: 1;
   align-items: center;
+}
+
+.pill-input {
+  background: transparent;
+  border: none;
+  outline: none;
+  color: v.$campaign-portal-text-muted;
+  font-family: v.$font-body;
+  font-size: 13px;
+  flex: 1;
+  min-width: 100px;
+  padding: 2px 0;
+
+  &::placeholder {
+    color: rgba(v.$location-blue, 0.30);
+  }
 }
 
 .pill-token {
   display: inline-flex;
   align-items: center;
   gap: 4px;
-  background: v.$campaign-portal-bg-placeholder;
-  border: 1px solid v.$campaign-portal-border-hover;
-  border-radius: 4px;
-  padding: 2px 6px 2px 8px;
-  font-family: v.$font-body;
-  font-size: 13px;
-  color: v.$color-ext-466;
+  background: rgba(v.$location-blue, 0.08);
+  border: 1px solid rgba(v.$location-blue, 0.25);
+  border-radius: 2px;
+  padding: 1px 6px 1px 8px;
+  font-family: v.$font-header;
+  font-size: 7px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(v.$location-blue, 0.90);
+  line-height: 1.6;
 }
 
 .pill-remove {
   background: none;
   border: none;
   cursor: pointer;
-  font-size: 14px;
+  font-size: 13px;
   line-height: 1;
-  color: v.$color-ext-467;
+  color: rgba(v.$location-blue, 0.50);
   padding: 0;
   display: flex;
   align-items: center;
   transition: color 0.15s ease;
 
-  &:hover { color: v.$color-ext-468; }
-}
-
-.pill-placeholder {
-  font-family: v.$font-body;
-  font-size: 15px;
-  color: v.$color-ext-462;
+  &:hover {
+    color: rgba(v.$location-blue, 0.85);
+  }
 }
 
 .pill-chevron {
-  font-size: 11px;
-  color: v.$color-ext-467;
+  font-size: 10px;
+  color: rgba(v.$location-blue, 0.50);
   flex-shrink: 0;
   transition: transform 0.18s ease;
 
-  &--open { transform: rotate(180deg); }
+  &--open {
+    transform: rotate(180deg);
+  }
 }
 
 .pill-dropdown {
@@ -164,51 +239,64 @@
   top: calc(100% + 4px);
   left: 0;
   right: 0;
-  background: v.$color-ext-469;
-  border: 1px solid v.$color-ext-465;
-  border-radius: 6px;
-  box-shadow: 0 8px 24px v.$journal-spine-band-shadow;
+  background: v.$campaign-portal-bg-dark;
+  border: 1px solid rgba(v.$location-blue, 0.35);
+  border-radius: 4px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
   z-index: 100;
   max-height: 200px;
   overflow-y: auto;
 }
 
 .pill-dropdown-item {
-  padding: 9px 14px;
+  padding: 8px 12px;
   font-family: v.$font-body;
-  font-size: 14px;
-  color: v.$color-ext-470;
+  font-size: 13px;
+  color: v.$campaign-portal-text-secondary;
   cursor: pointer;
-  transition: background 0.12s ease;
+  transition: background 0.12s ease, color 0.12s ease;
 
-  &:hover { background: v.$color-ext-22; color: v.$color-ext-457; }
-  &:not(:last-child) { border-bottom: 1px solid v.$campaign-portal-bg-hover; }
+  &:hover {
+    background: rgba(v.$location-blue, 0.08);
+    color: v.$campaign-portal-text-bright;
+  }
+
+  &:not(:last-child) {
+    border-bottom: 1px solid rgba(v.$location-blue, 0.06);
+  }
 }
 
 .pill-dropdown-empty {
-  padding: 10px 14px;
+  padding: 10px 12px;
   font-family: v.$font-body;
-  font-size: 13px;
+  font-size: 12px;
   font-style: italic;
-  color: v.$color-ext-471;
+  color: rgba(v.$location-blue, 0.45);
   text-align: center;
 }
 
-// ── Footer ────────────────────────────────────────────────────────────────────
+// ── Error & Actions ───────────────────────────────────────────────────────────
 
 .error-banner {
+  margin: 0 16px;
   background: v.$color-ext-360;
   border: 1px solid v.$color-ext-353;
-  border-radius: 6px;
-  padding: 10px 14px;
+  border-radius: 4px;
+  padding: 8px 12px;
   font-family: v.$font-body;
-  font-size: 13px;
+  font-size: 12px;
   color: v.$color-ext-472;
 }
 
-.modal-footer {
+.form-actions {
   display: flex;
   justify-content: flex-end;
   gap: 10px;
-  margin-top: 4px;
+  padding: 6px 16px 10px;
+}
+
+.form-submit-btn {
+  font-size: 8px;
+  padding: 4px 14px;
+  letter-spacing: 0.16em;
 }

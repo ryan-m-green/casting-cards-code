@@ -72,16 +72,17 @@
                 (input)="onRaceInputChange($any($event.target).value)"
                 (keydown)="onRaceInputKeydown($event)"
                 (focus)="onRaceInputFocus()"
+                (blur)="onRaceInputBlur()"
                 placeholder="Type or select race(s)…"
                 autocomplete="off"
               />
             </div>
-            <span class="pill-chevron" [class.pill-chevron--open]="showRaceDropdown()" (click)="toggleRaceDropdown($event)">▾</span>
+            <span class="pill-chevron" [class.pill-chevron--open]="showRaceDropdown()" (mousedown)="$event.preventDefault()" (click)="toggleRaceDropdown($event)">▾</span>
           </div>
           @if (showRaceDropdown()) {
             <div class="pill-dropdown">
               @for (r of availableRaces(); track r) {
-                <div class="pill-dropdown-item" (click)="addRace(r, $event)">{{ r }}</div>
+                <div class="pill-dropdown-item" (mousedown)="$event.preventDefault()" (click)="addRace(r, $event)">{{ r }}</div>
               }
               @if (!availableRaces().length && !selectedRaces().length) {
                 <div class="pill-dropdown-empty">All races selected</div>
@@ -117,16 +118,17 @@
                 (input)="onClassInputChange($any($event.target).value)"
                 (keydown)="onClassInputKeydown($event)"
                 (focus)="onClassInputFocus()"
+                (blur)="onClassInputBlur()"
                 placeholder="Type or select class(es)…"
                 autocomplete="off"
               />
             </div>
-            <span class="pill-chevron" [class.pill-chevron--open]="showClassDropdown()" (click)="toggleClassDropdown($event)">▾</span>
+            <span class="pill-chevron" [class.pill-chevron--open]="showClassDropdown()" (mousedown)="$event.preventDefault()" (click)="toggleClassDropdown($event)">▾</span>
           </div>
           @if (showClassDropdown()) {
             <div class="pill-dropdown">
               @for (c of availableClasses(); track c) {
-                <div class="pill-dropdown-item" (click)="addClassItem(c, $event)">{{ c }}</div>
+                <div class="pill-dropdown-item" (mousedown)="$event.preventDefault()" (click)="addClassItem(c, $event)">{{ c }}</div>
               }
               @if (!availableClasses().length && !selectedClasses().length) {
                 <div class="pill-dropdown-empty">All classes selected</div>
