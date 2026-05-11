@@ -3,6 +3,8 @@
 :host {
   display: block;
   width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
 
   // ── Social compass colour tokens ──────────────────────────────────────────
   --compass-hostile: #{v.$color-ext-546};

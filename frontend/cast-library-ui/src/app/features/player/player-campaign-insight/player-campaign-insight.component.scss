@@ -8,4 +8,7 @@
 
 .insight-content {
   padding: 24px 32px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }

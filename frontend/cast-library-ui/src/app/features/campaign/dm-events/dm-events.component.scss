@@ -2,6 +2,9 @@
 
 .events-page {
   padding: 32px 24px 300px;
+  max-width: 960px;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .tabs-bar {
@@ -496,8 +499,12 @@
 .ev-body {
   padding: 12px 14px 14px;
   font-family: v.$font-body;
-  font-size: 14px;
+  font-size: 16px;
   line-height: 1.7;
+
+  @media (max-width: 768px) {
+    font-size: 20px;
+  }
   color: v.$campaign-portal-text-muted;
   white-space: pre-wrap;
   border-top: 1px solid v.$campaign-portal-border;
@@ -515,6 +522,10 @@
   padding: 6px 14px;
   border-top: 1px solid v.$campaign-portal-border;
   background: v.$campaign-portal-bg-medium;
+
+  .ev-unlock-card-toggle {
+    margin-right: auto;
+  }
 }
 
 .ev-autosave-status {

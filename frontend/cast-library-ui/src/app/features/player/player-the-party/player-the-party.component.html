@@ -1,4 +1,5 @@
 @if (playerCard(); as card) {
+  <div class="party-page">
 
   <!-- ── Character header ── -->
     <div class="char-header">
@@ -383,9 +384,11 @@
       </div>
     }
 
-  } @else {
-    <div class="loading-state">Loading your character…</div>
-  }
+  </div>
+
+} @else {
+  <div class="loading-state">Loading your character…</div>
+}
 
 <app-character-info-editor
   [visible]="showInfoEditor()"
