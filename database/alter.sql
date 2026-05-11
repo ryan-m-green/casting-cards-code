@@ -592,3 +592,7 @@ END $$;
 -- [034] Add is_demo flag to campaigns — admin-only flag to mark showcase/demo campaigns
 ALTER TABLE campaigns
     ADD COLUMN IF NOT EXISTS is_demo BOOLEAN NULL;
+
+-- [035] Add sort_order to campaign_storyline — enables drag-and-drop reordering of storyline events
+ALTER TABLE campaign_storyline
+    ADD COLUMN IF NOT EXISTS sort_order INT NOT NULL DEFAULT 0;
