@@ -100,52 +100,107 @@
 
 .char-portrait {
   flex-shrink: 0;
-  width: 72px;
-  height: 72px;
-  border-radius: 50%;
+  display: inline-flex;
+  position: relative;
+  width: 132px;
+  height: 185px;
+  border-radius: 6px;
+  border: 2px dashed v.$campaign-portal-border-bold;
+  cursor: pointer;
   overflow: hidden;
-  border: 2px solid v.$campaign-portal-border-bold;
+  background: v.$campaign-portal-bg-placeholder;
+  transition: border-color 0.18s ease;
+
+  &--filled {
+    border-style: solid;
+  }
+
+  &:hover {
+    border-color: v.$campaign-portal-border-hover;
+    .char-portrait-overlay { opacity: 1; }
+  }
 }
 
-.char-portrait--editable {
-  cursor: pointer;
-  transition: opacity 0.18s ease;
-
-  &:hover { opacity: 0.8; }
+.char-portrait-file-input {
+  position: absolute;
+  width: 0;
+  height: 0;
+  opacity: 0;
+  pointer-events: none;
 }
 
 .char-portrait-img {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  display: block;
 }
 
-.char-portrait-placeholder {
-  width: 100%;
-  height: 100%;
+.char-portrait-overlay {
+  position: absolute;
+  inset: 0;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: v.$campaign-portal-bg-placeholder;
+  background: rgba(0, 0, 0, 0.45);
+  color: v.$campaign-portal-text-primary;
+  opacity: 0;
+  transition: opacity 0.18s ease;
+}
+
+.char-portrait-placeholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  height: 100%;
+  color: v.$campaign-portal-placeholder;
+}
+
+.char-portrait-initial {
   font-family: v.$font-header;
-  font-size: 28px;
+  font-size: 36px;
+}
+
+.char-portrait-uploading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  font-family: v.$font-header;
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
   color: v.$campaign-portal-placeholder;
 }
 
 .char-info {
   flex: 1;
   min-width: 0;
-  max-width:260px;
+  max-width: 400px;
 }
 
-.char-info--editable {
-  cursor: pointer;
+.char-edit-btn {
+  display: inline-block;
+  min-width: 160px;
+  width: auto;
+  text-align: left;
+  background: transparent;
+  border: 3px solid v.$campaign-portal-border;
   border-radius: 6px;
-  padding: 4px 6px;
-  margin: -4px -6px;
-  transition: background 0.18s ease;
+  padding: 8px;
+  cursor: pointer;
+  white-space: nowrap;
+  font-size: 14px;
+  transition: background 0.18s ease, border-color 0.18s ease;
 
-  &:hover { background: v.$campaign-portal-bg-hover; }
+  &:hover {
+    background: v.$campaign-portal-bg-hover;
+    border-color: v.$campaign-portal-border-bold;
+  }
 }
 
 .char-name {
@@ -162,6 +217,80 @@
   font-size: 13px;
   color: v.$campaign-portal-text-primary;
   margin-top: 3px;
+}
+
+.char-description-wrapper {
+  margin-top: 4px;
+  border: 3px solid v.$campaign-portal-border;
+  border-radius: 6px;
+  overflow: visible;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  cursor: pointer;
+  position: relative;
+  z-index: 10;
+}
+
+.char-description-preview {
+  font-family: v.$font-body;
+  font-size: 14px;
+  color: v.$campaign-portal-text-secondary;
+  padding: 4px 8px 0;
+  font-style: italic;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  // Fixed height — never changes, never causes reflow
+  max-height: calc(12px * 1.5 * 3);
+}
+
+.char-description-overlay {
+  position: absolute;
+  top: -3px;
+  left: -3px;
+  right: -3px;
+  background: v.$campaign-portal-bg-dark;
+  border: 3px solid v.$campaign-portal-border;
+  border-radius: 6px;
+  z-index: 20;
+  max-height: 400px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+}
+
+.char-description-overlay-text {
+  font-family: v.$font-body;
+  font-size: 14px;
+  color: v.$campaign-portal-text-secondary;
+  padding: 8px 8px 0;
+  font-style: italic;
+  flex: 1;
+}
+
+.char-description-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 18px;
+  border-top: 1px solid v.$campaign-portal-border;
+  transition: background 0.18s ease;
+  flex-shrink: 0;
+
+  .char-description-wrapper:hover & { background: v.$campaign-portal-bg-hover; }
+
+  &--overlay {
+    margin-top: 4px;
+  }
+}
+
+.char-description-toggle-icon {
+  width: 14px;
+  height: 7px;
+  color: v.$campaign-portal-text-secondary;
+  opacity: 0.7;
 }
 
 .char-conditions {

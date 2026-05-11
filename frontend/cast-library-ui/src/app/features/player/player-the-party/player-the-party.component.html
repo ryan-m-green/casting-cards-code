@@ -2,16 +2,60 @@
 
   <!-- ── Character header ── -->
     <div class="char-header">
-      <div class="char-portrait char-portrait--editable" (click)="showCharacterEditor.set(true)" title="Edit portrait">
-        @if (card.imageUrl) {
+      <label class="char-portrait" [class.char-portrait--filled]="card.imageUrl" title="Replace portrait">
+        <input type="file" accept="image/jpeg,image/png,image/webp" class="char-portrait-file-input"
+               (change)="onPortraitFileSelected($event)" [disabled]="portraitUploading()" />
+        @if (portraitUploading()) {
+          <div class="char-portrait-uploading">Uploading…</div>
+        } @else if (card.imageUrl) {
           <img [src]="card.imageUrl" alt="" class="char-portrait-img" />
+          <div class="char-portrait-overlay">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
+              <circle cx="12" cy="13" r="4"/>
+            </svg>
+          </div>
         } @else {
-          <div class="char-portrait-placeholder">{{ initial(card.name) }}</div>
+          <div class="char-portrait-placeholder">
+            <div class="char-portrait-initial">{{ initial(card.name) }}</div>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
+              <circle cx="12" cy="13" r="4"/>
+            </svg>
+          </div>
         }
-      </div>
-      <div class="char-info char-info--editable" (click)="showInfoEditor.set(true)" title="Edit character">
-        <div class="char-name">{{ card.name }}</div>
-        <div class="char-subtitle">{{ card.race }} · {{ card.class }}</div>
+      </label>
+      <div class="char-info">
+        <button class="char-edit-btn" (click)="showInfoEditor.set(true)" title="Edit character">
+          <div class="char-name">{{ card.name }}</div>
+          <div class="char-subtitle">{{ card.race }} · {{ card.class }}</div>
+        </button>
+        @if (card.description) {
+          <div class="char-description-wrapper" (click)="descriptionExpanded.set(!descriptionExpanded()); $event.stopPropagation()">
+            <!-- Always collapsed preview — never changes size -->
+            <div class="char-description-preview">{{ card.description }}</div>
+            <div class="char-description-toggle" [attr.aria-label]="descriptionExpanded() ? 'Collapse description' : 'Expand description'">
+              <svg class="char-description-toggle-icon" viewBox="0 0 16 8" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                @if (descriptionExpanded()) {
+                  <polyline points="1,7 8,1 15,7"/>
+                } @else {
+                  <polyline points="1,1 8,7 15,1"/>
+                }
+              </svg>
+            </div>
+            <!-- Expanded overlay — absolutely positioned, does not affect layout -->
+            @if (descriptionExpanded()) {
+              <div class="char-description-overlay">
+                <div class="char-description-overlay-text">{{ card.description }}</div>
+                <div class="char-description-toggle char-description-toggle--overlay">
+                  <svg class="char-description-toggle-icon" viewBox="0 0 16 8" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="1,7 8,1 15,7"/>
+                  </svg>
+                </div>
+              </div>
+            }
+          </div>
+        }
         @if (conditions().length) {
           <div class="char-conditions">
             @for (c of conditions(); track c.id) {
@@ -355,16 +399,7 @@
   (saved)="onInfoSaved($event)"
 />
 
-<app-character-editor
-  [visible]="showCharacterEditor()"
-  [campaignId]="campaignId()"
-  [playerCardId]="playerCardId()"
-  [name]="playerCard()?.name ?? ''"
-  [descriptor]="(playerCard()?.race ?? '') + ' · ' + (playerCard()?.class ?? '')"
-  [imageUrl]="playerCard()?.imageUrl ?? null"
-  (closed)="showCharacterEditor.set(false)"
-  (uploaded)="onPortraitUploaded($event)"
-/>
+
 
 @if (viewingSecretsFor(); as member) {
   <div class="secrets-modal-backdrop" (click)="closeSecretsModal()">

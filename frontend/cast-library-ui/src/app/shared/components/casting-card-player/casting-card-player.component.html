@@ -1,4 +1,5 @@
-<div class="cc-wrap" [class.cc-flipped]="flipped" [style.transform]="tiltTransform" (click)="flipped = !flipped">
+<div class="cc-wrap" [class.cc-flipped]="flipped" [style.transform]="tiltTransform"
+     (pointerdown)="onPointerDown($event)" (pointermove)="onPointerMove($event)" (click)="toggleFlip()">
   <div class="cc-inner">
 
     <!-- ── BACK FACE ── -->
@@ -6,7 +7,11 @@
       <div class="cc-back-frame">
         <div class="cc-back-border"></div>
         <div class="cc-back-border2"></div>
-        <div class="cc-back-inner">
+        <div class="cc-back-inner" #backInner
+             (wheel)="onBackWheel($event, backInner)"
+             (pointerdown)="onBackScrollStart($event, backInner)"
+             (pointermove)="onBackScrollMove($event, backInner)"
+             (pointerup)="onBackScrollEnd()">
 
           <!-- Emblem -->
           <div class="cc-back-emblem">

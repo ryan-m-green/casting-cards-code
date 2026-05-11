@@ -5,7 +5,6 @@ import { FormsModule } from '@angular/forms';
 import { CastingCardPlayerComponent } from '../../../shared/components/casting-card-player/casting-card-player.component';
 import { CastCardComponent } from '../../../shared/components/cast-card/cast-card.component';
 import { CampaignDropdownComponent, CampaignDropdownOption } from '../../../shared/components/campaign-dropdown/campaign-dropdown.component';
-import { CharacterEditorComponent } from '../../../shared/components/character-editor/character-editor.component';
 import { CharacterInfoEditorComponent, PlayerCardInfoUpdate } from '../../../shared/components/character-info-editor/character-info-editor.component';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../../environments/environment';
@@ -41,7 +40,7 @@ const MEMORY_TYPE_META: Record<PlayerMemory['memoryType'], { icon: string; label
 @Component({
   selector: 'app-player-the-party',
   standalone: true,
-  imports: [CommonModule, FormsModule, CampaignDropdownComponent, CharacterEditorComponent, CharacterInfoEditorComponent, CastingCardPlayerComponent, CastCardComponent],
+  imports: [CommonModule, FormsModule, CampaignDropdownComponent, CharacterInfoEditorComponent, CastingCardPlayerComponent, CastCardComponent],
   templateUrl: './player-the-party.component.html',
   styleUrl: './player-the-party.component.scss',
 })
@@ -61,8 +60,10 @@ export class PlayerThePartyComponent implements OnInit, OnDestroy {
   // ── Player card ──────────────────────────────────────────────────────────────
   playerCard          = signal<PlayerCard | null>(null);
   conditions          = signal<PlayerCardCondition[]>([]);
-  showCharacterEditor = signal(false);
-  showInfoEditor      = signal(false);
+  showCharacterEditor     = signal(false);
+  showInfoEditor          = signal(false);
+  descriptionExpanded     = signal(false);
+  portraitUploading       = signal(false);
 
   portalColor = signal(this.transition.spineColor);
 
@@ -584,6 +585,27 @@ export class PlayerThePartyComponent implements OnInit, OnDestroy {
   goBack() {
     this.transition.quickCover();
     this.router.navigate(['/player/campaign', this.campaignId()]);
+  }
+
+  onPortraitFileSelected(event: Event) {
+    const input = event.target as HTMLInputElement;
+    const file  = input.files?.[0];
+    if (!file) return;
+
+    this.portraitUploading.set(true);
+    const formData = new FormData();
+    formData.append('file', file);
+
+    this.http.post<{ imageUrl: string }>(
+      `${environment.apiUrl}/api/campaigns/${this.campaignId()}/player-cards/${this.playerCardId()}/image`,
+      formData
+    ).subscribe({
+      next: res => {
+        this.portraitUploading.set(false);
+        this.onPortraitUploaded(res.imageUrl);
+      },
+      error: () => this.portraitUploading.set(false),
+    });
   }
 
   onPortraitUploaded(url: string) {

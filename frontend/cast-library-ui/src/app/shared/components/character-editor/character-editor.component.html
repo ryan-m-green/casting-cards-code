@@ -1,29 +1,30 @@
 @if (visible) {
   <div class="upload-overlay" (click)="close()">
     <div class="upload-panel" (click)="$event.stopPropagation()">
-      <h3 class="upload-panel-title">Edit Portrait</h3>
-      <div class="pc-card pc-card-player pointer-none">
-        <div class="lib-card-front card-form-inner">
-          <div class="card-form-header">
-            <div class="card-name">{{ name }}</div>
-            <div class="card-descriptor">{{ descriptor }}</div>
-            <div class="dv dv-mb"></div>
-          </div>
-          @if (displayUrl) {
-            <img [src]="displayUrl" alt="Character portrait" class="card-form-image" />
-          } @else {
-            <div class="card-form-placeholder-simple">
-              <div class="card-initial">{{ name[0]?.toUpperCase() }}</div>
-            </div>
-          }
-        </div>
-      </div>
-      <label class="upload-file-label">
-        {{ imageUploading() ? 'Uploading…' : (displayUrl ? 'Replace Portrait' : 'Upload Portrait') }}
+      <h3 class="upload-panel-title">Replace Portrait</h3>
+      <label class="ce-portrait-label" [class.ce-portrait-label--filled]="displayUrl">
         <input type="file" accept="image/jpeg,image/png,image/webp" class="hidden-input"
                (change)="onFileSelected($event)" [disabled]="imageUploading()" />
+        @if (imageUploading()) {
+          <div class="ce-portrait-uploading">Uploading…</div>
+        } @else if (displayUrl) {
+          <img [src]="displayUrl" class="ce-portrait-img" alt="Portrait preview" />
+          <div class="ce-portrait-overlay">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
+              <circle cx="12" cy="13" r="4"/>
+            </svg>
+          </div>
+        } @else {
+          <div class="ce-portrait-empty">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
+              <circle cx="12" cy="13" r="4"/>
+            </svg>
+            <span class="ce-portrait-hint">Click to upload<br><em>portrait</em></span>
+          </div>
+        }
       </label>
-      <button class="btn-primary btn-upload-done" (click)="close()">Close</button>
     </div>
   </div>
 }

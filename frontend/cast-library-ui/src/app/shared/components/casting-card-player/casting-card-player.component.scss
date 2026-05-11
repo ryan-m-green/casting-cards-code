@@ -44,6 +44,7 @@
 
 .cc-face--back {
   transform: rotateY(180deg);
+  overflow: visible;
 }
 
 .cc-wrap.cc-flipped .cc-face--front {
@@ -287,12 +288,14 @@
   flex-direction: column;
   align-items: center;
   position: relative;
-  overflow-y: auto;
+  overflow-y: scroll;
   overflow-x: hidden;
   scrollbar-width: none;
   background: linear-gradient(160deg,#1e100a 0%,#2a1a0f 100%);
 
   &::-webkit-scrollbar { display: none; }
+
+  & > * { flex-shrink: 0; }
 }
 
 .cc-back-frame::after {

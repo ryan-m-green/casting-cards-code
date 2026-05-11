@@ -53,6 +53,7 @@ export class CharacterEditorComponent {
         this.previewUrl.set(null);
         this.imageUploading.set(false);
         this.uploaded.emit(res.imageUrl);
+        this.close();
       },
       error: () => {
         URL.revokeObjectURL(objectUrl);

@@ -26,6 +26,52 @@ export class CastingCardPlayerComponent {
 
   flipped = false;
 
+  private _ptrStartX = 0;
+  private _ptrStartY = 0;
+  private _dragging  = false;
+
+  private _backScrollStartY   = 0;
+  private _backScrollStartTop = 0;
+  private _backScrollActive   = false;
+
+  onPointerDown(e: PointerEvent): void {
+    this._ptrStartX = e.clientX;
+    this._ptrStartY = e.clientY;
+    this._dragging  = false;
+  }
+
+  onPointerMove(e: PointerEvent): void {
+    if (Math.abs(e.clientX - this._ptrStartX) > 5 ||
+        Math.abs(e.clientY - this._ptrStartY) > 5) {
+      this._dragging = true;
+    }
+  }
+
+  toggleFlip(): void {
+    if (this._dragging) { this._dragging = false; return; }
+    this.flipped = !this.flipped;
+  }
+
+  onBackWheel(e: WheelEvent, el: HTMLElement): void {
+    el.scrollTop += e.deltaY;
+    e.stopPropagation();
+  }
+
+  onBackScrollStart(e: PointerEvent, el: HTMLElement): void {
+    this._backScrollStartY   = e.clientY;
+    this._backScrollStartTop = el.scrollTop;
+    this._backScrollActive   = true;
+  }
+
+  onBackScrollMove(e: PointerEvent, el: HTMLElement): void {
+    if (!this._backScrollActive) return;
+    el.scrollTop = this._backScrollStartTop + (this._backScrollStartY - e.clientY);
+  }
+
+  onBackScrollEnd(): void {
+    this._backScrollActive = false;
+  }
+
   initial(name: string): string { return name.charAt(0).toUpperCase(); }
 
   conditionNames(): string {
