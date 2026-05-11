@@ -211,7 +211,7 @@
 
 .char-name {
   font-family: v.$font-header;
-  font-size: 18px;
+  font-size: 14px;
   font-weight: 600;
   letter-spacing: 0.1em;
   color: v.$campaign-portal-text-primary;
@@ -356,6 +356,7 @@
 .tab-content {
   padding: 24px 32px 48px;
   max-width: 900px;
+  margin: 0 auto;
 }
 
 .tab-header {

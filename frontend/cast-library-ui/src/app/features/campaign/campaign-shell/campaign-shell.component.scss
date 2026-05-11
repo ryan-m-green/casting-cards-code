@@ -21,6 +21,7 @@
   inset: 0;
   background: v.$color-black;
   overflow-y: auto;
+  overscroll-behavior: none;
   scrollbar-width: none;
 
   &::-webkit-scrollbar { display: none; }
@@ -32,6 +33,7 @@
   inset: 0;
   pointer-events: none;
   z-index: 9999;
+  transform: translateZ(0);
   animation: portal-inward-breathe 8.4s ease-in-out infinite;
 }
 
