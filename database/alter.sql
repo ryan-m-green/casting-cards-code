@@ -228,8 +228,7 @@ CREATE TABLE IF NOT EXISTS factions (
     faction_id   UUID         PRIMARY KEY DEFAULT gen_random_uuid(),
     dm_user_id   UUID         NOT NULL REFERENCES users(id) ON DELETE CASCADE,
     name         VARCHAR(255) NOT NULL,
-    type         VARCHAR(50)  NOT NULL
-                 CHECK (type IN ('Criminal Syndicate','Guild','Military Order','Political Body','Religious Cult','Secret Society')),
+    type         VARCHAR(50)  NOT NULL,
     influence    SMALLINT     NOT NULL DEFAULT 5
                  CHECK (influence BETWEEN 0 AND 10),
     perception   SMALLINT     NOT NULL DEFAULT 0
