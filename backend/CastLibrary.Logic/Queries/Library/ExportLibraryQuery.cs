@@ -1,5 +1,6 @@
 ﻿using CastLibrary.Shared.Domain;
 using CastLibrary.Shared.Enums;
+using System.Collections.Concurrent;
 
 namespace CastLibrary.Logic.Queries.Library
 {
@@ -7,7 +8,7 @@ namespace CastLibrary.Logic.Queries.Library
     {
         public Guid DmUserId { get; set; }
         public EntityType CardEntityType { get; set; }
-        public HashSet<string> UsedFileNames { get; set; }
+        public ConcurrentDictionary<string, byte> UsedFileNames { get; set; }
         public LibraryExportPackage Package { get; set; }
     }
 }

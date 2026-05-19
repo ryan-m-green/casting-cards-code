@@ -1,13 +1,15 @@
 ﻿using CastLibrary.Logic.Factories;
 using CastLibrary.Logic.Services;
 using CastLibrary.Repository.Repositories.Read;
+using CastLibrary.Shared.Enums;
 using CastLibrary.Shared.Requests;
+using System.Collections.Concurrent;
 
 namespace CastLibrary.Logic.Queries.Library
 {
     public interface IExportLocationLibraryQueryHandler
     {
-        Task<List<LocationCard>> HandleAsync(ExportLibraryQuery query);
+        Task<List<LocationCard>> HandleAsync(ExportLibraryQuery query, ConcurrentDictionary<string, byte[]> imageCollector);
     }
     public class ExportLocationLIbraryQueryHandler(
          ILocationReadRepository locationReadRepository,
@@ -16,23 +18,25 @@ namespace CastLibrary.Logic.Queries.Library
         ILocationCardFactory locationCardFactory
         ) : IExportLocationLibraryQueryHandler
     {
-        public async Task<List<LocationCard>> HandleAsync(ExportLibraryQuery query)
+        public async Task<List<LocationCard>> HandleAsync(ExportLibraryQuery query, ConcurrentDictionary<string, byte[]> imageCollector)
         {
             var locations = await locationReadRepository.GetAllByDmAsync(query.DmUserId);
 
-            var locationCards = new List<LocationCard>();
+            var locationCards = new ConcurrentBag<LocationCard>();
 
-            foreach (var location in locations)
-            {
-                var imageKey = imageKeyCreator.Create(query.DmUserId, location.Id, query.CardEntityType);
+            await Parallel.ForEachAsync(locations, async (location, cancellationToken) =>
+             {
+                 var imageKey = imageKeyCreator.Create(query.DmUserId, location.Id, EntityType.Location);
 
-                var imageFileName = await imageFileNameQueryHandler.HandleAsync(
-                    imageKey, "cast", location.Name, query.UsedFileNames, query.Package.Images);
+                 var imageFileName = await imageFileNameQueryHandler.HandleAsync(
+                     imageKey, "location", location.Name, query.UsedFileNames, imageCollector);
 
-                var locationCard = locationCardFactory.Create(location, imageFileName);
-                locationCards.Add(locationCard);
-            }
-            return locationCards;
+                 var locationCard = locationCardFactory.Create(location, imageFileName);
+
+                 locationCards.Add(locationCard);
+             });
+
+            return locationCards.ToList();
         }
     }
 }

@@ -36,7 +36,7 @@ namespace CastLibrary.Logic.Commands.Library
         private static readonly JsonSerializerOptions JsonOptions = new()
         {
             WriteIndented = true,
-            PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+            PropertyNameCaseInsensitive = true,
         };
     }
     public class ZipLibraryImportCommand

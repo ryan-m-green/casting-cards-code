@@ -8,9 +8,16 @@ public class ImportLibraryResponse
     public int CastsSkipped { get; set; }
     public int LocationsSkipped { get; set; }
     public int SublocationsSkipped { get; set; }
+    public int FactionsImported { get; set; }
+    public int FactionsSkipped { get; set; }
     public List<ImportFailure> Failures { get; set; } = [];
 }
-
+public class ImportRecord
+{
+    public int NumberImported { get; set; }
+    public int NumberSkipped { get; set; }
+    public List<ImportFailure> Failures { get; set; }
+}
 public class ImportFailure
 {
     public string CardType { get; set; } = string.Empty;

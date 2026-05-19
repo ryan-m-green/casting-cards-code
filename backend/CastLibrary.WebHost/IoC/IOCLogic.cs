@@ -205,6 +205,7 @@ namespace CastLibrary.WebHost.IoC
             services.AddScoped<IExportLocationLibraryQueryHandler, ExportLocationLIbraryQueryHandler>();
             services.AddScoped<IExportSublocationLibraryQueryHandler, ExportSublocationLibraryQueryHandler>();
             services.AddScoped<IGetImportTemplateQueryHandler, GetImportTemplateQueryHandler>();
+            services.AddScoped<IExportFactionLibraryQueryHandler, ExportFactionLibraryQueryHandler>();
             services.AddScoped<IImageFileNameQueryHandler, ImageFileNameQueryHandler>();
             services.AddScoped<IGetUserKeywordsQueryHandler, GetUserKeywordsQueryHandler>();
 
@@ -268,6 +269,7 @@ namespace CastLibrary.WebHost.IoC
             services.AddScoped<ICampaignFactory, CampaignFactory>();
             services.AddScoped<ICastCardFactory, CastCardFactory>();
             services.AddScoped<ILocationCardFactory, LocationCardFactory>();
+            services.AddScoped<IFactionCardFactory, FactionCardFactory>();
             services.AddScoped<ISublocationCardFactory, SublocationCardFactory>();
             services.AddScoped<ILibraryBundleTemplateFactory, LibraryBundleTemplateFactory>();
             services.AddScoped<ITemplateReadMeFactory, TemplateReadMeFactory>();

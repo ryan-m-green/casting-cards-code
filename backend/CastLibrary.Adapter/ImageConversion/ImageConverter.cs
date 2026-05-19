@@ -40,8 +40,23 @@ namespace CastLibrary.Adapter.ImageConversion
                 {
                     image.AutoOrient();
                     image.Strip();
-                    image.Format = MagickFormat.Png;
-                    image.Depth = 8;//8bit depth
+
+                    // Resize for web/mobile display
+                    image.Resize(new MagickGeometry("800x")); // or "800x" for mobile
+
+                    // Reduce color depth (PNG‑8 palette)
+                    image.ColorType = ColorType.Palette;
+                    image.Quantize(new QuantizeSettings
+                    {
+                        Colors = 256,
+                        DitherMethod = DitherMethod.No
+                    });
+
+                    // Optimize PNG compression
+                    image.Settings.SetDefine("png:compression-level", "9");
+                    image.Settings.SetDefine("png:compression-filter", "5");
+
+                    image.Format = MagickFormat.Png8;
                     image.Write(output);
                 }
 

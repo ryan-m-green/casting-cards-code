@@ -1,13 +1,14 @@
 ﻿using CastLibrary.Logic.Interfaces;
 using CastLibrary.Shared.Domain;
 using CastLibrary.Shared.Enums;
+using System.Collections.Concurrent;
 using System.Text.RegularExpressions;
 
 namespace CastLibrary.Logic.Services
 {
     public interface IFilenameService
     {
-        string BuildUniqueFilename(string prefix, string name, HashSet<string> used);
+        string BuildUniqueFilename(string prefix, string name, ConcurrentDictionary<string, byte> used);
         void AddImageUrls(Guid dmUserId,
             List<CampaignLocationInstanceDomain> locations,
             List<CampaignSublocationInstanceDomain> sublocations,
@@ -64,16 +65,16 @@ namespace CastLibrary.Logic.Services
             });
         }
 
-        public string BuildUniqueFilename(string prefix, string name, HashSet<string> used)
+        public string BuildUniqueFilename(string prefix, string name, ConcurrentDictionary<string, byte> used)
         {
             var slug = Regex.Replace(name.ToLowerInvariant().Replace(" ", "_"), @"[^a-z0-9_]", "");
             if (string.IsNullOrEmpty(slug)) slug = "unnamed";
 
             var candidate = $"{prefix}_{slug}.png";
-            if (!used.Contains(candidate)) return candidate;
+            if (used.TryAdd(candidate, 0)) return candidate;
 
             var i = 2;
-            while (used.Contains($"{prefix}_{slug}_{i}.png")) i++;
+            while (!used.TryAdd($"{prefix}_{slug}_{i}.png", 0)) i++;
             return $"{prefix}_{slug}_{i}.png";
         }
     }

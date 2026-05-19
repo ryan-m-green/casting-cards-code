@@ -5,6 +5,7 @@ public class LibraryBundle
     public List<CastCard> Casts { get; set; } = [];
     public List<LocationCard> Locations { get; set; } = [];
     public List<SublocationCard> Sublocations { get; set; } = [];
+    public List<FactionCard> Factions { get; set; } = [];
 }
 
 public class CastCard
@@ -39,6 +40,17 @@ public class LocationCard
     public string ImageFileName { get; set; }
 }
 
+public class FactionCard
+{
+    public string Name { get; set; } = string.Empty;
+    public string FactionType { get; set; } = string.Empty;
+    public short Influence { get; set; } //value between 0 - 10
+    public short Perception { get; set; }//value between -5 - 5
+    public bool Hidden { get; set; }
+    public string Description { get; set; }
+    public string SymbolPath { get; set; }
+}
+
 public class SublocationCard
 {
     public string Name { get; set; } = string.Empty;
@@ -49,8 +61,8 @@ public class SublocationCard
 
 public class ShopItemCard
 {
-    public string Name             { get; set; } = string.Empty;
-    public int    PriceAmount      { get; set; }
+    public string Name { get; set; } = string.Empty;
+    public int PriceAmount { get; set; }
     public string PriceCurrencyType { get; set; } = "gp";
-    public string Description      { get; set; } = string.Empty;
+    public string Description { get; set; } = string.Empty;
 }

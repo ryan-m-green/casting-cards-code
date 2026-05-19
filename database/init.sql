@@ -123,6 +123,46 @@ CREATE TABLE IF NOT EXISTS campaign_location_instances (
     created_at            TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
+-- ─── Factions ─────────────────────────────────────────────────────────────────
+-- DM's faction library.
+CREATE TABLE IF NOT EXISTS factions (
+    faction_id   UUID         PRIMARY KEY DEFAULT gen_random_uuid(),
+    dm_user_id   UUID         NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    name         VARCHAR(255) NOT NULL,
+    type         VARCHAR(50)  NOT NULL,
+    influence    SMALLINT     NOT NULL DEFAULT 5
+                 CHECK (influence BETWEEN 0 AND 10),
+    perception   SMALLINT     NOT NULL DEFAULT 0
+                 CHECK (perception BETWEEN -5 AND 5),
+    hidden       BOOLEAN      NOT NULL DEFAULT FALSE,
+    symbol_path  TEXT,
+    description  TEXT,
+    dm_notes     TEXT,
+    created_at   TIMESTAMPTZ  NOT NULL DEFAULT NOW()
+);
+
+CREATE INDEX IF NOT EXISTS idx_factions_dm ON factions(dm_user_id);
+
+-- Campaign Faction Instances
+CREATE TABLE IF NOT EXISTS campaign_faction_instances (
+    faction_instance_id   UUID      PRIMARY KEY,
+    source_faction_id     UUID      NOT NULL REFERENCES factions(faction_id) ON DELETE RESTRICT,
+    campaign_id           UUID      NOT NULL REFERENCES campaigns(id)        ON DELETE CASCADE,
+    dm_user_id            UUID      NOT NULL,
+    name                  TEXT      NOT NULL,
+    type                  TEXT      NOT NULL DEFAULT '',
+    influence             SMALLINT  NOT NULL DEFAULT 5,
+    perception            SMALLINT  NOT NULL DEFAULT 0,
+    hidden                BOOLEAN   NOT NULL DEFAULT FALSE,
+    is_visible_to_players BOOLEAN   NOT NULL DEFAULT FALSE,
+    symbol_path           TEXT,
+    description           TEXT,
+    dm_notes              TEXT,
+    created_at            TIMESTAMP NOT NULL
+);
+
+CREATE INDEX IF NOT EXISTS idx_cfi_campaign ON campaign_faction_instances(campaign_id);
+
 -- ─── Campaign Instances: Sublocations ────────────────────────────────────────
 -- source_sublocation_id NOT NULL: a sublocation instance must always reference its library sublocation.
 --   ON DELETE RESTRICT: prevents deleting a library sublocation while campaign instances exist.
@@ -206,6 +246,119 @@ CREATE TABLE IF NOT EXISTS campaign_secrets (
         (location_instance_id    IS NOT NULL)::int +
         (sublocation_instance_id IS NOT NULL)::int = 1
     )
+);
+
+-- ─── Faction Relationships & Junctions ───────────────────────────────────────
+-- Campaign Faction ↔ Sublocation junction
+CREATE TABLE IF NOT EXISTS campaign_faction_sublocations (
+    id                      UUID PRIMARY KEY,
+    faction_instance_id     UUID NOT NULL REFERENCES campaign_faction_instances(faction_instance_id) ON DELETE CASCADE,
+    sublocation_instance_id UUID NOT NULL REFERENCES campaign_sublocation_instances(instance_id)    ON DELETE CASCADE,
+    is_primary              BOOLEAN NOT NULL DEFAULT FALSE,
+    dm_user_id              UUID
+);
+
+CREATE UNIQUE INDEX IF NOT EXISTS uq_faction_sublocation_dm
+    ON campaign_faction_sublocations (faction_instance_id, sublocation_instance_id, dm_user_id)
+    WHERE dm_user_id IS NOT NULL;
+
+CREATE UNIQUE INDEX IF NOT EXISTS uq_faction_sublocation_player
+    ON campaign_faction_sublocations (faction_instance_id, sublocation_instance_id)
+    WHERE dm_user_id IS NULL;
+
+-- Campaign Faction ↔ Cast junction
+CREATE TABLE IF NOT EXISTS campaign_faction_cast_members (
+    id                  UUID PRIMARY KEY,
+    faction_instance_id UUID NOT NULL REFERENCES campaign_faction_instances(faction_instance_id) ON DELETE CASCADE,
+    cast_instance_id    UUID NOT NULL REFERENCES campaign_cast_instances(instance_id)            ON DELETE CASCADE,
+    is_primary          BOOLEAN NOT NULL DEFAULT FALSE,
+    dm_user_id          UUID
+);
+
+CREATE UNIQUE INDEX IF NOT EXISTS uq_faction_cast_dm
+    ON campaign_faction_cast_members (faction_instance_id, cast_instance_id, dm_user_id)
+    WHERE dm_user_id IS NOT NULL;
+
+CREATE UNIQUE INDEX IF NOT EXISTS uq_faction_cast_player
+    ON campaign_faction_cast_members (faction_instance_id, cast_instance_id)
+    WHERE dm_user_id IS NULL;
+
+-- Faction relationships (library-level)
+CREATE TABLE IF NOT EXISTS faction_relationships (
+    faction_relationship_id UUID    PRIMARY KEY DEFAULT gen_random_uuid(),
+    campaign_id             UUID    NOT NULL REFERENCES campaigns(id) ON DELETE CASCADE,
+    faction_a_id            UUID    NOT NULL REFERENCES factions(faction_id) ON DELETE CASCADE,
+    faction_b_id            UUID    NOT NULL REFERENCES factions(faction_id) ON DELETE CASCADE,
+    relationship_type       VARCHAR(100),
+    relationship_strength   INTEGER,
+    notes                   TEXT,
+    CONSTRAINT chk_faction_relationship_no_self CHECK (faction_a_id <> faction_b_id)
+);
+
+CREATE INDEX IF NOT EXISTS idx_faction_relationships_a        ON faction_relationships(faction_a_id);
+CREATE INDEX IF NOT EXISTS idx_faction_relationships_b        ON faction_relationships(faction_b_id);
+
+-- Campaign player faction relationships
+CREATE TABLE IF NOT EXISTS campaign_player_faction_relationships (
+    campaign_player_faction_relationship_id UUID    PRIMARY KEY DEFAULT gen_random_uuid(),
+    campaign_id                             UUID    NOT NULL REFERENCES campaigns(id) ON DELETE CASCADE,
+    faction_a_id                            UUID    NOT NULL REFERENCES factions(faction_id) ON DELETE CASCADE,
+    faction_b_id                            UUID    NOT NULL REFERENCES factions(faction_id) ON DELETE CASCADE,
+    relationship_type                       VARCHAR(100),
+    relationship_strength                   INTEGER,
+    notes                                   TEXT,
+    CONSTRAINT chk_player_faction_relationship_no_self CHECK (faction_a_id <> faction_b_id)
+);
+
+CREATE INDEX IF NOT EXISTS idx_player_faction_relationships_campaign ON campaign_player_faction_relationships(campaign_id);
+CREATE INDEX IF NOT EXISTS idx_player_faction_relationships_a        ON campaign_player_faction_relationships(faction_a_id);
+CREATE INDEX IF NOT EXISTS idx_player_faction_relationships_b        ON campaign_player_faction_relationships(faction_b_id);
+
+-- Campaign faction instance relationships
+CREATE TABLE IF NOT EXISTS campaign_faction_instance_relationships (
+    id                    UUID         PRIMARY KEY DEFAULT gen_random_uuid(),
+    campaign_id           UUID         NOT NULL REFERENCES campaigns(id) ON DELETE CASCADE,
+    faction_instance_id_a UUID         NOT NULL REFERENCES campaign_faction_instances(faction_instance_id) ON DELETE CASCADE,
+    faction_instance_id_b UUID         NOT NULL REFERENCES campaign_faction_instances(faction_instance_id) ON DELETE CASCADE,
+    relationship_type     VARCHAR(50)  NOT NULL CHECK (relationship_type IN ('allied','rival','enemy','neutral')),
+    strength              SMALLINT     NOT NULL DEFAULT 0 CHECK (strength BETWEEN 0 AND 5),
+    dm_user_id            UUID         REFERENCES users(id) ON DELETE SET NULL,
+    created_at            TIMESTAMPTZ  NOT NULL DEFAULT NOW(),
+    CONSTRAINT chk_campaign_faction_instance_relationship_no_self CHECK (faction_instance_id_a <> faction_instance_id_b),
+    CONSTRAINT uq_campaign_faction_instance_relationship UNIQUE (campaign_id, faction_instance_id_a, faction_instance_id_b)
+);
+
+CREATE INDEX IF NOT EXISTS idx_campaign_faction_instance_relationships_campaign ON campaign_faction_instance_relationships(campaign_id);
+CREATE INDEX IF NOT EXISTS idx_campaign_faction_instance_relationships_a ON campaign_faction_instance_relationships(faction_instance_id_a);
+CREATE INDEX IF NOT EXISTS idx_campaign_faction_instance_relationships_b ON campaign_faction_instance_relationships(faction_instance_id_b);
+
+-- Faction participants (cast members in factions)
+CREATE TABLE IF NOT EXISTS faction_participants (
+    faction_participant_id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    campaign_id            UUID NOT NULL REFERENCES campaigns(id) ON DELETE CASCADE,
+    cast_instance_id       UUID NOT NULL
+                           REFERENCES campaign_cast_instances(instance_id) ON DELETE CASCADE,
+    faction_id             UUID NOT NULL REFERENCES factions(faction_id) ON DELETE CASCADE,
+    role                   VARCHAR(100),
+    motivation             TEXT
+);
+
+CREATE INDEX IF NOT EXISTS idx_faction_participants_campaign ON faction_participants(campaign_id);
+CREATE INDEX IF NOT EXISTS idx_faction_participants_faction  ON faction_participants(faction_id);
+CREATE INDEX IF NOT EXISTS idx_faction_participants_cast     ON faction_participants(cast_instance_id);
+
+-- Campaign Faction Player Notes
+CREATE TABLE IF NOT EXISTS campaign_faction_player_notes (
+    id                  UUID        PRIMARY KEY DEFAULT gen_random_uuid(),
+    campaign_id         UUID        NOT NULL REFERENCES campaigns(id) ON DELETE CASCADE,
+    faction_instance_id UUID        NOT NULL REFERENCES campaign_faction_instances(faction_instance_id) ON DELETE CASCADE,
+    perception          SMALLINT,
+    influence           SMALLINT,
+    player_notes        TEXT,
+    type                TEXT,
+    created_at          TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    updated_at          TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    CONSTRAINT uq_camp_faction_player_notes_campaign_faction UNIQUE (campaign_id, faction_instance_id)
 );
 
 -- ─── Currency Transactions ────────────────────────────────────────────────────
@@ -363,3 +516,198 @@ CREATE TABLE IF NOT EXISTS campaign_storyline (
 );
 
 CREATE INDEX IF NOT EXISTS idx_campaign_storyline_campaign ON campaign_storyline(campaign_id);
+
+-- ─── Campaign Time of Day ─────────────────────────────────────────────────────
+-- Tracks day/night cycle configuration per campaign.
+CREATE TABLE IF NOT EXISTS campaign_time_of_day (
+    id                       UUID        PRIMARY KEY DEFAULT gen_random_uuid(),
+    campaign_id              UUID        NOT NULL REFERENCES campaigns(id) ON DELETE CASCADE,
+    day_length_hours         NUMERIC(6,2) NOT NULL DEFAULT 24,
+    cursor_position_percent  NUMERIC(5,2) NOT NULL DEFAULT 0,
+    days_passed              INT         NOT NULL DEFAULT 0,
+    created_at               TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    updated_at               TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    UNIQUE (campaign_id)
+);
+
+-- Time-of-day slices (dawn, day, dusk, night, etc.)
+CREATE TABLE IF NOT EXISTS campaign_tod_slices (
+    id              UUID         PRIMARY KEY DEFAULT gen_random_uuid(),
+    campaign_id     UUID         NOT NULL REFERENCES campaigns(id) ON DELETE CASCADE,
+    label           TEXT         NOT NULL,
+    color           TEXT         NOT NULL,
+    duration_hours  NUMERIC(6,2) NOT NULL,
+    sort_order      INT          NOT NULL DEFAULT 0,
+    dm_notes        TEXT,
+    player_notes    TEXT,
+    created_at      TIMESTAMPTZ  NOT NULL DEFAULT NOW(),
+    updated_at      TIMESTAMPTZ  NOT NULL DEFAULT NOW()
+);
+
+-- ─── Bug Reports ──────────────────────────────────────────────────────────────
+-- Global application bug reports submitted by users.
+CREATE TABLE IF NOT EXISTS bug_reports (
+    id               UUID         PRIMARY KEY DEFAULT gen_random_uuid(),
+    user_id          UUID         NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    title            VARCHAR(255) NOT NULL,
+    description      TEXT         NOT NULL,
+    steps_to_reproduce TEXT,
+    severity         VARCHAR(10)  NOT NULL DEFAULT 'Medium'
+                                  CHECK (severity IN ('Low', 'Medium', 'High', 'Critical')),
+    page_url         VARCHAR(500),
+    device           VARCHAR(255),
+    browser          VARCHAR(255),
+    os               VARCHAR(255),
+    screen_resolution VARCHAR(50),
+    is_fixed         BOOLEAN      NOT NULL DEFAULT FALSE,
+    fixed_at         TIMESTAMPTZ,
+    reported_at      TIMESTAMPTZ  NOT NULL DEFAULT NOW()
+);
+
+CREATE INDEX IF NOT EXISTS idx_bug_reports_user    ON bug_reports(user_id);
+CREATE INDEX IF NOT EXISTS idx_bug_reports_is_fixed ON bug_reports(is_fixed);
+
+-- ─── Player Cards (The Company) ───────────────────────────────────────────────
+-- Player character cards - one per player per campaign.
+CREATE TABLE IF NOT EXISTS player_cards (
+    id               UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    campaign_id      UUID         NOT NULL REFERENCES campaigns(id) ON DELETE CASCADE,
+    player_user_id   UUID         NOT NULL REFERENCES users(id)     ON DELETE CASCADE,
+    name             VARCHAR(255) NOT NULL,
+    race             VARCHAR(100) NOT NULL,
+    class            VARCHAR(100) NOT NULL,
+    description      TEXT,
+    image_path       TEXT,
+    created_at       TIMESTAMPTZ  NOT NULL DEFAULT NOW(),
+    updated_at       TIMESTAMPTZ  NOT NULL DEFAULT NOW(),
+    CONSTRAINT uq_player_card UNIQUE (campaign_id, player_user_id)
+);
+
+CREATE INDEX IF NOT EXISTS idx_player_cards_campaign    ON player_cards(campaign_id);
+CREATE INDEX IF NOT EXISTS idx_player_cards_player_user ON player_cards(player_user_id);
+
+-- Active D&D conditions assigned to a player card by the DM.
+CREATE TABLE IF NOT EXISTS player_card_conditions (
+    id             UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    player_card_id UUID         NOT NULL REFERENCES player_cards(id) ON DELETE CASCADE,
+    condition_name VARCHAR(100) NOT NULL,
+    assigned_at    TIMESTAMPTZ  NOT NULL DEFAULT NOW()
+);
+
+CREATE INDEX IF NOT EXISTS idx_player_card_conditions_card ON player_card_conditions(player_card_id);
+
+-- Chronicle entries (memories) authored by the player.
+CREATE TABLE IF NOT EXISTS player_card_memories (
+    id             UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    player_card_id UUID         NOT NULL REFERENCES player_cards(id) ON DELETE CASCADE,
+    memory_type    VARCHAR(20)  NOT NULL CHECK (memory_type IN ('KEY_EVENT','ENCOUNTER','DISCOVERY','DECISION','LOSS','BOND')),
+    session_number INT,
+    title          VARCHAR(255) NOT NULL,
+    detail         TEXT,
+    memory_date    DATE         NOT NULL DEFAULT CURRENT_DATE,
+    created_at     TIMESTAMPTZ  NOT NULL DEFAULT NOW()
+);
+
+CREATE INDEX IF NOT EXISTS idx_player_card_memories_card ON player_card_memories(player_card_id);
+
+-- Goals, fears, and flaws authored by the player.
+CREATE TABLE IF NOT EXISTS player_card_traits (
+    id             UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    player_card_id UUID        NOT NULL REFERENCES player_cards(id) ON DELETE CASCADE,
+    trait_type     VARCHAR(10) NOT NULL CHECK (trait_type IN ('GOAL','FEAR','FLAW')),
+    content        TEXT        NOT NULL,
+    is_completed   BOOLEAN     NOT NULL DEFAULT FALSE,
+    created_at     TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+CREATE INDEX IF NOT EXISTS idx_player_card_traits_card ON player_card_traits(player_card_id);
+
+-- Private secrets delivered by the DM; shareable to the party.
+CREATE TABLE IF NOT EXISTS player_card_secrets (
+    id             UUID        PRIMARY KEY DEFAULT gen_random_uuid(),
+    player_card_id UUID        NOT NULL REFERENCES player_cards(id) ON DELETE CASCADE,
+    content        TEXT        NOT NULL,
+    is_shared      BOOLEAN     NOT NULL DEFAULT FALSE,
+    shared_at      TIMESTAMPTZ,
+    shared_by      VARCHAR(10) CHECK (shared_by IN ('DM','PLAYER')),
+    created_at     TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+CREATE INDEX IF NOT EXISTS idx_player_card_secrets_card ON player_card_secrets(player_card_id);
+
+-- Player impression notes per cast/location/sublocation instance.
+-- Exactly one FK column must be non-null (same pattern as campaign_secrets).
+CREATE TABLE IF NOT EXISTS player_cast_perceptions (
+    id                      UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    player_card_id          UUID NOT NULL REFERENCES player_cards(id) ON DELETE CASCADE,
+    cast_instance_id        UUID REFERENCES campaign_cast_instances(instance_id)        ON DELETE CASCADE,
+    location_instance_id    UUID REFERENCES campaign_location_instances(instance_id)    ON DELETE CASCADE,
+    sublocation_instance_id UUID REFERENCES campaign_sublocation_instances(instance_id) ON DELETE CASCADE,
+    impression              TEXT NOT NULL,
+    created_at              TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    updated_at              TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    CONSTRAINT chk_perception_exactly_one_entity CHECK (
+        (cast_instance_id        IS NOT NULL)::int +
+        (location_instance_id    IS NOT NULL)::int +
+        (sublocation_instance_id IS NOT NULL)::int = 1
+    ),
+    CONSTRAINT uq_player_perception UNIQUE (player_card_id, cast_instance_id, location_instance_id, sublocation_instance_id)
+);
+
+CREATE INDEX IF NOT EXISTS idx_player_perception_card         ON player_cast_perceptions(player_card_id);
+CREATE INDEX IF NOT EXISTS idx_player_perception_cast         ON player_cast_perceptions(cast_instance_id);
+CREATE INDEX IF NOT EXISTS idx_player_perception_location     ON player_cast_perceptions(location_instance_id);
+CREATE INDEX IF NOT EXISTS idx_player_perception_sublocation  ON player_cast_perceptions(sublocation_instance_id);
+
+-- ─── Player Notes ─────────────────────────────────────────────────────────────
+-- Campaign location player notes (shared per location per campaign)
+CREATE TABLE IF NOT EXISTS campaign_location_player_notes (
+    id                   UUID        PRIMARY KEY DEFAULT gen_random_uuid(),
+    campaign_id          UUID        NOT NULL REFERENCES campaigns(id) ON DELETE CASCADE,
+    location_instance_id UUID        NOT NULL REFERENCES campaign_location_instances(instance_id) ON DELETE CASCADE,
+    notes                TEXT        NOT NULL DEFAULT '',
+    created_at           TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    updated_at           TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    CONSTRAINT uq_camp_loc_player_notes_campaign_location UNIQUE (campaign_id, location_instance_id)
+);
+
+CREATE INDEX IF NOT EXISTS idx_camp_loc_player_notes_campaign  ON campaign_location_player_notes(campaign_id);
+CREATE INDEX IF NOT EXISTS idx_camp_loc_player_notes_location  ON campaign_location_player_notes(location_instance_id);
+
+-- Campaign sublocation player notes
+CREATE TABLE IF NOT EXISTS campaign_sublocation_player_notes (
+    id                      UUID        PRIMARY KEY DEFAULT gen_random_uuid(),
+    campaign_id             UUID        NOT NULL REFERENCES campaigns(id) ON DELETE CASCADE,
+    sublocation_instance_id UUID        NOT NULL REFERENCES campaign_sublocation_instances(instance_id) ON DELETE CASCADE,
+    notes                   TEXT        NOT NULL DEFAULT '',
+    created_at              TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    updated_at              TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    UNIQUE (campaign_id, sublocation_instance_id)
+);
+
+CREATE INDEX IF NOT EXISTS idx_camp_subloc_player_notes_campaign  ON campaign_sublocation_player_notes(campaign_id);
+CREATE INDEX IF NOT EXISTS idx_camp_subloc_player_notes_subloc    ON campaign_sublocation_player_notes(sublocation_instance_id);
+
+-- Player quicknote queue (unsorted notes awaiting routing)
+CREATE TABLE IF NOT EXISTS player_quicknote_queue (
+    id              UUID        PRIMARY KEY DEFAULT gen_random_uuid(),
+    campaign_id     UUID        NOT NULL REFERENCES campaigns(id) ON DELETE CASCADE,
+    player_user_id  UUID        NOT NULL REFERENCES users(id)     ON DELETE CASCADE,
+    content         TEXT        NOT NULL DEFAULT '',
+    created_at      TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    updated_at      TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+CREATE INDEX IF NOT EXISTS idx_player_quicknote_queue_campaign ON player_quicknote_queue(campaign_id);
+CREATE INDEX IF NOT EXISTS idx_player_quicknote_queue_player   ON player_quicknote_queue(player_user_id);
+
+-- Campaign player notes (shared freeform campaign-level notes)
+CREATE TABLE IF NOT EXISTS campaign_player_notes (
+    id          UUID        PRIMARY KEY DEFAULT gen_random_uuid(),
+    campaign_id UUID        NOT NULL REFERENCES campaigns(id) ON DELETE CASCADE UNIQUE,
+    notes       TEXT        NOT NULL DEFAULT '',
+    created_at  TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    updated_at  TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+CREATE INDEX IF NOT EXISTS idx_campaign_player_notes_campaign ON campaign_player_notes(campaign_id);

@@ -30,6 +30,20 @@ namespace CastLibrary.Logic.Factories
                         ImageFileName = "cast_aldric_vane.png",
                     },
                 ],
+                Sublocations =
+                [
+                    new SublocationCard
+                    {
+                        Name = "The Rusty Flagon",
+                        Description = "A dimly lit tavern on the docks.",
+                        ImageFileName = "loc_rusty_flagon.png",
+                        ShopItems =
+                        [
+                            new ShopItemCard { Name = "Ale", PriceAmount = 2, PriceCurrencyType = "cp", Description = "Warm and flat." },
+                            new ShopItemCard { Name = "Stew", PriceAmount = 4, PriceCurrencyType = "cp", Description = "Mystery meat." },
+                        ],
+                    },
+                ],
                 Locations =
                  [
                      new LocationCard
@@ -48,18 +62,15 @@ namespace CastLibrary.Logic.Factories
                          ImageFileName = "location_ironhaven.png",
                      },
                  ],
-                Sublocations =
-                [
-                    new SublocationCard
+                Factions = [
+                    new FactionCard
                     {
-                        Name = "The Rusty Flagon",
-                        Description = "A dimly lit tavern on the docks.",
-                        ImageFileName = "loc_rusty_flagon.png",
-                        ShopItems =
-                        [
-                            new ShopItemCard { Name = "Ale", PriceAmount = 2, PriceCurrencyType = "cp", Description = "Warm and flat." },
-                            new ShopItemCard { Name = "Stew", PriceAmount = 4, PriceCurrencyType = "cp", Description = "Mystery meat." },
-                        ],
+                        Name = "The Iron Syndicate",
+                        FactionType = "Merchant Guild",
+                        Influence = 8,
+                        Perception = 3,
+                        Hidden = false,
+                        Description = "A powerful merchant guild with ties to the city's underworld."
                     },
                 ],
             };

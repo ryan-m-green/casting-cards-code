@@ -22,9 +22,11 @@ interface ImportResult {
   castsImported: number;
   locationsImported: number;
   sublocationsImported: number;
+  factionsImported: number;
   castsSkipped: number;
   locationsSkipped: number;
   sublocationsSkipped: number;
+  factionsSkipped: number;
   failures: ImportFailure[];
 }
 
@@ -210,6 +212,7 @@ export class DashboardComponent implements OnInit {
     this.http.post<ImportResult>(`${environment.apiUrl}/api/dashboard/import`, formData)
       .subscribe({
         next: result => {
+          debugger;
           this.importResult.set(result);
           this.importing.set(false);
           this.showImportPanel.set(false);

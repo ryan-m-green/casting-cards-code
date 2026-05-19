@@ -64,6 +64,8 @@ public class DashboardController(
 
     [HttpPost("import")]
     [Consumes("multipart/form-data")]
+    [DisableRequestSizeLimit]
+    [RequestFormLimits(MultipartBodyLengthLimit = long.MaxValue)]
     public async Task<IActionResult> Import([FromForm] IFormFile zipFile)
     {
         if (zipFile is null || zipFile.Length == 0)
