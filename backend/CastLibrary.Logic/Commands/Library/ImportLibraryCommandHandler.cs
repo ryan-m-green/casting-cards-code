@@ -8,7 +8,6 @@ using CastLibrary.Shared.Requests;
 using CastLibrary.Shared.Responses;
 using Microsoft.Extensions.Logging;
 using System.Collections.Concurrent;
-using System.Collections.Immutable;
 
 namespace CastLibrary.Logic.Commands.Library;
 
