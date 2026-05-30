@@ -9,7 +9,7 @@ public interface IReorderCampaignEventsCommandHandler
 }
 
 public class ReorderCampaignEventsCommandHandler(
-    ICampaignEventUpdateRepository repository) : IReorderCampaignEventsCommandHandler
+    IStorylineUpdateRepository repository) : IReorderCampaignEventsCommandHandler
 {
     public Task HandleAsync(ReorderCampaignEventsCommand command)
         => repository.ReorderAsync(command.Request.EventIds);

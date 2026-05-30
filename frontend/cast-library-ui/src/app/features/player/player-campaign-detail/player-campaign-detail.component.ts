@@ -1,4 +1,5 @@
-import { Component, OnInit, signal, inject, effect } from '@angular/core';
+import { Component, OnInit, signal, inject } from '@angular/core';
+import { Subscription } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
@@ -33,53 +34,58 @@ export class PlayerCampaignDetailComponent implements OnInit {
 
   spineColor = () => this.campaign()?.spineColor ?? '#6e28d0';
 
+  private hubSubscriptions: Subscription[] = [];
+
   constructor() {
     // Remove locked card from view with fade-out, add unlocked card after shell re-fetch
-    effect(() => {
-      const event = this.hub.cardVisibilityChanged();
-      if (!event || event.campaignId !== this.campaignId()) return;
+    this.hubSubscriptions.push(
+      this.hub.cardVisibilityChanged$.subscribe(event => {
+        if (!event || event.campaignId !== this.campaignId()) return;
 
-      if (!event.isVisible) {
-        this.lockingIds.update(s => new Set([...s, event.instanceId]));
-        setTimeout(() => {
-          this.campaign.update(c => {
-            if (!c) return c;
-            const locking = new Set([...this.lockingIds(), event.instanceId]);
-            this.lockingIds.set(locking);
-            return {
-              ...c,
-              locations:    c.locations.filter((x: any) => x.instanceId !== event.instanceId),
-              sublocations: c.sublocations.filter((x: any) => x.instanceId !== event.instanceId),
-              casts:        c.casts.filter((x: any) => x.instanceId !== event.instanceId),
-              factions:     c.factions.filter((x: any) => x.factionInstanceId !== event.instanceId),
-            };
-          });
-          this.lockingIds.update(s => { const n = new Set(s); n.delete(event.instanceId); return n; });
-        }, 650);
-      } else {
-        // Shell handles overlay; re-fetch to get the newly visible card into local state
-        this.http.get<CampaignDetail>(`${environment.apiUrl}/api/campaigns/${this.campaignId()}/player`)
-          .subscribe(c => { this.campaign.set(c); this.transition.spineColor = c.spineColor; });
-      }
-    });
+        if (!event.isVisible) {
+          this.lockingIds.update(s => new Set([...s, event.instanceId]));
+          setTimeout(() => {
+            this.campaign.update(c => {
+              if (!c) return c;
+              const locking = new Set([...this.lockingIds(), event.instanceId]);
+              this.lockingIds.set(locking);
+              return {
+                ...c,
+                locations:    c.locations.filter((x: any) => x.instanceId !== event.instanceId),
+                sublocations: c.sublocations.filter((x: any) => x.instanceId !== event.instanceId),
+                casts:        c.casts.filter((x: any) => x.instanceId !== event.instanceId),
+                factions:     c.factions.filter((x: any) => x.factionInstanceId !== event.instanceId),
+              };
+            });
+            this.lockingIds.update(s => { const n = new Set(s); n.delete(event.instanceId); return n; });
+          }, 650);
+        } else {
+          // Shell handles overlay; re-fetch to get the newly visible card into local state
+          this.http.get<CampaignDetail>(`${environment.apiUrl}/api/campaigns/${this.campaignId()}/player`)
+            .subscribe(c => { this.campaign.set(c); this.transition.spineColor = c.spineColor; });
+        }
+      })
+    );
 
     // Mark resealed secrets as not revealed
-    effect(() => {
-      const event = this.hub.secretResealed();
-      if (!event || event.campaignId !== this.campaignId()) return;
-      this.campaign.update(c => {
-        if (!c) return c;
-        return { ...c, secrets: c.secrets.map(s => s.id === event.secretId ? { ...s, isRevealed: false } : s) };
-      });
-    });
+    this.hubSubscriptions.push(
+      this.hub.secretResealed$.subscribe(event => {
+        if (!event || event.campaignId !== this.campaignId()) return;
+        this.campaign.update(c => {
+          if (!c) return c;
+          return { ...c, secrets: c.secrets.map(s => s.id === event.secretId ? { ...s, isRevealed: false } : s) };
+        });
+      })
+    );
 
     // Bulk visibility: re-fetch campaign data
-    effect(() => {
-      const event = this.hub.bulkCardVisibilityChanged();
-      if (!event || event.campaignId !== this.campaignId()) return;
-      this.http.get<CampaignDetail>(`${environment.apiUrl}/api/campaigns/${this.campaignId()}/player`)
-        .subscribe(c => { this.campaign.set(c); this.transition.spineColor = c.spineColor; });
-    });
+    this.hubSubscriptions.push(
+      this.hub.bulkCardVisibilityChanged$.subscribe(event => {
+        if (!event || event.campaignId !== this.campaignId()) return;
+        this.http.get<CampaignDetail>(`${environment.apiUrl}/api/campaigns/${this.campaignId()}/player`)
+          .subscribe(c => { this.campaign.set(c); this.transition.spineColor = c.spineColor; });
+      })
+    );
   }
 
   ngOnInit() {
@@ -104,6 +110,10 @@ export class PlayerCampaignDetailComponent implements OnInit {
   goToLocationDetail(instanceId: string) {
     this.transition.quickCover();
     this.router.navigate(['locations', instanceId], { relativeTo: this.route });
+  }
+
+  ngOnDestroy() {
+    this.hubSubscriptions.forEach(sub => sub.unsubscribe());
   }
 
   isLocking(instanceId: string): boolean {

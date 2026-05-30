@@ -9,7 +9,7 @@
 .void-canvas {
   width: 100%;
   min-height: 100%;
-  background: v.$color-black;
+  background: v.$color-base-black;
   position: relative;
   overflow-y: auto;
   overflow-x: hidden;
@@ -27,17 +27,17 @@
 @keyframes portal-inward-breathe {
   0%, 100% {
     box-shadow:
-      inset 0 0 0    1px color-mix(in srgb, var(--portal-color, #{v.$cast-gold}) 40%, white 60%),
-      inset 0 0  6px  2px color-mix(in srgb, var(--portal-color, #{v.$cast-gold}), transparent 28%),
-      inset 0 0 14px  4px color-mix(in srgb, var(--portal-color, #{v.$cast-gold}), transparent 52%),
-      inset 0 0 25px  8px color-mix(in srgb, var(--portal-color, #{v.$cast-gold}), transparent 76%);
+      inset 0 0 0    1px color-mix(in srgb, var(--portal-color, #{v.$color-base-cast-tan}) 40%, white 60%),
+      inset 0 0  6px  2px color-mix(in srgb, var(--portal-color, #{v.$color-base-cast-tan}), transparent 28%),
+      inset 0 0 14px  4px color-mix(in srgb, var(--portal-color, #{v.$color-base-cast-tan}), transparent 52%),
+      inset 0 0 25px  8px color-mix(in srgb, var(--portal-color, #{v.$color-base-cast-tan}), transparent 76%);
   }
   50% {
     box-shadow:
-      inset 0 0 0    1px color-mix(in srgb, var(--portal-color, #{v.$cast-gold}) 25%, white 75%),
-      inset 0 0  9px  3px color-mix(in srgb, var(--portal-color, #{v.$cast-gold}), transparent 12%),
-      inset 0 0 19px  6px color-mix(in srgb, var(--portal-color, #{v.$cast-gold}), transparent 36%),
-      inset 0 0 35px 12px color-mix(in srgb, var(--portal-color, #{v.$cast-gold}), transparent 64%);
+      inset 0 0 0    1px color-mix(in srgb, var(--portal-color, #{v.$color-base-cast-tan}) 25%, white 75%),
+      inset 0 0  9px  3px color-mix(in srgb, var(--portal-color, #{v.$color-base-cast-tan}), transparent 12%),
+      inset 0 0 19px  6px color-mix(in srgb, var(--portal-color, #{v.$color-base-cast-tan}), transparent 36%),
+      inset 0 0 35px 12px color-mix(in srgb, var(--portal-color, #{v.$color-base-cast-tan}), transparent 64%);
   }
 }
 
@@ -88,7 +88,7 @@
 .void-crumb-sep {
   font-family: v.$font-header;
   font-size: 9px;
-  color: color-mix(in srgb, var(--portal-color, #{v.$cast-gold}), white 55%);
+  color: color-mix(in srgb, var(--portal-color, #{v.$color-base-cast-tan}), white 55%);
   user-select: none;
   pointer-events: none;
 }
@@ -98,14 +98,14 @@
   font-size: 9px;
   letter-spacing: 0.18em;
   text-transform: uppercase;
-  color: color-mix(in srgb, var(--portal-color, #{v.$cast-gold}), white 75%);
+  color: color-mix(in srgb, var(--portal-color, #{v.$color-base-cast-tan}), white 75%);
   background: none;
   border: none;
   cursor: pointer;
   transition: color 0.2s ease;
   white-space: nowrap;
 
-  &:hover { color: color-mix(in srgb, var(--portal-color, #{v.$cast-gold}), white 92%); }
+  &:hover { color: color-mix(in srgb, var(--portal-color, #{v.$color-base-cast-tan}), white 92%); }
 }
 
 .void-title {
@@ -119,8 +119,8 @@
   text-transform: uppercase;
   color: v.$campaign-portal-text-softer;
   text-shadow:
-    0 0 20px color-mix(in srgb, var(--portal-color, #{v.$cast-gold}), white 35%),
-    0 0 50px color-mix(in srgb, var(--portal-color, #{v.$cast-gold}), transparent 38%),
+    0 0 20px color-mix(in srgb, var(--portal-color, #{v.$color-base-cast-tan}), white 35%),
+    0 0 50px color-mix(in srgb, var(--portal-color, #{v.$color-base-cast-tan}), transparent 38%),
     0 1px 3px v.$color-ext-23;
 }
 
@@ -156,8 +156,8 @@
   font-size: 8px;
   letter-spacing: 0.30em;
   text-transform: uppercase;
-  color: rgba(v.$cast-gold, 0.95);
-  text-shadow: 0 0 6px var(--portal-color, #{v.$cast-gold}), 0 0 16px var(--portal-color, #{v.$cast-gold}), 0 0 32px var(--portal-color, #{v.$cast-gold});
+  color: rgba(v.$color-base-cast-tan, 0.95);
+  text-shadow: 0 0 6px var(--portal-color, #{v.$color-base-cast-tan}), 0 0 16px var(--portal-color, #{v.$color-base-cast-tan}), 0 0 32px var(--portal-color, #{v.$color-base-cast-tan});
   margin-bottom: 10px;
   user-select: none;
 }
@@ -191,18 +191,18 @@
 
     svg path {
       fill: transparent;
-      stroke: rgba(v.$star-color, 0.40);
+      stroke: rgba(v.$color-base-gold-bright-hex, 0.40);
       stroke-width: 1.5px;
       stroke-linejoin: round;
       transition: fill 0.18s ease, stroke 0.18s ease;
     }
 
   &--lit svg {
-    filter: drop-shadow(0 0 4px rgba(v.$star-color, 0.50));
+    filter: drop-shadow(0 0 4px rgba(v.$color-base-gold-bright-hex, 0.50));
 
     path {
-      fill: v.$star-color;
-      stroke: v.$star-color;
+      fill: v.$color-base-gold-bright-hex;
+      stroke: v.$color-base-gold-bright-hex;
     }
   }
 }
@@ -212,19 +212,19 @@
   0%   { transform: scale(1);    filter: drop-shadow(0 0 0px transparent); }
   28% {
     transform: scale(1.45);
-    filter: drop-shadow(0 0 10px #{v.$star-color}) drop-shadow(0 0 20px rgba(v.$star-color, 0.5));
+    filter: drop-shadow(0 0 10px #{v.$color-base-gold-bright-hex}) drop-shadow(0 0 20px rgba(v.$color-base-gold-bright-hex, 0.5));
   }
   58% {
     transform: scale(0.90);
-    filter: drop-shadow(0 0 6px rgba(v.$star-color, 0.70));
+    filter: drop-shadow(0 0 6px rgba(v.$color-base-gold-bright-hex, 0.70));
   }
   80% {
     transform: scale(1.06);
-    filter: drop-shadow(0 0 5px rgba(v.$star-color, 0.55));
+    filter: drop-shadow(0 0 5px rgba(v.$color-base-gold-bright-hex, 0.55));
   }
   100% {
     transform: scale(1);
-    filter: drop-shadow(0 0 4px rgba(v.$star-color, 0.50));
+    filter: drop-shadow(0 0 4px rgba(v.$color-base-gold-bright-hex, 0.50));
   }
 }
 
@@ -287,10 +287,10 @@
 
 .detail-label {
   font-family: v.$font-header;
-  font-size: 7px;
+  font-size: 12px;
   letter-spacing: 0.2em;
   text-transform: uppercase;
-  color: rgba(v.$location-blue, 0.85);
+  color: rgba(v.$color-lib-location-1, 0.85);
   white-space: nowrap;
 }
 
@@ -343,10 +343,10 @@
 
 .detail-keyword-pill {
   font-family: v.$font-header;
-  font-size: 7px;
+  font-size: 10px;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: rgba(v.$location-blue, 0.80);
+  color: rgba(v.$color-lib-location-1, 0.80);
   border: 1px solid v.$color-player-section-border;
   border-radius: 2px;
   padding: 2px 8px;
@@ -358,7 +358,7 @@
   width: 100%;
   height: 34px;
   padding: 0;
-  background: rgba(v.$cast-gold, 0.04);
+  background: rgba(v.$color-base-cast-tan, 0.04);
   border: none;
   border-top: 1px solid v.$color-player-section-border;
   border-radius: 0 0 6px 6px;
@@ -366,21 +366,15 @@
   font-family: v.$font-header;
   font-size: 8px;
   letter-spacing: 0.12em;
-  color: rgba(v.$location-blue, 0.85);
+  color: rgba(v.$color-lib-location-1, 0.85);
   transition: background 0.18s ease, color 0.18s ease;
 
   &:hover {
-    background: rgba(v.$cast-gold, 0.10);
-    color: rgba(v.$location-blue, 0.95);
+    background: rgba(v.$color-base-cast-tan, 0.10);
+    color: rgba(v.$color-lib-location-1, 0.95);
   }
 }
 
-/* ── Time-of-day bar section ─────────────────────────────────── */
-.tod-bar-section {
-  padding: 0 20px 54px;
-  max-width: 960px;
-  margin: 0 auto;
-}
 
 @media (max-width: 767px) {
   .cast-body {

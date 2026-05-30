@@ -28,18 +28,18 @@
   width: 32px;
   height: 32px;
   font-size: 0.75rem;
-  color: v.$color-text-muted;
+  color: v.$color-base-brown-15;
   line-height: 1;
   padding: 2px 4px;
 
-  &:hover { color: v.$color-text-primary; }
+  &:hover { color: v.$color-base-brown-14; }
 }
 
 .ip-empty {
   font-family: 'IM Fell English', serif;
   font-style: italic;
   font-size: 0.85rem;
-  color: v.$color-text-muted;
+  color: v.$color-base-brown-15;
   padding: 12px 0;
 }
 
@@ -52,14 +52,14 @@
   font-family: 'Cinzel', serif;
   font-size: 0.8rem;
   letter-spacing: 0.05em;
-  color: v.$color-text-primary;
+  color: v.$color-base-brown-14;
   cursor: pointer;
   border: none;
   background: transparent;
   padding: 4px 8px;
 
   &:hover {
-    color: v.$color-text-dark;
+    color: v.$color-base-brown-16;
   }
 }
 
@@ -75,9 +75,9 @@
   align-items: center;
   padding: 5px 14px;
   border-radius: 999px;
-  border: 1px solid rgba(v.$cast-gold, 0.45);
-  background: rgba(v.$cast-gold, 0.08);
-  color: v.$color-text-primary;
+  border: 1px solid rgba(v.$color-base-cast-tan, 0.45);
+  background: rgba(v.$color-base-cast-tan, 0.08);
+  color: v.$color-base-brown-14;
   font-family: 'Cinzel', serif;
   font-size: 0.75rem;
   letter-spacing: 0.05em;
@@ -85,9 +85,9 @@
   transition: background 0.15s, border-color 0.15s, color 0.15s;
 
   &:hover {
-    background: rgba(v.$cast-gold, 0.22);
-    border-color: rgba(v.$cast-gold, 0.75);
-    color: v.$color-text-dark;
+    background: rgba(v.$color-base-cast-tan, 0.22);
+    border-color: rgba(v.$color-base-cast-tan, 0.75);
+    color: v.$color-base-brown-16;
   }
 }
 
@@ -118,12 +118,12 @@
   }
 
   &--selected {
-    background: rgba(v.$cast-gold, 0.18);
-    border-color: rgba(v.$cast-gold, 0.75);
+    background: rgba(v.$color-base-cast-tan, 0.18);
+    border-color: rgba(v.$color-base-cast-tan, 0.75);
 
     &:hover {
-      background: rgba(v.$cast-gold, 0.28);
-      border-color: v.$cast-gold;
+      background: rgba(v.$color-base-cast-tan, 0.28);
+      border-color: v.$color-base-cast-tan;
     }
 
     .ip-icon-img {
@@ -139,7 +139,7 @@
   width: 14px;
   height: 14px;
   border-radius: 50%;
-  background: v.$cast-gold;
+  background: v.$color-base-cast-tan;
   color: #1a1008;
   font-size: 0.6rem;
   font-weight: 700;
@@ -158,7 +158,7 @@
 .ip-icon-label {
   font-size: 0.6rem;
   font-family: 'Cinzel', serif;
-  color: v.$color-text-muted;
+  color: v.$color-base-brown-15;
   text-align: center;
   line-height: 1.3;
   max-width: 72px;

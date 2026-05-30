@@ -1,8 +1,10 @@
-import { Component, OnInit, OnDestroy, signal, inject, ElementRef, effect } from '@angular/core';
+import { Component, OnInit, OnDestroy, signal, inject, ElementRef } from '@angular/core';
+import { Subscription } from 'rxjs';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { JournalTitleComponent } from '../../../shared/components/journal-title/journal-title.component';
 import { CampaignJoinInputComponent } from '../../../shared/components/campaign-join-input/campaign-join-input.component';
+import { PortalCardComponent } from '../../../shared/components/portal-card/portal-card.component';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../../environments/environment';
 import { Campaign } from '../../../shared/models/campaign.model';
@@ -13,7 +15,7 @@ import { CampaignHubService } from '../../../core/hub/campaign-hub.service';
 @Component({
   selector: 'app-player-campaigns',
   standalone: true,
-  imports: [CommonModule, JournalTitleComponent, CampaignJoinInputComponent],
+  imports: [CommonModule, JournalTitleComponent, CampaignJoinInputComponent, PortalCardComponent],
   templateUrl: './player-campaigns.component.html',
   styleUrl: './player-campaigns.component.scss'
 })
@@ -23,6 +25,7 @@ export class PlayerCampaignsComponent implements OnInit, OnDestroy {
   private transition = inject(PortalTransitionService);
   private el         = inject(ElementRef);
   private hub        = inject(CampaignHubService);
+  private hubSubscriptions: Subscription[] = [];
   auth               = inject(AuthService);
 
   campaigns       = signal<Campaign[]>([]);
@@ -33,13 +36,14 @@ export class PlayerCampaignsComponent implements OnInit, OnDestroy {
 
   constructor() {
     // Listen for PlayerRemoved event from SignalR
-    effect(() => {
-      const event = this.hub.playerRemoved();
-      if (!event) return;
+    this.hubSubscriptions.push(
+      this.hub.playerRemoved$.subscribe(event => {
+        if (!event) return;
 
-      // Remove the campaign from the list
-      this.campaigns.update(list => list.filter(c => c.id !== event.campaignId));
-    });
+        // Remove the campaign from the list
+        this.campaigns.update(list => list.filter(c => c.id !== event.campaignId));
+      })
+    );
   }
 
   cardStyle(campaign: Campaign): string {
@@ -63,6 +67,7 @@ export class PlayerCampaignsComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
     // Disconnect from SignalR hub when leaving the page
     this.hub.disconnect().catch(console.warn);
+    this.hubSubscriptions.forEach(sub => sub.unsubscribe());
   }
 
   redeemCode(code: string) {

@@ -1,0 +1,96 @@
+@use '../../../../styles/variables' as v;
+
+.crb-spark-host-container {
+  position: relative;
+  width: 24px;
+  height: 24px;
+  overflow: visible;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  pointer-events: none;
+}
+
+.light-source {
+  position: absolute;
+  top: 7px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 12px;
+  height: 12px;
+  background: radial-gradient(circle, #ffffff 0%, #fff8e0 30%, #ffcc00 60%, #ff8800 100%);
+  border-radius: 50%;
+  box-shadow:
+    0 0 10px 4px rgba(255, 255, 255, 0.9),
+    0 0 20px 8px rgba(255, 220, 100, 0.7),
+    0 0 30px 12px rgba(255, 150, 50, 0.5),
+    0 0 40px 16px rgba(255, 100, 0, 0.3);
+  animation: light-pulse 2s ease-in-out infinite;
+  z-index: 100000;
+}
+
+@keyframes light-pulse {
+  0%, 100% {
+    transform: translateX(-50%) scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: translateX(-50%) scale(1.1);
+    opacity: 0.9;
+  }
+}
+
+.spark-host {
+  position: absolute;
+  top: 8px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 4px;
+  height: 4px;
+  pointer-events: none;
+  overflow: visible;
+  z-index: 99999;
+}
+
+.crb-ripple {
+  position: fixed;
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  border: 6px solid rgba(255, 100, 0, 0.4);
+  box-shadow: 0 0 20px rgba(255, 150, 50, 0.6), inset 0 0 20px rgba(255, 200, 100, 0.3);
+  transform: translate(-50%, -50%) scale(0);
+  pointer-events: none;
+  z-index: 999999;
+  opacity: 0;
+  animation: ripple-expand 3s ease-out forwards;
+
+  &.ripple-visible {
+    opacity: 1;
+  }
+}
+
+.crb-ripple-1 {
+  animation-delay: 0s;
+}
+
+.crb-ripple-2 {
+  animation-delay: 0.1s;
+}
+
+.crb-ripple-3 {
+  animation-delay: 0.2s;
+}
+
+@keyframes ripple-expand {
+  0% {
+    transform: translate(-50%, -50%) scale(0);
+    opacity: 0.8;
+    border-width: 6px;
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(30);
+    opacity: 0;
+    border-width: 1px;
+  }
+}

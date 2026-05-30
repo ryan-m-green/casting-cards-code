@@ -1,7 +1,8 @@
 import {
   Component, Input, OnInit, OnChanges, OnDestroy, SimpleChanges,
-  signal, inject, ViewChild, ElementRef, Injector, effect,
+  signal, inject, ViewChild, ElementRef,
 } from '@angular/core';
+import { Subscription } from 'rxjs';
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { catchError, of } from 'rxjs';
@@ -22,7 +23,6 @@ export class PlayerLocationNotesComponent implements OnInit, OnChanges, OnDestro
 
   private http = inject(HttpClient);
   private hub  = inject(CampaignHubService);
-  private injector = inject(Injector);
 
   @ViewChild('notesTextarea') private notesRef?: ElementRef<HTMLTextAreaElement>;
 
@@ -36,19 +36,22 @@ export class PlayerLocationNotesComponent implements OnInit, OnChanges, OnDestro
   notesText = '';
   saving = signal(false);
   private saveDebounce: ReturnType<typeof setTimeout> | null = null;
+  private hubSubscriptions: Subscription[] = [];
 
   ngOnInit() {
     this.load();
-    effect(() => {
-      const e = this.hub.noteUpdated();
-      if (e?.entityType === 'location' && e.instanceId === this.locationInstanceId) {
-        this.load();
-      }
-    }, { injector: this.injector });
+    this.hubSubscriptions.push(
+      this.hub.noteUpdated$.subscribe(e => {
+        if (e?.entityType === 'location' && e.instanceId === this.locationInstanceId) {
+          this.load();
+        }
+      })
+    );
   }
 
   ngOnDestroy() {
     if (this.saveDebounce) clearTimeout(this.saveDebounce);
+    this.hubSubscriptions.forEach(sub => sub.unsubscribe());
   }
 
   ngOnChanges(changes: SimpleChanges) {

@@ -101,6 +101,8 @@
           </div>
         </fieldset>
 
+       
+
         @if (!filteredEvents().length) {
           <div class="ev-empty">No events match the current filters.</div>
         } @else {
@@ -111,6 +113,26 @@
           (dragleave)="onListDragLeave($event)"
           (drop)="onDrop($event)"
         >
+         <!-- Archive actions wrapper -->
+        <div class="ev-actions-wrapper">
+          <button
+            type="button"
+            class="ev-archive-btn"
+            [disabled]="archiving() || !hasUnlockedEventsToArchive()"
+            (click)="archiveClicked()"
+            [title]="archiving() ? 'Archiving...' : 'Archive all unlocked scenes'"
+          >
+            @if (archiving()) {
+              <svg class="ev-archive-btn-icon ev-archive-btn-icon--spinning" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 12a9 9 0 1 1-6.219-8.56"/>
+              </svg>
+              <span>Archiving…</span>
+            } @else {
+              <img class="ev-archive-btn-icon" src="/ancient_paper_scroll_document.svg" alt="Archive" />
+              <span>Archive Unlocked</span>
+            }
+          </button>
+        </div>
           @for (ev of filteredEvents(); track ev.id; let i = $index) {
             @if (dropLineIndex() === i) {
               <div class="ev-drop-line"></div>
@@ -132,7 +154,7 @@
                   (touchstart)="onHandleTouchStart(i, $event)"
                 >⠿</span>
 
-                <span class="ev-badge ev-badge--{{ ev.imageUrl ? 'handout' : (ev.linkedEntityType ?? 'none') }}">
+                <span class="ev-badge ev-badge--{{ ev.imageUrl ? 'handout' : (ev.linkedEntities.length > 1 ? 'multitrigger' : (ev.linkedEntities.length > 0 ? ev.linkedEntities[0].entityType : 'none')) }}">
                   @if (ev.imageUrl) {
                     <svg class="ev-badge-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
                       <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
@@ -140,11 +162,21 @@
                       <polyline points="21 15 16 10 5 21"/>
                     </svg>
                   }
-                  @switch (ev.linkedEntityType) {
+                  @switch (ev.linkedEntities.length > 1 ? 'multitrigger' : (ev.linkedEntities.length > 0 ? ev.linkedEntities[0].entityType : null)) {
                     @case (null) {
                       <svg class="ev-badge-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
                         <circle cx="12" cy="12" r="10"/>
                         <line x1="8" y1="12" x2="16" y2="12"/>
+                      </svg>
+                    }
+                    @case ('multitrigger') {
+                      <svg class="ev-badge-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="1.6" />
+                        <line x1="12" y1="4" x2="12" y2="8" />
+                        <line x1="18.5" y1="7" x2="15.5" y2="9.5" />
+                        <line x1="18" y1="16.5" x2="14.8" y2="14.5" />
+                        <line x1="6" y1="16.5" x2="9.2" y2="14.5" />
+                        <line x1="5.5" y1="7" x2="8.5" y2="9.5" />
                       </svg>
                     }
                     @case ('cast') {
@@ -196,7 +228,7 @@
 
                 <span class="ev-title">{{ ev.title }}</span>
 
-                @if (ev.linkedEntityType !== null) {
+                @if (ev.linkedEntities.length > 0) {
                 <button
                   class="ev-lock-btn"
                   [class.ev-lock-btn--revealed]="ev.visibleToPlayers"
@@ -213,40 +245,6 @@
 
               @if (expandedId() === ev.id) {
                 <div class="ev-item-edit-bar">
-                  @if (!ev.visibleToPlayers && (ev.linkedEntityType === 'cast' || ev.linkedEntityType === 'location' || ev.linkedEntityType === 'sublocation' || ev.linkedEntityType === 'faction')) {
-                    <label class="ev-unlock-card-toggle" (click)="$event.stopPropagation()" [title]="'Also unlock the associated card'">
-                      <input
-                        type="checkbox"
-                        class="ev-unlock-card-toggle__input"
-                        [checked]="getUnlockCard(ev.id)"
-                        (change)="setUnlockCard(ev.id, $any($event.target).checked)"
-                      />
-                      <span class="ev-unlock-card-toggle__track"></span>
-                      <span class="ev-unlock-card-toggle__label" [class.ev-unlock-card-toggle__label--struck]="!getUnlockCard(ev.id)">unlocks</span>
-                      @switch (ev.linkedEntityType) {
-                        @case ('cast') {
-                          <svg class="ev-unlock-card-toggle__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>
-                          </svg>
-                        }
-                        @case ('location') {
-                          <svg class="ev-unlock-card-toggle__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/>
-                          </svg>
-                        }
-                        @case ('sublocation') {
-                          <svg class="ev-unlock-card-toggle__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                            <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/>
-                          </svg>
-                        }
-                        @case ('faction') {
-                          <svg class="ev-unlock-card-toggle__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
-                          </svg>
-                        }
-                      }
-                    </label>
-                  }
                   @if (editSaveSuccess() && editingId() === ev.id) {
                     <span class="ev-autosave-status ev-autosave-status--saved">Saved</span>
                   }
@@ -270,15 +268,32 @@
                 </div>
                 <div class="ev-body-wrapper">
 
+                  @if (ev.imageUrl) {
+                    <div class="ev-handout-wrapper">
+                      <img class="ev-handout-img" [src]="ev.imageUrl" [alt]="ev.title" />
+                    </div>
+                  }
+
                   @if (editingId() !== ev.id) {
                     <!-- Read-only view -->
-                    <div class="ev-body">{{ ev.body }}</div>
-                    @if (ev.imageUrl) {
-                      <div class="ev-handout-wrapper">
-                        <img class="ev-handout-img" [src]="ev.imageUrl" [alt]="ev.title" />
-                      </div>
-                    }
-                  } @else if (ev.imageUrl !== undefined && ev.linkedEntityType === 'handout' || ev.imageUrl) {
+                    <div class="ev-body">
+                      {{ ev.body }}
+                      @if (ev.linkedEntities.length > 0) {
+                        <div class="ev-footer">
+                          <div class="ev-footer-title">Triggers The Following Types</div>
+                          <div class="ev-trigger-list">
+                            @for (group of groupedTriggers(ev) | keyvalue; track group.key) {
+                              <div class="ev-trigger-item">
+                                <span class="ev-trigger-icon" [innerHTML]="getIconForType(group.key)"></span>
+                                <span class="ev-trigger-type">{{ group.key.toUpperCase() }}:</span>
+                                <span class="ev-trigger-values">{{ group.value.join(', ') }}</span>
+                              </div>
+                            }
+                          </div>
+                        </div>
+                      }
+                    </div>
+                  } @else if (ev.imageUrl) {
                     <!-- Handout edit form -->
                     <div class="ev-edit-form">
                       <div class="event-form-field">
@@ -297,15 +312,24 @@
                         <app-note-destination-picker
                           [showQueue]="false"
                           [showNone]="true"
+                          [showCampaign]="false"
+                          [showTimeOfDay]="true"
+                          [multiselect]="true"
+                          [linkedEntities]="editLinkedEntities()"
+                          [campaignId]="campaignId"
                           [destType]="editDestType() ?? 'none'"
                           [entityId]="editEntityId()"
-                          [locations]="locations"
-                          [sublocations]="sublocations"
-                          [casts]="casts"
-                          [factions]="factions"
-                          [players]="players"
+                          [tod]="tod()"
+                          [todPositionPercent]="editTodPositionPercent()"
+                          [locations]="locations()"
+                          [sublocations]="sublocations()"
+                          [casts]="casts()"
+                          [factions]="factions()"
+                          [players]="players()"
                           (destTypeChange)="onEditDestTypeChange($event)"
                           (entityIdChange)="editEntityId.set($event)"
+                          (todPositionPercentChange)="editTodPositionPercent.set($event)"
+                          (linkedEntitiesChange)="editLinkedEntities.set($event)"
                         />
                       </div>
                       <div class="event-panel-divider"></div>
@@ -353,19 +377,24 @@
                         <app-note-destination-picker
                           [showQueue]="false"
                           [showNone]="true"
+                          [showCampaign]="false"
                           [showTimeOfDay]="true"
+                          [multiselect]="true"
+                          [linkedEntities]="editLinkedEntities()"
+                          [campaignId]="campaignId"
                           [destType]="editDestType() ?? 'none'"
                           [entityId]="editEntityId()"
-                          [tod]="tod"
+                          [tod]="tod()"
                           [todPositionPercent]="editTodPositionPercent()"
-                          [locations]="locations"
-                          [sublocations]="sublocations"
-                          [casts]="casts"
-                          [factions]="factions"
-                          [players]="players"
+                          [locations]="locations()"
+                          [sublocations]="sublocations()"
+                          [casts]="casts()"
+                          [factions]="factions()"
+                          [players]="players()"
                           (destTypeChange)="onEditDestTypeChange($event)"
                           (entityIdChange)="editEntityId.set($event)"
                           (todPositionPercentChange)="editTodPositionPercent.set($event)"
+                          (linkedEntitiesChange)="editLinkedEntities.set($event)"
                         />
                       </div>
                       <div class="event-form-actions">
@@ -429,19 +458,24 @@
             <app-note-destination-picker
               [showQueue]="false"
               [showNone]="true"
+              [showCampaign]="false"
               [showTimeOfDay]="true"
+              [multiselect]="true"
+              [linkedEntities]="linkedEntities()"
+              [campaignId]="campaignId"
               [destType]="destType()"
               [entityId]="entityId()"
-              [tod]="tod"
+              [tod]="tod()"
               [todPositionPercent]="todPositionPercent()"
-              [locations]="locations"
-              [sublocations]="sublocations"
-              [casts]="casts"
-              [factions]="factions"
-              [players]="players"
+              [locations]="locations()"
+              [sublocations]="sublocations()"
+              [casts]="casts()"
+              [factions]="factions()"
+              [players]="players()"
               (destTypeChange)="onDestTypeChange($event)"
               (entityIdChange)="entityId.set($event)"
               (todPositionPercentChange)="todPositionPercent.set($event)"
+              (linkedEntitiesChange)="linkedEntities.set($event)"
             />
           </div>
 
@@ -546,15 +580,20 @@
             <app-note-destination-picker
               [showQueue]="false"
               [showNone]="true"
+              [showCampaign]="false"
+              [multiselect]="true"
+              [linkedEntities]="handoutLinkedEntities()"
+              [campaignId]="campaignId"
               [destType]="handoutDestType()"
               [entityId]="handoutEntityId()"
-              [locations]="locations"
-              [sublocations]="sublocations"
-              [casts]="casts"
-              [factions]="factions"
-              [players]="players"
+              [locations]="locations()"
+              [sublocations]="sublocations()"
+              [casts]="casts()"
+              [factions]="factions()"
+              [players]="players()"
               (destTypeChange)="onHandoutDestTypeChange($event)"
               (entityIdChange)="handoutEntityId.set($event)"
+              (linkedEntitiesChange)="handoutLinkedEntities.set($event)"
             />
           </div>
 

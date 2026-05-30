@@ -1,4 +1,5 @@
-import { Component, OnInit, OnDestroy, signal, inject, computed, ViewChild, ElementRef, AfterViewInit, effect } from '@angular/core';
+import { Component, OnInit, OnDestroy, signal, inject, computed, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
+import { Subscription } from 'rxjs';
 import { Router, RouterLink, ActivatedRoute } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
@@ -46,6 +47,7 @@ export class CampaignCreatorComponent implements OnInit, OnDestroy {
   private el     = inject(ElementRef);
   private auth   = inject(AuthService);
   private hub    = inject(CampaignHubService);
+  private hubSubscriptions: Subscription[] = [];
   router         = inject(Router);
   fb             = inject(FormBuilder);
   isEditMode     = signal(false);
@@ -54,13 +56,14 @@ export class CampaignCreatorComponent implements OnInit, OnDestroy {
   isDemoChecked  = signal(false);
 
   constructor() {
-    effect(() => {
-      const event = this.hub.playerJoined();
-      if (!event || event.campaignId !== this.campaignId()) return;
-      this.players.update(ps =>
-        ps.some(p => p.userId === event.player.userId) ? ps : [...ps, event.player]
-      );
-    });
+    this.hubSubscriptions.push(
+      this.hub.playerJoined$.subscribe(event => {
+        if (!event || event.campaignId !== this.campaignId()) return;
+        this.players.update(ps =>
+          ps.some(p => p.userId === event.player.userId) ? ps : [...ps, event.player]
+        );
+      })
+    );
   }
 
   @ViewChild('mainCard', { read: ElementRef }) mainCardRef!: ElementRef<HTMLElement>;
@@ -221,6 +224,7 @@ export class CampaignCreatorComponent implements OnInit, OnDestroy {
     clearTimeout(this.keywordSaveTimer);
     const id = this.campaignId();
     if (id) this.hub.leaveCampaign(id).catch(console.warn);
+    this.hubSubscriptions.forEach(sub => sub.unsubscribe());
   }
 
   setLocationSearch(term: string) {

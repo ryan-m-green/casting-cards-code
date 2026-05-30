@@ -45,13 +45,13 @@
   font-size: 7px;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: rgba(v.$location-blue, 0.85);
+  color: rgba(v.$color-lib-location-1, 0.85);
 }
 
 .fsp-empty {
   font-family: v.$font-header;
   font-size: 8px;
-  color: rgba(v.$location-blue, 0.85);
+  color: rgba(v.$color-lib-location-1, 0.85);
   text-align: center;
   padding: 8px 0;
 }
@@ -71,10 +71,10 @@
   align-items: center;
   gap: 4px;
   padding: 6px 4px;
-  border: 1px solid rgba(v.$location-blue, 0.20);
+  border: 1px solid rgba(v.$color-lib-location-1, 0.20);
   border-radius: 4px;
   cursor: grab;
-  background: rgba(255, 255, 255, 0.92);
+  background: rgba(v.$color-base-white, 0.92);
   transition: border-color 0.15s, background 0.15s, transform 0.12s;
   user-select: none;
   -webkit-user-select: none;
@@ -82,7 +82,7 @@
 
   &:hover {
     background: #fff;
-    border-color: rgba(v.$location-blue, 0.55);
+    border-color: rgba(v.$color-lib-location-1, 0.55);
     transform: translateY(-2px);
   }
 
@@ -92,7 +92,7 @@
   }
 
   &--assigned {
-    border-color: rgba(v.$location-blue, 0.85);
+    border-color: rgba(v.$color-lib-location-1, 0.85);
     background: #fff;
   }
 
@@ -112,8 +112,8 @@
 
     &:hover {
       transform: none;
-      border-color: rgba(v.$location-blue, 0.20);
-      background: rgba(255, 255, 255, 0.92);
+      border-color: rgba(v.$color-lib-location-1, 0.20);
+      background: rgba(v.$color-base-white, 0.92);
     }
   }
 }
@@ -139,7 +139,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  color: v.$color-text-muted;
+  color: v.$color-base-brown-15;
 }
 
 // ── Card name label ───────────────────────────────────────────────────────────
@@ -148,7 +148,7 @@
   font-size: 7px;
   letter-spacing: 0.06em;
   text-transform: uppercase;
-  color: rgba(v.$location-blue, 0.85);
+  color: rgba(v.$color-lib-location-1, 0.85);
   text-align: center;
   white-space: nowrap;
   overflow: hidden;

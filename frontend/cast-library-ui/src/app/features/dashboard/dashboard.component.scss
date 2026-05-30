@@ -23,7 +23,7 @@
 
   &__inner {
     padding: 4px 10px;
-    background: v.$journal-parchment-base-3;
+    background: v.$color-base-tan-3;
     border-radius: 1px;
     height: 100%;
     display: inline-flex;
@@ -32,8 +32,8 @@
 
   &--cast {
     background: linear-gradient(145deg,
-      v.$color-cast-gold-1 0%, v.$color-cast-gold-2 20%, v.$color-cast-gold-3 45%,
-      v.$color-cast-gold-4 55%, v.$color-cast-gold-2 70%, v.$color-cast-gold-5 85%, v.$color-cast-gold-6 100%
+      v.$color-base-gold-2 0%, v.$color-base-gold-mid-hex 20%, v.$color-base-gold-dark-hex 45%,
+      v.$color-base-gold-bright-hex 55%, v.$color-base-gold-mid-hex 70%, v.$color-base-gold-3 85%, v.$color-base-gold-4 100%
     ) !important;
   }
 
@@ -46,8 +46,8 @@
 
   &--location {
     background: linear-gradient(145deg,
-      v.$color-loc-green-1 0%, v.$color-loc-green-2 15%, v.$color-loc-green-3 40%,
-      v.$color-loc-green-4 55%, v.$color-loc-green-5 70%, v.$color-loc-green-6 85%, v.$color-loc-green-7 100%
+      v.$color-base-yellow-green 0%, v.$color-base-mid-yellow-green 15%, v.$color-base-dark-yellow-green 40%,
+      v.$color-base-green-6 55%, v.$color-base-green-7 70%, v.$color-base-green-8 85%, v.$color-base-green-9 100%
     ) !important;
   }
 
@@ -62,8 +62,8 @@
 
   &--campaign {
     background: linear-gradient(145deg,
-      v.$portal-card-frame-1 0%, v.$portal-card-frame-2 30%,
-      v.$portal-card-frame-3 60%, v.$portal-card-frame-4 100%
+      v.$color-base-blue-4 0%, v.$color-base-blue-5 30%,
+      v.$color-base-black-3 60%, v.$color-base-blue-6 100%
     ) !important;
   }
 }
@@ -74,12 +74,12 @@
 
 .sv--cast {
   background: linear-gradient(145deg,
-    v.$color-cast-gold-1 0%, v.$color-cast-gold-2 20%, v.$color-cast-gold-3 45%,
-    v.$color-cast-gold-4 55%, v.$color-cast-gold-2 70%, v.$color-cast-gold-5 85%, v.$color-cast-gold-6 100%
+    v.$color-base-gold-2 0%, v.$color-base-gold-mid-hex 20%, v.$color-base-gold-dark-hex 45%,
+    v.$color-base-gold-bright-hex 55%, v.$color-base-gold-mid-hex 70%, v.$color-base-gold-3 85%, v.$color-base-gold-4 100%
   );
   padding: 3px;
 
-  .sv-inner { background: v.$journal-parchment-base-3; }
+  .sv-inner { background: v.$color-base-tan-3; }
 }
 
 .sv--sublocation {
@@ -89,17 +89,17 @@
   );
   padding: 3px;
 
-  .sv-inner { background: v.$journal-parchment-base-3; }
+  .sv-inner { background: v.$color-base-tan-3; }
 }
 
 .sv--location {
   background: linear-gradient(145deg,
-    v.$color-loc-green-1 0%, v.$color-loc-green-2 15%, v.$color-loc-green-3 40%,
-    v.$color-loc-green-4 55%, v.$color-loc-green-5 70%, v.$color-loc-green-6 85%, v.$color-loc-green-7 100%
+    v.$color-base-yellow-green 0%, v.$color-base-mid-yellow-green 15%, v.$color-base-dark-yellow-green 40%,
+    v.$color-base-green-6 55%, v.$color-base-green-7 70%, v.$color-base-green-8 85%, v.$color-base-green-9 100%
   );
   padding: 3px;
 
-  .sv-inner { background: v.$journal-parchment-base-3; }
+  .sv-inner { background: v.$color-base-tan-3; }
 }
 
 .sv--faction {
@@ -111,26 +111,25 @@
   );
   padding: 3px;
 
-  .sv-inner { background: v.$journal-parchment-base-3; }
+  .sv-inner { background: v.$color-base-tan-3; }
 }
 
 .sv--campaign {
   background: linear-gradient(145deg,
-    v.$portal-card-frame-1 0%, v.$portal-card-frame-2 30%,
-    v.$portal-card-frame-3 60%, v.$portal-card-frame-4 100%
+    v.$color-base-blue-4 0%, v.$color-base-blue-5 30%,
+    v.$color-base-black-3 60%, v.$color-base-blue-6 100%
   );
   padding: 3px;
 
-  .sv-inner { background: v.$journal-parchment-base-3; }
+  .sv-inner { background: v.$color-base-tan-3; }
 }
 
 .active-campaign-item {
   margin-bottom: 16px;
-  max-width: 50%;
   transition: transform 0.2s ease;
   background: linear-gradient(145deg,
-    v.$portal-card-frame-1 0%, v.$portal-card-frame-2 30%,
-    v.$portal-card-frame-3 60%, v.$portal-card-frame-4 100%
+    v.$color-base-blue-4 0%, v.$color-base-blue-5 30%,
+    v.$color-base-black-3 60%, v.$color-base-blue-6 100%
   ) !important;
   padding: 3px;
 
@@ -139,12 +138,19 @@
   }
 
   .sv-inner {
-    background: v.$journal-parchment-base-3;
+    background: v.$color-base-tan-3;
     display: flex;
     flex-direction: row;
     align-items: center;
     gap: 16px;
     padding: 0;
+  }
+
+  .active-campaign-icon .variant-inline{
+    max-height:100px;
+    padding-left:20px;
+    margin-right:-50px;
+    opacity:.30;
   }
 
   .active-campaign-icon {
@@ -155,7 +161,7 @@
     flex-shrink: 0;
     padding: 4px 0 4px 4px;
     margin: 0 14px 0 18px;
-    color: v.$color-text-primary;
+    color: v.$color-base-brown-14;
   }
 
   .active-campaign-content {
@@ -235,13 +241,13 @@
   font-weight: 600;
   letter-spacing: 0.15em;
   text-transform: uppercase;
-  color: v.$color-ext-434;
+  color: v.$color-base-amber-brown;
 }
 
 .import-file-input {
   font-family: v.$font-body;
   font-size: 11px;
-  color: v.$color-text-primary;
+  color: v.$color-base-brown-14;
   width: 100%;
   cursor: pointer;
 }
@@ -250,13 +256,13 @@
   font-family: v.$font-body;
   font-size: 10px;
   font-style: italic;
-  color: v.$color-text-primary;
+  color: v.$color-base-brown-14;
 }
 
 .import-error {
   font-family: v.$font-body;
   font-size: 11px;
-  color: v.$color-ext-435;
+  color: v.$color-base-brick;
   font-style: italic;
 }
 
@@ -286,11 +292,11 @@
   font-size: 9px;
   font-weight: 600;
   letter-spacing: 0.1em;
-  color: v.$color-text-primary;
+  color: v.$color-base-brown-14;
   margin-bottom: 6px;
 
   &--skipped {
-    color: v.$color-text-muted;
+    color: v.$color-base-brown-15;
     font-weight: 400;
   }
 }
@@ -301,7 +307,7 @@
   font-weight: 600;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: v.$color-ext-435;
+  color: v.$color-base-brick;
   margin-bottom: 4px;
 }
 
@@ -309,7 +315,7 @@
   font-family: v.$font-body;
   font-size: 10px;
   font-style: italic;
-  color: v.$color-text-primary;
+  color: v.$color-base-brown-14;
   padding: 2px 0;
   border-bottom: 0.5px solid v.$color-ext-296;
   line-height: 1.4;
@@ -321,6 +327,6 @@
   font-weight: 700;
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: v.$color-ext-435;
+  color: v.$color-base-brick;
   margin-right: 4px;
 }

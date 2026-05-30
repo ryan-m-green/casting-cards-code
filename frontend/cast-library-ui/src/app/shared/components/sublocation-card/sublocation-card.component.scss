@@ -104,7 +104,7 @@
     v.$color-ext-678 55%, v.$color-ext-679 70%, v.$color-ext-680 85%, v.$color-ext-681 100%
   );
   box-shadow:
-    0 0 0 1px v.$color-dark-frame,
+    0 0 0 1px v.$color-base-black-7,
     0 6px 22px v.$color-shadow-dark,
     inset 0 1px 0 v.$color-ext-682;
 }
@@ -278,7 +278,7 @@
   font-family: 'IM Fell English', serif;
   font-style: italic;
   font-size: 6.5px;
-  color: v.$color-text-dark;
+  color: v.$color-base-brown-16;
   line-height: 1.45;
   opacity: 0.8;
   display: -webkit-box;
@@ -580,17 +580,17 @@
   transition: all 0.2s;
 
   &--gold {
-    background: linear-gradient(180deg, v.$color-cast-btn-gold-1, v.$color-cast-btn-gold-2);
+    background: linear-gradient(180deg, v.$color-base-gold-bright-hex, v.$color-base-gold-mid-hex);
     color: v.$color-ext-690;
     box-shadow: 0 2px 4px v.$color-shadow-light;
-    &:hover { background: linear-gradient(180deg, v.$color-cast-btn-gold-hover-1, v.$color-cast-btn-gold-hover-2); transform: translateY(-1px); }
+    &:hover { background: linear-gradient(180deg, v.$color-base-gold-11, v.$color-base-gold-12); transform: translateY(-1px); }
   }
 
   &--red {
-    background: linear-gradient(180deg, v.$color-loc-btn-red-1, v.$color-loc-btn-red-2);
+    background: linear-gradient(180deg, v.$color-base-btn-red, v.$color-base-btn-red-dark);
     color: v.$color-ext-647;
     box-shadow: 0 2px 4px v.$color-shadow-light;
-    &:hover { background: linear-gradient(180deg, v.$color-loc-btn-red-hover-1, v.$color-loc-btn-red-hover-2); transform: translateY(-1px); }
+    &:hover { background: linear-gradient(180deg, v.$color-base-btn-red-hover, v.$color-base-btn-red-hover-dark); transform: translateY(-1px); }
   }
 }
 

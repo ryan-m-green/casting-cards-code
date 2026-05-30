@@ -3,6 +3,14 @@
 // ── Variables ───────────────────────────────────────────────────────────────
 $spring-easing:       cubic-bezier(0.22, 1, 0.36, 1);
 
+// ── Host container ───────────────────────────────────────────────────────────
+:host {
+  display: block;
+  padding: 0 20px 40px;
+  max-width: 960px;
+  margin: 0 auto;
+}
+
 // ── Wrapper ─────────────────────────────────────────────────────────────────
 .tod-wrapper {
   position: relative;
@@ -53,7 +61,7 @@ $spring-easing:       cubic-bezier(0.22, 1, 0.36, 1);
   min-height: 44px;
   padding: 0;
   border-radius: 6px;
-  border: 1px solid color-mix(in srgb, var(--portal-color, v.$campaign-portal-primary), transparent 35%);
+  border: 1px solid color-mix(in srgb, var(--portal-color, v.$color-base-purple-primary), transparent 35%);
   background: v.$color-ext-700;
   color: v.$color-ext-701;
   font-family: v.$font-header;
@@ -73,7 +81,7 @@ $spring-easing:       cubic-bezier(0.22, 1, 0.36, 1);
   &:focus-visible,
   &:active {
     background: v.$color-ext-702;
-    border-color: color-mix(in srgb, var(--portal-color, v.$campaign-portal-primary), transparent 10%);
+    border-color: color-mix(in srgb, var(--portal-color, v.$color-base-purple-primary), transparent 10%);
     color: v.$color-ext-704;
   }
 
@@ -95,7 +103,7 @@ $spring-easing:       cubic-bezier(0.22, 1, 0.36, 1);
     &:hover,
     &:focus-visible {
       background: v.$color-ext-709;
-      border-color: color-mix(in srgb, var(--portal-color, v.$campaign-portal-primary), transparent 10%);
+      border-color: color-mix(in srgb, var(--portal-color, v.$color-base-purple-primary), transparent 10%);
       color: v.$campaign-portal-text-lavender;
     }
   }
@@ -114,7 +122,7 @@ $spring-easing:       cubic-bezier(0.22, 1, 0.36, 1);
   padding: 0;
   margin-right: 8px;
   border-radius: 6px;
-  border: 1px solid color-mix(in srgb, var(--portal-color, v.$campaign-portal-primary), transparent 35%);
+  border: 1px solid color-mix(in srgb, var(--portal-color, v.$color-base-purple-primary), transparent 35%);
   background: v.$color-tod-lock-unlocked;
   cursor: pointer;
   touch-action: manipulation;
@@ -123,14 +131,14 @@ $spring-easing:       cubic-bezier(0.22, 1, 0.36, 1);
 
   &--locked {
     background: rgba(212, 168, 67, 0.18);
-    border-color: color-mix(in srgb, var(--portal-color, v.$campaign-portal-primary), transparent 35%);
+    border-color: color-mix(in srgb, var(--portal-color, v.$color-base-purple-primary), transparent 35%);
     box-shadow: 0 0 6px rgba(212, 168, 67, 0.35);
   }
 
   &:hover,
   &:focus-visible {
     background: v.$color-ext-702;
-    border-color: color-mix(in srgb, var(--portal-color, v.$campaign-portal-primary), transparent 10%);
+    border-color: color-mix(in srgb, var(--portal-color, v.$color-base-purple-primary), transparent 10%);
   }
 
   &:focus-visible {
@@ -140,18 +148,18 @@ $spring-easing:       cubic-bezier(0.22, 1, 0.36, 1);
 
   .tod-wrapper--dark & {
     background: v.$color-tod-lock-unlocked;
-    border-color: color-mix(in srgb, var(--portal-color, v.$campaign-portal-primary), transparent 35%);
+    border-color: color-mix(in srgb, var(--portal-color, v.$color-base-purple-primary), transparent 35%);
 
     &--locked {
       background: rgba(212, 168, 67, 0.18);
-      border-color: color-mix(in srgb, var(--portal-color, v.$campaign-portal-primary), transparent 35%);
+      border-color: color-mix(in srgb, var(--portal-color, v.$color-base-purple-primary), transparent 35%);
       box-shadow: 0 0 6px rgba(212, 168, 67, 0.35);
     }
 
     &:hover,
     &:focus-visible {
       background: v.$color-ext-709;
-      border-color: color-mix(in srgb, var(--portal-color, v.$campaign-portal-primary), transparent 10%);
+      border-color: color-mix(in srgb, var(--portal-color, v.$color-base-purple-primary), transparent 10%);
     }
   }
 }
@@ -376,7 +384,7 @@ $spring-easing:       cubic-bezier(0.22, 1, 0.36, 1);
   left: 0;
   right: 0;
   z-index: 30;
-  background: v.$journal-tod-panel-bg;
+  background: v.$color-base-tan-4;
   border: 1px solid v.$journal-tod-panel-border;
   border-top: none;
   border-radius: 0 0 8px 8px;
@@ -508,7 +516,7 @@ $spring-easing:       cubic-bezier(0.22, 1, 0.36, 1);
   font-family: v.$font-body;
   font-style: italic;
   font-size: 0.82rem;
-  color: rgba(v.$location-blue, 0.85);
+  color: rgba(v.$color-lib-location-1, 0.85);
   margin: 0;
   padding: 8px 0;
 }

@@ -38,11 +38,11 @@
 
       @if (loading()) {
         <div class="wb wb-narrow">
-          <p class="wbd">Loading users…</p>
+          <p class="wbd-journal">Loading users…</p>
         </div>
       } @else if (errorMsg()) {
         <div class="wb wb-narrow error-box">
-          <p class="wbd text-error">{{ errorMsg() }}</p>
+          <p class="wbd-journal text-error">{{ errorMsg() }}</p>
         </div>
       } @else {
         <div class="user-list">
@@ -87,7 +87,7 @@
           }
           @if (filteredUsers().length === 0) {
             <div class="wb wb-narrow">
-              <p class="wbd">No users found matching "{{ searchQuery }}"</p>
+              <p class="wbd-journal">No users found matching "{{ searchQuery }}"</p>
             </div>
           }
         </div>

@@ -2,7 +2,7 @@
 
 This project is a D&D campaign management platform with:
 
-- NPC library
+- NPC (Cast) library
 - Location & sublocation library
 - Campaign management
 - Factions

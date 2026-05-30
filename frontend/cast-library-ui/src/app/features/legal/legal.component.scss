@@ -9,7 +9,7 @@
   font-size: 17px;
   font-weight: 600;
   letter-spacing: 0.14em;
-  color: v.$color-text-primary;
+  color: v.$color-base-brown-14;
   text-align: center;
   margin: 10px 0 10px;
 }
@@ -157,7 +157,7 @@
   white-space: nowrap;
 
   &:hover {
-    color: v.$color-gold-solid;
+    color: v.$color-base-gold-1;
     border-color: v.$color-ext-8;
     background: v.$color-ext-9;
   }
@@ -187,7 +187,7 @@
   transition: color 0.15s ease, border-color 0.15s ease, background 0.15s ease;
 
   &:hover {
-    color: v.$color-gold-solid;
+    color: v.$color-base-gold-1;
     border-color: v.$color-ext-12;
     background: v.$color-ext-9;
   }
@@ -206,7 +206,7 @@
   top: calc(100% + 4px);
   right: 0;
   min-width: 140px;
-  background: v.$journal-parchment-base-4;
+  background: v.$color-base-tan-4;
   border: 1px solid v.$color-ext-13;
   border-radius: 4px;
   box-shadow: 0 6px 18px v.$color-ext-14;

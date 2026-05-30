@@ -2,13 +2,16 @@
 
 
 @if (campaign(); as camp) {
+  <div class="campaign-notes-panel">
+    <app-player-campaign-notes [campaignId]="campaignId()" />
+  </div>
+
   @if (camp.locations.some(l => !l.isPartyAnchor)) {
-    
     <div class="location-cards-section">
-      <div class="campaign-notes-panel">
-        <app-player-campaign-notes [campaignId]="campaignId()" />
+      <div class="location-cards-header">
+        <span class="location-cards-label">Locations</span>
+        <span class="location-cards-line"></span>
       </div>
-      <div class="location-cards-label">Locations</div>
       
       <div class="location-cards-container">
         @for (location of camp.locations; track location.instanceId) {

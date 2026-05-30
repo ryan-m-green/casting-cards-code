@@ -70,7 +70,7 @@
   box-shadow:
     0 0 0 1px rgba(0, 0, 0, 0.55),
     0 6px 22px rgba(0, 0, 0, 0.7),
-    inset 0 1px 0 rgba(255, 255, 255, 0.08);
+    inset 0 1px 0 rgba(v.$color-base-white, 0.08);
 
   .fac-card--good & {
     background: linear-gradient(
@@ -380,7 +380,7 @@
   border-radius: 0 0 3px 3px;
 
   .fac-card--good & {
-    background: rgba(255, 255, 255, 0.06);
+    background: rgba(v.$color-base-white, 0.06);
   }
 
   .fac-card--neutral &,
@@ -395,7 +395,7 @@
   font-size: 8px;
   line-height: 1.45;
   text-align: center;
-  color: v.$campaign-btn-primary-text;
+  color: v.$color-base-white-2;
 
   .fac-card--good & {
     color: rgba(50, 20, 40, 0.85);
@@ -489,7 +489,7 @@
   font-size: 6px;
   letter-spacing: 0.2em;
   text-transform: uppercase;
-  color: v.$campaign-btn-primary-text;
+  color: v.$color-base-white-2;
 }
 
 // ── Back Face ─────────────────────────────────────────────────────────────

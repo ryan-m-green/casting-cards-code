@@ -40,15 +40,15 @@
   border-radius: 2px;
   outline: none;
   font-family: v.$font-body;
-  font-size: 12px;
+  font-size: 14px;
   font-style: italic;
-  color: v.$color-text-primary;
+  color: v.$color-base-brown-14;
   padding: 5px 8px;
   margin-bottom: 10px;
   transition: border-color v.$transition-std, background v.$transition-std;
 
   &::placeholder {
-    color: v.$color-text-placeholder;
+    color: v.$color-base-brown-17;
     font-style: italic;
   }
 
@@ -145,7 +145,7 @@ textarea.fi {
 }
 
 .pc-card-cast .lib-card-front {
-  background: linear-gradient(160deg, v.$color-lib-cast-1 0%, v.$color-lib-cast-2 50%, v.$color-lib-cast-3 100%);
+  background: linear-gradient(160deg, v.$color-base-cast-tan 0%, v.$color-base-cast-gold-pale 50%, v.$color-base-cast-amber 100%);
 }
 
 .pc-card-location .lib-card-front {
@@ -171,7 +171,7 @@ textarea.fi {
 }
 
 .lib-card-back {
-  background: linear-gradient(108deg, v.$color-page-start, v.$color-page-mid, v.$color-page-end);
+  background: linear-gradient(108deg, v.$color-base-tan-11, v.$color-base-tan-12, v.$color-base-tan-13);
   padding: 10px 8px;
   scrollbar-width: thin;
 
@@ -186,7 +186,7 @@ textarea.fi {
   font-family: v.$font-header;
   font-size: 10px;
   font-weight: 700;
-  color: v.$color-text-primary;
+  color: v.$color-base-brown-14;
   letter-spacing: 0.06em;
   white-space: nowrap;
   overflow: hidden;
@@ -197,7 +197,7 @@ textarea.fi {
   font-family: v.$font-body;
   font-size: 9px;
   font-style: italic;
-  color: v.$color-text-primary;
+  color: v.$color-base-brown-14;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -207,7 +207,7 @@ textarea.fi {
   font-family: v.$font-body;
   font-size: 10px;
   font-style: italic;
-  color: v.$color-text-secondary;
+  color: v.$color-base-brown-14;
   line-height: 1.4;
   display: -webkit-box;
   -webkit-line-clamp: 4;
@@ -262,7 +262,7 @@ textarea.fi {
     transform: translate(-50%, -50%);
     width: 90%;
     height: 90%;
-    color: v.$color-text-secondary;
+    color: v.$color-base-brown-14;
     opacity: 0.08;
     pointer-events: none;
   }
@@ -272,7 +272,7 @@ textarea.fi {
     font-family: v.$font-header;
     font-size: 16px;
     font-weight: 700;
-    color: v.$color-text-primary;
+    color: v.$color-base-brown-14;
   }
 
   .sv-label {
@@ -281,7 +281,7 @@ textarea.fi {
     font-size: 7px;
     text-transform: uppercase;
     letter-spacing: 0.2em;
-    color: v.$color-text-secondary;
+    color: v.$color-base-brown-14;
   }
 }
 
@@ -323,7 +323,7 @@ textarea.fi {
     font-family: v.$font-header;
     font-size: 10px;
     font-weight: 600;
-    color: v.$color-text-primary;
+    color: v.$color-base-brown-14;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -333,7 +333,7 @@ textarea.fi {
     font-family: v.$font-body;
     font-size: 9px;
     font-style: italic;
-    color: v.$color-text-secondary;
+    color: v.$color-base-brown-14;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -341,7 +341,7 @@ textarea.fi {
 
   .cast-row-arrow {
     font-size: 12px;
-    color: v.$color-text-muted;
+    color: v.$color-base-brown-15;
     flex-shrink: 0;
   }
 }
@@ -389,7 +389,7 @@ textarea.fi {
   text-transform: uppercase;
   letter-spacing: 0.15em;
 
-  &.saving { color: v.$color-text-muted; }
+  &.saving { color: v.$color-base-brown-15; }
   &.saved   { color: v.$color-open-text; }
   &.error   { color: v.$color-dm-text; }
 }
@@ -400,22 +400,22 @@ textarea.fi {
   align-items: center;
   gap: v.$spacing-xs;
   padding: 4px 12px;
-  background: v.$campaign-btn-primary-bg;
+  background: v.$color-base-green-2;
   border: 1px solid v.$campaign-btn-primary-border;
   border-radius: 4px;
   font-family: v.$font-header;
-  font-size: 8px;
+  font-size: 12px;
   font-weight: bolder;
   letter-spacing: 0.16em;
   text-transform: uppercase;
-  color: v.$campaign-btn-primary-text;
+  color: v.$color-base-white-2;
   cursor: pointer;
   transition: background 0.18s ease, border-color 0.18s ease, color 0.18s ease;
 
   &:hover {
-    background: v.$campaign-btn-primary-hover-bg;
-    border-color: v.$campaign-btn-primary-hover-border;
-    color: v.$campaign-btn-primary-hover-text;
+    background: v.$color-base-green-4;
+    border-color: v.$color-base-green-5;
+    color: v.$color-base-white-3;
   }
 
   &:disabled {
@@ -466,7 +466,7 @@ textarea.fi {
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.15em;
-  color: v.$color-text-primary;
+  color: v.$color-base-brown-14;
   cursor: pointer;
   transition: background v.$transition-std, transform v.$transition-fast;
 
@@ -490,7 +490,7 @@ textarea.fi {
   font-size: 9.5px;
   text-transform: uppercase;
   letter-spacing: 0.12em;
-  color: v.$color-text-secondary;
+  color: v.$color-base-brown-14;
   cursor: pointer;
   transition: background v.$transition-std;
 
@@ -524,12 +524,12 @@ textarea.fi {
   font-family: v.$font-body;
   font-size: 11px;
   font-style: italic;
-  color: v.$color-text-primary;
+  color: v.$color-base-brown-14;
   outline: none;
   margin-bottom: v.$spacing-sm;
 
-  &::placeholder { color: v.$color-text-muted; }
-  &:focus { border-color: v.$color-gold-solid; }
+  &::placeholder { color: v.$color-base-brown-15; }
+  &:focus { border-color: v.$color-base-gold-1; }
 
   &--header {
     width: 320px;
@@ -637,7 +637,7 @@ textarea.fi {
 .secret-delete-btn,
 .secret-cancel-btn {
   flex-shrink: 0;
-  font-size: 11px;
+  font-size: 16px;
   background: none;
   border: 1px solid v.$color-secret-delete-border;
   border-radius: 3px;
@@ -672,7 +672,7 @@ textarea.fi {
 
 .btn-upload-done {
   width: 100%;
-  color: v.$color-upload-done-text;
+  color: v.$color-base-warm-cream;
 }
 
 // ─── Card Slot Layout ─────────────────────────────────────────────────────────
@@ -731,7 +731,7 @@ textarea.fi {
   font-family: v.$font-header;
   font-size: 40px;
   font-weight: 700;
-  color: v.$color-card-initial-text;
+  color: v.$color-base-dark-brown;
 }
 
 .card-desc-overlay {
@@ -770,7 +770,7 @@ textarea.fi {
   border: none;
   border-radius: 2px;
   background: v.$color-card-edit-btn-bg;
-  color: v.$color-card-edit-btn-text;
+  color: v.$color-base-ivory-warm;
   cursor: pointer;
 }
 
@@ -845,7 +845,7 @@ textarea.fi {
   font-size: 8px;
   font-family: v.$font-header;
   letter-spacing: 0.1em;
-  color: v.$color-card-upload-hint;
+  color: v.$color-base-dark-brown;
   text-transform: uppercase;
 }
 
@@ -876,7 +876,7 @@ textarea.fi {
   font-family: v.$font-header;
   font-size: 13px;
   font-weight: 700;
-  color: v.$color-delete-modal-title;
+  color: v.$color-base-warm-cream;
   letter-spacing: 0.06em;
   margin-bottom: 10px;
 }
@@ -905,7 +905,7 @@ textarea.fi {
   border: 1px solid v.$color-ui-cancel-border;
   border-radius: 3px;
   background: v.$color-ui-cancel-bg;
-  color: v.$color-ui-cancel-text;
+  color: v.$color-base-cream-warm;
   cursor: pointer;
 }
 
@@ -952,12 +952,12 @@ textarea.fi {
   font-family: v.$font-header;
   font-size: 14px;
   letter-spacing: 0.1em;
-  color: v.$color-ui-upload-text;
+  color: v.$color-base-warm-cream;
 }
 
 .upload-file-label {
   cursor: pointer;
-  color: v.$color-ui-upload-text;
+  color: v.$color-base-warm-cream;
   font-family: v.$font-header;
   font-size: 12px;
   letter-spacing: 0.08em;
@@ -976,14 +976,14 @@ textarea.fi {
   width: 132px;
   height: 185px;
   border-radius: 6px;
-  border: 1px dashed rgba(v.$color-text-primary, 0.25);
+  border: 1px dashed rgba(v.$color-base-brown-14, 0.25);
   cursor: pointer;
   overflow: hidden;
   background: rgba(v.$color-input-bg, 0.5);
   transition: border-color 0.18s ease;
 
   &:hover {
-    border-color: rgba(v.$color-text-primary, 0.5);
+    border-color: rgba(v.$color-base-brown-14, 0.5);
 
     .ce-portrait-overlay { opacity: 1; }
     .ce-portrait-empty   { opacity: 0.85; }
@@ -991,7 +991,7 @@ textarea.fi {
 
   &--filled {
     border-style: solid;
-    border-color: rgba(v.$color-text-primary, 0.3);
+    border-color: rgba(v.$color-base-brown-14, 0.3);
   }
 }
 
@@ -1009,7 +1009,7 @@ textarea.fi {
   align-items: center;
   justify-content: center;
   background: rgba(0, 0, 0, 0.45);
-  color: v.$color-text-primary;
+  color: v.$color-base-brown-14;
   opacity: 0;
   transition: opacity 0.18s ease;
 }
@@ -1022,7 +1022,7 @@ textarea.fi {
   gap: 8px;
   width: 100%;
   height: 100%;
-  color: rgba(v.$color-text-primary, 0.4);
+  color: rgba(v.$color-base-brown-14, 0.4);
   transition: opacity 0.18s ease;
 }
 
@@ -1036,7 +1036,7 @@ textarea.fi {
   font-size: 10px;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: rgba(v.$color-text-primary, 0.5);
+  color: rgba(v.$color-base-brown-14, 0.5);
 }
 
 .ce-portrait-hint {
@@ -1060,7 +1060,7 @@ textarea.fi {
   font-family: v.$font-body;
   font-size: 11px;
   font-style: italic;
-  color: v.$color-text-secondary;
+  color: v.$color-base-brown-14;
   white-space: nowrap;
   transition: opacity 280ms ease;
 
@@ -1096,13 +1096,13 @@ textarea.fi {
   font-size: 7px;
   letter-spacing: 0.18em;
   text-transform: uppercase;
-  color: v.$color-currency-header;
+  color: v.$color-base-amber-brown;
   padding-bottom: 2px;
 }
 
 .currency-display-divider {
   height: 0.5px;
-  background: v.$color-border-light;
+  background: rgba(200, 225, 235, 0.40);
   margin-bottom: 3px;
 }
 
@@ -1114,20 +1114,20 @@ textarea.fi {
 
 .currency-row-sep {
   font-family: v.$font-body;
-  font-size: 9px;
+  font-size: 14px;
   padding: 0 3px;
 }
 
 .currency-row-type {
   font-family: v.$font-header;
-  font-size: 9px;
+  font-size: 14px;
   letter-spacing: 0.12em;
   text-transform: uppercase;
 }
 
 .currency-row-amount {
   font-family: v.$font-body;
-  font-size: 10px;
+  font-size: 14px;
 }
 
 .currency-display--compact {

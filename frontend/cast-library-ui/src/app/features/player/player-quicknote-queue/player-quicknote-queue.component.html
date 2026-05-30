@@ -9,21 +9,55 @@
       @for (state of items(); track state.item.id) {
         <div class="qnq-card">
           <button
+            class="qnq-edit-btn"
+            [disabled]="state.deleting || state.routing || state.editing"
+            (click)="startEdit(state)"
+            title="Edit"
+            aria-label="Edit"
+          >
+            ✎ Edit
+          </button>
+          <button
             class="qnq-delete-btn"
-            [disabled]="state.deleting || state.routing"
+            [disabled]="state.deleting || state.routing || state.editing"
             (click)="deleteItem(state)"
             title="Delete"
             aria-label="Delete"
           >
             <img src="/icons/chronicle/delete.svg" alt="Delete" class="qnq-delete-btn-img" />
           </button>
-          <div class="qnq-content">{{ state.item.content }}</div>
+          @if (state.editing) {
+            <div class="qnq-content-wrapper">
+              <textarea
+                class="qnq-textarea"
+                [(ngModel)]="state.editedContent"
+                rows="6"
+              ></textarea>
+              <div class="qnq-button-row">
+                <button
+                  class="qnq-cancel-btn"
+                  (click)="cancelEdit(state)"
+                >
+                  ✖
+                </button>
+                <button
+                  class="qnq-save-btn"
+                  (click)="saveEdit(state)"
+                >
+                  Save
+                </button>
+              </div>
+            </div>
+          } @else {
+            <div class="qnq-content">{{ state.item.content }}</div>
+          }
           <div class="qnq-meta">{{ state.item.createdAt | date:'MMM d, y, h:mm a' }}</div>
 
           <div class="qnq-actions">
             <app-note-destination-picker
               [showQueue]="false"
               [showPlayer]="false"
+              [showCampaign]="true"
               [destType]="state.destType"
               [entityId]="state.entityId"
               [locations]="locations"

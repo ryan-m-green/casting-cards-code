@@ -100,15 +100,14 @@
       <div class="detail-panel-content" #detailContent>
 
       <!-- Panel action bar (DM only) -->
-      <div class="detail-panel-actions">
-        @if (!editing()) {
-          <button class="detail-edit-btn" (click)="startEditing()">✎ Edit Details</button>
-        } @else {
-          <button class="campaign-primary-btn" (click)="saveDetails()">✔ Save For Campaign</button>
-          <button class="campaign-primary-btn" (click)="saveToLibrary()">✔ Save For Campaign & Library</button>
-          <button class="detail-cancel-btn" (click)="cancelEditing()">Cancel</button>
-        }
-      </div>
+      <app-detail-panel-actions
+        [isDm]="isDm()"
+        [editing]="editing()"
+        (startEditingClick)="startEditing()"
+        (saveDetailsClick)="saveDetails()"
+        (saveToLibraryClick)="saveToLibrary()"
+        (cancelEditingClick)="cancelEditing()"
+      />
 
       <!-- Cast Name -->
       @if (editing()) {

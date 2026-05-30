@@ -10,11 +10,11 @@
 
 .tab-btn {
   font-family: v.$font-header;
-  font-size: 9px;
+  font-size: 12px;
   font-weight: bolder;
   letter-spacing: 0.18em;
   text-transform: uppercase;
-  color: v.$color-text-secondary;
+  color: v.$color-base-brown-14;
   background: none;
   border: none;
   border-bottom: 2px solid transparent;
@@ -24,11 +24,11 @@
   margin-bottom: -1px;
 
   &:hover {
-    color: v.$color-text-primary;
+    color: v.$color-base-brown-14;
   }
 
   &--active {
-    color: v.$color-text-primary;
+    color: v.$color-base-brown-14;
     border-bottom-color: v.$color-border-accent;
   }
 }
@@ -52,7 +52,7 @@
   align-items: center;
   padding: 16px 20px;
   margin-bottom: 12px;
-  background: v.$color-page-mid;
+  background: v.$color-base-tan-12;
   border: 1px solid v.$color-border;
   border-radius: 4px;
   transition: border-color 0.2s;
@@ -69,19 +69,19 @@
 .user-name {
   font-size: 16px;
   font-weight: 500;
-  color: v.$color-text-primary;
+  color: v.$color-base-brown-14;
   margin-bottom: 4px;
 }
 
 .user-meta {
   font-size: 13px;
-  color: v.$color-text-secondary;
+  color: v.$color-base-brown-14;
   margin-bottom: 2px;
 }
 
 .user-date {
   font-size: 12px;
-  color: v.$color-text-muted;
+  color: v.$color-base-brown-15;
 }
 
 .user-demo-label {
@@ -134,7 +134,7 @@
 .btn-demo-save {
   padding: 6px 12px;
   background: transparent;
-  color: v.$color-text-secondary;
+  color: v.$color-base-brown-14;
   border: 1px solid v.$color-border;
   border-radius: 4px;
   cursor: pointer;
@@ -144,7 +144,7 @@
 
   &:hover:not(:disabled) {
     border-color: v.$color-border-accent;
-    color: v.$color-text-primary;
+    color: v.$color-base-brown-14;
   }
 
   &:disabled {
@@ -184,12 +184,12 @@
   font-weight: 600;
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: v.$color-text-secondary;
+  color: v.$color-base-brown-14;
 }
 
 .form-hint {
   font-size: 12px;
-  color: v.$color-text-muted;
+  color: v.$color-base-brown-15;
   margin: 0;
 }
 
@@ -203,7 +203,7 @@
   flex-shrink: 0;
   padding: 8px 20px;
   background: transparent;
-  color: v.$color-text-primary;
+  color: v.$color-base-brown-14;
   border: 1px solid v.$color-border-accent;
   border-radius: 4px;
   cursor: pointer;
@@ -229,11 +229,11 @@
 .add-player-success {
   animation: fade-out 3s forwards;
   font-size: 13px;
-  color: v.$color-text-secondary;
+  color: v.$color-base-brown-14;
   padding: 10px 14px;
   border: 1px solid v.$color-border;
   border-radius: 4px;
-  background: v.$color-page-mid;
+  background: v.$color-base-tan-12;
 }
 
 .add-player-error {
@@ -243,7 +243,7 @@
   padding: 10px 14px;
   border: 1px solid v.$color-dm-border;
   border-radius: 4px;
-  background: v.$color-page-mid;
+  background: v.$color-base-tan-12;
 }
 
 // ── Modal ─────────────────────────────────────────────────────────────────────
@@ -262,7 +262,7 @@
 }
 
 .modal-content {
-  background: v.$color-page-mid;
+  background: v.$color-base-tan-12;
   border: 1px solid v.$color-border;
   border-radius: 8px;
   padding: 24px;
@@ -274,18 +274,18 @@
 .modal-title {
   font-size: 20px;
   font-weight: 500;
-  color: v.$color-text-primary;
+  color: v.$color-base-brown-14;
   margin: 0 0 16px 0;
 }
 
 .modal-message {
   font-size: 14px;
-  color: v.$color-text-secondary;
+  color: v.$color-base-brown-14;
   line-height: 1.5;
   margin: 0 0 24px 0;
 
   strong {
-    color: v.$color-text-primary;
+    color: v.$color-base-brown-14;
   }
 }
 
@@ -298,7 +298,7 @@
 .btn-cancel {
   padding: 8px 16px;
   background: transparent;
-  color: v.$color-text-secondary;
+  color: v.$color-base-brown-14;
   border: 1px solid v.$color-border;
   border-radius: 4px;
   cursor: pointer;
@@ -306,15 +306,15 @@
   transition: all 0.2s;
 
   &:hover {
-    border-color: v.$color-text-secondary;
-    color: v.$color-text-primary;
+    border-color: v.$color-base-brown-14;
+    color: v.$color-base-brown-14;
   }
 }
 
 .btn-confirm-delete {
   padding: 8px 16px;
   background: v.$color-delete-bg;
-  color: v.$color-delete-modal-title;
+  color: v.$color-base-warm-cream;
   border: 1px solid v.$color-delete-modal-panel-border;
   border-radius: 4px;
   cursor: pointer;

@@ -56,7 +56,7 @@
     v.$color-ext-740 55%, v.$color-ext-741 70%, v.$color-ext-742 85%, v.$color-ext-743 100%
   );
   box-shadow:
-    0 0 0 1px v.$color-dark-frame,
+    0 0 0 1px v.$color-base-black-7,
     0 6px 22px v.$color-shadow-dark,
     inset 0 1px 0 v.$color-ext-744;
 }
@@ -102,7 +102,7 @@
   padding: 6px 8px 5px;
   position: relative;
   flex-shrink: 0;
-  background: linear-gradient(180deg, v.$color-ext-748 0%, v.$color-ext-742 100%);
+  background: linear-gradient(180deg, v.$color-base-dark-purple-1 0%, v.$color-ext-742 100%);
   border-bottom: 1.5px solid v.$color-ext-739;
 
   &::after {
@@ -149,7 +149,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(160deg, v.$color-ext-748 0%, v.$color-ext-742 60%, v.$color-ext-745 100%);
+  background: linear-gradient(160deg, v.$color-base-dark-purple-1 0%, v.$color-ext-742 60%, v.$color-ext-745 100%);
 }
 
 .ec-portrait-img {
@@ -232,7 +232,7 @@
   &:hover {
     background: v.$color-ext-644;
     border-color: v.$color-ext-645;
-    color: v.$color-ext-152;
+    color: v.$color-base-white;
   }
 }
 
@@ -245,7 +245,7 @@
   flex-shrink: 0;
   margin-top: 2px;
   position: relative;
-  background: linear-gradient(180deg, v.$color-ext-742 0%, v.$color-ext-748 100%);
+  background: linear-gradient(180deg, v.$color-ext-742 0%, v.$color-base-dark-purple-1 100%);
   border-top: 1.5px solid v.$color-ext-739;
 }
 

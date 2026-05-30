@@ -1,4 +1,5 @@
 import { Component, OnInit, OnDestroy, signal, computed, inject, HostBinding } from '@angular/core';
+import { Subscription } from 'rxjs';
 import { ActivatedRoute, Router, RouterLink, RouterOutlet } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../../environments/environment';
@@ -25,6 +26,7 @@ export class CampaignShellComponent implements OnInit, OnDestroy {
   private hub        = inject(CampaignHubService);
   private transition = inject(PortalTransitionService);
   private auth       = inject(AuthService);
+  private hubSubscriptions: Subscription[] = [];
   shellSvc           = inject(CampaignShellService);
 
   @HostBinding('class.portal-entry') portalEntry = false;
@@ -34,6 +36,16 @@ export class CampaignShellComponent implements OnInit, OnDestroy {
   campaign   = signal<CampaignDetail | null>(null);
 
   isDm = computed(() => this.campaign()?.dmUserId === this.auth.currentUser()?.id);
+
+  constructor() {
+    this.hubSubscriptions.push(
+      this.hub.campaignNavChanged$.subscribe(ev => {
+        if (!ev || ev.campaignId !== this.campaignId()) return;
+        this.http.get<CampaignDetail>(`${environment.apiUrl}/api/campaigns/${ev.campaignId}`)
+          .subscribe(c => { this.campaign.set(c); this.shellSvc.setCampaign(c); });
+      })
+    );
+  }
 
   safeColor(color: string | undefined): string {
     return color && /^#[0-9a-fA-F]{6}$/.test(color) ? color : '#6e28d0';
@@ -66,6 +78,7 @@ export class CampaignShellComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     this.hub.leaveCampaign(this.campaignId()).catch(console.warn);
+    this.hubSubscriptions.forEach(sub => sub.unsubscribe());
   }
 
   goToTheParty() {

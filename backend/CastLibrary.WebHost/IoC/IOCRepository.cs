@@ -99,10 +99,13 @@ namespace CastLibrary.WebHost.IoC
             services.AddScoped<ISublocationPlayerNotesUpdateRepository, SublocationPlayerNotesUpdateRepository>();
             services.AddScoped<ICampaignPlayerNotesReadRepository, CampaignPlayerNotesReadRepository>();
             services.AddScoped<ICampaignPlayerNotesUpdateRepository, CampaignPlayerNotesUpdateRepository>();
-            services.AddScoped<ICampaignEventInsertRepository, CampaignEventInsertRepository>();
-            services.AddScoped<ICampaignEventReadRepository, CampaignEventReadRepository>();
-            services.AddScoped<ICampaignEventUpdateRepository, CampaignEventUpdateRepository>();
-            services.AddScoped<ICampaignEventDeleteRepository, CampaignEventDeleteRepository>();
+            services.AddScoped<ICampaignEventInsertRepository, StorylineInsertRepository>();
+            services.AddScoped<IStorylineReadRepository, StorylineReadRepository>();
+            services.AddScoped<IStorylineUpdateRepository, StorylineUpdateRepository>();
+            services.AddScoped<ICampaignEventDeleteRepository, StorylineDeleteRepository>();
+            services.AddScoped<IArchiveCampaignEventsRepository, ArchiveCampaignEventsRepository>();
+            services.AddScoped<ICampaignEventArchivedReadRepository, CampaignEventArchivedReadRepository>();
+            services.AddScoped<ICampaignEventArchivedInsertRepository, StorylineArchivedInsertRepository>();
             services.AddHealthChecks()
               .AddCheck<DatabaseHealthCheck>("postgres");
 
@@ -135,6 +138,7 @@ namespace CastLibrary.WebHost.IoC
             services.AddScoped<ICampaignFactionPlayerNotesEntityMapper, CampaignFactionPlayerNotesEntityMapper>();
             services.AddScoped<ICampaignSublocationPlayerNotesEntityMapper, CampaignSublocationPlayerNotesEntityMapper>();
             services.AddScoped<ICampaignPlayerNotesEntityMapper, CampaignPlayerNotesEntityMapper>();
+            services.AddScoped<ICampaignEventArchivedEntityMapper, CampaignEventArchivedEntityMapper>();
             services.AddScoped<IPlayerQuicknoteQueueEntityMapper, PlayerQuicknoteQueueEntityMapper>();
             services.AddScoped<ICampaignEventEntityMapper, CampaignEventEntityMapper>();
             services.AddScoped<IQuicknoteQueueReadRepository, QuicknoteQueueReadRepository>();

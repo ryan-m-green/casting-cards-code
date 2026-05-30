@@ -8,7 +8,7 @@ public interface ICampaignEventDeleteRepository
     Task DeleteAsync(Guid eventId);
 }
 
-public class CampaignEventDeleteRepository(
+public class StorylineDeleteRepository(
     ISqlConnectionFactory sqlConnectionFactory,
     ILoggingService logging,
     ICorrelationContext correlation) : ICampaignEventDeleteRepository

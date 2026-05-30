@@ -1,6 +1,7 @@
 import {
-  Component, OnInit, signal, inject, Injector, effect,
+  Component, OnInit, OnDestroy, signal, inject,
 } from '@angular/core';
+import { Subscription } from 'rxjs';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -30,6 +31,8 @@ interface QueueItemState {
   routing: boolean;
   deleting: boolean;
   success: boolean;
+  editing: boolean;
+  editedContent: string;
 }
 
 @Component({
@@ -39,13 +42,13 @@ interface QueueItemState {
   templateUrl: './player-quicknote-queue.component.html',
   styleUrl: './player-quicknote-queue.component.scss',
 })
-export class PlayerQuicknoteQueueComponent implements OnInit {
+export class PlayerQuicknoteQueueComponent implements OnInit, OnDestroy {
   private route    = inject(ActivatedRoute);
   private router   = inject(Router);
   private http     = inject(HttpClient);
   private shellSvc = inject(PlayerCampaignShellService);
   private hub      = inject(CampaignHubService);
-  private injector = inject(Injector);
+  private hubSubscriptions: Subscription[] = [];
 
   campaignId = signal('');
   items      = signal<QueueItemState[]>([]);
@@ -71,12 +74,17 @@ export class PlayerQuicknoteQueueComponent implements OnInit {
     this.campaignId.set(id);
     this.shellSvc.setTitle('Quicknote Queue');
     this.loadQueue(id);
-    effect(() => {
-      const e = this.hub.quickNoteQueued();
-      if (e?.campaignId === this.campaignId()) {
-        this.loadQueue(this.campaignId());
-      }
-    }, { injector: this.injector });
+    this.hubSubscriptions.push(
+      this.hub.quickNoteQueued$.subscribe(e => {
+        if (e?.campaignId === this.campaignId()) {
+          this.loadQueue(this.campaignId());
+        }
+      })
+    );
+  }
+
+  ngOnDestroy() {
+    this.hubSubscriptions.forEach(sub => sub.unsubscribe());
   }
 
   private loadQueue(campaignId: string) {
@@ -92,6 +100,8 @@ export class PlayerQuicknoteQueueComponent implements OnInit {
           routing:  false,
           deleting: false,
           success:  false,
+          editing: false,
+          editedContent: item.content,
         })));
         this.loading.set(false);
       });
@@ -219,5 +229,32 @@ export class PlayerQuicknoteQueueComponent implements OnInit {
 
   goBack() {
     this.router.navigate(['/player/campaign', this.campaignId()]);
+  }
+
+  startEdit(state: QueueItemState) {
+    state.editing = true;
+    state.editedContent = state.item.content;
+  }
+
+  cancelEdit(state: QueueItemState) {
+    state.editing = false;
+    state.editedContent = state.item.content;
+  }
+
+  saveEdit(state: QueueItemState) {
+    const cId = this.campaignId();
+    const base = environment.apiUrl;
+    const itemId = state.item.id;
+
+    this.http.put(`${base}/api/campaigns/${cId}/quicknote-queue/${itemId}`, { content: state.editedContent })
+      .subscribe({
+        next: () => {
+          state.item.content = state.editedContent;
+          state.editing = false;
+        },
+        error: () => {
+          state.editedContent = state.item.content;
+        },
+      });
   }
 }

@@ -22,7 +22,7 @@
       <label class="fi-label">Confirm Password</label>
       <input class="fi" type="password" formControlName="confirmPassword" placeholder="••••••••" autocomplete="new-password" />
       @if (passwordMismatch) {
-        <p class="wbd text-error">Passwords do not match.</p>
+        <p class="wbd-journal text-error">Passwords do not match.</p>
       }
 
       <div class="dv join-dv"></div>
@@ -41,7 +41,7 @@
 
       @if (errorMsg()) {
         <div class="wb join-error-box">
-          <p class="wbd text-error">{{ errorMsg() }}</p>
+          <p class="wbd-journal text-error">{{ errorMsg() }}</p>
         </div>
       }
 

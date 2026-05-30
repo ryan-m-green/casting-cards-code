@@ -27,6 +27,9 @@ This file defines all real-time events used in the Cast Library application.
 ## Notes
 - NoteUpdated
 
+## Nav Events
+- CampaignNavChanged
+
 ---
 
 ## Broadcast Pattern

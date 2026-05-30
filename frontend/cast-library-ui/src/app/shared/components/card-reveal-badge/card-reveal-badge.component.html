@@ -1,0 +1,9 @@
+@if (count > 0 && !hidden) {
+  <div class="crb-badge" [class.badge-visible]="badgeVisible" (click)="onClick()">
+    <app-crb-spark-host></app-crb-spark-host>
+    <span class="crb-text">New Cards</span>
+    <span class="crb-parenthesis">(</span>
+    <span class="crb-count">{{ count }}</span>
+    <span class="crb-parenthesis">)</span>
+  </div>
+}

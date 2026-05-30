@@ -23,7 +23,7 @@
 
 .notes-panel-label {
   font-family: v.$font-header;
-  font-size: 7px;
+  font-size: 12px;
   letter-spacing: 0.22em;
   text-transform: uppercase;
   color: v.$color-player-section-label;
@@ -32,10 +32,10 @@
 
 .notes-saving {
   font-family: v.$font-header;
-  font-size: 7px;
+  font-size: 12px;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: rgba(v.$subLoc-olive, 0.8);
+  color: rgba(v.$color-lib-sublocation-1, 0.8);
   white-space: nowrap;
 }
 
@@ -63,7 +63,7 @@
   transition: border-color 0.2s;
 
   &::placeholder {
-    color: rgba(v.$subLoc-olive, 0.30);
+    color: rgba(v.$color-lib-sublocation-1, 0.30);
   }
 
   &:focus {

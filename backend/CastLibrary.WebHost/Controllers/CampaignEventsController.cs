@@ -3,7 +3,9 @@ using CastLibrary.Logic.Queries.Campaign;
 using CastLibrary.Logic.Services;
 using CastLibrary.Logic.Validators;
 using CastLibrary.Repository.Repositories.Update;
+using CastLibrary.Shared.Domain;
 using CastLibrary.Shared.Requests;
+using CastLibrary.Shared.Responses;
 using CastLibrary.WebHost.Hubs;
 using CastLibrary.WebHost.Mappers;
 using CastLibrary.WebHost.MetadataHelpers;
@@ -18,11 +20,12 @@ namespace CastLibrary.WebHost.Controllers;
 [Authorize]
 public class CampaignEventsController(
     ICreateCampaignEventCommandHandler createCommand,
-    IUpdateCampaignEventVisibilityCommandHandler updateVisibilityCommand,
+    IUpdateStorylineVisibilityCommandHandler updateVisibilityCommand,
     IUpdateCampaignEventBodyCommandHandler updateBodyCommand,
     IUpdateCampaignEventDetailsCommandHandler updateDetailsCommand,
     IDeleteCampaignEventCommandHandler deleteEventCommand,
     IReorderCampaignEventsCommandHandler reorderCommand,
+    IArchiveCampaignEventsCommandHandler archiveCommand,
     IGetCampaignEventsQueryHandler getEventsQuery,
     IGetVisibleCampaignEventsQueryHandler getVisibleEventsQuery,
     IUploadCampaignEventHandoutCommandHandler uploadHandoutCommand,
@@ -30,7 +33,6 @@ public class CampaignEventsController(
     ICampaignEventWebMapper mapper,
     ICampaignAccessService campaignAccess,
     IUserRetriever userRetriever,
-    ITimeOfDayWriteRepository timeOfDayRepo,
     IHubContext<CampaignHub> hubContext) : ControllerBase
 {
     private Task<bool> CallerOwns(Guid campaignId) =>
@@ -67,6 +69,22 @@ public class CampaignEventsController(
 
         await updateBodyCommand.HandleAsync(new UpdateCampaignEventBodyCommand(eventId, request));
 
+        // Notify players of event content update
+        var events = await getEventsQuery.HandleAsync(new GetCampaignEventsQuery(campaignId));
+        var campaignEvent = events.FirstOrDefault(e => e.Id == eventId);
+        if (campaignEvent != null)
+        {
+            await hubContext.Clients.Group(campaignId.ToString())
+                .SendAsync("StorylineEventUpdated", new
+                {
+                    campaignId,
+                    eventId,
+                    title = campaignEvent.Title,
+                    body = campaignEvent.Body,
+                    imageUrl = campaignEvent.ImageUrl
+                });
+        }
+
         return NoContent();
     }
 
@@ -82,6 +100,22 @@ public class CampaignEventsController(
 
         await updateDetailsCommand.HandleAsync(new UpdateCampaignEventDetailsCommand(eventId, request));
 
+        // Notify players of event content update
+        var events = await getEventsQuery.HandleAsync(new GetCampaignEventsQuery(campaignId));
+        var campaignEvent = events.FirstOrDefault(e => e.Id == eventId);
+        if (campaignEvent != null)
+        {
+            await hubContext.Clients.Group(campaignId.ToString())
+                .SendAsync("StorylineEventUpdated", new
+                {
+                    campaignId,
+                    eventId,
+                    title = campaignEvent.Title,
+                    body = campaignEvent.Body,
+                    imageUrl = campaignEvent.ImageUrl
+                });
+        }
+
         return NoContent();
     }
 
@@ -92,14 +126,21 @@ public class CampaignEventsController(
     {
         if (!await CallerOwns(campaignId)) return Forbid();
 
-        await updateVisibilityCommand.HandleAsync(new UpdateCampaignEventVisibilityCommand(eventId, request));
+        var resultList = await updateVisibilityCommand.HandleAsync(new UpdateCampaignEventVisibilityCommand(campaignId, eventId, request));
 
-        if (request.IsVisibleToPlayers && request.IsTodScene && request.TodPositionPercent.HasValue)
+        foreach(var result in resultList)
         {
-            var clamped = Math.Max(0m, Math.Min(100m, request.TodPositionPercent.Value));
-            await timeOfDayRepo.UpdateCursorAsync(campaignId, clamped);
             await hubContext.Clients.Group(campaignId.ToString())
-                .SendAsync("TimeCursorMoved", new { campaignId, positionPercent = clamped });
+                .SendAsync(result.EventName, new CardVisibilityChangedEvent
+                {
+                    CampaignId = campaignId,
+                    InstanceId = result.EntityInstanceId,
+                    CardType   = result.CardType,
+                    IsVisible  = result.IsVisible,
+                    TickCount  = result.TickCount,
+                    Title      = result.Title,
+                    Body       = result.Body
+                });
         }
 
         return NoContent();
@@ -134,11 +175,18 @@ public class CampaignEventsController(
         if (string.IsNullOrWhiteSpace(request.Title) || request.Title.Length > 200)
             return BadRequest("Title is required and must not exceed 200 characters.");
 
-        if (string.IsNullOrWhiteSpace(request.LinkedEntityType))
-            return BadRequest("LinkedEntityType is required.");
-
-        var domain   = await uploadHandoutCommand.HandleAsync(
-            new UploadCampaignEventHandoutCommand(campaignId, request.Title.Trim(), request.Body?.Trim(), request.LinkedEntityType, request.LinkedEntityId));
+        CampaignEventDomain domain;
+        if (request.LinkedEntities != null && request.LinkedEntities.Count > 0)
+        {
+            var firstLinkedEntity = request.LinkedEntities[0];
+            domain = await uploadHandoutCommand.HandleAsync(
+                new UploadCampaignEventHandoutCommand(campaignId, request.Title.Trim(), request.Body?.Trim(), firstLinkedEntity.EntityType, Guid.Parse(firstLinkedEntity.EntityId)));
+        }
+        else
+        {
+            domain = await uploadHandoutCommand.HandleAsync(
+                new UploadCampaignEventHandoutCommand(campaignId, request.Title.Trim(), request.Body?.Trim(), null, null));
+        }
         var response = mapper.ToResponse(domain);
 
         return CreatedAtAction(nameof(CreateHandout), new { campaignId }, response);
@@ -161,8 +209,8 @@ public class CampaignEventsController(
         if (!isAllowed)
             return BadRequest("Only JPEG, PNG, WebP, and PDF files are supported.");
 
-        if (file.Length > 20 * 1024 * 1024)
-            return BadRequest("File size must not exceed 20 MB.");
+        if (file.Length > 5 * 1024 * 1024)
+            return BadRequest("File size must not exceed 5 MB.");
 
         var resolvedContentType = file.ContentType == "application/octet-stream" && ext == ".pdf"
             ? "application/pdf"
@@ -186,6 +234,16 @@ public class CampaignEventsController(
         await reorderCommand.HandleAsync(new ReorderCampaignEventsCommand(request));
 
         return NoContent();
+    }
+[HttpPost("archive")]
+    [Authorize(Roles = "DM,Admin")]
+    public async Task<IActionResult> Archive(Guid campaignId)
+    {
+        if (!await CallerOwns(campaignId)) return Forbid();
+
+        var archivedCount = await archiveCommand.HandleAsync(new ArchiveCampaignEventsCommand(new ArchiveCampaignEventsRequest { CampaignId = campaignId }));
+
+        return Ok(new { archivedCount });
     }
 
     [HttpDelete("{eventId}")]

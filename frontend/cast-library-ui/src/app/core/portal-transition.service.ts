@@ -176,7 +176,7 @@ export class PortalTransitionService {
           bottom:       '0',
           left:         '0',
           borderRadius: '50%',
-          border:       '3px solid rgba(255,255,255,0.22)',
+          border:       '3px solid rgba(255, 255, 255,0.22)',
           boxShadow:    `0 0 18px ${color}, 0 0 40px ${color}80`,
         });
 

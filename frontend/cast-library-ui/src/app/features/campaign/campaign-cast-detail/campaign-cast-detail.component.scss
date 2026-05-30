@@ -19,7 +19,7 @@
 .void-canvas {
   width: 100%;
   min-height: 100%;
-  background: v.$color-black;
+  background: v.$color-base-black;
   position: relative;
   overflow-y: auto;
   overflow-x: hidden;
@@ -37,17 +37,17 @@
 @keyframes portal-inward-breathe {
   0%, 100% {
     box-shadow:
-      inset 0 0 0    1px color-mix(in srgb, var(--portal-color, #{v.$color-lib-cast-1}) 40%, white 60%),
-      inset 0 0  6px  2px color-mix(in srgb, var(--portal-color, #{v.$color-lib-cast-1}), transparent 28%),
-      inset 0 0 14px  4px color-mix(in srgb, var(--portal-color, #{v.$color-lib-cast-1}), transparent 52%),
-      inset 0 0 25px  8px color-mix(in srgb, var(--portal-color, #{v.$color-lib-cast-1}), transparent 76%);
+      inset 0 0 0    1px color-mix(in srgb, var(--portal-color, #{v.$color-base-cast-tan}) 40%, white 60%),
+      inset 0 0  6px  2px color-mix(in srgb, var(--portal-color, #{v.$color-base-cast-tan}), transparent 28%),
+      inset 0 0 14px  4px color-mix(in srgb, var(--portal-color, #{v.$color-base-cast-tan}), transparent 52%),
+      inset 0 0 25px  8px color-mix(in srgb, var(--portal-color, #{v.$color-base-cast-tan}), transparent 76%);
   }
   50% {
     box-shadow:
-      inset 0 0 0    1px color-mix(in srgb, var(--portal-color, #{v.$color-lib-cast-1}) 25%, white 75%),
-      inset 0 0  9px  3px color-mix(in srgb, var(--portal-color, #{v.$color-lib-cast-1}), transparent 12%),
-      inset 0 0 19px  6px color-mix(in srgb, var(--portal-color, #{v.$color-lib-cast-1}), transparent 36%),
-      inset 0 0 35px 12px color-mix(in srgb, var(--portal-color, #{v.$color-lib-cast-1}), transparent 64%);
+      inset 0 0 0    1px color-mix(in srgb, var(--portal-color, #{v.$color-base-cast-tan}) 25%, white 75%),
+      inset 0 0  9px  3px color-mix(in srgb, var(--portal-color, #{v.$color-base-cast-tan}), transparent 12%),
+      inset 0 0 19px  6px color-mix(in srgb, var(--portal-color, #{v.$color-base-cast-tan}), transparent 36%),
+      inset 0 0 35px 12px color-mix(in srgb, var(--portal-color, #{v.$color-base-cast-tan}), transparent 64%);
   }
 }
 
@@ -70,7 +70,7 @@
 
 .topbar-party-btn {
   font-family: v.$font-header;
-  font-size: 9px;
+  font-size: 12px;
   letter-spacing: 0.16em;
   text-transform: uppercase;
   padding: 7px 16px;
@@ -99,25 +99,25 @@
 
 .void-crumb-sep {
   font-family: v.$font-header;
-  font-size: 9px;
-  color: color-mix(in srgb, var(--portal-color, #{v.$color-lib-cast-1}), white 55%);
+  font-size: 12px;
+  color: color-mix(in srgb, var(--portal-color, #{v.$color-base-cast-tan}), white 55%);
   user-select: none;
   pointer-events: none;
 }
 
 .void-back {
   font-family: v.$font-header;
-  font-size: 9px;
+  font-size: 12px;
   letter-spacing: 0.18em;
   text-transform: uppercase;
-  color: color-mix(in srgb, var(--portal-color, #{v.$color-lib-cast-1}), white 75%);
+  color: color-mix(in srgb, var(--portal-color, #{v.$color-base-cast-tan}), white 75%);
   background: none;
   border: none;
   cursor: pointer;
   transition: color 0.2s ease;
   white-space: nowrap;
 
-  &:hover { color: color-mix(in srgb, var(--portal-color, #{v.$color-lib-cast-1}), white 92%); }
+  &:hover { color: color-mix(in srgb, var(--portal-color, #{v.$color-base-cast-tan}), white 92%); }
 }
 
 .void-title {
@@ -131,8 +131,8 @@
   text-transform: uppercase;
   color: v.$campaign-portal-text-softer;
   text-shadow:
-    0 0 20px color-mix(in srgb, var(--portal-color, #{v.$color-lib-cast-1}), white 35%),
-    0 0 50px color-mix(in srgb, var(--portal-color, #{v.$color-lib-cast-1}), transparent 38%),
+    0 0 20px color-mix(in srgb, var(--portal-color, #{v.$color-base-cast-tan}), white 35%),
+    0 0 50px color-mix(in srgb, var(--portal-color, #{v.$color-base-cast-tan}), transparent 38%),
     0 1px 3px v.$color-ext-23;
 }
 
@@ -206,7 +206,7 @@
   border: none;
   border-bottom: 1px solid v.$campaign-portal-border-light;
   color: v.$campaign-portal-text-secondary;
-  font-size: 0.8rem;
+  font-size: 12px;
   cursor: pointer;
   text-align: left;
   transition: color 0.15s;
@@ -229,7 +229,7 @@
   border: none;
   border-bottom: 1px solid v.$campaign-portal-border-light;
   color: v.$campaign-portal-text-primary;
-  font-size: 0.85rem;
+  font-size: 12px;
   cursor: pointer;
   text-align: left;
   transition: background 0.15s;
@@ -272,7 +272,7 @@
 .travel-empty {
   padding: 12px 16px;
   color: rgba(v.$campaign-portal-text-secondary, 0.5);
-  font-size: 0.8rem;
+  font-size: 12px;
   font-style: italic;
 }
 
@@ -283,7 +283,7 @@
   position: relative;
   z-index: 101;
   background: v.$campaign-portal-bg-dark;
-  border: 1px solid rgba(v.$color-lib-cast-1, 0.40);
+  border: 1px solid rgba(v.$color-base-cast-tan, 0.40);
   border-radius: 6px;
   overflow: hidden;
   display: flex;
@@ -304,7 +304,7 @@
   flex-direction: column;
   gap: 6px;
   padding: 12px 16px;
-  border-bottom: 1px solid rgba(v.$color-lib-cast-1, 0.12);
+  border-bottom: 1px solid rgba(v.$color-base-cast-tan, 0.12);
 }
 
 /* ── 2-col field grid ────────────────────────────────────────────────────── */
@@ -319,10 +319,10 @@
   flex-direction: column;
   gap: 6px;
   padding: 12px 16px;
-  border-bottom: 1px solid rgba(v.$color-lib-cast-1, 0.08);
+  border-bottom: 1px solid rgba(v.$color-base-cast-tan, 0.08);
 
   &:nth-child(odd) {
-    border-right: 1px solid rgba(v.$color-lib-cast-1, 0.08);
+    border-right: 1px solid rgba(v.$color-base-cast-tan, 0.08);
   }
 
   &--full {
@@ -333,8 +333,8 @@
 
 /* ── Secrets section ─────────────────────────────────────────────────────── */
 .detail-secrets-section {
-  border-top: 1px solid rgba(v.$color-lib-cast-1, 0.22);
-  background: rgba(v.$color-lib-cast-1, 0.03);
+  border-top: 1px solid rgba(v.$color-base-cast-tan, 0.22);
+  background: rgba(v.$color-base-cast-tan, 0.03);
 }
 
 .detail-secrets-header {
@@ -349,7 +349,7 @@
   align-items: flex-start;
   gap: 10px;
   padding: 8px 16px;
-  border-top: 1px solid rgba(v.$color-lib-cast-1, 0.08);
+  border-top: 1px solid rgba(v.$color-base-cast-tan, 0.08);
 }
 
 .secret-lock-btn {
@@ -379,7 +379,7 @@
 
   &:hover {
     opacity: 1;
-    background: rgba(v.$color-lib-cast-1, 0.06);
+    background: rgba(v.$color-base-cast-tan, 0.06);
   }
 }
 
@@ -405,17 +405,17 @@
 /* ── Shared label / line / value ─────────────────────────────────────────── */
 .detail-label {
   font-family: v.$font-header;
-  font-size: 7px;
+  font-size: 12px;
   letter-spacing: 0.2em;
   text-transform: uppercase;
-  color: rgba(v.$location-blue, 0.85);
+  color: rgba(v.$color-lib-location-1, 0.85);
   white-space: nowrap;
 }
 
 .detail-line {
   height: 1px;
   width: 100%;
-  background: linear-gradient(to right, rgba(v.$color-lib-cast-1, 0.22), transparent);
+  background: linear-gradient(to right, rgba(v.$color-base-cast-tan, 0.22), transparent);
 }
 
 .detail-value {
@@ -444,11 +444,11 @@
 
 .detail-keyword-pill {
   font-family: v.$font-header;
-  font-size: 7px;
+  font-size: 12px;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: rgba(v.$location-blue, 0.80);
-  border: 1px solid rgba(v.$color-lib-cast-1, 0.28);
+  color: rgba(v.$color-lib-location-1, 0.80);
+  border: 1px solid rgba(v.$color-base-cast-tan, 0.28);
   border-radius: 2px;
   padding: 2px 8px;
 }
@@ -465,7 +465,7 @@
   align-items: center;
   gap: 6px;
   font-family: v.$font-body;
-  font-size: 11px;
+  font-size: 12px;
   color: v.$campaign-portal-text-secondary;
   cursor: pointer;
 }
@@ -481,11 +481,11 @@
 
 .detail-edit-btn {
   background: none;
-  border: 1px solid rgba(v.$color-lib-cast-1, 0.30);
+  border: 1px solid rgba(v.$color-base-cast-tan, 0.30);
   border-radius: 4px;
   padding: 4px 12px;
   font-family: v.$font-header;
-  font-size: 8px;
+  font-size: 12px;
   letter-spacing: 0.16em;
   text-transform: uppercase;
   color: v.$color-ext-33;
@@ -493,9 +493,9 @@
   transition: background 0.18s ease, border-color 0.18s ease, color 0.18s ease;
 
   &:hover {
-    background: rgba(v.$color-lib-cast-1, 0.10);
-    border-color: rgba(v.$color-lib-cast-1, 0.55);
-    color: v.$color-ext-36;
+    background: rgba(v.$color-base-cast-tan, 0.10);
+    border-color: rgba(v.$color-base-cast-tan, 0.55);
+    color: v.$color-base-mist-blue;
   }
 }
 
@@ -505,7 +505,7 @@
   border-radius: 4px;
   padding: 4px 12px;
   font-family: v.$font-header;
-  font-size: 8px;
+  font-size: 12px;
   letter-spacing: 0.16em;
   text-transform: uppercase;
   color: v.$color-ext-39;
@@ -525,7 +525,7 @@
   border-radius: 4px;
   padding: 4px 12px;
   font-family: v.$font-header;
-  font-size: 8px;
+  font-size: 12px;
   letter-spacing: 0.16em;
   text-transform: uppercase;
   color: v.$color-ext-42;
@@ -541,7 +541,7 @@
 /* ── Edit inputs ─────────────────────────────────────────────────────────── */
 .detail-input {
   background: v.$color-overlay-darker;
-  border: 1px solid rgba(v.$color-lib-cast-1, 0.28);
+  border: 1px solid rgba(v.$color-base-cast-tan, 0.28);
   border-radius: 3px;
   padding: 5px 8px;
   font-family: v.$font-body;
@@ -553,11 +553,11 @@
   transition: border-color 0.18s ease;
 
   &::placeholder {
-    color: rgba(v.$color-lib-cast-1, 0.30);
+    color: rgba(v.$color-base-cast-tan, 0.30);
   }
 
   &:focus {
-    border-color: rgba(v.$color-lib-cast-1, 0.65);
+    border-color: rgba(v.$color-base-cast-tan, 0.65);
   }
 
   &--block {
@@ -574,7 +574,7 @@
   flex-direction: column;
   gap: 6px;
   padding: 12px 16px;
-  border-top: 1px solid rgba(v.$color-lib-cast-1, 0.14);
+  border-top: 1px solid rgba(v.$color-base-cast-tan, 0.14);
   margin-top: 4px;
   min-height: 60px;
 }
@@ -582,7 +582,7 @@
 .detail-value--muted {
   font-family: v.$font-body;
   font-size: 13px;
-  color: rgba(v.$location-blue, 0.75);
+  color: rgba(v.$color-lib-location-1, 0.75);
   font-style: italic;
   margin: 0;
 }
@@ -605,11 +605,11 @@
 .secret-textarea {
   flex: 1;
   background: v.$color-overlay-darker;
-  border: 1px solid rgba(v.$color-lib-cast-1, 0.28);
+  border: 1px solid rgba(v.$color-base-cast-tan, 0.28);
   border-radius: 3px;
   padding: 5px 8px;
   font-family: v.$font-body;
-  font-size: 13px;
+  font-size: 16px;
   color: v.$campaign-portal-text-muted;
   resize: vertical;
   outline: none;
@@ -617,11 +617,11 @@
   min-height: 48px;
 
   &::placeholder {
-    color: rgba(v.$color-lib-cast-1, 0.30);
+    color: rgba(v.$color-base-cast-tan, 0.30);
   }
 
   &:focus {
-    border-color: rgba(v.$color-lib-cast-1, 0.65);
+    border-color: rgba(v.$color-base-cast-tan, 0.65);
   }
 }
 
@@ -673,20 +673,20 @@
   margin: 4px 16px 8px;
   padding: 6px 0;
   background: none;
-  border: 1px dashed rgba(v.$color-lib-cast-1, 0.22);
+  border: 1px dashed rgba(v.$color-base-cast-tan, 0.22);
   border-radius: 4px;
   font-family: v.$font-header;
-  font-size: 8px;
+  font-size: 12px;
   letter-spacing: 0.16em;
   text-transform: uppercase;
-  color: rgba(v.$color-lib-cast-1, 0.85);
+  color: rgba(v.$color-base-cast-tan, 0.85);
   cursor: pointer;
   transition: border-color 0.18s ease, color 0.18s ease, background 0.18s ease;
 
   &:hover {
-    border-color: rgba(v.$color-lib-cast-1, 0.55);
-    color: rgba(v.$color-lib-cast-1, 0.80);
-    background: rgba(v.$color-lib-cast-1, 0.05);
+    border-color: rgba(v.$color-base-cast-tan, 0.55);
+    color: rgba(v.$color-base-cast-tan, 0.80);
+    background: rgba(v.$color-base-cast-tan, 0.05);
   }
 }
 
@@ -696,29 +696,23 @@
   width: 100%;
   height: 34px;
   padding: 0;
-  background: rgba(v.$color-lib-cast-1, 0.04);
+  background: rgba(v.$color-base-cast-tan, 0.04);
   border: none;
-  border-top: 1px solid rgba(v.$color-lib-cast-1, 0.14);
+  border-top: 1px solid rgba(v.$color-base-cast-tan, 0.14);
   border-radius: 0 0 6px 6px;
   cursor: pointer;
   font-family: v.$font-header;
-  font-size: 8px;
+  font-size: 12px;
   letter-spacing: 0.12em;
-  color: rgba(v.$color-lib-cast-1, 0.85);
+  color: rgba(v.$color-base-cast-tan, 0.85);
   transition: background 0.18s ease, color 0.18s ease;
 
   &:hover {
-    background: rgba(v.$color-lib-cast-1, 0.10);
-    color: rgba(v.$color-lib-cast-1, 0.95);
+    background: rgba(v.$color-base-cast-tan, 0.10);
+    color: rgba(v.$color-base-cast-tan, 0.95);
   }
 }
 
-/* ── Time-of-day bar section ─────────────────────────────────── */
-.tod-bar-section {
-  padding: 0 20px 54px;
-  max-width: 960px;
-  margin: 0 auto;
-}
 
 /* ── Mobile: left-slide + downward accordion ─────────────────────────────── */
 @media (max-width: 767px) {
@@ -759,21 +753,21 @@
   width: 72px;
   height: 100px;
   border-radius: 4px;
-  border: 1px dashed rgba(v.$color-text-primary, 0.25);
+  border: 1px dashed rgba(v.$color-base-brown-14, 0.25);
   cursor: pointer;
   overflow: hidden;
   background: rgba(v.$color-input-bg, 0.5);
   transition: border-color 0.18s ease;
 
   &:hover {
-    border-color: rgba(v.$color-text-primary, 0.5);
+    border-color: rgba(v.$color-base-brown-14, 0.5);
     .detail-portrait-overlay { opacity: 1; }
     .detail-portrait-empty   { opacity: 0.85; }
   }
 
   &--filled {
     border-style: solid;
-    border-color: rgba(v.$color-text-primary, 0.3);
+    border-color: rgba(v.$color-base-brown-14, 0.3);
   }
 }
 
@@ -799,7 +793,7 @@
   align-items: center;
   justify-content: center;
   background: rgba(0, 0, 0, 0.45);
-  color: v.$color-text-primary;
+  color: v.$color-base-brown-14;
   opacity: 0;
   transition: opacity 0.18s ease;
 }
@@ -812,12 +806,12 @@
   gap: 5px;
   width: 100%;
   height: 100%;
-  color: rgba(v.$color-text-primary, 0.35);
+  color: rgba(v.$color-base-brown-14, 0.35);
   transition: opacity 0.18s ease;
 }
 
 .detail-portrait-hint {
-  font-size: 8px;
+  font-size: 12px;
   text-align: center;
   line-height: 1.4;
   font-family: v.$font-header;
@@ -826,7 +820,7 @@
 
   em {
     font-style: italic;
-    font-size: 7px;
+    font-size: 12px;
     opacity: 0.75;
     text-transform: none;
   }

@@ -228,6 +228,9 @@ public class CampaignsController(
         }
 
         var response = campaignMapper.ToLocationInstanceResponse(instance);
+
+        await hubContext.Clients.Group(id.ToString()).SendAsync("CampaignNavChanged", new { campaignId = id });
+
         return Ok(response);
     }
 
@@ -275,6 +278,8 @@ public class CampaignsController(
         if (!await CallerOwns(id)) return Forbid();
         await DeleteLocationInstanceCommand.HandleAsync(new DeleteLocationInstanceCommand(instanceId));
 
+        await hubContext.Clients.Group(id.ToString()).SendAsync("CampaignNavChanged", new { campaignId = id });
+
         return NoContent();
     }
 
@@ -290,6 +295,9 @@ public class CampaignsController(
         }
 
         var response = campaignMapper.ToCastInstanceResponse(instance);
+
+        await hubContext.Clients.Group(id.ToString()).SendAsync("CampaignNavChanged", new { campaignId = id });
+
         return Ok(response);
     }
 
@@ -340,6 +348,8 @@ public class CampaignsController(
         if (!await CallerOwns(id)) return Forbid();
         await deleteCastInstanceCommand.HandleAsync(new DeleteCastInstanceCommand(instanceId));
 
+        await hubContext.Clients.Group(id.ToString()).SendAsync("CampaignNavChanged", new { campaignId = id });
+
         return NoContent();
     }
 
@@ -356,6 +366,9 @@ public class CampaignsController(
         }
 
         var response = campaignMapper.ToSublocationInstanceResponse(instance);
+
+        await hubContext.Clients.Group(id.ToString()).SendAsync("CampaignNavChanged", new { campaignId = id });
+
         return Ok(response);
     }
 
@@ -450,6 +463,8 @@ public class CampaignsController(
     {
         if (!await CallerOwns(id)) return Forbid();
         await deleteSublocationInstanceCommand.HandleAsync(new DeleteSublocationInstanceCommand(instanceId));
+
+        await hubContext.Clients.Group(id.ToString()).SendAsync("CampaignNavChanged", new { campaignId = id });
 
         return NoContent();
     }
@@ -756,6 +771,9 @@ public class CampaignsController(
         var dmUserId = userRetriever.GetDmUserId(User);
         var instance = await addFactionCommand.HandleAsync(new AddFactionToCampaignCommand(id, dmUserId, request));
         if (instance is null) return NotFound();
+
+        await hubContext.Clients.Group(id.ToString()).SendAsync("CampaignNavChanged", new { campaignId = id });
+
         return Ok(factionMapper.ToResponse(instance));
     }
 
@@ -771,6 +789,8 @@ public class CampaignsController(
             campaignId        = id,
             factionInstanceId = factionInstanceId,
         });
+
+        await hubContext.Clients.Group(id.ToString()).SendAsync("CampaignNavChanged", new { campaignId = id });
 
         return NoContent();
     }
@@ -815,19 +835,17 @@ public class CampaignsController(
     }
 
     [HttpPatch("{id}/factions/{factionInstanceId}/sublocations/{sublocationInstanceId}/primary")]
-    [Authorize(Roles = "DM,Admin")]
     public async Task<IActionResult> SetFactionSublocationPrimary(Guid id, Guid factionInstanceId, Guid sublocationInstanceId)
     {
-        if (!await CallerOwns(id)) return Forbid();
+        if (!await CallerCanView(id)) return Forbid();
         await setFactionSublocationPrimaryCommand.HandleAsync(factionInstanceId, sublocationInstanceId);
         return NoContent();
     }
 
     [HttpDelete("{id}/factions/{factionInstanceId}/sublocations/primary")]
-    [Authorize(Roles = "DM,Admin")]
     public async Task<IActionResult> ClearFactionSublocationPrimary(Guid id, Guid factionInstanceId)
     {
-        if (!await CallerOwns(id)) return Forbid();
+        if (!await CallerCanView(id)) return Forbid();
         await clearFactionSublocationPrimaryCommand.HandleAsync(factionInstanceId);
         return NoContent();
     }
@@ -854,19 +872,17 @@ public class CampaignsController(
     }
 
     [HttpPatch("{id}/factions/{factionInstanceId}/cast/{castInstanceId}/primary")]
-    [Authorize(Roles = "DM,Admin")]
     public async Task<IActionResult> SetFactionCastMemberPrimary(Guid id, Guid factionInstanceId, Guid castInstanceId)
     {
-        if (!await CallerOwns(id)) return Forbid();
+        if (!await CallerCanView(id)) return Forbid();
         await setFactionCastMemberPrimaryCommand.HandleAsync(factionInstanceId, castInstanceId);
         return NoContent();
     }
 
     [HttpDelete("{id}/factions/{factionInstanceId}/cast/primary")]
-    [Authorize(Roles = "DM,Admin")]
     public async Task<IActionResult> ClearFactionCastMemberPrimary(Guid id, Guid factionInstanceId)
     {
-        if (!await CallerOwns(id)) return Forbid();
+        if (!await CallerCanView(id)) return Forbid();
         await clearFactionCastMemberPrimaryCommand.HandleAsync(factionInstanceId);
         return NoContent();
     }
@@ -874,12 +890,11 @@ public class CampaignsController(
     // ── Faction Relationships ─────────────────────────────────────────────────
 
     [HttpPost("{id}/factions/{factionInstanceId}/relationships")]
-    [Authorize(Roles = "DM,Admin")]
     public async Task<IActionResult> AddFactionRelationship(Guid id, Guid factionInstanceId,
         [FromBody] AddFactionRelationshipRequest request)
     {
-        if (!await CallerOwns(id)) return Forbid();
-        var dmUserId = userRetriever.GetDmUserId(User);
+        if (!await CallerCanView(id)) return Forbid();
+        var dmUserId = userRetriever.IsPlayer(User) ? (Guid?)null : userRetriever.GetDmUserId(User);
         var relationship = await addFactionRelationshipCommand.HandleAsync(
             new AddFactionRelationshipCommand(id, dmUserId, request));
         return Ok(new CampaignFactionRelationshipResponse
@@ -896,15 +911,14 @@ public class CampaignsController(
     }
 
     [HttpDelete("{id}/factions/{factionInstanceId}/relationships/{relationshipId}")]
-    [Authorize(Roles = "DM,Admin")]
     public async Task<IActionResult> RemoveFactionRelationship(Guid id, Guid factionInstanceId, Guid relationshipId)
     {
-        if (!await CallerOwns(id)) return Forbid();
+        if (!await CallerCanView(id)) return Forbid();
         await removeFactionRelationshipCommand.HandleAsync(relationshipId);
         return NoContent();
     }
 
-    // ── Player: faction symbol assignment ──────────────────────────────────────
+    // ── DM: faction symbol assignment ──────────────────────────────────────────
 
     [HttpPatch("{id}/sublocations/{instanceId}/faction-symbol")]
     [Authorize(Roles = "DM,Admin")]
@@ -912,6 +926,7 @@ public class CampaignsController(
         [FromBody] AssignFactionToSublocationRequest request)
     {
         if (!await CallerOwns(id)) return Forbid();
+        request.DmUserId = userRetriever.GetUserId(User);
         await assignFactionToSublocationCommand.HandleAsync(
             new AssignFactionToSublocationCommand(instanceId, request));
 
@@ -924,6 +939,35 @@ public class CampaignsController(
         [FromBody] AssignFactionToCastRequest request)
     {
         if (!await CallerOwns(id)) return Forbid();
+        request.DmUserId = userRetriever.GetUserId(User);
+        await assignFactionToCastCommand.HandleAsync(
+            new AssignFactionToCastCommand(instanceId, request));
+
+        return NoContent();
+    }
+
+    // ── Player: faction symbol assignment ──────────────────────────────────────
+
+    [HttpPatch("{id}/sublocations/{instanceId}/player-faction-symbol")]
+    [Authorize]
+    public async Task<IActionResult> AssignPlayerFactionToSublocation(Guid id, Guid instanceId,
+        [FromBody] AssignFactionToSublocationRequest request)
+    {
+        if (!await CallerCanView(id)) return Forbid();
+        request.DmUserId = null;
+        await assignFactionToSublocationCommand.HandleAsync(
+            new AssignFactionToSublocationCommand(instanceId, request));
+
+        return NoContent();
+    }
+
+    [HttpPatch("{id}/casts/{instanceId}/player-faction-symbols")]
+    [Authorize]
+    public async Task<IActionResult> AssignPlayerFactionsToCast(Guid id, Guid instanceId,
+        [FromBody] AssignFactionToCastRequest request)
+    {
+        if (!await CallerCanView(id)) return Forbid();
+        request.DmUserId = null;
         await assignFactionToCastCommand.HandleAsync(
             new AssignFactionToCastCommand(instanceId, request));
 

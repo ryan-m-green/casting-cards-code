@@ -222,3 +222,55 @@ ALTER TABLE campaigns
 
 -- [036] Add tod_position_percent to campaign_storyline — stores time-of-day cursor position to fire on storyline unlock
 -- tod_position_percent column is now included in the campaign_storyline table in init.sql
+
+-- [037] Convert linked_entity_id and linked_entity_type to linked_entities JSONB array
+-- Add new column
+ALTER TABLE campaign_storyline
+    ADD COLUMN IF NOT EXISTS linked_entities JSONB NOT NULL DEFAULT '[]'::jsonb;
+
+-- Migrate existing data: convert single linked_entity_id/type to JSON array
+-- Only attempt migration if the old columns exist
+DO $$
+BEGIN
+    IF EXISTS (
+        SELECT 1 
+        FROM information_schema.columns 
+        WHERE table_name = 'campaign_storyline' 
+          AND column_name IN ('linked_entity_id', 'linked_entity_type')
+    ) THEN
+        UPDATE campaign_storyline
+        SET linked_entities = jsonb_build_object(
+            'entityType', linked_entity_type,
+            'entityId', linked_entity_id
+        )::jsonb
+        WHERE linked_entity_id IS NOT NULL AND linked_entity_type IS NOT NULL;
+    END IF;
+END $$;
+
+-- Drop old columns if they exist
+ALTER TABLE campaign_storyline
+    DROP COLUMN IF EXISTS linked_entity_id,
+    DROP COLUMN IF EXISTS linked_entity_type;
+
+-- [038] Campaign Storyline Refactoring — separate archived table + schema changes
+-- This migration is superseded by [039] below
+
+-- [039] Create separate archived table for campaign chronicles
+CREATE TABLE IF NOT EXISTS campaign_storyline_archived (
+    id                  UUID         PRIMARY KEY DEFAULT gen_random_uuid(),
+    campaign_id         UUID         NOT NULL REFERENCES campaigns(id) ON DELETE CASCADE,
+    title               VARCHAR(200) NOT NULL,
+    body                TEXT         NOT NULL CHECK (char_length(body) <= 50000),
+    sort_order          INT          NOT NULL DEFAULT 0,
+    linked_entities     JSONB        NOT NULL DEFAULT '[]'::jsonb,
+    file_path           VARCHAR(500),
+    tod_slice_name      VARCHAR(100),
+    in_game_day         INT          NOT NULL CHECK (in_game_day > 0),
+    visible_to_players  BOOLEAN      NOT NULL DEFAULT FALSE,
+    archived_at         TIMESTAMPTZ  NOT NULL DEFAULT NOW(),
+    created_at          TIMESTAMPTZ  NOT NULL DEFAULT NOW(),
+    updated_at          TIMESTAMPTZ  NOT NULL DEFAULT NOW()
+);
+
+CREATE INDEX IF NOT EXISTS idx_campaign_storyline_archived_campaign ON campaign_storyline_archived(campaign_id);
+CREATE INDEX IF NOT EXISTS idx_campaign_storyline_archived_day ON campaign_storyline_archived(in_game_day);

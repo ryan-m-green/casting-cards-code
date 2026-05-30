@@ -1,6 +1,7 @@
-import { Component, OnInit, signal, computed, inject, effect, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, OnDestroy, signal, computed, inject, ViewChild, ElementRef } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
+import { Subscription } from 'rxjs';
 import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../../environments/environment';
@@ -27,15 +28,16 @@ import { LocationCardComponent } from '../../../shared/components/location-card/
 import { SublocationCardComponent } from '../../../shared/components/sublocation-card/sublocation-card.component';
 import { PortalImportCardComponent } from '../../../shared/components/portal-import-card/portal-import-card.component';
 import { LockIconComponent } from '../../../shared/components/lock-icon/lock-icon.component';
+import { DetailPanelActionsComponent } from '../../../shared/components/detail-panel-actions/detail-panel-actions.component';
 
 @Component({
   selector: 'app-campaign-location-detail',
   standalone: true,
-  imports: [CommonModule, FormsModule, LocationCardComponent, SublocationCardComponent, PortalImportCardComponent, LockIconComponent],
+  imports: [CommonModule, FormsModule, LocationCardComponent, SublocationCardComponent, PortalImportCardComponent, LockIconComponent, DetailPanelActionsComponent],
   templateUrl: './campaign-location-detail.component.html',
   styleUrl: './campaign-location-detail.component.scss'
 })
-export class CampaignLocationDetailComponent implements OnInit {
+export class CampaignLocationDetailComponent implements OnInit, OnDestroy {
   private route      = inject(ActivatedRoute);
   private router     = inject(Router);
   private http       = inject(HttpClient);
@@ -43,6 +45,7 @@ export class CampaignLocationDetailComponent implements OnInit {
   private auth       = inject(AuthService);
   private shellSvc   = inject(CampaignShellService);
   private transition = inject(PortalTransitionService);
+  private hubSubscriptions: Subscription[] = [];
 
   @ViewChild('detailContent') private detailContentRef!: ElementRef<HTMLElement>;
   @ViewChild('expandBtn')     private expandBtnRef!: ElementRef<HTMLElement>;
@@ -63,6 +66,7 @@ export class CampaignLocationDetailComponent implements OnInit {
   }
   get sublocationsGridEl(): HTMLElement | null { return this._sublocationsGridEl(); }
 
+  private paramsSub?: Subscription;
   campaignId         = signal('');
   locationInstanceId = signal('');
   campaign           = signal<CampaignDetail | null>(null);
@@ -119,58 +123,88 @@ export class CampaignLocationDetailComponent implements OnInit {
   revealedCount = computed(() => this.locationSecrets().filter(s => s.isRevealed).length);
 
   constructor() {
-    effect(() => {
-      const event = this.hub.secretRevealed();
-      if (!event || event.campaignId !== this.campaignId()) return;
-      this.campaign.update(c => {
-        if (!c) return c;
-        return {
-          ...c,
-          secrets: c.secrets.map(s =>
-            s.id === event.secretId ? { ...s, isRevealed: true } : s
-          )
-        };
-      });
-    });
+    this.hubSubscriptions.push(
+      this.hub.secretRevealed$.subscribe(event => {
+        if (!event || event.campaignId !== this.campaignId()) return;
+        this.campaign.update(c => {
+          if (!c) return c;
+          return {
+            ...c,
+            secrets: c.secrets.map(s =>
+              s.id === event.secretId ? { ...s, isRevealed: true } : s
+            )
+          };
+        });
+      })
+    );
 
-    effect(() => {
-      const event = this.hub.factionLocked();
-      if (!event || event.campaignId !== this.campaignId()) return;
-      this.campaign.update(c => {
-        if (!c) return c;
-        return {
-          ...c,
-          sublocations: (c.sublocations ?? []).map(l =>
-            l.factionInstanceId === event.factionInstanceId
-              ? { ...l, factionInstanceId: undefined, symbolPath: undefined }
-              : l
-          ),
-          casts: (c.casts ?? []).map(ca => ({
-            ...ca,
-            factionSymbols: (ca.factionSymbols ?? []).filter(fs => fs.factionInstanceId !== event.factionInstanceId),
-          })),
-        };
-      });
-    });
+    this.hubSubscriptions.push(
+      this.hub.factionLocked$.subscribe(event => {
+        if (!event || event.campaignId !== this.campaignId()) return;
+        this.campaign.update(c => {
+          if (!c) return c;
+          return {
+            ...c,
+            sublocations: (c.sublocations ?? []).map(l =>
+              l.factionInstanceId === event.factionInstanceId
+                ? { ...l, factionInstanceId: undefined, symbolPath: undefined }
+                : l
+            ),
+            casts: (c.casts ?? []).map(ca => ({
+              ...ca,
+              factionSymbols: (ca.factionSymbols ?? []).filter(fs => fs.factionInstanceId !== event.factionInstanceId),
+            })),
+          };
+        });
+      })
+    );
+
+    this.hubSubscriptions.push(
+      this.hub.bulkCardVisibilityChanged$.subscribe(event => {
+        if (!event || event.campaignId !== this.campaignId()) return;
+        if (event.cardType !== 'sublocation') return;
+        if (event.parentInstanceId !== this.locationInstanceId()) return;
+        this.campaign.update(c => {
+          if (!c) return c;
+          return {
+            ...c,
+            sublocations: (c.sublocations ?? []).map(l =>
+              l.locationInstanceId === event.parentInstanceId
+                ? { ...l, isVisibleToPlayers: event.isVisible }
+                : l
+            ),
+          };
+        });
+      })
+    );
   }
 
   ngOnInit() {
-    const id             = this.route.snapshot.paramMap.get('id')!;
-    const locationInstId = this.route.snapshot.paramMap.get('locationInstanceId')!;
-    this.campaignId.set(id);
-    this.locationInstanceId.set(locationInstId);
-    this.http.get<CampaignDetail>(`${environment.apiUrl}/api/campaigns/${id}`)
-      .subscribe(c => {
-        this.campaign.set(c);
-        this.shellSvc.setCampaign(c);
-        const loc = c.locations.find(l => l.instanceId === locationInstId);
-        this.shellSvc.setTitleContext({
-          pageType: 'location',
-          campaignId: id,
-          baseRoute: '/campaign',
-          location: loc ?? null,
-        }, '56px');
-      });
+    this.paramsSub = this.route.paramMap.subscribe(params => {
+      const id             = params.get('id')!;
+      const locationInstId = params.get('locationInstanceId')!;
+      this.campaignId.set(id);
+      this.locationInstanceId.set(locationInstId);
+      this.campaign.set(null);
+      this.http.get<CampaignDetail>(`${environment.apiUrl}/api/campaigns/${id}`)
+        .subscribe(c => {
+          this.campaign.set(c);
+          this.shellSvc.setCampaign(c);
+          const loc = c.locations.find(l => l.instanceId === locationInstId);
+          this.shellSvc.setTitleContext({
+            pageType: 'location',
+            campaignId: id,
+            campaignName: c.name,
+            baseRoute: '/campaign',
+            location: loc ?? null,
+          }, '56px');
+        });
+    });
+  }
+
+  ngOnDestroy() {
+    this.paramsSub?.unsubscribe();
+    this.hubSubscriptions.forEach(sub => sub.unsubscribe());
   }
 
   startEditing() {
@@ -256,6 +290,7 @@ export class CampaignLocationDetailComponent implements OnInit {
       } : c);
       this.shellSvc.setTitleContext({
         pageType: 'location',
+        campaignName: this.campaign()?.name,
         campaignId: this.campaignId(),
         baseRoute: '/campaign',
         location: this.location() ? { ...this.location()!, name: body.name } : null,

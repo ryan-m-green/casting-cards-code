@@ -121,11 +121,11 @@ export class FactionSymbolPickerComponent {
         ? { factionInstanceId: symbols[0].factionInstanceId, symbolPath: symbols[0].symbolPath }
         : { factionInstanceId: null, symbolPath: null };
 
-      this.http.patch(`${base}/sublocations/${this.targetDropInstanceId}/faction-symbol`, body)
+      this.http.patch(`${base}/sublocations/${this.targetDropInstanceId}/player-faction-symbol`, body)
         .subscribe();
     } else {
       const body = { factionSymbols: symbols.map(s => ({ factionInstanceId: s.factionInstanceId, symbolPath: s.symbolPath })) };
-      this.http.patch(`${base}/casts/${this.targetDropInstanceId}/faction-symbols`, body)
+      this.http.patch(`${base}/casts/${this.targetDropInstanceId}/player-faction-symbols`, body)
         .subscribe();
     }
   }

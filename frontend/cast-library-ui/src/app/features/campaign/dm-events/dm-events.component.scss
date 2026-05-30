@@ -17,7 +17,7 @@
 
 .tab-btn {
   font-family: v.$font-header;
-  font-size: 9px;
+  font-size: 12px;
   font-weight: bolder;
   letter-spacing: 0.18em;
   text-transform: uppercase;
@@ -81,7 +81,7 @@
 
 .event-label {
   font-family: v.$font-header;
-  font-size: 9px;
+  font-size: 12px;
   font-weight: bolder;
   letter-spacing: 0.16em;
   text-transform: uppercase;
@@ -185,7 +185,7 @@
 
 .ev-filters-legend {
   font-family: v.$font-body;
-  font-size: 11px;
+  font-size: 12px;
   letter-spacing: 0.08em;
   text-transform: uppercase;
   color: v.$campaign-portal-text-softer;
@@ -277,6 +277,69 @@
   flex-shrink: 0;
 }
 
+// ── Archive actions wrapper ─────────────────────────────────────────────────────
+
+.ev-actions-wrapper {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 16px;
+}
+
+.ev-archive-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  background: v.$campaign-portal-bg-medium;
+  border: 1px solid v.$campaign-portal-border-bold;
+  border-radius: 6px;
+  color: white;
+  font-family: v.$font-header;
+  font-size: 11px;
+  font-weight: bolder;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  outline: none;
+
+  &:focus-visible {
+    outline: 2px solid v.$campaign-portal-border-strong-focus;
+    outline-offset: 2px;
+  }
+
+  &:hover:not(:disabled) {
+    background: v.$campaign-portal-bg-hover;
+    border-color: v.$color-border-accent;
+    color: white;
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
+
+.ev-archive-btn-icon {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+  filter: brightness(0) invert(1);
+
+  &--spinning {
+    animation: spin 1s linear infinite;
+  }
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
 // ── Drop line ─────────────────────────────────────────────────────────────────
 .ev-drop-line {
   height: 2px;
@@ -343,7 +406,7 @@
   padding: 8px 8px;
   border-radius: 4px;
   font-family: v.$font-header;
-  font-size: 9px;
+  font-size: 12px;
   font-weight: bolder;
   letter-spacing: 0.14em;
   text-transform: uppercase;
@@ -354,8 +417,8 @@
 }
 
 .ev-badge-icon {
-  width: 13px;
-  height: 13px;
+  width: 18px;
+  height: 18px;
   flex-shrink: 0;
 }
 
@@ -429,7 +492,7 @@
 
   &__label {
     font-family: v.$font-header;
-    font-size: 8px;
+    font-size: 12px;
     font-weight: bolder;
     letter-spacing: 0.14em;
     text-transform: uppercase;
@@ -484,7 +547,7 @@
 }
 
 .ev-chevron {
-  font-size: 10px;
+  font-size: 12px;
   color: v.$campaign-portal-text-softer;
   flex-shrink: 0;
   transition: transform 0.2s ease;
@@ -497,17 +560,15 @@
 }
 
 .ev-body {
-  padding: 12px 14px 14px;
+  padding: 0 14px 14px;
   font-family: v.$font-body;
   font-size: 16px;
-  line-height: 1.7;
 
   @media (max-width: 768px) {
     font-size: 20px;
   }
   color: v.$campaign-portal-text-muted;
   white-space: pre-wrap;
-  border-top: 1px solid v.$campaign-portal-border;
 
   &--hidden {
     visibility: hidden;
@@ -528,9 +589,63 @@
   }
 }
 
+.ev-trigger-list {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.ev-trigger-item {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.ev-trigger-icon {
+  display: inline-flex;
+  align-items: center;
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+  color: #e94560;
+}
+
+.ev-trigger-type {
+  font-family: v.$font-header;
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: v.$campaign-portal-text-bright;
+}
+
+.ev-trigger-values {
+  font-family: v.$font-body;
+  font-size: 14px;
+  color: v.$campaign-portal-text-muted;
+}
+
+.ev-footer {
+  padding-top: 16px;
+  border-top: 4px solid v.$campaign-portal-border;
+}
+
+.ev-footer-title {
+  display: inline-block;
+  font-family: v.$font-header;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: v.$campaign-portal-text-muted;
+  margin-bottom: 8px;
+  padding-bottom: 4px;
+  border-bottom: 1px solid v.$campaign-portal-border;
+}
+
 .ev-autosave-status {
   font-family: v.$font-body;
-  font-size: 11px;
+  font-size: 12px;
   color: v.$campaign-portal-text-softer;
 
   &--saved {
@@ -542,7 +657,7 @@
   display: inline-flex;
   align-items: center;
   font-family: v.$font-header;
-  font-size: 9px;
+  font-size: 12px;
   font-weight: bolder;
   letter-spacing: 0.14em;
   text-transform: uppercase;
@@ -598,7 +713,7 @@
 
   &-label {
     font-family: v.$font-header;
-    font-size: 9px;
+    font-size: 12px;
     font-weight: bolder;
     letter-spacing: 0.14em;
     text-transform: uppercase;
@@ -607,7 +722,7 @@
 
   &-yes {
     font-family: v.$font-header;
-    font-size: 9px;
+    font-size: 12px;
     font-weight: bolder;
     letter-spacing: 0.14em;
     text-transform: uppercase;
@@ -623,7 +738,7 @@
 
   &-no {
     font-family: v.$font-header;
-    font-size: 9px;
+    font-size: 12px;
     font-weight: bolder;
     letter-spacing: 0.14em;
     text-transform: uppercase;
@@ -666,14 +781,12 @@
 
 .ev-handout-wrapper {
   padding: 12px 14px 14px;
-  border-top: 1px solid v.$campaign-portal-border;
 }
 
 .ev-handout-img {
   display: block;
   max-width: 100%;
   border-radius: 6px;
-  border: 1px solid v.$campaign-portal-border-bold;
 }
 
 // ── Handout upload form ───────────────────────────────────────────────────────
@@ -743,7 +856,7 @@
 }
 
 .handout-pdf-note {
-  font-size: 11px;
+  font-size: 12px;
   color: v.$campaign-portal-text-softer;
   margin-left: auto;
 }

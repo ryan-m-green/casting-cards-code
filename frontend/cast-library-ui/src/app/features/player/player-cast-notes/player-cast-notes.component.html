@@ -2,8 +2,7 @@
 
   <!-- ── Panel header ── -->
   <div class="notes-panel-header">
-    <span class="notes-panel-label">Cast Notes</span>
-    <span class="notes-panel-line"></span>
+    <span class="notes-panel-label notes-panel-title">Cast Notes</span>
     @if (saving()) {
       <span class="notes-saving">saving…</span>
     }
@@ -12,7 +11,6 @@
   <!-- ── 1. What does this person want ── -->
   <div class="notes-section">
     <div class="notes-field-label">What does this person want</div>
-    <span class="notes-field-line"></span>
     <textarea
       #wantTextarea
       class="notes-textarea"
@@ -21,13 +19,9 @@
       (input)="onWantInput($any($event.target).value)"
     ></textarea>
   </div>
-
-  <div class="notes-section-divider"></div>
-
   <!-- ── 2. Who is this person connected with ── -->
   <div class="notes-section">
     <div class="notes-field-label">Who is this person connected with</div>
-    <span class="notes-field-line"></span>
 
     <div class="notes-dropdown">
       <button class="notes-dropdown-trigger" (click)="toggleDropdown($event)">
@@ -65,12 +59,9 @@
     }
   </div>
 
-  <div class="notes-section-divider"></div>
-
   <!-- ── 3. What is this person's alignment ── -->
   <div class="notes-section">
     <div class="notes-field-label">What is this person's alignment</div>
-    <span class="notes-field-line"></span>
     <div class="alignment-grid">
       @for (row of alignments; track $index) {
         @for (cell of row; track cell) {
@@ -84,12 +75,9 @@
     </div>
   </div>
 
-  <div class="notes-section-divider"></div>
-
   <!-- ── 4. How does this person perceive us ── -->
   <div class="notes-section">
     <div class="notes-field-label">How does this person perceive us</div>
-    <span class="notes-field-line"></span>
     <div
       class="perception-card"
       [class.perception-card--hostile]="notes().perception < 0"

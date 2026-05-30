@@ -123,6 +123,38 @@
   }
 }
 
+// ─── Sparkler Drip Animation ───────────────────────────────────────────────────
+.sparkler-drip {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  pointer-events: none;
+  animation: sparkler-fall 800ms ease-in forwards;
+  background: var(--color, #C8A030);
+  box-shadow: 0 0 4px 1px var(--color, #C8A030);
+  z-index: 99999;
+}
+
+@keyframes sparkler-fall {
+  0% {
+    transform: translate(0, 0) scale(1);
+    opacity: 1;
+  }
+  30% {
+    // Phase 1: Horizontal movement (left or right) with slight upward arc
+    transform: translate(calc(var(--hx) * var(--hd)), -5px) scale(0.95);
+    opacity: 0.9;
+  }
+  100% {
+    // Phase 2: Vertical fall from horizontal position
+    transform: translate(calc(var(--hx) * var(--hd)), var(--dy)) scale(0.3);
+    opacity: 0;
+  }
+}
+
 // ─── Stack Pulse ─────────────────────────────────────────────────────────────
 @keyframes stackPulse {
   0%   { transform: scale(1); }

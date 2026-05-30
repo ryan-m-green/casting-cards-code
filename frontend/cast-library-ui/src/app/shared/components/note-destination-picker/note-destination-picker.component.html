@@ -35,6 +35,7 @@
     <span>Faction</span>
   </button>
 
+  @if (showCampaign) {
   <button type="button" class="ndp-dest-btn" [class.active]="destType === 'campaign'" (click)="onDestTypeChange('campaign')" (keydown.enter)="onKeyEnter('campaign')" title="Campaign Note">
     <svg class="ndp-dest-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
       <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/>
@@ -42,6 +43,7 @@
     </svg>
     <span>Campaign</span>
   </button>
+  }
 
   <button type="button" class="ndp-dest-btn" [class.active]="destType === 'sublocation'" [disabled]="sublocations.length === 0" (click)="onDestTypeChange('sublocation')" (keydown.enter)="onKeyEnter('sublocation')" title="Sublocation">
     <svg class="ndp-dest-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
@@ -82,6 +84,19 @@
   }
 
 </div>
+
+@if (showPills) {
+  <div class="ndp-pills">
+    @for (item of linkedEntities; track item.entityId; let i = $index) {
+      <span class="ndp-pill">
+        {{ item.entityType.toUpperCase() }}: {{ item.entityName }}
+        <button class="ndp-pill-remove" (click)="removeLinkedItem(i)" title="Remove" aria-label="Remove">
+          <img src="/icons/chronicle/delete.svg" alt="Remove" class="ndp-pill-remove-img" />
+        </button>
+      </span>
+    }
+  </div>
+}
 
 @if (showEntitySelect) {
   <div class="ndp-entity-row">
@@ -162,5 +177,23 @@
         }
       </div>
     }
+  </div>
+}
+
+@if (showNone) {
+  <div class="ndp-visibility-text">
+    <span class="ndp-visibility-label">{{ getVisibilityText() }}</span>
+  </div>
+}
+
+@if (multiselect && showNone) {
+  <div class="ndp-add-trigger-row">
+    <button type="button" class="ndp-add-trigger-btn" [disabled]="destType === 'none'" (click)="addTrigger()" title="Add trigger">
+      <svg class="ndp-add-trigger-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="12" y1="5" x2="12" y2="19"></line>
+        <line x1="5" y1="12" x2="19" y2="12"></line>
+      </svg>
+      <span>Add Trigger</span>
+    </button>
   </div>
 }

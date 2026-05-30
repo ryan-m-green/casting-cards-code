@@ -1,3 +1,4 @@
+using CastLibrary.Repository.Mappers;
 using CastLibrary.Repository.Repositories.Insert;
 using CastLibrary.Shared.Domain;
 using CastLibrary.Shared.Requests;
@@ -16,17 +17,15 @@ public class CreateCampaignEventCommandHandler(
     {
         var domain = new CampaignEventDomain
         {
-            Id               = Guid.NewGuid(),
-            CampaignId       = command.CampaignId,
-            Title            = command.Request.Title,
-            Body             = command.Request.Body,
-            SortOrder        = 0,
-            LinkedEntityId   = command.Request.LinkedEntityId,
-            LinkedEntityType = command.Request.LinkedEntityType,
-            TodPositionPercent = command.Request.TodPositionPercent,
-            VisibleToPlayers = false,
-            CreatedAt        = DateTime.UtcNow,
-            UpdatedAt        = DateTime.UtcNow,
+            Id = Guid.NewGuid(),
+            CampaignId = command.CampaignId,
+            Title = command.Request.Title,
+            Body = command.Request.Body,
+            SortOrder = 0,
+            LinkedEntities = command.Request.LinkedEntities,
+            VisibleToPlayers = command.Request.IsVisibleToPlayers,
+            CreatedAt = DateTime.UtcNow,
+            UpdatedAt = DateTime.UtcNow,
         };
 
         return await campaignEventRepository.InsertAsync(domain);

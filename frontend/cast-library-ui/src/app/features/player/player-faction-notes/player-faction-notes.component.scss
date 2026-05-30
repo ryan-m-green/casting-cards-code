@@ -18,12 +18,12 @@
   align-items: center;
   gap: 12px;
   padding: 12px 16px 10px;
-  border-bottom: 1px solid rgba(v.$cast-gold, 0.18);
+  border-bottom: 1px solid rgba(v.$color-base-cast-tan, 0.18);
 }
 
 .notes-panel-label {
   font-family: v.$font-header;
-  font-size: 7px;
+  font-size: 12px;
   letter-spacing: 0.22em;
   text-transform: uppercase;
   color: rgba(v.$color-faction-neutral-frame-2, 0.95);
@@ -33,7 +33,7 @@
 .notes-panel-line {
   flex: 1;
   height: 1px;
-  background: linear-gradient(to right, rgba(v.$cast-gold, 0.22), transparent);
+  background: linear-gradient(to right, rgba(v.$color-base-cast-tan, 0.22), transparent);
 }
 
 .notes-saving {

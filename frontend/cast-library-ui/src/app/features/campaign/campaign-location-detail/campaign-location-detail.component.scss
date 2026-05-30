@@ -19,7 +19,7 @@
 .void-canvas {
   width: 100%;
   min-height: 100%;
-  background: v.$color-black;
+  background: v.$color-base-black;
   position: relative;
   overflow-y: auto;
   overflow-x: hidden;
@@ -37,17 +37,17 @@
 @keyframes portal-inward-breathe {
   0%, 100% {
     box-shadow:
-      inset 0 0 0    1px color-mix(in srgb, var(--portal-color, #{v.$location-blue}) 40%, white 60%),
-      inset 0 0  6px  2px color-mix(in srgb, var(--portal-color, #{v.$location-blue}), transparent 28%),
-      inset 0 0 14px  4px color-mix(in srgb, var(--portal-color, #{v.$location-blue}), transparent 52%),
-      inset 0 0 25px  8px color-mix(in srgb, var(--portal-color, #{v.$location-blue}), transparent 76%);
+      inset 0 0 0    1px color-mix(in srgb, var(--portal-color, #{v.$color-lib-location-1}) 40%, white 60%),
+      inset 0 0  6px  2px color-mix(in srgb, var(--portal-color, #{v.$color-lib-location-1}), transparent 28%),
+      inset 0 0 14px  4px color-mix(in srgb, var(--portal-color, #{v.$color-lib-location-1}), transparent 52%),
+      inset 0 0 25px  8px color-mix(in srgb, var(--portal-color, #{v.$color-lib-location-1}), transparent 76%);
   }
   50% {
     box-shadow:
-      inset 0 0 0    1px color-mix(in srgb, var(--portal-color, #{v.$location-blue}) 25%, white 75%),
-      inset 0 0  9px  3px color-mix(in srgb, var(--portal-color, #{v.$location-blue}), transparent 12%),
-      inset 0 0 19px  6px color-mix(in srgb, var(--portal-color, #{v.$location-blue}), transparent 36%),
-      inset 0 0 35px 12px color-mix(in srgb, var(--portal-color, #{v.$location-blue}), transparent 64%);
+      inset 0 0 0    1px color-mix(in srgb, var(--portal-color, #{v.$color-lib-location-1}) 25%, white 75%),
+      inset 0 0  9px  3px color-mix(in srgb, var(--portal-color, #{v.$color-lib-location-1}), transparent 12%),
+      inset 0 0 19px  6px color-mix(in srgb, var(--portal-color, #{v.$color-lib-location-1}), transparent 36%),
+      inset 0 0 35px 12px color-mix(in srgb, var(--portal-color, #{v.$color-lib-location-1}), transparent 64%);
   }
 }
 
@@ -70,7 +70,7 @@
 
 .topbar-party-btn {
   font-family: v.$font-header;
-  font-size: 9px;
+  font-size: 12px;
   letter-spacing: 0.16em;
   text-transform: uppercase;
   padding: 7px 16px;
@@ -90,17 +90,17 @@
 
 .void-back {
   font-family: v.$font-header;
-  font-size: 9px;
+  font-size: 12px;
   letter-spacing: 0.18em;
   text-transform: uppercase;
-  color: color-mix(in srgb, var(--portal-color, #{v.$location-blue}), white 75%);
+  color: color-mix(in srgb, var(--portal-color, #{v.$color-lib-location-1}), white 75%);
   background: none;
   border: none;
   cursor: pointer;
   transition: color 0.2s ease;
   white-space: nowrap;
 
-  &:hover { color: color-mix(in srgb, var(--portal-color, #{v.$location-blue}), white 92%); }
+  &:hover { color: color-mix(in srgb, var(--portal-color, #{v.$color-lib-location-1}), white 92%); }
 }
 
 /* ── Breadcrumbs ─────────────────────────────────────────────────────────── */
@@ -114,8 +114,8 @@
 
 .void-crumb-sep {
   font-family: v.$font-header;
-  font-size: 9px;
-  color: color-mix(in srgb, var(--portal-color, #{v.$location-blue}), white 55%);
+  font-size: 12px;
+  color: color-mix(in srgb, var(--portal-color, #{v.$color-lib-location-1}), white 55%);
   user-select: none;
   pointer-events: none;
 }
@@ -131,17 +131,17 @@
   text-transform: uppercase;
   color: v.$campaign-portal-text-softer;
   text-shadow:
-    0 0 20px color-mix(in srgb, var(--portal-color, #{v.$location-blue}), white 35%),
-    0 0 50px color-mix(in srgb, var(--portal-color, #{v.$location-blue}), transparent 38%),
+    0 0 20px color-mix(in srgb, var(--portal-color, #{v.$color-lib-location-1}), white 35%),
+    0 0 50px color-mix(in srgb, var(--portal-color, #{v.$color-lib-location-1}), transparent 38%),
     0 1px 3px v.$color-ext-23;
 }
 
 .void-subtitle {
   font-family: v.$font-header;
-  font-size: 8px;
+  font-size: 12px;
   letter-spacing: 0.2em;
   text-transform: uppercase;
-  color: color-mix(in srgb, var(--portal-color, #{v.$location-blue}), white 75%);
+  color: color-mix(in srgb, var(--portal-color, #{v.$color-lib-location-1}), white 75%);
   white-space: nowrap;
 }
 
@@ -164,7 +164,7 @@
   flex: 1;
   min-width: 0;
   background: v.$campaign-portal-bg-dark;
-  border: 1px solid rgba(v.$location-blue, 0.40);
+  border: 1px solid rgba(v.$color-lib-location-1, 0.40);
   border-radius: 6px;
   display: flex;
   flex-direction: column;
@@ -186,7 +186,7 @@
   flex-direction: column;
   gap: 6px;
   padding: 12px 16px;
-  border-bottom: 1px solid rgba(v.$location-blue, 0.12);
+  border-bottom: 1px solid rgba(v.$color-lib-location-1, 0.12);
 }
 
 /* ── 2-col field grid ────────────────────────────────────────────────────── */
@@ -202,10 +202,10 @@
   flex-direction: column;
   gap: 6px;
   padding: 12px 16px;
-  border-bottom: 1px solid rgba(v.$location-blue, 0.08);
+  border-bottom: 1px solid rgba(v.$color-lib-location-1, 0.08);
   // odd cells get a right border to act as column separator
   &:nth-child(odd) {
-    border-right: 1px solid rgba(v.$location-blue, 0.08);
+    border-right: 1px solid rgba(v.$color-lib-location-1, 0.08);
   }
 
   &--full {
@@ -215,8 +215,8 @@
 
 /* ── Secrets section ─────────────────────────────────────────────────────── */
 .detail-secrets-section {
-  border-top: 1px solid rgba(v.$location-blue, 0.22);
-  background: rgba(v.$location-blue, 0.03);
+  border-top: 1px solid rgba(v.$color-lib-location-1, 0.22);
+  background: rgba(v.$color-lib-location-1, 0.03);
 }
 
 .detail-secrets-header {
@@ -232,7 +232,7 @@
   align-items: flex-start;
   gap: 10px;
   padding: 10px 16px;
-  border-top: 1px solid rgba(v.$location-blue, 0.08);
+  border-top: 1px solid rgba(v.$color-lib-location-1, 0.08);
 }
 
 .secret-lock-btn {
@@ -262,7 +262,7 @@
 
   &:hover {
     opacity: 1;
-    background: rgba(v.$location-blue, 0.06);
+    background: rgba(v.$color-lib-location-1, 0.06);
   }
 }
 
@@ -292,34 +292,7 @@
   }
 }
 
-/* ── Panel action bar (Edit / Save / Cancel) ─────────────────────────────── */
-.detail-panel-actions {
-  display: flex;
-  justify-content: flex-end;
-  align-items: center;
-  gap: 8px;
-  padding: 10px 16px 0;
-}
 
-.detail-edit-btn {
-  background: none;
-  border: 1px solid rgba(v.$location-blue, 0.30);
-  border-radius: 4px;
-  padding: 4px 12px;
-  font-family: v.$font-header;
-  font-size: 8px;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-  color: v.$campaign-portal-text-bright;
-  cursor: pointer;
-  transition: background 0.18s ease, border-color 0.18s ease, color 0.18s ease;
-
-  &:hover {
-    background: rgba(v.$location-blue, 0.10);
-    border-color: rgba(v.$location-blue, 0.55);
-    color: v.$campaign-portal-text-bright;
-  }
-}
 
 .detail-save-btn {
   background: v.$color-ext-37;
@@ -327,7 +300,7 @@
   border-radius: 4px;
   padding: 4px 12px;
   font-family: v.$font-header;
-  font-size: 8px;
+  font-size: 12px;
   letter-spacing: 0.16em;
   text-transform: uppercase;
   color: v.$color-ext-39;
@@ -347,7 +320,7 @@
   border-radius: 4px;
   padding: 4px 12px;
   font-family: v.$font-header;
-  font-size: 8px;
+  font-size: 12px;
   letter-spacing: 0.16em;
   text-transform: uppercase;
   color: v.$campaign-portal-text-secondary;
@@ -363,7 +336,7 @@
 /* ── Edit inputs ─────────────────────────────────────────────────────────── */
 .detail-input {
   background: v.$color-overlay-darker;
-  border: 1px solid rgba(v.$location-blue, 0.28);
+  border: 1px solid rgba(v.$color-lib-location-1, 0.28);
   border-radius: 3px;
   padding: 5px 8px;
   font-family: v.$font-body;
@@ -375,11 +348,11 @@
   transition: border-color 0.18s ease;
 
   &::placeholder {
-    color: rgba(v.$location-blue, 0.30);
+    color: rgba(v.$color-lib-location-1, 0.30);
   }
 
   &:focus {
-    border-color: rgba(v.$location-blue, 0.65);
+    border-color: rgba(v.$color-lib-location-1, 0.65);
   }
 
   &--block {
@@ -396,7 +369,7 @@
   flex-direction: column;
   gap: 6px;
   padding: 12px 16px;
-  border-top: 1px solid rgba(v.$location-blue, 0.14);
+  border-top: 1px solid rgba(v.$color-lib-location-1, 0.14);
   margin-top: 4px;
   min-height: 60px;
 }
@@ -404,7 +377,7 @@
 .detail-value--muted {
   font-family: v.$font-body;
   font-size: 13px;
-  color: rgba(v.$location-blue, 0.75);
+  color: rgba(v.$color-lib-location-1, 0.75);
   font-style: italic;
   margin: 0;
 }
@@ -427,11 +400,11 @@
 .secret-textarea {
   flex: 1;
   background: v.$color-overlay-darker;
-  border: 1px solid rgba(v.$location-blue, 0.28);
+  border: 1px solid rgba(v.$color-lib-location-1, 0.28);
   border-radius: 3px;
   padding: 5px 8px;
   font-family: v.$font-body;
-  font-size: 13px;
+  font-size: 16px;
   color: v.$campaign-portal-text-muted;
   resize: vertical;
   outline: none;
@@ -439,11 +412,11 @@
   min-height: 48px;
 
   &::placeholder {
-    color: rgba(v.$location-blue, 0.30);
+    color: rgba(v.$color-lib-location-1, 0.30);
   }
 
   &:focus {
-    border-color: rgba(v.$location-blue, 0.65);
+    border-color: rgba(v.$color-lib-location-1, 0.65);
   }
 }
 
@@ -495,20 +468,20 @@
   margin: 4px 16px 8px;
   padding: 6px 0;
   background: none;
-  border: 1px dashed rgba(v.$location-blue, 0.22);
+  border: 1px dashed rgba(v.$color-lib-location-1, 0.22);
   border-radius: 4px;
   font-family: v.$font-header;
-  font-size: 8px;
+  font-size: 12px;
   letter-spacing: 0.16em;
   text-transform: uppercase;
-  color: rgba(v.$location-blue, 0.85);
+  color: rgba(v.$color-lib-location-1, 0.85);
   cursor: pointer;
   transition: border-color 0.18s ease, color 0.18s ease, background 0.18s ease;
 
   &:hover {
-    border-color: rgba(v.$location-blue, 0.55);
-    color: rgba(v.$location-blue, 0.80);
-    background: rgba(v.$location-blue, 0.05);
+    border-color: rgba(v.$color-lib-location-1, 0.55);
+    color: rgba(v.$color-lib-location-1, 0.80);
+    background: rgba(v.$color-lib-location-1, 0.05);
   }
 }
 
@@ -518,28 +491,28 @@
   width: 100%;
   height: 34px;
   padding: 0;
-  background: rgba(v.$location-blue, 0.04);
+  background: rgba(v.$color-lib-location-1, 0.04);
   border: none;
-  border-top: 1px solid rgba(v.$location-blue, 0.14);
+  border-top: 1px solid rgba(v.$color-lib-location-1, 0.14);
   border-radius: 0 0 6px 6px;
   cursor: pointer;
   font-family: v.$font-header;
-  font-size: 8px;
+  font-size: 12px;
   letter-spacing: 0.12em;
-  color: rgba(v.$location-blue, 0.85);
+  color: rgba(v.$color-lib-location-1, 0.85);
   transition: background 0.18s ease, color 0.18s ease;
 
   &:hover {
-    background: rgba(v.$location-blue, 0.10);
-    color: rgba(v.$location-blue, 0.95);
+    background: rgba(v.$color-lib-location-1, 0.10);
+    color: rgba(v.$color-lib-location-1, 0.95);
   }
 }
 
 .location-cards-empty {
   font-family: v.$font-header;
-  font-size: 11px;
+  font-size: 12px;
   letter-spacing: 0.1em;
-  color: rgba(v.$location-blue, 0.85);
+  color: rgba(v.$color-lib-location-1, 0.85);
   font-style: italic;
   opacity: 0.65;
   padding: 8px 0;
@@ -547,17 +520,17 @@
 
 .detail-label {
   font-family: v.$font-header;
-  font-size: 7px;
+  font-size: 12px;
   letter-spacing: 0.2em;
   text-transform: uppercase;
-  color: rgba(v.$location-blue, 0.85);
+  color: rgba(v.$color-lib-location-1, 0.85);
   white-space: nowrap;
 }
 
 .detail-line {
   height: 1px;
   width: 100%;
-  background: linear-gradient(to right, rgba(v.$location-blue, 0.22), transparent);
+  background: linear-gradient(to right, rgba(v.$color-lib-location-1, 0.22), transparent);
 }
 
 .detail-value {
@@ -586,11 +559,11 @@
 
 .detail-keyword-pill {
   font-family: v.$font-header;
-  font-size: 7px;
+  font-size: 12px;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: rgba(v.$location-blue, 0.80);
-  border: 1px solid rgba(v.$location-blue, 0.28);
+  color: rgba(v.$color-lib-location-1, 0.80);
+  border: 1px solid rgba(v.$color-lib-location-1, 0.28);
   border-radius: 2px;
   padding: 2px 8px;
 }
@@ -617,19 +590,19 @@
 
 .lang-col-header {
   font-family: v.$font-header;
-  font-size: 8px;
+  font-size: 12px;
   font-weight: 700;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: rgba(v.$color-parchment, 0.50);
+  color: rgba(v.$color-base-linen-warm, 0.50);
   margin-bottom: 4px;
   padding-left: 2px;
 }
 
 .lang-list {
-  border: 1px solid rgba(v.$color-parchment, 0.15);
+  border: 1px solid rgba(v.$color-base-linen-warm, 0.15);
   border-radius: 3px;
-  background: rgba(v.$color-black, 0.35);
+  background: rgba(v.$color-base-black, 0.35);
   min-height: 120px;
   max-height: 180px;
   overflow-y: auto;
@@ -637,28 +610,28 @@
 }
 
 .lang-list--selected {
-  background: rgba(v.$location-blue, 0.08);
-  border-color: rgba(v.$location-blue, 0.30);
+  background: rgba(v.$color-lib-location-1, 0.08);
+  border-color: rgba(v.$color-lib-location-1, 0.30);
 }
 
 .lang-item {
   padding: 5px 10px;
-  font-size: 11px;
-  color: rgba(v.$color-parchment, 0.80);
+  font-size: 16px;
+  color: rgba(v.$color-base-linen-warm, 0.80);
   cursor: pointer;
-  &:hover { background: rgba(v.$color-parchment, 0.08); }
+  &:hover { background: rgba(v.$color-base-linen-warm, 0.08); }
 }
 
 .lang-item--selected {
-  color: rgba(v.$location-blue, 0.90);
-  &:hover { background: rgba(v.$location-blue, 0.12); }
+  color: rgba(v.$color-lib-location-1, 0.90);
+  &:hover { background: rgba(v.$color-lib-location-1, 0.12); }
 }
 
 .lang-empty {
   padding: 8px 10px;
-  font-size: 10px;
+  font-size: 12px;
   font-style: italic;
-  color: rgba(v.$color-parchment, 0.35);
+  color: rgba(v.$color-base-linen-warm, 0.35);
 }
 
 /* ── Sublocations section ─────────────────────────────────────────────────── */
@@ -677,18 +650,18 @@
 
 .sublocations-section-label {
   font-family: v.$font-header;
-  font-size: 9px;
+  font-size: 14px;
   letter-spacing: 0.22em;
   text-transform: uppercase;
-  color: rgba(v.$location-blue, 0.92);
+  color: rgba(v.$color-lib-location-1, 0.92);
   white-space: nowrap;
-  text-shadow: 0 0 10px rgba(v.$location-blue, 0.22);
+  text-shadow: 0 0 10px rgba(v.$color-lib-location-1, 0.22);
 }
 
 .sublocations-section-line {
   flex: 1;
   height: 1px;
-  background: linear-gradient(to right, rgba(v.$location-blue,0.24), transparent);
+  background: linear-gradient(to right, rgba(v.$color-lib-location-1,0.24), transparent);
 }
 
 .sublocations-grid {
@@ -716,7 +689,7 @@ app-portal-import-card {
   border: 1px solid v.$color-border-white-light;
   border-radius: 6px;
   font-family: v.$font-header;
-  font-size: 8px;
+  font-size: 14px;
   letter-spacing: 0.14em;
   text-transform: uppercase;
   color: v.$campaign-portal-text-bright;
@@ -756,7 +729,7 @@ app-portal-import-card {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: color-mix(in srgb, v.$color-black, transparent 30%);
+  background: color-mix(in srgb, v.$color-base-black, transparent 30%);
   border: 1px solid v.$color-border-accent;
   border-radius: 50%;
   color: #ffffff;
@@ -773,12 +746,6 @@ app-portal-import-card {
   }
 }
 
-/* ── Time-of-day bar section ─────────────────────────────────── */
-.tod-bar-section {
-  padding: 0 20px 54px;
-  max-width: 960px;
-  margin: 0 auto;
-}
 
 /* ── Mobile: left-slide + downward accordion ─────────────────────────────── */
 @media (max-width: 767px) {
@@ -821,21 +788,21 @@ app-portal-import-card {
   width: 72px;
   height: 100px;
   border-radius: 4px;
-  border: 1px dashed rgba(v.$color-text-primary, 0.25);
+  border: 1px dashed rgba(v.$color-base-brown-14, 0.25);
   cursor: pointer;
   overflow: hidden;
   background: rgba(v.$color-input-bg, 0.5);
   transition: border-color 0.18s ease;
 
   &:hover {
-    border-color: rgba(v.$color-text-primary, 0.5);
+    border-color: rgba(v.$color-base-brown-14, 0.5);
     .detail-portrait-overlay { opacity: 1; }
     .detail-portrait-empty   { opacity: 0.85; }
   }
 
   &--filled {
     border-style: solid;
-    border-color: rgba(v.$color-text-primary, 0.3);
+    border-color: rgba(v.$color-base-brown-14, 0.3);
   }
 }
 
@@ -861,7 +828,7 @@ app-portal-import-card {
   align-items: center;
   justify-content: center;
   background: rgba(0, 0, 0, 0.45);
-  color: v.$color-text-primary;
+  color: v.$color-base-brown-14;
   opacity: 0;
   transition: opacity 0.18s ease;
 }
@@ -874,12 +841,12 @@ app-portal-import-card {
   gap: 5px;
   width: 100%;
   height: 100%;
-  color: rgba(v.$color-text-primary, 0.35);
+  color: rgba(v.$color-base-brown-14, 0.35);
   transition: opacity 0.18s ease;
 }
 
 .detail-portrait-hint {
-  font-size: 8px;
+  font-size: 12px;
   text-align: center;
   line-height: 1.4;
   font-family: v.$font-header;
@@ -888,7 +855,7 @@ app-portal-import-card {
 
   em {
     font-style: italic;
-    font-size: 7px;
+    font-size: 12px;
     opacity: 0.75;
     text-transform: none;
   }

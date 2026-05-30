@@ -30,8 +30,10 @@ export interface SecretResealedEvent {
 export interface CardVisibilityChangedEvent {
   campaignId: string;
   instanceId: string;
-  cardType: 'location' | 'sublocation' | 'cast' | 'faction';
+  cardType: 'location' | 'sublocation' | 'cast' | 'faction' | 'campaign-event';
   isVisible: boolean;
+  title?: string;
+  body?: string;
 }
 
 export interface BulkCardVisibilityChangedEvent {

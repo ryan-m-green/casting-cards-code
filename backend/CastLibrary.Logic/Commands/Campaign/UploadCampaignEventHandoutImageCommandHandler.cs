@@ -10,7 +10,7 @@ public interface IUploadCampaignEventHandoutImageCommandHandler
 }
 
 public class UploadCampaignEventHandoutImageCommandHandler(
-    ICampaignEventUpdateRepository updateRepository,
+    IStorylineUpdateRepository updateRepository,
     IImageStorageOperator imageStorage) : IUploadCampaignEventHandoutImageCommandHandler
 {
     public async Task<string> HandleAsync(UploadCampaignEventHandoutImageCommand command)

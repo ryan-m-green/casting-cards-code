@@ -2,8 +2,9 @@
   @if (isDm()) {
     <!-- ── Locations grid ── -->
     <div class="location-cards-section">
-      <div class="location-cards-label-row">
+      <div class="location-cards-header">
         <span class="location-cards-label">Locations</span>
+        <span class="location-cards-line"></span>
       </div>
       <div class="cl-grid" #locationsGrid>
         @for (location of camp.locations; track location.instanceId) {
@@ -33,7 +34,7 @@
           }
         }
         @if (!camp.locations.some(l => !l.isPartyAnchor)) {
-          <p class="location-cards-empty">No locations yet — use the ✦ button below to add some.</p>
+          <p class="wbd">No locations yet — use the ✦ button below to add some.</p>
         }
       </div>
       <app-portal-import-card

@@ -1,61 +1,101 @@
-@if (data) {
+@if (currentData) {
   <div class="cr-backdrop" (click)="dismiss()">
     <div class="cr-panel" (click)="$event.stopPropagation()">
 
-      <!-- Card -->
-      <div class="cr-card-wrap">
-        @switch (data.cardType) {
-          @case ('cast') {
-            @if (castModel) {
-              <app-cast-card
-                [cast]="castModel"
-                [flippable]="false"
-                [editable]="false"
-                [secretContent]="data.secretContent ?? null" />
+      <!-- Carousel Controls (only show if multiple cards) -->
+      @if (totalCards > 1) {
+        <button class="cr-nav-btn cr-nav-prev" (click)="previousCard()" aria-label="Previous card">
+          <span class="cr-nav-arrow">‹</span>
+        </button>
+        <button class="cr-nav-btn cr-nav-next" (click)="nextCard()" aria-label="Next card">
+          <span class="cr-nav-arrow">›</span>
+        </button>
+        <div class="cr-counter">{{ currentCardNumber }} of {{ totalCards }}</div>
+      }
+
+      <!-- Rolodex Fan Carousel -->
+      <div class="cr-card-fan">
+        @for (card of cards; track card; let i = $index) {
+          <div
+            class="cr-card-wrap-fan"
+            [style.opacity]="cardStyles()[i].opacity"
+            [style.transform]="'translateX(' + cardStyles()[i].translateX + ') translateY(' + cardStyles()[i].translateY + ') translateZ(' + cardStyles()[i].translateZ + ') scale(' + cardStyles()[i].scale + ') rotate(' + cardStyles()[i].rotate + ')'"
+            [style.z-index]="cardStyles()[i].zIndex"
+            [style.pointer-events]="cardStyles()[i].pointerEvents"
+            (click)="navigateToCard(i)"
+          >
+            @switch (card.cardType) {
+              @case ('cast') {
+                <app-cast-card
+                  [cast]="getCastModel(card)"
+                  [flippable]="false"
+                  [editable]="false"
+                  [secretContent]="card.secretContent ?? null" />
+              }
+              @case ('player') {
+                <app-cast-card
+                  [cast]="getCastModel(card)"
+                  [flippable]="false"
+                  [editable]="false"
+                  [secretContent]="card.secretContent ?? null" />
+              }
+              @case ('location') {
+                <app-location-card
+                  [location]="getLocationModel(card)"
+                  [flippable]="false"
+                  [editable]="false"
+                  [secretContent]="card.secretContent ?? null" />
+              }
+              @case ('sublocation') {
+                <app-sublocation-card
+                  [sublocation]="getSublocationModel(card)"
+                  [flippable]="false"
+                  [editable]="false"
+                  [secretContent]="card.secretContent ?? null" />
+              }
+              @case ('faction') {
+                <app-faction-card
+                  [faction]="getFactionModel(card)"
+                  [flippable]="false"
+                  [editable]="false"
+                  [secrets]="false"
+                  [campaignMode]="false" />
+              }
+              @case ('currency') {
+                <app-currency-card
+                  [amount]="card.amount ?? 0"
+                  [currency]="card.currency ?? 'gp'"
+                  [note]="card.note ?? null"
+                  [portalColor]="card.portalColor ?? '#6e28d0'" />
+              }
+              @case ('whisper') {
+                <app-whisper-card
+                  [content]="card.content ?? null"
+                  [recipient]="card.recipient ?? ''"
+                  [portalColor]="card.portalColor ?? '#6e28d0'"
+                  [dismissable]="false"
+                  (goToSecrets)="handleWhisperGoToSecrets()" />
+              }
+              @case ('campaign-event') {
+                <app-portal-card
+                  [name]="card.descriptor"
+                  [description]="card.content || card.name || ''"
+                  [portalColor]="card.portalColor ?? '#6e28d0'"
+                  [showPortal]="false"
+                  [showSettings]="false"
+                  [sceneText]="card.sceneText ?? ''"
+                />
+              }
+              @default {
+                <div>Unknown card type: {{ card.cardType }}</div>
+              }
             }
-          }
-          @case ('player') {
-            @if (castModel) {
-              <app-cast-card
-                [cast]="castModel"
-                [flippable]="false"
-                [editable]="false"
-                [secretContent]="data.secretContent ?? null" />
-            }
-          }
-          @case ('location') {
-            @if (locationModel) {
-              <app-location-card
-                [location]="locationModel"
-                [flippable]="false"
-                [editable]="false"
-                [secretContent]="data.secretContent ?? null" />
-            }
-          }
-          @case ('sublocation') {
-            @if (sublocationModel) {
-              <app-sublocation-card
-                [sublocation]="sublocationModel"
-                [flippable]="false"
-                [editable]="false"
-                [secretContent]="data.secretContent ?? null" />
-            }
-          }
-          @case ('faction') {
-            @if (factionModel) {
-              <app-faction-card
-                [faction]="factionModel"
-                [flippable]="false"
-                [editable]="false"
-                [secrets]="false"
-                [campaignMode]="false" />
-            }
-          }
+          </div>
         }
       </div>
 
       <!-- Dismiss -->
-      <button class="cr-dismiss" (click)="dismiss()" aria-label="Dismiss">✕ Dismiss</button>
+      <button class="cr-dismiss" (click)="dismiss()" aria-label="Dismiss">Dismiss All</button>
     </div>
   </div>
 }

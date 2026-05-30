@@ -1,7 +1,8 @@
 import {
   Component, Input, OnInit, OnChanges, OnDestroy, SimpleChanges,
-  signal, computed, inject, ViewChild, ElementRef, Injector, effect,
+  signal, computed, inject, ViewChild, ElementRef,
 } from '@angular/core';
+import { Subscription } from 'rxjs';
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { catchError, of } from 'rxjs';
@@ -54,10 +55,10 @@ export class PlayerCastNotesComponent implements OnInit, OnChanges, OnDestroy {
 
   private allCasts$    = signal<CampaignCastInstance[]>([]);
   private allLocations$ = signal<CampaignLocationInstance[]>([]);
+  private hubSubscriptions: Subscription[] = [];
 
   private http = inject(HttpClient);
   private hub      = inject(CampaignHubService);
-  private injector = inject(Injector);
 
   @ViewChild('wantTextarea') private wantRef?: ElementRef<HTMLTextAreaElement>;
 
@@ -130,16 +131,18 @@ export class PlayerCastNotesComponent implements OnInit, OnChanges, OnDestroy {
   ngOnInit() {
     this.load();
     document.addEventListener('click', this.outsideClickHandler);
-    effect(() => {
-      const e = this.hub.noteUpdated();
-      if (e?.entityType === 'cast' && e.instanceId === this.castInstance?.instanceId) {
-        this.load();
-      }
-    }, { injector: this.injector });
+    this.hubSubscriptions.push(
+      this.hub.noteUpdated$.subscribe(e => {
+        if (e?.entityType === 'cast' && e.instanceId === this.castInstance?.instanceId) {
+          this.load();
+        }
+      })
+    );
   }
 
   ngOnDestroy() {
     document.removeEventListener('click', this.outsideClickHandler);
+    this.hubSubscriptions.forEach(sub => sub.unsubscribe());
   }
 
   ngOnChanges(changes: SimpleChanges) {

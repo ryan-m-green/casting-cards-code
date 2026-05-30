@@ -19,6 +19,7 @@ export interface SaveRelationshipEvent {
 export class FactionRelationshipsSectionComponent {
   relationships = input.required<FactionRelationship[]>();
   otherFactions = input<CampaignFactionInstance[]>([]);
+  currentFactionInstanceId = input<string>('');
   isDm          = input(false);
 
   removeRelationship = output<FactionRelationship>();
@@ -48,6 +49,10 @@ export class FactionRelationshipsSectionComponent {
     const s = new Set<string>();
     for (const r of this.relationships()) s.add(r.factionInstanceIdB);
     return s;
+  });
+
+  selectableFactions = computed<CampaignFactionInstance[]>(() => {
+    return this.otherFactions().filter(f => f.factionInstanceId !== this.currentFactionInstanceId());
   });
 
   relTargetFaction(rel: FactionRelationship): CampaignFactionInstance | null {

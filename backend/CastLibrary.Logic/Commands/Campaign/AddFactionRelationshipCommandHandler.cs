@@ -31,13 +31,13 @@ public class AddFactionRelationshipCommandHandler(
 
 public class AddFactionRelationshipCommand
 {
-    public AddFactionRelationshipCommand(Guid campaignId, Guid dmUserId, AddFactionRelationshipRequest request)
+    public AddFactionRelationshipCommand(Guid campaignId, Guid? dmUserId, AddFactionRelationshipRequest request)
     {
         CampaignId = campaignId;
         DmUserId   = dmUserId;
         Request    = request;
     }
     public Guid CampaignId { get; }
-    public Guid DmUserId { get; }
+    public Guid? DmUserId { get; }
     public AddFactionRelationshipRequest Request { get; }
 }

@@ -1,9 +1,9 @@
-import { Component, OnInit, OnDestroy, signal, computed, inject, effect, untracked } from '@angular/core';
+import { Component, OnInit, OnDestroy, signal, computed, inject, untracked } from '@angular/core';
 import { RouterOutlet, RouterLink, ActivatedRoute, Router, NavigationEnd } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
 import { catchError, filter } from 'rxjs/operators';
-import { EMPTY, Subscription } from 'rxjs';
+import { EMPTY, firstValueFrom, Subscription } from 'rxjs';
 import { environment } from '../../../../environments/environment';
 import { CampaignDetail } from '../../../shared/models/campaign.model';
 import { CampaignFactionInstance } from '../../../shared/models/faction.model';
@@ -12,13 +12,12 @@ import { AuthService } from '../../../core/auth/auth.service';
 import { PortalTransitionService } from '../../../core/portal-transition.service';
 import { PlayerCampaignShellService } from '../../../core/player-campaign-shell.service';
 import { TimeOfDayBarComponent } from '../../../shared/components/time-of-day-bar/time-of-day-bar.component';
+import { CardRevealBadgeComponent } from '../../../shared/components/card-reveal-badge/card-reveal-badge.component';
 import {
   CardRevealOverlayComponent,
   CardRevealOverlayData,
 } from '../../../shared/components/card-reveal-overlay/card-reveal-overlay.component';
-import { WhisperCardComponent } from '../../../shared/components/whisper-card/whisper-card.component';
 import { EventCardComponent } from '../../../shared/components/event-card/event-card.component';
-import { CurrencyCardComponent } from '../../../shared/components/currency-card/currency-card.component';
 import { VoidTitleSegmentsComponent } from '../../../shared/components/void-title-segments/void-title-segments.component';
 import { CurrencyDisplayComponent, CurrencyLine } from '../../../shared/components/currency-display/currency-display.component';
 import { VoidNavDrawerComponent } from '../../../shared/components/void-nav-drawer/void-nav-drawer.component';
@@ -27,7 +26,7 @@ import { QuicknotesComponent } from '../../../shared/components/quicknotes/quick
 @Component({
   selector: 'app-player-campaign-shell',
   standalone: true,
-  imports: [RouterOutlet, CommonModule, TimeOfDayBarComponent, CardRevealOverlayComponent, WhisperCardComponent, EventCardComponent, CurrencyCardComponent, CurrencyDisplayComponent, VoidNavDrawerComponent, VoidTitleSegmentsComponent, QuicknotesComponent],
+  imports: [RouterOutlet, CommonModule, TimeOfDayBarComponent, CardRevealBadgeComponent, CardRevealOverlayComponent, EventCardComponent, CurrencyDisplayComponent, VoidNavDrawerComponent, VoidTitleSegmentsComponent, QuicknotesComponent],
   templateUrl: './player-campaign-shell.component.html',
   styleUrl: './player-campaign-shell.component.scss',
 })
@@ -50,10 +49,11 @@ export class PlayerCampaignShellComponent implements OnInit, OnDestroy {
 
   // ── Event card notification ───────────────────────────────────────────────
   eventCardTitle = signal<string | null>(null);
-  private eventRevealQueue: string[] = [];
-  private eventRevealProcessing = false;
-  private eventRevealSub?: Subscription;
   private pendingOverlayData: CardRevealOverlayData | null = null;
+
+  // ── Card reveal overlay ──────────────────────────────────────────────────────
+  showOverlay       = signal(false);
+  cardRevealQueue   = signal<CardRevealOverlayData[]>([]);
 
   // ── Purse popover ──────────────────────────────────────────────────────────
   showPurse        = signal(false);
@@ -65,292 +65,343 @@ export class PlayerCampaignShellComponent implements OnInit, OnDestroy {
   goldCardCurrency = signal('gp');
   goldCardNote     = signal<string | null>(null);
 
+  private hubSubscriptions: Subscription[] = [];
+
   constructor() {
     // Show overlay when a card is newly unlocked
-    effect(() => {
-      const event = this.hub.cardVisibilityChanged();
-      if (!event || event.campaignId !== this.campaignId()) return;
-      if (!event.isVisible) return;
+    this.hubSubscriptions.push(
+      this.hub.cardVisibilityChanged$.subscribe(event => {
+        if (!event || event.campaignId !== this.campaignId()) return;
+        if (!event.isVisible) return;
 
-      // Re-fetch campaign data to get the newly visible card
-      this.http
-        .get<CampaignDetail>(`${environment.apiUrl}/api/campaigns/${this.campaignId()}/player`)
-        .subscribe(c => {
-          this.campaign.set(c);
-          this.shellSvc.setCampaign(c);
-          const data = this.buildOverlayFromVisibilityEvent(c, event.instanceId, event.cardType);
-          if (data) {
-            if (this.eventCardTitle() !== null) {
-              this.pendingOverlayData = data;
-            } else {
-              this.overlayData.set(data);
-            }
-          }
-        });
-    });
-
-    // Re-fetch campaign when a card is hidden so the nav drawer removes the node
-    effect(() => {
-      const event = this.hub.cardVisibilityChanged();
-      if (!event || event.campaignId !== this.campaignId()) return;
-      if (event.isVisible) return;
-
-      this.http
-        .get<CampaignDetail>(`${environment.apiUrl}/api/campaigns/${this.campaignId()}/player`)
-        .subscribe(c => {
-          this.campaign.set(c);
-          this.shellSvc.setCampaign(c);
-        });
-    });
-
-    // Show overlay when a faction is unlocked; remove it when locked
-    effect(() => {
-      const event = this.hub.cardVisibilityChanged();
-      if (!event || event.cardType !== 'faction' || event.campaignId !== this.campaignId()) return;
-
-      if (event.isVisible) {
+        // Re-fetch campaign data to get the newly visible card
         this.http
-          .get<CampaignFactionInstance[]>(`${environment.apiUrl}/api/campaigns/${this.campaignId()}/factions/player`)
-          .subscribe(factions => {
-            const faction = factions.find(f => f.factionInstanceId === event.instanceId);
-            if (faction) {
-              const data: CardRevealOverlayData = {
-                cardType:   'faction',
-                name:       faction.name,
-                descriptor: faction.type ?? '',
-                symbolPath: faction.symbolPath ?? '',
-              };
+          .get<CampaignDetail>(`${environment.apiUrl}/api/campaigns/${this.campaignId()}/player`)
+          .subscribe(async c => {
+            this.campaign.set(c);
+            this.shellSvc.setCampaign(c);
+            const data = await this.buildOverlayFromVisibilityEvent(c, event.instanceId, event.cardType, event.title, event.body);
+            if (data) {
               if (this.eventCardTitle() !== null) {
                 this.pendingOverlayData = data;
               } else {
-                this.overlayData.set(data);
+                this.cardRevealQueue.update(queue => [...queue, data]);
               }
             }
           });
-      }
-    });
+      })
+    );
+
+    // Re-fetch campaign when a card is hidden so the nav drawer removes the node
+    this.hubSubscriptions.push(
+      this.hub.cardVisibilityChanged$.subscribe(event => {
+        if (!event || event.campaignId !== this.campaignId()) return;
+        if (event.isVisible) return;
+
+        // Remove the card from the reveal queue by matching instanceId (or eventId for campaign-events)
+        this.cardRevealQueue.update(queue => queue.filter(item => {
+          if (event.cardType === 'campaign-event') {
+            return !(item.cardType === event.cardType && item.eventId === event.instanceId);
+          }
+          return !(item.cardType === event.cardType && item.instanceId === event.instanceId);
+        }));
+
+        this.http
+          .get<CampaignDetail>(`${environment.apiUrl}/api/campaigns/${this.campaignId()}/player`)
+          .subscribe(c => {
+            this.campaign.set(c);
+            this.shellSvc.setCampaign(c);
+          });
+      })
+    );
+
+    // Show overlay when a faction is unlocked; remove it when locked
+    this.hubSubscriptions.push(
+      this.hub.cardVisibilityChanged$.subscribe(event => {
+        if (!event || event.cardType !== 'faction' || event.campaignId !== this.campaignId()) return;
+
+        if (event.isVisible) {
+          this.http
+            .get<CampaignFactionInstance[]>(`${environment.apiUrl}/api/campaigns/${this.campaignId()}/factions/player`)
+            .subscribe(factions => {
+              const faction = factions.find(f => f.factionInstanceId === event.instanceId);
+              if (faction) {
+                const data: CardRevealOverlayData = {
+                  cardType:   'faction',
+                  name:       faction.name,
+                  descriptor: faction.type ?? '',
+                  symbolPath: faction.symbolPath ?? '',
+                };
+                if (this.eventCardTitle() !== null) {
+                  this.pendingOverlayData = data;
+                } else {
+                  this.overlayData.set(data);
+                }
+              }
+            });
+        }
+      })
+    );
 
     // Re-fetch campaign when a faction is removed (clears faction symbols from sublocation/cast cards)
-    effect(() => {
-      const event = this.hub.factionRemoved();
-      if (!event || event.campaignId !== this.campaignId()) return;
+    this.hubSubscriptions.push(
+      this.hub.factionRemoved$.subscribe(event => {
+        if (!event || event.campaignId !== this.campaignId()) return;
 
-      this.http
-        .get<CampaignDetail>(`${environment.apiUrl}/api/campaigns/${this.campaignId()}/player`)
-        .subscribe(c => {
-          this.campaign.set(c);
-          this.shellSvc.setCampaign(c);
-        });
-    });
+        this.http
+          .get<CampaignDetail>(`${environment.apiUrl}/api/campaigns/${this.campaignId()}/player`)
+          .subscribe(c => {
+            this.campaign.set(c);
+            this.shellSvc.setCampaign(c);
+          });
+      })
+    );
 
     // Re-fetch campaign when a faction is locked (clears faction symbols from sublocation/cast cards)
-    effect(() => {
-      const event = this.hub.factionLocked();
-      if (!event || event.campaignId !== this.campaignId()) return;
+    this.hubSubscriptions.push(
+      this.hub.factionLocked$.subscribe(event => {
+        if (!event || event.campaignId !== this.campaignId()) return;
 
-      this.http
-        .get<CampaignDetail>(`${environment.apiUrl}/api/campaigns/${this.campaignId()}/player`)
-        .subscribe(c => {
-          this.campaign.set(c);
-          this.shellSvc.setCampaign(c);
-        });
-    });
+        this.http
+          .get<CampaignDetail>(`${environment.apiUrl}/api/campaigns/${this.campaignId()}/player`)
+          .subscribe(c => {
+            this.campaign.set(c);
+            this.shellSvc.setCampaign(c);
+          });
+      })
+    );
 
     // Re-fetch campaign when a shop item is updated (refreshes sublocation shop items for players)
-    effect(() => {
-      const event = this.hub.shopItemUpdated();
-      if (!event || event.campaignId !== this.campaignId()) return;
+    this.hubSubscriptions.push(
+      this.hub.shopItemUpdated$.subscribe(event => {
+        if (!event || event.campaignId !== this.campaignId()) return;
 
-      this.http
-        .get<CampaignDetail>(`${environment.apiUrl}/api/campaigns/${this.campaignId()}/player`)
-        .subscribe(c => {
-          this.campaign.set(c);
-          this.shellSvc.setCampaign(c);
-        });
-    });
+        this.http
+          .get<CampaignDetail>(`${environment.apiUrl}/api/campaigns/${this.campaignId()}/player`)
+          .subscribe(c => {
+            this.campaign.set(c);
+            this.shellSvc.setCampaign(c);
+          });
+      })
+    );
 
     // Update a shop item's isScratchedOff flag in-place when the DM toggles the scratch state
-    effect(() => {
-      const event = this.hub.shopItemScratchToggled();
-      if (!event || event.campaignId !== this.campaignId()) return;
+    this.hubSubscriptions.push(
+      this.hub.shopItemScratchToggled$.subscribe(event => {
+        if (!event || event.campaignId !== this.campaignId()) return;
 
-      const update = (c: CampaignDetail): CampaignDetail => ({
-        ...c,
-        sublocations: c.sublocations.map((s: any) =>
-          s.instanceId !== event.sublocationInstanceId ? s : {
-            ...s,
-            shopItems: (s.shopItems ?? []).map((item: any) =>
-              item.id !== event.shopItemId ? item : { ...item, isScratchedOff: event.isScratchedOff }
-            ),
-          }
-        ),
-      });
+        const update = (c: CampaignDetail): CampaignDetail => ({
+          ...c,
+          sublocations: c.sublocations.map((s: any) =>
+            s.instanceId !== event.sublocationInstanceId ? s : {
+              ...s,
+              shopItems: (s.shopItems ?? []).map((item: any) =>
+                item.id !== event.shopItemId ? item : { ...item, isScratchedOff: event.isScratchedOff }
+              ),
+            }
+          ),
+        });
 
-      this.campaign.update(c => c ? update(c) : c);
-      this.shellSvc.setCampaign(update(untracked(() => this.shellSvc.campaign())!));
-    });
+        this.campaign.update(c => c ? update(c) : c);
+        this.shellSvc.setCampaign(update(untracked(() => this.shellSvc.campaign())!));
+      })
+    );
 
     // Re-fetch campaign when a cast instance is updated (refreshes cast detail panels)
-    effect(() => {
-      const event = this.hub.castInstanceUpdated();
-      if (!event || event.campaignId !== this.campaignId()) return;
+    this.hubSubscriptions.push(
+      this.hub.castInstanceUpdated$.subscribe(event => {
+        if (!event || event.campaignId !== this.campaignId()) return;
 
-      this.http
-        .get<CampaignDetail>(`${environment.apiUrl}/api/campaigns/${this.campaignId()}/player`)
-        .subscribe(c => {
-          this.campaign.set(c);
-          this.shellSvc.setCampaign(c);
-        });
-    });
+        this.http
+          .get<CampaignDetail>(`${environment.apiUrl}/api/campaigns/${this.campaignId()}/player`)
+          .subscribe(c => {
+            this.campaign.set(c);
+            this.shellSvc.setCampaign(c);
+          });
+      })
+    );
 
     // Re-fetch campaign when a location instance is updated (refreshes location detail panels)
-    effect(() => {
-      const event = this.hub.locationInstanceUpdated();
-      if (!event || event.campaignId !== this.campaignId()) return;
+    this.hubSubscriptions.push(
+      this.hub.locationInstanceUpdated$.subscribe(event => {
+        if (!event || event.campaignId !== this.campaignId()) return;
 
-      this.http
-        .get<CampaignDetail>(`${environment.apiUrl}/api/campaigns/${this.campaignId()}/player`)
-        .subscribe(c => {
-          this.campaign.set(c);
-          this.shellSvc.setCampaign(c);
-        });
-    });
+        this.http
+          .get<CampaignDetail>(`${environment.apiUrl}/api/campaigns/${this.campaignId()}/player`)
+          .subscribe(c => {
+            this.campaign.set(c);
+            this.shellSvc.setCampaign(c);
+          });
+      })
+    );
 
     // Re-fetch campaign when a sublocation instance is updated (refreshes sublocation detail panels)
-    effect(() => {
-      const event = this.hub.sublocationInstanceUpdated();
-      if (!event || event.campaignId !== this.campaignId()) return;
+    this.hubSubscriptions.push(
+      this.hub.sublocationInstanceUpdated$.subscribe(event => {
+        if (!event || event.campaignId !== this.campaignId()) return;
 
-      this.http
-        .get<CampaignDetail>(`${environment.apiUrl}/api/campaigns/${this.campaignId()}/player`)
-        .subscribe(c => {
-          this.campaign.set(c);
-          this.shellSvc.setCampaign(c);
-        });
-    });
+        this.http
+          .get<CampaignDetail>(`${environment.apiUrl}/api/campaigns/${this.campaignId()}/player`)
+          .subscribe(c => {
+            this.campaign.set(c);
+            this.shellSvc.setCampaign(c);
+          });
+      })
+    );
 
     // Re-fetch campaign when a faction instance is updated (refreshes faction cards in nav/shell)
-    effect(() => {
-      const event = this.hub.factionInstanceUpdated();
-      if (!event || event.campaignId !== this.campaignId()) return;
+    this.hubSubscriptions.push(
+      this.hub.factionInstanceUpdated$.subscribe(event => {
+        if (!event || event.campaignId !== this.campaignId()) return;
 
-      this.http
-        .get<CampaignDetail>(`${environment.apiUrl}/api/campaigns/${this.campaignId()}/player`)
-        .subscribe(c => {
-          this.campaign.set(c);
-          this.shellSvc.setCampaign(c);
-        });
-    });
+        this.http
+          .get<CampaignDetail>(`${environment.apiUrl}/api/campaigns/${this.campaignId()}/player`)
+          .subscribe(c => {
+            this.campaign.set(c);
+            this.shellSvc.setCampaign(c);
+          });
+      })
+    );
+
+    // Update event card content when a storyline event is updated
+    this.hubSubscriptions.push(
+      this.hub.storylineEventUpdated$.subscribe(event => {
+        if (!event || event.campaignId !== this.campaignId()) return;
+
+        // If the event card is currently displayed, update its content
+        if (this.eventCardTitle() !== null) {
+          // Update the overlay data with the new content
+          this.overlayData.set({
+            cardType: 'campaign-event',
+            name: event.title,
+            descriptor: 'Event • Game Master',
+            content: event.body,
+            imageUrl: event.imageUrl ?? undefined,
+            eventId: event.eventId,
+            portalColor: this.campaign()?.spineColor ?? '#6e28d0',
+          });
+        }
+
+        // Re-fetch events list to ensure it's up to date
+        this.http
+          .get<{ id: string; title: string; body: string; imageUrl?: string }[]>(`${environment.apiUrl}/api/campaigns/${this.campaignId()}/events/player`)
+          .subscribe(events => {
+            // Update campaign events in campaign detail
+            this.http
+              .get<CampaignDetail>(`${environment.apiUrl}/api/campaigns/${this.campaignId()}/player`)
+              .subscribe(c => {
+                this.campaign.set(c);
+                this.shellSvc.setCampaign(c);
+              });
+          });
+      })
+    );
 
     // Re-fetch campaign when a bulk card visibility change occurs (e.g. unlock all casts)
-    effect(() => {
-      const event = this.hub.bulkCardVisibilityChanged();
-      if (!event || event.campaignId !== this.campaignId()) return;
-      if (!event.isVisible) return;
+    this.hubSubscriptions.push(
+      this.hub.bulkCardVisibilityChanged$.subscribe(event => {
+        if (!event || event.campaignId !== this.campaignId()) return;
+        if (!event.isVisible) return;
 
-      this.http
-        .get<CampaignDetail>(`${environment.apiUrl}/api/campaigns/${this.campaignId()}/player`)
-        .subscribe(c => {
-          this.campaign.set(c);
-          this.shellSvc.setCampaign(c);
-        });
-    });
+        this.http
+          .get<CampaignDetail>(`${environment.apiUrl}/api/campaigns/${this.campaignId()}/player`)
+          .subscribe(c => {
+            this.campaign.set(c);
+            this.shellSvc.setCampaign(c);
+          });
+      })
+    );
 
     // Show overlay when a secret is revealed (enriched with content)
-    effect(() => {
-      const event = this.hub.secretRevealed();
-      if (!event || event.campaignId !== this.campaignId()) return;
+    this.hubSubscriptions.push(
+      this.hub.secretRevealed$.subscribe(async event => {
+        if (!event || event.campaignId !== this.campaignId()) return;
 
-      const c = untracked(() => this.campaign());
-      if (!c) return;
+        const c = untracked(() => this.campaign());
+        if (!c) return;
 
-      const instanceId = event.castInstanceId ?? event.locationInstanceId ?? event.sublocationInstanceId;
-      if (!instanceId) return;
+        const instanceId = event.castInstanceId ?? event.locationInstanceId ?? event.sublocationInstanceId;
+        if (!instanceId) return;
 
-      const cardType = event.castInstanceId ? 'cast'
-                     : event.locationInstanceId ? 'location'
-                     : 'sublocation';
+        const cardType = event.castInstanceId ? 'cast'
+                       : event.locationInstanceId ? 'location'
+                       : 'sublocation';
 
-      const data = this.buildOverlayFromVisibilityEvent(c, instanceId, cardType);
-      if (data) {
-        this.overlayData.set({ ...data, secretContent: event.secretContent });
-      }
-    });
+        const data = await this.buildOverlayFromVisibilityEvent(c, instanceId, cardType);
+        if (data) {
+          this.overlayData.set({ ...data, secretContent: event.secretContent });
+        }
+      })
+    );
 
     // Show wizard overlay when the DM delivers a personal secret to this player
-    effect(() => {
-      const event = this.hub.secretDelivered();
-      if (!event || event.campaignId !== this.campaignId()) return;
-      const myId = untracked(() => this.auth.currentUser()?.id);
-      if (!myId || event.playerUserId !== myId) return;
-      this.wizardSecretContent.set(event.content);
-      this.wizardSecretRecipient.set(untracked(() => this.auth.currentUser()?.displayName ?? ''));
-    });
+    this.hubSubscriptions.push(
+      this.hub.secretDelivered$.subscribe(event => {
+        if (!event || event.campaignId !== this.campaignId()) return;
+        const myId = untracked(() => this.auth.currentUser()?.id);
+        if (!myId || event.playerUserId !== myId) return;
+        this.wizardSecretContent.set(event.content);
+        this.wizardSecretRecipient.set(untracked(() => this.auth.currentUser()?.displayName ?? ''));
+      })
+    );
 
     // Show card reveal overlay when a party member shares a secret
-    effect(() => {
-      const event = this.hub.secretShared();
-      if (!event) return;
-      this.overlayData.set({
-        cardType:      'player',
-        name:          event.playerName,
-        descriptor:    event.playerRaceClass,
-        imageUrl:      event.playerImageUrl,
-        secretContent: event.secretContent,
-      });
-    });
+    this.hubSubscriptions.push(
+      this.hub.secretShared$.subscribe(event => {
+        if (!event) return;
+        this.overlayData.set({
+          cardType:      'player',
+          name:          event.playerName,
+          descriptor:    event.playerRaceClass,
+          imageUrl:      event.playerImageUrl,
+          secretContent: event.secretContent,
+        });
+      })
+    );
 
     // Show currency card when the DM awards gold to this player or the party
-    effect(() => {
-      const queue = this.hub.goldAwarded();
-      if (!queue.length) return;
-      const myId = untracked(() => this.auth.currentUser()?.id);
-      const mine = queue.find(e =>
-        e.campaignId === this.campaignId() &&
-        (e.playerUserId === null || e.playerUserId === myId)
-      );
-      this.hub.goldAwarded.set([]);
-      if (!mine) return;
-      this.goldCardAmount.set(mine.amount);
-      this.goldCardCurrency.set(mine.currency);
-      this.goldCardNote.set(mine.note);
-      this.showGoldCard.set(true);
-      // Update purse balance for the awarded currency type
-      this.purse.update(lines => {
-        const existing = lines.find(l => l.type === mine.currency);
-        if (existing) {
-          return lines.map(l => l.type === mine.currency ? { ...l, amount: l.amount + mine.amount } : l);
-        }
-        return [...lines, { type: mine.currency, amount: mine.amount }];
-      });
-    });
-
-    // Show event card when the DM unlocks an event for players.
-    // Uses a Subject (not a signal effect) so rapid-fire events are never deduplicated/dropped.
-    this.eventRevealSub = this.hub.campaignEventReveal$.pipe(
-      filter(e => !!e && e.campaignId === this.campaignId() && e.isVisibleToPlayers)
-    ).subscribe(e => {
-      this.eventRevealQueue.push(e.eventId);
-      this._processEventRevealQueue();
-    });
+    this.hubSubscriptions.push(
+      this.hub.goldAwarded$.subscribe(queue => {
+        if (!queue.length) return;
+        const myId = untracked(() => this.auth.currentUser()?.id);
+        const mine = queue.find((e: any) =>
+          e.campaignId === this.campaignId() &&
+          (e.playerUserId === null || e.playerUserId === myId)
+        );
+        if (!mine) return;
+        this.goldCardAmount.set(mine.amount);
+        this.goldCardCurrency.set(mine.currency);
+        this.goldCardNote.set(mine.note);
+        this.showGoldCard.set(true);
+        // Update purse balance for the awarded currency type
+        this.purse.update(lines => {
+          const existing = lines.find(l => l.type === mine.currency);
+          if (existing) {
+            return lines.map(l => l.type === mine.currency ? { ...l, amount: l.amount + mine.amount } : l);
+          }
+          return [...lines, { type: mine.currency, amount: mine.amount }];
+        });
+      })
+    );
 
     // Update cast's sublocation in campaign when a cast travels — keeps the nav drawer in sync
-    effect(() => {
-      const event = this.hub.castTravelled();
-      if (!event || event.campaignId !== this.campaignId()) return;
+    this.hubSubscriptions.push(
+      this.hub.castTravelled$.subscribe(event => {
+        if (!event || event.campaignId !== this.campaignId()) return;
 
-      const update = (c: CampaignDetail): CampaignDetail => ({
-        ...c,
-        casts: c.casts.map(ca =>
-          ca.instanceId === event.castInstanceId
-            ? { ...ca, sublocationInstanceId: event.toSublocationInstanceId, locationInstanceId: event.toLocationInstanceId }
-            : ca
-        ),
-      });
+        const update = (c: CampaignDetail): CampaignDetail => ({
+          ...c,
+          casts: c.casts.map(ca =>
+            ca.instanceId === event.castInstanceId
+              ? { ...ca, sublocationInstanceId: event.toSublocationInstanceId, locationInstanceId: event.toLocationInstanceId }
+              : ca
+          ),
+        });
 
-      this.campaign.update(c => c ? update(c) : c);
-      this.shellSvc.setCampaign(update(untracked(() => this.shellSvc.campaign())!));
-    });
+        this.campaign.update(c => c ? update(c) : c);
+        this.shellSvc.setCampaign(update(untracked(() => this.shellSvc.campaign())!));
+      })
+    );
   }
 
   ngOnInit() {
@@ -370,7 +421,7 @@ export class PlayerCampaignShellComponent implements OnInit, OnDestroy {
     ).subscribe(() => this.loadQueueCount(this.campaignId()));
 
     const token = this.auth.getToken();
-    const connectAndJoin = token && !this.hub.isConnected()
+    const connectAndJoin = token
       ? this.hub.connect(token).then(() => this.hub.joinCampaign(id))
       : this.hub.joinCampaign(id);
     connectAndJoin.catch(console.warn);
@@ -422,8 +473,8 @@ export class PlayerCampaignShellComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    this.eventRevealSub?.unsubscribe();
     this.hub.leaveCampaign(this.campaignId()).catch(console.warn);
+    this.hubSubscriptions.forEach(sub => sub.unsubscribe());
   }
 
   private loadQueueCount(id: string) {
@@ -435,9 +486,12 @@ export class PlayerCampaignShellComponent implements OnInit, OnDestroy {
 
   dismissOverlay() {
     this.overlayData.set(null);
-    if (this.eventRevealQueue.length > 0) {
-      setTimeout(() => this._processEventRevealQueue(), 400);
-    }
+    this.showOverlay.set(false);
+    this.cardRevealQueue.set([]);
+  }
+
+  onBadgeClick() {
+    this.showOverlay.set(true);
   }
 
   dismissWizardSecret() {
@@ -446,26 +500,11 @@ export class PlayerCampaignShellComponent implements OnInit, OnDestroy {
 
   dismissEventCard() {
     this.eventCardTitle.set(null);
-    this.eventRevealProcessing = false;
     if (this.pendingOverlayData) {
       const pending = this.pendingOverlayData;
       this.pendingOverlayData = null;
-      setTimeout(() => this.overlayData.set(pending), 400);
-    } else if (this.eventRevealQueue.length > 0) {
-      setTimeout(() => this._processEventRevealQueue(), 400);
+      setTimeout(() => this.cardRevealQueue.update(queue => [...queue, pending]), 400);
     }
-  }
-
-  private _processEventRevealQueue() {
-    if (this.eventRevealProcessing || this.eventRevealQueue.length === 0) return;
-    this.eventRevealProcessing = true;
-    const eventId = this.eventRevealQueue.shift()!;
-    this.http
-      .get<{ id: string; title: string }[]>(`${environment.apiUrl}/api/campaigns/${this.campaignId()}/events/player`)
-      .subscribe(events => {
-        const found = events.find(e => e.id === eventId);
-        this.eventCardTitle.set(found?.title ?? 'New Event');
-      });
   }
 
   dismissGoldCard() {
@@ -506,25 +545,39 @@ export class PlayerCampaignShellComponent implements OnInit, OnDestroy {
     return color && /^#[0-9a-fA-F]{6}$/.test(color) ? color : '#6e28d0';
   }
 
-  private buildOverlayFromVisibilityEvent(
+  private async buildOverlayFromVisibilityEvent(
     campaign: CampaignDetail,
     instanceId: string,
-    cardType: 'location' | 'sublocation' | 'cast' | 'faction',
-  ): CardRevealOverlayData | null {
+    cardType: 'location' | 'sublocation' | 'cast' | 'faction' | 'campaign-event',
+    eventTitle?: string,
+    eventBody?: string,
+  ): Promise<CardRevealOverlayData | null> {
+    if (cardType === 'campaign-event') {
+      // Use title and body from SignalR event instead of making API call
+      if (!eventTitle || !eventBody) return null;
+      return {
+        cardType: 'campaign-event',
+        name: eventTitle,
+        descriptor: 'Event • Game Master',
+        content: eventBody,
+        eventId: instanceId,
+        portalColor: this.campaign()?.spineColor ?? '#6e28d0',
+      };
+    }
     if (cardType === 'location') {
       const location = campaign.locations.find((c: any) => c.instanceId === instanceId);
       if (!location) return null;
-      return { cardType: 'location', name: location.name, descriptor: location.classification ?? '', imageUrl: location.imageUrl ?? '' };
+      return { cardType: 'location', name: location.name, descriptor: location.classification ?? '', imageUrl: location.imageUrl ?? '', instanceId };
     }
     if (cardType === 'sublocation') {
       const subLoc = campaign.sublocations.find((l: any) => l.instanceId === instanceId);
       if (!subLoc) return null;
-      return { cardType: 'sublocation', name: subLoc.name, descriptor: '', imageUrl: subLoc.imageUrl ?? '' };
+      return { cardType: 'sublocation', name: subLoc.name, descriptor: '', imageUrl: subLoc.imageUrl ?? '', instanceId };
     }
     if (cardType === 'cast') {
       const cast = campaign.casts.find((ca: any) => ca.instanceId === instanceId);
       if (!cast) return null;
-      return { cardType: 'cast', name: cast.name, descriptor: cast.role ?? '', imageUrl: cast.imageUrl ?? '' };
+      return { cardType: 'cast', name: cast.name, descriptor: cast.role ?? '', imageUrl: cast.imageUrl ?? '', instanceId };
     }
     return null;
   }

@@ -30,7 +30,7 @@
   transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
 
   span {
-    font-size: 10px;
+    font-size: 11px;
     font-weight: 600;
     letter-spacing: 0.04em;
     text-transform: uppercase;
@@ -62,6 +62,54 @@
   flex-shrink: 0;
 }
 
+/* ── Linked entities pills ───────────────────────────────────── */
+.ndp-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 8px;
+}
+
+.ndp-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-family: v.$font-header;
+  font-size: 12px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: v.$campaign-portal-text-bright;
+  border: 1px solid v.$campaign-portal-border-strong-focus;
+  background: color-mix(in srgb, v.$campaign-portal-bg-dark 30%, v.$color-base-arcane-purple 70%);
+  border-radius: 3px;
+  padding: 6px 7px 6px 9px;
+}
+
+.ndp-pill-remove {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  color: v.$campaign-portal-text-bright;
+  transition: opacity 0.15s;
+
+  &:hover {
+    opacity: 0.65;
+  }
+}
+
+.ndp-pill-remove-img {
+  width: 16px;
+  height: 16px;
+  opacity: 0.8;
+  filter: brightness(0) invert(1);
+}
+
 /* ── Entity select row ───────────────────────────────────────── */
 .ndp-entity-row {
   display: flex;
@@ -74,6 +122,51 @@
   flex: 1;
 }
 
+/* ── Add trigger button ─────────────────────────────────────── */
+.ndp-add-trigger-row {
+  display: flex;
+  justify-content: flex-start;
+  margin-top: 24px;
+  margin-bottom: 24px;
+}
+
+.ndp-add-trigger-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 10px;
+  background: color-mix(in srgb, v.$campaign-portal-bg-dark 30%, v.$color-base-arcane-purple 70%);
+  border: 1px solid v.$campaign-portal-border-strong-focus;
+  border-radius: 4px;
+  color: v.$campaign-portal-text-bright;
+  font-family: v.$font-header;
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background 0.15s ease, border-color 0.15s ease, opacity 0.15s ease;
+
+  &:hover:not(:disabled) {
+    background: color-mix(in srgb, v.$campaign-portal-bg-dark 20%, v.$color-base-arcane-purple 80%);
+    border-color: v.$campaign-portal-border-strong-focus;
+  }
+
+  &:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+  }
+
+  span {
+    font-weight: 600;
+  }
+}
+
+.ndp-add-trigger-icon {
+  width: 14px;
+  height: 14px;
+  flex-shrink: 0;
+}
+
 /* ── Mini Time-of-Day bar ────────────────────────────────────── */
 .ndp-mini-tod {
   width: 100%;
@@ -82,7 +175,7 @@
 .ndp-mini-tod__bar {
   position: relative;
   display: flex;
-  height: 28px;
+  height: 40px;
   border-radius: 6px;
   overflow: visible;
   cursor: crosshair;
@@ -104,9 +197,9 @@
 }
 
 .ndp-mini-tod__label {
-  font-size: 0.52rem;
+  font-size: 14px;
   font-weight: 600;
-  color: rgba(255, 255, 255, 0.85);
+  color: rgba(v.$color-base-white, 0.85);
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.55);
   white-space: nowrap;
   overflow: hidden;
@@ -143,7 +236,7 @@
 
 .ndp-mini-tod__hint {
   display: block;
-  font-size: 0.68rem;
+  font-size: 14px;
   color: v.$campaign-portal-text-muted;
   font-style: italic;
   margin-top: 5px;
@@ -156,7 +249,7 @@
   background: none;
   border: none;
   color: v.$campaign-portal-text-muted;
-  font-size: 0.68rem;
+  font-size: 0.14px;
   cursor: pointer;
   text-decoration: underline;
   padding: 0;
@@ -164,4 +257,19 @@
   &:hover {
     color: v.$campaign-portal-text-bright;
   }
+}
+
+/* ── Visibility text for visibility status ───────────────────────── */
+.ndp-visibility-text {
+  margin-top: 12px;
+  padding: 6px 0;
+}
+
+.ndp-visibility-label {
+  font-family: v.$font-header;
+  font-size: 11px;
+  font-weight: normal;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: v.$campaign-portal-text-muted;
 }

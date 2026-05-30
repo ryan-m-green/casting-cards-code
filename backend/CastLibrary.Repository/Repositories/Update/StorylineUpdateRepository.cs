@@ -4,19 +4,19 @@ using Dapper;
 
 namespace CastLibrary.Repository.Repositories.Update;
 
-public interface ICampaignEventUpdateRepository
+public interface IStorylineUpdateRepository
 {
     Task UpdateVisibilityAsync(Guid eventId, bool isVisibleToPlayers);
     Task UpdateBodyAsync(Guid eventId, string body);
     Task UpdateFilePathAsync(Guid eventId, string filePath);
-    Task UpdateDetailsAsync(Guid eventId, string title, string body, string? linkedEntityType, Guid? linkedEntityId, decimal? todPositionPercent);
+    Task UpdateDetailsAsync(Guid eventId, string title, string body, string linkedEntities);
     Task ReorderAsync(IList<Guid> eventIds);
 }
 
-public class CampaignEventUpdateRepository(
+public class StorylineUpdateRepository(
     ISqlConnectionFactory sqlConnectionFactory,
     ILoggingService logging,
-    ICorrelationContext correlation) : ICampaignEventUpdateRepository
+    ICorrelationContext correlation) : IStorylineUpdateRepository
 {
     public async Task UpdateVisibilityAsync(Guid eventId, bool isVisibleToPlayers)
     {
@@ -75,18 +75,16 @@ public class CampaignEventUpdateRepository(
         logging.LogDbOperation(correlation.TraceId, spanId, "UPDATE", "campaign_storyline", @params, rows);
     }
 
-    public async Task UpdateDetailsAsync(Guid eventId, string title, string body, string? linkedEntityType, Guid? linkedEntityId, decimal? todPositionPercent)
+    public async Task UpdateDetailsAsync(Guid eventId, string title, string body, string linkedEntities)
     {
         var spanId  = correlation.NewSpan();
-        var @params = new { Id = eventId, Title = title, Body = body, LinkedEntityType = linkedEntityType, LinkedEntityId = linkedEntityId, TodPositionPercent = todPositionPercent, UpdatedAt = DateTime.UtcNow };
+        var @params = new { Id = eventId, Title = title, Body = body, LinkedEntities = linkedEntities, UpdatedAt = DateTime.UtcNow };
 
         const string sql =
             @"UPDATE campaign_storyline
               SET title              = @Title,
                   body               = @Body,
-                  linked_entity_type = @LinkedEntityType,
-                  linked_entity_id   = @LinkedEntityId,
-                  tod_position_percent = @TodPositionPercent,
+                  linked_entities    = @LinkedEntities::jsonb,
                   updated_at         = @UpdatedAt
               WHERE id = @Id";
 

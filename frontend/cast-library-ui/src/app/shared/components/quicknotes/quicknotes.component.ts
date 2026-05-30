@@ -18,6 +18,7 @@ import { CampaignSublocationInstance } from '../../models/sublocation.model';
 import { CampaignCastInstance } from '../../models/cast.model';
 import { CampaignFactionInstance } from '../../models/faction.model';
 import { NoteDestinationPickerComponent } from '../note-destination-picker/note-destination-picker.component';
+import { PlayerCampaignShellService } from '../../../core/player-campaign-shell.service';
 
 type DestinationType = 'queue' | 'location' | 'sublocation' | 'cast' | 'faction' | 'campaign';
 
@@ -37,6 +38,7 @@ export class QuicknotesComponent {
 
   private http   = inject(HttpClient);
   private router  = inject(Router);
+  shellSvc        = inject(PlayerCampaignShellService);
 
   isOpen      = signal(false);
   isClosing   = signal(false);

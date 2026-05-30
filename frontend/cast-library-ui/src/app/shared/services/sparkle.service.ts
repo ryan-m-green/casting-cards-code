@@ -33,6 +33,31 @@ export class SparkleService {
     }
   }
 
+  triggerSparkler(host: HTMLElement, colors: string[] = SPARK_COLORS): void {
+    // Create a single spark that drips downward
+    const spark = document.createElement('div');
+    spark.className = 'sparkler-drip';
+
+    // Random movement pattern: 0 = straight, 1 = left, 2 = right
+    const pattern = Math.floor(Math.random() * 3);
+    
+    // Horizontal distance (0 to 10px)
+    const hx = pattern === 0 ? 0 : 5 + Math.random() * 5;
+    // Horizontal direction (-1 for left, 1 for right)
+    const hd = pattern === 1 ? -1 : (pattern === 2 ? 1 : 0);
+    // Downward distance (200px to 300px)
+    const dy = 200 + Math.random() * 100;
+    const color = colors[Math.floor(Math.random() * colors.length)];
+
+    spark.style.setProperty('--hx', `${hx}px`);
+    spark.style.setProperty('--hd', `${hd}`);
+    spark.style.setProperty('--dy', `${dy}px`);
+    spark.style.setProperty('--color', color);
+
+    host.appendChild(spark);
+    spark.addEventListener('animationend', () => spark.remove(), { once: true });
+  }
+
   triggerEdge(container: HTMLElement, points = 7): void {
     const rect = container.getBoundingClientRect();
     for (let p = 0; p < points; p++) {

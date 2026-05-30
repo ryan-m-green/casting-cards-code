@@ -43,16 +43,21 @@
 
   <!-- ── Time of day bar ── -->
   @if (campaign(); as camp) {
-    <div class="tod-bar-section">
-      <app-time-of-day-bar
-        [campaignId]="campaignId()"
-        [isDm]="isDm()"
-        [allowInteraction]="true"
-        [panelTheme]="'dark'"
-        [todInput]="timeOfDay()"
-      />
-    </div>
+    <app-time-of-day-bar
+      [campaignId]="campaignId()"
+      [isDm]="isDm()"
+      [allowInteraction]="true"
+      [panelTheme]="'dark'"
+      [todInput]="timeOfDay()"
+    />
   }
+  <div class="tod-badge-container">
+    <app-card-reveal-badge
+      [count]="cardRevealQueue().length"
+      [hidden]="showOverlay()"
+      (badgeClicked)="onBadgeClick()"
+    />
+  </div>
 
   <!-- ── Page content ── -->
   <router-outlet />
@@ -63,33 +68,17 @@
 <div class="void-letterbox-top"></div>
 <div class="void-letterbox-bottom"></div>
 
-<app-card-reveal-overlay
-  [data]="overlayData()"
-  (dismissed)="dismissOverlay()"
-/>
+@if (showOverlay()) {
+  <app-card-reveal-overlay
+    [cards]="cardRevealQueue()"
+    (dismissed)="dismissOverlay()"
+    (goToSecrets)="navigateToSecrets()"
+  />
+}
 
-<app-whisper-card
-  [content]="wizardSecretContent()"
-  [recipient]="wizardSecretRecipient()"
-  [portalColor]="campaign()?.spineColor ?? '#6e28d0'"
-  [dismissable]="false"
-  (dismissed)="dismissWizardSecret()"
-  (goToSecrets)="navigateToSecrets()"
-/>
-
-<app-event-card
+@* Event card disabled - using badge system instead *@
+@* <app-event-card
   [eventTitle]="eventCardTitle()"
   [portalColor]="campaign()?.spineColor ?? '#6e28d0'"
   (dismissed)="dismissEventCard()"
-/>
-
-@if (showGoldCard()) {
-  <app-currency-card
-    [amount]="goldCardAmount()"
-    [currency]="goldCardCurrency()"
-    [note]="goldCardNote()"
-    [portalColor]="campaign()?.spineColor ?? '#6e28d0'"
-    [dismissable]="true"
-    (dismissed)="dismissGoldCard()"
-  />
-}
+/> *@

@@ -1,4 +1,4 @@
-import { Component, OnInit, signal, computed, inject, effect, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, OnDestroy, signal, computed, inject, ViewChild, ElementRef } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -12,17 +12,19 @@ import { CampaignHubService } from '../../../core/hub/campaign-hub.service';
 import { AuthService } from '../../../core/auth/auth.service';
 import { CampaignShellService } from '../../../core/campaign-shell.service';
 import { PortalTransitionService } from '../../../core/portal-transition.service';
+import { Subscription } from 'rxjs';
 import { CastCardComponent } from '../../../shared/components/cast-card/cast-card.component';
 import { LockIconComponent } from '../../../shared/components/lock-icon/lock-icon.component';
+import { DetailPanelActionsComponent } from '../../../shared/components/detail-panel-actions/detail-panel-actions.component';
 
 @Component({
   selector: 'app-campaign-cast-detail',
   standalone: true,
-  imports: [CommonModule, FormsModule, CastCardComponent, LockIconComponent],
+  imports: [CommonModule, FormsModule, CastCardComponent, LockIconComponent, DetailPanelActionsComponent],
   templateUrl: './campaign-cast-detail.component.html',
   styleUrl: './campaign-cast-detail.component.scss'
 })
-export class CampaignCastDetailComponent implements OnInit {
+export class CampaignCastDetailComponent implements OnInit, OnDestroy {
   private route    = inject(ActivatedRoute);
   private router   = inject(Router);
   private http     = inject(HttpClient);
@@ -30,6 +32,7 @@ export class CampaignCastDetailComponent implements OnInit {
   private auth     = inject(AuthService);
   private shellSvc = inject(CampaignShellService);
   private transition = inject(PortalTransitionService);
+  private hubSubscriptions: Subscription[] = [];
 
   @ViewChild('detailContent') private detailContentRef!: ElementRef<HTMLElement>;
   @ViewChild('expandBtn')     private expandBtnRef!: ElementRef<HTMLElement>;
@@ -83,6 +86,7 @@ export class CampaignCastDetailComponent implements OnInit {
   newSecretContent = signal('');
 
   // Travel drawer
+  private paramsSub?: Subscription;
   travelDrawerOpen   = signal(false);
   selectedLocationId = signal<string | null>(null);
 
@@ -154,54 +158,64 @@ export class CampaignCastDetailComponent implements OnInit {
   });
 
   constructor() {
-    effect(() => {
-      const event = this.hub.secretRevealed();
-      if (!event || event.campaignId !== this.campaignId()) return;
-      this.campaign.update(c => {
-        if (!c) return c;
-        return {
-          ...c,
-          secrets: c.secrets.map(s =>
-            s.id === event.secretId ? { ...s, isRevealed: true } : s
-          )
-        };
-      });
-    });
+    this.hubSubscriptions.push(
+      this.hub.secretRevealed$.subscribe(event => {
+        if (!event || event.campaignId !== this.campaignId()) return;
+        this.campaign.update(c => {
+          if (!c) return c;
+          return {
+            ...c,
+            secrets: c.secrets.map(s =>
+              s.id === event.secretId ? { ...s, isRevealed: true } : s
+            )
+          };
+        });
+      })
+    );
   }
 
   ngOnInit() {
-    const id       = this.route.snapshot.paramMap.get('id')!;
-    const subLocId = this.route.snapshot.paramMap.get('sublocationInstanceId')!;
-    const castId   = this.route.snapshot.paramMap.get('castInstanceId')!;
-    this.campaignId.set(id);
-    this.sublocationInstanceId.set(subLocId);
-    this.castInstanceId.set(castId);
-    this.http.get<CampaignDetail>(`${environment.apiUrl}/api/campaigns/${id}`)
-      .subscribe(c => {
-        this.campaign.set(c);
-        const cast    = c.casts.find(ca => ca.instanceId === castId);
-        const subLoc  = c.sublocations.find((l: CampaignSublocationInstance) => l.instanceId === subLocId);
-        const loc     = subLoc ? c.locations.find(l => l.instanceId === subLoc.locationInstanceId) : null;
-      if (cast) {
-        if (subLoc?.isPartyAnchor) {
-          this.shellSvc.setTitleContext({
-            pageType:   'cast-party',
-            campaignId: id,
-            baseRoute:  '/campaign',
-            location:   null,
-            partyRoute: ['/campaign', id, 'the-party'],
-          }, '56px');
-        } else {
-          this.shellSvc.setTitleContext({
-            pageType: 'cast',
-            campaignId: id,
-            baseRoute: '/campaign',
-            location: loc ?? null,
-            sublocation: subLoc ?? null,
-          }, '56px');
-        }
-      }
+    this.paramsSub = this.route.paramMap.subscribe(params => {
+      const id       = params.get('id')!;
+      const subLocId = params.get('sublocationInstanceId')!;
+      const castId   = params.get('castInstanceId')!;
+      this.campaignId.set(id);
+      this.sublocationInstanceId.set(subLocId);
+      this.castInstanceId.set(castId);
+      this.campaign.set(null);
+      this.http.get<CampaignDetail>(`${environment.apiUrl}/api/campaigns/${id}`)
+        .subscribe(c => {
+          this.campaign.set(c);
+          const cast   = c.casts.find(ca => ca.instanceId === castId);
+          const subLoc = c.sublocations.find((l: CampaignSublocationInstance) => l.instanceId === subLocId);
+          const loc    = subLoc ? c.locations.find(l => l.instanceId === subLoc.locationInstanceId) : null;
+          if (cast) {
+            if (subLoc?.isPartyAnchor) {
+              this.shellSvc.setTitleContext({
+                pageType:   'cast-party',
+                campaignId: id,
+                baseRoute:  '/campaign',
+                location:   null,
+                partyRoute: ['/campaign', id, 'the-party'],
+              }, '56px');
+            } else {
+              this.shellSvc.setTitleContext({
+                pageType: 'cast',
+                campaignId: id,
+                campaignName: c.name,
+                baseRoute: '/campaign',
+                location: loc ?? null,
+                sublocation: subLoc ?? null,
+              }, '56px');
+            }
+          }
+        });
     });
+  }
+
+  ngOnDestroy() {
+    this.paramsSub?.unsubscribe();
+    this.hubSubscriptions.forEach(sub => sub.unsubscribe());
   }
 
   toggleCastVisibility() {
@@ -344,6 +358,7 @@ export class CampaignCastDetailComponent implements OnInit {
         this.shellSvc.setTitleContext({
           pageType: 'cast',
           campaignId: this.campaignId(),
+          campaignName: this.campaign()?.name,
           baseRoute: '/campaign',
           location: this.parentLocation(),
           sublocation: subLocAfterSave,
@@ -467,6 +482,7 @@ export class CampaignCastDetailComponent implements OnInit {
         this.shellSvc.setTitleContext({
           pageType:    'cast',
           campaignId:  this.campaignId(),
+          campaignName: this.campaign()?.name,
           baseRoute:   '/campaign',
           location:    newLoc,
           sublocation: newSubLoc,

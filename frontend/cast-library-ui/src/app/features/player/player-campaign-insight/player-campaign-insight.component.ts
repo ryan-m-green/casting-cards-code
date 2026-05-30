@@ -1,4 +1,5 @@
-import { Component, OnInit, signal, inject, effect } from '@angular/core';
+import { Component, OnInit, OnDestroy, signal, inject } from '@angular/core';
+import { Subscription } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
@@ -19,7 +20,7 @@ import { environment } from '../../../../environments/environment';
   templateUrl: './player-campaign-insight.component.html',
   styleUrl: './player-campaign-insight.component.scss',
 })
-export class PlayerCampaignInsightComponent implements OnInit {
+export class PlayerCampaignInsightComponent implements OnInit, OnDestroy {
   private route        = inject(ActivatedRoute);
   private router       = inject(Router);
   private http         = inject(HttpClient);
@@ -33,46 +34,54 @@ export class PlayerCampaignInsightComponent implements OnInit {
   sublocations = signal<CampaignSublocationInstance[]>([]);
   relationships = signal<CampaignCastRelationship[]>([]);
 
+  private hubSubscriptions: Subscription[] = [];
+
   constructor() {
     // Single cast lock / unlock
-    effect(() => {
-      const event = this.hub.cardVisibilityChanged();
-      if (!event || event.campaignId !== this.campaignId()) return;
+    this.hubSubscriptions.push(
+      this.hub.cardVisibilityChanged$.subscribe(event => {
+        if (!event || event.campaignId !== this.campaignId()) return;
 
-      if (event.cardType === 'cast') {
-        if (event.isVisible) {
-          this.http.get<{ casts: CampaignCastInstance[] }>(
-            `${environment.apiUrl}/api/campaigns/${this.campaignId()}/player`
-          ).subscribe(detail => this.casts.set(detail.casts ?? []));
-        } else {
-          this.casts.update(list =>
-            list.map(c => c.instanceId === event.instanceId ? { ...c, isVisibleToPlayers: false } : c)
-          );
+        if (event.cardType === 'cast') {
+          if (event.isVisible) {
+            this.http.get<{ casts: CampaignCastInstance[] }>(
+              `${environment.apiUrl}/api/campaigns/${this.campaignId()}/player`
+            ).subscribe(detail => this.casts.set(detail.casts ?? []));
+          } else {
+            this.casts.update(list =>
+              list.map(c => c.instanceId === event.instanceId ? { ...c, isVisibleToPlayers: false } : c)
+            );
+          }
         }
-      }
 
-      if (event.cardType === 'faction') {
-        if (event.isVisible) {
-          this.http.get<CampaignFactionInstance[]>(
-            `${environment.apiUrl}/api/campaigns/${this.campaignId()}/factions/player`
-          ).subscribe(f => this.factions.set(f));
-        } else {
-          this.factions.update(list =>
-            list.map(f => f.factionInstanceId === event.instanceId ? { ...f, isVisibleToPlayers: false } : f)
-          );
+        if (event.cardType === 'faction') {
+          if (event.isVisible) {
+            this.http.get<CampaignFactionInstance[]>(
+              `${environment.apiUrl}/api/campaigns/${this.campaignId()}/factions/player`
+            ).subscribe(f => this.factions.set(f));
+          } else {
+            this.factions.update(list =>
+              list.map(f => f.factionInstanceId === event.instanceId ? { ...f, isVisibleToPlayers: false } : f)
+            );
+          }
         }
-      }
-    });
+      })
+    );
 
     // Bulk lock / unlock
-    effect(() => {
-      const event = this.hub.bulkCardVisibilityChanged();
-      if (!event || event.campaignId !== this.campaignId()) return;
+    this.hubSubscriptions.push(
+      this.hub.bulkCardVisibilityChanged$.subscribe(event => {
+        if (!event || event.campaignId !== this.campaignId()) return;
 
-      this.http.get<{ casts: CampaignCastInstance[] }>(
-        `${environment.apiUrl}/api/campaigns/${this.campaignId()}/player`
-      ).subscribe(detail => this.casts.set(detail.casts ?? []));
-    });
+        this.http.get<{ casts: CampaignCastInstance[] }>(
+          `${environment.apiUrl}/api/campaigns/${this.campaignId()}/player`
+        ).subscribe(detail => this.casts.set(detail.casts ?? []));
+      })
+    );
+  }
+
+  ngOnDestroy() {
+    this.hubSubscriptions.forEach(sub => sub.unsubscribe());
   }
 
   ngOnInit() {

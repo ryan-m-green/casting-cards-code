@@ -9,7 +9,7 @@
 .void-canvas {
   width: 100%;
   min-height: 100%;
-  background: v.$color-black;
+  background: v.$color-base-black;
   position: relative;
   overflow-y: auto;
   overflow-x: hidden;
@@ -231,7 +231,7 @@
 
 .detail-label {
   font-family: v.$font-header;
-  font-size: 7px;
+  font-size: 12px;
   letter-spacing: 0.2em;
   text-transform: uppercase;
   color: rgba(v.$color-lib-location-1, 0.85);
@@ -269,7 +269,7 @@
 
 .detail-keyword-pill {
   font-family: v.$font-header;
-  font-size: 7px;
+  font-size: 10px;
   letter-spacing: 0.14em;
   text-transform: uppercase;
   color: rgba(v.$color-lib-location-1, 0.80);
@@ -344,12 +344,6 @@
 }
 
 
-/* ── Time-of-day bar section ─────────────────────────────────── */
-.tod-bar-section {
-  padding: 0 20px 54px;
-  max-width: 960px;
-  margin: 0 auto;
-}
 
 /* ── Mobile: left-slide + downward accordion ─────────────────────────────── */
 @media (max-width: 767px) {

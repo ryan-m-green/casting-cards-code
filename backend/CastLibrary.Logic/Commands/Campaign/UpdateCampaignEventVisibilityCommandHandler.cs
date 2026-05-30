@@ -1,28 +1,45 @@
-using CastLibrary.Repository.Repositories.Update;
+using CastLibrary.Logic.Strategies;
+using CastLibrary.Shared.Domain;
 using CastLibrary.Shared.Requests;
 
 namespace CastLibrary.Logic.Commands.Campaign;
 
-public interface IUpdateCampaignEventVisibilityCommandHandler
+public interface IUpdateStorylineVisibilityCommandHandler
 {
-    Task HandleAsync(UpdateCampaignEventVisibilityCommand command);
+    Task<List<EntityVisibilityResult>> HandleAsync(UpdateCampaignEventVisibilityCommand command);
 }
 
 public class UpdateCampaignEventVisibilityCommandHandler(
-    ICampaignEventUpdateRepository repository) : IUpdateCampaignEventVisibilityCommandHandler
+        IEnumerable<IEntityVisibilityUpdater> entityVisibilityUpdaters) : IUpdateStorylineVisibilityCommandHandler
 {
-    public Task HandleAsync(UpdateCampaignEventVisibilityCommand command)
-        => repository.UpdateVisibilityAsync(command.EventId, command.Request.IsVisibleToPlayers);
+    public async Task<List<EntityVisibilityResult>> HandleAsync(UpdateCampaignEventVisibilityCommand command)
+    {
+        var campaignId = command.CampaignId;
+        var resultList = new List<EntityVisibilityResult>();
+        foreach (var entity in command.Request.EntityVisibilities)
+        {
+            var match = entityVisibilityUpdaters.FirstOrDefault(o => o.IsMatch(entity));
+            if (match != null)
+            {
+                var result = await match.Update(campaignId, entity);
+                result.TickCount = DateTime.UtcNow.Ticks;
+                resultList.Add(result);
+            }
+        }
+        return resultList;
+    }
+
 }
 
 public class UpdateCampaignEventVisibilityCommand
 {
-    public UpdateCampaignEventVisibilityCommand(Guid eventId, UpdateCampaignEventVisibilityRequest request)
+    public UpdateCampaignEventVisibilityCommand(Guid campaignId, Guid eventId, UpdateCampaignEventVisibilityRequest request)
     {
         EventId = eventId;
         Request = request;
+        CampaignId = campaignId;
     }
-
+    public Guid CampaignId { get; }
     public Guid EventId { get; }
     public UpdateCampaignEventVisibilityRequest Request { get; }
 }

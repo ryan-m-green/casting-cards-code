@@ -15,19 +15,28 @@ public class UploadCampaignEventHandoutCommandHandler(
     {
         var eventId = Guid.NewGuid();
 
+        var linkedEntities = new List<LinkedEntityTrigger>();
+        if (!string.IsNullOrWhiteSpace(command.LinkedEntityType) && command.LinkedEntityId.HasValue)
+        {
+            linkedEntities.Add(new LinkedEntityTrigger 
+            { 
+                EntityType = command.LinkedEntityType, 
+                EntityId = command.LinkedEntityId.Value.ToString() 
+            });
+        }
+
         var domain = new CampaignEventDomain
         {
-            Id               = eventId,
-            CampaignId       = command.CampaignId,
-            Title            = command.Title,
-            Body             = command.Body ?? string.Empty,
-            SortOrder        = 0,
-            LinkedEntityId   = command.LinkedEntityId,
-            LinkedEntityType = command.LinkedEntityType,
-            FilePath         = null,
+            Id = eventId,
+            CampaignId = command.CampaignId,
+            Title = command.Title,
+            Body = command.Body ?? string.Empty,
+            SortOrder = 0,
+            LinkedEntities = linkedEntities,
+            FilePath = null,
             VisibleToPlayers = false,
-            CreatedAt        = DateTime.UtcNow,
-            UpdatedAt        = DateTime.UtcNow,
+            CreatedAt = DateTime.UtcNow,
+            UpdatedAt = DateTime.UtcNow,
         };
 
         await insertRepository.InsertAsync(domain);
@@ -47,9 +56,9 @@ public class UploadCampaignEventHandoutCommand
         LinkedEntityId   = linkedEntityId;
     }
 
-    public Guid    CampaignId       { get; }
-    public string  Title            { get; }
+    public Guid   CampaignId       { get; }
+    public string Title            { get; }
     public string Body             { get; }
-    public string  LinkedEntityType { get; }
-    public Guid?   LinkedEntityId   { get; }
+    public string LinkedEntityType { get; }
+    public Guid?  LinkedEntityId   { get; }
 }

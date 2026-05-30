@@ -1,4 +1,4 @@
-import { Component, OnInit, signal, computed, inject, ViewChild, ElementRef, effect, untracked } from '@angular/core';
+import { Component, OnInit, OnDestroy, signal, computed, inject, ViewChild, ElementRef, effect, untracked } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
@@ -7,6 +7,7 @@ import { CampaignCastPlayerNotes } from '../../../shared/models/campaign.model';
 import { CampaignSublocationInstance, ShopItem } from '../../../shared/models/sublocation.model';
 import { CampaignCastInstance } from '../../../shared/models/cast.model';
 import { CampaignSecret } from '../../../shared/models/secret.model';
+import { Subscription } from 'rxjs';
 import { PortalTransitionService } from '../../../core/portal-transition.service';
 
 interface PurchaseResult {
@@ -32,7 +33,7 @@ import { FactionSymbolPickerComponent, FactionSymbolAssignment } from '../../../
   templateUrl: './player-sublocation-detail.component.html',
   styleUrl: './player-sublocation-detail.component.scss'
 })
-export class PlayerSublocationDetailComponent implements OnInit {
+export class PlayerSublocationDetailComponent implements OnInit, OnDestroy {
   private route      = inject(ActivatedRoute);
   private router     = inject(Router);
   private http       = inject(HttpClient);
@@ -47,6 +48,8 @@ export class PlayerSublocationDetailComponent implements OnInit {
   campaignId            = signal('');
   sublocationInstanceId = signal('');
   campaign              = () => this.shell.campaign();
+  private paramsSub?: Subscription;
+  private hubSubscriptions: Subscription[] = [];
   detailExpanded        = signal(false);
   panelHeight           = signal('220px');
   castRatings           = signal<Map<string, number>>(new Map());
@@ -112,86 +115,99 @@ export class PlayerSublocationDetailComponent implements OnInit {
       this.shellService.setTitleContext({
         pageType: 'sublocation',
         campaignId: id,
+        campaignName: this.campaign()?.name,
         baseRoute: '/player/campaign',
         location: parentLoc,
       });
     });
 
-    effect(() => {
-      const event = this.hub.castTravelled();
-      if (!event) return;
-      const currentSub = this.sublocationInstanceId();
-      if (!currentSub) return;
+    this.hubSubscriptions.push(
+      this.hub.castTravelled$.subscribe(event => {
+        if (!event) return;
+        const currentSub = this.sublocationInstanceId();
+        if (!currentSub) return;
 
-      const isLeaving  = event.fromSublocationInstanceId === currentSub;
-      const isArriving = event.toSublocationInstanceId   === currentSub;
+        const isLeaving  = event.fromSublocationInstanceId === currentSub;
+        const isArriving = event.toSublocationInstanceId   === currentSub;
 
-      if (isLeaving) {
-        this.fadingOutIds.update(s => new Set([...s, event.castInstanceId]));
-        setTimeout(() => {
-          // Initialise local override from base if not yet set
-          if (this.localCasts() === null) {
-            this.localCasts.set([...this.baseCasts()]);
-          }
-          this.localCasts.update(list => (list ?? []).filter(c => c.instanceId !== event.castInstanceId));
-          this.fadingOutIds.update(s => { const n = new Set(s); n.delete(event.castInstanceId); return n; });
-        }, 500);
-      }
+        if (isLeaving) {
+          this.fadingOutIds.update(s => new Set([...s, event.castInstanceId]));
+          setTimeout(() => {
+            // Initialise local override from base if not yet set
+            if (this.localCasts() === null) {
+              this.localCasts.set([...this.baseCasts()]);
+            }
+            this.localCasts.update(list => (list ?? []).filter(c => c.instanceId !== event.castInstanceId));
+            this.fadingOutIds.update(s => { const n = new Set(s); n.delete(event.castInstanceId); return n; });
+          }, 500);
+        }
 
-      if (isArriving) {
-        this.http.get<CampaignCastInstance>(
-          `${environment.apiUrl}/api/campaigns/${event.campaignId}/casts/${event.castInstanceId}`
-        ).subscribe(cast => {
-          if (this.localCasts() === null) {
-            this.localCasts.set([...this.baseCasts()]);
-          }
+        if (isArriving) {
+          this.http.get<CampaignCastInstance>(
+            `${environment.apiUrl}/api/campaigns/${event.campaignId}/casts/${event.castInstanceId}`
+          ).subscribe(cast => {
+            if (this.localCasts() === null) {
+              this.localCasts.set([...this.baseCasts()]);
+            }
           this.localCasts.update(list => {
             const existing = (list ?? []).find(c => c.instanceId === cast.instanceId);
             return existing ? (list ?? []) : [...(list ?? []), cast];
           });
         });
       }
-    });
+      })
+    );
 
-    effect(() => {
-      const event = this.hub.cardVisibilityChanged();
-      if (!event || event.cardType !== 'sublocation') return;
-      const sublocId   = untracked(() => this.sublocationInstanceId());
-      const campaignId = untracked(() => this.campaignId());
-      if (!sublocId || !campaignId || event.instanceId !== sublocId) return;
-      if (!event.isVisible) {
-        this.transition.quickCover();
-        this.router.navigate(['/player/campaign', campaignId]);
-      }
-    });
+    this.hubSubscriptions.push(
+      this.hub.cardVisibilityChanged$.subscribe(event => {
+        if (!event || event.cardType !== 'sublocation') return;
+        const sublocId   = untracked(() => this.sublocationInstanceId());
+        const campaignId = untracked(() => this.campaignId());
+        if (!sublocId || !campaignId || event.instanceId !== sublocId) return;
+        if (!event.isVisible) {
+          this.transition.quickCover();
+          this.router.navigate(['/player/campaign', campaignId]);
+        }
+      })
+    );
   }
 
   ngOnInit() {
     this.transition.hide();
-    const id    = this.route.snapshot.paramMap.get('id')!;
-    const locId = this.route.snapshot.paramMap.get('sublocationInstanceId')!;
-    this.campaignId.set(id);
-    this.sublocationInstanceId.set(locId);
+    this.paramsSub = this.route.paramMap.subscribe(params => {
+      const id    = params.get('id')!;
+      const locId = params.get('sublocationInstanceId')!;
+      this.campaignId.set(id);
+      this.sublocationInstanceId.set(locId);
+      this.castRatings.set(new Map());
+      this.localCasts.set(null);
+      this.fadingOutIds.set(new Set());
 
-    const subLoc = this.sublocation();
-    if (subLoc) {
-      const c = this.campaign();
-      if (c) {
-        const castIds = c.casts
-          .filter(ca => ca.sublocationInstanceId === subLoc.instanceId)
-          .map(ca => ca.instanceId);
-        if (castIds.length) {
-          const params = castIds.map(cid => `castInstanceId=${cid}`).join('&');
-          this.http.get<CampaignCastPlayerNotes[]>(
-            `${environment.apiUrl}/api/campaigns/${id}/cast-player-notes/by-cast-instances?${params}`
-          ).subscribe(notes => {
-            const map = new Map<string, number>();
-            notes.forEach(n => map.set(n.castInstanceId, n.rating));
-            this.castRatings.set(map);
-          });
+      const subLoc = this.sublocation();
+      if (subLoc) {
+        const c = this.campaign();
+        if (c) {
+          const castIds = c.casts
+            .filter(ca => ca.sublocationInstanceId === subLoc.instanceId)
+            .map(ca => ca.instanceId);
+          if (castIds.length) {
+            const queryParams = castIds.map(cid => `castInstanceId=${cid}`).join('&');
+            this.http.get<CampaignCastPlayerNotes[]>(
+              `${environment.apiUrl}/api/campaigns/${id}/cast-player-notes/by-cast-instances?${queryParams}`
+            ).subscribe(notes => {
+              const map = new Map<string, number>();
+              notes.forEach(n => map.set(n.castInstanceId, n.rating));
+              this.castRatings.set(map);
+            });
+          }
         }
       }
-    }
+    });
+  }
+
+  ngOnDestroy() {
+    this.paramsSub?.unsubscribe();
+    this.hubSubscriptions.forEach(sub => sub.unsubscribe());
   }
 
   toggleDetail() {

@@ -28,8 +28,8 @@
             @if (!editing()) {
               <button class="detail-edit-btn" (click)="startEditing()">✎ Edit Details</button>
             } @else {
-              <button class="campaign-primary-btn" (click)="saveDetails()">✔ Save For Campaign</button>
-              <button class="campaign-primary-btn" (click)="saveToLibrary()">✔ Save For Campaign & Library</button>
+              <button class="campaign-primary-btn" (click)="saveDetails()">✔ Campaign</button>
+              <button class="campaign-primary-btn" (click)="saveToLibrary()">✔ Campaign & Library</button>
               <button class="campaign-secondary-btn" (click)="cancelEditing()">Cancel</button>
             }
           </div>
@@ -211,6 +211,7 @@
     <app-faction-relationships-section
       [relationships]="factionRelationships()"
       [otherFactions]="otherFactions()"
+      [currentFactionInstanceId]="faction()!.factionInstanceId"
       [isDm]="isDm()"
       (removeRelationship)="removeRelationship($event)"
       (saveRelationship)="saveRelationship($event)"

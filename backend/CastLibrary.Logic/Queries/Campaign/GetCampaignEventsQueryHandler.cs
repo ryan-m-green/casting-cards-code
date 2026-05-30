@@ -9,7 +9,7 @@ public interface IGetCampaignEventsQueryHandler
 }
 
 public class GetCampaignEventsQueryHandler(
-    ICampaignEventReadRepository repository) : IGetCampaignEventsQueryHandler
+    IStorylineReadRepository repository) : IGetCampaignEventsQueryHandler
 {
     public Task<List<CampaignEventDomain>> HandleAsync(GetCampaignEventsQuery query)
         => repository.GetByCampaignIdAsync(query.CampaignId);

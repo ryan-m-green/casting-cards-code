@@ -1,5 +1,6 @@
 using CastLibrary.Logic.Interfaces;
 using CastLibrary.Shared.Domain;
+using CastLibrary.Shared.Requests;
 using CastLibrary.Shared.Responses;
 
 namespace CastLibrary.WebHost.Mappers;
@@ -13,16 +14,14 @@ public class CampaignEventWebMapper(IImageStorageOperator imageStorage) : ICampa
 {
     public CampaignEventResponse ToResponse(CampaignEventDomain domain) => new()
     {
-        Id               = domain.Id,
-        CampaignId       = domain.CampaignId,
-        Title            = domain.Title,
-        Body             = domain.Body,
-        SortOrder        = domain.SortOrder,
-        LinkedEntityId   = domain.LinkedEntityId,
-        LinkedEntityType = domain.LinkedEntityType,
+        Id = domain.Id,
+        CampaignId = domain.CampaignId,
+        Title = domain.Title,
+        Body = domain.Body,
+        SortOrder = domain.SortOrder,
+        LinkedEntities = domain.LinkedEntities,
         VisibleToPlayers = domain.VisibleToPlayers,
-        ImageUrl         = !string.IsNullOrEmpty(domain.FilePath) ? imageStorage.GetPublicUrl(domain.FilePath) : null,
-        TodPositionPercent = domain.TodPositionPercent,
-        CreatedAt        = domain.CreatedAt,
+        ImageUrl = !string.IsNullOrEmpty(domain.FilePath) ? imageStorage.GetPublicUrl(domain.FilePath) : null,
+        CreatedAt = domain.CreatedAt,
     };
 }

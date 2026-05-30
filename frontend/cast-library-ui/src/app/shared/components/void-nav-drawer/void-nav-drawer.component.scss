@@ -14,7 +14,7 @@
   height: 44px;
   padding: 0;
   background: v.$campaign-portal-bg-dark;
-  border: 1px solid color-mix(in srgb, var(--portal-color, v.$campaign-portal-primary), transparent 50%);
+  border: 1px solid color-mix(in srgb, var(--portal-color, v.$color-base-purple-primary), transparent 50%);
   border-radius: 8px;
   cursor: pointer;
   animation: nav-btn-pulse 8.4s ease-in-out infinite;
@@ -23,19 +23,19 @@
   &:hover,
   &.is-open {
     background: v.$campaign-portal-border-accent;
-    border-color: color-mix(in srgb, var(--portal-color, v.$campaign-portal-primary), transparent 20%);
+    border-color: color-mix(in srgb, var(--portal-color, v.$color-base-purple-primary), transparent 20%);
     animation: none;
   }
 }
 
 @keyframes nav-btn-pulse {
   0%, 100% {
-    border-color: color-mix(in srgb, var(--portal-color, v.$campaign-portal-primary), transparent 60%);
-    box-shadow: 0 0 4px color-mix(in srgb, var(--portal-color, v.$campaign-portal-primary), transparent 80%);
+    border-color: color-mix(in srgb, var(--portal-color, v.$color-base-purple-primary), transparent 60%);
+    box-shadow: 0 0 4px color-mix(in srgb, var(--portal-color, v.$color-base-purple-primary), transparent 80%);
   }
   50% {
-    border-color: color-mix(in srgb, var(--portal-color, v.$campaign-portal-primary), transparent 20%);
-    box-shadow: 0 0 10px color-mix(in srgb, var(--portal-color, v.$campaign-portal-primary), transparent 45%);
+    border-color: color-mix(in srgb, var(--portal-color, v.$color-base-purple-primary), transparent 20%);
+    box-shadow: 0 0 10px color-mix(in srgb, var(--portal-color, v.$color-base-purple-primary), transparent 45%);
   }
 }
 
@@ -87,15 +87,15 @@
   top: 0;
   left: 0;
   bottom: 0;
-  width: min(320px, 88vw);
+  width: min(420px, 88vw);
   z-index: 10001;
   display: flex;
   flex-direction: column;
-  background: color-mix(in srgb, v.$color-black 88%, v.$campaign-portal-primary 12%);
-  border-right: 1px solid color-mix(in srgb, var(--portal-color, v.$campaign-portal-primary), transparent 50%);
+  background: color-mix(in srgb, v.$color-base-black 88%, v.$color-base-purple-primary 12%);
+  border-right: 1px solid color-mix(in srgb, var(--portal-color, v.$color-base-purple-primary), transparent 50%);
   box-shadow:
-    4px 0 32px color-mix(in srgb, var(--portal-color, v.$campaign-portal-primary), transparent 60%),
-    inset -1px 0 0 color-mix(in srgb, var(--portal-color, v.$campaign-portal-primary), transparent 60%);
+    4px 0 32px color-mix(in srgb, var(--portal-color, v.$color-base-purple-primary), transparent 60%),
+    inset -1px 0 0 color-mix(in srgb, var(--portal-color, v.$color-base-purple-primary), transparent 60%);
   animation: drawer-slide-in 0.26s cubic-bezier(0.22, 1, 0.36, 1) both, drawer-border-pulse 8.4s ease-in-out infinite;
   overflow: hidden;
 
@@ -106,16 +106,16 @@
 
 @keyframes drawer-border-pulse {
   0%, 100% {
-    border-right-color: color-mix(in srgb, var(--portal-color, v.$campaign-portal-primary), transparent 65%);
+    border-right-color: color-mix(in srgb, var(--portal-color, v.$color-base-purple-primary), transparent 65%);
     box-shadow:
-      4px 0 18px color-mix(in srgb, var(--portal-color, v.$campaign-portal-primary), transparent 72%),
-      inset -1px 0 0 color-mix(in srgb, var(--portal-color, v.$campaign-portal-primary), transparent 65%);
+      4px 0 18px color-mix(in srgb, var(--portal-color, v.$color-base-purple-primary), transparent 72%),
+      inset -1px 0 0 color-mix(in srgb, var(--portal-color, v.$color-base-purple-primary), transparent 65%);
   }
   50% {
-    border-right-color: color-mix(in srgb, var(--portal-color, v.$campaign-portal-primary), transparent 25%);
+    border-right-color: color-mix(in srgb, var(--portal-color, v.$color-base-purple-primary), transparent 25%);
     box-shadow:
-      4px 0 36px color-mix(in srgb, var(--portal-color, v.$campaign-portal-primary), transparent 40%),
-      inset -1px 0 0 color-mix(in srgb, var(--portal-color, v.$campaign-portal-primary), transparent 25%);
+      4px 0 36px color-mix(in srgb, var(--portal-color, v.$color-base-purple-primary), transparent 40%),
+      inset -1px 0 0 color-mix(in srgb, var(--portal-color, v.$color-base-purple-primary), transparent 25%);
   }
 }
 
@@ -149,7 +149,7 @@
   font-size: 10px;
   letter-spacing: 0.28em;
   text-transform: uppercase;
-  color: color-mix(in srgb, var(--portal-color, v.$campaign-portal-primary), white 60%);
+  color: color-mix(in srgb, var(--portal-color, v.$color-base-purple-primary), white 60%);
 }
 
 .nav-close-btn {
@@ -199,7 +199,7 @@
   &:hover,
   &.is-active {
     background: v.$campaign-portal-border-accent;
-    border-color: color-mix(in srgb, var(--portal-color, v.$campaign-portal-primary), transparent 20%);
+    border-color: color-mix(in srgb, var(--portal-color, v.$color-base-purple-primary), transparent 20%);
   }
 }
 
@@ -230,7 +230,7 @@
 
   &:hover {
     background: v.$campaign-portal-border-accent;
-    border-color: color-mix(in srgb, var(--portal-color, v.$campaign-portal-primary), transparent 20%);
+    border-color: color-mix(in srgb, var(--portal-color, v.$color-base-purple-primary), transparent 20%);
   }
 }
 
@@ -249,7 +249,7 @@
 
 .nav-queue-count {
   font-family: v.$font-header;
-  font-size: 11px;
+  font-size: 14px;
   font-weight: 700;
   letter-spacing: 0.04em;
   color: v.$campaign-portal-text-purple-light;
@@ -278,28 +278,28 @@
   transition: background 0.15s ease;
 
   &:hover {
-    background: rgba(255, 255, 255, 0.04);
+    background: rgba(v.$color-base-white, 0.04);
 
     .nav-exit-arrow,
     .nav-exit-label {
-      color: color-mix(in srgb, var(--portal-color, v.$campaign-portal-primary), white 92%);
+      color: color-mix(in srgb, var(--portal-color, v.$color-base-purple-primary), white 92%);
     }
   }
 }
 
 .nav-exit-arrow {
   font-size: 12px;
-  color: color-mix(in srgb, var(--portal-color, v.$campaign-portal-primary), white 75%);
+  color: color-mix(in srgb, var(--portal-color, v.$color-base-purple-primary), white 75%);
   flex-shrink: 0;
   transition: color 0.15s ease;
 }
 
 .nav-exit-label {
   font-family: v.$font-header;
-  font-size: 9px;
+  font-size: 14px;
   letter-spacing: 0.18em;
   text-transform: uppercase;
-  color: color-mix(in srgb, var(--portal-color, v.$campaign-portal-primary), white 75%);
+  color: color-mix(in srgb, var(--portal-color, v.$color-base-purple-primary), white 75%);
   white-space: nowrap;
   transition: color 0.15s ease;
 }
@@ -315,12 +315,12 @@
 .nav-search {
   width: 100%;
   padding: 8px 12px;
-  background: rgba(255, 255, 255, 0.04);
+  background: rgba(v.$color-base-white, 0.04);
   border: 1px solid v.$campaign-portal-border-bold;
   border-radius: 8px;
   color: v.$campaign-portal-text-bright;
   font-family: v.$font-header;
-  font-size: 10px;
+  font-size: 14px;
   letter-spacing: 0.08em;
   outline: none;
   transition: border-color 0.18s ease, background 0.18s ease;
@@ -333,7 +333,7 @@
 
   &:focus {
     border-color: v.$campaign-portal-border-strong-focus;
-    background: rgba(255, 255, 255, 0.07);
+    background: rgba(v.$color-base-white, 0.07);
   }
 }
 
@@ -364,10 +364,10 @@
   display: block;
   padding: 4px 20px 6px;
   font-family: v.$font-header;
-  font-size: 8px;
+  font-size: 18px;
   letter-spacing: 0.3em;
   text-transform: uppercase;
-  color: color-mix(in srgb, var(--portal-color, v.$campaign-portal-primary), white 50%);
+  color: color-mix(in srgb, var(--portal-color, v.$color-base-purple-primary), white 50%);
   opacity: 0.7;
   user-select: none;
 }
@@ -390,43 +390,63 @@
   border-radius: 0;
 
   &:hover {
-    background: rgba(255, 255, 255, 0.05);
+    background: rgba(v.$color-base-white, 0.05);
   }
 
   &.is-active {
-    background: color-mix(in srgb, var(--portal-color, v.$campaign-portal-primary), transparent 84%);
-    box-shadow: inset 2px 0 0 color-mix(in srgb, var(--portal-color, v.$campaign-portal-primary), white 55%);
+    background: color-mix(in srgb, var(--portal-color, v.$color-base-purple-primary), transparent 84%);
+    box-shadow: inset 2px 0 0 color-mix(in srgb, var(--portal-color, v.$color-base-purple-primary), white 55%);
 
-    .nav-item-label { color: color-mix(in srgb, var(--portal-color, v.$campaign-portal-primary), white 78%); }
-    .nav-item-icon  { color: color-mix(in srgb, var(--portal-color, v.$campaign-portal-primary), white 65%); }
+    .nav-item-label {
+      color: color-mix(in srgb, var(--portal-color, v.$color-base-purple-primary), white 78%);
+    }
+
+    .nav-item-icon {
+      color: color-mix(in srgb, var(--portal-color, v.$color-base-purple-primary), white 65%);
+    }
   }
 
   &--home {
     .nav-item-label {
-      font-size: 10px;
+      font-size: 14px;
       letter-spacing: 0.18em;
-      color: color-mix(in srgb, var(--portal-color, v.$campaign-portal-primary), white 65%);
+      color: color-mix(in srgb, var(--portal-color, v.$color-base-purple-primary), white 65%);
     }
-    .nav-item-icon { color: color-mix(in srgb, var(--portal-color, v.$campaign-portal-primary), white 65%); }
+
+    .nav-item-icon {
+      color: color-mix(in srgb, var(--portal-color, v.$color-base-purple-primary), white 65%);
+    }
   }
 
   &--top {
     .nav-item-label {
-      font-size: 10px;
+      font-size: 14px;
       letter-spacing: 0.16em;
       color: v.$campaign-portal-text-lavender-bright;
     }
-    .nav-item-icon { color: v.$campaign-portal-text-lavender-bright; }
+
+    .nav-item-icon {
+      color: v.$campaign-portal-text-lavender-bright;
+    }
   }
 
   &--location {
     padding-left: 20px;
-    .nav-item-label { color: v.$campaign-portal-text-lavender; font-size: 10px; letter-spacing: 0.12em; }
+
+    .nav-item-label {
+      color: v.$campaign-portal-text-lavender;
+      font-size: 14px;
+      letter-spacing: 0.12em;
+    }
   }
 
   &--sublocation {
     padding-left: 36px;
-    .nav-item-label { color: v.$campaign-portal-text-secondary; font-size: 9px; }
+
+    .nav-item-label {
+      color: v.$campaign-portal-text-secondary;
+      font-size: 14px;
+    }
   }
 
   &--sublocation-static {
@@ -434,35 +454,52 @@
     cursor: default;
     pointer-events: none;
     flex: 1;
-    .nav-item-label { color: v.$campaign-portal-text-secondary; font-size: 9px; }
+
+    .nav-item-label {
+      color: v.$campaign-portal-text-secondary;
+      font-size: 14px;
+    }
   }
 
   &--cast {
     padding-left: 52px;
-    .nav-item-label { color: v.$campaign-portal-text-muted; font-size: 9px; }
+
+    .nav-item-label {
+      color: v.$campaign-portal-text-muted;
+      font-size: 14px;
+    }
   }
 
   &--cast-static {
     padding-left: 52px;
     cursor: default;
     pointer-events: none;
-    .nav-item-label { color: v.$campaign-portal-text-muted; font-size: 9px; }
+
+    .nav-item-label {
+      color: v.$campaign-portal-text-muted;
+      font-size: 14px;
+    }
   }
 
   &--faction {
     padding-left: 36px;
-    .nav-item-label { color: v.$campaign-portal-text-lavender; font-size: 10px; letter-spacing: 0.1em; }
+
+    .nav-item-label {
+      color: v.$campaign-portal-text-lavender;
+      font-size: 14px;
+      letter-spacing: 0.1em;
+    }
   }
 }
 
 .nav-item-icon {
-  font-size: 11px;
+  font-size: 18px;
   color: v.$campaign-portal-text-purple-light;
   flex-shrink: 0;
   width: 16px;
   text-align: center;
 
-  &--location   { color: color-mix(in srgb, var(--portal-color, v.$campaign-portal-primary), white 55%); }
+  &--location   { color: color-mix(in srgb, var(--portal-color, v.$color-base-purple-primary), white 55%); }
   &--sublocation { color: rgba(v.$campaign-portal-text-secondary, 0.7); font-size: 9px; }
   &--cast       { color: rgba(v.$campaign-portal-text-muted, 0.6); font-size: 8px; }
   &--faction    { color: v.$campaign-portal-text-purple-light; }
@@ -470,7 +507,7 @@
 
 .nav-item-label {
   font-family: v.$font-header;
-  font-size: 10px;
+  font-size: 14px;
   letter-spacing: 0.14em;
   text-transform: uppercase;
   white-space: nowrap;

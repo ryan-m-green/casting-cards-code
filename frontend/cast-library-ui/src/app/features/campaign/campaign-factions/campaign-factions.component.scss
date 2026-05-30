@@ -3,7 +3,6 @@
 :host {
   display: block;
   width: 100%;
-  max-width: 1200px;
   margin: 0 auto;
 
   // ── Social compass colour tokens ──────────────────────────────────────────
@@ -31,7 +30,7 @@
 
 .factions-tab {
   font-family: v.$font-header;
-  font-size: 9px;
+  font-size: 12px;
   font-weight: bolder;
   letter-spacing: 0.18em;
   text-transform: uppercase;
@@ -66,7 +65,7 @@
 
 .factions-empty {
   font-family: v.$font-header;
-  font-size: 11px;
+  font-size: 12px;
   letter-spacing: 0.1em;
   color: v.$campaign-portal-text-softer;
   font-style: italic;
@@ -81,6 +80,7 @@
   gap: 18px;
   align-items: flex-start;
   min-height: 40px;
+  justify-content: center;
 }
 
 .cl-loc-wrap {
@@ -97,7 +97,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: color-mix(in srgb, v.$color-black, transparent 30%);
+  background: color-mix(in srgb, v.$color-base-black, transparent 30%);
   border: 1px solid v.$color-border-accent;
   border-radius: 50%;
   color: #ffffff;
@@ -132,7 +132,7 @@ app-portal-import-card {
 
 .compass-cast-selector-label {
   font-family: v.$font-header;
-  font-size: 8px;
+  font-size: 12px;
   letter-spacing: 0.18em;
   text-transform: uppercase;
   color: v.$campaign-portal-text-bright;
@@ -181,7 +181,7 @@ app-portal-import-card {
   max-width: 552px;
   height: auto;
   background: v.$color-ext-527;
-  border: 1px solid rgba(v.$accent, 0.16);
+  border: 1px solid rgba(v.$color-arcane-border, 0.16);
   border-radius: 6px;
 
   @media (max-width: 600px) {
@@ -203,14 +203,14 @@ app-portal-import-card {
 .compass-ring {
   fill: none;
   stroke-linecap: round;
-  &--outer { stroke: rgba(v.$accent, 0.50); stroke-width: 1.5; }
-  &--mid   { stroke: rgba(v.$accent, 0.22); stroke-width: 1; stroke-dasharray: 4 4; }
-  &--value { stroke: rgba(v.$accent, 0.12); stroke-width: 0.75; }
+  &--outer { stroke: rgba(v.$color-arcane-border, 0.50); stroke-width: 1.5; }
+  &--mid   { stroke: rgba(v.$color-arcane-border, 0.22); stroke-width: 1; stroke-dasharray: 4 4; }
+  &--value { stroke: rgba(v.$color-arcane-border, 0.12); stroke-width: 0.75; }
 }
 
 .compass-ring-label {
   font-family: v.$font-header;
-  font-size: 7px;
+  font-size: 12px;
   letter-spacing: 0.18em;
   text-transform: uppercase;
   fill: v.$campaign-portal-text-secondary;
@@ -218,20 +218,20 @@ app-portal-import-card {
 }
 
 .compass-slice-line {
-  stroke: rgba(v.$accent, 0.18);
+  stroke: rgba(v.$color-arcane-border, 0.18);
   stroke-width: 1;
   stroke-dasharray: 3 5;
 }
 
 .compass-center {
   fill: v.$color-ext-559;
-  stroke: rgba(v.$accent, 0.65);
+  stroke: rgba(v.$color-arcane-border, 0.65);
   stroke-width: 1.5;
 }
 
 .compass-center-label {
   font-family: v.$font-header;
-  font-size: 7px;
+  font-size: 12px;
   letter-spacing: 0.14em;
   text-transform: uppercase;
   fill: v.$campaign-portal-text-bright;
@@ -254,7 +254,7 @@ app-portal-import-card {
 }
 
 .compass-node--unassessed .compass-node-circle {
-  stroke: rgba(v.$accent, 0.45);
+  stroke: rgba(v.$color-arcane-border, 0.45);
   stroke-dasharray: 4 3;
   stroke-width: 1.5;
   fill-opacity: 0.70;
@@ -270,7 +270,7 @@ app-portal-import-card {
 
 .compass-node-label {
   font-family: v.$font-header;
-  font-size: 7px;
+  font-size: 12px;
   letter-spacing: 0.08em;
   fill: v.$campaign-portal-text-bright;
   pointer-events: none;
@@ -283,7 +283,7 @@ app-portal-import-card {
   &.edge--allied    { stroke: v.$color-ext-519; }
   &.edge--rival     { stroke: v.$color-ext-520;  stroke-dasharray: 6 3; }
   &.edge--enemy     { stroke: v.$color-ext-529;  stroke-dasharray: 2 4; }
-  &.edge--neutral   { stroke: rgba(v.$accent, 0.40); }
+  &.edge--neutral   { stroke: rgba(v.$color-arcane-border, 0.40); }
   &.edge--blackmail { stroke: v.$color-ext-531;  stroke-dasharray: 8 3 2 3; }
   &.edge--patronage { stroke: v.$color-ext-532; }
 }
@@ -303,7 +303,7 @@ app-portal-import-card {
   gap: 8px 24px;
   justify-content: center;
   padding: 4px 0 12px;
-  border-bottom: 1px solid rgba(v.$accent, 0.12);
+  border-bottom: 1px solid rgba(v.$color-arcane-border, 0.12);
   width: 100%;
 }
 
@@ -315,7 +315,7 @@ app-portal-import-card {
 
 .compass-legend-title {
   font-family: v.$font-header;
-  font-size: 7px;
+  font-size: 12px;
   letter-spacing: 0.18em;
   text-transform: uppercase;
   color: v.$campaign-portal-text-bright;
@@ -343,7 +343,7 @@ app-portal-import-card {
   &.edge--allied    { stroke: v.$color-ext-519; }
   &.edge--rival     { stroke: v.$color-ext-520;  stroke-dasharray: 6 3; }
   &.edge--enemy     { stroke: v.$color-ext-529;  stroke-dasharray: 2 4; }
-  &.edge--neutral   { stroke: rgba(v.$accent, 0.40); }
+  &.edge--neutral   { stroke: rgba(v.$color-arcane-border, 0.40); }
   &.edge--blackmail { stroke: v.$color-ext-531;  stroke-dasharray: 8 3 2 3; }
   &.edge--patronage { stroke: v.$color-ext-532; }
 }
@@ -384,7 +384,7 @@ app-portal-import-card {
   width: 4px;
   height: 4px;
   border-radius: 50%;
-  background: rgba(v.$accent, 0.85);
+  background: rgba(v.$color-arcane-border, 0.85);
   transform-origin: 0 0;
   pointer-events: none;
   z-index: 1000;
@@ -468,7 +468,7 @@ app-portal-import-card {
   border: 1px solid v.$color-ext-638;
   border-radius: 4px;
   font-family: v.$font-body;
-  font-size: 11px;
+  font-size: 12px;
   color: v.$campaign-portal-text-bright;
   line-height: 1.5;
 }

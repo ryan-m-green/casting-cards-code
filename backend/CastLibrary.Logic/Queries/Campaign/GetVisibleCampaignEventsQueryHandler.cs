@@ -9,7 +9,7 @@ public interface IGetVisibleCampaignEventsQueryHandler
 }
 
 public class GetVisibleCampaignEventsQueryHandler(
-    ICampaignEventReadRepository repository) : IGetVisibleCampaignEventsQueryHandler
+    IStorylineReadRepository repository) : IGetVisibleCampaignEventsQueryHandler
 {
     public Task<List<CampaignEventDomain>> HandleAsync(GetVisibleCampaignEventsQuery query)
         => repository.GetVisibleByCampaignIdAsync(query.CampaignId);

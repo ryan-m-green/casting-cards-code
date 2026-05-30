@@ -41,18 +41,18 @@
   border-radius: 12px;
   padding: 6px;
   box-shadow:
-    0 0 0 1px v.$portal-card-frame-shadow,
+    0 0 0 1px v.$color-base-black-2,
     0 10px 36px v.$color-shadow-dark,
-    0 0 32px color-mix(in srgb, var(--portal-color, v.$campaign-portal-primary), transparent 67%),
-    inset 0 1px 0 color-mix(in srgb, var(--portal-color, v.$campaign-portal-primary), transparent 80%);
+    0 0 32px color-mix(in srgb, var(--portal-color, v.$color-base-purple-primary), transparent 67%),
+    inset 0 1px 0 color-mix(in srgb, var(--portal-color, v.$color-base-purple-primary), transparent 80%);
 }
 
 .frame-portal {
   background: linear-gradient(145deg,
-    v.$portal-card-frame-1 0%,
-    v.$portal-card-frame-2 30%,
-    v.$portal-card-frame-3 60%,
-    v.$portal-card-frame-4 100%);
+    v.$color-base-blue-4 0%,
+    v.$color-base-blue-5 30%,
+    v.$color-base-black-3 60%,
+    v.$color-base-blue-6 100%);
 }
 
 // ─── Inner Content Area ───────────────────────────────────────────────────────
@@ -78,8 +78,8 @@
 
 .inner-portal {
   background: radial-gradient(ellipse at 50% 45%,
-    v.$portal-card-bg-1 0%,
-    v.$portal-card-bg-2 100%);
+    v.$color-base-black-4 0%,
+    v.$color-base-black-5 100%);
 }
 
 // ─── Runic Border ─────────────────────────────────────────────────────────────
@@ -107,7 +107,7 @@
   }
 
   .rune-glow {
-    fill: var(--portal-color, v.$campaign-portal-primary);
+    fill: var(--portal-color, v.$color-base-purple-primary);
     filter: blur(2px);
     animation: runeGlowPulse var(--portal-breathe-duration) ease-in-out infinite;
   }
@@ -158,7 +158,7 @@
   position: absolute;
   inset: -2px;
   border-radius: 50%;
-  background: var(--portal-color, v.$campaign-portal-primary);
+  background: var(--portal-color, v.$color-base-purple-primary);
   animation: portalPulse var(--portal-breathe-duration) ease-in-out infinite;
 }
 
@@ -168,8 +168,8 @@
   border-radius: 50%;
   border: 3px solid v.$portal-card-oval-ring;
   box-shadow:
-    0 0 18px var(--portal-color, v.$campaign-portal-primary),
-    0 0 40px color-mix(in srgb, var(--portal-color, v.$campaign-portal-primary), transparent 47%);
+    0 0 18px var(--portal-color, v.$color-base-purple-primary),
+    0 0 40px color-mix(in srgb, var(--portal-color, v.$color-base-purple-primary), transparent 47%);
 }
 
 .portal-oval-inner {
@@ -177,14 +177,14 @@
   inset: 5px;
   border-radius: 50%;
   background: radial-gradient(ellipse at 38% 32%,
-    v.$portal-card-oval-inner-1 0%,
-    v.$portal-card-oval-inner-2 100%);
+    v.$color-base-blue-7 0%,
+    v.$color-base-black-6 100%);
   animation: portalInnerPulse var(--portal-breathe-duration) ease-in-out infinite;
 }
 
 @keyframes portalInnerPulse {
-  0%, 100% { box-shadow: inset 0 0 4px 11px color-mix(in srgb, var(--portal-color, v.$campaign-portal-primary), transparent 85%); }
-  50%       { box-shadow: inset 0 0 12px 20px color-mix(in srgb, var(--portal-color, v.$campaign-portal-primary), transparent 50%); }
+  0%, 100% { box-shadow: inset 0 0 4px 11px color-mix(in srgb, var(--portal-color, v.$color-base-purple-primary), transparent 85%); }
+  50%       { box-shadow: inset 0 0 12px 20px color-mix(in srgb, var(--portal-color, v.$color-base-purple-primary), transparent 50%); }
 }
 
 .portal-oval-sparkle {
@@ -246,7 +246,7 @@
 
   &--delete {
     border: 1.5px solid v.$portal-card-delete-border;
-    color: v.$portal-card-delete-text;
+    color: v.$color-base-red-2;
     box-shadow: 0 0 8px v.$portal-card-delete-glow, inset 0 1px 0 v.$portal-card-delete-inset;
 
     &:hover {
@@ -260,7 +260,7 @@
     flex: none;
     width: 64px;
     border: 1.5px solid v.$portal-card-edit-border;
-    color: v.$portal-card-edit-text;
+    color: v.$color-base-blue-9;
     box-shadow: 0 0 8px v.$portal-card-edit-glow, inset 0 1px 0 v.$portal-card-edit-inset;
 
     &:hover {
@@ -281,7 +281,7 @@
   text-transform: uppercase;
   font-weight: bolder;
   color: rgba(154, 176, 184, 0.85);
-  border-top: 1px solid color-mix(in srgb, var(--portal-color, v.$campaign-portal-primary), transparent 82%);
+  border-top: 1px solid color-mix(in srgb, var(--portal-color, v.$color-base-purple-primary), transparent 82%);
   position: relative;
   z-index: 1;
 }

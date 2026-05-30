@@ -9,7 +9,7 @@ public interface IUpdateCampaignEventBodyCommandHandler
 }
 
 public class UpdateCampaignEventBodyCommandHandler(
-    ICampaignEventUpdateRepository repository) : IUpdateCampaignEventBodyCommandHandler
+    IStorylineUpdateRepository repository) : IUpdateCampaignEventBodyCommandHandler
 {
     public Task HandleAsync(UpdateCampaignEventBodyCommand command)
         => repository.UpdateBodyAsync(command.EventId, command.Request.Body);

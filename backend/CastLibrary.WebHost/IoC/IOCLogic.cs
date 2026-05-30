@@ -22,6 +22,7 @@ using CastLibrary.Logic.Queries.PlayerCard;
 using CastLibrary.Logic.Queries.QuicknoteQueue;
 using CastLibrary.Logic.Queries.Sublocation;
 using CastLibrary.Logic.Services;
+using CastLibrary.Logic.Strategies;
 
 namespace CastLibrary.WebHost.IoC
 {
@@ -31,7 +32,7 @@ namespace CastLibrary.WebHost.IoC
         {
             services.AddScoped<ILoggingService, LoggingService>();
 
-            return services.AddServices().AddFactories().AddCommands().AddQueries();
+            return services.AddServices().AddFactories().AddCommands().AddQueries().AddStrategies();
         }
 
         public static IServiceCollection AddCommands(this IServiceCollection services)
@@ -169,13 +170,14 @@ namespace CastLibrary.WebHost.IoC
             services.AddScoped<IAssignFactionToCastCommandHandler, AssignFactionToCastCommandHandler>();
 
             services.AddScoped<ICreateCampaignEventCommandHandler, CreateCampaignEventCommandHandler>();
-            services.AddScoped<IUpdateCampaignEventVisibilityCommandHandler, UpdateCampaignEventVisibilityCommandHandler>();
+            services.AddScoped<IUpdateStorylineVisibilityCommandHandler, UpdateCampaignEventVisibilityCommandHandler>();
             services.AddScoped<IUpdateCampaignEventBodyCommandHandler, UpdateCampaignEventBodyCommandHandler>();
             services.AddScoped<IUploadCampaignEventHandoutCommandHandler, UploadCampaignEventHandoutCommandHandler>();
             services.AddScoped<IUploadCampaignEventHandoutImageCommandHandler, UploadCampaignEventHandoutImageCommandHandler>();
             services.AddScoped<IUpdateCampaignEventDetailsCommandHandler, UpdateCampaignEventDetailsCommandHandler>();
             services.AddScoped<IDeleteCampaignEventCommandHandler, DeleteCampaignEventCommandHandler>();
             services.AddScoped<IReorderCampaignEventsCommandHandler, ReorderCampaignEventsCommandHandler>();
+            services.AddScoped<IArchiveCampaignEventsCommandHandler, ArchiveCampaignEventsCommandHandler>();
 
             return services;
         }
@@ -277,7 +279,16 @@ namespace CastLibrary.WebHost.IoC
             return services;
         }
 
+        public static IServiceCollection AddStrategies(this IServiceCollection services)
+        {
+            services.AddScoped<IEntityVisibilityUpdater, CampaignEntityVisibilityUpdater>();
+            services.AddScoped<IEntityVisibilityUpdater, SublocationEntityVisibilityUpdater>();
+            services.AddScoped<IEntityVisibilityUpdater, LocationEntityVisibilityUpdater>();
+            services.AddScoped<IEntityVisibilityUpdater, CastEntityVisibilityUpdater>();
+            services.AddScoped<IEntityVisibilityUpdater, FactionEntityVisibilityUpdater>();
+            services.AddScoped<IEntityVisibilityUpdater, TimeOfDayEntityVisibilityUpdater>();
+            return services;
+
+        }
     }
 }
-
-

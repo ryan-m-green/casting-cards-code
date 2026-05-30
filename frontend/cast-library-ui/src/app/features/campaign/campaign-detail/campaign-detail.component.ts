@@ -1,4 +1,5 @@
-import { Component, OnInit, signal, computed, inject, effect, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, OnDestroy, signal, computed, inject, ViewChild, ElementRef } from '@angular/core';
+import { Subscription } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
@@ -22,7 +23,7 @@ import { PortalImportCardComponent } from '../../../shared/components/portal-imp
   templateUrl: './campaign-detail.component.html',
   styleUrl: './campaign-detail.component.scss'
 })
-export class CampaignDetailComponent implements OnInit {
+export class CampaignDetailComponent implements OnInit, OnDestroy {
   private _locationsGridEl = signal<HTMLElement | null>(null);
   @ViewChild('locationsGrid') set locationsGridRef(ref: ElementRef<HTMLElement> | undefined) {
     this._locationsGridEl.set(ref?.nativeElement ?? null);
@@ -41,6 +42,7 @@ export class CampaignDetailComponent implements OnInit {
   private transition = inject(PortalTransitionService);
   private hub        = inject(CampaignHubService);
   private shellSvc   = inject(CampaignShellService);
+  private hubSubscriptions: Subscription[] = [];
   auth               = inject(AuthService);
 
   campaign           = signal<CampaignDetail | null>(null);
@@ -64,37 +66,43 @@ export class CampaignDetailComponent implements OnInit {
   isDm = computed(() => this.campaign()?.dmUserId === this.auth.currentUser()?.id);
 
   constructor() {
-    effect(() => {
-      const event = this.hub.secretRevealed();
-      if (!event || event.campaignId !== this.campaignId()) return;
-      this.campaign.update(c => {
-        if (!c) return c;
-        return {
-          ...c,
-          secrets: c.secrets.map(s => s.id === event.secretId ? { ...s, isRevealed: true } : s)
-        };
-      });
-    });
+    this.hubSubscriptions.push(
+      this.hub.secretRevealed$.subscribe(event => {
+        if (!event || event.campaignId !== this.campaignId()) return;
+        this.campaign.update(c => {
+          if (!c) return c;
+          return {
+            ...c,
+            secrets: c.secrets.map(s => s.id === event.secretId ? { ...s, isRevealed: true } : s)
+          };
+        });
+      })
+    );
 
-    effect(() => {
-      const event = this.hub.factionLocked();
-      if (!event || event.campaignId !== this.campaignId()) return;
-      this.campaign.update(c => {
-        if (!c) return c;
-        return {
-          ...c,
-          sublocations: c.sublocations.map(l =>
-            l.factionInstanceId === event.factionInstanceId
-              ? { ...l, factionInstanceId: undefined, symbolPath: undefined }
-              : l
-          ),
-          casts: c.casts.map(ca => ({
-            ...ca,
-            factionSymbols: (ca.factionSymbols ?? []).filter(fs => fs.factionInstanceId !== event.factionInstanceId),
-          })),
-        };
-      });
-    });
+    this.hubSubscriptions.push(
+      this.hub.factionLocked$.subscribe(event => {
+        if (!event || event.campaignId !== this.campaignId()) return;
+        this.campaign.update(c => {
+          if (!c) return c;
+          return {
+            ...c,
+            sublocations: c.sublocations.map(l =>
+              l.factionInstanceId === event.factionInstanceId
+                ? { ...l, factionInstanceId: undefined, symbolPath: undefined }
+                : l
+            ),
+            casts: c.casts.map(ca => ({
+              ...ca,
+              factionSymbols: (ca.factionSymbols ?? []).filter(fs => fs.factionInstanceId !== event.factionInstanceId),
+            })),
+          };
+        });
+      })
+    );
+  }
+
+  ngOnDestroy() {
+    this.hubSubscriptions.forEach(sub => sub.unsubscribe());
   }
 
   ngOnInit() {

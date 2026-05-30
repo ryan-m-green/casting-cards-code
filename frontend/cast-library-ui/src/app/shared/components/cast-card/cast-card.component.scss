@@ -100,13 +100,13 @@
   padding: 4px;
   background: linear-gradient(
     145deg,
-    v.$color-cast-gold-1 0%, v.$color-cast-gold-2 20%, v.$color-cast-gold-3 45%,
-    v.$color-cast-gold-4 55%, v.$color-cast-gold-2 70%, v.$color-cast-gold-5 85%, v.$color-cast-gold-6 100%
+    v.$color-base-gold-2 0%, v.$color-base-gold-mid-hex 20%, v.$color-base-gold-dark-hex 45%,
+    v.$color-base-gold-bright-hex 55%, v.$color-base-gold-mid-hex 70%, v.$color-base-gold-3 85%, v.$color-base-gold-4 100%
   );
   box-shadow:
-    0 0 0 1px v.$color-dark-frame,
+    0 0 0 1px v.$color-base-black-7,
     0 6px 22px v.$color-shadow-dark,
-    inset 0 1px 0 v.$color-cast-shadow-inset;
+    inset 0 1px 0 v.$color-cast-gold-10;
 }
 
 // ── Front Inner ───────────────────────────────────────────────────────────────
@@ -118,7 +118,7 @@
   overflow: hidden;
   display: flex;
   flex-direction: column;
-  background: linear-gradient(160deg, v.$color-cast-bg-light-1 0%, v.$color-cast-bg-light-2 50%, v.$color-cast-bg-light-3 100%);
+  background: linear-gradient(160deg, v.$color-base-tan-14 0%, v.$color-base-tan-15 50%, v.$color-base-tan-16 100%);
 
   // parchment noise overlay
   &::before {
@@ -162,8 +162,8 @@
   padding: 6px 8px 5px;
   position: relative;
   flex-shrink: 0;
-  background: linear-gradient(180deg, v.$color-cast-banner-dark 0%, v.$color-cast-banner-red 100%);
-  border-bottom: 1.5px solid v.$color-cast-gold-3;
+  background: linear-gradient(180deg, v.$color-base-red-5 0%, v.$color-base-red-6 100%);
+  border-bottom: 1.5px solid v.$color-base-gold-dark-hex;
 
   &::after {
     content: '';
@@ -172,7 +172,7 @@
     left: 0;
     right: 0;
     height: 1.5px;
-    background: linear-gradient(90deg, transparent, v.$color-cast-accent-glow, transparent);
+    background: linear-gradient(90deg, transparent, v.$color-cast-gold-11, transparent);
   }
 }
 
@@ -182,7 +182,7 @@
   font-size: 8px;
   letter-spacing: 0.03em;
   line-height: 1.2;
-  color: v.$color-cast-gold-4;
+  color: v.$color-base-gold-bright-hex;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -193,7 +193,7 @@
   font-family: 'Cinzel', serif;
   font-size: 6px;
   letter-spacing: 0.12em;
-  color: v.$color-cast-gold-7;
+  color: v.$color-base-gold-5;
   margin-top: 1px;
   opacity: 0.8;
   white-space: nowrap;
@@ -213,7 +213,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(160deg, v.$color-cast-portrait-1, v.$color-cast-portrait-2, v.$color-cast-portrait-3);
+  background: linear-gradient(160deg, v.$color-base-cast-tan, v.$color-base-cast-gold-pale, v.$color-base-cast-amber);
 }
 
 .cast-portrait-img {
@@ -314,8 +314,8 @@
 .cast-flavor-text {
   font-family: 'IM Fell English', serif;
   font-style: italic;
-  font-size: 6.5px;
-  color: v.$color-text-dark;
+  font-size: 9px;
+  color: v.$color-base-brown-16;
   line-height: 1.45;
   opacity: 0.8;
   display: -webkit-box;
@@ -333,8 +333,8 @@
   flex-shrink: 0;
   margin-top: 2px;
   position: relative;
-  background: linear-gradient(180deg, v.$color-cast-banner-red 0%, v.$color-cast-banner-dark 100%);
-  border-top: 1.5px solid v.$color-cast-gold-3;
+  background: linear-gradient(180deg, v.$color-base-red-6 0%, v.$color-base-red-5 100%);
+  border-top: 1.5px solid v.$color-base-gold-dark-hex;
   cursor: default;
   transition: filter 0.2s;
 
@@ -350,7 +350,7 @@
   font-size: 5px;
   letter-spacing: 0.15em;
   text-transform: uppercase;
-  color: v.$color-cast-gold-4;
+  color: v.$color-base-gold-bright-hex;
   position: absolute;
   left: 50%;
   transform: translateX(-50%);
@@ -371,7 +371,7 @@
 .cast-pip {
   width: 3px;
   height: 3px;
-  background: v.$color-cast-gold-2;
+  background: v.$color-base-gold-mid-hex;
   transform: rotate(45deg);
   opacity: 0.7;
 }
@@ -452,7 +452,7 @@
   align-items: center;
   position: relative;
   overflow: hidden;
-  background: linear-gradient(160deg, v.$color-cast-back-dark-1 0%, v.$color-cast-back-dark-2 100%);
+  background: linear-gradient(160deg, v.$color-base-black-8 0%, v.$color-base-brown-19 100%);
 
   &::before {
     content: '';
@@ -468,7 +468,7 @@
 .cast-back-border {
   position: absolute;
   inset: 6px;
-  border: 1px solid v.$color-cast-gold-back-border;
+  border: 1px solid v.$color-base-gold-6;
   border-radius: 3px;
   pointer-events: none;
 }
@@ -476,7 +476,7 @@
 .cast-back-border2 {
   position: absolute;
   inset: 9px;
-  border: 1px solid v.$color-cast-gold-back-border-2;
+  border: 1px solid v.$color-base-gold-7;
   border-radius: 2px;
   pointer-events: none;
 }
@@ -493,8 +493,8 @@
   font-size: 8px;
   letter-spacing: 0.05em;
   text-align: center;
-  color: v.$color-cast-gold-4;
-  text-shadow: 0 0 12px v.$color-cast-gold-4;
+  color: v.$color-base-gold-bright-hex;
+  text-shadow: 0 0 12px v.$color-base-gold-bright-hex;
   margin-top: 6px;
   padding: 0 12px;
   max-width: 130px;
@@ -509,7 +509,7 @@
   width: 75%;
   height: 1px;
   margin: 5px auto;
-  background: linear-gradient(90deg, transparent, v.$color-cast-gold-4, transparent);
+  background: linear-gradient(90deg, transparent, v.$color-base-gold-bright-hex, transparent);
   opacity: 0.5;
   position: relative;
   z-index: 2;
@@ -530,7 +530,7 @@
 
   &::-webkit-scrollbar { width: 2px; }
   &::-webkit-scrollbar-thumb {
-    background: v.$color-cast-gold-scrollbar;
+    background: v.$color-base-gold-9;
     border-radius: 1px;
   }
 }
@@ -538,25 +538,25 @@
 .cast-stat-row {
   display: flex;
   flex-direction: column;
-  border-bottom: 1px solid v.$color-cast-gold-back-divider;
+  border-bottom: 1px solid v.$color-base-gold-8;
   padding-bottom: 3px;
 }
 
 .cast-stat-key {
   font-family: 'Cinzel', serif;
-  font-size: 6px;
+  font-size: 12px;
   letter-spacing: 0.2em;
   text-transform: uppercase;
-  color: v.$color-cast-gold-stat-key;
+  color: v.$color-base-gold-dark-hex;
   opacity: 0.9;
 }
 
 .cast-stat-val {
   font-family: 'IM Fell English', serif;
   font-style: italic;
-  font-size: 9px;
+  font-size: 12px;
   line-height: 1.2;
-  color: v.$color-cast-gold-stat-val;
+  color: v.$color-base-gold-10;
 }
 
 // ── Back Action Buttons ───────────────────────────────────────────────────────
@@ -574,7 +574,7 @@
   flex: 1;
   padding: 4px 3px;
   font-family: 'Cinzel', serif;
-  font-size: 6px;
+  font-size: 9px;
   letter-spacing: 0.1em;
   border: none;
   border-radius: 2px;
@@ -582,17 +582,17 @@
   transition: all 0.2s;
 
   &--gold {
-    background: linear-gradient(180deg, v.$color-cast-btn-gold-1, v.$color-cast-btn-gold-2);
-    color: v.$color-cast-banner-dark;
+    background: linear-gradient(180deg, v.$color-base-gold-bright-hex, v.$color-base-gold-mid-hex);
+    color: v.$color-base-red-5;
     box-shadow: 0 2px 4px v.$color-shadow-light;
-    &:hover { background: linear-gradient(180deg, v.$color-cast-btn-gold-hover-1, v.$color-cast-btn-gold-hover-2); transform: translateY(-1px); }
+    &:hover { background: linear-gradient(180deg, v.$color-base-gold-11, v.$color-base-gold-12); transform: translateY(-1px); }
   }
 
   &--red {
-    background: linear-gradient(180deg, v.$color-cast-btn-red-1, v.$color-cast-btn-red-2);
+    background: linear-gradient(180deg, v.$color-base-btn-red, v.$color-base-btn-red-dark);
     color: v.$color-ext-647;
     box-shadow: 0 2px 4px v.$color-shadow-light;
-    &:hover { background: linear-gradient(180deg, v.$color-cast-btn-red-hover-1, v.$color-cast-btn-red-hover-2); transform: translateY(-1px); }
+    &:hover { background: linear-gradient(180deg, v.$color-base-btn-red-hover, v.$color-base-btn-red-hover-dark); transform: translateY(-1px); }
   }
 }
 

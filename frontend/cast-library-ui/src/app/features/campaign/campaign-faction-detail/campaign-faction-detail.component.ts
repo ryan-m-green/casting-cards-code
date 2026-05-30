@@ -1,8 +1,9 @@
-import { Component, OnInit, signal, computed, inject, effect, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, OnDestroy, signal, computed, inject, ViewChild, ElementRef } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
+import { Subscription } from 'rxjs';
 import { environment } from '../../../../environments/environment';
 import { CampaignDetail } from '../../../shared/models/campaign.model';
 import { CampaignFactionInstance, FactionRelationship } from '../../../shared/models/faction.model';
@@ -24,7 +25,7 @@ import { FactionRelationshipsSectionComponent, SaveRelationshipEvent } from '../
   templateUrl: './campaign-faction-detail.component.html',
   styleUrl: './campaign-faction-detail.component.scss',
 })
-export class CampaignFactionDetailComponent implements OnInit {
+export class CampaignFactionDetailComponent implements OnInit, OnDestroy {
   @ViewChild('detailContent') private detailContentRef!: ElementRef<HTMLElement>;
   @ViewChild('expandBtn')     private expandBtnRef!: ElementRef<HTMLElement>;
 
@@ -34,21 +35,24 @@ export class CampaignFactionDetailComponent implements OnInit {
   private hub      = inject(CampaignHubService);
   private auth     = inject(AuthService);
   private shellSvc = inject(CampaignShellService);
+  private hubSubscriptions: Subscription[] = [];
 
   constructor() {
-    effect(() => {
-      const event = this.hub.cardVisibilityChanged();
-      if (!event || event.campaignId !== this.campaignId()) return;
-      if (event.cardType !== 'faction') return;
-      this.campaign.update(c => c ? {
-        ...c,
-        factions: c.factions.map(f =>
-          f.factionInstanceId === event.instanceId ? { ...f, isVisibleToPlayers: event.isVisible } : f
-        ),
-      } : c);
-    });
+    this.hubSubscriptions.push(
+      this.hub.cardVisibilityChanged$.subscribe(event => {
+        if (!event || event.campaignId !== this.campaignId()) return;
+        if (event.cardType !== 'faction') return;
+        this.campaign.update(c => c ? {
+          ...c,
+          factions: c.factions.map(f =>
+            f.factionInstanceId === event.instanceId ? { ...f, isVisibleToPlayers: event.isVisible } : f
+          ),
+        } : c);
+      })
+    );
   }
 
+  private paramsSub?: Subscription;
   campaignId        = signal('');
   factionInstanceId = signal('');
   campaign          = signal<CampaignDetail | null>(null);
@@ -322,17 +326,30 @@ export class CampaignFactionDetailComponent implements OnInit {
   }
 
   ngOnInit() {
-    const id                = this.route.snapshot.paramMap.get('id')!;
-    const factionInstanceId = this.route.snapshot.paramMap.get('factionInstanceId')!;
-    this.campaignId.set(id);
-    this.factionInstanceId.set(factionInstanceId);
+    this.paramsSub = this.route.paramMap.subscribe(params => {
+      const id                = params.get('id')!;
+      const factionInstanceId = params.get('factionInstanceId')!;
+      this.campaignId.set(id);
+      this.factionInstanceId.set(factionInstanceId);
+      this.campaign.set(null);
+      this.http.get<CampaignDetail>(`${environment.apiUrl}/api/campaigns/${id}`)
+        .subscribe(c => {
+          this.campaign.set(c);
+          const faction = c.factions.find(f => f.factionInstanceId === factionInstanceId);
+          this.shellSvc.setTitleContext({
+            pageType: 'gm-faction-detail',
+            campaignId: id,
+            baseRoute: '/campaign',
+            location: null,
+            faction: faction ? { instanceId: faction.factionInstanceId, name: faction.name ?? '' } : null
+          }, '56px');
+        });
+    });
+  }
 
-    this.http.get<CampaignDetail>(`${environment.apiUrl}/api/campaigns/${id}`)
-      .subscribe(c => {
-        this.campaign.set(c);
-        const faction = c.factions.find(f => f.factionInstanceId === factionInstanceId);
-        this.shellSvc.setTitleContext({ pageType: 'gm-faction-detail', campaignId: id, baseRoute: '/campaign', location: null }, '56px');
-      });
+  ngOnDestroy() {
+    this.paramsSub?.unsubscribe();
+    this.hubSubscriptions.forEach(sub => sub.unsubscribe());
   }
 
   goToFactions() {
@@ -404,7 +421,14 @@ export class CampaignFactionDetailComponent implements OnInit {
           f.factionInstanceId === this.factionInstanceId() ? { ...f, ...body } : f
         ),
       } : c);
-      this.shellSvc.setTitleContext({ pageType: 'gm-faction-detail', campaignId: this.campaignId(), baseRoute: '/campaign', location: null }, '56px');
+      const faction = this.faction();
+      this.shellSvc.setTitleContext({
+        pageType: 'gm-faction-detail',
+        campaignId: this.campaignId(),
+        baseRoute: '/campaign',
+        location: null,
+        faction: faction ? { instanceId: faction.factionInstanceId, name: faction.name ?? '' } : null
+      }, '56px');
       this.editing.set(false);
       this.collapsePanel();
     });

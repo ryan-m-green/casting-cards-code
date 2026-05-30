@@ -189,7 +189,7 @@
       <!-- ── Locations tree ── -->
       @if (filteredLocations().length > 0) {
         <div class="nav-section">
-          <span class="nav-section-label">Locations</span>
+          <span class="nav-section-label">{{ campaign()?.name ?? 'Locations' }}</span>
 
           @for (loc of filteredLocations(); track loc.instanceId) {
             <div class="nav-tree-location">
@@ -228,9 +228,6 @@
                       <button class="nav-item nav-item--cast" [class.is-active]="isActiveCast(cast.instanceId)" (click)="goToCast(sub.instanceId, cast.instanceId)">
                         <span class="nav-item-icon nav-item-icon--cast">◉</span>
                         <span class="nav-item-label">{{ cast.name }}</span>
-                        @if (cast.role) {
-                          <span class="nav-item-meta">{{ cast.role }}</span>
-                        }
                       </button>
                     }
                   </div>

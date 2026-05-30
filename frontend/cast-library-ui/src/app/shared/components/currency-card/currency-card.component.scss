@@ -1,60 +1,10 @@
 @use '../../../../styles/variables' as v;
 
-// ── Backdrop ──────────────────────────────────────────────────────────────────
-.currency-backdrop {
-  position: fixed;
-  inset: 0;
-  z-index: 8100;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: v.$color-ext-650;
-  animation: currency-fade-in 0.3s ease forwards;
-}
-
-@keyframes currency-fade-in {
-  from { opacity: 0; }
-  to   { opacity: 1; }
-}
-
-// ── Panel ────────────────────────────────────────────────────────────────
-.currency-panel {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 20px;
-  animation: currency-appear 0.65s cubic-bezier(0.2, 0, 0.3, 1) forwards;
-  will-change: transform, opacity;
-}
-
 // ── Card Shell ────────────────────────────────────────────────────────────────
 .currency-card {
   width: v.$card-width;
   height: v.$card-height;
   position: relative;
-}
-
-@keyframes currency-appear {
-  0%   { transform: scale(6); opacity: 0; }
-  55%  { opacity: 1; }
-  100% { transform: scale(1); opacity: 1; }
-}
-
-@keyframes currency-pulse {
-  0%, 100% {
-    box-shadow:
-      0 0 0   3px color-mix(in srgb, var(--portal-color, v.$color-ext-651) 40%, white 60%),
-      0 0  8px 5px color-mix(in srgb, var(--portal-color, v.$color-ext-651), transparent 28%),
-      0 0 18px 8px color-mix(in srgb, var(--portal-color, v.$color-ext-651), transparent 52%),
-      0 0 36px 12px color-mix(in srgb, var(--portal-color, v.$color-ext-651), transparent 76%);
-  }
-  50% {
-    box-shadow:
-      0 0 0   3px color-mix(in srgb, var(--portal-color, v.$color-ext-651) 25%, white 75%),
-      0 0 12px 7px color-mix(in srgb, var(--portal-color, v.$color-ext-651), transparent 12%),
-      0 0 26px 12px color-mix(in srgb, var(--portal-color, v.$color-ext-651), transparent 36%),
-      0 0 52px 18px color-mix(in srgb, var(--portal-color, v.$color-ext-651), transparent 64%);
-  }
 }
 
 // ── Frame ─────────────────────────────────────────────────────────────────────
@@ -69,9 +19,9 @@
     v.$color-ext-654 55%, v.$color-ext-655 70%, v.$color-ext-656 85%, v.$color-ext-657 100%
   );
   box-shadow:
-    0 0 0 1px v.$color-dark-frame,
+    0 0 0 1px v.$color-base-black-7,
     0 6px 22px v.$color-shadow-dark,
-    inset 0 1px 0 v.$color-cast-shadow-inset;
+    inset 0 1px 0 v.$color-cast-gold-10;
 }
 
 // ── Inner Parchment ───────────────────────────────────────────────────────────
@@ -125,7 +75,7 @@
     left: 0;
     right: 0;
     height: 1.5px;
-    background: linear-gradient(90deg, transparent, v.$color-cast-accent-glow, transparent);
+    background: linear-gradient(90deg, transparent, v.$color-cast-gold-11, transparent);
   }
 }
 
@@ -197,35 +147,15 @@
   font-family: 'IM Fell English', serif;
   font-style: italic;
   font-size: 7px;
-  color: v.$color-text-dark;
+  color: v.$color-base-brown-16;
   line-height: 1.4;
   opacity: 0.8;
   margin-top: 3px;
   display: -webkit-box;
   -webkit-line-clamp: 2;
+  line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
-}
-
-// ── Dismiss Button ────────────────────────────────────────────────────────────
-.currency-dismiss-btn {
-  font-family: v.$font-header;
-  font-size: 11px;
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-  color: v.$color-ext-575;
-  background: v.$color-ext-642;
-  border: 1px solid v.$color-ext-643;
-  border-radius: 4px;
-  cursor: pointer;
-  padding: 8px 20px;
-  transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease;
-
-  &:hover {
-    background: v.$color-ext-644;
-    border-color: v.$color-ext-645;
-    color: v.$color-ext-152;
-  }
 }
 
 // ── Strip ─────────────────────────────────────────────────────────────────────

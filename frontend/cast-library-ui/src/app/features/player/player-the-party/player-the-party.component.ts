@@ -1,4 +1,5 @@
 import { Component, OnInit, OnDestroy, signal, computed, inject, effect, untracked } from '@angular/core';
+import { Subscription } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -139,6 +140,7 @@ export class PlayerThePartyComponent implements OnInit, OnDestroy {
   companionRatings = signal<Map<string, number>>(new Map());
   private companionTiltMap = new Map<string, number>();
   private partyMemberTiltMap = new Map<string, number>();
+  private hubSubscriptions: Subscription[] = [];
 
   companionTiltFor(instanceId: string): number {
     if (!this.companionTiltMap.has(instanceId)) {
@@ -225,99 +227,104 @@ export class PlayerThePartyComponent implements OnInit, OnDestroy {
   });
 
   constructor() {
-    effect(() => {
-      const event = this.hub.playerSecretDeleted();
-      if (!event) return;
-      const myCardId = untracked(() => this.playerCardId());
-      if (event.playerCardId !== myCardId) return;
-      this.secrets.update(list => list.filter(s => s.id !== event.secretId));
-    });
+    this.hubSubscriptions.push(
+      this.hub.playerSecretDeleted$.subscribe(event => {
+        if (!event) return;
+        const myCardId = untracked(() => this.playerCardId());
+        if (event.playerCardId !== myCardId) return;
+        this.secrets.update(list => list.filter(s => s.id !== event.secretId));
+      })
+    );
 
-    effect(() => {
-      const event = this.hub.secretDelivered();
-      if (!event) return;
-      const myUserId   = untracked(() => this.auth.currentUser()?.id);
-      const campaignId = untracked(() => this.campaignId());
-      if (!myUserId || event.playerUserId !== myUserId) return;
-      this.loadSecrets(campaignId);
-    });
+    this.hubSubscriptions.push(
+      this.hub.secretDelivered$.subscribe(event => {
+        if (!event) return;
+        const myUserId   = untracked(() => this.auth.currentUser()?.id);
+        const campaignId = untracked(() => this.campaignId());
+        if (!myUserId || event.playerUserId !== myUserId) return;
+        this.loadSecrets(campaignId);
+      })
+    );
 
-    effect(() => {
-      const event = this.hub.conditionAssigned();
-      if (!event) return;
-      const myCardId = untracked(() => this.playerCardId());
-      if (event.playerCardId === myCardId) {
-        this.conditions.update(list => [...list, {
-          id: event.conditionId,
-          playerCardId: event.playerCardId,
-          conditionName: event.conditionName,
-          assignedAt: event.assignedAt,
-        }]);
-      } else {
-        this.discoveredCast.update(cast => {
-          if (!cast) return cast;
-          return {
-            ...cast,
-            partyCards: cast.partyCards.map(p =>
-              p.id === event.playerCardId
-                ? { ...p, conditions: [...p.conditions, { id: event.conditionId, playerCardId: event.playerCardId, conditionName: event.conditionName, assignedAt: event.assignedAt }] }
-                : p
-            ),
-          };
-        });
-      }
-    });
-
-    effect(() => {
-      const event = this.hub.conditionRemoved();
-      if (!event) return;
-      const myCardId = untracked(() => this.playerCardId());
-      if (event.playerCardId === myCardId) {
-        this.conditions.update(list => list.filter(c => c.id !== event.conditionId));
-      } else {
-        this.discoveredCast.update(cast => {
-          if (!cast) return cast;
-          return {
-            ...cast,
-            partyCards: cast.partyCards.map(p =>
-              p.id === event.playerCardId
-                ? { ...p, conditions: p.conditions.filter(c => c.id !== event.conditionId) }
-                : p
-            ),
-          };
-        });
-      }
-    });
-
-    effect(() => {
-      const event = this.hub.castTravelled();
-      if (!event) return;
-      const partySubId = untracked(() => this.discoveredCast()?.partyAnchorSublocationInstanceId);
-      if (!partySubId) return;
-
-      const leavingParty  = event.fromSublocationInstanceId === partySubId;
-      const arrivingParty = event.toSublocationInstanceId   === partySubId;
-
-      if (leavingParty) {
-        this.discoveredCast.update(cast => cast ? {
-          ...cast,
-          questingCompanions: cast.questingCompanions.filter(c => c.instanceId !== event.castInstanceId),
-        } : cast);
-      }
-
-      if (arrivingParty) {
-        this.http.get<any>(
-          `${environment.apiUrl}/api/campaigns/${event.campaignId}/casts/${event.castInstanceId}`
-        ).subscribe(cast => {
-          this.discoveredCast.update(d => {
-            if (!d) return d;
-            const already = d.questingCompanions.some(c => c.instanceId === cast.instanceId);
-            if (already) return d;
-            return { ...d, questingCompanions: [...d.questingCompanions, cast] };
+    this.hubSubscriptions.push(
+      this.hub.conditionAssigned$.subscribe(event => {
+        if (!event) return;
+        const myCardId = untracked(() => this.playerCardId());
+        if (event.playerCardId === myCardId) {
+          this.conditions.update(list => [...list, {
+            id: event.conditionId,
+            playerCardId: event.playerCardId,
+            conditionName: event.conditionName,
+            assignedAt: event.assignedAt,
+          }]);
+        } else {
+          this.discoveredCast.update(cast => {
+            if (!cast) return cast;
+            return {
+              ...cast,
+              partyCards: cast.partyCards.map(p =>
+                p.id === event.playerCardId
+                  ? { ...p, conditions: [...p.conditions, { id: event.conditionId, playerCardId: event.playerCardId, conditionName: event.conditionName, assignedAt: event.assignedAt }] }
+                  : p
+              ),
+            };
           });
-        });
-      }
-    });
+        }
+      })
+    );
+
+    this.hubSubscriptions.push(
+      this.hub.conditionRemoved$.subscribe(event => {
+        if (!event) return;
+        const myCardId = untracked(() => this.playerCardId());
+        if (event.playerCardId === myCardId) {
+          this.conditions.update(list => list.filter(c => c.id !== event.conditionId));
+        } else {
+          this.discoveredCast.update(cast => {
+            if (!cast) return cast;
+            return {
+              ...cast,
+              partyCards: cast.partyCards.map(p =>
+                p.id === event.playerCardId
+                  ? { ...p, conditions: p.conditions.filter(c => c.id !== event.conditionId) }
+                  : p
+              ),
+            };
+          });
+        }
+      })
+    );
+
+    this.hubSubscriptions.push(
+      this.hub.castTravelled$.subscribe(event => {
+        if (!event) return;
+        const partySubId = untracked(() => this.discoveredCast()?.partyAnchorSublocationInstanceId);
+        if (!partySubId) return;
+
+        const leavingParty  = event.fromSublocationInstanceId === partySubId;
+        const arrivingParty = event.toSublocationInstanceId   === partySubId;
+
+        if (leavingParty) {
+          this.discoveredCast.update(cast => cast ? {
+            ...cast,
+            questingCompanions: cast.questingCompanions.filter(c => c.instanceId !== event.castInstanceId),
+          } : cast);
+        }
+
+        if (arrivingParty) {
+          this.http.get<any>(
+            `${environment.apiUrl}/api/campaigns/${event.campaignId}/casts/${event.castInstanceId}`
+          ).subscribe(cast => {
+            this.discoveredCast.update(d => {
+              if (!d) return d;
+              const already = d.questingCompanions.some(c => c.instanceId === cast.instanceId);
+              if (already) return d;
+              return { ...d, questingCompanions: [...d.questingCompanions, cast] };
+            });
+          });
+        }
+      })
+    );
   }
 
   ngOnInit() {
@@ -336,6 +343,7 @@ export class PlayerThePartyComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     if (this.newMemoryDebounce) clearTimeout(this.newMemoryDebounce);
+    this.hubSubscriptions.forEach(sub => sub.unsubscribe());
   }
 
   private loadPlayerCard(id: string) {

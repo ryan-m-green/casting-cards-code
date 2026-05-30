@@ -4,7 +4,7 @@
 
 // ── GM-only Box ──────────────────────────────────────────────────────────────
 .form-gm-box {
-  border: 1px solid rgba(v.$color-text-primary, 0.2);
+  border: 1px solid rgba(v.$color-base-brown-14, 0.2);
   border-radius: 8px;
   padding: 16px;
   margin: 0;
@@ -17,7 +17,7 @@
     font-size: 0.7rem;
     letter-spacing: 0.12em;
     text-transform: uppercase;
-    color: rgba(v.$color-text-primary, 0.5);
+    color: rgba(v.$color-base-brown-14, 0.5);
     padding: 0 8px;
   }
 }
@@ -49,7 +49,7 @@
   font-family: 'Cinzel', serif;
   font-size: 0.85rem;
   letter-spacing: 0.08em;
-  color: v.$color-text-primary;
+  color: v.$color-base-brown-14;
   margin-bottom: 12px;
   margin-top: 0;
 }
@@ -59,7 +59,7 @@
   width: 100%;
   display: block;
   cursor: pointer;
-  accent-color: v.$color-gold-solid;
+  accent-color: v.$color-base-gold-1;
   margin-top: 4px;
 }
 
@@ -93,7 +93,7 @@
   span {
     width: 1px;
     height: 4px;
-    background: rgba(v.$color-gold-solid, 0.40);
+    background: rgba(v.$color-base-gold-1, 0.40);
     border-radius: 1px;
   }
 }
@@ -102,14 +102,14 @@
   font-family: v.$font-header;
   font-size: 11px;
   letter-spacing: 0.12em;
-  color: v.$color-text-primary;
+  color: v.$color-base-brown-14;
   white-space: nowrap;
   flex-shrink: 0;
 }
 
 // ── Perception card ────────────────────────────────────────────────────────────
 .perception-card {
-  border: 1px solid rgba(v.$color-gold-solid, 0.30);
+  border: 1px solid rgba(v.$color-base-gold-1, 0.30);
   border-radius: 4px;
   padding: 10px 12px 8px;
   display: flex;
@@ -123,7 +123,7 @@
 
 .perception-slider {
   width: 100%;
-  accent-color: v.$color-gold-solid;
+  accent-color: v.$color-base-gold-1;
   cursor: pointer;
 
   &.slider-friendly { accent-color: #3a7a3a; }
@@ -139,7 +139,7 @@
   span {
     width: 1px;
     height: 4px;
-    background: rgba(v.$color-gold-solid, 0.30);
+    background: rgba(v.$color-base-gold-1, 0.30);
     border-radius: 1px;
   }
 }
@@ -150,17 +150,17 @@
   font-family: v.$font-header;
   font-size: 10px;
   letter-spacing: 0.10em;
-  color: rgba(v.$color-text-primary, 0.60);
+  color: rgba(v.$color-base-brown-14, 0.60);
 }
 
 .perception-label-center {
   font-weight: 600;
-  color: rgba(v.$color-text-primary, 0.85);
+  color: rgba(v.$color-base-brown-14, 0.85);
   text-align: center;
 }
 
 .perception-label-end {
-  color: rgba(v.$color-text-primary, 0.55);
+  color: rgba(v.$color-base-brown-14, 0.55);
 }
 
 // ── Toggle Switch ──────────────────────────────────────────────────────────────
@@ -219,7 +219,7 @@
     left: 2px;
     top: 2px;
     border-radius: 50%;
-    background: v.$color-gold-solid;
+    background: v.$color-base-gold-1;
     transition: transform 0.2s;
   }
 
@@ -229,7 +229,7 @@
 
     &::before {
       transform: translateX(18px);
-      background: v.$color-gold-solid;
+      background: v.$color-base-gold-1;
     }
   }
 }
@@ -238,6 +238,6 @@
   font-family: 'IM Fell English', serif;
   font-style: italic;
   font-size: 0.75rem;
-  color: v.$color-text-muted;
+  color: v.$color-base-brown-15;
   flex-shrink: 0;
 }

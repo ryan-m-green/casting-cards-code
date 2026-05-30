@@ -9,7 +9,7 @@
   flex: 1;
   min-width: 0;
   background: v.$campaign-portal-bg-dark;
-  border: 1px solid rgba(v.$location-blue, 0.40);
+  border: 1px solid rgba(v.$color-lib-location-1, 0.40);
   border-radius: 6px;
   overflow: hidden;
   position: relative;
@@ -21,7 +21,7 @@
     position: absolute;
     width: 14px;
     height: 14px;
-    border-color: rgba(v.$location-blue, 0.45);
+    border-color: rgba(v.$color-lib-location-1, 0.45);
     border-style: solid;
     pointer-events: none;
   }
@@ -46,11 +46,11 @@
   max-height: calc(100vh - 180px);
   overflow-y: auto;
   scrollbar-width: thin;
-  scrollbar-color: rgba(v.$location-blue, 0.15) transparent;
+  scrollbar-color: rgba(v.$color-lib-location-1, 0.15) transparent;
 
   &::-webkit-scrollbar { width: 3px; }
   &::-webkit-scrollbar-thumb {
-    background: rgba(v.$location-blue, 0.15);
+    background: rgba(v.$color-lib-location-1, 0.15);
     border-radius: 2px;
   }
 }
@@ -71,10 +71,10 @@
 
 .intel-field-label {
   font-family: v.$font-header;
-  font-size: 7px;
+  font-size: 12px;
   letter-spacing: 0.2em;
   text-transform: uppercase;
-  color: rgba(v.$location-blue, 0.85);
+  color: rgba(v.$color-lib-location-1, 0.85);
   white-space: nowrap;
   flex-shrink: 0;
 }
@@ -83,7 +83,7 @@
   flex: 1;
   height: 1px;
   min-width: 10px;
-  background: linear-gradient(to right, rgba(v.$location-blue, 0.28), transparent);
+  background: linear-gradient(to right, rgba(v.$color-lib-location-1, 0.28), transparent);
 
   &--block {
     flex: none;
@@ -113,7 +113,7 @@
 /* ── Secrets section ─────────────────────────────────────────────────────── */
 .intel-secrets-section {
   margin-top: 20px;
-  border-top: 1px solid rgba(v.$location-blue, 0.14);
+  border-top: 1px solid rgba(v.$color-lib-location-1, 0.14);
   padding-top: 16px;
 }
 
@@ -126,21 +126,21 @@
 
 .intel-secrets-title {
   font-family: v.$font-header;
-  font-size: 9px;
+  font-size: 12px;
   letter-spacing: 0.22em;
   text-transform: uppercase;
-  color: rgba(v.$location-blue, 0.9);
-  text-shadow: 0 0 10px rgba(v.$location-blue, 0.28);
+  color: rgba(v.$color-lib-location-1, 0.9);
+  text-shadow: 0 0 10px rgba(v.$color-lib-location-1, 0.28);
 }
 
 .intel-secrets-count {
   font-family: v.$font-header;
-  font-size: 7px;
+  font-size: 12px;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: rgba(v.$location-blue, 0.82);
+  color: rgba(v.$color-lib-location-1, 0.82);
   padding: 2px 8px;
-  border: 1px solid rgba(v.$location-blue, 0.18);
+  border: 1px solid rgba(v.$color-lib-location-1, 0.18);
   border-radius: 2px;
 }
 
@@ -164,17 +164,17 @@
   align-items: center;
   gap: 8px;
   padding: 8px 12px 6px;
-  border-bottom: 1px solid rgba(v.$location-blue, 0.07);
+  border-bottom: 1px solid rgba(v.$color-lib-location-1, 0.07);
 }
 
 .secret-card-icon {
-  font-size: 11px;
+  font-size: 12px;
   flex-shrink: 0;
 }
 
 .secret-card-status {
   font-family: v.$font-header;
-  font-size: 7px;
+  font-size: 12px;
   letter-spacing: 0.18em;
   text-transform: uppercase;
   color: v.$campaign-portal-text-secondary;
@@ -195,14 +195,14 @@
 
 .secret-card-footer {
   padding: 6px 12px 8px;
-  border-top: 1px solid rgba(v.$location-blue, 0.07);
+  border-top: 1px solid rgba(v.$color-lib-location-1, 0.07);
   display: flex;
   justify-content: flex-end;
 }
 
 .secret-action-btn {
   font-family: v.$font-header;
-  font-size: 7px;
+  font-size: 12px;
   letter-spacing: 0.16em;
   text-transform: uppercase;
   padding: 4px 12px;

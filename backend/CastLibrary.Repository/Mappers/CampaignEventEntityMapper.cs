@@ -1,3 +1,4 @@
+using System.Text.Json;
 using CastLibrary.Shared.Domain;
 using CastLibrary.Shared.Entities;
 
@@ -12,17 +13,22 @@ public class CampaignEventEntityMapper : ICampaignEventEntityMapper
 {
     public CampaignEventDomain ToDomain(CampaignEventEntity entity) => new()
     {
-        Id                = entity.Id,
-        CampaignId        = entity.CampaignId,
-        Title             = entity.Title,
-        Body              = entity.Body,
-        SortOrder         = entity.SortOrder,
-        LinkedEntityId    = entity.LinkedEntityId,
-        LinkedEntityType  = entity.LinkedEntityType,
-        FilePath          = entity.FilePath,
-        TodPositionPercent = entity.TodPositionPercent,
-        VisibleToPlayers  = entity.VisibleToPlayers,
-        CreatedAt         = entity.CreatedAt,
-        UpdatedAt         = entity.UpdatedAt,
+        Id = entity.Id,
+        CampaignId = entity.CampaignId,
+        Title = entity.Title,
+        Body = entity.Body,
+        SortOrder = entity.SortOrder,
+        LinkedEntities = string.IsNullOrWhiteSpace(entity.LinkedEntities) 
+            ? [] 
+            : JsonSerializer.Deserialize<List<LinkedEntityTrigger>>(entity.LinkedEntities) ?? [],
+        FilePath = entity.FilePath,
+        VisibleToPlayers = entity.VisibleToPlayers,
+        CreatedAt = entity.CreatedAt,
+        UpdatedAt = entity.UpdatedAt,
     };
+
+    public static string ToJson(List<LinkedEntityTrigger> linkedEntities) =>
+        linkedEntities == null || linkedEntities.Count == 0 
+            ? "[]" 
+            : JsonSerializer.Serialize(linkedEntities);
 }

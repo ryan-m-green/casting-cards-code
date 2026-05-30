@@ -53,7 +53,7 @@
   align-items: center;
   gap: 8px;
   font-family: v.$font-header;
-  font-size: 8px;
+  font-size: 12px;
   letter-spacing: 0.18em;
   text-transform: uppercase;
   color: rgba(v.$color-faction-neutral-frame-2, 0.85);
@@ -94,7 +94,7 @@
   border-radius: 0 0 6px 6px;
   cursor: pointer;
   font-family: v.$font-header;
-  font-size: 8px;
+  font-size: 12px;
   letter-spacing: 0.12em;
   color: rgba(v.$color-faction-neutral-frame-2, 0.85);
   transition: background 0.18s ease, color 0.18s ease;
@@ -181,7 +181,7 @@
   display: flex;
   justify-content: space-between;
   font-family: v.$font-header;
-  font-size: 7px;
+  font-size: 12px;
   letter-spacing: 0.10em;
   color: rgba(v.$color-faction-neutral-frame-2, 0.60);
 }
@@ -233,7 +233,7 @@
 
 .detail-slider-value {
   font-family: v.$font-header;
-  font-size: 11px;
+  font-size: 14px;
   letter-spacing: 0.12em;
   color: v.$campaign-portal-text-bright;
   white-space: nowrap;
@@ -245,7 +245,7 @@
   top: 10px;
   right: 14px;
   font-family: v.$font-header;
-  font-size: 7px;
+  font-size: 12px;
   letter-spacing: 0.16em;
   text-transform: uppercase;
   color: rgba(v.$color-faction-neutral-frame-2, 0.50);
@@ -265,7 +265,7 @@
 
 .faction-members-label {
   font-family: v.$font-header;
-  font-size: 9px;
+  font-size: 12px;
   letter-spacing: 0.20em;
   text-transform: uppercase;
   color: v.$campaign-portal-text-secondary;

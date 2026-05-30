@@ -13,7 +13,7 @@
 
 .info-panel {
   background: v.$campaign-portal-bg-dark;
-  border: 1px solid rgba(v.$location-blue, 0.40);
+  border: 1px solid rgba(v.$color-lib-location-1, 0.40);
   border-radius: 6px;
   width: 100%;
   max-width: 500px;
@@ -30,7 +30,7 @@
     position: absolute;
     width: 14px;
     height: 14px;
-    border-color: rgba(v.$location-blue, 0.45);
+    border-color: rgba(v.$color-lib-location-1, 0.45);
     border-style: solid;
     pointer-events: none;
     z-index: 1;
@@ -55,7 +55,7 @@
 
 .info-panel-header {
   padding: 10px 16px 8px;
-  border-bottom: 1px solid rgba(v.$location-blue, 0.12);
+  border-bottom: 1px solid rgba(v.$color-lib-location-1, 0.12);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -65,7 +65,7 @@
 .info-panel-rune {
   font-size: 14px;
   opacity: 0.45;
-  color: rgba(v.$location-blue, 0.9);
+  color: rgba(v.$color-lib-location-1, 0.9);
 }
 
 .info-panel-title {
@@ -76,7 +76,7 @@
   text-transform: uppercase;
   color: v.$campaign-portal-text-softer;
   text-shadow:
-    0 0 18px rgba(v.$location-blue, 0.35),
+    0 0 18px rgba(v.$color-lib-location-1, 0.35),
     0 1px 3px v.$color-shadow-dark;
   margin: 0;
 }
@@ -88,7 +88,7 @@
   flex-direction: column;
   gap: 4px;
   padding: 8px 16px;
-  border-bottom: 1px solid rgba(v.$location-blue, 0.08);
+  border-bottom: 1px solid rgba(v.$color-lib-location-1, 0.08);
   position: relative;
 }
 
@@ -97,23 +97,23 @@
   font-size: 7px;
   letter-spacing: 0.2em;
   text-transform: uppercase;
-  color: rgba(v.$location-blue, 0.85);
+  color: rgba(v.$color-lib-location-1, 0.85);
   white-space: nowrap;
 }
 
 .required { color: v.$color-ext-460; margin-left: 2px; }
-.optional { color: rgba(v.$location-blue, 0.45); font-size: 8px; }
+.optional { color: rgba(v.$color-lib-location-1, 0.45); font-size: 8px; }
 
 .detail-line {
   height: 1px;
   width: 100%;
-  background: linear-gradient(to right, rgba(v.$location-blue, 0.22), transparent);
+  background: linear-gradient(to right, rgba(v.$color-lib-location-1, 0.22), transparent);
   margin-bottom: 2px;
 }
 
 .detail-input {
   background: v.$color-overlay-darker;
-  border: 1px solid rgba(v.$location-blue, 0.28);
+  border: 1px solid rgba(v.$color-lib-location-1, 0.28);
   border-radius: 3px;
   padding: 5px 8px;
   font-family: v.$font-body;
@@ -125,11 +125,11 @@
   transition: border-color 0.18s ease;
 
   &::placeholder {
-    color: rgba(v.$location-blue, 0.30);
+    color: rgba(v.$color-lib-location-1, 0.30);
   }
 
   &:focus {
-    border-color: rgba(v.$location-blue, 0.65);
+    border-color: rgba(v.$color-lib-location-1, 0.65);
   }
 
   &--block {
@@ -148,7 +148,7 @@
   align-items: center;
   gap: 8px;
   background: v.$color-overlay-darker;
-  border: 1px solid rgba(v.$location-blue, 0.28);
+  border: 1px solid rgba(v.$color-lib-location-1, 0.28);
   border-radius: 3px;
   padding: 5px 8px;
   cursor: pointer;
@@ -158,11 +158,11 @@
   user-select: none;
 
   &:hover {
-    border-color: rgba(v.$location-blue, 0.45);
+    border-color: rgba(v.$color-lib-location-1, 0.45);
   }
 
   &--open {
-    border-color: rgba(v.$location-blue, 0.65);
+    border-color: rgba(v.$color-lib-location-1, 0.65);
   }
 }
 
@@ -186,7 +186,7 @@
   padding: 2px 0;
 
   &::placeholder {
-    color: rgba(v.$location-blue, 0.30);
+    color: rgba(v.$color-lib-location-1, 0.30);
   }
 }
 
@@ -194,15 +194,15 @@
   display: inline-flex;
   align-items: center;
   gap: 4px;
-  background: rgba(v.$location-blue, 0.08);
-  border: 1px solid rgba(v.$location-blue, 0.25);
+  background: rgba(v.$color-lib-location-1, 0.08);
+  border: 1px solid rgba(v.$color-lib-location-1, 0.25);
   border-radius: 2px;
   padding: 1px 6px 1px 8px;
   font-family: v.$font-header;
   font-size: 7px;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: rgba(v.$location-blue, 0.90);
+  color: rgba(v.$color-lib-location-1, 0.90);
   line-height: 1.6;
 }
 
@@ -212,20 +212,20 @@
   cursor: pointer;
   font-size: 13px;
   line-height: 1;
-  color: rgba(v.$location-blue, 0.50);
+  color: rgba(v.$color-lib-location-1, 0.50);
   padding: 0;
   display: flex;
   align-items: center;
   transition: color 0.15s ease;
 
   &:hover {
-    color: rgba(v.$location-blue, 0.85);
+    color: rgba(v.$color-lib-location-1, 0.85);
   }
 }
 
 .pill-chevron {
   font-size: 10px;
-  color: rgba(v.$location-blue, 0.50);
+  color: rgba(v.$color-lib-location-1, 0.50);
   flex-shrink: 0;
   transition: transform 0.18s ease;
 
@@ -240,7 +240,7 @@
   left: 0;
   right: 0;
   background: v.$campaign-portal-bg-dark;
-  border: 1px solid rgba(v.$location-blue, 0.35);
+  border: 1px solid rgba(v.$color-lib-location-1, 0.35);
   border-radius: 4px;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
   z-index: 100;
@@ -257,12 +257,12 @@
   transition: background 0.12s ease, color 0.12s ease;
 
   &:hover {
-    background: rgba(v.$location-blue, 0.08);
+    background: rgba(v.$color-lib-location-1, 0.08);
     color: v.$campaign-portal-text-bright;
   }
 
   &:not(:last-child) {
-    border-bottom: 1px solid rgba(v.$location-blue, 0.06);
+    border-bottom: 1px solid rgba(v.$color-lib-location-1, 0.06);
   }
 }
 
@@ -271,7 +271,7 @@
   font-family: v.$font-body;
   font-size: 12px;
   font-style: italic;
-  color: rgba(v.$location-blue, 0.45);
+  color: rgba(v.$color-lib-location-1, 0.45);
   text-align: center;
 }
 
@@ -279,7 +279,7 @@
 
 .error-banner {
   margin: 0 16px;
-  background: v.$color-ext-360;
+  background: v.$color-base-mist-blue0;
   border: 1px solid v.$color-ext-353;
   border-radius: 4px;
   padding: 8px 12px;

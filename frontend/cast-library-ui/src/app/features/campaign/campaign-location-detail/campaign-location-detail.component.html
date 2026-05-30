@@ -22,17 +22,14 @@
       <div class="detail-panel-content" #detailContent>
 
         <!-- Panel header with edit toggle -->
-        @if (isDm()) {
-          <div class="detail-panel-actions">
-            @if (!editing()) {
-              <button class="detail-edit-btn" (click)="startEditing()">✎ Edit Details</button>
-            } @else {
-              <button class="campaign-primary-btn" (click)="saveDetails()">✔ Save For Campaign</button>
-              <button class="campaign-primary-btn" (click)="saveToLibrary()">✔ Save For Campaign & Library</button>
-              <button class="campaign-secondary-btn" (click)="cancelEditing()">Cancel</button>
-            }
-          </div>
-        }
+        <app-detail-panel-actions
+          [isDm]="isDm()"
+          [editing]="editing()"
+          (startEditingClick)="startEditing()"
+          (saveDetailsClick)="saveDetails()"
+          (saveToLibraryClick)="saveToLibrary()"
+          (cancelEditingClick)="cancelEditing()"
+        />
 
         <!-- Location Title -->
         @if (editing()) {
@@ -367,7 +364,7 @@
           </div>
         }
         @if (!locationSublocations().length) {
-          <p class="location-cards-empty">No sublocations yet — use the ✦ button below to add some.</p>
+          <p class="wbd">No sublocations yet — use the ✦ button below to add some.</p>
         }
       </div>
 

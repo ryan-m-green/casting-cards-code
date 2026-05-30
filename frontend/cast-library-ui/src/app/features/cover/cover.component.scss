@@ -203,7 +203,7 @@
   letter-spacing: 0.1em;
   line-height: 1.1;
   margin-bottom: 5px;
-  background: linear-gradient(to bottom, v.$color-ext-394 0%, v.$journal-spine-cap-2 40%, v.$color-ext-395 70%, v.$journal-spine-cap-2 100%);
+  background: linear-gradient(to bottom, v.$color-ext-394 0%, v.$color-base-spine-4 40%, v.$color-ext-395 70%, v.$color-base-spine-4 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -344,7 +344,7 @@
   font-size: 11px;
   font-weight: 600;
   letter-spacing: 0.3em;
-  color: v.$journal-spine-cap-2;
+  color: v.$color-base-spine-4;
   background: linear-gradient(to bottom, v.$color-ext-412 0%, v.$color-ext-413 40%, v.$color-ext-414 60%, v.$color-ext-412 100%);
   border: 1px solid v.$color-ext-415;
   border-top-color: v.$color-ext-416;

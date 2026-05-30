@@ -1,8 +1,8 @@
-import { Component, OnInit, OnDestroy, signal, computed, inject, ViewChild, ElementRef, Injector, effect, untracked } from '@angular/core';
+import { Component, OnInit, OnDestroy, signal, computed, inject, ViewChild, ElementRef, effect, untracked } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
-import { catchError, of } from 'rxjs';
+import { catchError, of, Subscription } from 'rxjs';
 import { environment } from '../../../../environments/environment';
 import { CampaignFactionInstance, FactionRelationship } from '../../../shared/models/faction.model';
 import { CampaignSublocationInstance } from '../../../shared/models/sublocation.model';
@@ -14,7 +14,7 @@ import { PlayerCampaignShellService } from '../../../core/player-campaign-shell.
 import { CampaignHubService } from '../../../core/hub/campaign-hub.service';
 import { PlayerFactionNotesComponent } from '../player-faction-notes/player-faction-notes.component';
 import { FactionCardComponent } from '../../../shared/components/faction-card/faction-card.component';
-import { FactionRelationshipsSectionComponent } from '../../../shared/components/faction-relationships-section/faction-relationships-section.component';
+import { FactionRelationshipsSectionComponent, SaveRelationshipEvent } from '../../../shared/components/faction-relationships-section/faction-relationships-section.component';
 import { SublocationCardComponent } from '../../../shared/components/sublocation-card/sublocation-card.component';
 import { CastCardComponent } from '../../../shared/components/cast-card/cast-card.component';
 
@@ -32,7 +32,6 @@ export class PlayerFactionDetailComponent implements OnInit, OnDestroy {
   private transition = inject(PortalTransitionService);
   private shellSvc   = inject(PlayerCampaignShellService);
   private hub        = inject(CampaignHubService);
-  private injector   = inject(Injector);
 
   @ViewChild('detailContent') private detailContentRef!: ElementRef<HTMLElement>;
   @ViewChild('expandBtn')     private expandBtnRef!: ElementRef<HTMLElement>;
@@ -129,6 +128,8 @@ export class PlayerFactionDetailComponent implements OnInit, OnDestroy {
 
   private sublocationTiltMap = new Map<string, number>();
   private castTiltMap        = new Map<string, number>();
+  private paramsSub?: Subscription;
+  private hubSubscriptions: Subscription[] = [];
   castRatings                = signal<Map<string, number>>(new Map());
 
   // ── Player assessment (influence + perception sliders) ────────────────────
@@ -195,83 +196,97 @@ export class PlayerFactionDetailComponent implements OnInit, OnDestroy {
   }
 
   constructor() {
-    effect(() => {
-      const event = this.hub.cardVisibilityChanged();
-      if (!event || event.cardType !== 'faction') return;
-      const factionId  = untracked(() => this.factionInstanceId());
-      const campaignId = untracked(() => this.campaignId());
-      if (!factionId || !campaignId || event.instanceId !== factionId) return;
-      if (!event.isVisible) {
-        this.transition.quickCover();
-        this.router.navigate(['/player/campaign', campaignId]);
-      }
-    });
+    this.hubSubscriptions.push(
+      this.hub.cardVisibilityChanged$.subscribe(event => {
+        if (!event || event.cardType !== 'faction') return;
+        const factionId  = untracked(() => this.factionInstanceId());
+        const campaignId = untracked(() => this.campaignId());
+        if (!factionId || !campaignId || event.instanceId !== factionId) return;
+        if (!event.isVisible) {
+          this.transition.quickCover();
+          this.router.navigate(['/player/campaign', campaignId]);
+        }
+      })
+    );
   }
 
   ngOnInit() {
     this.transition.hide();
-    const id            = this.route.snapshot.paramMap.get('id')!;
-    const factionInstId = this.route.snapshot.paramMap.get('factionInstanceId')!;
-    this.campaignId.set(id);
-    this.factionInstanceId.set(factionInstId);
+    this.paramsSub = this.route.paramMap.subscribe(params => {
+      const id            = params.get('id')!;
+      const factionInstId = params.get('factionInstanceId')!;
+      this.campaignId.set(id);
+      this.factionInstanceId.set(factionInstId);
+      this.faction.set(null);
+      this.playerNotes.set(null);
+      this.castRatings.set(new Map());
 
-    this.http.get<CampaignFactionInstance[]>(
-      `${environment.apiUrl}/api/campaigns/${id}/factions/player`
-    ).pipe(
-      catchError(() => of([] as CampaignFactionInstance[]))
-    ).subscribe(factions => {
-      const f = factions.find(x => x.factionInstanceId === factionInstId) ?? null;
-      this.faction.set(f);
-      if (f) {
-        this.shellSvc.setTitleContext({ pageType: 'player-faction-detail', campaignId: id, baseRoute: '/player/campaign', location: null });
-        if (f.castInstanceIds.length) {
-          const params = f.castInstanceIds.map(cid => `castInstanceId=${cid}`).join('&');
-          this.http.get<CampaignCastPlayerNotes[]>(
-            `${environment.apiUrl}/api/campaigns/${id}/cast-player-notes/by-cast-instances?${params}`
-          ).pipe(catchError(() => of([] as CampaignCastPlayerNotes[])))
-            .subscribe(notes => {
-              const map = new Map<string, number>();
-              notes.forEach(n => map.set(n.castInstanceId, n.rating));
-              this.castRatings.set(map);
-            });
-        }
-      }
-    });
-
-    this.http.get<CampaignFactionPlayerNotes>(
-      `${environment.apiUrl}/api/campaigns/${id}/faction-player-notes/${factionInstId}`
-    ).pipe(
-      catchError(() => of<CampaignFactionPlayerNotes>({ id: '', campaignId: id, factionInstanceId: factionInstId, notes: '', influence: null, perception: null }))
-    ).subscribe(n => {
-      this.playerNotes.set(n);
-      this.notesText.set(n.notes);
-      // Sync initial influence to faction card glow
-      if (n.influence != null) {
-        this.faction.update(f => f ? { ...f, influence: n.influence! } : f);
-      }
-    });
-
-    effect(() => {
-      const e = this.hub.noteUpdated();
-      if (e?.entityType === 'faction' && e.instanceId === this.factionInstanceId()) {
-        this.loadPlayerNotes();
-      }
-    }, { injector: this.injector });
-
-    effect(() => {
-      const event = this.hub.factionInstanceUpdated();
-      if (!event || event.factionInstanceId !== untracked(() => this.factionInstanceId())) return;
-      const id            = untracked(() => this.campaignId());
-      const factionInstId = untracked(() => this.factionInstanceId());
       this.http.get<CampaignFactionInstance[]>(
         `${environment.apiUrl}/api/campaigns/${id}/factions/player`
       ).pipe(
         catchError(() => of([] as CampaignFactionInstance[]))
       ).subscribe(factions => {
         const f = factions.find(x => x.factionInstanceId === factionInstId) ?? null;
-        if (f) this.faction.set(f);
+        this.faction.set(f);
+        if (f) {
+          this.shellSvc.setTitleContext({
+            pageType: 'player-faction-detail',
+            campaignId: id,
+            baseRoute: '/player/campaign',
+            location: null,
+            faction: { instanceId: f.factionInstanceId, name: f.name ?? '' }
+          });
+          if (f.castInstanceIds.length) {
+            const queryParams = f.castInstanceIds.map(cid => `castInstanceId=${cid}`).join('&');
+            this.http.get<CampaignCastPlayerNotes[]>(
+              `${environment.apiUrl}/api/campaigns/${id}/cast-player-notes/by-cast-instances?${queryParams}`
+            ).pipe(catchError(() => of([] as CampaignCastPlayerNotes[])))
+              .subscribe(notes => {
+                const map = new Map<string, number>();
+                notes.forEach(n => map.set(n.castInstanceId, n.rating));
+                this.castRatings.set(map);
+              });
+          }
+        }
       });
-    }, { injector: this.injector });
+
+      this.http.get<CampaignFactionPlayerNotes>(
+        `${environment.apiUrl}/api/campaigns/${id}/faction-player-notes/${factionInstId}`
+      ).pipe(
+        catchError(() => of<CampaignFactionPlayerNotes>({ id: '', campaignId: id, factionInstanceId: factionInstId, notes: '', influence: null, perception: null }))
+      ).subscribe(n => {
+        this.playerNotes.set(n);
+        this.notesText.set(n.notes);
+        // Sync initial influence to faction card glow
+        if (n.influence != null) {
+          this.faction.update(f => f ? { ...f, influence: n.influence! } : f);
+        }
+      });
+    });
+
+    this.hubSubscriptions.push(
+      this.hub.noteUpdated$.subscribe(e => {
+        if (e?.entityType === 'faction' && e.instanceId === this.factionInstanceId()) {
+          this.loadPlayerNotes();
+        }
+      })
+    );
+
+    this.hubSubscriptions.push(
+      this.hub.factionInstanceUpdated$.subscribe(event => {
+        if (!event || event.factionInstanceId !== untracked(() => this.factionInstanceId())) return;
+        const id            = untracked(() => this.campaignId());
+        const factionInstId = untracked(() => this.factionInstanceId());
+        this.http.get<CampaignFactionInstance[]>(
+          `${environment.apiUrl}/api/campaigns/${id}/factions/player`
+        ).pipe(
+          catchError(() => of([] as CampaignFactionInstance[]))
+        ).subscribe(factions => {
+          const f = factions.find(x => x.factionInstanceId === factionInstId) ?? null;
+          if (f) this.faction.set(f);
+        });
+      })
+    );
   }
 
   private loadPlayerNotes() {
@@ -295,6 +310,7 @@ export class PlayerFactionDetailComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     if (this.saveDebounce) clearTimeout(this.saveDebounce);
+    this.paramsSub?.unsubscribe();
   }
 
   toggleDetail() {
@@ -320,5 +336,25 @@ export class PlayerFactionDetailComponent implements OnInit, OnDestroy {
   goToCampaign() {
     this.transition.quickCover();
     this.router.navigate(['/player/campaign', this.campaignId()]);
+  }
+
+  saveRelationship(event: SaveRelationshipEvent) {
+    const f = this.faction();
+    if (!f) return;
+    const body = {
+      factionInstanceIdA: f.factionInstanceId,
+      factionInstanceIdB: event.factionInstanceIdB,
+      relationshipType: event.relationshipType,
+      strength: event.strength,
+    };
+    this.http.post<FactionRelationship>(
+      `${environment.apiUrl}/api/campaigns/${this.campaignId()}/factions/${f.factionInstanceId}/relationships`,
+      body
+    ).subscribe(rel => {
+      this.faction.update(fi => fi ? {
+        ...fi,
+        factionRelationships: [...(fi.factionRelationships ?? []), rel],
+      } : fi);
+    });
   }
 }

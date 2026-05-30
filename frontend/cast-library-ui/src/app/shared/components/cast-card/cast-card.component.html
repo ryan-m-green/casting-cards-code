@@ -104,10 +104,7 @@
             </svg>
           </div>
 
-          @if (queueable) {
-            <button class="loc-delete-btn" (click)="onDeleteClick($event)" aria-label="Remove {{ cast.name }} from queue">&#215;</button>
-          }
-
+          
           @if (secrets) {
             <button class="cast-secrets-btn"
                     [class.cast-secrets-btn--revealed]="secretsRevealed"

@@ -54,44 +54,44 @@ public class DashboardController(
         return Ok(response);
     }
 
-    [HttpGet("import-template")]
-    public async Task<IActionResult> GetImportTemplate()
-    {
-        var zipBytes = await getImportTemplateQueryHandler.HandleAsync();
+    // [HttpGet("import-template")]
+    // public async Task<IActionResult> GetImportTemplate()
+    // {
+    //     var zipBytes = await getImportTemplateQueryHandler.HandleAsync();
 
-        return File(zipBytes, "application/zip", "library-import-template.zip");
-    }
+    //     return File(zipBytes, "application/zip", "library-import-template.zip");
+    // }
 
-    [HttpPost("import")]
-    [Consumes("multipart/form-data")]
-    [DisableRequestSizeLimit]
-    [RequestFormLimits(MultipartBodyLengthLimit = long.MaxValue)]
-    public async Task<IActionResult> Import([FromForm] IFormFile zipFile)
-    {
-        if (zipFile is null || zipFile.Length == 0)
-            return BadRequest("No ZIP file provided.");
-        try
-        {
-            var archive = await zipArchiveMapper.MapAsync(zipFile);
+    // [HttpPost("import")]
+    // [Consumes("multipart/form-data")]
+    // [DisableRequestSizeLimit]
+    // [RequestFormLimits(MultipartBodyLengthLimit = long.MaxValue)]
+    // public async Task<IActionResult> Import([FromForm] IFormFile zipFile)
+    // {
+    //     if (zipFile is null || zipFile.Length == 0)
+    //         return BadRequest("No ZIP file provided.");
+    //     try
+    //     {
+    //         var archive = await zipArchiveMapper.MapAsync(zipFile);
 
-            var result = await zipLibraryImportCommandHandler
-                .HandleAsync(new ZipLibraryImportCommand(userRetriever.GetUserId(User), archive));
-            return Ok(result);
-        }
-        catch (Exception ex)
-        {
-            return BadRequest($"Invalid ZIP: {ex.Message}");
-        }        
-    }
+    //         var result = await zipLibraryImportCommandHandler
+    //             .HandleAsync(new ZipLibraryImportCommand(userRetriever.GetUserId(User), archive));
+    //         return Ok(result);
+    //     }
+    //     catch (Exception ex)
+    //     {
+    //         return BadRequest($"Invalid ZIP: {ex.Message}");
+    //     }        
+    // }
 
-    [HttpGet("export")]
-    public async Task<IActionResult> Export()
-    {
-        var userId = userRetriever.GetUserId(User);
-        var zipBytes = await exportLibraryQuery.HandleAsync(userId);
+    // [HttpGet("export")]
+    // public async Task<IActionResult> Export()
+    // {
+    //     var userId = userRetriever.GetUserId(User);
+    //     var zipBytes = await exportLibraryQuery.HandleAsync(userId);
 
-        var filename = $"library-export-{DateTime.UtcNow:yyyy-MM-dd}.zip";
+    //     var filename = $"library-export-{DateTime.UtcNow:yyyy-MM-dd}.zip";
 
-        return File(zipBytes, "application/zip", filename);
-    }
+    //     return File(zipBytes, "application/zip", filename);
+    // }
 }

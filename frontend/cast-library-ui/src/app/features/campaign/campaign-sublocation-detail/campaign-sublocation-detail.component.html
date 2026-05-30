@@ -23,17 +23,14 @@
       <div class="detail-panel-content" #detailContent>
 
         <!-- Panel action bar (DM only) -->
-        @if (isDm()) {
-          <div class="detail-panel-actions">
-            @if (!editing()) {
-              <button class="detail-edit-btn" (click)="startEditing()">✎ Edit Details</button>
-            } @else {
-              <button class="campaign-primary-btn" (click)="saveDetails()">✔ Save For Campaign</button>
-              <button class="campaign-primary-btn" (click)="saveToLibrary()">✔ Save For Campaign & Library</button>
-              <button class="campaign-secondary-btn" (click)="cancelEditing()">Cancel</button>
-            }
-          </div>
-        }
+        <app-detail-panel-actions
+          [isDm]="isDm()"
+          [editing]="editing()"
+          (startEditingClick)="startEditing()"
+          (saveDetailsClick)="saveDetails()"
+          (saveToLibraryClick)="saveToLibrary()"
+          (cancelEditingClick)="cancelEditing()"
+        />
 
         <!-- Sublocation Title -->
         @if (editing()) {
@@ -337,7 +334,7 @@
           </div>
         }
         @if (!sublocationCasts().length) {
-          <p class="cast-cards-empty">No cast members yet — use the ✪ button below to add some.</p>
+          <p class="wbd">No cast members yet — use the ✪ button below to add some.</p>
         }
       </div>
 

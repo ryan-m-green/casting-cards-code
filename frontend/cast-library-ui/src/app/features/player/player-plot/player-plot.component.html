@@ -1,0 +1,36 @@
+<!-- Player plot page with storyline and chronicles tabs -->
+<div class="events-page">
+
+  <div class="tabs-bar" role="tablist" aria-label="Storyline views">
+    <button
+      class="tab-btn"
+      [class.tab-btn--active]="activeTab() === 'storyline'"
+      role="tab"
+      [attr.aria-selected]="activeTab() === 'storyline'"
+      aria-controls="plot-panel-storyline"
+      id="plot-tab-storyline"
+      (click)="setTab('storyline')"
+    >Storyline</button>
+    <button
+      class="tab-btn"
+      [class.tab-btn--active]="activeTab() === 'chronicles'"
+      role="tab"
+      [attr.aria-selected]="activeTab() === 'chronicles'"
+      aria-controls="plot-panel-chronicles"
+      id="plot-tab-chronicles"
+      (click)="setTab('chronicles')"
+    >Campaign Chronicles</button>
+  </div>
+
+  @if (activeTab() === 'storyline') {
+    <div class="tab-content" id="plot-panel-storyline" role="tabpanel" aria-labelledby="plot-tab-storyline">
+      <app-player-events />
+    </div>
+  }
+
+  @if (activeTab() === 'chronicles') {
+    <div class="tab-content" id="plot-panel-chronicles" role="tabpanel" aria-labelledby="plot-tab-chronicles">
+    </div>
+  }
+
+</div>

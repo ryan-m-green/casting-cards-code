@@ -91,7 +91,7 @@ export const routes: Routes = [
       },
       {
         path: 'plot',
-        loadComponent: () => import('./features/player/player-events/player-events.component').then(m => m.PlayerEventsComponent),
+        loadComponent: () => import('./features/player/player-plot/player-plot.component').then(m => m.PlayerPlotComponent),
       },
     ],
   },

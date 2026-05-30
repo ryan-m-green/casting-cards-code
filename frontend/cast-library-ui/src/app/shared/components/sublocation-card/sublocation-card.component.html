@@ -106,10 +106,7 @@
             </svg>
           </div>
 
-          @if (queueable) {
-            <button class="loc-delete-btn" (click)="onDeleteClick($event)" aria-label="Remove {{ sublocation.name }} from queue">&#215;</button>
-          }
-
+          
           @if (secrets) {
             <button class="subloc-secrets-btn"
                     [class.subloc-secrets-btn--revealed]="secretsRevealed"

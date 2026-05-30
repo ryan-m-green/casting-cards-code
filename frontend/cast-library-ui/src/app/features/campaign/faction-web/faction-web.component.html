@@ -10,7 +10,7 @@
       <div class="fweb-legend-row">
         <span class="fweb-legend-label">Relationships</span>
         <span class="fweb-legend-item fweb-legend-rel">─── Allied</span>
-        <span class="fweb-legend-item fweb-legend-rel">- - - Rival</span>
+        <span class="fweb-legend-item fweb-legend-rival">● ● ● Rival</span>
         <span class="fweb-legend-item fweb-legend-rel">─ · ─ Enemy</span>
         <span class="fweb-legend-item fweb-legend-rel">· · · Neutral</span>
       </div>
@@ -39,13 +39,15 @@
 
       <!-- ── Relationship segments ─────────────────────────────────────── -->
       <g aria-hidden="true">
-        @for (seg of spineSegments(); track $index) {
+        @for (seg of spineSegments(); track seg.id) {
           <path
+            [attr.id]="seg.id"
             [attr.d]="seg.d"
             fill="none"
             [attr.stroke]="relColor(seg.relType)"
             [attr.stroke-dasharray]="relDash(seg.relType)"
-            stroke-width="1.5"
+            [attr.stroke-width]="seg.relType === 'rival' ? 4 : 1.5"
+            [attr.stroke-linecap]="seg.relType === 'rival' ? 'round' : 'butt'"
           />
         }
       </g>
@@ -80,126 +82,7 @@
         }
       </g>
 
-      <!-- ── Cast groups: L-elbow from bottom-left + vertical spine ──────────── -->
-      @for (g of castGroups(); track g.factionId) {
-        <g aria-hidden="true">
-          <!-- horizontal elbow along bottom of faction box -->
-          <line
-            [attr.x1]="g.elbowStartX"
-            [attr.y1]="g.elbowY"
-            [attr.x2]="g.spineX"
-            [attr.y2]="g.elbowY"
-            stroke="rgba(120,90,200,0.55)"
-            stroke-width="1"
-          />
-          <!-- vertical cast spine -->
-          <line
-            [attr.x1]="g.spineX"
-            [attr.y1]="g.spineY1"
-            [attr.x2]="g.spineX"
-            [attr.y2]="g.spineY2"
-            stroke="rgba(120,90,200,0.55)"
-            stroke-width="1"
-          />
-        </g>
-        <!-- child rows: crown (primary) + icon + label -->
-        @for (c of g.children; track c.id) {
-          <g class="fweb-tree-node">
-            <text
-              [attr.x]="g.iconX"
-              [attr.y]="c.cy"
-              dominant-baseline="middle"
-              class="fweb-tree-icon fweb-tree-icon--cast"
-              [attr.fill]="c.isPrimary ? '#c0a0ff' : '#9070c8'"
-            >👤</text>
-            @if (c.isPrimary) {
-              <image
-                href="crown_gems.svg"
-                [attr.x]="g.iconX - (crownSize / 2) + 6"
-                [attr.y]="c.cy - 3 - (crownSize * 0.75)"
-                [attr.width]="crownSize"
-                [attr.height]="crownSize * 0.75"
-                class="fweb-crown"
-              />
-            }
-            <text
-              [attr.x]="g.iconX + 14"
-              [attr.y]="c.cy"
-              dominant-baseline="middle"
-              class="fweb-tree-label fweb-tree-label--link"
-              [class.fweb-tree-label--primary]="c.isPrimary"
-              [attr.fill]="c.isPrimary ? '#c8aeff' : '#9878d0'"
-              (click)="navigateToCast(c.id)"
-            >{{ c.label }}</text>
-          </g>
-        }
-      }
-
-      <!-- ── Subloc groups: L-elbow from top-right + vertical spine + ticks ────── -->
-      @for (g of sublocGroups(); track g.factionId) {
-        <g aria-hidden="true">
-          <!-- horizontal elbow from faction top-right -->
-          <line
-            [attr.x1]="g.elbowStartX"
-            [attr.y1]="g.elbowY"
-            [attr.x2]="g.spineX"
-            [attr.y2]="g.elbowY"
-            stroke="rgba(60,150,85,0.55)"
-            stroke-width="1"
-          />
-          <!-- vertical subloc spine -->
-          <line
-            [attr.x1]="g.spineX"
-            [attr.y1]="g.spineY1"
-            [attr.x2]="g.spineX"
-            [attr.y2]="g.spineY2"
-            stroke="rgba(60,150,85,0.55)"
-            stroke-width="1"
-          />
-          <!-- horizontal tick per child -->
-          @for (c of g.children; track c.id) {
-            <line
-              [attr.x1]="g.spineX"
-              [attr.y1]="c.cy"
-              [attr.x2]="g.iconX"
-              [attr.y2]="c.cy"
-              stroke="rgba(60,150,85,0.45)"
-              stroke-width="1"
-            />
-          }
-        </g>
-        @for (c of g.children; track c.id) {
-          <g class="fweb-tree-node">
-            <text
-              [attr.x]="g.iconX"
-              [attr.y]="c.cy"
-              dominant-baseline="middle"
-              class="fweb-tree-icon fweb-tree-icon--subloc"
-              [attr.fill]="c.isPrimary ? '#70d890' : '#4aaa68'"
-            >📍</text>
-            @if (c.isPrimary) {
-              <image
-                href="crown_gems.svg"
-                [attr.x]="g.iconX - (crownSize / 2) + 6"
-                [attr.y]="c.cy - 3 - (crownSize * 0.75)"
-                [attr.width]="crownSize"
-                [attr.height]="crownSize * 0.75"
-                class="fweb-crown"
-              />
-            }
-            <text
-              [attr.x]="g.iconX + 14"
-              [attr.y]="c.cy"
-              dominant-baseline="middle"
-              class="fweb-tree-label fweb-tree-label--link"
-              [class.fweb-tree-label--primary]="c.isPrimary"
-              [attr.fill]="c.isPrimary ? '#7ad898' : '#52a068'"
-              (click)="navigateToSublocation(c.id)"
-            >{{ c.label }}</text>
-          </g>
-        }
-      }
-
+      
 
 
       <!-- ── Faction nodes ─────────────────────────────────────────────────── -->
@@ -213,33 +96,138 @@
           <rect
             [attr.x]="node.x"
             [attr.y]="node.y"
-            [attr.width]="nodeW"
-            [attr.height]="nodeH"
+            [attr.width]="node.width"
+            [attr.height]="node.height"
             rx="4"
             class="fweb-node-rect"
           />
           <!-- alignment icon -->
           <text
             [attr.x]="node.x + 10"
-            [attr.y]="node.cy"
+            [attr.y]="node.y + 17"
             dominant-baseline="middle"
             class="fweb-node-align-icon"
             [attr.fill]="alignColor(node.faction)"
           >{{ alignIcon(node.faction) }}</text>
-          <!-- faction name -->
-          <text
-            [attr.x]="node.x + 26"
-            [attr.y]="node.cy - 5"
-            dominant-baseline="middle"
-            class="fweb-node-name"
-          >{{ node.faction.name }}</text>
-          <!-- influence dots -->
-          <text
-            [attr.x]="node.x + 26"
-            [attr.y]="node.cy + 8"
-            dominant-baseline="middle"
-            class="fweb-node-dots"
-          >{{ influenceDots(node.faction.influence) }}</text>
+          <!-- node name and dots wrapper -->
+          <g>
+            <!-- faction name -->
+            <text
+              [attr.x]="node.x + 34"
+              [attr.y]="node.y + 12"
+              dominant-baseline="middle"
+              class="fweb-node-name"
+            >{{ node.faction.name }}</text>
+            <!-- influence label -->
+            <text
+              [attr.x]="node.x + 34"
+              [attr.y]="node.y + 25"
+              dominant-baseline="middle"
+              class="fweb-node-label"
+            >Influence</text>
+            <!-- influence dots -->
+            <text
+              [attr.x]="node.x + 110"
+              [attr.y]="node.y + 25"
+              dominant-baseline="middle"
+              class="fweb-node-dots"
+              [attr.aria-label]="'Influence: ' + node.faction.influence"
+            >{{ influenceDots(node.faction.influence) }}</text>
+          </g>
+
+          <!-- Cast section -->
+          @if (node.casts.length > 0) {
+            <g [attr.transform]="'translate(20, 0)'">
+              <text
+                [attr.x]="node.x + 12"
+                [attr.y]="node.y + 48"
+                class="fweb-section-title"
+              >CAST</text>
+              @for (cast of node.casts; track cast.id; let i = $index) {
+                <g class="fweb-card-item">
+                  @if (cast.isPrimary) {
+                    <image
+                      href="crown_gems.svg"
+                      [attr.x]="node.x + 4"
+                      [attr.y]="node.y + 58 + i * 16 - 8"
+                      [attr.width]="crownSize"
+                      [attr.height]="crownSize * 0.75"
+                      class="fweb-crown"
+                    />
+                  }
+                  <text
+                    [attr.x]="node.x + 16"
+                    [attr.y]="node.y + 58 + i * 16"
+                    dominant-baseline="middle"
+                    class="fweb-card-icon fweb-card-icon--cast"
+                  >👤</text>
+                  <text
+                    [attr.x]="node.x + 34"
+                    [attr.y]="node.y + 58 + i * 16"
+                    dominant-baseline="middle"
+                    class="fweb-card-label fweb-card-label--link"
+                    [class.fweb-card-label--primary]="cast.isPrimary"
+                    [attr.fill]="cast.isPrimary ? '#c8aeff' : '#9878d0'"
+                    (click)="navigateToCast(cast.id)"
+                  >{{ cast.name }}</text>
+                </g>
+              }
+            </g>
+          }
+
+          <!-- Divider -->
+          @if (node.casts.length > 0 && node.sublocations.length > 0) {
+            <g [attr.transform]="'translate(-28, 0)'">
+              <line
+                [attr.x1]="node.x + 48"
+                [attr.y1]="node.y + 48 + (node.casts.length > 0 ? sectionTitleH + node.casts.length * listItemH : 0) + 4"
+                [attr.x2]="node.x + node.width - 48"
+                [attr.y2]="node.y + 48 + (node.casts.length > 0 ? sectionTitleH + node.casts.length * listItemH : 0) + 4"
+                class="fweb-divider"
+              />
+            </g>
+          }
+
+          <!-- Sublocation section -->
+          @if (node.sublocations.length > 0) {
+            <g [attr.transform]="'translate(20, 0)'">
+              @let subOffset = 48 + (node.casts.length > 0 ? sectionTitleH + node.casts.length * listItemH : 0) + (node.casts.length > 0 && node.sublocations.length > 0 ? dividerH + 8 : 0);
+              <text
+                [attr.x]="node.x + 12"
+                [attr.y]="node.y + subOffset"
+                class="fweb-section-title"
+              >SUBLOCATIONS</text>
+              @for (sub of node.sublocations; track sub.id; let i = $index) {
+                <g class="fweb-card-item">
+                  @if (sub.isPrimary) {
+                    <image
+                      href="crown_gems.svg"
+                      [attr.x]="node.x + 4"
+                      [attr.y]="node.y + subOffset + 10 + i * 16 - 8"
+                      [attr.width]="crownSize"
+                      [attr.height]="crownSize * 0.75"
+                      class="fweb-crown"
+                    />
+                  }
+                  <text
+                    [attr.x]="node.x + 16"
+                    [attr.y]="node.y + subOffset + 10 + i * 16"
+                    dominant-baseline="middle"
+                    class="fweb-card-icon fweb-card-icon--subloc"
+                  >📍</text>
+                  <text
+                    [attr.x]="node.x + 34"
+                    [attr.y]="node.y + subOffset + 10 + i * 16"
+                    dominant-baseline="middle"
+                    class="fweb-card-label fweb-card-label--link"
+                    [class.fweb-card-label--primary]="sub.isPrimary"
+                    [attr.fill]="sub.isPrimary ? '#7ad898' : '#52a068'"
+                    (click)="navigateToSublocation(sub.id)"
+                  >{{ sub.name }}</text>
+                </g>
+              }
+            </g>
+          }
         </g>
       }
 

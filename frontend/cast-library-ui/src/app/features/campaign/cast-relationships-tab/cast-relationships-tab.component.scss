@@ -93,7 +93,7 @@
 
 .deck-count {
   font-family: v.$font-header;
-  font-size: 10px;
+  font-size: 12px;
   color: v.$color-ext-328;
   letter-spacing: 0.08em;
   text-align: center;
@@ -199,11 +199,11 @@
 
   &--toggle {
     padding: 5px 12px;
-    font-size: 10px;
+    font-size: 12px;
     position: relative;
     background: rgba(200, 225, 235, 0.1);
     border: 1px solid rgba(200, 225, 235, 0.3);
-    color: v.$color-ext-152;
+    color: v.$color-base-white;
     white-space: nowrap;
     align-self: flex-start;
     &:hover { background: rgba(200, 225, 235, 0.18); }
@@ -323,12 +323,12 @@
 .rel-slider-labels {
   display: flex;
   justify-content: space-between;
-  font-size: 0.7rem;
+  font-size: 12px;
   color: v.$color-ext-329;
 }
 
 .neutral-label {
-  font-size: 0.72rem;
+  font-size: 12px;
   font-weight: 600;
   color: v.$color-ext-332;
 }

@@ -60,10 +60,6 @@
 }
 
 /* ── Spine relationship segments ─────────────────────────────────────────── */
-.fweb-spine-rel {
-  // colour set inline via [attr.stroke]
-}
-
 .fweb-spine-rel-label-bg {
   fill: rgba(14, 8, 28, 0.88);
   stroke: rgba(v.$color-base-portal-violet, 0.50);
@@ -79,7 +75,7 @@
 
 .fweb-rel-label {
   font-family: v.$font-header;
-  font-size: 6px;
+  font-size: 12px;
   letter-spacing: 0.08em;
   text-transform: uppercase;
   pointer-events: none;
@@ -88,10 +84,10 @@
 
 .fweb-spine-rel-label {
   font-family: v.$font-header;
-  font-size: 7px;
+  font-size: 12px;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  fill: v.$color-base-lavender-pale;
+  fill: v.$color-base-lavender-14;
   pointer-events: none;
   user-select: none;
 }
@@ -108,50 +104,67 @@
 }
 
 .fweb-node-align-icon {
-  font-size: 11px;
+  font-size: 18px;
   pointer-events: none;
   user-select: none;
 }
 
 .fweb-node-name {
   font-family: v.$font-header;
-  font-size: 9px;
+  font-size: 12px;
   font-weight: 700;
   letter-spacing: 0.07em;
-  fill: v.$color-base-lavender-pale;
+  fill: v.$color-base-lavender-14;
+  pointer-events: none;
+  user-select: none;
+}
+
+.fweb-node-label {
+  font-family: v.$font-header;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.07em;
+  fill: v.$color-base-lavender-14;
   pointer-events: none;
   user-select: none;
 }
 
 .fweb-node-dots {
-  font-size: 5px;
+  font-size: 20px;
   letter-spacing: 0.06em;
   fill: rgba(v.$color-base-lavender-light, 0.50);
   pointer-events: none;
   user-select: none;
 }
 
-/* ── Tree nodes (cast & subloc) ──────────────────────────────────────────── */
-.fweb-tree-node {
+/* ── Card items (cast & subloc) ──────────────────────────────────────────── */
+.fweb-card-item {
   pointer-events: none;
 }
 
-.fweb-tree-icon {
-  font-size: 9px;
+.fweb-card-icon {
+  font-size: 12px;
   pointer-events: none;
   user-select: none;
+
+  &--cast {
+    fill: rgba(160, 120, 255, 0.85);
+  }
+
+  &--subloc {
+    fill: rgba(80, 195, 110, 0.85);
+  }
 }
 
-.fweb-tree-label {
+.fweb-card-label {
   font-family: v.$font-body;
-  font-size: 7.5px;
+  font-size: 12px;
   letter-spacing: 0.03em;
   pointer-events: none;
   user-select: none;
 
   &--primary {
     font-weight: 600;
-    font-size: 8px;
   }
 
   &--link {
@@ -160,6 +173,25 @@
     text-decoration: underline;
     text-underline-offset: 1px;
   }
+}
+
+/* ── Section title ─────────────────────────────────────────────────────── */
+.fweb-section-title {
+  font-family: v.$font-header;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  fill: rgba(v.$color-base-lavender-light, 0.6);
+  pointer-events: none;
+  user-select: none;
+}
+
+/* ── Divider ───────────────────────────────────────────────────────────── */
+.fweb-divider {
+  stroke: rgba(v.$color-base-portal-violet, 0.3);
+  stroke-width: 1;
+  pointer-events: none;
 }
 
 /* ── Crown image ─────────────────────────────────────────────────────────── */
@@ -177,7 +209,7 @@
   gap: 4px;
   padding: 10px 16px 12px 0;
   font-family: v.$font-body;
-  font-size: 9px;
+  font-size: 12px;
   letter-spacing: 0.05em;
   color: v.$campaign-portal-text-muted;
 }
@@ -190,7 +222,7 @@
 
 .fweb-legend-label {
   font-family: v.$font-header;
-  font-size: 8px;
+  font-size: 12px;
   letter-spacing: 0.12em;
   text-transform: uppercase;
   color: v.$campaign-portal-text-muted;
@@ -209,9 +241,9 @@
 .fweb-legend-neutral     { color: v.$campaign-portal-text-bright; }
 .fweb-legend-cast        { color: rgba(160, 120, 255, 0.85); }
 .fweb-legend-subloc      { color: rgba(80, 195, 110, 0.85); }
-.fweb-legend-good        { color: #6ecf88; }
+.fweb-legend-good        { color: rgb(255, 192, 220); }
 .fweb-legend-neutral-align { color: #a898c8; }
-.fweb-legend-evil        { color: #d05858; }
+.fweb-legend-evil        { color: rgb(184, 216, 32); }
 
 /* ── Mobile ──────────────────────────────────────────────────────────────── */
 @media (max-width: 600px) {

@@ -64,7 +64,7 @@
 .sub-badge-free {
   background: v.$color-ext-136;
   border-color: v.$color-border;
-  color: v.$color-text-secondary;
+  color: v.$color-base-brown-14;
 }
 
 // ── Price label ───────────────────────────────────────────────────────────────
@@ -92,7 +92,7 @@
     font-family: v.$font-body;
     font-size: 12px;
     font-style: italic;
-    color: v.$color-text-secondary;
+    color: v.$color-base-brown-14;
     padding: 2px 0;
 
     &::before {
@@ -103,7 +103,7 @@
 }
 
 .sub-perks li {
-  color: v.$color-text-primary;
+  color: v.$color-base-brown-14;
 }
 
 // ── Inactive account warning ───────────────────────────────────────────────────
@@ -128,7 +128,7 @@
 
 .sub-stripe-text {
   font-size: 11px;
-  color: v.$color-text-muted;
+  color: v.$color-base-brown-15;
 }
 
 // ── Subscribe button ──────────────────────────────────────────────────────────

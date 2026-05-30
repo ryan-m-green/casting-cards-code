@@ -1,6 +1,7 @@
-import { Component, OnInit, signal, computed, inject, effect, HostListener, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, OnDestroy, signal, computed, inject, HostListener, ViewChild, ElementRef } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
+import { Subscription } from 'rxjs';
 import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../../environments/environment';
@@ -17,15 +18,16 @@ import { SublocationCardComponent } from '../../../shared/components/sublocation
 import { CastCardComponent } from '../../../shared/components/cast-card/cast-card.component';
 import { PortalImportCardComponent } from '../../../shared/components/portal-import-card/portal-import-card.component';
 import { LockIconComponent } from '../../../shared/components/lock-icon/lock-icon.component';
+import { DetailPanelActionsComponent } from '../../../shared/components/detail-panel-actions/detail-panel-actions.component';
 
 @Component({
   selector: 'app-campaign-sublocation-detail',
   standalone: true,
-  imports: [CommonModule, FormsModule, SublocationCardComponent, CastCardComponent, PortalImportCardComponent, LockIconComponent],
+  imports: [CommonModule, FormsModule, SublocationCardComponent, CastCardComponent, PortalImportCardComponent, LockIconComponent, DetailPanelActionsComponent],
   templateUrl: './campaign-sublocation-detail.component.html',
   styleUrl: './campaign-sublocation-detail.component.scss'
 })
-export class CampaignSublocationDetailComponent implements OnInit {
+export class CampaignSublocationDetailComponent implements OnInit, OnDestroy {
   private route      = inject(ActivatedRoute);
   private router     = inject(Router);
   private http       = inject(HttpClient);
@@ -33,6 +35,7 @@ export class CampaignSublocationDetailComponent implements OnInit {
   private auth       = inject(AuthService);
   private shellSvc   = inject(CampaignShellService);
   private transition = inject(PortalTransitionService);
+  private hubSubscriptions: Subscription[] = [];
 
   @ViewChild('detailContent') private detailContentRef!: ElementRef<HTMLElement>;
   @ViewChild('expandBtn')     private expandBtnRef!: ElementRef<HTMLElement>;
@@ -53,6 +56,7 @@ export class CampaignSublocationDetailComponent implements OnInit {
   }
   get castGridEl(): HTMLElement | null { return this._castGridEl(); }
 
+  private paramsSub?: Subscription;
   campaignId         = signal('');
   sublocationInstanceId = signal('');
   campaign           = signal<CampaignDetail | null>(null);
@@ -121,61 +125,72 @@ export class CampaignSublocationDetailComponent implements OnInit {
   });
 
   constructor() {
-    effect(() => {
-      const event = this.hub.secretRevealed();
-      if (!event || event.campaignId !== this.campaignId()) return;
-      this.campaign.update(c => {
-        if (!c) return c;
-        return {
-          ...c,
-          secrets: c.secrets.map(s =>
-            s.id === event.secretId ? { ...s, isRevealed: true } : s
-          )
-        };
-      });
-    });
+    this.hubSubscriptions.push(
+      this.hub.secretRevealed$.subscribe(event => {
+        if (!event || event.campaignId !== this.campaignId()) return;
+        this.campaign.update(c => {
+          if (!c) return c;
+          return {
+            ...c,
+            secrets: c.secrets.map(s =>
+              s.id === event.secretId ? { ...s, isRevealed: true } : s
+            )
+          };
+        });
+      })
+    );
 
-    effect(() => {
-      const event = this.hub.factionLocked();
-      if (!event || event.campaignId !== this.campaignId()) return;
-      this.campaign.update(c => {
-        if (!c) return c;
-        return {
-          ...c,
-          sublocations: (c.sublocations ?? []).map(l =>
-            l.factionInstanceId === event.factionInstanceId
-              ? { ...l, factionInstanceId: undefined, symbolPath: undefined }
-              : l
-          ),
-          casts: (c.casts ?? []).map(ca => ({
-            ...ca,
-            factionSymbols: (ca.factionSymbols ?? []).filter(fs => fs.factionInstanceId !== event.factionInstanceId),
-          })),
-        };
-      });
-    });
+    this.hubSubscriptions.push(
+      this.hub.factionLocked$.subscribe(event => {
+        if (!event || event.campaignId !== this.campaignId()) return;
+        this.campaign.update(c => {
+          if (!c) return c;
+          return {
+            ...c,
+            sublocations: (c.sublocations ?? []).map(l =>
+              l.factionInstanceId === event.factionInstanceId
+                ? { ...l, factionInstanceId: undefined, symbolPath: undefined }
+                : l
+            ),
+            casts: (c.casts ?? []).map(ca => ({
+              ...ca,
+              factionSymbols: (ca.factionSymbols ?? []).filter(fs => fs.factionInstanceId !== event.factionInstanceId),
+            })),
+          };
+        });
+      })
+    );
   }
 
   ngOnInit() {
-    const id    = this.route.snapshot.paramMap.get('id')!;
-    const locId = this.route.snapshot.paramMap.get('sublocationInstanceId')!;
-    this.campaignId.set(id);
-    this.sublocationInstanceId.set(locId);
-    this.http.get<CampaignDetail>(`${environment.apiUrl}/api/campaigns/${id}`)
-      .subscribe(c => {
-        this.campaign.set(c);
-        this.shellSvc.setCampaign(c);
-        const subLoc    = c.sublocations.find(l => l.instanceId === locId);
-        const parentLoc = subLoc ? c.locations.find(l => l.instanceId === subLoc.locationInstanceId) : null;
-        if (subLoc) {
-          this.shellSvc.setTitleContext({
-            pageType: 'sublocation',
-            campaignId: id,
-            baseRoute: '/campaign',
-            location: parentLoc ?? null,
-          }, '56px');
-        }
-      });
+    this.paramsSub = this.route.paramMap.subscribe(params => {
+      const id    = params.get('id')!;
+      const locId = params.get('sublocationInstanceId')!;
+      this.campaignId.set(id);
+      this.sublocationInstanceId.set(locId);
+      this.campaign.set(null);
+      this.http.get<CampaignDetail>(`${environment.apiUrl}/api/campaigns/${id}`)
+        .subscribe(c => {
+          this.campaign.set(c);
+          this.shellSvc.setCampaign(c);
+          const subLoc    = c.sublocations.find(l => l.instanceId === locId);
+          const parentLoc = subLoc ? c.locations.find(l => l.instanceId === subLoc.locationInstanceId) : null;
+          if (subLoc) {
+            this.shellSvc.setTitleContext({
+              pageType: 'sublocation',
+              campaignId: id,
+              campaignName: c.name,
+              baseRoute: '/campaign',
+              location: parentLoc ?? null,
+            }, '56px');
+          }
+        });
+    });
+  }
+
+  ngOnDestroy() {
+    this.paramsSub?.unsubscribe();
+    this.hubSubscriptions.forEach(sub => sub.unsubscribe());
   }
 
   // ── Edit details ─────────────────────────────────────────────────────────
@@ -220,6 +235,7 @@ export class CampaignSublocationDetailComponent implements OnInit {
       this.shellSvc.setTitleContext({
         pageType: 'sublocation',
         campaignId: this.campaignId(),
+        campaignName: this.campaign()?.name,
         baseRoute: '/campaign',
         location: this.parentLocation(),
       }, '56px');

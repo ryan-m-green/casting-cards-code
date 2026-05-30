@@ -84,13 +84,11 @@
 }
 
 .ev-body {
-  padding: 12px 14px 14px;
+  padding: 0 14px 14px;
   font-family: v.$font-body;
   font-size: 16px;
-  line-height: 1.7;
   color: v.$campaign-portal-text-muted;
   white-space: pre-wrap;
-  border-top: 1px solid v.$campaign-portal-border;
 
   @media (max-width: 768px) {
     font-size: 20px;
@@ -99,14 +97,12 @@
 
 .ev-handout-wrapper {
   padding: 12px 14px 14px;
-  border-top: 1px solid v.$campaign-portal-border;
 }
 
 .ev-handout-img {
   display: block;
   max-width: 100%;
   border-radius: 6px;
-  border: 1px solid v.$campaign-portal-border-bold;
 }
 
 
@@ -120,7 +116,7 @@
     v.$color-ext-740 55%, v.$color-ext-741 70%, v.$color-ext-742 85%, v.$color-ext-743 100%
   );
   box-shadow:
-    0 0 0 1px v.$color-dark-frame,
+    0 0 0 1px v.$color-base-black-7,
     0 6px 22px v.$color-shadow-dark,
     inset 0 1px 0 v.$color-ext-744;
   transition: box-shadow 0.2s ease;
@@ -166,7 +162,7 @@
   align-items: center;
   justify-content: space-between;
   padding: 10px 14px 10px 12px;
-  background: linear-gradient(180deg, v.$color-ext-748 0%, v.$color-ext-742 100%);
+  background: linear-gradient(180deg, v.$color-base-dark-purple-1 0%, v.$color-ext-742 100%);
   border-bottom: 1.5px solid v.$color-ext-739;
   user-select: none;
 

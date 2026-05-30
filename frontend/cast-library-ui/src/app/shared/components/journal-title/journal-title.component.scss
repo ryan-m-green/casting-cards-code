@@ -16,7 +16,7 @@
   font-weight: 600;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: v.$journal-leather-cover-base-1;
+  color: v.$color-base-leather-1;
   margin-bottom: 5px;
 }
 
@@ -25,33 +25,33 @@
 }
 
 .jt-orn {
-  color: v.$journal-spine-cap-2;
+  color: v.$color-base-spine-4;
 }
 
 .jt-rule {
   height: 1px;
-  background: linear-gradient(to right, v.$journal-spine-cap-2, transparent);
+  background: linear-gradient(to right, v.$color-base-spine-4, transparent);
   opacity: 0.55;
   margin-bottom: 6px;
 }
 
 .jt-center .jt-rule {
-  background: linear-gradient(to right, transparent, v.$journal-spine-cap-2, transparent);
+  background: linear-gradient(to right, transparent, v.$color-base-spine-4, transparent);
 }
 
 .jt-subtitle {
   font-family: v.$font-body;
   font-style: italic;
-  font-size: 13px;
-  color: v.$journal-leather-cover-base-2;
+  font-size: 18px;
+  color: v.$color-base-leather-2;
   margin-top: 4px;
 }
 
 .jt-username {
   font-family: v.$font-body;
   font-style: italic;
-  font-size: 13px;
-  color: v.$journal-leather-cover-base-2;
+  font-size: 24px;
+  color: v.$color-base-leather-2;
   margin-top: 4px;
   letter-spacing: 0.02em;
 }

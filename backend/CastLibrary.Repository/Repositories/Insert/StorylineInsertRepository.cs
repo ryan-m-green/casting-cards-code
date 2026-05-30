@@ -1,4 +1,5 @@
 using CastLibrary.Logic.Interfaces;
+using CastLibrary.Repository.Mappers;
 using CastLibrary.Shared.Domain;
 using Dapper;
 
@@ -9,7 +10,7 @@ public interface ICampaignEventInsertRepository
     Task<CampaignEventDomain> InsertAsync(CampaignEventDomain domain);
 }
 
-public class CampaignEventInsertRepository(
+public class StorylineInsertRepository(
     ISqlConnectionFactory sqlConnectionFactory,
     ILoggingService logging,
     ICorrelationContext correlation) : ICampaignEventInsertRepository
@@ -17,16 +18,15 @@ public class CampaignEventInsertRepository(
     public async Task<CampaignEventDomain> InsertAsync(CampaignEventDomain domain)
     {
         var spanId  = correlation.NewSpan();
+        var linkedEntitiesJson = CampaignEventEntityMapper.ToJson(domain.LinkedEntities);
         var @params = new
         {
             domain.Id,
             domain.CampaignId,
             domain.Title,
             domain.Body,
-            domain.LinkedEntityId,
-            domain.LinkedEntityType,
+            LinkedEntities = linkedEntitiesJson,
             domain.FilePath,
-            domain.TodPositionPercent,
             domain.VisibleToPlayers,
             domain.CreatedAt,
             domain.UpdatedAt,
@@ -34,11 +34,11 @@ public class CampaignEventInsertRepository(
 
         const string sql =
             @"INSERT INTO campaign_storyline
-                (id, campaign_id, title, body, sort_order, linked_entity_id, linked_entity_type, file_path, tod_position_percent, visible_to_players, created_at, updated_at)
+                (id, campaign_id, title, body, sort_order, linked_entities, file_path, visible_to_players, created_at, updated_at)
               VALUES
                 (@Id, @CampaignId, @Title, @Body,
                  (SELECT COALESCE(MAX(sort_order), -1) + 1 FROM campaign_storyline WHERE campaign_id = @CampaignId),
-                 @LinkedEntityId, @LinkedEntityType, @FilePath, @TodPositionPercent, @VisibleToPlayers, @CreatedAt, @UpdatedAt)
+                 @LinkedEntities::jsonb, @FilePath, @VisibleToPlayers, @CreatedAt, @UpdatedAt)
               RETURNING sort_order";
 
         logging.LogDbOperation(correlation.TraceId, spanId, "INSERT", "campaign_storyline", @params);

@@ -171,11 +171,11 @@
   }
 
   <!-- ── Faction Relationships ── -->
-  @if (factionRelationships().length) {
-    <app-faction-relationships-section
-      [relationships]="factionRelationships()"
-      [otherFactions]="visibleFactions()"
-    />
-  }
+  <app-faction-relationships-section
+    [relationships]="factionRelationships()"
+    [otherFactions]="visibleFactions()"
+    [currentFactionInstanceId]="factionInstanceId()"
+    (saveRelationship)="saveRelationship($event)"
+  />
 
 }

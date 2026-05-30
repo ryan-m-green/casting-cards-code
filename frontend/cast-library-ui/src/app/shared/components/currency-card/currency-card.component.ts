@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 @Component({
@@ -13,8 +13,4 @@ export class CurrencyCardComponent {
   @Input() currency: string = 'gp';
   @Input() note: string | null = null;
   @Input() portalColor: string = '#6e28d0';
-  @Input() dismissable: boolean = false;
-  @Output() dismissed = new EventEmitter<void>();
-
-  dismiss() { this.dismissed.emit(); }
 }

@@ -8,11 +8,11 @@ import {
   signal,
   computed,
   inject,
-  effect,
   ElementRef,
   ViewChild,
   HostListener,
 } from '@angular/core';
+import { Subscription } from 'rxjs';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
@@ -41,6 +41,7 @@ export class TimeOfDayBarComponent implements OnInit, OnChanges, OnDestroy {
 
   private http = inject(HttpClient);
   private hub  = inject(CampaignHubService);
+  private hubSubscriptions: Subscription[] = [];
 
   tod             = signal<TimeOfDay | null>(null);
   cursorPercent   = signal(0);
@@ -67,58 +68,63 @@ export class TimeOfDayBarComponent implements OnInit, OnChanges, OnDestroy {
 
   constructor() {
     // React to any user moving cursor — broadcast updates all connected clients
-    effect(() => {
-      const event = this.hub.timeCursorMoved();
-      if (!event || event.campaignId !== this.campaignId) return;
-      if (this.isDragging()) return; // don't override an in-progress local drag
-      this.animateCursorTo(event.positionPercent);
-    });
+    this.hubSubscriptions.push(
+      this.hub.timeCursorMoved$.subscribe(event => {
+        if (!event || event.campaignId !== this.campaignId) return;
+        if (this.isDragging()) return; // don't override an in-progress local drag
+        this.animateCursorTo(event.positionPercent);
+      })
+    );
 
     // React to player notes updated by another user
-    effect(() => {
-      const event = this.hub.playerNotesUpdated();
-      if (!event || event.campaignId !== this.campaignId) return;
-      this.playerNotesEdit.update(m => ({ ...m, [event.sliceId]: event.playerNotes }));
-      this.tod.update(tod => {
-        if (!tod) return tod;
-        return {
-          ...tod,
-          slices: tod.slices.map(s =>
-            s.id === event.sliceId ? { ...s, playerNotes: event.playerNotes } : s
-          ),
-        };
-      });
-    });
+    this.hubSubscriptions.push(
+      this.hub.playerNotesUpdated$.subscribe(event => {
+        if (!event || event.campaignId !== this.campaignId) return;
+        this.playerNotesEdit.update(m => ({ ...m, [event.sliceId]: event.playerNotes }));
+        this.tod.update(tod => {
+          if (!tod) return tod;
+          return {
+            ...tod,
+            slices: tod.slices.map(s =>
+              s.id === event.sliceId ? { ...s, playerNotes: event.playerNotes } : s
+            ),
+          };
+        });
+      })
+    );
 
     // React to DM notes updated by the DM (syncs to all connected clients)
-    effect(() => {
-      const event = this.hub.dmNotesUpdated();
-      if (!event || event.campaignId !== this.campaignId) return;
-      this.dmNotesEdit.update(m => ({ ...m, [event.sliceId]: event.dmNotes }));
-      this.tod.update(tod => {
-        if (!tod) return tod;
-        return {
-          ...tod,
-          slices: tod.slices.map(s =>
-            s.id === event.sliceId ? { ...s, dmNotes: event.dmNotes } : s
-          ),
-        };
-      });
-    });
+    this.hubSubscriptions.push(
+      this.hub.dmNotesUpdated$.subscribe(event => {
+        if (!event || event.campaignId !== this.campaignId) return;
+        this.dmNotesEdit.update(m => ({ ...m, [event.sliceId]: event.dmNotes }));
+        this.tod.update(tod => {
+          if (!tod) return tod;
+          return {
+            ...tod,
+            slices: tod.slices.map(s =>
+              s.id === event.sliceId ? { ...s, dmNotes: event.dmNotes } : s
+            ),
+          };
+        });
+      })
+    );
 
     // React to full time-of-day config replaced
-    effect(() => {
-      const updated = this.hub.timeOfDayUpdated();
-      if (!updated || updated.campaignId !== this.campaignId) return;
-      this.loadFromTod(updated);
-    });
+    this.hubSubscriptions.push(
+      this.hub.timeOfDayUpdated$.subscribe(updated => {
+        if (!updated || updated.campaignId !== this.campaignId) return;
+        this.loadFromTod(updated);
+      })
+    );
 
     // React to day advanced (all users)
-    effect(() => {
-      const event = this.hub.dayAdvanced();
-      if (!event || event.campaignId !== this.campaignId) return;
-      this.daysPassed.set(event.daysPassed);
-    });
+    this.hubSubscriptions.push(
+      this.hub.dayAdvanced$.subscribe(event => {
+        if (!event || event.campaignId !== this.campaignId) return;
+        this.daysPassed.set(event.daysPassed);
+      })
+    );
   }
 
   ngOnChanges(changes: SimpleChanges) {
@@ -135,6 +141,7 @@ export class TimeOfDayBarComponent implements OnInit, OnChanges, OnDestroy {
     clearTimeout(this.shimmerTimer);
     Object.values(this.playerNoteTimers).forEach(t => clearTimeout(t));
     Object.values(this.dmNoteTimers).forEach(t => clearTimeout(t));
+    this.hubSubscriptions.forEach(sub => sub.unsubscribe());
   }
 
   // ── Slice rendering helpers ───────────────────────────────────────────────

@@ -2,9 +2,9 @@
 
 // ── ADA district colors (accessible contrast, distinct even grayscale) ─────────
 :host {
-  --district-neutral: v.$color-ext-497;
-  --district-0: v.$color-ext-498;   // blue-grey
-  --district-1: v.$color-ext-499;   // amber
+  --district-neutral: v.$color-base-espresso7;
+  --district-0: v.$color-base-espresso8;   // blue-grey
+  --district-1: v.$color-base-espresso9;   // amber
   --district-2: v.$color-ext-500;   // sage
   --district-3: v.$color-ext-501;   // rose
   --district-4: v.$color-ext-502;   // lavender
@@ -44,13 +44,13 @@
   text-transform: uppercase;
   color: v.$campaign-portal-text-bright;
   white-space: nowrap;
-  text-shadow: 0 0 10px rgba(v.$accent, 0.22);
+  text-shadow: 0 0 10px rgba(v.$color-arcane-border, 0.22);
 }
 
 .political-line {
   flex: 1;
   height: 1px;
-  background: linear-gradient(to right, rgba(v.$accent, 0.24), transparent);
+  background: linear-gradient(to right, rgba(v.$color-arcane-border, 0.24), transparent);
 }
 
 .political-saving {
@@ -72,7 +72,7 @@
   display: flex;
   gap: 2px;
   margin-bottom: 24px;
-  border-bottom: 1px solid rgba(v.$accent, 0.18);
+  border-bottom: 1px solid rgba(v.$color-arcane-border, 0.18);
 }
 
 .pol-tab {
@@ -95,11 +95,11 @@
 
   &--active {
     color: v.$campaign-portal-text-bright;
-    border-bottom-color: rgba(v.$accent, 0.70);
+    border-bottom-color: rgba(v.$color-arcane-border, 0.70);
   }
 
   &:focus-visible {
-    outline: 2px solid rgba(v.$accent, 0.80);
+    outline: 2px solid rgba(v.$color-arcane-border, 0.80);
     outline-offset: 2px;
     border-radius: 2px;
   }
@@ -148,12 +148,12 @@
 
 .pol-section-line {
   height: 1px;
-  background: linear-gradient(to right, rgba(v.$accent, 0.22), transparent);
+  background: linear-gradient(to right, rgba(v.$color-arcane-border, 0.22), transparent);
 }
 
 .pol-divider {
   height: 1px;
-  background: rgba(v.$accent, 0.08);
+  background: rgba(v.$color-arcane-border, 0.08);
   margin: 12px 0;
 }
 
@@ -186,7 +186,7 @@
   justify-content: space-between;
   width: 100%;
   background: v.$campaign-portal-bg-medium;
-  border: 1px solid rgba(v.$accent, 0.22);
+  border: 1px solid rgba(v.$color-arcane-border, 0.22);
   border-radius: 3px;
   color: v.$campaign-portal-text-bright;
   font-family: v.$font-body;
@@ -197,11 +197,11 @@
   transition: border-color 0.15s;
 
   &:hover {
-    border-color: rgba(v.$accent, 0.45);
+    border-color: rgba(v.$color-arcane-border, 0.45);
   }
 
   &:focus-visible {
-    outline: 2px solid rgba(v.$accent, 0.60);
+    outline: 2px solid rgba(v.$color-arcane-border, 0.60);
     outline-offset: 1px;
   }
 }
@@ -227,8 +227,8 @@
   top: calc(100% + 2px);
   left: 0;
   right: 0;
-  background: v.$campaign-portal-panel-dark;
-  border: 1px solid rgba(v.$accent, 0.28);
+  background: v.$color-base-dark-purple-2;
+  border: 1px solid rgba(v.$color-arcane-border, 0.28);
   border-radius: 3px;
   z-index: 50;
   max-height: 200px;
@@ -245,12 +245,12 @@
   transition: background 0.12s, color 0.12s;
 
   &:hover {
-    background: rgba(v.$accent, 0.10);
+    background: rgba(v.$color-arcane-border, 0.10);
     color: v.$campaign-portal-text-bright;
   }
 
   &--selected {
-    background: rgba(v.$accent, 0.08);
+    background: rgba(v.$color-arcane-border, 0.08);
     color: v.$campaign-portal-text-bright;
   }
 }
@@ -274,7 +274,7 @@
 
 .influence-slider {
   width: 100%;
-  accent-color: rgba(v.$accent, 0.80);
+  accent-color: rgba(v.$color-arcane-border, 0.80);
   cursor: pointer;
 
   &.slider-low {
@@ -282,7 +282,7 @@
   }
 
   &.slider-mid {
-    accent-color: rgba(v.$accent, 0.80);
+    accent-color: rgba(v.$color-arcane-border, 0.80);
   }
 
   &.slider-high {
@@ -290,7 +290,7 @@
   }
 
   &:focus-visible {
-    outline: 2px solid rgba(v.$accent, 0.70);
+    outline: 2px solid rgba(v.$color-arcane-border, 0.70);
     outline-offset: 2px;
     border-radius: 2px;
   }
@@ -314,7 +314,7 @@
 // ── Shared controls ────────────────────────────────────────────────────────────
 .pol-input {
   background: v.$campaign-portal-bg-medium;
-  border: 1px solid rgba(v.$accent, 0.22);
+  border: 1px solid rgba(v.$color-arcane-border, 0.22);
   border-radius: 3px;
   color: v.$campaign-portal-text-bright;
   font-family: v.$font-body;
@@ -327,9 +327,9 @@
   }
 
   &:focus {
-    outline: 2px solid rgba(v.$accent, 0.60);
+    outline: 2px solid rgba(v.$color-arcane-border, 0.60);
     outline-offset: 1px;
-    border-color: rgba(v.$accent, 0.50);
+    border-color: rgba(v.$color-arcane-border, 0.50);
   }
 
   &--notes {
@@ -342,10 +342,10 @@
   width: 16px;
   height: 16px;
   cursor: pointer;
-  accent-color: rgba(v.$accent, 0.80);
+  accent-color: rgba(v.$color-arcane-border, 0.80);
 
   &:focus-visible {
-    outline: 2px solid rgba(v.$accent, 0.80);
+    outline: 2px solid rgba(v.$color-arcane-border, 0.80);
     outline-offset: 2px;
   }
 }
@@ -366,7 +366,7 @@
   }
 
   &:focus-visible {
-    outline: 2px solid rgba(v.$accent, 0.70);
+    outline: 2px solid rgba(v.$color-arcane-border, 0.70);
     outline-offset: 2px;
     border-radius: 2px;
   }
@@ -380,7 +380,7 @@
   text-transform: uppercase;
   color: v.$campaign-portal-text-bright;
   background: none;
-  border: 1px solid rgba(v.$accent, 0.20);
+  border: 1px solid rgba(v.$color-arcane-border, 0.20);
   border-radius: 3px;
   padding: 5px 12px;
   cursor: pointer;
@@ -388,11 +388,11 @@
 
   &:hover {
     color: v.$campaign-portal-text-bright;
-    border-color: rgba(v.$accent, 0.50);
+    border-color: rgba(v.$color-arcane-border, 0.50);
   }
 
   &:focus-visible {
-    outline: 2px solid rgba(v.$accent, 0.70);
+    outline: 2px solid rgba(v.$color-arcane-border, 0.70);
     outline-offset: 2px;
   }
 
@@ -403,7 +403,7 @@
 
 .pol-textarea {
   background: v.$campaign-portal-bg-medium;
-  border: 1px solid rgba(v.$accent, 0.22);
+  border: 1px solid rgba(v.$color-arcane-border, 0.22);
   border-radius: 4px;
   color: v.$campaign-portal-text-bright;
   font-family: v.$font-body;
@@ -419,9 +419,9 @@
   }
 
   &:focus {
-    outline: 2px solid rgba(v.$accent, 0.60);
+    outline: 2px solid rgba(v.$color-arcane-border, 0.60);
     outline-offset: 1px;
-    border-color: rgba(v.$accent, 0.50);
+    border-color: rgba(v.$color-arcane-border, 0.50);
   }
 }
 
@@ -463,7 +463,7 @@
   flex-direction: column;
   gap: 4px;
   padding: 6px 0;
-  border-bottom: 1px solid rgba(v.$accent, 0.08);
+  border-bottom: 1px solid rgba(v.$color-arcane-border, 0.08);
 
   &:last-child {
     border-bottom: none;
@@ -534,7 +534,7 @@
   max-width: 420px;
   height: auto;
   background: v.$color-ext-527;
-  border: 1px solid rgba(v.$accent, 0.16);
+  border: 1px solid rgba(v.$color-arcane-border, 0.16);
   border-radius: 6px;
 }
 
@@ -545,20 +545,20 @@
   &.edge--allied    { stroke: v.$color-ext-519; stroke-dasharray: none; }
   &.edge--rival     { stroke: v.$color-ext-520;  stroke-dasharray: 6 3; }
   &.edge--enemy     { stroke: v.$color-ext-529;   stroke-dasharray: 2 4; }
-  &.edge--neutral   { stroke: rgba(v.$accent, 0.40);       stroke-dasharray: none; }
+  &.edge--neutral   { stroke: rgba(v.$color-arcane-border, 0.40);       stroke-dasharray: none; }
   &.edge--blackmail { stroke: v.$color-ext-531;  stroke-dasharray: 8 3 2 3; }
   &.edge--patronage { stroke: v.$color-ext-532; stroke-dasharray: none; stroke-width: 3; }
 }
 
 .web-node-circle {
   fill: v.$color-ext-533;
-  stroke: rgba(v.$accent, 0.60);
+  stroke: rgba(v.$color-arcane-border, 0.60);
   stroke-width: 1.5;
   transition: stroke 0.2s;
 }
 
 .web-node--hidden .web-node-circle {
-  stroke: rgba(v.$accent, 0.28);
+  stroke: rgba(v.$color-arcane-border, 0.28);
   stroke-dasharray: 4 3;
   fill: v.$color-ext-534;
 }
@@ -573,7 +573,7 @@
 .web-node-hidden-icon {
   font-family: v.$font-header;
   font-size: 11px;
-  fill: rgba(v.$accent, 0.85);
+  fill: rgba(v.$color-arcane-border, 0.85);
   font-weight: bold;
 }
 
@@ -589,7 +589,7 @@
   flex-wrap: wrap;
   gap: 12px 24px;
   padding: 12px 0 4px;
-  border-top: 1px solid rgba(v.$accent, 0.12);
+  border-top: 1px solid rgba(v.$color-arcane-border, 0.12);
 }
 
 .legend-item {
@@ -630,7 +630,7 @@
 .district-cell {
   position: relative;
   background: var(--district-color, var(--district-neutral));
-  border: 2px solid rgba(v.$accent, 0.30);
+  border: 2px solid rgba(v.$color-arcane-border, 0.30);
   border-radius: 4px;
   padding: 14px 12px;
   cursor: default;
@@ -650,12 +650,12 @@
     pointer-events: none;
   }
 
-  &.pattern-diagonal::before { background: repeating-linear-gradient(45deg, currentColor 0, currentColor 1px, transparent 0, transparent 50%) 0/8px 8px; color: rgba(v.$accent, 0.22); }
-  &.pattern-dots::before     { background: radial-gradient(circle, rgba(v.$accent, 0.30) 1.5px, transparent 1.5px) 0/8px 8px; }
-  &.pattern-lines::before    { background: repeating-linear-gradient(0deg, currentColor 0, currentColor 1px, transparent 0, transparent 50%) 0/8px 8px; color: rgba(v.$accent, 0.18); }
-  &.pattern-solid::before    { background: rgba(v.$accent, 0.08); }
-  &.pattern-cross::before    { background: repeating-linear-gradient(0deg, rgba(v.$accent, 0.15) 0, rgba(v.$accent, 0.15) 1px, transparent 0, transparent 50%) 0/8px 8px,
-                                             repeating-linear-gradient(90deg, rgba(v.$accent, 0.15) 0, rgba(v.$accent, 0.15) 1px, transparent 0, transparent 50%) 0/8px 8px; }
+  &.pattern-diagonal::before { background: repeating-linear-gradient(45deg, currentColor 0, currentColor 1px, transparent 0, transparent 50%) 0/8px 8px; color: rgba(v.$color-arcane-border, 0.22); }
+  &.pattern-dots::before     { background: radial-gradient(circle, rgba(v.$color-arcane-border, 0.30) 1.5px, transparent 1.5px) 0/8px 8px; }
+  &.pattern-lines::before    { background: repeating-linear-gradient(0deg, currentColor 0, currentColor 1px, transparent 0, transparent 50%) 0/8px 8px; color: rgba(v.$color-arcane-border, 0.18); }
+  &.pattern-solid::before    { background: rgba(v.$color-arcane-border, 0.08); }
+  &.pattern-cross::before    { background: repeating-linear-gradient(0deg, rgba(v.$color-arcane-border, 0.15) 0, rgba(v.$color-arcane-border, 0.15) 1px, transparent 0, transparent 50%) 0/8px 8px,
+                                             repeating-linear-gradient(90deg, rgba(v.$color-arcane-border, 0.15) 0, rgba(v.$color-arcane-border, 0.15) 1px, transparent 0, transparent 50%) 0/8px 8px; }
 
   &::after {
     content: '';
@@ -744,7 +744,7 @@
   flex-direction: column;
   gap: 10px;
   padding-top: 12px;
-  border-top: 1px solid rgba(v.$accent, 0.12);
+  border-top: 1px solid rgba(v.$color-arcane-border, 0.12);
 }
 
 .map-legend-influence-title {
@@ -777,7 +777,7 @@
   display: inline-block;
   width: 20px;
   height: 20px;
-  border: 2px solid rgba(v.$accent, 0.30);
+  border: 2px solid rgba(v.$color-arcane-border, 0.30);
   border-radius: 4px;
   background: var(--district-neutral);
   flex-shrink: 0;
@@ -809,7 +809,7 @@
   max-width: 480px;
   height: auto;
   background: v.$color-ext-527;
-  border: 1px solid rgba(v.$accent, 0.16);
+  border: 1px solid rgba(v.$color-arcane-border, 0.16);
   border-radius: 6px;
 }
 
@@ -838,10 +838,10 @@
   fill: none;
   stroke-linecap: round;
 
-  &--outer { stroke: rgba(v.$accent, 0.50); stroke-width: 1.5; }
-  &--mid   { stroke: rgba(v.$accent, 0.22); stroke-width: 1; stroke-dasharray: 4 4; }
-  &--tn    { stroke: rgba(v.$accent, 0.35); stroke-width: 1; }
-  &--value { stroke: rgba(v.$accent, 0.12); stroke-width: 0.75; }
+  &--outer { stroke: rgba(v.$color-arcane-border, 0.50); stroke-width: 1.5; }
+  &--mid   { stroke: rgba(v.$color-arcane-border, 0.22); stroke-width: 1; stroke-dasharray: 4 4; }
+  &--tn    { stroke: rgba(v.$color-arcane-border, 0.35); stroke-width: 1; }
+  &--value { stroke: rgba(v.$color-arcane-border, 0.12); stroke-width: 0.75; }
 }
 
 // ── Ring labels ────────────────────────────────────────────────────────────────
@@ -856,7 +856,7 @@
 
 // ── Slice dividers ─────────────────────────────────────────────────────────────
 .compass-slice-line {
-  stroke: rgba(v.$accent, 0.18);
+  stroke: rgba(v.$color-arcane-border, 0.18);
   stroke-width: 1;
   stroke-dasharray: 3 5;
 }
@@ -889,7 +889,7 @@
 // ── Party center ───────────────────────────────────────────────────────────────
 .compass-center {
   fill: v.$color-ext-559;
-  stroke: rgba(v.$accent, 0.65);
+  stroke: rgba(v.$color-arcane-border, 0.65);
   stroke-width: 1.5;
 }
 
@@ -923,7 +923,7 @@
 }
 
 .compass-node--unassessed .compass-node-circle {
-  stroke: rgba(v.$accent, 0.45);
+  stroke: rgba(v.$color-arcane-border, 0.45);
   stroke-dasharray: 4 3;
   stroke-width: 1.5;
   fill-opacity: 0.70;
@@ -967,7 +967,7 @@
   gap: 20px 40px;
   justify-content: center;
   padding: 12px 0 4px;
-  border-top: 1px solid rgba(v.$accent, 0.12);
+  border-top: 1px solid rgba(v.$color-arcane-border, 0.12);
   width: 100%;
 }
 
@@ -1061,7 +1061,7 @@
 .cast-card-popout-placeholder {
   width: 100%;
   height: 100%;
-  background: linear-gradient(160deg, v.$color-lib-cast-1, v.$color-lib-cast-2, v.$color-lib-cast-3);
+  background: linear-gradient(160deg, v.$color-base-cast-tan, v.$color-base-cast-gold-pale, v.$color-base-cast-amber);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1099,7 +1099,7 @@
 
 .cast-card-popout-header {
   padding: 10px 14px 8px;
-  border-bottom: 1px solid rgba(v.$accent, 0.12);
+  border-bottom: 1px solid rgba(v.$color-arcane-border, 0.12);
 }
 
 .cast-card-popout-name {
@@ -1155,7 +1155,7 @@
 .cast-card-popout-rule {
   flex: 1;
   height: 1px;
-  background: linear-gradient(to right, rgba(v.$accent, 0.22), transparent);
+  background: linear-gradient(to right, rgba(v.$color-arcane-border, 0.22), transparent);
   display: inline-block;
 }
 
@@ -1196,7 +1196,7 @@
   &:hover { color: v.$campaign-portal-text-bright; }
 
   &:focus-visible {
-    outline: 2px solid rgba(v.$accent, 0.70);
+    outline: 2px solid rgba(v.$color-arcane-border, 0.70);
     outline-offset: 2px;
     border-radius: 2px;
   }
@@ -1210,8 +1210,8 @@
   width: 3px;
   height: 13px;
   border-radius: 99px;
-  background: var(--spark-color, #{v.$accent});
-  box-shadow: 0 0 4px 1px var(--spark-color, #{v.$accent});
+  background: var(--spark-color, #{v.$color-arcane-border});
+  box-shadow: 0 0 4px 1px var(--spark-color, #{v.$color-arcane-border});
   transform-origin: 50% 100%;
   z-index: 202;
   pointer-events: none;

@@ -1,4 +1,7 @@
+using CastLibrary.Logic.Interfaces;
+using CastLibrary.Logic.Services;
 using CastLibrary.Shared.Domain;
+using CastLibrary.Shared.Enums;
 
 namespace CastLibrary.Logic.Factories;
 
@@ -7,11 +10,14 @@ public interface ISublocationInstanceFactory
     CampaignSublocationInstanceDomain Create(
         SublocationDomain source, Guid campaignId, Guid? LocationInstanceId);
 }
-public class SublocationInstanceFactory : ISublocationInstanceFactory
+public class SublocationInstanceFactory(IImageKeyCreator imageKeyCreator, IImageStorageOperator imageStorageOperator) : ISublocationInstanceFactory
 {
     public CampaignSublocationInstanceDomain Create(
         SublocationDomain source, Guid campaignId, Guid? LocationInstanceId)
     {
+        var imageKey = imageKeyCreator.Create(source.DmUserId, source.Id, EntityType.Sublocation);
+
+        var imageUrl = imageStorageOperator.GetPublicUrl(imageKey);
         var instanceId = Guid.NewGuid();
         return new()
         {
@@ -21,6 +27,7 @@ public class SublocationInstanceFactory : ISublocationInstanceFactory
             LocationInstanceId = LocationInstanceId,
             Name = source.Name,
             Description = source.Description,
+            ImageUrl = imageUrl,
             ShopItems = source.ShopItems.Select(s => new ShopItemDomain
             {
                 Id = Guid.NewGuid(),

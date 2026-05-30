@@ -28,6 +28,7 @@ export class PlayerLocationDetailComponent implements OnInit, OnDestroy {
   private shellSvc   = inject(PlayerCampaignShellService);
   private hub        = inject(CampaignHubService);
   private paramSub?: Subscription;
+  private hubSubscriptions: Subscription[] = [];
 
   @ViewChild('detailContent')   private detailContentRef!: ElementRef<HTMLElement>;
   @ViewChild('expandBtn')       private expandBtnRef!: ElementRef<HTMLElement>;
@@ -58,17 +59,18 @@ export class PlayerLocationDetailComponent implements OnInit, OnDestroy {
   });
 
   constructor() {
-    effect(() => {
-      const event = this.hub.cardVisibilityChanged();
-      if (!event || event.cardType !== 'location') return;
-      const locationId = untracked(() => this.locationInstanceId());
-      const campaignId = untracked(() => this.campaignId());
-      if (!locationId || !campaignId || event.instanceId !== locationId) return;
-      if (!event.isVisible) {
-        this.transition.quickCover();
-        this.router.navigate(['/player/campaign', campaignId]);
-      }
-    });
+    this.hubSubscriptions.push(
+      this.hub.cardVisibilityChanged$.subscribe(event => {
+        if (!event || event.cardType !== 'location') return;
+        const locationId = untracked(() => this.locationInstanceId());
+        const campaignId = untracked(() => this.campaignId());
+        if (!locationId || !campaignId || event.instanceId !== locationId) return;
+        if (!event.isVisible) {
+          this.transition.quickCover();
+          this.router.navigate(['/player/campaign', campaignId]);
+        }
+      })
+    );
   }
 
   ngOnInit() {
@@ -95,6 +97,7 @@ export class PlayerLocationDetailComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     this.paramSub?.unsubscribe();
+    this.hubSubscriptions.forEach(sub => sub.unsubscribe());
   }
 
   toggleDetail() {

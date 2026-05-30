@@ -21,14 +21,12 @@
 
   <!-- ── Time of day bar ── -->
   @if (campaign(); as camp) {
-    <div class="tod-bar-section">
-      <app-time-of-day-bar
-        [campaignId]="campaignId()"
-        [isDm]="isDm()"
-        [panelTheme]="'dark'"
-        [todInput]="camp.timeOfDay ?? null"
-      />
-    </div>
+    <app-time-of-day-bar
+      [campaignId]="campaignId()"
+      [isDm]="isDm()"
+      [panelTheme]="'dark'"
+      [todInput]="camp.timeOfDay ?? null"
+    />
   }
 
   <!-- ── Page content ── -->

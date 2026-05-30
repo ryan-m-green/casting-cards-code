@@ -1,10 +1,12 @@
-import { Component, OnInit, OnDestroy, signal, inject, ElementRef, effect } from '@angular/core';
+import { Component, OnInit, OnDestroy, signal, inject, ElementRef } from '@angular/core';
+import { Subscription } from 'rxjs';
 import { Router, RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { JournalTitleComponent } from '../../../shared/components/journal-title/journal-title.component';
 import { JournalWatermarkComponent } from '../../../shared/components/journal-watermark/journal-watermark.component';
 import { CampaignJoinInputComponent } from '../../../shared/components/campaign-join-input/campaign-join-input.component';
+import { PortalCardComponent } from '../../../shared/components/portal-card/portal-card.component';
 import { environment } from '../../../../environments/environment';
 import { Campaign } from '../../../shared/models/campaign.model';
 import { PortalTransitionService } from '../../../core/portal-transition.service';
@@ -14,7 +16,7 @@ import { CampaignHubService } from '../../../core/hub/campaign-hub.service';
 @Component({
   selector: 'app-campaign-library',
   standalone: true,
-  imports: [CommonModule, RouterLink, JournalTitleComponent, JournalWatermarkComponent, CampaignJoinInputComponent],
+  imports: [CommonModule, RouterLink, JournalTitleComponent, JournalWatermarkComponent, CampaignJoinInputComponent, PortalCardComponent],
   templateUrl: './campaign-library.component.html',
   styleUrl: './campaign-library.component.scss'
 })
@@ -24,6 +26,7 @@ export class CampaignLibraryComponent implements OnInit, OnDestroy {
   private transition = inject(PortalTransitionService);
   private el         = inject(ElementRef);
   private hub        = inject(CampaignHubService);
+  private hubSubscriptions: Subscription[] = [];
   private auth       = inject(AuthService);
 
   activeTab             = signal<'mine' | 'joined'>('mine');
@@ -36,11 +39,12 @@ export class CampaignLibraryComponent implements OnInit, OnDestroy {
   private isEntering   = false;
 
   constructor() {
-    effect(() => {
-      const event = this.hub.playerRemoved();
-      if (!event) return;
-      this.joinedCampaigns.update(list => list.filter(c => c.id !== event.campaignId));
-    });
+    this.hubSubscriptions.push(
+      this.hub.playerRemoved$.subscribe(event => {
+        if (!event) return;
+        this.joinedCampaigns.update(list => list.filter(c => c.id !== event.campaignId));
+      })
+    );
   }
 
   cardStyle(campaign: Campaign): string {
@@ -62,6 +66,7 @@ export class CampaignLibraryComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     this.hub.disconnect().catch(console.warn);
+    this.hubSubscriptions.forEach(sub => sub.unsubscribe());
   }
 
   private loadJoinedCampaigns() {

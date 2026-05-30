@@ -16,7 +16,7 @@
         @if (wizardStep() === 1) {
           <div class="faction-wizard-panel faction-wizard-panel--active">
             <div class="relationship-list">
-              @for (other of otherFactions(); track other.factionInstanceId) {
+              @for (other of selectableFactions(); track other.factionInstanceId) {
                 <button
                   class="relationship-item"
                   type="button"
@@ -30,7 +30,7 @@
                   }
                 </button>
               }
-              @if (!otherFactions().length) {
+              @if (!selectableFactions().length) {
                 <span class="relationship-empty">No other factions in this campaign.</span>
               }
             </div>

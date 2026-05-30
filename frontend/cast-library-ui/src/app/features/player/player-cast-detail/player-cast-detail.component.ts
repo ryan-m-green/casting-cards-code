@@ -1,4 +1,4 @@
-import { Component, OnInit, signal, computed, inject, ViewChild, ElementRef, effect, untracked } from '@angular/core';
+import { Component, OnInit, OnDestroy, signal, computed, inject, ViewChild, ElementRef, effect, untracked } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
@@ -12,7 +12,7 @@ import { CastCardComponent } from '../../../shared/components/cast-card/cast-car
 import { PlayerCampaignShellComponent } from '../player-campaign-shell/player-campaign-shell.component';
 import { PlayerCampaignShellService } from '../../../core/player-campaign-shell.service';
 import { CampaignHubService } from '../../../core/hub/campaign-hub.service';
-import { catchError, EMPTY } from 'rxjs';
+import { catchError, EMPTY, Subscription } from 'rxjs';
 import { FactionSymbolPickerComponent, FactionSymbolAssignment } from '../../../shared/components/faction-symbol-picker/faction-symbol-picker.component';
 
 @Component({
@@ -22,7 +22,7 @@ import { FactionSymbolPickerComponent, FactionSymbolAssignment } from '../../../
   templateUrl: './player-cast-detail.component.html',
   styleUrl: './player-cast-detail.component.scss'
 })
-export class PlayerCastDetailComponent implements OnInit {
+export class PlayerCastDetailComponent implements OnInit, OnDestroy {
   private route      = inject(ActivatedRoute);
   private router     = inject(Router);
   private http       = inject(HttpClient);
@@ -79,40 +79,50 @@ export class PlayerCastDetailComponent implements OnInit {
   });
 
   fromParty = false;
+  private paramsSub?: Subscription;
+  private hubSubscriptions: Subscription[] = [];
 
   constructor() {
     effect(() => {
-      const event = this.hub.cardVisibilityChanged();
-      if (!event || event.cardType !== 'cast') return;
-      const castId    = untracked(() => this.castInstanceId());
-      const campaignId = untracked(() => this.campaignId());
-      if (!castId || !campaignId) return;
-      if (event.instanceId !== castId) return;
+      const ca = this.cast();
+      if (!ca) return;
+      this.castFactionSymbols.set(ca.factionSymbols ?? []);
+    });
 
-      if (event.isVisible) {
+    this.hubSubscriptions.push(
+      this.hub.cardVisibilityChanged$.subscribe(event => {
+        if (!event || event.cardType !== 'cast') return;
+        const castId    = untracked(() => this.castInstanceId());
+        const campaignId = untracked(() => this.campaignId());
+        if (!castId || !campaignId) return;
+        if (event.instanceId !== castId) return;
+
+        if (event.isVisible) {
+          this.http.get<CampaignCastInstance>(
+            `${environment.apiUrl}/api/campaigns/${campaignId}/casts/${castId}`
+          ).subscribe(ca => this.castOverride.set(ca));
+        } else {
+          this.transition.quickCover();
+          this.router.navigate(['/player/campaign', campaignId]);
+        }
+      })
+    );
+
+    this.hubSubscriptions.push(
+      this.hub.factionRemoved$.subscribe(event => {
+        if (!event) return;
+        const castId     = untracked(() => this.castInstanceId());
+        const campaignId = untracked(() => this.campaignId());
+        if (!castId || !campaignId || event.campaignId !== campaignId) return;
+
         this.http.get<CampaignCastInstance>(
           `${environment.apiUrl}/api/campaigns/${campaignId}/casts/${castId}`
-        ).subscribe(ca => this.castOverride.set(ca));
-      } else {
-        this.transition.quickCover();
-        this.router.navigate(['/player/campaign', campaignId]);
-      }
-    });
-
-    effect(() => {
-      const event = this.hub.factionRemoved();
-      if (!event) return;
-      const castId     = untracked(() => this.castInstanceId());
-      const campaignId = untracked(() => this.campaignId());
-      if (!castId || !campaignId || event.campaignId !== campaignId) return;
-
-      this.http.get<CampaignCastInstance>(
-        `${environment.apiUrl}/api/campaigns/${campaignId}/casts/${castId}`
-      ).subscribe(ca => {
-        this.castOverride.set(ca);
-        this.castFactionSymbols.set(ca.factionSymbols ?? []);
-      });
-    });
+        ).subscribe(ca => {
+          this.castOverride.set(ca);
+          this.castFactionSymbols.set(ca.factionSymbols ?? []);
+        });
+      })
+    );
 
     effect(() => {
       const ca = this.cast();
@@ -135,46 +145,57 @@ export class PlayerCastDetailComponent implements OnInit {
       this.shellService.setTitleContext({
         pageType: 'cast',
         campaignId: this.campaignId(),
+        campaignName: this.campaign()?.name,
         baseRoute: '/player/campaign',
         location: parentLoc,
         sublocation: parentSubLoc,
       });
     });
 
-    effect(() => {
-      const event = this.hub.castTravelled();
-      if (!event || event.castInstanceId !== untracked(() => this.castInstanceId())) return;
-      this.sublocationInstanceId.set(event.toSublocationInstanceId);
-    });
+    this.hubSubscriptions.push(
+      this.hub.castTravelled$.subscribe(event => {
+        if (!event || event.castInstanceId !== untracked(() => this.castInstanceId())) return;
+        this.sublocationInstanceId.set(event.toSublocationInstanceId);
+      })
+    );
   }
 
   ngOnInit() {
     this.transition.hide();
-    const id     = this.route.snapshot.paramMap.get('id')!;
-    const locId  = this.route.snapshot.paramMap.get('sublocationInstanceId')!;
-    const castId = this.route.snapshot.paramMap.get('castInstanceId')!;
-    this.fromParty = this.route.snapshot.queryParamMap.get('from') === 'party';
-    this.campaignId.set(id);
-    this.sublocationInstanceId.set(locId);
-    this.castInstanceId.set(castId);
+    this.paramsSub = this.route.paramMap.subscribe(params => {
+      const id     = params.get('id')!;
+      const locId  = params.get('sublocationInstanceId')!;
+      const castId = params.get('castInstanceId')!;
+      this.fromParty = this.route.snapshot.queryParamMap.get('from') === 'party';
+      this.campaignId.set(id);
+      this.sublocationInstanceId.set(locId);
+      this.castInstanceId.set(castId);
+      this.castOverride.set(null);
+      this.playerNotes.set(null);
 
-    this.http.get<CampaignCastPlayerNotes>(
-      `${environment.apiUrl}/api/campaigns/${id}/cast-player-notes/${castId}`
-    ).pipe(catchError(() => EMPTY)).subscribe(n => this.playerNotes.set(n));
+      this.http.get<CampaignCastPlayerNotes>(
+        `${environment.apiUrl}/api/campaigns/${id}/cast-player-notes/${castId}`
+      ).pipe(catchError(() => EMPTY)).subscribe(n => this.playerNotes.set(n));
 
-    const shellCampaign = this.shell.campaign();
-    const alreadyInShell = shellCampaign?.casts.some(ca => ca.instanceId === castId) ?? false;
-    if (!alreadyInShell) {
-      this.http.get<CampaignCastInstance>(
-        `${environment.apiUrl}/api/campaigns/${id}/casts/${castId}`
-      ).subscribe(ca => {
-        this.castOverride.set(ca);
-        this.castFactionSymbols.set(ca.factionSymbols ?? []);
-      });
-    } else {
-      const ca = this.cast();
-      if (ca) this.castFactionSymbols.set(ca.factionSymbols ?? []);
-    }
+      const shellCampaign = this.shell.campaign();
+      const alreadyInShell = shellCampaign?.casts.some(ca => ca.instanceId === castId) ?? false;
+      if (!alreadyInShell) {
+        this.http.get<CampaignCastInstance>(
+          `${environment.apiUrl}/api/campaigns/${id}/casts/${castId}`
+        ).subscribe(ca => {
+          this.castOverride.set(ca);
+          this.castFactionSymbols.set(ca.factionSymbols ?? []);
+        });
+      } else {
+        const ca = this.cast();
+        if (ca) this.castFactionSymbols.set(ca.factionSymbols ?? []);
+      }
+    });
+  }
+
+  ngOnDestroy() {
+    this.paramsSub?.unsubscribe();
+    this.hubSubscriptions.forEach(sub => sub.unsubscribe());
   }
 
   goToSublocation() {

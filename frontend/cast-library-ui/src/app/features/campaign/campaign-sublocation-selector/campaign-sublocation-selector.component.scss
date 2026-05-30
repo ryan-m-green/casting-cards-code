@@ -4,10 +4,10 @@
 
 .locations-section-label {
   font-family: v.$font-header;
-  font-size: 8px;
+  font-size: 12px;
   letter-spacing: 0.22em;
   text-transform: uppercase;
-  color: v.$color-ext-49;
+  color: v.$color-base-espresso;
   font-weight: 700;
   border-bottom: 0.5px solid v.$color-ext-50;
   padding-bottom: 4px;
@@ -92,7 +92,7 @@
 
 .deck-count {
   font-family: v.$font-header;
-  font-size: 10px;
+  font-size: 12px;
   color: v.$color-ext-276;
   letter-spacing: 0.08em;
   text-align: center;
@@ -148,7 +148,7 @@
 .add-btn {
   width: 150px;
   font-family: v.$font-header;
-  font-size: 10px;
+  font-size: 12px;
   letter-spacing: 0.14em;
   text-transform: uppercase;
   color: v.$color-ext-280;
@@ -183,10 +183,10 @@
 // ── Selected sublocation stack ───────────────────────────────────────────────────
 .sel-header {
   font-family: v.$font-header;
-  font-size: 9px;
+  font-size: 12px;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: v.$color-ext-49;
+  color: v.$color-base-espresso;
   font-weight: 700;
   margin-bottom: 7px;
 }
@@ -293,14 +293,14 @@
 .detail-location-label {
   font-family: v.$font-body;
   font-style: italic;
-  font-size: 10px;
+  font-size: 12px;
   color: v.$color-ext-288;
 }
 
 .confirm-btn {
   margin-left: auto;
   font-family: v.$font-header;
-  font-size: 8px;
+  font-size: 12px;
   letter-spacing: 0.12em;
   text-transform: uppercase;
   color: v.$color-ext-121;
@@ -316,7 +316,7 @@
 
 .detail-desc-text {
   font-family: v.$font-body;
-  font-size: 11px;
+  font-size: 12px;
   color: v.$color-ext-290;
   line-height: 1.5;
   margin: 0;
@@ -325,7 +325,7 @@
 // ── Cast Members ──────────────────────────────────────────────────────────────
 .cast-section-label {
   font-family: v.$font-header;
-  font-size: 9px;
+  font-size: 12px;
   letter-spacing: 0.16em;
   text-transform: uppercase;
   color: v.$color-ext-291;
@@ -355,7 +355,7 @@
 .cast-member-empty {
   font-family: v.$font-body;
   font-style: italic;
-  font-size: 11px;
+  font-size: 12px;
   color: v.$color-ext-295;
   margin: 0 0 10px 0;
 }
@@ -363,7 +363,7 @@
 // ── Inventory ─────────────────────────────────────────────────────────────────
 .inv-section-label {
   font-family: v.$font-header;
-  font-size: 9px;
+  font-size: 12px;
   letter-spacing: 0.16em;
   text-transform: uppercase;
   color: v.$color-ext-291;
@@ -375,7 +375,7 @@
 .inv-label-hint {
   font-family: v.$font-body;
   font-style: italic;
-  font-size: 8px;
+  font-size: 12px;
   letter-spacing: 0;
   text-transform: none;
   color: v.$color-ext-137;
@@ -395,21 +395,21 @@
 
 .inv-item-name {
   font-family: v.$font-body;
-  font-size: 9.5px;
+  font-size: 12px;
   color: v.$color-ext-297;
 }
 
 .inv-item-price {
   font-family: v.$font-body;
   font-style: italic;
-  font-size: 9px;
+  font-size: 12px;
   color: v.$color-ext-120;
 }
 
 .inv-empty {
   font-family: v.$font-body;
   font-style: italic;
-  font-size: 10px;
+  font-size: 12px;
   color: v.$color-ext-137;
   margin: 0 0 8px;
 }
@@ -422,7 +422,7 @@
 
 .inv-custom-label {
   font-family: v.$font-header;
-  font-size: 8px;
+  font-size: 12px;
   letter-spacing: 0.10em;
   text-transform: uppercase;
   color: v.$color-ext-298;
@@ -504,7 +504,7 @@
 }
 
 .notes-dropdown-caret {
-  font-size: 9px;
+  font-size: 12px;
   opacity: 1;
   transition: transform 0.15s;
   margin-left: 3px;
@@ -565,7 +565,7 @@
   align-items: center;
   gap: 4px;
   font-family: v.$font-header;
-  font-size: 8px;
+  font-size: 12px;
   letter-spacing: 0.06em;
   color: v.$color-ext-312;
   border: 1px dashed v.$color-ext-139;
@@ -581,7 +581,7 @@
 .add-casts-btn {
   margin-left: auto;
   font-family: v.$font-header;
-  font-size: 8px;
+  font-size: 12px;
   letter-spacing: 0.12em;
   text-transform: uppercase;
   color: v.$color-ext-121;
@@ -609,7 +609,7 @@
 
 .keyword-chip-readonly {
   font-family: v.$font-body;
-  font-size: 10px;
+  font-size: 12px;
   color: v.$color-ext-315;
   background: v.$color-ext-283;
   border: 1px solid v.$color-ext-316;

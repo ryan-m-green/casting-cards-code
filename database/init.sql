@@ -499,23 +499,42 @@ CREATE INDEX IF NOT EXISTS idx_location_pol_notes_campaign ON location_political
 CREATE INDEX IF NOT EXISTS idx_location_pol_notes_location ON location_political_notes(location_instance_id);
 
 -- ─── Campaign Storyline ───────────────────────────────────────────────────────
--- DM story scene entries per campaign.
+-- DM story scene entries per campaign (active only).
 CREATE TABLE IF NOT EXISTS campaign_storyline (
     id                  UUID         PRIMARY KEY DEFAULT gen_random_uuid(),
     campaign_id         UUID         NOT NULL REFERENCES campaigns(id) ON DELETE CASCADE,
     title               VARCHAR(200) NOT NULL,
     body                TEXT         NOT NULL CHECK (char_length(body) <= 50000),
     sort_order          INT          NOT NULL DEFAULT 0,
-    linked_entity_id    UUID,
-    linked_entity_type  VARCHAR(50),
+    linked_entities     JSONB        NOT NULL DEFAULT '[]'::jsonb,
     file_path           VARCHAR(500),
-    tod_position_percent DECIMAL(5,2),
     visible_to_players  BOOLEAN      NOT NULL DEFAULT FALSE,
     created_at          TIMESTAMPTZ  NOT NULL DEFAULT NOW(),
     updated_at          TIMESTAMPTZ  NOT NULL DEFAULT NOW()
 );
 
 CREATE INDEX IF NOT EXISTS idx_campaign_storyline_campaign ON campaign_storyline(campaign_id);
+
+-- ─── Campaign Storyline Archived ───────────────────────────────────────────────
+-- Archived storyline entries for campaign chronicles (historical read-only).
+CREATE TABLE IF NOT EXISTS campaign_storyline_archived (
+    id                  UUID         PRIMARY KEY DEFAULT gen_random_uuid(),
+    campaign_id         UUID         NOT NULL REFERENCES campaigns(id) ON DELETE CASCADE,
+    title               VARCHAR(200) NOT NULL,
+    body                TEXT         NOT NULL CHECK (char_length(body) <= 50000),
+    sort_order          INT          NOT NULL DEFAULT 0,
+    linked_entities     JSONB        NOT NULL DEFAULT '[]'::jsonb,
+    file_path           VARCHAR(500),
+    tod_slice_name      VARCHAR(100),
+    in_game_day         INT          NOT NULL CHECK (in_game_day > 0),
+    visible_to_players  BOOLEAN      NOT NULL DEFAULT FALSE,
+    archived_at         TIMESTAMPTZ  NOT NULL DEFAULT NOW(),
+    created_at          TIMESTAMPTZ  NOT NULL DEFAULT NOW(),
+    updated_at          TIMESTAMPTZ  NOT NULL DEFAULT NOW()
+);
+
+CREATE INDEX IF NOT EXISTS idx_campaign_storyline_archived_campaign ON campaign_storyline_archived(campaign_id);
+CREATE INDEX IF NOT EXISTS idx_campaign_storyline_archived_day ON campaign_storyline_archived(in_game_day);
 
 -- ─── Campaign Time of Day ─────────────────────────────────────────────────────
 -- Tracks day/night cycle configuration per campaign.

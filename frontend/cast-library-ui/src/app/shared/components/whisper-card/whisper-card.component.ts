@@ -13,8 +13,7 @@ export class WhisperCardComponent {
   @Input() recipient: string = '';
   @Input() portalColor: string = '#6e28d0';
   @Input() dismissable: boolean = false;
-  @Output() dismissed   = new EventEmitter<void>();
   @Output() goToSecrets = new EventEmitter<void>();
 
-  dismiss() { this.dismissed.emit(); }
+  dismiss() { }
 }

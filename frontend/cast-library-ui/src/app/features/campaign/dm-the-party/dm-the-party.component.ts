@@ -1,4 +1,4 @@
-import { Component, OnInit, signal, computed, inject } from '@angular/core';
+import { Component, OnInit, signal, computed, inject, viewChild, ElementRef } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CommonModule, DatePipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -146,6 +146,7 @@ export class DmThePartyComponent implements OnInit {
   goldSaving           = signal(false);
   currencyDropdownOpen = signal(false);
   readonly currencies: Currency[] = ['cp', 'sp', 'ep', 'gp', 'pp'];
+  goldAmountInput      = viewChild.required<ElementRef<HTMLInputElement>>('goldAmountInput');
 
   // ── Condition modal ───────────────────────────────────────────────────────────
   condModalCard = signal<PlayerCardWithDetails | null>(null);
@@ -206,6 +207,9 @@ export class DmThePartyComponent implements OnInit {
     this.goldNote.set('');
     this.currencyDropdownOpen.set(false);
     this.goldModalOpen.set(true);
+    setTimeout(() => {
+      this.goldAmountInput().nativeElement.focus();
+    });
   }
 
   awardGold() {

@@ -65,13 +65,13 @@
   padding: 4px;
   background: linear-gradient(
     145deg,
-    v.$color-loc-green-1 0%, v.$color-loc-green-2 15%, v.$color-loc-green-3 40%,
-    v.$color-loc-green-4 55%, v.$color-loc-green-5 70%, v.$color-loc-green-6 85%, v.$color-loc-green-7 100%
+    v.$color-base-yellow-green 0%, v.$color-base-mid-yellow-green 15%, v.$color-base-dark-yellow-green 40%,
+    v.$color-base-green-6 55%, v.$color-base-green-7 70%, v.$color-base-green-8 85%, v.$color-base-green-9 100%
   );
   box-shadow:
-    0 0 0 1px v.$color-dark-frame,
+    0 0 0 1px v.$color-base-black-7,
     0 6px 22px v.$color-shadow-dark,
-    inset 0 1px 0 v.$color-loc-frame-inset;
+    inset 0 1px 0 v.$color-cast-green-16;
 }
 
 // ── Front Inner ───────────────────────────────────────────────────────────────
@@ -83,7 +83,7 @@
   overflow: hidden;
   display: flex;
   flex-direction: column;
-  background: linear-gradient(160deg, v.$color-loc-bg-light-1 0%, v.$color-loc-bg-light-2 50%, v.$color-loc-bg-light-3 100%);
+  background: linear-gradient(160deg, v.$color-base-white-4 0%, v.$color-base-loc-sage 50%, v.$color-base-green-13 100%);
 
   &::before {
     content: '';
@@ -115,8 +115,8 @@
   padding: 6px 8px 5px;
   position: relative;
   flex-shrink: 0;
-  background: linear-gradient(180deg, v.$color-loc-banner-dark 0%, v.$color-loc-banner-mid 100%);
-  border-bottom: 1.5px solid v.$color-loc-green-3;
+  background: linear-gradient(180deg, v.$color-base-green-11 0%, v.$color-base-green-12 100%);
+  border-bottom: 1.5px solid v.$color-base-dark-yellow-green;
 
   &::after {
     content: '';
@@ -125,7 +125,7 @@
     left: 0;
     right: 0;
     height: 1.5px;
-    background: linear-gradient(90deg, transparent, v.$color-loc-accent-glow, transparent);
+    background: linear-gradient(90deg, transparent, v.$color-cast-green-15, transparent);
   }
 }
 
@@ -135,7 +135,7 @@
   font-size: 8px;
   letter-spacing: 0.03em;
   line-height: 1.2;
-  color: v.$color-loc-green-1;
+  color: v.$color-base-yellow-green;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -146,7 +146,7 @@
   font-family: 'Cinzel', serif;
   font-size: 6px;
   letter-spacing: 0.12em;
-  color: v.$color-loc-green-8;
+  color: v.$color-base-green-10;
   margin-top: 1px;
   opacity: 0.8;
   white-space: nowrap;
@@ -166,7 +166,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(160deg, v.$color-loc-bg-light-3, v.$color-loc-portrait-2, v.$color-loc-portrait-3);
+  background: linear-gradient(160deg, v.$color-base-green-13, v.$color-base-loc-sage, v.$color-base-green-14);
 }
 
 .loc-portrait-img {
@@ -228,8 +228,8 @@
 .loc-flavor-text {
   font-family: 'IM Fell English', serif;
   font-style: italic;
-  font-size: 6.5px;
-  color: v.$color-text-dark;
+  font-size: 9px;
+  color: v.$color-base-brown-16;
   line-height: 1.45;
   opacity: 0.8;
   display: -webkit-box;
@@ -247,8 +247,8 @@
   flex-shrink: 0;
   margin-top: 2px;
   position: relative;
-  background: linear-gradient(180deg, v.$color-loc-banner-mid 0%, v.$color-loc-banner-dark 100%);
-  border-top: 1.5px solid v.$color-loc-green-3;
+  background: linear-gradient(180deg, v.$color-base-green-12 0%, v.$color-base-green-11 100%);
+  border-top: 1.5px solid v.$color-base-dark-yellow-green;
   cursor: default;
   transition: filter 0.2s;
 
@@ -264,7 +264,7 @@
   font-size: 5px;
   letter-spacing: 0.15em;
   text-transform: uppercase;
-  color: v.$color-loc-green-1;
+  color: v.$color-base-yellow-green;
   position: absolute;
   left: 50%;
   transform: translateX(-50%);
@@ -285,7 +285,7 @@
 .loc-pip {
   width: 3px;
   height: 3px;
-  background: v.$color-loc-green-2;
+  background: v.$color-base-mid-yellow-green;
   transform: rotate(45deg);
   opacity: 0.7;
 }
@@ -366,7 +366,7 @@
   align-items: center;
   position: relative;
   overflow: hidden;
-  background: linear-gradient(160deg, v.$color-loc-back-dark-1 0%, v.$color-loc-back-dark-2 100%);
+  background: linear-gradient(160deg, v.$color-base-black-9 0%, v.$color-base-black-10 100%);
 
   &::before {
     content: '';
@@ -382,7 +382,7 @@
 .loc-back-border {
   position: absolute;
   inset: 6px;
-  border: 1px solid v.$color-loc-back-border;
+  border: 1px solid v.$color-cast-green-17;
   border-radius: 3px;
   pointer-events: none;
 }
@@ -390,7 +390,7 @@
 .loc-back-border2 {
   position: absolute;
   inset: 9px;
-  border: 1px solid v.$color-loc-back-border-2;
+  border: 1px solid v.$color-cast-green-18;
   border-radius: 2px;
   pointer-events: none;
 }
@@ -407,8 +407,8 @@
   font-size: 8px;
   letter-spacing: 0.05em;
   text-align: center;
-  color: v.$color-loc-green-1;
-  text-shadow: 0 0 12px v.$color-loc-green-1;
+  color: v.$color-base-yellow-green;
+  text-shadow: 0 0 12px v.$color-base-yellow-green;
   margin-top: 6px;
   padding: 0 12px;
   max-width: 130px;
@@ -423,7 +423,7 @@
   width: 75%;
   height: 1px;
   margin: 5px auto;
-  background: linear-gradient(90deg, transparent, v.$color-loc-green-1, transparent);
+  background: linear-gradient(90deg, transparent, v.$color-base-yellow-green, transparent);
   opacity: 0.5;
   position: relative;
   z-index: 2;
@@ -458,7 +458,7 @@
 
 .loc-stat-key {
   font-family: 'Cinzel', serif;
-  font-size: 6px;
+  font-size: 9px;
   letter-spacing: 0.2em;
   text-transform: uppercase;
   color: v.$color-loc-stat-key;
@@ -468,7 +468,7 @@
 .loc-stat-val {
   font-family: 'IM Fell English', serif;
   font-style: italic;
-  font-size: 9px;
+  font-size: 12px;
   line-height: 1.2;
   color: v.$color-loc-stat-val;
 }
@@ -496,17 +496,17 @@
   transition: all 0.2s;
 
   &--gold {
-    background: linear-gradient(180deg, v.$color-loc-btn-green-1, v.$color-loc-btn-green-2);
-    color: v.$color-loc-banner-dark;
+    background: linear-gradient(180deg, v.$color-base-yellow-green, v.$color-base-mid-yellow-green);
+    color: v.$color-base-green-11;
     box-shadow: 0 2px 4px v.$color-shadow-light;
     &:hover { background: linear-gradient(180deg, v.$color-loc-btn-green-hover-1, v.$color-loc-btn-green-hover-2); transform: translateY(-1px); }
   }
 
   &--red {
-    background: linear-gradient(180deg, v.$color-loc-btn-red-1, v.$color-loc-btn-red-2);
+    background: linear-gradient(180deg, v.$color-base-btn-red, v.$color-base-btn-red-dark);
     color: v.$color-ext-647;
     box-shadow: 0 2px 4px v.$color-shadow-light;
-    &:hover { background: linear-gradient(180deg, v.$color-loc-btn-red-hover-1, v.$color-loc-btn-red-hover-2); transform: translateY(-1px); }
+    &:hover { background: linear-gradient(180deg, v.$color-base-btn-red-hover, v.$color-base-btn-red-hover-dark); transform: translateY(-1px); }
   }
 }
 

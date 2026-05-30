@@ -111,7 +111,7 @@
 
 .web-label {
   font-family: v.$font-body;
-  font-size: 11px;
+  font-size: 12px;
   font-style: italic;
   text-anchor: middle;
   dominant-baseline: middle;
@@ -154,7 +154,7 @@
 
 .web-node-name {
   font-family: v.$font-header;
-  font-size: 0.72rem;
+  font-size: 12px;
   font-weight: 600;
   color: v.$color-ext-317;
   white-space: nowrap;
@@ -164,7 +164,7 @@
 }
 
 .web-node-sub {
-  font-size: 0.7rem;
+  font-size: 12px;
   color: v.$color-ext-376;
   font-style: italic;
   white-space: nowrap;
@@ -175,7 +175,7 @@
 
 .web-node-sentiment {
   font-family: v.$font-header;
-  font-size: 0.65rem;
+  font-size: 12px;
   font-weight: 600;
   letter-spacing: 0.02em;
   color: v.$color-ext-376;

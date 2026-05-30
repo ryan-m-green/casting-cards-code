@@ -16,7 +16,7 @@
 .void-canvas {
   width: 100%;
   min-height: 100%;
-  background: v.$color-black;
+  background: v.$color-base-black;
   position: relative;
   overflow-y: auto;
   overflow-x: hidden;
@@ -34,17 +34,17 @@
 @keyframes portal-inward-breathe {
   0%, 100% {
     box-shadow:
-      inset 0 0 0    1px color-mix(in srgb, var(--portal-color, v.$campaign-portal-primary) 40%, white 60%),
-      inset 0 0  6px  2px color-mix(in srgb, var(--portal-color, v.$campaign-portal-primary), transparent 28%),
-      inset 0 0 14px  4px color-mix(in srgb, var(--portal-color, v.$campaign-portal-primary), transparent 52%),
-      inset 0 0 25px  8px color-mix(in srgb, var(--portal-color, v.$campaign-portal-primary), transparent 76%);
+      inset 0 0 0    1px color-mix(in srgb, var(--portal-color, v.$color-base-purple-primary) 40%, white 60%),
+      inset 0 0  6px  2px color-mix(in srgb, var(--portal-color, v.$color-base-purple-primary), transparent 28%),
+      inset 0 0 14px  4px color-mix(in srgb, var(--portal-color, v.$color-base-purple-primary), transparent 52%),
+      inset 0 0 25px  8px color-mix(in srgb, var(--portal-color, v.$color-base-purple-primary), transparent 76%);
   }
   50% {
     box-shadow:
-      inset 0 0 0    1px color-mix(in srgb, var(--portal-color, v.$campaign-portal-primary) 25%, white 75%),
-      inset 0 0  9px  3px color-mix(in srgb, var(--portal-color, v.$campaign-portal-primary), transparent 12%),
-      inset 0 0 19px  6px color-mix(in srgb, var(--portal-color, v.$campaign-portal-primary), transparent 36%),
-      inset 0 0 35px 12px color-mix(in srgb, var(--portal-color, v.$campaign-portal-primary), transparent 64%);
+      inset 0 0 0    1px color-mix(in srgb, var(--portal-color, v.$color-base-purple-primary) 25%, white 75%),
+      inset 0 0  9px  3px color-mix(in srgb, var(--portal-color, v.$color-base-purple-primary), transparent 12%),
+      inset 0 0 19px  6px color-mix(in srgb, var(--portal-color, v.$color-base-purple-primary), transparent 36%),
+      inset 0 0 35px 12px color-mix(in srgb, var(--portal-color, v.$color-base-purple-primary), transparent 64%);
   }
 }
 
@@ -69,14 +69,14 @@
   font-size: 9px;
   letter-spacing: 0.18em;
   text-transform: uppercase;
-  color: color-mix(in srgb, var(--portal-color, v.$campaign-portal-primary), white 70%);
+  color: color-mix(in srgb, var(--portal-color, v.$color-base-purple-primary), white 70%);
   background: none;
   border: none;
   cursor: pointer;
   transition: color 0.2s ease;
   white-space: nowrap;
 
-  &:hover { color: color-mix(in srgb, var(--portal-color, v.$campaign-portal-primary), white 90%); }
+  &:hover { color: color-mix(in srgb, var(--portal-color, v.$color-base-purple-primary), white 90%); }
 }
 
 .void-title {
@@ -90,8 +90,8 @@
   text-transform: uppercase;
   color: v.$color-ext-160;
   text-shadow:
-    0 0 20px color-mix(in srgb, var(--portal-color, v.$campaign-portal-primary), white 35%),
-    0 0 50px color-mix(in srgb, var(--portal-color, v.$campaign-portal-primary), transparent 38%),
+    0 0 20px color-mix(in srgb, var(--portal-color, v.$color-base-purple-primary), white 35%),
+    0 0 50px color-mix(in srgb, var(--portal-color, v.$color-base-purple-primary), transparent 38%),
     0 1px 3px v.$color-ext-23;
 }
 
@@ -101,7 +101,7 @@
   align-items: center;
   gap: 20px;
   padding: 16px 32px 20px;
-  border-bottom: 1px solid rgba(v.$memory-search-accent, 0.22);
+  border-bottom: 1px solid rgba(v.$color-arcane-border, 0.22);
 }
 
 .char-portrait {
@@ -315,7 +315,7 @@
   background: v.$color-ext-569;
   border: 1px solid v.$color-ext-570;
   border-radius: 20px;
-  color: v.$color-ext-571;
+  color: v.$color-base-white;
 }
 
 /* ── Tabs bar ────────────────────────────────────────────────── */
@@ -396,7 +396,7 @@
 /* ── Add form panel ──────────────────────────────────────────── */
 .add-form-panel {
   background: v.$campaign-portal-bg-dark;
-  border: 1px solid color-mix(in srgb, var(--portal-color, v.$campaign-portal-primary) 55%, transparent 45%);
+  border: 1px solid color-mix(in srgb, var(--portal-color, v.$color-base-purple-primary) 55%, transparent 45%);
   border-radius: 12px;
   box-shadow: 0 0 40px v.$campaign-portal-bg-placeholder, 0 16px 48px v.$color-ext-155;
   padding: 20px 20px 18px;
@@ -524,7 +524,7 @@
 
 .memory-search-input {
   background: v.$campaign-portal-bg-medium;
-  border: 1px solid rgba(v.$memory-search-accent, 0.22);
+  border: 1px solid rgba(v.$color-arcane-border, 0.22);
   border-radius: 4px;
   color: v.$campaign-portal-text-bright;
   font-family: v.$font-body;
@@ -534,12 +534,12 @@
   width: 100%;
   box-sizing: border-box;
 
-  &::placeholder { color: rgba(v.$memory-search-accent, 0.30); }
+  &::placeholder { color: rgba(v.$color-arcane-border, 0.30); }
 
   &:focus {
-    outline: 2px solid rgba(v.$memory-search-accent, 0.60);
+    outline: 2px solid rgba(v.$color-arcane-border, 0.60);
     outline-offset: 1px;
-    border-color: rgba(v.$memory-search-accent, 0.50);
+    border-color: rgba(v.$color-arcane-border, 0.50);
   }
 }
 
@@ -554,13 +554,13 @@
   display: flex;
   gap: 14px;
   align-items: flex-start;
-  background: v.$color-ext-362;
-  border: 1px solid rgba(v.$memory-search-accent, 0.22);
+  background: v.$color-base-mist-blue2;
+  border: 1px solid rgba(v.$color-arcane-border, 0.22);
   border-radius: 8px;
   padding: 14px 16px;
   transition: border-color 0.18s ease;
 
-  &:hover { border-color: rgba(v.$memory-search-accent, 0.50); }
+  &:hover { border-color: rgba(v.$color-arcane-border, 0.50); }
 }
 
 .memory-entry--key_event .memory-icon { color: v.$color-ext-474; }
@@ -635,7 +635,7 @@
 
 .secrets-modal {
   background: v.$campaign-portal-bg-dark;
-  border: 1px solid color-mix(in srgb, var(--portal-color, v.$campaign-portal-primary) 55%, transparent 45%);
+  border: 1px solid color-mix(in srgb, var(--portal-color, v.$color-base-purple-primary) 55%, transparent 45%);
   border-radius: 12px;
   width: 100%;
   max-width: 480px;
@@ -814,7 +814,7 @@
 .cast-card {
   display: flex;
   gap: 14px;
-  background: v.$color-ext-362;
+  background: v.$color-base-mist-blue2;
   border: 1px solid v.$campaign-portal-border-light;
   border-radius: 8px;
   padding: 14px 16px;
@@ -898,7 +898,7 @@
 .impression-prompt {
   font-family: v.$font-body;
   font-size: 12px;
-  color: v.$color-ext-368;
+  color: v.$color-base-mist-blue8;
 }
 
 .impression-input {
@@ -1030,7 +1030,7 @@
 }
 
 .secret-entry {
-  background: v.$color-ext-362;
+  background: v.$color-base-mist-blue2;
   border: 1px solid v.$campaign-portal-bg-placeholder;
   border-radius: 8px;
   padding: 16px 18px;
@@ -1083,14 +1083,14 @@
   flex-shrink: 0;
   background: none;
   border: none;
-  color: v.$color-ext-364;
+  color: v.$color-base-mist-blue4;
   cursor: pointer;
   font-size: 11px;
   padding: 4px 6px;
   border-radius: 4px;
   transition: color 0.15s ease, background 0.15s ease;
 
-  &:hover { color: v.$color-ext-356; background: v.$color-ext-365; }
+  &:hover { color: v.$color-ext-356; background: v.$color-base-mist-blue5; }
 }
 
 .delete-btn--dagger {

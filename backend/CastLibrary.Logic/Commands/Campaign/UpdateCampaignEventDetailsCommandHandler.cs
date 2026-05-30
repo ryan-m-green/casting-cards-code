@@ -1,3 +1,4 @@
+using CastLibrary.Repository.Mappers;
 using CastLibrary.Repository.Repositories.Update;
 using CastLibrary.Shared.Requests;
 
@@ -9,16 +10,18 @@ public interface IUpdateCampaignEventDetailsCommandHandler
 }
 
 public class UpdateCampaignEventDetailsCommandHandler(
-    ICampaignEventUpdateRepository repository) : IUpdateCampaignEventDetailsCommandHandler
+    IStorylineUpdateRepository repository) : IUpdateCampaignEventDetailsCommandHandler
 {
     public Task HandleAsync(UpdateCampaignEventDetailsCommand command)
-        => repository.UpdateDetailsAsync(
+    {
+        var linkedEntities = CampaignEventEntityMapper.ToJson(command.Request.LinkedEntities);
+        
+        return repository.UpdateDetailsAsync(
             command.EventId,
             command.Request.Title.Trim(),
             command.Request.Body,
-            command.Request.LinkedEntityType,
-            command.Request.LinkedEntityId,
-            command.Request.TodPositionPercent);
+            linkedEntities);
+    }
 }
 
 public class UpdateCampaignEventDetailsCommand

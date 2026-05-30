@@ -357,7 +357,7 @@ replaced with the '.' operator. Find more at https://v21.angular.dev/extended-di
 [39m[22m
 [1m[31m[31mX [41;31m[[41;97mERROR[41;31m][0m [1mUndefined variable.
     Γò╖
-179 Γöé   border-bottom: 1px solid rgba($location-blue, 0.12);
+179 Γöé   border-bottom: 1px solid rgba($color-lib-location-1, 0.12);
     Γöé                                 ^^^^^^^^^^^^^^
     Γò╡
   src\app\features\campaign\campaign-location-detail\campaign-location-detail.component.scss 179:33  root stylesheet[0m [1m[35m[plugin angular-sass][0m
@@ -365,7 +365,7 @@ replaced with the '.' operator. Find more at https://v21.angular.dev/extended-di
 
 [31mX [41;31m[[41;97mERROR[41;31m][0m [1mUndefined variable.
     Γò╖
-170 Γöé   border-bottom: 1px solid rgba($subLoc-olive, 0.12);
+170 Γöé   border-bottom: 1px solid rgba($color-lib-sublocation-1, 0.12);
     Γöé                                 ^^^^^^^^^^^^^
     Γò╡
   src\app\features\campaign\campaign-sublocation-detail\campaign-sublocation-detail.component.scss 170:33  root stylesheet[0m [1m[35m[plugin angular-sass][0m
@@ -373,7 +373,7 @@ replaced with the '.' operator. Find more at https://v21.angular.dev/extended-di
 
 [31mX [41;31m[[41;97mERROR[41;31m][0m [1mUndefined variable.
     Γò╖
-143 Γöé   color: rgba($cast-gold, 0.95);
+143 Γöé   color: rgba($color-base-cast-tan, 0.95);
     Γöé               ^^^^^^^^^^
     Γò╡
   src\app\features\player\player-cast-detail\player-cast-detail.component.scss 143:15  root stylesheet[0m [1m[35m[plugin angular-sass][0m
@@ -381,7 +381,7 @@ replaced with the '.' operator. Find more at https://v21.angular.dev/extended-di
 
 [31mX [41;31m[[41;97mERROR[41;31m][0m [1mUndefined variable.
    Γò╖
-60 Γöé   background: rgba($cast-gold, 0.08);
+60 Γöé   background: rgba($color-base-cast-tan, 0.08);
    Γöé                    ^^^^^^^^^^
    Γò╡
   src\app\features\player\player-cast-notes\player-cast-notes.component.scss 60:20  root stylesheet[0m [1m[35m[plugin angular-sass][0m
@@ -389,7 +389,7 @@ replaced with the '.' operator. Find more at https://v21.angular.dev/extended-di
 
 [31mX [41;31m[[41;97mERROR[41;31m][0m [1mUndefined variable.
     Γò╖
-154 Γöé   border-bottom: 1px solid rgba($subLoc-olive, 0.12);
+154 Γöé   border-bottom: 1px solid rgba($color-lib-sublocation-1, 0.12);
     Γöé                                 ^^^^^^^^^^^^^
     Γò╡
   src\app\features\player\player-sublocation-detail\player-sublocation-detail.component.scss 154:33  root stylesheet[0m [1m[35m[plugin angular-sass][0m
@@ -397,7 +397,7 @@ replaced with the '.' operator. Find more at https://v21.angular.dev/extended-di
 
 [31mX [41;31m[[41;97mERROR[41;31m][0m [1mUndefined variable.
     Γò╖
-141 Γöé   color: rgba($location-blue, 0.82);
+141 Γöé   color: rgba($color-lib-location-1, 0.82);
     Γöé               ^^^^^^^^^^^^^^
     Γò╡
   src\app\features\campaign\campaign-location-detail\location-detail-panel\location-detail-panel.component.scss 141:15  root stylesheet[0m [1m[35m[plugin angular-sass][0m
@@ -405,7 +405,7 @@ replaced with the '.' operator. Find more at https://v21.angular.dev/extended-di
 
 [31mX [41;31m[[41;97mERROR[41;31m][0m [1mUndefined variable.
     Γò╖
-102 Γöé     outline: 2px solid rgba(v.$accent, 0.80);
+102 Γöé     outline: 2px solid rgba(v.$color-arcane-border, 0.80);
     Γöé                             ^^^^^^^
     Γò╡
   src\app\features\player\player-location-political-notes\player-location-political-notes.component.scss 102:29  root stylesheet[0m [1m[35m[plugin angular-sass][0m
