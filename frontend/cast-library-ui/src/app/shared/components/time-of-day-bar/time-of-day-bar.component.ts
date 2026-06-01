@@ -20,11 +20,12 @@ import { environment } from '../../../../environments/environment';
 import { TimeOfDay, TimeOfDaySlice } from '../../models/time-of-day.model';
 import { CampaignHubService } from '../../../core/hub/campaign-hub.service';
 import { LockIconComponent } from '../lock-icon/lock-icon.component';
+import { ConfirmDialogComponent } from '../confirm-dialog/confirm-dialog.component';
 
 @Component({
   selector: 'app-time-of-day-bar',
   standalone: true,
-  imports: [CommonModule, FormsModule, LockIconComponent],
+  imports: [CommonModule, FormsModule, LockIconComponent, ConfirmDialogComponent],
   templateUrl: './time-of-day-bar.component.html',
   styleUrl: './time-of-day-bar.component.scss',
 })
@@ -53,6 +54,7 @@ export class TimeOfDayBarComponent implements OnInit, OnChanges, OnDestroy {
   dmNotesEdit     = signal<Record<string, string>>({});
   playerNotesEdit = signal<Record<string, string>>({});
   saving          = signal<string | null>(null);
+  showAdvanceConfirm = signal(false);
 
   private shimmerTimer?: ReturnType<typeof setTimeout>;
   private playerNoteTimers: Record<string, ReturnType<typeof setTimeout>> = {};
@@ -244,32 +246,23 @@ export class TimeOfDayBarComponent implements OnInit, OnChanges, OnDestroy {
   private triggerDayActionIfAtEdge() {
     if (this.isLocked() || (!this.isDm && !this.allowInteraction)) return;
     const pct = this.cursorPercent();
-    if (pct === 0) {
-      this.onRewindDay();
-    } else if (pct === 100) {
-      this.onAdvanceDay();
+    if (pct === 100) {
+      this.requestAdvanceDay();
     }
   }
 
-  onRewindDay() {
-    if (this.isLocked() || (!this.isDm && !this.allowInteraction) || this.daysPassed() === 0) return;
-    if (this.previewOnly) {
-      this.daysPassed.update(d => Math.max(0, d - 1));
-      return;
-    }
-    this.http.patch(
-      `${environment.apiUrl}/api/campaigns/${this.campaignId}/time-of-day/rewind-day`,
-      {}
-    ).subscribe();
-  }
-
-  onRewindDayTouch(event: TouchEvent) {
-    event.preventDefault();
-    this.onRewindDay();
-  }
-
-  onAdvanceDay() {
+  requestAdvanceDay() {
     if (this.isLocked() || (!this.isDm && !this.allowInteraction)) return;
+    this.showAdvanceConfirm.set(true);
+  }
+
+  cancelAdvanceDay() {
+    this.showAdvanceConfirm.set(false);
+  }
+
+  confirmAdvanceDay() {
+    if (this.isLocked() || (!this.isDm && !this.allowInteraction)) return;
+    this.showAdvanceConfirm.set(false);
     if (this.previewOnly) {
       this.daysPassed.update(d => d + 1);
       return;
@@ -278,6 +271,10 @@ export class TimeOfDayBarComponent implements OnInit, OnChanges, OnDestroy {
       `${environment.apiUrl}/api/campaigns/${this.campaignId}/time-of-day/advance-day`,
       {}
     ).subscribe();
+  }
+
+  onAdvanceDay() {
+    this.requestAdvanceDay();
   }
 
   onAdvanceDayTouch(event: TouchEvent) {

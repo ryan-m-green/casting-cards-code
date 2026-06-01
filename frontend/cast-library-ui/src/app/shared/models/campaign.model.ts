@@ -36,6 +36,10 @@ export interface CampaignPlayer {
   userId: string;
   displayName: string;
   email: string;
+  playerCardName: string;
+  playerCardRace: string;
+  playerCardClass: string;
+  imageUrl: string;
 }
 
 export interface CampaignInviteCode {

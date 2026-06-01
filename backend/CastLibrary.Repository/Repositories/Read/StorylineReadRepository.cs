@@ -32,6 +32,7 @@ public class StorylineReadRepository(
                      linked_entities AS LinkedEntities,
                      file_path       AS FilePath,
                      visible_to_players AS VisibleToPlayers,
+                     scene_type      AS SceneType,
                      created_at      AS CreatedAt,
                      updated_at      AS UpdatedAt
               FROM campaign_storyline
@@ -61,6 +62,7 @@ public class StorylineReadRepository(
                      linked_entities AS LinkedEntities,
                      file_path       AS FilePath,
                      visible_to_players AS VisibleToPlayers,
+                     scene_type      AS SceneType,
                      created_at      AS CreatedAt,
                      updated_at      AS UpdatedAt
               FROM campaign_storyline
@@ -91,6 +93,7 @@ public class StorylineReadRepository(
                      linked_entities AS LinkedEntities,
                      file_path       AS FilePath,
                      visible_to_players AS VisibleToPlayers,
+                     scene_type      AS SceneType,
                      created_at      AS CreatedAt,
                      updated_at      AS UpdatedAt
               FROM campaign_storyline

@@ -21,7 +21,7 @@ public class GetSublocationLibraryQueryHandler(ISublocationReadRepository subloc
         var options = new ParallelOptions() { MaxDegreeOfParallelism = 4 };
         Parallel.ForEach(sublocations, options, sublocation =>
         {
-            var imageKey = imageKeyCreator.Create(sublocation.DmUserId, sublocation.Id, EntityType.Sublocation);
+            var imageKey = imageKeyCreator.Create(sublocation.DmUserId, Guid.Empty, sublocation.Id, EntityType.Sublocation);
             sublocation.ImageUrl = imageStorageOperator.GetPublicUrl(imageKey);
         });
         return sublocations;

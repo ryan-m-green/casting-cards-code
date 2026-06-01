@@ -353,7 +353,7 @@ public class ImportLibraryCommandHandler(
         if (string.IsNullOrEmpty(imageFileName) || !images.TryGetValue(imageFileName, out var stream))
             return;
 
-        var key = imageKeyCreator.Create(dmUserId, entityId, entityType);
+        var key = imageKeyCreator.Create(dmUserId, Guid.Empty, entityId, entityType);
         try
         {
             await imageStorage.SaveAsync(key, stream, "image/png");

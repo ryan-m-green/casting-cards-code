@@ -31,14 +31,13 @@ public class CampaignEventArchivedReadRepository(
                      linked_entities AS LinkedEntities,
                      file_path       AS FilePath,
                      tod_slice_name  AS TodSliceName,
-                     in_game_day     AS InGameDay,
-                     visible_to_players AS VisibleToPlayers,
+                     in_game_days    AS InGameDays,
                      archived_at     AS ArchivedAt,
                      created_at      AS CreatedAt,
                      updated_at      AS UpdatedAt
               FROM campaign_storyline_archived
               WHERE campaign_id = @CampaignId
-              ORDER BY in_game_day ASC, sort_order ASC, created_at ASC";
+              ORDER BY sort_order ASC, created_at ASC";
 
         logging.LogDbOperation(correlation.TraceId, spanId, "SELECT", "campaign_storyline_archived", @params);
 
@@ -63,14 +62,13 @@ public class CampaignEventArchivedReadRepository(
                      linked_entities AS LinkedEntities,
                      file_path       AS FilePath,
                      tod_slice_name  AS TodSliceName,
-                     in_game_day     AS InGameDay,
-                     visible_to_players AS VisibleToPlayers,
+                     in_game_days    AS InGameDays,
                      archived_at     AS ArchivedAt,
                      created_at      AS CreatedAt,
                      updated_at      AS UpdatedAt
               FROM campaign_storyline_archived
               WHERE campaign_id = @CampaignId
-                AND in_game_day = @InGameDay
+                AND @InGameDay = ANY(in_game_days)
               ORDER BY sort_order ASC, created_at ASC";
 
         logging.LogDbOperation(correlation.TraceId, spanId, "SELECT", "campaign_storyline_archived", @params);

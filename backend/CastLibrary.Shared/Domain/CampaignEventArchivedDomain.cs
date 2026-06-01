@@ -11,8 +11,7 @@ public class CampaignEventArchivedDomain
     public string FilePath { get; set; }
     public string ImageUrl { get; set; }
     public string TodSliceName { get; set; }
-    public int InGameDay { get; set; }
-    public bool VisibleToPlayers { get; set; }
+    public int[] InGameDays { get; set; } = Array.Empty<int>();
     public DateTime ArchivedAt { get; set; }
     public DateTime CreatedAt { get; set; }
     public DateTime UpdatedAt { get; set; }

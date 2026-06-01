@@ -79,6 +79,7 @@ public class CampaignEventsController(
                 {
                     campaignId,
                     eventId,
+                    sceneType = campaignEvent.SceneType,
                     title = campaignEvent.Title,
                     body = campaignEvent.Body,
                     imageUrl = campaignEvent.ImageUrl
@@ -110,6 +111,7 @@ public class CampaignEventsController(
                 {
                     campaignId,
                     eventId,
+                    sceneType = campaignEvent.SceneType,
                     title = campaignEvent.Title,
                     body = campaignEvent.Body,
                     imageUrl = campaignEvent.ImageUrl
@@ -139,7 +141,11 @@ public class CampaignEventsController(
                     IsVisible  = result.IsVisible,
                     TickCount  = result.TickCount,
                     Title      = result.Title,
-                    Body       = result.Body
+                    Body       = result.Body,
+                    PlayerCardName = result.PlayerCardName,
+                    PlayerCardRace = result.PlayerCardRace,
+                    PlayerCardClass = result.PlayerCardClass,
+                    PlayerCardImageUrl = result.PlayerCardImageUrl
                 });
         }
 

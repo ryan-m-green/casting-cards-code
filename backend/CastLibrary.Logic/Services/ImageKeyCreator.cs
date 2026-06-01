@@ -4,11 +4,11 @@ namespace CastLibrary.Logic.Services
 {
     public interface IImageKeyCreator
     {
-        string Create(Guid dmUserId, Guid playerCardId, EntityType playerCardType);
+        string Create(Guid dmUserId, Guid campaignId, Guid playerCardId, EntityType playerCardType);
     }
     public class ImageKeyCreator : IImageKeyCreator
     {
-        public string Create(Guid dmUserId, Guid playerCardId, EntityType playerCardType)
+        public string Create(Guid dmUserId, Guid campaignId, Guid playerCardId, EntityType playerCardType)
         {
             switch (playerCardType)
             {
@@ -19,7 +19,7 @@ namespace CastLibrary.Logic.Services
                 case EntityType.Location:
                     return $"{dmUserId}/locations/{playerCardId}.png";
                 case EntityType.PlayerCard:
-                    return $"{dmUserId}/player-cards/{playerCardId}.png";
+                    return $"{dmUserId}/campaigns/{campaignId}/player-cards/{playerCardId}.png";
                 case EntityType.Faction:
                     return $"{dmUserId}/factions/{playerCardId}.png";
                 default: return string.Empty;

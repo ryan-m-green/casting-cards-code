@@ -1,9 +1,11 @@
+using Amazon.Runtime.Internal.Util;
 using CastLibrary.Logic.Interfaces;
 using CastLibrary.Logic.Services;
 using CastLibrary.Repository.Repositories;
 using CastLibrary.Repository.Repositories.Read;
 using CastLibrary.Shared.Domain;
 using CastLibrary.Shared.Enums;
+using System.Collections.Concurrent;
 
 namespace CastLibrary.Logic.Queries.Campaign;
 
@@ -11,7 +13,7 @@ public interface IGetPlayerCampaignDetailQueryHandler
 {
     Task<(CampaignDomain Campaign, List<CampaignLocationInstanceDomain> locations,
         List<CampaignCastInstanceDomain> Casts, List<CampaignSublocationInstanceDomain> Locations,
-        List<CampaignSecretDomain> Secrets, TimeOfDayDomain TimeOfDay, List<CampaignFactionInstanceDomain> Factions)>
+        List<CampaignSecretDomain> Secrets, TimeOfDayDomain TimeOfDay, List<CampaignPlayerDomain> Players, List<CampaignFactionInstanceDomain> Factions)>
         HandleAsync(Guid campaignId);
 }
 
@@ -24,11 +26,11 @@ public class GetPlayerCampaignDetailQueryHandler(
 {
     public async Task<(CampaignDomain Campaign, List<CampaignLocationInstanceDomain> locations,
         List<CampaignCastInstanceDomain> Casts, List<CampaignSublocationInstanceDomain> Locations,
-        List<CampaignSecretDomain> Secrets, TimeOfDayDomain TimeOfDay, List<CampaignFactionInstanceDomain> Factions)>
+        List<CampaignSecretDomain> Secrets, TimeOfDayDomain TimeOfDay, List<CampaignPlayerDomain> Players, List<CampaignFactionInstanceDomain> Factions)>
         HandleAsync(Guid campaignId)
     {
         var campaign = await campaignRepository.GetByIdAsync(campaignId);
-        if (campaign is null) return (null, [], [], [], [], null, []);
+        if (campaign is null) return (null, [], [], [], [], null, [], []);
 
         var locations = (await campaignRepository.GetLocationInstancesByCampaignAsync(campaignId))
                             .Where(c => c.IsVisibleToPlayers)
@@ -62,9 +64,14 @@ public class GetPlayerCampaignDetailQueryHandler(
 
         var factions = await campaignRepository.GetFactionInstancesForPlayerAsync(campaignId);
 
-        filenameService.AddImageUrls(campaign.DmUserId, locations, sublocations, casts, players);
+        var locationBag = new ConcurrentBag<CampaignLocationInstanceDomain>(locations);
+        var sublocationBag = new ConcurrentBag<CampaignSublocationInstanceDomain>(sublocations);
+        var castBag = new ConcurrentBag<CampaignCastInstanceDomain>(casts);
+        var playerBag = new ConcurrentBag<CampaignPlayerDomain>(players);
 
-        return (campaign, locations, casts, sublocations, secrets, timeOfDay, factions);
+        filenameService.AddImageUrls(campaign.DmUserId, campaignId, locationBag, sublocationBag, castBag, playerBag);
+
+        return (campaign, locationBag.ToList(), castBag.ToList(), sublocationBag.ToList(), secrets, timeOfDay, playerBag.ToList(), factions);
     }
 }
 

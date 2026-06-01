@@ -12,7 +12,7 @@ public class CastInstanceFactory(IImageKeyCreator imageKeyCreator, IImageStorage
 {
     public CampaignCastInstanceDomain Create(CastDomain source, Guid campaignId, Guid? LocationInstanceId, Guid sublocationInstanceId)
     {
-        var imageKey = imageKeyCreator.Create(source.DmUserId, source.Id, EntityType.Cast);
+        var imageKey = imageKeyCreator.Create(source.DmUserId, Guid.Empty, source.Id, EntityType.Cast);
 
         var imageUrl = imageStorageOperator.GetPublicUrl(imageKey);
 

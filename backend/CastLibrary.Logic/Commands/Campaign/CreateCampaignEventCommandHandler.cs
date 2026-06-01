@@ -24,6 +24,7 @@ public class CreateCampaignEventCommandHandler(
             SortOrder = 0,
             LinkedEntities = command.Request.LinkedEntities,
             VisibleToPlayers = command.Request.IsVisibleToPlayers,
+            SceneType = "campaign-event",
             CreatedAt = DateTime.UtcNow,
             UpdatedAt = DateTime.UtcNow,
         };

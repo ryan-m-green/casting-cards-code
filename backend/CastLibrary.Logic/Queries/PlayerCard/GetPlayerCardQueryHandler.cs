@@ -13,6 +13,7 @@ public interface IGetPlayerCardQueryHandler
 
 public class GetPlayerCardQueryHandler(
     IPlayerCardReadRepository playerCardReadRepository,
+    ICampaignReadRepository campaignReadRepository,
     ICurrencyBalanceReadRepository currencyBalanceReadRepository,
     IImageKeyCreator imageKeyCreator,
     IImageStorageOperator imageStorageOperator) : IGetPlayerCardQueryHandler
@@ -22,7 +23,9 @@ public class GetPlayerCardQueryHandler(
         var card = await playerCardReadRepository.GetByCampaignAndPlayerAsync(campaignId, playerUserId);
         if (card is null) return null;
 
-        var key = imageKeyCreator.Create(card.PlayerUserId, card.Id, EntityType.PlayerCard);
+        var campaign = await campaignReadRepository.GetByIdAsync(campaignId);
+
+        var key = imageKeyCreator.Create(campaign.DmUserId, card.CampaignId, playerUserId, EntityType.PlayerCard);
         card.ImageUrl = imageStorageOperator.GetPublicUrl(key);
         card.CurrencyBalances = await currencyBalanceReadRepository.GetByPlayerAsync(campaignId, playerUserId);
         return card;

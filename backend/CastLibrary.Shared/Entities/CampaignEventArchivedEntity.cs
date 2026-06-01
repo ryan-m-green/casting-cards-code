@@ -10,8 +10,7 @@ public class CampaignEventArchivedEntity
     public string LinkedEntities { get; set; } = "[]";
     public string FilePath { get; set; }
     public string TodSliceName { get; set; }
-    public int InGameDay { get; set; }
-    public bool VisibleToPlayers { get; set; }
+    public int[] InGameDays { get; set; } = Array.Empty<int>();
     public DateTime ArchivedAt { get; set; }
     public DateTime CreatedAt { get; set; }
     public DateTime UpdatedAt { get; set; }

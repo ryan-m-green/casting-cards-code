@@ -21,7 +21,7 @@ public class GetLocationLibraryQueryHandler(ILocationReadRepository locationRead
         var options = new ParallelOptions() { MaxDegreeOfParallelism = 4 };
         Parallel.ForEach(locationDomains, options, location =>
         {
-            var imageKey = imageKeyCreator.Create(location.DmUserId, location.Id, EntityType.Location);
+            var imageKey = imageKeyCreator.Create(location.DmUserId, Guid.Empty, location.Id, EntityType.Location);
             location.ImageUrl = imageStorageOperator.GetPublicUrl(imageKey);
         });
         return locationDomains;

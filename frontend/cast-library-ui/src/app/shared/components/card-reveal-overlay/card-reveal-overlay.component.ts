@@ -4,6 +4,7 @@ import { Cast } from '../../models/cast.model';
 import { Location } from '../../models/location.model';
 import { Sublocation } from '../../models/sublocation.model';
 import { Faction } from '../../models/faction.model';
+import { PlayerCardWithDetails } from '../../models/player-card.model';
 import { CastCardComponent } from '../cast-card/cast-card.component';
 import { LocationCardComponent } from '../location-card/location-card.component';
 import { SublocationCardComponent } from '../sublocation-card/sublocation-card.component';
@@ -11,9 +12,10 @@ import { FactionCardComponent } from '../faction-card/faction-card.component';
 import { CurrencyCardComponent } from '../currency-card/currency-card.component';
 import { WhisperCardComponent } from '../whisper-card/whisper-card.component';
 import { PortalCardComponent } from '../portal-card/portal-card.component';
+import { CastingCardPlayerComponent } from '../casting-card-player/casting-card-player.component';
 
 export interface CardRevealOverlayData {
-  cardType: 'location' | 'sublocation' | 'cast' | 'player' | 'faction' | 'currency' | 'whisper' | 'campaign-event';
+  cardType: 'location' | 'sublocation' | 'cast' | 'player' | 'faction' | 'currency' | 'whisper' | 'campaign-event' | 'campaign-handout';
   name: string;
   descriptor: string;
   imageUrl?: string;
@@ -30,6 +32,12 @@ export interface CardRevealOverlayData {
   sceneText?: string;
   showPortal?: boolean;
   showSettings?: boolean;
+  // Player card specific fields
+  playerUserId?: string;
+  playerDisplayName?: string;
+  playerRace?: string;
+  playerClass?: string;
+  playerDescription?: string;
 }
 
 const EMPTY_CAST_BASE: Omit<Cast, 'name' | 'imageUrl'> = {
@@ -57,7 +65,7 @@ const EMPTY_FACTION_BASE: Omit<Faction, 'name' | 'imageUrl'> = {
 @Component({
   selector: 'app-card-reveal-overlay',
   standalone: true,
-  imports: [CommonModule, CastCardComponent, LocationCardComponent, SublocationCardComponent, FactionCardComponent, CurrencyCardComponent, WhisperCardComponent, PortalCardComponent],
+  imports: [CommonModule, CastCardComponent, LocationCardComponent, SublocationCardComponent, FactionCardComponent, CurrencyCardComponent, WhisperCardComponent, PortalCardComponent, CastingCardPlayerComponent],
   templateUrl: './card-reveal-overlay.component.html',
   styleUrl: './card-reveal-overlay.component.scss',
 })
@@ -159,6 +167,25 @@ export class CardRevealOverlayComponent implements OnInit, OnDestroy {
     return { ...EMPTY_FACTION_BASE, name: d.name, symbolPath: d.symbolPath ?? '' };
   }
 
+  get playerModel(): PlayerCardWithDetails | null {
+    const d = this.currentData;
+    if (!d) return null;
+    return {
+      id: d.instanceId ?? '',
+      campaignId: '',
+      playerUserId: d.playerUserId ?? d.instanceId ?? '',
+      playerDisplayName: d.playerDisplayName ?? d.name,
+      name: d.name,
+      race: d.playerRace ?? '',
+      class: d.playerClass ?? '',
+      imageUrl: d.imageUrl,
+      description: d.playerDescription,
+      conditions: [],
+      currencyBalances: [],
+      traits: [],
+    };
+  }
+
   getCastModel(card: CardRevealOverlayData): Cast {
     return { ...EMPTY_CAST_BASE, name: card.name, role: card.descriptor, imageUrl: card.imageUrl };
   }
@@ -173,6 +200,23 @@ export class CardRevealOverlayComponent implements OnInit, OnDestroy {
 
   getFactionModel(card: CardRevealOverlayData): Faction {
     return { ...EMPTY_FACTION_BASE, name: card.name, symbolPath: card.symbolPath ?? '' };
+  }
+
+  getPlayerModel(card: CardRevealOverlayData): PlayerCardWithDetails {
+    return {
+      id: card.instanceId ?? '',
+      campaignId: '',
+      playerUserId: card.playerUserId ?? card.instanceId ?? '',
+      playerDisplayName: card.playerDisplayName ?? card.name,
+      name: card.name,
+      race: card.playerRace ?? '',
+      class: card.playerClass ?? '',
+      imageUrl: card.imageUrl,
+      description: card.playerDescription,
+      conditions: [],
+      currencyBalances: [],
+      traits: [],
+    };
   }
 
   nextCard() {

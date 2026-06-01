@@ -5,15 +5,18 @@ import { HttpClient } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { CampaignShellService } from '../../../core/campaign-shell.service';
+import { SessionService } from '../../../core/session.service';
 import { environment } from '../../../../environments/environment';
 import { NoteDestinationPickerComponent } from '../../../shared/components/note-destination-picker/note-destination-picker.component';
 import { LockIconComponent } from '../../../shared/components/lock-icon/lock-icon.component';
+import { ConfirmDialogComponent } from '../../../shared/components/confirm-dialog/confirm-dialog.component';
 import { CampaignLocationInstance } from '../../../shared/models/location.model';
 import { CampaignSublocationInstance } from '../../../shared/models/sublocation.model';
 import { CampaignCastInstance } from '../../../shared/models/cast.model';
 import { CampaignFactionInstance } from '../../../shared/models/faction.model';
 import { CampaignPlayer } from '../../../shared/models/campaign.model';
 import { TimeOfDay } from '../../../shared/models/time-of-day.model';
+import { Session } from '../../../shared/models/session.model';
 
 type EventsTab = 'events' | 'create-events' | 'create-handout';
 type DestType = 'cast' | 'faction' | 'campaign' | 'sublocation' | 'location' | 'player' | 'none' | 'time-of-day';
@@ -37,12 +40,13 @@ interface CampaignEvent {
   imageUrl?: string;
   todPositionPercent: number | null;
   archived: boolean;
+  sceneType: string;
 }
 
 @Component({
   selector: 'app-dm-events',
   standalone: true,
-  imports: [CommonModule, FormsModule, NoteDestinationPickerComponent, LockIconComponent],
+  imports: [CommonModule, FormsModule, NoteDestinationPickerComponent, LockIconComponent, ConfirmDialogComponent],
   templateUrl: './dm-events.component.html',
   styleUrl: './dm-events.component.scss',
 })
@@ -51,6 +55,7 @@ export class DmEventsComponent implements OnInit, OnDestroy {
   private shellSvc = inject(CampaignShellService);
   private http     = inject(HttpClient);
   private sanitizer = inject(DomSanitizer);
+  private sessionService = inject(SessionService);
 
   campaignId = '';
 
@@ -83,6 +88,19 @@ export class DmEventsComponent implements OnInit, OnDestroy {
 
   // Archive state
   archiving        = signal(false);
+
+  // Session state
+  activeSession    = signal<Session | null>(null);
+  totalSessionCount = signal(0);
+  loadingSession   = signal(false);
+  startingSession  = signal(false);
+  endingSession    = signal(false);
+  showStartSessionConfirm = signal(false);
+  endSessionPanelOpen = signal(false);
+  endSessionPanelClosing = signal(false);
+  endSessionPanelAnimating = signal(false);
+  sessionTitle = signal('');
+  private readonly PANEL_SLIDE_DURATION = 260;
 
   // Filter state — empty array = show all (persisted to localStorage per campaign)
   typeFilters       = signal<string[]>([]);
@@ -222,6 +240,8 @@ export class DmEventsComponent implements OnInit, OnDestroy {
     this.shellSvc.setTitleContext({ pageType: 'gm-events', campaignId: id, baseRoute: '/campaign', location: null }, '56px');
     this.loadFilters();
     this.loadEvents();
+    this.loadActiveSession();
+    this.loadSessionCount();
   }
 
   loadEvents() {
@@ -231,6 +251,26 @@ export class DmEventsComponent implements OnInit, OnDestroy {
         next:  data => { this.events.set(data); this.loadingEvents.set(false); },
         error: ()   => { this.loadingEvents.set(false); },
       });
+  }
+
+  loadActiveSession() {
+    this.loadingSession.set(true);
+    this.sessionService.getActiveSession(this.campaignId).subscribe({
+      next:  session => {
+        this.activeSession.set(session);
+        this.loadingSession.set(false);
+      },
+      error: () => { this.loadingSession.set(false); },
+    });
+  }
+
+  loadSessionCount() {
+    this.sessionService.getSessionCount(this.campaignId).subscribe({
+      next:  count => {
+        this.totalSessionCount.set(count);
+      },
+      error: () => {},
+    });
   }
 
   toggleExpand(id: string) {
@@ -413,6 +453,7 @@ export class DmEventsComponent implements OnInit, OnDestroy {
     domEvent.stopPropagation();
 
     const next = !event.visibleToPlayers;
+ 
     const entityVisibilities = event.linkedEntities.map(le => ({
       entityType: le.entityType,
       entityId: le.entityId,
@@ -420,11 +461,12 @@ export class DmEventsComponent implements OnInit, OnDestroy {
       isVisible: next
     }));
 
-    // Add campaign visibility unless the event is exclusively time-of-day
-    const isTimeOfDayOnly = event.linkedEntities.length === 1 && event.linkedEntities[0].entityType === 'time-of-day';
-    if (!isTimeOfDayOnly) {
+    const isTimeOfDayOnlyEvent = event.linkedEntities.length === 1 
+      && event.linkedEntities[0].entityType === 'time-of-day' 
+      && event.sceneType === 'campaign-event';
+    if (!isTimeOfDayOnlyEvent) {
       entityVisibilities.push({
-        entityType: 'campaign-event',
+        entityType: event.sceneType,
         entityId: event.id,
         todPositionPercent: null,
         isVisible: next
@@ -740,5 +782,97 @@ export class DmEventsComponent implements OnInit, OnDestroy {
         this.archiving.set(false);
       },
     });
+  }
+
+  requestStartSession() {
+    this.showStartSessionConfirm.set(true);
+  }
+
+  cancelStartSession() {
+    this.showStartSessionConfirm.set(false);
+  }
+
+  confirmStartSession() {
+    if (this.startingSession()) return;
+    this.startingSession.set(true);
+    this.showStartSessionConfirm.set(false);
+
+    this.sessionService.startSession(this.campaignId).subscribe({
+      next: (session) => {
+        this.activeSession.set(session);
+        this.loadSessionCount();
+        this.startingSession.set(false);
+      },
+      error: () => {
+        this.startingSession.set(false);
+      },
+    });
+  }
+
+  getNextSessionNumber(): number {
+    const active = this.activeSession();
+    if (active) {
+      return active.sessionNumber;
+    }
+    // No active session: use total count + 1 (defaults to 1 if count is 0)
+    return this.totalSessionCount() + 1;
+  }
+
+  requestEndSession() {
+    if (this.endSessionPanelOpen() && !this.endSessionPanelClosing()) {
+      this.endSessionPanelClosing.set(true);
+      setTimeout(() => {
+        this.endSessionPanelOpen.set(false);
+        this.endSessionPanelClosing.set(false);
+        this.sessionTitle.set('');
+      }, this.PANEL_SLIDE_DURATION);
+    } else if (!this.endSessionPanelOpen()) {
+      const active = this.activeSession();
+      this.sessionTitle.set(active?.title ?? `Session ${active?.sessionNumber ?? ''}`);
+      this.endSessionPanelOpen.set(true);
+      this.endSessionPanelAnimating.set(true);
+      setTimeout(() => {
+        this.endSessionPanelAnimating.set(false);
+      }, this.PANEL_SLIDE_DURATION);
+    }
+  }
+
+  cancelEndSession() {
+    this.endSessionPanelClosing.set(true);
+    setTimeout(() => {
+      this.endSessionPanelOpen.set(false);
+      this.endSessionPanelClosing.set(false);
+      this.sessionTitle.set('');
+    }, this.PANEL_SLIDE_DURATION);
+  }
+
+  confirmEndSession() {
+    if (this.endingSession()) return;
+    this.endingSession.set(true);
+    this.endSessionPanelClosing.set(true);
+
+    const currentDay = this.tod()?.daysPassed ?? 0;
+    
+    this.sessionService.endSession(this.campaignId, currentDay).subscribe({
+      next: () => {
+        this.activeSession.set(null);
+        this.loadSessionCount();
+        this.endingSession.set(false);
+        this.loadEvents();
+        setTimeout(() => {
+          this.endSessionPanelOpen.set(false);
+          this.endSessionPanelClosing.set(false);
+          this.sessionTitle.set('');
+        }, this.PANEL_SLIDE_DURATION);
+      },
+      error: () => {
+        this.endingSession.set(false);
+        this.endSessionPanelClosing.set(false);
+      },
+    });
+  }
+
+  get unlockedEventsForArchive(): CampaignEvent[] {
+    return this.events().filter(ev => ev.visibleToPlayers && ev.linkedEntities.length > 0);
   }
 }

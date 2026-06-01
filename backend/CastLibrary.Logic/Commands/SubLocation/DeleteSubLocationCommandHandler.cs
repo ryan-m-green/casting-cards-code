@@ -22,7 +22,7 @@ public class DeleteSublocationCommandHandler(
         if (sublocation is null || sublocation.DmUserId != command.DmUserId)
             return false;
 
-        var imagePath = imageKeyCreator.Create(sublocation.DmUserId, sublocation.Id, EntityType.Sublocation);
+        var imagePath = imageKeyCreator.Create(sublocation.DmUserId, Guid.Empty, sublocation.Id, EntityType.Sublocation);
 
         if (!string.IsNullOrEmpty(imagePath))
             await imageStorage.DeleteAsync(imagePath);

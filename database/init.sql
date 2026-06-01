@@ -526,15 +526,13 @@ CREATE TABLE IF NOT EXISTS campaign_storyline_archived (
     linked_entities     JSONB        NOT NULL DEFAULT '[]'::jsonb,
     file_path           VARCHAR(500),
     tod_slice_name      VARCHAR(100),
-    in_game_day         INT          NOT NULL CHECK (in_game_day > 0),
-    visible_to_players  BOOLEAN      NOT NULL DEFAULT FALSE,
+    in_game_days        INT[]        NOT NULL DEFAULT '{}',
     archived_at         TIMESTAMPTZ  NOT NULL DEFAULT NOW(),
     created_at          TIMESTAMPTZ  NOT NULL DEFAULT NOW(),
     updated_at          TIMESTAMPTZ  NOT NULL DEFAULT NOW()
 );
 
 CREATE INDEX IF NOT EXISTS idx_campaign_storyline_archived_campaign ON campaign_storyline_archived(campaign_id);
-CREATE INDEX IF NOT EXISTS idx_campaign_storyline_archived_day ON campaign_storyline_archived(in_game_day);
 
 -- ─── Campaign Time of Day ─────────────────────────────────────────────────────
 -- Tracks day/night cycle configuration per campaign.
@@ -730,3 +728,34 @@ CREATE TABLE IF NOT EXISTS campaign_player_notes (
 );
 
 CREATE INDEX IF NOT EXISTS idx_campaign_player_notes_campaign ON campaign_player_notes(campaign_id);
+
+-- Sessions table for campaign session tracking
+CREATE TABLE IF NOT EXISTS sessions (
+    id                  UUID         PRIMARY KEY DEFAULT gen_random_uuid(),
+    campaign_id         UUID         NOT NULL REFERENCES campaigns(id) ON DELETE CASCADE,
+    session_number      INT          NOT NULL CHECK (session_number > 0),
+    title               VARCHAR(200) NOT NULL,
+    alternate_title     VARCHAR(200),
+    start_time          TIMESTAMPTZ  NOT NULL DEFAULT NOW(),
+    start_in_game_day   INT          NOT NULL DEFAULT 0 CHECK (start_in_game_day >= 0),
+    is_active           BOOLEAN      NOT NULL DEFAULT TRUE
+);
+
+CREATE INDEX IF NOT EXISTS idx_sessions_campaign ON sessions(campaign_id);
+CREATE INDEX IF NOT EXISTS idx_sessions_active ON sessions(campaign_id, is_active) WHERE is_active = TRUE;
+
+-- ─── Campaign Session Archived ───────────────────────────────────────────────────
+-- Archived sessions with calculated in-game day ranges.
+CREATE TABLE IF NOT EXISTS campaign_session_archived (
+    id                  UUID         PRIMARY KEY DEFAULT gen_random_uuid(),
+    campaign_id         UUID         NOT NULL REFERENCES campaigns(id) ON DELETE CASCADE,
+    session_number      INT          NOT NULL CHECK (session_number > 0),
+    title               VARCHAR(200) NOT NULL,
+    alternate_title     VARCHAR(200),
+    start_time          TIMESTAMPTZ  NOT NULL,
+    end_time            TIMESTAMPTZ  NOT NULL,
+    in_game_days        INT[]        NOT NULL DEFAULT '{}',
+    archived_at         TIMESTAMPTZ  NOT NULL DEFAULT NOW()
+);
+
+CREATE INDEX IF NOT EXISTS idx_campaign_session_archived_campaign ON campaign_session_archived(campaign_id);

@@ -19,7 +19,7 @@ public class GetCastDetailQueryHandler(ICastReadRepository castReadRepository,
     {
         var cast = await castReadRepository.GetByIdAsync(id);
 
-        var imageKey = imageKeyCreator.Create(cast.DmUserId, cast.Id, EntityType.Cast);
+        var imageKey = imageKeyCreator.Create(cast.DmUserId, Guid.Empty, cast.Id, EntityType.Cast);
 
         cast.ImageUrl = imageStorageOperator.GetPublicUrl(imageKey);
         return cast;

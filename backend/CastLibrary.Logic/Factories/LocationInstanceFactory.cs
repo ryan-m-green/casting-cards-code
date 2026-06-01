@@ -13,7 +13,7 @@ public class LocationInstanceFactory(IImageKeyCreator imageKeyCreator, IImageSto
 
     public CampaignLocationInstanceDomain Create(LocationDomain source, Guid campaignId, int sortOrder)
     {
-        var imageKey = imageKeyCreator.Create(source.DmUserId, source.Id, EntityType.Location);
+        var imageKey = imageKeyCreator.Create(source.DmUserId, Guid.Empty, source.Id, EntityType.Location);
 
         var imageUrl = imageStorageOperator.GetPublicUrl(imageKey);
 

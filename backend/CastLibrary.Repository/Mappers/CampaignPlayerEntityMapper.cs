@@ -17,7 +17,11 @@ namespace CastLibrary.Repository.Mappers
                 UserId = entity.PlayerUserId,
                 DisplayName = entity.DisplayName,
                 Email = entity.Email,
-                JoinedAt = entity.JoinedAt
+                JoinedAt = entity.JoinedAt,
+                ImageUrl = entity.PlayerCardImageUrl,
+                PlayerCardName = entity.PlayerCardName,
+                PlayerCardRace = entity.PlayerCardRace,
+                PlayerCardClass = entity.PlayerCardClass
             };
         }
     }

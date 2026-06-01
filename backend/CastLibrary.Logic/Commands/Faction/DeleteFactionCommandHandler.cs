@@ -23,7 +23,7 @@ public class DeleteFactionCommandHandler(
         if (faction is null || faction.DmUserId != command.DmUserId)
             return false;
 
-        var imagePath = imageKeyCreator.Create(faction.DmUserId, faction.FactionId, EntityType.Faction);
+        var imagePath = imageKeyCreator.Create(faction.DmUserId, Guid.Empty, faction.FactionId, EntityType.Faction);
         if (!string.IsNullOrEmpty(imagePath))
             await imageStorage.DeleteAsync(imagePath);
 

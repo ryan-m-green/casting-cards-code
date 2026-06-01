@@ -95,16 +95,8 @@ public class TimeOfDayController(
     [HttpPatch("rewind-day")]
     public async Task<IActionResult> RewindDay(Guid campaignId)
     {
-        if (!await CallerCanAccess(campaignId)) return Forbid();
-        var daysPassed = await rewindDayCommand.HandleAsync(new RewindDayCommand(campaignId));
-
-        await hubContext.Clients.Group(campaignId.ToString())
-            .SendAsync("DayAdvanced", new { campaignId, daysPassed });
-
-        await hubContext.Clients.Group(campaignId.ToString())
-            .SendAsync("TimeCursorMoved", new { campaignId, positionPercent = 0 });
-
-        return NoContent();
+        // Time reversal is no longer allowed for session journaling consistency
+        return BadRequest("Time reversal is no longer supported. Time can only move forward to maintain session journal integrity.");
     }
 
     [HttpPatch("slices/{sliceId}/player-notes")]

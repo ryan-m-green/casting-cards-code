@@ -39,7 +39,7 @@ public class CampaignCastTravelController(
 
         var campaign = await campaignReadRepository.GetByIdAsync(campaignId);
         if (campaign is not null)
-            filenameService.AddImageUrls(campaign.DmUserId, [], [], [cast], []);
+            filenameService.AddImageUrls(campaign.DmUserId, Guid.Empty, [], [], [cast], []);
 
         var response = campaignMapper.ToCastInstanceResponse(cast);
         return Ok(response);
@@ -54,11 +54,11 @@ public class CampaignCastTravelController(
 
         await hubContext.Clients.Group(campaignId.ToString()).SendAsync("CastTravelled", new CastTravelledEvent
         {
-            CampaignId                = campaignId,
-            CastInstanceId            = castInstanceId,
+            CampaignId = campaignId,
+            CastInstanceId = castInstanceId,
             FromSublocationInstanceId = request.FromSublocationInstanceId,
-            ToLocationInstanceId      = request.LocationInstanceId,
-            ToSublocationInstanceId   = request.SublocationInstanceId,
+            ToLocationInstanceId = request.LocationInstanceId,
+            ToSublocationInstanceId = request.SublocationInstanceId,
         });
 
         return NoContent();

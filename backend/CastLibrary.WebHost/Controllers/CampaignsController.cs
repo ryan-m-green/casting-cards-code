@@ -156,7 +156,8 @@ public class CampaignsController(
     public async Task<IActionResult> GetById(Guid id)
     {
         if (!await CallerOwns(id)) return Forbid();
-        var (campaign, locations, casts, sublocations, secrets, relationships, players, inviteCode, timeOfDay, factions) = await getDetailQuery.HandleAsync(id);
+        var (campaign, locations, casts, sublocations, secrets, relationships, 
+            players, inviteCode, timeOfDay, factions) = await getDetailQuery.HandleAsync(id);
         if (campaign is null)
         {
             return NotFound();
@@ -190,7 +191,7 @@ public class CampaignsController(
     public async Task<IActionResult> GetPlayerView(Guid id)
     {
         if (!await CallerCanView(id)) return Forbid();
-        var (campaign, locations, casts, sublocations, secrets, timeOfDay, factions) = await getPlayerDetailQuery.HandleAsync(id);
+        var (campaign, locations, casts, sublocations, secrets, timeOfDay, players, factions) = await getPlayerDetailQuery.HandleAsync(id);
         if (campaign is null)
         {
             return NotFound();
@@ -209,6 +210,7 @@ public class CampaignsController(
             Casts = casts.Select(campaignMapper.ToCastInstanceResponse).ToList(),
             Sublocations = sublocations.Select(campaignMapper.ToSublocationInstanceResponse).ToList(),
             Secrets = secrets.Select(campaignMapper.ToSecretResponse).ToList(),
+            Players = players.Select(campaignMapper.ToPlayerResponse).ToList(),
             TimeOfDay = timeOfDay is not null ? campaignMapper.ToTimeOfDayResponse(timeOfDay) : null,
             Factions = factions.Select(factionMapper.ToResponse).ToList(),
         };

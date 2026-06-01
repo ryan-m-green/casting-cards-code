@@ -21,7 +21,7 @@ public class DeleteLocationCommandHandler(
         var location = await locationReadRepository.GetByIdAsync(command.LocationId);
         if (location is null || location.DmUserId != command.DmUserId)
             return false;
-        var imagePath = imageKeyCreator.Create(location.DmUserId, location.Id, EntityType.Location);
+        var imagePath = imageKeyCreator.Create(location.DmUserId, Guid.Empty, location.Id, EntityType.Location);
         if (!string.IsNullOrEmpty(imagePath))
             await imageStorage.DeleteAsync(imagePath);
 

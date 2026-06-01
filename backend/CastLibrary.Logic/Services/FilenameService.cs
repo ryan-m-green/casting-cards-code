@@ -1,4 +1,5 @@
-﻿using CastLibrary.Logic.Interfaces;
+﻿using CastLibrary.Logic.Commands.Campaign;
+using CastLibrary.Logic.Interfaces;
 using CastLibrary.Shared.Domain;
 using CastLibrary.Shared.Enums;
 using System.Collections.Concurrent;
@@ -9,24 +10,25 @@ namespace CastLibrary.Logic.Services
     public interface IFilenameService
     {
         string BuildUniqueFilename(string prefix, string name, ConcurrentDictionary<string, byte> used);
-        void AddImageUrls(Guid dmUserId,
-            List<CampaignLocationInstanceDomain> locations,
-            List<CampaignSublocationInstanceDomain> sublocations,
-            List<CampaignCastInstanceDomain> casts,
-            List<CampaignPlayerDomain> players);
+        void AddImageUrls(Guid dmUserId, Guid campaignId,
+            ConcurrentBag<CampaignLocationInstanceDomain> locations,
+            ConcurrentBag<CampaignSublocationInstanceDomain> sublocations,
+            ConcurrentBag<CampaignCastInstanceDomain> casts,
+            ConcurrentBag<CampaignPlayerDomain> players);
     }
     public class FilenameService(IImageKeyCreator imageKeyCreator,
     IImageStorageOperator imageStorageOperator) : IFilenameService
     {
-        public void AddImageUrls(Guid dmUserId,
-            List<CampaignLocationInstanceDomain> locations,
-            List<CampaignSublocationInstanceDomain> sublocations,
-            List<CampaignCastInstanceDomain> casts,
-            List<CampaignPlayerDomain> players)
+        public void AddImageUrls(Guid dmUserId, Guid campaignId,
+            ConcurrentBag<CampaignLocationInstanceDomain> locations,
+            ConcurrentBag<CampaignSublocationInstanceDomain> sublocations,
+            ConcurrentBag<CampaignCastInstanceDomain> casts,
+            ConcurrentBag<CampaignPlayerDomain> players)
         {
-            Parallel.ForEach(locations, new ParallelOptions { MaxDegreeOfParallelism = 4 }, location =>
+            var options = new ParallelOptions() { MaxDegreeOfParallelism = 4 };
+            Parallel.ForEach(locations, options, location =>
             {
-                var imageKey = imageKeyCreator.Create(dmUserId, location.SourceLocationId, EntityType.Location);
+                var imageKey = imageKeyCreator.Create(dmUserId, campaignId, location.SourceLocationId, EntityType.Location);
                 if (!string.IsNullOrEmpty(imageKey))
                 {
                     var newImageUrl = imageStorageOperator.GetPublicUrl(imageKey);
@@ -34,9 +36,9 @@ namespace CastLibrary.Logic.Services
                 }
             });
 
-            Parallel.ForEach(casts, new ParallelOptions { MaxDegreeOfParallelism = 4 }, cast =>
+            Parallel.ForEach(casts, options, cast =>
             {
-                var imageKey = imageKeyCreator.Create(dmUserId, cast.SourceCastId, EntityType.Cast);
+                var imageKey = imageKeyCreator.Create(dmUserId, campaignId, cast.SourceCastId, EntityType.Cast);
                 if (!string.IsNullOrEmpty(imageKey))
                 {
                     var newImageUrl = imageStorageOperator.GetPublicUrl(imageKey);
@@ -44,9 +46,9 @@ namespace CastLibrary.Logic.Services
                 }
             });
 
-            Parallel.ForEach(sublocations, new ParallelOptions { MaxDegreeOfParallelism = 4 }, subLocation =>
+            Parallel.ForEach(sublocations, options, subLocation =>
             {
-                var imageKey = imageKeyCreator.Create(dmUserId, subLocation.SourceSublocationId, EntityType.Sublocation);
+                var imageKey = imageKeyCreator.Create(dmUserId, campaignId, subLocation.SourceSublocationId, EntityType.Sublocation);
                 if (!string.IsNullOrEmpty(imageKey))
                 {
                     var newImageUrl = imageStorageOperator.GetPublicUrl(imageKey);
@@ -54,9 +56,9 @@ namespace CastLibrary.Logic.Services
                 }
             });
 
-            Parallel.ForEach(players, new ParallelOptions { MaxDegreeOfParallelism = 4 }, player =>
+            Parallel.ForEach(players, options, player =>
             {
-                var imageKey = imageKeyCreator.Create(dmUserId, player.UserId, EntityType.PlayerCard);
+                var imageKey = imageKeyCreator.Create(dmUserId, campaignId, player.UserId, EntityType.PlayerCard);
                 if (!string.IsNullOrEmpty(imageKey))
                 {
                     var newImageUrl = imageStorageOperator.GetPublicUrl(imageKey);

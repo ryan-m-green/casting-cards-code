@@ -71,6 +71,7 @@ export class PlayerCampaignShellComponent implements OnInit, OnDestroy {
     // Show overlay when a card is newly unlocked
     this.hubSubscriptions.push(
       this.hub.cardVisibilityChanged$.subscribe(event => {
+      
         if (!event || event.campaignId !== this.campaignId()) return;
         if (!event.isVisible) return;
 
@@ -80,7 +81,7 @@ export class PlayerCampaignShellComponent implements OnInit, OnDestroy {
           .subscribe(async c => {
             this.campaign.set(c);
             this.shellSvc.setCampaign(c);
-            const data = await this.buildOverlayFromVisibilityEvent(c, event.instanceId, event.cardType, event.title, event.body);
+            const data = await this.buildOverlayFromVisibilityEvent(c, event.instanceId, event.cardType, event.title, event.body, event.playerCardName, event.playerCardRace, event.playerCardClass, event.playerCardImageUrl);
             if (data) {
               if (this.eventCardTitle() !== null) {
                 this.pendingOverlayData = data;
@@ -98,9 +99,9 @@ export class PlayerCampaignShellComponent implements OnInit, OnDestroy {
         if (!event || event.campaignId !== this.campaignId()) return;
         if (event.isVisible) return;
 
-        // Remove the card from the reveal queue by matching instanceId (or eventId for campaign-events)
+        // Remove the card from the reveal queue by matching instanceId (or eventId for campaign-events/handouts)
         this.cardRevealQueue.update(queue => queue.filter(item => {
-          if (event.cardType === 'campaign-event') {
+          if (event.cardType === 'campaign-event' || event.cardType === 'campaign-handout') {
             return !(item.cardType === event.cardType && item.eventId === event.instanceId);
           }
           return !(item.cardType === event.cardType && item.instanceId === event.instanceId);
@@ -272,9 +273,9 @@ export class PlayerCampaignShellComponent implements OnInit, OnDestroy {
         if (this.eventCardTitle() !== null) {
           // Update the overlay data with the new content
           this.overlayData.set({
-            cardType: 'campaign-event',
+            cardType: event.sceneType,
             name: event.title,
-            descriptor: 'Event • Game Master',
+            descriptor: 'Storyline Event',
             content: event.body,
             imageUrl: event.imageUrl ?? undefined,
             eventId: event.eventId,
@@ -548,17 +549,21 @@ export class PlayerCampaignShellComponent implements OnInit, OnDestroy {
   private async buildOverlayFromVisibilityEvent(
     campaign: CampaignDetail,
     instanceId: string,
-    cardType: 'location' | 'sublocation' | 'cast' | 'faction' | 'campaign-event',
+    cardType: 'location' | 'sublocation' | 'cast' | 'faction' | 'campaign-event' | 'campaign-handout' | 'player',
     eventTitle?: string,
     eventBody?: string,
+    playerCardName?: string,
+    playerCardRace?: string,
+    playerCardClass?: string,
+    playerCardImageUrl?: string,
   ): Promise<CardRevealOverlayData | null> {
-    if (cardType === 'campaign-event') {
+    if (cardType === 'campaign-event' || cardType === 'campaign-handout') {
       // Use title and body from SignalR event instead of making API call
       if (!eventTitle || !eventBody) return null;
       return {
-        cardType: 'campaign-event',
+        cardType: cardType,
         name: eventTitle,
-        descriptor: 'Event • Game Master',
+        descriptor: 'Storyline Event',
         content: eventBody,
         eventId: instanceId,
         portalColor: this.campaign()?.spineColor ?? '#6e28d0',
@@ -578,6 +583,29 @@ export class PlayerCampaignShellComponent implements OnInit, OnDestroy {
       const cast = campaign.casts.find((ca: any) => ca.instanceId === instanceId);
       if (!cast) return null;
       return { cardType: 'cast', name: cast.name, descriptor: cast.role ?? '', imageUrl: cast.imageUrl ?? '', instanceId };
+    }
+    if (cardType === 'player') {
+      // Find player in campaign data
+      const player = campaign.players?.find((p: any) => p.userId === instanceId);
+      if (!player) return null;
+      const name = player.playerCardName || player.displayName || playerCardName || 'Player Character';
+      const descriptor = player.playerCardRace && player.playerCardClass
+        ? `${player.playerCardRace} ${player.playerCardClass}`
+        : (player.playerCardRace || player.playerCardClass || playerCardRace || playerCardClass || 'Player Character');
+      // Use imageUrl from SignalR event if available, otherwise use campaign data
+      const imageUrl = playerCardImageUrl || player.imageUrl || '';
+      return {
+        cardType: 'player',
+        name,
+        descriptor,
+        imageUrl,
+        instanceId,
+        playerUserId: player.userId,
+        playerDisplayName: player.displayName,
+        playerRace: player.playerCardRace || playerCardRace || '',
+        playerClass: player.playerCardClass || playerCardClass || '',
+        playerDescription: '',
+      };
     }
     return null;
   }

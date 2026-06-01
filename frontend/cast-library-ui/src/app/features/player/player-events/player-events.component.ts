@@ -17,6 +17,7 @@ interface CampaignEvent {
   sortOrder: number;
   createdAt: string;
   imageUrl?: string;
+  sceneType?: string;
 }
 
 @Component({
@@ -65,7 +66,7 @@ export class PlayerEventsComponent implements OnInit, OnDestroy {
     this.hubSubscriptions.push(
       this.hub.cardVisibilityChanged$.subscribe(e => {
         if (!e || e.campaignId !== this.campaignId()) return;
-        if (e.cardType !== 'campaign-event') return;
+        if (e.cardType !== 'campaign-event' && e.cardType !== 'campaign-handout') return;
         if (e.isVisible) {
           this.loadEvents(this.campaignId());
         } else {

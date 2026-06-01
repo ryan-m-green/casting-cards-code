@@ -1,9 +1,11 @@
+using CastLibrary.Logic.Commands.Campaign;
 using CastLibrary.Logic.Interfaces;
 using CastLibrary.Logic.Services;
 using CastLibrary.Repository.Repositories;
 using CastLibrary.Repository.Repositories.Read;
 using CastLibrary.Shared.Domain;
 using CastLibrary.Shared.Enums;
+using System.Collections.Concurrent;
 
 namespace CastLibrary.Logic.Queries.Campaign;
 
@@ -47,9 +49,16 @@ public class GetCampaignDetailQueryHandler(
         var inviteCode = await getInviteCodeQuery.HandleAsync(campaignId);
         var timeOfDay = await timeOfDayRepository.GetByCampaignIdAsync(campaignId);
 
-        filenameService.AddImageUrls(campaign.DmUserId, locations, sublocations, casts, players);
+        var locationBag = new ConcurrentBag<CampaignLocationInstanceDomain>(locations);
+        var sublocationBag = new ConcurrentBag<CampaignSublocationInstanceDomain>(sublocations);
+        var castsBag = new ConcurrentBag<CampaignCastInstanceDomain>(casts);
+        var playersBag = new ConcurrentBag<CampaignPlayerDomain>(players);
 
-        return (campaign, locations, casts, sublocations, secrets, relationships, players, inviteCode, timeOfDay, factions);
+        filenameService.AddImageUrls(campaign.DmUserId, campaignId, locationBag, sublocationBag, castsBag, playersBag);
+
+        return (campaign, locationBag.ToList(), castsBag.ToList(), 
+            sublocationBag.ToList(), secrets, relationships, playersBag.ToList(), 
+            inviteCode, timeOfDay, factions);
     }
 }
 

@@ -28,17 +28,18 @@ public class StorylineInsertRepository(
             LinkedEntities = linkedEntitiesJson,
             domain.FilePath,
             domain.VisibleToPlayers,
+            domain.SceneType,
             domain.CreatedAt,
             domain.UpdatedAt,
         };
 
         const string sql =
             @"INSERT INTO campaign_storyline
-                (id, campaign_id, title, body, sort_order, linked_entities, file_path, visible_to_players, created_at, updated_at)
+                (id, campaign_id, title, body, sort_order, linked_entities, file_path, visible_to_players, scene_type, created_at, updated_at)
               VALUES
                 (@Id, @CampaignId, @Title, @Body,
                  (SELECT COALESCE(MAX(sort_order), -1) + 1 FROM campaign_storyline WHERE campaign_id = @CampaignId),
-                 @LinkedEntities::jsonb, @FilePath, @VisibleToPlayers, @CreatedAt, @UpdatedAt)
+                 @LinkedEntities::jsonb, @FilePath, @VisibleToPlayers, @SceneType, @CreatedAt, @UpdatedAt)
               RETURNING sort_order";
 
         logging.LogDbOperation(correlation.TraceId, spanId, "INSERT", "campaign_storyline", @params);

@@ -28,7 +28,7 @@ namespace CastLibrary.Logic.Queries.Library
             
             await Parallel.ForEachAsync(casts, new ParallelOptions { MaxDegreeOfParallelism = 4 }, async (cast, cancellationToken) =>
             {
-                var imageKey = imageKeyCreator.Create(query.DmUserId, cast.Id, EntityType.Cast);
+                var imageKey = imageKeyCreator.Create(query.DmUserId, Guid.Empty, cast.Id, EntityType.Cast);
 
                 var imageFileName = await imageFileNameQueryHandler.HandleAsync(
                     imageKey, _entityName, cast.Name, query.UsedFileNames, imageCollector);

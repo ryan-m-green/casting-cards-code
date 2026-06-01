@@ -27,7 +27,7 @@ public class UploadSublocationImageCommandHandler(
         if (sublocation is null || sublocation.DmUserId != command.DmUserId)
             return (false, null);
 
-        var key = imageKeyCreator.Create(command.DmUserId, command.SublocationId, EntityType.Sublocation);
+        var key = imageKeyCreator.Create(command.DmUserId, Guid.Empty, command.SublocationId, EntityType.Sublocation);
 
         await imageStorage.SaveAsync(key, command.Stream, command.ContentType);
 

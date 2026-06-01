@@ -22,7 +22,7 @@ public class GetCastLibraryQueryHandler(ICastReadRepository castReadRepository,
         var options = new ParallelOptions() { MaxDegreeOfParallelism = 4 };
         Parallel.ForEach(cast, options, member =>
         {
-            var imageKey = imageKeyCreator.Create(member.DmUserId, member.Id, EntityType.Cast);
+            var imageKey = imageKeyCreator.Create(member.DmUserId, Guid.Empty, member.Id, EntityType.Cast);
             member.ImageUrl = imageStorageOperator.GetPublicUrl(imageKey);
         });
 

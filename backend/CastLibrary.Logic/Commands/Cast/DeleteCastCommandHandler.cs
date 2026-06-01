@@ -22,7 +22,7 @@ public class DeleteCastCommandHandler(
         if (cast is null || cast.DmUserId != command.DmUserId)
             return false;
 
-        var imagePath = imageKeyCreator.Create(cast.DmUserId, cast.Id, EntityType.Cast);
+        var imagePath = imageKeyCreator.Create(cast.DmUserId, Guid.Empty, cast.Id, EntityType.Cast);
 
         if (!string.IsNullOrEmpty(imagePath))
             await imageStorage.DeleteAsync(imagePath);

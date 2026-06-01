@@ -2,6 +2,21 @@
 
 :host { display: block; height: 100%; }
 
+.cast-form-doodle-art {
+    position: absolute;
+    bottom: 308px;
+    right:0px;
+    width: 220px;
+    height: auto;
+    transform: rotate(4deg);
+
+    @media (max-width: 960px) {
+        width: 140px;
+        bottom: 746px;
+        right: 4px;
+    }
+}
+
 // ── GM-only Box ──────────────────────────────────────────────────────────────
 .form-gm-box {
   border: 1px solid rgba(v.$color-base-brown-14, 0.2);

@@ -52,6 +52,7 @@ export interface FactionLockedEvent {
 export interface StorylineEventUpdatedEvent {
   campaignId: string;
   eventId: string;
+  sceneType: 'campaign-event' | 'campaign-handout';
   title: string;
   body: string;
   imageUrl: string | null;

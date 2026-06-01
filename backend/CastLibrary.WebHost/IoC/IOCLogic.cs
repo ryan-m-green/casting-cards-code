@@ -23,6 +23,7 @@ using CastLibrary.Logic.Queries.QuicknoteQueue;
 using CastLibrary.Logic.Queries.Sublocation;
 using CastLibrary.Logic.Services;
 using CastLibrary.Logic.Strategies;
+using CastLibrary.Logic.Commands.Session;
 
 namespace CastLibrary.WebHost.IoC
 {
@@ -179,6 +180,9 @@ namespace CastLibrary.WebHost.IoC
             services.AddScoped<IReorderCampaignEventsCommandHandler, ReorderCampaignEventsCommandHandler>();
             services.AddScoped<IArchiveCampaignEventsCommandHandler, ArchiveCampaignEventsCommandHandler>();
 
+            services.AddScoped<IStartSessionCommandHandler, StartSessionCommandHandler>();
+            services.AddScoped<IEndSessionCommandHandler, EndSessionCommandHandler>();
+
             return services;
         }
 
@@ -287,6 +291,7 @@ namespace CastLibrary.WebHost.IoC
             services.AddScoped<IEntityVisibilityUpdater, CastEntityVisibilityUpdater>();
             services.AddScoped<IEntityVisibilityUpdater, FactionEntityVisibilityUpdater>();
             services.AddScoped<IEntityVisibilityUpdater, TimeOfDayEntityVisibilityUpdater>();
+            services.AddScoped<IEntityVisibilityUpdater, PlayerEntityVisibilityUpdater>();
             return services;
 
         }

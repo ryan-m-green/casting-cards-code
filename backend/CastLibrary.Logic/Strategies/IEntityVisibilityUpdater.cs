@@ -2,6 +2,7 @@
 using CastLibrary.Repository.Repositories.Update;
 using CastLibrary.Shared.Domain;
 using CastLibrary.Shared.Requests;
+using ImageMagick;
 
 namespace CastLibrary.Logic.Strategies
 {
@@ -12,7 +13,9 @@ namespace CastLibrary.Logic.Strategies
         public const string Faction = "faction";
         public const string Location = "location";
         public const string Sublocation = "sublocation";
-        public const string Campaign = "campaign-event";
+        public const string CampaignEvent = "campaign-event";
+        public const string CampaignHandout = "campaign-handout";
+        public const string Player = "player";
     }
     public static class EventNames
     {
@@ -26,11 +29,40 @@ namespace CastLibrary.Logic.Strategies
         Task<EntityVisibilityResult> Update(Guid campaignId, EntityVisibility entityVisibility);
     }
 
+    public class PlayerEntityVisibilityUpdater(ICampaignPlayerReadRepository playerReadRepository) : IEntityVisibilityUpdater
+    {
+        public bool IsMatch(EntityVisibility entityVisibility)
+        {
+            return entityVisibility.EntityType.ToLower() == EntityTypes.Player;
+        }
+
+        public async Task<EntityVisibilityResult> Update(Guid campaignId, EntityVisibility entityVisibility)
+        {
+            // Fetch player card data to include in SignalR message
+            var players = await playerReadRepository.GetByCampaignAsync(campaignId);
+            var player = players.FirstOrDefault(p => p.UserId == entityVisibility.EntityId);
+
+            return new EntityVisibilityResult()
+            {
+                CampaignId = campaignId,
+                EventName = EventNames.CardVisibilityChanged,
+                IsVisible = entityVisibility.IsVisible,
+                EntityInstanceId = entityVisibility.EntityId,
+                CardType = EntityTypes.Player,
+                PlayerCardName = player?.PlayerCardName,
+                PlayerCardRace = player?.PlayerCardRace,
+                PlayerCardClass = player?.PlayerCardClass,
+                PlayerCardImageUrl = player?.ImageUrl
+            };
+        }
+    }
+
     public class CampaignEntityVisibilityUpdater(IStorylineUpdateRepository storylineUpdateRepository, IStorylineReadRepository storylineReadRepository) : IEntityVisibilityUpdater
     {
         public bool IsMatch(EntityVisibility entityVisibility)
         {
-            return entityVisibility.EntityType.ToLower() == EntityTypes.Campaign;
+            return entityVisibility.EntityType.ToLower() == EntityTypes.CampaignEvent ||
+                   entityVisibility.EntityType.ToLower() == EntityTypes.CampaignHandout;
         }
         public async Task<EntityVisibilityResult> Update(Guid campaignId, EntityVisibility entityVisibility)
         {
@@ -39,15 +71,19 @@ namespace CastLibrary.Logic.Strategies
             // Fetch event details to include in SignalR message
             var campaignEvent = await storylineReadRepository.GetByIdAsync(entityVisibility.EntityId);
 
+            var body = campaignEvent.SceneType == EntityTypes.CampaignHandout
+                ? "A handout is now available for viewing"
+                : campaignEvent.Body ?? "A scene is now available for viewing";
+
             return new EntityVisibilityResult()
             {
                 CampaignId = campaignId,
                 EventName = EventNames.CardVisibilityChanged,
                 IsVisible = entityVisibility.IsVisible,
                 EntityInstanceId = entityVisibility.EntityId,
-                CardType = EntityTypes.Campaign,
-                Title = campaignEvent?.Title,
-                Body = campaignEvent?.Body
+                CardType = entityVisibility.EntityType,
+                Title = campaignEvent.Title,
+                Body = body
             };
         }
     }

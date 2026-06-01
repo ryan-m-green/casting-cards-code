@@ -18,7 +18,7 @@ public class GetSublocationDetailQueryHandler(ISublocationReadRepository subloca
     {
         var sublocation = await sublocationReadRepository.GetByIdAsync(id);
 
-        var imageKey = imageKeyCreator.Create(sublocation.DmUserId, sublocation.Id, EntityType.Sublocation);
+        var imageKey = imageKeyCreator.Create(sublocation.DmUserId, Guid.Empty, sublocation.Id, EntityType.Sublocation);
         sublocation.ImageUrl = imageStorageOperator.GetPublicUrl(imageKey);
         return sublocation;
     }

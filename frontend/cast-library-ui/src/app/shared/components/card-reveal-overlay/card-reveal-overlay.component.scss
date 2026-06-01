@@ -115,17 +115,17 @@
 
 .cr-counter {
   position: absolute;
-  top: 16px;
+  top: 60px;
   left: 50%;
   transform: translateX(-50%);
   z-index: 20;
   font-family: v.$font-header;
-  font-size: 10px;
+  font-size: 14px;
   font-weight: 600;
   letter-spacing: 0.15em;
   text-transform: uppercase;
   color: v.$color-base-spine-4;
-  background: rgba(0, 0, 0, 0.5);
+  background: rgba(167, 121, 233, 0.18);
   padding: 4px 12px;
   border-radius: 12px;
   backdrop-filter: blur(4px);

@@ -28,6 +28,10 @@ public class CardVisibilityChangedEvent
     public long TickCount { get; set; }
     public string? Title { get; set; }
     public string? Body { get; set; }
+    public string? PlayerCardName { get; set; }
+    public string? PlayerCardRace { get; set; }
+    public string? PlayerCardClass { get; set; }
+    public string? PlayerCardImageUrl { get; set; }
 }
 
 public class BulkCardVisibilityChangedEvent

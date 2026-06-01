@@ -26,7 +26,7 @@ namespace CastLibrary.Logic.Queries.Library
 
             await Parallel.ForEachAsync(locations, async (location, cancellationToken) =>
              {
-                 var imageKey = imageKeyCreator.Create(query.DmUserId, location.Id, EntityType.Location);
+                 var imageKey = imageKeyCreator.Create(query.DmUserId, Guid.Empty, location.Id, EntityType.Location);
 
                  var imageFileName = await imageFileNameQueryHandler.HandleAsync(
                      imageKey, "location", location.Name, query.UsedFileNames, imageCollector);

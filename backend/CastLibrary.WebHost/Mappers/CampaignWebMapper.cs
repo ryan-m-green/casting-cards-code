@@ -225,6 +225,10 @@ public class CampaignWebMapper(
             UserId = d.UserId,
             DisplayName = d.DisplayName,
             Email = d.Email,
+            PlayerCardName = d.PlayerCardName,
+            PlayerCardRace = d.PlayerCardRace,
+            PlayerCardClass = d.PlayerCardClass,
+            ImageUrl = d.ImageUrl,
         };
 
         logging.LogMapping(

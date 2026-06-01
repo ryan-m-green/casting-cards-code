@@ -14,5 +14,6 @@ public class CampaignEventResponse
     public string ImageUrl { get; set; }
     public decimal? TodPositionPercent { get; set; }
     public bool Archived { get; set; }
+    public string SceneType { get; set; } = "campaign-event";
     public DateTime CreatedAt { get; set; }
 }

@@ -253,24 +253,119 @@ ALTER TABLE campaign_storyline
     DROP COLUMN IF EXISTS linked_entity_type;
 
 -- [038] Campaign Storyline Refactoring — separate archived table + schema changes
--- This migration is superseded by [039] below
+-- campaign_storyline_archived table is now in init.sql
 
--- [039] Create separate archived table for campaign chronicles
-CREATE TABLE IF NOT EXISTS campaign_storyline_archived (
-    id                  UUID         PRIMARY KEY DEFAULT gen_random_uuid(),
-    campaign_id         UUID         NOT NULL REFERENCES campaigns(id) ON DELETE CASCADE,
-    title               VARCHAR(200) NOT NULL,
-    body                TEXT         NOT NULL CHECK (char_length(body) <= 50000),
-    sort_order          INT          NOT NULL DEFAULT 0,
-    linked_entities     JSONB        NOT NULL DEFAULT '[]'::jsonb,
-    file_path           VARCHAR(500),
-    tod_slice_name      VARCHAR(100),
-    in_game_day         INT          NOT NULL CHECK (in_game_day > 0),
-    visible_to_players  BOOLEAN      NOT NULL DEFAULT FALSE,
-    archived_at         TIMESTAMPTZ  NOT NULL DEFAULT NOW(),
-    created_at          TIMESTAMPTZ  NOT NULL DEFAULT NOW(),
-    updated_at          TIMESTAMPTZ  NOT NULL DEFAULT NOW()
-);
+-- [041] Change campaign_storyline_archived in_game_day to INT array and drop visible_to_players
+ALTER TABLE campaign_storyline_archived
+    ADD COLUMN IF NOT EXISTS in_game_days INT[] NOT NULL DEFAULT '{}';
 
-CREATE INDEX IF NOT EXISTS idx_campaign_storyline_archived_campaign ON campaign_storyline_archived(campaign_id);
-CREATE INDEX IF NOT EXISTS idx_campaign_storyline_archived_day ON campaign_storyline_archived(in_game_day);
+-- Migrate existing data: convert single in_game_day to array
+DO $$
+BEGIN
+    IF EXISTS (
+        SELECT 1
+        FROM information_schema.columns
+        WHERE table_name = 'campaign_storyline_archived'
+          AND column_name = 'in_game_day'
+    ) THEN
+        UPDATE campaign_storyline_archived
+        SET in_game_days = ARRAY[in_game_day]
+        WHERE in_game_day IS NOT NULL;
+    END IF;
+END $$;
+
+-- Drop old column
+ALTER TABLE campaign_storyline_archived
+    DROP COLUMN IF EXISTS in_game_day;
+
+-- Drop visible_to_players column
+ALTER TABLE campaign_storyline_archived
+    DROP COLUMN IF EXISTS visible_to_players;
+
+-- Drop index on old in_game_day column
+DROP INDEX IF EXISTS idx_campaign_storyline_archived_day;
+
+-- [042] Add archived_session_id to campaign_storyline_archived before renaming tables
+ALTER TABLE campaign_storyline_archived
+    ADD COLUMN IF NOT EXISTS archived_session_id UUID REFERENCES campaign_session_archived(id) ON DELETE SET NULL;
+
+-- [043] Create index on archived_session_id in campaign_storyline_archived
+DO $$ BEGIN
+    IF NOT EXISTS (
+        SELECT 1 FROM pg_indexes
+        WHERE tablename = 'campaign_storyline_archived' AND indexname = 'idx_campaign_storyline_archived_archived_session'
+    ) THEN
+        CREATE INDEX idx_campaign_storyline_archived_archived_session ON campaign_storyline_archived(archived_session_id);
+    END IF;
+END $$;
+
+-- [044] Rename sessions to campaign_sessions
+DO $$ BEGIN
+    IF EXISTS (SELECT 1 FROM pg_tables WHERE schemaname = 'public' AND tablename = 'sessions')
+       AND NOT EXISTS (SELECT 1 FROM pg_tables WHERE schemaname = 'public' AND tablename = 'campaign_sessions') THEN
+        ALTER TABLE sessions RENAME TO campaign_sessions;
+    END IF;
+END $$;
+
+-- Rename indexes for campaign_sessions
+DO $$ BEGIN
+    IF EXISTS (SELECT 1 FROM pg_indexes WHERE indexname = 'idx_sessions_campaign')
+       AND NOT EXISTS (SELECT 1 FROM pg_indexes WHERE indexname = 'idx_campaign_sessions_campaign') THEN
+        ALTER INDEX idx_sessions_campaign RENAME TO idx_campaign_sessions_campaign;
+    END IF;
+END $$;
+
+DO $$ BEGIN
+    IF EXISTS (SELECT 1 FROM pg_indexes WHERE indexname = 'idx_sessions_active')
+       AND NOT EXISTS (SELECT 1 FROM pg_indexes WHERE indexname = 'idx_campaign_sessions_active') THEN
+        ALTER INDEX idx_sessions_active RENAME TO idx_campaign_sessions_active;
+    END IF;
+END $$;
+
+-- [045] Rename campaign_storyline_archived to campaign_session_chronicles
+DO $$ BEGIN
+    IF EXISTS (SELECT 1 FROM pg_tables WHERE schemaname = 'public' AND tablename = 'campaign_storyline_archived')
+       AND NOT EXISTS (SELECT 1 FROM pg_tables WHERE schemaname = 'public' AND tablename = 'campaign_session_chronicles') THEN
+        ALTER TABLE campaign_storyline_archived RENAME TO campaign_session_chronicles;
+    END IF;
+END $$;
+
+-- Rename indexes for campaign_session_chronicles
+DO $$ BEGIN
+    IF EXISTS (SELECT 1 FROM pg_indexes WHERE indexname = 'idx_campaign_storyline_archived_campaign')
+       AND NOT EXISTS (SELECT 1 FROM pg_indexes WHERE indexname = 'idx_campaign_session_chronicles_campaign') THEN
+        ALTER INDEX idx_campaign_storyline_archived_campaign RENAME TO idx_campaign_session_chronicles_campaign;
+    END IF;
+END $$;
+
+DO $$ BEGIN
+    IF EXISTS (SELECT 1 FROM pg_indexes WHERE indexname = 'idx_campaign_storyline_archived_archived_session')
+       AND NOT EXISTS (SELECT 1 FROM pg_indexes WHERE indexname = 'idx_campaign_session_chronicles_archived_session') THEN
+        ALTER INDEX idx_campaign_storyline_archived_archived_session RENAME TO idx_campaign_session_chronicles_archived_session;
+    END IF;
+END $$;
+
+-- [046] Update foreign key reference in campaign_session_chronicles to point to campaign_session_archived
+DO $$ BEGIN
+    IF EXISTS (SELECT 1 FROM pg_tables WHERE schemaname = 'public' AND tablename = 'campaign_session_chronicles') THEN
+        ALTER TABLE campaign_session_chronicles
+            DROP CONSTRAINT IF EXISTS campaign_storyline_archived_archived_session_id_fkey;
+        
+        IF NOT EXISTS (
+            SELECT 1 FROM pg_constraint
+            WHERE conname = 'campaign_session_chronicles_archived_session_id_fkey'
+        ) THEN
+            ALTER TABLE campaign_session_chronicles
+                ADD CONSTRAINT campaign_session_chronicles_archived_session_id_fkey
+                    FOREIGN KEY (archived_session_id) REFERENCES campaign_session_archived(id) ON DELETE SET NULL;
+        END IF;
+    END IF;
+END $$;
+
+-- [047] Add scene_type column to campaign_storyline table
+-- Values: 'campaign-event' or 'campaign-handout'
+ALTER TABLE campaign_storyline
+ADD COLUMN IF NOT EXISTS scene_type VARCHAR(50) NOT NULL DEFAULT 'campaign-event';
+
+-- Add comment to document the purpose
+COMMENT ON COLUMN campaign_storyline.scene_type IS 'Type of scene: campaign-event (text only) or campaign-handout (has file attachment)';

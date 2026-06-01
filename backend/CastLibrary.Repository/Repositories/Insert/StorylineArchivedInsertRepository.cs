@@ -29,8 +29,7 @@ public class StorylineArchivedInsertRepository(
             LinkedEntities = linkedEntitiesJson,
             domain.FilePath,
             domain.TodSliceName,
-            domain.InGameDay,
-            domain.VisibleToPlayers,
+            domain.InGameDays,
             domain.ArchivedAt,
             domain.CreatedAt,
             domain.UpdatedAt,
@@ -38,9 +37,9 @@ public class StorylineArchivedInsertRepository(
 
         const string sql =
             @"INSERT INTO campaign_storyline_archived
-                (id, campaign_id, title, body, sort_order, linked_entities, file_path, tod_slice_name, in_game_day, visible_to_players, archived_at, created_at, updated_at)
+                (id, campaign_id, title, body, sort_order, linked_entities, file_path, tod_slice_name, in_game_days, archived_at, created_at, updated_at)
               VALUES
-                (@Id, @CampaignId, @Title, @Body, @SortOrder, @LinkedEntities::jsonb, @FilePath, @TodSliceName, @InGameDay, @VisibleToPlayers, @ArchivedAt, @CreatedAt, @UpdatedAt)";
+                (@Id, @CampaignId, @Title, @Body, @SortOrder, @LinkedEntities::jsonb, @FilePath, @TodSliceName, @InGameDays, @ArchivedAt, @CreatedAt, @UpdatedAt)";
 
         logging.LogDbOperation(correlation.TraceId, spanId, "INSERT", "campaign_storyline_archived", @params);
 

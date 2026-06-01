@@ -106,6 +106,10 @@ namespace CastLibrary.WebHost.IoC
             services.AddScoped<IArchiveCampaignEventsRepository, ArchiveCampaignEventsRepository>();
             services.AddScoped<ICampaignEventArchivedReadRepository, CampaignEventArchivedReadRepository>();
             services.AddScoped<ICampaignEventArchivedInsertRepository, StorylineArchivedInsertRepository>();
+            services.AddScoped<ISessionReadRepository, SessionReadRepository>();
+            services.AddScoped<ISessionInsertRepository, SessionInsertRepository>();
+            services.AddScoped<ICampaignSessionArchivedInsertRepository, CampaignSessionArchivedInsertRepository>();
+            services.AddScoped<ITransferStorylineToChroniclesRepository, TransferStorylineToChroniclesRepository>();
             services.AddHealthChecks()
               .AddCheck<DatabaseHealthCheck>("postgres");
 

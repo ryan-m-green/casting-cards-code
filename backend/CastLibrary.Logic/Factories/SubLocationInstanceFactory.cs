@@ -15,7 +15,7 @@ public class SublocationInstanceFactory(IImageKeyCreator imageKeyCreator, IImage
     public CampaignSublocationInstanceDomain Create(
         SublocationDomain source, Guid campaignId, Guid? LocationInstanceId)
     {
-        var imageKey = imageKeyCreator.Create(source.DmUserId, source.Id, EntityType.Sublocation);
+        var imageKey = imageKeyCreator.Create(source.DmUserId, Guid.Empty, source.Id, EntityType.Sublocation);
 
         var imageUrl = imageStorageOperator.GetPublicUrl(imageKey);
         var instanceId = Guid.NewGuid();

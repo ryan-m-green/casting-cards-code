@@ -33,11 +33,9 @@
                   [secretContent]="card.secretContent ?? null" />
               }
               @case ('player') {
-                <app-cast-card
-                  [cast]="getCastModel(card)"
-                  [flippable]="false"
-                  [editable]="false"
-                  [secretContent]="card.secretContent ?? null" />
+                <app-casting-card-player
+                  [member]="getPlayerModel(card)"
+                  [mode]="'player'" />
               }
               @case ('location') {
                 <app-location-card
@@ -77,6 +75,16 @@
                   (goToSecrets)="handleWhisperGoToSecrets()" />
               }
               @case ('campaign-event') {
+                <app-portal-card
+                  [name]="card.descriptor"
+                  [description]="card.content || card.name || ''"
+                  [portalColor]="card.portalColor ?? '#6e28d0'"
+                  [showPortal]="false"
+                  [showSettings]="false"
+                  [sceneText]="card.sceneText ?? ''"
+                />
+              }
+              @case ('campaign-handout') {
                 <app-portal-card
                   [name]="card.descriptor"
                   [description]="card.content || card.name || ''"

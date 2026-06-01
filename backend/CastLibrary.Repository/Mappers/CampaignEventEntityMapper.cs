@@ -18,11 +18,12 @@ public class CampaignEventEntityMapper : ICampaignEventEntityMapper
         Title = entity.Title,
         Body = entity.Body,
         SortOrder = entity.SortOrder,
-        LinkedEntities = string.IsNullOrWhiteSpace(entity.LinkedEntities) 
-            ? [] 
+        LinkedEntities = string.IsNullOrWhiteSpace(entity.LinkedEntities)
+            ? []
             : JsonSerializer.Deserialize<List<LinkedEntityTrigger>>(entity.LinkedEntities) ?? [],
         FilePath = entity.FilePath,
         VisibleToPlayers = entity.VisibleToPlayers,
+        SceneType = entity.SceneType ?? "campaign-event",
         CreatedAt = entity.CreatedAt,
         UpdatedAt = entity.UpdatedAt,
     };

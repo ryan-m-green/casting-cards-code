@@ -89,6 +89,10 @@ export class NoteDestinationPickerComponent {
       || this.destType === 'player' || this.destType === 'time-of-day';
   }
 
+  get hasTimeTrigger(): boolean {
+    return this.linkedEntities.some(item => item.entityType === 'time-of-day');
+  }
+
   getVisibilityText(): string {
     // If "none" or "time-of-day", it's not visible to players
     if (this.destType === 'none' || this.destType === 'time-of-day') {

@@ -3,17 +3,7 @@
 
     <!-- ── Day counter label ── -->
     <div class="tod-day-counter" aria-live="polite">
-      @if (isDm || allowInteraction) {
-        <button
-          class="tod-next-day tod-next-day--left"
-          type="button"
-          aria-label="Rewind to previous day"
-          [disabled]="daysPassed() === 0 || isLocked()"
-          (click)="onRewindDay()"
-          (touchend)="onRewindDayTouch($event)"
-        ><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M18.5 5 11 12l7.5 7V5zm-7 0L4 12l7.5 7V5z"/></svg></button>
-      }
-      @if (isDm || allowInteraction) {
+      @if (isDm) {
         <button
           class="tod-lock-btn"
           type="button"
@@ -22,9 +12,9 @@
           (click)="toggleLock()"
         ><app-lock-icon [open]="!isLocked()" /></button>
       }Days Passed: {{ daysPassed() }}
-      @if (isDm || allowInteraction) {
+      @if (isDm) {
         <button
-          class="tod-next-day tod-next-day--right"
+          class="tod-next-day"
           type="button"
           aria-label="Advance to next day"
           [disabled]="isLocked()"
@@ -173,3 +163,12 @@
 } @else {
   <p class="tod-empty">No day/night cycle configured for this campaign.</p>
 }
+
+  <app-confirm-dialog
+    [show]="showAdvanceConfirm()"
+    [title]="'Advance to Next Day?'"
+    [message]="'Are you sure you want to advance to the next day? Time cannot be reversed.'"
+    [confirmButtonText]="'Advance'"
+    (confirm)="confirmAdvanceDay()"
+    (cancel)="cancelAdvanceDay()"
+  ></app-confirm-dialog>

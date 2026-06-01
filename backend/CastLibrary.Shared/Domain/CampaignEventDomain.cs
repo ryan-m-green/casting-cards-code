@@ -11,6 +11,7 @@ public class CampaignEventDomain
     public string FilePath { get; set; }
     public string ImageUrl { get; set; }
     public bool VisibleToPlayers { get; set; }
+    public string SceneType { get; set; } = "campaign-event";
     public DateTime CreatedAt { get; set; }
     public DateTime UpdatedAt { get; set; }
 }

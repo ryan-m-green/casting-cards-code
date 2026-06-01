@@ -15,4 +15,7 @@ public class CampaignPlayerDomain
     public string Email { get; set; } = string.Empty;
     public DateTime JoinedAt { get; set; }
     public string ImageUrl { get; set; } = string.Empty;
+    public string PlayerCardName { get; set; } = string.Empty;
+    public string PlayerCardRace { get; set; } = string.Empty;
+    public string PlayerCardClass { get; set; } = string.Empty;
 }

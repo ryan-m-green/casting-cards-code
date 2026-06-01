@@ -35,6 +35,7 @@ public class UploadCampaignEventHandoutCommandHandler(
             LinkedEntities = linkedEntities,
             FilePath = null,
             VisibleToPlayers = false,
+            SceneType = "campaign-handout",
             CreatedAt = DateTime.UtcNow,
             UpdatedAt = DateTime.UtcNow,
         };

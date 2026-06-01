@@ -3,6 +3,7 @@ using CastLibrary.Logic.Services;
 using CastLibrary.Repository.Repositories.Read;
 using CastLibrary.Shared.Domain;
 using CastLibrary.Shared.Enums;
+using System.Collections.Concurrent;
 
 namespace CastLibrary.Logic.Queries.PlayerCard;
 
@@ -28,12 +29,12 @@ public class GetDiscoveredCastQueryHandler(
 {
     public async Task<PartyData> HandleAsync(Guid campaignId)
     {
-        var cards    = await playerCardReadRepository.GetByCampaignAsync(campaignId);
+        var cards = await playerCardReadRepository.GetByCampaignAsync(campaignId);
         var balances = await currencyBalanceReadRepository.GetByCampaignAsync(campaignId);
-
+        var campaign = await campaignReadRepository.GetByIdAsync(campaignId);
         foreach (var card in cards)
         {
-            var key = imageKeyCreator.Create(card.PlayerUserId, card.Id, EntityType.PlayerCard);
+            var key = imageKeyCreator.Create(campaign.DmUserId, card.CampaignId, card.PlayerUserId, EntityType.PlayerCard);
             card.ImageUrl = imageStorageOperator.GetPublicUrl(key);
             card.CurrencyBalances = balances.TryGetValue(card.PlayerUserId, out var b) ? b : new();
         }
@@ -44,13 +45,17 @@ public class GetDiscoveredCastQueryHandler(
 
         var companions = await campaignReadRepository.GetQuestingCompanionsBySublocationInstanceIdAsync(partySubLoc.InstanceId);
 
+        var companionBag = new ConcurrentBag<CampaignCastInstanceDomain>(companions);
         if (companions.Count > 0)
         {
-            var campaign = await campaignReadRepository.GetByIdAsync(campaignId);
-            if (campaign is not null)
-                filenameService.AddImageUrls(campaign.DmUserId, [], [], companions, []);
+            filenameService.AddImageUrls(campaign.DmUserId, campaign.Id, [], [], companionBag, []);
         }
 
-        return new PartyData { PartyCards = cards, QuestingCompanions = companions, PartyAnchorSublocationInstanceId = partySubLoc.InstanceId };
+        return new PartyData
+        {
+            PartyCards = cards,
+            QuestingCompanions = companionBag.ToList(),
+            PartyAnchorSublocationInstanceId = partySubLoc.InstanceId
+        };
     }
 }

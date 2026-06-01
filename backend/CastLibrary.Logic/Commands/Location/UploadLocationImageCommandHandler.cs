@@ -22,7 +22,7 @@ public class UploadLocationImageCommandHandler(
             return (false, null);
         }
 
-        var key = imageKeyCreator.Create(command.DmUserId, command.LocationId, EntityType.Location);
+        var key = imageKeyCreator.Create(command.DmUserId, Guid.Empty, command.LocationId, EntityType.Location);
 
         await imageStorage.SaveAsync(key, command.Stream, command.ContentType);
 

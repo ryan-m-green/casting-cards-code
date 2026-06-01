@@ -145,6 +145,10 @@ public class CampaignPlayerResponse
     public Guid UserId { get; set; }
     public string DisplayName { get; set; } = string.Empty;
     public string Email { get; set; } = string.Empty;
+    public string PlayerCardName { get; set; } = string.Empty;
+    public string PlayerCardRace { get; set; } = string.Empty;
+    public string PlayerCardClass { get; set; } = string.Empty;
+    public string ImageUrl { get; set; } = string.Empty;
 }
 
 public class DashboardStatsResponse

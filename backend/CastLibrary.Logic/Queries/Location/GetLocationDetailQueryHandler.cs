@@ -18,7 +18,7 @@ public class GetLocationDetailQueryHandler(ILocationReadRepository locationReadR
     {
         var locationDomain = await locationReadRepository.GetByIdAsync(id);
 
-        var imageKey = imageKeyCreator.Create(locationDomain.DmUserId, locationDomain.Id, EntityType.Location);
+        var imageKey = imageKeyCreator.Create(locationDomain.DmUserId, Guid.Empty, locationDomain.Id, EntityType.Location);
 
         locationDomain.ImageUrl = imageStorageOperator.GetPublicUrl(imageKey);
 

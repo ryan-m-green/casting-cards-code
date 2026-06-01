@@ -27,10 +27,15 @@ $spring-easing:       cubic-bezier(0.22, 1, 0.36, 1);
   overflow: hidden;
   text-align: center;
   font-family: v.$font-header;
-  font-size: 0.72rem;
+  font-size: 18px;
   letter-spacing: 0.10em;
   color: v.$campaign-portal-text-bright;
   margin-bottom: 6px;
+  line-height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
 
   .tod-wrapper--dark & {
     color: v.$campaign-portal-text-bright;
@@ -52,7 +57,7 @@ $spring-easing:       cubic-bezier(0.22, 1, 0.36, 1);
 // ── Next Day button ───────────────────────────────────────────────────────────
 .tod-next-day {
   flex-shrink: 0;
-  display: flex;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
   height: 32px;
@@ -74,9 +79,6 @@ $spring-easing:       cubic-bezier(0.22, 1, 0.36, 1);
   -webkit-tap-highlight-color: transparent;
   transition: background 0.15s ease, color 0.15s ease;
 
-  &--left  { float: left; }
-  &--right { float: right; }
-
   &:hover,
   &:focus-visible,
   &:active {
@@ -94,6 +96,7 @@ $spring-easing:       cubic-bezier(0.22, 1, 0.36, 1);
     opacity: 0.55;
     cursor: not-allowed;
     pointer-events: none;
+    display:inline-flex;
   }
 
   .tod-wrapper--dark & {

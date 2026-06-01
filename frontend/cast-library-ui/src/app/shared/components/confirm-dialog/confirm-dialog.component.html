@@ -1,0 +1,13 @@
+@if (show) {
+  <div class="ev-confirm-overlay" (click)="onOverlayClick()"></div>
+  <div class="ev-confirm-dialog">
+    <div class="ev-confirm-dialog-content">
+      <h3 class="ev-confirm-dialog-title">{{ title }}</h3>
+      <p class="ev-confirm-dialog-message">{{ message }}</p>
+      <div class="ev-confirm-dialog-actions">
+        <button type="button" class="ev-confirm-dialog-btn ev-confirm-dialog-btn--cancel" (click)="onCancel()">{{ cancelButtonText }}</button>
+        <button type="button" class="campaign-primary-btn" (click)="onConfirm()">{{ confirmButtonText }}</button>
+      </div>
+    </div>
+  </div>
+}

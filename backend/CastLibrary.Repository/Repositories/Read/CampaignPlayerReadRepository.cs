@@ -30,9 +30,13 @@ public class CampaignPlayerReadRepository(
                      cp.player_user_id AS PlayerUserId,
                      u.display_name    AS DisplayName,
                      u.email,
-                     cp.joined_at      AS JoinedAt
+                     cp.joined_at      AS JoinedAt,
+                     pc.name           AS PlayerCardName,
+                     pc.race           AS PlayerCardRace,
+                     pc.class          AS PlayerCardClass
               FROM campaign_players cp
               JOIN users u ON u.id = cp.player_user_id
+              LEFT JOIN player_cards pc ON pc.campaign_id = cp.campaign_id AND pc.player_user_id = cp.player_user_id
               WHERE cp.campaign_id = @CampaignId
               ORDER BY cp.joined_at";
 

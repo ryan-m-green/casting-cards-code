@@ -74,7 +74,7 @@
   }
 
   @if (showTimeOfDay) {
-  <button type="button" class="ndp-dest-btn" [class.active]="destType === 'time-of-day'" [disabled]="!tod" (click)="onDestTypeChange('time-of-day')" (keydown.enter)="onKeyEnter('time-of-day')" title="Time of Day">
+  <button type="button" class="ndp-dest-btn" [class.active]="destType === 'time-of-day'" [disabled]="!tod || hasTimeTrigger" (click)="onDestTypeChange('time-of-day')" (keydown.enter)="onKeyEnter('time-of-day')" title="Time of Day">
     <svg class="ndp-dest-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
       <circle cx="12" cy="12" r="10"/>
       <polyline points="12 6 12 12 16 14"/>
