@@ -1,6 +1,3 @@
--- Add keywords column to users table
-ALTER TABLE users ADD COLUMN IF NOT EXISTS keywords TEXT[] NOT NULL DEFAULT '{}';
-
 -- Add token_version column to users table for JWT token invalidation on role changes
 ALTER TABLE users ADD COLUMN IF NOT EXISTS token_version INTEGER NOT NULL DEFAULT 1;
 
