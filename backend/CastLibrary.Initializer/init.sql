@@ -798,11 +798,6 @@ CREATE TABLE IF NOT EXISTS castcards_configuration (
     CONSTRAINT uq_castcards_configuration_key UNIQUE (key)
 );
 
--- Migrate existing tables to key/value pattern (for databases created before Slice 1)
--- Drop old columns if they exist
-ALTER TABLE castcards_configuration DROP COLUMN IF EXISTS doodle_art;
-ALTER TABLE castcards_configuration DROP COLUMN IF EXISTS stop_words;
-
 -- Add key column if it doesn't exist (without default to avoid duplicate keys)
 DO $$
 BEGIN

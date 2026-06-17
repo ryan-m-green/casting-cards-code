@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { Component, inject, OnInit, signal, computed } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 import { environment } from '../../../../environments/environment';
@@ -24,6 +24,7 @@ interface PricingModel {
   priceInCents: number;
   stripePriceId: string;
   isActive: boolean;
+  accountType: 'live' | 'test';
 }
 
 @Component({
@@ -57,6 +58,15 @@ export class ConfigurationSettingsComponent implements OnInit {
   subscriptionLimitsId = signal<string | null>(null);
   stopWordsId = signal<string | null>(null);
   stripeConfigId = signal<string | null>(null);
+
+  // Computed properties for sorted pricing models
+  livePricingModels = computed(() => 
+    this.pricingModels().filter(model => model.accountType === 'live')
+  );
+
+  testPricingModels = computed(() => 
+    this.pricingModels().filter(model => model.accountType === 'test')
+  );
 
   
   ngOnInit() {

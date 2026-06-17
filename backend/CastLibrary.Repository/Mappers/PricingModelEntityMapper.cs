@@ -15,7 +15,8 @@ public class PricingModelEntityMapper : IPricingModelEntityMapper
         ModelName = Enum.Parse<PricingModelName>(entity.ModelName, true),
         PriceInCents = entity.PriceInCents,
         StripePriceId = entity.StripePriceId,
-        IsActive = entity.IsActive
+        IsActive = entity.IsActive,
+        AccountType = entity.AccountType
     };
     public PricingModelEntity ToEntity(PricingModelDomain domain) => new()
     {
@@ -23,6 +24,7 @@ public class PricingModelEntityMapper : IPricingModelEntityMapper
         ModelName = domain.ModelName.ToString(),
         PriceInCents = domain.PriceInCents,
         StripePriceId = domain.StripePriceId,
-        IsActive = domain.IsActive
+        IsActive = domain.IsActive,
+        AccountType = domain.AccountType
     };
 }

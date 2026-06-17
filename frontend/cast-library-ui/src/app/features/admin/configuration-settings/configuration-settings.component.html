@@ -17,35 +17,83 @@
       }
 
       @if (pricingModels().length > 0) {
-        <div class="section-title">Pricing Model</div>
-        <div class="pricing-models-section">
-          @for (model of pricingModels(); track model.id) {
-            <div class="pricing-model-item">
-              <div class="pricing-model-row">
-                <label class="pricing-model-label">
-                  <input
-                    type="radio"
-                    [name]="'pricing-model'"
-                    [checked]="model.isActive"
-                    (change)="setActivePricingModel(model.modelName)"
-                  />
-                  <span class="pricing-model-name">{{ model.modelName }}</span>
-                </label>
-                <div class="pricing-model-price-input">
-                  <label class="form-label" [for]="'price-' + model.id">Price ($)</label>
-                  <input
-                    [id]="'price-' + model.id"
-                    class="fi"
-                    type="number"
-                    step="0.01"
-                    [ngModel]="model.priceInCents / 100"
-                    (ngModelChange)="updatePricingModelPrice(model.id, $event)"
-                  />
-                </div>
-              </div>
+        <div class="section-title">Pricing Models</div>
+        
+        <!-- Live Account Models -->
+        @if (livePricingModels().length > 0) {
+          <div class="account-type-section">
+            <div class="account-type-header">
+              <h3 class="account-type-title">Live Account</h3>
+              <span class="account-type-badge live">Production</span>
             </div>
-          }
-        </div>
+            <div class="pricing-models-section">
+              @for (model of livePricingModels(); track model.id) {
+                <div class="pricing-model-item">
+                  <div class="pricing-model-row">
+                    <label class="pricing-model-label">
+                      <input
+                        type="radio"
+                        [name]="'pricing-model'"
+                        [checked]="model.isActive"
+                        (change)="setActivePricingModel(model.modelName)"
+                      />
+                      <span class="pricing-model-name">{{ model.modelName }}</span>
+                    </label>
+                    <div class="pricing-model-price-input">
+                      <label class="form-label" [for]="'price-' + model.id">Price ($)</label>
+                      <input
+                        [id]="'price-' + model.id"
+                        class="fi"
+                        type="number"
+                        step="0.01"
+                        [ngModel]="model.priceInCents / 100"
+                        (ngModelChange)="updatePricingModelPrice(model.id, $event)"
+                      />
+                    </div>
+                  </div>
+                </div>
+              }
+            </div>
+          </div>
+        }
+
+        <!-- Test Account Models -->
+        @if (testPricingModels().length > 0) {
+          <div class="account-type-section">
+            <div class="account-type-header">
+              <h3 class="account-type-title">Test Account</h3>
+              <span class="account-type-badge test">Development</span>
+            </div>
+            <div class="pricing-models-section">
+              @for (model of testPricingModels(); track model.id) {
+                <div class="pricing-model-item">
+                  <div class="pricing-model-row">
+                    <label class="pricing-model-label">
+                      <input
+                        type="radio"
+                        [name]="'pricing-model'"
+                        [checked]="model.isActive"
+                        (change)="setActivePricingModel(model.modelName)"
+                      />
+                      <span class="pricing-model-name">{{ model.modelName }}</span>
+                    </label>
+                    <div class="pricing-model-price-input">
+                      <label class="form-label" [for]="'price-' + model.id">Price ($)</label>
+                      <input
+                        [id]="'price-' + model.id"
+                        class="fi"
+                        type="number"
+                        step="0.01"
+                        [ngModel]="model.priceInCents / 100"
+                        (ngModelChange)="updatePricingModelPrice(model.id, $event)"
+                      />
+                    </div>
+                  </div>
+                </div>
+              }
+            </div>
+          </div>
+        }
       }
 
       @if (subscriptionLimits()) {

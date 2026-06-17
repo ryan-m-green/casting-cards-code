@@ -96,3 +96,34 @@ BEGIN
         ALTER TABLE castcards_configuration ADD CONSTRAINT uq_castcards_configuration_key UNIQUE (key);
     END IF;
 END $$;
+
+-- ============================================================
+-- Add AccountType column to pricing_model table
+-- ============================================================
+
+-- Add the new column with a default value
+ALTER TABLE pricing_model 
+ADD COLUMN IF NOT EXISTS account_type VARCHAR(10) NOT NULL DEFAULT 'test';
+
+-- Add a check constraint to ensure only valid values are stored
+DO $$
+BEGIN
+    IF NOT EXISTS (
+        SELECT 1 FROM pg_constraint
+        WHERE conname = 'chk_pricing_model_account_type'
+    ) THEN
+        ALTER TABLE pricing_model 
+        ADD CONSTRAINT chk_pricing_model_account_type 
+        CHECK (account_type IN ('live', 'test'));
+    END IF;
+END $$;
+
+-- Update existing records to have appropriate values
+-- Existing production models (Alpha, Beta, V1) set to 'live'
+-- FreeTrial remains as 'test' since it's the default trial
+UPDATE pricing_model 
+SET account_type = 'live' 
+WHERE model_name IN ('Alpha', 'Beta', 'V1') AND account_type = 'test';
+
+-- Create an index for better query performance if this column will be used for filtering
+CREATE INDEX IF NOT EXISTS idx_pricing_model_account_type ON pricing_model(account_type);

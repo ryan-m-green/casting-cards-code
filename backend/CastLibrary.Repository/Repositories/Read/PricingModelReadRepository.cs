@@ -18,7 +18,7 @@ public class PricingModelReadRepository(
         using var conn = sqlConnectionFactory.GetConnection();
         var entity = await conn.QueryFirstOrDefaultAsync<PricingModelEntity>(
             @"SELECT id, model_name AS ModelName, price_in_cents AS PriceInCents,
-                     stripe_price_id AS StripePriceId, is_active AS IsActive
+                     stripe_price_id AS StripePriceId, is_active AS IsActive, account_type AS AccountType
               FROM pricing_model WHERE is_active = true LIMIT 1");
         if (entity is null)
             throw new InvalidOperationException("No active pricing model found");
@@ -29,7 +29,7 @@ public class PricingModelReadRepository(
         using var conn = sqlConnectionFactory.GetConnection();
         var entity = await conn.QueryFirstOrDefaultAsync<PricingModelEntity>(
             @"SELECT id, model_name AS ModelName, price_in_cents AS PriceInCents,
-                     stripe_price_id AS StripePriceId, is_active AS IsActive
+                     stripe_price_id AS StripePriceId, is_active AS IsActive, account_type AS AccountType
               FROM pricing_model WHERE model_name = @ModelName", new { ModelName = modelName });
         if (entity is null)
             throw new InvalidOperationException($"Pricing model '{modelName}' not found");
@@ -41,9 +41,9 @@ public class PricingModelReadRepository(
         using var conn = sqlConnectionFactory.GetConnection();
         var entities = await conn.QueryAsync<PricingModelEntity>(
             @"SELECT id, model_name AS ModelName, price_in_cents AS PriceInCents,
-                     stripe_price_id AS StripePriceId, is_active AS IsActive
+                     stripe_price_id AS StripePriceId, is_active AS IsActive, account_type AS AccountType
               FROM pricing_model
-              ORDER BY model_name");
+              ORDER BY account_type, model_name");
         return entities.ToList();
     }
 }

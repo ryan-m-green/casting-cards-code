@@ -6,4 +6,5 @@ public class PricingModelEntity
     public int PriceInCents { get; set; }
     public string StripePriceId { get; set; } = string.Empty;
     public bool IsActive { get; set; }
+    public string AccountType { get; set; } = "test";
 }
