@@ -93,14 +93,24 @@
     background: v.$color-input-bg;
     border-color: v.$color-border-light;
   }
+
+  &.disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+    color: v.$color-base-brown-15;
+
+    &:hover {
+      color: v.$color-base-brown-15;
+    }
+  }
 }
 
 /* ── Tab empty / search ──────────────────────────────────────── */
 .pic-tab-empty {
   color: v.$color-base-brown-15;
   font-style: italic;
-  font-size: 13px;
-  padding: 16px 0;
+  font-size: 18px;
+  padding: 18px 0;
   text-align: center;
 }
 

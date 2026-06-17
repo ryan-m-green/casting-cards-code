@@ -25,7 +25,6 @@ public class SubmitBugReportCommandHandler(
             Title = command.Request.Title,
             Description = command.Request.Description,
             StepsToReproduce = command.Request.StepsToReproduce,
-            Severity = command.Request.Severity,
             PageUrl = command.Request.PageUrl,
             Device = command.Request.Device,
             Browser = command.Request.Browser,
@@ -39,8 +38,10 @@ public class SubmitBugReportCommandHandler(
 
         try
         {
-            await emailOperator.SendBugReportNotificationAsync(new BugReportNotificationEmailDomain
+            await emailOperator.SendEmailAsync(new BugReportNotificationEmailDomain
             {
+                ToEmail = string.Empty,
+                DisplayName = string.Empty,
                 Title = result.Title,
                 Description = result.Description,
                 StepsToReproduce = result.StepsToReproduce ?? string.Empty,

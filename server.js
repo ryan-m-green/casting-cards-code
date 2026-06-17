@@ -23,4 +23,4 @@ http.createServer((req, res) => {
     res.writeHead(200, { 'Content-Type': mime[ext] || 'text/plain' });
     res.end(data);
   });
-}).listen(PORT, () => console.log(`Serving on http://localhost:${PORT}`));
+}).listen(PORT);

@@ -147,5 +147,7 @@ export class CoverComponent {
     });
   }
 
-  createAccount(): void { this.router.navigate(['/join']); }
+  createAccount(): void {
+    this.router.navigate(['/join']);
+  }
 }

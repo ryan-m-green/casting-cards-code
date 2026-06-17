@@ -3,13 +3,15 @@ import { Router, RouterOutlet, NavigationCancel, NavigationError } from '@angula
 import { Subscription } from 'rxjs';
 import { filter } from 'rxjs/operators';
 import { PortalTransitionService } from './core/portal-transition.service';
+import { SubscriptionDrawerComponent } from './shared/components/subscription-drawer/subscription-drawer.component';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet],
+  imports: [RouterOutlet, SubscriptionDrawerComponent],
   template: `
     <div class="portal-transition-overlay" [class.active]="transition.active()" [class.instant]="transition.instant()"></div>
     <router-outlet />
+    <app-subscription-drawer />
   `,
   styles: [`
     :host { display: block; height: 100%; }

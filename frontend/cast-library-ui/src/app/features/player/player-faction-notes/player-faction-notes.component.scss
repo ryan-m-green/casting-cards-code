@@ -8,7 +8,7 @@
 .faction-notes-panel {
   width: 100%;
   background: v.$campaign-portal-bg-dark;
-  border: 1px solid rgba(v.$color-faction-neutral-frame-2, 0.40);
+  border: 1px solid rgba(v.$color-lib-location-1, 0.40);
   border-radius: 6px;
   overflow: hidden;
 }
@@ -26,7 +26,7 @@
   font-size: 12px;
   letter-spacing: 0.22em;
   text-transform: uppercase;
-  color: rgba(v.$color-faction-neutral-frame-2, 0.95);
+  color: rgba(v.$color-lib-location-1, 0.95);
   white-space: nowrap;
 }
 
@@ -41,7 +41,7 @@
   font-size: 7px;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: rgba(v.$color-faction-neutral-frame-2, 0.8);
+  color: rgba(v.$color-lib-location-1, 0.8);
   white-space: nowrap;
 }
 
@@ -55,7 +55,7 @@
 .notes-textarea {
   width: 100%;
   background: v.$color-overlay-darker;
-  border: 1px solid rgba(v.$color-faction-neutral-frame-2, 0.28);
+  border: 1px solid rgba(v.$color-lib-location-1, 0.28);
   border-radius: 3px;
   color: v.$campaign-portal-text-muted;
   font-family: v.$font-body;
@@ -69,10 +69,10 @@
   transition: border-color 0.2s;
 
   &::placeholder {
-    color: rgba(v.$color-faction-neutral-frame-2, 0.30);
+    color: rgba(v.$color-lib-location-1, 0.30);
   }
 
   &:focus {
-    border-color: rgba(v.$color-faction-neutral-frame-2, 0.55);
+    border-color: rgba(v.$color-lib-location-1, 0.55);
   }
 }

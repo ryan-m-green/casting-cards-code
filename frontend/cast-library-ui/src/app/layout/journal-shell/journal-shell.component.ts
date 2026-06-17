@@ -4,12 +4,14 @@ import { CommonModule } from '@angular/common';
 import { Subscription } from 'rxjs';
 import { PortalTransitionService } from '../../core/portal-transition.service';
 import { JournalNavDrawerComponent } from '../../shared/components/journal-nav-drawer/journal-nav-drawer.component';
+import { SubscriptionLockBannerComponent } from '../../shared/components/subscription-lock-banner/subscription-lock-banner.component';
 import { AuthService } from '../../core/auth/auth.service';
+import { FlipAnimationService } from '../../core/flip-animation.service';
 
 @Component({
   selector: 'app-journal-shell',
   standalone: true,
-  imports: [RouterOutlet, RouterLink, CommonModule, JournalNavDrawerComponent],
+  imports: [RouterOutlet, RouterLink, CommonModule, JournalNavDrawerComponent, SubscriptionLockBannerComponent],
   templateUrl: './journal-shell.component.html',
   styleUrl: './journal-shell.component.scss'
 })
@@ -17,6 +19,7 @@ export class JournalShellComponent implements OnInit, OnDestroy {
   private router = inject(Router);
   private auth   = inject(AuthService);
   protected transition = inject(PortalTransitionService);
+  private flipAnimationService = inject(FlipAnimationService);
 
   readonly spineBands = [18, 30, 45, 60, 72];
   isCover           = signal(false);
@@ -134,6 +137,8 @@ export class JournalShellComponent implements OnInit, OnDestroy {
     this.showOpenMessage.set(false);
     this.openMessageFading.set(false);
 
+    this.flipAnimationService.startFlip();
+
     if (fromCover) {
       el.classList.add('cover-flip');
       // Show instantly behind the flip — no fade-in needed, flip covers it
@@ -156,6 +161,7 @@ export class JournalShellComponent implements OnInit, OnDestroy {
       el.style.transform  = 'rotateY(0deg)';
       el.style.opacity    = '0';
       el.classList.remove('cover-flip');
+      this.flipAnimationService.endFlip();
 
       if (fromCover) {
         // Flip is done — start fading out immediately

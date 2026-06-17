@@ -1,0 +1,149 @@
+@use '../../../../styles/variables' as v;
+
+.event-entities {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 12px;
+  min-width:212px;
+}
+
+.entity-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px;
+  border-radius: 4px;
+  font-family: v.$font-body;
+  font-size: 0.8em;
+  transition: all 0.2s ease;
+
+  .entity-badge-inner {
+    padding: 4px 10px;
+    border-radius: 2px;
+    color: v.$campaign-portal-text-lavender;
+    font-weight: 500;
+    background: color-mix(in srgb, v.$campaign-portal-bg-dark 30%, v.$color-base-arcane-purple 70%);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .entity-badge-icon {
+    display: inline-flex;
+    align-items: center;
+    flex-shrink: 0;
+    color: v.$campaign-portal-text-lavender;
+  }
+}
+
+// Entity badge frames matching dashboard stats
+.entity-badge--cast {
+  background: linear-gradient(145deg,
+    v.$color-base-gold-2 0%, v.$color-base-gold-mid-hex 20%, v.$color-base-gold-dark-hex 45%,
+    v.$color-base-gold-bright-hex 55%, v.$color-base-gold-mid-hex 70%, v.$color-base-gold-3 85%, v.$color-base-gold-4 100%
+  );
+}
+
+.entity-badge--sublocation {
+  background: linear-gradient(145deg,
+    v.$color-ext-675 0%, v.$color-ext-676 15%, v.$color-ext-677 40%,
+    v.$color-ext-678 55%, v.$color-ext-679 70%, v.$color-ext-680 85%, v.$color-ext-681 100%
+  );
+}
+
+.entity-badge--location {
+  background: linear-gradient(145deg,
+    v.$color-base-yellow-green 0%, v.$color-base-mid-yellow-green 15%, v.$color-base-dark-yellow-green 40%,
+    v.$color-base-green-6 55%, v.$color-base-green-7 70%, v.$color-base-green-8 85%, v.$color-base-green-9 100%
+  );
+}
+
+.entity-badge--faction {
+  background: linear-gradient(145deg,
+    v.$color-faction-neutral-frame-1 0%, v.$color-faction-neutral-frame-2 15%,
+    v.$color-faction-neutral-frame-3 40%, v.$color-faction-neutral-frame-4 55%,
+    v.$color-faction-neutral-frame-5 70%, v.$color-faction-neutral-frame-6 85%,
+    v.$color-faction-neutral-frame-7 100%
+  );
+}
+
+.entity-badge--campaign {
+  background: linear-gradient(145deg,
+    v.$color-base-blue-4 0%, v.$color-base-blue-5 30%,
+    v.$color-base-black-3 60%, v.$color-base-blue-6 100%
+  );
+}
+
+// Player uses same frame as cast (golden gradient)
+.entity-badge--player {
+  background: linear-gradient(145deg,
+    v.$color-base-gold-2 0%, v.$color-base-gold-mid-hex 20%, v.$color-base-gold-dark-hex 45%,
+    v.$color-base-gold-bright-hex 55%, v.$color-base-gold-mid-hex 70%, v.$color-base-gold-3 85%, v.$color-base-gold-4 100%
+  );
+}
+
+// Handout uses same frame as campaign (blue gradient)
+.entity-badge--handout {
+  background: linear-gradient(145deg,
+    v.$color-base-blue-4 0%, v.$color-base-blue-5 30%,
+    v.$color-base-black-3 60%, v.$color-base-blue-6 100%
+  );
+}
+
+// Mini Time-of-Day Bar
+.mini-tod-bar {
+  margin-top: 24px;
+  margin-bottom: 40px;
+  width: 100%;
+  position: relative;
+}
+
+.mini-tod-bar__slices {
+  position: relative;
+  height: 24px;
+  border-radius: 6px;
+  overflow: hidden;
+  background: v.$color-overlay-dark;
+}
+
+.mini-tod-bar__slice {
+  position: absolute;
+  height: 100%;
+  top: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.mini-tod-bar__slice-label {
+  font-family: v.$font-header;
+  font-size: 8px;
+  color: white;
+  font-weight: 600;
+  text-transform: uppercase;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  padding: 0 4px;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+.mini-tod-bar__cursor {
+  position: absolute;
+  top: 64px;
+  transform: translateX(-50%) translateY(-100%);
+  z-index: 20;
+  pointer-events: none;
+
+  &__planchette {
+    display: block;
+    transform: rotate(180deg);
+    filter: drop-shadow(0 0 5px rgba(0, 0, 0, 0.5));
+    pointer-events: none;
+
+    svg, path, circle {
+      pointer-events: none;
+    }
+  }
+}

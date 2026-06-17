@@ -1,0 +1,158 @@
+.section-title {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: #5c4a3a;
+  margin-top: 2rem;
+  margin-bottom: 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid #8b7355;
+}
+
+.pricing-models-section {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  padding: 1rem;
+  border: 1px solid #8b7355;
+  border-radius: 0.25rem;
+  background-color: #f5f0e6;
+  margin-bottom: 2rem;
+}
+
+.pricing-model-item {
+  display: flex;
+  align-items: center;
+}
+
+.pricing-model-row {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  width: 100%;
+}
+
+.pricing-model-label {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  cursor: pointer;
+  padding: 0.5rem;
+  border-radius: 0.25rem;
+  transition: background-color 0.2s;
+
+  &:hover {
+    background-color: #e8e0d5;
+  }
+
+  input[type="radio"] {
+    cursor: pointer;
+  }
+}
+
+.pricing-model-name {
+  font-weight: 500;
+  color: #5c4a3a;
+}
+
+.pricing-model-price-input {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 0.5rem;
+  min-width: 120px;
+
+  .form-label {
+    margin-bottom: 0;
+  }
+
+  input {
+    width: 66px;
+  }
+}
+
+.configuration-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.configuration-item {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding: 1rem;
+  border: 1px solid #8b7355;
+  border-radius: 0.25rem;
+  background-color: #f5f0e6;
+
+  &.new-config {
+    border-color: #5a7d5a;
+    background-color: #f0f5f0;
+  }
+}
+
+.config-key,
+.config-value {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.config-textarea {
+  font-family: 'Courier New', monospace;
+  font-size: 0.875rem;
+  resize: vertical;
+}
+
+.action-buttons {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.btn-add,
+.btn-cancel,
+.btn-save {
+  padding: 0.5rem 1rem;
+  border: 1px solid #5c4a3a;
+  border-radius: 0.25rem;
+  background-color: #e8e0d5;
+  cursor: pointer;
+  font-size: 0.875rem;
+  transition: background-color 0.2s;
+
+  &:hover:not(:disabled) {
+    background-color: #d8d0c5;
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
+
+.btn-save {
+  background-color: #5a7d5a;
+  color: white;
+  border-color: #4a634a;
+
+  &:hover:not(:disabled) {
+    background-color: #4a634a;
+  }
+}
+
+.success-message {
+  padding: 0.75rem;
+  background-color: #d4edda;
+  border: 1px solid #c3e6cb;
+  border-radius: 0.25rem;
+  color: #155724;
+  margin-bottom: 1rem;
+}
+
+.error-box {
+  .text-error {
+    color: #721c24;
+  }
+}

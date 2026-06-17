@@ -94,10 +94,11 @@
 }
 
 .btn-delete {
-  padding: 8px 16px;
+  margin-top:8px;
+  padding: 8px 82px;
   background: transparent;
   color: v.$color-dm-text;
-  border: 1px solid v.$color-dm-border;
+  border: 2px solid v.$color-dm-border;
   border-radius: 4px;
   cursor: pointer;
   font-size: 13px;
@@ -116,9 +117,165 @@
 
 .user-card-actions {
   display: flex;
-  align-items: center;
+  flex-direction: column;
   gap: 10px;
   flex-shrink: 0;
+  margin-top:12px;
+}
+
+.role-toggles {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 8px;
+}
+
+.subscription-section {
+  margin-bottom: 12px;
+  padding: 12px;
+  background: v.$color-base-tan-11;
+  border: 1px solid v.$color-border;
+  border-radius: 4px;
+}
+
+.subscription-edit {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.sub-field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+
+  label {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: v.$color-base-brown-14;
+  }
+
+  input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    cursor: pointer;
+  }
+}
+
+.sub-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 4px;
+}
+
+.btn-save-sub {
+  padding: 6px 12px;
+  background: transparent;
+  color: v.$color-base-brown-14;
+  border: 1px solid v.$color-border-accent;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 12px;
+  transition: all 0.2s;
+
+  &:hover:not(:disabled) {
+    background: v.$color-border-accent;
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
+
+.btn-cancel-sub {
+  padding: 6px 12px;
+  background: transparent;
+  color: v.$color-base-brown-14;
+  border: 1px solid v.$color-border;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 12px;
+  transition: all 0.2s;
+
+  &:hover {
+    border-color: v.$color-base-brown-14;
+    color: v.$color-base-brown-14;
+  }
+}
+
+.subscription-display {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.sub-read-only,
+.sub-editable {
+  font-size: 12px;
+  color: v.$color-base-brown-14;
+  display: flex;
+  gap: 8px;
+}
+
+.sub-label {
+  font-weight: 600;
+  color: v.$color-base-brown-15;
+  min-width: 140px;
+}
+
+.sub-value {
+  color: v.$color-base-brown-14;
+  font-family: monospace;
+  font-size: 11px;
+  word-break: break-all;
+}
+
+.btn-edit-sub {
+  margin-top: 8px;
+  padding: 6px 12px;
+  background: transparent;
+  color: v.$color-base-brown-14;
+  border: 1px solid v.$color-border;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 12px;
+  transition: all 0.2s;
+  align-self: flex-start;
+
+  &:hover {
+    border-color: v.$color-border-accent;
+    color: v.$color-base-brown-14;
+  }
+}
+
+.btn-role-toggle {
+  padding: 6px 12px;
+  background: transparent;
+  color: v.$color-base-brown-14;
+  border: 1px solid v.$color-border;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 12px;
+  transition: all 0.2s;
+  white-space: nowrap;
+
+  &:hover:not(:disabled) {
+    border-color: v.$color-border-accent;
+    color: v.$color-base-brown-14;
+  }
+
+  &:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+  }
+
+  &--active {
+    background: v.$color-border-accent;
+    border-color: v.$color-border-accent;
+    color: v.$color-base-brown-14;
+  }
 }
 
 .demo-assign {
@@ -127,8 +284,28 @@
   gap: 6px;
 }
 
-.demo-assign app-campaign-dropdown {
+.demo-select {
   min-width: 200px;
+  background: v.$color-base-tan-12;
+  border: 1px solid v.$campaign-portal-border-medium;
+  border-radius: 5px;
+  color: v.$color-base-brown-14;
+  font-family: v.$font-body;
+  font-size: 14px;
+  padding: 8px 10px;
+  cursor: pointer;
+  transition: border-color 0.15s ease;
+
+  &:hover,
+  &:focus {
+    border-color: v.$campaign-portal-border-active;
+    outline: none;
+  }
+
+  option {
+    background: v.$color-base-tan-12;
+    color: v.$color-base-brown-14;
+  }
 }
 
 .btn-demo-save {
@@ -185,6 +362,27 @@
   letter-spacing: 0.1em;
   text-transform: uppercase;
   color: v.$color-base-brown-14;
+
+  &.checkbox-label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    text-transform: none;
+    letter-spacing: normal;
+
+    input[type="checkbox"] {
+      width: 18px;
+      height: 18px;
+      cursor: pointer;
+    }
+
+    span {
+      font-size: 13px;
+      font-weight: 400;
+      color: v.$color-base-brown-14;
+    }
+  }
 }
 
 .form-hint {
@@ -292,6 +490,36 @@
 .modal-actions {
   display: flex;
   justify-content: flex-end;
+.btn-confirm-role {
+  padding: 8px 16px;
+  background: transparent;
+  color: v.$color-base-brown-14;
+  border: 1px solid v.$color-border-accent;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 13px;
+  transition: all 0.2s;
+
+  &:hover:not(:disabled) {
+    background: v.$color-border-accent;
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
+
+.modal-error {
+  font-size: 13px;
+  color: v.$color-dm-text;
+  padding: 10px 14px;
+  border: 1px solid v.$color-dm-border;
+  border-radius: 4px;
+  background: v.$color-base-tan-12;
+  margin-bottom: 16px;
+}
+
   gap: 12px;
 }
 

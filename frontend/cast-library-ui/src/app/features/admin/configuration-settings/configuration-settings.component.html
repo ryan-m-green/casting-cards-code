@@ -1,0 +1,121 @@
+<div class="pc scroll-body">
+
+  <app-journal-title title="Configuration Settings" />
+
+  @if (loading()) {
+    <div class="wb wb-narrow">
+      <p class="wbd-journal">Loading configuration…</p>
+    </div>
+  } @else if (errorMsg()) {
+    <div class="wb wb-narrow error-box">
+      <p class="wbd-journal text-error">{{ errorMsg() }}</p>
+    </div>
+  } @else {
+    <div class="wb wb-narrow">
+      @if (successMsg()) {
+        <div class="success-message">{{ successMsg() }}</div>
+      }
+
+      @if (pricingModels().length > 0) {
+        <div class="section-title">Pricing Model</div>
+        <div class="pricing-models-section">
+          @for (model of pricingModels(); track model.id) {
+            <div class="pricing-model-item">
+              <div class="pricing-model-row">
+                <label class="pricing-model-label">
+                  <input
+                    type="radio"
+                    [name]="'pricing-model'"
+                    [checked]="model.isActive"
+                    (change)="setActivePricingModel(model.modelName)"
+                  />
+                  <span class="pricing-model-name">{{ model.modelName }}</span>
+                </label>
+                <div class="pricing-model-price-input">
+                  <label class="form-label" [for]="'price-' + model.id">Price ($)</label>
+                  <input
+                    [id]="'price-' + model.id"
+                    class="fi"
+                    type="number"
+                    step="0.01"
+                    [ngModel]="model.priceInCents / 100"
+                    (ngModelChange)="updatePricingModelPrice(model.id, $event)"
+                  />
+                </div>
+              </div>
+            </div>
+          }
+        </div>
+      }
+
+      <div class="section-title">Configuration Keys</div>
+      <div class="configuration-list">
+        @for (config of regularConfigurations(); track config.id || config.key) {
+          <div class="configuration-item">
+            <div class="config-key">
+              <label class="form-label" [for]="'config-key-' + (config.id || config.key)">Key</label>
+              <input
+                [id]="'config-key-' + (config.id || config.key)"
+                class="fi"
+                type="text"
+                [(ngModel)]="config.key"
+              />
+            </div>
+            <div class="config-value">
+              <label class="form-label" [for]="'config-value-' + (config.id || config.key)">Value (JSON)</label>
+              <textarea
+                [id]="'config-value-' + (config.id || config.key)"
+                class="fi config-textarea"
+                [(ngModel)]="config.value"
+                rows="6"
+              ></textarea>
+            </div>
+          </div>
+        }
+      </div>
+
+      @if (showAddForm()) {
+        <div class="configuration-item new-config">
+          <div class="config-key">
+            <label class="form-label" for="new-config-key">New Key</label>
+            <input
+              id="new-config-key"
+              class="fi"
+              type="text"
+              [(ngModel)]="newKey"
+              placeholder="Enter new key name"
+            />
+          </div>
+          <div class="config-value">
+            <label class="form-label" for="new-config-value">New Value (JSON)</label>
+            <textarea
+              id="new-config-value"
+              class="fi config-textarea"
+              [(ngModel)]="newValue"
+              rows="6"
+              placeholder="Enter JSON value"
+            ></textarea>
+          </div>
+        </div>
+      }
+
+      <div class="action-buttons">
+        @if (!showAddForm()) {
+          <button class="btn-add" (click)="toggleAddForm()">Add New Key</button>
+        } @else {
+          <button class="btn-add" (click)="addConfiguration()" [disabled]="!newKey || !newValue">Save New Key</button>
+          <button class="btn-cancel" (click)="toggleAddForm()">Cancel</button>
+        }
+        <button
+          class="btn-save"
+          (click)="saveConfigurations()"
+          [disabled]="saving()"
+        >
+          {{ saving() ? 'Saving…' : 'Save All Changes' }}
+        </button>
+      </div>
+    </div>
+  }
+
+  <div class="orn orn-mt">· · ·</div>
+</div>

@@ -3,6 +3,9 @@
   <div class="wr wr-page-header">
     <a class="btn-ghost" routerLink="/dm/campaigns">← Library</a>
   </div>
+
+  <img src="/goblin.PNG" alt="Goblin" class="goblin-image" />
+
   <div class="title-divider"></div>
 
   <!-- ── Tab navigation ──────────────────────────────────────────────────────── -->
@@ -154,6 +157,13 @@
     <div class="autosave-indicator saving">Saving…</div>
   } @else if (formSaveStatus() === 'saved') {
     <div class="autosave-indicator saved">Saved</div>
+  }
+
+  @if (limitError()) {
+    <div class="limit-error-message">
+      {{ limitError() }}
+      <button class="limit-error-close" (click)="limitError.set(null)">×</button>
+    </div>
   }
 
   } <!-- end @if world-setup -->

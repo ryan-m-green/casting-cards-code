@@ -2,9 +2,17 @@
   <app-journal-watermark pageType="sublocation" />
   <app-journal-title title="Sublocation Library" />
   <div class="wr wr-page-header">
+    <app-upgrade-badge
+      [visible]="subscription.isFreeTrial()"
+      (badgeClick)="openUpgradeDrawer()"
+      class="upgrade-badge-library" />
     <input class="search-bar search-bar--header" type="text" placeholder="Name · Description…"
            [value]="searchTerm()" (input)="searchTerm.set($any($event.target).value)" />
-    <button class="campaign-primary-btn wr-ml-auto" routerLink="/dm/sublocations/new">+ Create Sublocation</button>
+    <button class="campaign-primary-btn wr-ml-auto"
+            [class.disabled]="sublocationLimitReached() || isCreateDisabled()"
+            [attr.disabled]="(sublocationLimitReached() || isCreateDisabled()) ? 'true' : null"
+            [routerLink]="(sublocationLimitReached() || isCreateDisabled()) ? null : '/dm/sublocations/new'"
+            (click)="(sublocationLimitReached() || isCreateDisabled()) ? $event.preventDefault() : null">+ Create</button>
   </div>
 
   <div class="card-grid">

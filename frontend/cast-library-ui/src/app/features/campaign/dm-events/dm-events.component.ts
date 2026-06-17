@@ -10,6 +10,9 @@ import { environment } from '../../../../environments/environment';
 import { NoteDestinationPickerComponent } from '../../../shared/components/note-destination-picker/note-destination-picker.component';
 import { LockIconComponent } from '../../../shared/components/lock-icon/lock-icon.component';
 import { ConfirmDialogComponent } from '../../../shared/components/confirm-dialog/confirm-dialog.component';
+import { StorylineFilterBarComponent } from '../../../shared/components/storyline-filter-bar/storyline-filter-bar.component';
+import { EntityBadgeComponent } from '../../../shared/components/entity-badge/entity-badge.component';
+import { ChroniclesTimelineComponent } from '../../../shared/components/chronicles-timeline/chronicles-timeline.component';
 import { CampaignLocationInstance } from '../../../shared/models/location.model';
 import { CampaignSublocationInstance } from '../../../shared/models/sublocation.model';
 import { CampaignCastInstance } from '../../../shared/models/cast.model';
@@ -17,14 +20,16 @@ import { CampaignFactionInstance } from '../../../shared/models/faction.model';
 import { CampaignPlayer } from '../../../shared/models/campaign.model';
 import { TimeOfDay } from '../../../shared/models/time-of-day.model';
 import { Session } from '../../../shared/models/session.model';
+import { ChroniclesResponse, ChronicleSession, ChronicleItem } from '../../../shared/models/chronicle.model';
+import { CampaignDropdownOption } from '../../../shared/components/campaign-dropdown/campaign-dropdown.component';
 
-type EventsTab = 'events' | 'create-events' | 'create-handout';
+type EventsTab = 'events' | 'create-events' | 'create-handout' | 'chronicles';
 type DestType = 'cast' | 'faction' | 'campaign' | 'sublocation' | 'location' | 'player' | 'none' | 'time-of-day';
 
 interface LinkedItem {
-  entityType: string;
+  entityType: string | null;
   entityId: string;
-  entityName: string;
+  entityName: string | null;
   todPositionPercent?: number | null;
 }
 
@@ -35,6 +40,7 @@ interface CampaignEvent {
   body: string;
   linkedEntities: LinkedItem[];
   visibleToPlayers: boolean;
+  markedForArchive: boolean;
   sortOrder: number;
   createdAt: string;
   imageUrl?: string;
@@ -46,7 +52,7 @@ interface CampaignEvent {
 @Component({
   selector: 'app-dm-events',
   standalone: true,
-  imports: [CommonModule, FormsModule, NoteDestinationPickerComponent, LockIconComponent, ConfirmDialogComponent],
+  imports: [CommonModule, FormsModule, NoteDestinationPickerComponent, LockIconComponent, StorylineFilterBarComponent, ChroniclesTimelineComponent],
   templateUrl: './dm-events.component.html',
   styleUrl: './dm-events.component.scss',
 })
@@ -54,7 +60,7 @@ export class DmEventsComponent implements OnInit, OnDestroy {
   private route    = inject(ActivatedRoute);
   private shellSvc = inject(CampaignShellService);
   private http     = inject(HttpClient);
-  private sanitizer = inject(DomSanitizer);
+  sanitizer = inject(DomSanitizer);
   private sessionService = inject(SessionService);
 
   campaignId = '';
@@ -64,12 +70,13 @@ export class DmEventsComponent implements OnInit, OnDestroy {
   // Events list
   events        = signal<CampaignEvent[]>([]);
   loadingEvents = signal(false);
-  expandedId    = signal<string | null>(null);
+  expandedIds   = signal<Set<string>>(new Set());
 
   // Inline edit
   editingId        = signal<string | null>(null);
   editTitle        = signal('');
   editDraft        = signal('');
+  editSceneType    = signal<'campaign-event' | 'campaign-handout'>('campaign-event');
   editDestType     = signal<DestType | null>(null);
   editEntityId     = signal('');
   editLinkedEntities = signal<LinkedItem[]>([]);
@@ -99,12 +106,36 @@ export class DmEventsComponent implements OnInit, OnDestroy {
   endSessionPanelOpen = signal(false);
   endSessionPanelClosing = signal(false);
   endSessionPanelAnimating = signal(false);
-  sessionTitle = signal('');
+  alternateTitle = signal('');
   private readonly PANEL_SLIDE_DURATION = 260;
 
   // Filter state — empty array = show all (persisted to localStorage per campaign)
   typeFilters       = signal<string[]>([]);
   visibilityFilters = signal<string[]>([]);
+
+  // Chronicles state
+  chronicles       = signal<ChroniclesResponse | null>(null);
+  loadingChronicles = signal(false);
+  chroniclesPage   = signal(1);
+  chroniclesSearchQuery = signal('');
+  chroniclesTypeFilters = signal<string[]>([]);
+  expandedSessionIds = signal<Set<string>>(new Set());
+  chronicleEditingId = signal<string | null>(null);
+  chronicleEditTitle = signal('');
+  chronicleEditBody = signal('');
+  chronicleSaving = signal(false);
+  chronicleSaveError = signal<string | null>(null);
+  chronicleEditSessionId = signal('');
+  chronicleEditSortOrder = signal(0);
+
+  sessionOptions = computed<CampaignDropdownOption[]>(() => {
+    const chrons = this.chronicles();
+    if (!chrons || !chrons.sessions) return [];
+    return chrons.sessions.map(s => ({
+      value: s.sessionId,
+      label: `Session ${s.sessionNumber}${s.alternateTitle ? ' - ' + s.alternateTitle : ''}`
+    }));
+  });
 
   private filterStorageKey(suffix: string): string {
     return `dm-events-filter-${this.campaignId}-${suffix}`;
@@ -124,7 +155,7 @@ export class DmEventsComponent implements OnInit, OnDestroy {
     const vis   = this.visibilityFilters();
     return this.events().filter(ev => {
       if (types.length > 0) {
-        const effectiveType = ev.imageUrl ? 'handout' : (ev.linkedEntities.length > 0 ? ev.linkedEntities[0].entityType : 'none');
+        const effectiveType = ev.imageUrl ? 'handout' : (ev.linkedEntities.length > 0 ? ev.linkedEntities[0].entityType ?? 'none' : 'none');
         if (!types.includes(effectiveType)) return false;
       }
       if (vis.length > 0) {
@@ -144,6 +175,16 @@ export class DmEventsComponent implements OnInit, OnDestroy {
     const next = current.includes(type) ? current.filter(t => t !== type) : [...current, type];
     this.typeFilters.set(next);
     localStorage.setItem(this.filterStorageKey('types'), JSON.stringify(next));
+  }
+
+  onEventsTypeFilterChange(filters: string[]) {
+    this.typeFilters.set(filters);
+    localStorage.setItem(this.filterStorageKey('types'), JSON.stringify(filters));
+  }
+
+  onEventsVisibilityFilterChange(filters: string[]) {
+    this.visibilityFilters.set(filters);
+    localStorage.setItem(this.filterStorageKey('visibility'), JSON.stringify(filters));
   }
 
   toggleVisibilityFilter(v: string) {
@@ -195,6 +236,14 @@ export class DmEventsComponent implements OnInit, OnDestroy {
     return true;
   });
 
+  readonly allUsedEntities = computed<LinkedItem[]>(() => {
+    const allItems: LinkedItem[] = [];
+    for (const ev of this.events()) {
+      allItems.push(...ev.linkedEntities.filter(le => le.entityType !== 'time-of-day' && le.entityType !== 'player'));
+    }
+    return allItems;
+  });
+
   onHandoutDestTypeChange(value: string) {
     this.handoutDestType.set(value as DestType);
     this.handoutEntityId.set('');
@@ -222,6 +271,7 @@ export class DmEventsComponent implements OnInit, OnDestroy {
   setTab(tab: EventsTab) {
     this.activeTab.set(tab);
     if (tab === 'events') this.loadEvents();
+    if (tab === 'chronicles') this.loadChronicles();
   }
 
   onDestTypeChange(value: string) {
@@ -275,12 +325,14 @@ export class DmEventsComponent implements OnInit, OnDestroy {
 
   toggleExpand(id: string) {
     if (this.editingId() !== null) return;
-    if (this.expandedId() === id) {
-      this.expandedId.set(null);
+    const current = new Set(this.expandedIds());
+    if (current.has(id)) {
+      current.delete(id);
       this.editingId.set(null);
     } else {
-      this.expandedId.set(id);
+      current.add(id);
     }
+    this.expandedIds.set(current);
   }
 
   toggleEdit(ev: CampaignEvent, domEvent: Event) {
@@ -291,6 +343,7 @@ export class DmEventsComponent implements OnInit, OnDestroy {
       this.editingId.set(ev.id);
       this.editTitle.set(ev.title);
       this.editDraft.set(ev.body);
+      this.editSceneType.set((ev.sceneType as 'campaign-event' | 'campaign-handout') ?? 'campaign-event');
       this.editLinkedEntities.set(ev.linkedEntities);
       const firstLinked = ev.linkedEntities.length > 0 ? ev.linkedEntities[0] : null;
       this.editDestType.set((firstLinked?.entityType as DestType) ?? 'none');
@@ -325,6 +378,16 @@ export class DmEventsComponent implements OnInit, OnDestroy {
     this.editDestType.set(value as DestType);
     this.editEntityId.set('');
     if (value !== 'time-of-day') this.editTodPositionPercent.set(null);
+  }
+
+  onEditSceneTypeChange(value: 'campaign-event' | 'campaign-handout') {
+    this.editSceneType.set(value);
+    if (value === 'campaign-event') {
+      const prev = this.editPreviewUrl();
+      if (prev && prev.startsWith('blob:')) URL.revokeObjectURL(prev);
+      this.editPreviewUrl.set(null);
+      this.editFile.set(null);
+    }
   }
 
   onEditFileSelected(event: Event) {
@@ -364,6 +427,7 @@ export class DmEventsComponent implements OnInit, OnDestroy {
     const payload = {
       title,
       body: this.editDraft(),
+      sceneType: this.editSceneType(),
       linkedEntities,
       todPositionPercent: resolvedTodPercent,
     };
@@ -383,21 +447,22 @@ export class DmEventsComponent implements OnInit, OnDestroy {
           ).subscribe({
             next: (res: any) => {
               this.events.update(evs => evs.map(e => e.id === ev.id
-                ? { ...e, title, body: this.editDraft(), linkedEntities, todPositionPercent: resolvedTodPercent, imageUrl: res.imageUrl }
+                ? { ...e, title, body: this.editDraft(), sceneType: this.editSceneType(), linkedEntities, todPositionPercent: resolvedTodPercent, imageUrl: res.imageUrl, visibleToPlayers: e.visibleToPlayers }
                 : e));
               this._finishEditSave(ev.id);
             },
             error: () => {
               this.events.update(evs => evs.map(e => e.id === ev.id
-                ? { ...e, title, body: this.editDraft(), linkedEntities, todPositionPercent: resolvedTodPercent }
+                ? { ...e, title, body: this.editDraft(), sceneType: this.editSceneType(), linkedEntities, todPositionPercent: resolvedTodPercent, visibleToPlayers: e.visibleToPlayers }
                 : e));
               this.editSaving.set(false);
               this.editSaveError.set('Details saved but image upload failed.');
             },
           });
         } else {
+          const shouldClearImage = ev.sceneType === 'campaign-handout' && this.editSceneType() === 'campaign-event';
           this.events.update(evs => evs.map(e => e.id === ev.id
-            ? { ...e, title, body: this.editDraft(), linkedEntities, todPositionPercent: resolvedTodPercent }
+            ? { ...e, title, body: this.editDraft(), sceneType: this.editSceneType(), linkedEntities, todPositionPercent: resolvedTodPercent, imageUrl: shouldClearImage ? undefined : e.imageUrl, visibleToPlayers: e.visibleToPlayers }
             : e));
           this._finishEditSave(ev.id);
         }
@@ -440,7 +505,9 @@ export class DmEventsComponent implements OnInit, OnDestroy {
         this.events.update(evs => evs.filter(e => e.id !== eventId));
         this.confirmDeleteId.set(null);
         this.deleting.set(false);
-        if (this.expandedId() === eventId) this.expandedId.set(null);
+        const current = new Set(this.expandedIds());
+        current.delete(eventId);
+        this.expandedIds.set(current);
         if (this.editingId() === eventId) this._clearEditState();
       },
       error: () => {
@@ -461,10 +528,10 @@ export class DmEventsComponent implements OnInit, OnDestroy {
       isVisible: next
     }));
 
-    const isTimeOfDayOnlyEvent = event.linkedEntities.length === 1 
-      && event.linkedEntities[0].entityType === 'time-of-day' 
+    const isGmOnlyCampaignEvent = event.linkedEntities.length === 0 
       && event.sceneType === 'campaign-event';
-    if (!isTimeOfDayOnlyEvent) {
+
+    if (!isGmOnlyCampaignEvent) {
       entityVisibilities.push({
         entityType: event.sceneType,
         entityId: event.id,
@@ -483,7 +550,21 @@ export class DmEventsComponent implements OnInit, OnDestroy {
       });
   }
 
+  toggleArchiveMark(event: CampaignEvent, domEvent: Event) {
+    domEvent.stopPropagation();
+
+    const next = !event.markedForArchive;
+
+    this.http.patch(`${environment.apiUrl}/api/campaigns/${this.campaignId}/events/${event.id}/archive-mark`, next)
+      .subscribe({
+        next: () => {
+          this.events.update(evs => evs.map(e => e.id === event.id ? { ...e, markedForArchive: next } : e));
+        },
+      });
+  }
+
   entityNameFor(event: CampaignEvent): string {
+    if (event.sceneType === 'campaign-handout') return 'GM Handout';
     if (event.linkedEntities.length === 0) return 'GM Note';
     if (event.linkedEntities.length > 1) return 'Multitrigger';
     const first = event.linkedEntities[0];
@@ -502,8 +583,9 @@ export class DmEventsComponent implements OnInit, OnDestroy {
   groupedTriggers(event: CampaignEvent): Record<string, string[]> {
     const groups: Record<string, string[]> = {};
     for (const item of event.linkedEntities) {
-      if (!groups[item.entityType]) {
-        groups[item.entityType] = [];
+      const type = item.entityType ?? 'unknown';
+      if (!groups[type]) {
+        groups[type] = [];
       }
       let name = item.entityName;
       if (!name && item.entityId) {
@@ -516,7 +598,7 @@ export class DmEventsComponent implements OnInit, OnDestroy {
         else if (item.entityType === 'campaign')   name = 'Campaign';
         else name = id;
       }
-      groups[item.entityType].push(name || item.entityId);
+      groups[type].push(name || item.entityId);
     }
     return groups;
   }
@@ -653,10 +735,7 @@ export class DmEventsComponent implements OnInit, OnDestroy {
       todPct = timeOfDayEntity.todPositionPercent;
     }
 
-    // Determine visibility: if "none" or no linked entities, not visible to players
-    // Time-of-day is not visible to players
-    const hasLinked = linkedEntities.length > 0 || this.entityId();
-    const isVisibleToPlayers = d !== 'none' && d !== 'time-of-day' && hasLinked;
+    const isVisibleToPlayers = false;
 
     this.saving.set(true);
     this.saveError.set(null);
@@ -824,11 +903,10 @@ export class DmEventsComponent implements OnInit, OnDestroy {
       setTimeout(() => {
         this.endSessionPanelOpen.set(false);
         this.endSessionPanelClosing.set(false);
-        this.sessionTitle.set('');
+        this.alternateTitle.set('');
       }, this.PANEL_SLIDE_DURATION);
     } else if (!this.endSessionPanelOpen()) {
-      const active = this.activeSession();
-      this.sessionTitle.set(active?.title ?? `Session ${active?.sessionNumber ?? ''}`);
+      this.alternateTitle.set('');
       this.endSessionPanelOpen.set(true);
       this.endSessionPanelAnimating.set(true);
       setTimeout(() => {
@@ -842,7 +920,7 @@ export class DmEventsComponent implements OnInit, OnDestroy {
     setTimeout(() => {
       this.endSessionPanelOpen.set(false);
       this.endSessionPanelClosing.set(false);
-      this.sessionTitle.set('');
+      this.alternateTitle.set('');
     }, this.PANEL_SLIDE_DURATION);
   }
 
@@ -853,16 +931,17 @@ export class DmEventsComponent implements OnInit, OnDestroy {
 
     const currentDay = this.tod()?.daysPassed ?? 0;
     
-    this.sessionService.endSession(this.campaignId, currentDay).subscribe({
+    this.sessionService.endSession(this.campaignId, currentDay, this.alternateTitle()).subscribe({
       next: () => {
         this.activeSession.set(null);
         this.loadSessionCount();
         this.endingSession.set(false);
         this.loadEvents();
+        this.loadChronicles();
         setTimeout(() => {
           this.endSessionPanelOpen.set(false);
           this.endSessionPanelClosing.set(false);
-          this.sessionTitle.set('');
+          this.alternateTitle.set('');
         }, this.PANEL_SLIDE_DURATION);
       },
       error: () => {
@@ -872,7 +951,192 @@ export class DmEventsComponent implements OnInit, OnDestroy {
     });
   }
 
+  // Chronicles methods
+  loadChronicles(searchQuery?: string, typeFilters?: string[]) {
+    this.chronicles.set(null);
+    this.loadingChronicles.set(true);
+    const params = new URLSearchParams({
+      pageNumber: this.chroniclesPage().toString(),
+      pageSize: '5'
+    });
+
+    const actualSearchQuery = searchQuery ?? this.chroniclesSearchQuery();
+    const actualTypeFilters = typeFilters ?? this.chroniclesTypeFilters();
+
+    if (actualSearchQuery) {
+      params.append('searchQuery', actualSearchQuery);
+    }
+
+    actualTypeFilters.forEach(filter => {
+      params.append('typeFilters', filter);
+    });
+
+    this.http.get<ChroniclesResponse>(
+      `${environment.apiUrl}/api/campaigns/${this.campaignId}/chronicles/sessions-paged?${params}`
+    ).subscribe({
+      next: (response) => {
+        this.chronicles.set(response);
+        // Initialize all sessions as expanded
+        const allSessionIds = new Set(response.sessions.map(s => s.sessionId));
+        this.expandedSessionIds.set(allSessionIds);
+        this.loadingChronicles.set(false);
+      },
+      error: () => {
+        this.loadingChronicles.set(false);
+      }
+    });
+  }
+
+  onChronicleSearch(payload: { query: string; filters: string[] }) {
+    this.chroniclesSearchQuery.set(payload.query);
+    this.chroniclesTypeFilters.set(payload.filters);
+    this.chroniclesPage.set(1);
+    this.loadChronicles(payload.query, payload.filters);
+  }
+
+  onChronicleReset() {
+    this.chroniclesSearchQuery.set('');
+    this.chroniclesTypeFilters.set([]);
+    this.chroniclesPage.set(1);
+    this.loadChronicles();
+  }
+
+  chronicleNextPage() {
+    const current = this.chroniclesPage();
+    const total = this.chronicles()?.totalPages ?? 1;
+    if (current < total) {
+      this.chroniclesPage.set(current + 1);
+      this.loadChronicles();
+    }
+  }
+
+  chroniclePrevPage() {
+    const current = this.chroniclesPage();
+    if (current > 1) {
+      this.chroniclesPage.set(current - 1);
+      this.loadChronicles();
+    }
+  }
+
+  toggleSessionExpand(sessionId: string) {
+    const current = new Set(this.expandedSessionIds());
+    if (current.has(sessionId)) {
+      current.delete(sessionId);
+    } else {
+      current.add(sessionId);
+    }
+    this.expandedSessionIds.set(current);
+  }
+
+  openChronicleEdit(chronicle: ChronicleItem) {
+    this.chronicleEditingId.set(chronicle.id);
+    this.chronicleEditTitle.set(chronicle.title);
+    this.chronicleEditBody.set(chronicle.body);
+    this.chronicleSaveError.set(null);
+
+    // Find the session and sort order from the chronicles structure
+    const chrons = this.chronicles();
+    if (chrons && chrons.sessions) {
+      for (const session of chrons.sessions) {
+        const index = session.chronicles.findIndex(c => c.id === chronicle.id);
+        if (index !== -1) {
+          this.chronicleEditSessionId.set(session.sessionId);
+          this.chronicleEditSortOrder.set(index + 1);
+          break;
+        }
+      }
+    }
+  }
+
+  closeChronicleEdit() {
+    this.chronicleEditingId.set(null);
+    this.chronicleEditTitle.set('');
+    this.chronicleEditBody.set('');
+    this.chronicleEditSessionId.set('');
+    this.chronicleEditSortOrder.set(0);
+    this.chronicleSaveError.set(null);
+  }
+
+  saveChronicleEdit(id: string) {
+    if (!this.chronicleEditTitle().trim()) {
+      this.chronicleSaveError.set('Title is required');
+      return;
+    }
+
+    this.chronicleSaving.set(true);
+    this.chronicleSaveError.set(null);
+
+    this.http.patch(
+      `${environment.apiUrl}/api/campaigns/${this.campaignId}/chronicles/${id}`,
+      {
+        title: this.chronicleEditTitle(),
+        body: this.chronicleEditBody(),
+        sessionId: this.chronicleEditSessionId(),
+        sortOrder: this.chronicleEditSortOrder()
+      }
+    ).subscribe({
+      next: () => {
+        this.chronicleSaving.set(false);
+        this.closeChronicleEdit();
+        this.loadChronicles();
+      },
+      error: () => {
+        this.chronicleSaving.set(false);
+        this.chronicleSaveError.set('Failed to save chronicle');
+      }
+    });
+  }
+
+  onChronicleSessionChange(sessionId: string) {
+    this.chronicleEditSessionId.set(sessionId);
+  }
+
+  onChronicleSortOrderChange(sortOrder: number) {
+    this.chronicleEditSortOrder.set(sortOrder);
+  }
+
+  deleteSession(sessionId: string) {
+    if (!confirm('Are you sure you want to delete this session? This action cannot be undone.')) {
+      return;
+    }
+
+    this.http.delete(
+      `${environment.apiUrl}/api/campaigns/${this.campaignId}/chronicles/sessions/${sessionId}`
+    ).subscribe({
+      next: () => {
+        this.loadChronicles();
+      },
+      error: () => {
+        alert('Failed to delete session');
+      }
+    });
+  }
+
+  formatSessionDate(dateStr: string): string {
+    const date = new Date(dateStr);
+    return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+  }
+
+  formatInGameDays(days: number[]): string {
+    if (days.length === 0) return '';
+    if (days.length === 1) return `In-Game Day ${days[0]}`;
+    const sorted = [...days].sort((a, b) => a - b);
+    return `In-Game Days ${sorted.join(', ')}`;
+  }
+
   get unlockedEventsForArchive(): CampaignEvent[] {
-    return this.events().filter(ev => ev.visibleToPlayers && ev.linkedEntities.length > 0);
+    return this.events().filter(ev => {
+      const isUnlockedOrMarked = ev.visibleToPlayers || ev.markedForArchive;
+      const isGmNote = ev.sceneType === 'campaign-event' && ev.linkedEntities.length === 0;
+      return isUnlockedOrMarked && !isGmNote;
+    });
+  }
+
+  get gmNotesForArchive(): CampaignEvent[] {
+    return this.events().filter(ev => {
+      const isUnlockedOrMarked = ev.visibleToPlayers || ev.markedForArchive;
+      const isGmNote = ev.sceneType === 'campaign-event' && ev.linkedEntities.length === 0;
+      return isUnlockedOrMarked && isGmNote;
+    });
   }
 }

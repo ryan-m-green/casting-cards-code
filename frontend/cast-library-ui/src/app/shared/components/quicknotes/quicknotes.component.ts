@@ -5,12 +5,15 @@ import {
   inject,
   ViewChild,
   ElementRef,
+  OnInit,
+  OnDestroy,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { catchError, switchMap, of } from 'rxjs';
+import { Subscription } from 'rxjs';
 import { environment } from '../../../../environments/environment';
 import { CampaignDetail, CampaignCastPlayerNotes, CampaignPlayerNotes } from '../../models/campaign.model';
 import { CampaignLocationInstance } from '../../models/location.model';
@@ -19,6 +22,7 @@ import { CampaignCastInstance } from '../../models/cast.model';
 import { CampaignFactionInstance } from '../../models/faction.model';
 import { NoteDestinationPickerComponent } from '../note-destination-picker/note-destination-picker.component';
 import { PlayerCampaignShellService } from '../../../core/player-campaign-shell.service';
+import { CampaignHubService } from '../../../core/hub/campaign-hub.service';
 
 type DestinationType = 'queue' | 'location' | 'sublocation' | 'cast' | 'faction' | 'campaign';
 
@@ -29,7 +33,7 @@ type DestinationType = 'queue' | 'location' | 'sublocation' | 'cast' | 'faction'
   templateUrl: './quicknotes.component.html',
   styleUrl: './quicknotes.component.scss',
 })
-export class QuicknotesComponent {
+export class QuicknotesComponent implements OnInit, OnDestroy {
   @Input() campaignId!: string;
   @Input() campaign: CampaignDetail | null = null;
 
@@ -39,6 +43,8 @@ export class QuicknotesComponent {
   private http   = inject(HttpClient);
   private router  = inject(Router);
   shellSvc        = inject(PlayerCampaignShellService);
+  private hub     = inject(CampaignHubService);
+  private hubSubscription: Subscription | null = null;
 
   isOpen      = signal(false);
   isClosing   = signal(false);
@@ -50,6 +56,25 @@ export class QuicknotesComponent {
   saveSuccess = signal(false);
 
   private readonly SLIDE_DURATION = 260;
+
+  ngOnInit() {
+    this.hubSubscription = this.hub.quickNoteQueued$.subscribe(e => {
+      if (e?.campaignId === this.campaignId) {
+        this.refreshQueueCount();
+      }
+    });
+  }
+
+  ngOnDestroy() {
+    this.hubSubscription?.unsubscribe();
+  }
+
+  private refreshQueueCount() {
+    this.http
+      .get<{ id: string }[]>(`${environment.apiUrl}/api/campaigns/${this.campaignId}/quicknote-queue`)
+      .pipe(catchError(() => of([])))
+      .subscribe(items => this.shellSvc.quicknoteQueueCount.set(items.length));
+  }
 
   toggle() {
     if (this.isOpen() && !this.isClosing()) {

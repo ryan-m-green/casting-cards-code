@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, signal, computed, inject, untracked } from '@angular/core';
+import { Component, OnInit, OnDestroy, signal, computed, inject, untracked, NgZone } from '@angular/core';
 import { RouterOutlet, RouterLink, ActivatedRoute, Router, NavigationEnd } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
@@ -37,6 +37,7 @@ export class PlayerCampaignShellComponent implements OnInit, OnDestroy {
   private hub        = inject(CampaignHubService);
   private auth       = inject(AuthService);
   private transition = inject(PortalTransitionService);
+  private ngZone     = inject(NgZone);
   shellSvc           = inject(PlayerCampaignShellService);
 
   campaignId        = signal('');
@@ -79,8 +80,10 @@ export class PlayerCampaignShellComponent implements OnInit, OnDestroy {
         this.http
           .get<CampaignDetail>(`${environment.apiUrl}/api/campaigns/${this.campaignId()}/player`)
           .subscribe(async c => {
-            this.campaign.set(c);
-            this.shellSvc.setCampaign(c);
+            this.ngZone.run(() => {
+              this.campaign.set(c);
+              this.shellSvc.setCampaign(c);
+            });
             const data = await this.buildOverlayFromVisibilityEvent(c, event.instanceId, event.cardType, event.title, event.body, event.playerCardName, event.playerCardRace, event.playerCardClass, event.playerCardImageUrl);
             if (data) {
               if (this.eventCardTitle() !== null) {
@@ -302,14 +305,52 @@ export class PlayerCampaignShellComponent implements OnInit, OnDestroy {
     this.hubSubscriptions.push(
       this.hub.bulkCardVisibilityChanged$.subscribe(event => {
         if (!event || event.campaignId !== this.campaignId()) return;
-        if (!event.isVisible) return;
 
-        this.http
-          .get<CampaignDetail>(`${environment.apiUrl}/api/campaigns/${this.campaignId()}/player`)
-          .subscribe(c => {
-            this.campaign.set(c);
-            this.shellSvc.setCampaign(c);
-          });
+        if (event.isVisible) {
+          // Reveal all: fetch data and show overlays
+          this.http
+            .get<CampaignDetail>(`${environment.apiUrl}/api/campaigns/${this.campaignId()}/player`)
+            .subscribe(async c => {
+              this.ngZone.run(() => {
+                this.campaign.set(c);
+                this.shellSvc.setCampaign(c);
+              });
+
+              // Build reveal overlays for each newly visible sublocation
+              if (event.cardType === 'sublocation') {
+                const newlyVisibleSublocations = c.sublocations?.filter(
+                  (s: any) => s.locationInstanceId === event.parentInstanceId && s.isVisibleToPlayers
+                ) ?? [];
+
+                for (const subLoc of newlyVisibleSublocations) {
+                  const data = await this.buildOverlayFromVisibilityEvent(c, subLoc.instanceId, 'sublocation');
+                  if (data) {
+                    if (this.eventCardTitle() !== null) {
+                      this.pendingOverlayData = data;
+                    } else {
+                      this.cardRevealQueue.update(queue => [...queue, data]);
+                    }
+                  }
+                }
+              }
+            });
+        } else {
+          // Hide all: fetch data first, then remove cards from reveal queue
+          this.http
+            .get<CampaignDetail>(`${environment.apiUrl}/api/campaigns/${this.campaignId()}/player`)
+            .subscribe(c => {
+              this.ngZone.run(() => {
+                this.campaign.set(c);
+                this.shellSvc.setCampaign(c);
+              });
+
+              if (event.cardType === 'sublocation') {
+                this.cardRevealQueue.update(queue => queue.filter(item => {
+                  return !(item.cardType === 'sublocation' && item.instanceId && c.sublocations?.find((s: any) => s.instanceId === item.instanceId && s.locationInstanceId === event.parentInstanceId && !s.isVisibleToPlayers));
+                }));
+              }
+            });
+        }
       })
     );
 

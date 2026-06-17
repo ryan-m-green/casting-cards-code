@@ -14,6 +14,8 @@
     </div>
   }
 
+  <img src="/death_awaits.PNG" alt="Death awaits" class="death-awaits-image" />
+
   <form [formGroup]="form">
     <div class="wr form-row-gap faction-form-fields">
 
@@ -102,6 +104,18 @@
 
     </div>
   </form>
+
+  @if (limitError()) {
+    <div class="limit-error-message">
+      <span class="limit-error-text">{{ limitError() }}</span>
+      <div class="limit-error-actions">
+        @if (subscription.isFreeTrial()) {
+          <button class="limit-error-upgrade" (click)="openUpgradeDrawer()">Upgrade</button>
+        }
+        <button class="limit-error-close" (click)="limitError.set(null)">×</button>
+      </div>
+    </div>
+  }
 
   <div class="symbol-section">
     <div class="symbol-section-header">

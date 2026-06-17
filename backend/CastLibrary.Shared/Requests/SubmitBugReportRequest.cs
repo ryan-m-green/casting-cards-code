@@ -5,7 +5,7 @@ public class SubmitBugReportRequest
     public string Title { get; set; } = string.Empty;
     public string Description { get; set; } = string.Empty;
     public string StepsToReproduce { get; set; }
-    public string Severity { get; set; } = "Medium";
+    public string Severity { get; set; }
     public string PageUrl { get; set; }
     public string Device { get; set; }
     public string Browser { get; set; }

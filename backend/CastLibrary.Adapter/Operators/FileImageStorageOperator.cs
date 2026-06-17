@@ -88,4 +88,37 @@ public class FileImageStorageOperator(IFileStorageConfiguration config, IImageCo
             return null;
         }
     }
+
+    public async Task DeleteUserDirectoryAsync(Guid userId)
+    {
+        var userDirectoryPrefix = $"images/{userId}/";
+
+        try
+        {
+            // List all objects with the user's directory prefix
+            var listRequest = new ListObjectsV2Request
+            {
+                BucketName = _bucketName,
+                Prefix = userDirectoryPrefix
+            };
+
+            var listResponse = await _s3Client.ListObjectsV2Async(listRequest);
+
+            // Delete all objects in the user's directory
+            if (listResponse.S3Objects.Any())
+            {
+                var deleteRequest = new DeleteObjectsRequest
+                {
+                    BucketName = _bucketName,
+                    Objects = listResponse.S3Objects.Select(o => new KeyVersion { Key = o.Key }).ToList()
+                };
+
+                await _s3Client.DeleteObjectsAsync(deleteRequest);
+            }
+        }
+        catch (AmazonS3Exception)
+        {
+            // Log but don't throw - allow database deletion to proceed
+        }
+    }
 }

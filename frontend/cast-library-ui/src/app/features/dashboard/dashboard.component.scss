@@ -2,6 +2,37 @@
 
 :host { display: block; height: 100%; }
 
+.pc.scroll-body {
+  position: relative !important;
+  overflow: auto !important;
+  max-height: 100%;
+}
+
+.upgrade-badge-dashboard {
+  position: absolute;
+  top: 8px;
+  right: 20px;
+}
+
+.rat-wizard-image {
+  position: absolute;
+  top: 12px;
+  right: 22px;
+  width: 144px;
+  height: auto;
+  z-index: 10;
+}
+
+.dashboard-subtitle {
+  font-family: v.$font-header;
+  font-size: 22px;
+  font-weight: 600;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: v.$color-base-amber-brown;
+  margin-bottom: 16px;
+}
+
 // ─── Stat tile lift on hover ──────────────────────────────────────────────────
 .sv {
   transition: background v.$transition-std, transform 0.2s ease;

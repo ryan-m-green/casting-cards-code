@@ -60,4 +60,26 @@ public class LocalFileImageStorageOperator(IConfiguration configuration, IImageC
 
         return await File.ReadAllBytesAsync(fullPath);
     }
+
+    public async Task DeleteUserDirectoryAsync(Guid userId)
+    {
+        if (string.IsNullOrWhiteSpace(_basePath)) return;
+        if (_basePath != "C:\\Repository\\CastingCards\\Code\\images") return;
+        if (userId == Guid.Empty) return;
+
+        var userDirectory = Path.Combine(_basePath, userId.ToString());
+
+        try
+        {
+            if (Directory.Exists(userDirectory))
+            {
+                Directory.Delete(userDirectory, recursive: true);
+            }
+        }
+        catch
+        {
+            // Log but don't throw - allow database deletion to proceed
+        }
+
+    }
 }

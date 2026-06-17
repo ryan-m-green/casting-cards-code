@@ -1,3 +1,4 @@
+using CastLibrary.Logic.Services;
 using CastLibrary.Repository.Repositories.Insert;
 using CastLibrary.Shared.Domain;
 using CastLibrary.Shared.Requests;
@@ -8,10 +9,14 @@ public interface ICreateLocationCommandHandler
 {
     Task<LocationDomain> HandleAsync(CreateLocationCommand command);
 }
-public class CreateLocationCommandHandler(ILocationInsertRepository locationInsertRepository) : ICreateLocationCommandHandler
+public class CreateLocationCommandHandler(
+    ILocationInsertRepository locationInsertRepository,
+    ISubscriptionLimitService subscriptionLimitService) : ICreateLocationCommandHandler
 {
     public async Task<LocationDomain> HandleAsync(CreateLocationCommand command)
     {
+        await subscriptionLimitService.CheckLimitAsync(command.DmUserId, "Location");
+        
         var domain = new LocationDomain
         {
             Id = Guid.NewGuid(), DmUserId = command.DmUserId, Name = command.Request.Name,

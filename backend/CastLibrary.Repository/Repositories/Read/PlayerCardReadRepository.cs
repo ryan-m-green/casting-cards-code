@@ -11,6 +11,7 @@ public interface IPlayerCardReadRepository
     Task<PlayerCardDomain> GetByIdAsync(Guid id);
     Task<PlayerCardDomain> GetByCampaignAndPlayerAsync(Guid campaignId, Guid playerUserId);
     Task<List<PlayerCardDomain>> GetByCampaignAsync(Guid campaignId);
+    Task<PlayerCardDomain> GetByPlayerUserIdAsync(Guid playerId);
 }
 
 public class PlayerCardReadRepository(
@@ -32,6 +33,21 @@ public class PlayerCardReadRepository(
         var spanId = correlation.NewSpan();
         var @params = new { Id = id };
         var sql = $"SELECT {SelectColumns} {FromJoin} WHERE pc.id = @Id";
+
+        logging.LogDbOperation(correlation.TraceId, spanId, "SELECT", "player_cards", @params);
+
+        using var conn = sqlConnectionFactory.GetConnection();
+        var entity = await conn.QueryFirstOrDefaultAsync<PlayerCardEntity>(sql, @params);
+
+        logging.LogDbOperation(correlation.TraceId, spanId, "SELECT", "player_cards", @params, entity is null ? 0 : 1);
+
+        return entity is null ? null : mapper.ToDomain(entity);
+    }
+    public async Task<PlayerCardDomain> GetByPlayerUserIdAsync(Guid playerId)
+    {
+        var spanId = correlation.NewSpan();
+        var @params = new { Id = playerId };
+        var sql = $"SELECT {SelectColumns} {FromJoin} WHERE pc.player_user_id = @Id";
 
         logging.LogDbOperation(correlation.TraceId, spanId, "SELECT", "player_cards", @params);
 

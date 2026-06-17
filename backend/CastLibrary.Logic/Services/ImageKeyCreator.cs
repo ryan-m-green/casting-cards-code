@@ -4,24 +4,26 @@ namespace CastLibrary.Logic.Services
 {
     public interface IImageKeyCreator
     {
-        string Create(Guid dmUserId, Guid campaignId, Guid playerCardId, EntityType playerCardType);
+        string Create(Guid dmUserId, Guid campaignId, Guid entityId, EntityType entityType);
     }
     public class ImageKeyCreator : IImageKeyCreator
     {
-        public string Create(Guid dmUserId, Guid campaignId, Guid playerCardId, EntityType playerCardType)
+        public string Create(Guid dmUserId, Guid campaignId, Guid entityId, EntityType entityType)
         {
-            switch (playerCardType)
+            switch (entityType)
             {
                 case EntityType.Cast:
-                    return $"{dmUserId}/casts/{playerCardId}.png";
+                    return $"{dmUserId}/casts/{entityId}.png";
                 case EntityType.Sublocation:
-                    return $"{dmUserId}/sublocations/{playerCardId}.png";
+                    return $"{dmUserId}/sublocations/{entityId}.png";
                 case EntityType.Location:
-                    return $"{dmUserId}/locations/{playerCardId}.png";
+                    return $"{dmUserId}/locations/{entityId}.png";
                 case EntityType.PlayerCard:
-                    return $"{dmUserId}/campaigns/{campaignId}/player-cards/{playerCardId}.png";
+                    return $"{dmUserId}/campaigns/{campaignId}/player-cards/{entityId}.png";
                 case EntityType.Faction:
-                    return $"{dmUserId}/factions/{playerCardId}.png";
+                    return $"{dmUserId}/factions/{entityId}.png";
+                case EntityType.CampaignHandout:
+                    return $"{dmUserId}/campaigns/{campaignId}/handouts/{entityId}.png";
                 default: return string.Empty;
             }
         }

@@ -1,11 +1,11 @@
 import { Routes } from '@angular/router';
-import { adminGuard, authGuard, coverGuard, dmGuard, playerGuard } from './core/auth/auth.guard';
+import { adminGuard, authGuard, coverGuard, dmGuard, playerGuard, subscriptionLockGuard, libraryAccessGuard, playerLibraryAccessGuard, subscriptionChoiceGuard } from './core/auth/auth.guard';
 import { JournalShellComponent } from './layout/journal-shell/journal-shell.component';
 
 export const routes: Routes = [
   {
     path: 'campaign/:id',
-    canActivate: [dmGuard],
+    canActivate: [dmGuard, libraryAccessGuard],
     loadComponent: () => import('./features/campaign/campaign-shell/campaign-shell.component').then(m => m.CampaignShellComponent),
     children: [
       {
@@ -49,7 +49,7 @@ export const routes: Routes = [
   },
   {
     path: 'player/campaign/:id',
-    canActivate: [authGuard],
+    canActivate: [authGuard, playerLibraryAccessGuard],
     loadComponent: () => import('./features/player/player-campaign-shell/player-campaign-shell.component').then(m => m.PlayerCampaignShellComponent),
     children: [
       {
@@ -117,16 +117,21 @@ export const routes: Routes = [
         loadComponent: () => import('./features/legal/legal.component').then(m => m.LegalComponent),
       },
       {
-        path: 'subscribe',
-        loadComponent: () => import('./features/subscribe/subscribe.component').then(m => m.SubscribeComponent),
-      },
-      {
         path: 'forgot-password',
         loadComponent: () => import('./features/forgot-password/forgot-password.component').then(m => m.ForgotPasswordComponent),
       },
       {
         path: 'reset-password',
         loadComponent: () => import('./features/reset-password/reset-password.component').then(m => m.ResetPasswordComponent),
+      },
+      {
+        path: 'verification',
+        loadComponent: () => import('./features/verify-email/verify-email.component').then(m => m.VerifyEmailComponent),
+      },
+      {
+        path: 'subscription-choice',
+        canDeactivate: [subscriptionChoiceGuard],
+        loadComponent: () => import('./features/subscription-choice/subscription-choice.component').then(m => m.SubscriptionChoiceComponent),
       },
       {
         path: 'player',
@@ -138,6 +143,7 @@ export const routes: Routes = [
           },
           {
             path: 'bug-report',
+            canActivate: [playerLibraryAccessGuard],
             loadComponent: () => import('./features/bug-report/bug-report.component').then(m => m.BugReportComponent),
           },
           { path: '', redirectTo: 'campaigns', pathMatch: 'full' },
@@ -153,71 +159,88 @@ export const routes: Routes = [
           },
           {
             path: 'cast',
+            canActivate: [libraryAccessGuard],
             loadComponent: () => import('./features/cast/cast-library/cast-library.component').then(m => m.CastLibraryComponent),
           },
           {
             path: 'cast/new',
+            canActivate: [subscriptionLockGuard],
             loadComponent: () => import('./features/cast/cast-form/cast-form.component').then(m => m.CastFormComponent),
           },
           {
             path: 'cast/:id',
+            canActivate: [subscriptionLockGuard],
             loadComponent: () => import('./features/cast/cast-form/cast-form.component').then(m => m.CastFormComponent),
           },
           {
             path: 'locations',
+            canActivate: [libraryAccessGuard],
             loadComponent: () => import('./features/location/location-library/location-library.component').then(m => m.LocationLibraryComponent),
           },
           {
             path: 'locations/new',
+            canActivate: [subscriptionLockGuard],
             loadComponent: () => import('./features/location/location-form/location-form.component').then(m => m.LocationFormComponent),
           },
           {
             path: 'locations/:id',
+            canActivate: [subscriptionLockGuard],
             loadComponent: () => import('./features/location/location-form/location-form.component').then(m => m.LocationFormComponent),
           },
           {
             path: 'campaigns',
+            canActivate: [libraryAccessGuard],
             loadComponent: () => import('./features/campaign/campaign-library/campaign-library.component').then(m => m.CampaignLibraryComponent),
           },
           {
             path: 'campaigns/new',
+            canActivate: [subscriptionLockGuard],
             loadComponent: () => import('./features/campaign/campaign-creator/campaign-creator.component').then(m => m.CampaignCreatorComponent),
           },
           {
             path: 'campaigns/:id',
+            canActivate: [subscriptionLockGuard],
             loadComponent: () => import('./features/campaign/campaign-creator/campaign-creator.component').then(m => m.CampaignCreatorComponent),
           },
 
           {
             path: 'sublocations',
+            canActivate: [libraryAccessGuard],
             loadComponent: () => import('./features/sublocations/sublocation-library/sublocation-library.component').then(m => m.SublocationLibraryComponent),
           },
           {
             path: 'sublocations/new',
+            canActivate: [subscriptionLockGuard],
             loadComponent: () => import('./features/sublocations/sublocation-form/sublocation-form.component').then(m => m.SublocationFormComponent),
           },
           {
             path: 'sublocations/:id',
+            canActivate: [subscriptionLockGuard],
             loadComponent: () => import('./features/sublocations/sublocation-form/sublocation-form.component').then(m => m.SublocationFormComponent),
           },
           {
             path: 'faction',
+            canActivate: [libraryAccessGuard],
             loadComponent: () => import('./features/faction/faction-library/faction-library.component').then(m => m.FactionLibraryComponent),
           },
           {
             path: 'faction/new',
+            canActivate: [subscriptionLockGuard],
             loadComponent: () => import('./features/faction/faction-form/faction-form.component').then(m => m.FactionFormComponent),
           },
           {
             path: 'faction/:id',
+            canActivate: [subscriptionLockGuard],
             loadComponent: () => import('./features/faction/faction-form/faction-form.component').then(m => m.FactionFormComponent),
           },
           {
             path: 'change-password',
+            canActivate: [libraryAccessGuard],
             loadComponent: () => import('./features/change-password/change-password.component').then(m => m.ChangePasswordComponent),
           },
           {
             path: 'bug-report',
+            canActivate: [libraryAccessGuard],
             loadComponent: () => import('./features/bug-report/bug-report.component').then(m => m.BugReportComponent),
           },
           { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
@@ -228,10 +251,6 @@ export const routes: Routes = [
         canActivate: [adminGuard],
         children: [
           {
-            path: 'invite-code',
-            loadComponent: () => import('./features/admin/admin-invite-code/admin-invite-code.component').then(m => m.AdminInviteCodeComponent),
-          },
-          {
             path: 'user-management',
             loadComponent: () => import('./features/admin/user-management/user-management.component').then(m => m.UserManagementComponent),
           },
@@ -239,7 +258,11 @@ export const routes: Routes = [
             path: 'bug-reports',
             loadComponent: () => import('./features/admin/admin-bug-reports/admin-bug-reports.component').then(m => m.AdminBugReportsComponent),
           },
-          { path: '', redirectTo: 'invite-code', pathMatch: 'full' },
+          {
+            path: 'configuration-settings',
+            loadComponent: () => import('./features/admin/configuration-settings/configuration-settings.component').then(m => m.ConfigurationSettingsComponent),
+          },
+          { path: '', redirectTo: 'user-management', pathMatch: 'full' },
         ],
       },
       { path: '**', redirectTo: '' },

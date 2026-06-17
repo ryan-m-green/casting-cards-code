@@ -15,6 +15,7 @@ export class CastingCardPlayerComponent {
   @Input() tilt = 0;
 
   get tiltTransform(): string {
+    if (this.flipped) return '';
     return this.tilt ? `rotate(${this.tilt}deg)` : '';
   }
 

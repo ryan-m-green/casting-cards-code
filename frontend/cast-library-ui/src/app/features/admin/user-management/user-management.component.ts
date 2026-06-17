@@ -4,7 +4,6 @@ import { FormsModule } from '@angular/forms';
 import { forkJoin } from 'rxjs';
 import { environment } from '../../../../environments/environment';
 import { JournalTitleComponent } from '../../../shared/components/journal-title/journal-title.component';
-import { CampaignDropdownComponent, CampaignDropdownOption } from '../../../shared/components/campaign-dropdown/campaign-dropdown.component';
 
 interface UserManagementResponse {
   id: string;
@@ -12,6 +11,13 @@ interface UserManagementResponse {
   displayName: string;
   role: string;
   createdAt: string;
+  subscriptionId: string | null;
+  stripeCustomerId: string;
+  stripeSubscriptionId: string;
+  status: string;
+  bypassPayment: boolean;
+  currentPeriodEnd: string | null;
+  lockLevel: string;
 }
 
 interface DemoCampaign {
@@ -19,10 +25,15 @@ interface DemoCampaign {
   name: string;
 }
 
+interface CampaignDropdownOption {
+  value: string;
+  label: string;
+}
+
 @Component({
   selector: 'app-user-management',
   standalone: true,
-  imports: [FormsModule, JournalTitleComponent, CampaignDropdownComponent],
+  imports: [FormsModule, JournalTitleComponent],
   templateUrl: './user-management.component.html',
   styleUrl: './user-management.component.scss',
 })
@@ -39,12 +50,18 @@ export class UserManagementComponent implements OnInit {
   searchQuery = '';
   showConfirmDialog = signal(false);
   userToDelete = signal<UserManagementResponse | null>(null);
+  changingRole = signal<string | null>(null);
+  showRoleConfirmDialog = signal(false);
+  userToChangeRole = signal<UserManagementResponse | null>(null);
+  newRole = signal('');
+  adminPassword = '';
+  roleChangeError = signal('');
 
   demoCampaigns = signal<DemoCampaign[]>([]);
   demoCampaignOptions = computed<CampaignDropdownOption[]>(() =>
     this.demoCampaigns().map(c => ({ value: c.id, label: c.name }))
   );
-  demoPlayerIds = signal<string[]>([]);
+  demoPlayerAssignments = signal<Record<string, string>>({});
   selectedDemoCampaign = signal<Record<string, string>>({});
   assigningDemo = signal<string | null>(null);
   assignDemoSuccess = signal<Record<string, string>>({});
@@ -52,9 +69,19 @@ export class UserManagementComponent implements OnInit {
   addPlayerEmail = '';
   addPlayerDisplayName = '';
   addPlayerRole = 'DM';
+  addPlayerBypassPayment = false;
   addPlayerSubmitting = signal(false);
   addPlayerError = signal('');
   addPlayerSuccess = signal('');
+
+  editingSubscription = signal<string | null>(null);
+  subscriptionUpdateLoading = signal(false);
+  subscriptionEditData = signal<Record<string, {
+    status: string;
+    bypassPayment: boolean;
+    currentPeriodEnd: string;
+    lockLevel: string;
+  }>>({});
 
   setTab(tab: 'users' | 'add-player') {
     this.activeTab.set(tab);
@@ -75,13 +102,14 @@ export class UserManagementComponent implements OnInit {
     forkJoin({
       users: this.http.get<UserManagementResponse[]>(`${environment.apiUrl}/api/admin/users`),
       demos: this.http.get<DemoCampaign[]>(`${environment.apiUrl}/api/admin/campaigns/demo`),
-      demoPlayers: this.http.get<string[]>(`${environment.apiUrl}/api/admin/campaigns/demo/players`),
+      demoPlayers: this.http.get<Record<string, string>>(`${environment.apiUrl}/api/admin/campaigns/demo/players`),
     }).subscribe({
       next: ({ users, demos, demoPlayers }) => {
         this.users.set(users);
         this.filteredUsers.set(users);
         this.demoCampaigns.set(demos);
-        this.demoPlayerIds.set(demoPlayers);
+        this.demoPlayerAssignments.set(demoPlayers);
+        this.selectedDemoCampaign.set(demoPlayers);
         this.loading.set(false);
       },
       error: () => {
@@ -113,6 +141,49 @@ export class UserManagementComponent implements OnInit {
   cancelDelete() {
     this.showConfirmDialog.set(false);
     this.userToDelete.set(null);
+  }
+
+  confirmRoleChange(user: UserManagementResponse, role: string) {
+    this.userToChangeRole.set(user);
+    this.newRole.set(role);
+    this.showRoleConfirmDialog.set(true);
+    this.adminPassword = '';
+    this.roleChangeError.set('');
+  }
+
+  cancelRoleChange() {
+    this.showRoleConfirmDialog.set(false);
+    this.userToChangeRole.set(null);
+    this.newRole.set('');
+    this.adminPassword = '';
+    this.roleChangeError.set('');
+  }
+
+  changeUserRole() {
+    const user = this.userToChangeRole();
+    if (!user || !this.adminPassword) return;
+
+    this.changingRole.set(user.id);
+    this.roleChangeError.set('');
+
+    this.http.patch(`${environment.apiUrl}/api/admin/users/${user.id}/role`, {
+      newRole: this.newRole(),
+      adminPassword: this.adminPassword,
+    }).subscribe({
+      next: () => {
+        const updatedUsers = this.users().map(u =>
+          u.id === user.id ? { ...u, role: this.newRole() } : u
+        );
+        this.users.set(updatedUsers);
+        this.filterUsers();
+        this.changingRole.set(null);
+        this.cancelRoleChange();
+      },
+      error: (e) => {
+        this.roleChangeError.set(e.error?.message || 'Failed to change role.');
+        this.changingRole.set(null);
+      },
+    });
   }
 
   deleteUser() {
@@ -169,17 +240,18 @@ export class UserManagementComponent implements OnInit {
   }
 
   submitAddPlayer() {
-
     this.http.post(`${environment.apiUrl}/api/admin/users`, {
       email: this.addPlayerEmail,
       displayName: this.addPlayerDisplayName,
       role: this.addPlayerRole,
+      bypassPayment: this.addPlayerBypassPayment,
     }).subscribe({
       next: () => {
         this.addPlayerSuccess.set(`Player "${this.addPlayerDisplayName}" created successfully.`);
         this.addPlayerEmail = '';
         this.addPlayerDisplayName = '';
         this.addPlayerRole = 'Player';
+        this.addPlayerBypassPayment = false;
         this.addPlayerSubmitting.set(false);
         this.loadUsers();
         setTimeout(() => this.addPlayerSuccess.set(''), 3000);
@@ -195,5 +267,59 @@ export class UserManagementComponent implements OnInit {
   formatDate(createdAt: string): string {
     return new Date(createdAt).toLocaleDateString();
   }
+
+  clearFormMessages() {
+    this.addPlayerSuccess.set('');
+    this.addPlayerError.set('');
+  }
+
+  isValidEmail(email: string): boolean {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  }
+
+  startEditSubscription(user: UserManagementResponse) {
+    this.subscriptionEditData.update((data: Record<string, { status: string; bypassPayment: boolean; currentPeriodEnd: string; lockLevel: string }>) => ({
+      ...data,
+      [user.id]: {
+        status: user.status,
+        bypassPayment: user.bypassPayment,
+        currentPeriodEnd: user.currentPeriodEnd ?? '',
+        lockLevel: user.lockLevel,
+      },
+    }));
+    this.editingSubscription.set(user.id);
+  }
+
+  cancelEditSubscription() {
+    this.editingSubscription.set(null);
+  }
+
+  saveSubscription(user: UserManagementResponse) {
+    const editData = this.subscriptionEditData()[user.id];
+    if (!editData) return;
+
+    this.subscriptionUpdateLoading.set(true);
+    this.http.patch(`${environment.apiUrl}/api/admin/users/${user.id}/subscription`, {
+      status: editData.status,
+      bypassPayment: editData.bypassPayment,
+      currentPeriodEnd: editData.currentPeriodEnd || null,
+      lockLevel: editData.lockLevel,
+    }).subscribe({
+      next: () => {
+        const updatedUsers = this.users().map(u =>
+          u.id === user.id ? { ...u, status: editData.status, bypassPayment: editData.bypassPayment, currentPeriodEnd: editData.currentPeriodEnd || null, lockLevel: editData.lockLevel } : u
+        );
+        this.users.set(updatedUsers);
+        this.filterUsers();
+        this.subscriptionUpdateLoading.set(false);
+        this.editingSubscription.set(null);
+      },
+      error: () => {
+        this.subscriptionUpdateLoading.set(false);
+      },
+    });
+  }
 }
+
 

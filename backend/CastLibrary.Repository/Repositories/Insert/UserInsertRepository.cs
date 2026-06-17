@@ -17,8 +17,8 @@ namespace CastLibrary.Repository.Repositories.Insert
             using var conn = sqlConnectionFactory.GetConnection();
             var entity = mapper.ToEntity(user);
             await conn.ExecuteAsync(
-                @"INSERT INTO users (id, email, password_hash, display_name, role, created_at) 
-                    VALUES (@Id, @Email, @PasswordHash, @DisplayName, @Role, @CreatedAt)",
+                @"INSERT INTO users (id, email, password_hash, display_name, role, created_at, email_verified, email_verification_token) 
+                    VALUES (@Id, @Email, @PasswordHash, @DisplayName, @Role, @CreatedAt, @EmailVerified, @EmailVerificationToken)",
                     entity);
             return user;
         }

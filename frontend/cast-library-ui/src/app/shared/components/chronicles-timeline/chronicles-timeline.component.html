@@ -1,0 +1,120 @@
+@if (!chronicles || chronicles.sessions.length === 0) {
+  <div class="ev-empty">No chronicles have been published yet.</div>
+} @else {
+  <div class="chronicles-timeline">
+    @for (session of chronicles.sessions; track session.sessionId) {
+      <div class="chronicle-session">
+        <div class="session-header" (click)="toggleSessionExpand(session.sessionId)" [class.collapsed]="!expandedSessionIds.has(session.sessionId)">
+          <div class="session-title-section">
+            <h2 class="session-title">Session {{ session.sessionNumber }}</h2>
+            @if (session.alternateTitle) {
+              <p class="session-alternate-title">{{ session.alternateTitle }}</p>
+            }
+            <p class="session-subtitle">
+              <span class="session-date">{{ formatSessionDate(session.startTime) }}</span>
+              @if (session.inGameDays.length > 0) {
+                <span class="session-days">{{ formatInGameDays(session.inGameDays) }}</span>
+              }
+            </p>
+          </div>
+          <div class="session-meta">
+            <span class="session-count">{{ session.chronicleCount }} events</span>
+            @if (isDmMode && session.chronicleCount === 0) {
+              <button class="session-delete-btn" (click)="deleteSession.emit(session.sessionId)" title="Delete Session">
+                <img src="/icons/chronicle/delete.svg" alt="Delete" class="session-delete-btn-img" />
+              </button>
+            }
+            <svg class="session-expand-toggle" [class.expanded]="expandedSessionIds.has(session.sessionId)" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="6 9 12 15 18 9"/>
+            </svg>
+          </div>
+        </div>
+
+        @if (expandedSessionIds.has(session.sessionId)) {
+          <div class="session-events">
+            @for (chronicle of session.chronicles; track chronicle.id) {
+              <div class="event-card" [class.chronicle-gm-only]="chronicle.isGmOnly">
+                <div class="event-card-header">
+                  <div class="event-title-section">
+                    @if (chronicle.imageUrl) {
+                      <img [src]="chronicle.imageUrl" class="event-image" alt="" />
+                    }
+                    <div class="event-title">{{ chronicle.title }}</div>
+                  </div>            
+                </div>
+                @if (isDmMode && chronicleEditingId === chronicle.id) {
+                  <div class="chronicle-edit-form">
+                    <div class="chronicle-edit-controls">
+                      <div class="chronicle-edit-control-group">
+                        <label class="chronicle-edit-label">Move to Session:</label>
+                        <app-campaign-dropdown
+                          class="chronicle-edit-dropdown"
+                          [options]="sessionOptions"
+                          [value]="chronicleEditSessionId"
+                          fontSize="13px"
+                          (valueChange)="onSessionChange($event)"
+                        />
+                      </div>
+                      <div class="chronicle-edit-control-group">
+                        <label class="chronicle-edit-label">Sort Order:</label>
+                        <div class="chronicle-edit-sort">
+                          <button class="chronicle-sort-btn" (click)="onSortOrderDecrement()" [disabled]="chronicleEditSortOrder <= 1">↓</button>
+                          <input type="number" class="chronicle-sort-input" [(ngModel)]="chronicleEditSortOrder" min="1" />
+                          <button class="chronicle-sort-btn" (click)="onSortOrderIncrement()">↑</button>
+                        </div>
+                      </div>
+                    </div>
+                    <input
+                      type="text"
+                      class="chronicle-edit-input"
+                      [(ngModel)]="chronicleEditTitle"
+                      placeholder="Title"
+                    />
+                    <textarea
+                      class="chronicle-edit-textarea"
+                      [(ngModel)]="chronicleEditBody"
+                      placeholder="Content"
+                      rows="4"
+                    ></textarea>
+                    @if (chronicleSaveError) {
+                      <div class="chronicle-edit-error">{{ chronicleSaveError }}</div>
+                    }
+                    <div class="chronicle-edit-actions">
+                      <button class="chronicle-edit-cancel" (click)="onCancelChronicleEdit()" [disabled]="chronicleSaving">Cancel</button>
+                      <button class="campaign-primary-btn" (click)="onSaveChronicleEdit(chronicle.id)" [disabled]="chronicleSaving || !chronicleEditTitle.trim()">{{ chronicleSaving ? 'Saving…' : 'Save' }}</button>
+                    </div>
+                  </div>
+                } @else {
+                  <div class="event-card-body">
+                    <div class="event-content">
+                      <div [innerHTML]="chronicle.body"></div>
+                      @if (chronicle.imageUrl) {
+                        <img class="chronicle-image" [src]="chronicle.imageUrl" alt="Chronicle image" />
+                      }
+           
+                    </div>
+                  </div>
+                }
+          
+                <div class="event-card-footer">
+                             @if (chronicle.linkedEntities && chronicle.linkedEntities.length > 0) {
+                        <app-entity-badge [entities]="chronicle.linkedEntities" [timeOfDay]="timeOfDay" />
+                      }
+                  @if (isDmMode) {
+                    @if (chronicle.isGmOnly) {
+                      <span class="chronicle-gm-tag">
+                        <img src="/eye_vision_sight_seeing_surveillance.svg" class="chronicle-gm-icon" alt="" />
+                        GM ONLY
+                      </span>
+                    }
+                    <button class="chronicle-edit-btn" (click)="openChronicleEdit(chronicle); $event.stopPropagation()" [disabled]="chronicleEditingId === chronicle.id">Edit</button>
+                  }
+                  </div>
+              </div>
+            }
+          </div>
+        }
+      </div>
+    }
+  </div>
+}

@@ -1,4 +1,5 @@
 ﻿using CastLibrary.Logic.Factories;
+using CastLibrary.Logic.Services;
 using CastLibrary.Repository.Repositories.Insert;
 using CastLibrary.Shared.Domain;
 using CastLibrary.Shared.Requests;
@@ -11,10 +12,13 @@ public interface ICreateCastCommandHandler
 }
 public class CreateCastCommandHandler(
     ICastInsertRepository castRepository,
-    ICastFactory castFactory) : ICreateCastCommandHandler
+    ICastFactory castFactory,
+    ISubscriptionLimitService subscriptionLimitService) : ICreateCastCommandHandler
 {
     public async Task<CastDomain> HandleAsync(CreateCastCommand command)
     {
+        await subscriptionLimitService.CheckLimitAsync(command.DmUserId, "Cast");
+        
         var domain = castFactory.Create(command.Request, command.DmUserId);
         return await castRepository.InsertAsync(domain);
     }

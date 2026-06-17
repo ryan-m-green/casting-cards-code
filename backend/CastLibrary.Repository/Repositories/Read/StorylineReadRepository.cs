@@ -8,7 +8,7 @@ namespace CastLibrary.Repository.Repositories.Read;
 
 public interface IStorylineReadRepository
 {
-    Task<List<CampaignEventDomain>> GetByCampaignIdAsync(Guid campaignId);
+    Task<List<CampaignEventDomain>> GetByCampaignIdAsync(Guid campaignId, bool? isVisibleToPlayers = null, bool? markedForArchive = null);
     Task<List<CampaignEventDomain>> GetVisibleByCampaignIdAsync(Guid campaignId);
     Task<CampaignEventDomain?> GetByIdAsync(Guid eventId);
 }
@@ -19,12 +19,31 @@ public class StorylineReadRepository(
     ICorrelationContext correlation,
     ICampaignEventEntityMapper mapper) : IStorylineReadRepository
 {
-    public async Task<List<CampaignEventDomain>> GetByCampaignIdAsync(Guid campaignId)
+    public async Task<List<CampaignEventDomain>> GetByCampaignIdAsync(Guid campaignId, bool? isVisibleToPlayers = null, bool? markedForArchive = null)
     {
-        var spanId  = correlation.NewSpan();
-        var @params = new { CampaignId = campaignId };
-        const string sql =
-            @"SELECT id,
+        var spanId = correlation.NewSpan();
+
+        var whereClause = "WHERE campaign_id = @CampaignId";
+        var parameters = new Dictionary<string, object> { ["CampaignId"] = campaignId };
+
+        if (isVisibleToPlayers.HasValue && markedForArchive.HasValue)
+        {
+            whereClause += " AND (visible_to_players = @VisibleToPlayers OR marked_for_archive = @MarkedForArchive)";
+            parameters["VisibleToPlayers"] = isVisibleToPlayers.Value;
+            parameters["MarkedForArchive"] = markedForArchive.Value;
+        }
+        else if (isVisibleToPlayers.HasValue)
+        {
+            whereClause += " AND visible_to_players = @VisibleToPlayers";
+            parameters["VisibleToPlayers"] = isVisibleToPlayers.Value;
+        }
+        else if (markedForArchive.HasValue)
+        {
+            whereClause += " AND marked_for_archive = @MarkedForArchive";
+            parameters["MarkedForArchive"] = markedForArchive.Value;
+        }
+
+        var sql = $@"SELECT id,
                      campaign_id     AS CampaignId,
                      title,
                      body,
@@ -32,19 +51,20 @@ public class StorylineReadRepository(
                      linked_entities AS LinkedEntities,
                      file_path       AS FilePath,
                      visible_to_players AS VisibleToPlayers,
+                     marked_for_archive AS MarkedForArchive,
                      scene_type      AS SceneType,
                      created_at      AS CreatedAt,
                      updated_at      AS UpdatedAt
               FROM campaign_storyline
-              WHERE campaign_id = @CampaignId
+              {whereClause}
               ORDER BY sort_order ASC, created_at ASC";
 
-        logging.LogDbOperation(correlation.TraceId, spanId, "SELECT", "campaign_storyline", @params);
+        logging.LogDbOperation(correlation.TraceId, spanId, "SELECT", "campaign_storyline", parameters);
 
         using var conn = sqlConnectionFactory.GetConnection();
-        var rows = (await conn.QueryAsync<CampaignEventEntity>(sql, @params)).ToList();
+        var rows = (await conn.QueryAsync<CampaignEventEntity>(sql, parameters)).ToList();
 
-        logging.LogDbOperation(correlation.TraceId, spanId, "SELECT", "campaign_storyline", @params, rows.Count);
+        logging.LogDbOperation(correlation.TraceId, spanId, "SELECT", "campaign_storyline", parameters, rows.Count);
 
         return rows.Select(mapper.ToDomain).ToList();
     }
@@ -62,6 +82,7 @@ public class StorylineReadRepository(
                      linked_entities AS LinkedEntities,
                      file_path       AS FilePath,
                      visible_to_players AS VisibleToPlayers,
+                     marked_for_archive AS MarkedForArchive,
                      scene_type      AS SceneType,
                      created_at      AS CreatedAt,
                      updated_at      AS UpdatedAt
@@ -93,6 +114,7 @@ public class StorylineReadRepository(
                      linked_entities AS LinkedEntities,
                      file_path       AS FilePath,
                      visible_to_players AS VisibleToPlayers,
+                     marked_for_archive AS MarkedForArchive,
                      scene_type      AS SceneType,
                      created_at      AS CreatedAt,
                      updated_at      AS UpdatedAt

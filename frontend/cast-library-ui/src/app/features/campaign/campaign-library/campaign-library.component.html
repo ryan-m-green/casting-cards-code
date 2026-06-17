@@ -15,7 +15,15 @@
   <app-journal-watermark pageType="campaign" />
   <app-journal-title title="Campaign Library" />
   <div class="wr wr-page-header">
-    <a class="campaign-primary-btn wr-ml-auto" routerLink="/dm/campaigns/new">+ New Campaign</a>
+    <app-upgrade-badge
+      [visible]="subscription.isFreeTrial()"
+      (badgeClick)="openUpgradeDrawer()"
+      class="upgrade-badge-library" />
+    <a class="campaign-primary-btn wr-ml-auto" 
+       [class.disabled]="campaignLimitReached()"
+       [attr.disabled]="campaignLimitReached() ? 'true' : null"
+       [routerLink]="campaignLimitReached() ? null : '/dm/campaigns/new'"
+       (click)="campaignLimitReached() ? $event.preventDefault() : null">+ New Campaign</a>
   </div>
 
   <div class="tab-bar">
@@ -34,6 +42,7 @@
               [portalColor]="campaign.spineColor"
               [showPortal]="true"
               [showSettings]="true"
+              (settingsClick)="edit(campaign.id)"
             />
           </div>
         }

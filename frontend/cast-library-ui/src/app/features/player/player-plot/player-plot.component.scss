@@ -43,3 +43,112 @@
 .tab-content {
   padding: 24px 0;
 }
+
+.ev-empty {
+  font-family: v.$font-body;
+  font-size: 14px;
+  color: v.$campaign-portal-text-softer;
+  padding: 48px 0;
+  text-align: center;
+}
+
+// ── Pagination ─────────────────────────────────────────────────────────────────
+
+.pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  margin-top: 24px;
+}
+
+.pagination-btn {
+  padding: 8px 16px;
+  background: v.$campaign-portal-bg-dark;
+  border: 1px solid v.$campaign-portal-border-bold;
+  border-radius: 6px;
+  color: v.$campaign-portal-text-bright;
+  font-family: v.$font-header;
+  font-size: 11px;
+  font-weight: bolder;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background 0.15s ease, border-color 0.15s ease;
+
+  &:hover:not(:disabled) {
+    background: v.$campaign-portal-bg-hover;
+    border-color: v.$campaign-portal-border-hover;
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
+
+.pagination-info {
+  font-family: v.$font-body;
+  font-size: 13px;
+  color: v.$campaign-portal-text-muted;
+}
+
+// ── Chronicles Search & Filter ─────────────────────────────────────────────────────
+
+.chronicles-controls {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 14px;
+  align-items: center;
+}
+
+.chronicles-search {
+  flex: 1;
+  max-width: 400px;
+  font-size: 14px;
+  padding: 10px 14px;
+  background: v.$campaign-portal-bg-medium;
+  border: 1px solid v.$campaign-portal-border-bold;
+  border-radius: 6px;
+  color: v.$campaign-portal-text-muted;
+
+  &::placeholder {
+    color: v.$campaign-portal-text-softer;
+  }
+
+  &:focus {
+    outline: none;
+    border-color: v.$campaign-portal-border-strong-focus;
+  }
+}
+
+.chronicles-search-btn {
+  padding: 10px 20px;
+  background: v.$campaign-portal-bg-medium;
+  border: 1px solid v.$campaign-portal-border-bold;
+  border-radius: 6px;
+  color: v.$campaign-portal-text-bright;
+  font-family: v.$font-header;
+  font-size: 12px;
+  font-weight: bolder;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background 0.15s ease, border-color 0.15s ease;
+
+  &:hover {
+    background: v.$campaign-portal-bg-hover;
+    border-color: v.$campaign-portal-border-hover;
+  }
+}
+
+.chronicles-pagination {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 20px;
+  padding: 12px 16px;
+  background: v.$campaign-portal-bg-medium;
+  border: 1px solid v.$campaign-portal-border-bold;
+  border-radius: 8px;
+}

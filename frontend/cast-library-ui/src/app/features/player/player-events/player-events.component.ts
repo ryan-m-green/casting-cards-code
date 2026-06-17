@@ -8,6 +8,7 @@ import { environment } from '../../../../environments/environment';
 import { PlayerCampaignShellService } from '../../../core/player-campaign-shell.service';
 import { CampaignHubService } from '../../../core/hub/campaign-hub.service';
 import { PlayerEventCardItemComponent } from '../../../shared/components/player-event-card-item/player-event-card-item.component';
+import { StorylineFilterBarComponent } from '../../../shared/components/storyline-filter-bar/storyline-filter-bar.component';
 
 interface CampaignEvent {
   id: string;
@@ -23,7 +24,7 @@ interface CampaignEvent {
 @Component({
   selector: 'app-player-events',
   standalone: true,
-  imports: [CommonModule, PlayerEventCardItemComponent],
+  imports: [CommonModule, PlayerEventCardItemComponent, StorylineFilterBarComponent],
   templateUrl: './player-events.component.html',
   styleUrl: './player-events.component.scss',
 })
@@ -38,7 +39,7 @@ export class PlayerEventsComponent implements OnInit, OnDestroy {
   campaignId   = signal('');
   events       = signal<CampaignEvent[]>([]);
   loading      = signal(true);
-  expandedId   = signal<string | null>(null);
+  expandedIds  = signal<Set<string>>(new Set());
   typeFilters  = signal<string[]>([]);
 
   filteredEvents = computed(() => {
@@ -55,6 +56,10 @@ export class PlayerEventsComponent implements OnInit, OnDestroy {
     this.typeFilters.set(
       current.includes(type) ? current.filter(t => t !== type) : [...current, type]
     );
+  }
+
+  onTypeFilterChange(filters: string[]) {
+    this.typeFilters.set(filters);
   }
 
   ngOnInit() {
@@ -79,7 +84,6 @@ export class PlayerEventsComponent implements OnInit, OnDestroy {
       this.hub.storylineEventUpdated$.subscribe(e => {
         if (!e || e.campaignId !== this.campaignId()) return;
         
-        // Update the event in the local list with new content
         this.events.update(list => 
           list.map(ev => 
             ev.id === e.eventId 
@@ -106,7 +110,13 @@ export class PlayerEventsComponent implements OnInit, OnDestroy {
   }
 
   toggleExpand(id: string) {
-    this.expandedId.set(this.expandedId() === id ? null : id);
+    const current = new Set(this.expandedIds());
+    if (current.has(id)) {
+      current.delete(id);
+    } else {
+      current.add(id);
+    }
+    this.expandedIds.set(current);
   }
 
   goBack() {

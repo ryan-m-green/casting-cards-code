@@ -1,4 +1,6 @@
+using System.Text.Json;
 using CastLibrary.Logic.Interfaces;
+using CastLibrary.Repository.Services;
 using CastLibrary.Shared.Domain;
 using Dapper;
 
@@ -17,6 +19,7 @@ public class CampaignSessionArchivedInsertRepository(
     public async Task<CampaignSessionArchivedDomain> InsertAsync(CampaignSessionArchivedDomain domain)
     {
         var spanId = correlation.NewSpan();
+
         var @params = new
         {
             domain.Id,
@@ -28,13 +31,14 @@ public class CampaignSessionArchivedInsertRepository(
             domain.EndTime,
             InGameDays = domain.InGameDays,
             domain.ArchivedAt,
+            domain.Keywords
         };
 
         const string sql =
             @"INSERT INTO campaign_session_archived
-                (id, campaign_id, session_number, title, alternate_title, start_time, end_time, in_game_days, archived_at)
+                (id, campaign_id, session_number, title, alternate_title, start_time, end_time, in_game_days, archived_at, keywords)
               VALUES
-                (@Id, @CampaignId, @SessionNumber, @Title, @AlternateTitle, @StartTime, @EndTime, @InGameDays::int[], @ArchivedAt)";
+                (@Id, @CampaignId, @SessionNumber, @Title, @AlternateTitle, @StartTime, @EndTime, @InGameDays::int[], @ArchivedAt, @Keywords)";
 
         logging.LogDbOperation(correlation.TraceId, spanId, "INSERT", "campaign_session_archived", @params);
 

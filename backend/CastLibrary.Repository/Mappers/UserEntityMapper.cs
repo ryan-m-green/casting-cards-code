@@ -19,6 +19,10 @@ public class UserEntityMapper : IUserEntityMapper
         Role = Enum.Parse<UserRole>(entity.Role, true),
         Keywords = entity.Keywords ?? [],
         CreatedAt = entity.CreatedAt,
+        TokenVersion = entity.TokenVersion,
+        EmailVerified = entity.EmailVerified,
+        EmailVerificationToken = entity.EmailVerificationToken,
+        LastLoggedInOn = entity.LastLoggedInOn,
     };
 
     public UserEntity ToEntity(UserDomain domain)
@@ -31,7 +35,11 @@ public class UserEntityMapper : IUserEntityMapper
             Email = domain.Email,
             Keywords = domain.Keywords,
             PasswordHash = domain.PasswordHash,
+            EmailVerified = domain.EmailVerified,
+            EmailVerificationToken = domain.EmailVerificationToken,
+            TokenVersion = domain.TokenVersion,
             Role = domain.Role.ToString(),
+            LastLoggedInOn = domain.LastLoggedInOn,
         };
     }
 }

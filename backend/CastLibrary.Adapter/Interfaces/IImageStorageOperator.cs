@@ -6,4 +6,5 @@ public interface IImageStorageOperator
     Task DeleteAsync(string key);
     string GetPublicUrl(string key);
     Task<byte[]> ReadAsync(string key);
+    Task DeleteUserDirectoryAsync(Guid userId);
 }

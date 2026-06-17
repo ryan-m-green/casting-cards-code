@@ -1,4 +1,3 @@
-using CastLibrary.Logic.Interfaces;
 using CastLibrary.Shared.Domain;
 using CastLibrary.Shared.Requests;
 using CastLibrary.Shared.Responses;
@@ -10,7 +9,7 @@ public interface ICampaignEventWebMapper
     CampaignEventResponse ToResponse(CampaignEventDomain domain);
 }
 
-public class CampaignEventWebMapper(IImageStorageOperator imageStorage) : ICampaignEventWebMapper
+public class CampaignEventWebMapper : ICampaignEventWebMapper
 {
     public CampaignEventResponse ToResponse(CampaignEventDomain domain) => new()
     {
@@ -21,7 +20,8 @@ public class CampaignEventWebMapper(IImageStorageOperator imageStorage) : ICampa
         SortOrder = domain.SortOrder,
         LinkedEntities = domain.LinkedEntities,
         VisibleToPlayers = domain.VisibleToPlayers,
-        ImageUrl = !string.IsNullOrEmpty(domain.FilePath) ? imageStorage.GetPublicUrl(domain.FilePath) : null,
+        MarkedForArchive = domain.MarkedForArchive,
+        ImageUrl = domain.ImageUrl,
         SceneType = domain.SceneType ?? "campaign-event",
         CreatedAt = domain.CreatedAt,
     };

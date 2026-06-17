@@ -11,6 +11,7 @@ import { AuthService } from '../../../core/auth/auth.service';
 import { CampaignHubService } from '../../../core/hub/campaign-hub.service';
 import { PortalTransitionService } from '../../../core/portal-transition.service';
 import { CampaignShellService } from '../../../core/campaign-shell.service';
+import { SubscriptionService } from '../../../core/subscription.service';
 import { LocationCardComponent } from '../../../shared/components/location-card/location-card.component';
 import { PortalImportCardComponent } from '../../../shared/components/portal-import-card/portal-import-card.component';
 
@@ -36,12 +37,13 @@ export class CampaignDetailComponent implements OnInit, OnDestroy {
   }
   get importCardRef(): PortalImportCardComponent | null { return this._importCard(); }
 
-  private route      = inject(ActivatedRoute);
-  private router     = inject(Router);
-  private http       = inject(HttpClient);
-  private transition = inject(PortalTransitionService);
-  private hub        = inject(CampaignHubService);
-  private shellSvc   = inject(CampaignShellService);
+  private route          = inject(ActivatedRoute);
+  private router         = inject(Router);
+  private http           = inject(HttpClient);
+  private transition     = inject(PortalTransitionService);
+  private hub            = inject(CampaignHubService);
+  private shellSvc       = inject(CampaignShellService);
+  subscription           = inject(SubscriptionService);
   private hubSubscriptions: Subscription[] = [];
   auth               = inject(AuthService);
 

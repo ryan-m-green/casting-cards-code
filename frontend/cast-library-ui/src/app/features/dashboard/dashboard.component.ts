@@ -1,4 +1,4 @@
-import { Component, OnInit, signal, inject, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, signal, inject, ViewChild, ElementRef, computed } from '@angular/core';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
@@ -6,8 +6,12 @@ import { environment } from '../../../environments/environment';
 import { AuthService } from '../../core/auth/auth.service';
 import { Campaign } from '../../shared/models/campaign.model';
 import { PortalTransitionService } from '../../core/portal-transition.service';
+import { SubscriptionService } from '../../core/subscription.service';
+import { SubscriptionDrawerService } from '../../core/subscription-drawer.service';
 import { JournalTitleComponent } from '../../shared/components/journal-title/journal-title.component';
 import { IconComponent } from '../../shared/components/icon/icon.component';
+import { UpgradeBadgeComponent } from '../../shared/components/upgrade-badge/upgrade-badge.component';
+import { CampaignHubService } from '../../core/hub/campaign-hub.service';
 
 interface DashboardStats {
   campaignCount: number;
@@ -39,15 +43,18 @@ interface ImportFailure {
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [CommonModule, JournalTitleComponent, IconComponent],
+  imports: [CommonModule, JournalTitleComponent, IconComponent, UpgradeBadgeComponent],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.scss'
 })
 export class DashboardComponent implements OnInit {
-  private http       = inject(HttpClient);
-  private router     = inject(Router);
-  private transition = inject(PortalTransitionService);
-  auth               = inject(AuthService);
+  private http           = inject(HttpClient);
+  private router         = inject(Router);
+  private transition     = inject(PortalTransitionService);
+  auth                   = inject(AuthService);
+  subscription           = inject(SubscriptionService);
+  private drawerService  = inject(SubscriptionDrawerService);
+  private hub            = inject(CampaignHubService);
 
   @ViewChild('portalGhostTpl') private portalGhostTpl!: ElementRef<HTMLElement>;
   private isEntering = false;
@@ -62,7 +69,22 @@ export class DashboardComponent implements OnInit {
   importError     = signal<string | null>(null);
   selectedZipFile = signal<File | null>(null);
 
+  readonly isCreateDisabled = computed(() => {
+    if (this.auth.isExempt()) return false;
+    if (this.subscription.isFreeTrial()) return false;
+    const level = this.auth.lockLevel();
+    return level !== 'FullAccess';
+  });
+
   ngOnInit() {
+    console.log('Dashboard: Initializing SignalR connection...');
+    const token = this.auth.getToken();
+    if (token && token.length > 0) {
+      this.hub.connect(token).catch((err: Error) => console.error('Dashboard: SignalR connection failed:', err));
+    } else {
+      console.log('Dashboard: No token found, skipping SignalR connection');
+    }
+
     this.http.get<DashboardStats>(`${environment.apiUrl}/api/dashboard/stats`)
       .subscribe(s => this.stats.set(s));
   }
@@ -246,5 +268,9 @@ export class DashboardComponent implements OnInit {
     a.download = filename;
     a.click();
     URL.revokeObjectURL(url);
+  }
+
+  openUpgradeDrawer() {
+    this.drawerService.open();
   }
 }

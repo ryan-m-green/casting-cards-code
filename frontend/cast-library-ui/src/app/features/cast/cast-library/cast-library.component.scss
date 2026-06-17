@@ -1,3 +1,9 @@
 @use '../../../../styles/variables' as v;
 
 :host { display: block; height: 100%; }
+
+.upgrade-badge-library {
+  position: absolute;
+  top: 8px;
+  right: 20px;
+}

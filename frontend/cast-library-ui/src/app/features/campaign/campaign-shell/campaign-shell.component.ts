@@ -8,24 +8,29 @@ import { AuthService } from '../../../core/auth/auth.service';
 import { CampaignHubService } from '../../../core/hub/campaign-hub.service';
 import { PortalTransitionService } from '../../../core/portal-transition.service';
 import { CampaignShellService } from '../../../core/campaign-shell.service';
+import { SubscriptionService } from '../../../core/subscription.service';
+import { SubscriptionDrawerService } from '../../../core/subscription-drawer.service';
 import { TimeOfDayBarComponent } from '../../../shared/components/time-of-day-bar/time-of-day-bar.component';
 import { VoidNavDrawerComponent } from '../../../shared/components/void-nav-drawer/void-nav-drawer.component';
 import { VoidTitleSegmentsComponent } from '../../../shared/components/void-title-segments/void-title-segments.component';
+import { UpgradeBadgeComponent } from '../../../shared/components/upgrade-badge/upgrade-badge.component';
 
 @Component({
   selector: 'app-campaign-shell',
   standalone: true,
-  imports: [RouterOutlet, TimeOfDayBarComponent, VoidNavDrawerComponent, VoidTitleSegmentsComponent],
+  imports: [RouterOutlet, TimeOfDayBarComponent, VoidNavDrawerComponent, VoidTitleSegmentsComponent, UpgradeBadgeComponent],
   templateUrl: './campaign-shell.component.html',
   styleUrl: './campaign-shell.component.scss',
 })
 export class CampaignShellComponent implements OnInit, OnDestroy {
-  private route      = inject(ActivatedRoute);
-  private router     = inject(Router);
-  private http       = inject(HttpClient);
-  private hub        = inject(CampaignHubService);
-  private transition = inject(PortalTransitionService);
-  private auth       = inject(AuthService);
+  private route          = inject(ActivatedRoute);
+  private router         = inject(Router);
+  private http           = inject(HttpClient);
+  private hub            = inject(CampaignHubService);
+  private transition     = inject(PortalTransitionService);
+  private auth           = inject(AuthService);
+  subscription           = inject(SubscriptionService);
+  private drawerService  = inject(SubscriptionDrawerService);
   private hubSubscriptions: Subscription[] = [];
   shellSvc           = inject(CampaignShellService);
 
@@ -87,5 +92,9 @@ export class CampaignShellComponent implements OnInit, OnDestroy {
 
   goToFactions() {
     this.router.navigate(['/campaign', this.campaignId(), 'factions']);
+  }
+
+  openUpgradeDrawer() {
+    this.drawerService.open();
   }
 }

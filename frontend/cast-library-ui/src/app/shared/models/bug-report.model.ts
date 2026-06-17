@@ -6,7 +6,7 @@ export interface BugReport {
   title: string;
   description: string;
   stepsToReproduce?: string;
-  severity: BugSeverity;
+  severity?: BugSeverity;
   pageUrl?: string;
   device?: string;
   browser?: string;
@@ -22,7 +22,6 @@ export interface SubmitBugReportRequest {
   title: string;
   description: string;
   stepsToReproduce?: string;
-  severity: BugSeverity;
   pageUrl?: string;
   device?: string;
   browser?: string;

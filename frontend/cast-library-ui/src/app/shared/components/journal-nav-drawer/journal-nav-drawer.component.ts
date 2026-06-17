@@ -9,6 +9,7 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { Router, NavigationEnd } from '@angular/router';
 import { filter, map, startWith } from 'rxjs';
 import { AuthService } from '../../../core/auth/auth.service';
+import { SubscriptionService } from '../../../core/subscription.service';
 
 @Component({
   selector: 'app-journal-nav-drawer',
@@ -20,10 +21,18 @@ import { AuthService } from '../../../core/auth/auth.service';
 export class JournalNavDrawerComponent {
   private readonly router = inject(Router);
   private readonly auth   = inject(AuthService);
+  private readonly subscription = inject(SubscriptionService);
 
   readonly isDm       = this.auth.isDm;
   readonly isAdmin    = this.auth.isAdmin;
   readonly isLoggedIn = this.auth.isLoggedIn;
+
+  readonly isLibraryDisabled = computed(() => {
+    if (this.auth.isExempt()) return false;
+    if (this.subscription.isFreeTrial()) return false;
+    const level = this.auth.lockLevel();
+    return level === 'HardLock' || level === 'Suspended';
+  });
 
   isOpen    = signal(false);
   isClosing = signal(false);

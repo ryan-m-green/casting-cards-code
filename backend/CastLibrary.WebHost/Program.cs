@@ -1,13 +1,17 @@
 using System.Text;
 using System.Threading.RateLimiting;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.IdentityModel.Tokens;
+using CastLibrary.WebHost.Authorization;
 using CastLibrary.WebHost.Filters;
 using CastLibrary.WebHost.Hubs;
 using CastLibrary.WebHost.IoC;
 using CastLibrary.WebHost.Middleware;
+using Microsoft.AspNetCore.Authentication;
+using CastLibrary.WebHost.Authentication;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -69,9 +73,24 @@ builder.Services.AddControllers(options =>
     options.Filters.Add<RequestLoggingAndExceptionFilter>();
 })
     .AddJsonOptions(opts =>
+    {
+        opts.JsonSerializerOptions.PropertyNamingPolicy = System.Text.Json.JsonNamingPolicy.CamelCase;
         opts.JsonSerializerOptions.Converters.Add(
-            new System.Text.Json.Serialization.JsonStringEnumConverter()));
-builder.Services.AddSignalR();
+            new System.Text.Json.Serialization.JsonStringEnumConverter());
+    });
+builder.Services.AddSignalR(options =>
+{
+    options.KeepAliveInterval = TimeSpan.FromSeconds(15);
+    options.ClientTimeoutInterval = TimeSpan.FromSeconds(30);
+})
+.AddHubOptions<CampaignHub>(options =>
+{
+
+#if (DEBUG)
+    options.EnableDetailedErrors = true;
+#endif
+
+});
 
 // Configure CORS - support both localhost for development and environment-based URLs
 var allowedOrigins = builder.Configuration["AllowedOrigins"]?.Split(";", StringSplitOptions.RemoveEmptyEntries)
@@ -87,9 +106,14 @@ builder.Services.AddCors(options =>
 });
 
 var jwtKey = builder.Configuration["Jwt:Key"]!;
-builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+builder.Services.AddAuthentication(options =>
+    {
+        options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+        options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+    })
     .AddJwtBearer(opts =>
     {
+        opts.IncludeErrorDetails = false;
         opts.TokenValidationParameters = new TokenValidationParameters
         {
             ValidateIssuer = true,
@@ -101,13 +125,21 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey)),
         };
 
-        // Allow JWT from SignalR query string
+        // Allow JWT from SignalR query string and skip auth for webhook endpoint
         opts.Events = new JwtBearerEvents
         {
             OnMessageReceived = context =>
             {
-                var accessToken = context.Request.Query["access_token"];
                 var path = context.HttpContext.Request.Path;
+                
+                // Skip JWT validation for webhook endpoint entirely
+                if (path.StartsWithSegments("/api/stripe/webhook"))
+                {
+                    context.NoResult();
+                    return Task.CompletedTask;
+                }
+                
+                var accessToken = context.Request.Query["access_token"];
                 if (!string.IsNullOrEmpty(accessToken) && path.StartsWithSegments("/hubs"))
                     context.Token = accessToken;
                 return Task.CompletedTask;
@@ -115,7 +147,16 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         };
     });
 
-builder.Services.AddAuthorization();
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("TokenVersionValid", policy =>
+    {
+        policy.RequireAuthenticatedUser();
+        policy.AddRequirements(new TokenVersionRequirement());
+    });
+});
+
+builder.Services.AddScoped<IAuthorizationHandler, TokenVersionAuthorizationHandler>();
 
 builder.Services.AddRateLimiter(options =>
 {
@@ -176,8 +217,10 @@ if (Directory.Exists(imagesPath))
     });
 
 app.UseAuthentication();
+app.UseMiddleware<SubscriptionLockMiddleware>();
 app.UseAuthorization();
 app.MapControllers();
+
 app.MapHealthChecks("/health");      // DO internal probe hits container directly
 app.MapHealthChecks("/api/health");  // public path after preserve_path_prefix
 app.MapHub<CampaignHub>("/hubs/campaign");

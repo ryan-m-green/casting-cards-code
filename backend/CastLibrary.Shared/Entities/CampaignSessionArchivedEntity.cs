@@ -11,4 +11,5 @@ public class CampaignSessionArchivedEntity
     public DateTime EndTime { get; set; }
     public int[] InGameDays { get; set; } = Array.Empty<int>();
     public DateTime ArchivedAt { get; set; }
+    public string Keywords { get; set; } = string.Empty;
 }

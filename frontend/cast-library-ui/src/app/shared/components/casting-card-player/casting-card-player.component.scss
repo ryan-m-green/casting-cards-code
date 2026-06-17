@@ -14,10 +14,15 @@
   transition: transform .2s ease;
   position: relative;
   perspective: 700px;
+  transform-box: fill-box;
 }
 
 .cc-wrap:hover {
-  transform: translateY(-6px) scale(1.03);
+  transform: translateY(-6px);
+}
+
+.cc-wrap.cc-flipped:hover {
+  transform: none;
 }
 
 .cc-inner {
@@ -25,7 +30,10 @@
   height: 100%;
   position: relative;
   transform-style: preserve-3d;
+  transform-box: fill-box;
+  transform-origin: center center;
   transform: rotateY(0deg);
+  will-change: transform;
   transition: transform .65s cubic-bezier(.4,.2,.2,1);
 }
 
@@ -40,11 +48,12 @@
   -webkit-backface-visibility: hidden;
   border-radius: 8px;
   overflow: hidden;
+  transform-box: fill-box;
 }
 
 .cc-face--back {
   transform: rotateY(180deg);
-  overflow: visible;
+  overflow: hidden;
 }
 
 .cc-wrap.cc-flipped .cc-face--front {

@@ -87,9 +87,9 @@
 
 @if (showPills) {
   <div class="ndp-pills">
-    @for (item of linkedEntities; track item.entityId; let i = $index) {
+    @for (item of linkedEntities(); track item.entityId; let i = $index) {
       <span class="ndp-pill">
-        {{ item.entityType.toUpperCase() }}: {{ item.entityName }}
+        {{ item.entityType?.toUpperCase() ?? 'UNKNOWN' }}: {{ item.entityName ?? item.entityId }}
         <button class="ndp-pill-remove" (click)="removeLinkedItem(i)" title="Remove" aria-label="Remove">
           <img src="/icons/chronicle/delete.svg" alt="Remove" class="ndp-pill-remove-img" />
         </button>
@@ -101,49 +101,65 @@
 @if (showEntitySelect) {
   <div class="ndp-entity-row">
     @if (destType === 'location') {
-      <app-campaign-dropdown
-        class="ndp-entity-dropdown"
-        [options]="locationOptions"
-        [value]="entityId"
-        fontSize="13px"
-        [triggerTabIndex]="0"
-        (valueChange)="entityIdChange.emit($event)"
-      />
+      @if (hasAvailableOptions()) {
+        <app-campaign-dropdown
+          class="ndp-entity-dropdown"
+          [options]="locationOptions()"
+          [value]="entityId"
+          fontSize="13px"
+          [triggerTabIndex]="0"
+          (valueChange)="entityIdChange.emit($event)"
+        />
+      } @else {
+        <span class="ndp-no-options">All locations are already used</span>
+      }
     }
     @if (destType === 'sublocation') {
-      <app-campaign-dropdown
-        class="ndp-entity-dropdown"
-        [options]="sublocationOptions"
-        [value]="entityId"
-        fontSize="13px"
-        [triggerTabIndex]="0"
-        (valueChange)="entityIdChange.emit($event)"
-      />
+      @if (hasAvailableOptions()) {
+        <app-campaign-dropdown
+          class="ndp-entity-dropdown"
+          [options]="sublocationOptions()"
+          [value]="entityId"
+          fontSize="13px"
+          [triggerTabIndex]="0"
+          (valueChange)="entityIdChange.emit($event)"
+        />
+      } @else {
+        <span class="ndp-no-options">All sublocations are already used</span>
+      }
     }
     @if (destType === 'cast') {
-      <app-campaign-dropdown
-        class="ndp-entity-dropdown"
-        [options]="castOptions"
-        [value]="entityId"
-        fontSize="13px"
-        [triggerTabIndex]="0"
-        (valueChange)="entityIdChange.emit($event)"
-      />
+      @if (hasAvailableOptions()) {
+        <app-campaign-dropdown
+          class="ndp-entity-dropdown"
+          [options]="castOptions()"
+          [value]="entityId"
+          fontSize="13px"
+          [triggerTabIndex]="0"
+          (valueChange)="entityIdChange.emit($event)"
+        />
+      } @else {
+        <span class="ndp-no-options">All cast members are already used</span>
+      }
     }
     @if (destType === 'faction') {
-      <app-campaign-dropdown
-        class="ndp-entity-dropdown"
-        [options]="factionOptions"
-        [value]="entityId"
-        fontSize="13px"
-        [triggerTabIndex]="0"
-        (valueChange)="entityIdChange.emit($event)"
-      />
+      @if (hasAvailableOptions()) {
+        <app-campaign-dropdown
+          class="ndp-entity-dropdown"
+          [options]="factionOptions()"
+          [value]="entityId"
+          fontSize="13px"
+          [triggerTabIndex]="0"
+          (valueChange)="entityIdChange.emit($event)"
+        />
+      } @else {
+        <span class="ndp-no-options">All factions are already used</span>
+      }
     }
     @if (destType === 'player') {
       <app-campaign-dropdown
         class="ndp-entity-dropdown"
-        [options]="playerOptions"
+        [options]="playerOptions()"
         [value]="entityId"
         fontSize="13px"
         [triggerTabIndex]="0"

@@ -114,13 +114,31 @@ else
 
     await using var seedCmd = new NpgsqlCommand(
         "INSERT INTO users (id, email, password_hash, display_name, role, created_at) " +
-        "VALUES (gen_random_uuid(), @Email, @Hash, @DisplayName, 'Admin', NOW())", conn);
+        "VALUES (gen_random_uuid(), @Email, @Hash, @DisplayName, 'Admin', NOW()) " +
+        "RETURNING id", conn);
     seedCmd.Parameters.AddWithValue("Email", seedEmail);
     seedCmd.Parameters.AddWithValue("Hash", passwordHash);
     seedCmd.Parameters.AddWithValue("DisplayName", seedDisplayName);
-    await seedCmd.ExecuteNonQueryAsync();
+    var userId = (Guid)await seedCmd.ExecuteScalarAsync();
 
     Console.WriteLine($"       Seeded DM — email: {seedEmail}  password: {seedPassword}");
+
+    // Check if subscription exists for this user
+    await using var checkSubCmd = new NpgsqlCommand(
+        "SELECT id FROM subscriptions WHERE user_id = @UserId", conn);
+    checkSubCmd.Parameters.AddWithValue("UserId", userId);
+    var existingSubscription = await checkSubCmd.ExecuteScalarAsync();
+
+    if (existingSubscription == null)
+    {
+        // Create subscription record for default admin user
+        await using var subCmd = new NpgsqlCommand(
+            "INSERT INTO subscriptions (id, user_id, status, bypass_payment, created_at, lock_level, stripe_customer_id, stripe_subscription_id) " +
+            "VALUES (gen_random_uuid(), @UserId, 'Active', true, NOW(), 'FullAccess', '', '')", conn);
+        subCmd.Parameters.AddWithValue("UserId", userId);
+        await subCmd.ExecuteNonQueryAsync();
+        Console.WriteLine($"       Created subscription for admin user with bypass_payment=true");
+    }
 }
 
 Console.WriteLine();

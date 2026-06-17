@@ -18,13 +18,10 @@ export class BugReportComponent implements OnInit {
   private bugReportSvc   = inject(BugReportService);
   auth                   = inject(AuthService);
 
-  readonly severities = ['Low', 'Medium', 'High', 'Critical'] as const;
-
   form = this.fb.group({
     title:            ['', [Validators.required, Validators.maxLength(255)]],
     description:      ['', Validators.required],
     stepsToReproduce: [''],
-    severity:         ['Medium', Validators.required],
     pageUrl:          [''],
   });
 
@@ -46,7 +43,6 @@ export class BugReportComponent implements OnInit {
       title:            this.form.value.title!,
       description:      this.form.value.description!,
       stepsToReproduce: this.form.value.stepsToReproduce || undefined,
-      severity:         this.form.value.severity as SubmitBugReportRequest['severity'],
       pageUrl:          this.form.value.pageUrl || undefined,
       device:           this.getDevice(),
       browser:          this.getBrowser(),

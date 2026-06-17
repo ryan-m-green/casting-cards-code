@@ -7,33 +7,41 @@ import { JournalTitleComponent } from '../../../shared/components/journal-title/
 import { JournalWatermarkComponent } from '../../../shared/components/journal-watermark/journal-watermark.component';
 import { CampaignJoinInputComponent } from '../../../shared/components/campaign-join-input/campaign-join-input.component';
 import { PortalCardComponent } from '../../../shared/components/portal-card/portal-card.component';
+import { UpgradeBadgeComponent } from '../../../shared/components/upgrade-badge/upgrade-badge.component';
 import { environment } from '../../../../environments/environment';
 import { Campaign } from '../../../shared/models/campaign.model';
 import { PortalTransitionService } from '../../../core/portal-transition.service';
 import { AuthService } from '../../../core/auth/auth.service';
 import { CampaignHubService } from '../../../core/hub/campaign-hub.service';
+import { StripeService } from '../../../core/stripe.service';
+import { SubscriptionService } from '../../../core/subscription.service';
+import { SubscriptionDrawerService } from '../../../core/subscription-drawer.service';
 
 @Component({
   selector: 'app-campaign-library',
   standalone: true,
-  imports: [CommonModule, RouterLink, JournalTitleComponent, JournalWatermarkComponent, CampaignJoinInputComponent, PortalCardComponent],
+  imports: [CommonModule, RouterLink, JournalTitleComponent, JournalWatermarkComponent, CampaignJoinInputComponent, PortalCardComponent, UpgradeBadgeComponent],
   templateUrl: './campaign-library.component.html',
   styleUrl: './campaign-library.component.scss'
 })
 export class CampaignLibraryComponent implements OnInit, OnDestroy {
-  private http       = inject(HttpClient);
-  private router     = inject(Router);
-  private transition = inject(PortalTransitionService);
-  private el         = inject(ElementRef);
-  private hub        = inject(CampaignHubService);
+  private http           = inject(HttpClient);
+  private router         = inject(Router);
+  private transition     = inject(PortalTransitionService);
+  private el             = inject(ElementRef);
+  private hub            = inject(CampaignHubService);
   private hubSubscriptions: Subscription[] = [];
-  private auth       = inject(AuthService);
+  private stripe         = inject(StripeService);
+  private auth           = inject(AuthService);
+  subscription           = inject(SubscriptionService);
+  private drawerService  = inject(SubscriptionDrawerService);
 
   activeTab             = signal<'mine' | 'joined'>('mine');
   campaigns             = signal<Campaign[]>([]);
   joinedCampaigns       = signal<Campaign[]>([]);
   materializingJoinedId = signal<string | null>(null);
   confirmTarget         = signal<Campaign | null>(null);
+  campaignLimitReached  = signal(false);
   joinLoading           = signal(false);
   joinError             = signal('');
   private isEntering   = false;
@@ -59,6 +67,7 @@ export class CampaignLibraryComponent implements OnInit, OnDestroy {
     const token = this.auth.getToken();
     if (token && !this.hub.isConnected()) {
       this.hub.connect(token).catch(console.warn);
+    this.loadEntityLimits();
     }
     this.http.get<Campaign[]>(`${environment.apiUrl}/api/campaigns`).subscribe(c => this.campaigns.set(c));
     this.loadJoinedCampaigns();
@@ -67,6 +76,17 @@ export class CampaignLibraryComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
     this.hub.disconnect().catch(console.warn);
     this.hubSubscriptions.forEach(sub => sub.unsubscribe());
+  }
+
+  private loadEntityLimits() {
+    this.stripe.getUserEntityLimits().subscribe({
+      next: (limits) => {
+        this.campaignLimitReached.set(limits.campaigns.limitReached);
+      },
+      error: () => {
+        this.campaignLimitReached.set(false);
+      }
+    });
   }
 
   private loadJoinedCampaigns() {
@@ -302,5 +322,9 @@ export class CampaignLibraryComponent implements OnInit, OnDestroy {
       this.campaigns.update(list => list.filter(x => x.id !== c.id));
       this.confirmTarget.set(null);
     });
+  }
+
+  openUpgradeDrawer() {
+    this.drawerService.open();
   }
 }

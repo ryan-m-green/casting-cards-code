@@ -1,7 +1,14 @@
 <div class="pc scroll-body">
+  <app-upgrade-badge
+    [visible]="subscription.isFreeTrial()"
+    (badgeClick)="openUpgradeDrawer()"
+    class="upgrade-badge-dashboard" />
 
   <div class="dashboard-main">
+    <img src="/rat_wizard.PNG" alt="Rat wizard" class="rat-wizard-image" />
     <app-journal-title [title]="'Welcome back, ' + (auth.currentUser()?.displayName ?? '')" />
+
+  <div class="dashboard-subtitle">Card Deck Collection</div>
 
   <!-- Stats -->
   <div class="sc section-label-mb">
@@ -43,7 +50,7 @@
   </div>
 
   <div class="quick-actions">
-    <div class="section-label section-label-mb">Quick Actions</div>
+    <div class="dashboard-subtitle">Quick Actions</div>
 
   <!-- Active Campaign -->
   @if (stats().activeCampaign) {
@@ -63,13 +70,6 @@
           </div>
         </div>
       </div>
-    </div>
-    <div class="wr section-label-mb">
-      <button class="btn-ghost qa-btn qa-btn--cast" (click)="goto('/dm/cast/new')"><span class="qa-btn__inner">+ New Cast</span></button>
-      <button class="btn-ghost qa-btn qa-btn--sublocation" (click)="goto('/dm/sublocations/new')"><span class="qa-btn__inner">+ New Sublocation</span></button>
-      <button class="btn-ghost qa-btn qa-btn--location" (click)="goto('/dm/locations/new')"><span class="qa-btn__inner">+ New Location</span></button>
-      <button class="btn-ghost qa-btn qa-btn--faction" (click)="goto('/dm/faction/new')"><span class="qa-btn__inner">+ New Faction</span></button>
-      <button class="btn-ghost qa-btn qa-btn--campaign" (click)="goto('/dm/campaigns/new')"><span class="qa-btn__inner">+ New Campaign</span></button>
     </div>
 
     <!-- Hidden portal card; cloned as animation ghost -->
@@ -113,6 +113,14 @@
       </div>
     </div>
   }
+
+  <div class="wr section-label-mb">
+    <button class="btn-ghost qa-btn qa-btn--cast" [class.disabled]="isCreateDisabled()" [attr.disabled]="isCreateDisabled() ? 'true' : null" (click)="isCreateDisabled() ? null : goto('/dm/cast/new')"><span class="qa-btn__inner">+ New Cast</span></button>
+    <button class="btn-ghost qa-btn qa-btn--sublocation" [class.disabled]="isCreateDisabled()" [attr.disabled]="isCreateDisabled() ? 'true' : null" (click)="isCreateDisabled() ? null : goto('/dm/sublocations/new')"><span class="qa-btn__inner">+ New Sublocation</span></button>
+    <button class="btn-ghost qa-btn qa-btn--location" [class.disabled]="isCreateDisabled()" [attr.disabled]="isCreateDisabled() ? 'true' : null" (click)="isCreateDisabled() ? null : goto('/dm/locations/new')"><span class="qa-btn__inner">+ New Location</span></button>
+    <button class="btn-ghost qa-btn qa-btn--faction" [class.disabled]="isCreateDisabled()" [attr.disabled]="isCreateDisabled() ? 'true' : null" (click)="isCreateDisabled() ? null : goto('/dm/faction/new')"><span class="qa-btn__inner">+ New Faction</span></button>
+    <button class="btn-ghost qa-btn qa-btn--campaign" [class.disabled]="isCreateDisabled()" [attr.disabled]="isCreateDisabled() ? 'true' : null" (click)="isCreateDisabled() ? null : goto('/dm/campaigns/new')"><span class="qa-btn__inner">+ New Campaign</span></button>
+  </div>
 
   </div><!-- /.quick-actions -->
 

@@ -13,8 +13,12 @@
                 (click)="setTab('select')" type="button">
           {{ tabLabel().select }}
         </button>
-        <button class="pic-tab" [class.pic-tab--active]="activeTab() === 'new'"
-                (click)="setTab('new')" type="button">
+        <button class="pic-tab"
+                [class.pic-tab--active]="activeTab() === 'new'"
+                [class.disabled]="limitReached() || isCreateDisabled()"
+                [disabled]="limitReached() || isCreateDisabled()"
+                (click)="(limitReached() || isCreateDisabled()) ? null : setTab('new')"
+                type="button">
           {{ tabLabel().new }}
         </button>
       </div>
@@ -23,7 +27,12 @@
       @if (activeTab() === 'select') {
         @if (cardType === 'location') {
           @if (availableLocations().length === 0) {
-            <p class="pic-tab-empty">All library locations are already in this campaign.</p>
+            @if (limitReached()) {
+              <p class="pic-tab-empty">All library locations are already in this campaign.
+                <br>Upgrade your account to add more.</p>
+            } @else {
+              <p class="pic-tab-empty">All library locations are already in this campaign.</p>
+            }
           } @else {
             <div class="pic-search-row">
               <input class="fi pic-search-input" type="search"
@@ -51,7 +60,11 @@
         }
         @if (cardType === 'sublocation') {
           @if (availableSublocations().length === 0) {
-            <p class="pic-tab-empty">All library sublocations are already in this location.</p>
+            @if (limitReached()) {
+              <p class="pic-tab-empty">All library sublocations are already in this location.<br>Upgrade your account to add more</p>
+            } @else {
+              <p class="pic-tab-empty">All library sublocations are already in this location.</p>
+            }
           } @else {
             <div class="pic-search-row">
               <input class="fi pic-search-input" type="search"
@@ -79,7 +92,11 @@
         }
         @if (cardType === 'cast') {
           @if (availableCasts().length === 0) {
-            <p class="pic-tab-empty">All library cast members are already in this campaign.</p>
+            @if (limitReached()) {
+              <p class="pic-tab-empty">All library cast members are already in this campaign.<br>Upgrade your account to add more</p>
+            } @else {
+              <p class="pic-tab-empty">All library cast members are already in this campaign.</p>
+            }
           } @else {
             <div class="pic-search-row">
               <input class="fi pic-search-input" type="search"
@@ -108,7 +125,11 @@
         }
         @if (cardType === 'faction') {
           @if (availableFactions().length === 0) {
-            <p class="pic-tab-empty">All library factions are already in this campaign.</p>
+            @if (limitReached()) {
+              <p class="pic-tab-empty">All library factions are already in this campaign.<br>Upgrade your account to add more</p>
+            } @else {
+              <p class="pic-tab-empty">All library factions are already in this campaign.</p>
+            }
           } @else {
             <div class="pic-search-row">
               <input class="fi pic-search-input" type="search"

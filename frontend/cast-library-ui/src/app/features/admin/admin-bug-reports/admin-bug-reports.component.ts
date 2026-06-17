@@ -15,13 +15,10 @@ import { JournalTitleComponent } from '../../../shared/components/journal-title/
 export class AdminBugReportsComponent implements OnInit {
   private bugReportSvc = inject(BugReportService);
 
-  readonly severities = ['Low', 'Medium', 'High', 'Critical'] as const;
-
   bugs        = signal<BugReport[]>([]);
   loading     = signal(false);
   marking     = signal<string | null>(null);
   deleting    = signal<string | null>(null);
-  updatingSeverity = signal<string | null>(null);
   cleaning    = signal(false);
   errorMsg    = signal('');
 
@@ -63,18 +60,6 @@ export class AdminBugReportsComponent implements OnInit {
     });
   }
 
-  changeSeverity(bug: BugReport, severity: string) {
-    this.updatingSeverity.set(bug.id);
-    this.bugReportSvc.updateSeverity(bug.id, severity).subscribe({
-      next: () => {
-        this.bugs.update(list =>
-          list.map(b => b.id === bug.id ? { ...b, severity: severity as BugReport['severity'] } : b)
-        );
-        this.updatingSeverity.set(null);
-      },
-      error: () => { this.updatingSeverity.set(null); },
-    });
-  }
 
   cleanup() {
     this.cleaning.set(true);
@@ -93,18 +78,10 @@ export class AdminBugReportsComponent implements OnInit {
     });
   }
 
-  private readonly severityRank: Record<string, number> = {
-    Critical: 4, High: 3, Medium: 2, Low: 1,
-  };
-
-  get openBugs(): BugReport[] {
+get openBugs(): BugReport[] {
     return this.bugs()
       .filter(b => !b.isFixed)
-      .sort((a, b) => {
-        const severityDiff = (this.severityRank[b.severity] ?? 0) - (this.severityRank[a.severity] ?? 0);
-        if (severityDiff !== 0) return severityDiff;
-        return new Date(a.reportedAt).getTime() - new Date(b.reportedAt).getTime();
-      });
+      .sort((a, b) => new Date(a.reportedAt).getTime() - new Date(b.reportedAt).getTime());
   }
 
   get fixedBugs(): BugReport[] {

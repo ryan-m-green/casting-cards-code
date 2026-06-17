@@ -2,6 +2,7 @@
 using CastLibrary.Logic.Queries.Cast;
 using CastLibrary.Logic.Validators;
 using CastLibrary.Repository.Repositories.Read;
+using CastLibrary.Shared.Exceptions;
 using CastLibrary.Shared.Requests;
 using CastLibrary.WebHost.Mappers;
 using CastLibrary.WebHost.MetadataHelpers;
@@ -59,10 +60,18 @@ public class CastController(
             return BadRequest(errors);
         }
         var dmUserId = userRetriever.GetDmUserId(User);
-        var cast = await createCastCommand.HandleAsync(new CreateCastCommand(dmUserId, request));
-        var response = mapper.ToResponse(cast);
+        
+        try
+        {
+            var cast = await createCastCommand.HandleAsync(new CreateCastCommand(dmUserId, request));
+            var response = mapper.ToResponse(cast);
 
-        return CreatedAtAction(nameof(GetById), new { id = cast.Id }, response);
+            return CreatedAtAction(nameof(GetById), new { id = cast.Id }, response);
+        }
+        catch (LimitExceededException ex)
+        {
+            return StatusCode(403, ex.Message);
+        }
     }
 
     [HttpPut("{id}")]
@@ -109,7 +118,7 @@ public class CastController(
             return BadRequest("File size must not exceed 5 MB.");
         }
         var dmUserId = userRetriever.GetDmUserId(User);
-        var (success, _) = await uploadCastImageCommand.HandleAsync(
+        var (success, imageUrl) = await uploadCastImageCommand.HandleAsync(
             new UploadCastImageCommand(id, dmUserId, file.OpenReadStream(), file.ContentType));
 
         if (!success)
@@ -117,9 +126,6 @@ public class CastController(
             return NotFound();
         }
 
-        var cast = await getCastDetailQuery.HandleAsync(id);
-        var response = new { imageUrl = mapper.ToResponse(cast!).ImageUrl };
-
-        return Ok(response);
+        return Ok(new { imageUrl });
     }
 }

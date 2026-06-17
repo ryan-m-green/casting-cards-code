@@ -278,7 +278,7 @@ textarea.fi {
   .sv-label {
     position: relative;
     font-family: v.$font-header;
-    font-size: 7px;
+    font-size: 10px;
     text-transform: uppercase;
     letter-spacing: 0.2em;
     color: v.$color-base-brown-14;
@@ -418,7 +418,8 @@ textarea.fi {
     color: v.$color-base-white-3;
   }
 
-  &:disabled {
+  &:disabled,
+  &.disabled {
     opacity: 0.5;
     cursor: not-allowed;
   }
@@ -487,7 +488,7 @@ textarea.fi {
   border: 1px dashed v.$color-border;
   border-radius: 2px;
   font-family: v.$font-header;
-  font-size: 9.5px;
+  font-size: 12px;
   text-transform: uppercase;
   letter-spacing: 0.12em;
   color: v.$color-base-brown-14;
@@ -1143,8 +1144,8 @@ textarea.fi {
 .section-label-mb   { margin-bottom: 8px; }
 .empty-state-pad    { padding: 20px 0; }
 .empty-state-center { padding: 20px; text-align: center; }
-.btn-ghost--xs      { font-size: 7px; }
-.lock-pill--xs      { font-size: 7px; }
+.btn-ghost--xs      { font-size: 12px; }
+.lock-pill--xs      { font-size: 12px; }
 .orn-mt             { margin-top: 24px; }
 
 .list-arrow {

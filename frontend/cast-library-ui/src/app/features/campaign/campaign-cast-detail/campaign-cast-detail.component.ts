@@ -318,7 +318,7 @@ export class CampaignCastDetailComponent implements OnInit, OnDestroy {
   }
 
   saveDetails(syncLibrary = false) {
-    const castId = this.cast()?.id;
+    const castId = this.cast()?.sourceCastId;
     const body = {
       name:              this.editName(),
       publicDescription: this.editPublicDescription(),

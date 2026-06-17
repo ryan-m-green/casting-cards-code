@@ -1,15 +1,21 @@
 <div class="pc join-center">
   <div class="cover-ornament join-ornament">✦</div>
   <app-journal-title title="Create Your Account" align="center" />
-  <p class="pnum join-subtitle">Join the ledger as a DM or Adventurer</p>
+  <p class="pnum join-subtitle">Join the ledger as a Game Master or Player</p>
 
   <div class="role-card join-card">
+   @if (showDrawer()) {
+      <div class="verification-drawer">
+        <div class="drawer-content">
+          <h3>Account Created!</h3>
+          <p>Please check your email for a verification link to complete your registration.</p>
+          <img _ngcontent-ng-c1891706603="" src="/DoodleArt/Deer.PNG" alt="Doodle art" class="join-form-doodle-art">
+        </div>
+      </div>
+    }
+
     <form [formGroup]="registerForm" (ngSubmit)="register()">
-      <label class="fi-label">Invite Code</label>
-      <input class="fi" type="text" formControlName="inviteCode" placeholder="XXXX-XXXX-XXXX" autocomplete="off" />
-
-      <div class="dv join-dv"></div>
-
+       
       <label class="fi-label">Display Name</label>
       <input class="fi" type="text" formControlName="displayName" placeholder="The Chronicler" autocomplete="name" />
 
@@ -32,7 +38,7 @@
         <button type="button"
                 class="btn-ghost join-toggle-btn"
                 [class.btn-primary]="selectedRole() === 'DM'"
-                (click)="selectedRole.set('DM')">⚔ DM</button>
+                (click)="selectedRole.set('DM')">⚔ Game Master</button>
         <button type="button"
                 class="btn-ghost join-toggle-btn"
                 [class.btn-primary]="selectedRole() === 'Player'"
@@ -45,7 +51,7 @@
         </div>
       }
 
-      <button class="btn-primary btn-full join-submit-btn" type="submit" [disabled]="loading()">
+      <button class="campaign-primary-btn btn-full join-submit-btn" type="submit" [disabled]="loading()">
         {{ loading() ? '…' : 'Create Account' }}
       </button>
     </form>

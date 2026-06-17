@@ -1,5 +1,7 @@
 using CastLibrary.Logic.Interfaces;
+using CastLibrary.Logic.Services;
 using CastLibrary.Repository.Repositories.Read;
+using CastLibrary.Shared.Enums;
 
 namespace CastLibrary.Logic.Commands.Faction;
 
@@ -10,7 +12,8 @@ public interface IUploadFactionImageCommandHandler
 
 public class UploadFactionImageCommandHandler(
     IFactionReadRepository factionReadRepository,
-    IImageStorageOperator imageStorage) : IUploadFactionImageCommandHandler
+    IImageStorageOperator imageStorage,
+    IImageKeyCreator imageKeyCreator) : IUploadFactionImageCommandHandler
 {
     public async Task<(bool Success, string ImageKey)> HandleAsync(UploadFactionImageCommand command)
     {
@@ -18,7 +21,7 @@ public class UploadFactionImageCommandHandler(
         if (faction is null || faction.DmUserId != command.DmUserId)
             return (false, string.Empty);
 
-        var key = $"{faction.DmUserId}/factions/{command.FactionId}.png";
+        var key = imageKeyCreator.Create(faction.DmUserId, Guid.Empty, command.FactionId, EntityType.Faction);
 
         await imageStorage.SaveAsync(key, command.Stream, command.ContentType);
 

@@ -12,6 +12,9 @@ import { SparkleService } from '../../../shared/services/sparkle.service';
 import { FactionCardComponent } from '../../../shared/components/faction-card/faction-card.component';
 import { IconPickerComponent } from '../../../shared/components/icon-picker/icon-picker.component';
 import { JournalTitleComponent } from '../../../shared/components/journal-title/journal-title.component';
+import { HttpErrorResponse } from '@angular/common/http';
+import { SubscriptionService } from '../../../core/subscription.service';
+import { SubscriptionDrawerService } from '../../../core/subscription-drawer.service';
 
 export function perceptionLabel(v: number): string {
   if (v ===  5) return 'Revered';
@@ -47,15 +50,18 @@ export const FACTION_TYPE_OPTIONS = [
 export class FactionFormComponent implements OnInit {
   @ViewChild('sparkHost') sparkHost!: ElementRef<HTMLElement>;
 
-  private route   = inject(ActivatedRoute);
-  private router  = inject(Router);
-  private http    = inject(HttpClient);
-  private fb      = inject(FormBuilder);
-  private sparkle = inject(SparkleService);
+  private route          = inject(ActivatedRoute);
+  private router         = inject(Router);
+  private http           = inject(HttpClient);
+  private fb             = inject(FormBuilder);
+  private sparkle        = inject(SparkleService);
+  subscription           = inject(SubscriptionService);
+  private drawerService  = inject(SubscriptionDrawerService);
   private destroyRef = inject(DestroyRef);
 
   factionId      = signal<string | null>(null);
   saveStatus     = signal<'idle' | 'saving' | 'saved' | 'error'>('idle');
+  limitError     = signal<string | null>(null);
   imageUrl       = signal<string | null>(null);
   selectedIcon   = signal<string | null>(null);
   typeOptions      = FACTION_TYPE_OPTIONS;
@@ -153,10 +159,15 @@ export class FactionFormComponent implements OnInit {
       : this.http.post<Faction>(`${environment.apiUrl}/api/factions`, payload);
 
     req.pipe(
-      catchError(() => {
-        this.saveStatus.set('error');
-        this.fadeLabelTo('Error');
-        setTimeout(() => this.saveStatus.set('idle'), 2000);
+      catchError((err: HttpErrorResponse) => {
+        if (err.status === 403) {
+          this.limitError.set(err.error);
+          this.saveStatus.set('idle');
+        } else {
+          this.saveStatus.set('error');
+          this.fadeLabelTo('Error');
+          setTimeout(() => this.saveStatus.set('idle'), 2000);
+        }
         return EMPTY;
       })
     ).subscribe(faction => {
@@ -175,4 +186,7 @@ export class FactionFormComponent implements OnInit {
     this.imageUrl.set(path);
   }
 
+  openUpgradeDrawer() {
+    this.drawerService.open();
   }
+}

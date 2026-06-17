@@ -1,6 +1,7 @@
 using CastLibrary.Logic.Commands.Faction;
 using CastLibrary.Logic.Queries.Faction;
 using CastLibrary.Logic.Validators;
+using CastLibrary.Shared.Exceptions;
 using CastLibrary.Shared.Requests;
 using CastLibrary.WebHost.Mappers;
 using CastLibrary.WebHost.MetadataHelpers;
@@ -47,8 +48,16 @@ public class FactionsController(
             return BadRequest(result.Errors.Select(e => e.ErrorMessage).ToList());
 
         var dmUserId = userRetriever.GetDmUserId(User);
-        var faction = await createFactionCommand.HandleAsync(new CreateFactionCommand(dmUserId, request));
-        return CreatedAtAction(nameof(GetById), new { id = faction.FactionId }, mapper.ToResponse(faction));
+        
+        try
+        {
+            var faction = await createFactionCommand.HandleAsync(new CreateFactionCommand(dmUserId, request));
+            return CreatedAtAction(nameof(GetById), new { id = faction.FactionId }, mapper.ToResponse(faction));
+        }
+        catch (LimitExceededException ex)
+        {
+            return StatusCode(403, ex.Message);
+        }
     }
 
     [HttpPut("{id}")]

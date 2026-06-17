@@ -9,4 +9,8 @@ public class UserEntity
     public string Role { get; set; } = string.Empty;
     public string[] Keywords { get; set; } = [];
     public DateTime CreatedAt { get; set; }
+    public int TokenVersion { get; set; } = 1;
+    public bool EmailVerified { get; set; } = false;
+    public string EmailVerificationToken { get; set; }
+    public DateTime? LastLoggedInOn { get; set; }
 }

@@ -11,6 +11,7 @@ public class CampaignEventResponse
     public int SortOrder { get; set; }
     public List<LinkedEntityTrigger> LinkedEntities { get; set; } = [];
     public bool VisibleToPlayers { get; set; }
+    public bool MarkedForArchive { get; set; }
     public string ImageUrl { get; set; }
     public decimal? TodPositionPercent { get; set; }
     public bool Archived { get; set; }

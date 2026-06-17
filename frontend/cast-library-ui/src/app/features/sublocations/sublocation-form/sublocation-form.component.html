@@ -17,6 +17,7 @@
 
   <form [formGroup]="form">
     <div class="form-portrait-new-row">
+      <img src="/spilled_wine.PNG" alt="Spilled wine" class="spilled-wine-image" />
       @if (!sublocationId()) {
         <label class="form-portrait-label" [class.form-portrait-label--filled]="imagePreviewUrl()">
           <input type="file" accept="image/jpeg,image/png,image/webp" class="form-portrait-file-input" (change)="onPortraitFileSelected($event)" />
@@ -81,6 +82,18 @@
       }
     </div>
   </form>
+
+  @if (limitError()) {
+    <div class="limit-error-message">
+      <span class="limit-error-text">{{ limitError() }}</span>
+      <div class="limit-error-actions">
+        @if (subscription.isFreeTrial()) {
+          <button class="limit-error-upgrade" (click)="openUpgradeDrawer()">Upgrade</button>
+        }
+        <button class="limit-error-close" (click)="limitError.set(null)">×</button>
+      </div>
+    </div>
+  }
 
   <div class="form-save-footer">
     <span class="save-label"

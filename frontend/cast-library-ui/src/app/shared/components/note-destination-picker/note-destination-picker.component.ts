@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter, ElementRef, inject } from '@angular/core';
+import { Component, Input, Output, EventEmitter, ElementRef, inject, computed, input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { CampaignLocationInstance } from '../../models/location.model';
 import { CampaignSublocationInstance } from '../../models/sublocation.model';
@@ -9,9 +9,9 @@ import { TimeOfDay, TimeOfDaySlice } from '../../models/time-of-day.model';
 import { CampaignDropdownComponent, CampaignDropdownOption } from '../campaign-dropdown/campaign-dropdown.component';
 
 interface LinkedItem {
-  entityType: string;
+  entityType: string | null;
   entityId: string;
-  entityName: string;
+  entityName: string | null;
   todPositionPercent?: number | null;
 }
 
@@ -52,7 +52,8 @@ export class NoteDestinationPickerComponent {
   @Input() campaignId = '';
   @Input() tabIndexBase = 2;
   @Input() multiselect = false;
-  @Input() linkedEntities: LinkedItem[] = [];
+  linkedEntities = input<LinkedItem[]>([]);
+  excludedEntities = input<LinkedItem[]>([]);
   private _visibleToPlayers = false;
 
   @Input()
@@ -80,7 +81,7 @@ export class NoteDestinationPickerComponent {
   }
 
   get showPills(): boolean {
-    return this.multiselect && this.linkedEntities.length > 0;
+    return this.multiselect && this.linkedEntities().length > 0;
   }
 
   get isToggleDisabled(): boolean {
@@ -90,7 +91,7 @@ export class NoteDestinationPickerComponent {
   }
 
   get hasTimeTrigger(): boolean {
-    return this.linkedEntities.some(item => item.entityType === 'time-of-day');
+    return this.linkedEntities().some(item => item.entityType === 'time-of-day');
   }
 
   getVisibilityText(): string {
@@ -102,45 +103,42 @@ export class NoteDestinationPickerComponent {
     return 'Visible To Players';
   }
 
-  get locationOptions(): CampaignDropdownOption[] {
-    return [
-      { value: '', label: '— select location —' },
-      ...this.locations.filter(l => !l.isVisibleToPlayers).map(l => ({ value: l.instanceId, label: l.name })),
-    ];
-  }
+  readonly locationOptions = computed<CampaignDropdownOption[]>(() => [
+    { value: '', label: '— select location —' },
+    ...this.locations.filter(l => !l.isVisibleToPlayers && !this.excludedEntities().some(le => le.entityType === 'location' && le.entityId === l.instanceId) && !this.linkedEntities().some(le => le.entityType === 'location' && le.entityId === l.instanceId)).map(l => ({ value: l.instanceId, label: l.name })),
+  ]);
 
-  get sublocationOptions(): CampaignDropdownOption[] {
-    return [
-      { value: '', label: '— select sublocation —' },
-      ...this.sublocations.filter(s => !s.isVisibleToPlayers).map(s => ({ value: s.instanceId, label: s.name })),
-    ];
-  }
+  readonly sublocationOptions = computed<CampaignDropdownOption[]>(() => [
+    { value: '', label: '— select sublocation —' },
+    ...this.sublocations.filter(s => !s.isVisibleToPlayers && !this.excludedEntities().some(le => le.entityType === 'sublocation' && le.entityId === s.instanceId) && !this.linkedEntities().some(le => le.entityType === 'sublocation' && le.entityId === s.instanceId)).map(s => ({ value: s.instanceId, label: s.name })),
+  ]);
 
-  get castOptions(): CampaignDropdownOption[] {
-    return [
-      { value: '', label: '— select cast member —' },
-      ...this.casts.filter(c => !c.isVisibleToPlayers).map(c => ({ value: c.instanceId, label: c.name })),
-    ];
-  }
+  readonly castOptions = computed<CampaignDropdownOption[]>(() => [
+    { value: '', label: '— select cast member —' },
+    ...this.casts.filter(c => !c.isVisibleToPlayers && !this.excludedEntities().some(le => le.entityType === 'cast' && le.entityId === c.instanceId) && !this.linkedEntities().some(le => le.entityType === 'cast' && le.entityId === c.instanceId)).map(c => ({ value: c.instanceId, label: c.name })),
+  ]);
 
-  get factionOptions(): CampaignDropdownOption[] {
-    return [
-      { value: '', label: '— select faction —' },
-      ...this.factions.filter(f => !f.isVisibleToPlayers).map(f => ({ value: f.factionInstanceId, label: f.name })),
-    ];
-  }
+  readonly factionOptions = computed<CampaignDropdownOption[]>(() => [
+    { value: '', label: '— select faction —' },
+    ...this.factions.filter(f => !f.isVisibleToPlayers && !this.excludedEntities().some(le => le.entityType === 'faction' && le.entityId === f.factionInstanceId) && !this.linkedEntities().some(le => le.entityType === 'faction' && le.entityId === f.factionInstanceId)).map(f => ({ value: f.factionInstanceId, label: f.name })),
+  ]);
 
-  get playerOptions(): CampaignDropdownOption[] {
-    return [
-      { value: '', label: '— select player —' },
-      ...this.players.map(p => ({ value: p.userId, label: p.displayName })),
-    ];
-  }
+  readonly playerOptions = computed<CampaignDropdownOption[]>(() => [
+    { value: '', label: '— select player —' },
+    ...this.players.map(p => ({ value: p.userId, label: p.displayName })),
+  ]);
+
+  readonly hasAvailableOptions = computed(() => {
+    switch (this.destType) {
+      case 'location': return this.locationOptions().length > 1;
+      case 'sublocation': return this.sublocationOptions().length > 1;
+      case 'cast': return this.castOptions().length > 1;
+      case 'faction': return this.factionOptions().length > 1;
+      default: return true;
+    }
+  });
 
   onDestTypeChange(value: string): void {
-    if (this.multiselect && value === 'none') {
-      this.linkedEntitiesChange.emit([]);
-    }
     if (this.destType === 'time-of-day' && value !== 'time-of-day') {
       this.todPositionPercentChange.emit(null);
     }
@@ -230,12 +228,15 @@ export class NoteDestinationPickerComponent {
       todPositionPercent
     };
 
-    this.linkedEntitiesChange.emit([...this.linkedEntities, newItem]);
+    this.linkedEntitiesChange.emit([...this.linkedEntities(), newItem]);
     this.entityIdChange.emit('');
+    
+    // Reset destType to queue after adding trigger so selection is cleared for next scene/handout
+    this.onDestTypeChange('queue');
   }
 
   removeLinkedItem(index: number): void {
-    const updated = [...this.linkedEntities];
+    const updated = [...this.linkedEntities()];
     updated.splice(index, 1);
     this.linkedEntitiesChange.emit(updated);
   }

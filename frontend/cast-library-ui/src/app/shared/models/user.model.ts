@@ -17,10 +17,10 @@ export interface RegisterRequest {
   password: string;
   displayName: string;
   role: UserRole;
-  inviteCode: string;
 }
 
 export interface AuthResponse {
   token: string;
   user: User;
+  bypassPayment: boolean;
 }

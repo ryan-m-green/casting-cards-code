@@ -3,6 +3,7 @@ import { signal } from '@angular/core';
 import { Subject, Observable } from 'rxjs';
 import * as signalR from '@microsoft/signalr';
 import { environment } from '../../../environments/environment';
+import { AuthService } from '../auth/auth.service';
 import {
   SecretRevealedEvent,
   SecretResealedEvent,
@@ -58,6 +59,14 @@ export interface StorylineEventUpdatedEvent {
   imageUrl: string | null;
 }
 
+export interface SessionDeletedEvent {
+  sessionId: string;
+}
+
+export interface SubscriptionLockLevelChangedEvent {
+  userId: string;
+  newLockLevel: string;
+}
 
 export interface ShopItemUpdatedEvent {
   campaignId: string;
@@ -96,6 +105,8 @@ export interface FactionInstanceUpdatedEvent {
 export class CampaignHubService {
   private connection: signalR.HubConnection | null = null;
 
+  constructor(private authService: AuthService) {}
+
   private secretRevealedSubject            = new Subject<SecretRevealedEvent | null>();
   private secretDeliveredSubject           = new Subject<SecretDeliveredEvent | null>();
   private secretResealedSubject            = new Subject<SecretResealedEvent | null>();
@@ -126,6 +137,8 @@ export class CampaignHubService {
   private factionInstanceUpdatedSubject     = new Subject<FactionInstanceUpdatedEvent | null>();
   private storylineEventUpdatedSubject      = new Subject<StorylineEventUpdatedEvent | null>();
   private campaignNavChangedSubject          = new Subject<{ campaignId: string } | null>();
+  private sessionDeletedSubject              = new Subject<SessionDeletedEvent | null>();
+  private subscriptionLockLevelChangedSubject = new Subject<SubscriptionLockLevelChangedEvent | null>();
   readonly isConnected = signal(false);
 
   readonly secretRevealed$            = this.secretRevealedSubject.asObservable();
@@ -158,14 +171,49 @@ export class CampaignHubService {
   readonly factionInstanceUpdated$     = this.factionInstanceUpdatedSubject.asObservable();
   readonly storylineEventUpdated$      = this.storylineEventUpdatedSubject.asObservable();
   readonly campaignNavChanged$          = this.campaignNavChangedSubject.asObservable();
+  readonly sessionDeleted$              = this.sessionDeletedSubject.asObservable();
+  readonly subscriptionLockLevelChanged$ = this.subscriptionLockLevelChangedSubject.asObservable();
 
   async connect(token: string): Promise<void> {
+    console.log('SignalR: Starting connection...');
+    console.log('SignalR: Hub URL:', `${environment.apiUrl}/hubs/campaign`);
+    console.log('SignalR: Token present:', !!token);
+
     this.connection = new signalR.HubConnectionBuilder()
       .withUrl(`${environment.apiUrl}/hubs/campaign`, {
         accessTokenFactory: () => token,
       })
-      .withAutomaticReconnect()
+      .withAutomaticReconnect([0, 2000, 5000, 10000, 30000])
+      .withServerTimeout(90000)
+      .configureLogging(signalR.LogLevel.Trace)
       .build();
+
+    console.log('SignalR: Connection built, attempting to start...');
+
+    await this.connection.start()
+      .then(() => {
+        console.log('SignalR: Connected successfully');
+        console.log('SignalR: Connection ID:', this.connection?.connectionId);
+      })
+      .catch(err => console.error('SignalR: Connection failed:', err));
+
+    this.connection.onreconnecting((error) => {
+      console.log('SignalR: Reconnecting...', error);
+    });
+    this.connection.onreconnected(() => {
+      console.log('SignalR: Reconnected successfully');
+      console.log('SignalR: Connection ID:', this.connection?.connectionId);
+      this.isConnected.set(true);
+    });
+    this.connection.onclose((error) => {
+      console.log('SignalR: Connection closed', error);
+      this.isConnected.set(false);
+    });
+    this.isConnected.set(true);
+
+    this.connection.on('ping', () => {
+  console.log('SignalR ping received');
+});
 
     this.connection.on('SecretRevealed', (event: SecretRevealedEvent) => {
       this.secretRevealedSubject.next(event);
@@ -255,7 +303,6 @@ export class CampaignHubService {
       this.factionLockedSubject.next(event);
     });
 
-
     this.connection.on('ShopItemUpdated', (event: ShopItemUpdatedEvent) => {
       this.shopItemUpdatedSubject.next(event);
     });
@@ -288,11 +335,24 @@ export class CampaignHubService {
       this.campaignNavChangedSubject.next(event);
     });
 
-    this.connection.onclose(() => this.isConnected.set(false));
-    this.connection.onreconnected(() => this.isConnected.set(true));
+    this.connection.on('SessionDeleted', (event: SessionDeletedEvent) => {
+      this.sessionDeletedSubject.next(event);
+    });
 
-    await this.connection.start();
-    this.isConnected.set(true);
+    this.connection.on('SubscriptionLockLevelChanged', (event: SubscriptionLockLevelChangedEvent) => {
+      console.log('SignalR: SubscriptionLockLevelChanged event received', event);
+      this.subscriptionLockLevelChangedSubject.next(event);
+      // Update both AuthService and SubscriptionService with new subscription data
+      console.log('SignalR: Refreshing auth and subscription data...');
+      this.authService.refreshCurrentUser().subscribe({
+        next: () => {
+          console.log('SignalR: Auth data refreshed successfully');
+        },
+        error: (err) => {
+          console.error('SignalR: Failed to refresh auth data', err);
+        }
+      });
+    });
   }
 
   async joinCampaign(campaignId: string): Promise<void> {

@@ -4,13 +4,13 @@ namespace CastLibrary.Logic.Queries.Admin;
 
 public interface IGetDemoPlayersQueryHandler
 {
-    Task<List<Guid>> HandleAsync();
+    Task<Dictionary<Guid, Guid>> HandleAsync();
 }
 
 public class GetDemoPlayersQueryHandler(ICampaignPlayerReadRepository playerReadRepository) : IGetDemoPlayersQueryHandler
 {
-    public async Task<List<Guid>> HandleAsync()
+    public async Task<Dictionary<Guid, Guid>> HandleAsync()
     {
-        return await playerReadRepository.GetDemoPlayerUserIdsAsync();
+        return await playerReadRepository.GetDemoPlayerAssignmentsAsync();
     }
 }

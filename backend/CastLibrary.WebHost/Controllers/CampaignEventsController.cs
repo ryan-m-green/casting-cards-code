@@ -1,6 +1,7 @@
 using CastLibrary.Logic.Commands.Campaign;
 using CastLibrary.Logic.Queries.Campaign;
 using CastLibrary.Logic.Services;
+using CastLibrary.Logic.Strategies;
 using CastLibrary.Logic.Validators;
 using CastLibrary.Repository.Repositories.Update;
 using CastLibrary.Shared.Domain;
@@ -19,16 +20,17 @@ namespace CastLibrary.WebHost.Controllers;
 [Route("api/campaigns/{campaignId}/events")]
 [Authorize]
 public class CampaignEventsController(
-    ICreateCampaignEventCommandHandler createCommand,
+    ICreateCampaignStorylineCommandHandler createCommand,
     IUpdateStorylineVisibilityCommandHandler updateVisibilityCommand,
+    IUpdateStorylineArchiveMarkCommandHandler updateArchiveMarkCommand,
     IUpdateCampaignEventBodyCommandHandler updateBodyCommand,
     IUpdateCampaignEventDetailsCommandHandler updateDetailsCommand,
     IDeleteCampaignEventCommandHandler deleteEventCommand,
     IReorderCampaignEventsCommandHandler reorderCommand,
-    IArchiveCampaignEventsCommandHandler archiveCommand,
+    IArchiveSessionChroniclesCommandHandler archiveCommand,
     IGetCampaignEventsQueryHandler getEventsQuery,
     IGetVisibleCampaignEventsQueryHandler getVisibleEventsQuery,
-    IUploadCampaignEventHandoutCommandHandler uploadHandoutCommand,
+    IUploadCampaignStorylineHandoutCommandHandler uploadHandoutCommand,
     IUploadCampaignEventHandoutImageCommandHandler uploadHandoutImageCommand,
     ICampaignEventWebMapper mapper,
     ICampaignAccessService campaignAccess,
@@ -132,22 +134,53 @@ public class CampaignEventsController(
 
         foreach(var result in resultList)
         {
-            await hubContext.Clients.Group(campaignId.ToString())
-                .SendAsync(result.EventName, new CardVisibilityChangedEvent
+            object responseObject = null;
+            if (result.CardType == EntityTypes.TimeOfDay)
+            {
+                responseObject = new { campaignId = result.CampaignId, positionPercent = result.PositionPercentMoved };
+            }
+            else
+            {
+                responseObject = new CardVisibilityChangedEvent
                 {
                     CampaignId = campaignId,
                     InstanceId = result.EntityInstanceId,
-                    CardType   = result.CardType,
-                    IsVisible  = result.IsVisible,
-                    TickCount  = result.TickCount,
-                    Title      = result.Title,
-                    Body       = result.Body,
+                    CardType = result.CardType,
+                    IsVisible = result.IsVisible,
+                    TickCount = result.TickCount,
+                    Title = result.Title,
+                    Body = result.Body,
                     PlayerCardName = result.PlayerCardName,
                     PlayerCardRace = result.PlayerCardRace,
                     PlayerCardClass = result.PlayerCardClass,
                     PlayerCardImageUrl = result.PlayerCardImageUrl
-                });
+                };
+            }
+
+            await hubContext.Clients.Group(campaignId.ToString())
+                .SendAsync(result.EventName, responseObject);
         }
+
+        return NoContent();
+    }
+
+    [HttpPatch("{eventId}/archive-mark")]
+    [Authorize(Roles = "DM,Admin")]
+    public async Task<IActionResult> UpdateArchiveMark(Guid campaignId, Guid eventId,
+        [FromBody] bool markedForArchive)
+    {
+        if (!await CallerOwns(campaignId)) return Forbid();
+
+        await updateArchiveMarkCommand.HandleAsync(new UpdateStorylineArchiveMarkCommand(eventId, markedForArchive));
+
+        // SignalR event for real-time update
+        await hubContext.Clients.Group(campaignId.ToString())
+            .SendAsync("CampaignEventArchiveMarkChanged", new
+            {
+                campaignId,
+                eventId,
+                markedForArchive
+            });
 
         return NoContent();
     }
@@ -181,18 +214,9 @@ public class CampaignEventsController(
         if (string.IsNullOrWhiteSpace(request.Title) || request.Title.Length > 200)
             return BadRequest("Title is required and must not exceed 200 characters.");
 
-        CampaignEventDomain domain;
-        if (request.LinkedEntities != null && request.LinkedEntities.Count > 0)
-        {
-            var firstLinkedEntity = request.LinkedEntities[0];
-            domain = await uploadHandoutCommand.HandleAsync(
-                new UploadCampaignEventHandoutCommand(campaignId, request.Title.Trim(), request.Body?.Trim(), firstLinkedEntity.EntityType, Guid.Parse(firstLinkedEntity.EntityId)));
-        }
-        else
-        {
-            domain = await uploadHandoutCommand.HandleAsync(
-                new UploadCampaignEventHandoutCommand(campaignId, request.Title.Trim(), request.Body?.Trim(), null, null));
-        }
+        var domain = await uploadHandoutCommand.HandleAsync(
+            new UploadCampaignEventHandoutCommand(campaignId, request.Title.Trim(), request.Body?.Trim(), request.LinkedEntities ?? []));
+
         var response = mapper.ToResponse(domain);
 
         return CreatedAtAction(nameof(CreateHandout), new { campaignId }, response);
@@ -243,11 +267,12 @@ public class CampaignEventsController(
     }
 [HttpPost("archive")]
     [Authorize(Roles = "DM,Admin")]
-    public async Task<IActionResult> Archive(Guid campaignId)
+    public async Task<IActionResult> Archive(Guid campaignId, [FromBody] ArchiveSessionChroniclesRequest request)
     {
         if (!await CallerOwns(campaignId)) return Forbid();
 
-        var archivedCount = await archiveCommand.HandleAsync(new ArchiveCampaignEventsCommand(new ArchiveCampaignEventsRequest { CampaignId = campaignId }));
+        request.CampaignId = campaignId;
+        var archivedCount = await archiveCommand.HandleAsync(new ArchiveSessionChroniclesCommand(request));
 
         return Ok(new { archivedCount });
     }

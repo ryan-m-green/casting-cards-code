@@ -1,9 +1,11 @@
-﻿using CastLibrary.Logic.Services;
+﻿using CastLibrary.Adapter.Operators;
+using CastLibrary.Logic.Commands.Subscription;
+using CastLibrary.Logic.Services;
 using CastLibrary.Repository.Repositories;
-using CastLibrary.Repository.Repositories.Delete;
 using CastLibrary.Repository.Repositories.Insert;
 using CastLibrary.Repository.Repositories.Read;
 using CastLibrary.Repository.Repositories.Update;
+using CastLibrary.Shared.Configuration;
 using CastLibrary.Shared.Domain;
 using CastLibrary.Shared.Enums;
 using CastLibrary.Shared.Requests;
@@ -13,51 +15,56 @@ namespace CastLibrary.Logic.Commands.Auth;
 
 public interface IRegisterUserCommandHandler
 {
-    Task<(AuthResponse Result, string Error)> HandleAsync(RegisterCommand command);
+    Task<(string SuccessMessage, string Error)> HandleAsync(RegisterCommand command);
 }
+
 public class RegisterUserCommandHandler(
     IUserReadRepository userReadRepository,
     IUserInsertRepository userInsertRepository,
-    IAdminInviteCodeReadRepository adminInviteCodeReadRepository,
-    IAdminInviteCodeDeleteRepository adminInviteCodeDeleteRepository,
     IPasswordHashingService passwordHashingService,
-    IJwtTokenService jwtTokenService) : IRegisterUserCommandHandler
+    IEmailConfiguration emailConfiguration,
+    IEmailOperator emailOperator,
+    ICreateFreeTrialSubscriptionCommandHandler createFreeTrialSubscriptionCommand) : IRegisterUserCommandHandler
 {
-    public async Task<(AuthResponse Result, string Error)> HandleAsync(RegisterCommand command)
+    public async Task<(string SuccessMessage, string Error)> HandleAsync(RegisterCommand command)
     {
-        var activeCode = await adminInviteCodeReadRepository.GetCurrentAsync();
-        if (activeCode is null || activeCode.ExpiresAt <= DateTime.UtcNow)
-            return (null, "A valid invite code is required to register.");
-        if (!string.Equals(activeCode.Code, command.Request.InviteCode.Trim(), StringComparison.OrdinalIgnoreCase))
-            return (null, "Invalid invite code.");
-
-        if (await userReadRepository.ExistsByEmailAsync(command.Request.Email))
+        var emailToLower = command.Request.Email.ToLower();
+        if (await userReadRepository.ExistsByEmailAsync(emailToLower))
             return (null, "An account with that email address already exists.");
+
+        var verificationToken = Guid.NewGuid().ToString("N");
+        var verificationLink = $"{emailConfiguration.FrontendBaseUrl}/verification?token={verificationToken}";
+
+        if (!await emailOperator.SendEmailAsync(new AccountVerificationEmailDomain
+        {
+            ToEmail = emailToLower,
+            DisplayName = command.Request.DisplayName,
+            VerificationLink = verificationLink
+        }))
+        {
+            return (null, "Failed to send a verification request to that email address.");
+        }
 
         var user = new UserDomain
         {
-            Id           = Guid.NewGuid(),
-            Email        = command.Request.Email,
+            Id = Guid.NewGuid(),
+            Email = emailToLower,
             PasswordHash = passwordHashingService.Hash(command.Request.Password),
-            DisplayName  = command.Request.DisplayName,
-            Role         = Enum.Parse<UserRole>(command.Request.Role, true),
-            CreatedAt    = DateTime.UtcNow,
+            DisplayName = command.Request.DisplayName,
+            Role = Enum.Parse<UserRole>(command.Request.Role, true),
+            CreatedAt = DateTime.UtcNow,
+            EmailVerified = false,
+            EmailVerificationToken = verificationToken,
         };
 
-        var saved = await userInsertRepository.InsertAsync(user);
-        await adminInviteCodeDeleteRepository.DeleteAsync();
+        await userInsertRepository.InsertAsync(user);
 
-        return (new AuthResponse
-        {
-            Token = jwtTokenService.GenerateToken(saved),
-            User  = new UserResponse
-            {
-                Id          = saved.Id,
-                Email       = saved.Email,
-                DisplayName = saved.DisplayName,
-                Role        = saved.Role.ToString(),
-            }
-        }, null);
+        await createFreeTrialSubscriptionCommand.HandleAsync(
+            new CreateFreeTrialSubscriptionCommand(new CreateFreeTrialSubscriptionRequest { UserId = user.Id }));
+
+
+
+        return ("Registration successful. Please check your email for a verification link.", null);
     }
 }
 

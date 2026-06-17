@@ -77,7 +77,7 @@ export class VoidTitleSegmentsComponent {
           : { text: '\u2026', cssClass: 'void-title__indented' }
         );
         return playerFactionSegs;
-      case 'gm-events':             return [{ text: 'Storyline',       cssClass: 'void-title__label' }];
+      case 'gm-events':             return [{ text: 'Storyline Management',       cssClass: 'void-title__label' }];
       case 'player-events':          return [{ text: 'Storyline',       cssClass: 'void-title__label' }];
       case 'player-plot':            return [{ text: 'Storyline',       cssClass: 'void-title__label' }];
 

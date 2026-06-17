@@ -1,6 +1,9 @@
 using CastLibrary.Logic.Interfaces;
+using CastLibrary.Logic.Services;
+using CastLibrary.Repository.Repositories.Read;
 using CastLibrary.Repository.Repositories.Update;
 using CastLibrary.Shared.Domain;
+using CastLibrary.Shared.Enums;
 
 namespace CastLibrary.Logic.Commands.Campaign;
 
@@ -11,11 +14,17 @@ public interface IUploadCampaignEventHandoutImageCommandHandler
 
 public class UploadCampaignEventHandoutImageCommandHandler(
     IStorylineUpdateRepository updateRepository,
-    IImageStorageOperator imageStorage) : IUploadCampaignEventHandoutImageCommandHandler
+    IImageStorageOperator imageStorage,
+    ICampaignReadRepository campaignReadRepository,
+    IImageKeyCreator imageKeyCreator) : IUploadCampaignEventHandoutImageCommandHandler
 {
     public async Task<string> HandleAsync(UploadCampaignEventHandoutImageCommand command)
     {
-        var key = $"{command.CampaignId}/handouts/{command.EventId}.png";
+        var campaign = await campaignReadRepository.GetByIdAsync(command.CampaignId);
+        if (campaign is null)
+            throw new ArgumentException($"Campaign {command.CampaignId} not found");
+
+        var key = imageKeyCreator.Create(campaign.DmUserId, command.CampaignId, command.EventId, EntityType.CampaignHandout);
 
         await imageStorage.SaveAsync(key, command.Stream, command.ContentType);
         await updateRepository.UpdateFilePathAsync(command.EventId, key);

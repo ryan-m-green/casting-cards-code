@@ -17,6 +17,10 @@
     } @else {
       <span class="void-title" [style.margin-top]="shellSvc.voidTitleTopMargin()">{{ shellSvc.title() }}</span>
     }
+    <app-upgrade-badge
+      [visible]="subscription.isFreeTrial()"
+      (badgeClick)="openUpgradeDrawer()"
+      class="upgrade-badge-shell" />
   </div>
 
   <!-- ── Time of day bar ── -->

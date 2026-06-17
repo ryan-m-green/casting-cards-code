@@ -43,7 +43,7 @@ public class ForgotPasswordCommandHandler(
 
         try
         {
-            await emailOperator.SendPasswordResetEmailAsync(new PasswordResetEmailDomain
+            await emailOperator.SendEmailAsync(new PasswordResetEmailDomain
             {
                 ToEmail = user.Email,
                 DisplayName = user.DisplayName,

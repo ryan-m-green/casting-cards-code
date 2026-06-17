@@ -1,4 +1,5 @@
 using CastLibrary.Logic.Factories;
+using CastLibrary.Logic.Services;
 using CastLibrary.Repository.Repositories.Insert;
 using CastLibrary.Shared.Domain;
 using CastLibrary.Shared.Requests;
@@ -12,10 +13,13 @@ public interface ICreateFactionCommandHandler
 
 public class CreateFactionCommandHandler(
     IFactionInsertRepository factionRepository,
-    IFactionFactory factionFactory) : ICreateFactionCommandHandler
+    IFactionFactory factionFactory,
+    ISubscriptionLimitService subscriptionLimitService) : ICreateFactionCommandHandler
 {
     public async Task<FactionDomain> HandleAsync(CreateFactionCommand command)
     {
+        await subscriptionLimitService.CheckLimitAsync(command.DmUserId, "Faction");
+        
         var domain = factionFactory.Create(command.Request, command.DmUserId);
         return await factionRepository.InsertAsync(domain);
     }

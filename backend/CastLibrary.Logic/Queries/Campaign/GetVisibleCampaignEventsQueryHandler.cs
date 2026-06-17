@@ -1,3 +1,4 @@
+using CastLibrary.Logic.Interfaces;
 using CastLibrary.Repository.Repositories.Read;
 using CastLibrary.Shared.Domain;
 
@@ -9,10 +10,27 @@ public interface IGetVisibleCampaignEventsQueryHandler
 }
 
 public class GetVisibleCampaignEventsQueryHandler(
-    IStorylineReadRepository repository) : IGetVisibleCampaignEventsQueryHandler
+    IStorylineReadRepository repository,
+    IImageStorageOperator imageStorageOperator) : IGetVisibleCampaignEventsQueryHandler
 {
-    public Task<List<CampaignEventDomain>> HandleAsync(GetVisibleCampaignEventsQuery query)
-        => repository.GetVisibleByCampaignIdAsync(query.CampaignId);
+    public async Task<List<CampaignEventDomain>> HandleAsync(GetVisibleCampaignEventsQuery query)
+    {
+        var events = await repository.GetVisibleByCampaignIdAsync(query.CampaignId);
+        
+        foreach (var ev in events)
+        {
+            if (!string.IsNullOrEmpty(ev.FilePath))
+            {
+                ev.ImageUrl = imageStorageOperator.GetPublicUrl(ev.FilePath);
+            }
+            else
+            {
+                ev.ImageUrl = null;
+            }
+        }
+        
+        return events;
+    }
 }
 
 public class GetVisibleCampaignEventsQuery

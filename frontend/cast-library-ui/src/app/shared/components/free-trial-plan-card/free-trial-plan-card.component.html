@@ -1,0 +1,16 @@
+<div class="plan-card free-trial">
+  <h3>Free Trial</h3>
+  <span class="plan-subtitle">Try it as long as you like. <br /> Inactive accounts auto-delete after 30 days.</span>
+  <div class="price">$0</div>
+  <div class="plan-content">
+    <div class="plan-chips">
+      <div class="feature-chip">{{ freeTrialLimits()?.campaigns ?? 1 }} Campaign Card</div>
+      <div class="feature-chip">{{ freeTrialLimits()?.locations ?? 1 }} Location Cards</div>
+      <div class="feature-chip">{{ freeTrialLimits()?.sublocations ?? 2 }} Sublocation Cards</div>
+      <div class="feature-chip">{{ freeTrialLimits()?.factions ?? 1 }} Faction Cards</div>
+      <div class="feature-chip">{{ freeTrialLimits()?.cast ?? 3 }} Cast Cards</div>
+    </div>
+    <img class="plan-video" [class.negative-margin]="useNegativeMargin()" src="/candle.gif" alt="Free trial plan preview">
+    <button (click)="handleStartFreeTrial()" [disabled]="loading()">{{ loading() ? 'Processing...' : 'Start Free Trial' }}</button>
+  </div>
+</div>

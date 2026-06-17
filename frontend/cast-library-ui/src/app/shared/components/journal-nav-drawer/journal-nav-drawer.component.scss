@@ -270,7 +270,7 @@
   border-left: 3px solid transparent;
   text-align: left;
   cursor: pointer;
-  transition: background 0.14s ease, border-color 0.14s ease;
+  transition: background 0.14s ease, border-color 0.14s ease, opacity 0.14s ease;
 
   &:hover {
     background: rgba(v.$journal-parchment-stain-binding, 0.22);
@@ -291,6 +291,24 @@
 
     .jnd-item-marker {
       color: v.$color-base-spine-4;
+    }
+  }
+
+  &.disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+
+    &:hover {
+      background: none;
+      border-left-color: transparent;
+    }
+
+    .jnd-item-label {
+      color: rgba(v.$color-base-leather-2, 0.6);
+    }
+
+    .jnd-item-marker {
+      color: rgba(v.$color-base-leather-2, 0.3);
     }
   }
 }

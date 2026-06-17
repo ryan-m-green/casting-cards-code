@@ -23,7 +23,6 @@ export class RoleSelectionComponent {
   private router = inject(Router);
 
   registerForm = this.fb.group({
-    inviteCode:      ['', Validators.required],
     displayName:     ['', Validators.required],
     email:           ['', [Validators.required, Validators.email]],
     password:        ['', [Validators.required, Validators.minLength(6)]],
@@ -33,6 +32,7 @@ export class RoleSelectionComponent {
   selectedRole = signal<'DM' | 'Player'>('DM');
   errorMsg     = signal('');
   loading      = signal(false);
+  showDrawer   = signal(false);
 
   get passwordMismatch(): boolean {
     const confirm = this.registerForm.get('confirmPassword');
@@ -40,26 +40,23 @@ export class RoleSelectionComponent {
   }
 
   register() {
+
     if (this.registerForm.invalid) return;
     this.loading.set(true);
     this.errorMsg.set('');
-    const { email, password, displayName, inviteCode } = this.registerForm.value;
+    const { email, password, displayName } = this.registerForm.value;
     this.auth.register({
       email: email!,
       password: password!,
       displayName: displayName!,
       role: this.selectedRole(),
-      inviteCode: inviteCode!,
     }).subscribe({
-      next: () => {
-        if (this.selectedRole() === 'DM') {
-          this.router.navigate(['/dm/dashboard']);
-        } else {
-          this.router.navigate(['/player/campaigns']);
-        }
+      next: (response) => {
+        this.loading.set(false);
+        this.showDrawer.set(true);
       },
       error: (e) => {
-        this.errorMsg.set(e.error?.[0] || 'Registration failed');
+        this.errorMsg.set(e.error?.[0] || e.error?.message || 'Registration failed');
         this.loading.set(false);
       }
     });

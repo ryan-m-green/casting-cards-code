@@ -35,14 +35,6 @@
           <div class="bug-card">
             <div class="bug-header">
               <span class="bug-title">{{ bug.title }}</span>
-              <select class="severity-select severity-{{ bug.severity.toLowerCase() }}"
-                      [ngModel]="bug.severity"
-                      (ngModelChange)="changeSeverity(bug, $event)"
-                      [disabled]="updatingSeverity() === bug.id">
-                @for (s of severities; track s) {
-                  <option [value]="s">{{ s }}</option>
-                }
-              </select>
             </div>
             <p class="bug-description">{{ bug.description }}</p>
             @if (bug.stepsToReproduce) {
@@ -86,7 +78,6 @@
             <div class="bug-header">
               <span class="bug-title bug-title--fixed">{{ bug.title }}</span>
               <span class="fixed-badge">✓ Fixed</span>
-              <span class="severity-badge severity-{{ bug.severity.toLowerCase() }}">{{ bug.severity }}</span>
             </div>
             <p class="bug-description bug-description--fixed">{{ bug.description }}</p>
             <div class="bug-meta">

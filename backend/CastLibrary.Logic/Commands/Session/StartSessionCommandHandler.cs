@@ -32,14 +32,12 @@ public class StartSessionCommandHandler(
         var timeOfDay = await timeOfDayReadRepository.GetByCampaignIdAsync(command.CampaignId);
         var currentInGameDay = timeOfDay?.DaysPassed ?? 0;
 
-        // Create the session domain with auto-generated title
+        // Create the session domain
         var domain = new SessionDomain
         {
             Id = Guid.NewGuid(),
             CampaignId = command.CampaignId,
             SessionNumber = nextSessionNumber,
-            Title = $"Session {nextSessionNumber}",
-            AlternateTitle = string.Empty,
             StartTime = DateTime.UtcNow,
             StartInGameDay = currentInGameDay,
             IsActive = true,

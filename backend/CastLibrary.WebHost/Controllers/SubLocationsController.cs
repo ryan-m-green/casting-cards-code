@@ -1,5 +1,6 @@
 ﻿using CastLibrary.Logic.Commands.Sublocation;
 using CastLibrary.Logic.Queries.Sublocation;
+using CastLibrary.Shared.Exceptions;
 using CastLibrary.Shared.Requests;
 using CastLibrary.WebHost.Mappers;
 using CastLibrary.WebHost.MetadataHelpers;
@@ -53,10 +54,18 @@ public class SublocationsController(
             return BadRequest("Name is required.");
         }
         var userId = userRetriever.GetUserId(User);
-        var sublocation = await createSublocationCommand.HandleAsync(new CreateSublocationCommand(userId, request));
-        var response = mapper.ToResponse(sublocation);
+        
+        try
+        {
+            var sublocation = await createSublocationCommand.HandleAsync(new CreateSublocationCommand(userId, request));
+            var response = mapper.ToResponse(sublocation);
 
-        return CreatedAtAction(nameof(GetById), new { id = sublocation.Id }, response);
+            return CreatedAtAction(nameof(GetById), new { id = sublocation.Id }, response);
+        }
+        catch (LimitExceededException ex)
+        {
+            return StatusCode(403, ex.Message);
+        }
     }
 
     [HttpPut("{id}")]

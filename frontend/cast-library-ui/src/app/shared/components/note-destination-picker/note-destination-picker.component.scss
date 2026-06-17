@@ -122,6 +122,22 @@
   flex: 1;
 }
 
+.ndp-no-options {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: v.$font-body;
+  font-size: 16px;
+  color: v.$campaign-portal-text-muted;
+  font-style: italic;
+  background: v.$campaign-portal-bg-medium;
+  border: 1px solid v.$campaign-portal-border-bold;
+  border-radius: 4px;
+  padding: 8px 12px;
+  min-height: 36px;
+}
+
 /* ── Add trigger button ─────────────────────────────────────── */
 .ndp-add-trigger-row {
   display: flex;

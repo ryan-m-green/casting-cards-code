@@ -5,6 +5,7 @@ using CastLibrary.Repository.Repositories.Delete;
 using CastLibrary.Repository.Repositories.Insert;
 using CastLibrary.Repository.Repositories.Read;
 using CastLibrary.Repository.Repositories.Update;
+using CastLibrary.Repository.Services;
 
 namespace CastLibrary.WebHost.IoC
 {
@@ -14,10 +15,12 @@ namespace CastLibrary.WebHost.IoC
         {
             AddMappers(services);
             services.AddScoped<ISqlConnectionFactory, SqlConnectionFactory>();
+            services.AddScoped<IKeywordExtractionService, KeywordExtractionService>();
             services.AddScoped<IUserReadRepository, UserReadRepository>();
             services.AddScoped<IUserInsertRepository, UserInsertRepository>();
             services.AddScoped<IUserUpdateRepository, UserUpdateRepository>();
             services.AddScoped<IUserDeleteRepository, UserDeleteRepository>();
+            services.AddScoped<IUserWriteRepository, UserWriteRepository>();
             services.AddScoped<ICastReadRepository, CastReadRepository>();
             services.AddScoped<ICastInsertRepository, CastInsertRepository>();
             services.AddScoped<ICastUpdateRepository, CastUpdateRepository>();
@@ -103,13 +106,15 @@ namespace CastLibrary.WebHost.IoC
             services.AddScoped<IStorylineReadRepository, StorylineReadRepository>();
             services.AddScoped<IStorylineUpdateRepository, StorylineUpdateRepository>();
             services.AddScoped<ICampaignEventDeleteRepository, StorylineDeleteRepository>();
-            services.AddScoped<IArchiveCampaignEventsRepository, ArchiveCampaignEventsRepository>();
-            services.AddScoped<ICampaignEventArchivedReadRepository, CampaignEventArchivedReadRepository>();
-            services.AddScoped<ICampaignEventArchivedInsertRepository, StorylineArchivedInsertRepository>();
+            services.AddScoped<ICampaignSessionChroniclesReadRepository, CampaignSessionChroniclesReadRepository>();
+            services.AddScoped<ICampaignSessionChroniclesInsertRepository, CampaignSessionChroniclesInsertRepository>();
             services.AddScoped<ISessionReadRepository, SessionReadRepository>();
             services.AddScoped<ISessionInsertRepository, SessionInsertRepository>();
+            services.AddScoped<ISessionUpdateRepository, SessionUpdateRepository>();
             services.AddScoped<ICampaignSessionArchivedInsertRepository, CampaignSessionArchivedInsertRepository>();
-            services.AddScoped<ITransferStorylineToChroniclesRepository, TransferStorylineToChroniclesRepository>();
+            services.AddScoped<ICampaignChroniclesReadRepository, CampaignChroniclesReadRepository>();
+            services.AddScoped<ICampaignChroniclesUpdateRepository, CampaignChroniclesUpdateRepository>();
+            services.AddScoped<ISessionDeleteRepository, CampaignSessionArchivedDeleteRepository>();
             services.AddHealthChecks()
               .AddCheck<DatabaseHealthCheck>("postgres");
 
@@ -142,13 +147,27 @@ namespace CastLibrary.WebHost.IoC
             services.AddScoped<ICampaignFactionPlayerNotesEntityMapper, CampaignFactionPlayerNotesEntityMapper>();
             services.AddScoped<ICampaignSublocationPlayerNotesEntityMapper, CampaignSublocationPlayerNotesEntityMapper>();
             services.AddScoped<ICampaignPlayerNotesEntityMapper, CampaignPlayerNotesEntityMapper>();
-            services.AddScoped<ICampaignEventArchivedEntityMapper, CampaignEventArchivedEntityMapper>();
+            services.AddScoped<ICampaignSessionChroniclesEntityMapper, CampaignSessionChroniclesEntityMapper>();
             services.AddScoped<IPlayerQuicknoteQueueEntityMapper, PlayerQuicknoteQueueEntityMapper>();
             services.AddScoped<ICampaignEventEntityMapper, CampaignEventEntityMapper>();
+            services.AddScoped<ISubscriptionEntityMapper, SubscriptionEntityMapper>();
+            services.AddScoped<IPricingModelEntityMapper, PricingModelEntityMapper>();
             services.AddScoped<IQuicknoteQueueReadRepository, QuicknoteQueueReadRepository>();
             services.AddScoped<IQuicknoteQueueInsertRepository, QuicknoteQueueInsertRepository>();
             services.AddScoped<IQuicknoteQueueUpdateRepository, QuicknoteQueueUpdateRepository>();
             services.AddScoped<IQuicknoteQueueDeleteRepository, QuicknoteQueueDeleteRepository>();
+            services.AddScoped<ICastcardsConfigurationReadRepository, CastcardsConfigurationReadRepository>();
+            services.AddScoped<ICastcardsConfigurationInsertRepository, CastcardsConfigurationInsertRepository>();
+            services.AddScoped<ICastcardsConfigurationUpdateRepository, CastcardsConfigurationUpdateRepository>();
+            services.AddScoped<ICampaignLocationInstanceReadRepository, CampaignLocationInstanceReadRepository>();
+            services.AddScoped<ICampaignSublocationInstanceReadRepository, CampaignSublocationInstanceReadRepository>();
+            services.AddScoped<ICampaignCastInstanceReadRepository, CampaignCastInstanceReadRepository>();
+            services.AddScoped<ICampaignFactionInstanceReadRepository, CampaignFactionInstanceReadRepository>();
+            services.AddScoped<ISubscriptionReadRepository, SubscriptionReadRepository>();
+            services.AddScoped<ISubscriptionWriteRepository, SubscriptionWriteRepository>();
+            services.AddScoped<ISubscriptionUpdateRepository, SubscriptionUpdateRepository>();
+            services.AddScoped<IPricingModelReadRepository, PricingModelReadRepository>();
+            services.AddScoped<IPricingModelUpdateRepository, PricingModelUpdateRepository>();
         }
     }
 }

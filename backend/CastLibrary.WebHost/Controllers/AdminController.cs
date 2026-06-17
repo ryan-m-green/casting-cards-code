@@ -12,8 +12,6 @@ namespace CastLibrary.WebHost.Controllers;
 [Route("api/admin")]
 [Authorize(Roles = "Admin")]
 public class AdminController(
-    IGetAdminInviteCodeQueryHandler getInviteCodeQuery,
-    IGenerateAdminInviteCodeCommandHandler generateInviteCodeCommand,
     IGetAllUsersQueryHandler getAllUsersQuery,
     IDeleteUserCommandHandler deleteUserCommand,
     ICreatePlayerCommandHandler createPlayerCommand,
@@ -21,33 +19,10 @@ public class AdminController(
     IGetDemoCampaignsQueryHandler getDemoCampaignsQuery,
     IGetDemoPlayersQueryHandler getDemoPlayersQuery,
     IAddUserToDemoCampaignCommandHandler addUserToDemoCampaignCommand,
+    IChangeUserRoleCommandHandler changeUserRoleCommand,
+    IUpdateUserSubscriptionCommandHandler updateUserSubscriptionCommand,
     IUserRetriever userRetriever) : ControllerBase
 {
-    [HttpGet("invite-code")]
-    public async Task<IActionResult> GetInviteCode()
-    {
-        var code = await getInviteCodeQuery.HandleAsync();
-        if (code is null) return Ok(null);
-
-        return Ok(new AdminInviteCodeResponse
-        {
-            Code = code.Code,
-            ExpiresAt = code.ExpiresAt,
-        });
-    }
-
-    [HttpPost("invite-code/generate")]
-    public async Task<IActionResult> GenerateInviteCode()
-    {
-        var code = await generateInviteCodeCommand.HandleAsync();
-
-        return Ok(new AdminInviteCodeResponse
-        {
-            Code = code.Code,
-            ExpiresAt = code.ExpiresAt,
-        });
-    }
-
     [HttpGet("users")]
     public async Task<IActionResult> GetAllUsers()
     {
@@ -57,10 +32,16 @@ public class AdminController(
             Id = u.Id,
             Email = u.Email,
             DisplayName = u.DisplayName,
-            Role = u.Role.ToString(),
+            Role = u.Role,
             CreatedAt = u.CreatedAt,
+            SubscriptionId = u.SubscriptionId,
+            StripeCustomerId = u.StripeCustomerId,
+            StripeSubscriptionId = u.StripeSubscriptionId,
+            Status = u.Status,
+            BypassPayment = u.BypassPayment,
+            CurrentPeriodEnd = u.CurrentPeriodEnd,
+            LockLevel = u.LockLevel
         }).ToList();
-
         return Ok(response);
     }
 
@@ -98,8 +79,8 @@ public class AdminController(
     [HttpGet("campaigns/demo/players")]
     public async Task<IActionResult> GetDemoPlayers()
     {
-        var userIds = await getDemoPlayersQuery.HandleAsync();
-        return Ok(userIds);
+        var assignments = await getDemoPlayersQuery.HandleAsync();
+        return Ok(assignments.ToDictionary(k => k.Key.ToString(), v => v.Value.ToString()));
     }
 
     [HttpPost("campaigns/{campaignId}/players/{userId}")]
@@ -122,5 +103,26 @@ public class AdminController(
 
         await deleteUserCommand.HandleAsync(userId);
         return Ok(new { message = "User deleted successfully." });
+    }
+
+    [HttpPatch("users/{userId}/role")]
+    public async Task<IActionResult> ChangeUserRole(Guid userId, [FromBody] ChangeUserRoleRequest request)
+    {
+        var currentUserId = userRetriever.GetUserId(User);
+
+        var (success, error) = await changeUserRoleCommand.HandleAsync(
+            new ChangeUserRoleCommand(currentUserId, userId, request));
+
+        if (!success)
+            return BadRequest(new { message = error });
+
+        return NoContent();
+    }
+
+    [HttpPatch("users/{userId}/subscription")]
+    public async Task<IActionResult> UpdateUserSubscription(Guid userId, [FromBody] UpdateUserSubscriptionRequest request)
+    {
+        await updateUserSubscriptionCommand.HandleAsync(userId, request);
+        return NoContent();
     }
 }

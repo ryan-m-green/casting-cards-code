@@ -24,7 +24,6 @@ public class BugReportInsertRepository(
             bugReport.Title,
             bugReport.Description,
             bugReport.StepsToReproduce,
-            bugReport.Severity,
             bugReport.PageUrl,
             bugReport.Device,
             bugReport.Browser,
@@ -35,10 +34,10 @@ public class BugReportInsertRepository(
 
         const string sql =
             @"INSERT INTO bug_reports
-                (id, user_id, title, description, steps_to_reproduce, severity,
+                (id, user_id, title, description, steps_to_reproduce,
                  page_url, device, browser, os, screen_resolution, reported_at)
               VALUES
-                (@Id, @UserId, @Title, @Description, @StepsToReproduce, @Severity,
+                (@Id, @UserId, @Title, @Description, @StepsToReproduce,
                  @PageUrl, @Device, @Browser, @Os, @ScreenResolution, @ReportedAt)";
 
         logging.LogDbOperation(correlation.TraceId, spanId, "INSERT", "bug_reports", @params);

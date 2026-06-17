@@ -15,6 +15,7 @@ namespace CastLibrary.WebHost.Controllers;
 public class SessionsController(
     IStartSessionCommandHandler startSessionCommandHandler,
     IEndSessionCommandHandler endSessionCommandHandler,
+    IUpdateSessionCommandHandler updateSessionCommandHandler,
     ISessionReadRepository sessionReadRepository,
     ICampaignAccessService campaignAccess,
     IUserRetriever userRetriever) : ControllerBase
@@ -42,8 +43,6 @@ public class SessionsController(
             Id = session.Id,
             CampaignId = session.CampaignId,
             SessionNumber = session.SessionNumber,
-            Title = session.Title,
-            AlternateTitle = session.AlternateTitle,
             StartTime = session.StartTime,
             StartInGameDay = session.StartInGameDay,
             IsActive = session.IsActive
@@ -80,8 +79,6 @@ public class SessionsController(
             Id = domain.Id,
             CampaignId = domain.CampaignId,
             SessionNumber = domain.SessionNumber,
-            Title = domain.Title,
-            AlternateTitle = domain.AlternateTitle,
             StartTime = domain.StartTime,
             StartInGameDay = domain.StartInGameDay,
             IsActive = domain.IsActive
@@ -98,9 +95,33 @@ public class SessionsController(
             return Forbid();
         }
 
-        var command = new EndSessionCommand(campaignId, request.EndDay);
+        var command = new EndSessionCommand(campaignId, request.EndDay, request.AlternateTitle);
         await endSessionCommandHandler.HandleAsync(command);
 
         return Ok();
+    }
+
+    [HttpPatch("{sessionId}")]
+    public async Task<IActionResult> UpdateSession(Guid campaignId, Guid sessionId, [FromBody] UpdateSessionRequest request)
+    {
+        if (!await CallerOwns(campaignId))
+        {
+            return Forbid();
+        }
+
+        var command = new UpdateSessionCommand(sessionId, request);
+        var domain = await updateSessionCommandHandler.HandleAsync(command);
+
+        var response = new SessionResponse
+        {
+            Id = domain.Id,
+            CampaignId = domain.CampaignId,
+            SessionNumber = domain.SessionNumber,
+            StartTime = domain.StartTime,
+            StartInGameDay = domain.StartInGameDay,
+            IsActive = domain.IsActive
+        };
+
+        return Ok(response);
     }
 }

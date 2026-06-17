@@ -10,6 +10,7 @@ public class CampaignEventEntity
     public string LinkedEntities { get; set; } = "[]";
     public string FilePath { get; set; }
     public bool VisibleToPlayers { get; set; }
+    public bool MarkedForArchive { get; set; }
     public string SceneType { get; set; } = "campaign-event";
     public DateTime CreatedAt { get; set; }
     public DateTime UpdatedAt { get; set; }

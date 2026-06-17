@@ -16,8 +16,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Include="..\..\database\init.sql" CopyToOutputDirectory="Always" Link="init.sql" />
-    <None Include="..\..\database\alter.sql" CopyToOutputDirectory="Always" Link="alter.sql" />
+    <None Include="init.sql" CopyToOutputDirectory="Always" />
+    <None Include="alter.sql" CopyToOutputDirectory="Always" />
     <None Update="appsettings.json" CopyToOutputDirectory="Always" />
   </ItemGroup>
 

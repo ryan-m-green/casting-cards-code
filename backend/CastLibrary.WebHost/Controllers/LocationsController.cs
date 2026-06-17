@@ -1,6 +1,7 @@
 using CastLibrary.Logic.Commands.Location;
 using CastLibrary.Logic.Queries.Location;
 using CastLibrary.Logic.Validators;
+using CastLibrary.Shared.Exceptions;
 using CastLibrary.Shared.Requests;
 using CastLibrary.WebHost.Mappers;
 using CastLibrary.WebHost.MetadataHelpers;
@@ -58,10 +59,18 @@ public class LocationsController(
             return BadRequest(errors);
         }
         var userId = userRetriever.GetUserId(User);
-        var Location = await createLocationCommand.HandleAsync(new CreateLocationCommand(userId, request));
-        var response = mapper.ToResponse(Location);
+        
+        try
+        {
+            var Location = await createLocationCommand.HandleAsync(new CreateLocationCommand(userId, request));
+            var response = mapper.ToResponse(Location);
 
-        return CreatedAtAction(nameof(GetById), new { id = Location.Id }, response);
+            return CreatedAtAction(nameof(GetById), new { id = Location.Id }, response);
+        }
+        catch (LimitExceededException ex)
+        {
+            return StatusCode(403, ex.Message);
+        }
     }
 
     [HttpPut("{id}")]

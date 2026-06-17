@@ -52,18 +52,113 @@
                 <div class="user-name">{{ user.displayName }}</div>
                 <div class="user-meta">{{ user.email }} · {{ user.role }}</div>
                 <div class="user-date">Joined {{ formatDate(user.createdAt) }}</div>
-                @if (demoPlayerIds().includes(user.id)) {
+                @if (demoPlayerAssignments()[user.id]) {
                   <div class="user-demo-label">In Demo</div>
                 }
-              </div>
-              @if (user.role !== 'Admin') {
+                @if (user.role !== 'Admin') {
                 <div class="user-card-actions">
+                  <div class="role-toggles">
+                    <button
+                      class="btn-role-toggle"
+                      [class.btn-role-toggle--active]="user.role === 'Player'"
+                      [disabled]="changingRole() === user.id"
+                      (click)="confirmRoleChange(user, 'Player')"
+                    >Player</button>
+                    <button
+                      class="btn-role-toggle"
+                      [class.btn-role-toggle--active]="user.role === 'DM'"
+                      [disabled]="changingRole() === user.id"
+                      (click)="confirmRoleChange(user, 'DM')"
+                    >GM</button>
+                    <button
+                      class="btn-role-toggle"
+                      [class.btn-role-toggle--active]="user.role === 'Admin'"
+                      [disabled]="changingRole() === user.id"
+                      (click)="confirmRoleChange(user, 'Admin')"
+                    >Admin</button>
+                  </div>
+                  
+                  <div class="subscription-section">
+                    @if (editingSubscription() === user.id) {
+                      <div class="subscription-edit">
+                        <div class="sub-field">
+                          <label>Status</label>
+                          <select class="fi" [(ngModel)]="subscriptionEditData()[user.id].status">
+                            <option value="Active">Active</option>
+                            <option value="FreeTrial">FreeTrial</option>
+                            <option value="PastDue">PastDue</option>
+                            <option value="Canceled">Canceled</option>
+                          </select>
+                        </div>
+                        <div class="sub-field">
+                          <label>Bypass Payment</label>
+                          <input type="checkbox" [(ngModel)]="subscriptionEditData()[user.id].bypassPayment" />
+                        </div>
+                        <div class="sub-field">
+                          <label>Current Period End</label>
+                          <input type="datetime-local" class="fi" [(ngModel)]="subscriptionEditData()[user.id].currentPeriodEnd" />
+                        </div>
+                        <div class="sub-field">
+                          <label>Lock Level</label>
+                          <select class="fi" [(ngModel)]="subscriptionEditData()[user.id].lockLevel">
+                            <option value="FullAccess">FullAccess</option>
+                            <option value="SoftLock">SoftLock</option>
+                            <option value="HardLock">HardLock</option>
+                            <option value="Suspended">Suspended</option>
+                          </select>
+                        </div>
+                        <div class="sub-actions">
+                          <button class="btn-save-sub" (click)="saveSubscription(user)" [disabled]="subscriptionUpdateLoading()">
+                            {{ subscriptionUpdateLoading() ? '…' : 'Save' }}
+                          </button>
+                          <button class="btn-cancel-sub" (click)="cancelEditSubscription()">Cancel</button>
+                        </div>
+                      </div>
+                    } @else {
+                      <div class="subscription-display">
+                        <div class="sub-read-only">
+                          <span class="sub-label">User ID:</span> <span class="sub-value">{{ user.id }}</span>
+                        </div>
+                        @if (user.stripeCustomerId) {
+                          <div class="sub-read-only">
+                            <span class="sub-label">Stripe Customer:</span> <span class="sub-value">{{ user.stripeCustomerId }}</span>
+                          </div>
+                        }
+                        @if (user.stripeSubscriptionId) {
+                          <div class="sub-read-only">
+                            <span class="sub-label">Stripe Subscription:</span> <span class="sub-value">{{ user.stripeSubscriptionId }}</span>
+                          </div>
+                        }
+                        <div class="sub-editable">
+                          <span class="sub-label">Status:</span> <span class="sub-value">{{ user.status ? user.status : 'N/A' }}</span>
+                        </div>
+                        <div class="sub-editable">
+                          <span class="sub-label">Bypass Payment:</span> <span class="sub-value">{{ user.bypassPayment ? 'Yes' : 'No' }}</span>
+                        </div>
+                        @if (user.currentPeriodEnd) {
+                          <div class="sub-editable">
+                            <span class="sub-label">Period End:</span> <span class="sub-value">{{ formatDate(user.currentPeriodEnd) }}</span>
+                          </div>
+                        }
+                        <div class="sub-editable">
+                          <span class="sub-label">Lock Level:</span> <span class="sub-value">{{ user.lockLevel ? user.lockLevel : 'N/A' }}</span>
+                        </div>
+                        <button class="btn-edit-sub" (click)="startEditSubscription(user)">Edit Subscription</button>
+                      </div>
+                    }
+                  </div>
+
                   <div class="demo-assign">
-                    <app-campaign-dropdown
-                      [options]="demoCampaignOptions()"
-                      [value]="getSelectedCampaign(user.id)"
-                      (valueChange)="setSelectedCampaign(user.id, $event)"
-                    />
+                    <select
+                      class="demo-select"
+                      [(ngModel)]="selectedDemoCampaign()[user.id]"
+                      (ngModelChange)="setSelectedCampaign(user.id, $event)"
+                    >
+                      <option value="">— select demo —</option>
+                      @for (option of demoCampaignOptions(); track option.value) {
+                        <option [value]="option.value">{{ option.label }}</option>
+                      }
+                    </select>
                     @if (assignDemoSuccess()[user.id]) {
                       <span class="demo-assign-success">{{ assignDemoSuccess()[user.id] }}</span>
                     } @else {
@@ -74,15 +169,18 @@
                       >{{ assigningDemo() === user.id ? '…' : 'Add' }}</button>
                     }
                   </div>
-                  <button
+
+                </div>
+                 <button
                     class="btn-delete"
                     (click)="confirmDelete(user)"
                     [disabled]="deleting() === user.id"
                   >
                     {{ deleting() === user.id ? '…' : 'Delete' }}
                   </button>
-                </div>
               }
+              </div>
+              
             </div>
           }
           @if (filteredUsers().length === 0) {
@@ -108,6 +206,7 @@
             type="text"
             placeholder="Player's display name"
             [(ngModel)]="addPlayerDisplayName"
+            (ngModelChange)="clearFormMessages()"
           />
         </div>
 
@@ -119,6 +218,7 @@
             type="email"
             placeholder="player@example.com"
             [(ngModel)]="addPlayerEmail"
+            (ngModelChange)="clearFormMessages()"
           />
         </div>
 
@@ -130,13 +230,20 @@
           </select>
         </div>
 
-        <p class="form-hint">The account will be created with the default password. The player can change it after logging in.</p>
+        <div class="form-field">
+          <label class="form-label checkbox-label">
+            <input type="checkbox" [(ngModel)]="addPlayerBypassPayment" (ngModelChange)="clearFormMessages()" />
+            <span>Bypass Payment (Full Access)</span>
+          </label>
+        </div>
+
+        <p class="form-hint">The account will be created with the default password. A verification email will be sent to the user to confirm their email address. The player can change their password after logging in.</p>
 
         <div class="form-submit-row">
           <button
             class="btn-submit"
             (click)="submitAddPlayer()"
-            [disabled]="addPlayerSubmitting() || !addPlayerEmail || !addPlayerDisplayName"
+            [disabled]="addPlayerSubmitting() || !addPlayerEmail || !addPlayerDisplayName || !isValidEmail(addPlayerEmail)"
           >
             {{ addPlayerSubmitting() ? 'Creating…' : 'Create Player' }}
           </button>
@@ -163,6 +270,39 @@
         <div class="modal-actions">
           <button class="btn-cancel" (click)="cancelDelete()">Cancel</button>
           <button class="btn-confirm-delete" (click)="deleteUser()">Delete User</button>
+        </div>
+      </div>
+    </div>
+  }
+
+  @if (showRoleConfirmDialog()) {
+    <div class="modal-overlay" (click)="cancelRoleChange()">
+      <div class="modal-content" (click)="$event.stopPropagation()">
+        <h3 class="modal-title">Confirm Role Change</h3>
+        <p class="modal-message">
+          Enter your admin password to change <strong>{{ userToChangeRole()?.displayName }}</strong>'s role
+          from <strong>{{ userToChangeRole()?.role }}</strong> to <strong>{{ newRole() }}</strong>.
+        </p>
+        <div class="form-field">
+          <input
+            class="fi"
+            type="password"
+            placeholder="Admin password"
+            [(ngModel)]="adminPassword"
+          />
+        </div>
+        @if (roleChangeError()) {
+          <p class="modal-error">{{ roleChangeError() }}</p>
+        }
+        <div class="modal-actions">
+          <button class="btn-cancel" (click)="cancelRoleChange()">Cancel</button>
+          <button
+            class="btn-confirm-role"
+            [disabled]="!adminPassword || changingRole() === userToChangeRole()?.id"
+            (click)="changeUserRole()"
+          >
+            {{ changingRole() === userToChangeRole()?.id ? 'Changing…' : 'Change Role' }}
+          </button>
         </div>
       </div>
     </div>

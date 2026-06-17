@@ -42,16 +42,10 @@ namespace CastLibrary.Repository.Repositories.Delete
             // - password_reset_tokens
             // - campaign_players (as player)
             // - currency_transactions (ON DELETE SET NULL for player_user_id and created_by)
-            // - campaign_notes (created_by_user_id references users but doesn't cascade - needs manual cleanup)
 
             // First, remove user from campaign_players where they are a player
             await conn.ExecuteAsync(
                 "DELETE FROM campaign_players WHERE player_user_id = @UserId",
-                @params);
-
-            // Clean up notes created by this user (set created_by_user_id to null or delete)
-            await conn.ExecuteAsync(
-                "DELETE FROM campaign_notes WHERE created_by_user_id = @UserId",
                 @params);
 
             // Clean up currency transactions where user is creator
@@ -64,7 +58,7 @@ namespace CastLibrary.Repository.Repositories.Delete
                 "DELETE FROM users WHERE id = @UserId",
                 @params);
 
-            logging.LogDbOperation(correlation.TraceId, spanId, "DELETE", "users_and_all_data", @params, rows);
+            logging.LogDbOperation(correlation.TraceId, spanId, "DELETE", "users_all_data", @params, rows);
         }
     }
 }

@@ -70,12 +70,19 @@ public class QuicknoteQueueController(
         if (domain is null)
             return NotFound();
 
+        await hubContext.Clients.Group(campaignId.ToString())
+            .SendAsync("QuickNoteQueued", new { campaignId });
+
         return Ok(mapper.ToResponse(domain));
     }
 
     [HttpDelete("{id}")]
     public async Task<IActionResult> Delete(Guid campaignId, Guid id)
     {
+        await hubContext.Clients.Group(campaignId.ToString())
+            .SendAsync("QuickNoteQueued", new { campaignId });
+        
+        
         if (!await CallerCanAccess(campaignId)) return Forbid();
         await deleteCommand.HandleAsync(new DeleteQuicknoteQueueItemCommand(id, CurrentUserId));
         return NoContent();

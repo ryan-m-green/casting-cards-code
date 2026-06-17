@@ -105,6 +105,13 @@
   z-index: 1;
 }
 
+.upgrade-badge-detail {
+  position: absolute;
+  top: 8px;
+  right: 40px;
+  z-index: 10;
+}
+
 .location-cards-header {
   display: flex;
   align-items: center;

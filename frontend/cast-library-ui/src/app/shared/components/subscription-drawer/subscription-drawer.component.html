@@ -1,0 +1,30 @@
+@if (isOpen()) {
+  <div class="subscription-backdrop" [class.is-closing]="isClosing()" (click)="close()"></div>
+
+  <div class="subscription-drawer" [class.is-closing]="isClosing()" role="dialog" aria-label="Subscription options">
+    <div class="subscription-header">
+      <button class="subscription-close-btn" (click)="close()" aria-label="Close">✕</button>
+      <span class="subscription-header-title">Upgrade Your Plan</span>
+    </div>
+
+    <div class="subscription-body">
+      @if (pricingData) {
+        <div class="plan-cards">
+          <app-premium-plan-card
+            [pricingData]="pricingData"
+            [loading]="loading()"
+            [subscribe]="subscribeNow.bind(this)"
+            [useNegativeMargin]="true"
+          ></app-premium-plan-card>
+
+          <app-free-trial-plan-card
+            [freeTrialLimits]="freeTrialLimits"
+            [loading]="loading()"
+            [startFreeTrial]="startFreeTrial.bind(this)"
+            [useNegativeMargin]="true"
+          ></app-free-trial-plan-card>
+        </div>
+      }
+    </div>
+  </div>
+}

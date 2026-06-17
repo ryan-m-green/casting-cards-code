@@ -10,6 +10,9 @@ import { Cast } from '../../../shared/models/cast.model';
 import { SparkleService } from '../../../shared/services/sparkle.service';
 import { CastCardComponent } from '../../../shared/components/cast-card/cast-card.component';
 import { JournalTitleComponent } from '../../../shared/components/journal-title/journal-title.component';
+import { HttpErrorResponse } from '@angular/common/http';
+import { SubscriptionService } from '../../../core/subscription.service';
+import { SubscriptionDrawerService } from '../../../core/subscription-drawer.service';
 
 const VOICE_OPTIONS = ['Chest', 'Throat', 'Mouth / Oral', 'Nasal', 'Head / Sinus'];
 
@@ -43,14 +46,17 @@ const PRONOUN_OPTIONS = [
 export class CastFormComponent implements OnInit {
   @ViewChild('sparkHost') sparkHost!: ElementRef<HTMLElement>;
 
-  private route   = inject(ActivatedRoute);
-  private router  = inject(Router);
-  private http    = inject(HttpClient);
-  private fb      = inject(FormBuilder);
-  private sparkle = inject(SparkleService);
+  private route          = inject(ActivatedRoute);
+  private router         = inject(Router);
+  private http           = inject(HttpClient);
+  private fb             = inject(FormBuilder);
+  private sparkle        = inject(SparkleService);
+  subscription           = inject(SubscriptionService);
+  private drawerService  = inject(SubscriptionDrawerService);
 
   castId         = signal<string | null>(null);
   saveStatus     = signal<'idle' | 'saving' | 'saved' | 'error'>('idle');
+  limitError     = signal<string | null>(null);
   imageUrl        = signal<string | null>(null);
   imageUploading  = signal(false);
   imageFile       = signal<File | null>(null);
@@ -149,10 +155,15 @@ export class CastFormComponent implements OnInit {
       : this.http.post<Cast>(`${environment.apiUrl}/api/cast`, value);
 
     req.pipe(
-      catchError(() => {
-        this.saveStatus.set('error');
-        this.fadeLabelTo('Error');
-        setTimeout(() => { this.saveStatus.set('idle'); this.labelVisible.set(false); }, 2000);
+      catchError((err: HttpErrorResponse) => {
+        if (err.status === 403) {
+          this.limitError.set(err.error);
+          this.saveStatus.set('idle');
+        } else {
+          this.saveStatus.set('error');
+          this.fadeLabelTo('Error');
+          setTimeout(() => { this.saveStatus.set('idle'); this.labelVisible.set(false); }, 2000);
+        }
         return EMPTY;
       })
     ).subscribe(cast => {
@@ -218,5 +229,9 @@ export class CastFormComponent implements OnInit {
       ...raw,
       voicePlacement: VOICE_OPTIONS.filter((_, i) => (raw.voicePlacement as boolean[])[i]),
     };
+  }
+
+  openUpgradeDrawer() {
+    this.drawerService.open();
   }
 }

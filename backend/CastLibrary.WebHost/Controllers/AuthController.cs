@@ -3,9 +3,12 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
 using CastLibrary.Logic.Commands.Auth;
 using CastLibrary.Logic.Interfaces;
+using CastLibrary.Repository.Repositories.Read;
+using CastLibrary.Shared.Requests;
+using CastLibrary.Shared.Responses;
+using CastLibrary.Logic.Services;
 using CastLibrary.WebHost.MetadataHelpers;
 using CastLibrary.WebHost.Validators;
-using CastLibrary.Shared.Requests;
 
 namespace CastLibrary.WebHost.Controllers;
 
@@ -14,10 +17,14 @@ namespace CastLibrary.WebHost.Controllers;
 public class AuthController(
     ILoginCommandHandler loginCommand,
     IRegisterUserCommandHandler registerCommand,
+    IVerifyEmailCommandHandler verifyEmailCommand,
     IForgotPasswordCommandHandler forgotPasswordCommand,
     IResetPasswordCommandHandler resetPasswordCommand,
     IChangePasswordCommandHandler changePasswordCommand,
-    IUserRetriever userRetriever) : ControllerBase
+    IUserRetriever userRetriever,
+    IJwtTokenService jwtTokenService,
+    IUserReadRepository userReadRepository,
+    ISubscriptionReadRepository subscriptionReadRepository) : ControllerBase
 {
     [HttpPost("login")]
     [EnableRateLimiting("AuthEndpoints")]
@@ -31,7 +38,7 @@ public class AuthController(
         var result = await loginCommand.HandleAsync(new LoginCommand(request));
         if (result is null)
         {
-            return Unauthorized(new { message = "Invalid email or password." });
+            return Unauthorized(new { message = "Invalid email or password, or email not verified." });
         }
 
         return Ok(result);
@@ -49,13 +56,13 @@ public class AuthController(
             return BadRequest(errors);
         }
 
-        var (result, error) = await registerCommand.HandleAsync(new RegisterCommand(request));
+        var (successMessage, error) = await registerCommand.HandleAsync(new RegisterCommand(request));
         if (error is not null)
         {
             return BadRequest(new List<string> { error });
         }
 
-        return Ok(result);
+        return Ok(new { message = successMessage });
     }
 
     [HttpPost("forgot-password")]
@@ -73,6 +80,22 @@ public class AuthController(
         await forgotPasswordCommand.HandleAsync(new ForgotPasswordCommand(request));
 
         return Ok(new { message = "If that email is registered, a reset link has been sent." });
+    }
+
+    [HttpPost("verify-email")]
+    [EnableRateLimiting("AuthEndpoints")]
+    public async Task<IActionResult> VerifyEmail([FromBody] VerifyEmailRequest request)
+    {
+        if (string.IsNullOrWhiteSpace(request.Token))
+            return BadRequest(new { message = "Verification token is required." });
+
+        var (result, error) = await verifyEmailCommand.HandleAsync(new VerifyEmailCommand(request.Token));
+        if (error is not null)
+        {
+            return BadRequest(new { message = error });
+        }
+
+        return Ok(result);
     }
 
     [HttpPost("reset-password")]
@@ -115,5 +138,32 @@ public class AuthController(
         }
 
         return Ok(new { message = "Password changed successfully." });
+    }
+
+    [Authorize]
+    [HttpGet("me")]
+    public async Task<IActionResult> GetCurrentUser()
+    {
+        var userId = userRetriever.GetUserId(User);
+        var user = await userReadRepository.GetByIdAsync(userId);
+        if (user is null)
+        {
+            return NotFound();
+        }
+
+        var subscription = await subscriptionReadRepository.GetByUserIdAsync(userId);
+
+        var response = new AuthResponse
+        {
+            Token = jwtTokenService.GenerateToken(user, subscription),
+            User = new UserResponse
+            {
+                Id = user.Id,
+                Email = user.Email,
+                DisplayName = user.DisplayName,
+                Role = user.Role.ToString(),
+            }
+        };
+        return Ok(response);
     }
 }

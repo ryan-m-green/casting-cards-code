@@ -23,6 +23,7 @@ public class CampaignEventEntityMapper : ICampaignEventEntityMapper
             : JsonSerializer.Deserialize<List<LinkedEntityTrigger>>(entity.LinkedEntities) ?? [],
         FilePath = entity.FilePath,
         VisibleToPlayers = entity.VisibleToPlayers,
+        MarkedForArchive = entity.MarkedForArchive,
         SceneType = entity.SceneType ?? "campaign-event",
         CreatedAt = entity.CreatedAt,
         UpdatedAt = entity.UpdatedAt,

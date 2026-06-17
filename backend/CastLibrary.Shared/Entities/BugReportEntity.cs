@@ -7,7 +7,7 @@ public class BugReportEntity
     public string Title { get; set; } = string.Empty;
     public string Description { get; set; } = string.Empty;
     public string StepsToReproduce { get; set; }
-    public string Severity { get; set; } = string.Empty;
+    public string Severity { get; set; }
     public string PageUrl { get; set; }
     public string Device { get; set; }
     public string Browser { get; set; }

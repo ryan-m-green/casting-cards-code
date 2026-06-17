@@ -17,6 +17,7 @@
 
   <form [formGroup]="form">
     <div class="form-portrait-new-row">
+      <img src="/snail.PNG" alt="Snail" class="snail-image" />
       @if (!locationId()) {
         <label class="form-portrait-label" [class.form-portrait-label--filled]="imagePreviewUrl()">
           <input type="file" accept="image/jpeg,image/png,image/webp" class="form-portrait-file-input" (change)="onPortraitFileSelected($event)" />
@@ -123,6 +124,18 @@
       <textarea id="location-dmnotes-textarea" class="fi" formControlName="dmNotes" rows="3" placeholder="Private notes…" autocomplete="off"></textarea>
     </fieldset>
   </form>
+
+  @if (limitError()) {
+    <div class="limit-error-message">
+      <span class="limit-error-text">{{ limitError() }}</span>
+      <div class="limit-error-actions">
+        @if (subscription.isFreeTrial()) {
+          <button class="limit-error-upgrade" (click)="openUpgradeDrawer()">Upgrade</button>
+        }
+        <button class="limit-error-close" (click)="limitError.set(null)">×</button>
+      </div>
+    </div>
+  }
 
   <div class="form-save-footer">
     <span class="save-label"

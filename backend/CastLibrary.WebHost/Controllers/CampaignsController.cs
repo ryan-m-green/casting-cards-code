@@ -2,6 +2,7 @@ using CastLibrary.Logic.Commands.Campaign;
 using CastLibrary.Logic.Queries.Campaign;
 using CastLibrary.Logic.Services;
 using CastLibrary.Logic.Validators;
+using CastLibrary.Shared.Exceptions;
 using CastLibrary.Shared.Requests;
 using CastLibrary.Shared.Responses;
 using CastLibrary.WebHost.Hubs;
@@ -119,11 +120,18 @@ public class CampaignsController(
             return BadRequest(errors);
         }
 
-        var campaign = await createCommand.HandleAsync(
-            new CreateCampaignCommand(userRetriever.GetUserId(User), request, User.IsInRole("Admin")));
-        var response = campaignMapper.ToListResponse(campaign);
+        try
+        {
+            var campaign = await createCommand.HandleAsync(
+                new CreateCampaignCommand(userRetriever.GetUserId(User), request, User.IsInRole("Admin")));
+            var response = campaignMapper.ToListResponse(campaign);
 
-        return CreatedAtAction(nameof(GetById), new { id = campaign.Id }, response);
+            return CreatedAtAction(nameof(GetById), new { id = campaign.Id }, response);
+        }
+        catch (LimitExceededException ex)
+        {
+            return StatusCode(403, ex.Message);
+        }
     }
 
     [HttpPatch("{id}")]

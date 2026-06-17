@@ -10,6 +10,9 @@ import { Location } from '../../../shared/models/location.model';
 import { SparkleService } from '../../../shared/services/sparkle.service';
 import { LocationCardComponent } from '../../../shared/components/location-card/location-card.component';
 import { JournalTitleComponent } from '../../../shared/components/journal-title/journal-title.component';
+import { HttpErrorResponse } from '@angular/common/http';
+import { SubscriptionService } from '../../../core/subscription.service';
+import { SubscriptionDrawerService } from '../../../core/subscription-drawer.service';
 
 const SIZE_OPTIONS = ['Hamlet', 'Village', 'Town', 'Large Town', 'Location', 'Large Location', 'Metropolis'];
 
@@ -77,11 +80,13 @@ const CLIMATE_OPTIONS = [
 export class LocationFormComponent implements OnInit {
   @ViewChild('sparkHost') sparkHost!: ElementRef<HTMLElement>;
 
-  private route   = inject(ActivatedRoute);
-  private router  = inject(Router);
-  private http    = inject(HttpClient);
-  private fb      = inject(FormBuilder);
-  private sparkle = inject(SparkleService);
+  private route          = inject(ActivatedRoute);
+  private router         = inject(Router);
+  private http           = inject(HttpClient);
+  private fb             = inject(FormBuilder);
+  private sparkle        = inject(SparkleService);
+  subscription           = inject(SubscriptionService);
+  private drawerService  = inject(SubscriptionDrawerService);
 
   sizeOptions         = SIZE_OPTIONS;
   conditionOptions    = CONDITION_OPTIONS;
@@ -96,6 +101,7 @@ export class LocationFormComponent implements OnInit {
 
   locationId     = signal<string | null>(null);
   saveStatus     = signal<'idle' | 'saving' | 'saved' | 'error'>('idle');
+  limitError     = signal<string | null>(null);
   imageUrl        = signal<string | null>(null);
   imageUploading  = signal(false);
   imageFile       = signal<File | null>(null);
@@ -186,10 +192,15 @@ export class LocationFormComponent implements OnInit {
       : this.http.post<Location>(`${environment.apiUrl}/api/locations`, this.form.value);
 
     req.pipe(
-      catchError(() => {
-        this.saveStatus.set('error');
-        this.fadeLabelTo('Error');
-        setTimeout(() => { this.saveStatus.set('idle'); this.labelVisible.set(false); }, 2000);
+      catchError((err: HttpErrorResponse) => {
+        if (err.status === 403) {
+          this.limitError.set(err.error);
+          this.saveStatus.set('idle');
+        } else {
+          this.saveStatus.set('error');
+          this.fadeLabelTo('Error');
+          setTimeout(() => { this.saveStatus.set('idle'); this.labelVisible.set(false); }, 2000);
+        }
         return EMPTY;
       })
     ).subscribe(location => {
@@ -247,5 +258,9 @@ export class LocationFormComponent implements OnInit {
         this.imageUploading.set(false);
       },
     });
+  }
+
+  openUpgradeDrawer() {
+    this.drawerService.open();
   }
 }

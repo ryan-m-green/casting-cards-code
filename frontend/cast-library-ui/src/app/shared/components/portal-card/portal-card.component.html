@@ -57,7 +57,7 @@
 
           @if (showSettings) {
             <div class="portal-btns">
-              <button class="portal-btn portal-btn--edit" aria-label="Settings">Settings →</button>
+              <button class="portal-btn portal-btn--edit" (click)="onSettingsClick($event)" aria-label="Settings">Settings →</button>
             </div>
           }
 

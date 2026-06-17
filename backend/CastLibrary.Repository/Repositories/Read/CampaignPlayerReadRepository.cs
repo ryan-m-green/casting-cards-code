@@ -11,7 +11,7 @@ public interface ICampaignPlayerReadRepository
     Task<List<CampaignPlayerDomain>> GetByCampaignAsync(Guid campaignId);
     Task<bool> IsPlayerInCampaignAsync(Guid campaignId, Guid playerUserId);
     Task<CampaignPlayerDomain> GetByUserAndCampaignAsync(Guid campaignId, Guid playerUserId);
-    Task<List<Guid>> GetDemoPlayerUserIdsAsync();
+    Task<Dictionary<Guid, Guid>> GetDemoPlayerAssignmentsAsync();
 }
 
 public class CampaignPlayerReadRepository(
@@ -94,11 +94,11 @@ public class CampaignPlayerReadRepository(
         return entity is not null ? mapper.ToDomain(entity) : null;
     }
 
-    public async Task<List<Guid>> GetDemoPlayerUserIdsAsync()
+    public async Task<Dictionary<Guid, Guid>> GetDemoPlayerAssignmentsAsync()
     {
         var spanId = correlation.NewSpan();
         const string sql =
-            @"SELECT DISTINCT cp.player_user_id
+            @"SELECT cp.player_user_id AS UserId, cp.campaign_id AS CampaignId
               FROM campaign_players cp
               JOIN campaigns c ON c.id = cp.campaign_id
               WHERE c.is_demo = TRUE";
@@ -106,10 +106,11 @@ public class CampaignPlayerReadRepository(
         logging.LogDbOperation(correlation.TraceId, spanId, "SELECT", "campaign_players", null);
 
         using var conn = sqlConnectionFactory.GetConnection();
-        var ids = (await conn.QueryAsync<Guid>(sql)).ToList();
+        var assignments = (await conn.QueryAsync<(Guid UserId, Guid CampaignId)>(sql))
+            .ToDictionary(x => x.UserId, x => x.CampaignId);
 
-        logging.LogDbOperation(correlation.TraceId, spanId, "SELECT", "campaign_players", null, ids.Count);
+        logging.LogDbOperation(correlation.TraceId, spanId, "SELECT", "campaign_players", null, assignments.Count);
 
-        return ids;
+        return assignments;
     }
 }

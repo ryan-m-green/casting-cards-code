@@ -2,9 +2,17 @@
   <app-journal-watermark pageType="cast" />
   <app-journal-title title="Cast Library" />
   <div class="wr wr-page-header">
+    <app-upgrade-badge
+      [visible]="subscription.isFreeTrial()"
+      (badgeClick)="openUpgradeDrawer()"
+      class="upgrade-badge-library" />
     <input class="search-bar search-bar--header" type="text" placeholder="Name · Race · Role…"
            [value]="searchTerm()" (input)="searchTerm.set($any($event.target).value)" />
-    <button class="campaign-primary-btn wr-ml-auto" routerLink="/dm/cast/new">+ Create Cast</button>
+    <button class="campaign-primary-btn wr-ml-auto"
+            [class.disabled]="castLimitReached() || isCreateDisabled()"
+            [attr.disabled]="(castLimitReached() || isCreateDisabled()) ? 'true' : null"
+            [routerLink]="(castLimitReached() || isCreateDisabled()) ? null : '/dm/cast/new'"
+            (click)="(castLimitReached() || isCreateDisabled()) ? $event.preventDefault() : null">+ Create</button>
   </div>
 
   <div class="card-grid">

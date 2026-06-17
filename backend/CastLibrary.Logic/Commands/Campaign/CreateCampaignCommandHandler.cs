@@ -16,10 +16,13 @@ public class CreateCampaignCommandHandler(
     ILocationReadRepository locationReadRepository,
     ICampaignFactory campaignFactory,
     ILocationInstanceFactory locationInstanceFactory,
-    IPartyAnchorService partyAnchorService) : ICreateCampaignCommandHandler
+    IPartyAnchorService partyAnchorService,
+    ISubscriptionLimitService subscriptionLimitService) : ICreateCampaignCommandHandler
 {
     public async Task<CampaignDomain> HandleAsync(CreateCampaignCommand command)
     {
+        await subscriptionLimitService.CheckLimitAsync(command.DmUserId, "Campaign");
+        
         var campaign = campaignFactory.Create(command.Request, command.DmUserId, command.IsCallerAdmin);
         var saved    = await campaignRepository.InsertAsync(campaign);
 

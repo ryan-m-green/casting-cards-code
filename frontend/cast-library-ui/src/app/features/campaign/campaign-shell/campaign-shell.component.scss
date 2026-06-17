@@ -78,6 +78,12 @@
   z-index: 1;
 }
 
+.upgrade-badge-shell {
+  position: absolute;
+  top: 20px;
+  right: 32px;
+}
+
 /* ── Topbar row ─────────────────────────────────────────────── */
 .topbar-row {
   display: flex;

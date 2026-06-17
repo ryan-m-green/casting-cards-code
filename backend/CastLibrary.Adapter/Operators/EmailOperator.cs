@@ -1,52 +1,78 @@
-﻿using MailKit.Net.Smtp;
-using MailKit.Security;
-using Microsoft.Extensions.Configuration;
-using CastLibrary.Adapter.Mappers;
+﻿using CastLibrary.Adapter.EmailBuilders;
+using CastLibrary.Logic.Interfaces;
+using CastLibrary.Shared.Configuration;
 using CastLibrary.Shared.Domain;
+using Microsoft.Extensions.Configuration;
+using Newtonsoft.Json.Serialization;
+using System.Net.Http.Headers;
+using System.Text;
+using System.Text.Json;
 
 namespace CastLibrary.Adapter.Operators;
 
 public interface IEmailOperator
 {
-    Task SendPasswordResetEmailAsync(PasswordResetEmailDomain emailData);
-    Task SendBugReportNotificationAsync(BugReportNotificationEmailDomain emailData);
+    Task<bool> SendEmailAsync(IEmailDomain emailData);
 }
-public class EmailOperator(IConfiguration configuration) : IEmailOperator
+
+public class EmailOperator(
+    IEmailConfiguration emailConfiguration,
+    IConfiguration configuration,
+    IEnumerable<IEmailTemplateBuilder> templateBuilders,
+    ILoggingService loggingService) : IEmailOperator
 {
-    public async Task SendPasswordResetEmailAsync(PasswordResetEmailDomain emailData)
+    private readonly HttpClient _httpClient = new HttpClient();
+    private const string SenderApiUrl = "https://api.sender.net/v2/message/send";
+
+    public async Task<bool> SendEmailAsync(IEmailDomain emailData)
     {
-        var host = configuration["Email:SmtpHost"]!;
-        var port = int.Parse(configuration["Email:SmtpPort"]!);
-        var username = configuration["Email:SmtpUsername"]!;
-        var password = configuration["Email:SmtpPassword"]!;
-        var fromAddress = configuration["Email:FromAddress"]!;
-        var fromName = configuration["Email:FromName"]!;
+        var builder = GetBuilder(emailData.GetType());
 
-        var message = EmailMessageMapper.ToMimeMessage(emailData, fromAddress, fromName);
+        var adminAddress = emailData is BugReportNotificationEmailDomain
+            ? configuration["Email:AdminAddress"] ?? throw new InvalidOperationException("Email:AdminAddress not configured")
+            : null;
 
-        using var client = new SmtpClient();
-        await client.ConnectAsync(host, port, SecureSocketOptions.StartTls);
-        await client.AuthenticateAsync(username, password);
-        await client.SendAsync(message);
-        await client.DisconnectAsync(quit: true);
+        var request = builder.GenerateTemplateRequest(emailData,
+            emailConfiguration.FromEmail,
+            emailConfiguration.FromName,
+            adminAddress);
+
+        var json = JsonSerializer.Serialize(request, new JsonSerializerOptions { WriteIndented = true });
+
+        var content = new StringContent(json, Encoding.UTF8, new MediaTypeHeaderValue("application/json"));
+
+        var httpRequest = new HttpRequestMessage(HttpMethod.Post, SenderApiUrl);
+        httpRequest.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+        httpRequest.Headers.Authorization = new AuthenticationHeaderValue("Bearer", emailConfiguration.ApiToken);
+        httpRequest.Content = content;
+
+        try
+        {
+            var response = await _httpClient.SendAsync(httpRequest);
+
+            if (!response.IsSuccessStatusCode)
+            {
+                var errorContent = await response.Content.ReadAsStringAsync();
+                loggingService.LogError($"Sender.net Error: {response.StatusCode} - {errorContent}");
+                return false;
+            }
+
+            response.EnsureSuccessStatusCode();
+        }
+        catch (Exception ex)
+        {
+            loggingService.LogError($"Sender.net Server Error: {ex.Message}");
+            return false;
+        }
+
+        return true;
     }
 
-    public async Task SendBugReportNotificationAsync(BugReportNotificationEmailDomain emailData)
+    private IEmailTemplateBuilder GetBuilder(Type type)
     {
-        var host = configuration["Email:SmtpHost"]!;
-        var port = int.Parse(configuration["Email:SmtpPort"]!);
-        var username = configuration["Email:SmtpUsername"]!;
-        var password = configuration["Email:SmtpPassword"]!;
-        var fromAddress = configuration["Email:FromAddress"]!;
-        var fromName = configuration["Email:FromName"]!;
-        var adminAddress = configuration["Email:AdminAddress"]!;
-
-        var message = EmailMessageMapper.ToBugReportMimeMessage(emailData, fromAddress, fromName, adminAddress);
-
-        using var client = new SmtpClient();
-        await client.ConnectAsync(host, port, SecureSocketOptions.StartTls);
-        await client.AuthenticateAsync(username, password);
-        await client.SendAsync(message);
-        await client.DisconnectAsync(quit: true);
+        var builder = templateBuilders.FirstOrDefault(b => b.IsMatch(type));
+        if (builder is null)
+            throw new InvalidOperationException($"No template builder found for type {type.Name}");
+        return builder;
     }
 }

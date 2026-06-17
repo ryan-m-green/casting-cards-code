@@ -234,8 +234,26 @@ public class LoggingService : ILoggingService
         try
         {
             // If the object is already a string (e.g. a pre-serialised payload)
-            // embed it verbatim.
-            if (obj is string s) return s;
+            // check if it contains JSON and clean it up.
+            if (obj is string s)
+            {
+                // If the string looks like JSON (contains { or [), try to parse and re-serialize
+                // to remove escape sequences like \r\n and \"
+                if ((s.Contains("{") || s.Contains("[")) && s.Contains("\""))
+                {
+                    try
+                    {
+                        using var document = JsonDocument.Parse(s);
+                        return JsonSerializer.Serialize(document.RootElement, _jsonOptions);
+                    }
+                    catch
+                    {
+                        // If parsing fails, return the original string
+                        return s;
+                    }
+                }
+                return s;
+            }
             return JsonSerializer.Serialize(obj, _jsonOptions);
         }
         catch

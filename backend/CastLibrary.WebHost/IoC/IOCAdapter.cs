@@ -1,5 +1,7 @@
 ﻿using CastLibrary.Adapter.ImageConversion;
 using CastLibrary.Adapter.Operators;
+using CastLibrary.Adapter.Services;
+using CastLibrary.Adapter.EmailBuilders;
 using CastLibrary.Logic.Interfaces;
 using CastLibrary.Shared.Configuration;
 
@@ -14,7 +16,16 @@ namespace CastLibrary.WebHost.IoC
             useLocalStorage = true;
 #endif
 
+            services.AddScoped<IEmailConfiguration>(sp =>
+                new EmailConfiguration(sp.GetRequiredService<IConfiguration>()));
             services.AddScoped<IEmailOperator, EmailOperator>();
+
+            services.AddScoped<IEmailTemplateBuilder, AccountVerificationEmailTemplateBuilder>();
+            services.AddScoped<IEmailTemplateBuilder, PasswordResetEmailTemplateBuilder>();
+            services.AddScoped<IEmailTemplateBuilder, BugReportEmailTemplateBuilder>();
+            services.AddScoped<IEmailTemplateBuilder, WelcomeEmailTemplateBuilder>();
+            services.AddScoped<IEmailTemplateBuilder, CampaignInvitationEmailTemplateBuilder>();
+            services.AddScoped<IEmailTemplateBuilder, InactivityReminderEmailTemplateBuilder>();
 
             if (useLocalStorage)
             {
@@ -27,6 +38,7 @@ namespace CastLibrary.WebHost.IoC
                 services.AddScoped<IImageStorageOperator, FileImageStorageOperator>();
             }
 
+            services.AddScoped<IStripeService, StripeService>();
             services.AddScoped<IImageConverter, ImageConverter>();
 
             return services;

@@ -1,3 +1,4 @@
+using CastLibrary.Logic.Services;
 using CastLibrary.Repository.Repositories.Insert;
 using CastLibrary.Shared.Domain;
 using CastLibrary.Shared.Requests;
@@ -8,10 +9,14 @@ public interface ICreateSublocationCommandHandler
 {
     Task<SublocationDomain> HandleAsync(CreateSublocationCommand command);
 }
-public class CreateSublocationCommandHandler(ISublocationInsertRepository sublocationInsertRepository) : ICreateSublocationCommandHandler
+public class CreateSublocationCommandHandler(
+    ISublocationInsertRepository sublocationInsertRepository,
+    ISubscriptionLimitService subscriptionLimitService) : ICreateSublocationCommandHandler
 {
     public async Task<SublocationDomain> HandleAsync(CreateSublocationCommand command)
     {
+        await subscriptionLimitService.CheckLimitAsync(command.DmUserId, "Sublocation");
+        
         var domain = new SublocationDomain
         {
             Id = Guid.NewGuid(),

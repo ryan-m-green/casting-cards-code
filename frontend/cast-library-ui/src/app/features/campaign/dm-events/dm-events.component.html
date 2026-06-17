@@ -28,6 +28,15 @@
       id="events-tab-create-handout"
       (click)="setTab('create-handout')"
     >Create Handout</button>
+    <button
+      class="tab-btn"
+      [class.tab-btn--active]="activeTab() === 'chronicles'"
+      role="tab"
+      [attr.aria-selected]="activeTab() === 'chronicles'"
+      aria-controls="events-panel-chronicles"
+      id="events-tab-chronicles"
+      (click)="setTab('chronicles')"
+    >Campaign Chronicles</button>
   </div>
 
   @if (activeTab() === 'events') {
@@ -40,66 +49,14 @@
       } @else {
 
         <!-- Filter bar -->
-        <fieldset class="ev-filters">
-          <legend class="ev-filters-legend">Filters</legend>
-          <div class="ev-filter-group">
-            <button type="button" class="ev-filter-btn" [class.ev-filter-btn--active]="typeFilters().includes('cast')" (click)="toggleTypeFilter('cast')" title="Cast">
-              <svg class="ev-filter-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>
-              </svg>
-            </button>
-            <button type="button" class="ev-filter-btn" [class.ev-filter-btn--active]="typeFilters().includes('faction')" (click)="toggleTypeFilter('faction')" title="Faction">
-              <svg class="ev-filter-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
-              </svg>
-            </button>
-            <button type="button" class="ev-filter-btn" [class.ev-filter-btn--active]="typeFilters().includes('location')" (click)="toggleTypeFilter('location')" title="Location">
-              <svg class="ev-filter-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/>
-              </svg>
-            </button>
-            <button type="button" class="ev-filter-btn" [class.ev-filter-btn--active]="typeFilters().includes('sublocation')" (click)="toggleTypeFilter('sublocation')" title="Sublocation">
-              <svg class="ev-filter-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/>
-              </svg>
-            </button>
-            <button type="button" class="ev-filter-btn" [class.ev-filter-btn--active]="typeFilters().includes('player')" (click)="toggleTypeFilter('player')" title="Player">
-              <svg class="ev-filter-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/>
-                <path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>
-              </svg>
-            </button>
-            <button type="button" class="ev-filter-btn" [class.ev-filter-btn--active]="typeFilters().includes('campaign')" (click)="toggleTypeFilter('campaign')" title="Campaign">
-              <svg class="ev-filter-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
-              </svg>
-            </button>
-            <button type="button" class="ev-filter-btn" [class.ev-filter-btn--active]="typeFilters().includes('handout')" (click)="toggleTypeFilter('handout')" title="Handout">
-              <svg class="ev-filter-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
-                <circle cx="8.5" cy="8.5" r="1.5"/>
-                <polyline points="21 15 16 10 5 21"/>
-              </svg>
-            </button>
-          </div>
-
-          <div class="ev-filter-divider"></div>
-
-          <div class="ev-filter-group">
-            <button type="button" class="ev-filter-btn ev-filter-btn--lock-locked" [class.ev-filter-btn--active]="visibilityFilters().includes('locked')" (click)="toggleVisibilityFilter('locked')" title="Locked">
-              <svg class="ev-filter-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 14 16" fill="none">
-                <path d="M3 7 L3 4 C3 0.5 11 0.5 11 4 L11 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                <rect x="1" y="7" width="12" height="9" rx="2" fill="currentColor"/>
-              </svg>
-            </button>
-            <button type="button" class="ev-filter-btn ev-filter-btn--lock-unlocked" [class.ev-filter-btn--active]="visibilityFilters().includes('unlocked')" (click)="toggleVisibilityFilter('unlocked')" title="Unlocked">
-              <svg class="ev-filter-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 14 16" fill="none">
-                <path d="M3 7 L3 4 C3 0.5 11 0.5 11 4 L11 1" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                <rect x="1" y="7" width="12" height="9" rx="2" fill="currentColor"/>
-              </svg>
-            </button>
-          </div>
-        </fieldset>
+        <app-storyline-filter-bar
+          [activeTypeFilters]="typeFilters()"
+          [activeVisibilityFilters]="visibilityFilters()"
+          [showVisibilityFilters]="true"
+          [debugLabel]="'EVENTS TAB'"
+          (typeFilterChange)="onEventsTypeFilterChange($event)"
+          (visibilityFilterChange)="onEventsVisibilityFilterChange($event)"
+        ></app-storyline-filter-bar>
 
        
 
@@ -131,9 +88,9 @@
           <button
             type="button"
             [class]="activeSession() !== null ? 'campaign-primary-btn' : 'ev-end-session-btn'"
-            [disabled]="endingSession() || activeSession() === null"
+            [disabled]="endingSession() || activeSession() === null || (unlockedEventsForArchive.length === 0 && gmNotesForArchive.length === 0)"
             (click)="requestEndSession()"
-            [title]="activeSession() ? 'End current session' : 'No active session'"
+            [title]="activeSession() && (unlockedEventsForArchive.length > 0 || gmNotesForArchive.length > 0) ? 'End current session' : (activeSession() ? 'No unlocked or marked scenes' : 'No active session')"
           >
             @if (endingSession()) {
               <svg class="ev-end-session-btn-icon ev-end-session-btn-icon--spinning" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -150,33 +107,59 @@
             <div class="ev-end-session-panel-clip" [class.ev-end-session-panel-clip--animating]="endSessionPanelAnimating() || endSessionPanelClosing()">
               <div class="ev-end-session-panel" [class.ev-end-session-panel--closing]="endSessionPanelClosing()">
                 <div class="ev-end-session-panel-header">
-                  <label class="ev-end-session-label" for="session-title-input">Session Title</label>
+                  <label class="ev-end-session-label" for="session-title-input">Alternate Title</label>
                   <input
                     id="session-title-input"
                     class="ev-end-session-title-input"
                     type="text"
-                    [value]="sessionTitle()"
-                    (input)="sessionTitle.set($any($event.target).value)"
+                    [value]="alternateTitle()"
+                    (input)="alternateTitle.set($any($event.target).value)"
                     maxlength="200"
-                    placeholder="Enter session title..."
+                    placeholder="Enter alternate title..."
                   />
                 </div>
 
-                @if (unlockedEventsForArchive.length > 0) {
-                  <div class="ev-end-session-panel-events">
-                    <div class="ev-end-session-panel-events-header">
-                      <span class="ev-end-session-panel-events-title">Unlocked Storyline Items to Archive</span>
-                      <span class="ev-end-session-panel-events-count">{{ unlockedEventsForArchive.length }}</span>
+
+
+                @if (unlockedEventsForArchive.length > 0 || gmNotesForArchive.length > 0) {
+                  @if (unlockedEventsForArchive.length > 0) {
+                    <div class="ev-end-session-panel-events">
+                      <div class="ev-end-session-panel-events-header">
+                        <span class="ev-end-session-panel-events-title">Unlocked Storyline Items to Archive</span>
+                        <span class="ev-end-session-panel-events-count">{{ unlockedEventsForArchive.length }}</span>
+                      </div>
+                      <div class="ev-end-session-panel-events-list">
+                        @for (ev of unlockedEventsForArchive; track ev.id) {
+                          <div class="ev-end-session-panel-event-item">
+                            <span class="ev-end-session-panel-event-type">{{ entityNameFor(ev) }}</span>
+                            <span class="ev-end-session-panel-event-title">{{ ev.title }}</span>                            
+                          </div>
+                        }
+                      </div>
                     </div>
-                    <div class="ev-end-session-panel-events-list">
-                      @for (ev of unlockedEventsForArchive; track ev.id) {
-                        <div class="ev-end-session-panel-event-item">
-                          <span class="ev-end-session-panel-event-title">{{ ev.title }}</span>
-                          <span class="ev-end-session-panel-event-type">{{ entityNameFor(ev) }}</span>
-                        </div>
-                      }
+                  }
+
+                  @if (gmNotesForArchive.length > 0) {
+                    <div class="ev-end-session-panel-events">
+                      <div class="ev-end-session-panel-events-header">
+                          <span class="ev-end-session-panel-events-title">GM Notes Marked as Read</span>
+                          <span class="ev-end-session-panel-events-count">{{ gmNotesForArchive.length }}</span>
+              
+                
+                      </div>
+                      <div class="ev-end-session-panel-events-note">
+                        These notes are not visible to players.
+                      </div>
+                      <div class="ev-end-session-panel-events-list">
+                        @for (ev of gmNotesForArchive; track ev.id) {
+                          <div class="ev-end-session-panel-event-item">
+                            <span class="ev-end-session-panel-event-type">GM Note</span>
+                            <span class="ev-end-session-panel-event-title">{{ ev.title }}</span>                            
+                          </div>
+                        }
+                      </div>
                     </div>
-                  </div>
+                  }
                 }
 
                 <div class="ev-end-session-panel-actions">
@@ -207,7 +190,7 @@
             }
             <div
               class="ev-item"
-              [class.ev-item--expanded]="expandedId() === ev.id"
+              [class.ev-item--expanded]="expandedIds().has(ev.id)"
               [class.ev-item--dragging]="draggingIndex() === i"
               [draggable]="editingId() === null"
               (dragstart)="onDragStart(i, $event)"
@@ -222,14 +205,14 @@
                   (touchstart)="onHandleTouchStart(i, $event)"
                 >⠿</span>
 
-                <span class="ev-badge ev-badge--{{ ev.imageUrl ? 'handout' : (ev.linkedEntities.length > 1 ? 'multitrigger' : (ev.linkedEntities.length > 0 ? ev.linkedEntities[0].entityType : 'none')) }}">
-                  @if (ev.imageUrl) {
+                <span class="ev-badge ev-badge--{{ ev.sceneType === 'campaign-handout' ? 'handout' : (ev.imageUrl ? 'handout' : (ev.linkedEntities.length > 1 ? 'multitrigger' : (ev.linkedEntities.length > 0 ? ev.linkedEntities[0].entityType : 'none'))) }}">
+                  @if (ev.sceneType === 'campaign-event' && ev.linkedEntities.length > 1) {
                     <svg class="ev-badge-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
                       <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
                       <circle cx="8.5" cy="8.5" r="1.5"/>
                       <polyline points="21 15 16 10 5 21"/>
                     </svg>
-                  }
+                  } @if (ev.sceneType !== 'campaign-handout') {
                   @switch (ev.linkedEntities.length > 1 ? 'multitrigger' : (ev.linkedEntities.length > 0 ? ev.linkedEntities[0].entityType : null)) {
                     @case (null) {
                       <svg class="ev-badge-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
@@ -291,12 +274,27 @@
                       </svg>
                     }
                   }
-                  <span class="ev-badge-label">{{ entityNameFor(ev) }}</span>
+                  }
+                  <span class="ev-badge-label" [class.ev-badge-label--strikethrough]="ev.markedForArchive || ev.visibleToPlayers">{{ entityNameFor(ev) }}</span>
                 </span>
 
                 <span class="ev-title">{{ ev.title }}</span>
 
-                @if (ev.linkedEntities.length > 0) {
+                @if (ev.sceneType === 'campaign-event' && ev.linkedEntities.length === 0) {
+                <button
+                  class="ev-archive-btn"
+                  [class.ev-archive-btn--marked]="ev.markedForArchive"
+                  (click)="toggleArchiveMark(ev, $event)"
+                  [title]="ev.markedForArchive ? 'Unmark as read' : 'Mark as read'"
+                  [attr.aria-label]="ev.markedForArchive ? 'Unmark as read' : 'Mark as read'"
+                >
+                  @if (ev.markedForArchive) {
+                    <img src="/open_book_diamond_bookmark.svg" alt="Marked" class="ev-archive-icon" />
+                  } @else {
+                    <img src="/magic_book_shining_diamond.svg" alt="Not marked" class="ev-archive-icon" />
+                  }
+                </button>
+                } @else {
                 <button
                   class="ev-lock-btn"
                   [class.ev-lock-btn--revealed]="ev.visibleToPlayers"
@@ -308,11 +306,23 @@
                 </button>
                 }
 
-                <span class="ev-chevron" [class.ev-chevron--open]="expandedId() === ev.id">&#9660;</span>
+               
+
+                <span class="ev-chevron" [class.ev-chevron--open]="expandedIds().has(ev.id)">&#9660;</span>
               </div>
 
-              @if (expandedId() === ev.id) {
+              @if (expandedIds().has(ev.id)) {
                 <div class="ev-item-edit-bar">
+                   @if (editingId() === ev.id) {
+                  <div class="scene-type-toggle-header">
+                    <span class="scene-type-toggle-label">Scene</span>
+                    <label class="scene-type-toggle-switch">
+                      <input type="checkbox" [checked]="editSceneType() === 'campaign-handout'" (change)="onEditSceneTypeChange($event.target.checked ? 'campaign-handout' : 'campaign-event')" />
+                      <span class="scene-type-toggle-slider"></span>
+                    </label>
+                    <span class="scene-type-toggle-label">Handout</span>
+                  </div>
+                }
                   @if (editSaveSuccess() && editingId() === ev.id) {
                     <span class="ev-autosave-status ev-autosave-status--saved">Saved</span>
                   }
@@ -336,7 +346,7 @@
                 </div>
                 <div class="ev-body-wrapper">
 
-                  @if (ev.imageUrl) {
+                  @if (ev.imageUrl && editingId() !== ev.id) {
                     <div class="ev-handout-wrapper">
                       <img class="ev-handout-img" [src]="ev.imageUrl" [alt]="ev.title" />
                     </div>
@@ -361,7 +371,7 @@
                         </div>
                       }
                     </div>
-                  } @else if (ev.imageUrl) {
+                  } @else if (editSceneType() === 'campaign-handout') {
                     <!-- Handout edit form -->
                     <div class="ev-edit-form">
                       <div class="event-form-field">
@@ -384,6 +394,7 @@
                           [showTimeOfDay]="true"
                           [multiselect]="true"
                           [linkedEntities]="editLinkedEntities()"
+                          [excludedEntities]="allUsedEntities()"
                           [campaignId]="campaignId"
                           [destType]="editDestType() ?? 'none'"
                           [entityId]="editEntityId()"
@@ -407,6 +418,15 @@
                           <div class="handout-preview">
                             <img class="handout-preview-img" [src]="editPreviewUrl()!" alt="Handout preview" />
                           </div>
+                        } @else {
+                          <div class="handout-preview handout-preview--placeholder">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="#666" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                              <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+                              <circle cx="8.5" cy="8.5" r="1.5"/>
+                              <polyline points="21 15 16 10 5 21"/>
+                            </svg>
+                            <span class="handout-placeholder-text">No image uploaded</span>
+                          </div>
                         }
                         <label class="handout-upload-label">
                           <input type="file" accept="image/jpeg,image/png,image/webp,application/pdf"
@@ -422,6 +442,12 @@
                         </label>
                       </div>
                       <div class="event-form-actions">
+                        <button
+                          class="ev-edit-btn"
+                          [class.ev-edit-btn--close]="true"
+                          (click)="toggleEdit(ev, $event)"
+                          title="Close edit mode"
+                        >Close</button>
                         <button class="campaign-primary-btn" [disabled]="editSaving() || !editTitle().trim() || !editDestType()"
                           (click)="saveEditDetails(ev)">{{ editSaving() ? 'Saving…' : 'Save' }}</button>
                       </div>
@@ -449,6 +475,7 @@
                           [showTimeOfDay]="true"
                           [multiselect]="true"
                           [linkedEntities]="editLinkedEntities()"
+                          [excludedEntities]="allUsedEntities()"
                           [campaignId]="campaignId"
                           [destType]="editDestType() ?? 'none'"
                           [entityId]="editEntityId()"
@@ -466,6 +493,12 @@
                         />
                       </div>
                       <div class="event-form-actions">
+                        <button
+                          class="ev-edit-btn"
+                          [class.ev-edit-btn--close]="true"
+                          (click)="toggleEdit(ev, $event)"
+                          title="Close edit mode"
+                        >Close</button>
                         <button class="campaign-primary-btn" [disabled]="editSaving() || !editTitle().trim() || !editDraft().trim() || !editDestType()"
                           (click)="saveEditDetails(ev)">{{ editSaving() ? 'Saving…' : 'Save' }}</button>
                       </div>
@@ -530,6 +563,7 @@
               [showTimeOfDay]="true"
               [multiselect]="true"
               [linkedEntities]="linkedEntities()"
+              [excludedEntities]="allUsedEntities()"
               [campaignId]="campaignId"
               [destType]="destType()"
               [entityId]="entityId()"
@@ -651,6 +685,7 @@
               [showCampaign]="false"
               [multiselect]="true"
               [linkedEntities]="handoutLinkedEntities()"
+              [excludedEntities]="allUsedEntities()"
               [campaignId]="campaignId"
               [destType]="handoutDestType()"
               [entityId]="handoutEntityId()"
@@ -685,13 +720,85 @@
     </div>
   }
 
-  <app-confirm-dialog
-    [show]="showStartSessionConfirm()"
-    [title]="'Start Session?'"
-    [message]="'Are you sure you want to start Session ' + getNextSessionNumber() + '? This will begin tracking gameplay events for this session.'"
-    [confirmButtonText]="'Start Session'"
-    (confirm)="confirmStartSession()"
-    (cancel)="cancelStartSession()"
-  ></app-confirm-dialog>
+  @if (activeTab() === 'chronicles') {
+    <div class="tab-content" id="events-panel-chronicles" role="tabpanel" aria-labelledby="events-tab-chronicles">
+
+      @if (loadingChronicles()) {
+        <div class="ev-empty">Loading chronicles…</div>
+      }
+
+      <!-- Search and filters - always visible -->
+      <app-storyline-filter-bar
+        [isBackendFilter]="true"
+        [showSearchBar]="true"
+        [activeTypeFilters]="chroniclesTypeFilters()"
+        [showVisibilityFilters]="false"
+        [debugLabel]="'CHRONICLES TAB'"
+        (typeFilterChange)="chroniclesTypeFilters.set($event)"
+        (search)="onChronicleSearch($event)"
+        (reset)="onChronicleReset()"
+      ></app-storyline-filter-bar>
+
+      @if (!loadingChronicles() && (!chronicles() || chronicles()!.sessions.length === 0)) {
+        <div class="ev-empty">No chronicles match your search or filters.</div>
+      }
+
+      @if (!loadingChronicles() && chronicles() && chronicles()!.sessions.length > 0) {
+        <!-- Pagination info -->
+        @if (chronicles()!.totalSessions > 0) {
+          <div class="chronicles-pagination">
+            <button
+              class="pagination-btn"
+              [disabled]="chroniclesPage() === 1"
+              (click)="chroniclePrevPage()"
+            >Current Sessions</button>
+            <span class="pagination-info">{{ chronicles()!.totalSessions }} sessions total</span>
+            <button
+              class="pagination-btn"
+              [disabled]="chroniclesPage() === chronicles()!.totalPages"
+              (click)="chronicleNextPage()"
+            >Past Sessions</button>
+          </div>
+        }
+
+        <!-- Session timeline -->
+        <app-chronicles-timeline
+          [chronicles]="chronicles()"
+          [expandedSessionIds]="expandedSessionIds()"
+          [isDmMode]="true"
+          [chronicleEditingId]="chronicleEditingId()"
+          [chronicleEditTitle]="chronicleEditTitle()"
+          [chronicleEditBody]="chronicleEditBody()"
+          [chronicleSaving]="chronicleSaving()"
+          [chronicleSaveError]="chronicleSaveError()"
+          [timeOfDay]="tod()"
+          [sessionOptions]="sessionOptions()"
+          [chronicleEditSessionId]="chronicleEditSessionId()"
+          [chronicleEditSortOrder]="chronicleEditSortOrder()"
+          (sessionExpand)="toggleSessionExpand($event)"
+          (editChronicle)="openChronicleEdit($event)"
+          (cancelChronicleEdit)="closeChronicleEdit()"
+          (saveChronicleEdit)="saveChronicleEdit($event)"
+          (sessionChange)="onChronicleSessionChange($event)"
+          (sortOrderChange)="onChronicleSortOrderChange($event)"
+          (deleteSession)="deleteSession($event)" />
+      }
+    </div>
+  }
+
+  @if (showStartSessionConfirm()) {
+  <div class="modal-overlay" (click)="cancelStartSession()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+      <h2 class="modal-title">Start Session {{ getNextSessionNumber() }}</h2>
+      <p class="modal-message">This will begin tracking gameplay events for this session.</p>
+      <div class="modal-actions">
+        <button class="modal-btn modal-btn--cancel" (click)="cancelStartSession()">Cancel</button>
+        <button class="modal-btn modal-btn--confirm" (click)="confirmStartSession()" [disabled]="startingSession()">
+          {{ startingSession() ? 'Starting...' : 'Start Session' }}
+        </button>
+      </div>
+    </div>
+  </div>
+}
 
 </div>

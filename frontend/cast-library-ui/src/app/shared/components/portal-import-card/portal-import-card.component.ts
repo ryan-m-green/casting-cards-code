@@ -20,6 +20,10 @@ import { FactionCardComponent } from '../faction-card/faction-card.component';
 import { IconPickerComponent } from '../icon-picker/icon-picker.component';
 import { Sublocation } from '../../models/sublocation.model';
 import { FACTION_TYPE_OPTIONS, perceptionLabel } from '../../../features/faction/faction-form/faction-form.component';
+import { StripeService, EntityLimitsResponse } from '../../../core/stripe.service';
+import { SubscriptionService } from '../../../core/subscription.service';
+import { AuthService } from '../../../core/auth/auth.service';
+import { effect } from '@angular/core';
 
 export type ImportCardType = 'location' | 'sublocation' | 'cast' | 'faction';
 
@@ -76,6 +80,9 @@ export class PortalImportCardComponent implements OnInit, OnChanges {
 
   private http = inject(HttpClient);
   private fb   = inject(FormBuilder);
+  private stripe = inject(StripeService);
+  private subscription = inject(SubscriptionService);
+  private auth = inject(AuthService);
 
   // ── Drawer state ──────────────────────────────────────────────────────────
   drawerOpen       = signal(false);
@@ -83,6 +90,14 @@ export class PortalImportCardComponent implements OnInit, OnChanges {
   drawerCollapsing = signal(false);
   activeTab        = signal<'select' | 'new'>('select');
   searchTerm       = signal('');
+  limitReached     = signal(false);
+
+  readonly isCreateDisabled = computed(() => {
+    if (this.auth.isExempt()) return false;
+    if (this.subscription.isFreeTrial()) return false;
+    const level = this.auth.lockLevel();
+    return level !== 'FullAccess';
+  });
 
   // ── Library / pending / instances ──────────────────────────────────────────
   libraryLocations     = signal<Location[]>([]);
@@ -327,6 +342,37 @@ export class PortalImportCardComponent implements OnInit, OnChanges {
     return color && /^#[0-9a-fA-F]{6}$/.test(color) ? color : '#6e28d0';
   }
 
+  private loadEntityLimits() {
+    this.stripe.getUserEntityLimits().subscribe({
+      next: (limits: EntityLimitsResponse) => {
+        switch (this.cardType) {
+          case 'location':
+            this.limitReached.set(limits.locations.limitReached);
+            break;
+          case 'sublocation':
+            this.limitReached.set(limits.sublocations.limitReached);
+            break;
+          case 'cast':
+            this.limitReached.set(limits.cast.limitReached);
+            break;
+          case 'faction':
+            this.limitReached.set(limits.factions.limitReached);
+            break;
+        }
+      },
+      error: () => {
+        this.limitReached.set(false);
+      }
+    });
+  }
+
+  // Switch to select tab if limit reached or locked and currently on new tab
+  private _limitReachedEffect = effect(() => {
+    if ((this.limitReached() || this.isCreateDisabled()) && this.activeTab() === 'new') {
+      this.activeTab.set('select');
+    }
+  });
+
   // ── Lifecycle ─────────────────────────────────────────────────────────────
 
   ngOnInit() {
@@ -343,6 +389,7 @@ export class PortalImportCardComponent implements OnInit, OnChanges {
       this.instanceList.set(this.initialInstances as CampaignLocationInstance[]);
       if (this.cardType === 'location') this._fetchLibraryLocations();
     }
+    this.loadEntityLimits();
   }
 
   ngOnChanges(changes: SimpleChanges) {
@@ -351,6 +398,7 @@ export class PortalImportCardComponent implements OnInit, OnChanges {
       if (this.cardType === 'sublocation') this._fetchLibrarySublocations();
       if (this.cardType === 'cast')        this._fetchLibraryCasts();
       if (this.cardType === 'faction')     this._fetchLibraryFactions();
+      this.loadEntityLimits();
     }
   }
 

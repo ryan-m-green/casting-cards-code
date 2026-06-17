@@ -28,10 +28,17 @@ export class SessionService {
     );
   }
 
-  endSession(campaignId: string, endDay: number): Observable<void> {
+  endSession(campaignId: string, endDay: number, alternateTitle?: string): Observable<void> {
     return this.http.patch<void>(
       `${environment.apiUrl}/api/campaigns/${campaignId}/sessions/end`,
-      { endDay }
+      { endDay, alternateTitle: alternateTitle ?? '' }
+    );
+  }
+
+  updateSession(campaignId: string, sessionId: string, title: string, alternateTitle: string): Observable<Session> {
+    return this.http.patch<Session>(
+      `${environment.apiUrl}/api/campaigns/${campaignId}/sessions/${sessionId}`,
+      { title, alternateTitle }
     );
   }
 }

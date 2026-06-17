@@ -17,13 +17,6 @@
       <textarea id="bug-steps" class="fi fi-textarea" formControlName="stepsToReproduce"
                 rows="4" placeholder="1. Go to...&#10;2. Click on...&#10;3. Observe that..."></textarea>
 
-      <label for="bug-severity" class="fi-label">Severity <span class="req">*</span></label>
-      <select id="bug-severity" class="fi" formControlName="severity">
-        @for (s of severities; track s) {
-          <option [value]="s">{{ s }}</option>
-        }
-      </select>
-
       <label for="bug-page" class="fi-label">Page Where Issue Occurred</label>
       <input id="bug-page" class="fi" type="text" formControlName="pageUrl"
              placeholder="Dashboard, Location Library..." autocomplete="off" />
@@ -39,7 +32,7 @@
   } @else {
     <div class="wb wb-narrow">
       <p class="wbd-journal success-msg">✓ Your report has been received. Thank you for helping improve the realm!</p>
-      <button class="btn-ghost btn-another" (click)="submitted.set(false); form.reset({ severity: 'Medium' })">
+      <button class="btn-ghost btn-another" (click)="submitted.set(false); form.reset()">
         Report Another
       </button>
     </div>

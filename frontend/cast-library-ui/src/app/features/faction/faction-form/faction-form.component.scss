@@ -2,6 +2,33 @@
 
 :host { display: block; height: 100%; }
 
+.pc.scroll-body {
+  position: relative !important;
+  overflow: auto !important;
+  max-height: 100%;
+}
+
+.death-awaits-image {
+  position: absolute;
+  top: 368px;
+  right: 22px;
+  width: 144px;
+  height: auto;
+  z-index: 10;
+  transform: scaleX(-1);
+  opacity: 0;
+  animation: fadeIn 8s ease-in forwards 6s;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
 // ── GM-only Box ──────────────────────────────────────────────────────────────
 .form-gm-box {
   border: 1px solid rgba(v.$color-base-brown-14, 0.2);
@@ -240,4 +267,66 @@
   font-size: 0.75rem;
   color: v.$color-base-brown-15;
   flex-shrink: 0;
+}
+
+.limit-error-message {
+  background: rgba(220, 38, 38, 0.1);
+  border: 1px solid rgba(220, 38, 38, 0.3);
+  border-radius: 8px;
+  padding: 12px 16px;
+  margin: 16px 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  color: #dc2626;
+  font-family: v.$font-body;
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+.limit-error-text {
+  flex: 1;
+}
+
+.limit-error-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.limit-error-upgrade {
+  padding: 6px 16px;
+  background: #4a90d9;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-family: v.$font-header;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background 0.2s ease;
+
+  &:hover {
+    background: #5a9fe9;
+  }
+}
+
+.limit-error-close {
+  background: none;
+  border: none;
+  color: #dc2626;
+  font-size: 20px;
+  cursor: pointer;
+  padding: 0;
+  line-height: 1;
+  opacity: 0.7;
+  transition: opacity 0.18s ease;
+
+  &:hover {
+    opacity: 1;
+  }
 }

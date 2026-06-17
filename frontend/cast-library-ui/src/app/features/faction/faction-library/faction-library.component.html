@@ -2,9 +2,17 @@
   <app-journal-watermark pageType="faction" />
   <app-journal-title title="Factions Library" />
   <div class="wr wr-page-header">
+    <app-upgrade-badge
+      [visible]="subscription.isFreeTrial()"
+      (badgeClick)="openUpgradeDrawer()"
+      class="upgrade-badge-library" />
     <input class="search-bar search-bar--header" type="text" placeholder="Name · Type…"
            [value]="searchTerm()" (input)="searchTerm.set($any($event.target).value)" />
-    <button class="campaign-primary-btn wr-ml-auto" routerLink="/dm/faction/new">+ Create Faction</button>
+    <button class="campaign-primary-btn wr-ml-auto"
+            [class.disabled]="factionLimitReached() || isCreateDisabled()"
+            [attr.disabled]="(factionLimitReached() || isCreateDisabled()) ? 'true' : null"
+            [routerLink]="(factionLimitReached() || isCreateDisabled()) ? null : '/dm/faction/new'"
+            (click)="(factionLimitReached() || isCreateDisabled()) ? $event.preventDefault() : null">+ Create</button>
   </div>
 
   <div class="card-grid">

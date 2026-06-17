@@ -3,7 +3,7 @@ import { Subscription } from 'rxjs';
 import { Router, RouterLink, ActivatedRoute } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { forkJoin } from 'rxjs';
 import { environment } from '../../../../environments/environment';
 import { Location, CampaignLocationInstance } from '../../../shared/models/location.model';
@@ -81,6 +81,7 @@ export class CampaignCreatorComponent implements OnInit, OnDestroy {
   expandedIdx    = signal(0);
   saving         = signal(false);
   formSaveStatus = signal<'idle' | 'saving' | 'saved'>('idle');
+  limitError     = signal<string | null>(null);
   isSwapping     = false;
   activeTab      = signal<'world-setup' | 'cast-relationships' | 'day-cycle' | 'players'>('world-setup');
   players        = signal<CampaignPlayer[]>([]);
@@ -198,7 +199,14 @@ export class CampaignCreatorComponent implements OnInit, OnDestroy {
           this.formSaveStatus.set('saved');
           setTimeout(() => this.formSaveStatus.set('idle'), 2000);
         };
-        const onError = () => this.formSaveStatus.set('idle');
+        const onError = (err: HttpErrorResponse) => {
+          if (err.status === 403) {
+            this.limitError.set(err.error);
+            this.formSaveStatus.set('idle');
+          } else {
+            this.formSaveStatus.set('idle');
+          }
+        };
         if (cid) {
           this.http.patch(`${environment.apiUrl}/api/campaigns/${cid}`, this.form.value)
             .subscribe({ next: onSuccess, error: onError });
