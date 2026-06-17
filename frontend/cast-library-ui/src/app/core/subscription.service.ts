@@ -21,20 +21,27 @@ export class SubscriptionService implements OnDestroy {
   readonly isHardLock = computed(() => this.lockLevel() === 'HardLock');
   readonly isSuspended = computed(() => this.lockLevel() === 'Suspended');
   readonly isExempt = computed(() => this.bypassPayment());
-  private refreshInterval: any;
+  private refreshInterval: any = null;
 
   constructor(private http: HttpClient, private stripe: StripeService) {
-    this.loadSubscription();
-    // Refresh subscription every 30 seconds to catch webhook changes
-    this.refreshInterval = setInterval(() => {
-      console.log('SubscriptionService: Periodic subscription refresh');
-      this.loadSubscription();
-    }, 30000);
+    // Subscription polling is started explicitly
   }
 
   ngOnDestroy(): void {
+    this.stopPolling();
+  }
+
+  startPolling(): void {
+    this.loadSubscription();
+    this.refreshInterval = setInterval(() => {
+      this.loadSubscription();
+    }, 3000);
+  }
+
+  stopPolling(): void {
     if (this.refreshInterval) {
       clearInterval(this.refreshInterval);
+      this.refreshInterval = null;
     }
   }
 

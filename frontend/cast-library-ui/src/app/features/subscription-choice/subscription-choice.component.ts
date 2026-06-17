@@ -16,7 +16,7 @@ import { signal } from '@angular/core';
   templateUrl: './subscription-choice.component.html',
   styleUrl: './subscription-choice.component.scss'
 })
-export class SubscriptionChoiceComponent implements OnInit, OnDestroy {
+export class SubscriptionChoiceComponent implements OnInit {
   private router = inject(Router);
   private route = inject(ActivatedRoute);
   private stripe = inject(StripeService);
@@ -26,7 +26,7 @@ export class SubscriptionChoiceComponent implements OnInit, OnDestroy {
   loading = false;
   pricingData = toSignal(this.stripe.getPricingDisplay(), { initialValue: undefined });
   isCheckoutSuccess = signal(false);
-  private pollingInterval: any = null;
+  private checkInterval: any = null;
 
   get freeTrialLimits(): SubscriptionTier | null {
     return this.pricingData()?.subscriptionLimits?.freeTrial ?? null;
@@ -42,22 +42,22 @@ export class SubscriptionChoiceComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    if (this.pollingInterval) {
-      clearInterval(this.pollingInterval);
+    if (this.checkInterval) {
+      clearInterval(this.checkInterval);
     }
+    this.subscriptionService.stopPolling();
   }
 
   private startPollingSubscriptionStatus() {
-    this.subscriptionService.refreshSubscription();
+    this.subscriptionService.startPolling();
     
-    this.pollingInterval = setInterval(() => {
-      this.subscriptionService.refreshSubscription();
-      
+    const checkInterval = setInterval(() => {
       const sub = this.subscriptionService.subscription();
       const lockLevel = this.subscriptionService.lockLevel();
       
       if (sub?.status === 'Active' && lockLevel === 'FullAccess') {
-        clearInterval(this.pollingInterval);
+        clearInterval(checkInterval);
+        this.subscriptionService.stopPolling();
         this.isCheckoutSuccess.set(false);
         this.router.navigate(['/dm/dashboard']);
       }
