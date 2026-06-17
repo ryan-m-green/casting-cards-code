@@ -875,8 +875,7 @@ VALUES
     ('FreeTrial', 0, NULL, true),
     ('Alpha', 499, 'price_1TfRZ1RyKMnLezQDGoZMgyGC', false),
     ('Beta', 999, 'price_1TfRtmRyKMnLezQDK6ZklcWE', false),
-    ('V1', 1499, 'price_1TfRu4RyKMnLezQDKdUxXPPG', false)
-ON CONFLICT (model_name) DO NOTHING;
+    ('V1', 1499, 'price_1TfRu4RyKMnLezQDKdUxXPPG', false);
 
 -- Seed subscription limits configuration
 INSERT INTO castcards_configuration (key, value)
