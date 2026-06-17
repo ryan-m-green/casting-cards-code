@@ -6,6 +6,13 @@
 CREATE EXTENSION IF NOT EXISTS "pgcrypto";
 CREATE EXTENSION IF NOT EXISTS "pg_trgm";
 
+-- ─── Migrations for existing databases ─────────────────────────────────────────
+-- Add keywords column to users table (for existing databases)
+ALTER TABLE users ADD COLUMN IF NOT EXISTS keywords TEXT[] NOT NULL DEFAULT '{}';
+ALTER TABLE campaign_location_instances ADD COLUMN IF NOT EXISTS keywords TEXT[] NOT NULL DEFAULT '{}';
+ALTER TABLE campaign_sublocation_instances ADD COLUMN IF NOT EXISTS keywords TEXT[] NOT NULL DEFAULT '{}';
+ALTER TABLE campaign_cast_instances ADD COLUMN IF NOT EXISTS keywords TEXT[] NOT NULL DEFAULT '{}';
+
 -- ─── Users ───────────────────────────────────────────────────────────────────
 CREATE TABLE IF NOT EXISTS users (
     id            UUID PRIMARY KEY DEFAULT gen_random_uuid(),
