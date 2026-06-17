@@ -1,5 +1,6 @@
 using System.Text;
 using System.Threading.RateLimiting;
+using CastLibrary.WebHost.Validators;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.RateLimiting;
@@ -18,6 +19,13 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Logging.ClearProviders();
 builder.Logging.AddConsole();
 
+// Suppress DataProtection and Hosting warnings
+builder.Logging.AddFilter("Microsoft.AspNetCore.DataProtection.Repositories.FileSystemXmlRepository", LogLevel.Error);
+builder.Logging.AddFilter("Microsoft.AspNetCore.DataProtection.KeyManagement.XmlKeyManager", LogLevel.Error);
+builder.Logging.AddFilter("Microsoft.AspNetCore.Hosting.Diagnostics", LogLevel.Error);
+
+var logger = LoggerFactory.Create(config => config.AddConsole()).CreateLogger<Program>();
+
 // DO App Platform injects secrets as plain env vars; ${VAR} interpolation in app.yaml
 // doesn't resolve reliably, so read all secrets directly and inject into the config
 // hierarchy so all downstream code works unchanged.
@@ -28,7 +36,14 @@ dbConnectionString = builder.Configuration["ConnectionStrings:DefaultConnection"
 #else
 dbConnectionString = Environment.GetEnvironmentVariable("DB_CONNECTION_STRING");
 if (dbConnectionString != null)
+{
     builder.Configuration["ConnectionStrings:DefaultConnection"] = dbConnectionString;
+    logger.LogInformation("DB_CONNECTION_STRING environment variable loaded");
+}
+else
+{
+    logger.LogWarning("DB_CONNECTION_STRING environment variable not found");
+}
 #endif
 
 
@@ -37,36 +52,75 @@ if (frontendUrl != null)
 {
     builder.Configuration["AllowedOrigins"] = frontendUrl;
     builder.Configuration["Email:FrontendBaseUrl"] = frontendUrl;
+    logger.LogInformation("FRONTEND_BASE_URL environment variable loaded: {FrontendUrl}", frontendUrl);
+}
+else
+{
+    logger.LogWarning("FRONTEND_BASE_URL environment variable not found");
 }
 
 var jwtKeyEnv = Environment.GetEnvironmentVariable("JWT_KEY");
 if (jwtKeyEnv != null)
+{
     builder.Configuration["Jwt:Key"] = jwtKeyEnv;
+    logger.LogInformation("JWT_KEY environment variable loaded");
+}
+else
+{
+    logger.LogWarning("JWT_KEY environment variable not found");
+}
 
 // Spaces / S3 config — injected directly to avoid ${VAR} interpolation issues
 var spacesAccessKey = Environment.GetEnvironmentVariable("SPACES_ACCESS_KEY");
 if (spacesAccessKey != null)
+{
     builder.Configuration["ImageStorage:S3:AccessKey"] = spacesAccessKey;
+    logger.LogInformation("SPACES_ACCESS_KEY environment variable loaded");
+}
 
 var spacesSecretKey = Environment.GetEnvironmentVariable("SPACES_SECRET_KEY");
 if (spacesSecretKey != null)
+{
     builder.Configuration["ImageStorage:S3:SecretKey"] = spacesSecretKey;
+    logger.LogInformation("SPACES_SECRET_KEY environment variable loaded");
+}
 
 var spacesBucketName = Environment.GetEnvironmentVariable("SPACES_BUCKET_NAME");
 if (spacesBucketName != null)
+{
     builder.Configuration["ImageStorage:S3:BucketName"] = spacesBucketName;
+    logger.LogInformation("SPACES_BUCKET_NAME environment variable loaded: {BucketName}", spacesBucketName);
+}
+else
+{
+    logger.LogWarning("SPACES_BUCKET_NAME environment variable not found");
+}
 
 var spacesRegion = Environment.GetEnvironmentVariable("SPACES_REGION");
 if (spacesRegion != null)
+{
     builder.Configuration["ImageStorage:S3:Region"] = spacesRegion;
+    logger.LogInformation("SPACES_REGION environment variable loaded: {Region}", spacesRegion);
+}
 
 var spacesEndpoint = Environment.GetEnvironmentVariable("SPACES_ENDPOINT");
 if (spacesEndpoint != null)
+{
     builder.Configuration["ImageStorage:S3:Endpoint"] = spacesEndpoint;
+    logger.LogInformation("SPACES_ENDPOINT environment variable loaded: {Endpoint}", spacesEndpoint);
+}
 
 var spacesPublicUrl = Environment.GetEnvironmentVariable("SPACES_PUBLIC_URL");
 if (spacesPublicUrl != null)
+{
     builder.Configuration["ImageStorage:S3:PublicUrl"] = spacesPublicUrl;
+    logger.LogInformation("SPACES_PUBLIC_URL environment variable loaded: {PublicUrl}", spacesPublicUrl);
+}
+
+// ── Validate environment variables ─────────────────────────────────────────────
+#if !DEBUG
+EnvironmentVariableValidator.Validate(logger);
+#endif
 
 builder.Services.AddControllers(options =>
 {
