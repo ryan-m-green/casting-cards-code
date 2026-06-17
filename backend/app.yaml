@@ -50,7 +50,7 @@ services:
     value: Cast Library
     scope: RUN_TIME
   - key: Email__FrontendBaseUrl
-    value: ${FRONTEND_BASE_URL}
+    value: https://castingcards.app
     scope: RUN_TIME
   # Image Storage
   - key: ImageStorage__BaseUrl
