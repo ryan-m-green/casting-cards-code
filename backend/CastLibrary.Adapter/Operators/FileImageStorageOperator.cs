@@ -105,7 +105,7 @@ public class FileImageStorageOperator(IFileStorageConfiguration config, IImageCo
             var listResponse = await _s3Client.ListObjectsV2Async(listRequest);
 
             // Delete all objects in the user's directory
-            if (listResponse.S3Objects.Any())
+            if (listResponse.S3Objects?.Any() == true)
             {
                 var deleteRequest = new DeleteObjectsRequest
                 {
