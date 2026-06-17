@@ -42,7 +42,7 @@ public class StripeConfiguration : Shared.Configuration.IStripeConfiguration
         {
             EnsureLoadedAsync().GetAwaiter().GetResult();
             var account = _config.ActiveAccount.ToLower() == "live" ? _config.LiveAccount : _config.TestAccount;
-            return account.SecretKey;
+            return account?.SecretKey ?? string.Empty;
         }
     }
 
@@ -52,7 +52,7 @@ public class StripeConfiguration : Shared.Configuration.IStripeConfiguration
         {
             EnsureLoadedAsync().GetAwaiter().GetResult();
             var account = _config.ActiveAccount.ToLower() == "live" ? _config.LiveAccount : _config.TestAccount;
-            return account.PublishableKey;
+            return account?.PublishableKey ?? string.Empty;
         }
     }
 
@@ -62,7 +62,7 @@ public class StripeConfiguration : Shared.Configuration.IStripeConfiguration
         {
             EnsureLoadedAsync().GetAwaiter().GetResult();
             var account = _config.ActiveAccount.ToLower() == "live" ? _config.LiveAccount : _config.TestAccount;
-            return account.WebhookSecret;
+            return account?.WebhookSecret ?? string.Empty;
         }
     }
 
@@ -72,7 +72,7 @@ public class StripeConfiguration : Shared.Configuration.IStripeConfiguration
         {
             EnsureLoadedAsync().GetAwaiter().GetResult();
             var account = _config.ActiveAccount.ToLower() == "live" ? _config.LiveAccount : _config.TestAccount;
-            return account.SuccessUrl;
+            return account?.SuccessUrl ?? string.Empty;
         }
     }
 
@@ -82,7 +82,7 @@ public class StripeConfiguration : Shared.Configuration.IStripeConfiguration
         {
             EnsureLoadedAsync().GetAwaiter().GetResult();
             var account = _config.ActiveAccount.ToLower() == "live" ? _config.LiveAccount : _config.TestAccount;
-            return account.CancelUrl;
+            return account?.CancelUrl ?? string.Empty;
         }
     }
 
@@ -92,7 +92,7 @@ public class StripeConfiguration : Shared.Configuration.IStripeConfiguration
         {
             EnsureLoadedAsync().GetAwaiter().GetResult();
             var account = _config.ActiveAccount.ToLower() == "live" ? _config.LiveAccount : _config.TestAccount;
-            return account.ReturnUrl;
+            return account?.ReturnUrl ?? string.Empty;
         }
     }
 

@@ -1,9 +1,16 @@
+using System.Text.Json.Serialization;
+
 namespace CastLibrary.Shared.Domain;
 
 public class StripeConfigurationDomain
 {
+    [JsonPropertyName("testAccount")]
     public StripeAccount TestAccount { get; set; }
+    
+    [JsonPropertyName("liveAccount")]
     public StripeAccount LiveAccount { get; set; }
+    
+    [JsonPropertyName("activeAccount")]
     public string ActiveAccount { get; set; }
 }
 
