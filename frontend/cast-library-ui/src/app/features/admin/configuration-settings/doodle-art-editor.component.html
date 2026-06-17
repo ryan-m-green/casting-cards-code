@@ -1,0 +1,24 @@
+<div class="doodle-art-editor">
+  <div class="art-items-list">
+    @for (artItem of config().ArtItems; track artItem; let index = $index) {
+      <div class="art-item-pill">
+        <span class="art-item-text">{{ artItem }}</span>
+        <button class="btn-remove" (click)="removeArtItem(index)" aria-label="Remove art item">×</button>
+      </div>
+    }
+    @if (config().ArtItems.length === 0) {
+      <div class="empty-state">No art items configured</div>
+    }
+  </div>
+
+  <div class="add-art-item-form">
+    <input
+      class="fi"
+      type="text"
+      [(ngModel)]="newArtItem"
+      placeholder="Enter an art item"
+      (keydown.enter)="addArtItem()"
+    />
+    <button class="btn-add" (click)="addArtItem()" [disabled]="!newArtItem.trim()">Add</button>
+  </div>
+</div>

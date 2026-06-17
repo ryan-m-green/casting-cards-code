@@ -250,6 +250,77 @@
   }
 }
 
+.card-counts-section {
+  margin-bottom: 12px;
+  padding: 12px;
+  background: v.$color-base-tan-11;
+  border: 1px solid v.$color-border;
+  border-radius: 4px;
+}
+
+.card-counts-loading {
+  font-size: 12px;
+  color: v.$color-base-brown-15;
+  font-style: italic;
+}
+
+.card-counts {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.card-counts-title {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: v.$color-base-brown-14;
+  margin-bottom: 4px;
+}
+
+.card-counts-list {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.card-count-item {
+  display: flex;
+  align-items: center;
+  font-size: 12px;
+  padding: 2px 0;
+  gap: 8px;
+}
+
+.card-count-type {
+  color: v.$color-base-brown-15;
+  font-weight: 500;
+}
+
+.card-count-value {
+  color: v.$color-base-brown-14;
+  font-weight: 600;
+  font-family: monospace;
+}
+
+.btn-load-card-counts {
+  padding: 6px 12px;
+  background: transparent;
+  color: v.$color-base-brown-14;
+  border: 1px solid v.$color-border;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 12px;
+  transition: all 0.2s;
+  align-self: flex-start;
+
+  &:hover {
+    border-color: v.$color-border-accent;
+    color: v.$color-base-brown-14;
+  }
+}
+
 .btn-role-toggle {
   padding: 6px 12px;
   background: transparent;

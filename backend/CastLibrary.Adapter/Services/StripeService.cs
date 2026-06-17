@@ -1,6 +1,6 @@
 using Stripe;
 using Stripe.Checkout;
-using Microsoft.Extensions.Configuration;
+using CastLibrary.Shared.Configuration;
 using CastLibrary.Shared.Enums;
 
 namespace CastLibrary.Adapter.Services;
@@ -16,11 +16,11 @@ public interface IStripeService
     Task<Charge> GetChargeAsync(string chargeId);
 }
 
-public class StripeService(IConfiguration configuration) : IStripeService
+public class StripeService(IStripeConfiguration stripeConfiguration) : IStripeService
 {
     public string CreateCheckoutSession(Guid userId, string pricingModelId, string successUrl, string cancelUrl)
     {
-        StripeConfiguration.ApiKey = configuration["Stripe:SecretKey"];
+        StripeConfiguration.ApiKey = stripeConfiguration.SecretKey;
 
         var options = new SessionCreateOptions
         {
@@ -51,7 +51,7 @@ public class StripeService(IConfiguration configuration) : IStripeService
 
     public Event HandleWebhook(string jsonPayload, string stripeSignature, string webhookSecret)
     {
-        StripeConfiguration.ApiKey = configuration["Stripe:SecretKey"];
+        StripeConfiguration.ApiKey = stripeConfiguration.SecretKey;
         
         try
         {
@@ -71,7 +71,7 @@ public class StripeService(IConfiguration configuration) : IStripeService
 
     public async Task<Invoice> GetLatestInvoiceAsync(string stripeSubscriptionId)
     {
-        StripeConfiguration.ApiKey = configuration["Stripe:SecretKey"];
+        StripeConfiguration.ApiKey = stripeConfiguration.SecretKey;
         var service = new InvoiceService();
         var options = new InvoiceListOptions
         {
@@ -110,7 +110,7 @@ public class StripeService(IConfiguration configuration) : IStripeService
 
     public string CreateCustomerPortalSession(string stripeCustomerId, string returnUrl)
     {
-        StripeConfiguration.ApiKey = configuration["Stripe:SecretKey"];
+        StripeConfiguration.ApiKey = stripeConfiguration.SecretKey;
 
         var options = new SessionCreateOptions
         {
@@ -126,7 +126,7 @@ public class StripeService(IConfiguration configuration) : IStripeService
 
     public async Task<Charge> GetChargeAsync(string chargeId)
     {
-        StripeConfiguration.ApiKey = configuration["Stripe:SecretKey"];
+        StripeConfiguration.ApiKey = stripeConfiguration.SecretKey;
         var service = new ChargeService();
         return await service.GetAsync(chargeId);
     }

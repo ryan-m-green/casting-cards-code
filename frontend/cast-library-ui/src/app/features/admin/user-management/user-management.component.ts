@@ -11,6 +11,7 @@ interface UserManagementResponse {
   displayName: string;
   role: string;
   createdAt: string;
+  lastLoggedInOn: string | null;
   subscriptionId: string | null;
   stripeCustomerId: string;
   stripeSubscriptionId: string;
@@ -82,6 +83,15 @@ export class UserManagementComponent implements OnInit {
     currentPeriodEnd: string;
     lockLevel: string;
   }>>({});
+
+  userCardCounts = signal<Record<string, {
+    campaigns: number;
+    locations: number;
+    sublocations: number;
+    casts: number;
+    factions: number;
+  }>>({});
+  loadingCardCounts = signal<Record<string, boolean>>({});
 
   setTab(tab: 'users' | 'add-player') {
     this.activeTab.set(tab);
@@ -268,6 +278,10 @@ export class UserManagementComponent implements OnInit {
     return new Date(createdAt).toLocaleDateString();
   }
 
+  formatDateNullable(date: string | null): string {
+    return date ? new Date(date).toLocaleDateString() : 'never';
+  }
+
   clearFormMessages() {
     this.addPlayerSuccess.set('');
     this.addPlayerError.set('');
@@ -317,6 +331,29 @@ export class UserManagementComponent implements OnInit {
       },
       error: () => {
         this.subscriptionUpdateLoading.set(false);
+      },
+    });
+  }
+
+  loadUserCardCounts(userId: string) {
+    if (this.userCardCounts()[userId] || this.loadingCardCounts()[userId]) {
+      return; // Already loaded or loading
+    }
+
+    this.loadingCardCounts.update(m => ({ ...m, [userId]: true }));
+    this.http.get<{
+      campaigns: number;
+      locations: number;
+      sublocations: number;
+      casts: number;
+      factions: number;
+    }>(`${environment.apiUrl}/api/site-configuration/users/${userId}/card-counts`).subscribe({
+      next: (counts) => {
+        this.userCardCounts.update(m => ({ ...m, [userId]: counts }));
+        this.loadingCardCounts.update(m => ({ ...m, [userId]: false }));
+      },
+      error: () => {
+        this.loadingCardCounts.update(m => ({ ...m, [userId]: false }));
       },
     });
   }

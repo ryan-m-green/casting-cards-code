@@ -48,64 +48,31 @@
         </div>
       }
 
-      <div class="section-title">Configuration Keys</div>
-      <div class="configuration-list">
-        @for (config of regularConfigurations(); track config.id || config.key) {
-          <div class="configuration-item">
-            <div class="config-key">
-              <label class="form-label" [for]="'config-key-' + (config.id || config.key)">Key</label>
-              <input
-                [id]="'config-key-' + (config.id || config.key)"
-                class="fi"
-                type="text"
-                [(ngModel)]="config.key"
-              />
-            </div>
-            <div class="config-value">
-              <label class="form-label" [for]="'config-value-' + (config.id || config.key)">Value (JSON)</label>
-              <textarea
-                [id]="'config-value-' + (config.id || config.key)"
-                class="fi config-textarea"
-                [(ngModel)]="config.value"
-                rows="6"
-              ></textarea>
-            </div>
-          </div>
-        }
-      </div>
+      @if (subscriptionLimits()) {
+        <div class="section-title">Subscription Limits</div>
+        <app-subscription-limits-editor
+          [config]="subscriptionLimits()!"
+          (configChange)="updateSubscriptionLimits($event)"
+        />
+      }
 
-      @if (showAddForm()) {
-        <div class="configuration-item new-config">
-          <div class="config-key">
-            <label class="form-label" for="new-config-key">New Key</label>
-            <input
-              id="new-config-key"
-              class="fi"
-              type="text"
-              [(ngModel)]="newKey"
-              placeholder="Enter new key name"
-            />
-          </div>
-          <div class="config-value">
-            <label class="form-label" for="new-config-value">New Value (JSON)</label>
-            <textarea
-              id="new-config-value"
-              class="fi config-textarea"
-              [(ngModel)]="newValue"
-              rows="6"
-              placeholder="Enter JSON value"
-            ></textarea>
-          </div>
-        </div>
+      @if (stopWords() || !stopWords()) {
+        <div class="section-title">Stop Words</div>
+        <app-stop-words-editor
+          [config]="stopWords() || { words: [] }"
+          (configChange)="updateStopWords($event)"
+        />
+      }
+
+      @if (stripeConfig() || !stripeConfig()) {
+        <div class="section-title">Stripe Configuration</div>
+        <app-stripe-config-editor
+          [config]="stripeConfig() || { testAccount: { secretKey: '', publishableKey: '', webhookSecret: '', successUrl: '', cancelUrl: '', returnUrl: '' }, liveAccount: { secretKey: '', publishableKey: '', webhookSecret: '', successUrl: '', cancelUrl: '', returnUrl: '' }, activeAccount: 'test' }"
+          (configChange)="updateStripeConfig($event)"
+        />
       }
 
       <div class="action-buttons">
-        @if (!showAddForm()) {
-          <button class="btn-add" (click)="toggleAddForm()">Add New Key</button>
-        } @else {
-          <button class="btn-add" (click)="addConfiguration()" [disabled]="!newKey || !newValue">Save New Key</button>
-          <button class="btn-cancel" (click)="toggleAddForm()">Cancel</button>
-        }
         <button
           class="btn-save"
           (click)="saveConfigurations()"

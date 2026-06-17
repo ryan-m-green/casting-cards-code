@@ -3,5 +3,6 @@ public enum CastCardsConfigurationKeys
 {
     SubscriptionLimits,
     DoodleArt,
-    StopWords
+    StopWords,
+    StripeConfiguration
 }

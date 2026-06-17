@@ -1,5 +1,6 @@
 using CastLibrary.Logic.Commands.Stripe;
 using CastLibrary.Logic.Interfaces;
+using CastLibrary.Shared.Configuration;
 using CastLibrary.Shared.Domain;
 using CastLibrary.WebHost.Filters;
 using CastLibrary.WebHost.Hubs;
@@ -18,7 +19,7 @@ public class StripeController(
     ICreateCustomerPortalSessionCommandHandler createCustomerPortalSessionCommand,
     IUserRetriever userRetriever,
     IHubContext<CampaignHub> hubContext,
-    IConfiguration configuration,
+    IStripeConfiguration stripeConfiguration,
     ILoggingService loggingService) : ControllerBase
 {
     [Authorize]
@@ -26,8 +27,8 @@ public class StripeController(
     public async Task<IActionResult> CreateCheckoutSession()
     {
         var userId = userRetriever.GetUserId(User);
-        var successUrl = configuration["Stripe:SuccessUrl"];
-        var cancelUrl = configuration["Stripe:CancelUrl"];
+        var successUrl = stripeConfiguration.SuccessUrl;
+        var cancelUrl = stripeConfiguration.CancelUrl;
 
         var checkoutUrl = await createCheckoutSessionCommand.HandleAsync(new CreateCheckoutSessionCommand(
             userId,
@@ -43,7 +44,7 @@ public class StripeController(
     public async Task<IActionResult> CreateCustomerPortalSession()
     {
         var userId = userRetriever.GetUserId(User);
-        var returnUrl = configuration["Stripe:ReturnUrl"];
+        var returnUrl = stripeConfiguration.ReturnUrl;
 
         var portalUrl = await createCustomerPortalSessionCommand.HandleAsync(new CreateCustomerPortalSessionCommand(
             userId,

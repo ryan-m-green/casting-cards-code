@@ -11,6 +11,7 @@ public static class CastCardsConfigurationKeysExtensions
             CastCardsConfigurationKeys.SubscriptionLimits => "subscription_limits",
             CastCardsConfigurationKeys.DoodleArt => "doodle_art",
             CastCardsConfigurationKeys.StopWords => "stop_words",
+            CastCardsConfigurationKeys.StripeConfiguration => "stripe_configuration",
             _ => key.ToString().ToLower()
         };
     }

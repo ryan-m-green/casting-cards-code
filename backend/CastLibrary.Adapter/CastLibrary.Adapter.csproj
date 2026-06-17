@@ -1,6 +1,12 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <ItemGroup>
+    <Compile Remove="Strategies\**" />
+    <EmbeddedResource Remove="Strategies\**" />
+    <None Remove="Strategies\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\CastLibrary.Shared\CastLibrary.Shared.csproj" />
   </ItemGroup>
 
@@ -12,10 +18,6 @@
     <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="10.0.6" />
     <PackageReference Include="MimeKit" Version="4.16.0" />
     <PackageReference Include="Stripe.net" Version="52.0.0" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Strategies\" />
   </ItemGroup>
 
   <PropertyGroup>

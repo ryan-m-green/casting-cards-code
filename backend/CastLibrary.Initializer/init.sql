@@ -904,7 +904,25 @@ VALUES
     }'::jsonb)
 ON CONFLICT (key) DO NOTHING;
 
--- Seed DoodleArt configuration
+-- Seed Stripe configuration
 INSERT INTO castcards_configuration (key, value)
-VALUES ('DoodleArt', '["tiefling_joke"]'::jsonb)
+VALUES ('stripe_configuration', '{
+    "testAccount": {
+	    "secretKey": "",
+	    "publishableKey": "",
+	    "webhookSecret": "",
+        "successUrl": "https://castingcards.app/subscription-choice?checkout=success",
+        "cancelUrl": "https://castingcards.app/subscription-choice",
+        "returnUrl": "https://castingcards.app/dm/dashboard"
+    },
+    "liveAccount": {
+        "secretKey": "",
+        "publishableKey": "",
+        "webhookSecret": "",
+        "successUrl": "https://castingcards.app/subscription-choice?checkout=success",
+        "cancelUrl": "https://castingcards.app/subscription-choice",
+        "returnUrl": "https://castingcards.app/dm/dashboard"
+    },
+    "activeAccount": "test"
+}'::jsonb)
 ON CONFLICT (key) DO NOTHING;

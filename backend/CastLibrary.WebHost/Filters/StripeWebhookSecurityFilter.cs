@@ -1,4 +1,5 @@
 using CastLibrary.Logic.Interfaces;
+using CastLibrary.Shared.Configuration;
 using CastLibrary.Shared.Domain;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
@@ -13,10 +14,10 @@ public class StripeWebhookSecurityFilter : ActionFilterAttribute
     {
         try
         {
-            var configuration = context.HttpContext.RequestServices.GetRequiredService<IConfiguration>();
+            var stripeConfiguration = context.HttpContext.RequestServices.GetRequiredService<IStripeConfiguration>();
             var loggingService = context.HttpContext.RequestServices.GetRequiredService<ILoggingService>();
             var stripeSignature = context.HttpContext.Request.Headers["Stripe-Signature"].ToString();
-            var webhookSecret = configuration["Stripe:WebhookSecret"];
+            var webhookSecret = stripeConfiguration.WebhookSecret;
 
             if (string.IsNullOrWhiteSpace(stripeSignature))
             {

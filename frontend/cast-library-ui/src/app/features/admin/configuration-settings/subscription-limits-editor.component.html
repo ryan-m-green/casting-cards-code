@@ -1,0 +1,123 @@
+<div class="subscription-limits-editor">
+  <div class="limits-section">
+    <div class="section-header">Free Trial Limits</div>
+    <div class="limits-grid">
+      <div class="limit-field">
+        <label class="form-label" for="free-campaigns">Campaigns</label>
+        <input
+          id="free-campaigns"
+          class="fi"
+          type="number"
+          step="1"
+          [ngModel]="config().FreeTrial.Campaigns"
+          (ngModelChange)="updateFreeTrialField('Campaigns', $event)"
+        />
+      </div>
+      <div class="limit-field">
+        <label class="form-label" for="free-locations">Locations</label>
+        <input
+          id="free-locations"
+          class="fi"
+          type="number"
+          step="1"
+          [ngModel]="config().FreeTrial.Locations"
+          (ngModelChange)="updateFreeTrialField('Locations', $event)"
+        />
+      </div>
+      <div class="limit-field">
+        <label class="form-label" for="free-sublocations">Sublocations</label>
+        <input
+          id="free-sublocations"
+          class="fi"
+          type="number"
+          step="1"
+          [ngModel]="config().FreeTrial.Sublocations"
+          (ngModelChange)="updateFreeTrialField('Sublocations', $event)"
+        />
+      </div>
+      <div class="limit-field">
+        <label class="form-label" for="free-factions">Factions</label>
+        <input
+          id="free-factions"
+          class="fi"
+          type="number"
+          step="1"
+          [ngModel]="config().FreeTrial.Factions"
+          (ngModelChange)="updateFreeTrialField('Factions', $event)"
+        />
+      </div>
+      <div class="limit-field">
+        <label class="form-label" for="free-cast">Cast</label>
+        <input
+          id="free-cast"
+          class="fi"
+          type="number"
+          step="1"
+          [ngModel]="config().FreeTrial.Cast"
+          (ngModelChange)="updateFreeTrialField('Cast', $event)"
+        />
+      </div>
+    </div>
+  </div>
+
+  <div class="limits-section">
+    <div class="section-header">Paid Limits</div>
+    <div class="limits-grid">
+      <div class="limit-field">
+        <label class="form-label" for="paid-campaigns">Campaigns</label>
+        <input
+          id="paid-campaigns"
+          class="fi"
+          type="number"
+          step="1"
+          [ngModel]="config().Paid.Campaigns"
+          (ngModelChange)="updatePaidField('Campaigns', $event)"
+        />
+      </div>
+      <div class="limit-field">
+        <label class="form-label" for="paid-locations">Locations</label>
+        <input
+          id="paid-locations"
+          class="fi"
+          type="number"
+          step="1"
+          [ngModel]="config().Paid.Locations"
+          (ngModelChange)="updatePaidField('Locations', $event)"
+        />
+      </div>
+      <div class="limit-field">
+        <label class="form-label" for="paid-sublocations">Sublocations</label>
+        <input
+          id="paid-sublocations"
+          class="fi"
+          type="number"
+          step="1"
+          [ngModel]="config().Paid.Sublocations"
+          (ngModelChange)="updatePaidField('Sublocations', $event)"
+        />
+      </div>
+      <div class="limit-field">
+        <label class="form-label" for="paid-factions">Factions</label>
+        <input
+          id="paid-factions"
+          class="fi"
+          type="number"
+          step="1"
+          [ngModel]="config().Paid.Factions"
+          (ngModelChange)="updatePaidField('Factions', $event)"
+        />
+      </div>
+      <div class="limit-field">
+        <label class="form-label" for="paid-cast">Cast</label>
+        <input
+          id="paid-cast"
+          class="fi"
+          type="number"
+          step="1"
+          [ngModel]="config().Paid.Cast"
+          (ngModelChange)="updatePaidField('Cast', $event)"
+        />
+      </div>
+    </div>
+  </div>
+</div>

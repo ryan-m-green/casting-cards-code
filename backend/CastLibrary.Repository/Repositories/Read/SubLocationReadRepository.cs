@@ -8,6 +8,7 @@ public interface ISublocationReadRepository
 {
     Task<List<SublocationDomain>> GetAllByDmAsync(Guid dmUserId);
     Task<SublocationDomain> GetByIdAsync(Guid id);
+    Task<int> GetSublocationCountByDmAsync(Guid dmUserId);
 }
 public class SublocationReadRepository(
     ISqlConnectionFactory      sqlConnectionFactory,
@@ -78,6 +79,21 @@ public class SublocationReadRepository(
 
         logging.LogDbOperation(correlation.TraceId, spanId, "SELECT", "sublocations", @params, 1);
         return sublocation;
+    }
+
+    public async Task<int> GetSublocationCountByDmAsync(Guid dmUserId)
+    {
+        var spanId  = correlation.NewSpan();
+        var @params = new { DmUserId = dmUserId };
+        const string sql = "SELECT COUNT(*) FROM sublocations WHERE dm_user_id = @DmUserId AND location_id IS NULL";
+
+        logging.LogDbOperation(correlation.TraceId, spanId, "SELECT", "sublocations", @params);
+
+        using var conn = sqlConnectionFactory.GetConnection();
+        var count = await conn.QuerySingleAsync<int>(sql, @params);
+
+        logging.LogDbOperation(correlation.TraceId, spanId, "SELECT", "sublocations", @params, count);
+        return count;
     }
 }
 

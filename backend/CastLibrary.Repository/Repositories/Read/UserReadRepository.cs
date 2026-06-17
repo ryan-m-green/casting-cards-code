@@ -28,6 +28,7 @@ public class UserReadRepository(
         public string DisplayName { get; set; } = string.Empty;
         public string role { get; set; } = string.Empty;
         public DateTime CreatedAt { get; set; }
+        public DateTime? LastLoggedInOn { get; set; }
         public Guid? SubscriptionId { get; set; }
         public string? StripeCustomerId { get; set; }
         public string? StripeSubscriptionId { get; set; }
@@ -83,7 +84,7 @@ public class UserReadRepository(
     {
         using var conn = sqlConnectionFactory.GetConnection();
         var results = await conn.QueryAsync<UserSubscriptionEntity>(
-            @"SELECT u.id, u.email, u.display_name AS DisplayName, u.role, u.created_at AS CreatedAt,
+            @"SELECT u.id, u.email, u.display_name AS DisplayName, u.role, u.created_at AS CreatedAt, u.last_logged_in_on AS LastLoggedInOn,
                      s.id AS SubscriptionId, s.stripe_customer_id AS StripeCustomerId, 
                      s.stripe_subscription_id AS StripeSubscriptionId, s.status AS Status, 
                      s.bypass_payment AS BypassPayment, s.current_period_end AS CurrentPeriodEnd, 
@@ -99,6 +100,7 @@ public class UserReadRepository(
             DisplayName = r.DisplayName,
             Role = r.role,
             CreatedAt = r.CreatedAt,
+            LastLoggedInOn = r.LastLoggedInOn,
             SubscriptionId = r.SubscriptionId,
             StripeCustomerId = r.StripeCustomerId ?? string.Empty,
             StripeSubscriptionId = r.StripeSubscriptionId ?? string.Empty,

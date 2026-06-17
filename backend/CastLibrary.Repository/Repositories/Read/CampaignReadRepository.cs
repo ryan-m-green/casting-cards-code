@@ -30,6 +30,7 @@ public interface ICampaignReadRepository
     Task<List<CampaignFactionInstanceDomain>> GetFactionInstancesByCampaignAsync(Guid campaignId, Guid dmUserId);
     Task<CampaignFactionInstanceDomain> GetFactionInstanceByIdAsync(Guid instanceId);
     Task<List<CampaignFactionInstanceDomain>> GetFactionInstancesForPlayerAsync(Guid campaignId);
+    Task<int> GetCampaignCountByDmAsync(Guid dmUserId);
 }
 
 public class CampaignReadRepository(
@@ -1049,6 +1050,21 @@ public class CampaignReadRepository(
 
         logging.LogDbOperation(correlation.TraceId, spanId, "SELECT", "campaigns", null, entities.Count);
         return entities.Select(mapper.ToDomain).ToList();
+    }
+
+    public async Task<int> GetCampaignCountByDmAsync(Guid dmUserId)
+    {
+        var spanId = correlation.NewSpan();
+        var @params = new { DmUserId = dmUserId };
+        const string sql = "SELECT COUNT(*) FROM campaigns WHERE dm_user_id = @DmUserId";
+
+        logging.LogDbOperation(correlation.TraceId, spanId, "SELECT", "campaigns", @params);
+
+        using var conn = CreateConnection();
+        var count = await conn.QuerySingleAsync<int>(sql, @params);
+
+        logging.LogDbOperation(correlation.TraceId, spanId, "SELECT", "campaigns", @params, count);
+        return count;
     }
 }
 

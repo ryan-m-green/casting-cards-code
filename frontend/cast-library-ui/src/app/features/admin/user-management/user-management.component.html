@@ -52,6 +52,7 @@
                 <div class="user-name">{{ user.displayName }}</div>
                 <div class="user-meta">{{ user.email }} · {{ user.role }}</div>
                 <div class="user-date">Joined {{ formatDate(user.createdAt) }}</div>
+                <div class="user-date">Last Logged In: {{ formatDateNullable(user.lastLoggedInOn) }}</div>
                 @if (demoPlayerAssignments()[user.id]) {
                   <div class="user-demo-label">In Demo</div>
                 }
@@ -145,6 +146,42 @@
                         </div>
                         <button class="btn-edit-sub" (click)="startEditSubscription(user)">Edit Subscription</button>
                       </div>
+                    }
+                  </div>
+
+                  <div class="card-counts-section">
+                    @if (loadingCardCounts()[user.id]) {
+                      <div class="card-counts-loading">Loading card counts...</div>
+                    } @else if (userCardCounts()[user.id]) {
+                      <div class="card-counts">
+                        <div class="card-counts-title">Card Counts</div>
+                        <div class="card-counts-list">
+                          <div class="card-count-item">
+                            <span class="card-count-type">Campaigns</span>
+                            <span class="card-count-value">{{ userCardCounts()[user.id].campaigns }}</span>
+                          </div>
+                          <div class="card-count-item">
+                            <span class="card-count-type">Locations</span>
+                            <span class="card-count-value">{{ userCardCounts()[user.id].locations }}</span>
+                          </div>
+                          <div class="card-count-item">
+                            <span class="card-count-type">Sublocations</span>
+                            <span class="card-count-value">{{ userCardCounts()[user.id].sublocations }}</span>
+                          </div>
+                          <div class="card-count-item">
+                            <span class="card-count-type">Casts</span>
+                            <span class="card-count-value">{{ userCardCounts()[user.id].casts }}</span>
+                          </div>
+                          <div class="card-count-item">
+                            <span class="card-count-type">Factions</span>
+                            <span class="card-count-value">{{ userCardCounts()[user.id].factions }}</span>
+                          </div>
+                        </div>
+                      </div>
+                    } @else {
+                      <button class="btn-load-card-counts" (click)="loadUserCardCounts(user.id)">
+                        Load Card Counts
+                      </button>
                     }
                   </div>
 

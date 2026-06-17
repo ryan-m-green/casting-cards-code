@@ -10,6 +10,7 @@ public interface ILocationReadRepository
 {
     Task<List<LocationDomain>> GetAllByDmAsync(Guid dmUserId);
     Task<LocationDomain> GetByIdAsync(Guid id);
+    Task<int> GetLocationCountByDmAsync(Guid dmUserId);
 }
 public class LocationReadRepository(
     ISqlConnectionFactory sqlConnectinFactory,
@@ -55,6 +56,21 @@ public class LocationReadRepository(
             entity is null ? 0 : 1);
 
         return entity is null ? null : mapper.ToDomain(entity);
+    }
+
+    public async Task<int> GetLocationCountByDmAsync(Guid dmUserId)
+    {
+        var spanId = correlation.NewSpan();
+        var @params = new { DmUserId = dmUserId };
+        const string sql = "SELECT COUNT(*) FROM locations WHERE dm_user_id = @DmUserId AND campaign_id IS NULL";
+
+        logging.LogDbOperation(correlation.TraceId, spanId, "SELECT", "locations", @params);
+
+        using var conn = sqlConnectinFactory.GetConnection();
+        var count = await conn.QuerySingleAsync<int>(sql, @params);
+
+        logging.LogDbOperation(correlation.TraceId, spanId, "SELECT", "locations", @params, count);
+        return count;
     }
 }
 

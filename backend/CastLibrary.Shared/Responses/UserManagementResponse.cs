@@ -7,6 +7,7 @@ public class UserManagementResponse
     public string DisplayName { get; set; } = string.Empty;
     public string Role { get; set; } = string.Empty;
     public DateTime CreatedAt { get; set; }
+    public DateTime? LastLoggedInOn { get; set; }
     
     // Subscription fields
     public Guid? SubscriptionId { get; set; }

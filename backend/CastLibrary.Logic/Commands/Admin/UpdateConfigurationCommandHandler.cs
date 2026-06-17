@@ -31,18 +31,15 @@ public class UpdateConfigurationCommandHandler(
                 continue;
             }
 
-            // Skip entries with empty ids (pricing_model)
-            if (request.Id == Guid.Empty)
-            {
-                continue;
-            }
-
-            var existingEntity = entities.FirstOrDefault(e => e.Id == request.Id);
+            // For entries with empty ids, look up existing entity by key
+            var existingEntity = request.Id == Guid.Empty 
+                ? entities.FirstOrDefault(e => e.Key == request.Key)
+                : entities.FirstOrDefault(e => e.Id == request.Id);
 
             if (existingEntity != null)
             {
                 var success = await configurationUpdateRepository.UpdateConfigurationByIdAsync(
-                    request.Id,
+                    existingEntity.Id,
                     request.Key,
                     request.Value);
                 

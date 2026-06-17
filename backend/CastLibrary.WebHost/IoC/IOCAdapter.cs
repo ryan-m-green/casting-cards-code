@@ -1,8 +1,10 @@
-﻿using CastLibrary.Adapter.ImageConversion;
+﻿using CastLibrary.Adapter.Configuration;
+using CastLibrary.Adapter.ImageConversion;
 using CastLibrary.Adapter.Operators;
 using CastLibrary.Adapter.Services;
 using CastLibrary.Adapter.EmailBuilders;
 using CastLibrary.Logic.Interfaces;
+using CastLibrary.Repository.Configuration;
 using CastLibrary.Shared.Configuration;
 
 namespace CastLibrary.WebHost.IoC
@@ -38,6 +40,8 @@ namespace CastLibrary.WebHost.IoC
                 services.AddScoped<IImageStorageOperator, FileImageStorageOperator>();
             }
 
+            services.AddSingleton<Shared.Configuration.IConfigurationCache, Repository.Configuration.ConfigurationCache>();
+            services.AddSingleton<IStripeConfiguration, Adapter.Configuration.StripeConfiguration>();
             services.AddScoped<IStripeService, StripeService>();
             services.AddScoped<IImageConverter, ImageConverter>();
 

@@ -10,6 +10,7 @@ public interface IFactionReadRepository
 {
     Task<List<FactionDomain>> GetAllByDmAsync(Guid dmUserId);
     Task<FactionDomain> GetByIdAsync(Guid factionId);
+    Task<int> GetFactionCountByDmAsync(Guid dmUserId);
 }
 
 public class FactionReadRepository(
@@ -57,5 +58,20 @@ public class FactionReadRepository(
 
         logging.LogDbOperation(correlation.TraceId, spanId, "SELECT", "factions", @params, entity is null ? 0 : 1);
         return entity is null ? null : mapper.ToDomain(entity);
+    }
+
+    public async Task<int> GetFactionCountByDmAsync(Guid dmUserId)
+    {
+        var spanId = correlation.NewSpan();
+        var @params = new { DmUserId = dmUserId };
+        const string sql = "SELECT COUNT(*) FROM factions WHERE dm_user_id = @DmUserId";
+
+        logging.LogDbOperation(correlation.TraceId, spanId, "SELECT", "factions", @params);
+
+        using var conn = sqlConnectionFactory.GetConnection();
+        var count = await conn.QuerySingleAsync<int>(sql, @params);
+
+        logging.LogDbOperation(correlation.TraceId, spanId, "SELECT", "factions", @params, count);
+        return count;
     }
 }

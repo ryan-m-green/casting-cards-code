@@ -10,6 +10,7 @@ public interface ICastReadRepository
 {
     Task<List<CastDomain>> GetAllByDmAsync(Guid dmUserId);
     Task<CastDomain> GetByIdAsync(Guid id);
+    Task<int> GetCastCountByDmAsync(Guid dmUserId);
 }
 
 public class CastReadRepository(
@@ -61,5 +62,20 @@ public class CastReadRepository(
             entity is null ? 0 : 1);
 
         return entity is null ? null : mapper.ToDomain(entity);
+    }
+
+    public async Task<int> GetCastCountByDmAsync(Guid dmUserId)
+    {
+        var spanId = correlation.NewSpan();
+        var @params = new { DmUserId = dmUserId };
+        const string sql = "SELECT COUNT(*) FROM casts WHERE dm_user_id = @DmUserId";
+
+        logging.LogDbOperation(correlation.TraceId, spanId, "SELECT", "casts", @params);
+
+        using var conn = sqlConnectionFactory.GetConnection();
+        var count = await conn.QuerySingleAsync<int>(sql, @params);
+
+        logging.LogDbOperation(correlation.TraceId, spanId, "SELECT", "casts", @params, count);
+        return count;
     }
 }
