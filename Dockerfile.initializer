@@ -6,7 +6,6 @@ COPY ["backend/CastLibrary.Initializer/CastLibrary.Initializer.csproj", "backend
 RUN dotnet restore "backend/CastLibrary.Initializer/CastLibrary.Initializer.csproj"
 
 COPY backend/CastLibrary.Initializer/ backend/CastLibrary.Initializer/
-COPY database/ database/
 
 RUN dotnet publish "backend/CastLibrary.Initializer/CastLibrary.Initializer.csproj" \
     -c Release -o /app/publish /p:UseAppHost=false
