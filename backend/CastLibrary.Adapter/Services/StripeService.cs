@@ -2,6 +2,7 @@ using Stripe;
 using Stripe.Checkout;
 using CastLibrary.Shared.Configuration;
 using CastLibrary.Shared.Enums;
+using Microsoft.Extensions.Logging;
 
 namespace CastLibrary.Adapter.Services;
 
@@ -16,11 +17,21 @@ public interface IStripeService
     Task<Charge> GetChargeAsync(string chargeId);
 }
 
-public class StripeService(IStripeConfiguration stripeConfiguration) : IStripeService
+public class StripeService(IStripeConfiguration stripeConfiguration, ILogger<StripeService> logger) : IStripeService
 {
     public string CreateCheckoutSession(Guid userId, string pricingModelId, string successUrl, string cancelUrl)
     {
-        StripeConfiguration.ApiKey = stripeConfiguration.SecretKey;
+        logger.LogInformation("CreateCheckoutSession called for userId: {UserId}", userId);
+        
+        var secretKey = stripeConfiguration.SecretKey;
+        logger.LogInformation("Retrieved Stripe SecretKey: {HasKey}", !string.IsNullOrEmpty(secretKey));
+        
+        if (string.IsNullOrEmpty(secretKey))
+        {
+            logger.LogError("Stripe SecretKey is null or empty");
+        }
+        
+        StripeConfiguration.ApiKey = secretKey;
 
         var options = new SessionCreateOptions
         {
