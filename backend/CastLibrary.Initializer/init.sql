@@ -869,14 +869,6 @@ CREATE TABLE IF NOT EXISTS subscriptions (
 );
 CREATE INDEX IF NOT EXISTS idx_subscriptions_user_id ON subscriptions(user_id);
 
--- Seed pricing models
-INSERT INTO pricing_model (model_name, price_in_cents, stripe_price_id, is_active)
-VALUES
-    ('FreeTrial', 0, NULL, true),
-    ('Alpha', 499, 'price_1TfRZ1RyKMnLezQDGoZMgyGC', false),
-    ('Beta', 999, 'price_1TfRtmRyKMnLezQDK6ZklcWE', false),
-    ('V1', 1499, 'price_1TfRu4RyKMnLezQDKdUxXPPG', false);
-
 -- Seed subscription limits configuration
 INSERT INTO castcards_configuration (key, value)
 VALUES

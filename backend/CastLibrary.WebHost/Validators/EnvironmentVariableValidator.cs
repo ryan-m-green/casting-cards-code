@@ -12,7 +12,7 @@ public static class EnvironmentVariableValidator
     {
         "DB_CONNECTION_STRING",
         "JWT_KEY",
-        "FRONTEND_BASE_URL",
+        "Email__FrontendBaseUrl",
         "SPACES_ACCESS_KEY",
         "SPACES_SECRET_KEY",
         "SPACES_BUCKET_NAME",
@@ -22,17 +22,10 @@ public static class EnvironmentVariableValidator
         "SEED_DM_EMAIL",
         "SEED_DM_PASSWORD",
         "SEED_DM_DISPLAY_NAME",
-        "SMTP_HOST",
-        "SMTP_USERNAME",
-        "SMTP_PASSWORD",
-        "EMAIL_FROM_ADDRESS",
-        "STRIPE_SECRET_KEY",
-        "STRIPE_PUBLISHABLE_KEY",
-        "STRIPE_WEBHOOK_SECRET",
-        "STRIPE_SUCCESS_URL",
-        "STRIPE_CANCEL_URL",
-        "STRIPE_RETURN_URL",
-        "EMAIL_API_TOKEN"
+        "Email__ApiToken",
+        "Email__FromEmail",
+        "Email__AdminAddress",
+        "Email__FromName"
     };
 
     public static void Validate(ILogger logger)

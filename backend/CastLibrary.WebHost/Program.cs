@@ -47,16 +47,16 @@ else
 #endif
 
 
-var frontendUrl = Environment.GetEnvironmentVariable("FRONTEND_BASE_URL");
+var frontendUrl = Environment.GetEnvironmentVariable("Email__FrontendBaseUrl");
 if (frontendUrl != null)
 {
     builder.Configuration["AllowedOrigins"] = frontendUrl;
     builder.Configuration["Email:FrontendBaseUrl"] = frontendUrl;
-    logger.LogInformation("FRONTEND_BASE_URL environment variable loaded: {FrontendUrl}", frontendUrl);
+    logger.LogInformation("Email__FrontendBaseUrl environment variable loaded: {FrontendUrl}", frontendUrl);
 }
 else
 {
-    logger.LogWarning("FRONTEND_BASE_URL environment variable not found");
+    logger.LogWarning("Email__FrontendBaseUrl environment variable not found");
 }
 
 var jwtKeyEnv = Environment.GetEnvironmentVariable("JWT_KEY");
