@@ -70,37 +70,37 @@ export class AuthService {
   }
 
   logout(): Promise<boolean> {
-    localStorage.removeItem(this.TOKEN_KEY);
-    localStorage.removeItem(this.USER_KEY);
+    sessionStorage.removeItem(this.TOKEN_KEY);
+    sessionStorage.removeItem(this.USER_KEY);
     this._currentUser.set(null);
     return this.router.navigate(['/'], { state: { noFlip: true } });
   }
 
   getToken(): string | null {
-    return localStorage.getItem(this.TOKEN_KEY);
+    return sessionStorage.getItem(this.TOKEN_KEY);
   }
 
   private storeSession(response: AuthResponse): void {
-    localStorage.setItem(this.TOKEN_KEY, response.token);
-    localStorage.setItem(this.USER_KEY, JSON.stringify(response.user));
+    sessionStorage.setItem(this.TOKEN_KEY, response.token);
+    sessionStorage.setItem(this.USER_KEY, JSON.stringify(response.user));
     this._currentUser.set(response.user);
     this._lockLevel.set(this.parseLockLevelFromToken(response.token));
     this._bypassPayment.set(this.parseBypassPaymentFromToken(response.token));
   }
 
   private loadUser(): User | null {
-    const stored = localStorage.getItem(this.USER_KEY);
+    const stored = sessionStorage.getItem(this.USER_KEY);
     if (!stored) return null;
     if (this.isTokenExpired()) {
-      localStorage.removeItem(this.TOKEN_KEY);
-      localStorage.removeItem(this.USER_KEY);
+      sessionStorage.removeItem(this.TOKEN_KEY);
+      sessionStorage.removeItem(this.USER_KEY);
       return null;
     }
     return JSON.parse(stored);
   }
 
   private isTokenExpired(): boolean {
-    const token = localStorage.getItem(this.TOKEN_KEY);
+    const token = sessionStorage.getItem(this.TOKEN_KEY);
     if (!token) return true;
     try {
       const payload = JSON.parse(atob(token.split('.')[1]));
@@ -111,13 +111,13 @@ export class AuthService {
   }
 
   private loadLockLevelFromToken(): LockLevel {
-    const token = localStorage.getItem(this.TOKEN_KEY);
+    const token = sessionStorage.getItem(this.TOKEN_KEY);
     if (!token) return 'FullAccess';
     return this.parseLockLevelFromToken(token);
   }
 
   private loadBypassPaymentFromToken(): boolean {
-    const token = localStorage.getItem(this.TOKEN_KEY);
+    const token = sessionStorage.getItem(this.TOKEN_KEY);
     if (!token) return false;
     return this.parseBypassPaymentFromToken(token);
   }

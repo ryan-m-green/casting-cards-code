@@ -3,6 +3,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { StripeService, PricingDisplayResponse, SubscriptionTier } from '../../core/stripe.service';
 import { SubscriptionService } from '../../core/subscription.service';
+import { AuthService } from '../../core/auth/auth.service';
 import { JournalTitleComponent } from '../../shared/components/journal-title/journal-title.component';
 import { PremiumPlanCardComponent } from '../../shared/components/premium-plan-card/premium-plan-card.component';
 import { FreeTrialPlanCardComponent } from '../../shared/components/free-trial-plan-card/free-trial-plan-card.component';
@@ -21,11 +22,12 @@ export class SubscriptionChoiceComponent implements OnInit {
   private route = inject(ActivatedRoute);
   private stripe = inject(StripeService);
   private subscriptionService = inject(SubscriptionService);
+  private authService = inject(AuthService);
   private cdr = inject(ChangeDetectorRef);
 
   loading = false;
   pricingData = toSignal(this.stripe.getPricingDisplay(), { initialValue: undefined });
-  isCheckoutSuccess = signal(false);
+  isCheckoutSuccessSignal = signal(false);
   private checkInterval: any = null;
 
   get freeTrialLimits(): SubscriptionTier | null {
@@ -35,7 +37,15 @@ export class SubscriptionChoiceComponent implements OnInit {
   ngOnInit() {
     this.route.queryParams.subscribe(params => {
       if (params['checkout'] === 'success') {
-        this.isCheckoutSuccess.set(true);
+        // Check if token exists before proceeding
+        if (!this.authService.getToken()) {
+          // Token was lost during redirect, redirect to login with return URL
+          this.router.navigate(['/'], { 
+            queryParams: { returnUrl: '/subscription-choice?checkout=success' }
+          });
+          return;
+        }
+        this.isCheckoutSuccessSignal.set(true);
         this.startPollingSubscriptionStatus();
       }
     });
@@ -58,7 +68,7 @@ export class SubscriptionChoiceComponent implements OnInit {
       if (sub?.status === 'Active' && lockLevel === 'FullAccess') {
         clearInterval(checkInterval);
         this.subscriptionService.stopPolling();
-        this.isCheckoutSuccess.set(false);
+        this.isCheckoutSuccessSignal.set(false);
         this.router.navigate(['/dm/dashboard']);
       }
     }, 3000);
@@ -92,5 +102,9 @@ export class SubscriptionChoiceComponent implements OnInit {
         this.loading = false;
       }
     });
+  }
+
+  isCheckoutSuccess(): boolean {
+    return this.isCheckoutSuccessSignal();
   }
 }
