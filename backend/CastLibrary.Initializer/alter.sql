@@ -118,12 +118,6 @@ BEGIN
     END IF;
 END $$;
 
--- Update existing records to have appropriate values
--- Existing production models (Alpha, Beta, V1) set to 'live'
--- FreeTrial remains as 'test' since it's the default trial
-UPDATE pricing_model 
-SET account_type = 'live' 
-WHERE model_name IN ('Alpha', 'Beta', 'V1') AND account_type = 'test';
 
 -- Create an index for better query performance if this column will be used for filtering
 CREATE INDEX IF NOT EXISTS idx_pricing_model_account_type ON pricing_model(account_type);
