@@ -16,10 +16,21 @@ public class StripeConfigurationDomain
 
 public class StripeAccount
 {
+    [JsonPropertyName("secretKey")]
     public string SecretKey { get; set; }
+    
+    [JsonPropertyName("publishableKey")]
     public string PublishableKey { get; set; }
+    
+    [JsonPropertyName("webhookSecret")]
     public string WebhookSecret { get; set; }
+    
+    [JsonPropertyName("successUrl")]
     public string SuccessUrl { get; set; }
+    
+    [JsonPropertyName("cancelUrl")]
     public string CancelUrl { get; set; }
+    
+    [JsonPropertyName("returnUrl")]
     public string ReturnUrl { get; set; }
 }
