@@ -3,7 +3,6 @@ using CastLibrary.Logic.Interfaces;
 using CastLibrary.Shared.Configuration;
 using CastLibrary.Shared.Domain;
 using Microsoft.Extensions.Configuration;
-using Newtonsoft.Json.Serialization;
 using System.Net.Http.Headers;
 using System.Text;
 using System.Text.Json;
