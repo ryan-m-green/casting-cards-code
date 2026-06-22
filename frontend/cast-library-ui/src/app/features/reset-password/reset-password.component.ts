@@ -53,7 +53,7 @@ export class ResetPasswordComponent implements OnInit {
       next: () => {
         this.success.set(true);
         this.loading.set(false);
-        setTimeout(() => this.router.navigate(['/join']), 2500);
+        setTimeout(() => this.router.navigate(['/login']), 2500);
       },
       error: (e) => {
         this.errorMsg.set(e.error?.message || 'Invalid or expired reset link.');
