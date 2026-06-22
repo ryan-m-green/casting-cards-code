@@ -196,6 +196,7 @@ public class AuthController(
         }
 
         return Ok(new {
+            token = result.Token,
             user = result.User,
             bypassPayment = result.BypassPayment,
             xsrfToken = antiforgeryTokens.RequestToken

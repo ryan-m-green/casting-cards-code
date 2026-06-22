@@ -37,14 +37,7 @@ export class VerifyEmailComponent implements OnInit {
       next: (response) => {
         this.success.set(true);
         this.loading.set(false);
-        // Redirect based on bypass payment flag
-        setTimeout(() => {
-          if (response.bypassPayment) {
-            this.router.navigate(['/dm/dashboard']);
-          } else {
-            this.router.navigate(['/subscription-choice']);
-          }
-        }, 1500);
+  
       },
       error: (e) => {
         this.errorMsg.set(e.error?.message || 'Invalid or expired verification link.');

@@ -24,7 +24,8 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
       !req.url.includes('/api/stripe/webhook')) {
 
     const token = localStorage.getItem('cast_library_token');
-    if (token) {
+    // Only add Authorization header if token exists and has valid JWT format (contains dots)
+    if (token && token.trim() !== '' && token.includes('.')) {
       modifiedReq = modifiedReq.clone({
         headers: modifiedReq.headers.set('Authorization', `Bearer ${token}`),
         withCredentials: true

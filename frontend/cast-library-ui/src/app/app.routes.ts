@@ -130,6 +130,7 @@ export const routes: Routes = [
       },
       {
         path: 'subscription-choice',
+        canActivate: [authGuard],
         canDeactivate: [subscriptionChoiceGuard],
         loadComponent: () => import('./features/subscription-choice/subscription-choice.component').then(m => m.SubscriptionChoiceComponent),
       },
