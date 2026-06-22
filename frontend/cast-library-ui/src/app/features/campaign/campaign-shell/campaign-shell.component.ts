@@ -8,7 +8,6 @@ import { AuthService } from '../../../core/auth/auth.service';
 import { CampaignHubService } from '../../../core/hub/campaign-hub.service';
 import { PortalTransitionService } from '../../../core/portal-transition.service';
 import { CampaignShellService } from '../../../core/campaign-shell.service';
-import { SubscriptionService } from '../../../core/subscription.service';
 import { SubscriptionDrawerService } from '../../../core/subscription-drawer.service';
 import { TimeOfDayBarComponent } from '../../../shared/components/time-of-day-bar/time-of-day-bar.component';
 import { VoidNavDrawerComponent } from '../../../shared/components/void-nav-drawer/void-nav-drawer.component';
@@ -28,8 +27,7 @@ export class CampaignShellComponent implements OnInit, OnDestroy {
   private http           = inject(HttpClient);
   private hub            = inject(CampaignHubService);
   private transition     = inject(PortalTransitionService);
-  private auth           = inject(AuthService);
-  subscription           = inject(SubscriptionService);
+  auth = inject(AuthService);
   private drawerService  = inject(SubscriptionDrawerService);
   private hubSubscriptions: Subscription[] = [];
   shellSvc           = inject(CampaignShellService);
@@ -74,15 +72,14 @@ export class CampaignShellComponent implements OnInit, OnDestroy {
         this.transition.spineColor = c.spineColor;
       });
 
-    const token = this.auth.getToken();
-    const connectAndJoin = token && !this.hub.isConnected()
-      ? this.hub.connect(token).then(() => this.hub.joinCampaign(id))
+    const connectAndJoin = !this.hub.isConnected()
+      ? this.hub.connect().then(() => this.hub.joinCampaign(id))
       : this.hub.joinCampaign(id);
-    connectAndJoin.catch(console.warn);
+    connectAndJoin.catch(() => {});
   }
 
   ngOnDestroy() {
-    this.hub.leaveCampaign(this.campaignId()).catch(console.warn);
+    this.hub.leaveCampaign(this.campaignId()).catch(() => {});
     this.hubSubscriptions.forEach(sub => sub.unsubscribe());
   }
 

@@ -16,8 +16,7 @@
   }
 
   <form [formGroup]="form">
-    <div class="form-portrait-new-row">
-      <img src="/spilled_wine.PNG" alt="Spilled wine" class="spilled-wine-image" />
+    <div class="form-portrait-new-row">      
       @if (!sublocationId()) {
         <label class="form-portrait-label" [class.form-portrait-label--filled]="imagePreviewUrl()">
           <input type="file" accept="image/jpeg,image/png,image/webp" class="form-portrait-file-input" (change)="onPortraitFileSelected($event)" />
@@ -42,6 +41,7 @@
     <label class="fi-label">Description</label>
     <textarea class="fi" formControlName="description" rows="3" placeholder="A dimly lit smithy…" autocomplete="off"></textarea>
     <fieldset class="form-gm-box">
+      <img src="/spilled_wine.PNG" alt="Spilled wine" class="spilled-wine-image" />
       <legend class="form-gm-box__legend">FOR GM EYES ONLY</legend>
       <label class="fi-label">GM Notes</label>
       <textarea class="fi" formControlName="dmNotes" rows="3" placeholder="Private notes…" autocomplete="off"></textarea>
@@ -87,7 +87,7 @@
     <div class="limit-error-message">
       <span class="limit-error-text">{{ limitError() }}</span>
       <div class="limit-error-actions">
-        @if (subscription.isFreeTrial()) {
+        @if (auth.isFreeTrial()) {
           <button class="limit-error-upgrade" (click)="openUpgradeDrawer()">Upgrade</button>
         }
         <button class="limit-error-close" (click)="limitError.set(null)">×</button>

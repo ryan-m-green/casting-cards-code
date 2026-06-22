@@ -16,7 +16,7 @@
   <app-journal-title title="Campaign Library" />
   <div class="wr wr-page-header">
     <app-upgrade-badge
-      [visible]="subscription.isFreeTrial()"
+      [visible]="auth.isFreeTrial()"
       (badgeClick)="openUpgradeDrawer()"
       class="upgrade-badge-library" />
     <a class="campaign-primary-btn wr-ml-auto" 

@@ -174,46 +174,37 @@ export class CampaignHubService {
   readonly sessionDeleted$              = this.sessionDeletedSubject.asObservable();
   readonly subscriptionLockLevelChanged$ = this.subscriptionLockLevelChangedSubject.asObservable();
 
-  async connect(token: string): Promise<void> {
-    console.log('SignalR: Starting connection...');
-    console.log('SignalR: Hub URL:', `${environment.apiUrl}/hubs/campaign`);
-    console.log('SignalR: Token present:', !!token);
-
+  async connect(): Promise<void> {
     this.connection = new signalR.HubConnectionBuilder()
       .withUrl(`${environment.apiUrl}/hubs/campaign`, {
-        accessTokenFactory: () => token,
+        accessTokenFactory: () => {
+          // Return JWT token from localStorage for SignalR authentication
+          const token = localStorage.getItem('cast_library_token');
+          return token || ''; // Return empty string instead of null to satisfy TypeScript
+        }
       })
       .withAutomaticReconnect([0, 2000, 5000, 10000, 30000])
       .withServerTimeout(90000)
       .configureLogging(signalR.LogLevel.Trace)
       .build();
 
-    console.log('SignalR: Connection built, attempting to start...');
-
     await this.connection.start()
-      .then(() => {
-        console.log('SignalR: Connected successfully');
-        console.log('SignalR: Connection ID:', this.connection?.connectionId);
-      })
       .catch(err => console.error('SignalR: Connection failed:', err));
 
-    this.connection.onreconnecting((error) => {
-      console.log('SignalR: Reconnecting...', error);
+    this.connection.onreconnecting(() => {
+      this.isConnected.set(false);
     });
     this.connection.onreconnected(() => {
-      console.log('SignalR: Reconnected successfully');
-      console.log('SignalR: Connection ID:', this.connection?.connectionId);
       this.isConnected.set(true);
     });
-    this.connection.onclose((error) => {
-      console.log('SignalR: Connection closed', error);
+    this.connection.onclose(() => {
       this.isConnected.set(false);
     });
     this.isConnected.set(true);
 
     this.connection.on('ping', () => {
-  console.log('SignalR ping received');
-});
+      // Ping received
+    });
 
     this.connection.on('SecretRevealed', (event: SecretRevealedEvent) => {
       this.secretRevealedSubject.next(event);
@@ -340,13 +331,11 @@ export class CampaignHubService {
     });
 
     this.connection.on('SubscriptionLockLevelChanged', (event: SubscriptionLockLevelChangedEvent) => {
-      console.log('SignalR: SubscriptionLockLevelChanged event received', event);
       this.subscriptionLockLevelChangedSubject.next(event);
-      // Update both AuthService and SubscriptionService with new subscription data
-      console.log('SignalR: Refreshing auth and subscription data...');
+      // Update AuthService with new subscription data via JWT refresh
       this.authService.refreshCurrentUser().subscribe({
         next: () => {
-          console.log('SignalR: Auth data refreshed successfully');
+          // Auth data refreshed successfully
         },
         error: (err) => {
           console.error('SignalR: Failed to refresh auth data', err);

@@ -36,7 +36,7 @@ public class CampaignChroniclesController(
         Guid campaignId,
         [FromQuery] int pageNumber = 1,
         [FromQuery] int pageSize = 5,
-        [FromQuery] string? searchQuery = null,
+        [FromQuery] string searchQuery = null,
         [FromQuery] string[]? typeFilters = null)
     {
         if (!await CallerIsMemberOrOwner(campaignId)) return Forbid();
@@ -72,7 +72,7 @@ public class CampaignChroniclesController(
         Guid campaignId,
         [FromQuery] int pageNumber = 1,
         [FromQuery] int pageSize = 10,
-        [FromQuery] string? searchQuery = null,
+        [FromQuery] string searchQuery = null,
         [FromQuery] string[]? typeFilters = null)
     {
         if (!await CallerIsMemberOrOwner(campaignId)) return Forbid();

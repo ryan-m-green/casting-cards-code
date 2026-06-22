@@ -89,6 +89,71 @@ public class FileImageStorageOperator(IFileStorageConfiguration config, IImageCo
         }
     }
 
+    public async Task<List<(string key, long size)>> ListAllImagesWithSizesAsync()
+    {
+        var imageKeys = new List<(string key, long size)>();
+        var continuationToken = string.Empty;
+
+        try
+        {
+            do
+            {
+                var listRequest = new ListObjectsV2Request
+                {
+                    BucketName = _bucketName,
+                    Prefix = "images/",
+                    ContinuationToken = string.IsNullOrEmpty(continuationToken) ? null : continuationToken
+                };
+
+                Console.WriteLine($"Listing with prefix: {listRequest.Prefix}");
+                var listResponse = await _s3Client.ListObjectsV2Async(listRequest);
+                Console.WriteLine($"List response received. KeyCount: {listResponse.KeyCount}");
+
+                if (listResponse.S3Objects?.Any() == true)
+                {
+                    foreach (var obj in listResponse.S3Objects)
+                    {
+                        // Remove "images/" prefix to return just the key
+                        var key = obj.Key.StartsWith("images/") ? obj.Key["images/".Length..] : obj.Key;
+                        var size = obj.Size ?? 0;
+                        imageKeys.Add((key, size));
+                    }
+                }
+
+                continuationToken = listResponse.NextContinuationToken;
+            } while (!string.IsNullOrEmpty(continuationToken));
+        }
+        catch (AmazonS3Exception ex)
+        {
+            Console.WriteLine($"S3 Error: {ex.Message}");
+            Console.WriteLine($"StatusCode: {ex.StatusCode}");
+            Console.WriteLine($"ErrorCode: {ex.ErrorCode}");
+            Console.WriteLine($"RequestId: {ex.RequestId}");
+
+            if (ex.InnerException != null)
+            {
+                Console.WriteLine($"Inner Exception: {ex.InnerException.Message}");
+                Console.WriteLine($"Inner Exception Type: {ex.InnerException.GetType().Name}");
+            }
+
+            throw;
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"General Error: {ex.Message}");
+            Console.WriteLine($"Exception Type: {ex.GetType().Name}");
+
+            if (ex.InnerException != null)
+            {
+                Console.WriteLine($"Inner Exception: {ex.InnerException.Message}");
+            }
+
+            throw;
+        }
+
+        return imageKeys;
+    }
+
     public async Task DeleteUserDirectoryAsync(Guid userId)
     {
         var userDirectoryPrefix = $"images/{userId}/";
@@ -120,5 +185,72 @@ public class FileImageStorageOperator(IFileStorageConfiguration config, IImageCo
         {
             // Log but don't throw - allow database deletion to proceed
         }
+    }
+
+    public async Task<List<string>> ListAllImagesAsync()
+    {
+        var imageKeys = new List<string>();
+        var continuationToken = string.Empty;
+
+        try
+        {
+            Console.WriteLine($"Attempting to list objects from bucket: {_bucketName}");
+            Console.WriteLine($"Endpoint configured in S3 client");
+
+            do
+            {
+                var listRequest = new ListObjectsV2Request
+                {
+                    BucketName = _bucketName,
+                    Prefix = "images/",
+                    ContinuationToken = string.IsNullOrEmpty(continuationToken) ? null : continuationToken
+                };
+
+                Console.WriteLine($"Listing with prefix: {listRequest.Prefix}");
+                var listResponse = await _s3Client.ListObjectsV2Async(listRequest);
+                Console.WriteLine($"List response received. KeyCount: {listResponse.KeyCount}");
+
+                if (listResponse.S3Objects?.Any() == true)
+                {
+                    foreach (var obj in listResponse.S3Objects)
+                    {
+                        // Remove "images/" prefix to return just the key
+                        var key = obj.Key.StartsWith("images/") ? obj.Key["images/".Length..] : obj.Key;
+                        imageKeys.Add(key);
+                    }
+                }
+
+                continuationToken = listResponse.NextContinuationToken;
+            } while (!string.IsNullOrEmpty(continuationToken));
+        }
+        catch (AmazonS3Exception ex)
+        {
+            Console.WriteLine($"S3 Error: {ex.Message}");
+            Console.WriteLine($"StatusCode: {ex.StatusCode}");
+            Console.WriteLine($"ErrorCode: {ex.ErrorCode}");
+            Console.WriteLine($"RequestId: {ex.RequestId}");
+            
+            if (ex.InnerException != null)
+            {
+                Console.WriteLine($"Inner Exception: {ex.InnerException.Message}");
+                Console.WriteLine($"Inner Exception Type: {ex.InnerException.GetType().Name}");
+            }
+            
+            throw;
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"General Error: {ex.Message}");
+            Console.WriteLine($"Exception Type: {ex.GetType().Name}");
+            
+            if (ex.InnerException != null)
+            {
+                Console.WriteLine($"Inner Exception: {ex.InnerException.Message}");
+            }
+            
+            throw;
+        }
+
+        return imageKeys;
     }
 }

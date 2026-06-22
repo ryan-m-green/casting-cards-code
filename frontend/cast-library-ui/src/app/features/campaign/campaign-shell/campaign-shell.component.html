@@ -18,7 +18,7 @@
       <span class="void-title" [style.margin-top]="shellSvc.voidTitleTopMargin()">{{ shellSvc.title() }}</span>
     }
     <app-upgrade-badge
-      [visible]="subscription.isFreeTrial()"
+      [visible]="auth.isFreeTrial()"
       (badgeClick)="openUpgradeDrawer()"
       class="upgrade-badge-shell" />
   </div>

@@ -3,7 +3,7 @@
   <app-journal-title title="Location Library" />
   <div class="wr wr-page-header">
     <app-upgrade-badge
-      [visible]="subscription.isFreeTrial()"
+      [visible]="auth.isFreeTrial()"
       (badgeClick)="openUpgradeDrawer()"
       class="upgrade-badge-library" />
     <input class="search-bar search-bar--header" type="text" placeholder="Location name · Type…"

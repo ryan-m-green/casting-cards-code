@@ -33,6 +33,8 @@ using CastLibrary.Logic.Strategies.SubscriptionEvent;
 using CastLibrary.Logic.Strategies.InvoiceEvent;
 using CastLibrary.Logic.Strategies.WebhookEvent;
 using CastLibrary.Logic.Commands.Stripe;
+using CastLibrary.Shared.Interfaces;
+using CastLibrary.Repository.Repositories.Read;
 
 namespace CastLibrary.WebHost.IoC
 {
@@ -293,6 +295,8 @@ namespace CastLibrary.WebHost.IoC
             services.AddScoped<ICampaignAccessService, CampaignAccessService>();
             services.AddScoped<ISubscriptionLimitService, SubscriptionLimitService>();
             services.AddScoped<IEmailService, EmailService>();
+            services.AddScoped<IAuditLoggingService, AuditLoggingService>();
+            services.AddScoped<IFileValidationService, FileValidationService>();
 
             return services;
         }

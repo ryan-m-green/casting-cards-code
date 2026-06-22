@@ -11,8 +11,8 @@ import { SparkleService } from '../../../shared/services/sparkle.service';
 import { SublocationCardComponent } from '../../../shared/components/sublocation-card/sublocation-card.component';
 import { JournalTitleComponent } from '../../../shared/components/journal-title/journal-title.component';
 import { HttpErrorResponse } from '@angular/common/http';
-import { SubscriptionService } from '../../../core/subscription.service';
 import { SubscriptionDrawerService } from '../../../core/subscription-drawer.service';
+import { AuthService } from '../../../core/auth/auth.service';
 
 @Component({
   selector: 'app-sublocation-form',
@@ -29,8 +29,8 @@ export class SublocationFormComponent implements OnInit {
   private http           = inject(HttpClient);
   private fb             = inject(FormBuilder);
   private sparkle        = inject(SparkleService);
-  subscription           = inject(SubscriptionService);
   private drawerService  = inject(SubscriptionDrawerService);
+  auth = inject(AuthService);
 
   sublocationId  = signal<string | null>(null);
   saveStatus     = signal<'idle' | 'saving' | 'saved' | 'error'>('idle');

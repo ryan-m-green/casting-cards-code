@@ -1,5 +1,6 @@
 using CastLibrary.Logic.Commands.Location;
 using CastLibrary.Logic.Queries.Location;
+using CastLibrary.Logic.Services;
 using CastLibrary.Logic.Validators;
 using CastLibrary.Shared.Exceptions;
 using CastLibrary.Shared.Requests;
@@ -7,6 +8,7 @@ using CastLibrary.WebHost.Mappers;
 using CastLibrary.WebHost.MetadataHelpers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 using System.Security.Claims;
 
 namespace CastLibrary.WebHost.Controllers;
@@ -14,6 +16,7 @@ namespace CastLibrary.WebHost.Controllers;
 [ApiController]
 [Route("api/locations")]
 [Authorize]
+[EnableRateLimiting("GeneralApi")]
 public class LocationsController(
     IGetLocationDetailQueryHandler getLocationDetailQueryHandler,
     IGetLocationLibraryQueryHandler getLocationLibraryQuery,
@@ -22,7 +25,8 @@ public class LocationsController(
     IUploadLocationImageCommandHandler uploadLocationImageCommand,
     IDeleteLocationCommandHandler deleteLocationCommand,
     ILocationWebMapper mapper,
-    IUserRetriever userRetriever) : ControllerBase
+    IUserRetriever userRetriever,
+    IFileValidationService fileValidationService) : ControllerBase
 {
 
     [HttpGet]
@@ -101,24 +105,14 @@ public class LocationsController(
     [Consumes("multipart/form-data")]
     public async Task<IActionResult> UploadImage(Guid id, IFormFile file)
     {
-        if (file is null || file.Length == 0)
-        {
-            return BadRequest("No file provided.");
-        }
+        var validationResult = await fileValidationService.ValidateFileAsync(file, 20 * 1024 * 1024, 
+            new[] { "image/jpeg", "image/png", "image/webp" });
 
-        var allowedTypes = new[] { "image/jpeg", "image/png", "image/webp" };
-        if (!allowedTypes.Contains(file.ContentType))
-        {
-            return BadRequest("Only JPEG, PNG, and WebP images are supported.");
-        }
-
-        if (file.Length > 5 * 1024 * 1024)
-        {
-            return BadRequest("File size must not exceed 5 MB.");
-        }
+        if (!validationResult.IsValid)
+            return BadRequest(validationResult.ErrorMessage);
         var userId = userRetriever.GetUserId(User);
         var (success, _) = await uploadLocationImageCommand.HandleAsync(
-            new UploadLocationImageCommand(id, userId, file.OpenReadStream(), file.ContentType));
+            new UploadLocationImageCommand(id, userId, file.OpenReadStream(), validationResult.DetectedContentType));
 
         if (!success)
         {

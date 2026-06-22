@@ -16,7 +16,7 @@
   height: auto;
   z-index: 10;
   transform: scaleX(-1);
-  animation: snailCrawl 260s linear infinite;
+  animation: snailCrawl 200s linear infinite;
 }
 
 @keyframes snailCrawl {

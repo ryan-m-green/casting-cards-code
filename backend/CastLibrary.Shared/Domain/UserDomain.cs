@@ -12,6 +12,6 @@ public class UserDomain
     public DateTime CreatedAt { get; set; }
     public int TokenVersion { get; set; } = 1;
     public bool EmailVerified { get; set; } = false;
-    public string? EmailVerificationToken { get; set; }
+    public string EmailVerificationToken { get; set; }
     public DateTime? LastLoggedInOn { get; set; }
 }

@@ -168,6 +168,7 @@ namespace CastLibrary.WebHost.IoC
             services.AddScoped<ISubscriptionUpdateRepository, SubscriptionUpdateRepository>();
             services.AddScoped<IPricingModelReadRepository, PricingModelReadRepository>();
             services.AddScoped<IPricingModelUpdateRepository, PricingModelUpdateRepository>();
+            services.AddScoped<IAuditReadRepository, AuditReadRepository>();
         }
     }
 }

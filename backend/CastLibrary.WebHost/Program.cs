@@ -12,19 +12,35 @@ using CastLibrary.WebHost.Hubs;
 using CastLibrary.WebHost.IoC;
 using CastLibrary.WebHost.Middleware;
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using CastLibrary.WebHost.Authentication;
+using CastLibrary.Shared.Enums;
+using Microsoft.AspNetCore.Antiforgery;
+using Microsoft.AspNetCore.Http;
+using CastLibrary.Shared.Interfaces;
+using Serilog;
+using Serilog.Events;
+
+// Configure Serilog
+Log.Logger = new LoggerConfiguration()
+    .MinimumLevel.Information()
+    .WriteTo.File("C:\\Repository\\CastingCards\\logs\\cast-library-.txt", rollingInterval: RollingInterval.Day)
+    .WriteTo.File("C:\\Repository\\CastingCards\\logs\\errors\\cast-library-error-.txt", rollingInterval: RollingInterval.Day, restrictedToMinimumLevel: Serilog.Events.LogEventLevel.Error)
+    .CreateLogger();
 
 var builder = WebApplication.CreateBuilder(args);
 
+// Use Serilog
+builder.Host.UseSerilog();
+
 builder.Logging.ClearProviders();
-builder.Logging.AddConsole();
 
 // Suppress DataProtection and Hosting warnings
 builder.Logging.AddFilter("Microsoft.AspNetCore.DataProtection.Repositories.FileSystemXmlRepository", LogLevel.Error);
 builder.Logging.AddFilter("Microsoft.AspNetCore.DataProtection.KeyManagement.XmlKeyManager", LogLevel.Error);
 builder.Logging.AddFilter("Microsoft.AspNetCore.Hosting.Diagnostics", LogLevel.Error);
 
-var logger = LoggerFactory.Create(config => config.AddConsole()).CreateLogger<Program>();
+var logger = builder.Services.BuildServiceProvider().GetRequiredService<ILogger<Program>>();
 
 // DO App Platform injects secrets as plain env vars; ${VAR} interpolation in app.yaml
 // doesn't resolve reliably, so read all secrets directly and inject into the config
@@ -47,6 +63,7 @@ else
 #endif
 
 
+#if !DEBUG
 var frontendUrl = Environment.GetEnvironmentVariable("Email__FrontendBaseUrl");
 if (frontendUrl != null)
 {
@@ -58,7 +75,9 @@ else
 {
     logger.LogWarning("Email__FrontendBaseUrl environment variable not found");
 }
+#endif
 
+#if !DEBUG
 var jwtKeyEnv = Environment.GetEnvironmentVariable("JWT_KEY");
 if (jwtKeyEnv != null)
 {
@@ -69,6 +88,7 @@ else
 {
     logger.LogWarning("JWT_KEY environment variable not found");
 }
+#endif
 
 // Spaces / S3 config — injected directly to avoid ${VAR} interpolation issues
 var spacesAccessKey = Environment.GetEnvironmentVariable("SPACES_ACCESS_KEY");
@@ -125,6 +145,8 @@ EnvironmentVariableValidator.Validate(logger);
 builder.Services.AddControllers(options =>
 {
     options.Filters.Add<RequestLoggingAndExceptionFilter>();
+    options.Filters.Add<ValidateAntiforgeryTokenFilter>();
+    options.Filters.Add<ModelStateValidationFilter>();
 })
     .AddJsonOptions(opts =>
     {
@@ -159,11 +181,72 @@ builder.Services.AddCors(options =>
               .AllowCredentials());
 });
 
-var jwtKey = builder.Configuration["Jwt:Key"]!;
+var jwtKey = builder.Configuration["Jwt:Key"];
+var jwtIssuer = builder.Configuration["Jwt:Issuer"];
+var jwtAudience = builder.Configuration["Jwt:Audience"];
+
+// Validate and get cookie domain
+var cookieDomain = Environment.GetEnvironmentVariable("COOKIE_DOMAIN");
+if (!string.IsNullOrEmpty(cookieDomain) && !IsValidDomain(cookieDomain))
+{
+    throw new InvalidOperationException($"Invalid COOKIE_DOMAIN format: '{cookieDomain}'. Domain must be in valid format (e.g., 'example.com' or '.example.com').");
+}
+
+static bool IsValidDomain(string domain)
+{
+    if (string.IsNullOrWhiteSpace(domain))
+        return false;
+    
+    // Basic domain validation - can be enhanced as needed
+    return Uri.CheckHostName(domain) != UriHostNameType.Unknown;
+}
+
+if (string.IsNullOrEmpty(jwtKey))
+{
+    throw new InvalidOperationException("JWT Key is required. Please set the Jwt:Key configuration value.");
+}
+
+if (string.IsNullOrEmpty(jwtIssuer))
+{
+    throw new InvalidOperationException("JWT Issuer is required. Please set the Jwt:Issuer configuration value.");
+}
+
+if (string.IsNullOrEmpty(jwtAudience))
+{
+    throw new InvalidOperationException("JWT Audience is required. Please set the Jwt:Audience configuration value.");
+}
 builder.Services.AddAuthentication(options =>
     {
+        // For API endpoints, use JWT as default
         options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
         options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+    })
+    .AddCookie("Cookies", opts =>
+    {
+        opts.Cookie.Name = "casting_cards_token";
+        opts.Cookie.HttpOnly = true;
+        opts.Cookie.SecurePolicy = builder.Environment.IsDevelopment() ? CookieSecurePolicy.None : CookieSecurePolicy.Always;
+        opts.Cookie.SameSite = SameSiteMode.Lax;
+        opts.Cookie.Path = "/";
+        if (!string.IsNullOrEmpty(cookieDomain))
+        {
+            opts.Cookie.Domain = cookieDomain;
+        }
+        opts.ExpireTimeSpan = TimeSpan.FromHours(4);
+        opts.SlidingExpiration = true;
+        opts.Events = new CookieAuthenticationEvents
+        {
+            OnRedirectToLogin = context =>
+            {
+                context.Response.StatusCode = StatusCodes.Status401Unauthorized;
+                return Task.CompletedTask;
+            },
+            OnRedirectToAccessDenied = context =>
+            {
+                context.Response.StatusCode = StatusCodes.Status403Forbidden;
+                return Task.CompletedTask;
+            }
+        };
     })
     .AddJwtBearer(opts =>
     {
@@ -174,12 +257,12 @@ builder.Services.AddAuthentication(options =>
             ValidateAudience = true,
             ValidateLifetime = true,
             ValidateIssuerSigningKey = true,
-            ValidIssuer = builder.Configuration["Jwt:Issuer"],
-            ValidAudience = builder.Configuration["Jwt:Audience"],
+            ValidIssuer = jwtIssuer,
+            ValidAudience = jwtAudience,
             IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey)),
         };
 
-        // Allow JWT from SignalR query string and skip auth for webhook endpoint
+        // Configure JWT to read from cookies for SignalR and skip webhook
         opts.Events = new JwtBearerEvents
         {
             OnMessageReceived = context =>
@@ -193,9 +276,26 @@ builder.Services.AddAuthentication(options =>
                     return Task.CompletedTask;
                 }
                 
-                var accessToken = context.Request.Query["access_token"];
-                if (!string.IsNullOrEmpty(accessToken) && path.StartsWithSegments("/hubs"))
-                    context.Token = accessToken;
+                // For SignalR, try to get JWT from query parameter first, then cookie
+                if (path.StartsWithSegments("/hubs"))
+                {
+                    // Try query parameter first (access_token)
+                    var accessToken = context.HttpContext.Request.Query["access_token"].FirstOrDefault();
+                    if (!string.IsNullOrEmpty(accessToken))
+                    {
+                        context.Token = accessToken;
+                        return Task.CompletedTask;
+                    }
+                    
+                    // Fallback to cookie
+                    var token = context.HttpContext.Request.Cookies["casting_cards_token"];
+                    if (!string.IsNullOrEmpty(token))
+                    {
+                        context.Token = token;
+                        return Task.CompletedTask;
+                    }
+                }
+                
                 return Task.CompletedTask;
             }
         };
@@ -212,26 +312,108 @@ builder.Services.AddAuthorization(options =>
 
 builder.Services.AddScoped<IAuthorizationHandler, TokenVersionAuthorizationHandler>();
 
-builder.Services.AddRateLimiter(options =>
+// Add Antiforgery services for CSRF protection
+builder.Services.AddAntiforgery(options =>
 {
-    options.AddFixedWindowLimiter("AuthEndpoints", limiterOptions =>
+    options.Cookie.Name = "XSRF-TOKEN";
+    options.Cookie.HttpOnly = false;
+    options.Cookie.SecurePolicy = builder.Environment.IsDevelopment() ? CookieSecurePolicy.None : CookieSecurePolicy.Always;
+    options.Cookie.SameSite = SameSiteMode.Lax;
+    options.Cookie.Path = "/";
+    if (!string.IsNullOrEmpty(cookieDomain))
     {
-        limiterOptions.PermitLimit = 10;
-        limiterOptions.Window = TimeSpan.FromMinutes(1);
-        limiterOptions.QueueProcessingOrder = QueueProcessingOrder.OldestFirst;
-        limiterOptions.QueueLimit = 0;
-    });
-
-    options.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
+        options.Cookie.Domain = cookieDomain;
+    }
+    // Remove domain restriction for localhost development
+    options.HeaderName = "X-XSRF-TOKEN";
+    options.FormFieldName = "XSRF-TOKEN";
+    options.Cookie.Expiration = TimeSpan.FromHours(4);
+    options.Cookie.MaxAge = TimeSpan.FromHours(4);
+    // Allow header-only token validation for API calls
+    options.SuppressXFrameOptionsHeader = false;
 });
+
+// Log antiforgery configuration for debugging
+logger.LogInformation("Antiforgery Configuration - Cookie Name: XSRF-TOKEN, Secure: {SecurePolicy}, SameSite: {SameSite}, Path: /, Domain: {Domain}",
+    builder.Environment.IsDevelopment() ? "None" : "Always",
+    SameSiteMode.Lax,
+    cookieDomain ?? "(none)");
+
+// Rate limiting for security - DISABLED
+// builder.Services.AddRateLimiter(options =>
+// {
+//     options.GlobalLimiter = PartitionedRateLimiter.Create<HttpContext, string>(context =>
+//         RateLimitPartition.GetSlidingWindowLimiter(
+//             GetClientId(context), 
+//             key => new SlidingWindowRateLimiterOptions
+//             {
+//                 PermitLimit = GetPermitLimit(context),
+//                 Window = TimeSpan.FromMinutes(1),
+//                 SegmentsPerWindow = 6
+//             }));
+
+//     options.OnRejected = async (context, cancellationToken) =>
+//     {
+//         var logger = context.HttpContext.RequestServices.GetService<ILogger<Program>>();
+        
+//         var clientId = GetClientId(context.HttpContext);
+//         var endpoint = context.HttpContext.Request.Path;
+//         var httpMethod = context.HttpContext.Request.Method;
+        
+//         // Extract user information if available
+//         var userId = GetUserId(context.HttpContext);
+//         var userEmail = GetUserEmail(context.HttpContext);
+
+//         // Try to log to audit service if available
+//         try
+//         {
+//             var auditService = context.HttpContext.RequestServices.GetService<IAuditLoggingService>();
+//             if (auditService != null)
+//             {
+//                 await auditService.LogSecurityEventAsync(
+//                     userId,
+//                     userEmail,
+//                     AuditEventType.RateLimitViolation,
+//                     $"Rate limit exceeded for {httpMethod} {endpoint}",
+//                     GetClientIpAddress(context.HttpContext),
+//                     context.HttpContext.Request.Headers["User-Agent"].ToString(),
+//                     additionalData: $"ClientId: {clientId}, Endpoint: {endpoint}, Method: {httpMethod}");
+//             }
+//         }
+//         catch (Exception ex)
+//         {
+//             logger?.LogWarning(ex, "Failed to log rate limit violation to audit service");
+//         }
+
+//         logger?.LogWarning(
+//             "Rate limit exceeded for client {ClientId} on {Method} {Endpoint} by user {UserId} ({UserEmail})",
+//             clientId, httpMethod, endpoint, userId, userEmail);
+
+//         // Set the response
+//         context.HttpContext.Response.StatusCode = StatusCodes.Status429TooManyRequests;
+//         await context.HttpContext.Response.WriteAsync("Too many requests. Please try again later.");
+//     };
+
+//     // Add specific policy for authentication endpoints
+//     options.AddPolicy("AuthEndpoints", context =>
+//         RateLimitPartition.GetSlidingWindowLimiter(
+//             GetClientId(context),
+//             key => new SlidingWindowRateLimiterOptions
+//             {
+//                 PermitLimit = 20, // 20 requests per minute for auth endpoints
+//                 Window = TimeSpan.FromMinutes(1),
+//                 SegmentsPerWindow = 6
+//             }));
+// });
 
 builder.Services.AddCastLibraryServices(builder.Configuration);
 
 var app = builder.Build();
 
 app.UseCors("Angular");
+app.UseMiddleware<SecurityHeadersMiddleware>();
+app.UseMiddleware<ModelBindingErrorMiddleware>();
 app.UseWebSockets();
-app.UseRateLimiter();
 
 // ── Path prefix restore ───────────────────────────────────────────────────────
 // DO App Platform strips the matched ingress prefix (/api, /hubs, /images)
@@ -257,6 +439,11 @@ app.Use(async (context, next) =>
 // /api/auth/login and every controller route returns 404.
 app.UseRouting();
 
+// ── Rate Limiting ─────────────────────────────────────────────────────────────
+// CRITICAL: Must be after UseRouting to ensure rate limiting applies to final paths
+// not the pre-path-restore paths, preventing bypass vulnerabilities
+// DISABLED: app.UseRateLimiter();
+
 // ── Correlation ID ────────────────────────────────────────────────────────────
 // Must run before UseAuthentication so trace_id is available on every log entry,
 // including auth failures.
@@ -272,6 +459,11 @@ if (Directory.Exists(imagesPath))
 
 app.UseAuthentication();
 app.UseMiddleware<SubscriptionLockMiddleware>();
+
+// ── Audit Logging ─────────────────────────────────────────────────────────────
+// Must run after UseAuthentication to have user context for audit events
+// Temporarily commented out to test security headers
+// app.UseMiddleware<AuditLoggingMiddleware>();
 app.UseAuthorization();
 app.MapControllers();
 
@@ -280,3 +472,63 @@ app.MapHealthChecks("/api/health");  // public path after preserve_path_prefix
 app.MapHub<CampaignHub>("/hubs/campaign");
 
 app.Run();
+
+// Helper methods for rate limiting
+static string GetClientId(HttpContext context)
+{
+    // Try to get authenticated user ID first
+    var userIdClaim = context.User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+    if (!string.IsNullOrEmpty(userIdClaim))
+    {
+        return $"user:{userIdClaim}";
+    }
+
+    // Fall back to IP address
+    var ipAddress = GetClientIpAddress(context);
+    return $"ip:{ipAddress}";
+}
+
+static Guid GetUserId(HttpContext context)
+{
+    var userIdClaim = context.User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+    return Guid.TryParse(userIdClaim, out var userId) ? userId : Guid.Empty;
+}
+
+static string GetUserEmail(HttpContext context)
+{
+    return context.User.FindFirst(System.Security.Claims.ClaimTypes.Email)?.Value ?? "Anonymous";
+}
+
+static string GetClientIpAddress(HttpContext context)
+{
+    var xForwardedFor = context.Request.Headers["X-Forwarded-For"].FirstOrDefault();
+    if (!string.IsNullOrEmpty(xForwardedFor))
+    {
+        return xForwardedFor.Split(',')[0].Trim();
+    }
+
+    var xRealIp = context.Request.Headers["X-Real-IP"].FirstOrDefault();
+    if (!string.IsNullOrEmpty(xRealIp))
+    {
+        return xRealIp;
+    }
+
+    return context.Connection.RemoteIpAddress?.ToString() ?? "Unknown";
+}
+
+static int GetPermitLimit(HttpContext context)
+{
+    var path = context.Request.Path.Value?.ToLower() ?? string.Empty;
+    
+    if (path.Contains("/auth/") || path.Contains("/login") || path.Contains("/register"))
+    {
+        return 20; // AuthEndpoints limit
+    }
+    
+    if (path.Contains("/subscription"))
+    {
+        return 5; // SubscriptionRefresh limit
+    }
+    
+    return 100; // GeneralApi limit
+}

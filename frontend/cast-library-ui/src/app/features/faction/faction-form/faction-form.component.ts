@@ -13,8 +13,8 @@ import { FactionCardComponent } from '../../../shared/components/faction-card/fa
 import { IconPickerComponent } from '../../../shared/components/icon-picker/icon-picker.component';
 import { JournalTitleComponent } from '../../../shared/components/journal-title/journal-title.component';
 import { HttpErrorResponse } from '@angular/common/http';
-import { SubscriptionService } from '../../../core/subscription.service';
 import { SubscriptionDrawerService } from '../../../core/subscription-drawer.service';
+import { AuthService } from '../../../core/auth/auth.service';
 
 export function perceptionLabel(v: number): string {
   if (v ===  5) return 'Revered';
@@ -55,8 +55,8 @@ export class FactionFormComponent implements OnInit {
   private http           = inject(HttpClient);
   private fb             = inject(FormBuilder);
   private sparkle        = inject(SparkleService);
-  subscription           = inject(SubscriptionService);
   private drawerService  = inject(SubscriptionDrawerService);
+  auth = inject(AuthService);
   private destroyRef = inject(DestroyRef);
 
   factionId      = signal<string | null>(null);

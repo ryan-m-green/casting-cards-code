@@ -7,6 +7,7 @@ using CastLibrary.WebHost.Hubs;
 using CastLibrary.WebHost.MetadataHelpers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.AspNetCore.SignalR;
 
 namespace CastLibrary.WebHost.Controllers;
@@ -14,6 +15,7 @@ namespace CastLibrary.WebHost.Controllers;
 [ApiController]
 [Route("api/campaigns/{campaignId}/time-of-day")]
 [Authorize]
+[EnableRateLimiting("GeneralApi")]
 public class TimeOfDayController(
     IGetTimeOfDayQueryHandler getQuery,
     IUpsertTimeOfDayCommandHandler upsertCommand,

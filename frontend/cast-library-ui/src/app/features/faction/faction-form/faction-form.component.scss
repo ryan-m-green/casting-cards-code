@@ -8,18 +8,6 @@
   max-height: 100%;
 }
 
-.death-awaits-image {
-  position: absolute;
-  top: 368px;
-  right: 22px;
-  width: 144px;
-  height: auto;
-  z-index: 10;
-  transform: scaleX(-1);
-  opacity: 0;
-  animation: fadeIn 8s ease-in forwards 6s;
-}
-
 @keyframes fadeIn {
   from {
     opacity: 0;
@@ -31,11 +19,24 @@
 
 // ── GM-only Box ──────────────────────────────────────────────────────────────
 .form-gm-box {
+  position: relative;
   border: 1px solid rgba(v.$color-base-brown-14, 0.2);
   border-radius: 8px;
   padding: 16px;
   margin: 0;
   display: flex;
+
+  .death-awaits-image {
+    position: absolute;
+    top: -24px;
+    right: 0;
+    width: 144px;
+    height: auto;
+    z-index: 10;
+    transform: scaleX(-1);
+    opacity: 0;
+    animation: fadeIn 4s ease-in forwards 6s;
+  }
   flex-direction: column;
   gap: 16px;
 

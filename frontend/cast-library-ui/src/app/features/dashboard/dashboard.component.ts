@@ -6,7 +6,6 @@ import { environment } from '../../../environments/environment';
 import { AuthService } from '../../core/auth/auth.service';
 import { Campaign } from '../../shared/models/campaign.model';
 import { PortalTransitionService } from '../../core/portal-transition.service';
-import { SubscriptionService } from '../../core/subscription.service';
 import { SubscriptionDrawerService } from '../../core/subscription-drawer.service';
 import { JournalTitleComponent } from '../../shared/components/journal-title/journal-title.component';
 import { IconComponent } from '../../shared/components/icon/icon.component';
@@ -52,7 +51,6 @@ export class DashboardComponent implements OnInit {
   private router         = inject(Router);
   private transition     = inject(PortalTransitionService);
   auth                   = inject(AuthService);
-  subscription           = inject(SubscriptionService);
   private drawerService  = inject(SubscriptionDrawerService);
   private hub            = inject(CampaignHubService);
 
@@ -71,18 +69,15 @@ export class DashboardComponent implements OnInit {
 
   readonly isCreateDisabled = computed(() => {
     if (this.auth.isExempt()) return false;
-    if (this.subscription.isFreeTrial()) return false;
+    if (this.auth.isFreeTrial()) return false;
     const level = this.auth.lockLevel();
     return level !== 'FullAccess';
   });
 
   ngOnInit() {
-    console.log('Dashboard: Initializing SignalR connection...');
-    const token = this.auth.getToken();
-    if (token && token.length > 0) {
-      this.hub.connect(token).catch((err: Error) => console.error('Dashboard: SignalR connection failed:', err));
-    } else {
-      console.log('Dashboard: No token found, skipping SignalR connection');
+    // Only connect to SignalR if user is authenticated to prevent 401 errors
+    if (this.auth.isLoggedIn()) {
+      this.hub.connect().catch((err: Error) => console.error('Dashboard: SignalR connection failed:', err));
     }
 
     this.http.get<DashboardStats>(`${environment.apiUrl}/api/dashboard/stats`)

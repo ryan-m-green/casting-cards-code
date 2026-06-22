@@ -462,11 +462,7 @@ export class PlayerCampaignShellComponent implements OnInit, OnDestroy {
       filter(e => e instanceof NavigationEnd)
     ).subscribe(() => this.loadQueueCount(this.campaignId()));
 
-    const token = this.auth.getToken();
-    const connectAndJoin = token
-      ? this.hub.connect(token).then(() => this.hub.joinCampaign(id))
-      : this.hub.joinCampaign(id);
-    connectAndJoin.catch(console.warn);
+    this.hub.connect().then(() => this.hub.joinCampaign(id)).catch(() => {});
 
     // Gate: redirect to player card creation if none exists yet
     this.http.get(
@@ -515,7 +511,7 @@ export class PlayerCampaignShellComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    this.hub.leaveCampaign(this.campaignId()).catch(console.warn);
+    this.hub.leaveCampaign(this.campaignId()).catch(() => {});
     this.hubSubscriptions.forEach(sub => sub.unsubscribe());
   }
 

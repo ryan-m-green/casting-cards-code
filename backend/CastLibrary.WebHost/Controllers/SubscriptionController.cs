@@ -4,6 +4,9 @@ using CastLibrary.Shared.Requests;
 using CastLibrary.WebHost.MetadataHelpers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
+using CastLibrary.Shared.Interfaces;
+using CastLibrary.Shared.Enums;
 namespace CastLibrary.WebHost.Controllers;
 
 [ApiController]
@@ -12,19 +15,50 @@ public class SubscriptionController(
     ICreateFreeTrialSubscriptionCommandHandler createFreeTrialCommand,
     IGetUserSubscriptionQueryHandler getUserSubscriptionQuery,
     IGetUserEntityLimitsQueryHandler getUserEntityLimitsQuery,
-    IUserRetriever userRetriever) : ControllerBase
+    IUserRetriever userRetriever,
+    IAuditLoggingService auditService) : ControllerBase
 {
     [HttpPost("free-trial")]
     [Authorize]
+    [EnableRateLimiting("SubscriptionRefresh")]
     public async Task<IActionResult> CreateFreeTrial()
     {
         var userId = userRetriever.GetUserId(User);
-        var result = await createFreeTrialCommand.HandleAsync(
-            new CreateFreeTrialSubscriptionCommand(new CreateFreeTrialSubscriptionRequest { UserId = userId }));
-        return Ok(result);
+        
+        try
+        {
+            var result = await createFreeTrialCommand.HandleAsync(
+                new CreateFreeTrialSubscriptionCommand(new CreateFreeTrialSubscriptionRequest { UserId = userId }));
+            
+            // Get user email for audit logging
+            var userEmail = userRetriever.GetEmail(User);
+            
+            // Log successful subscription creation
+            await auditService.LogSubscriptionEventAsync(
+                userId,
+                userEmail,
+                AuditEventType.SubscriptionCreated,
+                "Free trial subscription created successfully",
+                additionalData: $"SubscriptionId: {result.Id}, Status: {result.Status}");
+            
+            return Ok(result);
+        }
+        catch (Exception ex)
+        {
+            // Log failed subscription creation
+            await auditService.LogSubscriptionEventAsync(
+                userId,
+                "Unknown",
+                AuditEventType.SubscriptionCreated,
+                "Free trial subscription creation failed",
+                additionalData: $"Error: {ex.Message}");
+            
+            throw;
+        }
     }
     [HttpGet("user")]
     [Authorize]
+    [EnableRateLimiting("SubscriptionRefresh")]
     public async Task<IActionResult> GetUserSubscription()
     {
         var userId = userRetriever.GetUserId(User);
@@ -36,6 +70,7 @@ public class SubscriptionController(
 
     [HttpGet("entity-limits")]
     [Authorize]
+    [EnableRateLimiting("SubscriptionRefresh")]
     public async Task<IActionResult> GetUserEntityLimits()
     {
         var userId = userRetriever.GetUserId(User);

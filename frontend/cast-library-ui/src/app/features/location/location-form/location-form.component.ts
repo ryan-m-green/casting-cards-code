@@ -11,8 +11,8 @@ import { SparkleService } from '../../../shared/services/sparkle.service';
 import { LocationCardComponent } from '../../../shared/components/location-card/location-card.component';
 import { JournalTitleComponent } from '../../../shared/components/journal-title/journal-title.component';
 import { HttpErrorResponse } from '@angular/common/http';
-import { SubscriptionService } from '../../../core/subscription.service';
 import { SubscriptionDrawerService } from '../../../core/subscription-drawer.service';
+import { AuthService } from '../../../core/auth/auth.service';
 
 const SIZE_OPTIONS = ['Hamlet', 'Village', 'Town', 'Large Town', 'Location', 'Large Location', 'Metropolis'];
 
@@ -85,8 +85,8 @@ export class LocationFormComponent implements OnInit {
   private http           = inject(HttpClient);
   private fb             = inject(FormBuilder);
   private sparkle        = inject(SparkleService);
-  subscription           = inject(SubscriptionService);
   private drawerService  = inject(SubscriptionDrawerService);
+  auth = inject(AuthService);
 
   sizeOptions         = SIZE_OPTIONS;
   conditionOptions    = CONDITION_OPTIONS;

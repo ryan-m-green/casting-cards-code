@@ -1,5 +1,6 @@
 ﻿using CastLibrary.Logic.Commands.Sublocation;
 using CastLibrary.Logic.Queries.Sublocation;
+using CastLibrary.Logic.Services;
 using CastLibrary.Shared.Exceptions;
 using CastLibrary.Shared.Requests;
 using CastLibrary.WebHost.Mappers;
@@ -20,7 +21,8 @@ public class SublocationsController(
     IUploadSublocationImageCommandHandler uploadSublocationImageCommand,
     IDeleteSublocationCommandHandler deleteSublocationCommand,
     ISublocationWebMapper mapper,
-    IUserRetriever userRetriever) : ControllerBase
+    IUserRetriever userRetriever,
+    IFileValidationService fileValidationService) : ControllerBase
 {
 
     [HttpGet]
@@ -95,25 +97,15 @@ public class SublocationsController(
     [Consumes("multipart/form-data")]
     public async Task<IActionResult> UploadImage(Guid id, IFormFile file)
     {
-        if (file is null || file.Length == 0)
-        {
-            return BadRequest("No file provided.");
-        }
+        var validationResult = await fileValidationService.ValidateFileAsync(file, 20 * 1024 * 1024, 
+            new[] { "image/jpeg", "image/png", "image/webp" });
 
-        var allowedTypes = new[] { "image/jpeg", "image/png", "image/webp" };
-        if (!allowedTypes.Contains(file.ContentType))
-        {
-            return BadRequest("Only JPEG, PNG, and WebP images are supported.");
-        }
-
-        if (file.Length > 5 * 1024 * 1024)
-        {
-            return BadRequest("File size must not exceed 5 MB.");
-        }
+        if (!validationResult.IsValid)
+            return BadRequest(validationResult.ErrorMessage);
         var userId = userRetriever.GetUserId(User);
 
         var (success, _) = await uploadSublocationImageCommand.HandleAsync(
-            new UploadSublocationImageCommand(id, userId, file.OpenReadStream(), file.ContentType));
+            new UploadSublocationImageCommand(id, userId, file.OpenReadStream(), validationResult.DetectedContentType));
 
         if (!success)
         {

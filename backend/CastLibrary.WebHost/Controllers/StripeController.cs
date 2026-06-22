@@ -7,6 +7,7 @@ using CastLibrary.WebHost.Hubs;
 using CastLibrary.WebHost.MetadataHelpers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.AspNetCore.SignalR;
 
 namespace CastLibrary.WebHost.Controllers;
@@ -24,6 +25,7 @@ public class StripeController(
 {
     [Authorize]
     [HttpPost("create-checkout-session")]
+    [EnableRateLimiting("GeneralApi")]
     public async Task<IActionResult> CreateCheckoutSession()
     {
         var userId = userRetriever.GetUserId(User);
@@ -41,6 +43,7 @@ public class StripeController(
 
     [Authorize]
     [HttpPost("create-customer-portal-session")]
+    [EnableRateLimiting("GeneralApi")]
     public async Task<IActionResult> CreateCustomerPortalSession()
     {
         var userId = userRetriever.GetUserId(User);

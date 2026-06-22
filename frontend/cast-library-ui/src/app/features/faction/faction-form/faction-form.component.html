@@ -14,8 +14,6 @@
     </div>
   }
 
-  <img src="/death_awaits.PNG" alt="Death awaits" class="death-awaits-image" />
-
   <form [formGroup]="form">
     <div class="wr form-row-gap faction-form-fields">
 
@@ -42,7 +40,7 @@
 
       <fieldset class="form-gm-box">
         <legend class="form-gm-box__legend">FOR GM EYES ONLY</legend>
-
+<img src="/death_awaits.PNG" alt="Death awaits" class="death-awaits-image" />
         <div class="wr form-row-gap">
           <div class="form-field">
             <label for="faction-type-input" class="fi-label">Type</label>
@@ -109,7 +107,7 @@
     <div class="limit-error-message">
       <span class="limit-error-text">{{ limitError() }}</span>
       <div class="limit-error-actions">
-        @if (subscription.isFreeTrial()) {
+        @if (auth.isFreeTrial()) {
           <button class="limit-error-upgrade" (click)="openUpgradeDrawer()">Upgrade</button>
         }
         <button class="limit-error-close" (click)="limitError.set(null)">×</button>

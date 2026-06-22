@@ -167,11 +167,10 @@ export class CampaignCreatorComponent implements OnInit, OnDestroy {
   ngOnInit() {
     const id = this.route.snapshot.paramMap.get('id');
     if (id) {
-      const token = this.auth.getToken();
-      const connectAndJoin = token && !this.hub.isConnected()
-        ? this.hub.connect(token).then(() => this.hub.joinCampaign(id))
+      const connectAndJoin = !this.hub.isConnected()
+        ? this.hub.connect().then(() => this.hub.joinCampaign(id))
         : this.hub.joinCampaign(id);
-      connectAndJoin.catch(console.warn);
+      connectAndJoin.catch(() => {});
     }
 
     this.http.get<{ keywords: string[] }>(`${environment.apiUrl}/api/users/keywords`)
@@ -231,7 +230,7 @@ export class CampaignCreatorComponent implements OnInit, OnDestroy {
     clearTimeout(this.formSaveTimer);
     clearTimeout(this.keywordSaveTimer);
     const id = this.campaignId();
-    if (id) this.hub.leaveCampaign(id).catch(console.warn);
+    if (id) this.hub.leaveCampaign(id).catch(() => {});
     this.hubSubscriptions.forEach(sub => sub.unsubscribe());
   }
 

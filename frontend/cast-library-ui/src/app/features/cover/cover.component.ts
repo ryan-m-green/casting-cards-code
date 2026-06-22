@@ -1,5 +1,5 @@
-import { Component, inject, signal, ElementRef, ViewChild, DestroyRef } from '@angular/core';
-import { Router, RouterLink } from '@angular/router';
+import { Component, inject, signal, ElementRef, ViewChild, DestroyRef, OnInit } from '@angular/core';
+import { Router, RouterLink, ActivatedRoute } from '@angular/router';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { AuthService } from '../../core/auth/auth.service';
@@ -12,14 +12,51 @@ import { SparkleService } from '../../shared/services/sparkle.service';
   templateUrl: './cover.component.html',
   styleUrl: './cover.component.scss'
 })
-export class CoverComponent {
+export class CoverComponent implements OnInit {
   @ViewChild('sparkHost') sparkHost!: ElementRef<HTMLElement>;
 
   private fb        = inject(FormBuilder);
   private auth      = inject(AuthService);
   private router    = inject(Router);
+  private route     = inject(ActivatedRoute);
   private sparkle   = inject(SparkleService);
   private destroyRef = inject(DestroyRef);
+
+  ngOnInit() {
+    console.log('CoverComponent.ngOnInit - Checking auth state');
+    console.log('CoverComponent.ngOnInit - isLoggedIn():', this.auth.isLoggedIn());
+    console.log('CoverComponent.ngOnInit - isDm():', this.auth.isDm());
+    console.log('CoverComponent.ngOnInit - isAdmin():', this.auth.isAdmin());
+    
+    // Check if user is already authenticated and redirect
+    if (this.auth.isDm() || this.auth.isAdmin()) {
+      console.log('CoverComponent.ngOnInit - User is DM/Admin, redirecting to dashboard');
+      this.router.navigate(['/dm/dashboard']);
+      return;
+    }
+    
+    if (this.auth.isLoggedIn()) {
+      console.log('CoverComponent.ngOnInit - User is logged in, redirecting to player campaigns');
+      this.router.navigate(['/player/campaigns']);
+      return;
+    }
+    
+    // If not immediately authenticated, check for token and wait a moment for state restoration
+    const token = localStorage.getItem('cast_library_token');
+    if (token) {
+      console.log('CoverComponent.ngOnInit - Token found, waiting for auth state restoration');
+      setTimeout(() => {
+        if (this.auth.isLoggedIn()) {
+          console.log('CoverComponent.ngOnInit - Auth state restored, redirecting');
+          if (this.auth.isDm() || this.auth.isAdmin()) {
+            this.router.navigate(['/dm/dashboard']);
+          } else {
+            this.router.navigate(['/player/campaigns']);
+          }
+        }
+      }, 100);
+    }
+  }
 
   loginForm = this.fb.group({
     email:    ['', [Validators.required, Validators.email]],
@@ -132,11 +169,24 @@ export class CoverComponent {
         const remaining = Math.max(0, this.SPARK_DURATION_MS - elapsed);
         setTimeout(() => {
           this.loading.set(false);
-          if (res.user.role === 'DM' || res.user.role === 'Admin') {
-            this.router.navigate(['/dm/dashboard']);
-          } else {
-            this.router.navigate(['/player/campaigns']);
-          }
+          
+          // Check for returnUrl parameter
+          this.route.queryParams
+            .pipe(takeUntilDestroyed(this.destroyRef))
+            .subscribe(params => {
+              const returnUrl = params['returnUrl'];
+              if (returnUrl) {
+                // Navigate to the return URL
+                this.router.navigateByUrl(returnUrl);
+              } else {
+                // Default navigation based on user role from auth service
+                if (this.auth.isDm()) {
+                  this.router.navigate(['/dm/dashboard']);
+                } else {
+                  this.router.navigate(['/player/campaigns']);
+                }
+              }
+            });
         }, remaining);
       },
       error: (e) => {

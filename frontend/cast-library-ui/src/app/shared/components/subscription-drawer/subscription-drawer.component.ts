@@ -2,6 +2,7 @@ import { Component, inject, signal, computed, HostListener } from '@angular/core
 import { CommonModule } from '@angular/common';
 import { StripeService, PricingDisplayResponse, SubscriptionTier } from '../../../core/stripe.service';
 import { SubscriptionDrawerService } from '../../../core/subscription-drawer.service';
+import { AuthService } from '../../../core/auth/auth.service';
 import { PremiumPlanCardComponent } from '../premium-plan-card/premium-plan-card.component';
 import { FreeTrialPlanCardComponent } from '../free-trial-plan-card/free-trial-plan-card.component';
 
@@ -15,6 +16,7 @@ import { FreeTrialPlanCardComponent } from '../free-trial-plan-card/free-trial-p
 export class SubscriptionDrawerComponent {
   private stripe = inject(StripeService);
   private drawerService = inject(SubscriptionDrawerService);
+  private authService = inject(AuthService);
 
   isOpen = this.drawerService.isOpen;
   isClosing = signal(false);
@@ -27,14 +29,17 @@ export class SubscriptionDrawerComponent {
   }
 
   ngOnInit() {
-    this.stripe.getPricingDisplay().subscribe({
-      next: (data) => {
-        this.pricingData = data;
-      },
-      error: () => {
-        this.pricingData = null;
-      }
-    });
+    // Only fetch pricing data if user is authenticated to avoid 401 errors
+    if (this.authService.isLoggedIn()) {
+      this.stripe.getPricingDisplay().subscribe({
+        next: (data) => {
+          this.pricingData = data;
+        },
+        error: () => {
+          this.pricingData = null;
+        }
+      });
+    }
   }
 
   close() {

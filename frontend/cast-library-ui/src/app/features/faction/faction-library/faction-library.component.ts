@@ -10,7 +10,6 @@ import { JournalTitleComponent } from '../../../shared/components/journal-title/
 import { JournalWatermarkComponent } from '../../../shared/components/journal-watermark/journal-watermark.component';
 import { UpgradeBadgeComponent } from '../../../shared/components/upgrade-badge/upgrade-badge.component';
 import { StripeService, EntityLimitsResponse } from '../../../core/stripe.service';
-import { SubscriptionService } from '../../../core/subscription.service';
 import { SubscriptionDrawerService } from '../../../core/subscription-drawer.service';
 import { AuthService } from '../../../core/auth/auth.service';
 import { CampaignHubService } from '../../../core/hub/campaign-hub.service';
@@ -26,9 +25,8 @@ export class FactionLibraryComponent implements OnInit {
   private http       = inject(HttpClient);
   router             = inject(Router);
   private stripe     = inject(StripeService);
-  subscription       = inject(SubscriptionService);
   private drawerService  = inject(SubscriptionDrawerService);
-  private auth       = inject(AuthService);
+  auth = inject(AuthService);
   private hub        = inject(CampaignHubService);
 
   factions        = signal<Faction[]>([]);
@@ -39,19 +37,13 @@ export class FactionLibraryComponent implements OnInit {
 
   readonly isCreateDisabled = computed(() => {
     if (this.auth.isExempt()) return false;
-    if (this.subscription.isFreeTrial()) return false;
+    if (this.auth.isFreeTrial()) return false;
     const level = this.auth.lockLevel();
     return level !== 'FullAccess';
   });
 
   ngOnInit() {
-    console.log('FactionLibrary: Initializing SignalR connection...');
-    const token = this.auth.getToken();
-    if (token && token.length > 0) {
-      this.hub.connect(token).catch((err: unknown) => console.error('FactionLibrary: SignalR connection failed:', err));
-    } else {
-      console.log('FactionLibrary: No token found, skipping SignalR connection');
-    }
+    this.hub.connect().catch((err: unknown) => console.error('FactionLibrary: SignalR connection failed:', err));
 
     this.http.get<Faction[]>(`${environment.apiUrl}/api/factions`)
       .subscribe(f => this.factions.set(f));

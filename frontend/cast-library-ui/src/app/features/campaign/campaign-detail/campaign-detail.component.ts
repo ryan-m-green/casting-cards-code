@@ -11,7 +11,6 @@ import { AuthService } from '../../../core/auth/auth.service';
 import { CampaignHubService } from '../../../core/hub/campaign-hub.service';
 import { PortalTransitionService } from '../../../core/portal-transition.service';
 import { CampaignShellService } from '../../../core/campaign-shell.service';
-import { SubscriptionService } from '../../../core/subscription.service';
 import { LocationCardComponent } from '../../../shared/components/location-card/location-card.component';
 import { PortalImportCardComponent } from '../../../shared/components/portal-import-card/portal-import-card.component';
 
@@ -43,7 +42,6 @@ export class CampaignDetailComponent implements OnInit, OnDestroy {
   private transition     = inject(PortalTransitionService);
   private hub            = inject(CampaignHubService);
   private shellSvc       = inject(CampaignShellService);
-  subscription           = inject(SubscriptionService);
   private hubSubscriptions: Subscription[] = [];
   auth               = inject(AuthService);
 
@@ -137,7 +135,7 @@ export class CampaignDetailComponent implements OnInit, OnDestroy {
 
   revealSecret(secret: CampaignSecret) {
     if (!this.isDm()) return;
-    this.hub.revealSecret(this.campaignId(), secret.id).catch(console.warn);
+    this.hub.revealSecret(this.campaignId(), secret.id).catch(() => {});
   }
 
   openSecretModal(secret: CampaignSecret) {

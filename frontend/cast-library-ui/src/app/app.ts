@@ -3,6 +3,7 @@ import { Router, RouterOutlet, NavigationCancel, NavigationError } from '@angula
 import { Subscription } from 'rxjs';
 import { filter } from 'rxjs/operators';
 import { PortalTransitionService } from './core/portal-transition.service';
+import { AuthService } from './core/auth/auth.service';
 import { SubscriptionDrawerComponent } from './shared/components/subscription-drawer/subscription-drawer.component';
 
 @Component({
@@ -41,14 +42,86 @@ import { SubscriptionDrawerComponent } from './shared/components/subscription-dr
 export class App implements OnInit, OnDestroy {
   transition = inject(PortalTransitionService);
   private router = inject(Router);
+  private authService = inject(AuthService);
   private _navSub: Subscription | null = null;
 
   ngOnInit() {
+    // Check if returning from Stripe checkout and start subscription refresh interval
+    this.checkForStripeReturn();
+
+    // Check if there's evidence of an existing session (JWT cookie or localStorage token)
+    const hasCookie = this.hasJwtCookie();
+    const hasLocalStorageToken = this.hasLocalStorageToken();
+    
+    if (hasCookie || hasLocalStorageToken) {
+      console.log('App: Found existing session - Cookie:', hasCookie, 'LocalStorage:', hasLocalStorageToken);
+      
+      // Validate session on app startup to check auth state
+      this.authService.refreshCurrentUser().subscribe({
+        next: () => {
+          console.log('App: Session validation successful, user authenticated:', this.authService.isLoggedIn());
+          // If user is authenticated, fetch CSRF token
+          if (this.authService.isLoggedIn()) {
+            this.authService.getCsrfToken().subscribe({
+              error: () => {
+                // Silently fail - CSRF token will be fetched on first request
+              }
+            });
+          }
+        },
+        error: (error) => {
+          console.log('App: Session validation failed, checking localStorage auth state');
+          // Check if user is still authenticated from localStorage restoration
+          // The refreshCurrentUser method now handles 401s by clearing auth state itself
+          if (this.authService.isLoggedIn()) {
+            console.log('App: User still authenticated from localStorage, fetching CSRF token');
+            this.authService.getCsrfToken().subscribe({
+              error: () => {
+                // Silently fail - CSRF token will be fetched on first request
+              }
+            });
+          } else {
+            console.log('App: User not authenticated after session validation');
+          }
+        }
+      });
+    } else {
+      console.log('App: No existing session found');
+    }
+
     this._navSub = this.router.events.pipe(
       filter(e => e instanceof NavigationCancel || e instanceof NavigationError)
     ).subscribe(() => {
       if (this.transition.active()) this.transition.hide();
     });
+  }
+
+  private hasJwtCookie(): boolean {
+    return document.cookie.split(';').some(cookie => 
+      cookie.trim().startsWith('casting_cards_token=')
+    );
+  }
+
+  private hasLocalStorageToken(): boolean {
+    return !!localStorage.getItem('cast_library_token');
+  }
+
+  private checkForStripeReturn(): void {
+    const urlParams = new URLSearchParams(window.location.search);
+    const stripeSuccess = urlParams.get('stripe_success');
+    const sessionId = urlParams.get('session_id');
+    
+    // Check if returning from Stripe checkout
+    if (stripeSuccess === 'true' && sessionId) {
+      console.log('App: Detected Stripe checkout return, starting subscription refresh');
+      this.authService.startSubscriptionRefresh();
+      
+      // Clean up URL parameters
+      const url = new URL(window.location.href);
+      url.searchParams.delete('stripe_success');
+      url.searchParams.delete('session_id');
+      window.history.replaceState({}, document.title, url.toString());
+    }
   }
 
   ngOnDestroy() {

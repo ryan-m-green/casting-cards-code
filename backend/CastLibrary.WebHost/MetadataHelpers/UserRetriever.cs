@@ -7,6 +7,7 @@ namespace CastLibrary.WebHost.MetadataHelpers
     {
         Guid GetDmUserId(ClaimsPrincipal user);
         Guid GetUserId(ClaimsPrincipal user);
+        string GetEmail(ClaimsPrincipal user);
         bool IsPlayer(ClaimsPrincipal user);
         LockLevel GetLockLevel(ClaimsPrincipal user);
         bool GetBypassPayment(ClaimsPrincipal user);
@@ -19,6 +20,11 @@ namespace CastLibrary.WebHost.MetadataHelpers
             var userIdString = user.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? Guid.Empty.ToString();
 
             return Guid.Parse(userIdString);
+        }
+
+        public string GetEmail(ClaimsPrincipal user)
+        {
+            return user.FindFirst(ClaimTypes.Email)?.Value ?? "Unknown";
         }
 
         public Guid GetDmUserId(ClaimsPrincipal user)

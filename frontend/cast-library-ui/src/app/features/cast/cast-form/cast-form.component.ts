@@ -11,8 +11,8 @@ import { SparkleService } from '../../../shared/services/sparkle.service';
 import { CastCardComponent } from '../../../shared/components/cast-card/cast-card.component';
 import { JournalTitleComponent } from '../../../shared/components/journal-title/journal-title.component';
 import { HttpErrorResponse } from '@angular/common/http';
-import { SubscriptionService } from '../../../core/subscription.service';
 import { SubscriptionDrawerService } from '../../../core/subscription-drawer.service';
+import { AuthService } from '../../../core/auth/auth.service';
 
 const VOICE_OPTIONS = ['Chest', 'Throat', 'Mouth / Oral', 'Nasal', 'Head / Sinus'];
 
@@ -51,8 +51,8 @@ export class CastFormComponent implements OnInit {
   private http           = inject(HttpClient);
   private fb             = inject(FormBuilder);
   private sparkle        = inject(SparkleService);
-  subscription           = inject(SubscriptionService);
   private drawerService  = inject(SubscriptionDrawerService);
+  auth = inject(AuthService);
 
   castId         = signal<string | null>(null);
   saveStatus     = signal<'idle' | 'saving' | 'saved' | 'error'>('idle');

@@ -21,7 +21,6 @@ import { IconPickerComponent } from '../icon-picker/icon-picker.component';
 import { Sublocation } from '../../models/sublocation.model';
 import { FACTION_TYPE_OPTIONS, perceptionLabel } from '../../../features/faction/faction-form/faction-form.component';
 import { StripeService, EntityLimitsResponse } from '../../../core/stripe.service';
-import { SubscriptionService } from '../../../core/subscription.service';
 import { AuthService } from '../../../core/auth/auth.service';
 import { effect } from '@angular/core';
 
@@ -81,7 +80,6 @@ export class PortalImportCardComponent implements OnInit, OnChanges {
   private http = inject(HttpClient);
   private fb   = inject(FormBuilder);
   private stripe = inject(StripeService);
-  private subscription = inject(SubscriptionService);
   private auth = inject(AuthService);
 
   // ── Drawer state ──────────────────────────────────────────────────────────
@@ -94,7 +92,7 @@ export class PortalImportCardComponent implements OnInit, OnChanges {
 
   readonly isCreateDisabled = computed(() => {
     if (this.auth.isExempt()) return false;
-    if (this.subscription.isFreeTrial()) return false;
+    if (this.auth.isFreeTrial()) return false;
     const level = this.auth.lockLevel();
     return level !== 'FullAccess';
   });

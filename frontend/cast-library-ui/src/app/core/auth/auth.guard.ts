@@ -1,7 +1,6 @@
 import { inject } from '@angular/core';
 import { CanActivateFn, CanDeactivateFn, Router } from '@angular/router';
 import { AuthService } from './auth.service';
-import { SubscriptionService } from '../subscription.service';
 import { SubscriptionChoiceComponent } from '../../features/subscription-choice/subscription-choice.component';
 
 export const authGuard: CanActivateFn = () => {
@@ -14,9 +13,23 @@ export const authGuard: CanActivateFn = () => {
 export const dmGuard: CanActivateFn = () => {
   const auth   = inject(AuthService);
   const router = inject(Router);
-  if (auth.isDm() || auth.isAdmin()) return true;
-  if (!auth.isLoggedIn()) return router.createUrlTree(['/']);
+  
+  console.log('dmGuard - Checking auth state:');
+  console.log('dmGuard - isLoggedIn():', auth.isLoggedIn());
+  console.log('dmGuard - isDm():', auth.isDm());
+  console.log('dmGuard - isAdmin():', auth.isAdmin());
+  console.log('dmGuard - currentUser():', auth.currentUser());
+  
+  if (auth.isDm() || auth.isAdmin()) {
+    console.log('dmGuard - User is DM/Admin, allowing access');
+    return true;
+  }
+  if (!auth.isLoggedIn()) {
+    console.log('dmGuard - User not logged in, redirecting to login');
+    return router.createUrlTree(['/']);
+  }
   // Logged-in player attempting a DM page — log them out and send to login
+  console.log('dmGuard - Logged-in player attempting DM page, logging out');
   auth.logout();
   return false;
 };
@@ -46,14 +59,13 @@ export const coverGuard: CanActivateFn = () => {
 };
 
 export const subscriptionLockGuard: CanActivateFn = () => {
-  const auth            = inject(AuthService);
-  const subscription    = inject(SubscriptionService);
-  const router          = inject(Router);
+  const auth   = inject(AuthService);
+  const router = inject(Router);
 
   // Allow if exempt (admin or bypassPayment from JWT token for immediate bypass)
   if (auth.isExempt()) return true;
   // Allow if on free trial
-  if (subscription.isFreeTrial()) return true;
+  if (auth.isFreeTrial()) return true;
   // Check current lock level from auth service (from JWT token for immediate availability)
   // Allow if FullAccess
   if (auth.lockLevel() === 'FullAccess') return true;
@@ -63,14 +75,13 @@ export const subscriptionLockGuard: CanActivateFn = () => {
 };
 
 export const libraryAccessGuard: CanActivateFn = () => {
-  const auth            = inject(AuthService);
-  const subscription    = inject(SubscriptionService);
-  const router          = inject(Router);
+  const auth   = inject(AuthService);
+  const router = inject(Router);
 
   // Allow if exempt (admin or bypassPayment from JWT token for immediate bypass)
   if (auth.isExempt()) return true;
   // Allow if on free trial
-  if (subscription.isFreeTrial()) return true;
+  if (auth.isFreeTrial()) return true;
   // Check current lock level from auth service (from JWT token for immediate availability)
   const level = auth.lockLevel();
   // Allow if FullAccess or SoftLock
@@ -81,14 +92,13 @@ export const libraryAccessGuard: CanActivateFn = () => {
 };
 
 export const playerLibraryAccessGuard: CanActivateFn = () => {
-  const auth            = inject(AuthService);
-  const subscription    = inject(SubscriptionService);
-  const router          = inject(Router);
+  const auth   = inject(AuthService);
+  const router = inject(Router);
 
   // Allow if exempt (admin or bypassPayment from JWT token for immediate bypass)
   if (auth.isExempt()) return true;
   // Allow if on free trial
-  if (subscription.isFreeTrial()) return true;
+  if (auth.isFreeTrial()) return true;
   // Check current lock level from auth service (from JWT token for immediate availability)
   const level = auth.lockLevel();
   // Allow if FullAccess or SoftLock

@@ -1,6 +1,6 @@
 <div class="pc scroll-body">
   <app-upgrade-badge
-    [visible]="subscription.isFreeTrial()"
+    [visible]="auth.isFreeTrial()"
     (badgeClick)="openUpgradeDrawer()"
     class="upgrade-badge-dashboard" />
 

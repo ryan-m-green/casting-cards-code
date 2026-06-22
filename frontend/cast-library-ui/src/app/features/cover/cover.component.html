@@ -81,7 +81,7 @@
 
   <!-- Form area + buttons: flow together as one unit -->
   <div class="cover-form-area">
-    <form id="loginForm" class="cover-login-form" [formGroup]="loginForm" (ngSubmit)="knock()">
+    <form id="loginForm" class="cover-login-form" [formGroup]="loginForm" (ngSubmit)="knock()" autocomplete="off">
       <div class="field">
         <div class="field-label-row">
           <label for="email-input" class="cover-fi-label">Arcane Seal (Email)</label>
@@ -103,7 +103,7 @@
         </div>
         <input id="password-input" class="cover-fi" [class.input-error]="hasPasswordError()"
                type="password" formControlName="password"
-               placeholder="••••••••" autocomplete="current-password" />
+               placeholder="••••••••" autocomplete="off" />
       </div>
 
     </form>

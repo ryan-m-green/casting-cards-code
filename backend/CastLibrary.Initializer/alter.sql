@@ -121,3 +121,38 @@ END $$;
 
 -- Create an index for better query performance if this column will be used for filtering
 CREATE INDEX IF NOT EXISTS idx_pricing_model_account_type ON pricing_model(account_type);
+
+-- ============================================================
+-- Comprehensive Audit Logging - Slice 3
+-- ============================================================
+
+-- Create audit_logs table for security event tracking
+CREATE TABLE IF NOT EXISTS audit_logs (
+    id                UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    user_id           UUID NOT NULL,
+    user_email        VARCHAR(255) NOT NULL,
+    event_type        VARCHAR(50) NOT NULL,
+    event_description TEXT NOT NULL,
+    endpoint          VARCHAR(500),
+    http_method       VARCHAR(10),
+    status_code       INTEGER,
+    ip_address        VARCHAR(45),
+    user_agent        TEXT,
+    request_details   TEXT,
+    response_details  TEXT,
+    is_success        BOOLEAN NOT NULL DEFAULT true,
+    error_message     TEXT,
+    created_at        TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    additional_data   TEXT
+);
+
+-- Create indexes for audit logs table for efficient querying
+CREATE INDEX IF NOT EXISTS idx_audit_logs_user_id ON audit_logs(user_id);
+CREATE INDEX IF NOT EXISTS idx_audit_logs_event_type ON audit_logs(event_type);
+CREATE INDEX IF NOT EXISTS idx_audit_logs_created_at ON audit_logs(created_at);
+CREATE INDEX IF NOT EXISTS idx_audit_logs_user_created ON audit_logs(user_id, created_at);
+CREATE INDEX IF NOT EXISTS idx_audit_logs_type_created ON audit_logs(event_type, created_at);
+CREATE INDEX IF NOT EXISTS idx_audit_logs_success ON audit_logs(is_success);
+
+-- Create index for date range queries
+CREATE INDEX IF NOT EXISTS idx_audit_logs_date_range ON audit_logs(created_at DESC);

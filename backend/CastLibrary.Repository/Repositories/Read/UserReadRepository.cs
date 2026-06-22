@@ -30,12 +30,12 @@ public class UserReadRepository(
         public DateTime CreatedAt { get; set; }
         public DateTime? LastLoggedInOn { get; set; }
         public Guid? SubscriptionId { get; set; }
-        public string? StripeCustomerId { get; set; }
-        public string? StripeSubscriptionId { get; set; }
-        public string? Status { get; set; }
+        public string StripeCustomerId { get; set; }
+        public string StripeSubscriptionId { get; set; }
+        public string Status { get; set; }
         public bool? BypassPayment { get; set; }
         public DateTime? CurrentPeriodEnd { get; set; }
-        public string? LockLevel { get; set; }
+        public string LockLevel { get; set; }
     }
     public async Task<bool> ExistsByEmailAsync(string email)
     {

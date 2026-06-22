@@ -5,7 +5,6 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { filter, map, startWith } from 'rxjs';
 import { NavigationEnd } from '@angular/router';
 import { AuthService } from '../../../core/auth/auth.service';
-import { SubscriptionService } from '../../../core/subscription.service';
 import { StripeService } from '../../../core/stripe.service';
 import { FlipAnimationService } from '../../../core/flip-animation.service';
 
@@ -18,15 +17,14 @@ import { FlipAnimationService } from '../../../core/flip-animation.service';
 })
 export class SubscriptionLockBannerComponent {
   private auth = inject(AuthService);
-  private subscriptionService = inject(SubscriptionService);
   private router = inject(Router);
   private stripe = inject(StripeService);
   private flipAnimationService = inject(FlipAnimationService);
 
-  readonly lockLevel = this.subscriptionService.lockLevel;
+  readonly lockLevel = this.auth.lockLevel;
   readonly isExempt = this.auth.isExempt;
   readonly isDm = this.auth.isDm;
-  readonly isFreeTrial = this.subscriptionService.isFreeTrial;
+  readonly isFreeTrial = this.auth.isFreeTrial;
   readonly isFlipInProgress = this.flipAnimationService.isFlipInProgress;
 
   private readonly currentUrl = toSignal(
@@ -58,12 +56,12 @@ export class SubscriptionLockBannerComponent {
     if (this.excludedPaths.some(path => url.startsWith(path))) return false;
     if (!this.auth.isLoggedIn()) return false;
     // Don't show until subscription data is loaded
-    if (!this.subscriptionService.subscription()) return false;
+    if (!this.auth.subscription()) return false;
     if (this.isExempt()) return false;
     if (this.isFreeTrial()) return false;
     const level = this.lockLevel();
     if (level === 'FullAccess') {
-      const pastDueSince = this.subscriptionService.subscription()?.pastDueSince;
+      const pastDueSince = this.auth.subscription()?.pastDueSince;
       if (!pastDueSince) return false;
       return new Date() > new Date(pastDueSince);
     }

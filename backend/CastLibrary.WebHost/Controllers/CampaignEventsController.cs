@@ -35,7 +35,8 @@ public class CampaignEventsController(
     ICampaignEventWebMapper mapper,
     ICampaignAccessService campaignAccess,
     IUserRetriever userRetriever,
-    IHubContext<CampaignHub> hubContext) : ControllerBase
+    IHubContext<CampaignHub> hubContext,
+    IFileValidationService fileValidationService) : ControllerBase
 {
     private Task<bool> CallerOwns(Guid campaignId) =>
         campaignAccess.IsOwnerAsync(campaignId, userRetriever.GetUserId(User));
@@ -229,22 +230,13 @@ public class CampaignEventsController(
     {
         if (!await CallerOwns(campaignId)) return Forbid();
 
-        if (file is null || file.Length == 0)
-            return BadRequest("No file provided.");
+        var validationResult = await fileValidationService.ValidateFileAsync(file, 20 * 1024 * 1024, 
+            new[] { "image/jpeg", "image/png", "image/webp", "application/pdf" });
 
-        var allowedTypes = new[] { "image/jpeg", "image/png", "image/webp", "application/pdf" };
-        var ext = Path.GetExtension(file.FileName).ToLowerInvariant();
-        var isAllowed = allowedTypes.Contains(file.ContentType)
-            || (file.ContentType == "application/octet-stream" && ext is ".pdf" or ".jpg" or ".jpeg" or ".png" or ".webp");
-        if (!isAllowed)
-            return BadRequest("Only JPEG, PNG, WebP, and PDF files are supported.");
+        if (!validationResult.IsValid)
+            return BadRequest(validationResult.ErrorMessage);
 
-        if (file.Length > 5 * 1024 * 1024)
-            return BadRequest("File size must not exceed 5 MB.");
-
-        var resolvedContentType = file.ContentType == "application/octet-stream" && ext == ".pdf"
-            ? "application/pdf"
-            : file.ContentType;
+        var resolvedContentType = validationResult.DetectedContentType;
 
         var imageUrl = await uploadHandoutImageCommand.HandleAsync(
             new UploadCampaignEventHandoutImageCommand(campaignId, eventId, file.OpenReadStream(), resolvedContentType));

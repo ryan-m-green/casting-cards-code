@@ -56,9 +56,8 @@ export class PlayerCampaignsComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     // Connect to SignalR hub to receive real-time events
-    const token = this.auth.getToken();
-    if (token && !this.hub.isConnected()) {
-      this.hub.connect(token).catch(console.warn);
+    if (!this.hub.isConnected()) {
+      this.hub.connect().catch(() => {});
     }
 
     this.http.get<Campaign[]>(`${environment.apiUrl}/api/campaigns`).subscribe(c => this.campaigns.set(c));
@@ -66,7 +65,7 @@ export class PlayerCampaignsComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     // Disconnect from SignalR hub when leaving the page
-    this.hub.disconnect().catch(console.warn);
+    this.hub.disconnect().catch(() => {});
     this.hubSubscriptions.forEach(sub => sub.unsubscribe());
   }
 

@@ -61,6 +61,42 @@ public class LocalFileImageStorageOperator(IConfiguration configuration, IImageC
         return await File.ReadAllBytesAsync(fullPath);
     }
 
+    public async Task<List<(string key, long size)>> ListAllImagesWithSizesAsync()
+    {
+        var imageKeys = new List<(string key, long size)>();
+
+        try
+        {
+            if (!Directory.Exists(_basePath))
+                return imageKeys;
+
+            // Recursively find all .png files
+            var pngFiles = Directory.GetFiles(_basePath, "*.png", SearchOption.AllDirectories);
+
+            foreach (var file in pngFiles)
+            {
+                // Get relative path from base path and convert to forward slashes
+                var relativePath = Path.GetRelativePath(_basePath, file);
+                var key = relativePath.Replace(Path.DirectorySeparatorChar, '/');
+
+                // Remove .png extension to match S3 key format
+                if (key.EndsWith(".png", StringComparison.OrdinalIgnoreCase))
+                {
+                    key = key[..^4];
+                }
+
+                var size = new FileInfo(file).Length;
+                imageKeys.Add((key, size));
+            }
+        }
+        catch
+        {
+            // Return empty list on error
+        }
+
+        return await Task.FromResult(imageKeys);
+    }
+
     public async Task DeleteUserDirectoryAsync(Guid userId)
     {
         if (string.IsNullOrWhiteSpace(_basePath)) return;
@@ -81,5 +117,40 @@ public class LocalFileImageStorageOperator(IConfiguration configuration, IImageC
             // Log but don't throw - allow database deletion to proceed
         }
 
+    }
+
+    public async Task<List<string>> ListAllImagesAsync()
+    {
+        var imageKeys = new List<string>();
+
+        try
+        {
+            if (!Directory.Exists(_basePath))
+                return imageKeys;
+
+            // Recursively find all .png files
+            var pngFiles = Directory.GetFiles(_basePath, "*.png", SearchOption.AllDirectories);
+
+            foreach (var file in pngFiles)
+            {
+                // Get relative path from base path and convert to forward slashes
+                var relativePath = Path.GetRelativePath(_basePath, file);
+                var key = relativePath.Replace(Path.DirectorySeparatorChar, '/');
+                
+                // Remove .png extension to match S3 key format
+                if (key.EndsWith(".png", StringComparison.OrdinalIgnoreCase))
+                {
+                    key = key[..^4];
+                }
+
+                imageKeys.Add(key);
+            }
+        }
+        catch
+        {
+            // Return empty list on error
+        }
+
+        return await Task.FromResult(imageKeys);
     }
 }

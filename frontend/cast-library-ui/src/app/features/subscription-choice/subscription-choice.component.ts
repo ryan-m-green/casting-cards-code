@@ -2,7 +2,6 @@ import { Component, inject, OnInit, ChangeDetectorRef, OnDestroy } from '@angula
 import { Router, ActivatedRoute } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { StripeService, PricingDisplayResponse, SubscriptionTier } from '../../core/stripe.service';
-import { SubscriptionService } from '../../core/subscription.service';
 import { AuthService } from '../../core/auth/auth.service';
 import { JournalTitleComponent } from '../../shared/components/journal-title/journal-title.component';
 import { PremiumPlanCardComponent } from '../../shared/components/premium-plan-card/premium-plan-card.component';
@@ -21,7 +20,6 @@ export class SubscriptionChoiceComponent implements OnInit {
   private router = inject(Router);
   private route = inject(ActivatedRoute);
   private stripe = inject(StripeService);
-  private subscriptionService = inject(SubscriptionService);
   private authService = inject(AuthService);
   private cdr = inject(ChangeDetectorRef);
 
@@ -37,16 +35,9 @@ export class SubscriptionChoiceComponent implements OnInit {
   ngOnInit() {
     this.route.queryParams.subscribe(params => {
       if (params['checkout'] === 'success') {
-        // Check if token exists before proceeding
-        if (!this.authService.getToken()) {
-          // Token was lost during redirect, redirect to login with return URL
-          this.router.navigate(['/'], { 
-            queryParams: { returnUrl: '/subscription-choice?checkout=success' }
-          });
-          return;
-        }
+        // Cookies handle authentication automatically, no token check needed
         this.isCheckoutSuccessSignal.set(true);
-        this.startPollingSubscriptionStatus();
+        this.startSubscriptionRefresh();
       }
     });
   }
@@ -55,19 +46,19 @@ export class SubscriptionChoiceComponent implements OnInit {
     if (this.checkInterval) {
       clearInterval(this.checkInterval);
     }
-    this.subscriptionService.stopPolling();
+    this.authService.stopSubscriptionRefresh();
   }
 
-  private startPollingSubscriptionStatus() {
-    this.subscriptionService.startPolling();
+  private startSubscriptionRefresh() {
+    this.authService.startSubscriptionRefresh();
     
     const checkInterval = setInterval(() => {
-      const sub = this.subscriptionService.subscription();
-      const lockLevel = this.subscriptionService.lockLevel();
+      const sub = this.authService.subscription();
+      const lockLevel = this.authService.lockLevel();
       
       if (sub?.status === 'Active' && lockLevel === 'FullAccess') {
         clearInterval(checkInterval);
-        this.subscriptionService.stopPolling();
+        this.authService.stopSubscriptionRefresh();
         this.isCheckoutSuccessSignal.set(false);
         this.router.navigate(['/dm/dashboard']);
       }

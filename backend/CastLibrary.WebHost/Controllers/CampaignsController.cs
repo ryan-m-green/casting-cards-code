@@ -10,6 +10,7 @@ using CastLibrary.WebHost.Mappers;
 using CastLibrary.WebHost.MetadataHelpers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.AspNetCore.SignalR;
 
 namespace CastLibrary.WebHost.Controllers;
@@ -17,6 +18,7 @@ namespace CastLibrary.WebHost.Controllers;
 [ApiController]
 [Route("api/campaigns")]
 [Authorize]
+[EnableRateLimiting("GeneralApi")]
 public class CampaignsController(
     IGetCampaignLibraryQueryHandler getLibraryQuery,
     IGetCampaignDetailQueryHandler getDetailQuery,

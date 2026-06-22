@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "CastLibrary.ImageMigrationTool": {
+      "commandName": "Project",
+      "commandLineArgs": "upload"
+    }
+  }
+}

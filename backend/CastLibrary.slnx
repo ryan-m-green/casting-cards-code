@@ -1,5 +1,6 @@
 ﻿<Solution>
   <Project Path="CastLibrary.Adapter/CastLibrary.Adapter.csproj" />
+  <Project Path="CastLibrary.ImageMigrationTool/CastLibrary.ImageMigrationTool.csproj" />
   <Project Path="CastLibrary.Initializer/CastLibrary.Initializer.csproj" Id="391b0291-ed22-4764-9149-b86ba8b580ff" />
   <Project Path="CastLibrary.Logic/CastLibrary.Logic.csproj" />
   <Project Path="CastLibrary.Repository/CastLibrary.Repository.csproj" />

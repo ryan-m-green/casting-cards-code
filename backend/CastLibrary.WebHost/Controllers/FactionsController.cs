@@ -1,5 +1,6 @@
 using CastLibrary.Logic.Commands.Faction;
 using CastLibrary.Logic.Queries.Faction;
+using CastLibrary.Logic.Services;
 using CastLibrary.Logic.Validators;
 using CastLibrary.Shared.Exceptions;
 using CastLibrary.Shared.Requests;
@@ -7,12 +8,14 @@ using CastLibrary.WebHost.Mappers;
 using CastLibrary.WebHost.MetadataHelpers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 
 namespace CastLibrary.WebHost.Controllers;
 
 [ApiController]
 [Route("api/factions")]
 [Authorize]
+[EnableRateLimiting("GeneralApi")]
 public class FactionsController(
     IGetFactionLibraryQueryHandler getFactionLibraryQuery,
     IGetFactionDetailQueryHandler getFactionDetailQuery,
@@ -21,7 +24,8 @@ public class FactionsController(
     IUploadFactionImageCommandHandler uploadFactionImageCommand,
     IDeleteFactionCommandHandler deleteFactionCommand,
     IFactionWebMapper mapper,
-    IUserRetriever userRetriever) : ControllerBase
+    IUserRetriever userRetriever,
+    IFileValidationService fileValidationService) : ControllerBase
 {
     [HttpGet]
     public async Task<IActionResult> GetAll()
@@ -81,19 +85,15 @@ public class FactionsController(
     [Consumes("multipart/form-data")]
     public async Task<IActionResult> UploadImage(Guid id, IFormFile file)
     {
-        if (file is null || file.Length == 0)
-            return BadRequest("No file provided.");
+        var validationResult = await fileValidationService.ValidateFileAsync(file, 20 * 1024 * 1024, 
+            new[] { "image/jpeg", "image/png", "image/webp" });
 
-        var allowedTypes = new[] { "image/jpeg", "image/png", "image/webp" };
-        if (!allowedTypes.Contains(file.ContentType))
-            return BadRequest("Only JPEG, PNG, and WebP images are supported.");
-
-        if (file.Length > 5 * 1024 * 1024)
-            return BadRequest("File size must not exceed 5 MB.");
+        if (!validationResult.IsValid)
+            return BadRequest(validationResult.ErrorMessage);
 
         var dmUserId = userRetriever.GetDmUserId(User);
         var (success, _) = await uploadFactionImageCommand.HandleAsync(
-            new UploadFactionImageCommand(id, dmUserId, file.OpenReadStream(), file.ContentType));
+            new UploadFactionImageCommand(id, dmUserId, file.OpenReadStream(), validationResult.DetectedContentType));
 
         if (!success) return NotFound();
 

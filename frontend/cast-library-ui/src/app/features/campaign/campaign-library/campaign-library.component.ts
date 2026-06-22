@@ -14,7 +14,6 @@ import { PortalTransitionService } from '../../../core/portal-transition.service
 import { AuthService } from '../../../core/auth/auth.service';
 import { CampaignHubService } from '../../../core/hub/campaign-hub.service';
 import { StripeService } from '../../../core/stripe.service';
-import { SubscriptionService } from '../../../core/subscription.service';
 import { SubscriptionDrawerService } from '../../../core/subscription-drawer.service';
 
 @Component({
@@ -32,8 +31,7 @@ export class CampaignLibraryComponent implements OnInit, OnDestroy {
   private hub            = inject(CampaignHubService);
   private hubSubscriptions: Subscription[] = [];
   private stripe         = inject(StripeService);
-  private auth           = inject(AuthService);
-  subscription           = inject(SubscriptionService);
+  auth = inject(AuthService);
   private drawerService  = inject(SubscriptionDrawerService);
 
   activeTab             = signal<'mine' | 'joined'>('mine');
@@ -64,17 +62,16 @@ export class CampaignLibraryComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    const token = this.auth.getToken();
-    if (token && !this.hub.isConnected()) {
-      this.hub.connect(token).catch(console.warn);
-    this.loadEntityLimits();
+    if (!this.hub.isConnected()) {
+      this.hub.connect().catch(() => {});
     }
+    this.loadEntityLimits();
     this.http.get<Campaign[]>(`${environment.apiUrl}/api/campaigns`).subscribe(c => this.campaigns.set(c));
     this.loadJoinedCampaigns();
   }
 
   ngOnDestroy() {
-    this.hub.disconnect().catch(console.warn);
+    this.hub.disconnect().catch(() => {});
     this.hubSubscriptions.forEach(sub => sub.unsubscribe());
   }
 

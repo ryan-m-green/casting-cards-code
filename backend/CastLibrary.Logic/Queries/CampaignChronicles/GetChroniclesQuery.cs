@@ -77,7 +77,7 @@ public class GetChroniclesQuery
         Guid campaignId,
         int pageNumber = 1,
         int pageSize = 5,
-        string? searchQuery = null,
+        string searchQuery = null,
         string[]? typeFilters = null,
         bool isPlayer = false)
     {
@@ -92,7 +92,7 @@ public class GetChroniclesQuery
     public Guid CampaignId { get; }
     public int PageNumber { get; }
     public int PageSize { get; }
-    public string? SearchQuery { get; }
+    public string SearchQuery { get; }
     public string[]? TypeFilters { get; }
     public bool IsPlayer { get; }
 }

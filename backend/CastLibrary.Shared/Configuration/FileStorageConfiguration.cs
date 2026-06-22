@@ -20,7 +20,7 @@ namespace CastLibrary.Shared.Configuration
             BucketName = configuration["ImageStorage:S3:BucketName"] ?? throw new InvalidOperationException("BucketName not configured");
             Region = configuration["ImageStorage:S3:Region"] ?? throw new InvalidOperationException("Region not configured");
             Endpoint = configuration["ImageStorage:S3:Endpoint"] ?? throw new InvalidOperationException("Endpoint not configured");
-            PublicUrl = configuration["ImageStorage:S3:PublicUrl"] ?? throw new InvalidOperationException("PublicUrl not configured");
+            PublicUrl = configuration["ImageStorage:S3:PublicUrl"] ?? string.Empty;
         }
 
         public string AccessKey { get; }
