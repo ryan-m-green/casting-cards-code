@@ -319,7 +319,7 @@ builder.Services.AddAntiforgery(options =>
 {
     options.Cookie.Name = "XSRF-TOKEN";
     options.Cookie.HttpOnly = false;
-    options.Cookie.SecurePolicy = builder.Environment.IsDevelopment() ? CookieSecurePolicy.None : CookieSecurePolicy.Always;
+    options.Cookie.SecurePolicy = builder.Environment.IsDevelopment() ? CookieSecurePolicy.None : CookieSecurePolicy.SameAsRequest;
     options.Cookie.SameSite = SameSiteMode.Lax;
     options.Cookie.Path = "/";
     if (!string.IsNullOrEmpty(cookieDomain))
@@ -412,10 +412,12 @@ builder.Services.AddCastLibraryServices(builder.Configuration);
 
 var app = builder.Build();
 
-// Configure forwarded headers for Digital Ocean load balancer
+// Configure forwarded headers for Digital Ocean App Platform
 app.UseForwardedHeaders(new ForwardedHeadersOptions
 {
-    ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
+    ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto,
+    KnownProxies = { IPAddress.None }, // Trust all proxies (DO App Platform environment)
+    ForwardLimit = null
 });
 
 app.UseCors("Angular");
