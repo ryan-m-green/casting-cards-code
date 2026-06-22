@@ -24,6 +24,7 @@ using Serilog.Events;
 // Configure Serilog
 Log.Logger = new LoggerConfiguration()
     .MinimumLevel.Information()
+    .WriteTo.Console()
     .WriteTo.File("C:\\Repository\\CastingCards\\logs\\cast-library-.txt", rollingInterval: RollingInterval.Day)
     .WriteTo.File("C:\\Repository\\CastingCards\\logs\\errors\\cast-library-error-.txt", rollingInterval: RollingInterval.Day, restrictedToMinimumLevel: Serilog.Events.LogEventLevel.Error)
     .CreateLogger();
