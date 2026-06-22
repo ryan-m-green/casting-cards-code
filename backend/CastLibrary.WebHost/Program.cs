@@ -17,6 +17,7 @@ using CastLibrary.WebHost.Authentication;
 using CastLibrary.Shared.Enums;
 using Microsoft.AspNetCore.Antiforgery;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.HttpOverrides;
 using CastLibrary.Shared.Interfaces;
 using Serilog;
 using Serilog.Events;
@@ -410,6 +411,12 @@ logger.LogInformation("Antiforgery Configuration - Cookie Name: XSRF-TOKEN, Secu
 builder.Services.AddCastLibraryServices(builder.Configuration);
 
 var app = builder.Build();
+
+// Configure forwarded headers for Digital Ocean load balancer
+app.UseForwardedHeaders(new ForwardedHeadersOptions
+{
+    ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
+});
 
 app.UseCors("Angular");
 app.UseMiddleware<SecurityHeadersMiddleware>();
