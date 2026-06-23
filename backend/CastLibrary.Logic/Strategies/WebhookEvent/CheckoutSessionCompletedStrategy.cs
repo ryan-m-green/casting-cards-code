@@ -36,21 +36,21 @@ public class CheckoutSessionCompletedStrategy : IWebhookEventStrategy
 
     public async Task HandleAsync(StripeEventPayload stripeEvent)
     {
-        _loggingService.LogInformation($"CheckoutSessionCompletedStrategy: Processing webhook event {stripeEvent.Id}");
+        _loggingService.LogInformation($"CheckoutSessionCompletedStrategy: Entry - Processing webhook event {stripeEvent.Id}");
         try
         {
             var session = stripeEvent.Data["object"].ToObject<Stripe.Checkout.Session>();
             _loggingService.LogInformation($"CheckoutSessionCompletedStrategy: Stripe event data: {stripeEvent.Data}");
             if (session?.Metadata == null || !session.Metadata.TryGetValue("userId", out var userIdStr) || !Guid.TryParse(userIdStr, out var userId))
             {
-                _loggingService.LogWarning($"CheckoutSessionCompletedStrategy: Could not extract userId from webhook event {stripeEvent.Id}");
+                _loggingService.LogWarning($"CheckoutSessionCompletedStrategy: Exit - Could not extract userId from webhook event {stripeEvent.Id}");
                 return;
             }
 
             var subscription = await _subscriptionReadRepository.GetByUserIdAsync(userId);
             if (subscription == null)
             {
-                _loggingService.LogWarning($"CheckoutSessionCompletedStrategy: No subscription found for userId {userId}");
+                _loggingService.LogWarning($"CheckoutSessionCompletedStrategy: Exit - No subscription found for userId {userId}");
                 return;
             }
             subscription.CurrentPeriodEnd = session.ExpiresAt;
@@ -65,10 +65,11 @@ public class CheckoutSessionCompletedStrategy : IWebhookEventStrategy
 
             userId = stripeEvent.UserId == Guid.Empty ? subscription.UserId : stripeEvent.UserId;
             stripeEvent.Callback(userId, subscription.LockLevel.ToString());
+            _loggingService.LogInformation($"CheckoutSessionCompletedStrategy: Exit - Successfully processed webhook event {stripeEvent.Id}");
         }
         catch (Exception ex)
         {
-            _loggingService.LogError($"CheckoutSessionCompletedStrategy: Error processing webhook event {stripeEvent.Id}: {ex.Message}");
+            _loggingService.LogError($"CheckoutSessionCompletedStrategy: Exit - Error processing webhook event {stripeEvent.Id}: {ex.Message}");
         }
     }
 

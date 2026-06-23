@@ -14,16 +14,37 @@ public class ProcessStripeWebhookCommandHandler(
 {
     public async Task HandleAsync(ProcessStripeWebhookCommand command)
     {
-        if (command.EventPayload == null) return;
+        loggingService.LogInformation("ProcessStripeWebhookCommandHandler: Entry - Processing webhook command");
+        try
+        {
+            if (command.EventPayload == null)
+            {
+                loggingService.LogWarning("ProcessStripeWebhookCommandHandler: Exit - Event payload is null");
+                return;
+            }
 
-        var strategy = webhookEventStrategies.FirstOrDefault(s => s.IsMatch(command.EventPayload.Type));
-        if (strategy != null)
-        {
-            await strategy.HandleAsync(command.EventPayload);
+            var eventType = command.EventPayload.Type;
+            loggingService.LogInformation($"ProcessStripeWebhookCommandHandler: Looking for strategy for event type {eventType}");
+
+            var strategy = webhookEventStrategies.FirstOrDefault(s => s.IsMatch(eventType));
+            if (strategy != null)
+            {
+                var strategyName = strategy.GetType().Name;
+                loggingService.LogInformation($"ProcessStripeWebhookCommandHandler: Selected strategy {strategyName} for event type {eventType}");
+                await strategy.HandleAsync(command.EventPayload);
+                loggingService.LogInformation($"ProcessStripeWebhookCommandHandler: Strategy {strategyName} completed successfully");
+            }
+            else
+            {
+                loggingService.LogInformation($"ProcessStripeWebhookCommandHandler: No matching strategy found for webhook event {eventType}");
+            }
+
+            loggingService.LogInformation("ProcessStripeWebhookCommandHandler: Exit - Webhook command processing completed");
         }
-        else
+        catch (Exception ex)
         {
-            loggingService.LogInformation($"No matching strategy found for webhook event {command.EventPayload.Type}");
+            loggingService.LogError($"ProcessStripeWebhookCommandHandler: Exit - Error processing webhook command: {ex.Message}");
+            throw;
         }
     }
 }

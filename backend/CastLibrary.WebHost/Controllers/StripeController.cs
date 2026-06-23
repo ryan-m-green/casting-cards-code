@@ -62,15 +62,27 @@ public class StripeController(
     [StripeWebhookSecurityFilter]
     public async Task<IActionResult> Webhook()
     {
-        var payload = (StripeEventPayload)HttpContext.Items["StripePayload"];
-        var eventType = payload.Type;
+        loggingService.LogInformation("StripeController.Webhook: Entry - Processing Stripe webhook");
+        try
+        {
+            var payload = (StripeEventPayload)HttpContext.Items["StripePayload"];
+            var eventType = payload.Type;
 
-        payload.Callback = (userId, lockLevel) => NotifySubscriptionLockLevelChanged(userId, lockLevel);
+            loggingService.LogInformation($"StripeController.Webhook: Received event type {eventType} with ID {payload.Id}");
 
-        var command = new ProcessStripeWebhookCommand(payload);
-        await webhookHandler.HandleAsync(command);
+            payload.Callback = (userId, lockLevel) => NotifySubscriptionLockLevelChanged(userId, lockLevel);
 
-        return Ok();
+            var command = new ProcessStripeWebhookCommand(payload);
+            await webhookHandler.HandleAsync(command);
+
+            loggingService.LogInformation($"StripeController.Webhook: Exit - Successfully processed webhook event {eventType}");
+            return Ok();
+        }
+        catch (Exception ex)
+        {
+            loggingService.LogError($"StripeController.Webhook: Exit - Error processing webhook: {ex.Message}");
+            throw;
+        }
     }
 
     private void NotifySubscriptionLockLevelChanged(Guid userId, string newLockLevel)

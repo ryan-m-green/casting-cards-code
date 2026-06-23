@@ -33,7 +33,7 @@ public class InvoicePaymentSucceededStrategy : IWebhookEventStrategy
 
     public async Task HandleAsync(StripeEventPayload stripeEvent)
     {
-        _loggingService.LogInformation($"InvoicePaymentSucceededStrategy: Processing webhook event {stripeEvent.Id}");
+        _loggingService.LogInformation($"InvoicePaymentSucceededStrategy: Entry - Processing webhook event {stripeEvent.Id}");
         try
         {
             var invoiceObject = stripeEvent.Data["object"] as JObject;
@@ -42,14 +42,14 @@ public class InvoicePaymentSucceededStrategy : IWebhookEventStrategy
             _loggingService.LogInformation($"InvoicePaymentSucceededStrategy: Stripe event data: {stripeEvent.Data}");
             if (string.IsNullOrEmpty(customerId))
             {
-                _loggingService.LogWarning($"InvoicePaymentSucceededStrategy: Could not extract CustomerId from webhook event {stripeEvent.Id}");
+                _loggingService.LogWarning($"InvoicePaymentSucceededStrategy: Exit - Could not extract CustomerId from webhook event {stripeEvent.Id}");
                 return;
             }
 
             var subscription = await _subscriptionReadRepository.GetByStripeCustomerIdAsync(customerId);
             if (subscription == null)
             {
-                _loggingService.LogWarning($"InvoicePaymentSucceededStrategy: No subscription found for CustomerId {customerId}");
+                _loggingService.LogWarning($"InvoicePaymentSucceededStrategy: Exit - No subscription found for CustomerId {customerId}");
                 return;
             }
 
@@ -67,10 +67,11 @@ public class InvoicePaymentSucceededStrategy : IWebhookEventStrategy
             var userId = stripeEvent.UserId == Guid.Empty ? subscription.UserId : stripeEvent.UserId;
             stripeEvent.Callback(userId, subscription.LockLevel.ToString());
             _loggingService.LogInformation($"InvoicePaymentSucceededStrategy: Successfully updated subscription {subscription.Id} for CustomerId {customerId} to Active");
+            _loggingService.LogInformation($"InvoicePaymentSucceededStrategy: Exit - Successfully processed webhook event {stripeEvent.Id}");
         }
         catch (Exception ex)
         {
-            _loggingService.LogError($"InvoicePaymentSucceededStrategy: Error processing webhook event {stripeEvent.Id}: {ex.Message}");
+            _loggingService.LogError($"InvoicePaymentSucceededStrategy: Exit - Error processing webhook event {stripeEvent.Id}: {ex.Message}");
         }
     }
 

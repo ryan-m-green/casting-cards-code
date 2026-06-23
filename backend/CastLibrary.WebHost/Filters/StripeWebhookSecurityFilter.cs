@@ -12,21 +12,26 @@ public class StripeWebhookSecurityFilter : ActionFilterAttribute
 {
     public override async Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
     {
+        var stripeConfiguration = context.HttpContext.RequestServices.GetRequiredService<IStripeConfiguration>();
+        var loggingService = context.HttpContext.RequestServices.GetRequiredService<ILoggingService>();
+        
+        loggingService.LogInformation("StripeWebhookSecurityFilter: Entry - Processing webhook request");
+        
         try
         {
-            var stripeConfiguration = context.HttpContext.RequestServices.GetRequiredService<IStripeConfiguration>();
-            var loggingService = context.HttpContext.RequestServices.GetRequiredService<ILoggingService>();
             var stripeSignature = context.HttpContext.Request.Headers["Stripe-Signature"].ToString();
             var webhookSecret = stripeConfiguration.WebhookSecret;
 
             if (string.IsNullOrWhiteSpace(stripeSignature))
             {
+                loggingService.LogWarning("StripeWebhookSecurityFilter: Exit - Stripe-Signature header is missing");
                 context.Result = new BadRequestObjectResult(new { error = "Stripe-Signature header is missing" });
                 return;
             }
 
             if (string.IsNullOrWhiteSpace(webhookSecret))
             {
+                loggingService.LogWarning("StripeWebhookSecurityFilter: Exit - Webhook secret is not configured");
                 context.Result = new BadRequestObjectResult(new { error = "Webhook secret is not configured" });
                 return;
             }
@@ -39,6 +44,7 @@ public class StripeWebhookSecurityFilter : ActionFilterAttribute
 
             if (string.IsNullOrWhiteSpace(jsonPayload))
             {
+                loggingService.LogWarning("StripeWebhookSecurityFilter: Exit - Request body is empty");
                 context.Result = new BadRequestObjectResult(new { error = "Request body is empty" });
                 return;
             }
@@ -46,6 +52,7 @@ public class StripeWebhookSecurityFilter : ActionFilterAttribute
             EventUtility.ConstructEvent(jsonPayload, stripeSignature, webhookSecret, throwOnApiVersionMismatch: false);
 
             var payload = JsonConvert.DeserializeObject<StripeEventPayload>(jsonPayload);
+            loggingService.LogInformation($"StripeWebhookSecurityFilter: Signature validated successfully for event type {payload?.Type}");
 
             // Extract userId from metadata for all events
             if (payload.Data != null && payload.Data["object"] != null)
@@ -63,15 +70,18 @@ public class StripeWebhookSecurityFilter : ActionFilterAttribute
             context.HttpContext.Items["StripePayload"] = payload;
 
             context.HttpContext.Request.Body.Position = 0;
+            loggingService.LogInformation("StripeWebhookSecurityFilter: Exit - Passing request to controller");
             await next();
         }
         catch (StripeException ex)
         {
+            loggingService.LogError($"StripeWebhookSecurityFilter: Exit - Invalid Stripe signature: {ex.Message}");
             context.Result = new BadRequestObjectResult(new { error = $"Invalid Stripe signature: {ex.Message}" });
             return;
         }
         catch(Exception e)
         {
+            loggingService.LogError($"StripeWebhookSecurityFilter: Exit - Unexpected error: {e.Message}");
             var a = 32;
         }
     }

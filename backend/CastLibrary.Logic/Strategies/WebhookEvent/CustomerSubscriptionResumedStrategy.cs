@@ -34,7 +34,7 @@ public class CustomerSubscriptionResumedStrategy : IWebhookEventStrategy
 
     public async Task HandleAsync(StripeEventPayload stripeEvent)
     {
-        _loggingService.LogInformation($"CustomerSubscriptionResumedStrategy: Processing webhook event {stripeEvent.Id}");
+        _loggingService.LogInformation($"CustomerSubscriptionResumedStrategy: Entry - Processing webhook event {stripeEvent.Id}");
         try
         {
             var subscriptionObject = stripeEvent.Data["object"] as JObject;
@@ -43,14 +43,14 @@ public class CustomerSubscriptionResumedStrategy : IWebhookEventStrategy
             _loggingService.LogInformation($"CustomerSubscriptionResumedStrategy: Stripe event data: {stripeEvent.Data}");
             if (string.IsNullOrEmpty(customerId))
             {
-                _loggingService.LogWarning($"CustomerSubscriptionResumedStrategy: Could not extract CustomerId from webhook event {stripeEvent.Id}");
+                _loggingService.LogWarning($"CustomerSubscriptionResumedStrategy: Exit - Could not extract CustomerId from webhook event {stripeEvent.Id}");
                 return;
             }
 
             var subscription = await _subscriptionReadRepository.GetByStripeCustomerIdAsync(customerId);
             if (subscription == null)
             {
-                _loggingService.LogWarning($"CustomerSubscriptionResumedStrategy: No subscription found for CustomerId {customerId}");
+                _loggingService.LogWarning($"CustomerSubscriptionResumedStrategy: Exit - No subscription found for CustomerId {customerId}");
                 return;
             }
 
@@ -68,10 +68,11 @@ public class CustomerSubscriptionResumedStrategy : IWebhookEventStrategy
             var userId = stripeEvent.UserId == Guid.Empty ? subscription.UserId : stripeEvent.UserId;
             stripeEvent.Callback(userId, subscription.LockLevel.ToString());
             _loggingService.LogInformation($"CustomerSubscriptionResumedStrategy: Successfully updated subscription {subscription.Id} for CustomerId {customerId} to Active");
+            _loggingService.LogInformation($"CustomerSubscriptionResumedStrategy: Exit - Successfully processed webhook event {stripeEvent.Id}");
         }
         catch (Exception ex)
         {
-            _loggingService.LogError($"CustomerSubscriptionResumedStrategy: Error processing webhook event {stripeEvent.Id}: {ex.Message}");
+            _loggingService.LogError($"CustomerSubscriptionResumedStrategy: Exit - Error processing webhook event {stripeEvent.Id}: {ex.Message}");
         }
     }
 

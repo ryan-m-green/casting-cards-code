@@ -33,7 +33,7 @@ public class PaymentIntentPaymentFailedStrategy : IWebhookEventStrategy
 
     public async Task HandleAsync(StripeEventPayload stripeEvent)
     {
-        _loggingService.LogInformation($"PaymentIntentPaymentFailedStrategy: Processing webhook event {stripeEvent.Id}");
+        _loggingService.LogInformation($"PaymentIntentPaymentFailedStrategy: Entry - Processing webhook event {stripeEvent.Id}");
         try
         {
             var paymentIntentObject = stripeEvent.Data["object"] as JObject;
@@ -43,14 +43,14 @@ public class PaymentIntentPaymentFailedStrategy : IWebhookEventStrategy
             _loggingService.LogInformation($"PaymentIntentPaymentFailedStrategy: Stripe event data: {stripeEvent.Data}");
             if (string.IsNullOrEmpty(customerId))
             {
-                _loggingService.LogWarning($"PaymentIntentPaymentFailedStrategy: Could not extract CustomerId from webhook event {stripeEvent.Id}");
+                _loggingService.LogWarning($"PaymentIntentPaymentFailedStrategy: Exit - Could not extract CustomerId from webhook event {stripeEvent.Id}");
                 return;
             }
 
             var subscription = await _subscriptionReadRepository.GetByStripeCustomerIdAsync(customerId);
             if (subscription == null)
             {
-                _loggingService.LogWarning($"PaymentIntentPaymentFailedStrategy: No subscription found for CustomerId {customerId}");
+                _loggingService.LogWarning($"PaymentIntentPaymentFailedStrategy: Exit - No subscription found for CustomerId {customerId}");
                 return;
             }
 
@@ -64,10 +64,11 @@ public class PaymentIntentPaymentFailedStrategy : IWebhookEventStrategy
             var userId = stripeEvent.UserId == Guid.Empty ? subscription.UserId : stripeEvent.UserId;
             stripeEvent.Callback(userId, subscription.LockLevel.ToString());
             _loggingService.LogInformation($"PaymentIntentPaymentFailedStrategy: Successfully updated subscription {subscription.Id} for CustomerId {customerId} to PastDue with SoftLock");
+            _loggingService.LogInformation($"PaymentIntentPaymentFailedStrategy: Exit - Successfully processed webhook event {stripeEvent.Id}");
         }
         catch (Exception ex)
         {
-            _loggingService.LogError($"PaymentIntentPaymentFailedStrategy: Error processing webhook event {stripeEvent.Id}: {ex.Message}");
+            _loggingService.LogError($"PaymentIntentPaymentFailedStrategy: Exit - Error processing webhook event {stripeEvent.Id}: {ex.Message}");
         }
     }
 

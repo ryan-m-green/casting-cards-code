@@ -37,28 +37,28 @@ public class ChargeDisputeCreatedStrategy : IWebhookEventStrategy
 
     public async Task HandleAsync(StripeEventPayload stripeEvent)
     {
-        _loggingService.LogInformation($"ChargeDisputeCreatedStrategy: Processing webhook event {stripeEvent.Id}");
+        _loggingService.LogInformation($"ChargeDisputeCreatedStrategy: Entry - Processing webhook event {stripeEvent.Id}");
         try
         {
             var dispute = stripeEvent.Data["object"].ToObject<Dispute>();
             _loggingService.LogInformation($"ChargeDisputeCreatedStrategy: Stripe event data: {stripeEvent.Data}");
             if (dispute?.Charge == null)
             {
-                _loggingService.LogWarning($"ChargeDisputeCreatedStrategy: Could not extract Charge from webhook event {stripeEvent.Id}");
+                _loggingService.LogWarning($"ChargeDisputeCreatedStrategy: Exit - Could not extract Charge from webhook event {stripeEvent.Id}");
                 return;
             }
 
             var charge = await _stripeService.GetChargeAsync(dispute.Charge.Id);
             if (charge?.Customer == null)
             {
-                _loggingService.LogWarning($"ChargeDisputeCreatedStrategy: Could not extract CustomerId from charge {dispute.Charge.Id}");
+                _loggingService.LogWarning($"ChargeDisputeCreatedStrategy: Exit - Could not extract CustomerId from charge {dispute.Charge.Id}");
                 return;
             }
 
             var subscription = await _subscriptionReadRepository.GetByStripeCustomerIdAsync(charge.Customer.Id);
             if (subscription == null)
             {
-                _loggingService.LogWarning($"ChargeDisputeCreatedStrategy: No subscription found for CustomerId {charge.Customer.Id}");
+                _loggingService.LogWarning($"ChargeDisputeCreatedStrategy: Exit - No subscription found for CustomerId {charge.Customer.Id}");
                 return;
             }
 
@@ -70,10 +70,11 @@ public class ChargeDisputeCreatedStrategy : IWebhookEventStrategy
             var userId = stripeEvent.UserId == Guid.Empty ? subscription.UserId : stripeEvent.UserId;
             stripeEvent.Callback(userId, subscription.LockLevel.ToString());
             _loggingService.LogInformation($"ChargeDisputeCreatedStrategy: Successfully updated subscription {subscription.Id} for CustomerId {charge.Customer.Id} to HardLock due to dispute");
+            _loggingService.LogInformation($"ChargeDisputeCreatedStrategy: Exit - Successfully processed webhook event {stripeEvent.Id}");
         }
         catch (Exception ex)
         {
-            _loggingService.LogError($"ChargeDisputeCreatedStrategy: Error processing webhook event {stripeEvent.Id}: {ex.Message}");
+            _loggingService.LogError($"ChargeDisputeCreatedStrategy: Exit - Error processing webhook event {stripeEvent.Id}: {ex.Message}");
         }
     }
 

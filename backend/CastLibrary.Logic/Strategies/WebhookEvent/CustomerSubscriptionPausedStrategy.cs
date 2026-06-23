@@ -34,7 +34,7 @@ public class CustomerSubscriptionPausedStrategy : IWebhookEventStrategy
 
     public async Task HandleAsync(StripeEventPayload stripeEvent)
     {
-        _loggingService.LogInformation($"CustomerSubscriptionPausedStrategy: Processing webhook event {stripeEvent.Id}");
+        _loggingService.LogInformation($"CustomerSubscriptionPausedStrategy: Entry - Processing webhook event {stripeEvent.Id}");
         try
         {
             var subscriptionObject = stripeEvent.Data["object"] as JObject;
@@ -43,14 +43,14 @@ public class CustomerSubscriptionPausedStrategy : IWebhookEventStrategy
             _loggingService.LogInformation($"CustomerSubscriptionPausedStrategy: Stripe event data: {stripeEvent.Data}");
             if (string.IsNullOrEmpty(customerId))
             {
-                _loggingService.LogWarning($"CustomerSubscriptionPausedStrategy: Could not extract CustomerId from webhook event {stripeEvent.Id}");
+                _loggingService.LogWarning($"CustomerSubscriptionPausedStrategy: Exit - Could not extract CustomerId from webhook event {stripeEvent.Id}");
                 return;
             }
 
             var subscription = await _subscriptionReadRepository.GetByStripeCustomerIdAsync(customerId);
             if (subscription == null)
             {
-                _loggingService.LogWarning($"CustomerSubscriptionPausedStrategy: No subscription found for CustomerId {customerId}");
+                _loggingService.LogWarning($"CustomerSubscriptionPausedStrategy: Exit - No subscription found for CustomerId {customerId}");
                 return;
             }
 
@@ -67,10 +67,11 @@ public class CustomerSubscriptionPausedStrategy : IWebhookEventStrategy
             var userId = stripeEvent.UserId == Guid.Empty ? subscription.UserId : stripeEvent.UserId;
             stripeEvent.Callback(userId, subscription.LockLevel.ToString());
             _loggingService.LogInformation($"CustomerSubscriptionPausedStrategy: Successfully updated subscription {subscription.Id} for CustomerId {customerId} to Paused with HardLock");
+            _loggingService.LogInformation($"CustomerSubscriptionPausedStrategy: Exit - Successfully processed webhook event {stripeEvent.Id}");
         }
         catch (Exception ex)
         {
-            _loggingService.LogError($"CustomerSubscriptionPausedStrategy: Error processing webhook event {stripeEvent.Id}: {ex.Message}");
+            _loggingService.LogError($"CustomerSubscriptionPausedStrategy: Exit - Error processing webhook event {stripeEvent.Id}: {ex.Message}");
         }
     }
 

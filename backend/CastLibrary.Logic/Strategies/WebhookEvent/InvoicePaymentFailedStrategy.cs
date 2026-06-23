@@ -38,7 +38,7 @@ public class InvoicePaymentFailedStrategy : IWebhookEventStrategy
 
     public async Task HandleAsync(StripeEventPayload stripeEvent)
     {
-        _loggingService.LogInformation($"InvoicePaymentFailedStrategy: Processing webhook event {stripeEvent.Id}");
+        _loggingService.LogInformation($"InvoicePaymentFailedStrategy: Entry - Processing webhook event {stripeEvent.Id}");
         try
         {
             var invoiceObject = stripeEvent.Data["object"] as JObject;
@@ -48,14 +48,14 @@ public class InvoicePaymentFailedStrategy : IWebhookEventStrategy
             _loggingService.LogInformation($"InvoicePaymentFailedStrategy: Stripe event data: {stripeEvent.Data}");
             if (string.IsNullOrEmpty(customerId))
             {
-                _loggingService.LogWarning($"InvoicePaymentFailedStrategy: Could not extract CustomerId from webhook event {stripeEvent.Id}");
+                _loggingService.LogWarning($"InvoicePaymentFailedStrategy: Exit - Could not extract CustomerId from webhook event {stripeEvent.Id}");
                 return;
             }
 
             var subscription = await _subscriptionReadRepository.GetByStripeCustomerIdAsync(customerId);
             if (subscription == null)
             {
-                _loggingService.LogWarning($"InvoicePaymentFailedStrategy: No subscription found for CustomerId {customerId}");
+                _loggingService.LogWarning($"InvoicePaymentFailedStrategy: Exit - No subscription found for CustomerId {customerId}");
                 return;
             }
 
@@ -65,6 +65,7 @@ public class InvoicePaymentFailedStrategy : IWebhookEventStrategy
                 var lockLevel = _stripeService.CalculateLockLevel(subscription.PastDueSince.Value);
                 subscription.LockLevel = lockLevel;
                 await _subscriptionUpdateRepository.UpdateAsync(subscription);
+                _loggingService.LogInformation($"InvoicePaymentFailedStrategy: Exit - Successfully processed webhook event {stripeEvent.Id} (recalculated lock level)");
                 return;
             }
 
@@ -81,10 +82,11 @@ public class InvoicePaymentFailedStrategy : IWebhookEventStrategy
             var userId = stripeEvent.UserId == Guid.Empty ? subscription.UserId : stripeEvent.UserId;
             stripeEvent.Callback(userId, subscription.LockLevel.ToString());
             _loggingService.LogInformation($"InvoicePaymentFailedStrategy: Successfully updated subscription {subscription.Id} for CustomerId {customerId} to PastDue with LockLevel {subscription.LockLevel}");
+            _loggingService.LogInformation($"InvoicePaymentFailedStrategy: Exit - Successfully processed webhook event {stripeEvent.Id}");
         }
         catch (Exception ex)
         {
-            _loggingService.LogError($"InvoicePaymentFailedStrategy: Error processing webhook event {stripeEvent.Id}: {ex.Message}");
+            _loggingService.LogError($"InvoicePaymentFailedStrategy: Exit - Error processing webhook event {stripeEvent.Id}: {ex.Message}");
         }
     }
 
