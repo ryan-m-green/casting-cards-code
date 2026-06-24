@@ -28,8 +28,9 @@ export class AboutComponent implements AfterViewInit, OnDestroy {
         autoplay: true,
         muted: true,
         loop: true,
-        fluid: true,
-        preload: 'auto'
+        responsive: true,
+        preload: 'auto',
+        aspectRatio: '16:9'
       });
     }
   }

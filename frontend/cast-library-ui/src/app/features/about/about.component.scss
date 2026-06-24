@@ -51,15 +51,17 @@
   background: v.$color-base-tan-13;
 
   video {
-    width: 100%;
     display: block;
     border-radius: 12px;
+    max-width: 100%;
+    height: auto;
   }
 
   // Video.js customizations
   :host ::ng-deep .video-js {
     border-radius: 12px;
-    width: 100% !important;
+    max-width: 100%;
+    height: auto;
   }
 
   :host ::ng-deep .vjs-big-play-button {
