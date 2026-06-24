@@ -56,6 +56,7 @@ public class CampaignReadRepository(
                 c.spine_color    AS SpineColor,
                 c.is_demo        AS IsDemo,
                 c.created_at     AS CreatedAt,
+                c.last_accessed_at AS LastAccessedAt,
                 COALESCE(ci.location_count, 0)   AS LocationCount,
                 COALESCE(cp.player_count, 0) AS PlayerCount
               FROM campaigns c
@@ -93,6 +94,7 @@ public class CampaignReadRepository(
                 c.fantasy_type   AS FantasyType,
                 c.status,
                 c.spine_color    AS SpineColor,
+                c.last_accessed_at AS LastAccessedAt,
                 c.created_at     AS CreatedAt,
                 COALESCE(ci.location_count, 0)   AS LocationCount,
                 COALESCE(cp.player_count, 0) AS PlayerCount
@@ -130,7 +132,8 @@ public class CampaignReadRepository(
                 description,
                 fantasy_type AS FantasyType,
                 status,
-                spine_color  AS SpineColor,
+                spine_color  AS SpineColo,
+                last_accessed_at AS LastAccessedAtr,
                 is_demo      AS IsDemo,
                 created_at   AS CreatedAt
               FROM campaigns WHERE id = @Id";

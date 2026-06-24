@@ -5,6 +5,7 @@ using CastLibrary.Logic.Queries.Faction;
 using CastLibrary.Logic.Queries.Library;
 using CastLibrary.Logic.Queries.Location;
 using CastLibrary.Logic.Queries.Sublocation;
+using CastLibrary.Shared.Enums;
 using CastLibrary.Shared.Responses;
 using CastLibrary.WebHost.Mappers;
 using CastLibrary.WebHost.MetadataHelpers;
@@ -38,8 +39,13 @@ public class DashboardController(
         var sublocations = await getSublocationLibraryQuery.HandleAsync(userId);
         var casts = await getCastLibraryQuery.HandleAsync(userId);
         var factions = await getFactionLibraryQuery.HandleAsync(userId);
-        var active = campaigns.FirstOrDefault(c => c.Status == Shared.Enums.CampaignStatus.Active)
-                  ?? campaigns.OrderByDescending(c => c.CreatedAt).FirstOrDefault();
+        var active = campaigns.Where(o => o.Status == CampaignStatus.Active && o.LastAccessedAt.HasValue)
+            .OrderByDescending(o => o.LastAccessedAt).FirstOrDefault();
+        
+        if (active == null)
+        {
+            active = campaigns.Where(o => o.Status == CampaignStatus.Active).OrderByDescending(o => o.CreatedAt).FirstOrDefault();
+        }
 
         var response = new DashboardStatsResponse
         {

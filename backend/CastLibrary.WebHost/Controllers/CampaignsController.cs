@@ -80,6 +80,7 @@ public class CampaignsController(
     IGetPlayerCampaignFactionInstancesQueryHandler getPlayerFactionInstancesQuery,
     IAssignFactionToSublocationCommandHandler assignFactionToSublocationCommand,
     IAssignFactionToCastCommandHandler assignFactionToCastCommand,
+    IUpdateCampaignLastAccessedCommandHandler updateLastAccessedCommand,
     ICampaignAccessService campaignAccess) : ControllerBase
 {
     private Task<bool> CallerOwns(Guid campaignId) =>
@@ -166,6 +167,10 @@ public class CampaignsController(
     public async Task<IActionResult> GetById(Guid id)
     {
         if (!await CallerOwns(id)) return Forbid();
+        
+        // Update LastAccessedAt when campaign is opened
+        await updateLastAccessedCommand.HandleAsync(new UpdateCampaignLastAccessedCommand(id));
+        
         var (campaign, locations, casts, sublocations, secrets, relationships, 
             players, inviteCode, timeOfDay, factions) = await getDetailQuery.HandleAsync(id);
         if (campaign is null)
@@ -986,6 +991,9 @@ public class CampaignsController(
         return NoContent();
     }
 }
+
+
+
 
 
 

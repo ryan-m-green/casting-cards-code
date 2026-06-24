@@ -156,3 +156,10 @@ CREATE INDEX IF NOT EXISTS idx_audit_logs_success ON audit_logs(is_success);
 
 -- Create index for date range queries
 CREATE INDEX IF NOT EXISTS idx_audit_logs_date_range ON audit_logs(created_at DESC);
+
+-- ============================================================
+-- Campaign LastAccessedAt Tracking
+-- ============================================================
+
+-- Add last_accessed_at column to campaigns table
+ALTER TABLE campaigns ADD COLUMN IF NOT EXISTS last_accessed_at TIMESTAMP;

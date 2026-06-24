@@ -184,6 +184,7 @@ namespace CastLibrary.WebHost.IoC
             services.AddScoped<IDeleteQuicknoteQueueItemCommandHandler, DeleteQuicknoteQueueItemCommandHandler>();
             services.AddScoped<IAssignFactionToSublocationCommandHandler, AssignFactionToSublocationCommandHandler>();
             services.AddScoped<IAssignFactionToCastCommandHandler, AssignFactionToCastCommandHandler>();
+            services.AddScoped<IUpdateCampaignLastAccessedCommandHandler, UpdateCampaignLastAccessedCommandHandler>();
 
             services.AddScoped<ICreateCampaignStorylineCommandHandler, CreateCampaignStorylineCommandHandler>();
             services.AddScoped<IUpdateStorylineVisibilityCommandHandler, UpdateCampaignEventVisibilityCommandHandler>();

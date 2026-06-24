@@ -13,4 +13,5 @@ public class CampaignEntity
     public int LocationCount { get; set; }
     public int PlayerCount { get; set; }
     public DateTime CreatedAt { get; set; }
+    public DateTime? LastAccessedAt { get; set; }
 }

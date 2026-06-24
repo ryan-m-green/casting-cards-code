@@ -45,8 +45,10 @@
             <input id="location-classification-input" class="fi" formControlName="classification" placeholder="Major Port Location" autocomplete="off" />
           </div>
         </div>
-        <div class="wr form-row-gap">
-          <div class="form-field">
+      </div>
+    </div>
+    <div class="wr form-row-gap">
+      <div class="form-field">
             <label for="location-size-input" class="fi-label">Size</label>
             <input id="location-size-input" class="fi" formControlName="size" list="size-options" placeholder="Large" autocomplete="off" />
             <datalist id="size-options">
@@ -60,10 +62,6 @@
               @for (c of conditionOptions; track c) { <option [value]="c"></option> }
             </datalist>
           </div>
-        </div>
-      </div>
-    </div>
-    <div class="wr form-row-gap">
       <div class="form-field">
         <label for="location-geography-input" class="fi-label">Geography</label>
         <input id="location-geography-input" class="fi" formControlName="geography" list="geography-options" placeholder="Coastal" autocomplete="off" />

@@ -37,6 +37,7 @@ public interface ICampaignUpdateRepository
     Task ClearFactionFromSublocationInstancesAsync(Guid factionInstanceId);
     Task ClearFactionFromCastInstancesAsync(Guid factionInstanceId);
     Task SetIsDemoAsync(Guid campaignId, bool? isDemo);
+    Task UpdateLastAccessedAtAsync(Guid campaignId);
 }
 
 public class CampaignUpdateRepository(
@@ -626,6 +627,21 @@ public class CampaignUpdateRepository(
         using var conn = CreateConnection();
         var rows = await conn.ExecuteAsync(
             "UPDATE campaigns SET is_demo=@IsDemo WHERE id=@Id",
+            @params);
+
+        logging.LogDbOperation(correlation.TraceId, spanId, "UPDATE", "campaigns", @params, rows);
+    }
+
+    public async Task UpdateLastAccessedAtAsync(Guid campaignId)
+    {
+        var spanId = correlation.NewSpan();
+        var @params = new { Id = campaignId, LastAccessedAt = DateTime.UtcNow };
+
+        logging.LogDbOperation(correlation.TraceId, spanId, "UPDATE", "campaigns", @params);
+
+        using var conn = CreateConnection();
+        var rows = await conn.ExecuteAsync(
+            "UPDATE campaigns SET last_accessed_at=@LastAccessedAt WHERE id=@Id",
             @params);
 
         logging.LogDbOperation(correlation.TraceId, spanId, "UPDATE", "campaigns", @params, rows);

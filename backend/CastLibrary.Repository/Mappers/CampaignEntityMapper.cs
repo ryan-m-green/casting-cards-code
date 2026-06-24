@@ -25,6 +25,7 @@ public class CampaignEntityMapper : ICampaignEntityMapper
         LocationCount = entity.LocationCount,
         PlayerCount = entity.PlayerCount,
         CreatedAt = entity.CreatedAt,
+        LastAccessedAt = entity.LastAccessedAt,
     };
 
     public CampaignEntity ToEntity(CampaignDomain domain) => new()
@@ -39,6 +40,7 @@ public class CampaignEntityMapper : ICampaignEntityMapper
         IsDemo = domain.IsDemo,
         LocationCount = domain.LocationCount,
         PlayerCount = domain.PlayerCount,
+        LastAccessedAt = domain.LastAccessedAt,
         CreatedAt = domain.CreatedAt,
     };
 }
