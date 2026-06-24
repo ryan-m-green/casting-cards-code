@@ -8,6 +8,9 @@
   .header-content {
     max-width: 1200px;
     margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
   }
 
   .header-title {
@@ -16,6 +19,23 @@
     font-weight: 700;
     color: v.$color-base-tan-1;
     margin: 0;
+  }
+
+  .header-nav {
+    display: flex;
+    gap: 1.5rem;
+
+    .nav-link {
+      font-family: v.$font-body;
+      font-size: 1rem;
+      color: v.$color-base-tan-1;
+      text-decoration: none;
+      transition: color 0.2s ease;
+
+      &:hover {
+        color: v.$color-base-gold-1;
+      }
+    }
   }
 }
 
