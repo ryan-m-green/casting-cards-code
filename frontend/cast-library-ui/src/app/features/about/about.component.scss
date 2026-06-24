@@ -52,32 +52,11 @@
 
   video {
     display: block;
-    border-radius: 12px;
-    max-width: 100%;
+    width: 100%;
     height: auto;
-  }
-
-  // Video.js customizations
-  :host ::ng-deep .video-js {
     border-radius: 12px;
-    max-width: 100%;
-    height: auto;
-  }
-
-  :host ::ng-deep .vjs-big-play-button {
-    background-color: v.$color-base-green-3;
-    border: none;
-    border-radius: 50%;
-    width: 3rem;
-    height: 3rem;
-    line-height: 3rem;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-  }
-
-  :host ::ng-deep .vjs-control-bar {
-    background-color: rgba(0, 0, 0, 0.7);
+    object-fit: contain;
+    background: #000;
   }
 }
 
