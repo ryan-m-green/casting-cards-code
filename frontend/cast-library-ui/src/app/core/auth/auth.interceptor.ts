@@ -20,7 +20,6 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
       !req.url.includes('/api/auth/forgot-password') &&
       !req.url.includes('/api/auth/reset-password') &&
       !req.url.includes('/api/auth/verify-email') &&
-      !req.url.includes('/api/auth/change-password') &&
       !req.url.includes('/api/stripe/webhook')) {
 
     const token = localStorage.getItem('cast_library_token');
@@ -39,7 +38,6 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
       !req.url.includes('/api/auth/forgot-password') &&
       !req.url.includes('/api/auth/reset-password') &&
       !req.url.includes('/api/auth/verify-email') &&
-      !req.url.includes('/api/auth/change-password') &&
       !req.url.includes('/api/stripe/webhook')) {
 
     const xsrfToken = auth.xsrfToken();

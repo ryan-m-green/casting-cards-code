@@ -1,4 +1,4 @@
-﻿import { Injectable, signal, computed, OnDestroy } from '@angular/core';
+import { Injectable, signal, computed, OnDestroy } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { Observable, Subject, tap, catchError } from 'rxjs';
@@ -52,21 +52,11 @@ export class AuthService implements OnDestroy {
     const storedXsrfToken = localStorage.getItem(this.XSRF_TOKEN_KEY);
     if (storedXsrfToken) {
       this._xsrfToken.set(storedXsrfToken);
+      this._isTokenReady.set(true);
+    } else {
+      // Mark as ready to allow app to function, will initialize via APP_INITIALIZER
+      this._isTokenReady.set(true);
     }
-
-    // Initialize XSRF token by calling the endpoint to set the cookie
-    this.initializeXsrfToken().subscribe({
-      next: () => {
-        this._isTokenReady.set(true);
-        this.tokenRefreshAttempts = 0;
-        console.log('AuthService: XSRF token initialized successfully');
-      },
-      error: (error: HttpErrorResponse) => {
-        console.warn('AuthService: Failed to initialize XSRF token:', error);
-        // Still mark as ready to allow app to function, will retry on first request
-        this._isTokenReady.set(true);
-      }
-    });
   }
 
   login(request: LoginRequest): Observable<AuthResponse> {
