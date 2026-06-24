@@ -17,6 +17,9 @@ export class AboutComponent implements AfterViewInit {
   ngAfterViewInit() {
     if (this.videoRef?.nativeElement) {
       this.videoRef.nativeElement.muted = true;
+      this.videoRef.nativeElement.play().catch(err => {
+        console.log('Autoplay prevented:', err);
+      });
     }
   }
 

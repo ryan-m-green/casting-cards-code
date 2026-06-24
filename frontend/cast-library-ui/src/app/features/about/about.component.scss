@@ -227,14 +227,22 @@
   background: white;
 }
 
-.pricing-card {
-  max-width: 500px;
+.pricing-cards {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 2rem;
+  max-width: 1000px;
   margin: 0 auto;
+}
+
+.pricing-card {
   padding: 3rem;
   border-radius: 16px;
   background: v.$color-base-tan-11;
   border: 2px solid v.$color-base-gold-1;
   box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
 }
 
 .pricing-header {
@@ -285,6 +293,7 @@
   list-style: none;
   padding: 0;
   margin: 0 0 2rem;
+  flex: 1;
 }
 
 .pricing-feature {
@@ -308,6 +317,7 @@
 
 .pricing-button {
   width: 100%;
+  margin-top: auto;
 }
 
 // ── Testimonials Section ──────────────────────────────────────────────────────
@@ -347,10 +357,10 @@
   text-align: right;
 }
 
-// ── Mission Section ───────────────────────────────────────────────────────────
+// ── Mission & Philosophy Section ───────────────────────────────────────────────
 
-.mission {
-  background: white;
+.mission-philosophy {
+  background: v.$color-base-tan-12;
 }
 
 .mission-text {
@@ -359,13 +369,7 @@
   color: v.$color-base-text-brown;
   line-height: 1.8;
   text-align: center;
-  margin: 0;
-}
-
-// ── Philosophy Section ────────────────────────────────────────────────────────
-
-.philosophy {
-  background: v.$color-base-tan-12;
+  margin: 0 0 3rem;
 }
 
 .philosophy-grid {
@@ -446,6 +450,17 @@
 }
 
 // ── Responsive Design ─────────────────────────────────────────────────────────
+
+@media (max-width: 940px) {
+  .pricing-cards {
+    grid-template-columns: 1fr;
+  }
+
+  .pricing-card {
+    margin: 0 auto;
+    max-width: 426px;
+  }
+}
 
 @media (max-width: 768px) {
   .hero-title {

@@ -3,9 +3,10 @@
   <section class="hero">
     <div class="hero-content">
       <h1 class="hero-title">Get the most out of your storytelling</h1>
-      <p class="hero-subtitle">A calm, structured space for NPCs, factions, relationships, secrets, and worldbuilding. Run richer sessions with less prep.</p>
+      <p class="hero-subtitle">A calm, structured space for casts, factions, relationships, secrets, and worldbuilding. 
+        Run richer sessions with less worldbuilding prep.</p>
       <div class="hero-video">
-        <video #demoVideo controls autoplay muted loop playsinline>
+        <video #demoVideo controls muted loop playsinline>
           <source src="https://dev-casting-cards-files.sfo3.digitaloceanspaces.com/video/castingcardsdemo.mp4" type="video/mp4">
           Your browser does not support the video tag.
         </video>
@@ -137,38 +138,50 @@
   <section class="pricing">
     <div class="section-container">
       <h2 class="section-title">Simple pricing</h2>
-      <div class="pricing-card">
-        <div class="pricing-header">
-          <h3 class="pricing-title">Alpha Access</h3>
-          <div class="pricing-price">
-            <span class="price-strikethrough">$14.99/month</span>
-            <span class="price-current">$4.99/month</span>
+      <div class="pricing-cards">
+        <div class="pricing-card">
+          <div class="pricing-header">
+            <h3 class="pricing-title">Free Trial</h3>
+            <div class="pricing-price">
+              <span class="price-current">$0</span>
+            </div>
+            <p class="pricing-note">Try it as long as you like. Inactive accounts auto-delete after 30 days.</p>
           </div>
-          <p class="pricing-note">Limited time alpha pricing</p>
+          <ul class="pricing-features">
+            <li class="pricing-feature">1 Campaign Card</li>
+            <li class="pricing-feature">1 Location Card</li>
+            <li class="pricing-feature">2 Sublocation Cards</li>
+            <li class="pricing-feature">1 Faction Card</li>
+            <li class="pricing-feature">3 Cast Cards</li>
+          </ul>
+          <button class="cta-button pricing-button" (click)="navigateToJoin()">Start Free Trial</button>
         </div>
-        <ul class="pricing-features">
-          <li class="pricing-feature">Unlimited Card Libraries</li>
-          <li class="pricing-feature">Join the Guild Hall</li>
-          <li class="pricing-feature">Influence Feature Requests</li>
-          <li class="pricing-feature">Direct Developer Feedback</li>
-        </ul>
-        <button class="cta-button pricing-button" (click)="navigateToJoin()">Get Started</button>
+        <div class="pricing-card">
+          <div class="pricing-header">
+            <h3 class="pricing-title">Alpha Access</h3>
+            <div class="pricing-price">
+              <span class="price-strikethrough">$14.99/month</span>
+              <span class="price-current">$4.99/month</span>
+            </div>
+            <p class="pricing-note">Limited time alpha pricing</p>
+          </div>
+          <ul class="pricing-features">
+            <li class="pricing-feature">Unlimited Card Libraries</li>
+            <li class="pricing-feature">Join the Guild Hall</li>
+            <li class="pricing-feature">Influence Feature Requests</li>
+            <li class="pricing-feature">Direct Developer Feedback</li>
+          </ul>
+          <button class="cta-button pricing-button" (click)="navigateToJoin()">Get Started</button>
+        </div>
       </div>
     </div>
   </section>
 
-  <!-- Mission Section -->
-  <section class="mission">
+  <!-- Mission & Philosophy Section -->
+  <section class="mission-philosophy">
     <div class="section-container">
-      <h2 class="section-title">My Mission</h2>
-      <p class="mission-text">To support the shared craft of storytelling across any narrative game. For worldbuilders, this means a clear, human-centered way to understand relationships, motivations, and world dynamics. For players, it means effortless note-taking and the ability to step into the story with clarity and confidence, supported by tools that help them stay grounded in the world. For every table, it means a flexible card-based system that brings worldbuilding to life, no matter what game you play.</p>
-    </div>
-  </section>
-
-  <!-- Philosophy Section -->
-  <section class="philosophy">
-    <div class="section-container">
-      <h2 class="section-title">My Philosophy</h2>
+      <h2 class="section-title">Mission & Philosophy</h2>
+      <p class="mission-text">This exists because storytelling shouldn't be a memory test. Whether you're building worlds or just trying to keep up with the plot, you deserve tools that make it easier. DMs get organization without the headache. Players get clarity without the stress. The table gets a shared understanding of the world you're creating together.</p>
       <div class="philosophy-grid">
         <div class="philosophy-item">
           <h3 class="philosophy-title">Collaboration at the table</h3>
