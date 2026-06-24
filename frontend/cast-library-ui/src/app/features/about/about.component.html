@@ -1,57 +1,161 @@
-<div class="pc scroll-body">
-  <app-journal-title title="About" />
-  <div class="about-content">
-
-    <p class="about-body">Every great story begins with people — their bonds, their grudges, their loyalties, and the quiet threads that tie them together. As a storyteller, you're constantly tracking those threads: who trusts whom, which factions are shifting, what rumors are spreading, and how each choice reshapes the world.</p>
-    <p class="about-body">This app is a calm, structured hearth for all of that. A place where NPCs, factions, relationships, secrets, and political tensions settle into view, giving you a clearer sense of the story beneath the story. It helps you understand the people who make your world feel alive and run richer sessions with less prep.</p>
-    <p class="about-body">This is not limited to Dungeons &amp; Dragons. The flexible digital card system works with any narrative‑driven game, from homebrew systems to story‑focused RPGs. Wherever worldbuilding is needed, this app provides the structure to bring it to life.</p>
-
-    <div class="orn orn-mt">· · ·</div>
-
-    <div class="about-section-label section-label">Mission</div>
-    <p class="about-body">To support the shared craft of storytelling across any narrative game. For worldbuilders, this means a clear, human‑centered way to understand relationships, motivations, and world dynamics. For players, it means effortless note‑taking and the ability to step into the story with clarity and confidence, supported by tools that help them stay grounded in the world. For every table, it means a flexible card‑based system that brings worldbuilding to life, no matter what game you play.</p>
-
-    <div class="orn orn-mt">· · ·</div>
-
-    <div class="about-section-label section-label">Philosophy</div>
-    <div class="about-pillars">
-      <div class="about-pillar">
-        <span class="about-pillar-title">Collaboration at the table.</span>
-        <span class="about-pillar-body">Tools that help storytellers and players stay aligned, share context, and build a world together.</span>
+<div class="about-page">
+  <!-- Hero Section -->
+  <section class="hero">
+    <div class="hero-content">
+      <h1 class="hero-title">Get the most out of your storytelling</h1>
+      <p class="hero-subtitle">A calm, structured space for NPCs, factions, relationships, secrets, and worldbuilding. Run richer sessions with less prep.</p>
+      <div class="hero-video">
+        <video #demoVideo class="video-js vjs-default-skin" playsinline>
+          <source src="https://dev-casting-cards-files.sfo3.digitaloceanspaces.com/video/castingcardsdemo.mp4" type="video/mp4">
+          Your browser does not support the video tag.
+        </video>
       </div>
-      <div class="about-pillar">
-        <span class="about-pillar-title">Clarity that supports everyone.</span>
-        <span class="about-pillar-body">A simple, intuitive structure that reduces confusion and keeps the story moving.</span>
-      </div>
-      <div class="about-pillar">
-        <span class="about-pillar-title">Shared understanding.</span>
-        <span class="about-pillar-body">Features that help each person see the same world, even when their perspectives differ.</span>
-      </div>
-      <div class="about-pillar">
-        <span class="about-pillar-title">Respect for the story.</span>
-        <span class="about-pillar-body">Systems that highlight motivations, relationships, and consequences without overwhelming the table.</span>
+      <button class="cta-button" (click)="navigateToJoin()">Get Started</button>
+    </div>
+  </section>
+
+  <!-- Features Section -->
+  <section class="features">
+    <div class="section-container">
+      <h2 class="section-title">Everything you need to build your world</h2>
+      <div class="features-grid">
+        <div class="feature-card">
+          <div class="feature-card-header">
+            <div class="feature-icon">
+              <img src="/about/digital_card_system.svg" alt="Digital Card System">
+            </div>
+            <h3 class="feature-title">Digital Card System</h3>
+          </div>
+          <p class="feature-description">Reusable asset management for NPCs, locations, factions, and more. Create once, use everywhere.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-card-header">
+            <div class="feature-icon">
+              <img src="/about/storyline_session_management.svg" alt="Storyline & Session Management">
+            </div>
+            <h3 class="feature-title">Storyline & Session Management</h3>
+          </div>
+          <p class="feature-description">Run your entire session from a single page. Track events, manage scenes, and keep your campaign chronicle organized in one place.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-card-header">
+            <div class="feature-icon">
+              <img src="/about/quicknotes.svg" alt="Quicknotes">
+            </div>
+            <h3 class="feature-title">Quicknotes</h3>
+          </div>
+          <p class="feature-description">Capture ideas instantly without interrupting the flow. Take notes now and file them to the correct asset later, perfect for players who get note-taking anxiety.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-card-header">
+            <div class="feature-icon">
+              <img src="/about/time_of_day_counter.svg" alt="Time of Day & Day Counter">
+            </div>
+            <h3 class="feature-title">Time of Day & Day Counter</h3>
+          </div>
+          <p class="feature-description">Track in-game time and days to make your world more immersive. Watch your campaign unfold across days, weeks, and months.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-card-header">
+            <div class="feature-icon">
+              <img src="/about/faction_system.svg" alt="Faction Affiliation System">
+            </div>
+            <h3 class="feature-title">Faction Affiliation System</h3>
+          </div>
+          <p class="feature-description">Help players understand who belongs to which faction and where those factions operate throughout the land. Build complex political landscapes.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-card-header">
+            <div class="feature-icon">
+              <img src="/about/cast_travel_system.svg" alt="Cast Travel System">
+            </div>
+            <h3 class="feature-title">Cast Travel System</h3>
+          </div>
+          <p class="feature-description">Move cast members to any sublocation or attach them directly to the party. Track who's where and who's traveling with you.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-card-header">
+            <div class="feature-icon">
+              <img src="/about/currency_inventory_purchasing.svg" alt="Currency & Inventory Management">
+            </div>
+            <h3 class="feature-title">Currency & Inventory Management</h3>
+          </div>
+          <p class="feature-description">Build stores in any sublocation. Players can browse inventory and make purchases, tracking gold and items automatically.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-card-header">
+            <div class="feature-icon">
+              <img src="/about/realtime_collaboration.svg" alt="Real-Time Collaboration">
+            </div>
+            <h3 class="feature-title">Real-Time Collaboration</h3>
+          </div>
+          <p class="feature-description">Share updates instantly with your party. Everyone stays on the same page, automatically.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-card-header">
+            <div class="feature-icon">
+              <img src="/about/secrets_reveal_system.svg" alt="Secrets & Reveal System">
+            </div>
+            <h3 class="feature-title">Secrets & Reveal System</h3>
+          </div>
+          <p class="feature-description">Control information flow. Reveal secrets to specific players when the story demands it.</p>
+        </div>
       </div>
     </div>
+  </section>
 
-    <div class="orn orn-mt">· · ·</div>
-
-    <div class="about-section-label section-label">From the Creator</div>
-    <div class="wb about-creator">
-      <p class="about-body about-body--creator">I'm awful at taking notes, and my dyslexia makes
-        it even harder to keep track of story details. When I'm playing, I can focus on the moment
-        or try to write things down, but I can't do both. My notes were scattered and incomplete,
-        and I kept losing track of how everything fit together. I built this app to fix that for
-        myself, and it grew into a tool meant to help storytellers and players stay organized and
-        understand the world they're creating.</p>
-      <div class="about-signature">~ Ryan Green</div>
+  <!-- How It Works Section -->
+  <section class="how-it-works">
+    <div class="section-container">
+      <h2 class="section-title">Here's how Casting Cards works</h2>
+      <div class="steps">
+        <div class="step">
+          <div class="step-number">1</div>
+          <h3 class="step-title">Create your library</h3>
+          <p class="step-description">Build out your cards for cast members, locations, factions, and other story elements. Add images, notes, and relationships to bring your world to life.</p>
+        </div>
+        <div class="step">
+          <div class="step-number">2</div>
+          <h3 class="step-title">Create your campaign</h3>
+          <p class="step-description">Start your campaign from your library cards or add new cards directly within the campaign. Your library becomes the foundation for your shared world.</p>
+        </div>
+        <div class="step">
+          <div class="step-number">3</div>
+          <h3 class="step-title">Bring players in</h3>
+          <p class="step-description">Invite your players to join the campaign. No subscriptions required for players—everyone can access and participate.</p>
+        </div>
+        <div class="step">
+          <div class="step-number">4</div>
+          <h3 class="step-title">Play together</h3>
+          <p class="step-description">Collaborate in real-time, connect with each other through storytelling, and focus on what matters most—the story itself.</p>
+        </div>
+      </div>
     </div>
+  </section>
 
-    <div class="orn orn-mt">· · ·</div>
+  <!-- Pricing Section -->
+  <section class="pricing">
+    <div class="section-container">
+      <h2 class="section-title">Choose your plan</h2>
+      <div class="pricing-card">
+        <h3 class="pricing-title">Premium</h3>
+        <div class="pricing-price">$5/month</div>
+        <ul class="pricing-features">
+          <li class="pricing-feature">Unlimited Card Libraries</li>
+          <li class="pricing-feature">Join the Guild Hall</li>
+          <li class="pricing-feature">Influence Feature Requests</li>
+          <li class="pricing-feature">Direct Developer Feedback</li>
+        </ul>
+        <button class="cta-button" (click)="navigateToJoin()">Get Started</button>
+      </div>
+    </div>
+  </section>
 
-    <div class="about-section-label section-label">Vision</div>
-    <p class="about-body">A simple, reliable way to stay connected to the story. A tool that keeps the world clear and organized so players and storytellers can stay present in the game without worrying about losing track of important details.</p>
-
-    <div class="orn orn-mt">· · ·</div>
-
-  </div>
+  <!-- Mission Section -->
+  <section class="mission">
+    <div class="section-container">
+      <h2 class="section-title">Our Mission</h2>
+      <p class="mission-text">To support the shared craft of storytelling across any narrative game. For worldbuilders, this means a clear, human-centered way to understand relationships, motivations, and world dynamics. For players, it means effortless note-taking and the ability to step into the story with clarity and confidence, supported by tools that help them stay grounded in the world.</p>
+    </div>
+  </section>
 </div>

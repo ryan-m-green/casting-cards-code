@@ -1,0 +1,43 @@
+@use '../../../styles/variables' as v;
+
+.product-header {
+  background: v.$color-base-brown-warm;
+  padding: 1.5rem 2rem;
+  border-bottom: 2px solid v.$color-base-gold-1;
+
+  .header-content {
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .header-title {
+    font-family: v.$font-header;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: v.$color-base-tan-1;
+    margin: 0;
+  }
+}
+
+.product-main {
+  min-height: calc(100vh - 140px);
+}
+
+.product-footer {
+  background: v.$color-base-brown-warm;
+  padding: 2rem;
+  border-top: 2px solid v.$color-base-gold-1;
+
+  .footer-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    text-align: center;
+  }
+
+  p {
+    font-family: v.$font-body;
+    font-size: 0.9rem;
+    color: v.$color-base-tan-1;
+    margin: 0;
+  }
+}

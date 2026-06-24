@@ -1,8 +1,19 @@
 import { Routes } from '@angular/router';
 import { adminGuard, authGuard, coverGuard, dmGuard, playerGuard, subscriptionLockGuard, libraryAccessGuard, playerLibraryAccessGuard, subscriptionChoiceGuard } from './core/auth/auth.guard';
 import { JournalShellComponent } from './layout/journal-shell/journal-shell.component';
+import { ProductShellComponent } from './layout/product-shell/product-shell.component';
 
 export const routes: Routes = [
+  {
+    path: 'about',
+    component: ProductShellComponent,
+    children: [
+      {
+        path: '',
+        loadComponent: () => import('./features/about/about.component').then(m => m.AboutComponent),
+      }
+    ],
+  },
   {
     path: 'campaign/:id',
     canActivate: [dmGuard, libraryAccessGuard],
