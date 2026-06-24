@@ -122,12 +122,12 @@
         <div class="step">
           <div class="step-number">3</div>
           <h3 class="step-title">Bring players in</h3>
-          <p class="step-description">Invite your players to join the campaign. No subscriptions required for players—everyone can access and participate.</p>
+          <p class="step-description">Invite your players to join the campaign. No subscriptions required for players so everyone can access and participate.</p>
         </div>
         <div class="step">
           <div class="step-number">4</div>
           <h3 class="step-title">Play together</h3>
-          <p class="step-description">Collaborate in real-time, connect with each other through storytelling, and focus on what matters most—the story itself.</p>
+          <p class="step-description">Collaborate in real-time, connect with each other through storytelling, and focus on what matters most, the story itself.</p>
         </div>
       </div>
     </div>
@@ -136,17 +136,23 @@
   <!-- Pricing Section -->
   <section class="pricing">
     <div class="section-container">
-      <h2 class="section-title">Choose your plan</h2>
+      <h2 class="section-title">Simple pricing</h2>
       <div class="pricing-card">
-        <h3 class="pricing-title">Premium</h3>
-        <div class="pricing-price">$5/month</div>
+        <div class="pricing-header">
+          <h3 class="pricing-title">Alpha Access</h3>
+          <div class="pricing-price">
+            <span class="price-strikethrough">$14.99/month</span>
+            <span class="price-current">$4.99/month</span>
+          </div>
+          <p class="pricing-note">Limited time alpha pricing</p>
+        </div>
         <ul class="pricing-features">
           <li class="pricing-feature">Unlimited Card Libraries</li>
           <li class="pricing-feature">Join the Guild Hall</li>
           <li class="pricing-feature">Influence Feature Requests</li>
           <li class="pricing-feature">Direct Developer Feedback</li>
         </ul>
-        <button class="cta-button" (click)="navigateToJoin()">Get Started</button>
+        <button class="cta-button pricing-button" (click)="navigateToJoin()">Get Started</button>
       </div>
     </div>
   </section>
@@ -154,8 +160,45 @@
   <!-- Mission Section -->
   <section class="mission">
     <div class="section-container">
-      <h2 class="section-title">Our Mission</h2>
-      <p class="mission-text">To support the shared craft of storytelling across any narrative game. For worldbuilders, this means a clear, human-centered way to understand relationships, motivations, and world dynamics. For players, it means effortless note-taking and the ability to step into the story with clarity and confidence, supported by tools that help them stay grounded in the world.</p>
+      <h2 class="section-title">My Mission</h2>
+      <p class="mission-text">To support the shared craft of storytelling across any narrative game. For worldbuilders, this means a clear, human-centered way to understand relationships, motivations, and world dynamics. For players, it means effortless note-taking and the ability to step into the story with clarity and confidence, supported by tools that help them stay grounded in the world. For every table, it means a flexible card-based system that brings worldbuilding to life, no matter what game you play.</p>
     </div>
   </section>
+
+  <!-- Philosophy Section -->
+  <section class="philosophy">
+    <div class="section-container">
+      <h2 class="section-title">My Philosophy</h2>
+      <div class="philosophy-grid">
+        <div class="philosophy-item">
+          <h3 class="philosophy-title">Collaboration at the table</h3>
+          <p class="philosophy-description">Tools that help storytellers and players stay aligned, share context, and build a world together.</p>
+        </div>
+        <div class="philosophy-item">
+          <h3 class="philosophy-title">Clarity that supports everyone</h3>
+          <p class="philosophy-description">A simple, intuitive structure that reduces confusion and keeps the story moving.</p>
+        </div>
+        <div class="philosophy-item">
+          <h3 class="philosophy-title">Shared understanding</h3>
+          <p class="philosophy-description">Features that help each person see the same world, even when their perspectives differ.</p>
+        </div>
+        <div class="philosophy-item">
+          <h3 class="philosophy-title">Respect for the story</h3>
+          <p class="philosophy-description">Systems that highlight motivations, relationships, and consequences without overwhelming the table.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Creator Section -->
+  <section class="creator">
+    <div class="section-container">
+      <h2 class="section-title">From the Creator</h2>
+      <div class="creator-content">
+        <p class="creator-text">I'm awful at taking notes, and my dyslexia makes it even harder to keep track of story details. When I'm playing, I can focus on the moment or try to write things down, but I can't do both. My notes were scattered and incomplete, and I kept losing track of how everything fit together. I built this app to fix that for myself, and it grew into a tool meant to help storytellers and players stay organized and understand the world they're creating.</p>
+        <p class="creator-signature">~ Ryan Green</p>
+      </div>
+    </div>
+  </section>
+
 </div>

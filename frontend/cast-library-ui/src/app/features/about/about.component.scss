@@ -1,19 +1,21 @@
 @use '../../../styles/variables' as v;
 
-.about-page {
-  min-height: 100vh;
+:host {
+  display: block;
+  background: v.$color-base-tan-11;
 }
 
-// ── Hero Section ───────────────────────────────────────────────────────────────
+.about-page {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+// ── Hero Section ─────────────────────────────────────────────────────────────
 
 .hero {
-  background: linear-gradient(135deg, v.$color-base-brown-warm 0%, v.$color-base-tan-13 100%);
-  padding: 4rem 2rem;
+  padding: 5rem 1.5rem;
   text-align: center;
-
-  @media (max-width: 768px) {
-    padding: 3rem 1.5rem;
-  }
+  background: linear-gradient(135deg, v.$color-base-tan-11 0%, v.$color-base-tan-12 100%);
 }
 
 .hero-content {
@@ -25,25 +27,18 @@
   font-family: v.$font-header;
   font-size: 3rem;
   font-weight: 700;
-  color: v.$color-base-tan-1;
+  color: v.$color-base-brown-warm;
   margin: 0 0 1.5rem;
   line-height: 1.2;
-
-  @media (max-width: 768px) {
-    font-size: 2rem;
-  }
+  letter-spacing: -0.02em;
 }
 
 .hero-subtitle {
   font-family: v.$font-body;
   font-size: 1.25rem;
-  color: v.$color-base-tan-2;
-  line-height: 1.6;
+  color: v.$color-base-text-brown;
   margin: 0 0 2rem;
-
-  @media (max-width: 768px) {
-    font-size: 1rem;
-  }
+  line-height: 1.6;
 }
 
 .hero-video {
@@ -61,6 +56,7 @@
     border-radius: 12px;
   }
 
+  // Video.js customizations
   :host ::ng-deep .video-js {
     border-radius: 12px;
     width: 100% !important;
@@ -84,48 +80,45 @@
 }
 
 .cta-button {
-  background: v.$color-base-green-3;
-  color: white;
-  font-family: v.$font-header;
+  font-family: v.$font-body;
   font-size: 1.1rem;
   font-weight: 600;
-  padding: 1rem 2.5rem;
+  color: white;
+  background: v.$color-base-green-3;
   border: none;
+  padding: 1rem 2.5rem;
   border-radius: 8px;
   cursor: pointer;
-  transition: transform 0.2s ease;
+  transition: background 0.2s ease, transform 0.1s ease;
 
   &:hover {
     transform: translateY(-2px);
+  }
+
+  &:active {
+    transform: translateY(0);
   }
 }
 
 // ── Section Container ─────────────────────────────────────────────────────────
 
 .section-container {
-  max-width: 1200px;
+  max-width: 1000px;
   margin: 0 auto;
-  padding: 4rem 2rem;
-
-  @media (max-width: 768px) {
-    padding: 3rem 1.5rem;
-  }
+  padding: 4rem 1.5rem;
 }
 
 .section-title {
   font-family: v.$font-header;
-  font-size: 2.5rem;
+  font-size: 2.25rem;
   font-weight: 700;
   color: v.$color-base-brown-warm;
   text-align: center;
   margin: 0 0 3rem;
-
-  @media (max-width: 768px) {
-    font-size: 1.75rem;
-  }
+  letter-spacing: -0.02em;
 }
 
-// ── Features Section ───────────────────────────────────────────────────────────
+// ── Features Section ─────────────────────────────────────────────────────────
 
 .features {
   background: white;
@@ -180,20 +173,22 @@
   margin: 0;
 }
 
-// ── How It Works Section ───────────────────────────────────────────────────────
+// ── How It Works Section ─────────────────────────────────────────────────────
 
 .how-it-works {
-  background: v.$color-base-tan-11;
+  background: v.$color-base-tan-12;
 }
 
 .steps {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  display: flex;
+  flex-direction: column;
   gap: 2rem;
 }
 
 .step {
-  text-align: center;
+  display: flex;
+  gap: 1.5rem;
+  align-items: flex-start;
 }
 
 .step-number {
@@ -208,7 +203,6 @@
   justify-content: center;
   border-radius: 50%;
   background: v.$color-base-brown-warm;
-  margin: 0 auto 1rem;
 }
 
 .step-title {
@@ -216,10 +210,186 @@
   font-size: 1.5rem;
   font-weight: 600;
   color: v.$color-base-brown-warm;
-  margin: 0 0 1rem;
+  margin: 0 0 0.5rem;
 }
 
 .step-description {
+  font-family: v.$font-body;
+  font-size: 1.1rem;
+  color: v.$color-base-text-brown;
+  line-height: 1.6;
+  margin: 0;
+}
+
+// ── Pricing Section ───────────────────────────────────────────────────────────
+
+.pricing {
+  background: white;
+}
+
+.pricing-card {
+  max-width: 500px;
+  margin: 0 auto;
+  padding: 3rem;
+  border-radius: 16px;
+  background: v.$color-base-tan-11;
+  border: 2px solid v.$color-base-gold-1;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+}
+
+.pricing-header {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.pricing-title {
+  font-family: v.$font-header;
+  font-size: 1.75rem;
+  font-weight: 600;
+  color: v.$color-base-brown-warm;
+  margin: 0 0 1rem;
+}
+
+.pricing-price {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.price-strikethrough {
+  font-family: v.$font-body;
+  font-size: 1.25rem;
+  color: v.$color-base-text-brown;
+  text-decoration: line-through;
+  opacity: 0.7;
+}
+
+.price-current {
+  font-family: v.$font-header;
+  font-size: 3rem;
+  font-weight: 700;
+  color: v.$color-base-green-3;
+}
+
+.pricing-note {
+  font-family: v.$font-body;
+  font-size: 0.9rem;
+  color: v.$color-base-text-brown;
+  margin: 0;
+  opacity: 0.8;
+}
+
+.pricing-features {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 2rem;
+}
+
+.pricing-feature {
+  font-family: v.$font-body;
+  font-size: 1.1rem;
+  color: v.$color-base-text-brown;
+  padding: 0.75rem 0;
+  border-bottom: 1px solid v.$color-border;
+
+  &:last-child {
+    border-bottom: none;
+  }
+
+  &::before {
+    content: '✓';
+    color: v.$color-base-green-3;
+    font-weight: bold;
+    margin-right: 0.75rem;
+  }
+}
+
+.pricing-button {
+  width: 100%;
+}
+
+// ── Testimonials Section ──────────────────────────────────────────────────────
+
+.testimonials {
+  background: v.$color-base-tan-12;
+}
+
+.testimonials-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2rem;
+}
+
+.testimonial-card {
+  padding: 2rem;
+  border-radius: 12px;
+  background: white;
+  border: 1px solid v.$color-border;
+}
+
+.testimonial-text {
+  font-family: v.$font-body;
+  font-size: 1.1rem;
+  color: v.$color-base-text-brown;
+  line-height: 1.6;
+  font-style: italic;
+  margin: 0 0 1rem;
+}
+
+.testimonial-author {
+  font-family: v.$font-header;
+  font-size: 1rem;
+  font-weight: 600;
+  color: v.$color-base-brown-warm;
+  margin: 0;
+  text-align: right;
+}
+
+// ── Mission Section ───────────────────────────────────────────────────────────
+
+.mission {
+  background: white;
+}
+
+.mission-text {
+  font-family: v.$font-body;
+  font-size: 1.25rem;
+  color: v.$color-base-text-brown;
+  line-height: 1.8;
+  text-align: center;
+  margin: 0;
+}
+
+// ── Philosophy Section ────────────────────────────────────────────────────────
+
+.philosophy {
+  background: v.$color-base-tan-12;
+}
+
+.philosophy-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 2rem;
+}
+
+.philosophy-item {
+  padding: 1.5rem;
+  border-radius: 8px;
+  background: white;
+  border: 1px solid v.$color-border;
+}
+
+.philosophy-title {
+  font-family: v.$font-header;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: v.$color-base-brown-warm;
+  margin: 0 0 0.75rem;
+}
+
+.philosophy-description {
   font-family: v.$font-body;
   font-size: 1rem;
   color: v.$color-base-text-brown;
@@ -227,75 +397,109 @@
   margin: 0;
 }
 
-// ── Pricing Section ─────────────────────────────────────────────────────────────
+// ── Creator Section ───────────────────────────────────────────────────────────
 
-.pricing {
+.creator {
   background: white;
 }
 
-.pricing-card {
-  max-width: 400px;
+.creator-content {
+  max-width: 700px;
   margin: 0 auto;
-  padding: 2.5rem;
+  padding: 2rem;
   border-radius: 12px;
   background: v.$color-base-tan-11;
-  border: 2px solid v.$color-base-gold-1;
-  text-align: center;
+  border-left: 4px solid v.$color-base-gold-1;
 }
 
-.pricing-title {
+.creator-text {
+  font-family: v.$font-body;
+  font-size: 1.1rem;
+  color: v.$color-base-text-brown;
+  line-height: 1.8;
+  margin: 0 0 1rem;
+}
+
+.creator-signature {
   font-family: v.$font-header;
-  font-size: 1.5rem;
+  font-size: 1.1rem;
+  font-style: italic;
   font-weight: 600;
   color: v.$color-base-brown-warm;
-  margin: 0 0 1rem;
+  text-align: right;
+  margin: 0;
 }
 
-.pricing-price {
-  font-family: v.$font-header;
-  font-size: 2.5rem;
-  font-weight: 700;
-  color: v.$color-base-green-3;
-  margin: 0 0 2rem;
+// ── Vision Section ───────────────────────────────────────────────────────────
+
+.vision {
+  background: v.$color-base-tan-12;
 }
 
-.pricing-features {
-  list-style: none;
-  padding: 0;
-  margin: 0 0 2rem;
-  text-align: left;
-}
-
-.pricing-feature {
+.vision-text {
   font-family: v.$font-body;
-  font-size: 1rem;
+  font-size: 1.25rem;
   color: v.$color-base-text-brown;
-  line-height: 1.6;
-  margin: 0 0 1rem;
-  padding-left: 1.5rem;
-  position: relative;
+  line-height: 1.8;
+  text-align: center;
+  margin: 0;
+}
 
-  &::before {
-    content: '✓';
-    position: absolute;
-    left: 0;
-    color: v.$color-base-green-3;
-    font-weight: 700;
+// ── Responsive Design ─────────────────────────────────────────────────────────
+
+@media (max-width: 768px) {
+  .hero-title {
+    font-size: 2rem;
+  }
+
+  .hero-subtitle {
+    font-size: 1rem;
+  }
+
+  .section-title {
+    font-size: 1.75rem;
+  }
+
+  .section-container {
+    padding: 3rem 1rem;
+  }
+
+  .hero {
+    padding: 3rem 1rem;
+  }
+
+  .pricing-card {
+    padding: 2rem;
+  }
+
+  .step {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .features-grid,
+  .testimonials-grid,
+  .philosophy-grid {
+    grid-template-columns: 1fr;
   }
 }
 
-// ── Mission Section ─────────────────────────────────────────────────────────────
+@media (max-width: 480px) {
+  .hero-title {
+    font-size: 1.75rem;
+  }
 
-.mission {
-  background: v.$color-base-brown-warm;
-  color: v.$color-base-tan-1;
-}
+  .hero-subtitle {
+    font-size: 0.95rem;
+  }
 
-.mission-text {
-  font-family: v.$font-body;
-  font-size: 1.1rem;
-  line-height: 1.8;
-  max-width: 800px;
-  margin: 0 auto;
-  text-align: center;
+  .cta-button {
+    padding: 0.875rem 2rem;
+    font-size: 1rem;
+  }
+
+  .section-title {
+    font-size: 1.5rem;
+  }
 }
