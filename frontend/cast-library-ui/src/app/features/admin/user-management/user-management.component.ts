@@ -58,6 +58,11 @@ export class UserManagementComponent implements OnInit {
   adminPassword = '';
   roleChangeError = signal('');
 
+  showPasswordResetDialog = signal(false);
+  userToResetPassword = signal<UserManagementResponse | null>(null);
+  resettingPassword = signal<string | null>(null);
+  passwordResetError = signal('');
+
   demoCampaigns = signal<DemoCampaign[]>([]);
   demoCampaignOptions = computed<CampaignDropdownOption[]>(() =>
     this.demoCampaigns().map(c => ({ value: c.id, label: c.name }))
@@ -354,6 +359,41 @@ export class UserManagementComponent implements OnInit {
       },
       error: () => {
         this.loadingCardCounts.update(m => ({ ...m, [userId]: false }));
+      },
+    });
+  }
+
+  confirmPasswordReset(user: UserManagementResponse) {
+    this.userToResetPassword.set(user);
+    this.showPasswordResetDialog.set(true);
+    this.adminPassword = '';
+    this.passwordResetError.set('');
+  }
+
+  cancelPasswordReset() {
+    this.showPasswordResetDialog.set(false);
+    this.userToResetPassword.set(null);
+    this.adminPassword = '';
+    this.passwordResetError.set('');
+  }
+
+  resetUserPassword() {
+    const user = this.userToResetPassword();
+    if (!user || !this.adminPassword) return;
+
+    this.resettingPassword.set(user.id);
+    this.passwordResetError.set('');
+
+    this.http.patch(`${environment.apiUrl}/api/admin/users/${user.id}/password`, {
+      adminPassword: this.adminPassword,
+    }).subscribe({
+      next: () => {
+        this.resettingPassword.set(null);
+        this.cancelPasswordReset();
+      },
+      error: (e) => {
+        this.passwordResetError.set(e.error?.message || 'Failed to reset password.');
+        this.resettingPassword.set(null);
       },
     });
   }

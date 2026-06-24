@@ -123,6 +123,7 @@ namespace CastLibrary.WebHost.IoC
             services.AddScoped<ISetCampaignIsDemoCommandHandler, SetCampaignIsDemoCommandHandler>();
             services.AddScoped<IAddUserToDemoCampaignCommandHandler, AddUserToDemoCampaignCommandHandler>();
             services.AddScoped<IChangeUserRoleCommandHandler, ChangeUserRoleCommandHandler>();
+            services.AddScoped<IResetUserPasswordCommandHandler, ResetUserPasswordCommandHandler>();
             services.AddScoped<IUpdateConfigurationCommandHandler, UpdateConfigurationCommandHandler>();
             services.AddScoped<IUpdateUserSubscriptionCommandHandler, UpdateUserSubscriptionCommandHandler>();
 

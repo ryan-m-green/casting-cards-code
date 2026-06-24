@@ -209,11 +209,18 @@
 
                 </div>
                  <button
-                    class="btn-delete"
+                    class="btn-delete user-btn"
                     (click)="confirmDelete(user)"
                     [disabled]="deleting() === user.id"
                   >
-                    {{ deleting() === user.id ? '…' : 'Delete' }}
+                    {{ deleting() === user.id ? '…' : 'Delete User' }}
+                  </button>
+                  <button
+                    class="btn-reset-password user-btn"
+                    (click)="confirmPasswordReset(user)"
+                    [disabled]="resettingPassword() === user.id"
+                  >
+                    {{ resettingPassword() === user.id ? '…' : 'Reset Password' }}
                   </button>
               }
               </div>
@@ -339,6 +346,38 @@
             (click)="changeUserRole()"
           >
             {{ changingRole() === userToChangeRole()?.id ? 'Changing…' : 'Change Role' }}
+          </button>
+        </div>
+      </div>
+    </div>
+  }
+
+  @if (showPasswordResetDialog()) {
+    <div class="modal-overlay" (click)="cancelPasswordReset()">
+      <div class="modal-content" (click)="$event.stopPropagation()">
+        <h3 class="modal-title">Reset Password</h3>
+        <p class="modal-message">
+          Enter your admin password to reset <strong>{{ userToResetPassword()?.displayName }}</strong>'s password to 'castingcards'.
+        </p>
+        <div class="form-field">
+          <input
+            class="fi"
+            type="password"
+            placeholder="Admin password"
+            [(ngModel)]="adminPassword"
+          />
+        </div>
+        @if (passwordResetError()) {
+          <p class="modal-error">{{ passwordResetError() }}</p>
+        }
+        <div class="modal-actions">
+          <button class="btn-cancel" (click)="cancelPasswordReset()">Cancel</button>
+          <button
+            class="btn-confirm-reset"
+            [disabled]="!adminPassword || resettingPassword() === userToResetPassword()?.id"
+            (click)="resetUserPassword()"
+          >
+            {{ resettingPassword() === userToResetPassword()?.id ? 'Resetting…' : 'Reset Password' }}
           </button>
         </div>
       </div>

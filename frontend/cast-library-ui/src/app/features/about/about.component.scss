@@ -10,6 +10,25 @@
   margin: 0 auto;
 }
 
+.about-nav {
+  padding: 1rem 1.5rem;
+  text-align: right;
+}
+
+.nav-link {
+  font-family: v.$font-body;
+  font-size: 1rem;
+  font-weight: 600;
+  color: v.$color-base-brown-warm;
+  text-decoration: none;
+  cursor: pointer;
+  transition: color 0.2s ease;
+
+  &:hover {
+    color: v.$color-base-green-3;
+  }
+}
+
 // ── Hero Section ─────────────────────────────────────────────────────────────
 
 .hero {

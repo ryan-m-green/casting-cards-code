@@ -120,10 +120,6 @@ export const routes: Routes = [
         loadComponent: () => import('./features/role-selection/role-selection.component').then(m => m.RoleSelectionComponent),
       },
       {
-        path: 'about',
-        loadComponent: () => import('./features/about/about.component').then(m => m.AboutComponent),
-      },
-      {
         path: 'legal',
         loadComponent: () => import('./features/legal/legal.component').then(m => m.LegalComponent),
       },

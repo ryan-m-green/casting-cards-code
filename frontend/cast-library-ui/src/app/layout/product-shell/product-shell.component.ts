@@ -1,5 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { RouterOutlet, RouterLink } from '@angular/router';
+import { AuthService } from '../../core/auth/auth.service';
 
 @Component({
   selector: 'app-product-shell',
@@ -8,4 +9,6 @@ import { RouterOutlet, RouterLink } from '@angular/router';
   templateUrl: './product-shell.component.html',
   styleUrl: './product-shell.component.scss'
 })
-export class ProductShellComponent {}
+export class ProductShellComponent {
+  auth = inject(AuthService);
+}

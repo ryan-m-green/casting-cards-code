@@ -5,6 +5,7 @@ namespace CastLibrary.Repository.Repositories.Update
     public interface IUserUpdateRepository
     {
         Task UpdatePasswordAsync(Guid userId, string newPasswordHash);
+        Task UpdatePasswordAndIncrementTokenVersionAsync(Guid userId, string newPasswordHash);
         Task MergeKeywordsAsync(Guid userId, string[] newKeywords);
         Task UpdateRoleAndIncrementTokenVersionAsync(Guid userId, string newRole);
         Task SetEmailVerifiedAsync(Guid userId);
@@ -17,6 +18,14 @@ namespace CastLibrary.Repository.Repositories.Update
             using var conn = sqlConnectionFactory.GetConnection();
             await conn.ExecuteAsync(
                 "UPDATE users SET password_hash = @Hash WHERE id = @Id",
+                new { Hash = newPasswordHash, Id = userId });
+        }
+
+        public async Task UpdatePasswordAndIncrementTokenVersionAsync(Guid userId, string newPasswordHash)
+        {
+            using var conn = sqlConnectionFactory.GetConnection();
+            await conn.ExecuteAsync(
+                "UPDATE users SET password_hash = @Hash, token_version = token_version + 1 WHERE id = @Id",
                 new { Hash = newPasswordHash, Id = userId });
         }
         public async Task MergeKeywordsAsync(Guid userId, string[] newKeywords)

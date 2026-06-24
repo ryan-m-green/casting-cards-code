@@ -1,4 +1,4 @@
-import { Component, ElementRef, ViewChild } from '@angular/core';
+import { Component, ElementRef, ViewChild, AfterViewInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 
@@ -9,10 +9,16 @@ import { CommonModule } from '@angular/common';
   templateUrl: './about.component.html',
   styleUrl: './about.component.scss'
 })
-export class AboutComponent {
+export class AboutComponent implements AfterViewInit {
   @ViewChild('demoVideo') videoRef!: ElementRef<HTMLVideoElement>;
 
   constructor(private router: Router) {}
+
+  ngAfterViewInit() {
+    if (this.videoRef?.nativeElement) {
+      this.videoRef.nativeElement.muted = true;
+    }
+  }
 
   navigateToJoin() {
     this.router.navigate(['/join']);

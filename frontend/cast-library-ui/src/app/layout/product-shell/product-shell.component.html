@@ -2,7 +2,11 @@
   <div class="header-content">
     <h1 class="header-title">Casting Cards</h1>
     <div class="header-nav">
-      <a class="nav-link" routerLink="/login">Log In</a>
+      @if (auth.isLoggedIn()) {
+        <a class="nav-link" routerLink="/dm/dashboard">Dashboard</a>
+      } @else {
+        <a class="nav-link" routerLink="/">Log In</a>
+      }
       <a class="nav-link" routerLink="/legal">Legal</a>
     </div>
   </div>

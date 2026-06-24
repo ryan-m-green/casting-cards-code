@@ -24,6 +24,7 @@ public class AdminController(
     IGetDemoPlayersQueryHandler getDemoPlayersQuery,
     IAddUserToDemoCampaignCommandHandler addUserToDemoCampaignCommand,
     IChangeUserRoleCommandHandler changeUserRoleCommand,
+    IResetUserPasswordCommandHandler resetUserPasswordCommand,
     IUpdateUserSubscriptionCommandHandler updateUserSubscriptionCommand,
     IUserRetriever userRetriever,
     IAuditLoggingService auditService) : ControllerBase
@@ -277,5 +278,45 @@ public class AdminController(
             
             throw;
         }
+    }
+
+    [HttpPatch("users/{userId}/password")]
+    public async Task<IActionResult> ResetUserPassword(Guid userId, [FromBody] ResetUserPasswordRequest request)
+    {
+        var currentUserId = userRetriever.GetUserId(User);
+        var currentUserEmail = userRetriever.GetEmail(User);
+
+        if (currentUserId == userId)
+        {
+            return BadRequest(new { message = "Cannot reset your own password." });
+        }
+
+        var (success, error) = await resetUserPasswordCommand.HandleAsync(
+            new ResetUserPasswordCommand(currentUserId, userId, request));
+
+        if (!success)
+        {
+            // Log failed password reset attempt
+            await auditService.LogPermissionEventAsync(
+                currentUserId,
+                currentUserEmail,
+                AuditEventType.PasswordChange,
+                $"Failed to reset password for user {userId}",
+                targetUserId: userId.ToString(),
+                additionalData: $"Error: {error}");
+
+            return BadRequest(new { message = error });
+        }
+
+        // Log successful password reset
+        await auditService.LogPermissionEventAsync(
+            currentUserId,
+            currentUserEmail,
+            AuditEventType.PasswordChange,
+            $"Reset password for user {userId}",
+            targetUserId: userId.ToString(),
+            additionalData: "Password reset to 'castingcards' by admin");
+
+        return NoContent();
     }
 }

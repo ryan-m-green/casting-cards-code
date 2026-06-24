@@ -8,6 +8,12 @@
   margin-bottom: 0;
 }
 
+.user-btn {
+  margin-top: 8px;
+  gap: 4px;
+  padding: 6px 14px;
+}
+
 .tab-btn {
   font-family: v.$font-header;
   font-size: 12px;
@@ -95,7 +101,7 @@
 
 .btn-delete {
   margin-top:8px;
-  padding: 8px 82px;
+  margin-right:4px;
   background: transparent;
   color: v.$color-dm-text;
   border: 2px solid v.$color-dm-border;
@@ -107,6 +113,27 @@
   &:hover:not(:disabled) {
     background: v.$color-dm-bg;
     border-color: v.$color-dm-text;
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
+
+.btn-reset-password {
+  margin-top: 8px;
+  background: transparent;
+  color: v.$color-base-brown-14;
+  border: 2px solid v.$color-border;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 13px;
+  transition: all 0.2s;
+
+  &:hover:not(:disabled) {
+    background: v.$color-border-accent;
+    border-color: v.$color-border-accent;
   }
 
   &:disabled {
@@ -562,6 +589,26 @@
   display: flex;
   justify-content: flex-end;
 .btn-confirm-role {
+  padding: 8px 16px;
+  background: transparent;
+  color: v.$color-base-brown-14;
+  border: 1px solid v.$color-border-accent;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 13px;
+  transition: all 0.2s;
+
+  &:hover:not(:disabled) {
+    background: v.$color-border-accent;
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
+
+.btn-confirm-reset {
   padding: 8px 16px;
   background: transparent;
   color: v.$color-base-brown-14;
