@@ -1,4 +1,4 @@
-<div class="pc scroll-body">
+<div class="pc scroll-body" data-testid="configuration">
 
   <app-journal-title title="Configuration Settings" />
 
@@ -125,6 +125,7 @@
           class="btn-save"
           (click)="saveConfigurations()"
           [disabled]="saving()"
+          data-testid="save-configuration"
         >
           {{ saving() ? 'Saving…' : 'Save All Changes' }}
         </button>

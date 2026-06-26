@@ -1,4 +1,4 @@
-<div class="pc scroll-body">
+<div class="pc scroll-body" data-testid="bug-reports">
 
   <app-journal-title title="Report a Glitch in the Realm" />
 
@@ -32,7 +32,7 @@
     } @else {
       <div class="bug-list">
         @for (bug of openBugs; track bug.id) {
-          <div class="bug-card">
+          <div class="bug-card" [attr.data-testid]="'bug-row-' + bug.id">
             <div class="bug-header">
               <span class="bug-title">{{ bug.title }}</span>
             </div>
@@ -55,12 +55,14 @@
             <div class="bug-actions">
               <button class="btn-mark-fixed"
                       (click)="markFixed(bug)"
-                      [disabled]="marking() === bug.id || deleting() === bug.id">
+                      [disabled]="marking() === bug.id || deleting() === bug.id"
+                      data-testid="mark-fixed-button">
                 {{ marking() === bug.id ? '…' : '✓ Mark as Fixed' }}
               </button>
               <button class="btn-not-doing"
                       (click)="deleteBug(bug)"
-                      [disabled]="deleting() === bug.id || marking() === bug.id">
+                      [disabled]="deleting() === bug.id || marking() === bug.id"
+                      data-testid="delete-bug-button">
                 {{ deleting() === bug.id ? '…' : 'Not Doing' }}
               </button>
             </div>

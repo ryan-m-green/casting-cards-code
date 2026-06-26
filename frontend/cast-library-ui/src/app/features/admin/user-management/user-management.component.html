@@ -24,7 +24,7 @@
   </div>
 
   @if (activeTab() === 'users') {
-    <div class="tab-content" id="um-panel-users" role="tabpanel" aria-labelledby="um-tab-users">
+    <div class="tab-content" id="um-panel-users" role="tabpanel" aria-labelledby="um-tab-users" data-testid="user-management">
 
       <div class="wb wb-narrow">
         <input 
@@ -33,6 +33,7 @@
           placeholder="Search users..." 
           [(ngModel)]="searchQuery"
           (input)="filterUsers()"
+          data-testid="user-search"
         />
       </div>
 
@@ -47,7 +48,7 @@
       } @else {
         <div class="user-list">
           @for (user of filteredUsers(); track user.id) {
-            <div class="user-card">
+            <div class="user-card" [attr.data-testid]="'user-row-' + user.email">
               <div class="user-info">
                 <div class="user-name">{{ user.displayName }}</div>
                 <div class="user-meta">{{ user.email }} · {{ user.role }}</div>
@@ -64,6 +65,7 @@
                       [class.btn-role-toggle--active]="user.role === 'Player'"
                       [disabled]="changingRole() === user.id"
                       (click)="confirmRoleChange(user, 'Player')"
+                      data-testid="user-role-select"
                     >Player</button>
                     <button
                       class="btn-role-toggle"
@@ -93,7 +95,7 @@
                         </div>
                         <div class="sub-field">
                           <label>Bypass Payment</label>
-                          <input type="checkbox" [(ngModel)]="subscriptionEditData()[user.id].bypassPayment" />
+                          <input type="checkbox" [(ngModel)]="subscriptionEditData()[user.id].bypassPayment" data-testid="bypass-payment-toggle" />
                         </div>
                         <div class="sub-field">
                           <label>Current Period End</label>
@@ -101,7 +103,7 @@
                         </div>
                         <div class="sub-field">
                           <label>Lock Level</label>
-                          <select class="fi" [(ngModel)]="subscriptionEditData()[user.id].lockLevel">
+                          <select class="fi" [(ngModel)]="subscriptionEditData()[user.id].lockLevel" data-testid="lock-level-select">
                             <option value="FullAccess">FullAccess</option>
                             <option value="SoftLock">SoftLock</option>
                             <option value="HardLock">HardLock</option>
@@ -109,7 +111,7 @@
                           </select>
                         </div>
                         <div class="sub-actions">
-                          <button class="btn-save-sub" (click)="saveSubscription(user)" [disabled]="subscriptionUpdateLoading()">
+                          <button class="btn-save-sub" (click)="saveSubscription(user)" [disabled]="subscriptionUpdateLoading()" data-testid="save-user-role">
                             {{ subscriptionUpdateLoading() ? '…' : 'Save' }}
                           </button>
                           <button class="btn-cancel-sub" (click)="cancelEditSubscription()">Cancel</button>
@@ -117,7 +119,7 @@
                       </div>
                     } @else {
                       <div class="subscription-display">
-                        <div class="sub-read-only">
+                        <div class="sub-read-only" data-testid="user-details">
                           <span class="sub-label">User ID:</span> <span class="sub-value">{{ user.id }}</span>
                         </div>
                         @if (user.stripeCustomerId) {
@@ -158,23 +160,23 @@
                         <div class="card-counts-list">
                           <div class="card-count-item">
                             <span class="card-count-type">Campaigns</span>
-                            <span class="card-count-value">{{ userCardCounts()[user.id].campaigns }}</span>
+                            <span class="card-count-value" data-testid="campaign-count">{{ userCardCounts()[user.id].campaigns }}</span>
                           </div>
                           <div class="card-count-item">
                             <span class="card-count-type">Locations</span>
-                            <span class="card-count-value">{{ userCardCounts()[user.id].locations }}</span>
+                            <span class="card-count-value" data-testid="location-count">{{ userCardCounts()[user.id].locations }}</span>
                           </div>
                           <div class="card-count-item">
                             <span class="card-count-type">Sublocations</span>
-                            <span class="card-count-value">{{ userCardCounts()[user.id].sublocations }}</span>
+                            <span class="card-count-value" data-testid="sublocation-count">{{ userCardCounts()[user.id].sublocations }}</span>
                           </div>
                           <div class="card-count-item">
                             <span class="card-count-type">Casts</span>
-                            <span class="card-count-value">{{ userCardCounts()[user.id].casts }}</span>
+                            <span class="card-count-value" data-testid="cast-count">{{ userCardCounts()[user.id].casts }}</span>
                           </div>
                           <div class="card-count-item">
                             <span class="card-count-type">Factions</span>
-                            <span class="card-count-value">{{ userCardCounts()[user.id].factions }}</span>
+                            <span class="card-count-value" data-testid="faction-count">{{ userCardCounts()[user.id].factions }}</span>
                           </div>
                         </div>
                       </div>
@@ -212,6 +214,7 @@
                     class="btn-delete user-btn"
                     (click)="confirmDelete(user)"
                     [disabled]="deleting() === user.id"
+                    data-testid="delete-user-button"
                   >
                     {{ deleting() === user.id ? '…' : 'Delete User' }}
                   </button>

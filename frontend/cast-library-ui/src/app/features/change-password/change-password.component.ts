@@ -41,7 +41,8 @@ export class ChangePasswordComponent {
       next: () => {
         this.success.set(true);
         this.loading.set(false);
-        setTimeout(() => this.router.navigate(['/dm/dashboard']), 2000);
+        const redirectRoute = this.auth.isDm() ? '/dm/dashboard' : '/player/campaigns';
+        setTimeout(() => this.router.navigate([redirectRoute]), 2000);
       },
       error: (e) => {
         this.errorMsg.set(e.error?.message || 'Failed to change password.');

@@ -150,6 +150,11 @@ export const routes: Routes = [
             loadComponent: () => import('./features/player/player-campaigns/player-campaigns.component').then(m => m.PlayerCampaignsComponent),
           },
           {
+            path: 'change-password',
+            canActivate: [playerLibraryAccessGuard],
+            loadComponent: () => import('./features/change-password/change-password.component').then(m => m.ChangePasswordComponent),
+          },
+          {
             path: 'bug-report',
             canActivate: [playerLibraryAccessGuard],
             loadComponent: () => import('./features/bug-report/bug-report.component').then(m => m.BugReportComponent),

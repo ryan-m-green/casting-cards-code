@@ -129,6 +129,10 @@
           <!-- Player: Account -->
           <div class="jnd-section">
             <span class="jnd-section-label">Account</span>
+            <button class="jnd-item" [class.is-active]="isActive('/player/change-password')" (click)="navigate('/player/change-password')">
+              <span class="jnd-item-marker">◈</span>
+              <span class="jnd-item-label">Change Password</span>
+            </button>
             <button class="jnd-item" [class.is-active]="isActive('/player/bug-report')" (click)="navigate('/player/bug-report')">
               <span class="jnd-item-marker">◈</span>
               <span class="jnd-item-label">Report a Glitch</span>
