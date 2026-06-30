@@ -57,7 +57,6 @@ export class SubscriptionDrawerComponent {
 
   subscribeNow() {
     if (!this.pricingData?.active) {
-      console.error('No active pricing model available');
       return;
     }
 
@@ -67,7 +66,6 @@ export class SubscriptionDrawerComponent {
         window.location.href = response.checkoutUrl;
       },
       error: (error) => {
-        console.error('Failed to create checkout session:', error);
         this.loading.set(false);
       }
     });

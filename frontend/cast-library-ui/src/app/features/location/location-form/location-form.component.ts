@@ -249,7 +249,8 @@ export class LocationFormComponent implements OnInit {
     ).subscribe({
       next: res => {
         URL.revokeObjectURL(objectUrl);
-        this.imageUrl.set(res.imageUrl);
+        const cacheBustedUrl = res.imageUrl.includes('?') ? `${res.imageUrl}&t=${Date.now()}` : `${res.imageUrl}?t=${Date.now()}`;
+        this.imageUrl.set(cacheBustedUrl);
         this.imageUploading.set(false);
       },
       error: () => {

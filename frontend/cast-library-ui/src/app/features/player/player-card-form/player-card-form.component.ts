@@ -232,7 +232,11 @@ export class PlayerCardFormComponent implements OnInit {
             `${environment.apiUrl}/api/campaigns/${this.campaignId()}/player-cards/${card.id}/image`,
             formData
           ).subscribe({
-            next:  () => { this.saving.set(false); this.savedCard.set(card); },
+            next:  res => {
+              const cacheBustedUrl = res.imageUrl.includes('?') ? `${res.imageUrl}&t=${Date.now()}` : `${res.imageUrl}?t=${Date.now()}`;
+              this.saving.set(false);
+              this.savedCard.set({ ...card, imageUrl: cacheBustedUrl });
+            },
             error: () => { this.saving.set(false); this.savedCard.set(card); },
           });
         } else {

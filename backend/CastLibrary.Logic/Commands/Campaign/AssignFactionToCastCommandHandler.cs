@@ -39,12 +39,14 @@ public class AssignFactionToCastCommandHandler(
 
 public class AssignFactionToCastCommand
 {
-    public AssignFactionToCastCommand(Guid instanceId, AssignFactionToCastRequest request)
+    public AssignFactionToCastCommand(Guid campaignId, Guid instanceId, AssignFactionToCastRequest request)
     {
+        CampaignId = campaignId;
         InstanceId = instanceId;
         Request = request;
     }
 
+    public Guid CampaignId { get; }
     public Guid InstanceId { get; }
     public AssignFactionToCastRequest Request { get; }
 }

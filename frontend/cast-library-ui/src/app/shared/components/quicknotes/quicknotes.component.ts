@@ -36,6 +36,7 @@ type DestinationType = 'queue' | 'location' | 'sublocation' | 'cast' | 'faction'
 export class QuicknotesComponent implements OnInit, OnDestroy {
   @Input() campaignId!: string;
   @Input() campaign: CampaignDetail | null = null;
+  @Input() isPlayerComponent = false;
 
   @ViewChild('noteArea') noteArea!: ElementRef<HTMLTextAreaElement>;
   @ViewChild('saveBtn') saveBtn!: ElementRef<HTMLButtonElement>;
@@ -98,18 +99,30 @@ export class QuicknotesComponent implements OnInit, OnDestroy {
   }
 
   get locations(): CampaignLocationInstance[] {
+    if (this.isPlayerComponent) {
+      return this.campaign?.locations ?? [];
+    }
     return this.campaign?.locations?.filter(l => l.isVisibleToPlayers) ?? [];
   }
 
   get sublocations(): CampaignSublocationInstance[] {
+    if (this.isPlayerComponent) {
+      return this.campaign?.sublocations ?? [];
+    }
     return this.campaign?.sublocations?.filter(s => s.isVisibleToPlayers) ?? [];
   }
 
   get casts(): CampaignCastInstance[] {
+    if (this.isPlayerComponent) {
+      return this.campaign?.casts ?? [];
+    }
     return this.campaign?.casts?.filter(c => c.isVisibleToPlayers) ?? [];
   }
 
   get factions(): CampaignFactionInstance[] {
+    if (this.isPlayerComponent) {
+      return this.campaign?.factions ?? [];
+    }
     return this.campaign?.factions?.filter(f => f.isVisibleToPlayers) ?? [];
   }
 

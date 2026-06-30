@@ -136,8 +136,8 @@
   flex-shrink: 0;
   display: inline-flex;
   position: relative;
-  width: 68px;
-  height: 96px;
+  width: 96px;
+  height: 136px;
   border-radius: 4px;
   border: 1px dashed rgba(v.$color-lib-location-1, 0.28);
   cursor: pointer;
@@ -217,7 +217,7 @@
 
 .field-label {
   font-family: v.$font-header;
-  font-size: 7px;
+  font-size: 12px;
   letter-spacing: 0.2em;
   text-transform: uppercase;
   color: rgba(v.$color-lib-location-1, 0.85);
@@ -238,7 +238,7 @@
 
 .optional {
   color: rgba(v.$color-lib-location-1, 0.45);
-  font-size: 8px;
+  font-size: 12px;
 }
 
 // â”€â”€â”€ Inputs â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
@@ -278,7 +278,7 @@
 
 .field-error {
   font-family: v.$font-body;
-  font-size: 11px;
+  font-size: 12px;
   color: v.$color-ext-460;
 }
 
@@ -345,7 +345,7 @@
   border-radius: 2px;
   padding: 1px 6px 1px 8px;
   font-family: v.$font-header;
-  font-size: 7px;
+  font-size: 12px;
   letter-spacing: 0.12em;
   text-transform: uppercase;
   color: rgba(v.$color-lib-location-1, 0.90);
@@ -356,17 +356,21 @@
   background: none;
   border: none;
   cursor: pointer;
-  font-size: 13px;
-  line-height: 1;
-  color: rgba(v.$color-lib-location-1, 0.50);
   padding: 0;
   display: flex;
   align-items: center;
-  transition: color 0.15s ease;
+  transition: opacity 0.15s ease;
 
   &:hover {
-    color: rgba(v.$color-lib-location-1, 0.85);
+    opacity: 0.7;
   }
+}
+
+.pill-remove-img {
+  width: 14px;
+  height: 14px;
+  opacity: 0.5;
+  filter: invert(1);
 }
 
 .pill-chevron {
@@ -443,7 +447,7 @@
 }
 
 .form-submit-btn {
-  font-size: 8px;
+  font-size: 12px;
   padding: 4px 14px;
   letter-spacing: 0.16em;
 }

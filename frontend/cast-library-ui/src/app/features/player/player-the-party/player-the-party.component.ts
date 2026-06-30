@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, signal, computed, inject, effect, untracked } from '@angular/core';
+import { Component, OnInit, OnDestroy, signal, computed, inject, effect, untracked, HostListener } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
@@ -123,10 +123,11 @@ export class PlayerThePartyComponent implements OnInit, OnDestroy {
   partySecrets   = computed(() => this.secrets().filter(s => s.isShared));
   sharingSecretId = signal<string | null>(null);
 
-  // ── View Secrets modal ───────────────────────────────────────────────────────
+  // ── View Secrets drawer ───────────────────────────────────────────────────────
   viewingSecretsFor = signal<PlayerCardWithDetails | null>(null);
   memberSecrets     = signal<PlayerCardSecret[]>([]);
   secretsLoading    = signal(false);
+  secretsDrawerClosing = signal(false);
 
   // ── Cast tab ─────────────────────────────────────────────────────────────────
   discoveredCast  = signal<DiscoveredCastResponse | null>(null);
@@ -571,7 +572,7 @@ export class PlayerThePartyComponent implements OnInit, OnDestroy {
     });
   }
 
-  // ── View Secrets modal ───────────────────────────────────────────────────────
+  // ── View Secrets drawer ───────────────────────────────────────────────────────
   viewSecrets(member: PlayerCardWithDetails) {
     this.viewingSecretsFor.set(member);
     this.secretsLoading.set(true);
@@ -585,8 +586,19 @@ export class PlayerThePartyComponent implements OnInit, OnDestroy {
   }
 
   closeSecretsModal() {
-    this.viewingSecretsFor.set(null);
-    this.memberSecrets.set([]);
+    this.secretsDrawerClosing.set(true);
+    setTimeout(() => {
+      this.viewingSecretsFor.set(null);
+      this.memberSecrets.set([]);
+      this.secretsDrawerClosing.set(false);
+    }, 240);
+  }
+
+  @HostListener('document:keydown.escape')
+  onEscape() {
+    if (this.viewingSecretsFor()) {
+      this.closeSecretsModal();
+    }
   }
 
   // ── Navigation ───────────────────────────────────────────────────────────────
@@ -618,7 +630,10 @@ export class PlayerThePartyComponent implements OnInit, OnDestroy {
 
   onPortraitUploaded(url: string) {
     const card = this.playerCard();
-    if (card) this.playerCard.set({ ...card, imageUrl: url });
+    if (card) {
+      const cacheBustedUrl = url.includes('?') ? `${url}&t=${Date.now()}` : `${url}?t=${Date.now()}`;
+      this.playerCard.set({ ...card, imageUrl: cacheBustedUrl });
+    }
   }
 
   onInfoSaved(data: PlayerCardInfoUpdate) {

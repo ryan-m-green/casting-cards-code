@@ -100,7 +100,7 @@ public class CampaignChroniclesReadRepository(
         var gmOnlyClause = isPlayer ? "AND c.is_gm_only = FALSE" : string.Empty;
         var whereClause = typeFilters == null || typeFilters.Length == 0 
             ? string.Empty 
-            : "AND EXISTS (SELECT 1 FROM regexp_split_to_table(c.keywords, '\\s+') kw WHERE kw = ANY(@TypeFilters))";
+            : "AND c.linked_entities IS NOT NULL AND EXISTS (SELECT 1 FROM jsonb_array_elements(c.linked_entities) as item WHERE item->>'EntityType' = ANY(@TypeFilters))";
 
         var countSql = BuildCountSql(whereClause, gmOnlyClause);
         var dataSql = BuildDataSql(whereClause, gmOnlyClause);
@@ -165,7 +165,7 @@ public class CampaignChroniclesReadRepository(
         var gmOnlyClause = isPlayer ? "AND c.is_gm_only = FALSE" : string.Empty;
         var filterClause = typeFilters == null || typeFilters.Length == 0 
             ? string.Empty 
-            : "AND EXISTS (SELECT 1 FROM regexp_split_to_table(c.keywords, '\\s+') kw WHERE kw = ANY(@TypeFilters))";
+            : "AND c.linked_entities IS NOT NULL AND EXISTS (SELECT 1 FROM jsonb_array_elements(c.linked_entities) as item WHERE item->>'EntityType' = ANY(@TypeFilters))";
         var whereClause = filterClause + " AND (c.title ILIKE '%' || @SearchQuery || '%' OR c.body ILIKE '%' || @SearchQuery || '%')";
 
         var countSql = BuildCountSql(whereClause, gmOnlyClause);
@@ -199,7 +199,7 @@ public class CampaignChroniclesReadRepository(
         var gmOnlyClause = isPlayer ? "AND c.is_gm_only = FALSE" : string.Empty;
         var whereClause = typeFilters == null || typeFilters.Length == 0 
             ? string.Empty 
-            : "AND EXISTS (SELECT 1 FROM regexp_split_to_table(c.keywords, '\\s+') kw WHERE kw = ANY(@TypeFilters))";
+            : "AND c.linked_entities IS NOT NULL AND EXISTS (SELECT 1 FROM jsonb_array_elements(c.linked_entities) as item WHERE item->>'EntityType' = ANY(@TypeFilters))";
 
         var countSql = BuildCountSql(whereClause, gmOnlyClause);
         var dataSql = BuildDataSql(whereClause, gmOnlyClause);
@@ -264,7 +264,7 @@ public class CampaignChroniclesReadRepository(
         var gmOnlyClause = isPlayer ? "AND c.is_gm_only = FALSE" : string.Empty;
         var filterClause = typeFilters == null || typeFilters.Length == 0 
             ? string.Empty 
-            : "AND EXISTS (SELECT 1 FROM regexp_split_to_table(c.keywords, '\\s+') kw WHERE kw = ANY(@TypeFilters))";
+            : "AND c.linked_entities IS NOT NULL AND EXISTS (SELECT 1 FROM jsonb_array_elements(c.linked_entities) as item WHERE item->>'EntityType' = ANY(@TypeFilters))";
         var whereClause = filterClause + " AND (c.title ILIKE '%' || @SearchQuery || '%' OR c.body ILIKE '%' || @SearchQuery || '%')";
 
         var countSql = BuildCountSql(whereClause, gmOnlyClause);
@@ -322,9 +322,9 @@ public class CampaignChroniclesReadRepository(
                $"         c.archived_at as ArchivedAt\n" +
                $"  FROM campaign_session_archived s\n" +
                $"  INNER JOIN matching_sessions ms ON ms.id = s.id\n" +
-               $"  LEFT JOIN campaign_session_chronicles c ON c.archived_session_id = s.id\n" +
+               $"  LEFT JOIN campaign_session_chronicles c ON c.archived_session_id = s.id {gmOnlyClause}\n" +
                $"  WHERE s.campaign_id = @CampaignId\n" +
-               $"    {gmOnlyClause}\n" +
-               $"  ORDER BY s.start_time DESC, c.sort_order DESC";
+               $"    {whereClause}\n" +
+               $"  ORDER BY s.start_time DESC, c.sort_order ASC";
     }
 }

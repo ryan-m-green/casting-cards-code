@@ -23,20 +23,13 @@ export class CoverComponent implements OnInit {
   private destroyRef = inject(DestroyRef);
 
   ngOnInit() {
-    console.log('CoverComponent.ngOnInit - Checking auth state');
-    console.log('CoverComponent.ngOnInit - isLoggedIn():', this.auth.isLoggedIn());
-    console.log('CoverComponent.ngOnInit - isDm():', this.auth.isDm());
-    console.log('CoverComponent.ngOnInit - isAdmin():', this.auth.isAdmin());
-    
     // Check if user is already authenticated and redirect
     if (this.auth.isDm() || this.auth.isAdmin()) {
-      console.log('CoverComponent.ngOnInit - User is DM/Admin, redirecting to dashboard');
       this.router.navigate(['/dm/dashboard']);
       return;
     }
     
     if (this.auth.isLoggedIn()) {
-      console.log('CoverComponent.ngOnInit - User is logged in, redirecting to player campaigns');
       this.router.navigate(['/player/campaigns']);
       return;
     }
@@ -44,10 +37,8 @@ export class CoverComponent implements OnInit {
     // If not immediately authenticated, check for token and wait a moment for state restoration
     const token = localStorage.getItem('cast_library_token');
     if (token) {
-      console.log('CoverComponent.ngOnInit - Token found, waiting for auth state restoration');
       setTimeout(() => {
         if (this.auth.isLoggedIn()) {
-          console.log('CoverComponent.ngOnInit - Auth state restored, redirecting');
           if (this.auth.isDm() || this.auth.isAdmin()) {
             this.router.navigate(['/dm/dashboard']);
           } else {

@@ -287,6 +287,26 @@ export class PlayerFactionDetailComponent implements OnInit, OnDestroy {
         });
       })
     );
+
+    this.hubSubscriptions.push(
+      this.hub.factionSymbolAssigned$.subscribe(event => {
+        if (!event || event.campaignId !== untracked(() => this.campaignId())) {
+          return;
+        }
+        const id            = untracked(() => this.campaignId());
+        const factionInstId = untracked(() => this.factionInstanceId());
+        this.http.get<CampaignFactionInstance[]>(
+          `${environment.apiUrl}/api/campaigns/${id}/factions/player`
+        ).pipe(
+          catchError(() => of([] as CampaignFactionInstance[]))
+        ).subscribe(factions => {
+          const f = factions.find(x => x.factionInstanceId === factionInstId) ?? null;
+          if (f) {
+            this.faction.set(f);
+          }
+        });
+      })
+    );
   }
 
   private loadPlayerNotes() {

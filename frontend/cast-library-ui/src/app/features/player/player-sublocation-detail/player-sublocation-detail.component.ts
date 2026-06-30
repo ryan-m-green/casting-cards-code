@@ -3,7 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../../environments/environment';
-import { CampaignCastPlayerNotes } from '../../../shared/models/campaign.model';
+import { CampaignCastPlayerNotes, CampaignDetail } from '../../../shared/models/campaign.model';
 import { CampaignSublocationInstance, ShopItem } from '../../../shared/models/sublocation.model';
 import { CampaignCastInstance } from '../../../shared/models/cast.model';
 import { CampaignSecret } from '../../../shared/models/secret.model';
@@ -168,6 +168,24 @@ export class PlayerSublocationDetailComponent implements OnInit, OnDestroy {
           this.transition.quickCover();
           this.router.navigate(['/player/campaign', campaignId]);
         }
+      })
+    );
+
+    this.hubSubscriptions.push(
+      this.hub.factionSymbolAssigned$.subscribe(event => {
+        if (!event || event.campaignId !== untracked(() => this.campaignId())) {
+          return;
+        }
+        if (event.entityType !== 'sublocation' || event.instanceId !== untracked(() => this.sublocationInstanceId())) {
+          return;
+        }
+        const sublocId = untracked(() => this.sublocationInstanceId());
+        const campaignId = untracked(() => this.campaignId());
+        this.http.get<CampaignDetail>(
+          `${environment.apiUrl}/api/campaigns/${campaignId}`
+        ).subscribe(c => {
+          this.shellService.setCampaign(c);
+        });
       })
     );
   }

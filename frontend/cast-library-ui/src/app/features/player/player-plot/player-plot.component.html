@@ -41,7 +41,7 @@
           [showSearchBar]="true"
           [activeTypeFilters]="chroniclesTypeFilters()"
           [showVisibilityFilters]="false"
-          (typeFilterChange)="chroniclesTypeFilters.set($event)"
+          (typeFilterChange)="onChronicleTypeFilterChange($event)"
           (search)="onChronicleSearch($event)"
         ></app-storyline-filter-bar>
       }
@@ -51,7 +51,7 @@
       }
 
       @if (!chroniclesLoading() && chronicles() && chronicles()!.sessions.length > 0) {
-        <!-- Pagination info -->
+        <!-- Pagination info at top -->
         @if (chronicles()!.totalSessions > 0) {
           <div class="chronicles-pagination">
             <button
@@ -73,19 +73,25 @@
           [expandedSessionIds]="expandedSessionIds()"
           [isDmMode]="false"
           [timeOfDay]="timeOfDay()"
+          [searchQuery]="chroniclesSearchQuery()"
           (sessionExpand)="toggleSessionExpand($event)" />
-      }
 
-      @if (chronicles() && chronicles()!.totalPages > 1) {
-        <div class="pagination">
-          @if (chronicles()!.currentPage > 1) {
-            <button class="pagination-btn" (click)="chroniclesPage.set(chroniclesPage() - 1); loadChronicles()">Previous</button>
-          }
-          <span class="pagination-info">Page {{ chronicles()!.currentPage }} of {{ chronicles()!.totalPages }}</span>
-          @if (chronicles()!.currentPage < chronicles()!.totalPages) {
-            <button class="pagination-btn" (click)="chroniclesPage.set(chroniclesPage() + 1); loadChronicles()">Next</button>
-          }
-        </div>
+        <!-- Pagination info at bottom -->
+        @if (chronicles()!.totalSessions > 0) {
+          <div class="chronicles-pagination">
+            <button
+              class="pagination-btn"
+              [disabled]="chroniclesPage() === 1"
+              (click)="chroniclePrevPage()"
+            >Current Sessions</button>
+            <span class="pagination-info">{{ chronicles()!.totalSessions }} sessions total</span>
+            <button
+              class="pagination-btn"
+              [disabled]="chroniclesPage() === chronicles()!.totalPages"
+              (click)="chronicleNextPage()"
+            >Past Sessions</button>
+          </div>
+        }
       }
     </div>
   }

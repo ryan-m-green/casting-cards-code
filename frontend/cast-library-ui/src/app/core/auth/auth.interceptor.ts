@@ -50,11 +50,9 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
         withCredentials: true
       });
     } else if (!xsrfCookie) {
-      console.warn('authInterceptor: XSRF-TOKEN cookie not found, attempting refresh');
       // Token refresh when cookie is missing
       auth.getCsrfToken().subscribe({
         error: () => {
-          console.error('authInterceptor: Failed to refresh XSRF token');
         }
       });
     }
@@ -66,13 +64,10 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
         auth.safeLogout();
       } else if (err.status === 400 && err.error?.error === 'Invalid antiforgery token') {
         // CSRF token validation failed - clear token and refresh with retry logic
-        console.warn('authInterceptor: Antiforgery validation failed, refreshing token');
         auth.getCsrfToken().subscribe({
           next: () => {
-            console.log('authInterceptor: XSRF token refreshed successfully');
           },
           error: () => {
-            console.error('authInterceptor: Failed to refresh XSRF token after validation failure');
             // If refresh fails, logout user
             auth.safeLogout();
           }

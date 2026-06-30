@@ -599,9 +599,10 @@
 // ── Secret content (overlay reveal) ──────────────────────────────────────────
 .card-secret-block {
   position: absolute;
-  bottom: 26px;
-  left: 6px;
-  right: 6px;
+  top: calc(100% + 4px);
+  left: 50%;
+  transform: translateX(-50%);
+  width: 200px;
   z-index: 20;
   background: v.$color-ext-637;
   border: 1px solid v.$color-ext-638;
@@ -614,7 +615,7 @@
 
 .card-secret-label {
   font-family: v.$font-header;
-  font-size: 7px;
+  font-size: 12px;
   letter-spacing: 0.22em;
   text-transform: uppercase;
   color: v.$color-ext-640;
@@ -623,7 +624,7 @@
 
 .card-secret-text {
   font-family: v.$font-body;
-  font-size: 10px;
+  font-size: 12px;
   font-style: italic;
   line-height: 1.45;
   color: v.$color-ext-641;
@@ -631,4 +632,20 @@
   -webkit-line-clamp: 4;
   -webkit-box-orient: vertical;
   overflow: hidden;
+}
+
+// ── Traveling message (outside card) ───────────────────────────────────────────
+.card-traveling-block {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  right: 0;
+  background: v.$color-ext-637;
+  border: 1px solid v.$color-ext-638;
+  border-radius: 5px;
+  padding: 8px 10px;
+  box-shadow:
+    0 0 10px v.$color-ext-639,
+    0 4px 14px v.$color-ext-146;
+  z-index: 20;
 }

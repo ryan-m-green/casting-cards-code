@@ -390,11 +390,10 @@
                         <app-note-destination-picker
                           [showQueue]="false"
                           [showNone]="true"
-                          [showCampaign]="false"
+                          [showCampaign]="true"
                           [showTimeOfDay]="true"
                           [multiselect]="true"
                           [linkedEntities]="editLinkedEntities()"
-                          [excludedEntities]="allUsedEntities()"
                           [campaignId]="campaignId"
                           [destType]="editDestType() ?? 'none'"
                           [entityId]="editEntityId()"
@@ -471,11 +470,10 @@
                         <app-note-destination-picker
                           [showQueue]="false"
                           [showNone]="true"
-                          [showCampaign]="false"
+                          [showCampaign]="true"
                           [showTimeOfDay]="true"
                           [multiselect]="true"
                           [linkedEntities]="editLinkedEntities()"
-                          [excludedEntities]="allUsedEntities()"
                           [campaignId]="campaignId"
                           [destType]="editDestType() ?? 'none'"
                           [entityId]="editEntityId()"
@@ -559,11 +557,10 @@
             <app-note-destination-picker
               [showQueue]="false"
               [showNone]="true"
-              [showCampaign]="false"
+              [showCampaign]="true"
               [showTimeOfDay]="true"
               [multiselect]="true"
               [linkedEntities]="linkedEntities()"
-              [excludedEntities]="allUsedEntities()"
               [campaignId]="campaignId"
               [destType]="destType()"
               [entityId]="entityId()"
@@ -682,13 +679,15 @@
             <app-note-destination-picker
               [showQueue]="false"
               [showNone]="true"
-              [showCampaign]="false"
+              [showCampaign]="true"
+              [showTimeOfDay]="true"
               [multiselect]="true"
               [linkedEntities]="handoutLinkedEntities()"
-              [excludedEntities]="allUsedEntities()"
               [campaignId]="campaignId"
               [destType]="handoutDestType()"
               [entityId]="handoutEntityId()"
+              [tod]="tod()"
+              [todPositionPercent]="handoutTodPositionPercent()"
               [locations]="locations()"
               [sublocations]="sublocations()"
               [casts]="casts()"
@@ -696,6 +695,7 @@
               [players]="players()"
               (destTypeChange)="onHandoutDestTypeChange($event)"
               (entityIdChange)="handoutEntityId.set($event)"
+              (todPositionPercentChange)="handoutTodPositionPercent.set($event)"
               (linkedEntitiesChange)="handoutLinkedEntities.set($event)"
             />
           </div>
@@ -734,7 +734,7 @@
         [activeTypeFilters]="chroniclesTypeFilters()"
         [showVisibilityFilters]="false"
         [debugLabel]="'CHRONICLES TAB'"
-        (typeFilterChange)="chroniclesTypeFilters.set($event)"
+        (typeFilterChange)="onChronicleTypeFilterChange($event)"
         (search)="onChronicleSearch($event)"
         (reset)="onChronicleReset()"
       ></app-storyline-filter-bar>
@@ -775,6 +775,7 @@
           [sessionOptions]="sessionOptions()"
           [chronicleEditSessionId]="chronicleEditSessionId()"
           [chronicleEditSortOrder]="chronicleEditSortOrder()"
+          [searchQuery]="chroniclesSearchQuery()"
           (sessionExpand)="toggleSessionExpand($event)"
           (editChronicle)="openChronicleEdit($event)"
           (cancelChronicleEdit)="closeChronicleEdit()"
@@ -782,6 +783,23 @@
           (sessionChange)="onChronicleSessionChange($event)"
           (sortOrderChange)="onChronicleSortOrderChange($event)"
           (deleteSession)="deleteSession($event)" />
+
+        <!-- Pagination info at bottom -->
+        @if (chronicles()!.totalSessions > 0) {
+          <div class="chronicles-pagination">
+            <button
+              class="pagination-btn"
+              [disabled]="chroniclesPage() === 1"
+              (click)="chroniclePrevPage()"
+            >Current Sessions</button>
+            <span class="pagination-info">{{ chronicles()!.totalSessions }} sessions total</span>
+            <button
+              class="pagination-btn"
+              [disabled]="chroniclesPage() === chronicles()!.totalPages"
+              (click)="chronicleNextPage()"
+            >Past Sessions</button>
+          </div>
+        }
       }
     </div>
   }

@@ -77,7 +77,7 @@ export class DashboardComponent implements OnInit {
   ngOnInit() {
     // Only connect to SignalR if user is authenticated to prevent 401 errors
     if (this.auth.isLoggedIn()) {
-      this.hub.connect().catch((err: Error) => console.error('Dashboard: SignalR connection failed:', err));
+      this.hub.connect().catch((err: Error) => {});
     }
 
     this.http.get<DashboardStats>(`${environment.apiUrl}/api/dashboard/stats`)
@@ -229,7 +229,6 @@ export class DashboardComponent implements OnInit {
     this.http.post<ImportResult>(`${environment.apiUrl}/api/dashboard/import`, formData)
       .subscribe({
         next: result => {
-          debugger;
           this.importResult.set(result);
           this.importing.set(false);
           this.showImportPanel.set(false);

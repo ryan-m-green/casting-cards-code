@@ -83,14 +83,21 @@ export class PlayerEventsComponent implements OnInit, OnDestroy {
     this.hubSubscriptions.push(
       this.hub.storylineEventUpdated$.subscribe(e => {
         if (!e || e.campaignId !== this.campaignId()) return;
-        
-        this.events.update(list => 
-          list.map(ev => 
-            ev.id === e.eventId 
+
+        this.events.update(list =>
+          list.map(ev =>
+            ev.id === e.eventId
               ? { ...ev, title: e.title, body: e.body, imageUrl: e.imageUrl ?? undefined }
               : ev
           )
         );
+      })
+    );
+
+    this.hubSubscriptions.push(
+      this.hub.sessionEnded$.subscribe(e => {
+        if (!e || e.campaignId !== this.campaignId()) return;
+        this.loadEvents(this.campaignId());
       })
     );
   }

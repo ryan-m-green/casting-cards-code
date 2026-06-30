@@ -1,5 +1,5 @@
 <div class="cc-wrap" [class.cc-flipped]="flipped" [style.transform]="tiltTransform"
-     (pointerdown)="onPointerDown($event)" (pointermove)="onPointerMove($event)" (click)="toggleFlip()">
+     (pointerdown)="onPointerDown($event)" (pointermove)="onPointerMove($event)" (click)="flippable ? toggleFlip() : null">
   <div class="cc-inner">
 
     <!-- ── BACK FACE ── -->

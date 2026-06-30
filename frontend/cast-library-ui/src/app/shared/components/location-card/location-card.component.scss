@@ -513,9 +513,10 @@
 // ── Secret content (overlay reveal) ──────────────────────────────────────────
 .card-secret-block {
   position: absolute;
-  bottom: 26px;
-  left: 6px;
-  right: 6px;
+  top: calc(100% + 4px);
+  left: 50%;
+  transform: translateX(-50%);
+  width: 200px;
   z-index: 20;
   background: v.$color-ext-637;
   border: 1px solid v.$color-ext-638;
@@ -528,7 +529,7 @@
 
 .card-secret-label {
   font-family: v.$font-header;
-  font-size: 7px;
+  font-size: 12px;
   letter-spacing: 0.22em;
   text-transform: uppercase;
   color: v.$color-ext-640;
@@ -537,7 +538,7 @@
 
 .card-secret-text {
   font-family: v.$font-body;
-  font-size: 10px;
+  font-size: 12px;
   font-style: italic;
   line-height: 1.45;
   color: v.$color-ext-641;

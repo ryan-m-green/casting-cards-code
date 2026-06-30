@@ -32,6 +32,7 @@ export interface CardRevealOverlayData {
   sceneText?: string;
   showPortal?: boolean;
   showSettings?: boolean;
+  isTraveling?: boolean;
   // Player card specific fields
   playerUserId?: string;
   playerDisplayName?: string;

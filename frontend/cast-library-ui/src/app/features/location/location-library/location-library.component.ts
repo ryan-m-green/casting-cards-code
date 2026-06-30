@@ -42,7 +42,7 @@ export class LocationLibraryComponent implements OnInit {
   });
 
   ngOnInit() {
-    this.hub.connect().catch((err: unknown) => console.error('LocationLibrary: SignalR connection failed:', err));
+    this.hub.connect().catch((err: unknown) => {});
 
     this.http.get<Location[]>(`${environment.apiUrl}/api/locations`).subscribe(c => this.locations.set(c));
     this.loadEntityLimits();

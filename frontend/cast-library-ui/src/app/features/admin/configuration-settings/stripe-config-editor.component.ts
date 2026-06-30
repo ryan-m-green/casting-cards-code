@@ -37,7 +37,6 @@ export class StripeConfigEditorComponent {
   }
 
   updateLiveAccountField(field: keyof StripeConfigurationDomain['liveAccount'], value: string) {
-    console.log(`Updating live account field ${field}:`, value);
     const current = this.config();
     const updated = {
       ...current,
@@ -46,7 +45,6 @@ export class StripeConfigEditorComponent {
         [field]: value,
       },
     };
-    console.log('Emitting updated config:', updated);
     this.configChange.emit(updated);
   }
 

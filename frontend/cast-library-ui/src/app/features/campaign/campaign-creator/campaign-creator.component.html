@@ -113,8 +113,7 @@
     }
     <label class="fi-label">Campaign Color</label>
     <div class="color-picker-row">
-      <input type="color" class="color-swatch-input" formControlName="spineColor"
-             (change)="form.controls.spineColor.setValue($any($event.target).value)" />
+      <input type="color" class="color-swatch-input" formControlName="spineColor" />
       <span class="color-swatch-preview" [style.background]="form.controls.spineColor.value"></span>
       <span class="color-swatch-hex">{{ form.controls.spineColor.value }}</span>
     </div>

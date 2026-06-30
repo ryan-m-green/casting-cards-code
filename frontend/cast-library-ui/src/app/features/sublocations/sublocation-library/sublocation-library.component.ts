@@ -42,7 +42,7 @@ export class SublocationLibraryComponent implements OnInit {
   });
 
   ngOnInit() {
-    this.hub.connect().catch((err: unknown) => console.error('SublocationLibrary: SignalR connection failed:', err));
+    this.hub.connect().catch((err: unknown) => {});
 
     this.http.get<Sublocation[]>(`${environment.apiUrl}/api/sublocations`).subscribe(l => this.sublocations.set(l));
     this.loadEntityLimits();

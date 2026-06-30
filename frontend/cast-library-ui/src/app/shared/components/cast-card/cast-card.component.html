@@ -39,15 +39,6 @@
           <div class="cast-back-name">{{ cast.name }}</div>
           <div class="cast-back-divider"></div>
 
-          <div class="cast-back-stats">
-            @for (stat of stats; track stat.k) {
-              <div class="cast-stat-row">
-                <span class="cast-stat-key">{{ stat.k }}</span>
-                <span class="cast-stat-val">{{ stat.v }}</span>
-              </div>
-            }
-          </div>
-
           @if (editable) {
             <div class="cast-back-actions">
               <button class="cast-btn cast-btn--red" (click)="onDeleteClick($event)">✦ Delete</button>
@@ -201,14 +192,6 @@
             <div class="cast-flavor-text">{{ cast.publicDescription ? '"' + cast.publicDescription + '"' : '—' }}</div>
           </div>
 
-          <!-- secret content -->
-          @if (secretContent) {
-            <div class="card-secret-block">
-              <div class="card-secret-label">Secret Revealed</div>
-              <div class="card-secret-text">{{ secretContent }}</div>
-            </div>
-          }
-
           <!-- bottom strip -->
           <div class="cast-strip"
                [class.cast-strip--editable]="editable"
@@ -232,5 +215,20 @@
       </div>
     </div>
 
+    <!-- traveling message -->
+    @if (isTraveling) {
+      <div class="card-traveling-block">
+        <div class="card-secret-text">Traveling with your party</div>
+      </div>
+    }
+
   </div>
+
+  <!-- secret content -->
+  @if (secretContent) {
+    <div class="card-secret-block">
+      <div class="card-secret-label">Secret Revealed</div>
+      <div class="card-secret-text">{{ secretContent }}</div>
+    </div>
+  }
 </div>

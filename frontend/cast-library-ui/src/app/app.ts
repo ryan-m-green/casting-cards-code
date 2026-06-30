@@ -54,12 +54,10 @@ export class App implements OnInit, OnDestroy {
     const hasLocalStorageToken = this.hasLocalStorageToken();
     
     if (hasCookie || hasLocalStorageToken) {
-      console.log('App: Found existing session - Cookie:', hasCookie, 'LocalStorage:', hasLocalStorageToken);
       
       // Validate session on app startup to check auth state
       this.authService.refreshCurrentUser().subscribe({
         next: () => {
-          console.log('App: Session validation successful, user authenticated:', this.authService.isLoggedIn());
           // If user is authenticated, fetch CSRF token
           if (this.authService.isLoggedIn()) {
             this.authService.getCsrfToken().subscribe({
@@ -70,23 +68,19 @@ export class App implements OnInit, OnDestroy {
           }
         },
         error: (error) => {
-          console.log('App: Session validation failed, checking localStorage auth state');
           // Check if user is still authenticated from localStorage restoration
           // The refreshCurrentUser method now handles 401s by clearing auth state itself
           if (this.authService.isLoggedIn()) {
-            console.log('App: User still authenticated from localStorage, fetching CSRF token');
             this.authService.getCsrfToken().subscribe({
               error: () => {
                 // Silently fail - CSRF token will be fetched on first request
               }
             });
           } else {
-            console.log('App: User not authenticated after session validation');
           }
         }
       });
     } else {
-      console.log('App: No existing session found');
     }
 
     this._navSub = this.router.events.pipe(
@@ -113,7 +107,6 @@ export class App implements OnInit, OnDestroy {
     
     // Check if returning from Stripe checkout
     if (stripeSuccess === 'true' && sessionId) {
-      console.log('App: Detected Stripe checkout return, starting subscription refresh');
       this.authService.startSubscriptionRefresh();
       
       // Clean up URL parameters

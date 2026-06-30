@@ -107,7 +107,8 @@ public class CampaignPlayerReadRepository(
 
         using var conn = sqlConnectionFactory.GetConnection();
         var assignments = (await conn.QueryAsync<(Guid UserId, Guid CampaignId)>(sql))
-            .ToDictionary(x => x.UserId, x => x.CampaignId);
+            .GroupBy(x => x.UserId)
+            .ToDictionary(g => g.Key, g => g.First().CampaignId);
 
         logging.LogDbOperation(correlation.TraceId, spanId, "SELECT", "campaign_players", null, assignments.Count);
 

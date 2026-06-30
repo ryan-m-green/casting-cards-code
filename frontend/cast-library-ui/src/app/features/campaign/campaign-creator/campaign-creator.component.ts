@@ -96,7 +96,6 @@ export class CampaignCreatorComponent implements OnInit, OnDestroy {
   allDmKeywords      = signal<string[]>([]);
 
   private keywordSaveTimer?: ReturnType<typeof setTimeout>;
-
   // Local fields for location text inputs — never pushed to selectedDrafts() signal during typing
   liveLocationFields: Record<string, string> = {
     geography: '', climate: '', religion: '', vibe: '', languages: '',

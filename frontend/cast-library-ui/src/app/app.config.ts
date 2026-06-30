@@ -19,7 +19,6 @@ export const appConfig: ApplicationConfig = {
       useFactory: (auth: AuthService) => {
         return () => auth.getCsrfToken().pipe(
           catchError((err: unknown) => {
-            console.warn('Failed to initialize XSRF token:', err);
             return of(null);
           })
         );

@@ -98,7 +98,6 @@ export class SubscriptionLockBannerComponent {
     try {
       await this.stripe.redirectToCustomerPortal();
     } catch (error) {
-      console.error('Failed to redirect to customer portal:', error);
     }
   }
 }

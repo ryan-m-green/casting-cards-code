@@ -35,12 +35,14 @@ public class AssignFactionToSublocationCommandHandler(
 
 public class AssignFactionToSublocationCommand
 {
-    public AssignFactionToSublocationCommand(Guid instanceId, AssignFactionToSublocationRequest request)
+    public AssignFactionToSublocationCommand(Guid campaignId, Guid instanceId, AssignFactionToSublocationRequest request)
     {
+        CampaignId = campaignId;
         InstanceId = instanceId;
         Request = request;
     }
 
+    public Guid CampaignId { get; }
     public Guid InstanceId { get; }
     public AssignFactionToSublocationRequest Request { get; }
 }

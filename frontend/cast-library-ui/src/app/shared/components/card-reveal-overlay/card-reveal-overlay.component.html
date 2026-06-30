@@ -30,12 +30,19 @@
                   [cast]="getCastModel(card)"
                   [flippable]="false"
                   [editable]="false"
-                  [secretContent]="card.secretContent ?? null" />
+                  [secretContent]="card.secretContent ?? null"
+                  [isTraveling]="card.isTraveling ?? null" />
               }
               @case ('player') {
-                <app-casting-card-player
-                  [member]="getPlayerModel(card)"
-                  [mode]="'player'" />
+                <div class="cr-player-card-wrapper">
+                  <app-casting-card-player
+                    [member]="getPlayerModel(card)"
+                    [mode]="'player'"
+                    [flippable]="false" />
+                  @if (card.secretContent && i === currentIndex()) {
+                    <div class="cr-secret-reveal-text">A secret has been revealed</div>
+                  }
+                </div>
               }
               @case ('location') {
                 <app-location-card
@@ -72,6 +79,7 @@
                   [recipient]="card.recipient ?? ''"
                   [portalColor]="card.portalColor ?? '#6e28d0'"
                   [dismissable]="false"
+                  [focused]="i === currentIndex()"
                   (goToSecrets)="handleWhisperGoToSecrets()" />
               }
               @case ('campaign-event') {

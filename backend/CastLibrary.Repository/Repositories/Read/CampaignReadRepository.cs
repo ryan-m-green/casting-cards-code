@@ -132,8 +132,8 @@ public class CampaignReadRepository(
                 description,
                 fantasy_type AS FantasyType,
                 status,
-                spine_color  AS SpineColo,
-                last_accessed_at AS LastAccessedAtr,
+                spine_color  AS SpineColor,
+                last_accessed_at AS LastAccessedAt,
                 is_demo      AS IsDemo,
                 created_at   AS CreatedAt
               FROM campaigns WHERE id = @Id";

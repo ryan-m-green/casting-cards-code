@@ -49,6 +49,7 @@
   transition: max-height 0.45s cubic-bezier(0, 0, 0.2, 1);
   position: relative;
   margin-top: -30px;
+  padding-left:12px;
 
   &--open {
     max-height: 9999px;

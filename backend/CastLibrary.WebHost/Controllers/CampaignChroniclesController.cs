@@ -41,7 +41,7 @@ public class CampaignChroniclesController(
     {
         if (!await CallerIsMemberOrOwner(campaignId)) return Forbid();
 
-        var isPlayer = User.IsInRole("Player") && !User.IsInRole("DM") && !User.IsInRole("Admin");
+        var isPlayer = !await CallerOwns(campaignId);
         
         var response = await getChroniclesQuery.HandleAsync(new GetChroniclesQuery(
             campaignId,
@@ -77,7 +77,7 @@ public class CampaignChroniclesController(
     {
         if (!await CallerIsMemberOrOwner(campaignId)) return Forbid();
 
-        var isPlayer = User.IsInRole("Player") && !User.IsInRole("DM") && !User.IsInRole("Admin");
+        var isPlayer = !await CallerOwns(campaignId);
 
         var response = await getChroniclesSessionsPagedQuery.HandleAsync(new GetChroniclesSessionsPagedQuery(
             campaignId,

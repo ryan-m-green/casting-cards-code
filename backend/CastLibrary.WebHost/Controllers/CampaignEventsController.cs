@@ -3,8 +3,6 @@ using CastLibrary.Logic.Queries.Campaign;
 using CastLibrary.Logic.Services;
 using CastLibrary.Logic.Strategies;
 using CastLibrary.Logic.Validators;
-using CastLibrary.Repository.Repositories.Update;
-using CastLibrary.Shared.Domain;
 using CastLibrary.Shared.Requests;
 using CastLibrary.Shared.Responses;
 using CastLibrary.WebHost.Hubs;
@@ -27,7 +25,6 @@ public class CampaignEventsController(
     IUpdateCampaignEventDetailsCommandHandler updateDetailsCommand,
     IDeleteCampaignEventCommandHandler deleteEventCommand,
     IReorderCampaignEventsCommandHandler reorderCommand,
-    IArchiveSessionChroniclesCommandHandler archiveCommand,
     IGetCampaignEventsQueryHandler getEventsQuery,
     IGetVisibleCampaignEventsQueryHandler getVisibleEventsQuery,
     IUploadCampaignStorylineHandoutCommandHandler uploadHandoutCommand,
@@ -256,17 +253,6 @@ public class CampaignEventsController(
         await reorderCommand.HandleAsync(new ReorderCampaignEventsCommand(request));
 
         return NoContent();
-    }
-[HttpPost("archive")]
-    [Authorize(Roles = "DM,Admin")]
-    public async Task<IActionResult> Archive(Guid campaignId, [FromBody] ArchiveSessionChroniclesRequest request)
-    {
-        if (!await CallerOwns(campaignId)) return Forbid();
-
-        request.CampaignId = campaignId;
-        var archivedCount = await archiveCommand.HandleAsync(new ArchiveSessionChroniclesCommand(request));
-
-        return Ok(new { archivedCount });
     }
 
     [HttpDelete("{eventId}")]

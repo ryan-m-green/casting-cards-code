@@ -57,7 +57,6 @@
             <div class="detail-portrait-fields">
               <div class="detail-desc">
                 <span class="detail-label">Sublocation Title</span>
-                <span class="detail-line"></span>
                 <input class="detail-input"
                        [ngModel]="editName()"
                        (ngModelChange)="editName.set($event)"
@@ -69,7 +68,6 @@
         } @else {
           <div class="detail-desc">
             <span class="detail-label">Sublocation Title</span>
-            <span class="detail-line"></span>
             <span class="detail-value">{{ subLoc.name }}</span>
           </div>
         }
@@ -77,7 +75,6 @@
         <!-- Description — full width -->
         <div class="detail-desc">
           <span class="detail-label">Description</span>
-          <span class="detail-line"></span>
           @if (editing()) {
             <textarea class="detail-input detail-input--block"
                       [ngModel]="editDescription()"
@@ -95,7 +92,6 @@
           @if (!editing() && subLoc.keywords.length) {
             <div class="detail-cell detail-cell--full">
               <span class="detail-label">Keywords</span>
-              <span class="detail-line"></span>
               <div class="detail-keywords">
                 @for (kw of subLoc.keywords; track kw) {
                   <span class="detail-keyword-pill">{{ kw }}</span>
@@ -109,7 +105,6 @@
         @if (subLoc.shopItems.length || (isDm() && editing())) {
           <div class="detail-shop-section">
             <span class="detail-label">Shop Items</span>
-            <span class="detail-line"></span>
             <div class="detail-shop-grid">
               @for (item of subLoc.shopItems; track item.id) {
                 @if (isDm() && editing() && editingShopItemId() === item.id) {
@@ -222,22 +217,21 @@
         <div class="detail-secrets-section">
           <div class="detail-secrets-header">
             <span class="detail-label">Secrets</span>
-            <span class="detail-line"></span>
           </div>
           @for (secret of sublocationSecrets(); track secret.id) {
             <div class="detail-secret">
-              @if (isDm()) {
+              @if (isDm() && !editing()) {
                 <button class="secret-lock-btn" (click)="toggleSecret(secret)"
                         [title]="secret.isRevealed ? 'Reseal secret' : 'Reveal secret'">
                   <app-lock-icon [open]="secret.isRevealed" />
                 </button>
               }
-              <span class="secret-text" [class.secret-text--revealed]="secret.isRevealed">{{ secret.content }}</span>
               @if (isDm() && editing()) {
                 <button class="secret-delete-btn" (click)="deleteSecret(secret)" type="button" title="Delete secret" aria-label="Delete secret">
                   <img src="/icons/chronicle/delete.svg" alt="Delete" class="secret-delete-btn-img" />
                 </button>
               }
+              <span class="secret-text" [class.secret-text--revealed]="secret.isRevealed">{{ secret.content }}</span>
             </div>
           }
           @if (isDm() && editing()) {
@@ -261,7 +255,6 @@
         @if (isDm()) {
           <div class="detail-dm-notes">
             <span class="detail-label">DM Notes</span>
-            <span class="detail-line"></span>
             @if (editing()) {
               <textarea class="detail-input detail-input--block"
                         [ngModel]="editDmNotes()"

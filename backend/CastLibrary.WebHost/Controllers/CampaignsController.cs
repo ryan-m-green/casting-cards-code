@@ -945,7 +945,7 @@ public class CampaignsController(
         if (!await CallerOwns(id)) return Forbid();
         request.DmUserId = userRetriever.GetUserId(User);
         await assignFactionToSublocationCommand.HandleAsync(
-            new AssignFactionToSublocationCommand(instanceId, request));
+            new AssignFactionToSublocationCommand(id, instanceId, request));
 
         return NoContent();
     }
@@ -958,7 +958,7 @@ public class CampaignsController(
         if (!await CallerOwns(id)) return Forbid();
         request.DmUserId = userRetriever.GetUserId(User);
         await assignFactionToCastCommand.HandleAsync(
-            new AssignFactionToCastCommand(instanceId, request));
+            new AssignFactionToCastCommand(id, instanceId, request));
 
         return NoContent();
     }
@@ -973,7 +973,17 @@ public class CampaignsController(
         if (!await CallerCanView(id)) return Forbid();
         request.DmUserId = null;
         await assignFactionToSublocationCommand.HandleAsync(
-            new AssignFactionToSublocationCommand(instanceId, request));
+            new AssignFactionToSublocationCommand(id, instanceId, request));
+
+        var factionInstanceId = request.FactionInstanceId?.ToString() ?? string.Empty;
+        await hubContext.Clients.Group(id.ToString()).SendAsync("FactionSymbolAssigned", new
+        {
+            campaignId = id.ToString(),
+            instanceId = instanceId.ToString(),
+            entityType = "sublocation",
+            factionInstanceIds = string.IsNullOrEmpty(factionInstanceId) ? new List<string>() : new List<string> { factionInstanceId },
+            tickCount = DateTime.UtcNow.Ticks
+        });
 
         return NoContent();
     }
@@ -986,7 +996,16 @@ public class CampaignsController(
         if (!await CallerCanView(id)) return Forbid();
         request.DmUserId = null;
         await assignFactionToCastCommand.HandleAsync(
-            new AssignFactionToCastCommand(instanceId, request));
+            new AssignFactionToCastCommand(id, instanceId, request));
+
+        await hubContext.Clients.Group(id.ToString()).SendAsync("FactionSymbolAssigned", new
+        {
+            campaignId = id.ToString(),
+            instanceId = instanceId.ToString(),
+            entityType = "cast",
+            factionInstanceIds = request.FactionSymbols.Select(s => s.FactionInstanceId).ToList(),
+            tickCount = DateTime.UtcNow.Ticks
+        });
 
         return NoContent();
     }

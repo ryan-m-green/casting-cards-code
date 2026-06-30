@@ -58,42 +58,7 @@ public class PurchaseShopItemCommandHandler(
         var C = item.PriceCurrencyType.ToLowerInvariant();
         var X = item.PriceAmount;
 
-        // ── Step 1: direct match ─────────────────────────────────────────────
-        if (bal[C] >= X)
-        {
-            bal[C] -= X;
-            await currencyTransactionUpdateRepository.SetAmountAsync(command.CampaignId, command.PlayerUserId, C, bal[C]);
-            return Success(item, player);
-        }
-
-        // ── Step 2: exchange from higher denominations, one unit at a time ───
-        var working = new Dictionary<string, int>(bal, StringComparer.OrdinalIgnoreCase);
-        var cIndex  = Array.FindIndex(CoinOrder, c => c.Equals(C, StringComparison.OrdinalIgnoreCase));
-        var changed = new HashSet<string>(StringComparer.OrdinalIgnoreCase) { C };
-
-        for (var i = cIndex + 1; i < CoinOrder.Length; i++)
-        {
-            var D            = CoinOrder[i];
-            var exchangeRate = CopperValue[D] / cpPerItemUnit; // units of C per 1 unit of D
-
-            while (working[D] > 0)
-            {
-                working[D]--;
-                working[C] += exchangeRate;
-                changed.Add(D);
-
-                if (working[C] >= X)
-                {
-                    working[C] -= X;
-                    foreach (var coin in changed)
-                        await currencyTransactionUpdateRepository.SetAmountAsync(
-                            command.CampaignId, command.PlayerUserId, coin, working[coin]);
-                    return Success(item, player);
-                }
-            }
-        }
-
-        // ── Step 3: copper fallback — compare totals, redistribute optimally ─
+        // ── Copper fallback — convert all to copper, subtract cost, redistribute optimally ─
         var totalCp = CoinOrder.Sum(coin => bal[coin] * CopperValue[coin]);
         var costCp  = X * cpPerItemUnit;
 

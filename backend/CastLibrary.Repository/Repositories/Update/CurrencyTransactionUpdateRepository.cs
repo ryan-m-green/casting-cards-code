@@ -19,25 +19,37 @@ public class CurrencyTransactionUpdateRepository(
 {
     public async Task SetAmountAsync(Guid campaignId, Guid playerUserId, string currencyType, int newAmount)
     {
-        var spanId  = correlation.NewSpan();
+        var spanId = correlation.NewSpan();
         var @params = new { CampaignId = campaignId, PlayerUserId = playerUserId, CurrencyType = currencyType, NewAmount = newAmount };
 
-        const string sql =
+        const string updateSql =
             @"UPDATE currency_transactions
               SET amount = @NewAmount
-              WHERE id = (
-                  SELECT id FROM currency_transactions
-                  WHERE campaign_id = @CampaignId
-                    AND player_user_id = @PlayerUserId
-                    AND currency_type  = @CurrencyType
-                  LIMIT 1
-              )";
+              WHERE campaign_id = @CampaignId
+                AND player_user_id = @PlayerUserId
+                AND currency_type = @CurrencyType";
 
         logging.LogDbOperation(correlation.TraceId, spanId, "UPDATE", "currency_transactions", @params);
 
         using var conn = sqlConnectionFactory.GetConnection();
-        var rows = await conn.ExecuteAsync(sql, @params);
+        var rows = await conn.ExecuteAsync(updateSql, @params);
 
         logging.LogDbOperation(correlation.TraceId, spanId, "UPDATE", "currency_transactions", @params, rows);
+
+        if (rows == 0)
+        {
+            var id = Guid.NewGuid();
+            var insertParams = new { Id = id, CampaignId = campaignId, PlayerUserId = playerUserId, CurrencyType = currencyType, NewAmount = newAmount };
+
+            const string insertSql =
+                @"INSERT INTO currency_transactions (id, campaign_id, player_user_id, amount, currency_type, transaction_type, description, created_by, created_at)
+                  VALUES (@Id, @CampaignId, @PlayerUserId, @NewAmount, @CurrencyType, 'ADJUSTMENT', '', NULL, NOW())";
+
+            logging.LogDbOperation(correlation.TraceId, spanId, "INSERT", "currency_transactions", insertParams);
+
+            var insertRows = await conn.ExecuteAsync(insertSql, insertParams);
+
+            logging.LogDbOperation(correlation.TraceId, spanId, "INSERT", "currency_transactions", insertParams, insertRows);
+        }
     }
 }

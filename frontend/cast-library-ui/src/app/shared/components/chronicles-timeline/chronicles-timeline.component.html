@@ -39,7 +39,7 @@
                     @if (chronicle.imageUrl) {
                       <img [src]="chronicle.imageUrl" class="event-image" alt="" />
                     }
-                    <div class="event-title">{{ chronicle.title }}</div>
+                    <div class="event-title" [innerHTML]="highlightText(chronicle.title, searchQuery)"></div>
                   </div>            
                 </div>
                 @if (isDmMode && chronicleEditingId === chronicle.id) {
@@ -87,7 +87,7 @@
                 } @else {
                   <div class="event-card-body">
                     <div class="event-content">
-                      <div [innerHTML]="chronicle.body"></div>
+                      <div [innerHTML]="highlightText(chronicle.body, searchQuery)"></div>
                       @if (chronicle.imageUrl) {
                         <img class="chronicle-image" [src]="chronicle.imageUrl" alt="Chronicle image" />
                       }

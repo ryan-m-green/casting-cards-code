@@ -154,12 +154,12 @@ export class TimeOfDayEditorComponent implements OnInit, OnDestroy {
     this.scheduleAutosave();
   }
 
-  updateDuration(index: number, value: number) {
-    const current  = this.slices()[index].durationHours;
-    const otherSum = this.sliceTotal() - current;
-    const max      = this.dayLengthHours() - otherSum;
-    const clamped  = Math.max(0, Math.min(value, max));
-    this.updateSliceField(index, 'durationHours', clamped);
+  clampDurationOnBlur(index: number): void {
+    const slice = this.slices()[index];
+    const max = this.dayLengthHours() - (this.sliceTotal() - slice.durationHours);
+    if (slice.durationHours > max) {
+      this.updateSliceField(index, 'durationHours', max);
+    }
   }
 
   // ── Private ──────────────────────────────────────────────────────────────────

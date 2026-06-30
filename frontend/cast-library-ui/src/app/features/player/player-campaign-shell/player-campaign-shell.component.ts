@@ -44,9 +44,8 @@ export class PlayerCampaignShellComponent implements OnInit, OnDestroy {
   campaign          = signal<CampaignDetail | null>(null);
   timeOfDay         = computed(() => this.campaign()?.timeOfDay ?? null);
   isDm              = computed(() => this.campaign()?.dmUserId === this.auth.currentUser()?.id);
+  myPlayerCardId    = signal('');
   overlayData       = signal<CardRevealOverlayData | null>(null);
-  wizardSecretContent   = signal<string | null>(null);
-  wizardSecretRecipient = signal<string>('');
 
   // ── Event card notification ───────────────────────────────────────────────
   eventCardTitle = signal<string | null>(null);
@@ -59,12 +58,6 @@ export class PlayerCampaignShellComponent implements OnInit, OnDestroy {
   // ── Purse popover ──────────────────────────────────────────────────────────
   showPurse        = signal(false);
   purse            = signal<CurrencyLine[]>([]);
-
-  // ── Currency card overlay ─────────────────────────────────────────────────
-  showGoldCard     = signal(false);
-  goldCardAmount   = signal(0);
-  goldCardCurrency = signal('gp');
-  goldCardNote     = signal<string | null>(null);
 
   private hubSubscriptions: Subscription[] = [];
 
@@ -362,16 +355,18 @@ export class PlayerCampaignShellComponent implements OnInit, OnDestroy {
         const c = untracked(() => this.campaign());
         if (!c) return;
 
-        const instanceId = event.castInstanceId ?? event.locationInstanceId ?? event.sublocationInstanceId;
+        const instanceId = event.castInstanceId ?? event.locationInstanceId ?? event.sublocationInstanceId ?? event.factionInstanceId;
         if (!instanceId) return;
 
         const cardType = event.castInstanceId ? 'cast'
                        : event.locationInstanceId ? 'location'
-                       : 'sublocation';
+                       : event.sublocationInstanceId ? 'sublocation'
+                       : 'faction';
 
         const data = await this.buildOverlayFromVisibilityEvent(c, instanceId, cardType);
         if (data) {
-          this.overlayData.set({ ...data, secretContent: event.secretContent });
+          const secretRevealData = { ...data, secretContent: event.secretContent };
+          this.cardRevealQueue.update(queue => [...queue, secretRevealData]);
         }
       })
     );
@@ -382,8 +377,16 @@ export class PlayerCampaignShellComponent implements OnInit, OnDestroy {
         if (!event || event.campaignId !== this.campaignId()) return;
         const myId = untracked(() => this.auth.currentUser()?.id);
         if (!myId || event.playerUserId !== myId) return;
-        this.wizardSecretContent.set(event.content);
-        this.wizardSecretRecipient.set(untracked(() => this.auth.currentUser()?.displayName ?? ''));
+        const recipient = untracked(() => this.auth.currentUser()?.displayName ?? '');
+        const whisperData: CardRevealOverlayData = {
+          cardType: 'whisper',
+          name: recipient,
+          descriptor: 'Eyes Only · Game Master',
+          content: event.content,
+          recipient: recipient,
+          portalColor: this.campaign()?.spineColor ?? '#6e28d0',
+        };
+        this.cardRevealQueue.update(queue => [...queue, whisperData]);
       })
     );
 
@@ -391,13 +394,16 @@ export class PlayerCampaignShellComponent implements OnInit, OnDestroy {
     this.hubSubscriptions.push(
       this.hub.secretShared$.subscribe(event => {
         if (!event) return;
-        this.overlayData.set({
+        const myCardId = untracked(() => this.myPlayerCardId());
+        if (!myCardId || event.playerCardId === myCardId) return;
+        const sharedSecretData: CardRevealOverlayData = {
           cardType:      'player',
           name:          event.playerName,
           descriptor:    event.playerRaceClass,
           imageUrl:      event.playerImageUrl,
           secretContent: event.secretContent,
-        });
+        };
+        this.cardRevealQueue.update(queue => [...queue, sharedSecretData]);
       })
     );
 
@@ -411,10 +417,17 @@ export class PlayerCampaignShellComponent implements OnInit, OnDestroy {
           (e.playerUserId === null || e.playerUserId === myId)
         );
         if (!mine) return;
-        this.goldCardAmount.set(mine.amount);
-        this.goldCardCurrency.set(mine.currency);
-        this.goldCardNote.set(mine.note);
-        this.showGoldCard.set(true);
+        // Add currency card to reveal queue
+        const currencyData: CardRevealOverlayData = {
+          cardType: 'currency',
+          name: `${mine.amount} ${mine.currency}`,
+          descriptor: 'Gold Awarded',
+          amount: mine.amount,
+          currency: mine.currency,
+          note: mine.note ?? undefined,
+          portalColor: this.campaign()?.spineColor ?? '#6e28d0',
+        };
+        this.cardRevealQueue.update(queue => [...queue, currencyData]);
         // Update purse balance for the awarded currency type
         this.purse.update(lines => {
           const existing = lines.find(l => l.type === mine.currency);
@@ -442,6 +455,21 @@ export class PlayerCampaignShellComponent implements OnInit, OnDestroy {
 
         this.campaign.update(c => c ? update(c) : c);
         this.shellSvc.setCampaign(update(untracked(() => this.shellSvc.campaign())!));
+        
+        if (event.traveledToTheParty) {
+          const cast = this.campaign()?.casts.find(c => c.instanceId === event.castInstanceId);
+          if (cast) {
+            const castData: CardRevealOverlayData = {
+              cardType: 'cast',
+              name: cast.name,
+              descriptor: cast.role ?? '',
+              imageUrl: cast.imageUrl ?? '',
+              instanceId: cast.instanceId,
+              isTraveling: true,
+            };
+            this.cardRevealQueue.update(queue => [...queue, castData]);
+          }
+        }
       })
     );
   }
@@ -474,8 +502,11 @@ export class PlayerCampaignShellComponent implements OnInit, OnDestroy {
         }
         return EMPTY;
       })
-    ).subscribe();
-
+    ).subscribe((card: any) => {
+      if (card?.id) {
+        this.myPlayerCardId.set(card.id);
+      }
+    });
     this.http
       .get<CampaignDetail>(`${environment.apiUrl}/api/campaigns/${id}/player`)
       .subscribe(c => {
@@ -532,10 +563,6 @@ export class PlayerCampaignShellComponent implements OnInit, OnDestroy {
     this.showOverlay.set(true);
   }
 
-  dismissWizardSecret() {
-    this.wizardSecretContent.set(null);
-  }
-
   dismissEventCard() {
     this.eventCardTitle.set(null);
     if (this.pendingOverlayData) {
@@ -545,12 +572,7 @@ export class PlayerCampaignShellComponent implements OnInit, OnDestroy {
     }
   }
 
-  dismissGoldCard() {
-    this.showGoldCard.set(false);
-  }
-
   navigateToSecrets() {
-    this.wizardSecretContent.set(null);
     this.transition.quickCover();
     this.router.navigate(['/player/campaign', this.campaignId(), 'the-party'], { queryParams: { tab: 'secrets' } })
       .then(() => this.transition.hide());
@@ -620,6 +642,11 @@ export class PlayerCampaignShellComponent implements OnInit, OnDestroy {
       const cast = campaign.casts.find((ca: any) => ca.instanceId === instanceId);
       if (!cast) return null;
       return { cardType: 'cast', name: cast.name, descriptor: cast.role ?? '', imageUrl: cast.imageUrl ?? '', instanceId };
+    }
+    if (cardType === 'faction') {
+      const faction = campaign.factions?.find((f: any) => f.factionInstanceId === instanceId);
+      if (!faction) return null;
+      return { cardType: 'faction', name: faction.name, descriptor: faction.type ?? '', symbolPath: faction.symbolPath ?? '', instanceId };
     }
     if (cardType === 'player') {
       // Find player in campaign data

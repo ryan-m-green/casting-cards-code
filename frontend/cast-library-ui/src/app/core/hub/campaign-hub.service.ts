@@ -38,6 +38,7 @@ export interface CastTravelledEvent {
   fromSublocationInstanceId: string | null;
   toLocationInstanceId: string;
   toSublocationInstanceId: string;
+  traveledToTheParty: boolean;
 }
 
 export interface FactionRemovedEvent {
@@ -61,6 +62,11 @@ export interface StorylineEventUpdatedEvent {
 
 export interface SessionDeletedEvent {
   sessionId: string;
+}
+
+export interface SessionEndedEvent {
+  campaignId: string;
+  archivedSessionId: string;
 }
 
 export interface SubscriptionLockLevelChangedEvent {
@@ -101,6 +107,14 @@ export interface FactionInstanceUpdatedEvent {
   factionInstanceId: string;
 }
 
+export interface FactionSymbolAssignedEvent {
+  campaignId: string;
+  instanceId: string;
+  entityType: 'cast' | 'sublocation';
+  factionInstanceIds: string[];
+  tickCount: number;
+}
+
 @Injectable({ providedIn: 'root' })
 export class CampaignHubService {
   private connection: signalR.HubConnection | null = null;
@@ -135,9 +149,11 @@ export class CampaignHubService {
   private locationInstanceUpdatedSubject    = new Subject<LocationInstanceUpdatedEvent | null>();
   private sublocationInstanceUpdatedSubject = new Subject<SublocationInstanceUpdatedEvent | null>();
   private factionInstanceUpdatedSubject     = new Subject<FactionInstanceUpdatedEvent | null>();
+  private factionSymbolAssignedSubject      = new Subject<FactionSymbolAssignedEvent | null>();
   private storylineEventUpdatedSubject      = new Subject<StorylineEventUpdatedEvent | null>();
   private campaignNavChangedSubject          = new Subject<{ campaignId: string } | null>();
   private sessionDeletedSubject              = new Subject<SessionDeletedEvent | null>();
+  private sessionEndedSubject                = new Subject<SessionEndedEvent | null>();
   private subscriptionLockLevelChangedSubject = new Subject<SubscriptionLockLevelChangedEvent | null>();
   readonly isConnected = signal(false);
 
@@ -163,6 +179,7 @@ export class CampaignHubService {
   readonly castTravelled$             = this.castTravelledSubject.asObservable();
   readonly factionRemoved$            = this.factionRemovedSubject.asObservable();
   readonly factionLocked$             = this.factionLockedSubject.asObservable();
+  readonly factionSymbolAssigned$     = this.factionSymbolAssignedSubject.asObservable();
   readonly shopItemUpdated$            = this.shopItemUpdatedSubject.asObservable();
   readonly shopItemScratchToggled$     = this.shopItemScratchToggledSubject.asObservable();
   readonly castInstanceUpdated$        = this.castInstanceUpdatedSubject.asObservable();
@@ -172,6 +189,7 @@ export class CampaignHubService {
   readonly storylineEventUpdated$      = this.storylineEventUpdatedSubject.asObservable();
   readonly campaignNavChanged$          = this.campaignNavChangedSubject.asObservable();
   readonly sessionDeleted$              = this.sessionDeletedSubject.asObservable();
+  readonly sessionEnded$                = this.sessionEndedSubject.asObservable();
   readonly subscriptionLockLevelChanged$ = this.subscriptionLockLevelChangedSubject.asObservable();
 
   async connect(): Promise<void> {
@@ -185,11 +203,11 @@ export class CampaignHubService {
       })
       .withAutomaticReconnect([0, 2000, 5000, 10000, 30000])
       .withServerTimeout(90000)
-      .configureLogging(signalR.LogLevel.Trace)
+      .configureLogging(environment.production ? signalR.LogLevel.None : signalR.LogLevel.Trace)
       .build();
 
     await this.connection.start()
-      .catch(err => console.error('SignalR: Connection failed:', err));
+      .catch(err => {});
 
     this.connection.onreconnecting(() => {
       this.isConnected.set(false);
@@ -318,6 +336,10 @@ export class CampaignHubService {
       this.factionInstanceUpdatedSubject.next(event);
     });
 
+    this.connection.on('FactionSymbolAssigned', (event: FactionSymbolAssignedEvent) => {
+      this.factionSymbolAssignedSubject.next(event);
+    });
+
     this.connection.on('StorylineEventUpdated', (event: StorylineEventUpdatedEvent) => {
       this.storylineEventUpdatedSubject.next(event);
     });
@@ -330,6 +352,10 @@ export class CampaignHubService {
       this.sessionDeletedSubject.next(event);
     });
 
+    this.connection.on('SessionEnded', (event: SessionEndedEvent) => {
+      this.sessionEndedSubject.next(event);
+    });
+
     this.connection.on('SubscriptionLockLevelChanged', (event: SubscriptionLockLevelChangedEvent) => {
       this.subscriptionLockLevelChangedSubject.next(event);
       // Update AuthService with new subscription data via JWT refresh
@@ -338,7 +364,6 @@ export class CampaignHubService {
           // Auth data refreshed successfully
         },
         error: (err) => {
-          console.error('SignalR: Failed to refresh auth data', err);
         }
       });
     });

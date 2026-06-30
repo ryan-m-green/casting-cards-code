@@ -8,11 +8,13 @@ public interface IRemoveCampaignPlayerCommandHandler
 }
 
 public class RemoveCampaignPlayerCommandHandler(
-    ICampaignPlayerDeleteRepository playerDeleteRepository) : IRemoveCampaignPlayerCommandHandler
+    ICampaignPlayerDeleteRepository playerDeleteRepository,
+    IPlayerCardDeleteRepository playerCardDeleteRepository) : IRemoveCampaignPlayerCommandHandler
 {
     public async Task HandleAsync(RemoveCampaignPlayerCommand command)
     {
         await playerDeleteRepository.RemoveCampaignPlayerAsync(command.CampaignId, command.PlayerUserId);
+        await playerCardDeleteRepository.DeletePlayerCardAsync(command.CampaignId, command.PlayerUserId);
     }
 }
 

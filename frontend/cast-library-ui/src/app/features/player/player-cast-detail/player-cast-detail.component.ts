@@ -158,6 +158,25 @@ export class PlayerCastDetailComponent implements OnInit, OnDestroy {
         this.sublocationInstanceId.set(event.toSublocationInstanceId);
       })
     );
+
+    this.hubSubscriptions.push(
+      this.hub.factionSymbolAssigned$.subscribe(event => {
+        if (!event || event.campaignId !== untracked(() => this.campaignId())) {
+          return;
+        }
+        if (event.entityType !== 'cast' || event.instanceId !== untracked(() => this.castInstanceId())) {
+          return;
+        }
+        const castId = untracked(() => this.castInstanceId());
+        const campaignId = untracked(() => this.campaignId());
+        this.http.get<CampaignCastInstance>(
+          `${environment.apiUrl}/api/campaigns/${campaignId}/casts/${castId}`
+        ).subscribe(ca => {
+          this.castOverride.set(ca);
+          this.castFactionSymbols.set(ca.factionSymbols ?? []);
+        });
+      })
+    );
   }
 
   ngOnInit() {

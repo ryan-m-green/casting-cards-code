@@ -306,13 +306,15 @@ export class CampaignLocationDetailComponent implements OnInit, OnDestroy {
         this.imagePreviewUrl.set(null);
         this.http.post<{ imageUrl: string }>(`${environment.apiUrl}/api/locations/${locationLibId}/image`, formData)
           .subscribe(res => {
-            const freshUrl = res.imageUrl + '?v=' + Date.now();
-            this.campaign.update(c => c ? {
+            const cacheBustedUrl = res.imageUrl.includes('?') ? `${res.imageUrl}&t=${Date.now()}` : `${res.imageUrl}?t=${Date.now()}`;
+            const updater = (c: CampaignDetail | null) => c ? {
               ...c,
               locations: c.locations.map(l =>
-                l.instanceId === this.locationInstanceId() ? { ...l, imageUrl: freshUrl } : l
+                l.instanceId === this.locationInstanceId() ? { ...l, imageUrl: cacheBustedUrl } : l
               )
-            } : c);
+            } : c;
+            this.campaign.update(updater);
+            this.shellSvc.updateCampaign(updater);
           });
       }
     });

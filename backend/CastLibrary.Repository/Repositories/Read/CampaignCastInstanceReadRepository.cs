@@ -24,7 +24,7 @@ public class CampaignCastInstanceReadRepository(
                      name,
                      race,
                      role,
-                     public_description AS PublicDescription,
+                     public_description AS PublicDescription
               FROM campaign_cast_instances
               WHERE instance_id = @InstanceId";
 

@@ -38,14 +38,14 @@
       </button>
     }
     @if (showCampaign) {
-      <button type="button" class="ev-filter-btn" [class.ev-filter-btn--active]="activeTypeFilters.includes('campaign')" (click)="toggleTypeFilter('campaign')" title="Campaign">
+      <button type="button" class="ev-filter-btn" [class.ev-filter-btn--active]="activeTypeFilters.includes('campaign-event')" (click)="toggleTypeFilter('campaign-event')" title="Campaign Event">
         <svg class="ev-filter-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
           <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
         </svg>
       </button>
     }
     @if (showHandout) {
-      <button type="button" class="ev-filter-btn" [class.ev-filter-btn--active]="activeTypeFilters.includes('handout')" (click)="toggleTypeFilter('handout')" title="Handout">
+      <button type="button" class="ev-filter-btn" [class.ev-filter-btn--active]="activeTypeFilters.includes('campaign-handout')" (click)="toggleTypeFilter('campaign-handout')" title="Handout">
         <svg class="ev-filter-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
           <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
           <circle cx="8.5" cy="8.5" r="1.5"/>

@@ -68,6 +68,7 @@ namespace CastLibrary.WebHost.IoC
             services.AddScoped<IPlayerCardReadRepository, PlayerCardReadRepository>();
             services.AddScoped<IPlayerCardInsertRepository, PlayerCardInsertRepository>();
             services.AddScoped<IPlayerCardUpdateRepository, PlayerCardUpdateRepository>();
+            services.AddScoped<IPlayerCardDeleteRepository, PlayerCardDeleteRepository>();
             services.AddScoped<IPlayerCardConditionReadRepository, PlayerCardConditionReadRepository>();
             services.AddScoped<IPlayerCardConditionInsertRepository, PlayerCardConditionInsertRepository>();
             services.AddScoped<IPlayerCardConditionDeleteRepository, PlayerCardConditionDeleteRepository>();

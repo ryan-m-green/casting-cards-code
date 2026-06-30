@@ -52,8 +52,8 @@ export class NoteDestinationPickerComponent {
   @Input() campaignId = '';
   @Input() tabIndexBase = 2;
   @Input() multiselect = false;
+  @Input() isPlayerComponent = false;
   linkedEntities = input<LinkedItem[]>([]);
-  excludedEntities = input<LinkedItem[]>([]);
   private _visibleToPlayers = false;
 
   @Input()
@@ -94,6 +94,10 @@ export class NoteDestinationPickerComponent {
     return this.linkedEntities().some(item => item.entityType === 'time-of-day');
   }
 
+  get hasCampaignTrigger(): boolean {
+    return this.linkedEntities().some(item => item.entityType === 'campaign');
+  }
+
   getVisibilityText(): string {
     // If "none" or "time-of-day", it's not visible to players
     if (this.destType === 'none' || this.destType === 'time-of-day') {
@@ -105,38 +109,44 @@ export class NoteDestinationPickerComponent {
 
   readonly locationOptions = computed<CampaignDropdownOption[]>(() => [
     { value: '', label: '— select location —' },
-    ...this.locations.filter(l => !l.isVisibleToPlayers && !this.excludedEntities().some(le => le.entityType === 'location' && le.entityId === l.instanceId) && !this.linkedEntities().some(le => le.entityType === 'location' && le.entityId === l.instanceId)).map(l => ({ value: l.instanceId, label: l.name })),
+    ...this.locations.filter(l => {
+      const isVisibleToPlayers = this.isPlayerComponent ? true : !l.isVisibleToPlayers;
+      const isLinked = this.linkedEntities().some(le => le.entityType === 'location' && le.entityId === l.instanceId);
+      return isVisibleToPlayers && !isLinked;
+    }).map(l => ({ value: l.instanceId, label: l.name })),
   ]);
 
   readonly sublocationOptions = computed<CampaignDropdownOption[]>(() => [
     { value: '', label: '— select sublocation —' },
-    ...this.sublocations.filter(s => !s.isVisibleToPlayers && !this.excludedEntities().some(le => le.entityType === 'sublocation' && le.entityId === s.instanceId) && !this.linkedEntities().some(le => le.entityType === 'sublocation' && le.entityId === s.instanceId)).map(s => ({ value: s.instanceId, label: s.name })),
+    ...this.sublocations.filter(s => {
+      const isVisibleToPlayers = this.isPlayerComponent ? true : !s.isVisibleToPlayers;
+      const isLinked = this.linkedEntities().some(le => le.entityType === 'sublocation' && le.entityId === s.instanceId);
+      return isVisibleToPlayers && !isLinked;
+    }).map(s => ({ value: s.instanceId, label: s.name })),
   ]);
 
   readonly castOptions = computed<CampaignDropdownOption[]>(() => [
     { value: '', label: '— select cast member —' },
-    ...this.casts.filter(c => !c.isVisibleToPlayers && !this.excludedEntities().some(le => le.entityType === 'cast' && le.entityId === c.instanceId) && !this.linkedEntities().some(le => le.entityType === 'cast' && le.entityId === c.instanceId)).map(c => ({ value: c.instanceId, label: c.name })),
+    ...this.casts.filter(c => {
+      const isVisibleToPlayers = this.isPlayerComponent ? true : !c.isVisibleToPlayers;
+      const isLinked = this.linkedEntities().some(le => le.entityType === 'cast' && le.entityId === c.instanceId);
+      return isVisibleToPlayers && !isLinked;
+    }).map(c => ({ value: c.instanceId, label: c.name })),
   ]);
 
   readonly factionOptions = computed<CampaignDropdownOption[]>(() => [
     { value: '', label: '— select faction —' },
-    ...this.factions.filter(f => !f.isVisibleToPlayers && !this.excludedEntities().some(le => le.entityType === 'faction' && le.entityId === f.factionInstanceId) && !this.linkedEntities().some(le => le.entityType === 'faction' && le.entityId === f.factionInstanceId)).map(f => ({ value: f.factionInstanceId, label: f.name })),
+    ...this.factions.filter(f => {
+      const isVisibleToPlayers = this.isPlayerComponent ? true : !f.isVisibleToPlayers;
+      const isLinked = this.linkedEntities().some(le => le.entityType === 'faction' && le.entityId === f.factionInstanceId);
+      return isVisibleToPlayers && !isLinked;
+    }).map(f => ({ value: f.factionInstanceId, label: f.name })),
   ]);
 
   readonly playerOptions = computed<CampaignDropdownOption[]>(() => [
     { value: '', label: '— select player —' },
     ...this.players.map(p => ({ value: p.userId, label: p.displayName })),
   ]);
-
-  readonly hasAvailableOptions = computed(() => {
-    switch (this.destType) {
-      case 'location': return this.locationOptions().length > 1;
-      case 'sublocation': return this.sublocationOptions().length > 1;
-      case 'cast': return this.castOptions().length > 1;
-      case 'faction': return this.factionOptions().length > 1;
-      default: return true;
-    }
-  });
 
   onDestTypeChange(value: string): void {
     if (this.destType === 'time-of-day' && value !== 'time-of-day') {

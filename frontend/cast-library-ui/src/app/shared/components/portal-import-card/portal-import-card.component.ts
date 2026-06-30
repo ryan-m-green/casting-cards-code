@@ -143,7 +143,7 @@ export class PortalImportCardComponent implements OnInit, OnChanges {
 
   factionForm = this.fb.group({
     name:        ['', Validators.required],
-    type:        [FACTION_TYPE_OPTIONS[0], Validators.required],
+    type:        ['', Validators.required],
     description: [''],
     dmNotes:     [''],
     influence:   [0],
@@ -645,8 +645,9 @@ export class PortalImportCardComponent implements OnInit, OnChanges {
               `${environment.apiUrl}/api/locations/${location.id}/image`, formData
             ).subscribe({
               next: res => {
-                this.libraryLocations.update(list => list.map(l => l.id === location.id ? { ...l, imageUrl: res.imageUrl } : l));
-                this.instanceList.update(list => list.map(l => l.sourceLocationId === location.id ? { ...l, imageUrl: res.imageUrl } : l));
+                const cacheBustedUrl = res.imageUrl.includes('?') ? `${res.imageUrl}&t=${Date.now()}` : `${res.imageUrl}?t=${Date.now()}`;
+                this.libraryLocations.update(list => list.map(l => l.id === location.id ? { ...l, imageUrl: cacheBustedUrl } : l));
+                this.instanceList.update(list => list.map(l => l.sourceLocationId === location.id ? { ...l, imageUrl: cacheBustedUrl } : l));
                 const updated = this.instanceList().find(l => l.sourceLocationId === location.id);
                 if (updated) this.locationAdded.emit(updated);
               },
@@ -848,8 +849,9 @@ export class PortalImportCardComponent implements OnInit, OnChanges {
               `${environment.apiUrl}/api/sublocations/${sublocation.id}/image`, formData
             ).subscribe({
               next: res => {
-                this.librarySublocations.update(list => list.map(l => l.id === sublocation.id ? { ...l, imageUrl: res.imageUrl } : l));
-                this.sublocationInstanceList.update(list => list.map(l => l.sourceSublocationId === sublocation.id ? { ...l, imageUrl: res.imageUrl } : l));
+                const cacheBustedUrl = res.imageUrl.includes('?') ? `${res.imageUrl}&t=${Date.now()}` : `${res.imageUrl}?t=${Date.now()}`;
+                this.librarySublocations.update(list => list.map(l => l.id === sublocation.id ? { ...l, imageUrl: cacheBustedUrl } : l));
+                this.sublocationInstanceList.update(list => list.map(l => l.sourceSublocationId === sublocation.id ? { ...l, imageUrl: cacheBustedUrl } : l));
                 const updated = this.sublocationInstanceList().find(l => l.sourceSublocationId === sublocation.id);
                 if (updated) this.sublocationAdded.emit(updated);
               },
@@ -1388,7 +1390,7 @@ export class PortalImportCardComponent implements OnInit, OnChanges {
           });
           this.factionForm.reset({
             name:        '',
-            type:        FACTION_TYPE_OPTIONS[0],
+            type:        '',
             description: '',
             dmNotes:     '',
             influence:   0,
@@ -1484,8 +1486,9 @@ export class PortalImportCardComponent implements OnInit, OnChanges {
               `${environment.apiUrl}/api/cast/${cast.id}/image`, formData
             ).subscribe({
               next: res => {
-                this.libraryCasts.update(list => list.map(c => c.id === cast.id ? { ...c, imageUrl: res.imageUrl } : c));
-                this.castInstanceList.update(list => list.map(c => c.sourceCastId === cast.id ? { ...c, imageUrl: res.imageUrl } : c));
+                const cacheBustedUrl = res.imageUrl.includes('?') ? `${res.imageUrl}&t=${Date.now()}` : `${res.imageUrl}?t=${Date.now()}`;
+                this.libraryCasts.update(list => list.map(c => c.id === cast.id ? { ...c, imageUrl: cacheBustedUrl } : c));
+                this.castInstanceList.update(list => list.map(c => c.sourceCastId === cast.id ? { ...c, imageUrl: cacheBustedUrl } : c));
                 const updated = this.castInstanceList().find(c => c.sourceCastId === cast.id);
                 if (updated) this.castAdded.emit(updated);
               },

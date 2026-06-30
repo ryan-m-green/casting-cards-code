@@ -5,12 +5,13 @@ using CastLibrary.Repository.Repositories.Read;
 using CastLibrary.Repository.Repositories.Update;
 using CastLibrary.Repository.Services;
 using CastLibrary.Shared.Domain;
+using CastLibrary.Shared.Enums;
 
 namespace CastLibrary.Logic.Commands.Session;
 
 public interface IEndSessionCommandHandler
 {
-    Task HandleAsync(EndSessionCommand command);
+    Task<Guid> HandleAsync(EndSessionCommand command);
 }
 
 public class EndSessionCommandHandler(
@@ -22,7 +23,9 @@ public class EndSessionCommandHandler(
     ICampaignEventDeleteRepository campaignEventDeleteRepository,
     IKeywordExtractionService keywordExtractionService) : IEndSessionCommandHandler
 {
-    public async Task HandleAsync(EndSessionCommand command)
+    private const string _handout = "campaign-handout";
+
+    public async Task<Guid> HandleAsync(EndSessionCommand command)
     {
         var activeSession = await sessionReadRepository.GetActiveSessionByCampaignIdAsync(command.CampaignId);
         if (activeSession == null)
@@ -61,12 +64,21 @@ public class EndSessionCommandHandler(
             await semaphore.WaitAsync();
             try
             {
-                var linkedEntitiesJson = CampaignEventEntityMapper.ToJson(evt.LinkedEntities);
+                if (evt.LinkedEntities == null || !evt.LinkedEntities.Any() || evt.SceneType == _handout)
+                {
+                    evt.LinkedEntities.Add(new LinkedEntityTrigger()
+                    {
+                        EntityId = string.Empty,
+                        EntityName = evt.SceneType == EntityType.CampaignHandout.GetDescription() ? "Handout" : evt.SceneType,
+                        EntityType = evt.SceneType
+                    });
+                }
+
                 var keywords = await keywordExtractionService.ExtractChronicleKeywordsAsync(
                     evt.Title,
                     evt.Body,
                     null,
-                    linkedEntitiesJson);
+                    evt.LinkedEntities);
                 return (Event: evt, Keywords: keywords);
             }
             finally
@@ -107,6 +119,8 @@ public class EndSessionCommandHandler(
         // Close the active session
         activeSession.IsActive = false;
         await sessionUpdateRepository.UpdateAsync(activeSession);
+
+        return archivedSession.Id;
     }
 
     private static int[] CalculateDayRange(int startDay, int endDay)

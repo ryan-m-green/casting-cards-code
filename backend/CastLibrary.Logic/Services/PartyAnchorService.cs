@@ -68,6 +68,7 @@ public class PartyAnchorService(
             Name                = "The Party",
             IsVisibleToPlayers  = true,
             ShopItems           = [],
+            IsPartyAnchor       = true,
         };
         await campaignInsertRepository.InsertSublocationInstanceAsync(sublocationInstance);
     }

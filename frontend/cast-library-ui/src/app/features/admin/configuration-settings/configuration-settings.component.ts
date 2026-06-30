@@ -79,7 +79,6 @@ export class ConfigurationSettingsComponent implements OnInit {
     this.http.get<ConfigurationDto[]>(`${environment.apiUrl}/api/site-configuration`)
       .subscribe({
         next: (res) => {
-          console.log('Loaded configurations:', res);
           this.configurations.set(res);
           const pricingModelConfig = res.find(c => c.key === 'pricing_model');
           if (pricingModelConfig) {
@@ -87,7 +86,6 @@ export class ConfigurationSettingsComponent implements OnInit {
             try {
               this.pricingModels.set(JSON.parse(pricingModelConfig.value));
             } catch (e) {
-              console.error('Failed to parse pricing models:', e);
               this.pricingModels.set([]);
             }
           }
@@ -98,7 +96,6 @@ export class ConfigurationSettingsComponent implements OnInit {
             try {
               this.subscriptionLimits.set(JSON.parse(subscriptionLimitsConfig.value));
             } catch (e) {
-              console.error('Failed to parse subscription limits:', e);
             }
           }
 
@@ -108,20 +105,16 @@ export class ConfigurationSettingsComponent implements OnInit {
             try {
               this.stopWords.set(JSON.parse(stopWordsConfig.value));
             } catch (e) {
-              console.error('Failed to parse stop words:', e);
             }
           }
 
           const stripeConfigConfig = res.find(c => c.key === 'stripe_configuration');
           if (stripeConfigConfig) {
             this.stripeConfigId.set(stripeConfigConfig.id);
-            console.log('Stripe config raw JSON:', stripeConfigConfig.value);
             try {
               const parsed = JSON.parse(stripeConfigConfig.value);
-              console.log('Stripe config parsed:', parsed);
               this.stripeConfig.set(parsed);
             } catch (e) {
-              console.error('Failed to parse stripe configuration:', e);
             }
           }
 
@@ -144,7 +137,6 @@ export class ConfigurationSettingsComponent implements OnInit {
   }
 
   updateStripeConfig(config: StripeConfigurationDomain) {
-    console.log('Stripe config updated:', config);
     this.stripeConfig.set(config);
   }
 
@@ -193,10 +185,7 @@ export class ConfigurationSettingsComponent implements OnInit {
     }
 
     if (this.stripeConfig()) {
-      console.log('Saving Stripe config:', this.stripeConfig());
-      console.log('Stripe config ID:', this.stripeConfigId());
       const stripeConfigJson = JSON.stringify(this.stripeConfig());
-      console.log('Stripe config JSON:', stripeConfigJson);
       allConfigurations.push({
         id: this.stripeConfigId() || '00000000-0000-0000-0000-000000000000',
         key: 'stripe_configuration',
@@ -204,27 +193,15 @@ export class ConfigurationSettingsComponent implements OnInit {
       });
     }
 
-    console.log('Stored IDs:', {
-      pricingModelId: this.pricingModelId(),
-      subscriptionLimitsId: this.subscriptionLimitsId(),
-      stopWordsId: this.stopWordsId(),
-      stripeConfigId: this.stripeConfigId()
-    });
-    console.log('Complete API request payload:', allConfigurations);
     this.http.put(`${environment.apiUrl}/api/site-configuration`, allConfigurations)
       .subscribe({
         next: () => {
-          console.log('API request successful');
           this.successMsg.set('Configuration updated successfully.');
           this.saving.set(false);
           this.loadConfigurations();
           setTimeout(() => this.successMsg.set(''), 3000);
         },
         error: (e) => {
-          console.error('Save error:', e);
-          console.error('Error message:', e.error?.message);
-          console.error('Error object:', e.error);
-          console.error('Validation errors:', e.error?.errors);
           this.errorMsg.set(e.error?.errors ? JSON.stringify(e.error.errors) : (e.error?.message || JSON.stringify(e.error) || 'Failed to save configuration.'));
           this.saving.set(false);
           setTimeout(() => this.errorMsg.set(''), 3000);

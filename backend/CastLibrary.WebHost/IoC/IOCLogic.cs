@@ -195,7 +195,6 @@ namespace CastLibrary.WebHost.IoC
             services.AddScoped<IUpdateCampaignEventDetailsCommandHandler, UpdateCampaignEventDetailsCommandHandler>();
             services.AddScoped<IDeleteCampaignEventCommandHandler, DeleteCampaignEventCommandHandler>();
             services.AddScoped<IReorderCampaignEventsCommandHandler, ReorderCampaignEventsCommandHandler>();
-            services.AddScoped<IArchiveSessionChroniclesCommandHandler, ArchiveSessionChroniclesCommandHandler>();
 
             services.AddScoped<IStartSessionCommandHandler, StartSessionCommandHandler>();
             services.AddScoped<IUpdateSessionCommandHandler, UpdateSessionCommandHandler>();

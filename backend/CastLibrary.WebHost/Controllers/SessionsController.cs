@@ -3,9 +3,11 @@ using CastLibrary.Logic.Services;
 using CastLibrary.Repository.Repositories.Read;
 using CastLibrary.Shared.Requests;
 using CastLibrary.Shared.Responses;
+using CastLibrary.WebHost.Hubs;
 using CastLibrary.WebHost.MetadataHelpers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 
 namespace CastLibrary.WebHost.Controllers;
 
@@ -18,7 +20,8 @@ public class SessionsController(
     IUpdateSessionCommandHandler updateSessionCommandHandler,
     ISessionReadRepository sessionReadRepository,
     ICampaignAccessService campaignAccess,
-    IUserRetriever userRetriever) : ControllerBase
+    IUserRetriever userRetriever,
+    IHubContext<CampaignHub> hubContext) : ControllerBase
 {
     private Task<bool> CallerOwns(Guid campaignId) =>
         campaignAccess.IsOwnerAsync(campaignId, userRetriever.GetUserId(User));
@@ -96,7 +99,10 @@ public class SessionsController(
         }
 
         var command = new EndSessionCommand(campaignId, request.EndDay, request.AlternateTitle);
-        await endSessionCommandHandler.HandleAsync(command);
+        var archivedSessionId = await endSessionCommandHandler.HandleAsync(command);
+
+        await hubContext.Clients.Group(campaignId.ToString())
+            .SendAsync("SessionEnded", new { campaignId, archivedSessionId });
 
         return Ok();
     }

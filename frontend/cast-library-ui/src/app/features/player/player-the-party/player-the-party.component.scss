@@ -66,7 +66,7 @@
 
 .void-back {
   font-family: v.$font-header;
-  font-size: 9px;
+  font-size: 12px;
   letter-spacing: 0.18em;
   text-transform: uppercase;
   color: color-mix(in srgb, var(--portal-color, v.$color-base-purple-primary), white 70%);
@@ -177,7 +177,7 @@
   width: 100%;
   height: 100%;
   font-family: v.$font-header;
-  font-size: 10px;
+  font-size: 12px;
   letter-spacing: 0.08em;
   text-transform: uppercase;
   color: v.$campaign-portal-placeholder;
@@ -308,7 +308,7 @@
 
 .condition-pill {
   font-family: v.$font-header;
-  font-size: 8px;
+  font-size: 12px;
   letter-spacing: 0.12em;
   text-transform: uppercase;
   padding: 3px 8px;
@@ -459,7 +459,7 @@
 
 .add-label {
   font-family: v.$font-header;
-  font-size: 8px;
+  font-size: 12px;
   letter-spacing: 0.14em;
   text-transform: uppercase;
   color: v.$campaign-portal-text-bright;
@@ -493,7 +493,7 @@
 .save-btn {
   align-self: flex-end;
   font-family: v.$font-header;
-  font-size: 9px;
+  font-size: 12px;
   letter-spacing: 0.14em;
   text-transform: uppercase;
   padding: 9px 20px;
@@ -593,7 +593,7 @@
 
 .memory-type-label {
   font-family: v.$font-header;
-  font-size: 8px;
+  font-size: 12px;
   letter-spacing: 0.14em;
   text-transform: uppercase;
   color: v.$campaign-portal-text-bright;
@@ -602,7 +602,7 @@
 .memory-session,
 .memory-date {
   font-family: v.$font-header;
-  font-size: 8px;
+  font-size: 12px;
   letter-spacing: 0.1em;
   color: v.$campaign-portal-text-secondary;
 }
@@ -622,118 +622,150 @@
 }
 
 
-/* ── Secrets modal ───────────────────────────────────────────── */
-.secrets-modal-backdrop {
+/* ── Secrets drawer ───────────────────────────────────────────── */
+.secrets-backdrop {
   position: fixed;
   inset: 0;
-  background: v.$journal-spine-shadow;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 9000;
-  padding: 20px;
-}
+  z-index: 10000;
+  background: rgba(0, 0, 0, 0.6);
+  animation: backdrop-in 0.22s ease both;
 
-.secrets-modal {
-  background: v.$campaign-portal-bg-dark;
-  border: 1px solid color-mix(in srgb, var(--portal-color, v.$color-base-purple-primary) 55%, transparent 45%);
-  border-radius: 12px;
-  width: 100%;
-  max-width: 480px;
-  box-shadow: 0 0 40px v.$campaign-portal-bg-placeholder, 0 16px 48px v.$color-ext-155;
-  display: flex;
-  flex-direction: column;
-}
-
-.secrets-modal-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 18px 22px 14px;
-}
-
-.secrets-modal-title {
-  font-family: v.$font-header;
-  font-size: 11px;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  color: v.$campaign-portal-text-primary;
-}
-
-.secrets-modal-close-btn {
-  background: none;
-  border: none;
-  color: v.$color-ext-345;
-  font-size: 13px;
-  cursor: pointer;
-  width: 32px;
-  height: 32px;
-  padding: 0;
-  line-height: 1;
-  transition: color 0.15s ease;
-
-  &:hover {
-    color: v.$campaign-portal-text-lavender;
+  &.is-closing {
+    animation: backdrop-out 0.24s ease both;
   }
 }
 
-.secrets-modal-body {
-  padding: 18px 22px;
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
-  max-height: 60vh;
-  overflow-y: auto;
+@keyframes backdrop-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
 
-.secrets-modal-list {
+@keyframes backdrop-out {
+  from { opacity: 1; }
+  to { opacity: 0; }
+}
+
+.secrets-drawer {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: min(480px, 100vw);
+  z-index: 10001;
+  display: flex;
+  flex-direction: column;
+  background: v.$color-base-black;
+  border-left: none;
+  box-shadow: none;
+  animation: drawer-slide-in 0.26s cubic-bezier(0.22, 1, 0.36, 1) both, portal-inward-breathe 8.4s ease-in-out infinite;
+  overflow: hidden;
+
+  &.is-closing {
+    animation: drawer-slide-out 0.24s cubic-bezier(0.4, 0, 1, 1) both;
+  }
+}
+
+@keyframes drawer-slide-in {
+  from { transform: translateX(100%); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
+}
+
+@keyframes drawer-slide-out {
+  from { transform: translateX(0); opacity: 1; }
+  to { transform: translateX(100%); opacity: 0; }
+}
+
+@keyframes portal-inward-breathe {
+  0%, 100% {
+    box-shadow:
+      inset 0 0 0    1px color-mix(in srgb, var(--portal-color, v.$color-base-purple-primary) 40%, white 60%),
+      inset 0 0  6px  1px color-mix(in srgb, var(--portal-color, v.$color-base-purple-primary), transparent 28%),
+      inset 0 0 14px  2px color-mix(in srgb, var(--portal-color, v.$color-base-purple-primary), transparent 52%),
+      inset 0 0 25px  4px color-mix(in srgb, var(--portal-color, v.$color-base-purple-primary), transparent 76%);
+  }
+  50% {
+    box-shadow:
+      inset 0 0 0    1px color-mix(in srgb, var(--portal-color, v.$color-base-purple-primary) 25%, white 75%),
+      inset 0 0  9px  1.5px color-mix(in srgb, var(--portal-color, v.$color-base-purple-primary), transparent 12%),
+      inset 0 0 19px  3px color-mix(in srgb, var(--portal-color, v.$color-base-purple-primary), transparent 36%),
+      inset 0 0 35px  6px color-mix(in srgb, var(--portal-color, v.$color-base-purple-primary), transparent 64%);
+  }
+}
+
+.secrets-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 20px;
+  border-bottom: 1px solid rgba(v.$color-lib-location-1, 0.40);
+  flex-shrink: 0;
+}
+
+.secrets-header-title {
+  font-family: v.$font-header;
+  font-size: 14px;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: v.$campaign-portal-text-secondary;
+}
+
+.secrets-close-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  background: none;
+  border: 1px solid rgba(v.$color-lib-location-1, 0.40);
+  border-radius: 6px;
+  color: v.$campaign-portal-text-secondary;
+  font-size: 12px;
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease;
+  flex-shrink: 0;
+
+  &:hover {
+    background: rgba(v.$color-lib-location-1, 0.15);
+    color: v.$campaign-portal-text-bright;
+  }
+}
+
+.secrets-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 24px;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(v.$color-lib-location-1, 0.15) transparent;
+
+  @media (max-width: 480px) {
+    padding: 16px;
+  }
+
+  &::-webkit-scrollbar { width: 4px; }
+  &::-webkit-scrollbar-thumb { background: rgba(v.$color-lib-location-1, 0.15); border-radius: 2px; }
+}
+
+.secrets-list {
   margin: 0;
   padding-left: 22px;
   display: flex;
   flex-direction: column;
   gap: 14px;
-  overflow-y: auto;
-  flex: 1 1 auto;
-  min-height: 0;
 }
 
-.secrets-modal-item {
+.secrets-item {
   font-family: v.$font-body;
   font-size: 14px;
   line-height: 1.55;
   color: v.$campaign-portal-text-primary;
 }
 
-.secrets-modal-empty {
+.secrets-empty {
   font-family: v.$font-body;
   font-size: 13px;
   color: v.$campaign-portal-text-primary;
   font-style: italic;
-}
-
-.secrets-modal-footer {
-  display: flex;
-  justify-content: flex-end;
-}
-
-.secrets-modal-close {
-  align-self: flex-end;
-  font-family: v.$font-header;
-  font-size: 9px;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: v.$campaign-portal-text-primary;
-  background: none;
-  border: 1px solid v.$color-ext-583;
-  border-radius: 4px;
-  padding: 7px 18px;
-  cursor: pointer;
-  transition: border-color 0.18s ease, background 0.18s ease;
-
-  &:hover {
-    border-color: v.$color-ext-584;
-    background: v.$campaign-portal-bg-placeholder;
-  }
 }
 
 
@@ -759,7 +791,7 @@
 
 .filter-pill {
   font-family: v.$font-header;
-  font-size: 8px;
+  font-size: 12px;
   letter-spacing: 0.14em;
   text-transform: uppercase;
   padding: 6px 14px;
@@ -799,7 +831,7 @@
 
 .cast-section-label {
   font-family: v.$font-header;
-  font-size: 9px;
+  font-size: 12px;
   letter-spacing: 0.2em;
   text-transform: uppercase;
   color: v.$color-ext-348;
@@ -927,7 +959,7 @@
 .impression-save,
 .impression-cancel {
   font-family: v.$font-header;
-  font-size: 8px;
+  font-size: 12px;
   letter-spacing: 0.12em;
   text-transform: uppercase;
   padding: 5px 12px;
@@ -959,7 +991,7 @@
 
 .soul-section-label {
   font-family: v.$font-header;
-  font-size: 9px;
+  font-size: 12px;
   letter-spacing: 0.2em;
   text-transform: uppercase;
   color: v.$campaign-portal-text-bright;
@@ -1023,7 +1055,7 @@
 
 .secrets-section-label {
   font-family: v.$font-header;
-  font-size: 9px;
+  font-size: 12px;
   letter-spacing: 0.18em;
   text-transform: uppercase;
   color: v.$campaign-portal-text-bright;
@@ -1053,14 +1085,14 @@
 
 .secret-meta {
   font-family: v.$font-body;
-  font-size: 11px;
+  font-size: 12px;
   color: v.$color-ext-602;
   margin-bottom: 10px;
 }
 
 .share-btn {
   font-family: v.$font-header;
-  font-size: 8px;
+  font-size: 12px;
   letter-spacing: 0.12em;
   text-transform: uppercase;
   padding: 6px 14px;
@@ -1115,7 +1147,7 @@
 
 .empty-state {
   font-family: v.$font-body;
-  font-size: 13px;
+  font-size: 18px;
   color: v.$campaign-portal-text-secondary;
   font-style: italic;
   padding: 12px 0;
@@ -1144,7 +1176,7 @@
 
 .companions-label {
   font-family: v.$font-header;
-  font-size: 9px;
+  font-size: 12px;
   letter-spacing: 0.22em;
   text-transform: uppercase;
   color: v.$campaign-portal-text-softer;

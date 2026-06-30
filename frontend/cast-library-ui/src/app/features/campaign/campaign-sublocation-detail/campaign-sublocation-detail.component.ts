@@ -250,13 +250,15 @@ export class CampaignSublocationDetailComponent implements OnInit, OnDestroy {
         this.imagePreviewUrl.set(null);
         this.http.post<{ imageUrl: string }>(`${environment.apiUrl}/api/sublocations/${sublocationLibId}/image`, formData)
           .subscribe(res => {
-            const freshUrl = res.imageUrl + '?v=' + Date.now();
-            this.campaign.update(c => c ? {
+            const cacheBustedUrl = res.imageUrl.includes('?') ? `${res.imageUrl}&t=${Date.now()}` : `${res.imageUrl}?t=${Date.now()}`;
+            const updater = (c: CampaignDetail | null) => c ? {
               ...c,
               sublocations: c.sublocations.map(l =>
-                l.instanceId === this.sublocationInstanceId() ? { ...l, imageUrl: freshUrl } : l
+                l.instanceId === this.sublocationInstanceId() ? { ...l, imageUrl: cacheBustedUrl } : l
               )
-            } : c);
+            } : c;
+            this.campaign.update(updater);
+            this.shellSvc.updateCampaign(updater);
           });
       }
     });

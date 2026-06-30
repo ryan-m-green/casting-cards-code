@@ -16,6 +16,7 @@ export interface SecretRevealedEvent {
   castInstanceId: string | null;
   locationInstanceId: string | null;
   sublocationInstanceId: string | null;
+  factionInstanceId: string | null;
   secretContent: string;
 }
 

@@ -45,7 +45,7 @@ export class CastLibraryComponent implements OnInit {
   ngOnInit() {
     // Only connect to SignalR if user is authenticated to prevent 401 errors
     if (this.auth.isLoggedIn()) {
-      this.hub.connect().catch((err: unknown) => console.error('CastLibrary: SignalR connection failed:', err));
+      this.hub.connect().catch((err: unknown) => {});
     }
 
     this.http.get<Cast[]>(`${environment.apiUrl}/api/cast`)

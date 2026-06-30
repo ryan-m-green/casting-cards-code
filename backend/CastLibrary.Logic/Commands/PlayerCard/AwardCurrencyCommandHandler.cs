@@ -1,6 +1,6 @@
 ﻿using CastLibrary.Logic.Services;
-using CastLibrary.Repository.Repositories.Insert;
 using CastLibrary.Repository.Repositories.Read;
+using CastLibrary.Repository.Repositories.Update;
 using CastLibrary.Shared.Domain;
 using CastLibrary.Shared.Enums;
 using CastLibrary.Shared.Requests;
@@ -15,7 +15,8 @@ public interface IAwardCurrencyCommandHandler
 public class AwardCurrencyCommandHandler(
     IPlayerCardReadRepository playerCardReadRepository,
     ICampaignPlayerReadRepository campaignPlayerReadRepository,
-    IGoldTransactionInsertRepository goldTransactionInsertRepository,
+    ICurrencyBalanceReadRepository currencyBalanceReadRepository,
+    ICurrencyTransactionUpdateRepository currencyTransactionUpdateRepository,
     ISystemValuesService systemValuesService) : IAwardCurrencyCommandHandler
 {
     public async Task<AwardCurrencyResult> HandleAsync(AwardCurrencyCommand command)
@@ -25,18 +26,11 @@ public class AwardCurrencyCommandHandler(
             var card = await playerCardReadRepository.GetByIdAsync(command.Request.PlayerCardId.Value);
             if (card is null || card.CampaignId != command.CampaignId) return null;
 
-            await goldTransactionInsertRepository.InsertAsync(new GoldTransactionDomain
-            {
-                Id = Guid.NewGuid(),
-                CampaignId = command.CampaignId,
-                PlayerUserId = card.PlayerUserId,
-                Amount = command.Request.Amount,
-                Currency = command.Request.Currency,
-                TransactionType = TransactionType.DM_GRANT,
-                Description = command.Request.Note ?? string.Empty,
-                CreatedBy = command.RequestingUserId,
-                CreatedAt = systemValuesService.GetUTCNow(),
-            });
+            var currentBalances = await currencyBalanceReadRepository.GetByPlayerAsync(command.CampaignId, card.PlayerUserId);
+            var currentAmount = currentBalances.TryGetValue(command.Request.Currency, out var amount) ? amount : 0;
+            var newAmount = currentAmount + command.Request.Amount;
+
+            await currencyTransactionUpdateRepository.SetAmountAsync(command.CampaignId, card.PlayerUserId, command.Request.Currency, newAmount);
 
             return new AwardCurrencyResult
             {
@@ -55,7 +49,6 @@ public class AwardCurrencyCommandHandler(
             var remainder = command.Request.Amount % players.Count;
             var choices = Enumerable.Range(0, players.Count).ToArray();
             var bonusIndices = Random.Shared.GetItems(choices, remainder).ToHashSet();
-            var now = systemValuesService.GetUTCNow();
             var awards = new List<PlayerAwardSplit>();
 
             for (var i = 0; i < players.Count; i++)
@@ -63,18 +56,11 @@ public class AwardCurrencyCommandHandler(
                 var playerAmount = share + (bonusIndices.Contains(i) ? 1 : 0);
                 if (playerAmount == 0) continue;
 
-                await goldTransactionInsertRepository.InsertAsync(new GoldTransactionDomain
-                {
-                    Id = Guid.NewGuid(),
-                    CampaignId = command.CampaignId,
-                    PlayerUserId = players[i].UserId,
-                    Amount = playerAmount,
-                    Currency = command.Request.Currency,
-                    TransactionType = TransactionType.DM_GRANT,
-                    Description = command.Request.Note ?? string.Empty,
-                    CreatedBy = command.RequestingUserId,
-                    CreatedAt = now,
-                });
+                var currentBalances = await currencyBalanceReadRepository.GetByPlayerAsync(command.CampaignId, players[i].UserId);
+                var currentAmount = currentBalances.TryGetValue(command.Request.Currency, out var amount) ? amount : 0;
+                var newAmount = currentAmount + playerAmount;
+
+                await currencyTransactionUpdateRepository.SetAmountAsync(command.CampaignId, players[i].UserId, command.Request.Currency, newAmount);
 
                 awards.Add(new PlayerAwardSplit(players[i].UserId, playerAmount));
             }

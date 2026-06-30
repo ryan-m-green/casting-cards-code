@@ -7,4 +7,5 @@ public class CastTravelledEvent
     public Guid? FromSublocationInstanceId { get; set; }
     public Guid ToLocationInstanceId { get; set; }
     public Guid ToSublocationInstanceId { get; set; }
+    public bool TraveledToTheParty { get; set; }
 }

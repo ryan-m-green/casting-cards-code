@@ -77,8 +77,8 @@
             [value]="slice.durationHours"
             [max]="dayLengthHours() - (sliceTotal() - slice.durationHours)"
             [attr.aria-label]="'Duration in hours for slice ' + (i + 1)"
-            (input)="updateDuration(i, +$any($event.target).value)"
-            (change)="updateDuration(i, +$any($event.target).value)"
+            (input)="updateSliceField(i, 'durationHours', +$any($event.target).value)"
+            (blur)="clampDurationOnBlur(i)"
           />
           <span class="tod-unit">h</span>
         </div>

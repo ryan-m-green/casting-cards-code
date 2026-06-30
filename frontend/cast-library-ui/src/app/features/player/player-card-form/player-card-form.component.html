@@ -34,7 +34,6 @@
           <!-- Name field -->
           <div class="field-group field-group--flex">
             <label class="field-label" for="char-name">Character Name <span class="required">*</span></label>
-            <span class="detail-line"></span>
             <input
               id="char-name"
               class="detail-input"
@@ -54,7 +53,6 @@
         <!-- Race (multi-pill) -->
         <div class="field-group">
           <label class="field-label">Race <span class="required">*</span></label>
-          <span class="detail-line"></span>
           <div class="pill-select"
                [class.pill-select--open]="showRaceDropdown()"
                [class.pill-select--error]="raceError()">
@@ -62,7 +60,9 @@
               @for (r of selectedRaces(); track r) {
                 <span class="pill-token">
                   {{ r }}
-                  <button type="button" class="pill-remove" (click)="removeRace(r, $event)">×</button>
+                  <button type="button" class="pill-remove" (click)="removeRace(r, $event)">
+                    <img src="/icons/chronicle/delete.svg" alt="Remove" class="pill-remove-img" />
+                  </button>
                 </span>
               }
               <input
@@ -100,7 +100,6 @@
         <!-- Class (multi-pill) -->
         <div class="field-group">
           <label class="field-label">Class <span class="required">*</span></label>
-          <span class="detail-line"></span>
           <div class="pill-select"
                [class.pill-select--open]="showClassDropdown()"
                [class.pill-select--error]="classError()">
@@ -108,7 +107,9 @@
               @for (c of selectedClasses(); track c) {
                 <span class="pill-token">
                   {{ c }}
-                  <button type="button" class="pill-remove" (click)="removeClassItem(c, $event)">×</button>
+                  <button type="button" class="pill-remove" (click)="removeClassItem(c, $event)">
+                    <img src="/icons/chronicle/delete.svg" alt="Remove" class="pill-remove-img" />
+                  </button>
                 </span>
               }
               <input
@@ -146,7 +147,6 @@
         <!-- Description -->
         <div class="field-group">
           <label class="field-label" for="char-desc">Description <span class="optional">(optional)</span></label>
-          <span class="detail-line"></span>
           <textarea
             id="char-desc"
             class="detail-input detail-input--block"

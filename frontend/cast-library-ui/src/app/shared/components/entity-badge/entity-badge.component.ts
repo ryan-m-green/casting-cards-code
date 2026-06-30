@@ -26,8 +26,9 @@ export class EntityBadgeComponent {
       'faction': 'entity-badge--faction',
       'campaign': 'entity-badge--campaign',
       'player': 'entity-badge--player',
-      'handout': 'entity-badge--handout'
+      'campaign-handout': 'entity-badge--handout'
     };
+
     return typeMap[entityType.toLowerCase()] || 'entity-badge--cast';
   }
 

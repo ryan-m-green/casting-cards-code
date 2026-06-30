@@ -78,7 +78,6 @@ export class StripeService {
         window.location.href = response.portalUrl;
       }
     } catch (error) {
-      console.error('Error creating customer portal session:', error);
     }
   }
 }

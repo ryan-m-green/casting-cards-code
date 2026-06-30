@@ -375,13 +375,15 @@ export class CampaignCastDetailComponent implements OnInit, OnDestroy {
         this.imagePreviewUrl.set(null);
         this.http.post<{ imageUrl: string }>(`${environment.apiUrl}/api/cast/${castId}/image`, formData)
           .subscribe(res => {
-            const freshUrl = res.imageUrl + '?v=' + Date.now();
-            this.campaign.update(c => c ? {
+            const cacheBustedUrl = res.imageUrl.includes('?') ? `${res.imageUrl}&t=${Date.now()}` : `${res.imageUrl}?t=${Date.now()}`;
+            const updater = (c: CampaignDetail | null) => c ? {
               ...c,
               casts: c.casts.map(ca =>
-                ca.instanceId === this.castInstanceId() ? { ...ca, imageUrl: freshUrl } : ca
+                ca.instanceId === this.castInstanceId() ? { ...ca, imageUrl: cacheBustedUrl } : ca
               )
-            } : c);
+            } : c;
+            this.campaign.update(updater);
+            this.shellSvc.updateCampaign(updater);
           });
       }
     });

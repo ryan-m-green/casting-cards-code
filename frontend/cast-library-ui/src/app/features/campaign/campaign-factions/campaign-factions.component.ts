@@ -2,6 +2,7 @@ import { Component, OnInit, OnChanges, SimpleChanges, signal, computed, inject, 
 import { ActivatedRoute, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
+import { Subscription } from 'rxjs';
 import { environment } from '../../../../environments/environment';
 import { CampaignDetail, CampaignCastRelationship, CampaignCastPlayerNotes } from '../../../shared/models/campaign.model';
 import { CampaignFactionInstance } from '../../../shared/models/faction.model';
@@ -9,6 +10,8 @@ import { CampaignCastInstance } from '../../../shared/models/cast.model';
 import { CampaignSublocationInstance } from '../../../shared/models/sublocation.model';
 import { AuthService } from '../../../core/auth/auth.service';
 import { CampaignShellService } from '../../../core/campaign-shell.service';
+import { CampaignHubService } from '../../../core/hub/campaign-hub.service';
+import { PlayerCampaignShellService } from '../../../core/player-campaign-shell.service';
 import { FactionCardComponent } from '../../../shared/components/faction-card/faction-card.component';
 import { PortalImportCardComponent } from '../../../shared/components/portal-import-card/portal-import-card.component';
 import { FactionWebComponent } from '../faction-web/faction-web.component';
@@ -94,7 +97,10 @@ export class CampaignFactionsComponent implements OnInit, OnChanges {
   private router   = inject(Router);
   private http     = inject(HttpClient);
   private shellSvc = inject(CampaignShellService);
+  private hub      = inject(CampaignHubService);
+  private playerShellSvc = inject(PlayerCampaignShellService);
   auth             = inject(AuthService);
+  private hubSubscriptions: Subscription[] = [];
 
   campaign   = signal<CampaignDetail | null>(null);
   campaignId = signal('');
@@ -574,6 +580,30 @@ export class CampaignFactionsComponent implements OnInit, OnChanges {
   }
 
   ngOnInit() {
+    this.hubSubscriptions.push(
+      this.hub.factionSymbolAssigned$.subscribe(event => {
+        if (!event || event.campaignId !== this.campaignId()) {
+          return;
+        }
+        if (this.mode === 'player') {
+          this.http.get<CampaignFactionInstance[]>(
+            `${environment.apiUrl}/api/campaigns/${this.campaignId()}/factions/player`
+          ).subscribe(factions => {
+            this.resolvedFactions.set(factions);
+          });
+        } else {
+          this.http.get<CampaignDetail>(`${environment.apiUrl}/api/campaigns/${this.campaignId()}`)
+            .subscribe(campaign => {
+              this.campaign.set(campaign);
+              this.resolvedFactions.set(campaign.factions);
+              this.resolvedCasts.set(campaign.casts);
+              this.resolvedSublocations.set(campaign.sublocations);
+              this.resolvedRelationships.set(campaign.relationships ?? []);
+            });
+        }
+      })
+    );
+
     if (this.mode === 'player') {
       this.resolvedFactions.set(this.playerFactions);
       this.resolvedCasts.set(this.playerCasts);
@@ -646,5 +676,9 @@ export class CampaignFactionsComponent implements OnInit, OnChanges {
 
   onFactionRemoved(instanceId: string) {
     this.campaign.update(c => c ? { ...c, factions: c.factions.filter(f => f.factionInstanceId !== instanceId) } : c);
+  }
+
+  ngOnDestroy() {
+    this.hubSubscriptions.forEach(sub => sub.unsubscribe());
   }
 }

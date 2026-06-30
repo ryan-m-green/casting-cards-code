@@ -134,7 +134,6 @@
           <div class="detail-portrait-fields">
             <div class="detail-desc">
               <span class="detail-label">Cast Name</span>
-              <span class="detail-line"></span>
               <input class="detail-input"
                      [ngModel]="editName()"
                      (ngModelChange)="editName.set($event)"
@@ -146,7 +145,6 @@
       } @else {
         <div class="detail-desc">
           <span class="detail-label">Cast Name</span>
-          <span class="detail-line"></span>
           <span class="detail-value">{{ ca.name }}</span>
         </div>
       }
@@ -155,7 +153,6 @@
       @if (ca.publicDescription || editing()) {
         <div class="detail-desc">
           <span class="detail-label">Public Description</span>
-          <span class="detail-line"></span>
           @if (editing()) {
             <textarea class="detail-input detail-input--block"
                       [ngModel]="editPublicDescription()"
@@ -173,7 +170,6 @@
       @if (ca.description || editing()) {
         <div class="detail-desc">
           <span class="detail-label">Description</span>
-          <span class="detail-line"></span>
           @if (editing()) {
             <textarea class="detail-input detail-input--block"
                       [ngModel]="editDescription()"
@@ -192,7 +188,6 @@
         @if (ca.pronouns || editing()) {
           <div class="detail-cell">
             <span class="detail-label">Pronouns</span>
-            <span class="detail-line"></span>
             @if (editing()) {
               <input class="detail-input"
                      [ngModel]="editPronouns()"
@@ -211,7 +206,6 @@
         @if (ca.race || editing()) {
           <div class="detail-cell">
             <span class="detail-label">Race</span>
-            <span class="detail-line"></span>
             @if (editing()) {
               <input class="detail-input"
                      [ngModel]="editRace()"
@@ -226,7 +220,6 @@
         @if (ca.role || editing()) {
           <div class="detail-cell">
             <span class="detail-label">Role</span>
-            <span class="detail-line"></span>
             @if (editing()) {
               <input class="detail-input"
                      [ngModel]="editRole()"
@@ -241,7 +234,6 @@
         @if (ca.age || editing()) {
           <div class="detail-cell">
             <span class="detail-label">Age</span>
-            <span class="detail-line"></span>
             @if (editing()) {
               <input class="detail-input"
                      [ngModel]="editAge()"
@@ -256,7 +248,6 @@
         @if (ca.alignment || editing()) {
           <div class="detail-cell">
             <span class="detail-label">Alignment</span>
-            <span class="detail-line"></span>
             @if (editing()) {
               <input class="detail-input"
                      [ngModel]="editAlignment()"
@@ -275,7 +266,6 @@
         @if (ca.posture || editing()) {
           <div class="detail-cell">
             <span class="detail-label">Posture</span>
-            <span class="detail-line"></span>
             @if (editing()) {
               <input class="detail-input"
                      [ngModel]="editPosture()"
@@ -294,7 +284,6 @@
         @if (ca.speed || editing()) {
           <div class="detail-cell">
             <span class="detail-label">Speed</span>
-            <span class="detail-line"></span>
             @if (editing()) {
               <input class="detail-input"
                      [ngModel]="editSpeed()"
@@ -313,7 +302,6 @@
         @if (ca.voicePlacement.length || editing()) {
           <div class="detail-cell detail-cell--full">
             <span class="detail-label">Voice Placement</span>
-            <span class="detail-line"></span>
             @if (editing()) {
               <div class="detail-voice-checkboxes">
                 @for (opt of voiceOptions; track opt) {
@@ -337,7 +325,6 @@
         @if (ca.voiceNotes || editing()) {
           <div class="detail-cell detail-cell--full">
             <span class="detail-label">Voice Notes</span>
-            <span class="detail-line"></span>
             @if (editing()) {
               <textarea class="detail-input detail-input--block"
                         [ngModel]="editVoiceNotes()"
@@ -353,7 +340,6 @@
         @if (ca.keywords.length) {
           <div class="detail-cell detail-cell--full">
             <span class="detail-label">Keywords</span>
-            <span class="detail-line"></span>
             <div class="detail-keywords">
               @for (kw of ca.keywords; track kw) {
                 <span class="detail-keyword-pill">{{ kw }}</span>
@@ -367,23 +353,24 @@
       <div class="detail-secrets-section">
         <div class="detail-secrets-header">
           <span class="detail-label">Secrets</span>
-          <span class="detail-line"></span>
         </div>
         @for (secret of castSecrets(); track secret.id) {
           <div class="detail-secret">
-            <button
-              class="secret-lock-btn"
-              (click)="toggleSecret(secret)"
-              [title]="secret.isRevealed ? 'Reseal secret' : 'Reveal secret'"
-            >
-              <app-lock-icon [open]="secret.isRevealed" />
-            </button>
-            <span class="secret-text" [class.secret-text--revealed]="secret.isRevealed">{{ secret.content }}</span>
+            @if (!editing()) {
+              <button
+                class="secret-lock-btn"
+                (click)="toggleSecret(secret)"
+                [title]="secret.isRevealed ? 'Reseal secret' : 'Reveal secret'"
+              >
+                <app-lock-icon [open]="secret.isRevealed" />
+              </button>
+            }
             @if (editing()) {
               <button class="secret-delete-btn" (click)="deleteSecret(secret)" type="button" title="Delete secret" aria-label="Delete secret">
                 <img src="/icons/chronicle/delete.svg" alt="Delete" class="secret-delete-btn-img" />
               </button>
             }
+            <span class="secret-text" [class.secret-text--revealed]="secret.isRevealed">{{ secret.content }}</span>
           </div>
         }
         @if (editing()) {
@@ -406,7 +393,6 @@
       <!-- DM Notes -->
       <div class="detail-dm-notes">
         <span class="detail-label">DM Notes</span>
-        <span class="detail-line"></span>
         @if (editing()) {
           <textarea class="detail-input detail-input--block"
                     [ngModel]="editDmNotes()"

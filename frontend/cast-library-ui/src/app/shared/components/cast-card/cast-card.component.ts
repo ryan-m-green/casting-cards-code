@@ -29,6 +29,7 @@ export class CastCardComponent {
   @Input() canSetPrimary    = false;
   @Input() primaryLocked    = false;
   @Input() factionSymbols: { factionInstanceId: string; symbolPath: string }[] = [];
+  @Input() isTraveling: boolean | null = null;
 
   @Output() editClick      = new EventEmitter<void>();
   @Output() deleteClick    = new EventEmitter<void>();
@@ -42,22 +43,6 @@ export class CastCardComponent {
   starHover = signal<number | null>(null);
 
   readonly starNums = [1, 2, 3];
-
-  get stats(): { k: string; v: string }[] {
-    const c = this.cast;
-    const rows: { k: string; v: string }[] = [
-      { k: 'Pronouns',  v: c.pronouns  || '—' },
-      { k: 'Age',       v: c.age       || '—' },
-      { k: 'Race',      v: c.race      || '—' },
-      { k: 'Alignment', v: c.alignment || '—' },
-      { k: 'Posture',   v: c.posture   || '—' },
-      { k: 'Speed',     v: c.speed     || '—' },
-    ];
-    if (c.voicePlacement?.length) {
-      rows.push({ k: 'Voice', v: c.voicePlacement.join(', ') });
-    }
-    return rows;
-  }
 
   get tiltTransform(): string {
     return this.tilt ? `rotate(${this.tilt}deg)` : '';

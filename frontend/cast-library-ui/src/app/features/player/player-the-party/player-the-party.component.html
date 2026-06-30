@@ -405,25 +405,26 @@
 
 
 @if (viewingSecretsFor(); as member) {
-  <div class="secrets-modal-backdrop" (click)="closeSecretsModal()">
-    <div class="secrets-modal" (click)="$event.stopPropagation()">
-      <div class="secrets-modal-header">
-        <span class="secrets-modal-title">{{ member.name }}'s Secrets</span>
-        <button class="secrets-modal-close-btn" (click)="closeSecretsModal()" aria-label="Close">✕</button>
-      </div>
-      <div class="secrets-modal-body">
-        @if (secretsLoading()) {
-          <div class="secrets-modal-empty">Loading…</div>
-        } @else if (memberSecrets().length === 0) {
-          <div class="secrets-modal-empty">No shared secrets yet.</div>
-        } @else {
-          <ol class="secrets-modal-list">
-            @for (secret of memberSecrets(); track secret.id) {
-              <li class="secrets-modal-item">{{ secret.content }}</li>
-            }
-          </ol>
-        }
-      </div>
+  <div class="secrets-backdrop" [class.is-closing]="secretsDrawerClosing()" (click)="closeSecretsModal()"></div>
+
+  <div class="secrets-drawer" [class.is-closing]="secretsDrawerClosing()" role="dialog" [attr.aria-label]="member.name + ' secrets'">
+    <div class="secrets-header">
+      <button class="secrets-close-btn" (click)="closeSecretsModal()" aria-label="Close">✕</button>
+      <span class="secrets-header-title">{{ member.name }}'s Secrets</span>
+    </div>
+
+    <div class="secrets-body">
+      @if (secretsLoading()) {
+        <div class="secrets-empty">Loading…</div>
+      } @else if (memberSecrets().length === 0) {
+        <div class="secrets-empty">No shared secrets yet.</div>
+      } @else {
+        <ol class="secrets-list">
+          @for (secret of memberSecrets(); track secret.id) {
+            <li class="secrets-item">{{ secret.content }}</li>
+          }
+        </ol>
+      }
     </div>
   </div>
 }

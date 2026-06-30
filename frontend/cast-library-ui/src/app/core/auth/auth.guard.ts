@@ -14,22 +14,13 @@ export const dmGuard: CanActivateFn = () => {
   const auth   = inject(AuthService);
   const router = inject(Router);
   
-  console.log('dmGuard - Checking auth state:');
-  console.log('dmGuard - isLoggedIn():', auth.isLoggedIn());
-  console.log('dmGuard - isDm():', auth.isDm());
-  console.log('dmGuard - isAdmin():', auth.isAdmin());
-  console.log('dmGuard - currentUser():', auth.currentUser());
-  
   if (auth.isDm() || auth.isAdmin()) {
-    console.log('dmGuard - User is DM/Admin, allowing access');
     return true;
   }
   if (!auth.isLoggedIn()) {
-    console.log('dmGuard - User not logged in, redirecting to login');
     return router.createUrlTree(['/']);
   }
   // Logged-in player attempting a DM page — log them out and send to login
-  console.log('dmGuard - Logged-in player attempting DM page, logging out');
   auth.logout();
   return false;
 };

@@ -102,7 +102,6 @@ export class AuthService implements OnDestroy {
           this.tokenRefreshAttempts = 0;
         },
         error: (error: HttpErrorResponse) => {
-          console.error('Failed to fetch CSRF token:', error);
           this.tokenRefreshAttempts++;
 
           // Clear existing token on error to force refresh
@@ -112,7 +111,6 @@ export class AuthService implements OnDestroy {
           // Implement exponential backoff for retry
           if (this.tokenRefreshAttempts < this.MAX_REFRESH_ATTEMPTS) {
             const delay = Math.pow(2, this.tokenRefreshAttempts) * 1000; // 1s, 2s, 4s
-            console.warn(`Retrying XSRF token fetch in ${delay}ms (attempt ${this.tokenRefreshAttempts}/${this.MAX_REFRESH_ATTEMPTS})`);
             setTimeout(() => {
               this.getCsrfToken().subscribe({
                 error: () => {
@@ -121,7 +119,6 @@ export class AuthService implements OnDestroy {
               });
             }, delay);
           } else {
-            console.error('Max XSRF token refresh attempts reached. User may need to re-authenticate.');
             this.tokenRefreshAttempts = 0;
           }
         }
@@ -173,13 +170,11 @@ export class AuthService implements OnDestroy {
       return; // Already running
     }
 
-    console.log('AuthService: Starting subscription refresh interval');
     this.refreshCurrentUser(); // Initial refresh
 
     this.subscriptionRefreshInterval = setInterval(() => {
       this.refreshCurrentUser().subscribe({
         error: (error: HttpErrorResponse) => {
-          console.error('AuthService: Subscription refresh failed', error);
           // Continue interval even on error, will recover when connection is restored
         }
       });
@@ -188,7 +183,6 @@ export class AuthService implements OnDestroy {
 
   stopSubscriptionRefresh(): void {
     if (this.subscriptionRefreshInterval) {
-      console.log('AuthService: Stopping subscription refresh interval');
       clearInterval(this.subscriptionRefreshInterval);
       this.subscriptionRefreshInterval = null;
     }
@@ -216,11 +210,9 @@ export class AuthService implements OnDestroy {
     // After successful login/verify, refresh XSRF token to ensure cookie is set
     this.getCsrfToken().subscribe({
       next: () => {
-        console.log('AuthService.storeSession - XSRF token refreshed');
         this._isTokenReady.set(true);
       },
       error: (error: HttpErrorResponse) => {
-        console.warn('Failed to refresh XSRF token after login/verify:', error);
       }
     });
   }

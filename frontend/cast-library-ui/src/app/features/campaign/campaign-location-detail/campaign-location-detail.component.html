@@ -56,7 +56,6 @@
             <div class="detail-portrait-fields">
               <div class="detail-desc">
                 <span class="detail-label">Location Title</span>
-                <span class="detail-line"></span>
                 <input class="detail-input"
                        [ngModel]="editName()"
                        (ngModelChange)="editName.set($event)"
@@ -68,7 +67,6 @@
         } @else {
           <div class="detail-desc">
             <span class="detail-label">Location Title</span>
-            <span class="detail-line"></span>
             <span class="detail-value">{{ c.name }}</span>
           </div>
         }
@@ -76,7 +74,6 @@
         <!-- Description — full width -->
         <div class="detail-desc">
           <span class="detail-label">Description</span>
-          <span class="detail-line"></span>
           @if (editing()) {
             <textarea class="detail-input detail-input--block"
                       [ngModel]="editDescription()"
@@ -93,7 +90,6 @@
         <div class="detail-grid">
           <div class="detail-cell">
             <span class="detail-label">Classification</span>
-            <span class="detail-line"></span>
             @if (editing()) {
               <input class="detail-input"
                      [ngModel]="editClassification()"
@@ -106,7 +102,6 @@
           </div>
           <div class="detail-cell">
             <span class="detail-label">Size</span>
-            <span class="detail-line"></span>
             @if (editing()) {
               <input class="detail-input"
                      [ngModel]="editSize()"
@@ -119,7 +114,6 @@
           </div>
           <div class="detail-cell">
             <span class="detail-label">Condition</span>
-            <span class="detail-line"></span>
             @if (editing()) {
               <input class="detail-input"
                      [ngModel]="editCondition()"
@@ -132,7 +126,6 @@
           </div>
           <div class="detail-cell">
             <span class="detail-label">Geography</span>
-            <span class="detail-line"></span>
             @if (editing()) {
               <input class="detail-input"
                      [ngModel]="editGeography()"
@@ -145,7 +138,6 @@
           </div>
           <div class="detail-cell">
             <span class="detail-label">Architecture</span>
-            <span class="detail-line"></span>
             @if (editing()) {
               <input class="detail-input"
                      [ngModel]="editArchitecture()"
@@ -158,7 +150,6 @@
           </div>
           <div class="detail-cell">
             <span class="detail-label">Climate</span>
-            <span class="detail-line"></span>
             @if (editing()) {
               <input class="detail-input"
                      [ngModel]="editClimate()"
@@ -171,7 +162,6 @@
           </div>
           <div class="detail-cell">
             <span class="detail-label">Religion</span>
-            <span class="detail-line"></span>
             @if (editing()) {
               <input class="detail-input"
                      [ngModel]="editReligion()"
@@ -184,7 +174,6 @@
           </div>
           <div class="detail-cell">
             <span class="detail-label">Vibe</span>
-            <span class="detail-line"></span>
             @if (editing()) {
               <input class="detail-input"
                      [ngModel]="editVibe()"
@@ -197,7 +186,6 @@
           </div>
           <div class="detail-cell detail-cell--full">
             <span class="detail-label">Languages</span>
-            <span class="detail-line"></span>
             @if (editing()) {
               <div class="lang-picker" role="group" aria-label="Select languages spoken in this location">
                 <div class="lang-col">
@@ -239,7 +227,6 @@
           @if (!editing() && c.keywords.length) {
             <div class="detail-cell">
               <span class="detail-label">Keywords</span>
-              <span class="detail-line"></span>
               <div class="detail-keywords">
                 @for (kw of c.keywords; track kw) {
                   <span class="detail-keyword-pill">{{ kw }}</span>
@@ -253,22 +240,21 @@
         <div class="detail-secrets-section">
           <div class="detail-secrets-header">
             <span class="detail-label">Secrets</span>
-            <span class="detail-line"></span>
           </div>
           @for (secret of locationSecrets(); track secret.id) {
             <div class="detail-secret">
-              @if (isDm()) {
+              @if (isDm() && !editing()) {
                 <button class="secret-lock-btn" (click)="toggleSecret(secret)"
                         [title]="secret.isRevealed ? 'Reseal secret' : 'Reveal secret'">
                   <app-lock-icon [open]="secret.isRevealed" />
                 </button>
               }
-              <span class="secret-text" [class.secret-text--revealed]="secret.isRevealed">{{ secret.content }}</span>
               @if (isDm() && editing()) {
                 <button class="secret-delete-btn" (click)="deleteSecret(secret)" type="button" title="Delete secret" aria-label="Delete secret">
                   <img src="/icons/chronicle/delete.svg" alt="Delete" class="secret-delete-btn-img" />
                 </button>
               }
+              <span class="secret-text" [class.secret-text--revealed]="secret.isRevealed">{{ secret.content }}</span>
             </div>
           }
           @if (isDm() && editing()) {
@@ -292,7 +278,6 @@
         @if (isDm()) {
           <div class="detail-dm-notes">
             <span class="detail-label">DM Notes</span>
-            <span class="detail-line"></span>
             @if (editing()) {
               <textarea class="detail-input detail-input--block"
                         [ngModel]="editDmNotes()"

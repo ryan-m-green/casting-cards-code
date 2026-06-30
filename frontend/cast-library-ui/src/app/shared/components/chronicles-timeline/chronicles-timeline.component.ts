@@ -27,6 +27,7 @@ export class ChroniclesTimelineComponent {
   @Input() sessionOptions: CampaignDropdownOption[] = [];
   @Input() chronicleEditSessionId: string = '';
   @Input() chronicleEditSortOrder: number = 0;
+  @Input() searchQuery: string = '';
 
   @Output() sessionExpand = new EventEmitter<string>();
   @Output() editChronicle = new EventEmitter<ChronicleItem>();
@@ -76,5 +77,12 @@ export class ChroniclesTimelineComponent {
   formatInGameDays(days: number[]): string {
     if (!days || days.length === 0) return '';
     return days.length > 1 ? `Day ${days[0]} - ${days[days.length - 1]}` : `Day ${days[0]}`;
+  }
+
+  highlightText(text: string, query: string): string {
+    if (!query || !text) return text;
+    const escapedQuery = query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    const regex = new RegExp(`(${escapedQuery})`, 'gi');
+    return text.replace(regex, '<mark class="search-highlight">$1</mark>');
   }
 }

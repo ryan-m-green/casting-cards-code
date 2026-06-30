@@ -13,6 +13,7 @@ export class CastingCardPlayerComponent {
   @Input({ required: true }) member!: PlayerCardWithDetails;
   @Input() mode: 'player' | 'dm' = 'player';
   @Input() tilt = 0;
+  @Input() flippable = true;
 
   get tiltTransform(): string {
     if (this.flipped) return '';

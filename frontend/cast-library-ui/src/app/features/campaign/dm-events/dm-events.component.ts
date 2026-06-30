@@ -93,9 +93,7 @@ export class DmEventsComponent implements OnInit, OnDestroy {
   confirmDeleteId  = signal<string | null>(null);
   deleting         = signal(false);
 
-  // Archive state
-  archiving        = signal(false);
-
+  
   // Session state
   activeSession    = signal<Session | null>(null);
   totalSessionCount = signal(0);
@@ -155,7 +153,17 @@ export class DmEventsComponent implements OnInit, OnDestroy {
     const vis   = this.visibilityFilters();
     return this.events().filter(ev => {
       if (types.length > 0) {
-        const effectiveType = ev.imageUrl ? 'handout' : (ev.linkedEntities.length > 0 ? ev.linkedEntities[0].entityType ?? 'none' : 'none');
+        let effectiveType: string;
+        const linkedEntityType = ev.linkedEntities.length > 0 ? ev.linkedEntities[0].entityType ?? 'none' : 'none';
+        if (linkedEntityType === 'campaign') {
+          effectiveType = 'campaign-event';
+        } else if (ev.sceneType === 'campaign-handout') {
+          effectiveType = 'campaign-handout';
+        } else if (ev.imageUrl) {
+          effectiveType = 'handout';
+        } else {
+          effectiveType = linkedEntityType;
+        }
         if (!types.includes(effectiveType)) return false;
       }
       if (vis.length > 0) {
@@ -845,24 +853,6 @@ export class DmEventsComponent implements OnInit, OnDestroy {
     this.loadEvents();
   }
 
-  archiveClicked() {
-    if (this.archiving() || !this.hasUnlockedEventsToArchive()) return;
-    
-    this.archiving.set(true);
-    this.http.post(
-      `${environment.apiUrl}/api/campaigns/${this.campaignId}/events/archive`,
-      {}
-    ).subscribe({
-      next: (res: any) => {
-        this.archiving.set(false);
-        this.loadEvents();
-      },
-      error: () => {
-        this.archiving.set(false);
-      },
-    });
-  }
-
   requestStartSession() {
     this.showStartSessionConfirm.set(true);
   }
@@ -999,6 +989,12 @@ export class DmEventsComponent implements OnInit, OnDestroy {
     this.chroniclesTypeFilters.set([]);
     this.chroniclesPage.set(1);
     this.loadChronicles();
+  }
+
+  onChronicleTypeFilterChange(filters: string[]) {
+    this.chroniclesTypeFilters.set(filters);
+    this.chroniclesPage.set(1);
+    this.loadChronicles(this.chroniclesSearchQuery(), filters);
   }
 
   chronicleNextPage() {

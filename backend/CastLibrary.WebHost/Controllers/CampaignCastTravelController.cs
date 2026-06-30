@@ -50,7 +50,7 @@ public class CampaignCastTravelController(
     {
         if (!await CallerOwns(campaignId)) return Forbid();
 
-        await travelCommand.HandleAsync(new TravelCastInstanceCommand(castInstanceId, request));
+        var travelResponse = await travelCommand.HandleAsync(new TravelCastInstanceCommand(campaignId, castInstanceId, request));
 
         await hubContext.Clients.Group(campaignId.ToString()).SendAsync("CastTravelled", new CastTravelledEvent
         {
@@ -59,6 +59,7 @@ public class CampaignCastTravelController(
             FromSublocationInstanceId = request.FromSublocationInstanceId,
             ToLocationInstanceId = request.LocationInstanceId,
             ToSublocationInstanceId = request.SublocationInstanceId,
+            TraveledToTheParty = travelResponse.TraveledToTheParty
         });
 
         return NoContent();

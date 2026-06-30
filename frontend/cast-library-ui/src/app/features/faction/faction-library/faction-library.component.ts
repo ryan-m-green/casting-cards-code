@@ -43,7 +43,7 @@ export class FactionLibraryComponent implements OnInit {
   });
 
   ngOnInit() {
-    this.hub.connect().catch((err: unknown) => console.error('FactionLibrary: SignalR connection failed:', err));
+    this.hub.connect().catch((err: unknown) => {});
 
     this.http.get<Faction[]>(`${environment.apiUrl}/api/factions`)
       .subscribe(f => this.factions.set(f));
