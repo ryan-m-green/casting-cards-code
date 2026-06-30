@@ -63,7 +63,7 @@
 }
 
 .info-panel-rune {
-  font-size: 14px;
+  font-size: 24px;
   opacity: 0.45;
   color: rgba(v.$color-lib-location-1, 0.9);
 }
@@ -94,7 +94,7 @@
 
 .field-label {
   font-family: v.$font-header;
-  font-size: 7px;
+  font-size: 12px;
   letter-spacing: 0.2em;
   text-transform: uppercase;
   color: rgba(v.$color-lib-location-1, 0.85);
@@ -102,7 +102,7 @@
 }
 
 .required { color: v.$color-ext-460; margin-left: 2px; }
-.optional { color: rgba(v.$color-lib-location-1, 0.45); font-size: 8px; }
+.optional { color: rgba(v.$color-lib-location-1, 0.45); font-size: 12px; }
 
 .detail-line {
   height: 1px;
@@ -199,7 +199,7 @@
   border-radius: 2px;
   padding: 1px 6px 1px 8px;
   font-family: v.$font-header;
-  font-size: 7px;
+  font-size: 12px;
   letter-spacing: 0.12em;
   text-transform: uppercase;
   color: rgba(v.$color-lib-location-1, 0.90);
@@ -210,21 +210,25 @@
   background: none;
   border: none;
   cursor: pointer;
-  font-size: 13px;
-  line-height: 1;
-  color: rgba(v.$color-lib-location-1, 0.50);
   padding: 0;
   display: flex;
   align-items: center;
-  transition: color 0.15s ease;
+  transition: opacity 0.15s ease;
+}
 
-  &:hover {
-    color: rgba(v.$color-lib-location-1, 0.85);
+.pill-remove-icon {
+  width: 12px;
+  height: 12px;
+  opacity: 0.5;
+  filter: invert(1);
+
+  .pill-remove:hover & {
+    opacity: 0.85;
   }
 }
 
 .pill-chevron {
-  font-size: 10px;
+  font-size: 12px;
   color: rgba(v.$color-lib-location-1, 0.50);
   flex-shrink: 0;
   transition: transform 0.18s ease;
@@ -296,7 +300,7 @@
 }
 
 .form-submit-btn {
-  font-size: 8px;
+  font-size: 12px;
   padding: 4px 14px;
   letter-spacing: 0.16em;
 }

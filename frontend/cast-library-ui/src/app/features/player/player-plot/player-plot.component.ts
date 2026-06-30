@@ -52,7 +52,7 @@ export class PlayerPlotComponent implements OnInit, OnDestroy {
   ngOnInit() {
     const id = this.route.snapshot.paramMap.get('id')!;
     this.campaignId = id;
-    this.shellSvc.setTitleContext({ pageType: 'player-plot', campaignId: id, baseRoute: '/player/campaign', location: null });
+    this.shellSvc.setTitleContext({ pageType: 'player-plot', campaignId: id, campaignName: this.shellSvc.campaign()?.name, baseRoute: '/player/campaign', location: null });
 
     this.hubSubscriptions.push(
       this.hub.sessionEnded$.subscribe(e => {

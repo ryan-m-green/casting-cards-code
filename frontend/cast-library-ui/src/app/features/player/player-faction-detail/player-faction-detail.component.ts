@@ -232,6 +232,7 @@ export class PlayerFactionDetailComponent implements OnInit, OnDestroy {
           this.shellSvc.setTitleContext({
             pageType: 'player-faction-detail',
             campaignId: id,
+            campaignName: this.shellSvc.campaign()?.name,
             baseRoute: '/player/campaign',
             location: null,
             faction: { instanceId: f.factionInstanceId, name: f.name ?? '' }

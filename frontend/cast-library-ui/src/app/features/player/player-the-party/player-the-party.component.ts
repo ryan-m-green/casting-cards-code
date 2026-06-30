@@ -333,7 +333,7 @@ export class PlayerThePartyComponent implements OnInit, OnDestroy {
     const id = this.route.snapshot.paramMap.get('id')!;
     this.campaignId.set(id);
 
-    this.shellService.setTitleContext({ pageType: 'player-party', campaignId: id, baseRoute: '/player/campaign', location: null });
+    this.shellService.setTitleContext({ pageType: 'player-party', campaignId: id, campaignName: this.shellService.campaign()?.name, baseRoute: '/player/campaign', location: null });
 
     this.loadPlayerCard(id);
     this.loadCast(id);

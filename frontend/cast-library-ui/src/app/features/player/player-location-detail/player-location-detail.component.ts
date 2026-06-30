@@ -88,6 +88,7 @@ export class PlayerLocationDetailComponent implements OnInit, OnDestroy {
         this.shellSvc.setTitleContext({
           pageType: 'location',
           campaignId: id,
+          campaignName: this.shellSvc.campaign()?.name,
           baseRoute: '/player/campaign',
           location: loc,
         });

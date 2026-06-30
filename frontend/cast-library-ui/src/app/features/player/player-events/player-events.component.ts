@@ -65,7 +65,7 @@ export class PlayerEventsComponent implements OnInit, OnDestroy {
   ngOnInit() {
     const id = this.route.snapshot.paramMap.get('id')!;
     this.campaignId.set(id);
-    this.shellSvc.setTitleContext({ pageType: 'player-events', campaignId: id, baseRoute: '/player/campaign', location: null });
+    this.shellSvc.setTitleContext({ pageType: 'player-events', campaignId: id, campaignName: this.shellSvc.campaign()?.name, baseRoute: '/player/campaign', location: null });
     this.loadEvents(id);
 
     this.hubSubscriptions.push(

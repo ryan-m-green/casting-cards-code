@@ -64,20 +64,26 @@
   font-family: v.$font-body;
   font-size: var(--dd-font-size, 14px);
   color: v.$campaign-portal-text-bright;
-  padding: 9px 12px;
+  padding: 9px 12px 9px 28px;
   cursor: pointer;
   transition: background 0.12s ease;
   display: flex;
   align-items: center;
   gap: 8px;
+  position: relative;
 
   &:hover {
     background: v.$campaign-portal-bg-placeholder;
   }
 
   &--selected {
-    background: v.$campaign-portal-border-medium;
+    background: transparent;
     color: v.$campaign-portal-text-bright;
+
+    &:hover,
+    &--active {
+      background: transparent;
+    }
   }
 
   &--active {
@@ -93,4 +99,12 @@
   flex-shrink: 0;
   opacity: 0.85;
   filter: invert(1);
+}
+
+.campaign-dropdown-checkmark {
+  color: v.$campaign-portal-text-primary;
+  font-weight: bold;
+  font-size: 16px;
+  position: absolute;
+  left: 12px;
 }

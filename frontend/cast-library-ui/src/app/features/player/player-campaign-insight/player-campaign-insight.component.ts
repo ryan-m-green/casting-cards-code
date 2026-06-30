@@ -89,7 +89,7 @@ export class PlayerCampaignInsightComponent implements OnInit, OnDestroy {
     const id = this.route.snapshot.paramMap.get('id')!;
     this.campaignId.set(id);
 
-    this.shellService.setTitleContext({ pageType: 'player-factions', campaignId: id, baseRoute: '/player/campaign', location: null });
+    this.shellService.setTitleContext({ pageType: 'player-factions', campaignId: id, campaignName: this.shellService.campaign()?.name, baseRoute: '/player/campaign', location: null });
 
     this.http.get<CampaignFactionInstance[]>(`${environment.apiUrl}/api/campaigns/${id}/factions/player`)
       .subscribe(f => this.factions.set(f));

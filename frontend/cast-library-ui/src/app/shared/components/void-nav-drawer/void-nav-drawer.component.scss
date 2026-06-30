@@ -501,7 +501,7 @@
 
   &--location   { color: color-mix(in srgb, var(--portal-color, v.$color-base-purple-primary), white 55%); }
   &--sublocation { color: rgba(v.$campaign-portal-text-secondary, 0.7); font-size: 9px; }
-  &--cast       { color: rgba(v.$campaign-portal-text-muted, 0.6); font-size: 8px; }
+  &--cast       { color: rgba(v.$campaign-portal-text-muted, 0.6); font-size: 12px; }
   &--faction    { color: v.$campaign-portal-text-purple-light; }
 }
 

@@ -34,6 +34,9 @@
           (click)="select(option)"
           (mouseenter)="activeIndex.set(i)"
         >
+          @if (value === option.value) {
+            <span class="campaign-dropdown-checkmark">✓</span>
+          }
           @if (option.icon) {
             @if (option.icon.startsWith('/')) {
               <img [src]="option.icon" [alt]="option.label" class="dd-icon-img" />
