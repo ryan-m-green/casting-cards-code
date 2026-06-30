@@ -182,7 +182,7 @@ export class PlayerSublocationDetailComponent implements OnInit, OnDestroy {
         const sublocId = untracked(() => this.sublocationInstanceId());
         const campaignId = untracked(() => this.campaignId());
         this.http.get<CampaignDetail>(
-          `${environment.apiUrl}/api/campaigns/${campaignId}`
+          `${environment.apiUrl}/api/campaigns/${campaignId}/player`
         ).subscribe(c => {
           this.shellService.setCampaign(c);
         });
