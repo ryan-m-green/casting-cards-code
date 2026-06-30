@@ -28,19 +28,14 @@
           <div class="loc-back-name">{{ location.name }}</div>
           <div class="loc-back-divider"></div>
 
-          <div class="loc-back-stats">
-            @for (stat of stats; track stat.k) {
-              <div class="loc-stat-row">
-                <span class="loc-stat-key">{{ stat.k }}</span>
-                <span class="loc-stat-val">{{ stat.v }}</span>
-              </div>
-            }
+          <div class="loc-back-flavor">
+            <div class="loc-back-flavor-text">{{ location.description ? '"' + location.description + '"' : '—' }}</div>
           </div>
 
           @if (editable) {
             <div class="loc-back-actions">
-              <button class="loc-btn loc-btn--red" (click)="onDeleteClick($event)">✦ Delete</button>
               <button class="loc-btn loc-btn--gold" (click)="onEditClick($event)">✦ Edit</button>
+              <button class="loc-btn loc-btn--red" (click)="onDeleteClick($event)">✦ Delete</button>
             </div>
           }
         </div>
@@ -167,11 +162,6 @@
                 }
               </div>
             }
-          </div>
-
-          <!-- flavor -->
-          <div class="loc-flavor">
-            <div class="loc-flavor-text">{{ location.description ? '"' + location.description + '"' : '—' }}</div>
           </div>
 
           <!-- bottom strip -->

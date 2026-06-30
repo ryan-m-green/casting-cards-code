@@ -75,8 +75,8 @@
   flex-shrink: 0;
   display: inline-flex;
   position: relative;
-  width: 72px;
-  height: 100px;
+  width: 84px;
+  height: 117px;
   border-radius: 4px;
   border: 1px dashed rgba(v.$color-base-brown-14, 0.25);
   cursor: pointer;
@@ -94,6 +94,10 @@
     border-style: solid;
     border-color: rgba(v.$color-base-brown-14, 0.3);
   }
+}
+
+.randomize-button-container {
+  margin-bottom: 12px;
 }
 
 .form-portrait-file-input {
@@ -212,3 +216,10 @@
     opacity: 1;
   }
 }
+
+.save-spark-host {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+

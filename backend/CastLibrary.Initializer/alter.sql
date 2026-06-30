@@ -163,3 +163,10 @@ CREATE INDEX IF NOT EXISTS idx_audit_logs_date_range ON audit_logs(created_at DE
 
 -- Add last_accessed_at column to campaigns table
 ALTER TABLE campaigns ADD COLUMN IF NOT EXISTS last_accessed_at TIMESTAMP;
+
+-- ============================================================
+-- Add perception column to factions table
+-- ============================================================
+
+ALTER TABLE factions ADD COLUMN IF NOT EXISTS perception SMALLINT NOT NULL DEFAULT 0;
+ALTER TABLE factions ADD CONSTRAINT chk_factions_perception CHECK (perception BETWEEN -5 AND 5);

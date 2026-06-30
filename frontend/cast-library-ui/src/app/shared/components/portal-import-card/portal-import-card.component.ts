@@ -3,7 +3,7 @@ import {
   signal, computed, inject, ViewChild, ElementRef, SimpleChanges,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ReactiveFormsModule, FormBuilder, FormArray, Validators } from '@angular/forms';
+import { ReactiveFormsModule, FormBuilder, FormArray, Validators, FormControl } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { catchError } from 'rxjs/operators';
 import { EMPTY } from 'rxjs';
@@ -18,6 +18,8 @@ import { SublocationCardComponent } from '../sublocation-card/sublocation-card.c
 import { CastCardComponent } from '../cast-card/cast-card.component';
 import { FactionCardComponent } from '../faction-card/faction-card.component';
 import { IconPickerComponent } from '../icon-picker/icon-picker.component';
+import { JournalDropdownComponent } from '../journal-dropdown/journal-dropdown.component';
+import { JournalRandomizeButtonComponent } from '../journal-randomize-button/journal-randomize-button.component';
 import { Sublocation } from '../../models/sublocation.model';
 import { FACTION_TYPE_OPTIONS, perceptionLabel } from '../../../features/faction/faction-form/faction-form.component';
 import { StripeService, EntityLimitsResponse } from '../../../core/stripe.service';
@@ -26,22 +28,28 @@ import { effect } from '@angular/core';
 
 export type ImportCardType = 'location' | 'sublocation' | 'cast' | 'faction';
 
-const VOICE_OPTIONS        = ['Chest', 'Throat', 'Mouth / Oral', 'Nasal', 'Head / Sinus'];
-const POSTURE_OPTIONS      = ['Upright','Puffed Chest','Slouched','Hunched','Relaxed','Tense','Swaggering','Cowering','Guarded','Leaning'];
-const SPEED_OPTIONS        = ['Slow & Deliberate','Steady Drumbeat','Brisk','Quick & Hurried','Nervous & Rushed','Measured','Lumbering','Graceful'];
-const ALIGNMENT_OPTIONS    = ['Lawful Good','Neutral Good','Chaotic Good','Lawful Neutral','True Neutral','Chaotic Neutral','Lawful Evil','Neutral Evil','Chaotic Evil'];
-const PRONOUN_OPTIONS      = ['he/him','she/her','they/them','he/they','she/they','it/its','any pronouns'];
-const SIZE_OPTIONS         = ['Hamlet','Village','Town','Large Town','Location','Large Location','Metropolis'];
-const CONDITION_OPTIONS    = ['Thriving','Stable','Declining','Struggling','Ruined','Rebuilding','War-Torn','Occupied','Abandoned'];
-const GEOGRAPHY_OPTIONS    = ['Coastal — Ocean','Coastal — River Delta','Coastal — Cliffside','Riverbank','River Crossing / Ford','Island','Plains / Flatlands','Rolling Hills','Mountain Pass','High Mountain','Deep Forest','Forest Edge','Swamp / Marsh','Desert Oasis','Desert Expanse','Underground / Cavern','Floating / Aerial','Volcanic'];
-const ARCHITECTURE_OPTIONS = ['Timber & Thatch — Rustic village construction','Stone & Mortar — Sturdy, common medieval','Grand Stone — Imposing public buildings','Carved Rock — Cut into cliffs or cavern walls','Elven Woodwork — Living trees, curved organic forms','Dwarven Stonecraft — Heavy, angular, rune-etched','Arcane Spires — Towers crackling with magical energy','Bone & Leather — Tribal, nomadic materials','Marble & Column — Classical imperial style','Mudbrick — Desert or arid construction','Iron & Steam — Industrial, forge-heavy','Ancient Ruins — Built atop or within crumbling structures','Mixed / Eclectic — Many cultures layered over time'];
-const CLIMATE_OPTIONS      = ['Tropical — Hot, humid, heavy rain','Subtropical — Warm, seasonal rain','Temperate — Mild seasons, moderate rain','Mediterranean — Hot dry summers, mild wet winters','Continental — Cold winters, warm summers','Subarctic — Long brutal winters, brief summers','Arctic / Tundra — Frozen most of the year','Arid Desert — Scorching days, freezing nights','Semi-Arid — Dry, sparse vegetation','Highland — Cool, thin air, unpredictable storms','Magical — Unnaturally altered by arcane forces','Eternally Stormy — Perpetual storms or fog'];
-const ALL_LANGUAGES        = ['Common','Dwarvish','Elvish','Giant','Gnomish','Goblin','Halfling','Orc','Abyssal','Celestial','Draconic','Deep Speech','Infernal','Primordial','Aquan','Auran','Ignan','Terran','Sylvan','Undercommon','Druidic',"Thieves' Cant",'Aarakocra','Gith','Modron','Slaad','Sphinx','Bullywug','Hook Horror','Sahuagin','Troglodyte','Drow Sign Language','Ixitxachitl'];
+const VOICE_OPTIONS        = ['chest', 'throat', 'mouth / oral', 'nasal', 'head / sinus'];
+const POSTURE_OPTIONS      = ['upright', 'slouched', 'hunched', 'rigid', 'relaxed', 'open', 'closed‑off', 'confident', 'defensive', 'aggressive', 'passive', 'dominant', 'submissive', 'balanced', 'unsteady', 'leaning forward', 'leaning back', 'leaning to the side', 'arms crossed', 'hands on hips', 'hands behind back', 'military‑straight', 'casual', 'tense', 'loose', 'curved spine', 'straight spine', 'reclined', 'perched', 'crouched', 'kneeling', 'squatting', 'wide‑stance', 'narrow‑stance', 'asymmetrical', 'symmetrical', 'tall', 'compressed'];
+const SPEED_OPTIONS        = ['slow & deliberate', 'steady drumbeat', 'brisk', 'quick & hurried', 'nervous & rushed', 'measured', 'lumbering', 'graceful', 'sluggish', 'easygoing', 'calm & steady', 'smooth‑moving', 'relaxed pace', 'casual stride', 'purposeful stride', 'energetic', 'lively', 'darting', 'jittery', 'frantic', 'rapid‑fire', 'snappy', 'hurried', 'urgent', 'plodding', 'creeping', 'tentative', 'cautious', 'bold & decisive', 'fluid', 'sprightly', 'swift', 'nimble', 'light‑footed', 'heavy‑footed', 'stomping', 'drifting', 'wandering', 'methodical', 'stop‑and‑go', 'erratic', 'unpredictable'];
+const ALIGNMENT_OPTIONS    = ['lawful good', 'neutral good', 'chaotic good', 'lawful neutral', 'true neutral', 'chaotic neutral', 'lawful evil', 'neutral evil', 'chaotic evil'];
+const PRONOUN_OPTIONS      = ['he/him', 'she/her', 'they/them', 'he/they', 'she/they', 'it/its', 'any pronouns'];
+const SIZE_OPTIONS         = ['Hamlet', 'Village', 'Town', 'Large Town', 'Location', 'Large Location', 'Metropolis'];
+const CONDITION_OPTIONS    = ['calm', 'peaceful', 'bustling', 'crowded', 'quiet', 'deserted', 'lively', 'festive', 'tense', 'volatile', 'dangerous', 'unstable', 'war‑torn', 'recovering', 'thriving', 'prosperous', 'struggling', 'impoverished', 'neglected', 'fortified', 'guarded', 'patrolled', 'abandoned', 'ruined', 'decaying', 'overgrown', 'pristine', 'untouched', 'polluted', 'toxic', 'hazardous', 'stormy', 'windy', 'rainy', 'flooded', 'drought‑stricken', 'frozen', 'snow‑covered', 'foggy', 'smoky', 'dusty', 'scorching', 'humid', 'temperate', 'frigid', 'eerie', 'cursed', 'blessed', 'sacred', 'corrupted', 'chaotic', 'orderly', 'lawless', 'controlled', 'contested', 'occupied', 'besieged', 'isolated', 'remote', 'connected', 'central', 'strategic', 'forgotten', 'hidden', 'exposed'];
+const GEOGRAPHY_OPTIONS    = ['mountain', 'mountain range', 'hill', 'valley', 'canyon', 'plateau', 'mesa', 'plain', 'grassland', 'prairie', 'savanna', 'desert', 'dune field', 'tundra', 'glacier', 'ice field', 'forest', 'jungle', 'rainforest', 'swamp', 'marsh', 'wetland', 'bog', 'moor', 'heath', 'coastline', 'beach', 'shoreline', 'cliff', 'reef', 'island', 'archipelago', 'peninsula', 'bay', 'gulf', 'fjord', 'river', 'river delta', 'riverlands', 'lake', 'lagoon', 'pond', 'waterfall', 'spring', 'cave', 'cavern system', 'cave network', 'volcano', 'crater', 'badlands', 'steppe'];
+const ARCHITECTURE_OPTIONS = ['ancient stonework', 'classical', 'gothic', 'baroque', 'renaissance', 'medieval', 'rustic', 'rural', 'frontier‑built', 'industrial', 'modern', 'futuristic', 'brutalist', 'minimalist', 'ornate', 'imperial', 'colonial', 'fortified', 'militaristic', 'monastic', 'temple‑focused', 'sacred', 'ceremonial', 'nomadic', 'tribal', 'desert‑carved', 'mountain‑carved', 'forest‑integrated', 'coastal', 'maritime', 'subterranean', 'cavern‑built', 'cliffside‑built', 'sprawling', 'compact', 'labyrinthine', 'orderly', 'chaotic', 'high‑rise', 'low‑rise', 'timber‑framed', 'masonry', 'marble‑heavy', 'metal‑worked', 'glass‑heavy', 'mixed‑material', 'overgrown', 'reclaimed', 'ruined', 'reconstructed', 'pristine'];
+const CLIMATE_OPTIONS      = ['tropical', 'subtropical', 'temperate', 'arid', 'semi‑arid', 'mediterranean', 'continental', 'oceanic', 'alpine', 'polar'];
+const RELIGION_OPTIONS     = ['sun cult', 'moon cult', 'star cult', 'storm faith', 'earth mother', 'sea father', 'fire worship', 'nature druidism', 'beast totemism', 'ancestor worship', 'spirit veneration', 'elemental pantheon', 'celestial pantheon', 'infernal cult', 'abyssal cult', 'death cult', 'life cult', 'harvest faith', 'forge faith', 'knowledge order', 'trickster cult', 'war brotherhood', 'peace fellowship', 'justice order', 'shadow cult', 'light church', 'balance sect', 'time order', 'fate weavers', 'prophecy circle', 'arcane order', 'wild magic cult', 'blood rite cult', 'stone guardians', 'river spirits', 'mountain spirits', 'forest spirits', 'sky spirits', 'seasonal faith', 'spring renewal cult', 'winter vigil', 'autumn rites', 'summer flame cult'];
+const VIBE_OPTIONS         = ['cozy', 'warm', 'welcoming', 'peaceful', 'serene', 'tranquil', 'lively', 'bustling', 'vibrant', 'festive', 'cheerful', 'whimsical', 'quirky', 'mysterious', 'eerie', 'haunting', 'somber', 'gloomy', 'oppressive', 'tense', 'foreboding', 'dangerous', 'chaotic', 'wild', 'primal', 'sacred', 'reverent', 'solemn', 'majestic', 'awe‑inspiring', 'ancient', 'timeless', 'rustic', 'homely', 'refined', 'elegant', 'gritty', 'rough', 'harsh', 'bleak', 'desolate', 'lonely', 'isolated', 'remote', 'hidden', 'secretive', 'enchanted', 'magical', 'arcane', 'otherworldly', 'surreal', 'dreamlike'];
+const CLASSIFICATION_OPTIONS = ['city', 'town', 'village', 'region', 'province', 'territory', 'country', 'kingdom', 'empire', 'capital', 'district', 'wilderness', 'forest', 'jungle', 'desert', 'tundra', 'mountain range', 'valley', 'canyon', 'plains', 'grasslands', 'highlands', 'lowlands', 'coastline', 'shoreline', 'island', 'archipelago', 'peninsula', 'riverlands', 'wetlands', 'badlands', 'frontier', 'heartland', 'plateau', 'crater', 'volcanic region', 'glacier', 'steppe', 'savanna', 'moorland', 'ocean', 'sea', 'reef', 'cavern system', 'cave network', 'mine system', 'farmland', 'countryside', 'trade hub', 'port city', 'harbor district', 'crossroads region', 'caravan route', 'sacred grounds', 'ruins', 'ancient site', 'archaeological zone'];
+const AGE_OPTIONS           = ['infant', 'toddler', 'child', 'youth', 'teen', 'youngadult', 'adult', 'midlife', 'elder', 'ancient'];
+const ROLE_OPTIONS          = ['innkeeper', 'blacksmith', 'guildmaster', 'archivist', 'captain of the guard', 'merchant', 'healer', 'stablemaster', 'hunter', 'court advisor', 'high priest', 'ship captain', 'artificer', 'scout', 'mayor', 'quest scribe', 'wizard', 'bard', 'smuggler', 'naturalist', 'cartographer', 'diplomat', 'herbalist', 'monster hunter', 'librarian', 'alchemist', 'fence', 'noble', 'scribe', 'ranger', 'cook', 'quartermaster', 'engineer', 'spy', 'gladiator trainer', 'caravan leader', 'historian', 'sailor', 'miner', 'architect', 'tailor', 'brewer', 'butcher', 'farmer', 'shepherd', 'fisher', 'mason', 'jeweler', 'banker', 'tax collector', 'magistrate', 'lawyer', 'doctor', 'undertaker', 'gravekeeper', 'fortune teller', 'oracle', 'prophet', 'druid', 'shaman', 'beast tamer', 'falconer', 'weaponsmith', 'armorer', 'leatherworker', 'bowyer', 'fletcher', 'potion maker', 'scroll scribe', 'map seller', 'street performer', 'pickpocket', 'beggar', 'bounty hunter', 'mercenary', 'bodyguard', 'assassin', 'scout captain', 'guard recruiter', 'prison warden', 'jailor', 'courier', 'messenger', 'stablehand', 'dockworker', 'harbor master', 'lighthouse keeper', 'weather watcher', 'explorer', 'archaeologist', 'relic hunter', 'sage', 'tutor', 'professor', 'student', 'ritualist', 'cult leader', 'acolyte', 'temple attendant', 'festival organizer', 'town crier', 'auctioneer', 'market overseer'];
+const RACE_OPTIONS          = ['human', 'elf', 'high elf', 'wood elf', 'dark elf', 'drow', 'half‑elf', 'dwarf', 'hill dwarf', 'mountain dwarf', 'halfling', 'lightfoot halfling', 'stout halfling', 'gnome', 'forest gnome', 'rock gnome', 'orc', 'half‑orc', 'goblin', 'hobgoblin', 'bugbear', 'kobold', 'dragonborn', 'tiefling', 'aasimar', 'genasi', 'fire genasi', 'water genasi', 'air genasi', 'earth genasi', 'tabaxi', 'kenku', 'tortle', 'lizardfolk', 'triton', 'firbolg', 'goliath', 'minotaur', 'centaur', 'satyr', 'leonin', 'merfolk', 'changeling', 'shifter', 'warforged', 'kalashtar', 'vedalken', 'simic hybrid', 'aarakocra', 'yuan‑ti pureblood', 'fairy', 'harengon', 'githyanki', 'githzerai', 'duergar', 'svirfneblin', 'eladrin', 'sea elf', 'shadar‑kai', 'reborn', 'dhampir', 'hexblood', 'vampire', 'werewolf', 'catfolk', 'ratfolk', 'tengu', 'kitsune', 'ifrit', 'undine', 'sylph', 'oread', 'fetchling', 'grippli', 'vanara', 'nagaji', 'samsaran', 'skinwalker', 'gillman', 'android', 'lashunta', 'vesk', 'ysoki', 'kasatha', 'half‑giant', 'thri‑kreen', 'mul', 'elan', 'maenad', 'blue', 'loxodon', 'owlin', 'plasmoid', 'autognome', 'hadozee', 'giff', 'locathah', 'khenra', 'naga', 'serpentfolk', 'birdfolk', 'foxfolk', 'wolffolk', 'bearfolk', 'rabbitfolk', 'turtlefolk', 'insectfolk', 'construct', 'living construct', 'elemental‑touched', 'celestial‑touched', 'infernal‑touched', 'fey‑touched', 'shadow‑touched', 'giant‑kin'];
+const ALL_LANGUAGES        = ['Common', 'Dwarvish', 'Elvish', 'Giant', 'Gnomish', 'Goblin', 'Halfling', 'Orc', 'Abyssal', 'Celestial', 'Draconic', 'Deep Speech', 'Infernal', 'Primordial', 'Aquan', 'Auran', 'Ignan', 'Terran', 'Sylvan', 'Undercommon', 'Druidic', "Thieves' Cant", 'Aarakocra', 'Gith', 'Modron', 'Slaad', 'Sphinx', 'Bullywug', 'Hook Horror', 'Sahuagin', 'Troglodyte', 'Drow Sign Language', 'Ixitxachitl'];
 
 @Component({
   selector: 'app-portal-import-card',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, LocationCardComponent, SublocationCardComponent, CastCardComponent, FactionCardComponent, IconPickerComponent],
+  imports: [CommonModule, ReactiveFormsModule, LocationCardComponent, SublocationCardComponent, CastCardComponent, FactionCardComponent, IconPickerComponent, JournalDropdownComponent, JournalRandomizeButtonComponent],
   templateUrl: './portal-import-card.component.html',
   styleUrl: './portal-import-card.component.scss',
 })
@@ -156,11 +164,17 @@ export class PortalImportCardComponent implements OnInit, OnChanges {
   geographyOptions    = GEOGRAPHY_OPTIONS;
   architectureOptions = ARCHITECTURE_OPTIONS;
   climateOptions      = CLIMATE_OPTIONS;
+  religionOptions     = RELIGION_OPTIONS;
+  vibeOptions         = VIBE_OPTIONS;
+  classificationOptions = CLASSIFICATION_OPTIONS;
   voiceOptions     = VOICE_OPTIONS;
   postureOptions   = POSTURE_OPTIONS;
   speedOptions     = SPEED_OPTIONS;
   alignmentOptions = ALIGNMENT_OPTIONS;
   pronounOptions   = PRONOUN_OPTIONS;
+  ageOptions       = AGE_OPTIONS;
+  roleOptions      = ROLE_OPTIONS;
+  raceOptions      = RACE_OPTIONS;
 
   form = this.fb.group({
     name:           ['', Validators.required],
@@ -202,6 +216,28 @@ export class PortalImportCardComponent implements OnInit, OnChanges {
   });
 
   get castVoicePlacementArray() { return this.castForm.get('voicePlacement') as FormArray; }
+
+  // Location form controls
+  get classificationControl() { return this.form.get('classification') as FormControl; }
+  get sizeControl() { return this.form.get('size') as FormControl; }
+  get conditionControl() { return this.form.get('condition') as FormControl; }
+  get geographyControl() { return this.form.get('geography') as FormControl; }
+  get architectureControl() { return this.form.get('architecture') as FormControl; }
+  get climateControl() { return this.form.get('climate') as FormControl; }
+  get religionControl() { return this.form.get('religion') as FormControl; }
+  get vibeControl() { return this.form.get('vibe') as FormControl; }
+
+  // Cast form controls
+  get roleControl() { return this.castForm.get('role') as FormControl; }
+  get raceControl() { return this.castForm.get('race') as FormControl; }
+  get ageControl() { return this.castForm.get('age') as FormControl; }
+  get pronounsControl() { return this.castForm.get('pronouns') as FormControl; }
+  get postureControl() { return this.castForm.get('posture') as FormControl; }
+  get speedControl() { return this.castForm.get('speed') as FormControl; }
+  get alignmentControl() { return this.castForm.get('alignment') as FormControl; }
+
+  // Faction form controls
+  get factionTypeControl() { return this.factionForm.get('type') as FormControl; }
 
   readonly currencies = ['cp', 'sp', 'ep', 'gp', 'pp'];
 

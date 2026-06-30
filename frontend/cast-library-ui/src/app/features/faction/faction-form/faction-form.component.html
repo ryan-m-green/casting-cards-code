@@ -20,22 +20,15 @@
       <div class="wr form-row-gap faction-name-row">
         <div class="form-field">
           <label for="faction-name-input" class="fi-label">Name</label>
-          <input id="faction-name-input" class="fi" formControlName="name" placeholder="The Iron Veil" autocomplete="off" />
+          <input id="faction-name-input" class="fi" formControlName="name" autocomplete="off" />
         </div>
 
-        <div class="form-field form-field--toggle">
-          <label class="fi-label" for="faction-hidden-toggle">Faction is in hiding</label>
-          <label class="toggle-switch">
-            <input id="faction-hidden-toggle" type="checkbox" formControlName="hidden" />
-            <span class="toggle-slider"></span>
-          </label>
-          <span class="toggle-hint">{{ form.value.hidden ? 'Hidden - faction operates in the shadows' : 'Visible - faction is out in the open' }}</span>
-        </div>
+ 
       </div>
 
       <div class="form-field-min">
         <label for="faction-description-input" class="fi-label">Description</label>
-        <textarea id="faction-description-input" class="fi fi--textarea" formControlName="description" placeholder="A shadowy guild operating across three kingdoms…" rows="4" autocomplete="off"></textarea>
+        <textarea id="faction-description-input" class="fi fi--textarea" formControlName="description" rows="4" autocomplete="off"></textarea>
       </div>
 
       <fieldset class="form-gm-box">
@@ -43,17 +36,24 @@
 <img src="/death_awaits.PNG" alt="Death awaits" class="death-awaits-image" />
         <div class="wr form-row-gap">
           <div class="form-field">
-            <label for="faction-type-input" class="fi-label">Type</label>
-            <input id="faction-type-input" class="fi" formControlName="type" list="faction-type-options" placeholder="Guild" autocomplete="off" />
-            <datalist id="faction-type-options">
-              @for (opt of typeOptions; track opt) {
-                <option [value]="opt"></option>
-              }
-            </datalist>
+            <app-journal-dropdown 
+              [options]="typeOptions"
+              [label]="'Type'"
+              [control]="typeControl">
+            </app-journal-dropdown>
           </div>
           <div class="form-field"></div>
         </div>
-
+        <div class="form-field form-field--toggle">
+          <label class="fi-label" for="faction-hidden-toggle">Faction Visibility</label>
+          <div class="toggle-row">
+            <label class="toggle-switch">
+              <input id="faction-hidden-toggle" type="checkbox" formControlName="hidden" />
+              <span class="toggle-slider"></span>
+            </label>
+            <span class="toggle-hint">{{ form.value.hidden ? 'Hidden - faction operates in the shadows' : 'Visible - faction is out in the open' }}</span>
+          </div>
+        </div>
         <div class="form-field-min">
           <label for="faction-dm-notes-input" class="fi-label">DM Notes</label>
           <textarea id="faction-dm-notes-input" class="fi fi--textarea" formControlName="dmNotes" placeholder="Secret objectives, key contacts…" rows="4" autocomplete="off"></textarea>
@@ -130,5 +130,17 @@
     </div>
     <app-icon-picker [selectedIcon]="selectedIcon()" (iconSelected)="onIconSelected($event)" />
   </div>
+
+  @if (limitError()) {
+    <div class="limit-error-message">
+      <span class="limit-error-text">{{ limitError() }}</span>
+      <div class="limit-error-actions">
+        @if (auth.isFreeTrial()) {
+          <button class="limit-error-upgrade" (click)="openUpgradeDrawer()">Upgrade</button>
+        }
+        <button class="limit-error-close" (click)="limitError.set(null)">×</button>
+      </div>
+    </div>
+  }
 
 </div>

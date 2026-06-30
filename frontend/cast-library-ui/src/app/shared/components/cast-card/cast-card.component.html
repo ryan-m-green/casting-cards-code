@@ -39,10 +39,14 @@
           <div class="cast-back-name">{{ cast.name }}</div>
           <div class="cast-back-divider"></div>
 
+          <div class="cast-back-flavor">
+            <div class="cast-back-flavor-text">{{ cast.publicDescription ? '"' + cast.publicDescription + '"' : '—' }}</div>
+          </div>
+
           @if (editable) {
             <div class="cast-back-actions">
-              <button class="cast-btn cast-btn--red" (click)="onDeleteClick($event)">✦ Delete</button>
               <button class="cast-btn cast-btn--gold" (click)="onEditClick($event)">✦ Edit</button>
+              <button class="cast-btn cast-btn--red" (click)="onDeleteClick($event)">✦ Delete</button>
             </div>
           }
         </div>
@@ -185,11 +189,6 @@
                 </svg>
               </div>
             }
-          </div>
-
-          <!-- flavor -->
-          <div class="cast-flavor">
-            <div class="cast-flavor-text">{{ cast.publicDescription ? '"' + cast.publicDescription + '"' : '—' }}</div>
           </div>
 
           <!-- bottom strip -->

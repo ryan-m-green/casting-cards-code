@@ -23,6 +23,7 @@ public class FactionUpdateRepository(
             faction.Name,
             faction.Type,
             faction.Influence,
+            faction.Perception,
             faction.Hidden,
             faction.Description,
             faction.DmNotes,
@@ -31,6 +32,7 @@ public class FactionUpdateRepository(
         const string sql =
             @"UPDATE factions
                  SET name = @Name, type = @Type, influence = @Influence,
+                     perception = @Perception,
                      hidden = @Hidden,
                      description = @Description, dm_notes = @DmNotes, symbol_path = @SymbolPath
                WHERE faction_id = @FactionId";

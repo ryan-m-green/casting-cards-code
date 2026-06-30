@@ -2,7 +2,7 @@ import { Component, OnInit, OnDestroy, signal, inject, computed, ViewChild, Elem
 import { Subscription } from 'rxjs';
 import { Router, RouterLink, ActivatedRoute } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
+import { ReactiveFormsModule, FormBuilder, Validators, FormControl } from '@angular/forms';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { forkJoin } from 'rxjs';
 import { environment } from '../../../../environments/environment';
@@ -12,6 +12,7 @@ import { CampaignCastInstance } from '../../../shared/models/cast.model';
 import { CampaignSublocationInstance } from '../../../shared/models/sublocation.model';
 import { TimeOfDayEditorComponent } from '../time-of-day-editor/time-of-day-editor.component';
 import { JournalTitleComponent } from '../../../shared/components/journal-title/journal-title.component';
+import { JournalDropdownComponent } from '../../../shared/components/journal-dropdown/journal-dropdown.component';
 import { AuthService } from '../../../core/auth/auth.service';
 import { CampaignHubService } from '../../../core/hub/campaign-hub.service';
 
@@ -37,7 +38,7 @@ interface LocationDraft {
 @Component({
   selector: 'app-campaign-creator',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, RouterLink, TimeOfDayEditorComponent, JournalTitleComponent],
+  imports: [CommonModule, ReactiveFormsModule, RouterLink, TimeOfDayEditorComponent, JournalTitleComponent, JournalDropdownComponent],
   templateUrl: './campaign-creator.component.html',
   styleUrl: './campaign-creator.component.scss'
 })
@@ -102,6 +103,17 @@ export class CampaignCreatorComponent implements OnInit, OnDestroy {
   };
 
   readonly conditionOptions = ['Thriving', 'Stable', 'Declining', 'War-Torn', 'Rebuilding', 'Abandoned'];
+  readonly fantasyTypeOptions = [
+    'epic fantasy', 'heroic fantasy', 'dark fantasy', 'grim dark', 'mythic fantasy',
+    'high fantasy', 'low fantasy', 'sword and sorcery', 'political drama', 'court intrigue',
+    'wilderness exploration', 'deep exploration', 'survival adventure', 'gothic horror',
+    'cosmic horror', 'mystery adventure', 'planar adventure', 'fey wild adventure',
+    'underdark expedition', 'nautical adventure', 'pirate campaign', 'desert campaign',
+    'arctic campaign', 'wilderness campaign', 'dungeon crawl', 'hex crawl',
+    'steampunk fantasy', 'clockwork fantasy', 'arcane saga', 'divine saga',
+    'apocalyptic fantasy', 'post apocalyptic fantasy', 'renaissance fantasy',
+    'eldritch fantasy', 'primal fantasy', 'celestial saga', 'infernal saga'
+  ];
 
   private readonly SEL_PEEK = 46;
   private readonly SEL_FULL = 220;
@@ -158,10 +170,12 @@ export class CampaignCreatorComponent implements OnInit, OnDestroy {
 
   form = this.fb.group({
     name:        ['', Validators.required],
-    fantasyType: ['High Fantasy'],
+    fantasyType: [''],
     description: [''],
     spineColor:  ['#ffffff'],
   });
+
+  get fantasyTypeControl() { return this.form.get('fantasyType') as FormControl; }
 
   ngOnInit() {
     const id = this.route.snapshot.paramMap.get('id');

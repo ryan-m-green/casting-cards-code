@@ -1,7 +1,7 @@
 import { Component, OnInit, signal, computed, inject, ViewChild, ElementRef, DestroyRef } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
+import { ReactiveFormsModule, FormBuilder, Validators, FormControl } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { catchError } from 'rxjs/operators';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
@@ -12,6 +12,7 @@ import { SparkleService } from '../../../shared/services/sparkle.service';
 import { FactionCardComponent } from '../../../shared/components/faction-card/faction-card.component';
 import { IconPickerComponent } from '../../../shared/components/icon-picker/icon-picker.component';
 import { JournalTitleComponent } from '../../../shared/components/journal-title/journal-title.component';
+import { JournalDropdownComponent } from '../../../shared/components/journal-dropdown/journal-dropdown.component';
 import { HttpErrorResponse } from '@angular/common/http';
 import { SubscriptionDrawerService } from '../../../core/subscription-drawer.service';
 import { AuthService } from '../../../core/auth/auth.service';
@@ -32,18 +33,13 @@ export function perceptionLabel(v: number): string {
 }
 
 export const FACTION_TYPE_OPTIONS = [
-  'Criminal Syndicate',
-  'Guild',
-  'Military Order',
-  'Political Body',
-  'Religious Cult',
-  'Secret Society',
+  'guild', 'order', 'syndicate', 'cult', 'cabal', 'clan', 'tribe', 'house', 'league', 'coalition', 'council', 'empire', 'kingdom', 'dominion', 'confederacy', 'enclave', 'consortium', 'cartel', 'fellowship', 'brotherhood', 'sect', 'circle', 'pact', 'alliance', 'militia', 'regiment', 'brigade', 'company', 'corporation', 'foundation', 'academy', 'commune', 'collective', 'network'
 ];
 
 @Component({
   selector: 'app-faction-form',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, RouterLink, FactionCardComponent, IconPickerComponent, JournalTitleComponent],
+  imports: [CommonModule, ReactiveFormsModule, RouterLink, FactionCardComponent, IconPickerComponent, JournalTitleComponent, JournalDropdownComponent],
   templateUrl: './faction-form.component.html',
   styleUrl: './faction-form.component.scss'
 })
@@ -185,6 +181,8 @@ export class FactionFormComponent implements OnInit {
     this.selectedIcon.set(path);
     this.imageUrl.set(path);
   }
+
+  get typeControl() { return this.form.get('type') as FormControl; }
 
   openUpgradeDrawer() {
     this.drawerService.open();

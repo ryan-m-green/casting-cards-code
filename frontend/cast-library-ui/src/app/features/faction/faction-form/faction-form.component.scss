@@ -194,9 +194,14 @@
 // ── Toggle Switch ──────────────────────────────────────────────────────────────
 .form-field--toggle {
   display: flex;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 10px;
+  flex-direction: column;
+  gap: 8px;
+
+  .toggle-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
 
   .fi-label {
     margin-bottom: 0;
@@ -330,4 +335,10 @@
   &:hover {
     opacity: 1;
   }
+}
+
+.save-spark-host {
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }

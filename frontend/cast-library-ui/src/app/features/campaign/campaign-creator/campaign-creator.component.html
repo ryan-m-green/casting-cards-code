@@ -107,7 +107,7 @@
 
   <form [formGroup]="form">
     <label class="fi-label">Campaign Name</label>
-    <input class="fi" formControlName="name" placeholder="The Shadow of Eldenmoor" />
+    <input class="fi" formControlName="name" />
     @if (form.controls.name.touched && form.controls.name.invalid) {
       <div class="fi-error">Campaign name is required before adding locations.</div>
     }
@@ -117,14 +117,18 @@
       <span class="color-swatch-preview" [style.background]="form.controls.spineColor.value"></span>
       <span class="color-swatch-hex">{{ form.controls.spineColor.value }}</span>
     </div>
-    <label class="fi-label">Fantasy Type</label>
-    <input class="fi" formControlName="fantasyType" placeholder="High Fantasy" />
+    <app-journal-dropdown
+      [options]="fantasyTypeOptions"
+      [label]="'Fantasy Type'"
+      [control]="fantasyTypeControl">
+    </app-journal-dropdown>
     <label class="fi-label">Description</label>
     <textarea class="fi" formControlName="description" rows="3" placeholder="A brief synopsis…"></textarea>
   </form>
 
   @if (isAdmin()) {
-    <div class="demo-control">
+    <fieldset class="form-gm-box">
+      <legend class="form-gm-box__legend">FOR ADMINS ONLY</legend>
       <button
         class="demo-lock-btn"
         [class.demo-lock-btn--unlocked]="!isDemoLocked()"
@@ -146,7 +150,7 @@
       @if (isDemoChecked()) {
         <span class="demo-checked-indicator">✓</span>
       }
-    </div>
+    </fieldset>
   }
 
   @if (saving()) {

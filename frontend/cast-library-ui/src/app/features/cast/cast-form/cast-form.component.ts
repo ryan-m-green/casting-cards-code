@@ -1,7 +1,7 @@
 import { Component, OnInit, signal, computed, inject, ViewChild, ElementRef } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { ReactiveFormsModule, FormBuilder, FormArray, Validators } from '@angular/forms';
+import { ReactiveFormsModule, FormBuilder, FormArray, Validators, FormControl } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { catchError } from 'rxjs/operators';
 import { EMPTY } from 'rxjs';
@@ -10,36 +10,49 @@ import { Cast } from '../../../shared/models/cast.model';
 import { SparkleService } from '../../../shared/services/sparkle.service';
 import { CastCardComponent } from '../../../shared/components/cast-card/cast-card.component';
 import { JournalTitleComponent } from '../../../shared/components/journal-title/journal-title.component';
+import { JournalDropdownComponent } from '../../../shared/components/journal-dropdown/journal-dropdown.component';
+import { JournalRandomizeButtonComponent } from '../../../shared/components/journal-randomize-button/journal-randomize-button.component';
 import { HttpErrorResponse } from '@angular/common/http';
 import { SubscriptionDrawerService } from '../../../core/subscription-drawer.service';
 import { AuthService } from '../../../core/auth/auth.service';
 
-const VOICE_OPTIONS = ['Chest', 'Throat', 'Mouth / Oral', 'Nasal', 'Head / Sinus'];
+const VOICE_OPTIONS = ['chest', 'throat', 'mouth / oral', 'nasal', 'head / sinus'];
 
 const POSTURE_OPTIONS = [
-  'Upright', 'Puffed Chest', 'Slouched', 'Hunched', 'Relaxed',
-  'Tense', 'Swaggering', 'Cowering', 'Guarded', 'Leaning',
+  'upright', 'slouched', 'hunched', 'rigid', 'relaxed', 'open', 'closed‑off', 'confident', 'defensive', 'aggressive', 'passive', 'dominant', 'submissive', 'balanced', 'unsteady', 'leaning forward', 'leaning back', 'leaning to the side', 'arms crossed', 'hands on hips', 'hands behind back', 'military‑straight', 'casual', 'tense', 'loose', 'curved spine', 'straight spine', 'reclined', 'perched', 'crouched', 'kneeling', 'squatting', 'wide‑stance', 'narrow‑stance', 'asymmetrical', 'symmetrical', 'tall', 'compressed'
 ];
 
 const SPEED_OPTIONS = [
-  'Slow & Deliberate', 'Steady Drumbeat', 'Brisk', 'Quick & Hurried',
-  'Nervous & Rushed', 'Measured', 'Lumbering', 'Graceful',
+  'slow & deliberate', 'steady drumbeat', 'brisk', 'quick & hurried', 'nervous & rushed', 'measured', 'lumbering', 'graceful', 'sluggish', 'easygoing', 'calm & steady', 'smooth‑moving', 'relaxed pace', 'casual stride', 'purposeful stride', 'energetic', 'lively', 'darting', 'jittery', 'frantic', 'rapid‑fire', 'snappy', 'hurried', 'urgent', 'plodding', 'creeping', 'tentative', 'cautious', 'bold & decisive', 'fluid', 'sprightly', 'swift', 'nimble', 'light‑footed', 'heavy‑footed', 'stomping', 'drifting', 'wandering', 'methodical', 'stop‑and‑go', 'erratic', 'unpredictable'
 ];
 
 const ALIGNMENT_OPTIONS = [
-  'Lawful Good', 'Neutral Good', 'Chaotic Good',
-  'Lawful Neutral', 'True Neutral', 'Chaotic Neutral',
-  'Lawful Evil', 'Neutral Evil', 'Chaotic Evil',
+  'lawful good', 'neutral good', 'chaotic good',
+  'lawful neutral', 'true neutral', 'chaotic neutral',
+  'lawful evil', 'neutral evil', 'chaotic evil',
 ];
 
 const PRONOUN_OPTIONS = [
   'he/him', 'she/her', 'they/them', 'he/they', 'she/they', 'it/its', 'any pronouns',
 ];
 
+const AGE_OPTIONS = [
+  'infant', 'toddler', 'child', 'youth', 'teen', 'youngadult', 'adult', 'midlife', 'elder', 'ancient'
+];
+
+const ROLE_OPTIONS = [
+  'innkeeper', 'blacksmith', 'guildmaster', 'archivist', 'captain of the guard', 'merchant', 'healer', 'stablemaster', 'hunter', 'court advisor', 'high priest', 'ship captain', 'artificer', 'scout', 'mayor', 'quest scribe', 'wizard', 'bard', 'smuggler', 'naturalist', 'cartographer', 'diplomat', 'herbalist', 'monster hunter', 'librarian', 'alchemist', 'fence', 'noble', 'scribe', 'ranger', 'cook', 'quartermaster', 'engineer', 'spy', 'gladiator trainer', 'caravan leader', 'historian', 'sailor', 'miner', 'architect', 'tailor', 'brewer', 'butcher', 'farmer', 'shepherd', 'fisher', 'mason', 'jeweler', 'banker', 'tax collector', 'magistrate', 'lawyer', 'doctor', 'undertaker', 'gravekeeper', 'fortune teller', 'oracle', 'prophet', 'druid', 'shaman', 'beast tamer', 'falconer', 'weaponsmith', 'armorer', 'leatherworker', 'bowyer', 'fletcher', 'potion maker', 'scroll scribe', 'map seller', 'street performer', 'pickpocket', 'beggar', 'bounty hunter', 'mercenary', 'bodyguard', 'assassin', 'scout captain', 'guard recruiter', 'prison warden', 'jailor', 'courier', 'messenger', 'stablehand', 'dockworker', 'harbor master', 'lighthouse keeper', 'weather watcher', 'explorer', 'archaeologist', 'relic hunter', 'sage', 'tutor', 'professor', 'student', 'ritualist', 'cult leader', 'acolyte', 'temple attendant', 'festival organizer', 'town crier', 'auctioneer', 'market overseer'
+];
+
+const RACE_OPTIONS = [
+  'human', 'elf', 'high elf', 'wood elf', 'dark elf', 'drow', 'half‑elf', 'dwarf', 'hill dwarf', 'mountain dwarf', 'halfling', 'lightfoot halfling', 'stout halfling', 'gnome', 'forest gnome', 'rock gnome', 'orc', 'half‑orc', 'goblin', 'hobgoblin', 'bugbear', 'kobold', 'dragonborn', 'tiefling', 'aasimar', 'genasi', 'fire genasi', 'water genasi', 'air genasi', 'earth genasi', 'tabaxi', 'kenku', 'tortle', 'lizardfolk', 'triton', 'firbolg', 'goliath', 'minotaur', 'centaur', 'satyr', 'leonin', 'merfolk', 'changeling', 'shifter', 'warforged', 'kalashtar', 'vedalken', 'simic hybrid', 'aarakocra', 'yuan‑ti pureblood', 'fairy', 'harengon', 'githyanki', 'githzerai', 'duergar', 'svirfneblin', 'eladrin', 'sea elf', 'shadar‑kai', 'reborn', 'dhampir', 'hexblood', 'vampire', 'werewolf', 'catfolk', 'ratfolk', 'tengu', 'kitsune', 'ifrit', 'undine', 'sylph', 'oread', 'fetchling', 'grippli', 'vanara', 'nagaji', 'samsaran', 'skinwalker', 'gillman', 'android', 'lashunta', 'vesk', 'ysoki', 'kasatha', 'half‑giant', 'thri‑kreen', 'mul', 'elan', 'maenad', 'blue', 'loxodon', 'owlin', 'plasmoid', 'autognome', 'hadozee', 'giff', 'locathah', 'khenra', 'naga', 'serpentfolk', 'birdfolk', 'foxfolk', 'wolffolk', 'bearfolk', 'rabbitfolk', 'turtlefolk', 'insectfolk', 'construct', 'living construct', 'elemental‑touched', 'celestial‑touched', 'infernal‑touched', 'fey‑touched', 'shadow‑touched', 'giant‑kin'
+];
+
+
 @Component({
   selector: 'app-cast-form',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, RouterLink, CastCardComponent, JournalTitleComponent],
+  imports: [CommonModule, ReactiveFormsModule, RouterLink, CastCardComponent, JournalTitleComponent, JournalDropdownComponent, JournalRandomizeButtonComponent],
   templateUrl: './cast-form.component.html',
   styleUrl: './cast-form.component.scss'
 })
@@ -63,6 +76,9 @@ export class CastFormComponent implements OnInit {
   imagePreviewUrl = signal<string | null>(null);
   voiceOptions     = VOICE_OPTIONS;
   pronounOptions   = PRONOUN_OPTIONS;
+  ageOptions       = AGE_OPTIONS;
+  roleOptions      = ROLE_OPTIONS;
+  raceOptions      = RACE_OPTIONS;
   alignmentOptions = ALIGNMENT_OPTIONS;
   postureOptions   = POSTURE_OPTIONS;
   speedOptions     = SPEED_OPTIONS;
@@ -130,6 +146,20 @@ export class CastFormComponent implements OnInit {
   }
 
   get voicePlacementArray() { return this.form.get('voicePlacement') as FormArray; }
+
+  get pronounsControl() { return this.form.get('pronouns') as FormControl; }
+
+  get ageControl() { return this.form.get('age') as FormControl; }
+
+  get roleControl() { return this.form.get('role') as FormControl; }
+
+  get raceControl() { return this.form.get('race') as FormControl; }
+
+  get postureControl() { return this.form.get('posture') as FormControl; }
+
+  get speedControl() { return this.form.get('speed') as FormControl; }
+
+  get alignmentControl() { return this.form.get('alignment') as FormControl; }
 
   onSave(e: MouseEvent): void {
     if (this.form.invalid || this.saveStatus() === 'saving') return;

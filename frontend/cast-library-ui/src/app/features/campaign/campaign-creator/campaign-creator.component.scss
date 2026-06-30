@@ -87,6 +87,26 @@
   border: 1px solid v.$color-ui-cancel-border;
 }
 
+.form-gm-box {
+  border: 1px solid rgba(v.$color-base-brown-14, 0.2);
+  border-radius: 8px;
+  padding: 16px;
+  margin: 12px 0 0;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 12px;
+
+  &__legend {
+    font-family: v.$font-header;
+    font-size: 0.7rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: rgba(v.$color-base-brown-14, 0.5);
+    padding: 0 8px;
+  }
+}
+
 .limit-error-message {
   background: rgba(220, 38, 38, 0.1);
   border: 1px solid rgba(220, 38, 38, 0.3);

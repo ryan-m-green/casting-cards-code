@@ -161,6 +161,9 @@
       @if (activeTab() === 'new') {
         @if (cardType === 'location') {
           <div class="pic-new-form-wrap">
+            <div class="randomize-button-container">
+              <app-journal-randomize-button [randomizeGroupId]="'portal-location-form'"></app-journal-randomize-button>
+            </div>
             <form [formGroup]="form" class="pic-new-form pic-new-form--wrap">
 
               <div class="pic-new-form-top">
@@ -189,59 +192,79 @@
                     <input id="pic-name" class="fi" formControlName="name" placeholder="Irongate" autocomplete="off" />
                   </div>
                   <div class="form-field">
-                    <label for="pic-classification" class="fi-label">Classification</label>
-                    <input id="pic-classification" class="fi" formControlName="classification" placeholder="Major Port" autocomplete="off" />
+                    <app-journal-dropdown
+                      [options]="classificationOptions"
+                      [label]="'Classification'"
+                      [control]="classificationControl"
+                      [randomizeGroupId]="'portal-location-form'">
+                    </app-journal-dropdown>
                   </div>
                 </div>
 
                 <div class="wr form-row-gap">
                   <div class="form-field">
-                    <label for="pic-size" class="fi-label">Size</label>
-                    <input id="pic-size" class="fi" formControlName="size" list="pic-size-opts" placeholder="Large" autocomplete="off" />
-                    <datalist id="pic-size-opts">
-                      @for (s of sizeOptions; track s) { <option [value]="s"></option> }
-                    </datalist>
+                    <app-journal-dropdown
+                      [options]="sizeOptions"
+                      [label]="'Size'"
+                      [control]="sizeControl"
+                      [randomizeGroupId]="'portal-location-form'">
+                    </app-journal-dropdown>
                   </div>
                   <div class="form-field">
-                    <label for="pic-condition" class="fi-label">Condition</label>
-                    <input id="pic-condition" class="fi" formControlName="condition" list="pic-cond-opts" placeholder="Prosperous" autocomplete="off" />
-                    <datalist id="pic-cond-opts">
-                      @for (c of conditionOptions; track c) { <option [value]="c"></option> }
-                    </datalist>
+                    <app-journal-dropdown
+                      [options]="conditionOptions"
+                      [label]="'Condition'"
+                      [control]="conditionControl"
+                      [randomizeGroupId]="'portal-location-form'">
+                    </app-journal-dropdown>
+                  </div>
+                  <div class="form-field">
+                    <app-journal-dropdown
+                      [options]="geographyOptions"
+                      [label]="'Geography'"
+                      [control]="geographyControl"
+                      [randomizeGroupId]="'portal-location-form'">
+                    </app-journal-dropdown>
+                  </div>
+                  <div class="form-field">
+                    <app-journal-dropdown
+                      [options]="architectureOptions"
+                      [label]="'Architecture'"
+                      [control]="architectureControl"
+                      [randomizeGroupId]="'portal-location-form'">
+                    </app-journal-dropdown>
                   </div>
                 </div>
-
-                <label for="pic-geography" class="fi-label">Geography</label>
-                <input id="pic-geography" class="fi" formControlName="geography" list="pic-geo-opts" placeholder="Coastal" autocomplete="off" />
-                <datalist id="pic-geo-opts">
-                  @for (g of geographyOptions; track g) { <option [value]="g"></option> }
-                </datalist>
               </div>
 
               </div><!-- /.pic-new-form-top -->
 
-              <label for="pic-architecture" class="fi-label">Architecture</label>
-              <input id="pic-architecture" class="fi" formControlName="architecture" list="pic-arch-opts" placeholder="Gothic" autocomplete="off" />
-              <datalist id="pic-arch-opts">
-                @for (a of architectureOptions; track a) { <option [value]="a"></option> }
-              </datalist>
-
               <div class="wr form-row-gap">
                 <div class="form-field">
-                  <label for="pic-climate" class="fi-label">Climate</label>
-                  <input id="pic-climate" class="fi" formControlName="climate" list="pic-clim-opts" placeholder="Temperate" autocomplete="off" />
-                  <datalist id="pic-clim-opts">
-                    @for (cl of climateOptions; track cl) { <option [value]="cl"></option> }
-                  </datalist>
+                  <app-journal-dropdown
+                    [options]="climateOptions"
+                    [label]="'Climate'"
+                    [control]="climateControl"
+                    [randomizeGroupId]="'portal-location-form'">
+                  </app-journal-dropdown>
                 </div>
                 <div class="form-field">
-                  <label for="pic-religion" class="fi-label">Religion</label>
-                  <input id="pic-religion" class="fi" formControlName="religion" placeholder="Temple of Kord" autocomplete="off" />
+                  <app-journal-dropdown
+                    [options]="religionOptions"
+                    [label]="'Religion'"
+                    [control]="religionControl"
+                    [randomizeGroupId]="'portal-location-form'">
+                  </app-journal-dropdown>
+                </div>
+                <div class="form-field">
+                  <app-journal-dropdown
+                    [options]="vibeOptions"
+                    [label]="'Ambiance'"
+                    [control]="vibeControl"
+                    [randomizeGroupId]="'portal-location-form'">
+                  </app-journal-dropdown>
                 </div>
               </div>
-
-              <label for="pic-vibe" class="fi-label">Vibe / Atmosphere</label>
-              <textarea id="pic-vibe" class="fi" formControlName="vibe" rows="2" placeholder="Industrious and bustling..." autocomplete="off"></textarea>
 
               <label class="fi-label">Languages</label>
               <div class="lang-picker" role="group" aria-label="Select languages">
@@ -381,6 +404,9 @@
         }
         @if (cardType === 'cast') {
           <div class="pic-new-form-wrap">
+            <div class="randomize-button-container">
+              <app-journal-randomize-button [randomizeGroupId]="'portal-cast-form'"></app-journal-randomize-button>
+            </div>
             <form [formGroup]="castForm" class="pic-new-form pic-new-form--wrap">
 
               <div class="pic-new-form-top">
@@ -409,49 +435,61 @@
                     <input id="pic-cast-name" class="fi" formControlName="name" placeholder="Aldric the Bold" autocomplete="off" />
                   </div>
                   <div class="form-field-min">
-                    <label for="pic-cast-role" class="fi-label">Role / Class</label>
-                    <input id="pic-cast-role" class="fi" formControlName="role" placeholder="Blacksmith" autocomplete="off" />
+                    <app-journal-dropdown
+                      [options]="roleOptions"
+                      [label]="'Role / Class'"
+                      [control]="roleControl"
+                      [randomizeGroupId]="'portal-cast-form'">
+                    </app-journal-dropdown>
                   </div>
                 </div>
 
                 <div class="wr form-row-gap">
                   <div class="form-field">
-                    <label for="pic-cast-race" class="fi-label">Race</label>
-                    <input id="pic-cast-race" class="fi" formControlName="race" placeholder="Human" autocomplete="off" />
+                    <app-journal-dropdown
+                      [options]="raceOptions"
+                      [label]="'Race'"
+                      [control]="raceControl"
+                      [randomizeGroupId]="'portal-cast-form'">
+                    </app-journal-dropdown>
                   </div>
                   <div class="form-field">
-                    <label for="pic-cast-age" class="fi-label">Age</label>
-                    <input id="pic-cast-age" class="fi" formControlName="age" placeholder="44" autocomplete="off" />
+                    <app-journal-dropdown
+                      [options]="ageOptions"
+                      [label]="'Age'"
+                      [control]="ageControl"
+                      [randomizeGroupId]="'portal-cast-form'">
+                    </app-journal-dropdown>
                   </div>
-                  <div class="form-field">
-                    <label for="pic-cast-pronouns" class="fi-label">Pronouns</label>
-                    <input id="pic-cast-pronouns" class="fi" formControlName="pronouns" list="pic-cast-pronouns-opts" placeholder="he/him" autocomplete="off" />
-                    <datalist id="pic-cast-pronouns-opts">
-                      @for (p of pronounOptions; track p) { <option [value]="p"></option> }
-                    </datalist>
-                  </div>
+                  <app-journal-dropdown
+                    [options]="pronounOptions"
+                    [label]="'Pronouns'"
+                    [control]="pronounsControl"
+                    [randomizeGroupId]="'portal-cast-form'">
+                  </app-journal-dropdown>
                 </div>
-
-                <div class="wr form-row-gap">
-                  <div class="form-field">
-                    <label for="pic-cast-posture" class="fi-label">Posture</label>
-                    <input id="pic-cast-posture" class="fi" formControlName="posture" list="pic-cast-posture-opts" placeholder="Upright" autocomplete="off" />
-                    <datalist id="pic-cast-posture-opts">
-                      @for (p of postureOptions; track p) { <option [value]="p"></option> }
-                    </datalist>
-                  </div>
-                  <div class="form-field">
-                    <label for="pic-cast-speed" class="fi-label">Speed</label>
-                    <input id="pic-cast-speed" class="fi" formControlName="speed" list="pic-cast-speed-opts" placeholder="Average" autocomplete="off" />
-                    <datalist id="pic-cast-speed-opts">
-                      @for (s of speedOptions; track s) { <option [value]="s"></option> }
-                    </datalist>
-                  </div>
-                </div>
-
               </div>
 
               </div><!-- /.pic-new-form-top -->
+
+              <div class="wr form-row-gap">
+                <div class="form-field">
+                  <app-journal-dropdown
+                    [options]="postureOptions"
+                    [label]="'Posture'"
+                    [control]="postureControl"
+                    [randomizeGroupId]="'portal-cast-form'">
+                  </app-journal-dropdown>
+                </div>
+                <div class="form-field">
+                  <app-journal-dropdown
+                    [options]="speedOptions"
+                    [label]="'Speed'"
+                    [control]="speedControl"
+                    [randomizeGroupId]="'portal-cast-form'">
+                  </app-journal-dropdown>
+                </div>
+              </div>
 
               <label for="pic-cast-public-desc" class="fi-label">Public Description (visible to players)</label>
               <textarea id="pic-cast-public-desc" class="fi" formControlName="publicDescription" rows="3" placeholder="What players observe…" autocomplete="off"></textarea>
@@ -461,11 +499,12 @@
 
                 <div class="wr form-row-gap">
                   <div class="form-field">
-                    <label for="pic-cast-alignment" class="fi-label">Alignment</label>
-                    <input id="pic-cast-alignment" class="fi" formControlName="alignment" list="pic-cast-alignment-opts" placeholder="Neutral Good" autocomplete="off" />
-                    <datalist id="pic-cast-alignment-opts">
-                      @for (a of alignmentOptions; track a) { <option [value]="a"></option> }
-                    </datalist>
+                    <app-journal-dropdown
+                      [options]="alignmentOptions"
+                      [label]="'Alignment'"
+                      [control]="alignmentControl"
+                      [randomizeGroupId]="'portal-cast-form'">
+                    </app-journal-dropdown>
                   </div>
                   <div class="form-field"></div>
                 </div>
@@ -512,29 +551,34 @@
                                     <label for="pic-fac-name" class="fi-label">Faction Name</label>
                                     <input id="pic-fac-name" class="fi" formControlName="name" placeholder="The Iron Veil" autocomplete="off" />
                                   </div>
-                                  <div class="form-field--toggle form-field">
-                                    <label class="fi-label" for="pic-fac-hidden">Faction is in hiding</label>
-                                    <label class="toggle-switch">
-                                      <input id="pic-fac-hidden" type="checkbox" formControlName="hidden" />
-                                      <span class="toggle-slider"></span>
-                                    </label>
-                                    <span class="toggle-hint">{{ factionForm.value.hidden ? 'Hidden - faction operates in the shadows' : 'Visible - faction is out in the open' }}</span>
-                                  </div>
                                 </div>
 
                                 <label for="pic-fac-description" class="fi-label">Description</label>
-                                                <textarea id="pic-fac-description" class="fi fi--textarea" formControlName="description" rows="4" placeholder="A shadowy guild operating across three kingdoms…" autocomplete="off"></textarea>
+                                <textarea id="pic-fac-description" class="fi fi--textarea" formControlName="description" rows="4" placeholder="A shadowy guild operating across three kingdoms…" autocomplete="off"></textarea>
 
-                                                <fieldset class="form-gm-box">
-                                                  <legend class="form-gm-box__legend">FOR STORY TELLER EYES ONLY</legend>
+                                <fieldset class="form-gm-box">
+                                  <legend class="form-gm-box__legend">FOR GM EYES ONLY</legend>
 
-                                                  <div class="form-field">
-                                                    <label for="pic-fac-type" class="fi-label">Type</label>
-                                                    <input id="pic-fac-type" class="fi" formControlName="type" list="pic-fac-type-opts" placeholder="Guild" autocomplete="off" />
-                                                    <datalist id="pic-fac-type-opts">
-                                                      @for (t of factionTypeOptions; track t) { <option [value]="t"></option> }
-                                                    </datalist>
-                                                  </div>
+                                  <div class="wr form-row-gap">
+                                    <div class="form-field">
+                                      <app-journal-dropdown
+                                        [options]="factionTypeOptions"
+                                        [label]="'Type'"
+                                        [control]="factionTypeControl">
+                                      </app-journal-dropdown>
+                                    </div>
+                                    <div class="form-field"></div>
+                                  </div>
+                                  <div class="form-field--toggle form-field">
+                                    <label class="fi-label" for="pic-fac-hidden">Faction Visibility</label>
+                                    <div class="toggle-row">
+                                      <label class="toggle-switch">
+                                        <input id="pic-fac-hidden" type="checkbox" formControlName="hidden" />
+                                        <span class="toggle-slider"></span>
+                                      </label>
+                                      <span class="toggle-hint">{{ factionForm.value.hidden ? 'Hidden - faction operates in the shadows' : 'Visible - faction is out in the open' }}</span>
+                                    </div>
+                                  </div>
 
                                                   <label for="pic-fac-dm-notes" class="fi-label">DM Notes</label>
                                                   <textarea id="pic-fac-dm-notes" class="fi fi--textarea" formControlName="dmNotes" rows="4" placeholder="Secret objectives, key contacts…" autocomplete="off"></textarea>

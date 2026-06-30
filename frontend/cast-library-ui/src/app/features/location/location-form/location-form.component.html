@@ -15,6 +15,12 @@
     </div>
   }
 
+  @if (!locationId()) {
+    <div class="randomize-button-container">
+      <app-journal-randomize-button [randomizeGroupId]="'location-form'"></app-journal-randomize-button>
+    </div>
+  }
+
   <form [formGroup]="form">
     <div class="form-portrait-new-row">
       <img src="/snail.PNG" alt="Snail" class="snail-image" />
@@ -38,60 +44,79 @@
         <div class="wr form-row-gap">
           <div class="form-field-wide">
             <label for="location-name-input" class="fi-label">Location Name</label>
-            <input id="location-name-input" class="fi" formControlName="name" placeholder="Irongate" autocomplete="off" />
+            <input id="location-name-input" class="fi" formControlName="name" autocomplete="off" />
           </div>
           <div class="form-field">
-            <label for="location-classification-input" class="fi-label">Classification</label>
-            <input id="location-classification-input" class="fi" formControlName="classification" placeholder="Major Port Location" autocomplete="off" />
+            <app-journal-dropdown 
+              [options]="classificationOptions"
+              [label]="'Classification'"
+              [control]="classificationControl"
+              [randomizeGroupId]="'location-form'">
+            </app-journal-dropdown>
           </div>
         </div>
       </div>
     </div>
     <div class="wr form-row-gap">
       <div class="form-field">
-            <label for="location-size-input" class="fi-label">Size</label>
-            <input id="location-size-input" class="fi" formControlName="size" list="size-options" placeholder="Large" autocomplete="off" />
-            <datalist id="size-options">
-              @for (s of sizeOptions; track s) { <option [value]="s"></option> }
-            </datalist>
+            <app-journal-dropdown 
+              [options]="sizeOptions"
+              [label]="'Size'"
+              [control]="sizeControl"
+              [randomizeGroupId]="'location-form'">
+            </app-journal-dropdown>
           </div>
           <div class="form-field">
-            <label for="location-condition-input" class="fi-label">Condition</label>
-            <input id="location-condition-input" class="fi" formControlName="condition" list="condition-options" placeholder="Prosperous" autocomplete="off" />
-            <datalist id="condition-options">
-              @for (c of conditionOptions; track c) { <option [value]="c"></option> }
-            </datalist>
+            <app-journal-dropdown 
+              [options]="conditionOptions"
+              [label]="'Condition'"
+              [control]="conditionControl"
+              [randomizeGroupId]="'location-form'">
+            </app-journal-dropdown>
           </div>
       <div class="form-field">
-        <label for="location-geography-input" class="fi-label">Geography</label>
-        <input id="location-geography-input" class="fi" formControlName="geography" list="geography-options" placeholder="Coastal" autocomplete="off" />
-        <datalist id="geography-options">
-          @for (g of geographyOptions; track g) { <option [value]="g"></option> }
-        </datalist>
-      </div>
+            <app-journal-dropdown 
+              [options]="geographyOptions"
+              [label]="'Geography'"
+              [control]="geographyControl"
+              [randomizeGroupId]="'location-form'">
+            </app-journal-dropdown>
+          </div>
       <div class="form-field">
-        <label for="location-architecture-input" class="fi-label">Architecture</label>
-        <input id="location-architecture-input" class="fi" formControlName="architecture" list="architecture-options" placeholder="Gothic" autocomplete="off" />
-        <datalist id="architecture-options">
-          @for (a of architectureOptions; track a) { <option [value]="a"></option> }
-        </datalist>
-      </div>
+            <app-journal-dropdown 
+              [options]="architectureOptions"
+              [label]="'Architecture'"
+              [control]="architectureControl"
+              [randomizeGroupId]="'location-form'">
+            </app-journal-dropdown>
+          </div>
     </div>
     <div class="wr form-row-gap">
       <div class="form-field">
-        <label for="location-climate-input" class="fi-label">Climate</label>
-        <input id="location-climate-input" class="fi" formControlName="climate" list="climate-options" placeholder="Temperate" autocomplete="off" />
-        <datalist id="climate-options">
-          @for (cl of climateOptions; track cl) { <option [value]="cl"></option> }
-        </datalist>
-      </div>
+            <app-journal-dropdown
+              [options]="climateOptions"
+              [label]="'Climate'"
+              [control]="climateControl"
+              [randomizeGroupId]="'location-form'">
+            </app-journal-dropdown>
+          </div>
       <div class="form-field">
-        <label for="location-religion-input" class="fi-label">Religion</label>
-        <input id="location-religion-input" class="fi" formControlName="religion" placeholder="Temple of Kord" autocomplete="off" />
+            <app-journal-dropdown
+              [options]="religionOptions"
+              [label]="'Religion'"
+              [control]="religionControl"
+              [randomizeGroupId]="'location-form'">
+            </app-journal-dropdown>
+          </div>
+             <div class="form-field">
+        <app-journal-dropdown
+          [options]="vibeOptions"
+          [label]="'Ambiance'"
+          [control]="vibeControl"
+          [randomizeGroupId]="'location-form'">
+        </app-journal-dropdown>
       </div>
     </div>
-    <label for="location-vibe-textarea" class="fi-label">Vibe / Atmosphere</label>
-    <textarea id="location-vibe-textarea" class="fi" formControlName="vibe" rows="2" placeholder="Industrious and bustling…" autocomplete="off"></textarea>
     <label class="fi-label">Languages</label>
     <div class="lang-picker" role="group" aria-label="Select languages spoken in this location">
       <div class="lang-col">
@@ -136,11 +161,12 @@
   }
 
   <div class="form-save-footer">
-    <span class="save-label"
-          [class.save-label--saving]="labelText() === 'Saving…'"
-          [class.save-label--error]="labelText() === 'Error'"
-          [style.opacity]="labelVisible() ? 1 : 0">{{ labelText() }}</span>
     <div class="save-spark-host" #sparkHost>
+      @if (locationId()) {
+        <span class="save-label"
+              [class.save-label--saving]="labelText() === 'Saving…'"
+              [class.save-label--error]="labelText() === 'Error'">{{ labelText() }}</span>
+      }
       <button class="campaign-primary-btn"
               [disabled]="form.invalid || saveStatus() === 'saving'"
               (click)="onSave($event)">Save</button>

@@ -18,6 +18,12 @@
     </div>
   }
 
+  @if (!castId()) {
+    <div class="randomize-button-container">
+      <app-journal-randomize-button [randomizeGroupId]="'cast-form'"></app-journal-randomize-button>
+    </div>
+  }
+
   <form [formGroup]="form">
     <div class="form-portrait-new-row">
       @if (!castId()) {
@@ -40,53 +46,60 @@
         <div class="wr form-row-gap">
           <div class="form-field-min">
             <label for="cast-name-input" class="fi-label">Name</label>
-            <input id="cast-name-input" class="fi" formControlName="name" placeholder="Aldric the Bold" autocomplete="off" />
+            <input id="cast-name-input" class="fi" formControlName="name" autocomplete="off" />
           </div>
           <div class="form-field-min">
-            <label for="cast-role-input" class="fi-label">Role / Class</label>
-            <input id="cast-role-input" class="fi" formControlName="role" placeholder="Blacksmith" autocomplete="off" />
+            <app-journal-dropdown 
+              [options]="roleOptions" 
+              [label]="'Role / Class'"
+              [control]="roleControl"
+              [randomizeGroupId]="'cast-form'">
+            </app-journal-dropdown>
           </div>
         </div>
         <div class="wr form-row-gap">
           <div class="form-field">
-            <label for="cast-race-input" class="fi-label">Race</label>
-            <input id="cast-race-input" class="fi" formControlName="race" placeholder="Human" autocomplete="off" />
+            <app-journal-dropdown 
+              [options]="raceOptions" 
+              [label]="'Race'"
+              [control]="raceControl"
+              [randomizeGroupId]="'cast-form'">
+            </app-journal-dropdown>
           </div>
           <div class="form-field">
-            <label for="cast-age-input" class="fi-label">Age</label>
-            <input id="cast-age-input" class="fi" formControlName="age" placeholder="44" autocomplete="off" />
+            <app-journal-dropdown 
+              [options]="ageOptions"
+              [label]="'Age'"
+              [control]="ageControl"
+              [randomizeGroupId]="'cast-form'">
+            </app-journal-dropdown>
           </div>
-          <div class="form-field">
-            <label for="cast-pronouns-input" class="fi-label">Pronouns</label>
-            <input id="cast-pronouns-input" class="fi" formControlName="pronouns" list="pronouns-options" placeholder="he/him" autocomplete="off" />
-            <datalist id="pronouns-options">
-              @for (p of pronounOptions; track p) {
-                <option [value]="p"></option>
-              }
-            </datalist>
-          </div>
+          <app-journal-dropdown 
+            [options]="pronounOptions" 
+            [label]="'Pronouns'"
+            [control]="pronounsControl"
+            [randomizeGroupId]="'cast-form'">
+          </app-journal-dropdown>
         </div>
       </div>
     </div>
 
     <div class="wr form-row-gap">
       <div class="form-field">
-        <label for="cast-posture-input" class="fi-label">Posture</label>
-        <input id="cast-posture-input" class="fi" formControlName="posture" list="posture-options" placeholder="Upright" autocomplete="off" />
-        <datalist id="posture-options">
-          @for (p of postureOptions; track p) {
-            <option [value]="p"></option>
-          }
-        </datalist>
+        <app-journal-dropdown 
+          [options]="postureOptions" 
+          [label]="'Posture'"
+          [control]="postureControl"
+          [randomizeGroupId]="'cast-form'">
+        </app-journal-dropdown>
       </div>
       <div class="form-field">
-        <label for="cast-speed-input" class="fi-label">Speed</label>
-        <input id="cast-speed-input" class="fi" formControlName="speed" list="speed-options" placeholder="Average" autocomplete="off" />
-        <datalist id="speed-options">
-          @for (s of speedOptions; track s) {
-            <option [value]="s"></option>
-          }
-        </datalist>
+        <app-journal-dropdown 
+          [options]="speedOptions" 
+          [label]="'Speed'"
+          [control]="speedControl"
+          [randomizeGroupId]="'cast-form'">
+        </app-journal-dropdown>
       </div>
     </div>
 
@@ -98,13 +111,12 @@
 
       <div class="wr form-row-gap">
         <div class="form-field">
-          <label for="cast-alignment-input" class="fi-label">Alignment</label>
-          <input id="cast-alignment-input" class="fi" formControlName="alignment" list="alignment-options" placeholder="Neutral Good" autocomplete="off" />
-          <datalist id="alignment-options">
-            @for (a of alignmentOptions; track a) {
-              <option [value]="a"></option>
-            }
-          </datalist>
+          <app-journal-dropdown 
+            [options]="alignmentOptions" 
+            [label]="'Alignment'"
+            [control]="alignmentControl"
+            [randomizeGroupId]="'cast-form'">
+          </app-journal-dropdown>
         </div>
         <div class="form-field"></div>
       </div>
@@ -143,11 +155,12 @@
   }
 
   <div class="form-save-footer">
-    <span class="save-label"
-          [class.save-label--saving]="labelText() === 'Saving…'"
-          [class.save-label--error]="labelText() === 'Error'"
-          [style.opacity]="labelVisible() ? 1 : 0">{{ labelText() }}</span>
     <div class="save-spark-host" #sparkHost>
+      @if (castId()) {
+        <span class="save-label"
+              [class.save-label--saving]="labelText() === 'Saving…'"
+              [class.save-label--error]="labelText() === 'Error'">{{ labelText() }}</span>
+      }
       <button class="campaign-primary-btn"
               [disabled]="form.invalid || saveStatus() === 'saving'"
               (click)="onSave($event)">Save</button>

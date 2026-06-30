@@ -404,7 +404,7 @@
 .loc-back-name {
   font-family: 'Cinzel', serif;
   font-weight: 700;
-  font-size: 12px;
+  font-size: 9px;
   letter-spacing: 0.05em;
   text-align: center;
   color: v.$color-base-yellow-green;
@@ -427,6 +427,28 @@
   opacity: 0.5;
   position: relative;
   z-index: 2;
+}
+
+.loc-back-flavor {
+  width: 100%;
+  padding: 0 12px;
+  margin: 4px 0;
+  position: relative;
+  z-index: 2;
+}
+
+.loc-back-flavor-text {
+  font-family: 'IM Fell English', serif;
+  font-style: italic;
+  font-size: 11px;
+  color: v.$color-loc-stat-val;
+  line-height: 1.45;
+  opacity: 0.85;
+  text-align: left;
+  display: -webkit-box;
+  -webkit-line-clamp: 4;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
 .loc-back-stats {
@@ -482,13 +504,14 @@
   position: relative;
   z-index: 2;
   flex-shrink: 0;
+  margin-top: auto;
 }
 
 .loc-btn {
   flex: 1;
   padding: 4px 3px;
   font-family: 'Cinzel', serif;
-  font-size: 6px;
+  font-size: 9px;
   letter-spacing: 0.1em;
   border: none;
   border-radius: 2px;

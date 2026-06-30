@@ -25,7 +25,7 @@ public class FactionReadRepository(
         var @params = new { DmUserId = dmUserId };
         const string sql =
             @"SELECT faction_id AS FactionId, dm_user_id AS DmUserId, name, type,
-                     influence, hidden, description, dm_notes AS DmNotes,
+                     influence, perception, hidden, description, dm_notes AS DmNotes,
                      symbol_path AS SymbolPath, created_at AS CreatedAt
                 FROM factions
                WHERE dm_user_id = @DmUserId
@@ -46,7 +46,7 @@ public class FactionReadRepository(
         var @params = new { FactionId = factionId };
         const string sql =
             @"SELECT faction_id AS FactionId, dm_user_id AS DmUserId, name, type,
-                     influence, hidden, description, dm_notes AS DmNotes,
+                     influence, perception, hidden, description, dm_notes AS DmNotes,
                      symbol_path AS SymbolPath, created_at AS CreatedAt
                 FROM factions
                WHERE faction_id = @FactionId";
