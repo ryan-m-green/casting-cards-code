@@ -84,6 +84,8 @@ export class PortalImportCardComponent implements OnInit, OnChanges {
 
   // ── ViewChild ─────────────────────────────────────────────────────────────
   @ViewChild('drawerContainer') drawerContainerRef!: ElementRef<HTMLElement>;
+  @ViewChild('drawerInner') drawerInnerRef!: ElementRef<HTMLElement>;
+  @ViewChild('selectorGrid') selectorGridRef!: ElementRef<HTMLElement>;
 
   private http = inject(HttpClient);
   private fb   = inject(FormBuilder);
@@ -97,6 +99,7 @@ export class PortalImportCardComponent implements OnInit, OnChanges {
   activeTab        = signal<'select' | 'new'>('select');
   searchTerm       = signal('');
   limitReached     = signal(false);
+  drawerHeight     = signal('auto');
 
   readonly isCreateDisabled = computed(() => {
     if (this.auth.isExempt()) return false;
@@ -376,6 +379,42 @@ export class PortalImportCardComponent implements OnInit, OnChanges {
     return color && /^#[0-9a-fA-F]{6}$/.test(color) ? color : '#6e28d0';
   }
 
+  private _calculateDrawerHeight() {
+    // Wait for DOM to render before calculating
+    requestAnimationFrame(() => {
+      const selectorGrid = this.selectorGridRef?.nativeElement;
+      const drawerInner = this.drawerInnerRef?.nativeElement;
+      const locationSection = document.querySelector('.location-cards-section') as HTMLElement | null;
+
+      if (!selectorGrid || !drawerInner || !locationSection) {
+        this.drawerHeight.set('auto');
+        return;
+      }
+
+      // Calculate the drawer height to match the location section's bottom position
+      // Get the location section's bottom position relative to viewport
+      const locationRect = locationSection.getBoundingClientRect();
+      const drawerContainerRect = this.drawerContainerRef?.nativeElement.getBoundingClientRect();
+      
+      if (!drawerContainerRect) {
+        this.drawerHeight.set('auto');
+        return;
+      }
+
+      // Calculate the distance from drawer top to location section bottom
+      // This ensures the drawer extends exactly to the location section's bottom
+      const distanceToLocationBottom = locationRect.bottom - drawerContainerRect.top;
+      
+      // Account for drawer-inner's bottom padding (120px)
+      const drawerInnerBottomPadding = 120;
+      
+      // Calculate required height: distance to location bottom minus drawer-inner bottom padding
+      const calculatedHeight = Math.max(0, distanceToLocationBottom - drawerInnerBottomPadding);
+
+      this.drawerHeight.set(`${calculatedHeight}px`);
+    });
+  }
+
   private loadEntityLimits() {
     this.stripe.getUserEntityLimits().subscribe({
       next: (limits: EntityLimitsResponse) => {
@@ -409,6 +448,8 @@ export class PortalImportCardComponent implements OnInit, OnChanges {
 
   // ── Lifecycle ─────────────────────────────────────────────────────────────
 
+  private resizeListener?: () => void;
+
   ngOnInit() {
     if (this.cardType === 'sublocation') {
       this.sublocationInstanceList.set(this.initialInstances as CampaignSublocationInstance[]);
@@ -424,6 +465,16 @@ export class PortalImportCardComponent implements OnInit, OnChanges {
       if (this.cardType === 'location') this._fetchLibraryLocations();
     }
     this.loadEntityLimits();
+
+    // Add window resize listener
+    this.resizeListener = () => this._calculateDrawerHeight();
+    window.addEventListener('resize', this.resizeListener);
+  }
+
+  ngOnDestroy() {
+    if (this.resizeListener) {
+      window.removeEventListener('resize', this.resizeListener);
+    }
   }
 
   ngOnChanges(changes: SimpleChanges) {
@@ -441,6 +492,7 @@ export class PortalImportCardComponent implements OnInit, OnChanges {
       .subscribe(list => {
         this.libraryLocations.set(list);
         if (!this.availableLocations().length) this.activeTab.set('new');
+        this._calculateDrawerHeight();
       });
   }
 
@@ -449,6 +501,7 @@ export class PortalImportCardComponent implements OnInit, OnChanges {
       .subscribe(list => {
         this.librarySublocations.set(list);
         if (!this.availableSublocations().length) this.activeTab.set('new');
+        this._calculateDrawerHeight();
       });
   }
 
@@ -457,6 +510,7 @@ export class PortalImportCardComponent implements OnInit, OnChanges {
       .subscribe(list => {
         this.libraryCasts.set(list);
         if (!this.availableCasts().length) this.activeTab.set('new');
+        this._calculateDrawerHeight();
       });
   }
 
@@ -465,6 +519,7 @@ export class PortalImportCardComponent implements OnInit, OnChanges {
       .subscribe(list => {
         this.libraryFactions.set(list);
         if (!this.availableFactions().length) this.activeTab.set('new');
+        this._calculateDrawerHeight();
       });
   }
 
@@ -481,6 +536,8 @@ export class PortalImportCardComponent implements OnInit, OnChanges {
       setTimeout(() => {
         this.drawerOpen.set(true);
         this.drawerOpenChange.emit(true);
+        // Calculate drawer height after opening
+        this._calculateDrawerHeight();
         // Scroll so the top of the drawer lands at 75% of the viewport height.
         setTimeout(() => {
           const scrollEl = document.querySelector('.void-canvas') as HTMLElement | null;
@@ -493,13 +550,16 @@ export class PortalImportCardComponent implements OnInit, OnChanges {
         }, 400);
       }, 1200);
     } else {
-      this.drawerCollapsing.set(true);
       this.drawerOpen.set(false);
       this.drawerOpenChange.emit(false);
+      // Wait for drawer to collapse (0.8s transition), then collapse pulse bar
       setTimeout(() => {
-        this.drawerPulsing.set(false);
-        this.drawerCollapsing.set(false);
-      }, 1200);
+        this.drawerCollapsing.set(true);
+        setTimeout(() => {
+          this.drawerPulsing.set(false);
+          this.drawerCollapsing.set(false);
+        }, 1200);
+      }, 800);
     }
   }
 

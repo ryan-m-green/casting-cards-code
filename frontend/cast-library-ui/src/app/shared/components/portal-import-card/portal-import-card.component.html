@@ -5,7 +5,7 @@
   }
 
   <div class="pic-drawer" [class.pic-drawer--open]="drawerOpen()" #drawerContainer>
-    <div class="pic-drawer-inner">
+    <div class="pic-drawer-inner" #drawerInner [style.height]="drawerHeight()">
 
       <!-- Tabs -->
       <div class="pic-tabs">
@@ -43,7 +43,7 @@
             @if (filteredAvailable().length === 0) {
               <p class="pic-tab-empty">No results for "{{ searchTerm() }}".</p>
             } @else {
-              <div class="pic-selector-grid">
+              <div class="pic-selector-grid" #selectorGrid>
                 @for (loc of filteredAvailable(); track loc.id) {
                   <div class="pic-selector-card-wrap" [attr.data-source-id]="loc.id" (click)="selectLocation(loc, $any($event.currentTarget))">
                     <app-location-card
@@ -75,7 +75,7 @@
             @if (filteredAvailableSublocations().length === 0) {
               <p class="pic-tab-empty">No results for "{{ searchTerm() }}".</p>
             } @else {
-              <div class="pic-selector-grid">
+              <div class="pic-selector-grid" #selectorGrid>
                 @for (loc of filteredAvailableSublocations(); track loc.id) {
                   <div class="pic-selector-card-wrap" [attr.data-source-id]="loc.id" (click)="selectSublocation(loc, $any($event.currentTarget))">
                     <app-sublocation-card
@@ -107,7 +107,7 @@
             @if (filteredAvailableCasts().length === 0) {
               <p class="pic-tab-empty">No results for &quot;{{ searchTerm() }}&quot;.</p>
             } @else {
-              <div class="pic-selector-grid">
+              <div class="pic-selector-grid" #selectorGrid>
                 @for (cast of filteredAvailableCasts(); track cast.id) {
                   <div class="pic-selector-card-wrap" [attr.data-source-id]="cast.id" (click)="selectCast(cast, $any($event.currentTarget))">
                     <app-cast-card
@@ -140,7 +140,7 @@
             @if (filteredAvailableFactions().length === 0) {
               <p class="pic-tab-empty">No results for &quot;{{ searchTerm() }}&quot;.</p>
             } @else {
-              <div class="pic-selector-grid">
+              <div class="pic-selector-grid" #selectorGrid>
                 @for (faction of filteredAvailableFactions(); track faction.id) {
                   <div class="pic-selector-card-wrap" [attr.data-source-id]="faction.id" (click)="selectFaction(faction, $any($event.currentTarget))">
                     <app-faction-card
