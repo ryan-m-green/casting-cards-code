@@ -566,71 +566,7 @@
   padding: 9px 10px;
 }
 
-/* ── Secrets list modal ──────────────────────────────────────── */
-.secrets-list-entry {
-  position: relative;
-  background: v.$color-base-mist-blue2;
-  border: 1px solid v.$campaign-portal-border-light;
-  border-radius: 6px;
-  padding: 12px 14px;
-  transition: border-color 0.15s ease;
 
-  &:hover { border-color: v.$campaign-portal-border-strong; }
-}
-
-.sle-content {
-  font-family: v.$font-body;
-  font-size: 14px;
-  color: v.$campaign-portal-text-lavender;
-  line-height: 1.55;
-  margin-bottom: 8px;
-}
-
-.sle-footer {
-  display: flex;
-  align-items: center;
-}
-
-.sle-date {
-  font-family: v.$font-body;
-  font-size: 12px;
-  color: v.$color-base-mist-blue3;
-}
-
-.sle-delete {
-  position: absolute;
-  top: 8px;
-  right: 8px;
-  background: none;
-  border: none;
-  padding: 4px;
-  cursor: pointer;
-  border-radius: 4px;
-  opacity: 0.45;
-  transition: opacity 0.18s ease, background 0.15s ease;
-
-  &:hover {
-    opacity: 1;
-    background: v.$campaign-portal-bg-hover;
-  }
-}
-
-.sle-delete-img {
-  width: 20px;
-  height: 20px;
-  object-fit: contain;
-  display: block;
-  filter: invert(1);
-}
-
-.sle-empty,
-.sle-loading {
-  font-family: v.$font-body;
-  font-size: 13px;
-  color: v.$color-base-mist-blue6;
-  font-style: italic;
-  padding: 4px 0;
-}
 
 /* ── Currency custom dropdown ────────────────────────────────── */
 .currency-dropdown {

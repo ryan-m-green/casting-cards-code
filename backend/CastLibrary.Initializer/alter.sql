@@ -169,4 +169,13 @@ ALTER TABLE campaigns ADD COLUMN IF NOT EXISTS last_accessed_at TIMESTAMP;
 -- ============================================================
 
 ALTER TABLE factions ADD COLUMN IF NOT EXISTS perception SMALLINT NOT NULL DEFAULT 0;
-ALTER TABLE factions ADD CONSTRAINT chk_factions_perception CHECK (perception BETWEEN -5 AND 5);
+
+DO $$
+BEGIN
+    IF NOT EXISTS (
+        SELECT 1 FROM pg_constraint
+        WHERE conname = 'chk_factions_perception'
+    ) THEN
+        ALTER TABLE factions ADD CONSTRAINT chk_factions_perception CHECK (perception BETWEEN -5 AND 5);
+    END IF;
+END $$;

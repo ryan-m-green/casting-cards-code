@@ -1,0 +1,67 @@
+<div class="events-page">
+
+  @if (chroniclesLoading()) {
+    <div class="ev-empty">Loading chronicles…</div>
+  }
+
+  <!-- Search and filters - always visible -->
+  <div class="chronicle-filters-wrapper">
+    <app-storyline-filter-bar
+      [isBackendFilter]="true"
+      [showSearchBar]="true"
+      [activeTypeFilters]="chroniclesTypeFilters()"
+      [showVisibilityFilters]="false"
+      (typeFilterChange)="onChronicleTypeFilterChange($event)"
+      (search)="onChronicleSearch($event)"
+    ></app-storyline-filter-bar>
+  </div>
+
+  @if (!chroniclesLoading() && (!chronicles() || chronicles()!.sessions.length === 0)) {
+    <div class="ev-empty">No chronicles match your search or filters.</div>
+  }
+
+  @if (!chroniclesLoading() && chronicles() && chronicles()!.sessions.length > 0) {
+    <!-- Pagination info at top -->
+    @if (chronicles()!.totalSessions > 0) {
+      <div class="chronicles-pagination">
+        <button
+          class="pagination-btn"
+          [disabled]="chroniclesPage() === 1"
+          (click)="chroniclePrevPage()"
+        >Current Sessions</button>
+        <span class="pagination-info">{{ chronicles()!.totalSessions }} sessions total</span>
+        <button
+          class="pagination-btn"
+          [disabled]="chroniclesPage() === chronicles()!.totalPages"
+          (click)="chronicleNextPage()"
+        >Past Sessions</button>
+      </div>
+    }
+
+    <app-chronicles-timeline
+      [chronicles]="chronicles()"
+      [expandedSessionIds]="expandedSessionIds()"
+      [isDmMode]="false"
+      [timeOfDay]="timeOfDay()"
+      [searchQuery]="chroniclesSearchQuery()"
+      (sessionExpand)="toggleSessionExpand($event)" />
+
+    <!-- Pagination info at bottom -->
+    @if (chronicles()!.totalSessions > 0) {
+      <div class="chronicles-pagination">
+        <button
+          class="pagination-btn"
+          [disabled]="chroniclesPage() === 1"
+          (click)="chroniclePrevPage()"
+        >Current Sessions</button>
+        <span class="pagination-info">{{ chronicles()!.totalSessions }} sessions total</span>
+        <button
+          class="pagination-btn"
+          [disabled]="chroniclesPage() === chronicles()!.totalPages"
+          (click)="chronicleNextPage()"
+        >Past Sessions</button>
+      </div>
+    }
+  }
+
+</div>

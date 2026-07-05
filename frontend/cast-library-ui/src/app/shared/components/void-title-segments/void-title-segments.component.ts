@@ -16,7 +16,9 @@ export type TitlePageType =
   | 'player-faction-detail'
   | 'gm-events'
   | 'player-events'
-  | 'player-plot';
+  | 'player-plot'
+  | 'gm-chronicles'
+  | 'player-chronicles';
 
 export interface VoidTitleContext {
   pageType: TitlePageType;
@@ -80,6 +82,8 @@ export class VoidTitleSegmentsComponent {
       case 'gm-events':             return [{ text: 'Storyline Management',       cssClass: 'void-title__label' }];
       case 'player-events':          return [{ text: 'Storyline',       cssClass: 'void-title__label' }];
       case 'player-plot':            return [{ text: 'Storyline',       cssClass: 'void-title__label' }];
+      case 'gm-chronicles':         return [{ text: 'Campaign Chronicles',       cssClass: 'void-title__label' }];
+      case 'player-chronicles':      return [{ text: 'Campaign Chronicles',       cssClass: 'void-title__label' }];
 
       case 'cast-party':
         return [

@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, signal, computed, inject, effect, untracked, HostListener } from '@angular/core';
+import { Component, OnInit, OnDestroy, signal, computed, inject, effect, untracked, HostListener, ViewChild } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
@@ -7,6 +7,7 @@ import { CastingCardPlayerComponent } from '../../../shared/components/casting-c
 import { CastCardComponent } from '../../../shared/components/cast-card/cast-card.component';
 import { CampaignDropdownComponent, CampaignDropdownOption } from '../../../shared/components/campaign-dropdown/campaign-dropdown.component';
 import { CharacterInfoEditorComponent, PlayerCardInfoUpdate } from '../../../shared/components/character-info-editor/character-info-editor.component';
+import { PlayerSecretsDrawerComponent } from '../../../shared/components/player-secrets-drawer/player-secrets-drawer.component';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../../environments/environment';
 import { PortalTransitionService } from '../../../core/portal-transition.service';
@@ -41,7 +42,7 @@ const MEMORY_TYPE_META: Record<PlayerMemory['memoryType'], { icon: string; label
 @Component({
   selector: 'app-player-the-party',
   standalone: true,
-  imports: [CommonModule, FormsModule, CampaignDropdownComponent, CharacterInfoEditorComponent, CastingCardPlayerComponent, CastCardComponent],
+  imports: [CommonModule, FormsModule, CampaignDropdownComponent, CharacterInfoEditorComponent, CastingCardPlayerComponent, CastCardComponent, PlayerSecretsDrawerComponent],
   templateUrl: './player-the-party.component.html',
   styleUrl: './player-the-party.component.scss',
 })
@@ -124,10 +125,7 @@ export class PlayerThePartyComponent implements OnInit, OnDestroy {
   sharingSecretId = signal<string | null>(null);
 
   // ── View Secrets drawer ───────────────────────────────────────────────────────
-  viewingSecretsFor = signal<PlayerCardWithDetails | null>(null);
-  memberSecrets     = signal<PlayerCardSecret[]>([]);
-  secretsLoading    = signal(false);
-  secretsDrawerClosing = signal(false);
+  @ViewChild(PlayerSecretsDrawerComponent) secretsDrawer: PlayerSecretsDrawerComponent | null = null;
 
   // ── Cast tab ─────────────────────────────────────────────────────────────────
   discoveredCast  = signal<DiscoveredCastResponse | null>(null);
@@ -574,31 +572,7 @@ export class PlayerThePartyComponent implements OnInit, OnDestroy {
 
   // ── View Secrets drawer ───────────────────────────────────────────────────────
   viewSecrets(member: PlayerCardWithDetails) {
-    this.viewingSecretsFor.set(member);
-    this.secretsLoading.set(true);
-    const id = this.campaignId();
-    this.http.get<PlayerCardSecret[]>(
-      `${environment.apiUrl}/api/campaigns/${id}/player-cards/${member.id}/secrets/shared`
-    ).subscribe({
-      next: s => { this.memberSecrets.set(s); this.secretsLoading.set(false); },
-      error: () => this.secretsLoading.set(false),
-    });
-  }
-
-  closeSecretsModal() {
-    this.secretsDrawerClosing.set(true);
-    setTimeout(() => {
-      this.viewingSecretsFor.set(null);
-      this.memberSecrets.set([]);
-      this.secretsDrawerClosing.set(false);
-    }, 240);
-  }
-
-  @HostListener('document:keydown.escape')
-  onEscape() {
-    if (this.viewingSecretsFor()) {
-      this.closeSecretsModal();
-    }
+    this.secretsDrawer?.open(member, this.campaignId());
   }
 
   // ── Navigation ───────────────────────────────────────────────────────────────

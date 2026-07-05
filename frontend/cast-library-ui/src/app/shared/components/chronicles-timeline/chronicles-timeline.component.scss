@@ -227,6 +227,17 @@
 .event-content {
   color: v.$campaign-portal-text-muted;
   line-height: 1.6;
+
+  .chronicle-image {
+    width: 100%;
+    height: auto;
+    max-width: 100%;
+    max-height: 70vh;
+    object-fit: contain;
+    border-radius: 8px;
+    margin-top: 12px;
+    display: block;
+  }
 }
 
 .chronicle-gm-tag {

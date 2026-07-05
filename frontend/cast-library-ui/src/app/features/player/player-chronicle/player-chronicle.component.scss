@@ -1,0 +1,60 @@
+@use '../../../../styles/variables' as v;
+
+.events-page {
+  padding: 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.ev-empty {
+  text-align: center;
+  padding: 60px 20px;
+  color: v.$campaign-portal-text-muted;
+  font-family: v.$font-header;
+  font-size: 14px;
+  letter-spacing: 0.1em;
+}
+
+.chronicle-filters-wrapper {
+  display: flex;
+  justify-content: center;
+}
+
+.chronicles-pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  padding: 20px 0;
+}
+
+.pagination-btn {
+  padding: 8px 16px;
+  background: v.$campaign-portal-bg-medium;
+  border: 1px solid v.$campaign-portal-border-bold;
+  border-radius: 6px;
+  color: v.$campaign-portal-text-purple-light;
+  font-family: v.$font-header;
+  font-size: 12px;
+  letter-spacing: 0.1em;
+  cursor: pointer;
+  transition: all 0.15s ease;
+
+  &:hover:not(:disabled) {
+    background: v.$campaign-portal-border-accent;
+    border-color: v.$campaign-portal-border-strong-focus;
+    color: v.$campaign-portal-text-lavender-bright;
+  }
+
+  &:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+  }
+}
+
+.pagination-info {
+  font-family: v.$font-header;
+  font-size: 12px;
+  letter-spacing: 0.1em;
+  color: v.$campaign-portal-text-purple-light;
+}

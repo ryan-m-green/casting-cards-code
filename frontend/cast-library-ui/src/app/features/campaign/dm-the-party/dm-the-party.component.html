@@ -232,36 +232,7 @@
   </div>
 }
 
-<!-- ════════════════════ VIEW SECRETS MODAL ══ -->
-@if (viewSecretsOpen()) {
-  <div class="modal-backdrop" (click)="viewSecretsOpen.set(false)" role="dialog" aria-modal="true" aria-labelledby="view-secrets-modal-title">
-    <div class="modal-panel" (click)="$event.stopPropagation()">
-      <div class="modal-header modal-header--no-divider">
-        <span id="view-secrets-modal-title" class="modal-title">Secrets — {{ viewSecretsCard()?.name }}</span>
-        <button class="modal-close" (click)="viewSecretsOpen.set(false)">✕</button>
-      </div>
-      <div class="modal-body">
-        @if (viewSecretsLoading()) {
-          <div class="sle-loading">Loading…</div>
-        } @else if (viewSecretsList().length === 0) {
-          <div class="sle-empty">No secrets delivered yet.</div>
-        } @else {
-          @for (secret of viewSecretsList(); track secret.id) {
-            <div class="secrets-list-entry">
-              <button class="sle-delete" (click)="deletePlayerSecret(secret.id)" aria-label="Delete this secret" title="Delete secret">
-                <img src="/icons/chronicle/delete.svg" alt="Delete" class="sle-delete-img" />
-              </button>
-              <div class="sle-content">{{ secret.content }}</div>
-              <div class="sle-footer">
-                <span class="sle-date">Delivered {{ secret.deliveredAt | date:'mediumDate' }}</span>
-              </div>
-            </div>
-          }
-        }
-      </div>
-    </div>
-  </div>
-}
+<app-player-secrets-drawer></app-player-secrets-drawer>
 
 <!-- ════════════════════ SECRET MODAL ══ -->
 @if (secretModalOpen()) {

@@ -1,6 +1,6 @@
-import { Component, OnInit, signal, computed, inject, viewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, signal, computed, inject, viewChild, ElementRef, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { CommonModule, DatePipe } from '@angular/common';
+import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../../environments/environment';
@@ -21,6 +21,7 @@ import {
 import { CardFlipComponent } from '../../../shared/components/card-flip/card-flip.component';
 import { CastingCardPlayerComponent } from '../../../shared/components/casting-card-player/casting-card-player.component';
 import { CurrencyDisplayComponent, CurrencyLine } from '../../../shared/components/currency-display/currency-display.component';
+import { PlayerSecretsDrawerComponent } from '../../../shared/components/player-secrets-drawer/player-secrets-drawer.component';
 
 const D5E_CONDITIONS = [
   'Blinded', 'Charmed', 'Deafened', 'Exhaustion', 'Frightened', 'Grappled',
@@ -33,7 +34,7 @@ type Currency = 'cp' | 'sp' | 'ep' | 'gp' | 'pp';
 @Component({
   selector: 'app-dm-the-party',
   standalone: true,
-  imports: [CommonModule, FormsModule, DatePipe, CastingCardPlayerComponent, CastCardComponent],
+  imports: [CommonModule, FormsModule, CastingCardPlayerComponent, CastCardComponent, PlayerSecretsDrawerComponent],
   templateUrl: './dm-the-party.component.html',
   styleUrl: './dm-the-party.component.scss',
 })
@@ -160,11 +161,8 @@ export class DmThePartyComponent implements OnInit {
   secretContent    = signal('');
   secretSaving     = signal(false);
 
-  // ── View Secrets modal ────────────────────────────────────────────────────────
-  viewSecretsCard    = signal<PlayerCardWithDetails | null>(null);
-  viewSecretsOpen    = signal(false);
-  viewSecretsList    = signal<PlayerCardSecret[]>([]);
-  viewSecretsLoading = signal(false);
+  // ── View Secrets drawer ───────────────────────────────────────────────────────
+  @ViewChild(PlayerSecretsDrawerComponent) secretsDrawer: PlayerSecretsDrawerComponent | null = null;
 
   viewingCard = signal<PlayerCardWithDetails | null>(null);
 
@@ -335,31 +333,7 @@ export class DmThePartyComponent implements OnInit {
 
   // ── View Secrets ──────────────────────────────────────────────────────────────
   openViewSecretsModal(card: PlayerCardWithDetails) {
-    this.viewSecretsCard.set(card);
-    this.viewSecretsList.set([]);
-    this.viewSecretsLoading.set(true);
-    this.viewSecretsOpen.set(true);
-    const id = this.campaignId();
-    this.http.get<PlayerCardSecret[]>(
-      `${environment.apiUrl}/api/campaigns/${id}/player-cards/${card.id}/secrets`
-    ).subscribe({
-      next: secrets => {
-        this.viewSecretsList.set(secrets);
-        this.viewSecretsLoading.set(false);
-      },
-      error: () => this.viewSecretsLoading.set(false),
-    });
-  }
-
-  deletePlayerSecret(secretId: string) {
-    const card = this.viewSecretsCard();
-    if (!card) return;
-    const id = this.campaignId();
-    this.http.delete(
-      `${environment.apiUrl}/api/campaigns/${id}/player-cards/${card.id}/secrets/${secretId}`
-    ).subscribe(() => {
-      this.viewSecretsList.update(list => list.filter(s => s.id !== secretId));
-    });
+    this.secretsDrawer?.open(card, this.campaignId());
   }
 
   cardPurse(card: PlayerCardWithDetails): CurrencyLine[] {

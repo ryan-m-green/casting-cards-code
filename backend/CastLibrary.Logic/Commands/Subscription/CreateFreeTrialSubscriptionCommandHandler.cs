@@ -2,7 +2,6 @@ using CastLibrary.Repository.Repositories.Insert;
 using CastLibrary.Repository.Repositories.Read;
 using CastLibrary.Shared.Domain;
 using CastLibrary.Shared.Enums;
-using CastLibrary.Shared.Requests;
 namespace CastLibrary.Logic.Commands.Subscription;
 public interface ICreateFreeTrialSubscriptionCommandHandler
 {
@@ -11,8 +10,7 @@ public interface ICreateFreeTrialSubscriptionCommandHandler
 public class CreateFreeTrialSubscriptionCommandHandler(
     ISubscriptionWriteRepository subscriptionWriteRepository,
     ISubscriptionReadRepository subscriptionReadRepository,
-    IPricingModelReadRepository pricingModelReadRepository,
-    ICastcardsConfigurationReadRepository configurationReadRepository) : ICreateFreeTrialSubscriptionCommandHandler
+    IPricingModelReadRepository pricingModelReadRepository) : ICreateFreeTrialSubscriptionCommandHandler
 {
     public async Task<SubscriptionDomain> HandleAsync(CreateFreeTrialSubscriptionCommand command)
     {
@@ -24,6 +22,7 @@ public class CreateFreeTrialSubscriptionCommandHandler(
         if (existingSubscription is not null)
         {
             existingSubscription.Status = SubscriptionStatus.FreeTrial;
+            existingSubscription.LockLevel = LockLevel.SoftLock;
             existingSubscription.PricingModelId = freeTrialModel.Id;
             existingSubscription.BypassPayment = false;
             existingSubscription.StripeCustomerId = string.Empty;
@@ -37,6 +36,7 @@ public class CreateFreeTrialSubscriptionCommandHandler(
             Id = Guid.NewGuid(),
             UserId = command.Request.UserId,
             Status = SubscriptionStatus.FreeTrial,
+            LockLevel = LockLevel.SoftLock,
             PricingModelId = freeTrialModel.Id,
             BypassPayment = false,
             CreatedAt = DateTime.UtcNow

@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Output, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
@@ -33,7 +33,7 @@ export class StorylineFilterBarComponent {
   @Output() search = new EventEmitter<{ query: string; filters: string[] }>();
   @Output() reset = new EventEmitter<void>();
 
-  localSearchQuery = this.searchQuery;
+  localSearchQuery = signal(this.searchQuery);
 
   toggleTypeFilter(filter: string) {
     const updated = this.activeTypeFilters.includes(filter)
@@ -43,7 +43,7 @@ export class StorylineFilterBarComponent {
   }
 
   onSearchButtonClick() {
-    this.search.emit({ query: this.localSearchQuery, filters: this.activeTypeFilters });
+    this.search.emit({ query: this.localSearchQuery(), filters: this.activeTypeFilters });
   }
 
   onSearchKeyUp(event: KeyboardEvent) {
@@ -53,7 +53,7 @@ export class StorylineFilterBarComponent {
   }
 
   onResetButtonClick() {
-    this.localSearchQuery = '';
+    this.localSearchQuery.set('');
     this.reset.emit();
   }
 

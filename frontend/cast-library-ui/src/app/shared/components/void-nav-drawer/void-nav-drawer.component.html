@@ -20,13 +20,33 @@
       <span class="nav-header-title">Navigate</span>
       <div class="nav-header-actions">
         @if (!isDm()) {
-          <button class="nav-events-btn" (click)="goToEvents()" [class.is-active]="isActiveEvents()" aria-label="View events">
-            <img class="nav-events-icon" src="/open_book_star_moon_storytelling.svg" alt="Events" />
+          <button class="nav-storyline-btn" (click)="goToEvents()" [class.is-active]="isActiveEvents()" aria-label="View events">
+            <svg class="nav-events-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <line x1="4" y1="6" x2="20" y2="6"/>
+              <line x1="4" y1="12" x2="16" y2="12"/>
+              <line x1="4" y1="18" x2="18" y2="18"/>
+              <circle cx="22" cy="6" r="1.5" fill="currentColor"/>
+              <circle cx="22" cy="12" r="1.5" fill="currentColor"/>
+              <circle cx="22" cy="18" r="1.5" fill="currentColor"/>
+            </svg>
+          </button>
+          <button class="nav-storyline-btn" (click)="goToChronicles()" aria-label="View sessions">
+            <img class="nav-events-icon" src="/open_book_star_moon_storytelling.svg" alt="Sessions" />
           </button>
         }
         @if (isDm()) {
-          <button class="nav-events-btn" (click)="goToEvents()" [class.is-active]="isActiveEvents()" aria-label="View events">
-            <img class="nav-events-icon" src="/open_book_star_moon_storytelling.svg" alt="Events" />
+          <button class="nav-storyline-btn" (click)="goToEvents()" [class.is-active]="isActiveEvents()" aria-label="View Storyline">
+            <svg class="nav-events-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <line x1="4" y1="6" x2="20" y2="6"/>
+              <line x1="4" y1="12" x2="16" y2="12"/>
+              <line x1="4" y1="18" x2="18" y2="18"/>
+              <circle cx="22" cy="6" r="1.5" fill="currentColor"/>
+              <circle cx="22" cy="12" r="1.5" fill="currentColor"/>
+              <circle cx="22" cy="18" r="1.5" fill="currentColor"/>
+            </svg>
+          </button>
+          <button class="nav-storyline-btn" (click)="goToChronicles()" aria-label="View sessions">
+            <img class="nav-events-icon" src="/open_book_star_moon_storytelling.svg" alt="Sessions" />
           </button>
         }
         @if (!isDm()) {

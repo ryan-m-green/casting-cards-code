@@ -183,7 +183,7 @@
   margin-left: auto;
 }
 
-.nav-events-btn {
+.nav-storyline-btn {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -210,8 +210,8 @@
   filter: brightness(0) invert(1);
   transition: opacity 0.15s ease;
 
-  .nav-events-btn:hover &,
-  .nav-events-btn.is-active & {
+  .nav-storyline-btn:hover &,
+  .nav-storyline-btn.is-active & {
     opacity: 1;
   }
 }
