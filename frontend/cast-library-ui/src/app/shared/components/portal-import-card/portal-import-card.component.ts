@@ -384,32 +384,25 @@ export class PortalImportCardComponent implements OnInit, OnChanges {
     requestAnimationFrame(() => {
       const selectorGrid = this.selectorGridRef?.nativeElement;
       const drawerInner = this.drawerInnerRef?.nativeElement;
-      const locationSection = document.querySelector('.location-cards-section') as HTMLElement | null;
 
-      if (!selectorGrid || !drawerInner || !locationSection) {
+      if (!selectorGrid || !drawerInner) {
         this.drawerHeight.set('auto');
         return;
       }
 
-      // Calculate the drawer height to match the location section's bottom position
-      // Get the location section's bottom position relative to viewport
-      const locationRect = locationSection.getBoundingClientRect();
-      const drawerContainerRect = this.drawerContainerRef?.nativeElement.getBoundingClientRect();
-      
-      if (!drawerContainerRect) {
-        this.drawerHeight.set('auto');
-        return;
-      }
+      // Measure actual drawer-to-first-row spacing from DOM
+      const drawerInnerRect = drawerInner.getBoundingClientRect();
+      const selectorGridRect = selectorGrid.getBoundingClientRect();
+      const drawerToFirstRowSpacing = selectorGridRect.top - drawerInnerRect.top;
 
-      // Calculate the distance from drawer top to location section bottom
-      // This ensures the drawer extends exactly to the location section's bottom
-      const distanceToLocationBottom = locationRect.bottom - drawerContainerRect.top;
-      
-      // Account for drawer-inner's bottom padding (120px)
-      const drawerInnerBottomPadding = 120;
-      
-      // Calculate required height: distance to location bottom minus drawer-inner bottom padding
-      const calculatedHeight = Math.max(0, distanceToLocationBottom - drawerInnerBottomPadding);
+      // Use actual rendered grid height instead of calculating
+      const actualGridHeight = selectorGridRect.height;
+
+      // Add additional 120px buffer as requested
+      const bufferSpacing = 120;
+
+      // Calculate final drawer height
+      const calculatedHeight = drawerToFirstRowSpacing + actualGridHeight + bufferSpacing;
 
       this.drawerHeight.set(`${calculatedHeight}px`);
     });
