@@ -183,10 +183,22 @@
 
 .detail-secret {
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   gap: 10px;
   padding: 10px 16px;
-  border-top: 1px solid rgba(v.$color-lib-location-1, 0.08);
+}
+
+.detail-secrets-section {
+  border-top: 1px solid rgba(v.$color-lib-location-1, 0.22);
+  border-bottom: 1px solid rgba(v.$color-lib-location-1, 0.22);
+  background: rgba(v.$color-lib-location-1, 0.03);
+}
+
+.detail-secrets-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px 6px;
 }
 
 .secret-lock-icon {

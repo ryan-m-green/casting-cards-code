@@ -6,12 +6,12 @@ namespace CastLibrary.WebHost.Mappers;
 
 public interface ICampaignEventWebMapper
 {
-    CampaignEventResponse ToResponse(CampaignEventDomain domain);
+    CampaignEventResponse ToResponse(CampaignStorylineDomain domain);
 }
 
 public class CampaignEventWebMapper : ICampaignEventWebMapper
 {
-    public CampaignEventResponse ToResponse(CampaignEventDomain domain) => new()
+    public CampaignEventResponse ToResponse(CampaignStorylineDomain domain) => new()
     {
         Id = domain.Id,
         CampaignId = domain.CampaignId,

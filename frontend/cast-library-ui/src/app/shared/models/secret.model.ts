@@ -28,10 +28,25 @@ export interface SecretResealedEvent {
   sublocationInstanceId: string | null;
 }
 
+export interface SecretCreatedEvent {
+  secretId: string;
+  campaignId: string;
+  castInstanceId: string | null;
+  locationInstanceId: string | null;
+  sublocationInstanceId: string | null;
+  content: string;
+  sortOrder: number;
+}
+
+export interface SecretDeletedEvent {
+  secretId: string;
+  campaignId: string;
+}
+
 export interface CardVisibilityChangedEvent {
   campaignId: string;
   instanceId: string;
-  cardType: 'location' | 'sublocation' | 'cast' | 'faction' | 'campaign-event' | 'campaign-handout' | 'player';
+  cardType: 'location' | 'sublocation' | 'cast' | 'faction' | 'campaign-event' | 'campaign-handout' | 'player' | 'secret';
   isVisible: boolean;
   title?: string;
   body?: string;

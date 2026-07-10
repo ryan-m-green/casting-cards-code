@@ -19,6 +19,7 @@ public class KeywordExtractionService : IKeywordExtractionService
     private readonly ICampaignSublocationInstanceReadRepository campaignSublocationInstanceRepository;
     private readonly ICampaignCastInstanceReadRepository campaignCastInstanceRepository;
     private readonly ICampaignFactionInstanceReadRepository campaignFactionInstanceRepository;
+    private readonly ISecretReadRepository secretReadRepository;
     private readonly ConcurrentDictionary<string, byte> _stopWords;
     private readonly Dictionary<string, Func<LinkedEntityTrigger, KeywordsHeap, Task>> _entityKeywordStrategies;
     private readonly ILogger<KeywordExtractionService> _logger;
@@ -30,6 +31,7 @@ public class KeywordExtractionService : IKeywordExtractionService
         ICampaignCastInstanceReadRepository campaignCastInstanceRepository,
         ICampaignFactionInstanceReadRepository campaignFactionInstanceRepository,
         ICastcardsConfigurationReadRepository configurationRepository,
+        ISecretReadRepository secretReadRepository,
         ILogger<KeywordExtractionService> logger)
     {
         this.playerCardRepository = playerCardRepository;
@@ -37,6 +39,7 @@ public class KeywordExtractionService : IKeywordExtractionService
         this.campaignSublocationInstanceRepository = campaignSublocationInstanceRepository;
         this.campaignCastInstanceRepository = campaignCastInstanceRepository;
         this.campaignFactionInstanceRepository = campaignFactionInstanceRepository;
+        this.secretReadRepository = secretReadRepository;
         _logger = logger;
 
         var stopWords = Array.Empty<string>();
@@ -63,9 +66,11 @@ public class KeywordExtractionService : IKeywordExtractionService
             { EntityType.Faction.GetDescription(), (entity, keywords) => ExtractFactionKeywordsAsync(entity, keywords) },
             { EntityType.PlayerCard.GetDescription(), (entity, keywords) => ExtractPlayerKeywordsAsync(entity, keywords) },
             { EntityType.TimeOfDay.GetDescription(), (entity, keywords) => ExtractGenericEntityKeywordsAsync(entity, keywords) },
-            { EntityType.CampaignHandout.GetDescription(), (entity, keywords) => ExtractGenericEntityKeywordsAsync(entity, keywords) }
+            { EntityType.CampaignHandout.GetDescription(), (entity, keywords) => ExtractGenericEntityKeywordsAsync(entity, keywords) },
+            { EntityType.Secret.GetDescription(), (entity, keywords) => ExtractSecretEntityKeywordsAsync(entity, keywords)}
         };
     }
+
 
     public class KeywordsHeap : ConcurrentDictionary<string, byte>
     {
@@ -266,5 +271,18 @@ public class KeywordExtractionService : IKeywordExtractionService
         AddTokenized(player.Race, keywords);
         AddTokenized(player.Class, keywords);
         AddTokenized(player.Name, keywords);
+    }
+
+    private async Task ExtractSecretEntityKeywordsAsync(LinkedEntityTrigger entity, KeywordsHeap keywords)
+    {
+        var entityId = entity.EntityId;
+        if (!Guid.TryParse(entityId, out var id))
+            return;
+
+        var secret = await secretReadRepository.GetByIdAsync(id);
+        if (secret == null) return;
+
+        AddTokenized("secret", keywords);
+        AddTokenized(secret.Content, keywords);
     }
 }

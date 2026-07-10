@@ -64,10 +64,69 @@ export class PlayerCampaignShellComponent implements OnInit, OnDestroy {
   constructor() {
     // Show overlay when a card is newly unlocked
     this.hubSubscriptions.push(
-      this.hub.cardVisibilityChanged$.subscribe(event => {
-      
+      this.hub.cardVisibilityChanged$.subscribe(async event => {
+
         if (!event || event.campaignId !== this.campaignId()) return;
         if (!event.isVisible) return;
+
+        // Handle secret visibility changes
+        if (event.cardType === 'secret') {
+          console.log('Secret visibility change detected - event:', event);
+          
+          // Re-fetch campaign data to get the latest secrets
+          this.http
+            .get<CampaignDetail>(`${environment.apiUrl}/api/campaigns/${this.campaignId()}/player`)
+            .subscribe(async c => {
+              this.ngZone.run(() => {
+                this.campaign.set(c);
+                this.shellSvc.setCampaign(c);
+              });
+              
+              console.log('Secret handling: refreshed campaign secrets:', c.secrets);
+              
+              // Find the secret in the campaign data
+              const secret = c.secrets?.find(s => s.id === event.instanceId);
+              if (!secret) {
+                console.log('Secret handling: secret not found with instanceId:', event.instanceId);
+                return;
+              }
+
+              console.log('Secret handling: found secret:', secret);
+
+              // Get the associated card type and instance ID
+              const instanceId = secret.castInstanceId ?? secret.locationInstanceId ?? secret.sublocationInstanceId;
+              if (!instanceId) {
+                console.log('Secret handling: no associated instanceId found');
+                return;
+              }
+
+              const cardType = secret.castInstanceId ? 'cast'
+                             : secret.locationInstanceId ? 'location'
+                             : secret.sublocationInstanceId ? 'sublocation'
+                             : 'faction';
+
+              console.log('Secret handling: cardType:', cardType, 'instanceId:', instanceId);
+
+              const data = await this.buildOverlayFromVisibilityEvent(c, instanceId, cardType, event.title, event.body, event.playerCardName, event.playerCardRace, event.playerCardClass, event.playerCardImageUrl);
+              if (data) {
+                const secretRevealData = { ...data, secretContent: secret.content };
+                console.log('Secret handling: built overlay data:', secretRevealData);
+                console.log('Secret handling: eventCardTitle:', this.eventCardTitle());
+                this.ngZone.run(() => {
+                  if (this.eventCardTitle() !== null) {
+                    console.log('Secret handling: setting pendingOverlayData');
+                    this.pendingOverlayData = secretRevealData;
+                  } else {
+                    console.log('Secret handling: adding to cardRevealQueue');
+                    this.cardRevealQueue.update(queue => [...queue, secretRevealData]);
+                  }
+                });
+              } else {
+                console.log('Secret handling: buildOverlayFromVisibilityEvent returned null');
+              }
+            });
+          return;
+        }
 
         // Re-fetch campaign data to get the newly visible card
         this.http
@@ -608,7 +667,7 @@ export class PlayerCampaignShellComponent implements OnInit, OnDestroy {
   private async buildOverlayFromVisibilityEvent(
     campaign: CampaignDetail,
     instanceId: string,
-    cardType: 'location' | 'sublocation' | 'cast' | 'faction' | 'campaign-event' | 'campaign-handout' | 'player',
+    cardType: 'location' | 'sublocation' | 'cast' | 'faction' | 'campaign-event' | 'campaign-handout' | 'player' | 'secret',
     eventTitle?: string,
     eventBody?: string,
     playerCardName?: string,

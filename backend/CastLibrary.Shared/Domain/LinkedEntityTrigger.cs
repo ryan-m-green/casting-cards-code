@@ -6,4 +6,5 @@ public class LinkedEntityTrigger
     public string EntityId { get; set; }
     public string EntityName { get; set; }
     public decimal? TodPositionPercent { get; set; }
+    public string originalEntityType { get; set; }
 }

@@ -738,19 +738,6 @@ CREATE TABLE IF NOT EXISTS campaign_player_notes (
 
 CREATE INDEX IF NOT EXISTS idx_campaign_player_notes_campaign ON campaign_player_notes(campaign_id);
 
--- Sessions table for campaign session tracking
-CREATE TABLE IF NOT EXISTS sessions (
-    id                  UUID         PRIMARY KEY DEFAULT gen_random_uuid(),
-    campaign_id         UUID         NOT NULL REFERENCES campaigns(id) ON DELETE CASCADE,
-    session_number      INT          NOT NULL CHECK (session_number > 0),
-    start_time          TIMESTAMPTZ  NOT NULL DEFAULT NOW(),
-    start_in_game_day   INT          NOT NULL DEFAULT 0 CHECK (start_in_game_day >= 0),
-    is_active           BOOLEAN      NOT NULL DEFAULT TRUE
-);
-
-CREATE INDEX IF NOT EXISTS idx_sessions_campaign ON sessions(campaign_id);
-CREATE INDEX IF NOT EXISTS idx_sessions_active ON sessions(campaign_id, is_active) WHERE is_active = TRUE;
-
 -- ─── Campaign Session Archived ───────────────────────────────────────────────────
 -- Archived sessions with calculated in-game day ranges.
 CREATE TABLE IF NOT EXISTS campaign_session_archived (

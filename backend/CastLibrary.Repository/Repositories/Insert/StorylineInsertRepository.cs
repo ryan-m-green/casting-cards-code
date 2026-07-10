@@ -7,7 +7,7 @@ namespace CastLibrary.Repository.Repositories.Insert;
 
 public interface ICampaignEventInsertRepository
 {
-    Task<CampaignEventDomain> InsertAsync(CampaignEventDomain domain);
+    Task<CampaignStorylineDomain> InsertAsync(CampaignStorylineDomain domain);
 }
 
 public class StorylineInsertRepository(
@@ -15,7 +15,7 @@ public class StorylineInsertRepository(
     ILoggingService logging,
     ICorrelationContext correlation) : ICampaignEventInsertRepository
 {
-    public async Task<CampaignEventDomain> InsertAsync(CampaignEventDomain domain)
+    public async Task<CampaignStorylineDomain> InsertAsync(CampaignStorylineDomain domain)
     {
         var spanId  = correlation.NewSpan();
         var linkedEntitiesJson = CampaignEventEntityMapper.ToJson(domain.LinkedEntities);

@@ -6,14 +6,14 @@ namespace CastLibrary.Logic.Queries.Campaign;
 
 public interface IGetVisibleCampaignEventsQueryHandler
 {
-    Task<List<CampaignEventDomain>> HandleAsync(GetVisibleCampaignEventsQuery query);
+    Task<List<CampaignStorylineDomain>> HandleAsync(GetVisibleCampaignEventsQuery query);
 }
 
 public class GetVisibleCampaignEventsQueryHandler(
     IStorylineReadRepository repository,
     IImageStorageOperator imageStorageOperator) : IGetVisibleCampaignEventsQueryHandler
 {
-    public async Task<List<CampaignEventDomain>> HandleAsync(GetVisibleCampaignEventsQuery query)
+    public async Task<List<CampaignStorylineDomain>> HandleAsync(GetVisibleCampaignEventsQuery query)
     {
         var events = await repository.GetVisibleByCampaignIdAsync(query.CampaignId);
         

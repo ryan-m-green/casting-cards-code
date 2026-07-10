@@ -2,6 +2,7 @@ export interface LinkedEntityTrigger {
   entityType: string;
   entityId: string;
   entityName: string;
+  originalEntityType?: string;
 }
 
 export interface ChronicleItem {

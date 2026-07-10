@@ -289,3 +289,48 @@
   text-transform: uppercase;
   color: v.$campaign-portal-text-muted;
 }
+
+/* ── Advanced Options section ─────────────────────────────────────── */
+.ndp-advanced-options {
+  margin-top: 12px;
+  padding: 10px 12px;
+  background: color-mix(in srgb, v.$campaign-portal-bg-dark 40%, v.$color-base-arcane-purple 60%);
+  border: 1px solid v.$campaign-portal-border-strong-focus;
+  border-radius: 4px;
+}
+
+.ndp-advanced-title {
+  font-family: v.$font-header;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: v.$campaign-portal-text-bright;
+  margin-bottom: 8px;
+}
+
+.ndp-advanced-row {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.ndp-advanced-label {
+  font-family: v.$font-body;
+  font-size: 12px;
+  font-weight: 500;
+  color: v.$campaign-portal-text-muted;
+}
+
+.ndp-advanced-hint {
+  font-family: v.$font-body;
+  font-size: 11px;
+  font-weight: 400;
+  color: v.$campaign-portal-text-muted;
+  font-style: italic;
+  margin-bottom: 4px;
+}
+
+.ndp-advanced-dropdown {
+  width: 100%;
+}

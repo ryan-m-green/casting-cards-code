@@ -7,6 +7,8 @@ import { AuthService } from '../auth/auth.service';
 import {
   SecretRevealedEvent,
   SecretResealedEvent,
+  SecretCreatedEvent,
+  SecretDeletedEvent,
   CardVisibilityChangedEvent,
   BulkCardVisibilityChangedEvent,
   SecretDeliveredEvent,
@@ -122,6 +124,8 @@ export class CampaignHubService {
   constructor(private authService: AuthService) {}
 
   private secretRevealedSubject            = new Subject<SecretRevealedEvent | null>();
+  private secretCreatedSubject            = new Subject<SecretCreatedEvent | null>();
+  private secretDeletedSubject            = new Subject<SecretDeletedEvent | null>();
   private secretDeliveredSubject           = new Subject<SecretDeliveredEvent | null>();
   private secretResealedSubject            = new Subject<SecretResealedEvent | null>();
   private cardVisibilityChangedSubject     = new Subject<CardVisibilityChangedEvent | null>();
@@ -158,6 +162,8 @@ export class CampaignHubService {
   readonly isConnected = signal(false);
 
   readonly secretRevealed$            = this.secretRevealedSubject.asObservable();
+  readonly secretCreated$            = this.secretCreatedSubject.asObservable();
+  readonly secretDeleted$            = this.secretDeletedSubject.asObservable();
   readonly secretDelivered$           = this.secretDeliveredSubject.asObservable();
   readonly secretResealed$            = this.secretResealedSubject.asObservable();
   readonly cardVisibilityChanged$     = this.cardVisibilityChangedSubject.asObservable();
@@ -199,7 +205,9 @@ export class CampaignHubService {
           // Return JWT token from localStorage for SignalR authentication
           const token = localStorage.getItem('cast_library_token');
           return token || ''; // Return empty string instead of null to satisfy TypeScript
-        }
+        },
+        skipNegotiation: false,
+        transport: signalR.HttpTransportType.WebSockets | signalR.HttpTransportType.ServerSentEvents
       })
       .withAutomaticReconnect([0, 2000, 5000, 10000, 30000])
       .withServerTimeout(90000)
@@ -226,6 +234,16 @@ export class CampaignHubService {
 
     this.connection.on('SecretRevealed', (event: SecretRevealedEvent) => {
       this.secretRevealedSubject.next(event);
+    });
+
+    this.connection.on('SecretCreated', (event: SecretCreatedEvent) => {
+      console.log('CampaignHubService: SecretCreated event received from backend:', event);
+      this.secretCreatedSubject.next(event);
+    });
+
+    this.connection.on('SecretDeleted', (event: SecretDeletedEvent) => {
+      console.log('CampaignHubService: SecretDeleted event received from backend:', event);
+      this.secretDeletedSubject.next(event);
     });
 
     this.connection.on('SecretDelivered', (event: SecretDeliveredEvent) => {

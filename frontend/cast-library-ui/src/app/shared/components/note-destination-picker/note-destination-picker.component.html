@@ -1,7 +1,7 @@
 <div class="ndp-dest-btns">
 
   @if (showNone) {
-    <button type="button" class="ndp-dest-btn" [class.active]="destType === 'none'" (click)="onDestTypeChange('none')" (keydown.enter)="onKeyEnter('none')" title="GM Note (no association)">
+    <button type="button" class="ndp-dest-btn" [class.active]="destTypeSignal() === 'none'" (click)="onDestTypeChange('none')" (keydown.enter)="onKeyEnter('none')" title="GM Note (no association)">
       <svg class="ndp-dest-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
         <circle cx="12" cy="12" r="10"/>
         <line x1="8" y1="12" x2="16" y2="12"/>
@@ -11,7 +11,7 @@
   }
 
   @if (showQueue) {
-    <button type="button" class="ndp-dest-btn" [class.active]="destType === 'queue'" (click)="onDestTypeChange('queue')" (keydown.enter)="onKeyEnter('queue')" title="Unsorted Queue">
+    <button type="button" class="ndp-dest-btn" [class.active]="destTypeSignal() === 'queue'" (click)="onDestTypeChange('queue')" (keydown.enter)="onKeyEnter('queue')" title="Unsorted Queue">
       <svg class="ndp-dest-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
         <polyline points="22 12 16 12 14 15 10 15 8 12 2 12"/>
         <path d="M5.45 5.11L2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"/>
@@ -20,7 +20,7 @@
     </button>
   }
 
-  <button type="button" class="ndp-dest-btn" [class.active]="destType === 'cast'" [disabled]="casts.length === 0" (click)="onDestTypeChange('cast')" (keydown.enter)="onKeyEnter('cast')" title="Cast Member">
+  <button type="button" class="ndp-dest-btn" [class.active]="destTypeSignal() === 'cast'" [disabled]="casts.length === 0" (click)="onDestTypeChange('cast')" (keydown.enter)="onKeyEnter('cast')" title="Cast Member">
     <svg class="ndp-dest-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
       <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
       <circle cx="12" cy="7" r="4"/>
@@ -28,7 +28,7 @@
     <span>Cast</span>
   </button>
 
-  <button type="button" class="ndp-dest-btn" [class.active]="destType === 'faction'" [disabled]="factions.length === 0" (click)="onDestTypeChange('faction')" (keydown.enter)="onKeyEnter('faction')" title="Faction">
+  <button type="button" class="ndp-dest-btn" [class.active]="destTypeSignal() === 'faction'" [disabled]="factions.length === 0" (click)="onDestTypeChange('faction')" (keydown.enter)="onKeyEnter('faction')" title="Faction">
     <svg class="ndp-dest-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
       <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
     </svg>
@@ -36,7 +36,7 @@
   </button>
 
   @if (showCampaign) {
-  <button type="button" class="ndp-dest-btn" [class.active]="destType === 'campaign'" [disabled]="hasCampaignTrigger" (click)="onDestTypeChange('campaign')" (keydown.enter)="onKeyEnter('campaign')" title="Campaign Note">
+  <button type="button" class="ndp-dest-btn" [class.active]="destTypeSignal() === 'campaign'" [disabled]="hasCampaignTrigger" (click)="onDestTypeChange('campaign')" (keydown.enter)="onKeyEnter('campaign')" title="Campaign Note">
     <svg class="ndp-dest-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
       <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/>
       <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
@@ -45,7 +45,7 @@
   </button>
   }
 
-  <button type="button" class="ndp-dest-btn" [class.active]="destType === 'sublocation'" [disabled]="sublocations.length === 0" (click)="onDestTypeChange('sublocation')" (keydown.enter)="onKeyEnter('sublocation')" title="Sublocation">
+  <button type="button" class="ndp-dest-btn" [class.active]="destTypeSignal() === 'sublocation'" [disabled]="sublocations.length === 0" (click)="onDestTypeChange('sublocation')" (keydown.enter)="onKeyEnter('sublocation')" title="Sublocation">
     <svg class="ndp-dest-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
       <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
       <polyline points="9 22 9 12 15 12 15 22"/>
@@ -53,7 +53,7 @@
     <span>Sublocation</span>
   </button>
 
-  <button type="button" class="ndp-dest-btn" [class.active]="destType === 'location'" [disabled]="locations.length === 0" (click)="onDestTypeChange('location')" (keydown.enter)="onKeyEnter('location')" title="Location">
+  <button type="button" class="ndp-dest-btn" [class.active]="destTypeSignal() === 'location'" [disabled]="locations.length === 0" (click)="onDestTypeChange('location')" (keydown.enter)="onKeyEnter('location')" title="Location">
     <svg class="ndp-dest-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
       <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
       <circle cx="12" cy="10" r="3"/>
@@ -62,7 +62,7 @@
   </button>
 
   @if (showPlayer) {
-  <button type="button" class="ndp-dest-btn" [class.active]="destType === 'player'" [disabled]="players.length === 0" (click)="onDestTypeChange('player')" (keydown.enter)="onKeyEnter('player')" title="Player">
+  <button type="button" class="ndp-dest-btn" [class.active]="destTypeSignal() === 'player'" [disabled]="players.length === 0" (click)="onDestTypeChange('player')" (keydown.enter)="onKeyEnter('player')" title="Player">
     <svg class="ndp-dest-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
       <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
       <circle cx="9" cy="7" r="4"/>
@@ -74,7 +74,7 @@
   }
 
   @if (showTimeOfDay) {
-  <button type="button" class="ndp-dest-btn" [class.active]="destType === 'time-of-day'" [disabled]="!tod || hasTimeTrigger" (click)="onDestTypeChange('time-of-day')" (keydown.enter)="onKeyEnter('time-of-day')" title="Time of Day">
+  <button type="button" class="ndp-dest-btn" [class.active]="destTypeSignal() === 'time-of-day'" [disabled]="!tod || hasTimeTrigger" (click)="onDestTypeChange('time-of-day')" (keydown.enter)="onKeyEnter('time-of-day')" title="Time of Day">
     <svg class="ndp-dest-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
       <circle cx="12" cy="12" r="10"/>
       <polyline points="12 6 12 12 16 14"/>
@@ -89,7 +89,11 @@
   <div class="ndp-pills">
     @for (item of linkedEntities(); track item.entityId; let i = $index) {
       <span class="ndp-pill">
-        {{ item.entityType?.toUpperCase() ?? 'UNKNOWN' }}: {{ item.entityName ?? item.entityId }}
+        @if (item.entityType === 'secret') {
+          <span>{{ item.entityName ?? item.entityId }}</span>
+        } @else {
+          <span>{{ item.entityType?.toUpperCase() ?? 'UNKNOWN' }}: {{ item.entityName ?? item.entityId }}</span>
+        }
         <button class="ndp-pill-remove" (click)="removeLinkedItem(i)" title="Remove" aria-label="Remove">
           <img src="/icons/chronicle/delete.svg" alt="Remove" class="ndp-pill-remove-img" />
         </button>
@@ -100,7 +104,7 @@
 
 @if (showEntitySelect) {
   <div class="ndp-entity-row">
-    @if (destType === 'location') {
+    @if (destTypeSignal() === 'location') {
       <app-campaign-dropdown
         class="ndp-entity-dropdown"
         [options]="locationOptions()"
@@ -110,7 +114,7 @@
         (valueChange)="entityIdChange.emit($event)"
       />
     }
-    @if (destType === 'sublocation') {
+    @if (destTypeSignal() === 'sublocation') {
       <app-campaign-dropdown
         class="ndp-entity-dropdown"
         [options]="sublocationOptions()"
@@ -120,7 +124,7 @@
         (valueChange)="entityIdChange.emit($event)"
       />
     }
-    @if (destType === 'cast') {
+    @if (destTypeSignal() === 'cast') {
       <app-campaign-dropdown
         class="ndp-entity-dropdown"
         [options]="castOptions()"
@@ -130,7 +134,7 @@
         (valueChange)="entityIdChange.emit($event)"
       />
     }
-    @if (destType === 'faction') {
+    @if (destTypeSignal() === 'faction') {
       <app-campaign-dropdown
         class="ndp-entity-dropdown"
         [options]="factionOptions()"
@@ -140,7 +144,7 @@
         (valueChange)="entityIdChange.emit($event)"
       />
     }
-    @if (destType === 'player') {
+    @if (destTypeSignal() === 'player') {
       <app-campaign-dropdown
         class="ndp-entity-dropdown"
         [options]="playerOptions()"
@@ -150,7 +154,7 @@
         (valueChange)="entityIdChange.emit($event)"
       />
     }
-    @if (destType === 'time-of-day') {
+    @if (destTypeSignal() === 'time-of-day') {
       <div class="ndp-mini-tod">
         <div
           class="ndp-mini-tod__bar"
@@ -177,6 +181,23 @@
         }
       </div>
     }
+  </div>
+}
+
+@if (showSecretPicker === true && secretOptions().length > 1 && entityIdSignal()) {
+  <div class="ndp-advanced-options">
+    <div class="ndp-advanced-title">Advanced Options</div>
+    <div class="ndp-advanced-row">
+      <label class="ndp-advanced-label">Associate with a Secret</label>
+      <app-campaign-dropdown
+        class="ndp-advanced-dropdown"
+        [options]="secretOptions()"
+        [value]="selectedSecret()"
+        fontSize="12px"
+        [triggerTabIndex]="0"
+        (valueChange)="selectedSecret.set($event); selectedSecretChange.emit($event)"
+      />
+    </div>
   </div>
 }
 

@@ -25,7 +25,7 @@ public class CampaignEventsController(
     IUpdateCampaignEventDetailsCommandHandler updateDetailsCommand,
     IDeleteCampaignEventCommandHandler deleteEventCommand,
     IReorderCampaignEventsCommandHandler reorderCommand,
-    IGetCampaignEventsQueryHandler getEventsQuery,
+    IGetCampaignStorylineItemsQueryHandler getEventsQuery,
     IGetVisibleCampaignEventsQueryHandler getVisibleEventsQuery,
     IUploadCampaignStorylineHandoutCommandHandler uploadHandoutCommand,
     IUploadCampaignEventHandoutImageCommandHandler uploadHandoutImageCommand,
@@ -44,7 +44,7 @@ public class CampaignEventsController(
     {
         if (!await CallerOwns(campaignId)) return Forbid();
 
-        var domains   = await getEventsQuery.HandleAsync(new GetCampaignEventsQuery(campaignId));
+        var domains   = await getEventsQuery.HandleAsync(new GetCampaignStorylineItemsQuery(campaignId));
         var responses = domains.Select(mapper.ToResponse).ToList();
 
         return Ok(responses);
@@ -70,7 +70,7 @@ public class CampaignEventsController(
         await updateBodyCommand.HandleAsync(new UpdateCampaignEventBodyCommand(eventId, request));
 
         // Notify players of event content update
-        var events = await getEventsQuery.HandleAsync(new GetCampaignEventsQuery(campaignId));
+        var events = await getEventsQuery.HandleAsync(new GetCampaignStorylineItemsQuery(campaignId));
         var campaignEvent = events.FirstOrDefault(e => e.Id == eventId);
         if (campaignEvent != null)
         {
@@ -102,7 +102,7 @@ public class CampaignEventsController(
         await updateDetailsCommand.HandleAsync(new UpdateCampaignEventDetailsCommand(eventId, request));
 
         // Notify players of event content update
-        var events = await getEventsQuery.HandleAsync(new GetCampaignEventsQuery(campaignId));
+        var events = await getEventsQuery.HandleAsync(new GetCampaignStorylineItemsQuery(campaignId));
         var campaignEvent = events.FirstOrDefault(e => e.Id == eventId);
         if (campaignEvent != null)
         {

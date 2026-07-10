@@ -7,15 +7,15 @@ namespace CastLibrary.Logic.Commands.Campaign;
 
 public interface ICreateCampaignStorylineCommandHandler
 {
-    Task<CampaignEventDomain> HandleAsync(CreateCampaignEventCommand command);
+    Task<CampaignStorylineDomain> HandleAsync(CreateCampaignEventCommand command);
 }
 
 public class CreateCampaignStorylineCommandHandler(
     ICampaignEventInsertRepository campaignEventRepository) : ICreateCampaignStorylineCommandHandler
 {
-    public async Task<CampaignEventDomain> HandleAsync(CreateCampaignEventCommand command)
+    public async Task<CampaignStorylineDomain> HandleAsync(CreateCampaignEventCommand command)
     {
-        var domain = new CampaignEventDomain
+        var domain = new CampaignStorylineDomain
         {
             Id = Guid.NewGuid(),
             CampaignId = command.CampaignId,

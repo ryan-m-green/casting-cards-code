@@ -8,9 +8,9 @@ namespace CastLibrary.Repository.Repositories.Read;
 
 public interface IStorylineReadRepository
 {
-    Task<List<CampaignEventDomain>> GetByCampaignIdAsync(Guid campaignId, bool? isVisibleToPlayers = null, bool? markedForArchive = null);
-    Task<List<CampaignEventDomain>> GetVisibleByCampaignIdAsync(Guid campaignId);
-    Task<CampaignEventDomain?> GetByIdAsync(Guid eventId);
+    Task<List<CampaignStorylineDomain>> GetByCampaignIdAsync(Guid campaignId, bool? isVisibleToPlayers = null, bool? markedForArchive = null);
+    Task<List<CampaignStorylineDomain>> GetVisibleByCampaignIdAsync(Guid campaignId);
+    Task<CampaignStorylineDomain?> GetByIdAsync(Guid eventId);
 }
 
 public class StorylineReadRepository(
@@ -19,7 +19,7 @@ public class StorylineReadRepository(
     ICorrelationContext correlation,
     ICampaignEventEntityMapper mapper) : IStorylineReadRepository
 {
-    public async Task<List<CampaignEventDomain>> GetByCampaignIdAsync(Guid campaignId, bool? isVisibleToPlayers = null, bool? markedForArchive = null)
+    public async Task<List<CampaignStorylineDomain>> GetByCampaignIdAsync(Guid campaignId, bool? isVisibleToPlayers = null, bool? markedForArchive = null)
     {
         var spanId = correlation.NewSpan();
 
@@ -69,7 +69,7 @@ public class StorylineReadRepository(
         return rows.Select(mapper.ToDomain).ToList();
     }
 
-    public async Task<List<CampaignEventDomain>> GetVisibleByCampaignIdAsync(Guid campaignId)
+    public async Task<List<CampaignStorylineDomain>> GetVisibleByCampaignIdAsync(Guid campaignId)
     {
         var spanId  = correlation.NewSpan();
         var @params = new { CampaignId = campaignId };
@@ -101,7 +101,7 @@ public class StorylineReadRepository(
         return rows.Select(mapper.ToDomain).ToList();
     }
 
-    public async Task<CampaignEventDomain> GetByIdAsync(Guid eventId)
+    public async Task<CampaignStorylineDomain> GetByIdAsync(Guid eventId)
     {
         var spanId  = correlation.NewSpan();
         var @params = new { EventId = eventId };

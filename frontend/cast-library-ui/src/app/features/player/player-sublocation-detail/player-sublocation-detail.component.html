@@ -23,7 +23,6 @@
           @if (subLoc.description) {
             <div class="detail-desc">
               <span class="detail-label">Description</span>
-              <span class="detail-line"></span>
               <p class="detail-value detail-value--block">{{ subLoc.description }}</p>
             </div>
           }
@@ -32,7 +31,6 @@
             @if (subLoc.keywords.length) {
               <div class="detail-cell detail-cell--full">
                 <span class="detail-label">Keywords</span>
-                <span class="detail-line"></span>
                 <div class="detail-keywords">
                   @for (kw of subLoc.keywords; track kw) {
                     <span class="detail-keyword-pill">{{ kw }}</span>
@@ -45,7 +43,6 @@
           @if (subLoc.shopItems.length) {
             <div class="detail-shop-section">
               <span class="detail-label">Shop Items</span>
-              <span class="detail-line"></span>
               <div class="detail-shop-grid">
                 @for (item of subLoc.shopItems; track item.id) {
                   <div class="detail-shop-item">
@@ -70,7 +67,6 @@
           @if (sublocationSecrets().some(s => s.isRevealed)) {
             <div class="detail-secrets-section">
               <span class="detail-label">Secrets</span>
-              <span class="detail-line"></span>
               @for (secret of sublocationSecrets(); track secret.id) {
                 @if (secret.isRevealed) {
                   <div class="detail-secret">

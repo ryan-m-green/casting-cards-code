@@ -4,16 +4,16 @@ using CastLibrary.Shared.Domain;
 
 namespace CastLibrary.Logic.Queries.Campaign;
 
-public interface IGetCampaignEventsQueryHandler
+public interface IGetCampaignStorylineItemsQueryHandler
 {
-    Task<List<CampaignEventDomain>> HandleAsync(GetCampaignEventsQuery query);
+    Task<List<CampaignStorylineDomain>> HandleAsync(GetCampaignStorylineItemsQuery query);
 }
 
-public class GetCampaignEventsQueryHandler(
+public class GetCampaignStorylineItemsQueryHandler(
     IStorylineReadRepository repository,
-    IImageStorageOperator imageStorageOperator) : IGetCampaignEventsQueryHandler
+    IImageStorageOperator imageStorageOperator) : IGetCampaignStorylineItemsQueryHandler
 {
-    public async Task<List<CampaignEventDomain>> HandleAsync(GetCampaignEventsQuery query)
+    public async Task<List<CampaignStorylineDomain>> HandleAsync(GetCampaignStorylineItemsQuery query)
     {
         var events = await repository.GetByCampaignIdAsync(query.CampaignId);
         
@@ -33,8 +33,8 @@ public class GetCampaignEventsQueryHandler(
     }
 }
 
-public class GetCampaignEventsQuery
+public class GetCampaignStorylineItemsQuery
 {
-    public GetCampaignEventsQuery(Guid campaignId) => CampaignId = campaignId;
+    public GetCampaignStorylineItemsQuery(Guid campaignId) => CampaignId = campaignId;
     public Guid CampaignId { get; }
 }

@@ -246,7 +246,7 @@
               @if (isDm() && !editing()) {
                 <button class="secret-lock-btn" (click)="toggleSecret(secret)"
                         [title]="secret.isRevealed ? 'Reseal secret' : 'Reveal secret'">
-                  <app-lock-icon [open]="secret.isRevealed" />
+                  <app-lock-icon [open]="secret.isRevealed" class="detail-page-lock-icon" />
                 </button>
               }
               @if (isDm() && editing()) {
@@ -318,7 +318,7 @@
             (click)="toggleAllSublocationVisibility()"
             [title]="allSublocationVisible() ? 'Hide all sublocations from players' : 'Reveal all sublocations to players'"
           >
-            <app-lock-icon [open]="allSublocationVisible()" />{{ allSublocationVisible() ? ' Hide All' : ' Reveal All' }}
+            <app-lock-icon [open]="allSublocationVisible()" class="detail-page-lock-icon" />{{ allSublocationVisible() ? ' Hide All' : ' Reveal All' }}
           </button>
         }
       </div>

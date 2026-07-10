@@ -7,15 +7,15 @@ namespace CastLibrary.Logic.Commands.Campaign;
 
 public interface IUploadCampaignStorylineHandoutCommandHandler
 {
-    Task<CampaignEventDomain> HandleAsync(UploadCampaignEventHandoutCommand command);
+    Task<CampaignStorylineDomain> HandleAsync(UploadCampaignEventHandoutCommand command);
 }
 
 public class UploadCampaignStorylineHandoutCommandHandler(
     ICampaignEventInsertRepository insertRepository) : IUploadCampaignStorylineHandoutCommandHandler
 {
-    public async Task<CampaignEventDomain> HandleAsync(UploadCampaignEventHandoutCommand command)
+    public async Task<CampaignStorylineDomain> HandleAsync(UploadCampaignEventHandoutCommand command)
     {
-        var domain = new CampaignEventDomain
+        var domain = new CampaignStorylineDomain
         {
             Id = Guid.NewGuid(),
             CampaignId = command.CampaignId,

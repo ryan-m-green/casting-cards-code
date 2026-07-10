@@ -16,7 +16,7 @@ export class CrbSparkHostComponent implements OnInit, OnDestroy, AfterViewInit {
   private sparkleService = inject(SparkleService);
   private sparkInterval?: ReturnType<typeof setInterval>;
 
-  showRipple = false;
+  showRipple = true;
 
   ngOnInit() {
     // Start continuous sparkler effect
@@ -40,7 +40,6 @@ export class CrbSparkHostComponent implements OnInit, OnDestroy, AfterViewInit {
           (ripple as HTMLElement).style.top = `${centerY}px`;
         });
       }
-      this.showRipple = true;
   }
 
   ngOnDestroy() {

@@ -598,6 +598,17 @@ public class CampaignsController(
         var secret = await addSecretCommand.HandleAsync(new AddCampaignSecretCommand(id, request));
         var response = campaignMapper.ToSecretResponse(secret);
 
+        await hubContext.Clients.Group(id.ToString()).SendAsync("SecretCreated", new
+        {
+            secretId = secret.Id,
+            campaignId = secret.CampaignId,
+            castInstanceId = secret.CastInstanceId,
+            locationInstanceId = secret.LocationInstanceId,
+            sublocationInstanceId = secret.SublocationInstanceId,
+            content = secret.Content,
+            sortOrder = secret.SortOrder
+        });
+
         return Ok(response);
     }
 
@@ -608,6 +619,14 @@ public class CampaignsController(
         if (!await CallerOwns(id)) return Forbid();
         var deleted = await deleteCampaignSecretCommand.HandleAsync(new DeleteCampaignSecretCommand(secretId, id));
         var status = deleted ? 204 : 404;
+
+        if (deleted) {
+            await hubContext.Clients.Group(id.ToString()).SendAsync("SecretDeleted", new
+            {
+                secretId = secretId,
+                campaignId = id
+            });
+        }
 
         return deleted ? NoContent() : NotFound();
     }

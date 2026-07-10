@@ -1023,6 +1023,34 @@
   color: #e94560;
 }
 
+.ev-secret-inner-icon {
+  position: absolute;
+  top: 9px;
+  left: 5px;
+  width: 12px;
+  height: 12px;
+  display: inline-flex;
+  align-items: center;
+  color: #e94560;
+}
+
+.ev-secret-icon-wrapper {
+  position: relative;
+  width: 22px;
+  height: 22px;
+  display: inline-flex;
+  align-items: center;
+  margin-right: 4px;
+}
+
+.ev-secret-triangle {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 22px;
+  height: 22px;
+}
+
 .ev-trigger-type {
   font-family: v.$font-header;
   font-size: 14px;

@@ -29,6 +29,7 @@ export class SessionService {
   }
 
   endSession(campaignId: string, endDay: number, alternateTitle?: string): Observable<void> {
+    debugger;
     return this.http.patch<void>(
       `${environment.apiUrl}/api/campaigns/${campaignId}/sessions/end`,
       { endDay, alternateTitle: alternateTitle ?? '' }

@@ -20,7 +20,9 @@ public enum EntityType
     [Description("time-of-day")]
     TimeOfDay,
     [Description("campaign-event")]
-    CampaignEvent
+    CampaignEvent,
+    [Description("secret")]
+    Secret
 }
 
 public static class EntityTypeExtensions

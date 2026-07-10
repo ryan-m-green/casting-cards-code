@@ -1,6 +1,6 @@
 namespace CastLibrary.Shared.Domain;
 
-public class CampaignEventDomain
+public class CampaignStorylineDomain
 {
     public Guid Id { get; set; }
     public Guid CampaignId { get; set; }

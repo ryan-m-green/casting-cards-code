@@ -55,11 +55,11 @@ public class EndSessionCommandHandler(
         await campaignSessionArchivedInsertRepository.InsertAsync(archivedSession);
 
         // Query storyline events to move (CQRS: query in handler)
-        var eventsToMove = await storylineReadRepository.GetByCampaignIdAsync(command.CampaignId, true, true);
+        var storylineItemsToMove = await storylineReadRepository.GetByCampaignIdAsync(command.CampaignId, true, true);
 
         // Controlled concurrency: limit to 4 concurrent keyword extractions
         var semaphore = new SemaphoreSlim(4);
-        var keywordTasks = eventsToMove.Select(async evt =>
+        var keywordTasks = storylineItemsToMove.Select(async evt =>
         {
             await semaphore.WaitAsync();
             try

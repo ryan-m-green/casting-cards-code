@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter, ElementRef, inject, computed, input } from '@angular/core';
+import { Component, Input, Output, EventEmitter, ElementRef, inject, computed, input, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { CampaignLocationInstance } from '../../models/location.model';
 import { CampaignSublocationInstance } from '../../models/sublocation.model';
@@ -7,12 +7,14 @@ import { CampaignFactionInstance } from '../../models/faction.model';
 import { CampaignPlayer } from '../../models/campaign.model';
 import { TimeOfDay, TimeOfDaySlice } from '../../models/time-of-day.model';
 import { CampaignDropdownComponent, CampaignDropdownOption } from '../campaign-dropdown/campaign-dropdown.component';
+import { CampaignSecret } from '../../models/secret.model';
 
 interface LinkedItem {
   entityType: string | null;
   entityId: string;
   entityName: string | null;
   todPositionPercent?: number | null;
+  originalEntityType?: string; // Store original entity type for icon display when secret is selected
 }
 
 @Component({
@@ -24,6 +26,7 @@ interface LinkedItem {
 })
 export class NoteDestinationPickerComponent {
   private _destType = 'queue';
+  destTypeSignal = signal('queue');
 
   @Input()
   get destType(): string {
@@ -32,12 +35,26 @@ export class NoteDestinationPickerComponent {
   set destType(value: string) {
     if (this._destType !== value) {
       this._destType = value;
+      this.destTypeSignal.set(value);
       if (value === 'cast' || value === 'faction' || value === 'sublocation' || value === 'location' || value === 'player') {
         this.visibleToPlayersChange.emit(true);
       }
     }
   }
-  @Input() entityId = '';
+
+  private _entityId = '';
+  entityIdSignal = signal('');
+
+  @Input()
+  get entityId(): string {
+    return this._entityId;
+  }
+  set entityId(value: string) {
+    if (this._entityId !== value) {
+      this._entityId = value;
+      this.entityIdSignal.set(value);
+    }
+  }
   @Input() showQueue = true;
   @Input() showPlayer = true;
   @Input() showNone = false;
@@ -64,6 +81,19 @@ export class NoteDestinationPickerComponent {
     this._visibleToPlayers = value;
   }
   @Input() showCampaign = false;
+  private _secrets: CampaignSecret[] = [];
+  private secretsSignal = signal<CampaignSecret[]>([]);
+
+  @Input()
+  get secrets(): CampaignSecret[] {
+    return this._secrets;
+  }
+  set secrets(value: CampaignSecret[]) {
+    console.log('note-destination-picker: secrets input updated, count:', value.length);
+    this._secrets = value;
+    this.secretsSignal.set(value);
+  }
+  @Input() showSecretPicker: boolean | null = null;
 
   @Output() destTypeChange = new EventEmitter<string>();
   @Output() entityIdChange = new EventEmitter<string>();
@@ -71,13 +101,16 @@ export class NoteDestinationPickerComponent {
   @Output() enterOnDestType = new EventEmitter<string>();
   @Output() linkedEntitiesChange = new EventEmitter<LinkedItem[]>();
   @Output() visibleToPlayersChange = new EventEmitter<boolean>();
+  @Output() selectedSecretChange = new EventEmitter<string>();
+
+  selectedSecret = signal<string>('');
 
   private elRef = inject(ElementRef);
 
   get showEntitySelect(): boolean {
-    return this.destType === 'location' || this.destType === 'sublocation'
-      || this.destType === 'cast' || this.destType === 'faction'
-      || this.destType === 'player' || this.destType === 'time-of-day';
+    return this.destTypeSignal() === 'location' || this.destTypeSignal() === 'sublocation'
+      || this.destTypeSignal() === 'cast' || this.destTypeSignal() === 'faction'
+      || this.destTypeSignal() === 'player' || this.destTypeSignal() === 'time-of-day';
   }
 
   get showPills(): boolean {
@@ -85,9 +118,9 @@ export class NoteDestinationPickerComponent {
   }
 
   get isToggleDisabled(): boolean {
-    return this.destType === 'cast' || this.destType === 'faction'
-      || this.destType === 'sublocation' || this.destType === 'location'
-      || this.destType === 'player' || this.destType === 'time-of-day';
+    return this.destTypeSignal() === 'cast' || this.destTypeSignal() === 'faction'
+      || this.destTypeSignal() === 'sublocation' || this.destTypeSignal() === 'location'
+      || this.destTypeSignal() === 'player' || this.destTypeSignal() === 'time-of-day';
   }
 
   get hasTimeTrigger(): boolean {
@@ -100,39 +133,57 @@ export class NoteDestinationPickerComponent {
 
   getVisibilityText(): string {
     // If "none" or "time-of-day", it's not visible to players
-    if (this.destType === 'none' || this.destType === 'time-of-day') {
+    if (this.destTypeSignal() === 'none' || this.destTypeSignal() === 'time-of-day') {
       return 'Not Visible To Players';
     }
     // All other entity types are visible to players
     return 'Visible To Players';
   }
 
-  readonly locationOptions = computed<CampaignDropdownOption[]>(() => [
-    { value: '', label: '— select location —' },
-    ...this.locations.filter(l => {
-      const isVisibleToPlayers = this.isPlayerComponent ? true : !l.isVisibleToPlayers;
-      const isLinked = this.linkedEntities().some(le => le.entityType === 'location' && le.entityId === l.instanceId);
-      return isVisibleToPlayers && !isLinked;
-    }).map(l => ({ value: l.instanceId, label: l.name })),
-  ]);
+  readonly locationOptions = computed<CampaignDropdownOption[]>(() => {
+    const secrets = this.secretsSignal();
+    return [
+      { value: '', label: '— select location —' },
+      ...this.locations.filter(l => {
+        const isLinked = this.linkedEntities().some(le => le.entityType === 'location' && le.entityId === l.instanceId);
+        return !isLinked;
+      }).map(l => {
+        const secretCount = secrets.filter(s => !s.isRevealed && s.locationInstanceId === l.instanceId).length;
+        const label = secretCount > 0 ? `${l.name} | ${secretCount} Secrets` : l.name;
+        return { value: l.instanceId, label };
+      }),
+    ];
+});
 
-  readonly sublocationOptions = computed<CampaignDropdownOption[]>(() => [
-    { value: '', label: '— select sublocation —' },
-    ...this.sublocations.filter(s => {
-      const isVisibleToPlayers = this.isPlayerComponent ? true : !s.isVisibleToPlayers;
-      const isLinked = this.linkedEntities().some(le => le.entityType === 'sublocation' && le.entityId === s.instanceId);
-      return isVisibleToPlayers && !isLinked;
-    }).map(s => ({ value: s.instanceId, label: s.name })),
-  ]);
+  readonly sublocationOptions = computed<CampaignDropdownOption[]>(() => {
+    const secrets = this.secretsSignal();
+    return [
+      { value: '', label: '— select sublocation —' },
+      ...this.sublocations.filter(s => {
+        const isLinked = this.linkedEntities().some(le => le.entityType === 'sublocation' && le.entityId === s.instanceId);
+        return !isLinked;
+      }).map(s => {
+        const secretCount = secrets.filter(secret => !secret.isRevealed && secret.sublocationInstanceId === s.instanceId).length;
+        const label = secretCount > 0 ? `${s.name} | ${secretCount} Secrets` : s.name;
+        return { value: s.instanceId, label };
+      }),
+    ];
+});
 
-  readonly castOptions = computed<CampaignDropdownOption[]>(() => [
-    { value: '', label: '— select cast member —' },
-    ...this.casts.filter(c => {
-      const isVisibleToPlayers = this.isPlayerComponent ? true : !c.isVisibleToPlayers;
-      const isLinked = this.linkedEntities().some(le => le.entityType === 'cast' && le.entityId === c.instanceId);
-      return isVisibleToPlayers && !isLinked;
-    }).map(c => ({ value: c.instanceId, label: c.name })),
-  ]);
+  readonly castOptions = computed<CampaignDropdownOption[]>(() => {
+    const secrets = this.secretsSignal();
+    return [
+      { value: '', label: '— select cast member —' },
+      ...this.casts.filter(c => {
+        const isLinked = this.linkedEntities().some(le => le.entityType === 'cast' && le.entityId === c.instanceId);
+        return !isLinked;
+      }).map(c => {
+        const secretCount = secrets.filter(s => !s.isRevealed && s.castInstanceId === c.instanceId).length;
+        const label = secretCount > 0 ? `${c.name} | ${secretCount} Secrets` : c.name;
+        return { value: c.instanceId, label };
+      }),
+    ];
+});
 
   readonly factionOptions = computed<CampaignDropdownOption[]>(() => [
     { value: '', label: '— select faction —' },
@@ -148,8 +199,107 @@ export class NoteDestinationPickerComponent {
     ...this.players.map(p => ({ value: p.userId, label: p.displayName })),
   ]);
 
+readonly hasSecretsForType = computed(() => {
+  const entityType = this.destTypeSignal();
+  const secrets = this.secretsSignal();
+  console.log('hasSecretsForType recomputed - entityType:', entityType, 'total secrets:', secrets.length);
+  if (!entityType) return false;
+
+  const result = secrets.some(secret => {
+    if (secret.isRevealed) return false;
+
+    switch (entityType) {
+      case 'cast':
+        return secret.castInstanceId !== null;
+      case 'location':
+        return secret.locationInstanceId !== null;
+      case 'sublocation':
+        console.log('hasSecretsForType sublocation check - secret.sublocationInstanceId:', secret.sublocationInstanceId);
+        return secret.sublocationInstanceId !== null;
+      case 'faction':
+        return secret.castInstanceId === null &&
+               secret.locationInstanceId === null &&
+               secret.sublocationInstanceId === null;
+      default:
+        return false;
+    }
+  });
+  console.log('hasSecretsForType result:', result);
+  return result;
+});
+
+readonly secretOptions = computed<CampaignDropdownOption[]>(() => {
+  const options: CampaignDropdownOption[] = [{ value: '', label: '— select a secret —' }];
+  const entityType = this.destTypeSignal();
+  const entityId = this.entityIdSignal();
+  const secrets = this.secretsSignal();
+  console.log('secretOptions computed - entityType:', entityType, 'entityId:', entityId, 'total secrets:', secrets.length);
+
+  if (!entityId || !entityType) return options;
+
+  const filteredSecrets = secrets.filter(secret => {
+    if (secret.isRevealed) return false;
+
+    let matches = false;
+    switch (entityType) {
+      case 'cast':
+        matches = secret.castInstanceId === entityId;
+        break;
+      case 'location':
+        matches = secret.locationInstanceId === entityId;
+        break;
+      case 'sublocation':
+        matches = secret.sublocationInstanceId === entityId;
+        console.log('Sublocation secret check - secret.sublocationInstanceId:', secret.sublocationInstanceId, 'entityId:', entityId, 'matches:', matches, 'secret:', secret);
+        break;
+      case 'faction':
+        matches = secret.castInstanceId === null &&
+               secret.locationInstanceId === null &&
+               secret.sublocationInstanceId === null;
+        break;
+      default:
+        matches = false;
+    }
+    return matches;
+  });
+
+  console.log('Filtered secrets count:', filteredSecrets.length);
+  return [
+    ...options,
+    ...filteredSecrets.map(s => ({ value: s.id, label: `Secret: ${s.content.substring(0, 30)}${s.content.length > 30 ? '...' : ''}` }))
+  ];
+});
+
+private countSecretsForLocation(locationId: string): number {
+  console.log('countSecretsForLocation - locationId:', locationId, 'secrets:', this.secrets);
+  return this.secrets.filter(s => !s.isRevealed && s.locationInstanceId === locationId).length;
+}
+
+private countSecretsForSublocation(sublocationId: string): number {
+  console.log('countSecretsForSublocation - sublocationId:', sublocationId, 'total secrets:', this.secrets.length);
+  const result = this.secrets.filter(s => {
+    const isRevealed = s.isRevealed;
+    const matchesId = s.sublocationInstanceId === sublocationId;
+    console.log('  Secret - id:', s.id, 'isRevealed:', isRevealed, 'sublocationInstanceId:', s.sublocationInstanceId, 'matchesId:', matchesId, 'secret:', s);
+    return !isRevealed && matchesId;
+  }).length;
+  console.log('countSecretsForSublocation result:', result);
+  return result;
+}
+
+private countSecretsForCast(castId: string): number {
+  return this.secrets.filter(s => !s.isRevealed && s.castInstanceId === castId).length;
+}
+
+private countSecretsForFaction(factionId: string): number {
+  // Faction secrets are identified by having all three instance IDs as null
+  // Note: CampaignSecret doesn't have factionId field, so we count all faction-type secrets
+  // In practice, faction secrets are campaign-wide or handled differently
+  return 0; // Placeholder - faction secret counting needs clarification on how to associate with specific factions
+}
+
   onDestTypeChange(value: string): void {
-    if (this.destType === 'time-of-day' && value !== 'time-of-day') {
+    if (this.destTypeSignal() === 'time-of-day' && value !== 'time-of-day') {
       this.todPositionPercentChange.emit(null);
     }
     if (value === 'time-of-day') {
@@ -164,6 +314,8 @@ export class NoteDestinationPickerComponent {
       this._visibleToPlayers = true;
       this.visibleToPlayersChange.emit(true);
     }
+    this._destType = value;
+    this.destTypeSignal.set(value);
     this.destTypeChange.emit(value);
     this.entityIdChange.emit('');
   }
@@ -187,12 +339,37 @@ export class NoteDestinationPickerComponent {
 
   addTrigger(): void {
     const entityId = this.entityId;
+    const destType = this.destTypeSignal();
+    const selectedSecret = this.selectedSecret();
 
+    // If a secret is selected, only add the secret entity, not the regular entity
+    if (selectedSecret) {
+      const secret = this.secrets.find(s => s.id === selectedSecret);
+      if (!secret) return;
+      
+      const secretContent = secret.content.substring(0, 30) + (secret.content.length > 30 ? '...' : '');
+      const entityName = `Secret: (${destType}) ${secretContent}`;
+      
+      const newItem: LinkedItem = {
+        entityType: 'secret',
+        entityId: selectedSecret,
+        entityName
+      };
+
+      this.linkedEntitiesChange.emit([...this.linkedEntities(), newItem]);
+      this.entityIdChange.emit('');
+      this.selectedSecret.set('');
+      this.onDestTypeChange('queue');
+      return;
+    }
+
+    // Regular entity addition (no secret selected)
     let entityName = '';
     let finalEntityId = entityId;
     let todPositionPercent: number | null = null;
+    let finalEntityType = destType;
 
-    switch (this.destType) {
+    switch (destType) {
       case 'location':
         if (!entityId) return;
         entityName = this.locations.find(l => l.instanceId === entityId)?.name ?? '';
@@ -232,7 +409,7 @@ export class NoteDestinationPickerComponent {
     }
 
     const newItem: LinkedItem = {
-      entityType: this.destType,
+      entityType: finalEntityType,
       entityId: finalEntityId,
       entityName,
       todPositionPercent
@@ -240,7 +417,8 @@ export class NoteDestinationPickerComponent {
 
     this.linkedEntitiesChange.emit([...this.linkedEntities(), newItem]);
     this.entityIdChange.emit('');
-    
+    this.selectedSecret.set('');
+
     // Reset destType to queue after adding trigger so selection is cleared for next scene/handout
     this.onDestTypeChange('queue');
   }

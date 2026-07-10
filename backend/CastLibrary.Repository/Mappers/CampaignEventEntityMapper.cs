@@ -6,12 +6,12 @@ namespace CastLibrary.Repository.Mappers;
 
 public interface ICampaignEventEntityMapper
 {
-    CampaignEventDomain ToDomain(CampaignEventEntity entity);
+    CampaignStorylineDomain ToDomain(CampaignEventEntity entity);
 }
 
 public class CampaignEventEntityMapper : ICampaignEventEntityMapper
 {
-    public CampaignEventDomain ToDomain(CampaignEventEntity entity) => new()
+    public CampaignStorylineDomain ToDomain(CampaignEventEntity entity) => new()
     {
         Id = entity.Id,
         CampaignId = entity.CampaignId,

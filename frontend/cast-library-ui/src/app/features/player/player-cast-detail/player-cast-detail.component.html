@@ -42,7 +42,6 @@
         @if (ca.publicDescription) {
           <div class="detail-desc">
             <span class="detail-label">Public Description</span>
-            <span class="detail-line"></span>
             <p class="detail-value detail-value--block">{{ ca.publicDescription }}</p>
           </div>
         }
@@ -51,49 +50,42 @@
           @if (ca.pronouns) {
             <div class="detail-cell">
               <span class="detail-label">Pronouns</span>
-              <span class="detail-line"></span>
               <span class="detail-value">{{ ca.pronouns }}</span>
             </div>
           }
           @if (ca.race) {
             <div class="detail-cell">
               <span class="detail-label">Race</span>
-              <span class="detail-line"></span>
               <span class="detail-value">{{ ca.race }}</span>
             </div>
           }
           @if (ca.role) {
             <div class="detail-cell">
               <span class="detail-label">Role</span>
-              <span class="detail-line"></span>
               <span class="detail-value">{{ ca.role }}</span>
             </div>
           }
           @if (ca.age) {
             <div class="detail-cell">
               <span class="detail-label">Age</span>
-              <span class="detail-line"></span>
               <span class="detail-value">{{ ca.age }}</span>
             </div>
           }
           @if (ca.posture) {
             <div class="detail-cell">
               <span class="detail-label">Posture</span>
-              <span class="detail-line"></span>
               <span class="detail-value">{{ ca.posture }}</span>
             </div>
           }
           @if (ca.speed) {
             <div class="detail-cell">
               <span class="detail-label">Speed</span>
-              <span class="detail-line"></span>
               <span class="detail-value">{{ ca.speed }}</span>
             </div>
           }
           @if (ca.keywords.length) {
             <div class="detail-cell detail-cell--full">
               <span class="detail-label">Keywords</span>
-              <span class="detail-line"></span>
               <div class="detail-keywords">
                 @for (kw of ca.keywords; track kw) {
                   <span class="detail-keyword-pill">{{ kw }}</span>

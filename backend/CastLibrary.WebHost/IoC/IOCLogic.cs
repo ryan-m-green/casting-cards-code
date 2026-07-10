@@ -275,7 +275,7 @@ namespace CastLibrary.WebHost.IoC
             services.AddScoped<IDeleteSessionCommandHandler, DeleteSessionCommandHandler>();
 
             services.AddScoped<IGetQuicknoteQueueQueryHandler, GetQuicknoteQueueQueryHandler>();
-            services.AddScoped<IGetCampaignEventsQueryHandler, GetCampaignEventsQueryHandler>();
+            services.AddScoped<IGetCampaignStorylineItemsQueryHandler, GetCampaignStorylineItemsQueryHandler>();
             services.AddScoped<IGetVisibleCampaignEventsQueryHandler, GetVisibleCampaignEventsQueryHandler>();
             services.AddScoped<IGetUserSubscriptionQueryHandler, GetUserSubscriptionQueryHandler>();
             services.AddScoped<IGetUserEntityLimitsQueryHandler, GetUserEntityLimitsQueryHandler>();
@@ -330,6 +330,7 @@ namespace CastLibrary.WebHost.IoC
             services.AddScoped<IEntityVisibilityUpdater, FactionEntityVisibilityUpdater>();
             services.AddScoped<IEntityVisibilityUpdater, TimeOfDayEntityVisibilityUpdater>();
             services.AddScoped<IEntityVisibilityUpdater, PlayerEntityVisibilityUpdater>();
+            services.AddScoped<IEntityVisibilityUpdater, SecretEntityVisibilityUpdater>();
 
             // Subscription event strategies
             services.AddScoped<ISubscriptionEventStrategy, SubscriptionCreatedStrategy>();

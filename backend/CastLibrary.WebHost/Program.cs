@@ -342,72 +342,72 @@ logger.LogInformation("Antiforgery Configuration - Cookie Name: XSRF-TOKEN, Secu
     SameSiteMode.Lax,
     cookieDomain ?? "(none)");
 
-// Rate limiting for security - DISABLED
-// builder.Services.AddRateLimiter(options =>
-// {
-//     options.GlobalLimiter = PartitionedRateLimiter.Create<HttpContext, string>(context =>
-//         RateLimitPartition.GetSlidingWindowLimiter(
-//             GetClientId(context), 
-//             key => new SlidingWindowRateLimiterOptions
-//             {
-//                 PermitLimit = GetPermitLimit(context),
-//                 Window = TimeSpan.FromMinutes(1),
-//                 SegmentsPerWindow = 6
-//             }));
+// Rate limiting for security
+builder.Services.AddRateLimiter(options =>
+{
+    options.GlobalLimiter = PartitionedRateLimiter.Create<HttpContext, string>(context =>
+        RateLimitPartition.GetSlidingWindowLimiter(
+            GetClientId(context),
+            key => new SlidingWindowRateLimiterOptions
+            {
+                PermitLimit = GetPermitLimit(context),
+                Window = TimeSpan.FromMinutes(1),
+                SegmentsPerWindow = 6
+            }));
 
-//     options.OnRejected = async (context, cancellationToken) =>
-//     {
-//         var logger = context.HttpContext.RequestServices.GetService<ILogger<Program>>();
-        
-//         var clientId = GetClientId(context.HttpContext);
-//         var endpoint = context.HttpContext.Request.Path;
-//         var httpMethod = context.HttpContext.Request.Method;
-        
-//         // Extract user information if available
-//         var userId = GetUserId(context.HttpContext);
-//         var userEmail = GetUserEmail(context.HttpContext);
+    options.OnRejected = async (context, cancellationToken) =>
+    {
+        var logger = context.HttpContext.RequestServices.GetService<ILogger<Program>>();
 
-//         // Try to log to audit service if available
-//         try
-//         {
-//             var auditService = context.HttpContext.RequestServices.GetService<IAuditLoggingService>();
-//             if (auditService != null)
-//             {
-//                 await auditService.LogSecurityEventAsync(
-//                     userId,
-//                     userEmail,
-//                     AuditEventType.RateLimitViolation,
-//                     $"Rate limit exceeded for {httpMethod} {endpoint}",
-//                     GetClientIpAddress(context.HttpContext),
-//                     context.HttpContext.Request.Headers["User-Agent"].ToString(),
-//                     additionalData: $"ClientId: {clientId}, Endpoint: {endpoint}, Method: {httpMethod}");
-//             }
-//         }
-//         catch (Exception ex)
-//         {
-//             logger?.LogWarning(ex, "Failed to log rate limit violation to audit service");
-//         }
+        var clientId = GetClientId(context.HttpContext);
+        var endpoint = context.HttpContext.Request.Path;
+        var httpMethod = context.HttpContext.Request.Method;
 
-//         logger?.LogWarning(
-//             "Rate limit exceeded for client {ClientId} on {Method} {Endpoint} by user {UserId} ({UserEmail})",
-//             clientId, httpMethod, endpoint, userId, userEmail);
+        // Extract user information if available
+        var userId = GetUserId(context.HttpContext);
+        var userEmail = GetUserEmail(context.HttpContext);
 
-//         // Set the response
-//         context.HttpContext.Response.StatusCode = StatusCodes.Status429TooManyRequests;
-//         await context.HttpContext.Response.WriteAsync("Too many requests. Please try again later.");
-//     };
+        // Try to log to audit service if available
+        try
+        {
+            var auditService = context.HttpContext.RequestServices.GetService<IAuditLoggingService>();
+            if (auditService != null)
+            {
+                await auditService.LogSecurityEventAsync(
+                    userId,
+                    userEmail,
+                    AuditEventType.RateLimitViolation,
+                    $"Rate limit exceeded for {httpMethod} {endpoint}",
+                    GetClientIpAddress(context.HttpContext),
+                    context.HttpContext.Request.Headers["User-Agent"].ToString(),
+                    additionalData: $"ClientId: {clientId}, Endpoint: {endpoint}, Method: {httpMethod}");
+            }
+        }
+        catch (Exception ex)
+        {
+            logger?.LogWarning(ex, "Failed to log rate limit violation to audit service");
+        }
 
-//     // Add specific policy for authentication endpoints
-//     options.AddPolicy("AuthEndpoints", context =>
-//         RateLimitPartition.GetSlidingWindowLimiter(
-//             GetClientId(context),
-//             key => new SlidingWindowRateLimiterOptions
-//             {
-//                 PermitLimit = 20, // 20 requests per minute for auth endpoints
-//                 Window = TimeSpan.FromMinutes(1),
-//                 SegmentsPerWindow = 6
-//             }));
-// });
+        logger?.LogWarning(
+            "Rate limit exceeded for client {ClientId} on {Method} {Endpoint} by user {UserId} ({UserEmail})",
+            clientId, httpMethod, endpoint, userId, userEmail);
+
+        // Set the response
+        context.HttpContext.Response.StatusCode = StatusCodes.Status429TooManyRequests;
+        await context.HttpContext.Response.WriteAsync("Too many requests. Please try again later.");
+    };
+
+    // Add specific policy for authentication endpoints
+    options.AddPolicy("AuthEndpoints", context =>
+        RateLimitPartition.GetSlidingWindowLimiter(
+            GetClientId(context),
+            key => new SlidingWindowRateLimiterOptions
+            {
+                PermitLimit = 20, // 20 requests per minute for auth endpoints
+                Window = TimeSpan.FromMinutes(1),
+                SegmentsPerWindow = 6
+            }));
+});
 
 builder.Services.AddCastLibraryServices(builder.Configuration);
 

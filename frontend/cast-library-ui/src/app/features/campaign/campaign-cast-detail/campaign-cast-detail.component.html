@@ -362,7 +362,7 @@
                 (click)="toggleSecret(secret)"
                 [title]="secret.isRevealed ? 'Reseal secret' : 'Reveal secret'"
               >
-                <app-lock-icon [open]="secret.isRevealed" />
+                <app-lock-icon [open]="secret.isRevealed" class="detail-page-lock-icon" />
               </button>
             }
             @if (editing()) {

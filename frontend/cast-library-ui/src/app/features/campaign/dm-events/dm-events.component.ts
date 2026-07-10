@@ -6,6 +6,7 @@ import { FormsModule } from '@angular/forms';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { CampaignShellService } from '../../../core/campaign-shell.service';
 import { SessionService } from '../../../core/session.service';
+import { CampaignHubService } from '../../../core/hub/campaign-hub.service';
 import { environment } from '../../../../environments/environment';
 import { NoteDestinationPickerComponent } from '../../../shared/components/note-destination-picker/note-destination-picker.component';
 import { LockIconComponent } from '../../../shared/components/lock-icon/lock-icon.component';
@@ -20,6 +21,8 @@ import { CampaignPlayer } from '../../../shared/models/campaign.model';
 import { TimeOfDay } from '../../../shared/models/time-of-day.model';
 import { Session } from '../../../shared/models/session.model';
 import { CampaignDropdownOption } from '../../../shared/components/campaign-dropdown/campaign-dropdown.component';
+import { CampaignSecret } from '../../../shared/models/secret.model';
+import { Subscription } from 'rxjs';
 
 type EventsTab = 'events' | 'create-events' | 'create-handout';
 type DestType = 'cast' | 'faction' | 'campaign' | 'sublocation' | 'location' | 'player' | 'none' | 'time-of-day';
@@ -29,6 +32,7 @@ interface LinkedItem {
   entityId: string;
   entityName: string | null;
   todPositionPercent?: number | null;
+  originalEntityType?: string;
 }
 
 interface CampaignEvent {
@@ -60,6 +64,8 @@ export class DmEventsComponent implements OnInit, OnDestroy {
   private http     = inject(HttpClient);
   sanitizer = inject(DomSanitizer);
   private sessionService = inject(SessionService);
+  private hub      = inject(CampaignHubService);
+  private hubSubscriptions: Subscription[] = [];
 
   campaignId = '';
 
@@ -238,6 +244,7 @@ export class DmEventsComponent implements OnInit, OnDestroy {
   factions = computed(() => this.shellSvc.campaign()?.factions ?? []);
   players = computed(() => this.shellSvc.campaign()?.players ?? []);
   tod = computed(() => this.shellSvc.campaign()?.timeOfDay ?? null);
+  secrets = computed(() => this.shellSvc.campaign()?.secrets ?? []);
 
   canSave = computed(() => {
     const title = this.eventTitle();
@@ -263,6 +270,7 @@ export class DmEventsComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     clearTimeout(this.saveTimer);
+    this.hubSubscriptions.forEach(sub => sub.unsubscribe());
   }
 
   ngOnInit() {
@@ -273,13 +281,92 @@ export class DmEventsComponent implements OnInit, OnDestroy {
     this.loadEvents();
     this.loadActiveSession();
     this.loadSessionCount();
+
+    // Subscribe to secret state changes to update dropdown options
+    this.hubSubscriptions.push(
+      this.hub.secretRevealed$.subscribe(event => {
+        if (!event || event.campaignId !== this.campaignId) return;
+        // Update the campaign secrets to refresh dropdown options
+        this.shellSvc.updateCampaign(c => {
+          if (!c) return c;
+          return {
+            ...c,
+            secrets: c.secrets.map(s =>
+              s.id === event.secretId ? { ...s, isRevealed: true } : s
+            )
+          };
+        });
+      }),
+      this.hub.secretCreated$.subscribe(event => {
+        console.log('SecretCreated event received:', event);
+        if (!event || event.campaignId !== this.campaignId) {
+          console.log('SecretCreated event ignored - campaignId mismatch or null event');
+          return;
+        }
+        console.log('SecretCreated event - adding new secret to campaign');
+        // Add the new secret to the campaign secrets array
+        this.shellSvc.updateCampaign(c => {
+          if (!c) return c;
+          const newSecret: CampaignSecret = {
+            id: event.secretId,
+            campaignId: event.campaignId,
+            castInstanceId: event.castInstanceId,
+            locationInstanceId: event.locationInstanceId,
+            sublocationInstanceId: event.sublocationInstanceId,
+            content: event.content,
+            sortOrder: event.sortOrder,
+            isRevealed: false,
+            revealedAt: null
+          };
+          console.log('New secret to add:', newSecret);
+          return {
+            ...c,
+            secrets: [...c.secrets, newSecret]
+          };
+        });
+        console.log('Campaign secrets updated');
+      }),
+      this.hub.secretDeleted$.subscribe(event => {
+        console.log('SecretDeleted event received:', event);
+        if (!event || event.campaignId !== this.campaignId) {
+          console.log('SecretDeleted event ignored - campaignId mismatch or null event');
+          return;
+        }
+        console.log('SecretDeleted event - removing secret from campaign');
+        // Remove the deleted secret from the campaign secrets array
+        this.shellSvc.updateCampaign(c => {
+          if (!c) return c;
+          return {
+            ...c,
+            secrets: c.secrets.filter(s => s.id !== event.secretId)
+          };
+        });
+        console.log('Campaign secrets updated');
+      }),
+      this.hub.secretResealed$.subscribe(event => {
+        if (!event || event.campaignId !== this.campaignId) return;
+        // Update the campaign secrets to refresh dropdown options
+        this.shellSvc.updateCampaign(c => {
+          if (!c) return c;
+          return {
+            ...c,
+            secrets: c.secrets.map(s =>
+              s.id === event.secretId ? { ...s, isRevealed: false } : s
+            )
+          };
+        });
+      })
+    );
   }
 
   loadEvents() {
     this.loadingEvents.set(true);
     this.http.get<CampaignEvent[]>(`${environment.apiUrl}/api/campaigns/${this.campaignId}/events`)
       .subscribe({
-        next:  data => { this.events.set(data); this.loadingEvents.set(false); },
+        next:  data => {
+          this.events.set(data);
+          this.loadingEvents.set(false);
+        },
         error: ()   => { this.loadingEvents.set(false); },
       });
   }
@@ -501,7 +588,11 @@ export class DmEventsComponent implements OnInit, OnDestroy {
     domEvent.stopPropagation();
 
     const next = !event.visibleToPlayers;
- 
+
+    console.log('toggleVisibility called - event:', event);
+    console.log('toggleVisibility - linkedEntities:', event.linkedEntities);
+    console.log('toggleVisibility - next:', next);
+
     const entityVisibilities = event.linkedEntities.map(le => ({
       entityType: le.entityType,
       entityId: le.entityId,
@@ -509,7 +600,9 @@ export class DmEventsComponent implements OnInit, OnDestroy {
       isVisible: next
     }));
 
-    const isGmOnlyCampaignEvent = event.linkedEntities.length === 0 
+    console.log('toggleVisibility - entityVisibilities after map:', entityVisibilities);
+
+    const isGmOnlyCampaignEvent = event.linkedEntities.length === 0
       && event.sceneType === 'campaign-event';
 
     if (!isGmOnlyCampaignEvent) {
@@ -521,11 +614,17 @@ export class DmEventsComponent implements OnInit, OnDestroy {
       });
     }
 
+    console.log('toggleVisibility - entityVisibilities after campaign event push:', entityVisibilities);
+
     const body = { entityVisibilities };
-    
+
+    console.log('toggleVisibility - request body:', body);
+    console.log('toggleVisibility - API URL:', `${environment.apiUrl}/api/campaigns/${this.campaignId}/events/${event.id}/visibility`);
+
     this.http.patch(`${environment.apiUrl}/api/campaigns/${this.campaignId}/events/${event.id}/visibility`, body)
       .subscribe({
         next: () => {
+          console.log('toggleVisibility - request successful');
           this.events.update(evs => evs.map(e => e.id === event.id ? { ...e, visibleToPlayers: next } : e));
         },
       });
@@ -544,13 +643,18 @@ export class DmEventsComponent implements OnInit, OnDestroy {
       });
   }
 
-  entityNameFor(event: CampaignEvent): string {
+  entityNameFor(event: CampaignEvent): string | SafeHtml {
     if (event.sceneType === 'campaign-handout') return 'GM Handout';
     if (event.linkedEntities.length === 0) return 'GM Note';
     if (event.linkedEntities.length > 1) return 'Multitrigger';
     const first = event.linkedEntities[0];
     if (first.entityType === 'campaign') return 'Campaign';
     if (first.entityType === 'time-of-day') return this.getTimeSliceName(event.todPositionPercent);
+    if (first.entityType === 'secret') {
+      // Use originalEntityType to determine the display name
+      const originalType = first.originalEntityType || 'secret';
+      return first.entityName ?? 'Secret';
+    }
     const id = first.entityId;
     if (!id) return '';
     if (first.entityType === 'cast')        return this.casts().find(c => c.instanceId === id)?.name ?? id;
@@ -579,6 +683,15 @@ export class DmEventsComponent implements OnInit, OnDestroy {
         else if (item.entityType === 'campaign')   name = 'Campaign';
         else name = id;
       }
+      // For secret entities, extract the entity type from parentheses for icon display
+      if (item.entityType === 'secret' && name) {
+        const match = name.match(/Secret: \(([^)]+)\) (.+)/);
+        if (match) {
+          // Store as JSON string to pass both entity type and content
+          groups[type].push(JSON.stringify({ innerType: match[1], content: match[2] }));
+          continue;
+        }
+      }
       groups[type].push(name || item.entityId);
     }
     return groups;
@@ -600,8 +713,21 @@ export class DmEventsComponent implements OnInit, OnDestroy {
       'player': `<svg viewBox="0 0 24 24" fill="none" stroke="#e94560" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>`,
       'time-of-day': `<svg viewBox="0 0 24 24" fill="none" stroke="#e94560" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>`,
       'campaign': `<svg viewBox="0 0 24 24" fill="none" stroke="#e94560" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>`,
+      'secret': `<svg viewBox="0 0 24 24" fill="none" stroke="#e94560" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 22h20L12 2z"/></svg>`,
     };
     return this.sanitizer.bypassSecurityTrustHtml(icons[type] || icons['campaign']);
+  }
+
+parseSecretValue(value: string): { innerType: string, content: string } | null {
+    try {
+      const parsed = JSON.parse(value);
+      if (parsed.innerType && parsed.content) {
+        return parsed;
+      }
+    } catch {
+      // Not a JSON string, return as-is
+    }
+    return null;
   }
 
   onDragStart(index: number, event: DragEvent) {
@@ -889,6 +1015,7 @@ export class DmEventsComponent implements OnInit, OnDestroy {
 
   confirmEndSession() {
     if (this.endingSession()) return;
+    debugger;
     this.endingSession.set(true);
     this.endSessionPanelClosing.set(true);
 

@@ -1,8 +1,10 @@
-﻿using CastLibrary.Repository.Repositories.Read;
+﻿using CastLibrary.Logic.Commands.Campaign;
+using CastLibrary.Repository.Repositories.Read;
 using CastLibrary.Repository.Repositories.Update;
 using CastLibrary.Shared.Domain;
 using CastLibrary.Shared.Requests;
 using ImageMagick;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace CastLibrary.Logic.Strategies
 {
@@ -16,6 +18,7 @@ namespace CastLibrary.Logic.Strategies
         public const string CampaignEvent = "campaign-event";
         public const string CampaignHandout = "campaign-handout";
         public const string Player = "player";
+        public const string Secret = "secret";
     }
     public static class EventNames
     {
@@ -174,7 +177,7 @@ namespace CastLibrary.Logic.Strategies
     {
         public bool IsMatch(EntityVisibility entityVisibility)
         {
-            return entityVisibility.EntityType.ToLower() == EntityTypes.TimeOfDay 
+            return entityVisibility.EntityType.ToLower() == EntityTypes.TimeOfDay
                 && entityVisibility.TodPositionPercent.HasValue;
         }
 
@@ -193,6 +196,118 @@ namespace CastLibrary.Logic.Strategies
                 EventName = EventNames.TimeOfDayCursorMoved,
                 IsVisible = entityVisibility.IsVisible,
                 CardType = EntityTypes.TimeOfDay
+            };
+        }
+    }
+
+    public class SecretEntityVisibilityUpdater : IEntityVisibilityUpdater
+    {
+        private readonly ISecretUpdateRepository _secretUpdateRepository;
+        private readonly ISecretReadRepository _secretReadRepository;
+        private readonly IServiceProvider _serviceProvider;
+
+        private readonly IEnumerable<string> _allowedEntityTypes = new List<string>()
+        {
+            EntityTypes.Cast, EntityTypes.Sublocation, EntityTypes.Location
+        };
+
+        public SecretEntityVisibilityUpdater(ISecretUpdateRepository secretUpdateRepository,
+            ISecretReadRepository secretReadRepository,
+            IServiceProvider serviceProvider)
+        {
+            _secretUpdateRepository = secretUpdateRepository;
+            _secretReadRepository = secretReadRepository;
+            _serviceProvider = serviceProvider;
+        }
+
+        private IEnumerable<IEntityVisibilityUpdater> GetEntityVisibilityUpdaters()
+        {
+            var updaters = _serviceProvider.GetServices<IEntityVisibilityUpdater>();
+            return updaters.Where(updater =>
+                _allowedEntityTypes.Any(entityType =>
+                    updater.IsMatch(new EntityVisibility { EntityType = entityType }))
+            ).ToList();
+        }
+
+        public bool IsMatch(EntityVisibility entityVisibility)
+        {
+            return entityVisibility.EntityType.ToLower() == EntityTypes.Secret;
+        }
+
+        public async Task<EntityVisibilityResult> Update(Guid campaignId, EntityVisibility entityVisibility)
+        {
+            var secretId = entityVisibility.EntityId;
+            var secret = await _secretReadRepository.GetByIdAsync(secretId);
+            if (secret is null || secret.CampaignId != campaignId)
+            {
+                // Secret not found or belongs to different campaign, don't update
+                return new EntityVisibilityResult()
+                {
+                    CampaignId = campaignId,
+                    EntityInstanceId = secretId,
+                    EventName = EventNames.CardVisibilityChanged,
+                    IsVisible = false,
+                    CardType = EntityTypes.Secret
+                };
+            }
+
+            if (entityVisibility.IsVisible)
+            {
+                await _secretUpdateRepository.RevealAsync(secretId, DateTime.UtcNow);
+
+                // Auto-unlock associated card if it's still hidden
+                if (secret.CastInstanceId.HasValue)
+                {
+                    var updater = GetEntityVisibilityUpdaters().FirstOrDefault(u => u.IsMatch(new EntityVisibility { EntityType = EntityTypes.Cast }));
+                    if (updater != null)
+                    {
+                        await updater.Update(campaignId, new EntityVisibility
+                        {
+                            EntityType = EntityTypes.Cast,
+                            EntityId = secret.CastInstanceId.Value,
+                            IsVisible = true
+                        });
+                    }
+                }
+                else if (secret.LocationInstanceId.HasValue)
+                {
+                    var updater = GetEntityVisibilityUpdaters().FirstOrDefault(u => u.IsMatch(new EntityVisibility { EntityType = EntityTypes.Location }));
+                    if (updater != null)
+                    {
+                        await updater.Update(campaignId, new EntityVisibility
+                        {
+                            EntityType = EntityTypes.Location,
+                            EntityId = secret.LocationInstanceId.Value,
+                            IsVisible = true
+                        });
+                    }
+                }
+                else if (secret.SublocationInstanceId.HasValue)
+                {
+                    var updater = GetEntityVisibilityUpdaters().FirstOrDefault(u => u.IsMatch(new EntityVisibility { EntityType = EntityTypes.Sublocation }));
+                    if (updater != null)
+                    {
+                        await updater.Update(campaignId, new EntityVisibility
+                        {
+                            EntityType = EntityTypes.Sublocation,
+                            EntityId = secret.SublocationInstanceId.Value,
+                            IsVisible = true
+                        });
+                    }
+                }
+            }
+            else
+            {
+                await _secretUpdateRepository.ResealAsync(secretId);
+            }
+
+            return new EntityVisibilityResult()
+            {
+                CampaignId = campaignId,
+                EntityInstanceId = secretId,
+                EventName = EventNames.CardVisibilityChanged,
+                IsVisible = entityVisibility.IsVisible,
+                CardType = EntityTypes.Secret
             };
         }
     }
