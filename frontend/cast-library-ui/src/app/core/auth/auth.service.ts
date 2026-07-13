@@ -81,6 +81,18 @@ export class AuthService implements OnDestroy {
     return this.http.post<void>(`${environment.apiUrl}/api/auth/change-password`, { currentPassword, newPassword });
   }
 
+  updateDisplayName(displayName: string): Observable<AuthResponse> {
+    return this.http.post<AuthResponse>(`${environment.apiUrl}/api/auth/update-display-name`, { displayName }).pipe(
+      tap(response => this.storeSession(response))
+    );
+  }
+
+  updateEmail(email: string): Observable<AuthResponse> {
+    return this.http.post<AuthResponse>(`${environment.apiUrl}/api/auth/update-email`, { email }).pipe(
+      tap(response => this.storeSession(response))
+    );
+  }
+
   refreshCurrentUser(): Observable<AuthResponse> {
     return this.http.get<AuthResponse>(`${environment.apiUrl}/api/auth/me`).pipe(
       tap(response => this.storeSession(response))

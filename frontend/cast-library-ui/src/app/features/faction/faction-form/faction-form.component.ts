@@ -172,7 +172,7 @@ export class FactionFormComponent implements OnInit {
       setTimeout(() => this.saveStatus.set('idle'), 2000);
       if (!this.factionId()) {
         this.factionId.set(faction.id);
-        this.router.navigate(['/dm/faction', faction.id], { replaceUrl: true, queryParams: { upload: 'true' }, state: { noFlip: true } });
+        this.router.navigate(['/gm/faction', faction.id], { replaceUrl: true, queryParams: { upload: 'true' }, state: { noFlip: true } });
       }
     });
   }

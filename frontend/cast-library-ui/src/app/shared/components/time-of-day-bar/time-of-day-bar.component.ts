@@ -345,11 +345,11 @@ export class TimeOfDayBarComponent implements OnInit, OnChanges, OnDestroy {
     if (notes === undefined) return;
     this.saving.set(sliceId);
     this.http.patch(
-      `${environment.apiUrl}/api/campaigns/${this.campaignId}/time-of-day/slices/${sliceId}/dm-notes`,
+      `${environment.apiUrl}/api/campaigns/${this.campaignId}/time-of-day/slices/${sliceId}/gm-notes`,
       { dmNotes: notes }
     ).subscribe({
       next: () => {
-        this.saving.set(null);
+        setTimeout(() => this.saving.set(null), 1000);
         this.tod.update(tod => {
           if (!tod) return tod;
           return {
@@ -384,7 +384,7 @@ export class TimeOfDayBarComponent implements OnInit, OnChanges, OnDestroy {
       { playerNotes: notes }
     ).subscribe({
       next:  () => {
-        this.saving.set(null);
+        setTimeout(() => this.saving.set(null), 1000);
         this.tod.update(tod => {
           if (!tod) return tod;
           return {

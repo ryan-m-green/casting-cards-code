@@ -671,7 +671,7 @@ export class PlayerCampaignShellComponent implements OnInit, OnDestroy {
   }
 
   exitPortal() {
-    const destination = this.auth.isDm() ? '/dm/campaigns' : '/player/campaigns';
+    const destination = this.auth.isDm() ? '/gm/campaigns' : '/player/campaigns';
     this.transition.exitToLibrary(() =>
       this.router.navigate([destination], { state: { noFlip: true } })
     );

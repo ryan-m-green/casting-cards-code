@@ -22,7 +22,7 @@
 
       <div class="detail-panel-content" #detailContent>
 
-        <!-- Panel action bar (DM only) -->
+        <!-- Panel action bar (GM only) -->
         <app-detail-panel-actions
           [isDm]="isDm()"
           [editing]="editing()"
@@ -251,10 +251,10 @@
           }
         </div>
 
-        <!-- DM Notes (DM only) -->
+        <!-- GM Notes (GM only) -->
         @if (isDm()) {
           <div class="detail-dm-notes">
-            <span class="detail-label">DM Notes</span>
+            <span class="detail-label">GM Notes</span>
             @if (editing()) {
               <textarea class="detail-input detail-input--block"
                         [ngModel]="editDmNotes()"

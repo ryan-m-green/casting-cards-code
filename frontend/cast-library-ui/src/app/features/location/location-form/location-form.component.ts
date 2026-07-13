@@ -223,10 +223,10 @@ export class LocationFormComponent implements OnInit {
           this.imageFile.set(null);
           this.imagePreviewUrl.set(null);
           this.http.post<{ imageUrl: string }>(`${environment.apiUrl}/api/locations/${location.id}/image`, formData).subscribe(() => {
-            this.router.navigate(['/dm/locations', location.id], { replaceUrl: true, state: { noFlip: true } });
+            this.router.navigate(['/gm/locations', location.id], { replaceUrl: true, state: { noFlip: true } });
           });
         } else {
-          this.router.navigate(['/dm/locations', location.id], { replaceUrl: true, state: { noFlip: true } });
+          this.router.navigate(['/gm/locations', location.id], { replaceUrl: true, state: { noFlip: true } });
         }
       }
     });

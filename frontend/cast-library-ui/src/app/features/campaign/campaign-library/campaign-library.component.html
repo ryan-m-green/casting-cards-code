@@ -22,7 +22,7 @@
     <a class="campaign-primary-btn wr-ml-auto" 
        [class.disabled]="campaignLimitReached()"
        [attr.disabled]="campaignLimitReached() ? 'true' : null"
-       [routerLink]="campaignLimitReached() ? null : '/dm/campaigns/new'"
+       [routerLink]="campaignLimitReached() ? null : '/gm/campaigns/new'"
        (click)="campaignLimitReached() ? $event.preventDefault() : null">+ New Campaign</a>
   </div>
 

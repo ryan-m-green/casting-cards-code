@@ -11,7 +11,7 @@
     <button class="campaign-primary-btn wr-ml-auto"
             [class.disabled]="factionLimitReached() || isCreateDisabled()"
             [attr.disabled]="(factionLimitReached() || isCreateDisabled()) ? 'true' : null"
-            [routerLink]="(factionLimitReached() || isCreateDisabled()) ? null : '/dm/faction/new'"
+            [routerLink]="(factionLimitReached() || isCreateDisabled()) ? null : '/gm/faction/new'"
             (click)="(factionLimitReached() || isCreateDisabled()) ? $event.preventDefault() : null">+ Create</button>
   </div>
 

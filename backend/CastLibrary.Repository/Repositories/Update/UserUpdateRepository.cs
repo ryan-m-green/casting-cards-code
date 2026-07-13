@@ -9,6 +9,8 @@ namespace CastLibrary.Repository.Repositories.Update
         Task MergeKeywordsAsync(Guid userId, string[] newKeywords);
         Task UpdateRoleAndIncrementTokenVersionAsync(Guid userId, string newRole);
         Task SetEmailVerifiedAsync(Guid userId);
+        Task UpdateDisplayNameAsync(Guid userId, string displayName);
+        Task UpdateEmailAsync(Guid userId, string email);
     }
     public class UserUpdateRepository(
     ISqlConnectionFactory sqlConnectionFactory) : IUserUpdateRepository
@@ -56,6 +58,22 @@ namespace CastLibrary.Repository.Repositories.Update
             await conn.ExecuteAsync(
                 "UPDATE users SET email_verified = true, email_verification_token = NULL WHERE id = @Id",
                 new { Id = userId });
+        }
+
+        public async Task UpdateDisplayNameAsync(Guid userId, string displayName)
+        {
+            using var conn = sqlConnectionFactory.GetConnection();
+            await conn.ExecuteAsync(
+                "UPDATE users SET display_name = @DisplayName WHERE id = @Id",
+                new { Id = userId, DisplayName = displayName });
+        }
+
+        public async Task UpdateEmailAsync(Guid userId, string email)
+        {
+            using var conn = sqlConnectionFactory.GetConnection();
+            await conn.ExecuteAsync(
+                "UPDATE users SET email = @Email, email_verified = false WHERE id = @Id",
+                new { Id = userId, Email = email });
         }
     }
 }

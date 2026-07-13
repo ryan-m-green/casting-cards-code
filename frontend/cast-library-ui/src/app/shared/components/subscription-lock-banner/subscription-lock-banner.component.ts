@@ -36,7 +36,7 @@ export class SubscriptionLockBannerComponent {
     { initialValue: this.router.url },
   );
 
-  readonly excludedPaths = ['/about', '/legal', '/change-password', '/dm/change-password', '/dm/bug-report', '/player/bug-report', '/subscription-choice'];
+  readonly excludedPaths = ['/about', '/legal', '/change-password', '/gm/change-password', '/gm/bug-report', '/player/bug-report', '/subscription-choice'];
 
   private initialFlipComplete = signal(false);
   private wasOnCover = this.router.url === '/' || this.router.url === '';

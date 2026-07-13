@@ -230,7 +230,7 @@ export class CampaignCreatorComponent implements OnInit, OnDestroy {
           })
             .subscribe({ next: campaign => {
               this.campaignId.set(campaign.id);
-              this.router.navigate(['/dm/campaigns', campaign.id], { replaceUrl: true });
+              this.router.navigate(['/gm/campaigns', campaign.id], { replaceUrl: true });
               onSuccess();
             }, error: onError });
         }
@@ -477,7 +477,7 @@ export class CampaignCreatorComponent implements OnInit, OnDestroy {
     const cid              = this.campaignId();
     const locationInstanceId = this.expandedDraft()?.instanceId;
     if (cid && locationInstanceId) {
-      this.router.navigate(['/dm/campaigns', cid, 'locations', locationInstanceId, 'sublocations']);
+      this.router.navigate(['/gm/campaigns', cid, 'locations', locationInstanceId, 'sublocations']);
     }
   }
 
@@ -759,7 +759,7 @@ export class CampaignCreatorComponent implements OnInit, OnDestroy {
     if (!id) return;
     this.deleting.set(true);
     this.http.delete(`${environment.apiUrl}/api/campaigns/${id}`).subscribe({
-      next: () => this.router.navigate(['/dm/campaigns']),
+      next: () => this.router.navigate(['/gm/campaigns']),
       error: () => this.deleting.set(false),
     });
   }

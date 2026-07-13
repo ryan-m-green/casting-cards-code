@@ -221,7 +221,7 @@ $spring-easing:       cubic-bezier(0.22, 1, 0.36, 1);
     }
 
     &__readonly {
-      color: v.$color-ext-721;
+      color: v.$color-ext-563;
     }
   }
 }
@@ -306,7 +306,7 @@ $spring-easing:       cubic-bezier(0.22, 1, 0.36, 1);
   }
 
   &__label {
-    font-size: 0.68rem;
+    font-size: 12px;
     font-weight: 600;
     color: v.$color-ext-726;
     text-shadow: 0 1px 3px v.$color-ext-727;
@@ -454,18 +454,18 @@ $spring-easing:       cubic-bezier(0.22, 1, 0.36, 1);
   &__label {
     display: block;
     font-family: v.$font-header;
-    font-size: 0.6rem;
+    font-size: 12px;
     text-transform: uppercase;
-    letter-spacing: 0.18em;
-    color: v.$color-ext-126;
+    letter-spacing: 0.2em;
+    color: rgba(v.$color-lib-location-1, 0.85);
     margin-bottom: 6px;
   }
 
   &__saving {
     font-family: v.$font-body;
     font-style: italic;
-    font-size: 0.72rem;
-    color: v.$color-ext-733;
+    font-size: 12px;
+    color: v.$color-ext-120;
     margin-left: 6px;
     font-weight: 400;
     text-transform: none;
@@ -477,10 +477,10 @@ $spring-easing:       cubic-bezier(0.22, 1, 0.36, 1);
     background: v.$color-ext-734;
     border: 1px solid v.$color-ext-50;
     border-radius: 5px;
-    color: v.$color-ext-143;
+    color: v.$campaign-portal-text-secondary;
     font-family: v.$font-body;
-    font-size: 0.9rem;
-    line-height: 1.55;
+    font-size: 16px;
+    line-height: 1.6;
     padding: 7px 10px;
     resize: vertical;
     box-sizing: border-box;
@@ -499,9 +499,9 @@ $spring-easing:       cubic-bezier(0.22, 1, 0.36, 1);
 
   &__readonly {
     font-family: v.$font-body;
-    font-size: 0.9rem;
-    color: v.$color-ext-736;
-    line-height: 1.55;
+    font-size: 16px;
+    color: v.$campaign-portal-text-secondary;
+    line-height: 1.6;
     margin: 0;
     padding: 4px 2px;
     white-space: pre-wrap;

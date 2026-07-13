@@ -115,7 +115,7 @@ public class TimeOfDayController(
         return NoContent();
     }
 
-    [HttpPatch("slices/{sliceId}/dm-notes")]
+    [HttpPatch("slices/{sliceId}/gm-notes")]
     public async Task<IActionResult> UpdateDmNotes(Guid campaignId, Guid sliceId,
         [FromBody] UpdateSliceDmNotesRequest request)
     {

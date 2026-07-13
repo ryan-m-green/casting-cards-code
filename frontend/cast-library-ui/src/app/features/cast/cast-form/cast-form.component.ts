@@ -211,10 +211,10 @@ export class CastFormComponent implements OnInit {
           this.imageFile.set(null);
           this.imagePreviewUrl.set(null);
           this.http.post<{ imageUrl: string }>(`${environment.apiUrl}/api/cast/${cast.id}/image`, formData).subscribe(() => {
-            this.router.navigate(['/dm/cast', cast.id], { replaceUrl: true, state: { noFlip: true } });
+            this.router.navigate(['/gm/cast', cast.id], { replaceUrl: true, state: { noFlip: true } });
           });
         } else {
-          this.router.navigate(['/dm/cast', cast.id], { replaceUrl: true, state: { noFlip: true } });
+          this.router.navigate(['/gm/cast', cast.id], { replaceUrl: true, state: { noFlip: true } });
         }
       }
     });

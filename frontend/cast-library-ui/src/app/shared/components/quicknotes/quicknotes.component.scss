@@ -310,6 +310,25 @@
   }
 }
 
+.qn-close-btn {
+  padding: 7px 20px;
+  background: transparent;
+  border: 1px solid v.$campaign-portal-border-bold;
+  border-radius: 6px;
+  color: v.$campaign-portal-text-muted;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  letter-spacing: 0.06em;
+  transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+
+  &:hover {
+    background: v.$campaign-portal-bg-medium;
+    border-color: v.$campaign-portal-border-strong-focus;
+    color: v.$campaign-portal-text-bright;
+  }
+}
+
 /* ── Close warning ───────────────────────────────────────────── */
 .qn-close-warning {
   position: absolute;

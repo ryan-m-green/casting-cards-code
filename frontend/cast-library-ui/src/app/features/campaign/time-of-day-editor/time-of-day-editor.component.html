@@ -85,10 +85,10 @@
 
         <textarea
           class="fi fi-no-mb tod-notes-input"
-          placeholder="DM notes…"
+          placeholder="GM notes…"
           rows="1"
           [value]="slice.dmNotes"
-          [attr.aria-label]="'DM notes for ' + (slice.label || 'slice ' + (i + 1))"
+          [attr.aria-label]="'GM notes for ' + (slice.label || 'slice ' + (i + 1))"
           (input)="updateSliceField(i, 'dmNotes', $any($event.target).value)"
         ></textarea>
 

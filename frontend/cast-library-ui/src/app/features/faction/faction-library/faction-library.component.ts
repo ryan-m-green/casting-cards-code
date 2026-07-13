@@ -59,7 +59,7 @@ export class FactionLibraryComponent implements OnInit {
     );
   }
 
-  edit(id: string)          { this.router.navigate(['/dm/faction', id]); }
+  edit(id: string)          { this.router.navigate(['/gm/faction', id]); }
   confirmDelete(id: string) { this.pendingDeleteId.set(id); }
   cancelDelete()            { this.pendingDeleteId.set(null); }
 

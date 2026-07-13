@@ -35,32 +35,32 @@
         @if (isDm()) {
           <!-- Dashboard — standalone link -->
           <div class="jnd-section jnd-section--standalone">
-            <button class="jnd-item jnd-item--dashboard" [class.is-active]="isActive('/dm/dashboard')" (click)="navigate('/dm/dashboard')">
+            <button class="jnd-item jnd-item--dashboard" [class.is-active]="isActive('/gm/dashboard')" (click)="navigate('/gm/dashboard')">
               <span class="jnd-item-marker">◈</span>
               <span class="jnd-item-label">Dashboard</span>
             </button>
           </div>
 
-          <!-- DM: Library -->
+          <!-- GM: Library -->
           <div class="jnd-section">
             <span class="jnd-section-label">Library</span>
-            <button class="jnd-item" [class.is-active]="isActive('/dm/campaigns')" [class.disabled]="isLibraryDisabled()" [attr.disabled]="isLibraryDisabled() ? 'true' : null" (click)="isLibraryDisabled() ? null : navigate('/dm/campaigns')">
+            <button class="jnd-item" [class.is-active]="isActive('/gm/campaigns')" [class.disabled]="isLibraryDisabled()" [attr.disabled]="isLibraryDisabled() ? 'true' : null" (click)="isLibraryDisabled() ? null : navigate('/gm/campaigns')">
               <span class="jnd-item-marker">◈</span>
               <span class="jnd-item-label">Campaign Library</span>
             </button>
-            <button class="jnd-item" [class.is-active]="isActive('/dm/cast')" [class.disabled]="isLibraryDisabled()" [attr.disabled]="isLibraryDisabled() ? 'true' : null" (click)="isLibraryDisabled() ? null : navigate('/dm/cast')">
+            <button class="jnd-item" [class.is-active]="isActive('/gm/cast')" [class.disabled]="isLibraryDisabled()" [attr.disabled]="isLibraryDisabled() ? 'true' : null" (click)="isLibraryDisabled() ? null : navigate('/gm/cast')">
               <span class="jnd-item-marker">◈</span>
               <span class="jnd-item-label">Cast Library</span>
             </button>
-            <button class="jnd-item" [class.is-active]="isActive('/dm/sublocations')" [class.disabled]="isLibraryDisabled()" [attr.disabled]="isLibraryDisabled() ? 'true' : null" (click)="isLibraryDisabled() ? null : navigate('/dm/sublocations')">
+            <button class="jnd-item" [class.is-active]="isActive('/gm/sublocations')" [class.disabled]="isLibraryDisabled()" [attr.disabled]="isLibraryDisabled() ? 'true' : null" (click)="isLibraryDisabled() ? null : navigate('/gm/sublocations')">
               <span class="jnd-item-marker">◈</span>
               <span class="jnd-item-label">Sublocation Library</span>
             </button>
-            <button class="jnd-item" [class.is-active]="isActive('/dm/locations')" [class.disabled]="isLibraryDisabled()" [attr.disabled]="isLibraryDisabled() ? 'true' : null" (click)="isLibraryDisabled() ? null : navigate('/dm/locations')">
+            <button class="jnd-item" [class.is-active]="isActive('/gm/locations')" [class.disabled]="isLibraryDisabled()" [attr.disabled]="isLibraryDisabled() ? 'true' : null" (click)="isLibraryDisabled() ? null : navigate('/gm/locations')">
               <span class="jnd-item-marker">◈</span>
               <span class="jnd-item-label">Location Library</span>
             </button>
-            <button class="jnd-item" [class.is-active]="isActive('/dm/faction')" [class.disabled]="isLibraryDisabled()" [attr.disabled]="isLibraryDisabled() ? 'true' : null" (click)="isLibraryDisabled() ? null : navigate('/dm/faction')">
+            <button class="jnd-item" [class.is-active]="isActive('/gm/faction')" [class.disabled]="isLibraryDisabled()" [attr.disabled]="isLibraryDisabled() ? 'true' : null" (click)="isLibraryDisabled() ? null : navigate('/gm/faction')">
               <span class="jnd-item-marker">◈</span>
               <span class="jnd-item-label">Faction Library</span>
             </button>
@@ -111,14 +111,14 @@
         </div>
 
         @if (isDm()) {
-          <!-- DM: Account -->
+          <!-- GM: Account -->
           <div class="jnd-section">
             <span class="jnd-section-label">Account</span>
-            <button class="jnd-item" [class.is-active]="isActive('/dm/change-password')" (click)="navigate('/dm/change-password')">
+            <button class="jnd-item" [class.is-active]="isActive('/gm/account-settings')" (click)="navigate('/gm/account-settings')">
               <span class="jnd-item-marker">◈</span>
-              <span class="jnd-item-label">Change Password</span>
+              <span class="jnd-item-label">Account Settings</span>
             </button>
-            <button class="jnd-item" [class.is-active]="isActive('/dm/bug-report')" (click)="navigate('/dm/bug-report')">
+            <button class="jnd-item" [class.is-active]="isActive('/gm/bug-report')" (click)="navigate('/gm/bug-report')">
               <span class="jnd-item-marker">◈</span>
               <span class="jnd-item-label">Report A Bug</span>
             </button>
@@ -129,9 +129,9 @@
           <!-- Player: Account -->
           <div class="jnd-section">
             <span class="jnd-section-label">Account</span>
-            <button class="jnd-item" [class.is-active]="isActive('/player/change-password')" (click)="navigate('/player/change-password')">
+            <button class="jnd-item" [class.is-active]="isActive('/player/account-settings')" (click)="navigate('/player/account-settings')">
               <span class="jnd-item-marker">◈</span>
-              <span class="jnd-item-label">Change Password</span>
+              <span class="jnd-item-label">Account Settings</span>
             </button>
             <button class="jnd-item" [class.is-active]="isActive('/player/bug-report')" (click)="navigate('/player/bug-report')">
               <span class="jnd-item-marker">◈</span>

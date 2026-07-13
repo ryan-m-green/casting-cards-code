@@ -1,4 +1,4 @@
-<!-- ── DM: Factions grid ── -->
+<!-- ── GM: Factions grid ── -->
 @if (campaign(); as camp) {
   @if (isDm()) {
 <div class="factions-section">
@@ -90,7 +90,7 @@
   </div>
   }
 
-  <!-- ── Tab: Set Social Compass (DM only) ── -->
+  <!-- ── Tab: Set Social Compass (GM only) ── -->
   @if (activeTab() === 'set-social') {
   <div id="factions-panel-set-social" role="tabpanel" aria-labelledby="factions-tab-set-social">
     <app-cast-relationships-tab

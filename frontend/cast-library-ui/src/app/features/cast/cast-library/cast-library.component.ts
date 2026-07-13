@@ -64,7 +64,7 @@ export class CastLibraryComponent implements OnInit {
   }
 
   initial(name: string) { return name.charAt(0).toUpperCase(); }
-  edit(id: string)      { this.router.navigate(['/dm/cast', id]); }
+  edit(id: string)      { this.router.navigate(['/gm/cast', id]); }
 
   confirmDelete(id: string) { this.pendingDeleteId.set(id); }
   cancelDelete()            { this.pendingDeleteId.set(null); }

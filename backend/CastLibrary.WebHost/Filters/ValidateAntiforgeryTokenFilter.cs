@@ -39,12 +39,14 @@ public class ValidateAntiforgeryTokenFilter : Attribute, IAsyncAuthorizationFilt
         }
 
         // Skip validation for authentication endpoints (they handle their own security)
-        if (path.StartsWithSegments("/api/auth/login") || 
+        if (path.StartsWithSegments("/api/auth/login") ||
             path.StartsWithSegments("/api/auth/register") ||
             path.StartsWithSegments("/api/auth/forgot-password") ||
             path.StartsWithSegments("/api/auth/reset-password") ||
             path.StartsWithSegments("/api/auth/verify-email") ||
-            path.StartsWithSegments("/api/auth/change-password"))
+            path.StartsWithSegments("/api/auth/change-password") ||
+            path.StartsWithSegments("/api/auth/update-display-name") ||
+            path.StartsWithSegments("/api/auth/update-email"))
         {
             return;
         }

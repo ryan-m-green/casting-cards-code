@@ -99,6 +99,13 @@ export class QuicknotesComponent implements OnInit, OnDestroy {
       this.hub.sessionCancelled$.subscribe((event: any) => {
         if (event && event.campaignId === this.campaignId) {
           this.isSessionActive.set(false);
+          // Auto-save unsaved quicknotes to queue
+          if (this.noteContent().trim()) {
+            const originalDestType = this.destType();
+            this.destType.set('queue');
+            this.save();
+            this.destType.set(originalDestType);
+          }
         }
       })
     );
@@ -125,6 +132,18 @@ export class QuicknotesComponent implements OnInit, OnDestroy {
 
   toggle() {
     if (this.isOpen() && !this.isClosing()) {
+      // Check if there's unsaved content
+      if (this.noteContent().trim() && !this.saveSuccess()) {
+        this.showCloseWarning.set(true);
+        // Auto-hide warning after 4 seconds
+        if (this.warningTimeout) {
+          clearTimeout(this.warningTimeout);
+        }
+        this.warningTimeout = setTimeout(() => {
+          this.showCloseWarning.set(false);
+        }, 4000);
+        return;
+      }
       this.isClosing.set(true);
       setTimeout(() => {
         this.isOpen.set(false);
@@ -133,6 +152,7 @@ export class QuicknotesComponent implements OnInit, OnDestroy {
         this.destType.set('queue');
         this.entityId.set('');
         this.saveSuccess.set(false);
+        this.showCloseWarning.set(false);
       }, this.SLIDE_DURATION);
     } else if (!this.isOpen()) {
       this.isOpen.set(true);

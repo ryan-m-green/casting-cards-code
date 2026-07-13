@@ -32,13 +32,13 @@ const D5E_CONDITIONS = [
 type Currency = 'cp' | 'sp' | 'ep' | 'gp' | 'pp';
 
 @Component({
-  selector: 'app-dm-the-party',
+  selector: 'app-gm-the-party',
   standalone: true,
   imports: [CommonModule, FormsModule, CastingCardPlayerComponent, CastCardComponent, PlayerSecretsDrawerComponent],
-  templateUrl: './dm-the-party.component.html',
-  styleUrl: './dm-the-party.component.scss',
+  templateUrl: './gm-the-party.component.html',
+  styleUrl: './gm-the-party.component.scss',
 })
-export class DmThePartyComponent implements OnInit {
+export class GmThePartyComponent implements OnInit {
   private route      = inject(ActivatedRoute);
   private router     = inject(Router);
   private http       = inject(HttpClient);

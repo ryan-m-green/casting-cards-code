@@ -2,7 +2,7 @@
   <img src="/DoodleArt/tiefling_joke.PNG" class="cast-form-doodle-art" alt="Doodle art" />
   <app-journal-title [title]="castId() ? 'Edit Cast Member' : 'Cast Member Creation'" />
   <div class="wr wr-page-header">
-    <a class="btn-ghost" routerLink="/dm/cast">← Library</a>
+    <a class="btn-ghost" routerLink="/gm/cast">← Library</a>
   </div>
 
   @if (castId()) {
@@ -136,7 +136,7 @@
       <label for="cast-voice-notes-textarea" class="fi-label">Additional Voice Notes</label>
       <textarea id="cast-voice-notes-textarea" class="fi" formControlName="voiceNotes" rows="3" placeholder="Speaks with a slight stammer when nervous…" autocomplete="off"></textarea>
 
-      <label for="cast-dm-desc-textarea" class="fi-label">DM Description (private notes)</label>
+      <label for="cast-dm-desc-textarea" class="fi-label">GM Description (private notes)</label>
       <textarea id="cast-dm-desc-textarea" class="fi" formControlName="description" rows="4" placeholder="Your private notes on this cast member…" autocomplete="off"></textarea>
 
     </fieldset>

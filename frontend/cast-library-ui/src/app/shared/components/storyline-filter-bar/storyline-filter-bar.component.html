@@ -53,7 +53,7 @@
         </svg>
       </button>
     }
-    @if (showPlayerNote) {
+    @if (showPlayerNote && !disablePlayerNote) {
       <button type="button" class="ev-filter-btn" [class.ev-filter-btn--active]="activeTypeFilters.includes('player-note')" (click)="toggleTypeFilter('player-note')" title="Player Note">
         <img src="/old_paper_document_feather_pen.svg" class="ev-filter-icon ev-filter-icon--player-note" alt="" />
       </button>

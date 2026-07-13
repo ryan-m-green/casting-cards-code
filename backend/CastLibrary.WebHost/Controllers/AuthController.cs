@@ -24,6 +24,8 @@ public class AuthController(
     IForgotPasswordCommandHandler forgotPasswordCommand,
     IResetPasswordCommandHandler resetPasswordCommand,
     IChangePasswordCommandHandler changePasswordCommand,
+    IUpdateDisplayNameCommandHandler updateDisplayNameCommand,
+    IUpdateEmailCommandHandler updateEmailCommand,
     IUserRetriever userRetriever,
     IUserReadRepository userReadRepository,
     ISubscriptionReadRepository subscriptionReadRepository,
@@ -261,6 +263,88 @@ public class AuthController(
             isSuccess: true);
 
         return Ok(new { message = "Password changed successfully." });
+    }
+
+    [Authorize]
+    [HttpPost("update-display-name")]
+        public async Task<IActionResult> UpdateDisplayName([FromBody] UpdateDisplayNameRequest request)
+    {
+        var userId = userRetriever.GetUserId(User);
+        var user = await userReadRepository.GetByIdAsync(userId);
+        var (success, error) = await updateDisplayNameCommand.HandleAsync(new UpdateDisplayNameCommand(userId, request));
+        if (!success)
+        {
+            return BadRequest(new { message = error ?? "Failed to update display name." });
+        }
+
+        // Refresh the user session with updated data
+        var subscription = await subscriptionReadRepository.GetByUserIdAsync(userId);
+        var userDomain = new UserDomain
+        {
+            Id = user!.Id,
+            Email = user.Email,
+            DisplayName = request.DisplayName,
+            Role = user.Role,
+            TokenVersion = user.TokenVersion
+        };
+
+        var token = jwtTokenService.GenerateToken(userDomain, subscription);
+
+        var response = new AuthResponse
+        {
+            Token = token,
+            User = new UserResponse
+            {
+                Id = user.Id,
+                Email = user.Email,
+                DisplayName = request.DisplayName,
+                Role = user.Role.ToString(),
+            },
+            BypassPayment = subscription?.BypassPayment ?? false
+        };
+
+        return Ok(response);
+    }
+
+    [Authorize]
+    [HttpPost("update-email")]
+        public async Task<IActionResult> UpdateEmail([FromBody] UpdateEmailRequest request)
+    {
+        var userId = userRetriever.GetUserId(User);
+        var user = await userReadRepository.GetByIdAsync(userId);
+        var (success, error) = await updateEmailCommand.HandleAsync(new UpdateEmailCommand(userId, request));
+        if (!success)
+        {
+            return BadRequest(new { message = error ?? "Failed to update email." });
+        }
+
+        // Refresh the user session with updated data
+        var subscription = await subscriptionReadRepository.GetByUserIdAsync(userId);
+        var userDomain = new UserDomain
+        {
+            Id = user!.Id,
+            Email = request.Email,
+            DisplayName = user.DisplayName,
+            Role = user.Role,
+            TokenVersion = user.TokenVersion
+        };
+
+        var token = jwtTokenService.GenerateToken(userDomain, subscription);
+
+        var response = new AuthResponse
+        {
+            Token = token,
+            User = new UserResponse
+            {
+                Id = user.Id,
+                Email = request.Email,
+                DisplayName = user.DisplayName,
+                Role = user.Role.ToString(),
+            },
+            BypassPayment = subscription?.BypassPayment ?? false
+        };
+
+        return Ok(response);
     }
 
     [HttpGet("xsrf-token")]

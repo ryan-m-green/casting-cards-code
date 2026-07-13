@@ -1,7 +1,7 @@
 <div class="pc scroll-body">
   <app-journal-title [title]="factionId() ? 'Edit Faction' : 'Create Faction'" />
   <div class="wr wr-page-header">
-    <a class="btn-ghost" routerLink="/dm/faction">← Library</a>
+    <a class="btn-ghost" routerLink="/gm/faction">← Library</a>
   </div>
 
   @if (factionId() || imageUrl()) {
@@ -55,7 +55,7 @@
           </div>
         </div>
         <div class="form-field-min">
-          <label for="faction-dm-notes-input" class="fi-label">DM Notes</label>
+          <label for="faction-dm-notes-input" class="fi-label">GM Notes</label>
           <textarea id="faction-dm-notes-input" class="fi fi--textarea" formControlName="dmNotes" placeholder="Secret objectives, key contacts…" rows="4" autocomplete="off"></textarea>
         </div>
 

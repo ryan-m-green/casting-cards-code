@@ -11,7 +11,7 @@
     <button class="campaign-primary-btn wr-ml-auto"
             [class.disabled]="castLimitReached() || isCreateDisabled()"
             [attr.disabled]="(castLimitReached() || isCreateDisabled()) ? 'true' : null"
-            [routerLink]="(castLimitReached() || isCreateDisabled()) ? null : '/dm/cast/new'"
+            [routerLink]="(castLimitReached() || isCreateDisabled()) ? null : '/gm/cast/new'"
             (click)="(castLimitReached() || isCreateDisabled()) ? $event.preventDefault() : null">+ Create</button>
   </div>
 

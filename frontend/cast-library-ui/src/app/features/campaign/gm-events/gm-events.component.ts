@@ -52,13 +52,13 @@ interface CampaignEvent {
 }
 
 @Component({
-  selector: 'app-dm-events',
+  selector: 'app-gm-events',
   standalone: true,
   imports: [CommonModule, FormsModule, NoteDestinationPickerComponent, LockIconComponent, StorylineFilterBarComponent],
-  templateUrl: './dm-events.component.html',
-  styleUrl: './dm-events.component.scss',
+  templateUrl: './gm-events.component.html',
+  styleUrl: './gm-events.component.scss',
 })
-export class DmEventsComponent implements OnInit, OnDestroy {
+export class GmEventsComponent implements OnInit, OnDestroy {
   private route    = inject(ActivatedRoute);
   private shellSvc = inject(CampaignShellService);
   private http     = inject(HttpClient);
@@ -118,7 +118,7 @@ export class DmEventsComponent implements OnInit, OnDestroy {
   visibilityFilters = signal<string[]>([]);
 
   private filterStorageKey(suffix: string): string {
-    return `dm-events-${this.campaignId}-${suffix}`;
+    return `gm-events-${this.campaignId}-${suffix}`;
   }
 
   private loadFilters(): void {

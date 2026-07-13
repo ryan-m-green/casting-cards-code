@@ -54,7 +54,7 @@ export class LocationLibraryComponent implements OnInit {
     return this.locations().filter(c => c.name.toLowerCase().includes(term) || c.classification.toLowerCase().includes(term));
   }
 
-  edit(id: string) { this.router.navigate(['/dm/locations', id]); }
+  edit(id: string) { this.router.navigate(['/gm/locations', id]); }
 
   confirmDelete(id: string) { this.pendingDeleteId.set(id); }
   cancelDelete()            { this.pendingDeleteId.set(null); }

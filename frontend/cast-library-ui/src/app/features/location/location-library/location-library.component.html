@@ -11,7 +11,7 @@
     <button class="campaign-primary-btn wr-ml-auto"
             [class.disabled]="locationLimitReached() || isCreateDisabled()"
             [attr.disabled]="(locationLimitReached() || isCreateDisabled()) ? 'true' : null"
-            [routerLink]="(locationLimitReached() || isCreateDisabled()) ? null : '/dm/locations/new'"
+            [routerLink]="(locationLimitReached() || isCreateDisabled()) ? null : '/gm/locations/new'"
             (click)="(locationLimitReached() || isCreateDisabled()) ? $event.preventDefault() : null">+ Create</button>
   </div>
 

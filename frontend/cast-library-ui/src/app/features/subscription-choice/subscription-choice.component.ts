@@ -60,7 +60,7 @@ export class SubscriptionChoiceComponent implements OnInit {
         clearInterval(checkInterval);
         this.authService.stopSubscriptionRefresh();
         this.isCheckoutSuccessSignal.set(false);
-        this.router.navigate(['/dm/dashboard']);
+        this.router.navigate(['/gm/dashboard']);
       }
     }, 3000);
   }
@@ -69,7 +69,7 @@ export class SubscriptionChoiceComponent implements OnInit {
     this.loading = true;
     this.stripe.createFreeTrialSubscription().subscribe({
       next: () => {
-        this.router.navigate(['/dm/dashboard']);
+        this.router.navigate(['/gm/dashboard']);
       },
       error: () => {
         this.loading = false;

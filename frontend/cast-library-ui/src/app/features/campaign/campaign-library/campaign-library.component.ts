@@ -307,7 +307,7 @@ export class CampaignLibraryComponent implements OnInit, OnDestroy {
     }, 600);
   }
 
-  edit(id: string) { this.router.navigate(['/dm/campaigns', id]); }
+  edit(id: string) { this.router.navigate(['/gm/campaigns', id]); }
 
   requestDelete(campaign: Campaign) { this.confirmTarget.set(campaign); }
   cancelDelete() { this.confirmTarget.set(null); }

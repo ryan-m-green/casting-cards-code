@@ -232,7 +232,7 @@ export class VoidNavDrawerComponent implements OnChanges {
   }
 
   exitToLibrary() {
-    const route = this.mode() === 'player' ? ['/player/campaigns'] : ['/dm/campaigns'];
+    const route = this.mode() === 'player' ? ['/player/campaigns'] : ['/gm/campaigns'];
     this.transition.exitToLibrary(() =>
       this.router.navigate(route, { state: { noFlip: true } })
     );

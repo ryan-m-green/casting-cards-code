@@ -47,6 +47,13 @@ interface TitleSegment {
 export class VoidTitleSegmentsComponent {
   context = input.required<VoidTitleContext>();
 
+  protected isSingleTitle = computed(() => {
+    const segs = this.segments();
+    if (segs.length !== 1) return false;
+    const text = segs[0].text.toLowerCase();
+    return text === 'storyline' || text === 'the party' || text === 'factions';
+  });
+
   protected segments = computed<TitleSegment[]>(() => {
     const ctx = this.context();
 
@@ -98,11 +105,6 @@ export class VoidTitleSegmentsComponent {
         if (ctx.campaignName) {
           segs.push({ text: ctx.campaignName, route: [ctx.baseRoute, ctx.campaignId], cssClass: 'void-title__link void-title__campaign-link' });
         }
-        segs.push({ text: 'location:', cssClass: 'void-title__label' });
-        segs.push(ctx.location
-          ? { text: ctx.location.name, route: [ctx.baseRoute, ctx.campaignId, 'locations', ctx.location.instanceId], cssClass: 'void-title__indented' }
-          : { text: '\u2026', cssClass: 'void-title__indented' }
-        );
         return segs;
 
       default: {

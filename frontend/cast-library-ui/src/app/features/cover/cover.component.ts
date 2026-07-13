@@ -25,7 +25,7 @@ export class CoverComponent implements OnInit {
   ngOnInit() {
     // Check if user is already authenticated and redirect
     if (this.auth.isDm() || this.auth.isAdmin()) {
-      this.router.navigate(['/dm/dashboard']);
+      this.router.navigate(['/gm/dashboard']);
       return;
     }
     
@@ -40,7 +40,7 @@ export class CoverComponent implements OnInit {
       setTimeout(() => {
         if (this.auth.isLoggedIn()) {
           if (this.auth.isDm() || this.auth.isAdmin()) {
-            this.router.navigate(['/dm/dashboard']);
+            this.router.navigate(['/gm/dashboard']);
           } else {
             this.router.navigate(['/player/campaigns']);
           }
@@ -172,7 +172,7 @@ export class CoverComponent implements OnInit {
               } else {
                 // Default navigation based on user role from auth service
                 if (this.auth.isDm()) {
-                  this.router.navigate(['/dm/dashboard']);
+                  this.router.navigate(['/gm/dashboard']);
                 } else {
                   this.router.navigate(['/player/campaigns']);
                 }

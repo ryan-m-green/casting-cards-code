@@ -27,7 +27,7 @@ export const routes: Routes = [
       {
         path: 'the-party',
         canActivate: [dmGuard],
-        loadComponent: () => import('./features/campaign/dm-the-party/dm-the-party.component').then(m => m.DmThePartyComponent),
+        loadComponent: () => import('./features/campaign/gm-the-party/gm-the-party.component').then(m => m.GmThePartyComponent),
       },
       {
         path: 'locations/:locationInstanceId',
@@ -54,7 +54,7 @@ export const routes: Routes = [
       {
         path: 'plot',
         canActivate: [dmGuard],
-        loadComponent: () => import('./features/campaign/dm-events/dm-events.component').then(m => m.DmEventsComponent),
+        loadComponent: () => import('./features/campaign/gm-events/gm-events.component').then(m => m.GmEventsComponent),
       },
     ],
   },
@@ -150,7 +150,7 @@ export const routes: Routes = [
             loadComponent: () => import('./features/player/player-campaigns/player-campaigns.component').then(m => m.PlayerCampaignsComponent),
           },
           {
-            path: 'change-password',
+            path: 'account-settings',
             canActivate: [playerLibraryAccessGuard],
             loadComponent: () => import('./features/change-password/change-password.component').then(m => m.ChangePasswordComponent),
           },
@@ -163,7 +163,7 @@ export const routes: Routes = [
         ],
       },
       {
-        path: 'dm',
+        path: 'gm',
         canActivate: [dmGuard],
         children: [
           {
@@ -247,7 +247,7 @@ export const routes: Routes = [
             loadComponent: () => import('./features/faction/faction-form/faction-form.component').then(m => m.FactionFormComponent),
           },
           {
-            path: 'change-password',
+            path: 'account-settings',
             canActivate: [libraryAccessGuard],
             loadComponent: () => import('./features/change-password/change-password.component').then(m => m.ChangePasswordComponent),
           },

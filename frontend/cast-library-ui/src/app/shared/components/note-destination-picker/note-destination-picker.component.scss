@@ -37,6 +37,13 @@
     white-space: nowrap;
   }
 
+  .ndp-dest-btn__multiline {
+    font-size: 10px;
+    line-height: 1.2;
+    text-align: center;
+    white-space: normal;
+  }
+
   &:hover {
     background: color-mix(in srgb, v.$campaign-portal-bg-medium 50%, v.$color-base-arcane-purple 50%);
     border-color: v.$campaign-portal-border-strong-focus;

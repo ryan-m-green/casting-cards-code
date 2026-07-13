@@ -29,7 +29,7 @@
       </div>
       @if (!isSessionActive()) {
         <div class="session-disabled-message">
-          Notes are disabled when no session is active. Wait for the DM to start a session.
+          Notes are disabled when no session is active. Wait for the GM to start a session.
         </div>
       }
       <textarea
@@ -52,7 +52,7 @@
             [entityId]="entityId()"
             [showQueue]="true"
             [showPlayer]="false"
-            [showCampaign]="false"
+            [showCampaign]="true"
             [locations]="locations"
             [sublocations]="sublocations"
             [casts]="casts"

@@ -189,10 +189,10 @@ export class SublocationFormComponent implements OnInit {
           this.imageFile.set(null);
           this.imagePreviewUrl.set(null);
           this.http.post<{ imageUrl: string }>(`${environment.apiUrl}/api/sublocations/${subLoc.id}/image`, formData).subscribe(() => {
-            this.router.navigate(['/dm/sublocations', subLoc.id], { replaceUrl: true, state: { noFlip: true } });
+            this.router.navigate(['/gm/sublocations', subLoc.id], { replaceUrl: true, state: { noFlip: true } });
           });
         } else {
-          this.router.navigate(['/dm/sublocations', subLoc.id], { replaceUrl: true, state: { noFlip: true } });
+          this.router.navigate(['/gm/sublocations', subLoc.id], { replaceUrl: true, state: { noFlip: true } });
         }
       }
     });

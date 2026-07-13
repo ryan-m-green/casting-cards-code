@@ -57,7 +57,7 @@ export class SublocationLibraryComponent implements OnInit {
     );
   }
 
-  edit(id: string) { this.router.navigate(['/dm/sublocations', id]); }
+  edit(id: string) { this.router.navigate(['/gm/sublocations', id]); }
 
   confirmDelete(id: string) { this.pendingDeleteId.set(id); }
   cancelDelete()            { this.pendingDeleteId.set(null); }

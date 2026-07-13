@@ -29,7 +29,7 @@ export const playerGuard: CanActivateFn = () => {
   const auth   = inject(AuthService);
   const router = inject(Router);
   if (!auth.isLoggedIn()) return router.createUrlTree(['/']);
-  if (auth.isDm()) return router.createUrlTree(['/dm/campaigns']);
+  if (auth.isDm()) return router.createUrlTree(['/gm/campaigns']);
   return true;
 };
 
@@ -44,7 +44,7 @@ export const adminGuard: CanActivateFn = () => {
 export const coverGuard: CanActivateFn = () => {
   const auth   = inject(AuthService);
   const router = inject(Router);
-  if (auth.isDm() || auth.isAdmin()) return router.createUrlTree(['/dm/dashboard']);
+  if (auth.isDm() || auth.isAdmin()) return router.createUrlTree(['/gm/dashboard']);
   if (auth.isLoggedIn()) return router.createUrlTree(['/player/campaigns']);
   return true;
 };
@@ -62,7 +62,7 @@ export const subscriptionLockGuard: CanActivateFn = () => {
   if (auth.lockLevel() === 'FullAccess') return true;
 
   // Redirect to dashboard if locked (SoftLock, HardLock, Suspended)
-  return router.createUrlTree(['/dm/dashboard']);
+  return router.createUrlTree(['/gm/dashboard']);
 };
 
 export const libraryAccessGuard: CanActivateFn = () => {
@@ -79,7 +79,7 @@ export const libraryAccessGuard: CanActivateFn = () => {
   if (level === 'FullAccess' || level === 'SoftLock') return true;
 
   // Redirect to dashboard if HardLock or Suspended
-  return router.createUrlTree(['/dm/dashboard']);
+  return router.createUrlTree(['/gm/dashboard']);
 };
 
 export const playerLibraryAccessGuard: CanActivateFn = () => {

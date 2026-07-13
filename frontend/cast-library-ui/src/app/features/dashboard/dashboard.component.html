@@ -12,35 +12,35 @@
 
   <!-- Stats -->
   <div class="sc section-label-mb">
-    <div class="sv sv--cast" (click)="goto('/dm/cast')" (keydown.enter)="goto('/dm/cast')" (keydown.space)="goto('/dm/cast')" role="button" tabindex="0" aria-label="Go to Cast page. You have {{ stats().castCount }} cast members.">
+    <div class="sv sv--cast" (click)="goto('/gm/cast')" (keydown.enter)="goto('/gm/cast')" (keydown.space)="goto('/gm/cast')" role="button" tabindex="0" aria-label="Go to Cast page. You have {{ stats().castCount }} cast members.">
       <div class="sv-inner">
         <app-icon name="cast" />
         <div class="sv-value" aria-hidden="true">{{ stats().castCount }}</div>
         <div class="sv-label" aria-hidden="true">Cast</div>
       </div>
     </div>
-    <div class="sv sv--sublocation" (click)="goto('/dm/sublocations')" (keydown.enter)="goto('/dm/sublocations')" (keydown.space)="goto('/dm/sublocations')" role="button" tabindex="0" aria-label="Go to Sublocations page. You have {{ stats().sublocationCount }} sublocations.">
+    <div class="sv sv--sublocation" (click)="goto('/gm/sublocations')" (keydown.enter)="goto('/gm/sublocations')" (keydown.space)="goto('/gm/sublocations')" role="button" tabindex="0" aria-label="Go to Sublocations page. You have {{ stats().sublocationCount }} sublocations.">
       <div class="sv-inner">
         <app-icon name="sublocation" />
         <div class="sv-value" aria-hidden="true">{{ stats().sublocationCount }}</div>
         <div class="sv-label" aria-hidden="true">Sublocations</div>
       </div>
     </div>
-    <div class="sv sv--location" (click)="goto('/dm/locations')" (keydown.enter)="goto('/dm/locations')" (keydown.space)="goto('/dm/locations')" role="button" tabindex="0" aria-label="Go to Locations page. You have {{ stats().locationCount }} locations.">
+    <div class="sv sv--location" (click)="goto('/gm/locations')" (keydown.enter)="goto('/gm/locations')" (keydown.space)="goto('/gm/locations')" role="button" tabindex="0" aria-label="Go to Locations page. You have {{ stats().locationCount }} locations.">
       <div class="sv-inner">
         <app-icon name="location" />
         <div class="sv-value" aria-hidden="true">{{ stats().locationCount }}</div>
         <div class="sv-label" aria-hidden="true">Locations</div>
       </div>
     </div>
-    <div class="sv sv--faction" (click)="goto('/dm/faction')" (keydown.enter)="goto('/dm/faction')" (keydown.space)="goto('/dm/faction')" role="button" tabindex="0" aria-label="Go to Factions page. You have {{ stats().factionCount }} factions.">
+    <div class="sv sv--faction" (click)="goto('/gm/faction')" (keydown.enter)="goto('/gm/faction')" (keydown.space)="goto('/gm/faction')" role="button" tabindex="0" aria-label="Go to Factions page. You have {{ stats().factionCount }} factions.">
       <div class="sv-inner">
         <app-icon name="faction" />
         <div class="sv-value" aria-hidden="true">{{ stats().factionCount }}</div>
         <div class="sv-label" aria-hidden="true">Factions</div>
       </div>
     </div>
-    <div class="sv sv--campaign" (click)="goto('/dm/campaigns')" (keydown.enter)="goto('/dm/campaigns')" (keydown.space)="goto('/dm/campaigns')" role="button" tabindex="0" aria-label="Go to Campaigns page. You have {{ stats().campaignCount }} campaigns.">
+    <div class="sv sv--campaign" (click)="goto('/gm/campaigns')" (keydown.enter)="goto('/gm/campaigns')" (keydown.space)="goto('/gm/campaigns')" role="button" tabindex="0" aria-label="Go to Campaigns page. You have {{ stats().campaignCount }} campaigns.">
       <div class="sv-inner">
         <app-icon name="campaign" />
         <div class="sv-value" aria-hidden="true">{{ stats().campaignCount }}</div>
@@ -115,11 +115,11 @@
   }
 
   <div class="wr section-label-mb">
-    <button class="btn-ghost qa-btn qa-btn--cast" [class.disabled]="isCreateDisabled()" [attr.disabled]="isCreateDisabled() ? 'true' : null" (click)="isCreateDisabled() ? null : goto('/dm/cast/new')"><span class="qa-btn__inner">+ New Cast</span></button>
-    <button class="btn-ghost qa-btn qa-btn--sublocation" [class.disabled]="isCreateDisabled()" [attr.disabled]="isCreateDisabled() ? 'true' : null" (click)="isCreateDisabled() ? null : goto('/dm/sublocations/new')"><span class="qa-btn__inner">+ New Sublocation</span></button>
-    <button class="btn-ghost qa-btn qa-btn--location" [class.disabled]="isCreateDisabled()" [attr.disabled]="isCreateDisabled() ? 'true' : null" (click)="isCreateDisabled() ? null : goto('/dm/locations/new')"><span class="qa-btn__inner">+ New Location</span></button>
-    <button class="btn-ghost qa-btn qa-btn--faction" [class.disabled]="isCreateDisabled()" [attr.disabled]="isCreateDisabled() ? 'true' : null" (click)="isCreateDisabled() ? null : goto('/dm/faction/new')"><span class="qa-btn__inner">+ New Faction</span></button>
-    <button class="btn-ghost qa-btn qa-btn--campaign" [class.disabled]="isCreateDisabled()" [attr.disabled]="isCreateDisabled() ? 'true' : null" (click)="isCreateDisabled() ? null : goto('/dm/campaigns/new')"><span class="qa-btn__inner">+ New Campaign</span></button>
+    <button class="btn-ghost qa-btn qa-btn--cast" [class.disabled]="isCreateDisabled()" [attr.disabled]="isCreateDisabled() ? 'true' : null" (click)="isCreateDisabled() ? null : goto('/gm/cast/new')"><span class="qa-btn__inner">+ New Cast</span></button>
+    <button class="btn-ghost qa-btn qa-btn--sublocation" [class.disabled]="isCreateDisabled()" [attr.disabled]="isCreateDisabled() ? 'true' : null" (click)="isCreateDisabled() ? null : goto('/gm/sublocations/new')"><span class="qa-btn__inner">+ New Sublocation</span></button>
+    <button class="btn-ghost qa-btn qa-btn--location" [class.disabled]="isCreateDisabled()" [attr.disabled]="isCreateDisabled() ? 'true' : null" (click)="isCreateDisabled() ? null : goto('/gm/locations/new')"><span class="qa-btn__inner">+ New Location</span></button>
+    <button class="btn-ghost qa-btn qa-btn--faction" [class.disabled]="isCreateDisabled()" [attr.disabled]="isCreateDisabled() ? 'true' : null" (click)="isCreateDisabled() ? null : goto('/gm/faction/new')"><span class="qa-btn__inner">+ New Faction</span></button>
+    <button class="btn-ghost qa-btn qa-btn--campaign" [class.disabled]="isCreateDisabled()" [attr.disabled]="isCreateDisabled() ? 'true' : null" (click)="isCreateDisabled() ? null : goto('/gm/campaigns/new')"><span class="qa-btn__inner">+ New Campaign</span></button>
   </div>
 
   </div><!-- /.quick-actions -->

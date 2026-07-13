@@ -375,7 +375,7 @@
               <div class="secret-content">{{ secret.content }}</div>
               <div class="secret-meta">
                 Shared {{ secret.sharedAt | date:'mediumDate' }}
-                @if (secret.sharedBy) { · by {{ secret.sharedBy === 'DM' ? 'DM' : 'you' }} }
+                @if (secret.sharedBy) { · by {{ secret.sharedBy === 'DM' ? 'GM' : 'you' }} }
               </div>
             </div>
           }

@@ -14,10 +14,15 @@
   padding-left: 64px;
 }
 
+.void-title__label.void-title__single-title {
+  font-size: 24px !important;
+}
+
 .void-title__indented {
   display: block;
   padding-left: calc(64px + 1.2em);
   text-align: left;
+  margin-top:4px;
 }
 
 .void-title__indented + .void-title__label {
@@ -28,6 +33,7 @@
   display: block;
   text-align: left;
   padding-left: 64px;
+   padding-left: calc(64px + 1.2em);
   color: color-mix(in srgb, var(--portal-color, v.$color-base-purple-primary), v.$color-ext-160 45%);
   text-decoration: underline;
   text-underline-offset: 5px;
