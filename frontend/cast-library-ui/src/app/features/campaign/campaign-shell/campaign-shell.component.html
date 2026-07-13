@@ -10,6 +10,13 @@
 
   <!-- ── Top bar ── -->
   <div class="void-topbar">
+    <div class="topbar-row">
+      <div class="topbar-right">
+        <button class="topbar-chronicle-btn" (click)="openChronicleDrawer()" title="Chronicles">
+          <img class="chronicle-icon" src="/open_book_star_moon_storytelling.svg" alt="Chronicles" />
+        </button>
+      </div>
+    </div>
     @if (shellSvc.titleContext(); as ctx) {
       <span class="void-title" [style.margin-top]="shellSvc.voidTitleTopMargin()">
         <app-void-title-segments [context]="ctx" />
@@ -37,5 +44,11 @@
   <router-outlet />
 
 </div>
+
+<app-campaign-chronicle-drawer #chronicleDrawer
+  [campaignId]="campaignId()"
+  [isDmMode]="true"
+  [portalColor]="safeColor(shellSvc.campaign()?.spineColor)"
+/>
 <div class="void-letterbox-top"></div>
 <div class="void-letterbox-bottom"></div>

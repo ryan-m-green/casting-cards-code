@@ -23,6 +23,8 @@ import { CampaignFactionInstance } from '../../models/faction.model';
 import { NoteDestinationPickerComponent } from '../note-destination-picker/note-destination-picker.component';
 import { PlayerCampaignShellService } from '../../../core/player-campaign-shell.service';
 import { CampaignHubService } from '../../../core/hub/campaign-hub.service';
+import { SessionService } from '../../../core/session.service';
+import { Session } from '../../models/session.model';
 
 type DestinationType = 'queue' | 'location' | 'sublocation' | 'cast' | 'faction' | 'campaign';
 
@@ -45,7 +47,10 @@ export class QuicknotesComponent implements OnInit, OnDestroy {
   private router  = inject(Router);
   shellSvc        = inject(PlayerCampaignShellService);
   private hub     = inject(CampaignHubService);
+  private sessionService = inject(SessionService);
   private hubSubscription: Subscription | null = null;
+  private sessionSubscription: Subscription | null = null;
+  private hubSubscriptions: Subscription[] = [];
 
   isOpen      = signal(false);
   isClosing   = signal(false);
@@ -55,10 +60,49 @@ export class QuicknotesComponent implements OnInit, OnDestroy {
   entityId    = signal<string>('');
   isSaving    = signal(false);
   saveSuccess = signal(false);
+  showCloseWarning = signal(false);
+  isSessionActive = signal(false);
+
+  private warningTimeout: any = null;
 
   private readonly SLIDE_DURATION = 260;
 
   ngOnInit() {
+    // Subscribe to session state
+    this.sessionSubscription = this.sessionService.getActiveSession(this.campaignId).subscribe({
+      next: (session: Session | null) => {
+        this.isSessionActive.set(session !== null);
+      },
+      error: (err) => {
+        console.error('Quicknotes - Error fetching session:', err);
+      }
+    });
+
+    // Subscribe to SignalR events for session updates
+    this.hubSubscriptions.push(
+      this.hub.sessionStarted$.subscribe((event: any) => {
+        if (event && event.campaignId === this.campaignId) {
+          this.isSessionActive.set(true);
+        }
+      })
+    );
+
+    this.hubSubscriptions.push(
+      this.hub.sessionEnded$.subscribe((event: any) => {
+        if (event && event.campaignId === this.campaignId) {
+          this.isSessionActive.set(false);
+        }
+      })
+    );
+
+    this.hubSubscriptions.push(
+      this.hub.sessionCancelled$.subscribe((event: any) => {
+        if (event && event.campaignId === this.campaignId) {
+          this.isSessionActive.set(false);
+        }
+      })
+    );
+
     this.hubSubscription = this.hub.quickNoteQueued$.subscribe(e => {
       if (e?.campaignId === this.campaignId) {
         this.refreshQueueCount();
@@ -68,6 +112,8 @@ export class QuicknotesComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     this.hubSubscription?.unsubscribe();
+    this.sessionSubscription?.unsubscribe();
+    this.hubSubscriptions.forEach(sub => sub.unsubscribe());
   }
 
   private refreshQueueCount() {
@@ -252,6 +298,10 @@ export class QuicknotesComponent implements OnInit, OnDestroy {
   private appendNote(existing: string, newContent: string): string {
     const trimmed = (existing ?? '').trim();
     return trimmed ? `${trimmed}\n\n${newContent}` : newContent;
+  }
+
+  dismissWarning() {
+    this.showCloseWarning.set(false);
   }
 
   goToQueue() {

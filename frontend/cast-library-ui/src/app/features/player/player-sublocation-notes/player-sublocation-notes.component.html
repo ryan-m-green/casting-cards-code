@@ -8,12 +8,16 @@
   </div>
 
   <div class="notes-section">
+    @if (!isSessionActive()) {
+      <div class="session-disabled-message">Session not active - notes disabled</div>
+    }
     <textarea
       class="notes-textarea"
       rows="5"
       placeholder="Jot down anything you want to remember about this place…"
       [value]="notesText()"
       (input)="onNotesInput($any($event.target).value)"
+      [readonly]="!isSessionActive()"
     ></textarea>
   </div>
 

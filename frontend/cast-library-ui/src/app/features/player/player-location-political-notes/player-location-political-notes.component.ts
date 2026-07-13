@@ -7,6 +7,7 @@ import { HttpClient } from '@angular/common/http';
 import { CampaignDropdownComponent, CampaignDropdownOption } from '../../../shared/components/campaign-dropdown/campaign-dropdown.component';
 import { FactionCardComponent } from '../../../shared/components/faction-card/faction-card.component';
 import { CastCardComponent } from '../../../shared/components/cast-card/cast-card.component';
+import { SectionLabelComponent } from '../../../shared/components/section-label/section-label.component';
 import { Faction } from '../../../shared/models/faction.model';
 import { environment } from '../../../../environments/environment';
 import { CampaignCastInstance } from '../../../shared/models/cast.model';
@@ -88,7 +89,7 @@ interface AlignmentIcon {
 @Component({
   selector: 'app-player-location-political-notes',
   standalone: true,
-  imports: [CommonModule, CampaignDropdownComponent, FactionCardComponent, CastCardComponent],
+  imports: [CommonModule, CampaignDropdownComponent, FactionCardComponent, CastCardComponent, SectionLabelComponent],
   templateUrl: './player-location-political-notes.component.html',
   styleUrl: './player-location-political-notes.component.scss',
 })

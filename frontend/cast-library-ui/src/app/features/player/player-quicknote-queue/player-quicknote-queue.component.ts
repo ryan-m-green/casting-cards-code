@@ -1,5 +1,5 @@
 import {
-  Component, OnInit, OnDestroy, signal, inject,
+  Component, OnInit, OnDestroy, signal, inject, computed,
 } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { CommonModule } from '@angular/common';
@@ -10,7 +10,10 @@ import { catchError, switchMap, of } from 'rxjs';
 import { environment } from '../../../../environments/environment';
 import { PlayerCampaignShellService } from '../../../core/player-campaign-shell.service';
 import { CampaignHubService } from '../../../core/hub/campaign-hub.service';
+import { SessionContextService } from '../../../core/session-context.service';
+import { SessionService } from '../../../core/session.service';
 import { QuicknoteQueueItem } from '../../../shared/models/quicknote-queue.model';
+import { Session, ArchivedSession } from '../../../shared/models/session.model';
 import {
   CampaignDetail,
   CampaignCastPlayerNotes,
@@ -21,6 +24,7 @@ import { CampaignSublocationInstance } from '../../../shared/models/sublocation.
 import { CampaignCastInstance } from '../../../shared/models/cast.model';
 import { CampaignFactionInstance } from '../../../shared/models/faction.model';
 import { NoteDestinationPickerComponent } from '../../../shared/components/note-destination-picker/note-destination-picker.component';
+import { CampaignDropdownComponent, CampaignDropdownOption } from '../../../shared/components/campaign-dropdown/campaign-dropdown.component';
 
 type DestinationType = 'location' | 'sublocation' | 'cast' | 'faction' | 'campaign';
 
@@ -28,8 +32,10 @@ interface QueueItemState {
   item: QuicknoteQueueItem;
   destType: DestinationType;
   entityId: string;
+  selectedSessionId: string | null;
   routing: boolean;
   deleting: boolean;
+  migrating: boolean;
   success: boolean;
   editing: boolean;
   editedContent: string;
@@ -38,7 +44,7 @@ interface QueueItemState {
 @Component({
   selector: 'app-player-quicknote-queue',
   standalone: true,
-  imports: [CommonModule, FormsModule, NoteDestinationPickerComponent],
+  imports: [CommonModule, FormsModule, NoteDestinationPickerComponent, CampaignDropdownComponent],
   templateUrl: './player-quicknote-queue.component.html',
   styleUrl: './player-quicknote-queue.component.scss',
 })
@@ -48,25 +54,34 @@ export class PlayerQuicknoteQueueComponent implements OnInit, OnDestroy {
   private http     = inject(HttpClient);
   private shellSvc = inject(PlayerCampaignShellService);
   private hub      = inject(CampaignHubService);
+  private sessionContext = inject(SessionContextService);
+  private sessionService = inject(SessionService);
   private hubSubscriptions: Subscription[] = [];
+
+  // Debug log at class level
+  private static readonly COMPONENT_NAME = 'Quicknote Queue';
 
   campaignId = signal('');
   items      = signal<QueueItemState[]>([]);
   loading    = signal(true);
+  isSessionActive = signal(false);
+  archivedSessions = signal<ArchivedSession[]>([]);
 
-  get campaign(): CampaignDetail | null { return this.shellSvc.campaign(); }
+  readonly campaign = computed(() => this.shellSvc.campaign());
+  readonly locations = computed(() => this.campaign()?.locations?.filter(l => l.isVisibleToPlayers) ?? []);
+  readonly sublocations = computed(() => this.campaign()?.sublocations?.filter(s => s.isVisibleToPlayers) ?? []);
+  readonly casts = computed(() => this.campaign()?.casts?.filter(c => c.isVisibleToPlayers) ?? []);
+  readonly factions = computed(() => this.campaign()?.factions?.filter(f => f.isVisibleToPlayers) ?? []);
 
-  get locations(): CampaignLocationInstance[] {
-    return this.campaign?.locations?.filter(l => l.isVisibleToPlayers) ?? [];
-  }
-  get sublocations(): CampaignSublocationInstance[] {
-    return this.campaign?.sublocations?.filter(s => s.isVisibleToPlayers) ?? [];
-  }
-  get casts(): CampaignCastInstance[] {
-    return this.campaign?.casts?.filter(c => c.isVisibleToPlayers) ?? [];
-  }
-  get factions(): CampaignFactionInstance[] {
-    return this.campaign?.factions?.filter(f => f.isVisibleToPlayers) ?? [];
+  get sessionOptions(): CampaignDropdownOption[] {
+    const options: CampaignDropdownOption[] = [{ value: '', label: '-- Select Session --' }];
+    for (const session of this.archivedSessions()) {
+      options.push({
+        value: session.id,
+        label: `Session #${session.sessionNumber} - ${new Date(session.startTime).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric', hour: 'numeric', minute: '2-digit' })}`
+      });
+    }
+    return options;
   }
 
   ngOnInit() {
@@ -74,10 +89,49 @@ export class PlayerQuicknoteQueueComponent implements OnInit, OnDestroy {
     this.campaignId.set(id);
     this.shellSvc.setTitle('Quicknote Queue');
     this.loadQueue(id);
+    this.loadArchivedSessions(id);
+
+    // Directly check session state on init
+    this.hubSubscriptions.push(
+      this.sessionService.getActiveSession(this.campaignId()).subscribe({
+        next: (session: Session | null) => {
+          this.isSessionActive.set(session !== null);
+        },
+        error: (err) => {
+          console.error('Quicknote Queue - Error fetching session:', err);
+        }
+      })
+    );
+
     this.hubSubscriptions.push(
       this.hub.quickNoteQueued$.subscribe(e => {
         if (e?.campaignId === this.campaignId()) {
           this.loadQueue(this.campaignId());
+        }
+      })
+    );
+
+    // Subscribe to SignalR events for session updates
+    this.hubSubscriptions.push(
+      this.hub.sessionStarted$.subscribe((event: any) => {
+        if (event && event.campaignId === this.campaignId()) {
+          this.isSessionActive.set(true);
+        }
+      })
+    );
+
+    this.hubSubscriptions.push(
+      this.hub.sessionEnded$.subscribe((event: any) => {
+        if (event && event.campaignId === this.campaignId()) {
+          this.isSessionActive.set(false);
+        }
+      })
+    );
+
+    this.hubSubscriptions.push(
+      this.hub.sessionCancelled$.subscribe((event: any) => {
+        if (event && event.campaignId === this.campaignId()) {
+          this.isSessionActive.set(false);
         }
       })
     );
@@ -97,8 +151,10 @@ export class PlayerQuicknoteQueueComponent implements OnInit, OnDestroy {
           item,
           destType: 'cast',
           entityId: '',
+          selectedSessionId: null,
           routing:  false,
           deleting: false,
+          migrating: false,
           success:  false,
           editing: false,
           editedContent: item.content,
@@ -107,10 +163,21 @@ export class PlayerQuicknoteQueueComponent implements OnInit, OnDestroy {
       });
   }
 
+  private loadArchivedSessions(campaignId: string) {
+    this.sessionService.getArchivedSessions(campaignId).pipe(catchError(() => of([])))
+      .subscribe(data => {
+        this.archivedSessions.set(data);
+      });
+  }
+
   canRoute(state: QueueItemState): boolean {
     const needsEntity = state.destType === 'location' || state.destType === 'sublocation'
       || state.destType === 'cast' || state.destType === 'faction';
     if (needsEntity && !state.entityId) return false;
+    
+    // If no active session, require session selection
+    if (!this.isSessionActive() && !state.selectedSessionId) return false;
+    
     return true;
   }
 
@@ -129,6 +196,30 @@ export class PlayerQuicknoteQueueComponent implements OnInit, OnDestroy {
 
     state.routing = true;
 
+    // If no active session, migrate to chronicle using selected session
+    if (!this.isSessionActive() && state.selectedSessionId) {
+      this.http.post(`${base}/api/campaigns/${cId}/chronicles/migrate-player-note`, {
+        sessionId: state.selectedSessionId,
+        entityType: state.destType,
+        entityId: state.entityId || null,
+        entityName: this.getEntityName(state),
+        notes: content
+      }).subscribe({
+        next: () => {
+          this.http.delete(`${base}/api/campaigns/${cId}/quicknote-queue/${itemId}`)
+            .subscribe({
+              next: () => {
+                this.items.update(list => list.filter(s => s.item.id !== itemId));
+              },
+              error: () => { state.routing = false; },
+            });
+        },
+        error: () => { state.routing = false; },
+      });
+      return;
+    }
+
+    // Original player notes filing logic (when session is active)
     const afterRoute = () => {
       this.http.delete(`${base}/api/campaigns/${cId}/quicknote-queue/${itemId}`)
         .subscribe({
@@ -225,6 +316,29 @@ export class PlayerQuicknoteQueueComponent implements OnInit, OnDestroy {
   private appendNote(existing: string, newContent: string): string {
     const trimmed = (existing ?? '').trim();
     return trimmed ? `${trimmed}\n\n${newContent}` : newContent;
+  }
+
+  private getEntityName(state: QueueItemState): string {
+    if (!state.entityId) return state.destType;
+
+    switch (state.destType) {
+      case 'location':
+        const location = this.locations().find((l: CampaignLocationInstance) => l.instanceId === state.entityId);
+        return location?.name || 'Location';
+      case 'sublocation':
+        const sublocation = this.sublocations().find((s: CampaignSublocationInstance) => s.instanceId === state.entityId);
+        return sublocation?.name || 'Sublocation';
+      case 'cast':
+        const cast = this.casts().find((c: CampaignCastInstance) => c.instanceId === state.entityId);
+        return cast?.name || 'Cast';
+      case 'faction':
+        const faction = this.factions().find((f: CampaignFactionInstance) => f.factionInstanceId === state.entityId);
+        return faction?.name || 'Faction';
+      case 'campaign':
+        return this.campaign()?.name || 'Campaign';
+      default:
+        return state.destType;
+    }
   }
 
   goBack() {

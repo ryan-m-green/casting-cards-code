@@ -144,6 +144,13 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  cursor: pointer;
+  transition: color 0.2s ease, text-decoration 0.2s ease;
+
+  &:hover {
+    color: #f8d840;
+    text-decoration: underline;
+  }
 }
 
 .cc-sub {
@@ -301,6 +308,8 @@
   overflow-x: hidden;
   scrollbar-width: none;
   background: linear-gradient(160deg,#1e100a 0%,#2a1a0f 100%);
+  box-sizing: border-box;
+  padding: 0 10px 16px 10px;
 
   &::-webkit-scrollbar { display: none; }
 
@@ -394,6 +403,29 @@
   padding-bottom: 3px;
 }
 
+.cc-stat-row--inline {
+  flex-direction: row;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 8px;
+  padding-bottom: 3px;
+  border-bottom: 1px solid rgba(200,180,100,.15);
+}
+
+.cc-stat-col {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-width: 0;
+}
+
+.cc-stat-separator {
+  color: rgba(200,180,100,.4);
+  font-size: 10px;
+  align-self: center;
+  padding: 0 4px;
+}
+
 .cc-stat-key {
   font-family: 'Cinzel', serif;
   font-size: 10px;
@@ -450,10 +482,10 @@
   flex: 1;
   padding: 4px 3px;
   font-family: 'Cinzel', serif;
-  font-size: 6px;
+  font-size: 14px;
   letter-spacing: .1em;
   border: none;
-  border-radius: 2px;
+  border-radius: 4px;
   cursor: pointer;
   transition: all .2s;
 }

@@ -19,11 +19,12 @@ import { CastCardComponent } from '../../../shared/components/cast-card/cast-car
 import { PortalImportCardComponent } from '../../../shared/components/portal-import-card/portal-import-card.component';
 import { LockIconComponent } from '../../../shared/components/lock-icon/lock-icon.component';
 import { DetailPanelActionsComponent } from '../../../shared/components/detail-panel-actions/detail-panel-actions.component';
+import { SectionLabelComponent } from '../../../shared/components/section-label/section-label.component';
 
 @Component({
   selector: 'app-campaign-sublocation-detail',
   standalone: true,
-  imports: [CommonModule, FormsModule, SublocationCardComponent, CastCardComponent, PortalImportCardComponent, LockIconComponent, DetailPanelActionsComponent],
+  imports: [CommonModule, FormsModule, SublocationCardComponent, CastCardComponent, PortalImportCardComponent, LockIconComponent, DetailPanelActionsComponent, SectionLabelComponent],
   templateUrl: './campaign-sublocation-detail.component.html',
   styleUrl: './campaign-sublocation-detail.component.scss'
 })

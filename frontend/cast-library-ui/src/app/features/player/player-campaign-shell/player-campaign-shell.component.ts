@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, signal, computed, inject, untracked, NgZone } from '@angular/core';
+import { Component, OnInit, OnDestroy, signal, computed, inject, untracked, NgZone, viewChild } from '@angular/core';
 import { RouterOutlet, RouterLink, ActivatedRoute, Router, NavigationEnd } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
@@ -11,6 +11,7 @@ import { CampaignHubService } from '../../../core/hub/campaign-hub.service';
 import { AuthService } from '../../../core/auth/auth.service';
 import { PortalTransitionService } from '../../../core/portal-transition.service';
 import { PlayerCampaignShellService } from '../../../core/player-campaign-shell.service';
+import { CampaignShellService } from '../../../core/campaign-shell.service';
 import { TimeOfDayBarComponent } from '../../../shared/components/time-of-day-bar/time-of-day-bar.component';
 import { CardRevealBadgeComponent } from '../../../shared/components/card-reveal-badge/card-reveal-badge.component';
 import {
@@ -22,11 +23,12 @@ import { VoidTitleSegmentsComponent } from '../../../shared/components/void-titl
 import { CurrencyDisplayComponent, CurrencyLine } from '../../../shared/components/currency-display/currency-display.component';
 import { VoidNavDrawerComponent } from '../../../shared/components/void-nav-drawer/void-nav-drawer.component';
 import { QuicknotesComponent } from '../../../shared/components/quicknotes/quicknotes.component';
+import { CampaignChronicleDrawerComponent } from '../../../shared/components/campaign-chronicle-drawer/campaign-chronicle-drawer.component';
 
 @Component({
   selector: 'app-player-campaign-shell',
   standalone: true,
-  imports: [RouterOutlet, CommonModule, TimeOfDayBarComponent, CardRevealBadgeComponent, CardRevealOverlayComponent, EventCardComponent, CurrencyDisplayComponent, VoidNavDrawerComponent, VoidTitleSegmentsComponent, QuicknotesComponent],
+  imports: [RouterOutlet, CommonModule, TimeOfDayBarComponent, CardRevealBadgeComponent, CardRevealOverlayComponent, EventCardComponent, CurrencyDisplayComponent, VoidNavDrawerComponent, VoidTitleSegmentsComponent, QuicknotesComponent, CampaignChronicleDrawerComponent],
   templateUrl: './player-campaign-shell.component.html',
   styleUrl: './player-campaign-shell.component.scss',
 })
@@ -39,6 +41,7 @@ export class PlayerCampaignShellComponent implements OnInit, OnDestroy {
   private transition = inject(PortalTransitionService);
   private ngZone     = inject(NgZone);
   shellSvc           = inject(PlayerCampaignShellService);
+  campaignShellSvc   = inject(CampaignShellService);
 
   campaignId        = signal('');
   campaign          = signal<CampaignDetail | null>(null);
@@ -58,6 +61,9 @@ export class PlayerCampaignShellComponent implements OnInit, OnDestroy {
   // ── Purse popover ──────────────────────────────────────────────────────────
   showPurse        = signal(false);
   purse            = signal<CurrencyLine[]>([]);
+
+  // ── Chronicle drawer ───────────────────────────────────────────────────────
+  chronicleDrawer = viewChild.required<CampaignChronicleDrawerComponent>('chronicleDrawer');
 
   private hubSubscriptions: Subscription[] = [];
 
@@ -531,6 +537,13 @@ export class PlayerCampaignShellComponent implements OnInit, OnDestroy {
         }
       })
     );
+
+    // Subscribe to chronicle drawer search requests
+    this.hubSubscriptions.push(
+      this.campaignShellSvc.openChronicleWithSearch.subscribe((query: string) => {
+        this.chronicleDrawer().openWithSearch(query);
+      })
+    );
   }
 
   ngOnInit() {
@@ -643,6 +656,10 @@ export class PlayerCampaignShellComponent implements OnInit, OnDestroy {
 
   closePurse() {
     this.showPurse.set(false);
+  }
+
+  openChronicleDrawer() {
+    this.chronicleDrawer().open();
   }
 
   goToMyCharacter() {

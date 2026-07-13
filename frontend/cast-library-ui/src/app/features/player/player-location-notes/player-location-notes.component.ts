@@ -9,6 +9,7 @@ import { catchError, of } from 'rxjs';
 import { environment } from '../../../../environments/environment';
 import { CampaignLocationPlayerNotes } from '../../../shared/models/campaign.model';
 import { CampaignHubService } from '../../../core/hub/campaign-hub.service';
+import { SessionContextService } from '../../../core/session-context.service';
 
 @Component({
   selector: 'app-player-location-notes',
@@ -23,6 +24,9 @@ export class PlayerLocationNotesComponent implements OnInit, OnChanges, OnDestro
 
   private http = inject(HttpClient);
   private hub  = inject(CampaignHubService);
+  private sessionContext = inject(SessionContextService);
+
+  isSessionActive = signal(false);
 
   @ViewChild('notesTextarea') private notesRef?: ElementRef<HTMLTextAreaElement>;
 
@@ -44,6 +48,45 @@ export class PlayerLocationNotesComponent implements OnInit, OnChanges, OnDestro
       this.hub.noteUpdated$.subscribe(e => {
         if (e?.entityType === 'location' && e.instanceId === this.locationInstanceId) {
           this.load();
+        }
+      })
+    );
+
+    // Subscribe to session context
+    this.hubSubscriptions.push(
+      this.sessionContext.getActiveSession(this.campaignId).subscribe(session => {
+        this.isSessionActive.set(session !== null);
+      })
+    );
+
+    // Subscribe to session started event to reload notes and update active state
+    this.hubSubscriptions.push(
+      this.hub.sessionStarted$.subscribe(event => {
+        if (event) {
+          this.isSessionActive.set(true);
+          this.load();
+        }
+      })
+    );
+
+    // Subscribe to session ended event to update active state and reload notes
+    this.hubSubscriptions.push(
+      this.hub.sessionEnded$.subscribe(event => {
+        if (event) {
+          this.isSessionActive.set(false);
+          // Add delay to allow backend to complete note deletion
+          setTimeout(() => this.load(), 500);
+        }
+      })
+    );
+
+    // Subscribe to session cancelled event to update active state and reload notes
+    this.hubSubscriptions.push(
+      this.hub.sessionCancelled$.subscribe(event => {
+        if (event) {
+          this.isSessionActive.set(false);
+          // Add delay to allow backend to complete note deletion
+          setTimeout(() => this.load(), 500);
         }
       })
     );
@@ -82,12 +125,21 @@ export class PlayerLocationNotesComponent implements OnInit, OnChanges, OnDestro
 
   private save() {
     this.saving.set(true);
+    const saveStartTime = Date.now();
+    
     this.http.put<CampaignLocationPlayerNotes>(
       `${environment.apiUrl}/api/campaigns/${this.campaignId}/location-player-notes/${this.locationInstanceId}`,
       { notes: this.notesText }
     ).subscribe(updated => {
       this.notes.set(updated);
-      this.saving.set(false);
+      
+      // Ensure saving label shows for at least 1 second
+      const elapsed = Date.now() - saveStartTime;
+      const remainingTime = Math.max(0, 1000 - elapsed);
+      
+      setTimeout(() => {
+        this.saving.set(false);
+      }, remainingTime);
     });
   }
 

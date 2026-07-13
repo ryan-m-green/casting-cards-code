@@ -1,6 +1,7 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { Component, Input, Output, EventEmitter, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { PlayerCardWithDetails } from '../../models/player-card.model';
+import { CampaignShellService } from '../../../core/campaign-shell.service';
 
 @Component({
   selector: 'app-casting-card-player',
@@ -10,6 +11,8 @@ import { PlayerCardWithDetails } from '../../models/player-card.model';
   styleUrl: './casting-card-player.component.scss',
 })
 export class CastingCardPlayerComponent {
+  private shellSvc = inject(CampaignShellService);
+
   @Input({ required: true }) member!: PlayerCardWithDetails;
   @Input() mode: 'player' | 'dm' = 'player';
   @Input() tilt = 0;
@@ -20,11 +23,7 @@ export class CastingCardPlayerComponent {
     return this.tilt ? `rotate(${this.tilt}deg)` : '';
   }
 
-  @Output() viewSecrets      = new EventEmitter<PlayerCardWithDetails>();
-  @Output() awardGold        = new EventEmitter<PlayerCardWithDetails>();
-  @Output() manageConditions = new EventEmitter<PlayerCardWithDetails>();
-  @Output() deliverSecret    = new EventEmitter<PlayerCardWithDetails>();
-  @Output() viewAllSecrets   = new EventEmitter<PlayerCardWithDetails>();
+  @Output() cardActions = new EventEmitter<PlayerCardWithDetails>();
 
   flipped = false;
 
@@ -78,5 +77,10 @@ export class CastingCardPlayerComponent {
 
   conditionNames(): string {
     return this.member.conditions.map(c => c.conditionName).join(', ');
+  }
+
+  onNameClick(e: Event): void {
+    e.stopPropagation();
+    this.shellSvc.openChronicleDrawerWithSearch(this.member.name);
   }
 }

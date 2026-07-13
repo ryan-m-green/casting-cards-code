@@ -109,10 +109,7 @@
     @if (sublocationCasts().length) {
       <div class="subLoc-cast-section">
 
-        <div class="cast-section-header">
-          <span class="cast-section-label">Cast</span>
-          <span class="cast-section-line"></span>
-        </div>
+        <app-section-label title="Cast"></app-section-label>
 
         <div class="cast-grid">
           @for (cast of fadingOut(); track cast.instanceId) {

@@ -2,10 +2,10 @@ import { Injectable } from '@angular/core';
 
 const SPARK_COLORS = [
   '#C8A030', // Ember Gold
-  '#7A54C0', // Arcane Indigo
-  '#D4C0FF', // Lavender
   '#E8A820', // Bright Amber
   '#FFF0D0', // Warm White
+  '#FFD700', // Gold
+  '#FFEC8B', // Light Goldenrod
 ];
 
 @Injectable({ providedIn: 'root' })

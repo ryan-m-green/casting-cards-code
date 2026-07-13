@@ -308,9 +308,7 @@
   @if (isDm() && campaign()) {
     <div class="location-sublocations-section">
 
-      <div class="sublocations-section-header">
-        <span class="sublocations-section-label">Sublocations</span>
-        <span class="sublocations-section-line"></span>
+      <app-section-label title="Sublocations"></app-section-label>
         @if (locationSublocations().length) {
           <button
             class="subLoc-reveal-all-btn"
@@ -365,7 +363,6 @@
         (sublocationRemoved)="onSublocationRemoved($event)"
       />
 
-    </div>
   }
 
 }

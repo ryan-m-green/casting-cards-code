@@ -1,40 +1,36 @@
-import { Component, OnInit, OnDestroy, signal, inject, computed } from '@angular/core';
+import { Component, inject, signal, HostListener, Input, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ActivatedRoute } from '@angular/router';
+import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
-import { catchError, of } from 'rxjs';
-import { Subscription } from 'rxjs';
 import { environment } from '../../../../environments/environment';
-import { CampaignShellService } from '../../../core/campaign-shell.service';
-import { SessionService } from '../../../core/session.service';
+import { ChroniclesTimelineComponent } from '../chronicles-timeline/chronicles-timeline.component';
+import { StorylineFilterBarComponent } from '../storyline-filter-bar/storyline-filter-bar.component';
+import { ChroniclesResponse, ChronicleItem } from '../../models/chronicle.model';
+import { TimeOfDay } from '../../models/time-of-day.model';
+import { CampaignDropdownOption } from '../campaign-dropdown/campaign-dropdown.component';
 import { CampaignHubService } from '../../../core/hub/campaign-hub.service';
-import { ChroniclesTimelineComponent } from '../../../shared/components/chronicles-timeline/chronicles-timeline.component';
-import { StorylineFilterBarComponent } from '../../../shared/components/storyline-filter-bar/storyline-filter-bar.component';
-import { ChroniclesResponse, ChronicleSession, ChronicleItem } from '../../../shared/models/chronicle.model';
-import { TimeOfDay } from '../../../shared/models/time-of-day.model';
-import { Session } from '../../../shared/models/session.model';
-import { CampaignDropdownOption } from '../../../shared/components/campaign-dropdown/campaign-dropdown.component';
+import { Subscription } from 'rxjs';
 
 @Component({
-  selector: 'app-campaign-chronicle',
+  selector: 'app-campaign-chronicle-drawer',
   standalone: true,
-  imports: [CommonModule, ChroniclesTimelineComponent, StorylineFilterBarComponent],
-  templateUrl: './campaign-chronicle.component.html',
-  styleUrl: './campaign-chronicle.component.scss',
+  imports: [CommonModule, FormsModule, ChroniclesTimelineComponent, StorylineFilterBarComponent],
+  templateUrl: './campaign-chronicle-drawer.component.html',
+  styleUrl: './campaign-chronicle-drawer.component.scss'
 })
-export class CampaignChronicleComponent implements OnInit, OnDestroy {
-  private route = inject(ActivatedRoute);
-  private shellSvc = inject(CampaignShellService);
+export class CampaignChronicleDrawerComponent implements OnInit, OnDestroy {
   private http = inject(HttpClient);
-  private sessionService = inject(SessionService);
   private hub = inject(CampaignHubService);
   private hubSubscriptions: Subscription[] = [];
 
-  campaignId = '';
+  @Input() portalColor: string = '#6e28d0';
+  @Input() isDmMode: boolean = false;
+  @Input() campaignId: string = '';
 
-  // Chronicles state
-  chronicles = signal<ChroniclesResponse | null>(null);
+  isOpen = signal(false);
+  isClosing = signal(false);
   loadingChronicles = signal(false);
+  chronicles = signal<ChroniclesResponse | null>(null);
   chroniclesPage = signal(1);
   chroniclesPageSize = 5;
   chroniclesSearchQuery = signal('');
@@ -48,27 +44,15 @@ export class CampaignChronicleComponent implements OnInit, OnDestroy {
   chronicleEditSessionId = signal('');
   chronicleEditSortOrder = signal(0);
 
-  timeOfDay = computed(() => this.shellSvc.campaign()?.timeOfDay ?? null);
-
-  sessionOptions = computed<CampaignDropdownOption[]>(() => {
-    const chrons = this.chronicles();
-    if (!chrons || !chrons.sessions) return [];
-    return chrons.sessions.map(s => ({
-      value: s.sessionId,
-      label: `Session ${s.sessionNumber}${s.alternateTitle ? ' - ' + s.alternateTitle : ''}`
-    }));
-  });
+  sessionOptions = signal<CampaignDropdownOption[]>([]);
 
   ngOnInit() {
-    const id = this.route.snapshot.paramMap.get('id')!;
-    this.campaignId = id;
-    this.shellSvc.setTitleContext({ pageType: 'gm-chronicles', campaignId: id, baseRoute: '/campaign', location: null }, '56px');
-    this.loadChronicles();
-
     this.hubSubscriptions.push(
       this.hub.sessionEnded$.subscribe(e => {
         if (!e || e.campaignId !== this.campaignId) return;
-        this.loadChronicles();
+        if (this.isOpen()) {
+          this.loadChronicles();
+        }
       })
     );
   }
@@ -77,7 +61,42 @@ export class CampaignChronicleComponent implements OnInit, OnDestroy {
     this.hubSubscriptions.forEach(sub => sub.unsubscribe());
   }
 
+  open() {
+    this.isOpen.set(true);
+    this.chroniclesPage.set(1);
+    this.chroniclesSearchQuery.set('');
+    this.chroniclesTypeFilters.set([]);
+    this.loadChronicles();
+  }
+
+  openWithSearch(query: string) {
+    this.isOpen.set(true);
+    this.chroniclesPage.set(1);
+    this.chroniclesSearchQuery.set(query);
+    this.chroniclesTypeFilters.set([]);
+    this.loadChronicles(query);
+  }
+
+  close() {
+    this.isClosing.set(true);
+    setTimeout(() => {
+      this.isOpen.set(false);
+      this.chronicles.set(null);
+      this.chronicleEditingId.set(null);
+      this.isClosing.set(false);
+    }, 240);
+  }
+
+  @HostListener('document:keydown.escape')
+  onEscape() {
+    if (this.isOpen()) {
+      this.close();
+    }
+  }
+
   loadChronicles(searchQuery?: string, typeFilters?: string[]) {
+    if (!this.campaignId) return;
+    
     this.chronicles.set(null);
     this.loadingChronicles.set(true);
     const params = new URLSearchParams({
@@ -96,12 +115,15 @@ export class CampaignChronicleComponent implements OnInit, OnDestroy {
     }
 
     this.http.get<ChroniclesResponse>(`${environment.apiUrl}/api/campaigns/${this.campaignId}/chronicles/sessions-paged?${params}`)
-      .pipe(catchError(() => of(null)))
       .subscribe(data => {
         this.chronicles.set(data);
         if (data) {
           const allSessionIds = new Set(data.sessions.map(s => s.sessionId));
           this.expandedSessionIds.set(allSessionIds);
+          this.sessionOptions.set(data.sessions.map(s => ({
+            value: s.sessionId,
+            label: `Session ${s.sessionNumber}${s.alternateTitle ? ' - ' + s.alternateTitle : ''}`
+          })));
         }
         this.loadingChronicles.set(false);
       });
@@ -155,6 +177,8 @@ export class CampaignChronicleComponent implements OnInit, OnDestroy {
   }
 
   openChronicleEdit(chronicle: ChronicleItem) {
+    const hasPlayerNote = chronicle.linkedEntities?.some(e => e.entityType === 'player-note');
+    if (!this.isDmMode && !hasPlayerNote) return;
     this.chronicleEditingId.set(chronicle.id);
     this.chronicleEditTitle.set(chronicle.title);
     this.chronicleEditBody.set(chronicle.body);
@@ -209,6 +233,7 @@ export class CampaignChronicleComponent implements OnInit, OnDestroy {
   }
 
   deleteSession(sessionId: string) {
+    if (!this.isDmMode) return;
     this.http.delete(`${environment.apiUrl}/api/campaigns/${this.campaignId}/chronicles/sessions/${sessionId}`)
       .subscribe({
         next: () => {

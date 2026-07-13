@@ -30,9 +30,6 @@
               <circle cx="22" cy="18" r="1.5" fill="currentColor"/>
             </svg>
           </button>
-          <button class="nav-storyline-btn" (click)="goToChronicles()" aria-label="View sessions">
-            <img class="nav-events-icon" src="/open_book_star_moon_storytelling.svg" alt="Sessions" />
-          </button>
         }
         @if (isDm()) {
           <button class="nav-storyline-btn" (click)="goToEvents()" [class.is-active]="isActiveEvents()" aria-label="View Storyline">
@@ -44,9 +41,6 @@
               <circle cx="22" cy="12" r="1.5" fill="currentColor"/>
               <circle cx="22" cy="18" r="1.5" fill="currentColor"/>
             </svg>
-          </button>
-          <button class="nav-storyline-btn" (click)="goToChronicles()" aria-label="View sessions">
-            <img class="nav-events-icon" src="/open_book_star_moon_storytelling.svg" alt="Sessions" />
           </button>
         }
         @if (!isDm()) {

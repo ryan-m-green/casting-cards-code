@@ -10,6 +10,7 @@ public interface ISessionReadRepository
     Task<SessionDomain> GetByIdAsync(Guid sessionId);
     Task<int?> GetLastSessionNumberAsync(Guid campaignId);
     Task<int> GetTotalSessionCountAsync(Guid campaignId);
+    Task<List<SessionDomain>> GetCompletedSessionsAsync(Guid campaignId);
 }
 
 public class SessionReadRepository(
@@ -121,5 +122,34 @@ public class SessionReadRepository(
 
         logging.LogDbOperation(correlation.TraceId, spanId, "SELECT", "campaign_sessions", @params, result);
         return result;
+    }
+
+    public async Task<List<SessionDomain>> GetCompletedSessionsAsync(Guid campaignId)
+    {
+        var spanId = correlation.NewSpan();
+        var @params = new { CampaignId = campaignId };
+
+        const string sql =
+            @"SELECT id, campaign_id, session_number, start_time, start_in_game_day, is_active
+              FROM campaign_sessions
+              WHERE campaign_id = @CampaignId AND is_active = false
+              ORDER BY session_number DESC";
+
+        logging.LogDbOperation(correlation.TraceId, spanId, "SELECT", "campaign_sessions", @params);
+
+        using var conn = sqlConnectionFactory.GetConnection();
+        var sessions = await conn.QueryAsync<dynamic>(sql, @params);
+
+        logging.LogDbOperation(correlation.TraceId, spanId, "SELECT", "campaign_sessions", @params, sessions.Count());
+
+        return sessions.Select(session => new SessionDomain
+        {
+            Id = session.id,
+            CampaignId = session.campaign_id,
+            SessionNumber = session.session_number,
+            StartTime = session.start_time,
+            StartInGameDay = session.start_in_game_day,
+            IsActive = session.is_active
+        }).ToList();
     }
 }

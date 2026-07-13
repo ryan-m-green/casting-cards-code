@@ -1,6 +1,8 @@
 using CastLibrary.Logic.Commands.CampaignChronicles;
+using CastLibrary.Logic.Commands.PlayerNotes;
 using CastLibrary.Logic.Queries.CampaignChronicles;
 using CastLibrary.Logic.Services;
+using CastLibrary.Repository.Repositories.Read;
 using CastLibrary.Shared.Requests;
 using CastLibrary.Shared.Responses;
 using CastLibrary.WebHost.Hubs;
@@ -20,9 +22,11 @@ public class CampaignChroniclesController(
     IGetChroniclesSessionsQueryHandler getSessionsQuery,
     IUpdateChronicleCommandHandler updateCommand,
     IDeleteSessionCommandHandler deleteSessionCommand,
+    IMigratePlayerNoteToChronicleCommandHandler migratePlayerNoteCommand,
     ICampaignAccessService campaignAccess,
     IUserRetriever userRetriever,
-    IHubContext<CampaignHub> hubContext) : ControllerBase
+    IHubContext<CampaignHub> hubContext,
+    ICampaignChroniclesReadRepository readRepository) : ControllerBase
 {
     private Task<bool> CallerOwns(Guid campaignId) =>
         campaignAccess.IsOwnerAsync(campaignId, userRetriever.GetUserId(User));
@@ -92,13 +96,27 @@ public class CampaignChroniclesController(
     }
 
     [HttpPatch("{chronicleId}")]
-    [Authorize(Roles = "DM,Admin")]
+    [Authorize(Roles = "Player,DM,Admin")]
     public async Task<IActionResult> UpdateChronicle(
         Guid campaignId,
         Guid chronicleId,
         [FromBody] UpdateChronicleRequest request)
     {
-        if (!await CallerOwns(campaignId)) return Forbid();
+        var isDm = await CallerOwns(campaignId);
+        var isMember = await CallerIsMemberOrOwner(campaignId);
+
+        if (!isMember) return Forbid();
+
+        // Players can only edit player-note entries, DMs can edit all
+        if (!isDm)
+        {
+            var linkedEntities = await readRepository.GetLinkedEntitiesAsync(chronicleId);
+            var hasPlayerNote = System.Text.Json.JsonSerializer.Deserialize<List<CastLibrary.Shared.Domain.LinkedEntityTrigger>>(linkedEntities)
+                ?.Any(e => e.EntityType == "player-note") ?? false;
+            
+            if (!hasPlayerNote)
+                return Forbid();
+        }
 
         if (string.IsNullOrWhiteSpace(request.Title) || request.Title.Length > 200)
             return BadRequest("Title must be between 1 and 200 characters.");
@@ -134,5 +152,40 @@ public class CampaignChroniclesController(
         await hubContext.Clients.Group(campaignId.ToString()).SendAsync("SessionDeleted", new { sessionId });
 
         return NoContent();
+    }
+
+    [HttpPost("migrate-player-note")]
+    [Authorize(Roles = "Player,DM,Admin")]
+    public async Task<IActionResult> MigratePlayerNoteToChronicle(
+        Guid campaignId,
+        [FromBody] MigratePlayerNoteToChronicleRequest request)
+    {
+        if (!await CallerIsMemberOrOwner(campaignId)) return Forbid();
+
+        // Validate request
+        if (request.SessionId == Guid.Empty)
+            return BadRequest("SessionId is required.");
+
+        if (string.IsNullOrWhiteSpace(request.Notes))
+            return BadRequest("Notes are required.");
+
+        if (string.IsNullOrWhiteSpace(request.EntityName))
+            return BadRequest("EntityName is required.");
+
+        if (string.IsNullOrWhiteSpace(request.EntityType))
+            return BadRequest("EntityType is required.");
+
+        var command = new MigratePlayerNoteToChronicleCommand(
+            campaignId,
+            request.SessionId,
+            request.EntityType,
+            request.EntityId,
+            request.EntityName,
+            request.Notes
+        );
+
+        var chronicleId = await migratePlayerNoteCommand.HandleAsync(command);
+
+        return Ok(new { chronicleId });
     }
 }

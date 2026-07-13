@@ -22,6 +22,38 @@
   letter-spacing: 0.04em;
 }
 
+.session-disabled-message {
+  font-family: v.$font-body !important;
+  font-size: 14px !important;
+  color: rgba(255, 255, 255, 0.95) !important;
+  padding: 8px 16px !important;
+  background: rgba(v.$color-player-section-border, 0.08) !important;
+  border-radius: 6px !important;
+  margin-bottom: 16px !important;
+  text-align: center !important;
+  letter-spacing: 0.04em !important;
+}
+
+.qnq-session-selector {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  width: 100%;
+  min-width: 280px;
+
+  label {
+    font-family: v.$font-body;
+    font-size: 12px;
+    color: v.$campaign-portal-text-muted;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+
+  app-campaign-dropdown {
+    width: 100%;
+  }
+}
+
 /* ── List ────────────────────────────────────────────────────── */
 .qnq-list {
   display: flex;

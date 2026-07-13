@@ -296,9 +296,4 @@ export class VoidNavDrawerComponent implements OnChanges {
     this.router.navigate([this.base, 'plot']);
     this.close();
   }
-
-  goToChronicles() {
-    this.router.navigate([this.base, 'chronicle']);
-    this.close();
-  }
 }

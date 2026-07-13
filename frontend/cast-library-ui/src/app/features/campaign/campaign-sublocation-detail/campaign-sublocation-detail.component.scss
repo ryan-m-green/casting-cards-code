@@ -843,28 +843,6 @@
   z-index: 1;
 }
 
-.cast-section-header {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  margin-bottom: 20px;
-}
-
-.cast-section-label {
-  font-family: v.$font-header;
-  font-size: 12px;
-  letter-spacing: 0.22em;
-  text-transform: uppercase;
-  color: v.$campaign-portal-text-softer;
-  white-space: nowrap;
-  text-shadow: 0 0 10px color-mix(in srgb, var(--portal-color, #{v.$color-lib-sublocation-1}) 22%, transparent 78%);
-}
-
-.cast-section-line {
-  flex: 1;
-  height: 1px;
-  background: linear-gradient(to right, v.$campaign-portal-text-softer, transparent);
-}
 
 .cast-grid {
   display: flex;

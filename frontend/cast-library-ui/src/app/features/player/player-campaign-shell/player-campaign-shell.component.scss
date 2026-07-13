@@ -149,6 +149,33 @@
   }
 }
 
+/* ── Chronicle button ─────────────────────────────────────────── */
+.topbar-chronicle-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 46px;
+  height: 46px;
+  padding: 0;
+  background: v.$color-ext-22;
+  border: 1px solid v.$campaign-portal-border-bold;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.18s ease, border-color 0.18s ease;
+
+  .chronicle-icon {
+    width: 22px;
+    height: 22px;
+    display: block;
+    filter: brightness(0) invert(1);
+  }
+
+  &:hover {
+    background: v.$campaign-portal-border-accent;
+    border-color: v.$campaign-portal-border-strong-focus;
+  }
+}
+
 .purse-backdrop {
   position: fixed;
   inset: 0;

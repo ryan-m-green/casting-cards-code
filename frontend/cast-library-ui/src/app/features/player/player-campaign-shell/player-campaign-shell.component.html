@@ -31,6 +31,9 @@
             </div>
           }
         </div>
+        <button class="topbar-chronicle-btn" (click)="openChronicleDrawer()" title="Chronicles">
+          <img class="chronicle-icon" src="/open_book_star_moon_storytelling.svg" alt="Chronicles" />
+        </button>
       </div>
     </div>
     @if (shellSvc.titleContext(); as ctx) {
@@ -64,6 +67,12 @@
   <router-outlet />
 
 </div>
+
+<app-campaign-chronicle-drawer #chronicleDrawer
+  [campaignId]="campaignId()"
+  [isDmMode]="false"
+  [portalColor]="safeColor(campaign()?.spineColor)"
+/>
 <div class="void-letterbox-top"></div>
 <div class="void-letterbox-bottom"></div>
 <div class="void-letterbox-top"></div>

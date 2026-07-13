@@ -60,14 +60,26 @@
               [showCampaign]="true"
               [destType]="state.destType"
               [entityId]="state.entityId"
-              [locations]="locations"
-              [sublocations]="sublocations"
-              [casts]="casts"
-              [factions]="factions"
+              [locations]="locations()"
+              [sublocations]="sublocations()"
+              [casts]="casts()"
+              [factions]="factions()"
               [isPlayerComponent]="true"
               (destTypeChange)="onDestTypeChange(state, $event)"
               (entityIdChange)="state.entityId = $event"
             />
+
+            @if (!isSessionActive()) {
+              <div class="qnq-session-selector">
+                <label for="session-{{state.item.id}}">Target Session:</label>
+                <app-campaign-dropdown
+                  id="session-{{state.item.id}}"
+                  [options]="sessionOptions"
+                  [value]="state.selectedSessionId ?? ''"
+                  (valueChange)="state.selectedSessionId = $event"
+                />
+              </div>
+            }
 
             <div class="qnq-btn-group">
               <button

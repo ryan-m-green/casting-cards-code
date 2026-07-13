@@ -1,7 +1,8 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { Component, Input, Output, EventEmitter, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Faction } from '../../models/faction.model';
 import { LockIconComponent } from '../lock-icon/lock-icon.component';
+import { CampaignShellService } from '../../../core/campaign-shell.service';
 
 export type FactionAlignment = 'good' | 'neutral' | 'evil';
 
@@ -13,6 +14,8 @@ export type FactionAlignment = 'good' | 'neutral' | 'evil';
   styleUrl: './faction-card.component.scss'
 })
 export class FactionCardComponent {
+  private shellSvc = inject(CampaignShellService);
+
   @Input({ required: true }) faction!: Faction;
   @Input() tilt            = 0;
   @Input() flippable       = true;
@@ -110,5 +113,10 @@ export class FactionCardComponent {
   onFileInputChange(e: Event): void {
     const file = (e.target as HTMLInputElement).files?.[0];
     if (file) this.fileSelected.emit(file);
+  }
+
+  onNameClick(e: Event): void {
+    e.stopPropagation();
+    this.shellSvc.openChronicleDrawerWithSearch(this.faction.name);
   }
 }

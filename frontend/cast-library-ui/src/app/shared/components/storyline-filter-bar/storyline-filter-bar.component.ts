@@ -17,6 +17,7 @@ export class StorylineFilterBarComponent {
   @Input() showPlayer = true;
   @Input() showCampaign = true;
   @Input() showHandout = true;
+  @Input() showPlayerNote = true;
   @Input() showVisibilityFilters = false;
 
   @Input() activeTypeFilters: string[] = [];
@@ -29,11 +30,18 @@ export class StorylineFilterBarComponent {
 
   @Input() isBackendFilter = false;
   @Input() showSearchBar = false;
-  @Input() searchQuery = '';
+  private _searchQuery = '';
+  @Input() set searchQuery(value: string) {
+    this._searchQuery = value;
+    this.localSearchQuery.set(value);
+  }
+  get searchQuery(): string {
+    return this._searchQuery;
+  }
   @Output() search = new EventEmitter<{ query: string; filters: string[] }>();
   @Output() reset = new EventEmitter<void>();
 
-  localSearchQuery = signal(this.searchQuery);
+  localSearchQuery = signal(this._searchQuery);
 
   toggleTypeFilter(filter: string) {
     const updated = this.activeTypeFilters.includes(filter)

@@ -249,17 +249,23 @@
 .fac-name {
   font-family: 'Cinzel', serif;
   font-weight: 700;
-  font-size: 7.5px;
+  font-size: 10px;
   letter-spacing: 0.03em;
   line-height: 1.2;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
   text-shadow: 0 1px 4px rgba(0, 0, 0, 0.8);
+  cursor: pointer;
+  transition: color 0.2s ease, text-decoration 0.2s ease;
 
   .fac-card--good &    { color: v.$color-faction-good-accent; }
   .fac-card--neutral & { color: v.$color-faction-neutral-accent; }
   .fac-card--evil &    { color: v.$color-faction-evil-accent; }
+
+  &:hover {
+    text-decoration: underline;
+  }
 }
 
 .fac-sub {

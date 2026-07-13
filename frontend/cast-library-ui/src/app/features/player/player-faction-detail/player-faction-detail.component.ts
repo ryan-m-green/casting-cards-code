@@ -168,12 +168,21 @@ export class PlayerFactionDetailComponent implements OnInit, OnDestroy {
     const n = this.playerNotes();
     if (!n) return;
     this.notesSaving.set(true);
+    const saveStartTime = Date.now();
+    
     this.http.put<CampaignFactionPlayerNotes>(
       `${environment.apiUrl}/api/campaigns/${this.campaignId()}/faction-player-notes/${this.factionInstanceId()}`,
       { notes: this.notesText(), influence: n.influence, perception: n.perception }
     ).subscribe(updated => {
       this.playerNotes.set(updated);
-      this.notesSaving.set(false);
+      
+      // Ensure saving label shows for at least 1 second
+      const elapsed = Date.now() - saveStartTime;
+      const remainingTime = Math.max(0, 1000 - elapsed);
+      
+      setTimeout(() => {
+        this.notesSaving.set(false);
+      }, remainingTime);
     });
   }
 
@@ -269,6 +278,26 @@ export class PlayerFactionDetailComponent implements OnInit, OnDestroy {
       this.hub.noteUpdated$.subscribe(e => {
         if (e?.entityType === 'faction' && e.instanceId === this.factionInstanceId()) {
           this.loadPlayerNotes();
+        }
+      })
+    );
+
+    // Subscribe to session ended event to reload notes
+    this.hubSubscriptions.push(
+      this.hub.sessionEnded$.subscribe(event => {
+        if (event) {
+          // Add delay to allow backend to complete note deletion
+          setTimeout(() => this.loadPlayerNotes(), 500);
+        }
+      })
+    );
+
+    // Subscribe to session cancelled event to reload notes
+    this.hubSubscriptions.push(
+      this.hub.sessionCancelled$.subscribe(event => {
+        if (event) {
+          // Add delay to allow backend to complete note deletion
+          setTimeout(() => this.loadPlayerNotes(), 500);
         }
       })
     );

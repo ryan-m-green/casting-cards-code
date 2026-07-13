@@ -29,11 +29,12 @@ import { SublocationCardComponent } from '../../../shared/components/sublocation
 import { PortalImportCardComponent } from '../../../shared/components/portal-import-card/portal-import-card.component';
 import { LockIconComponent } from '../../../shared/components/lock-icon/lock-icon.component';
 import { DetailPanelActionsComponent } from '../../../shared/components/detail-panel-actions/detail-panel-actions.component';
+import { SectionLabelComponent } from '../../../shared/components/section-label/section-label.component';
 
 @Component({
   selector: 'app-campaign-location-detail',
   standalone: true,
-  imports: [CommonModule, FormsModule, LocationCardComponent, SublocationCardComponent, PortalImportCardComponent, LockIconComponent, DetailPanelActionsComponent],
+  imports: [CommonModule, FormsModule, LocationCardComponent, SublocationCardComponent, PortalImportCardComponent, LockIconComponent, DetailPanelActionsComponent, SectionLabelComponent],
   templateUrl: './campaign-location-detail.component.html',
   styleUrl: './campaign-location-detail.component.scss'
 })

@@ -11,6 +11,12 @@
 @if (isOpen()) {
   <div class="qn-panel-clip" [class.qn-panel-clip--animating]="isAnimating() || isClosing()">
     <div class="qn-panel" [class.qn-panel--closing]="isClosing()">
+      @if (showCloseWarning()) {
+        <div class="qn-close-warning">
+          <p class="qn-warning-text">Please save your note before closing.</p>
+          <button type="button" class="qn-warning-dismiss-btn" (click)="dismissWarning()">✕</button>
+        </div>
+      }
       <div class="qn-panel-header">
         <button class="qn-view-queue-btn" (click)="goToQueue()">
           View
@@ -21,6 +27,11 @@
           <span class="qn-queue-count">{{ shellSvc.quicknoteQueueCount() }}</span>
         </button>
       </div>
+      @if (!isSessionActive()) {
+        <div class="session-disabled-message">
+          Notes are disabled when no session is active. Wait for the DM to start a session.
+        </div>
+      }
       <textarea
         #noteArea
         id="quicknotes-note"
@@ -30,6 +41,7 @@
         [value]="noteContent()"
         (input)="noteContent.set($any($event.target).value)"
         rows="4"
+        [disabled]="!isSessionActive()"
       ></textarea>
 
       <div class="qn-controls">

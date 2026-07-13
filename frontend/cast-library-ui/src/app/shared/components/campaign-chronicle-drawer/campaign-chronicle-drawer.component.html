@@ -1,0 +1,94 @@
+@if (isOpen()) {
+  <div class="chronicle-backdrop" [class.is-closing]="isClosing()" (click)="close()"></div>
+
+  <div class="chronicle-drawer" [class.is-closing]="isClosing()" role="dialog" aria-label="Campaign chronicles" [style.--portal-color]="portalColor">
+    <div class="chronicle-header">
+      <button class="chronicle-close-btn" (click)="close()" aria-label="Close">✕</button>
+      <span class="chronicle-header-title">Chronicles</span>
+    </div>
+
+    <div class="chronicle-body">
+      @if (loadingChronicles()) {
+        <div class="chronicle-empty">Loading chronicles…</div>
+      }
+
+      <!-- Search and filters - always visible -->
+      <div class="chronicle-filters-wrapper">
+        <app-storyline-filter-bar
+          [isBackendFilter]="true"
+          [showSearchBar]="true"
+          [showFaction]="true"
+          [searchQuery]="chroniclesSearchQuery()"
+          [activeTypeFilters]="chroniclesTypeFilters()"
+          [showVisibilityFilters]="false"
+          (typeFilterChange)="onChronicleTypeFilterChange($event)"
+          (search)="onChronicleSearch($event)"
+          (reset)="onChronicleReset()"
+        ></app-storyline-filter-bar>
+      </div>
+
+      @if (!loadingChronicles() && (!chronicles() || chronicles()!.sessions.length === 0)) {
+        <div class="chronicle-empty">No chronicles match your search or filters.</div>
+      }
+
+      @if (!loadingChronicles() && chronicles() && chronicles()!.sessions.length > 0) {
+        <!-- Pagination info -->
+        @if (chronicles()!.totalSessions > 0) {
+          <div class="chronicles-pagination">
+            <button
+              class="pagination-btn"
+              [disabled]="chroniclesPage() === 1"
+              (click)="chroniclePrevPage()"
+            >Current Sessions</button>
+            <span class="pagination-info">{{ chronicles()!.totalSessions }} sessions total</span>
+            <button
+              class="pagination-btn"
+              [disabled]="chroniclesPage() === chronicles()!.totalPages"
+              (click)="chronicleNextPage()"
+            >Past Sessions</button>
+          </div>
+        }
+
+        <!-- Session timeline -->
+        <app-chronicles-timeline
+          [chronicles]="chronicles()"
+          [expandedSessionIds]="expandedSessionIds()"
+          [isDmMode]="isDmMode"
+          [chronicleEditingId]="chronicleEditingId()"
+          [chronicleEditTitle]="chronicleEditTitle()"
+          [chronicleEditBody]="chronicleEditBody()"
+          [chronicleSaving]="chronicleSaving()"
+          [chronicleSaveError]="chronicleSaveError()"
+          [timeOfDay]="null"
+          [sessionOptions]="sessionOptions()"
+          [chronicleEditSessionId]="chronicleEditSessionId()"
+          [chronicleEditSortOrder]="chronicleEditSortOrder()"
+          [searchQuery]="chroniclesSearchQuery()"
+          (sessionExpand)="toggleSessionExpand($event)"
+          (editChronicle)="openChronicleEdit($event)"
+          (cancelChronicleEdit)="closeChronicleEdit()"
+          (saveChronicleEdit)="saveChronicleEdit($event)"
+          (sessionChange)="onChronicleSessionChange($event)"
+          (sortOrderChange)="onChronicleSortOrderChange($event)"
+          (deleteSession)="deleteSession($event)" />
+
+        <!-- Pagination info at bottom -->
+        @if (chronicles()!.totalSessions > 0) {
+          <div class="chronicles-pagination">
+            <button
+              class="pagination-btn"
+              [disabled]="chroniclesPage() === 1"
+              (click)="chroniclePrevPage()"
+            >Current Sessions</button>
+            <span class="pagination-info">{{ chronicles()!.totalSessions }} sessions total</span>
+            <button
+              class="pagination-btn"
+              [disabled]="chroniclesPage() === chronicles()!.totalPages"
+              (click)="chronicleNextPage()"
+            >Past Sessions</button>
+          </div>
+        }
+      }
+    </div>
+  </div>
+}

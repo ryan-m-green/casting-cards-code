@@ -69,11 +69,25 @@ export interface SessionDeletedEvent {
 export interface SessionEndedEvent {
   campaignId: string;
   archivedSessionId: string;
+  timestamp: number;
+}
+
+export interface SessionStartedEvent {
+  campaignId: string;
+  sessionId: string;
+  sessionNumber: number;
+  startDay: number;
+  timestamp: number;
+}
+
+export interface SessionCancelledEvent {
+  campaignId: string;
+  timestamp: number;
 }
 
 export interface SubscriptionLockLevelChangedEvent {
   userId: string;
-  newLockLevel: string;
+  lockLevel: string;
 }
 
 export interface ShopItemUpdatedEvent {
@@ -154,12 +168,14 @@ export class CampaignHubService {
   private sublocationInstanceUpdatedSubject = new Subject<SublocationInstanceUpdatedEvent | null>();
   private factionInstanceUpdatedSubject     = new Subject<FactionInstanceUpdatedEvent | null>();
   private factionSymbolAssignedSubject      = new Subject<FactionSymbolAssignedEvent | null>();
+  private sessionCancelledSubject            = new Subject<SessionCancelledEvent | null>();
   private storylineEventUpdatedSubject      = new Subject<StorylineEventUpdatedEvent | null>();
   private campaignNavChangedSubject          = new Subject<{ campaignId: string } | null>();
   private sessionDeletedSubject              = new Subject<SessionDeletedEvent | null>();
   private sessionEndedSubject                = new Subject<SessionEndedEvent | null>();
+  private sessionStartedSubject              = new Subject<SessionStartedEvent | null>();
   private subscriptionLockLevelChangedSubject = new Subject<SubscriptionLockLevelChangedEvent | null>();
-  readonly isConnected = signal(false);
+  private _isConnected = signal(false);
 
   readonly secretRevealed$            = this.secretRevealedSubject.asObservable();
   readonly secretCreated$            = this.secretCreatedSubject.asObservable();
@@ -192,11 +208,17 @@ export class CampaignHubService {
   readonly locationInstanceUpdated$    = this.locationInstanceUpdatedSubject.asObservable();
   readonly sublocationInstanceUpdated$ = this.sublocationInstanceUpdatedSubject.asObservable();
   readonly factionInstanceUpdated$     = this.factionInstanceUpdatedSubject.asObservable();
+  readonly sessionCancelled$            = this.sessionCancelledSubject.asObservable();
   readonly storylineEventUpdated$      = this.storylineEventUpdatedSubject.asObservable();
   readonly campaignNavChanged$          = this.campaignNavChangedSubject.asObservable();
   readonly sessionDeleted$              = this.sessionDeletedSubject.asObservable();
   readonly sessionEnded$                = this.sessionEndedSubject.asObservable();
+  readonly sessionStarted$              = this.sessionStartedSubject.asObservable();
   readonly subscriptionLockLevelChanged$ = this.subscriptionLockLevelChangedSubject.asObservable();
+
+  isConnected(): boolean {
+    return this._isConnected();
+  }
 
   async connect(): Promise<void> {
     this.connection = new signalR.HubConnectionBuilder()
@@ -218,15 +240,15 @@ export class CampaignHubService {
       .catch(err => {});
 
     this.connection.onreconnecting(() => {
-      this.isConnected.set(false);
+      this._isConnected.set(false);
     });
     this.connection.onreconnected(() => {
-      this.isConnected.set(true);
+      this._isConnected.set(true);
     });
     this.connection.onclose(() => {
-      this.isConnected.set(false);
+      this._isConnected.set(false);
     });
-    this.isConnected.set(true);
+    this._isConnected.set(true);
 
     this.connection.on('ping', () => {
       // Ping received
@@ -374,16 +396,16 @@ export class CampaignHubService {
       this.sessionEndedSubject.next(event);
     });
 
-    this.connection.on('SubscriptionLockLevelChanged', (event: SubscriptionLockLevelChangedEvent) => {
+
+    this.connection.on('SessionCancelled', (event: SessionCancelledEvent | null) => {
+      this.sessionCancelledSubject.next(event);
+    });
+    this.connection.on('SubscriptionLockLevelChanged', (event: SubscriptionLockLevelChangedEvent | null) => {
       this.subscriptionLockLevelChangedSubject.next(event);
-      // Update AuthService with new subscription data via JWT refresh
-      this.authService.refreshCurrentUser().subscribe({
-        next: () => {
-          // Auth data refreshed successfully
-        },
-        error: (err) => {
-        }
-      });
+    });
+
+    this.connection.on('SessionStarted', (event: SessionStartedEvent | null) => {
+      this.sessionStartedSubject.next(event);
     });
   }
 
@@ -401,6 +423,6 @@ export class CampaignHubService {
 
   async disconnect(): Promise<void> {
     await this.connection?.stop();
-    this.isConnected.set(false);
+    this._isConnected.set(false);
   }
 }

@@ -2,10 +2,7 @@
   @if (isDm()) {
     <!-- ── Locations grid ── -->
     <div class="location-cards-section">
-      <div class="location-cards-header">
-        <span class="location-cards-label">Locations</span>
-        <span class="location-cards-line"></span>
-      </div>
+      <app-section-label title="Locations"></app-section-label>
       <div class="cl-grid" #locationsGrid>
         @for (location of camp.locations; track location.instanceId) {
           @if (!location.isPartyAnchor) {

@@ -1,6 +1,7 @@
-import { Component, Input, Output, EventEmitter, signal } from '@angular/core';
+import { Component, Input, Output, EventEmitter, signal, inject } from '@angular/core';
 import { Cast } from '../../models/cast.model';
 import { LockIconComponent } from '../lock-icon/lock-icon.component';
+import { CampaignShellService } from '../../../core/campaign-shell.service';
 
 @Component({
   selector: 'app-cast-card',
@@ -11,6 +12,8 @@ import { LockIconComponent } from '../lock-icon/lock-icon.component';
 })
 export class CastCardComponent {
   @Input({ required: true }) cast!: Cast;
+  private shellSvc = inject(CampaignShellService);
+
   @Input() editable        = true;
   @Input() flippable       = true;
   @Input() queueable       = false;
@@ -105,5 +108,10 @@ export class CastCardComponent {
       left: c.left,
       transform: `translate(${c.translateX}, ${c.translateY})`,
     };
+  }
+
+  onNameClick(e: Event): void {
+    e.stopPropagation();
+    this.shellSvc.openChronicleDrawerWithSearch(this.cast.name);
   }
 }

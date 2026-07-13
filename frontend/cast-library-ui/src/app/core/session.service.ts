@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../environments/environment';
-import { Session, StartSessionRequest } from '../shared/models/session.model';
+import { Session, StartSessionRequest, ArchivedSession } from '../shared/models/session.model';
 
 @Injectable({ providedIn: 'root' })
 export class SessionService {
@@ -29,7 +29,6 @@ export class SessionService {
   }
 
   endSession(campaignId: string, endDay: number, alternateTitle?: string): Observable<void> {
-    debugger;
     return this.http.patch<void>(
       `${environment.apiUrl}/api/campaigns/${campaignId}/sessions/end`,
       { endDay, alternateTitle: alternateTitle ?? '' }
@@ -40,6 +39,18 @@ export class SessionService {
     return this.http.patch<Session>(
       `${environment.apiUrl}/api/campaigns/${campaignId}/sessions/${sessionId}`,
       { title, alternateTitle }
+    );
+  }
+
+  cancelSession(campaignId: string): Observable<void> {
+    return this.http.delete<void>(
+      `${environment.apiUrl}/api/campaigns/${campaignId}/sessions/cancel`
+    );
+  }
+
+  getArchivedSessions(campaignId: string): Observable<ArchivedSession[]> {
+    return this.http.get<ArchivedSession[]>(
+      `${environment.apiUrl}/api/campaigns/${campaignId}/sessions/archived`
     );
   }
 }

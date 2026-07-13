@@ -37,14 +37,25 @@ public class JwtTokenService(IConfiguration configuration) : IJwtTokenService
         var lockLevel = LockLevel.Suspended;
         var bypassPayment = false;
         var subscriptionStatus = "FreeTrial";
+        var subscriptionId = string.Empty;
+        var pricingModelId = (string?)null;
+        var currentPeriodEnd = (DateTime?)null;
+        var createdAt = DateTime.UtcNow;
+        var pastDueSince = (DateTime?)null;
 
         if (subscription != null)
         {
             lockLevel = subscription.LockLevel;
             bypassPayment = subscription.BypassPayment;
             subscriptionStatus = subscription.Status.ToString();
+            subscriptionId = subscription.Id.ToString();
+            pricingModelId = subscription.PricingModelId?.ToString();
+            currentPeriodEnd = subscription.CurrentPeriodEnd;
+            createdAt = subscription.CreatedAt;
+            pastDueSince = subscription.PastDueSince;
         }
 
+        
         var isExempt = user.Role == UserRole.Admin || bypassPayment;
         if (isExempt)
         {
@@ -54,6 +65,21 @@ public class JwtTokenService(IConfiguration configuration) : IJwtTokenService
         claims.Add(new Claim("lockLevel", lockLevel.ToString()));
         claims.Add(new Claim("bypassPayment", bypassPayment.ToString()));
         claims.Add(new Claim("subscriptionStatus", subscriptionStatus));
+        claims.Add(new Claim("subscriptionId", subscriptionId));
+        claims.Add(new Claim("userId", user.Id.ToString()));
+        if (pricingModelId != null)
+        {
+            claims.Add(new Claim("pricingModelId", pricingModelId));
+        }
+        if (currentPeriodEnd.HasValue)
+        {
+            claims.Add(new Claim("currentPeriodEnd", currentPeriodEnd.Value.ToString("o")));
+        }
+        claims.Add(new Claim("createdAt", createdAt.ToString("o")));
+        if (pastDueSince.HasValue)
+        {
+            claims.Add(new Claim("pastDueSince", pastDueSince.Value.ToString("o")));
+        }
 
         var token = new JwtSecurityToken(
             issuer:    configuration["Jwt:Issuer"],

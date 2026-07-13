@@ -125,6 +125,7 @@
   gap: 12px;
   box-shadow: 0 6px 24px rgba(0, 0, 0, 0.6);
   animation: qn-slide-down 0.26s cubic-bezier(0.22, 1, 0.36, 1) both;
+  position: relative;
 }
 
 @keyframes qn-slide-down {
@@ -180,6 +181,18 @@
   letter-spacing: 0.04em;
   color: v.$campaign-portal-text-purple-light;
   line-height: 1;
+}
+
+/* ── Session disabled message ───────────────────────────────────── */
+.session-disabled-message {
+  background: color-mix(in srgb, v.$color-base-red-1 15%, transparent);
+  border: 1px solid v.$color-base-red-3;
+  border-radius: 6px;
+  padding: 10px 12px;
+  font-size: 13px;
+  color: v.$campaign-portal-text-muted;
+  line-height: 1.4;
+  text-align: center;
 }
 
 /* ── Textarea ────────────────────────────────────────────────── */
@@ -297,22 +310,57 @@
   }
 }
 
-/* ── Close button ───────────────────────────────────────────── */
-.qn-close-btn {
-  padding: 7px 16px;
-  background: transparent;
-  border: 1px solid v.$campaign-portal-border-bold;
+/* ── Close warning ───────────────────────────────────────────── */
+.qn-close-warning {
+  position: absolute;
+  top: 4px;
+  left: 14px;
+  background: color-mix(in srgb, v.$color-base-red-1 20%, transparent);
+  border: 1px solid v.$color-base-red-3;
   border-radius: 6px;
+  padding: 8px 12px;
+  max-width: 280px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  animation: qn-warning-fade-in 0.2s ease-out;
+  transition: opacity 0.3s ease-out;
+}
+
+.qn-close-warning--fading {
+  opacity: 0;
+}
+
+@keyframes qn-warning-fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.qn-warning-text {
+  margin: 0;
+  font-size: 12px;
+  color: v.$campaign-portal-text-bright;
+  line-height: 1.4;
+  flex: 1;
+}
+
+.qn-warning-dismiss-btn {
+  background: transparent;
+  border: none;
   color: v.$campaign-portal-text-muted;
-  font-size: 13px;
-  font-weight: 600;
+  font-size: 14px;
   cursor: pointer;
-  letter-spacing: 0.06em;
-  transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+  padding: 0;
+  line-height: 1;
+  transition: color 0.15s ease;
 
   &:hover {
-    background: color-mix(in srgb, v.$campaign-portal-bg-medium 60%, black 40%);
-    border-color: v.$campaign-portal-text-muted;
     color: v.$campaign-portal-text-bright;
   }
 }

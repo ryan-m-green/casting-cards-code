@@ -57,8 +57,7 @@
 
       <!-- ── Factions ── -->
       <div class="pol-section">
-        <div class="pol-section-label">Factions</div>
-        <span class="pol-section-line"></span>
+        <app-section-label title="Factions"></app-section-label>
 
         @if (notes().factions.length) {
           <div class="factions-table" role="table" aria-label="Factions">
@@ -137,8 +136,7 @@
 
       <!-- ── NPC Political Roles ── -->
       <div class="pol-section">
-        <div class="pol-section-label">NPC Political Roles</div>
-        <span class="pol-section-line"></span>
+        <app-section-label title="NPC Political Roles"></app-section-label>
 
         @if (notes().npcRoles.length) {
           <div class="roles-table" role="table" aria-label="NPC political roles">
@@ -207,8 +205,7 @@
 
       <!-- ── General Observations ── -->
       <div class="pol-section">
-        <div class="pol-section-label">General Observations</div>
-        <span class="pol-section-line"></span>
+        <app-section-label title="General Observations"></app-section-label>
         <textarea
           class="pol-textarea"
           rows="5"

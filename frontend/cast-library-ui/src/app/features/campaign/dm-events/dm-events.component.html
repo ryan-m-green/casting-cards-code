@@ -93,6 +93,19 @@
               <span>End Session {{ activeSession()?.sessionNumber }}</span>
             }
           </button>
+          <button
+            type="button"
+            class="ev-cancel-session-btn"
+            [disabled]="cancellingSession() || activeSession() === null"
+            (click)="requestCancelSession()"
+            [title]="activeSession() ? 'Cancel current session without archiving' : 'No active session'"
+          >
+            @if (cancellingSession()) {
+              <span>Cancelling…</span>
+            } @else {
+              <span>Cancel Session</span>
+            }
+          </button>
 
           @if (endSessionPanelOpen()) {
             <div class="ev-end-session-panel-clip" [class.ev-end-session-panel-clip--animating]="endSessionPanelAnimating() || endSessionPanelClosing()">
@@ -787,6 +800,21 @@
         <button class="modal-btn modal-btn--cancel" (click)="cancelStartSession()">Cancel</button>
         <button class="modal-btn modal-btn--confirm" (click)="confirmStartSession()" [disabled]="startingSession()">
           {{ startingSession() ? 'Starting...' : 'Start Session' }}
+        </button>
+      </div>
+    </div>
+  </div>
+}
+
+@if (showCancelSessionConfirm()) {
+  <div class="modal-overlay" (click)="cancelCancelSession()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+      <h2 class="modal-title">Cancel Session {{ activeSession()?.sessionNumber }}</h2>
+      <p class="modal-message">This will delete the current session without archiving any storyline events. The session number will not be incremented.</p>
+      <div class="modal-actions">
+        <button class="modal-btn modal-btn--cancel" (click)="cancelCancelSession()">Cancel</button>
+        <button class="modal-btn modal-btn--confirm modal-btn--danger" (click)="confirmCancelSession()" [disabled]="cancellingSession()">
+          {{ cancellingSession() ? 'Cancelling...' : 'Cancel Session' }}
         </button>
       </div>
     </div>

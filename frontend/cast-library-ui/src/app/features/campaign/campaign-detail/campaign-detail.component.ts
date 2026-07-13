@@ -13,13 +13,14 @@ import { PortalTransitionService } from '../../../core/portal-transition.service
 import { CampaignShellService } from '../../../core/campaign-shell.service';
 import { LocationCardComponent } from '../../../shared/components/location-card/location-card.component';
 import { PortalImportCardComponent } from '../../../shared/components/portal-import-card/portal-import-card.component';
+import { SectionLabelComponent } from '../../../shared/components/section-label/section-label.component';
 
 
 
 @Component({
   selector: 'app-campaign-detail',
   standalone: true,
-  imports: [CommonModule, LocationCardComponent, PortalImportCardComponent],
+  imports: [CommonModule, LocationCardComponent, PortalImportCardComponent, SectionLabelComponent],
   templateUrl: './campaign-detail.component.html',
   styleUrl: './campaign-detail.component.scss'
 })

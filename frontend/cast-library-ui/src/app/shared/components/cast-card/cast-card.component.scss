@@ -187,6 +187,13 @@
   overflow: hidden;
   text-overflow: ellipsis;
   text-shadow: 0 1px 4px v.$color-shadow-dark;
+  cursor: pointer;
+  transition: color 0.2s ease, text-decoration 0.2s ease;
+
+  &:hover {
+    color: v.$color-base-gold-11;
+    text-decoration: underline;
+  }
 }
 
 .cast-subtitle {

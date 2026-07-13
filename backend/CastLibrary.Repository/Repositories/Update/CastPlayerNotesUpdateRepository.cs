@@ -9,6 +9,7 @@ namespace CastLibrary.Repository.Repositories.Update
     public interface ICastPlayerNotesUpdateRepository
     {
         Task<CampaignCastPlayerNotesDomain> UpsertAsync(CampaignCastPlayerNotesDomain domain);
+        Task DeleteAsync(Guid campaignId, Guid castInstanceId);
     }
     public class CastPlayerNotesUpdateRepository(
     ISqlConnectionFactory sqlConnectionFactory,
@@ -53,6 +54,22 @@ namespace CastLibrary.Repository.Repositories.Update
 
             logging.LogDbOperation(correlation.TraceId, spanId, "UPSERT", "campaign_cast_player_notes", @params, 1);
             return mapper.ToDomain(row);
+        }
+
+        public async Task DeleteAsync(Guid campaignId, Guid castInstanceId)
+        {
+            var spanId = correlation.NewSpan();
+            var @params = new { CampaignId = campaignId, CastInstanceId = castInstanceId };
+            const string sql = @"
+                DELETE FROM campaign_cast_player_notes
+                WHERE campaign_id = @CampaignId AND cast_instance_id = @CastInstanceId";
+
+            logging.LogDbOperation(correlation.TraceId, spanId, "DELETE", "campaign_cast_player_notes", @params);
+
+            using var conn = sqlConnectionFactory.GetConnection();
+            await conn.ExecuteAsync(sql, @params);
+
+            logging.LogDbOperation(correlation.TraceId, spanId, "DELETE", "campaign_cast_player_notes", @params, 1);
         }
     }
 }

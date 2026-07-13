@@ -98,10 +98,13 @@ namespace CastLibrary.WebHost.IoC
             services.AddScoped<IFactionUpdateRepository, FactionUpdateRepository>();
             services.AddScoped<IFactionDeleteRepository, FactionDeleteRepository>();
             services.AddScoped<IFactionPlayerNotesReadRepository, FactionPlayerNotesReadRepository>();
+services.AddScoped<ICampaignSessionArchivedReadRepository, CampaignSessionArchivedReadRepository>();
             services.AddScoped<IFactionPlayerNotesUpdateRepository, FactionPlayerNotesUpdateRepository>();
             services.AddScoped<ISublocationPlayerNotesReadRepository, SublocationPlayerNotesReadRepository>();
             services.AddScoped<ISublocationPlayerNotesUpdateRepository, SublocationPlayerNotesUpdateRepository>();
             services.AddScoped<ICampaignPlayerNotesReadRepository, CampaignPlayerNotesReadRepository>();
+            services.AddScoped<IPlayerNotesReadRepository, PlayerNotesReadRepository>();
+            services.AddScoped<IPlayerNotesDeleteRepository, PlayerNotesDeleteRepository>();
             services.AddScoped<ICampaignPlayerNotesUpdateRepository, CampaignPlayerNotesUpdateRepository>();
             services.AddScoped<ICampaignEventInsertRepository, StorylineInsertRepository>();
             services.AddScoped<IStorylineReadRepository, StorylineReadRepository>();
@@ -116,6 +119,7 @@ namespace CastLibrary.WebHost.IoC
             services.AddScoped<ICampaignChroniclesReadRepository, CampaignChroniclesReadRepository>();
             services.AddScoped<ICampaignChroniclesUpdateRepository, CampaignChroniclesUpdateRepository>();
             services.AddScoped<ISessionDeleteRepository, CampaignSessionArchivedDeleteRepository>();
+            services.AddScoped<IActiveSessionDeleteRepository, SessionDeleteRepository>();
             services.AddHealthChecks()
               .AddCheck<DatabaseHealthCheck>("postgres");
 

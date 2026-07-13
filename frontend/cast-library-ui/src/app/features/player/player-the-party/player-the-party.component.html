@@ -210,7 +210,7 @@
               [member]="member"
               [tilt]="partyMemberTiltFor(member.id)"
               mode="player"
-              (viewSecrets)="viewSecrets($event)"
+              (cardActions)="viewSecrets($event)"
             />
           }
         </div>
@@ -404,4 +404,4 @@
 
 
 
-<app-player-secrets-drawer></app-player-secrets-drawer>
+<app-player-secrets-drawer [portalColor]="portalColor()"></app-player-secrets-drawer>

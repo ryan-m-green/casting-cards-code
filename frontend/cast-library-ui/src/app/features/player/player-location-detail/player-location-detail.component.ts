@@ -12,11 +12,12 @@ import { CampaignHubService } from '../../../core/hub/campaign-hub.service';
 import { PlayerLocationNotesComponent } from '../player-location-notes/player-location-notes.component';
 import { LocationCardComponent } from '../../../shared/components/location-card/location-card.component';
 import { SublocationCardComponent } from '../../../shared/components/sublocation-card/sublocation-card.component';
+import { SectionLabelComponent } from '../../../shared/components/section-label/section-label.component';
 
 @Component({
   selector: 'app-player-location-detail',
   standalone: true,
-  imports: [CommonModule, PlayerLocationNotesComponent, LocationCardComponent, SublocationCardComponent],
+  imports: [CommonModule, PlayerLocationNotesComponent, LocationCardComponent, SublocationCardComponent, SectionLabelComponent],
   templateUrl: './player-location-detail.component.html',
   styleUrl: './player-location-detail.component.scss'
 })

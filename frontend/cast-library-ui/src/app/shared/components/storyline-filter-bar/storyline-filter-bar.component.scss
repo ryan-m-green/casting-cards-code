@@ -111,6 +111,10 @@
   width: 18px;
   height: 18px;
   flex-shrink: 0;
+
+  &--player-note {
+    filter: brightness(0) invert(1);
+  }
 }
 
 .ev-search-group {

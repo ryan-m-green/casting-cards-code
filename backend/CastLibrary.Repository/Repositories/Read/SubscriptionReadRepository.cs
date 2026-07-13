@@ -22,6 +22,7 @@ public class SubscriptionReadRepository(
                      current_period_end AS CurrentPeriodEnd, created_at AS CreatedAt,
                      past_due_since AS PastDueSince, lock_level AS LockLevel
               FROM subscriptions WHERE user_id = @UserId", new { UserId = userId });
+
         return entity is null ? null : mapper.ToDomain(entity);
     }
 

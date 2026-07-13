@@ -108,7 +108,7 @@
 
           <!-- banner -->
           <div class="sub-banner">
-            <div class="sub-name">{{ sublocation.name }}</div>
+            <div class="sub-name" (click)="onNameClick($event)">{{ sublocation.name }}</div>
             <div class="sub-subtitle">Sublocation · {{ shopItemCount }} item{{ shopItemCount === 1 ? '' : 's' }}</div>
           </div>
 

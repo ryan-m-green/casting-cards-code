@@ -56,11 +56,6 @@ export const routes: Routes = [
         canActivate: [dmGuard],
         loadComponent: () => import('./features/campaign/dm-events/dm-events.component').then(m => m.DmEventsComponent),
       },
-      {
-        path: 'chronicle',
-        canActivate: [dmGuard],
-        loadComponent: () => import('./features/campaign/campaign-chronicle/campaign-chronicle.component').then(m => m.CampaignChronicleComponent),
-      },
     ],
   },
   {
@@ -108,10 +103,6 @@ export const routes: Routes = [
       {
         path: 'plot',
         loadComponent: () => import('./features/player/player-plot/player-plot.component').then(m => m.PlayerPlotComponent),
-      },
-      {
-        path: 'chronicle',
-        loadComponent: () => import('./features/player/player-chronicle/player-chronicle.component').then(m => m.PlayerChronicleComponent),
       },
     ],
   },

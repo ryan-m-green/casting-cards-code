@@ -93,7 +93,7 @@
 
           <!-- banner -->
           <div class="loc-banner">
-            <div class="loc-name">{{ location.name }}</div>
+            <div class="loc-name" (click)="onNameClick($event)">{{ location.name }}</div>
             <div class="loc-subtitle">Location · {{ location.classification }}</div>
           </div>
 

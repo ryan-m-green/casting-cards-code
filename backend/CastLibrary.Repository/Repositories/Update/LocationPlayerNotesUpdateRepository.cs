@@ -9,6 +9,7 @@ namespace CastLibrary.Repository.Repositories.Update;
 public interface ILocationPlayerNotesUpdateRepository
 {
     Task<CampaignLocationPlayerNotesDomain> UpsertAsync(CampaignLocationPlayerNotesDomain domain);
+    Task DeleteAsync(Guid campaignId, Guid locationInstanceId);
 }
 
 public class LocationPlayerNotesUpdateRepository(
@@ -46,5 +47,21 @@ public class LocationPlayerNotesUpdateRepository(
 
         logging.LogDbOperation(correlation.TraceId, spanId, "UPSERT", "campaign_location_player_notes", @params, 1);
         return mapper.ToDomain(row);
+    }
+
+    public async Task DeleteAsync(Guid campaignId, Guid locationInstanceId)
+    {
+        var spanId = correlation.NewSpan();
+        var @params = new { CampaignId = campaignId, LocationInstanceId = locationInstanceId };
+        const string sql = @"
+            DELETE FROM campaign_location_player_notes
+            WHERE campaign_id = @CampaignId AND location_instance_id = @LocationInstanceId";
+
+        logging.LogDbOperation(correlation.TraceId, spanId, "DELETE", "campaign_location_player_notes", @params);
+
+        using var conn = sqlConnectionFactory.GetConnection();
+        await conn.ExecuteAsync(sql, @params);
+
+        logging.LogDbOperation(correlation.TraceId, spanId, "DELETE", "campaign_location_player_notes", @params, 1);
     }
 }

@@ -104,7 +104,9 @@ export class DmEventsComponent implements OnInit, OnDestroy {
   loadingSession   = signal(false);
   startingSession  = signal(false);
   endingSession    = signal(false);
+  cancellingSession = signal(false);
   showStartSessionConfirm = signal(false);
+  showCancelSessionConfirm = signal(false);
   endSessionPanelOpen = signal(false);
   endSessionPanelClosing = signal(false);
   endSessionPanelAnimating = signal(false);
@@ -1011,6 +1013,31 @@ parseSecretValue(value: string): { innerType: string, content: string } | null {
       this.endSessionPanelClosing.set(false);
       this.alternateTitle.set('');
     }, this.PANEL_SLIDE_DURATION);
+  }
+
+  requestCancelSession() {
+    this.showCancelSessionConfirm.set(true);
+  }
+
+  cancelCancelSession() {
+    this.showCancelSessionConfirm.set(false);
+  }
+
+  confirmCancelSession() {
+    if (this.cancellingSession()) return;
+    this.cancellingSession.set(true);
+    this.showCancelSessionConfirm.set(false);
+
+    this.sessionService.cancelSession(this.campaignId).subscribe({
+      next: () => {
+        this.activeSession.set(null);
+        this.loadSessionCount();
+        this.cancellingSession.set(false);
+      },
+      error: () => {
+        this.cancellingSession.set(false);
+      }
+    });
   }
 
   confirmEndSession() {

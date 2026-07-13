@@ -34,6 +34,10 @@
     flex-shrink: 0;
     color: v.$campaign-portal-text-lavender;
   }
+
+  .entity-badge-icon--white {
+    filter: brightness(0) invert(1);
+  }
 }
 
 // Entity badge frames matching dashboard stats
@@ -80,6 +84,7 @@
     v.$color-base-gold-2 0%, v.$color-base-gold-mid-hex 20%, v.$color-base-gold-dark-hex 45%,
     v.$color-base-gold-bright-hex 55%, v.$color-base-gold-mid-hex 70%, v.$color-base-gold-3 85%, v.$color-base-gold-4 100%
   );
+  border: 1px solid rgba(212, 175, 55, 0.4);
 }
 
 // Handout uses same frame as campaign (blue gradient)
@@ -96,6 +101,15 @@
     #8b5cf6 0%, #7c3aed 20%, #6d28d9 45%,
     #a78bfa 55%, #8b5cf6 70%, #7c3aed 85%, #6d28d9 100%
   );
+}
+
+// Player-note uses parchment/tan colors
+.entity-badge--player-note {
+  background: linear-gradient(145deg,
+    #f4e4bc 0%, #e8d4a8 20%, #d4c496 45%,
+    #f0e0c0 55%, #e8d4a8 70%, #d4c496 85%, #c9b88a 100%
+  );
+  border: 1px solid rgba(212, 196, 150, 0.6);
 }
 
 // Secret badge wrapper for positioning triangle and entity icons

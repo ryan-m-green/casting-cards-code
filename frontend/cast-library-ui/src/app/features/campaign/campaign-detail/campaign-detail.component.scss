@@ -115,28 +115,6 @@
   z-index: 10;
 }
 
-.location-cards-header {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  margin-bottom: 20px;
-}
-
-.location-cards-label {
-  font-family: v.$font-header;
-  font-size: 14px;
-  letter-spacing: 0.22em;
-  text-transform: uppercase;
-  color: rgba(v.$color-lib-location-1, 0.92);
-  white-space: nowrap;
-  text-shadow: 0 0 10px rgba(v.$color-lib-location-1, 0.22);
-}
-
-.location-cards-line {
-  flex: 1;
-  height: 1px;
-  background: linear-gradient(to right, rgba(v.$color-lib-location-1, 0.24), transparent);
-}
 
 .location-cards-empty {
   font-family: v.$font-header;

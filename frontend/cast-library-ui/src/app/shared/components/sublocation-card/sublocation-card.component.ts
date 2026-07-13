@@ -1,6 +1,7 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { Component, Input, Output, EventEmitter, inject } from '@angular/core';
 import { Sublocation, CampaignSublocationInstance } from '../../models/sublocation.model';
 import { LockIconComponent } from '../lock-icon/lock-icon.component';
+import { CampaignShellService } from '../../../core/campaign-shell.service';
 
 @Component({
   selector: 'app-sublocation-card',
@@ -10,6 +11,8 @@ import { LockIconComponent } from '../lock-icon/lock-icon.component';
   styleUrl: './sublocation-card.component.scss'
 })
 export class SublocationCardComponent {
+  private shellSvc = inject(CampaignShellService);
+
   @Input({ required: true }) sublocation!: Sublocation | CampaignSublocationInstance;
   @Input() editable        = true;
   @Input() flippable       = true;
@@ -71,5 +74,10 @@ export class SublocationCardComponent {
   onFileInputChange(e: Event): void {
     const file = (e.target as HTMLInputElement).files?.[0];
     if (file) this.fileSelected.emit(file);
+  }
+
+  onNameClick(e: Event): void {
+    e.stopPropagation();
+    this.shellSvc.openChronicleDrawerWithSearch(this.sublocation.name);
   }
 }

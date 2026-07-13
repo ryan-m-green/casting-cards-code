@@ -109,6 +109,7 @@
   <!-- ── Player Notes ── -->
   <div class="faction-notes-panel">
     <app-player-faction-notes
+      [campaignId]="campaignId()"
       [notesText]="notesText()"
       [saving]="notesSaving()"
       (notesChange)="onNotesChange($event)"

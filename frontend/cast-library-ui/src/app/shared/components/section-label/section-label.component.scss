@@ -1,0 +1,24 @@
+@use '../../../../styles/variables' as v;
+
+.section-label-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.section-label-text {
+  font-family: v.$font-header;
+  font-size: 14px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: v.$campaign-portal-text-softer;
+  white-space: nowrap;
+  text-shadow: 0 0 10px color-mix(in srgb, var(--portal-color, v.$color-lib-location-1) 22%, transparent 78%);
+}
+
+.section-label-line {
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(to right, v.$campaign-portal-text-softer, transparent);
+}

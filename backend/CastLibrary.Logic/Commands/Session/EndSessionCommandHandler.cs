@@ -1,11 +1,9 @@
-using CastLibrary.Repository.Mappers;
-using CastLibrary.Repository.Repositories.Delete;
+using CastLibrary.Logic.Commands.CampaignChronicles;
 using CastLibrary.Repository.Repositories.Insert;
 using CastLibrary.Repository.Repositories.Read;
 using CastLibrary.Repository.Repositories.Update;
 using CastLibrary.Repository.Services;
 using CastLibrary.Shared.Domain;
-using CastLibrary.Shared.Enums;
 
 namespace CastLibrary.Logic.Commands.Session;
 
@@ -18,13 +16,9 @@ public class EndSessionCommandHandler(
     ISessionUpdateRepository sessionUpdateRepository,
     ISessionReadRepository sessionReadRepository,
     ICampaignSessionArchivedInsertRepository campaignSessionArchivedInsertRepository,
-    IStorylineReadRepository storylineReadRepository,
-    ICampaignSessionChroniclesInsertRepository chroniclesInsertRepository,
-    ICampaignEventDeleteRepository campaignEventDeleteRepository,
-    IKeywordExtractionService keywordExtractionService) : IEndSessionCommandHandler
+    IKeywordExtractionService keywordExtractionService,
+    IMigrateStorylineToChroniclesCommandHandler migrateStorylineToChroniclesCommand) : IEndSessionCommandHandler
 {
-    private const string _handout = "campaign-handout";
-
     public async Task<Guid> HandleAsync(EndSessionCommand command)
     {
         var activeSession = await sessionReadRepository.GetActiveSessionByCampaignIdAsync(command.CampaignId);
@@ -54,67 +48,11 @@ public class EndSessionCommandHandler(
 
         await campaignSessionArchivedInsertRepository.InsertAsync(archivedSession);
 
-        // Query storyline events to move (CQRS: query in handler)
-        var storylineItemsToMove = await storylineReadRepository.GetByCampaignIdAsync(command.CampaignId, true, true);
-
-        // Controlled concurrency: limit to 4 concurrent keyword extractions
-        var semaphore = new SemaphoreSlim(4);
-        var keywordTasks = storylineItemsToMove.Select(async evt =>
-        {
-            await semaphore.WaitAsync();
-            try
-            {
-                if (evt.LinkedEntities == null || !evt.LinkedEntities.Any() || evt.SceneType == _handout)
-                {
-                    evt.LinkedEntities.Add(new LinkedEntityTrigger()
-                    {
-                        EntityId = string.Empty,
-                        EntityName = evt.SceneType == EntityType.CampaignHandout.GetDescription() ? "Handout" : evt.SceneType,
-                        EntityType = evt.SceneType
-                    });
-                }
-
-                var keywords = await keywordExtractionService.ExtractChronicleKeywordsAsync(
-                    evt.Title,
-                    evt.Body,
-                    null,
-                    evt.LinkedEntities);
-                return (Event: evt, Keywords: keywords);
-            }
-            finally
-            {
-                semaphore.Release();
-            }
-        });
-
-        var results = await Task.WhenAll(keywordTasks);
-
-        // Insert chronicles with extracted keywords
-        foreach (var (evt, keywords) in results)
-        {
-            var chronicleDomain = new CampaignSessionChroniclesDomain
-            {
-                Id = Guid.NewGuid(),
-                CampaignId = evt.CampaignId,
-                ArchivedSessionId = archivedSession.Id,
-                Title = evt.Title,
-                Body = evt.Body,
-                SortOrder = evt.SortOrder,
-                LinkedEntities = evt.LinkedEntities,
-                FilePath = evt.FilePath,
-                TodSliceName = null,
-                ArchivedAt = DateTime.UtcNow,
-                CreatedAt = evt.CreatedAt,
-                UpdatedAt = evt.UpdatedAt,
-                Keywords = keywords,
-                IsGmOnly = evt.VisibleToPlayers == false
-            };
-
-            await chroniclesInsertRepository.InsertAsync(chronicleDomain);
-        }
-
-        // Delete from storyline (repository operation)
-        await campaignEventDeleteRepository.DeleteByCampaignAsync(command.CampaignId, true, true);
+        // Migrate storyline events to chronicles
+        await migrateStorylineToChroniclesCommand.HandleAsync(new MigrateStorylineToChroniclesCommand(
+            command.CampaignId,
+            archivedSession.Id
+        ));
 
         // Close the active session
         activeSession.IsActive = false;

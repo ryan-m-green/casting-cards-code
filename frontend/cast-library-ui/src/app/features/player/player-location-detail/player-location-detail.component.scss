@@ -324,28 +324,6 @@
   z-index: 1;
 }
 
-.sublocations-section-header {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  margin-bottom: 20px;
-}
-
-.sublocations-section-label {
-  font-family: v.$font-header;
-  font-size: 9px;
-  letter-spacing: 0.22em;
-  text-transform: uppercase;
-  color: rgba(v.$color-lib-location-1, 0.92);
-  white-space: nowrap;
-  text-shadow: 0 0 10px rgba(v.$color-lib-location-1, 0.22);
-}
-
-.sublocations-section-line {
-  flex: 1;
-  height: 1px;
-  background: linear-gradient(to right, rgba(v.$color-lib-location-1, 0.24), transparent);
-}
 
 .sublocations-grid {
   display: flex;

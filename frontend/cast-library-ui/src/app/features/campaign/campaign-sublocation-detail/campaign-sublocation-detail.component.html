@@ -285,9 +285,7 @@
   @if (isDm() && campaign()) {
     <div class="subLoc-cast-section">
 
-      <div class="cast-section-header">
-        <span class="cast-section-label">Cast of Characters</span>
-        <span class="cast-section-line"></span>
+      <app-section-label title="Cast of Characters"></app-section-label>
         @if (sublocationCasts().length) {
           <button
             class="cast-reveal-all-btn"
@@ -344,7 +342,6 @@
         (castRemoved)="onCastRemoved($event)"
       />
 
-    </div>
   }
 
 }

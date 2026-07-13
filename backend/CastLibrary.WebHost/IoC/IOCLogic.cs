@@ -8,6 +8,7 @@ using CastLibrary.Logic.Commands.Faction;
 using CastLibrary.Logic.Commands.Location;
 using CastLibrary.Logic.Commands.Library;
 using CastLibrary.Logic.Commands.PlayerCard;
+using CastLibrary.Logic.Commands.PlayerNotes;
 using CastLibrary.Logic.Commands.QuicknoteQueue;
 using CastLibrary.Logic.Commands.Sublocation;
 using CastLibrary.Logic.Commands.ScheduledWorkflows;
@@ -22,6 +23,7 @@ using CastLibrary.Logic.Queries.Faction;
 using CastLibrary.Logic.Queries.Location;
 using CastLibrary.Logic.Queries.Library;
 using CastLibrary.Logic.Queries.PlayerCard;
+using CastLibrary.Logic.Queries.PlayerNotes;
 using CastLibrary.Logic.Queries.QuicknoteQueue;
 using CastLibrary.Logic.Queries.Sublocation;
 using CastLibrary.Logic.Queries.Subscription;
@@ -179,6 +181,7 @@ namespace CastLibrary.WebHost.IoC
             services.AddScoped<IRemoveFactionRelationshipCommandHandler, RemoveFactionRelationshipCommandHandler>();
             services.AddScoped<IUpdateFactionInstanceVisibilityCommandHandler, UpdateFactionInstanceVisibilityCommandHandler>();
             services.AddScoped<IUpsertFactionPlayerNotesCommandHandler, UpsertFactionPlayerNotesCommandHandler>();
+            services.AddScoped<IMigratePlayerNoteToChronicleCommandHandler, MigratePlayerNoteToChronicleCommandHandler>();
             services.AddScoped<ICreateQuicknoteQueueItemCommandHandler, CreateQuicknoteQueueItemCommandHandler>();
             services.AddScoped<IUpdateQuicknoteQueueItemCommandHandler, UpdateQuicknoteQueueItemCommandHandler>();
             services.AddScoped<IDeleteQuicknoteQueueItemCommandHandler, DeleteQuicknoteQueueItemCommandHandler>();
@@ -198,7 +201,9 @@ namespace CastLibrary.WebHost.IoC
 
             services.AddScoped<IStartSessionCommandHandler, StartSessionCommandHandler>();
             services.AddScoped<IUpdateSessionCommandHandler, UpdateSessionCommandHandler>();
+            services.AddScoped<ICancelSessionCommandHandler, CancelSessionCommandHandler>();
             services.AddScoped<IUpdateChronicleCommandHandler, UpdateChronicleCommandHandler>();
+            services.AddScoped<IMigrateStorylineToChroniclesCommandHandler, MigrateStorylineToChroniclesCommandHandler>();
 
             services.AddScoped<IEndSessionCommandHandler, EndSessionCommandHandler>();
             services.AddScoped<ICreateFreeTrialSubscriptionCommandHandler, CreateFreeTrialSubscriptionCommandHandler>();
@@ -244,6 +249,7 @@ namespace CastLibrary.WebHost.IoC
             services.AddScoped<IGetLocationPlayerNotesQueryHandler, GetLocationPlayerNotesQueryHandler>();
             services.AddScoped<IGetSublocationPlayerNotesQueryHandler, GetSublocationPlayerNotesQueryHandler>();
             services.AddScoped<IGetCampaignPlayerNotesQueryHandler, GetCampaignPlayerNotesQueryHandler>();
+            services.AddScoped<IGetAllPlayerNotesQueryHandler, GetAllPlayerNotesQueryHandler>();
 
             services.AddScoped<IGetAllUsersQueryHandler, GetAllUsersQueryHandler>();
             services.AddScoped<IGetDemoCampaignsQueryHandler, GetDemoCampaignsQueryHandler>();
@@ -317,6 +323,8 @@ namespace CastLibrary.WebHost.IoC
             services.AddScoped<ILibraryBundleTemplateFactory, LibraryBundleTemplateFactory>();
             services.AddScoped<ITemplateReadMeFactory, TemplateReadMeFactory>();
             services.AddScoped<IChroniclesFactory, ChroniclesFactory>();
+            services.AddScoped<IStorylineChronicleFactory, StorylineChronicleFactory>();
+            services.AddScoped<IPlayerNoteChronicleFactory, PlayerNoteChronicleFactory>();
 
             return services;
         }

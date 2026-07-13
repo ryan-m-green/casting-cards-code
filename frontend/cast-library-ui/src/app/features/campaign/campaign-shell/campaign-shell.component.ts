@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, signal, computed, inject, HostBinding } from '@angular/core';
+import { Component, OnInit, OnDestroy, signal, computed, inject, HostBinding, viewChild } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { ActivatedRoute, Router, RouterLink, RouterOutlet } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
@@ -13,11 +13,12 @@ import { TimeOfDayBarComponent } from '../../../shared/components/time-of-day-ba
 import { VoidNavDrawerComponent } from '../../../shared/components/void-nav-drawer/void-nav-drawer.component';
 import { VoidTitleSegmentsComponent } from '../../../shared/components/void-title-segments/void-title-segments.component';
 import { UpgradeBadgeComponent } from '../../../shared/components/upgrade-badge/upgrade-badge.component';
+import { CampaignChronicleDrawerComponent } from '../../../shared/components/campaign-chronicle-drawer/campaign-chronicle-drawer.component';
 
 @Component({
   selector: 'app-campaign-shell',
   standalone: true,
-  imports: [RouterOutlet, TimeOfDayBarComponent, VoidNavDrawerComponent, VoidTitleSegmentsComponent, UpgradeBadgeComponent],
+  imports: [RouterOutlet, TimeOfDayBarComponent, VoidNavDrawerComponent, VoidTitleSegmentsComponent, UpgradeBadgeComponent, CampaignChronicleDrawerComponent],
   templateUrl: './campaign-shell.component.html',
   styleUrl: './campaign-shell.component.scss',
 })
@@ -40,12 +41,21 @@ export class CampaignShellComponent implements OnInit, OnDestroy {
 
   isDm = computed(() => this.campaign()?.dmUserId === this.auth.currentUser()?.id);
 
+  // ── Chronicle drawer ───────────────────────────────────────────────────────
+  chronicleDrawer = viewChild.required<CampaignChronicleDrawerComponent>('chronicleDrawer');
+
   constructor() {
     this.hubSubscriptions.push(
       this.hub.campaignNavChanged$.subscribe(ev => {
         if (!ev || ev.campaignId !== this.campaignId()) return;
         this.http.get<CampaignDetail>(`${environment.apiUrl}/api/campaigns/${ev.campaignId}`)
           .subscribe(c => { this.campaign.set(c); this.shellSvc.setCampaign(c); });
+      })
+    );
+
+    this.hubSubscriptions.push(
+      this.shellSvc.openChronicleWithSearch.subscribe(query => {
+        this.chronicleDrawer().openWithSearch(query);
       })
     );
   }
@@ -93,5 +103,9 @@ export class CampaignShellComponent implements OnInit, OnDestroy {
 
   openUpgradeDrawer() {
     this.drawerService.open();
+  }
+
+  openChronicleDrawer() {
+    this.chronicleDrawer().open();
   }
 }

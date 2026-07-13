@@ -7,6 +7,18 @@ export interface Session {
   isActive: boolean;
 }
 
+export interface ArchivedSession {
+  id: string;
+  campaignId: string;
+  sessionNumber: number;
+  title: string;
+  alternateTitle: string;
+  startTime: string;
+  endTime: string;
+  inGameDays: number[];
+  archivedAt: string;
+}
+
 export interface StartSessionRequest {
   campaignId: string;
 }

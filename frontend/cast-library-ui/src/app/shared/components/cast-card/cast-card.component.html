@@ -112,7 +112,7 @@
 
           <!-- banner -->
           <div class="cast-banner">
-            <div class="cast-name">{{ cast.name }}</div>
+            <div class="cast-name" (click)="onNameClick($event)">{{ cast.name }}</div>
             <div class="cast-subtitle">{{ cast.role }} · {{ cast.race }}</div>
           </div>
 

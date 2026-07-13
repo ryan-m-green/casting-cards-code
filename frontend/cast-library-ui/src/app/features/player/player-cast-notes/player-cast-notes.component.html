@@ -11,12 +11,16 @@
   <!-- ── 1. What does this person want ── -->
   <div class="notes-section">
     <div class="notes-field-label">What does this person want</div>
+    @if (!isSessionActive()) {
+      <div class="session-disabled-message">Session not active - notes disabled</div>
+    }
     <textarea
       #wantTextarea
       class="notes-textarea"
       rows="4"
       placeholder="What motivates them? What are they after?"
       (input)="onWantInput($any($event.target).value)"
+      [readonly]="!isSessionActive()"
     ></textarea>
   </div>
   <!-- ── 2. Who is this person connected with ── -->

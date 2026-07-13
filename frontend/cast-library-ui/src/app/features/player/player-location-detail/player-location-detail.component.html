@@ -125,10 +125,7 @@
       @if (locationSublocations().length) {
 <div class="location-sublocations-section">
 
-  <div class="sublocations-section-header">
-    <span class="sublocations-section-label">Sublocations</span>
-    <span class="sublocations-section-line"></span>
-  </div>
+  <app-section-label title="Sublocations"></app-section-label>
 
   <div class="sublocations-grid">
     @for (subLoc of locationSublocations(); track subLoc.instanceId) {

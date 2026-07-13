@@ -12,6 +12,7 @@ import { CampaignLocationInstance } from '../../../shared/models/location.model'
 import { CampaignSecret } from '../../../shared/models/secret.model';
 import { CampaignCastPlayerNotes } from '../../../shared/models/campaign.model';
 import { CampaignHubService } from '../../../core/hub/campaign-hub.service';
+import { SessionContextService } from '../../../core/session-context.service';
 
 const ALIGNMENTS: string[][] = [
   ['Lawful Good',    'Neutral Good',  'Chaotic Good'   ],
@@ -58,6 +59,9 @@ export class PlayerCastNotesComponent implements OnInit, OnChanges, OnDestroy {
   private hubSubscriptions: Subscription[] = [];
 
   private http = inject(HttpClient);
+  private sessionContext = inject(SessionContextService);
+
+  isSessionActive = signal(false);
   private hub      = inject(CampaignHubService);
 
   @ViewChild('wantTextarea') private wantRef?: ElementRef<HTMLTextAreaElement>;
@@ -131,10 +135,50 @@ export class PlayerCastNotesComponent implements OnInit, OnChanges, OnDestroy {
   ngOnInit() {
     this.load();
     document.addEventListener('click', this.outsideClickHandler);
+
     this.hubSubscriptions.push(
       this.hub.noteUpdated$.subscribe(e => {
         if (e?.entityType === 'cast' && e.instanceId === this.castInstance?.instanceId) {
           this.load();
+        }
+      })
+    );
+
+    // Subscribe to session context
+    this.hubSubscriptions.push(
+      this.sessionContext.getActiveSession(this.campaignId).subscribe(session => {
+        this.isSessionActive.set(session !== null);
+      })
+    );
+
+    // Subscribe to session started event to reload notes and update active state
+    this.hubSubscriptions.push(
+      this.hub.sessionStarted$.subscribe(event => {
+        if (event) {
+          this.isSessionActive.set(true);
+          this.load();
+        }
+      })
+    );
+
+    // Subscribe to session ended event to update active state and reload notes
+    this.hubSubscriptions.push(
+      this.hub.sessionEnded$.subscribe(event => {
+        if (event) {
+          this.isSessionActive.set(false);
+          // Add delay to allow backend to complete note deletion
+          setTimeout(() => this.load(), 500);
+        }
+      })
+    );
+
+    // Subscribe to session cancelled event to update active state and reload notes
+    this.hubSubscriptions.push(
+      this.hub.sessionCancelled$.subscribe(event => {
+        if (event) {
+          this.isSessionActive.set(false);
+          // Add delay to allow backend to complete note deletion
+          setTimeout(() => this.load(), 500);
         }
       })
     );
@@ -173,7 +217,9 @@ export class PlayerCastNotesComponent implements OnInit, OnChanges, OnDestroy {
 
   private save() {
     this.saving.set(true);
+    const saveStartTime = Date.now();
     const n = this.notes();
+    
     this.http.put<CampaignCastPlayerNotes>(
       `${environment.apiUrl}/api/campaigns/${this.campaignId}/cast-player-notes/${this.castInstance.instanceId}`,
       {
@@ -185,7 +231,14 @@ export class PlayerCastNotesComponent implements OnInit, OnChanges, OnDestroy {
       }
     ).subscribe(updated => {
       this.notes.set(updated);
-      this.saving.set(false);
+      
+      // Ensure saving label shows for at least 1 second
+      const elapsed = Date.now() - saveStartTime;
+      const remainingTime = Math.max(0, 1000 - elapsed);
+      
+      setTimeout(() => {
+        this.saving.set(false);
+      }, remainingTime);
     });
   }
 

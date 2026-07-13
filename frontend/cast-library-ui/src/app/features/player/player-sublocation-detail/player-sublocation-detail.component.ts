@@ -25,11 +25,12 @@ import { PlayerCampaignShellService } from '../../../core/player-campaign-shell.
 import { CampaignHubService } from '../../../core/hub/campaign-hub.service';
 import { PlayerSublocationNotesComponent } from '../player-sublocation-notes/player-sublocation-notes.component';
 import { FactionSymbolPickerComponent, FactionSymbolAssignment } from '../../../shared/components/faction-symbol-picker/faction-symbol-picker.component';
+import { SectionLabelComponent } from '../../../shared/components/section-label/section-label.component';
 
 @Component({
   selector: 'app-player-sublocation-detail',
   standalone: true,
-  imports: [CommonModule, SublocationCardComponent, CastCardComponent, PlayerSublocationNotesComponent, FactionSymbolPickerComponent],
+  imports: [CommonModule, SublocationCardComponent, CastCardComponent, PlayerSublocationNotesComponent, FactionSymbolPickerComponent, SectionLabelComponent],
   templateUrl: './player-sublocation-detail.component.html',
   styleUrl: './player-sublocation-detail.component.scss'
 })

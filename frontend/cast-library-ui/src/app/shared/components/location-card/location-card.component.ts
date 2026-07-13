@@ -1,6 +1,7 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { Component, Input, Output, EventEmitter, inject } from '@angular/core';
 import { Location } from '../../models/location.model';
 import { LockIconComponent } from '../lock-icon/lock-icon.component';
+import { CampaignShellService } from '../../../core/campaign-shell.service';
 
 @Component({
   selector: 'app-location-card',
@@ -10,6 +11,8 @@ import { LockIconComponent } from '../lock-icon/lock-icon.component';
   styleUrl: './location-card.component.scss'
 })
 export class LocationCardComponent {
+  private shellSvc = inject(CampaignShellService);
+
   @Input({ required: true }) location!: Location;
   @Input() editable        = true;
   @Input() flippable       = true;
@@ -78,5 +81,10 @@ export class LocationCardComponent {
   onFileInputChange(e: Event): void {
     const file = (e.target as HTMLInputElement).files?.[0];
     if (file) this.fileSelected.emit(file);
+  }
+
+  onNameClick(e: Event): void {
+    e.stopPropagation();
+    this.shellSvc.openChronicleDrawerWithSearch(this.location.name);
   }
 }
