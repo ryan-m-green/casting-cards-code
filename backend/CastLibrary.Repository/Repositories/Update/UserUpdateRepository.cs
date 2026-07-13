@@ -72,7 +72,7 @@ namespace CastLibrary.Repository.Repositories.Update
         {
             using var conn = sqlConnectionFactory.GetConnection();
             await conn.ExecuteAsync(
-                "UPDATE users SET email = @Email, email_verified = false WHERE id = @Id",
+                "UPDATE users SET email = @Email WHERE id = @Id",
                 new { Id = userId, Email = email });
         }
     }

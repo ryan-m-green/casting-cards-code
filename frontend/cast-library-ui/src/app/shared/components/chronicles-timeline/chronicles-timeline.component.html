@@ -42,7 +42,7 @@
                     <div class="event-title" [innerHTML]="highlightText(chronicle.title, searchQuery)"></div>
                   </div>            
                 </div>
-                @if (isDmMode && chronicleEditingId === chronicle.id) {
+                @if ((isDmMode || hasPlayerNote(chronicle)) && chronicleEditingId === chronicle.id) {
                   <div class="chronicle-edit-form">
                     <div class="chronicle-edit-controls">
                       <div class="chronicle-edit-control-group">
@@ -59,7 +59,7 @@
                         <label class="chronicle-edit-label">Sort Order:</label>
                         <div class="chronicle-edit-sort">
                           <button class="chronicle-sort-btn" (click)="onSortOrderDecrement()" [disabled]="chronicleEditSortOrder <= 1">↓</button>
-                          <input type="number" class="chronicle-sort-input" [(ngModel)]="chronicleEditSortOrder" min="1" />
+                          <input type="number" class="chronicle-sort-input" [value]="chronicleEditSortOrder" (input)="onSortOrderInputChange($event)" min="1" />
                           <button class="chronicle-sort-btn" (click)="onSortOrderIncrement()">↑</button>
                         </div>
                       </div>
@@ -107,7 +107,9 @@
                         GM ONLY
                       </span>
                     }
-                    <button class="chronicle-edit-btn" (click)="openChronicleEdit(chronicle); $event.stopPropagation()" [disabled]="chronicleEditingId === chronicle.id">Edit</button>
+                    <button class="chronicle-edit-btn" (click)="openChronicleEdit(chronicle, session.sessionId); $event.stopPropagation()" [disabled]="chronicleEditingId === chronicle.id">Edit</button>
+                  } @else if (hasPlayerNote(chronicle)) {
+                    <button class="chronicle-edit-btn" (click)="openChronicleEdit(chronicle, session.sessionId); $event.stopPropagation()" [disabled]="chronicleEditingId === chronicle.id">Edit</button>
                   }
                   </div>
               </div>

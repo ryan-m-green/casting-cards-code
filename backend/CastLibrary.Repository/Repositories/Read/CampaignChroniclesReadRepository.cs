@@ -295,15 +295,30 @@ public class CampaignChroniclesReadRepository(
 
     private string BuildDataSql(string whereClause, string gmOnlyClause)
     {
+        var hasSearchOrFilter = !string.IsNullOrEmpty(whereClause);
+        var chronicleJoinCondition = $"c.archived_session_id = s.id {gmOnlyClause}";
+        if (!string.IsNullOrEmpty(whereClause))
+        {
+            chronicleJoinCondition += $" {whereClause}";
+        }
+
+        var matchingSessionsCte = hasSearchOrFilter
+            ? $"SELECT DISTINCT s.id, s.start_time\n" +
+              $"    FROM campaign_session_archived s\n" +
+              $"    INNER JOIN campaign_session_chronicles c ON c.archived_session_id = s.id\n" +
+              $"    WHERE s.campaign_id = @CampaignId\n" +
+              $"      {whereClause}\n" +
+              $"      {gmOnlyClause}\n" +
+              $"    ORDER BY s.start_time DESC\n" +
+              $"    LIMIT @PageSize OFFSET @Offset"
+            : $"SELECT DISTINCT s.id, s.start_time\n" +
+              $"    FROM campaign_session_archived s\n" +
+              $"    WHERE s.campaign_id = @CampaignId\n" +
+              $"    ORDER BY s.start_time DESC\n" +
+              $"    LIMIT @PageSize OFFSET @Offset";
+
         return $"WITH matching_sessions AS (\n" +
-               $"    SELECT DISTINCT s.id, s.start_time\n" +
-               $"    FROM campaign_session_archived s\n" +
-               $"    INNER JOIN campaign_session_chronicles c ON c.archived_session_id = s.id\n" +
-               $"    WHERE s.campaign_id = @CampaignId\n" +
-               $"      {whereClause}\n" +
-               $"      {gmOnlyClause}\n" +
-               $"    ORDER BY s.start_time DESC\n" +
-               $"    LIMIT @PageSize OFFSET @Offset\n" +
+               $"    {matchingSessionsCte}\n" +
                $"  )\n" +
                $"  SELECT s.id as SessionId,\n" +
                $"         s.session_number as SessionNumber,\n" +
@@ -319,12 +334,12 @@ public class CampaignChroniclesReadRepository(
                $"         c.file_path as FilePath,\n" +
                $"         c.tod_slice_name as TodSliceName,\n" +
                $"         c.is_gm_only as IsGmOnly,\n" +
-               $"         c.archived_at as ArchivedAt\n" +
+               $"         c.archived_at as ArchivedAt,\n" +
+               $"         c.sort_order as SortOrder\n" +
                $"  FROM campaign_session_archived s\n" +
                $"  INNER JOIN matching_sessions ms ON ms.id = s.id\n" +
-               $"  LEFT JOIN campaign_session_chronicles c ON c.archived_session_id = s.id {gmOnlyClause}\n" +
+               $"  LEFT JOIN campaign_session_chronicles c ON {chronicleJoinCondition}\n" +
                $"  WHERE s.campaign_id = @CampaignId\n" +
-               $"    {whereClause}\n" +
                $"  ORDER BY s.start_time DESC, c.sort_order ASC";
     }
 }

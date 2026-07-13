@@ -59,6 +59,7 @@ export class TimeOfDayBarComponent implements OnInit, OnChanges, OnDestroy {
   private shimmerTimer?: ReturnType<typeof setTimeout>;
   private playerNoteTimers: Record<string, ReturnType<typeof setTimeout>> = {};
   private dmNoteTimers: Record<string, ReturnType<typeof setTimeout>> = {};
+  private autoLockTimer?: ReturnType<typeof setTimeout>;
   private dragStart = 0;
   private reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
@@ -141,6 +142,7 @@ export class TimeOfDayBarComponent implements OnInit, OnChanges, OnDestroy {
 
   ngOnDestroy() {
     clearTimeout(this.shimmerTimer);
+    clearTimeout(this.autoLockTimer);
     Object.values(this.playerNoteTimers).forEach(t => clearTimeout(t));
     Object.values(this.dmNoteTimers).forEach(t => clearTimeout(t));
     this.hubSubscriptions.forEach(sub => sub.unsubscribe());
@@ -169,7 +171,23 @@ export class TimeOfDayBarComponent implements OnInit, OnChanges, OnDestroy {
   // ── Cursor dragging (DM only) ─────────────────────────────────────────────
 
   toggleLock() {
+    const wasLocked = this.isLocked();
     this.isLocked.update(v => !v);
+
+    if (wasLocked) {
+      // Just unlocked - start auto-lock timer
+      this.resetAutoLockTimer();
+    } else {
+      // Just locked manually - clear timer
+      clearTimeout(this.autoLockTimer);
+    }
+  }
+
+  private resetAutoLockTimer() {
+    clearTimeout(this.autoLockTimer);
+    this.autoLockTimer = setTimeout(() => {
+      this.isLocked.set(true);
+    }, 8000);
   }
 
   onCursorMouseDown(event: MouseEvent) {
@@ -177,12 +195,14 @@ export class TimeOfDayBarComponent implements OnInit, OnChanges, OnDestroy {
     event.preventDefault();
     this.isDragging.set(true);
     this.dragStart = event.clientX;
+    this.resetAutoLockTimer();
   }
 
   onCursorTouchStart(event: TouchEvent) {
     if (this.isLocked() || (!this.isDm && !this.allowInteraction)) return;
     event.preventDefault();
     this.isDragging.set(true);
+    this.resetAutoLockTimer();
   }
 
   onCursorKeyDown(event: KeyboardEvent) {
@@ -192,10 +212,12 @@ export class TimeOfDayBarComponent implements OnInit, OnChanges, OnDestroy {
       event.preventDefault();
       const next = Math.min(100, this.cursorPercent() + step);
       this.cursorPercent.set(next);
+      this.resetAutoLockTimer();
     } else if (event.key === 'ArrowLeft') {
       event.preventDefault();
       const next = Math.max(0, this.cursorPercent() - step);
       this.cursorPercent.set(next);
+      this.resetAutoLockTimer();
     } else if (event.key === 'Enter' || event.key === ' ') {
       event.preventDefault();
       this.broadcastCursorPosition();
@@ -210,6 +232,7 @@ export class TimeOfDayBarComponent implements OnInit, OnChanges, OnDestroy {
     const rect = bar.getBoundingClientRect();
     const pct  = ((event.clientX - rect.left) / rect.width) * 100;
     this.cursorPercent.set(Math.max(0, Math.min(100, pct)));
+    this.resetAutoLockTimer();
   }
 
   @HostListener('document:mouseup')
@@ -220,6 +243,7 @@ export class TimeOfDayBarComponent implements OnInit, OnChanges, OnDestroy {
       this.broadcastCursorPosition();
     }
     this.triggerDayActionIfAtEdge();
+    this.resetAutoLockTimer();
   }
 
   @HostListener('document:touchmove', ['$event'])
@@ -230,6 +254,7 @@ export class TimeOfDayBarComponent implements OnInit, OnChanges, OnDestroy {
     const rect = bar.getBoundingClientRect();
     const pct  = ((event.touches[0].clientX - rect.left) / rect.width) * 100;
     this.cursorPercent.set(Math.max(0, Math.min(100, pct)));
+    this.resetAutoLockTimer();
   }
 
   @HostListener('document:touchend')
@@ -241,6 +266,7 @@ export class TimeOfDayBarComponent implements OnInit, OnChanges, OnDestroy {
       this.broadcastCursorPosition();
     }
     this.triggerDayActionIfAtEdge();
+    this.resetAutoLockTimer();
   }
 
   private triggerDayActionIfAtEdge() {
@@ -254,10 +280,12 @@ export class TimeOfDayBarComponent implements OnInit, OnChanges, OnDestroy {
   requestAdvanceDay() {
     if (this.isLocked() || (!this.isDm && !this.allowInteraction)) return;
     this.showAdvanceConfirm.set(true);
+    this.resetAutoLockTimer();
   }
 
   cancelAdvanceDay() {
     this.showAdvanceConfirm.set(false);
+    this.resetAutoLockTimer();
   }
 
   confirmAdvanceDay() {

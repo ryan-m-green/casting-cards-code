@@ -96,7 +96,7 @@ export class CampaignChronicleDrawerComponent implements OnInit, OnDestroy {
 
   loadChronicles(searchQuery?: string, typeFilters?: string[]) {
     if (!this.campaignId) return;
-    
+
     this.chronicles.set(null);
     this.loadingChronicles.set(true);
     const params = new URLSearchParams({
@@ -118,14 +118,21 @@ export class CampaignChronicleDrawerComponent implements OnInit, OnDestroy {
       .subscribe(data => {
         this.chronicles.set(data);
         if (data) {
-          const allSessionIds = new Set(data.sessions.map(s => s.sessionId));
+          const allSessionIds = new Set(data.sessions.map(s => String(s.sessionId)));
           this.expandedSessionIds.set(allSessionIds);
-          this.sessionOptions.set(data.sessions.map(s => ({
-            value: s.sessionId,
+        }
+        this.loadingChronicles.set(false);
+      });
+
+    // Load all sessions for the dropdown options
+    this.http.get<any[]>(`${environment.apiUrl}/api/campaigns/${this.campaignId}/chronicles/sessions`)
+      .subscribe(sessions => {
+        if (sessions) {
+          this.sessionOptions.set(sessions.map(s => ({
+            value: String(s.sessionId),
             label: `Session ${s.sessionNumber}${s.alternateTitle ? ' - ' + s.alternateTitle : ''}`
           })));
         }
-        this.loadingChronicles.set(false);
       });
   }
 
@@ -176,13 +183,14 @@ export class CampaignChronicleDrawerComponent implements OnInit, OnDestroy {
     }
   }
 
-  openChronicleEdit(chronicle: ChronicleItem) {
-    const hasPlayerNote = chronicle.linkedEntities?.some(e => e.entityType === 'player-note');
+  openChronicleEdit(payload: { chronicle: ChronicleItem; sessionId: string }) {
+    const { chronicle, sessionId } = payload;
+    const hasPlayerNote = chronicle.linkedEntities?.some(e => e.entityType.toLowerCase() === 'player-note');
     if (!this.isDmMode && !hasPlayerNote) return;
     this.chronicleEditingId.set(chronicle.id);
     this.chronicleEditTitle.set(chronicle.title);
     this.chronicleEditBody.set(chronicle.body);
-    this.chronicleEditSessionId.set(chronicle.sessionId);
+    this.chronicleEditSessionId.set(String(sessionId));
     this.chronicleEditSortOrder.set(chronicle.sortOrder);
     this.chronicleSaving.set(false);
     this.chronicleSaveError.set(null);

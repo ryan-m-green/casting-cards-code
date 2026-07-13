@@ -17,4 +17,5 @@ public class ChroniclesRowEntity
     public string TodSliceName { get; set; }
     public bool IsGmOnly { get; set; }
     public DateTime ArchivedAt { get; set; }
+    public int SortOrder { get; set; }
 }

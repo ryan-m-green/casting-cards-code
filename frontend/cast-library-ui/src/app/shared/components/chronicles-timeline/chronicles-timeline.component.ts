@@ -30,7 +30,7 @@ export class ChroniclesTimelineComponent {
   @Input() searchQuery: string = '';
 
   @Output() sessionExpand = new EventEmitter<string>();
-  @Output() editChronicle = new EventEmitter<ChronicleItem>();
+  @Output() editChronicle = new EventEmitter<{ chronicle: ChronicleItem; sessionId: string }>();
   @Output() cancelChronicleEdit = new EventEmitter<void>();
   @Output() saveChronicleEdit = new EventEmitter<string>();
   @Output() sessionChange = new EventEmitter<string>();
@@ -41,8 +41,8 @@ export class ChroniclesTimelineComponent {
     this.sessionExpand.emit(sessionId);
   }
 
-  openChronicleEdit(chronicle: ChronicleItem) {
-    this.editChronicle.emit(chronicle);
+  openChronicleEdit(chronicle: ChronicleItem, sessionId: string) {
+    this.editChronicle.emit({ chronicle, sessionId });
   }
 
   onCancelChronicleEdit() {
@@ -67,6 +67,14 @@ export class ChroniclesTimelineComponent {
     }
   }
 
+  onSortOrderInputChange(event: Event) {
+    const input = event.target as HTMLInputElement;
+    const value = parseInt(input.value, 10);
+    if (!isNaN(value) && value >= 1) {
+      this.sortOrderChange.emit(value);
+    }
+  }
+
 
   formatSessionDate(dateStr: string): string {
     if (!dateStr) return '';
@@ -84,5 +92,9 @@ export class ChroniclesTimelineComponent {
     const escapedQuery = query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
     const regex = new RegExp(`(${escapedQuery})`, 'gi');
     return text.replace(regex, '<mark class="search-highlight">$1</mark>');
+  }
+
+  hasPlayerNote(chronicle: ChronicleItem): boolean {
+    return chronicle.linkedEntities?.some(e => e.entityType.toLowerCase() === 'player-note') ?? false;
   }
 }

@@ -12,7 +12,8 @@ public interface IUpdateEmailCommandHandler
 
 public class UpdateEmailCommandHandler(
     IUserReadRepository userReadRepository,
-    IUserUpdateRepository userUpdateRepository) : IUpdateEmailCommandHandler
+    IUserUpdateRepository userUpdateRepository,
+    ISendEmailChangeNotificationsCommandHandler notificationHandler) : IUpdateEmailCommandHandler
 {
     public async Task<(bool Success, string Error)> HandleAsync(UpdateEmailCommand command)
     {
@@ -25,7 +26,19 @@ public class UpdateEmailCommandHandler(
         if (existingUser is not null && existingUser.Id != command.UserId)
             return (false, "Email already in use.");
 
+        var oldEmail = user.Email;
+        var changedAt = DateTime.UtcNow.ToString("yyyy-MM-dd HH:mm:ss UTC");
+
         await userUpdateRepository.UpdateEmailAsync(command.UserId, command.Request.Email);
+
+        // Send email notifications in parallel
+        await notificationHandler.HandleAsync(new SendEmailChangeNotificationsCommand
+        {
+            OldEmail = oldEmail,
+            NewEmail = command.Request.Email,
+            DisplayName = user.DisplayName,
+            ChangedAt = changedAt
+        });
 
         return (true, null);
     }

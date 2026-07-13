@@ -56,7 +56,8 @@ public class ChroniclesFactory(IImageStorageOperator imageStorageOperator) : ICh
                     ImageUrl = imageUrl,
                     TodSliceName = row.TodSliceName,
                     IsGmOnly = row.IsGmOnly,
-                    ArchivedAt = row.ArchivedAt
+                    ArchivedAt = row.ArchivedAt,
+                    SortOrder = row.SortOrder
                 });
             }
         }

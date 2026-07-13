@@ -366,7 +366,7 @@
 }
 
 .chronicle-sort-input {
-  width: 60px;
+  width: 40px;
   padding: 4px 8px;
   background: v.$campaign-portal-bg-medium;
   border: 1px solid v.$campaign-portal-border-bold;
@@ -375,6 +375,16 @@
   font-family: v.$font-header;
   font-size: 13px;
   text-align: center;
+
+  /* Hide native number input spinners */
+  -moz-appearance: textfield;
+  appearance: textfield;
+
+  &::-webkit-outer-spin-button,
+  &::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
 }
 
 .chronicle-edit-input,

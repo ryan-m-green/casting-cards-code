@@ -59,6 +59,7 @@ namespace CastLibrary.WebHost.IoC
             services.AddScoped<IChangePasswordCommandHandler, ChangePasswordCommandHandler>();
             services.AddScoped<IUpdateDisplayNameCommandHandler, UpdateDisplayNameCommandHandler>();
             services.AddScoped<IUpdateEmailCommandHandler, UpdateEmailCommandHandler>();
+            services.AddScoped<ISendEmailChangeNotificationsCommandHandler, SendEmailChangeNotificationsCommandHandler>();
 
             services.AddScoped<ICreateCastCommandHandler, CreateCastCommandHandler>();
             services.AddScoped<IUpdateCastCommandHandler, UpdateCastCommandHandler>();

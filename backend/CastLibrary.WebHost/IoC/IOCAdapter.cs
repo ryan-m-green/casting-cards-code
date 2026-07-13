@@ -28,6 +28,8 @@ namespace CastLibrary.WebHost.IoC
             services.AddScoped<IEmailTemplateBuilder, WelcomeEmailTemplateBuilder>();
             services.AddScoped<IEmailTemplateBuilder, CampaignInvitationEmailTemplateBuilder>();
             services.AddScoped<IEmailTemplateBuilder, InactivityReminderEmailTemplateBuilder>();
+            services.AddScoped<IEmailTemplateBuilder, EmailChangeSecurityAlertEmailTemplateBuilder>();
+            services.AddScoped<IEmailTemplateBuilder, EmailChangeConfirmationEmailTemplateBuilder>();
 
             if (useLocalStorage)
             {
