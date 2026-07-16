@@ -91,11 +91,18 @@
 
 .currency-subtitle {
   font-family: 'Cinzel', serif;
-  font-size: 6px;
+  font-size: 9px;
   letter-spacing: 0.12em;
-  color: v.$color-ext-663;
-  margin-top: 1px;
+  color: v.$color-ext-653;
   opacity: 0.8;
+  position: absolute;
+  bottom: 8px;
+  left: 0;
+  right: 0;
+  text-align: center;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8);
+  z-index: 2;
+  white-space: nowrap;
 }
 
 // ── Portrait ──────────────────────────────────────────────────────────────────
@@ -109,6 +116,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  position: relative;
 }
 
 .currency-portrait-img {
@@ -173,7 +181,8 @@
 
 .currency-strip-label {
   font-family: 'Cinzel', serif;
-  font-size: 5px;
+  font-size: 9px;
+  font-weight: bolder;
   letter-spacing: 0.15em;
   text-transform: uppercase;
   color: v.$color-ext-652;

@@ -14,6 +14,10 @@
   <!-- Detail panel -->
   <div class="location-detail-panel" [style.height]="panelHeight()" [class.detail-panel--mobile-expanded]="detailExpanded()">
 
+    @if (detailExpanded()) {
+      <button class="detail-close-btn" (click)="toggleDetail()" title="Close panel">Close</button>
+    }
+
     <div class="detail-panel-content" #detailContent>
 
       @if (c.description) {
@@ -95,9 +99,10 @@
         <div class="detail-secrets-header">
           <span class="detail-label">Secrets</span>
         </div>
-        @for (secret of locationSecrets(); track secret.id) {
+        @for (secret of locationSecrets(); track secret.id; let index = $index) {
         @if (secret.isRevealed) {
         <div class="detail-secret">
+          <span class="secret-number">{{ index + 1 }})</span>
           <span class="secret-text secret-text--revealed">{{ secret.content }}</span>
         </div>
         }
@@ -125,7 +130,7 @@
       @if (locationSublocations().length) {
 <div class="location-sublocations-section">
 
-  <app-section-label title="Sublocations"></app-section-label>
+  <app-section-label title="Sublocations" color="rgb(144, 180, 216)"></app-section-label>
 
   <div class="sublocations-grid">
     @for (subLoc of locationSublocations(); track subLoc.instanceId) {

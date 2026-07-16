@@ -344,7 +344,7 @@
         </div>
 
         <div class="secrets-section">
-          <div class="secrets-section-label">🔒 Held in Confidence</div>
+          <div class="secrets-section-label"><app-lock-icon /> Held in Confidence</div>
           @if (heldSecrets().length === 0) {
             <div class="empty-state">No private secrets.</div>
           }
@@ -359,6 +359,7 @@
                 (click)="shareSecret(secret.id)"
                 [disabled]="sharingSecretId() === secret.id"
               >
+                <img src="/monk_sitting_by_campfire.svg" class="share-btn-icon" />
                 Share with Party
               </button>
             </div>
@@ -366,7 +367,7 @@
         </div>
 
         <div class="secrets-section">
-          <div class="secrets-section-label">📖 Party Knowledge</div>
+          <div class="secrets-section-label"><img src="/ancient_scroll_knowledge.svg" class="knowledge-icon" /> Party Knowledge</div>
           @if (partySecrets().length === 0) {
             <div class="empty-state">No shared secrets yet.</div>
           }

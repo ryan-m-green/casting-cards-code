@@ -135,7 +135,7 @@
   animation: sparkler-fall 800ms ease-in forwards;
   background: var(--color, #C8A030);
   box-shadow: 0 0 4px 1px var(--color, #C8A030);
-  z-index: 99999;
+  z-index: 3000;
 }
 
 @keyframes sparkler-fall {

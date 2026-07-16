@@ -113,13 +113,14 @@
 
   <!-- ── 5. Secrets ── -->
   @if (castSecrets.length) {
-    <div class="notes-section-divider"></div>
+  
     <div class="notes-section">
       <div class="notes-field-label">Secrets</div>
-      <span class="notes-field-line"></span>
+
       <div class="secrets-grid">
-        @for (secret of castSecrets; track secret.id) {
-          <div class="secret-card">
+        @for (secret of castSecrets; track secret.id; let index = $index) {
+          <div class="secret-item">
+            <span class="secret-number">{{ index + 1 }})</span>
             <p class="secret-card-text">{{ secret.content }}</p>
           </div>
         }

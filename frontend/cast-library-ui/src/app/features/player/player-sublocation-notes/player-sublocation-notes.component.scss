@@ -8,7 +8,7 @@
 .sublocation-notes-panel {
   width: 100%;
   background: v.$campaign-portal-bg-dark;
-  border: 1px solid v.$color-player-section-border;
+  border: 1px solid #C0D4F0;
   border-radius: 6px;
   overflow: hidden;
 }
@@ -26,7 +26,7 @@
   font-size: 12px;
   letter-spacing: 0.22em;
   text-transform: uppercase;
-  color: v.$color-player-section-label;
+  color: rgb(144, 180, 216);
   white-space: nowrap;
 }
 
@@ -35,7 +35,7 @@
   font-size: 7px;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: rgba(v.$color-lib-location-1, 0.8);
+  color: rgb(144, 180, 216);
   white-space: nowrap;
 }
 

@@ -18,6 +18,10 @@
       <!-- Detail panel -->
       <div class="subLoc-detail-panel" [style.height]="panelHeight()" [class.detail-panel--mobile-expanded]="detailExpanded()">
 
+        @if (detailExpanded()) {
+          <button class="detail-close-btn" (click)="toggleDetail()" title="Close panel">Close</button>
+        }
+
         <div class="detail-panel-content" #detailContent>
 
           @if (subLoc.description) {
@@ -66,10 +70,13 @@
 
           @if (sublocationSecrets().some(s => s.isRevealed)) {
             <div class="detail-secrets-section">
-              <span class="detail-label">Secrets</span>
-              @for (secret of sublocationSecrets(); track secret.id) {
+              <div class="detail-secrets-header">
+                <span class="detail-label">Secrets</span>
+              </div>
+              @for (secret of sublocationSecrets(); track secret.id; let index = $index) {
                 @if (secret.isRevealed) {
                   <div class="detail-secret">
+                    <span class="secret-number">{{ index + 1 }})</span>
                     <span class="secret-text secret-text--revealed">{{ secret.content }}</span>
                   </div>
                 }
@@ -109,7 +116,7 @@
     @if (sublocationCasts().length) {
       <div class="subLoc-cast-section">
 
-        <app-section-label title="Cast"></app-section-label>
+        <app-section-label title="Cast Of Characters" color="rgb(232, 201, 106)"></app-section-label>
 
         <div class="cast-grid">
           @for (cast of fadingOut(); track cast.instanceId) {

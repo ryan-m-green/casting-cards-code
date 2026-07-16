@@ -8,7 +8,7 @@
 
   @if (camp.locations.some(l => !l.isPartyAnchor)) {
     <div class="location-cards-section">
-      <app-section-label title="Locations"></app-section-label>
+      <app-section-label title="Locations" color="rgb(200, 224, 128)"></app-section-label>
       
       <div class="location-cards-container">
         @for (location of camp.locations; track location.instanceId) {

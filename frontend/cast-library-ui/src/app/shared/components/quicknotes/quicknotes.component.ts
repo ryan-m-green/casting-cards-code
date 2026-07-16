@@ -7,6 +7,8 @@ import {
   ElementRef,
   OnInit,
   OnDestroy,
+  HostBinding,
+  HostListener,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -42,6 +44,26 @@ export class QuicknotesComponent implements OnInit, OnDestroy {
 
   @ViewChild('noteArea') noteArea!: ElementRef<HTMLTextAreaElement>;
   @ViewChild('saveBtn') saveBtn!: ElementRef<HTMLButtonElement>;
+  @ViewChild('qnPanel') qnPanel!: ElementRef<HTMLDivElement>;
+
+  @HostBinding('class.qn-animating')
+  get isAnimatingClass() {
+    return this.isOpen();
+  }
+
+  constructor(private elementRef: ElementRef) {
+    // Clear inline styles on screen resize to ensure CSS media queries take effect
+    window.addEventListener('resize', () => {
+      const host = this.elementRef.nativeElement as HTMLElement;
+      if (!this.isOpen()) {
+        host.style.left = '';
+        host.style.right = '';
+        host.style.transform = '';
+        host.style.width = '';
+        host.style.maxWidth = '';
+      }
+    });
+  }
 
   private http   = inject(HttpClient);
   private router  = inject(Router);
@@ -144,6 +166,17 @@ export class QuicknotesComponent implements OnInit, OnDestroy {
         }, 4000);
         return;
       }
+      // Reset mobile styles after slide-up animation completes (1s)
+      if (window.innerWidth < 768) {
+        setTimeout(() => {
+          const host = this.elementRef.nativeElement as HTMLElement;
+          host.style.left = '';
+          host.style.right = '';
+          host.style.transform = '';
+          host.style.width = '';
+          host.style.maxWidth = '';
+        }, 40);
+      }
       this.isClosing.set(true);
       setTimeout(() => {
         this.isOpen.set(false);
@@ -157,6 +190,21 @@ export class QuicknotesComponent implements OnInit, OnDestroy {
     } else if (!this.isOpen()) {
       this.isOpen.set(true);
       this.isAnimating.set(true);
+      // Clear any inline styles to ensure CSS takes effect
+      const host = this.elementRef.nativeElement as HTMLElement;
+      host.style.left = '';
+      host.style.right = '';
+      host.style.transform = '';
+      host.style.width = '';
+      host.style.maxWidth = '';
+      // Apply mobile expansion immediately (no animation)
+      if (window.innerWidth < 540) {
+        host.style.left = '12px';
+        host.style.right = '12px';
+        host.style.transform = 'none';
+        host.style.width = 'auto';
+        host.style.maxWidth = 'none';
+      }
       setTimeout(() => {
         this.isAnimating.set(false);
         this.noteArea?.nativeElement?.focus();

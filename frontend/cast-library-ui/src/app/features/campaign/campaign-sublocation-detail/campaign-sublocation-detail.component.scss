@@ -37,17 +37,17 @@
 @keyframes portal-inward-breathe {
   0%, 100% {
     box-shadow:
-      inset 0 0 0    1px color-mix(in srgb, var(--portal-color, #{v.$color-lib-sublocation-1}) 40%, white 60%),
-      inset 0 0  6px  2px color-mix(in srgb, var(--portal-color, #{v.$color-lib-sublocation-1}), transparent 28%),
-      inset 0 0 14px  4px color-mix(in srgb, var(--portal-color, #{v.$color-lib-sublocation-1}), transparent 52%),
-      inset 0 0 25px  8px color-mix(in srgb, var(--portal-color, #{v.$color-lib-sublocation-1}), transparent 76%);
+      inset 0 0 0    1px color-mix(in srgb, var(--portal-color, #{v.$color-lib-location-1}) 40%, white 60%),
+      inset 0 0  6px  2px color-mix(in srgb, var(--portal-color, #{v.$color-lib-location-1}), transparent 28%),
+      inset 0 0 14px  4px color-mix(in srgb, var(--portal-color, #{v.$color-lib-location-1}), transparent 52%),
+      inset 0 0 25px  8px color-mix(in srgb, var(--portal-color, #{v.$color-lib-location-1}), transparent 76%);
   }
   50% {
     box-shadow:
-      inset 0 0 0    1px color-mix(in srgb, var(--portal-color, #{v.$color-lib-sublocation-1}) 25%, white 75%),
-      inset 0 0  9px  3px color-mix(in srgb, var(--portal-color, #{v.$color-lib-sublocation-1}), transparent 12%),
-      inset 0 0 19px  6px color-mix(in srgb, var(--portal-color, #{v.$color-lib-sublocation-1}), transparent 36%),
-      inset 0 0 35px 12px color-mix(in srgb, var(--portal-color, #{v.$color-lib-sublocation-1}), transparent 64%);
+      inset 0 0 0    1px color-mix(in srgb, var(--portal-color, #{v.$color-lib-location-1}) 25%, white 75%),
+      inset 0 0  9px  3px color-mix(in srgb, var(--portal-color, #{v.$color-lib-location-1}), transparent 12%),
+      inset 0 0 19px  6px color-mix(in srgb, var(--portal-color, #{v.$color-lib-location-1}), transparent 36%),
+      inset 0 0 35px 12px color-mix(in srgb, var(--portal-color, #{v.$color-lib-location-1}), transparent 64%);
   }
 }
 
@@ -100,7 +100,7 @@
 .void-crumb-sep {
   font-family: v.$font-header;
   font-size: 12px;
-  color: color-mix(in srgb, var(--portal-color, #{v.$color-lib-sublocation-1}), white 55%);
+  color: color-mix(in srgb, var(--portal-color, #{v.$color-lib-location-1}), white 55%);
   user-select: none;
   pointer-events: none;
 }
@@ -110,14 +110,14 @@
   font-size: 12px;
   letter-spacing: 0.18em;
   text-transform: uppercase;
-  color: color-mix(in srgb, var(--portal-color, #{v.$color-lib-sublocation-1}), white 75%);
+  color: color-mix(in srgb, var(--portal-color, #{v.$color-lib-location-1}), white 75%);
   background: none;
   border: none;
   cursor: pointer;
   transition: color 0.2s ease;
   white-space: nowrap;
 
-  &:hover { color: color-mix(in srgb, var(--portal-color, #{v.$color-lib-sublocation-1}), white 92%); }
+  &:hover { color: color-mix(in srgb, var(--portal-color, #{v.$color-lib-location-1}), white 92%); }
 }
 
 .void-title {
@@ -131,8 +131,8 @@
   text-transform: uppercase;
   color: v.$campaign-portal-text-softer;
   text-shadow:
-    0 0 20px color-mix(in srgb, var(--portal-color, #{v.$color-lib-sublocation-1}), white 35%),
-    0 0 50px color-mix(in srgb, var(--portal-color, #{v.$color-lib-sublocation-1}), transparent 38%),
+    0 0 20px color-mix(in srgb, var(--portal-color, #{v.$color-lib-location-1}), white 35%),
+    0 0 50px color-mix(in srgb, var(--portal-color, #{v.$color-lib-location-1}), transparent 38%),
     0 1px 3px v.$color-ext-23;
 }
 
@@ -155,7 +155,7 @@
   flex: 1;
   min-width: 0;
   background: v.$campaign-portal-bg-dark;
-  border: 1px solid rgba(v.$color-lib-sublocation-1, 0.40);
+  border: 1px solid v.$color-ext-675;
   border-radius: 6px;
   display: flex;
   flex-direction: column;
@@ -163,6 +163,33 @@
   transition: height 0.35s cubic-bezier(0.4, 0, 0.2, 1),
               margin-left 0.35s cubic-bezier(0.4, 0, 0.2, 1),
               width 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+}
+
+.detail-close-btn {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  min-width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: 1px solid #C0D4F0;
+  border-radius: 4px;
+  color: v.$campaign-portal-text-bright;
+  font-size: 14px;
+  cursor: pointer;
+  z-index: 10;
+  transition: background 0.18s ease, border-color 0.18s ease, color 0.18s ease;
+  padding: 4px 4px;
+
+  &:hover {
+    background: rgba(192, 212, 240, 0.10);
+    border-color: #C0D4F0;
+    color: v.$campaign-portal-text-bright;
+  }
 }
 
 .detail-panel-content {
@@ -177,7 +204,7 @@
   flex-direction: column;
   gap: 6px;
   padding: 12px 16px;
-  border-bottom: 1px solid rgba(v.$color-lib-sublocation-1, 0.12);
+  border-bottom: 1px solid rgba(v.$color-lib-location-1, 0.12);
 }
 
 /* ── 2-col field grid ────────────────────────────────────────────────────── */
@@ -192,10 +219,10 @@
   flex-direction: column;
   gap: 6px;
   padding: 12px 16px;
-  border-bottom: 1px solid rgba(v.$color-lib-sublocation-1, 0.08);
+  border-bottom: 1px solid rgba(v.$color-lib-location-1, 0.08);
 
   &:nth-child(odd) {
-    border-right: 1px solid rgba(v.$color-lib-sublocation-1, 0.08);
+    border-right: 1px solid rgba(v.$color-lib-location-1, 0.08);
   }
 
   &--full {
@@ -206,9 +233,9 @@
 
 /* ── Secrets section ─────────────────────────────────────────────────────── */
 .detail-secrets-section {
-  border-top: 1px solid rgba(v.$color-lib-sublocation-1, 0.22);
-  border-bottom: 1px solid rgba(v.$color-lib-sublocation-1, 0.22);
-  background: rgba(v.$color-lib-sublocation-1, 0.03);
+  border-top: 1px solid rgba(v.$color-lib-location-1, 0.22);
+  border-bottom: 1px solid rgba(v.$color-lib-location-1, 0.22);
+  background: rgba(v.$color-lib-location-1, 0.03);
 }
 
 .detail-secrets-header {
@@ -224,7 +251,6 @@
   align-items: center;
   gap: 10px;
   padding: 10px 16px;
-  border-top: 1px solid rgba(v.$color-lib-sublocation-1, 0.08);
 }
 
 .secret-lock-btn {
@@ -244,7 +270,7 @@
 .secret-delete-btn {
   flex-shrink: 0;
   background: none;
-  border: 1px solid rgba(v.$color-lib-sublocation-1, 0.3);
+  border: 1px solid rgba(v.$color-lib-location-1, 0.3);
   cursor: pointer;
   padding: 3px;
   border-radius: 4px;
@@ -253,8 +279,8 @@
 
   &:hover {
     opacity: 1;
-    background: rgba(v.$color-lib-sublocation-1, 0.06);
-    border-color: rgba(v.$color-lib-sublocation-1, 0.5);
+    background: rgba(v.$color-lib-location-1, 0.06);
+    border-color: rgba(v.$color-lib-location-1, 0.5);
   }
 }
 
@@ -290,20 +316,20 @@
   width: 100%;
   height: 34px;
   padding: 0;
-  background: rgba(v.$color-lib-sublocation-1, 0.04);
+  background: rgba(v.$color-lib-location-1, 0.04);
   border: none;
-  border-top: 1px solid rgba(v.$color-lib-sublocation-1, 0.14);
+  border-top: 1px solid rgba(v.$color-lib-location-1, 0.14);
   border-radius: 0 0 6px 6px;
   cursor: pointer;
   font-family: v.$font-header;
   font-size: 12px;
   letter-spacing: 0.12em;
-  color: rgba(v.$color-lib-location-1, 0.85);
+  color: rgb(144, 180, 216);
   transition: background 0.18s ease, color 0.18s ease;
 
   &:hover {
-    background: rgba(v.$color-lib-sublocation-1, 0.10);
-    color: rgba(v.$color-lib-location-1, 0.95);
+    background: rgba(v.$color-lib-location-1, 0.10);
+    color: rgb(144, 180, 216);
   }
 }
 
@@ -312,14 +338,14 @@
   font-size: 12px;
   letter-spacing: 0.2em;
   text-transform: uppercase;
-  color: rgba(v.$color-lib-location-1, 0.85);
+  color: rgb(144, 180, 216);
   white-space: nowrap;
 }
 
 .detail-line {
   height: 1px;
   width: 100%;
-  background: linear-gradient(to right, rgba(v.$color-lib-sublocation-1, 0.22), transparent);
+  background: linear-gradient(to right, rgba(v.$color-lib-location-1, 0.22), transparent);
 }
 
 .detail-value {
@@ -351,8 +377,8 @@
   font-size: 12px;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: rgba(v.$color-lib-location-1, 0.80);
-  border: 1px solid rgba(v.$color-lib-sublocation-1, 0.28);
+  color: rgb(144, 180, 216);
+  border: 1px solid rgba(v.$color-lib-location-1, 0.28);
   border-radius: 2px;
   padding: 2px 8px;
 }
@@ -368,7 +394,7 @@
 
 .detail-edit-btn {
   background: none;
-  border: 1px solid rgba(v.$color-lib-sublocation-1, 0.30);
+  border: 1px solid rgba(v.$color-lib-location-1, 0.30);
   border-radius: 4px;
   padding: 4px 12px;
   font-family: v.$font-header;
@@ -380,8 +406,8 @@
   transition: background 0.18s ease, border-color 0.18s ease, color 0.18s ease;
 
   &:hover {
-    background: rgba(v.$color-lib-sublocation-1, 0.10);
-    border-color: rgba(v.$color-lib-sublocation-1, 0.55);
+    background: rgba(v.$color-lib-location-1, 0.10);
+    border-color: rgba(v.$color-lib-location-1, 0.55);
     color: v.$color-base-mist-blue;
   }
 }
@@ -428,7 +454,7 @@
 /* ── Edit inputs ─────────────────────────────────────────────────────────── */
 .detail-input {
   background: v.$color-overlay-darker;
-  border: 1px solid rgba(v.$color-lib-sublocation-1, 0.28);
+  border: 1px solid rgba(v.$color-lib-location-1, 0.28);
   border-radius: 3px;
   padding: 5px 8px;
   font-family: v.$font-body;
@@ -440,11 +466,11 @@
   transition: border-color 0.18s ease;
 
   &::placeholder {
-    color: rgba(v.$color-lib-sublocation-1, 0.30);
+    color: rgba(v.$color-lib-location-1, 0.30);
   }
 
   &:focus {
-    border-color: rgba(v.$color-lib-sublocation-1, 0.65);
+    border-color: rgba(v.$color-lib-location-1, 0.65);
   }
 
   &--block {
@@ -491,7 +517,7 @@
 .secret-textarea {
   flex: 1;
   background: v.$color-overlay-darker;
-  border: 1px solid rgba(v.$color-lib-sublocation-1, 0.28);
+  border: 1px solid rgba(v.$color-lib-location-1, 0.28);
   border-radius: 3px;
   padding: 5px 8px;
   font-family: v.$font-body;
@@ -503,11 +529,11 @@
   min-height: 48px;
 
   &::placeholder {
-    color: rgba(v.$color-lib-sublocation-1, 0.30);
+    color: rgba(v.$color-lib-location-1, 0.30);
   }
 
   &:focus {
-    border-color: rgba(v.$color-lib-sublocation-1, 0.65);
+    border-color: rgba(v.$color-lib-location-1, 0.65);
   }
 }
 
@@ -559,20 +585,20 @@
   margin: 4px 16px 8px;
   padding: 6px 0;
   background: none;
-  border: 1px dashed rgba(v.$color-lib-sublocation-1, 0.22);
+  border: 1px dashed rgba(v.$color-lib-location-1, 0.22);
   border-radius: 4px;
   font-family: v.$font-header;
   font-size: 12px;
   letter-spacing: 0.16em;
   text-transform: uppercase;
-  color: rgba(v.$color-lib-sublocation-1, 0.85);
+  color: rgb(144, 180, 216);
   cursor: pointer;
   transition: border-color 0.18s ease, color 0.18s ease, background 0.18s ease;
 
   &:hover {
-    border-color: rgba(v.$color-lib-sublocation-1, 0.55);
-    color: rgba(v.$color-lib-sublocation-1, 0.80);
-    background: rgba(v.$color-lib-sublocation-1, 0.05);
+    border-color: rgba(v.$color-lib-location-1, 0.55);
+    color: rgb(144, 180, 216);
+    background: rgba(v.$color-lib-location-1, 0.05);
   }
 }
 
@@ -582,7 +608,7 @@
   flex-direction: column;
   gap: 8px;
   padding: 12px 16px;
-  border-bottom: 1px solid rgba(v.$color-lib-sublocation-1, 0.08);
+  border-bottom: 1px solid rgba(v.$color-lib-location-1, 0.08);
 }
 
 .detail-shop-grid {
@@ -597,7 +623,7 @@
   align-items: center;
   gap: 12px;
   padding: 6px 0;
-  border-bottom: 1px solid rgba(v.$color-lib-sublocation-1, 0.18);
+  border-bottom: 1px solid rgba(v.$color-lib-location-1, 0.18);
 
   &--sold {
     .detail-shop-item-name {
@@ -606,7 +632,7 @@
     }
 
     .detail-shop-item-price {
-      color: rgba(v.$color-lib-sublocation-1, 0.30);
+      color: rgba(v.$color-lib-location-1, 0.30);
     }
   }
 }
@@ -632,7 +658,7 @@
   font-family: v.$font-header;
   font-size: 12px;
   letter-spacing: 0.12em;
-  color: rgba(v.$color-lib-sublocation-1, 0.95);
+  color: rgba(v.$color-lib-location-1, 0.95);
   white-space: nowrap;
 }
 
@@ -641,20 +667,20 @@
   flex-shrink: 0;
   padding: 2px 8px;
   background: v.$color-overlay-darker;
-  border: 1px solid rgba(v.$color-lib-sublocation-1, 0.28);
+  border: 1px solid rgba(v.$color-lib-location-1, 0.28);
   border-radius: 3px;
   font-family: v.$font-header;
   font-size: 12px;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: rgba(v.$color-lib-sublocation-1, 0.85);
+  color: rgba(v.$color-lib-location-1, 0.85);
   cursor: pointer;
   transition: background 0.18s ease, border-color 0.18s ease, color 0.18s ease;
 
   &:hover {
-    background: rgba(v.$color-lib-sublocation-1, 0.12);
-    border-color: rgba(v.$color-lib-sublocation-1, 0.55);
-    color: rgba(v.$color-lib-sublocation-1, 0.85);
+    background: rgba(v.$color-lib-location-1, 0.12);
+    border-color: rgba(v.$color-lib-location-1, 0.55);
+    color: rgba(v.$color-lib-location-1, 0.85);
   }
 
   &--sold {
@@ -674,17 +700,17 @@
   flex-shrink: 0;
   padding: 2px 7px;
   background: transparent;
-  border: 1px solid rgba(v.$color-lib-sublocation-1, 0.22);
+  border: 1px solid rgba(v.$color-lib-location-1, 0.22);
   border-radius: 3px;
   font-size: 12px;
-  color: rgba(v.$color-lib-sublocation-1, 0.65);
+  color: rgba(v.$color-lib-location-1, 0.65);
   cursor: pointer;
   transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
 
   &:hover {
-    background: rgba(v.$color-lib-sublocation-1, 0.10);
-    border-color: rgba(v.$color-lib-sublocation-1, 0.5);
-    color: rgba(v.$color-lib-sublocation-1, 0.95);
+    background: rgba(v.$color-lib-location-1, 0.10);
+    border-color: rgba(v.$color-lib-location-1, 0.5);
+    color: rgba(v.$color-lib-location-1, 0.95);
   }
 }
 
@@ -727,7 +753,7 @@
     width: 58px;
     flex: none;
     background: v.$campaign-portal-bg-medium;
-    border: 1px solid rgba(v.$color-lib-sublocation-1, 0.28);
+    border: 1px solid rgba(v.$color-lib-location-1, 0.28);
     color: v.$color-ext-261;
     font-family: v.$font-body;
     font-size: 13px;
@@ -737,13 +763,13 @@
     }
 
     &:hover {
-      border-color: rgba(v.$color-lib-sublocation-1, 0.50);
+      border-color: rgba(v.$color-lib-location-1, 0.50);
     }
 
     &:focus {
-      outline: 2px solid rgba(v.$color-lib-sublocation-1, 0.60);
+      outline: 2px solid rgba(v.$color-lib-location-1, 0.60);
       outline-offset: 1px;
-      border-color: rgba(v.$color-lib-sublocation-1, 0.50);
+      border-color: rgba(v.$color-lib-location-1, 0.50);
     }
   }
 }
@@ -764,7 +790,7 @@
   justify-content: space-between;
   width: 100%;
   background: v.$campaign-portal-bg-medium;
-  border: 1px solid rgba(v.$color-lib-sublocation-1, 0.28);
+  border: 1px solid rgba(v.$color-lib-location-1, 0.28);
   border-radius: 3px;
   color: v.$color-ext-265;
   font-family: v.$font-body;
@@ -775,11 +801,11 @@
   transition: border-color 0.15s;
 
   &:hover {
-    border-color: rgba(v.$color-lib-sublocation-1, 0.50);
+    border-color: rgba(v.$color-lib-location-1, 0.50);
   }
 
   &:focus-visible {
-    outline: 2px solid rgba(v.$color-lib-sublocation-1, 0.60);
+    outline: 2px solid rgba(v.$color-lib-location-1, 0.60);
     outline-offset: 1px;
   }
 }
@@ -806,7 +832,7 @@
   left: 0;
   right: 0;
   background: v.$color-base-dark-purple-2;
-  border: 1px solid rgba(v.$color-lib-sublocation-1, 0.28);
+  border: 1px solid rgba(v.$color-lib-location-1, 0.28);
   border-radius: 3px;
   z-index: 50;
   max-height: 200px;
@@ -823,13 +849,13 @@
   transition: background 0.12s, color 0.12s;
 
   &:hover {
-    background: rgba(v.$color-lib-sublocation-1, 0.10);
-    color: rgba(v.$color-lib-sublocation-1, 0.90);
+    background: rgba(v.$color-lib-location-1, 0.10);
+    color: rgba(v.$color-lib-location-1, 0.90);
   }
 
   &--selected {
-    background: rgba(v.$color-lib-sublocation-1, 0.08);
-    color: rgba(v.$color-lib-sublocation-1, 0.85);
+    background: rgba(v.$color-lib-location-1, 0.08);
+    color: rgba(v.$color-lib-location-1, 0.85);
   }
 }
 

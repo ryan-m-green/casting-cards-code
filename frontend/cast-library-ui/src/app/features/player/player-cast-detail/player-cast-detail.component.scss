@@ -156,7 +156,7 @@
   font-size: 12px;
   letter-spacing: 0.30em;
   text-transform: uppercase;
-  color: rgba(v.$color-base-cast-tan, 0.95);
+  color: v.$color-base-gold-bright-hex;
   text-shadow: 0 0 6px var(--portal-color, #{v.$color-base-cast-tan}), 0 0 16px var(--portal-color, #{v.$color-base-cast-tan}), 0 0 32px var(--portal-color, #{v.$color-base-cast-tan});
   margin-bottom: 10px;
   user-select: none;
@@ -238,7 +238,7 @@
   flex: 1;
   min-width: 0;
   background: v.$campaign-portal-bg-dark;
-  border: 1px solid v.$color-player-section-border;
+  border: 1px solid #D4AF37;
   border-radius: 6px;
   overflow: hidden;
   display: flex;
@@ -246,6 +246,33 @@
   transition: height 0.35s cubic-bezier(0.4, 0, 0.2, 1),
               margin-left 0.35s cubic-bezier(0.4, 0, 0.2, 1),
               width 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+}
+
+.detail-close-btn {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  min-width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: 1px solid #D4AF37;
+  border-radius: 4px;
+  color: v.$campaign-portal-text-bright;
+  font-size: 14px;
+  cursor: pointer;
+  z-index: 10;
+  transition: background 0.18s ease, border-color 0.18s ease, color 0.18s ease;
+  padding: 4px 4px;
+
+  &:hover {
+    background: rgba(212, 175, 55, 0.10);
+    border-color: #D4AF37;
+    color: v.$campaign-portal-text-bright;
+  }
 }
 
 .detail-panel-content {
@@ -290,7 +317,7 @@
   font-size: 12px;
   letter-spacing: 0.2em;
   text-transform: uppercase;
-  color: rgba(v.$color-lib-location-1, 0.85);
+  color: v.$color-base-gold-bright-hex;
   white-space: nowrap;
 }
 
@@ -346,7 +373,7 @@
   font-size: 10px;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: rgba(v.$color-lib-location-1, 0.80);
+  color: v.$color-base-gold-bright-hex;
   border: 1px solid v.$color-player-section-border;
   border-radius: 2px;
   padding: 2px 8px;
@@ -366,12 +393,12 @@
   font-family: v.$font-header;
   font-size: 12px;
   letter-spacing: 0.12em;
-  color: rgba(v.$color-lib-location-1, 0.85);
+  color: v.$color-base-gold-bright-hex;
   transition: background 0.18s ease, color 0.18s ease;
 
   &:hover {
     background: rgba(v.$color-base-cast-tan, 0.10);
-    color: rgba(v.$color-lib-location-1, 0.95);
+    color: v.$color-base-gold-bright-hex;
   }
 }
 

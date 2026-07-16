@@ -19,19 +19,24 @@
     <!-- Detail panel -->
     <div class="location-detail-panel" [style.height]="panelHeight()" [class.detail-panel--mobile-expanded]="detailExpanded()">
 
+      @if (detailExpanded()) {
+        <button class="detail-close-btn" (click)="toggleDetail()" title="Close panel">Close</button>
+      }
+
       <div class="detail-panel-content" #detailContent>
 
         <!-- Panel header with edit toggle -->
         <app-detail-panel-actions
           [isDm]="isDm()"
           [editing]="editing()"
+          [editBtnBorderColor]="'#C8E080'"
           (startEditingClick)="startEditing()"
           (saveDetailsClick)="saveDetails()"
           (saveToLibraryClick)="saveToLibrary()"
           (cancelEditingClick)="cancelEditing()"
         />
 
-        <!-- Location Title -->
+        <!-- Location Name -->
         @if (editing()) {
           <div class="detail-portrait-row">
             <label class="detail-portrait-label" [class.detail-portrait-label--filled]="imagePreviewUrl() || location()?.imageUrl">
@@ -55,18 +60,18 @@
             </label>
             <div class="detail-portrait-fields">
               <div class="detail-desc">
-                <span class="detail-label">Location Title</span>
+                <span class="detail-label">Location Name</span>
                 <input class="detail-input"
                        [ngModel]="editName()"
                        (ngModelChange)="editName.set($event)"
-                       placeholder="Location title…"
+                       placeholder="Location name…"
                        autocomplete="off" />
               </div>
             </div>
           </div>
         } @else {
           <div class="detail-desc">
-            <span class="detail-label">Location Title</span>
+            <span class="detail-label">Location Name</span>
             <span class="detail-value">{{ c.name }}</span>
           </div>
         }
@@ -308,7 +313,7 @@
   @if (isDm() && campaign()) {
     <div class="location-sublocations-section">
 
-      <app-section-label title="Sublocations"></app-section-label>
+      <app-section-label title="Sublocations" color="rgb(144, 180, 216)"></app-section-label>
         @if (locationSublocations().length) {
           <button
             class="subLoc-reveal-all-btn"

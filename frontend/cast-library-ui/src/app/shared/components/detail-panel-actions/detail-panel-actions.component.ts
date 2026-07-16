@@ -10,6 +10,7 @@ import { Component, input, output } from '@angular/core';
 export class DetailPanelActionsComponent {
   isDm    = input.required<boolean>();
   editing = input.required<boolean>();
+  editBtnBorderColor = input<string>('');
 
   startEditingClick  = output<void>();
   saveDetailsClick   = output<void>();

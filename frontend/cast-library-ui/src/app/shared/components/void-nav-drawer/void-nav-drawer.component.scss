@@ -6,7 +6,7 @@
   position: fixed;
   top: 24px;
   left: 24px;
-  z-index: 10000;
+  z-index: 2002;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -65,7 +65,7 @@
 .nav-backdrop {
   position: fixed;
   inset: 0;
-  z-index: 10000;
+  z-index: 2004;
   background: rgba(0, 0, 0, 0.6);
   animation: backdrop-in 0.22s ease both;
 }
@@ -88,7 +88,7 @@
   left: 0;
   bottom: 0;
   width: min(420px, 88vw);
-  z-index: 10001;
+  z-index: 2005;
   display: flex;
   flex-direction: column;
   background: color-mix(in srgb, v.$color-base-black 88%, v.$color-base-purple-primary 12%);

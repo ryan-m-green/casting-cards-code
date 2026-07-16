@@ -8,6 +8,7 @@ import { CastCardComponent } from '../../../shared/components/cast-card/cast-car
 import { CampaignDropdownComponent, CampaignDropdownOption } from '../../../shared/components/campaign-dropdown/campaign-dropdown.component';
 import { CharacterInfoEditorComponent, PlayerCardInfoUpdate } from '../../../shared/components/character-info-editor/character-info-editor.component';
 import { PlayerSecretsDrawerComponent } from '../../../shared/components/player-secrets-drawer/player-secrets-drawer.component';
+import { LockIconComponent } from '../../../shared/components/lock-icon/lock-icon.component';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../../environments/environment';
 import { PortalTransitionService } from '../../../core/portal-transition.service';
@@ -42,7 +43,7 @@ const MEMORY_TYPE_META: Record<PlayerMemory['memoryType'], { icon: string; label
 @Component({
   selector: 'app-player-the-party',
   standalone: true,
-  imports: [CommonModule, FormsModule, CampaignDropdownComponent, CharacterInfoEditorComponent, CastingCardPlayerComponent, CastCardComponent, PlayerSecretsDrawerComponent],
+  imports: [CommonModule, FormsModule, CampaignDropdownComponent, CharacterInfoEditorComponent, CastingCardPlayerComponent, CastCardComponent, PlayerSecretsDrawerComponent, LockIconComponent],
   templateUrl: './player-the-party.component.html',
   styleUrl: './player-the-party.component.scss',
 })

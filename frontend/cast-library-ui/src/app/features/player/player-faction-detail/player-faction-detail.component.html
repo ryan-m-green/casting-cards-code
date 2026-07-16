@@ -18,6 +18,10 @@
     <!-- Detail panel -->
     <div class="faction-detail-panel" [style.height]="panelHeight()" [class.detail-panel--mobile-expanded]="detailExpanded()">
 
+      @if (detailExpanded()) {
+        <button class="detail-close-btn" (click)="toggleDetail()" title="Close panel">Close</button>
+      }
+
       <div class="detail-panel-content" #detailContent>
 
         <!-- Name -->

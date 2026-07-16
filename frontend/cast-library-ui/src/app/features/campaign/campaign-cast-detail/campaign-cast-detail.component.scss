@@ -188,7 +188,7 @@
   width: 100%;
   max-width: 260px;
   background: v.$campaign-portal-bg-dark;
-  border: 1px solid v.$campaign-portal-border-bold;
+  border: 1px solid v.$color-ext-675;
   border-radius: 6px;
   overflow-y: auto;
   min-height: 48px;
@@ -204,9 +204,8 @@
   padding: 10px 16px;
   background: none;
   border: none;
-  border-bottom: 1px solid v.$campaign-portal-border-light;
   color: v.$campaign-portal-text-secondary;
-  font-size: 12px;
+  font-size: 18px;
   cursor: pointer;
   text-align: left;
   transition: color 0.15s;
@@ -215,9 +214,10 @@
 }
 
 .travel-divider {
-  height: 1px;
-  background: v.$campaign-portal-border-light;
-  margin: 2px 0;
+  height: 4px;
+  background: rgba(100, 100, 120, 0.8);
+  margin: 10px 8px;
+  border-radius: 2px;
 }
 
 .travel-item {
@@ -225,11 +225,11 @@
   align-items: center;
   justify-content: space-between;
   padding: 10px 16px;
-  background: none;
+  background: linear-gradient(180deg, v.$color-base-green-11 0%, v.$color-base-green-12 100%);
   border: none;
   border-bottom: 1px solid v.$campaign-portal-border-light;
-  color: v.$campaign-portal-text-primary;
-  font-size: 12px;
+  color: v.$color-base-yellow-green;
+  font-size: 18px;
   cursor: pointer;
   text-align: left;
   transition: background 0.15s;
@@ -237,11 +237,23 @@
 
   &:last-child { border-bottom: none; }
 
-  &:hover { background: v.$campaign-portal-bg-hover; }
+  &:hover { background: linear-gradient(180deg, v.$color-base-green-12 0%, v.$color-base-green-11 100%); }
 
   &--party {
-    color: v.$campaign-portal-text-primary;
+    color: #e8c96a;
     font-weight: 600;
+    background: linear-gradient(180deg, #3d0e0e 0%, #6b1a1a 100%);
+    border-bottom: 1.5px solid #8a6820;
+
+    &:hover { background: linear-gradient(180deg, #4d1e1e 0%, #7b2a2a 100%); }
+  }
+
+  &--sublocation {
+    color: v.$color-ext-675;
+    background: linear-gradient(180deg, v.$color-ext-686 0%, v.$color-ext-687 100%);
+    border-bottom: 1.5px solid v.$color-ext-677;
+
+    &:hover { background: linear-gradient(180deg, v.$color-ext-687 0%, v.$color-ext-686 100%); }
   }
 
   &--disabled {
@@ -263,8 +275,11 @@
 
 .travel-checkmark {
   margin-left: 8px;
-  color: v.$campaign-portal-text-primary;
   flex-shrink: 0;
+  width: 20px;
+  height: 24px;
+  object-fit: contain;
+  filter: brightness(0) invert(1);
 
   &--faint { opacity: 0.3; }
 }
@@ -283,7 +298,7 @@
   position: relative;
   z-index: 101;
   background: v.$campaign-portal-bg-dark;
-  border: 1px solid rgba(v.$color-base-cast-tan, 0.40);
+  border: 1px solid v.$color-base-gold-2;
   border-radius: 6px;
   overflow: hidden;
   display: flex;
@@ -291,6 +306,32 @@
   transition: height 0.35s cubic-bezier(0.4, 0, 0.2, 1),
               margin-left 0.35s cubic-bezier(0.4, 0, 0.2, 1),
               width 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.detail-close-btn {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  min-width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: 1px solid #D4AF37;
+  border-radius: 4px;
+  color: v.$campaign-portal-text-bright;
+  font-size: 14px;
+  cursor: pointer;
+  z-index: 10;
+  transition: background 0.18s ease, border-color 0.18s ease, color 0.18s ease;
+  padding: 4px 4px;
+
+  &:hover {
+    background: rgba(212, 175, 55, 0.10);
+    border-color: #D4AF37;
+    color: v.$campaign-portal-text-bright;
+  }
 }
 
 .detail-panel-content {
@@ -408,7 +449,7 @@
   font-size: 12px;
   letter-spacing: 0.2em;
   text-transform: uppercase;
-  color: rgba(v.$color-lib-location-1, 0.85);
+  color: v.$color-base-gold-bright-hex;
   white-space: nowrap;
 }
 
@@ -447,7 +488,7 @@
   font-size: 12px;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: rgba(v.$color-lib-location-1, 0.80);
+  color: v.$color-base-gold-bright-hex;
   border: 1px solid rgba(v.$color-base-cast-tan, 0.28);
   border-radius: 2px;
   padding: 2px 8px;
@@ -477,26 +518,6 @@
   align-items: center;
   gap: 8px;
   padding: 10px 16px 0;
-}
-
-.detail-edit-btn {
-  background: none;
-  border: 1px solid rgba(v.$color-base-cast-tan, 0.30);
-  border-radius: 4px;
-  padding: 4px 12px;
-  font-family: v.$font-header;
-  font-size: 12px;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-  color: v.$color-ext-33;
-  cursor: pointer;
-  transition: background 0.18s ease, border-color 0.18s ease, color 0.18s ease;
-
-  &:hover {
-    background: rgba(v.$color-base-cast-tan, 0.10);
-    border-color: rgba(v.$color-base-cast-tan, 0.55);
-    color: v.$color-base-mist-blue;
-  }
 }
 
 .detail-save-btn {
@@ -678,13 +699,13 @@
   font-size: 12px;
   letter-spacing: 0.16em;
   text-transform: uppercase;
-  color: rgba(v.$color-base-cast-tan, 0.85);
+  color: v.$color-base-gold-bright-hex;
   cursor: pointer;
   transition: border-color 0.18s ease, color 0.18s ease, background 0.18s ease;
 
   &:hover {
     border-color: rgba(v.$color-base-cast-tan, 0.55);
-    color: rgba(v.$color-base-cast-tan, 0.80);
+    color: v.$color-base-gold-bright-hex;
     background: rgba(v.$color-base-cast-tan, 0.05);
   }
 }
@@ -703,12 +724,12 @@
   font-family: v.$font-header;
   font-size: 12px;
   letter-spacing: 0.12em;
-  color: rgba(v.$color-base-cast-tan, 0.85);
+  color: v.$color-base-gold-bright-hex;
   transition: background 0.18s ease, color 0.18s ease;
 
   &:hover {
     background: rgba(v.$color-base-cast-tan, 0.10);
-    color: rgba(v.$color-base-cast-tan, 0.95);
+    color: v.$color-base-gold-bright-hex;
   }
 }
 

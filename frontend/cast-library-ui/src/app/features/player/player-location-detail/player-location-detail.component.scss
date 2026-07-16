@@ -140,7 +140,7 @@
   flex: 1;
   min-width: 0;
   background: v.$campaign-portal-bg-dark;
-  border: 1px solid rgba(v.$color-lib-location-1, 0.40);
+  border: 1px solid #C8E080;
   border-radius: 6px;
   display: flex;
   flex-direction: column;
@@ -148,6 +148,33 @@
   transition: height 0.35s cubic-bezier(0.4, 0, 0.2, 1),
               margin-left 0.35s cubic-bezier(0.4, 0, 0.2, 1),
               width 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+}
+
+.detail-close-btn {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  min-width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: 1px solid #C8E080;
+  border-radius: 4px;
+  color: v.$campaign-portal-text-bright;
+  font-size: 14px;
+  cursor: pointer;
+  z-index: 10;
+  transition: background 0.18s ease, border-color 0.18s ease, color 0.18s ease;
+  padding: 4px 4px;
+
+  &:hover {
+    background: rgba(200, 224, 128, 0.10);
+    border-color: #C8E080;
+    color: v.$campaign-portal-text-bright;
+  }
 }
 
 .detail-panel-content {
@@ -184,8 +211,15 @@
 .detail-secret {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 2px;
   padding: 10px 16px;
+}
+
+.secret-number {
+  font-family: v.$font-header;
+  font-size: 12px;
+  font-weight: 700;
+  color: rgb(144, 180, 216);
 }
 
 .detail-secrets-section {
@@ -232,12 +266,12 @@
   font-family: v.$font-header;
   font-size: 12px;
   letter-spacing: 0.12em;
-  color: rgba(v.$color-lib-location-1, 0.85);
+  color: v.$color-base-yellow-green;
   transition: background 0.18s ease, color 0.18s ease;
 
   &:hover {
     background: rgba(v.$color-lib-location-1, 0.10);
-    color: rgba(v.$color-lib-location-1, 0.95);
+    color: v.$color-base-yellow-green;
   }
 }
 
@@ -246,7 +280,7 @@
   font-size: 12px;
   letter-spacing: 0.2em;
   text-transform: uppercase;
-  color: rgba(v.$color-lib-location-1, 0.85);
+  color: v.$color-base-yellow-green;
   white-space: nowrap;
 }
 
@@ -284,7 +318,7 @@
   font-size: 10px;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: rgba(v.$color-lib-location-1, 0.80);
+  color: v.$color-base-yellow-green;
   border: 1px solid rgba(v.$color-lib-location-1, 0.28);
   border-radius: 2px;
   padding: 2px 8px;
@@ -303,11 +337,11 @@
   font-size: 7px;
   letter-spacing: 0.18em;
   text-transform: uppercase;
-  color: rgba(v.$color-lib-location-1, 0.85);
+  color: v.$color-base-yellow-green;
   transition: color 0.18s ease, border-color 0.18s ease, background 0.18s ease;
 
   &:hover {
-    color: rgba(v.$color-lib-location-1, 0.85);
+    color: v.$color-base-yellow-green;
     border-color: rgba(v.$color-lib-location-1, 0.42);
     background: rgba(v.$color-lib-location-1, 0.08);
   }

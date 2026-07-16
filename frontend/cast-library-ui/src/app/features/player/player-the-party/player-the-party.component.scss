@@ -111,7 +111,7 @@
   width: 132px;
   height: 185px;
   border-radius: 6px;
-  border: 2px dashed v.$campaign-portal-border-bold;
+  border: 2px dashed v.$color-base-gold-mid;
   cursor: pointer;
   overflow: hidden;
   background: v.$campaign-portal-bg-placeholder;
@@ -122,7 +122,7 @@
   }
 
   &:hover {
-    border-color: v.$campaign-portal-border-hover;
+    border-color: v.$color-base-gold-bright;
     .char-portrait-overlay { opacity: 1; }
   }
 }
@@ -195,17 +195,34 @@
   width: auto;
   text-align: left;
   background: transparent;
-  border: 3px solid v.$campaign-portal-border;
+  border: 3px solid v.$color-base-gold-mid;
   border-radius: 6px;
   padding: 8px;
+  padding-right: 28px;
   cursor: pointer;
   white-space: nowrap;
   font-size: 14px;
+  position: relative;
   transition: background 0.18s ease, border-color 0.18s ease;
+
+  &::after {
+    content: '';
+    position: absolute;
+    right: 0px;
+    top: 20%;
+    transform: translateY(-50%);
+    width: 18px;
+    height: 18px;
+    background-image: url('/feather_quill_writing_tool.svg');
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    filter: brightness(0) invert(1);
+  }
 
   &:hover {
     background: v.$campaign-portal-bg-hover;
-    border-color: v.$campaign-portal-border-bold;
+    border-color: v.$color-base-gold-bright;
   }
 }
 
@@ -227,7 +244,7 @@
 
 .char-description-wrapper {
   margin-top: 4px;
-  border: 3px solid v.$campaign-portal-border;
+  border: 3px solid #c9a84c;
   border-radius: 6px;
   overflow: visible;
   padding-top: 8px;
@@ -257,7 +274,7 @@
   left: -3px;
   right: -3px;
   background: v.$campaign-portal-bg-dark;
-  border: 3px solid v.$campaign-portal-border;
+  border: 3px solid v.$color-base-gold-mid;
   border-radius: 6px;
   z-index: 20;
   max-height: 400px;
@@ -915,17 +932,26 @@
   text-transform: uppercase;
   color: v.$campaign-portal-text-bright;
   margin-bottom: 14px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.knowledge-icon {
+  width: 16px;
+  height: 16px;
+  filter: brightness(0) invert(1);
 }
 
 .secret-entry {
   background: v.$color-base-mist-blue2;
-  border: 1px solid v.$campaign-portal-bg-placeholder;
+  border: 1px solid v.$color-base-gold-mid;
   border-radius: 8px;
   padding: 16px 18px;
   margin-bottom: 10px;
 
   &--shared {
-    border-color: v.$color-ext-600;
+    border-color: v.$color-base-gold-bright;
     background: v.$color-ext-601;
   }
 }
@@ -941,29 +967,39 @@
 .secret-meta {
   font-family: v.$font-body;
   font-size: 12px;
-  color: v.$color-ext-602;
+  color: v.$campaign-portal-text-secondary;
   margin-bottom: 10px;
 }
 
 .share-btn {
+  padding: 6px 12px;
+  background: none;
+  border: 1px solid v.$color-base-gold-mid;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.18s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
   font-family: v.$font-header;
   font-size: 12px;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  padding: 6px 14px;
-  background: none;
-  border: 1px solid v.$color-ext-603;
-  border-radius: 20px;
-  color: v.$color-ext-604;
-  cursor: pointer;
-  transition: all 0.18s ease;
+  color: v.$campaign-portal-text-bright;
 
   &:hover:not(:disabled) {
-    background: v.$color-ext-605;
-    border-color: v.$color-ext-606;
+    background: v.$campaign-portal-bg-hover;
+    border-color: v.$color-base-gold-bright;
   }
 
   &:disabled { opacity: 0.4; cursor: not-allowed; }
+}
+
+.share-btn-icon {
+  width: 20px;
+  height: 20px;
+  filter: brightness(0) invert(1);
 }
 
 /* ── Shared utilities ────────────────────────────────────────── */

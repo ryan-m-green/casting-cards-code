@@ -8,7 +8,7 @@
 .location-notes-panel {
   width: 100%;
   background: v.$campaign-portal-bg-dark;
-  border: 1px solid rgba(v.$color-lib-location-1, 0.40);
+  border: 1px solid #C8E080;
   border-radius: 6px;
   overflow: hidden;
 }
@@ -26,7 +26,7 @@
   font-size: 12px;
   letter-spacing: 0.22em;
   text-transform: uppercase;
-  color: rgba(v.$color-lib-location-1, 0.95);
+  color: v.$color-base-yellow-green;
   white-space: nowrap;
 }
 
@@ -41,7 +41,7 @@
   font-size: 7px;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: rgba(v.$color-lib-location-1, 0.8);
+  color: v.$color-base-yellow-green;
   white-space: nowrap;
 }
 
@@ -67,7 +67,7 @@
   font-size: 7px;
   letter-spacing: 0.20em;
   text-transform: uppercase;
-  color: rgba(v.$color-lib-location-1, 0.9);
+  color: v.$color-base-yellow-green;
 }
 
 .notes-field-line {

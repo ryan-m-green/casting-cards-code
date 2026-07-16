@@ -12,7 +12,7 @@
   font-size: 14px;
   letter-spacing: 0.22em;
   text-transform: uppercase;
-  color: v.$campaign-portal-text-softer;
+  color: var(--label-color, v.$color-base-yellow-green);
   white-space: nowrap;
   text-shadow: 0 0 10px color-mix(in srgb, var(--portal-color, v.$color-lib-location-1) 22%, transparent 78%);
 }
@@ -20,5 +20,5 @@
 .section-label-line {
   flex: 1;
   height: 1px;
-  background: linear-gradient(to right, v.$campaign-portal-text-softer, transparent);
+  background: linear-gradient(to right, var(--label-color, v.$color-base-yellow-green), transparent);
 }

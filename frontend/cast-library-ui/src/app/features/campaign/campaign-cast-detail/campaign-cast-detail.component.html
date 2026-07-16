@@ -42,7 +42,7 @@
                 (click)="partyAnchor() && travelCast(partyAnchor()!.locationInstanceId, partyAnchor()!.instanceId)">
                 <span class="travel-item-name">⚔ The Party</span>
                 @if (partyAnchor() && currentSublocationId() === partyAnchor()!.instanceId) {
-                  <span class="travel-checkmark">✓</span>
+                  <img class="travel-checkmark" src="/scroll_check_mark_icon.svg" alt="">
                 }
               </button>
               <div class="travel-divider"></div>
@@ -56,7 +56,7 @@
                     (click)="selectLocation(loc.instanceId)">
                     <span class="travel-item-name">{{ loc.name }}</span>
                     @if (currentLocationId() === loc.instanceId && currentSublocationId() !== partyAnchor()?.instanceId) {
-                      <span class="travel-checkmark travel-checkmark--faint">✓</span>
+                      <img class="travel-checkmark travel-checkmark--faint" src="/scroll_check_mark_icon.svg" alt="">
                     }
                   </button>
                 } @else {
@@ -74,14 +74,15 @@
             <!-- Sublocations list -->
             <div class="travel-list">
               <button class="travel-back" type="button" (click)="selectedLocationId.set(null)">← Back</button>
+              <div class="travel-divider"></div>
               @for (sub of sublocationsByLocation()[selectedLocationId()!]; track sub.instanceId) {
                 <button
-                  class="travel-item"
+                  class="travel-item travel-item--sublocation"
                   type="button"
                   (click)="travelCast(sub.locationInstanceId, sub.instanceId)">
                   <span class="travel-item-name">{{ sub.name }}</span>
                   @if (currentSublocationId() === sub.instanceId) {
-                    <span class="travel-checkmark">✓</span>
+                    <img class="travel-checkmark" src="/scroll_check_mark_icon.svg" alt="">
                   }
                 </button>
               }
@@ -97,12 +98,17 @@
     <!-- Detail panel -->
     <div class="cast-detail-panel" [style.height]="panelHeight()" [class.detail-panel--mobile-expanded]="detailExpanded()">
 
+      @if (detailExpanded()) {
+        <button class="detail-close-btn" (click)="toggleDetail()" title="Close panel">Close</button>
+      }
+
       <div class="detail-panel-content" #detailContent>
 
       <!-- Panel action bar (GM only) -->
       <app-detail-panel-actions
         [isDm]="isDm()"
         [editing]="editing()"
+        [editBtnBorderColor]="'#D4AF37'"
         (startEditingClick)="startEditing()"
         (saveDetailsClick)="saveDetails()"
         (saveToLibraryClick)="saveToLibrary()"

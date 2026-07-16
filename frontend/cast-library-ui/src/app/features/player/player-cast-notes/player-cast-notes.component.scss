@@ -9,7 +9,7 @@
 .cast-notes-panel {
   width: 100%;
   background: v.$campaign-portal-bg-dark;
-  border: 1px solid v.$color-player-section-border;
+  border: 1px solid #D4AF37;
   border-radius: 6px;
   overflow: hidden;
 }
@@ -32,7 +32,7 @@
   font-size: 12px;
   letter-spacing: 0.22em;
   text-transform: uppercase;
-  color: rgba(v.$color-lib-location-1, 0.95);
+  color: v.$color-base-gold-bright-hex;
   white-space: nowrap;
 }
 
@@ -81,7 +81,7 @@
   font-size: 12px;
   letter-spacing: 0.20em;
   text-transform: uppercase;
-  color: rgba(v.$color-lib-location-1, 0.9);
+  color: v.$color-base-gold-bright-hex;
 }
 
 .notes-field-line {
@@ -175,7 +175,7 @@
   font-size: 12px;
   letter-spacing: 0.20em;
   text-transform: uppercase;
-  color: rgba(v.$color-lib-location-1, 0.8);
+  color: v.$color-base-gold-bright-hex;
   padding: 8px 12px 4px;
   border-top: 1px solid v.$color-player-section-border;
 
@@ -336,18 +336,18 @@
   display: flex;
   justify-content: space-between;
   font-size: 1rem;
-  color: rgba(v.$color-lib-location-1, 0.85);
+  color: v.$color-base-gold-bright-hex;
 }
 
 .perception-label-center {
   font-weight: 600;
-  color: rgba(v.$color-lib-location-1, 0.85);
+  color: v.$color-base-gold-bright-hex;
   text-align: center;
 }
 
 .perception-label-end {
   font-size: 1rem;
-  color: rgba(v.$color-lib-location-1, 0.8);
+  color: v.$color-base-gold-bright-hex;
 }
 
 // ── 5. Secrets grid ───────────────────────────────────────────────────────────
@@ -357,11 +357,18 @@
   gap: 6px;
 }
 
-.secret-card {
-  background: rgba(v.$color-base-cast-tan, 0.04);
-  border: 1px solid v.$color-player-section-border;
-  border-radius: 4px;
-  padding: 12px 16px;
+.secret-item {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  padding: 6px 0;
+}
+
+.secret-number {
+  font-family: v.$font-header;
+  font-size: 12px;
+  font-weight: 700;
+  color: rgb(232, 201, 106);
 }
 
 .secret-card-text {

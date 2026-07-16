@@ -1,7 +1,7 @@
 @if (isDm()) {
   <div class="detail-panel-actions">
     @if (!editing()) {
-      <button class="detail-edit-btn" (click)="startEditingClick.emit()">✎ Edit Details</button>
+      <button class="detail-edit-btn" [style.border-color]="editBtnBorderColor() || ''" (click)="startEditingClick.emit()">✎ Edit Details</button>
     } @else {
       <button class="campaign-primary-btn" (click)="saveDetailsClick.emit()">✔ Campaign</button>
       <button class="campaign-primary-btn" (click)="saveToLibraryClick.emit()">✔ Campaign + Library</button>

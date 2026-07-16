@@ -3,7 +3,7 @@
 .chronicle-backdrop {
   position: fixed;
   inset: 0;
-  z-index: 10000;
+  z-index: 2004;
   background: rgba(0, 0, 0, 0.6);
   animation: backdrop-in 0.22s ease both;
 
@@ -28,7 +28,7 @@
   right: 0;
   bottom: 0;
   width: 75vw;
-  z-index: 1000000;
+  z-index: 2005;
   display: flex;
   flex-direction: column;
   background: v.$campaign-portal-bg-dark;

@@ -4,19 +4,80 @@
   display: block;
   position: absolute;
   top: 0;
-  left: 50%;
-  transform: translateX(-50%);
-  z-index: 200;
-  width: 100%;
+  left: 72px;
+  right: 62px;
+  transform: none;
+  z-index: 2003;
+  width: auto;
   max-width: 600px;
 
-  @media (max-width: 600px) {
-    width: 64%;
+  @media (min-width: 336px) {
+    width: 148px;
+  }
+  @media (min-width: 360px) {
+    width: 164px;
+  }
+  @media (min-width: 375px) {
+    width: 178px;
+  }
+  @media (min-width: 390px) {
+    width: 192px;
+  }
+   @media (min-width: 400px) {
+    width: 215px;
+  }
+  @media (min-width: 430px) {
+    width: 232px;
+  }
+  @media (min-width: 540px){
+    left: calc(50% - 24px);
+    transform: translateX(-50%);
+    right: auto;
+    width: 324px;
+  }
+  @media (min-width: 768px) {
+    left: calc(50% - 24px);
+    transform: translateX(-50%);
+    right: auto;
+    width: 554px;
+  }
+  @media (min-width: 900px) {
+    left: 50%;
+    transform: translateX(-50%);
+    right: auto;
+    width: 100%;
   }
 
-  @media (min-width: 601px) and (max-width: 1024px) {
-    width: 75%;
+  &.qn-animating {
+    .qn-panel-clip {
+      max-height: 1000px;
+      opacity: 1;
+    }
   }
+}
+
+.qn-panel-clip {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  z-index: 300;
+  max-height: 0;
+  overflow: hidden;
+  opacity: 0;
+  animation: qn-slide-down 1s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+.qn-panel {
+  background: v.$campaign-portal-bg-dark;
+  border: 1px solid var(--portal-color, v.$color-base-purple-primary);
+  border-top: none;
+  padding: 14px 20px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.6);
+  position: relative;
 }
 
 /* ── Trigger bar ─────────────────────────────────────────────── */
@@ -26,6 +87,20 @@
   gap: 8px;
   height: 56px;
   padding: 8px 20px;
+
+  @media (max-width: 540px) {
+    padding-left: 10px;
+    padding-right: 10px;
+  }
+
+  @media (max-width: 400px) {
+    padding-left: 5px;
+    padding-right: 5px;
+  }
+
+  @media (max-width: 360px) {
+    gap: 4px;
+  }
   background: color-mix(in srgb, v.$color-base-indigo-dark 80%, black 20%);
   border: 1px solid transparent;
   border-bottom: 1px solid v.$campaign-portal-border-bold;
@@ -109,10 +184,10 @@
   left: 0;
   right: 0;
   z-index: 300;
-
-  &--animating {
-    overflow: hidden;
-  }
+  max-height: 0;
+  overflow: hidden;
+  opacity: 0;
+  animation: qn-slide-down 1s cubic-bezier(0.22, 1, 0.36, 1) forwards;
 }
 
 .qn-panel {
@@ -124,13 +199,18 @@
   flex-direction: column;
   gap: 12px;
   box-shadow: 0 6px 24px rgba(0, 0, 0, 0.6);
-  animation: qn-slide-down 0.26s cubic-bezier(0.22, 1, 0.36, 1) both;
   position: relative;
 }
 
 @keyframes qn-slide-down {
-  from { transform: translateY(-100%); }
-  to   { transform: translateY(0); }
+  from {
+    max-height: 0;
+    opacity: 0;
+  }
+  to {
+    max-height: 1000px;
+    opacity: 1;
+  }
 }
 
 @keyframes qn-slide-up {
@@ -381,5 +461,56 @@
 
   &:hover {
     color: v.$campaign-portal-text-bright;
+  }
+}
+
+/* ── Width expansion animation ─────────────────────────────────── */
+@keyframes qn-width-expand {
+  from {
+    width: 180px;
+  }
+  to {
+    width: calc(100% - 24px);
+  }
+}
+
+/* ── Mobile close button ─────────────────────────────────────────── */
+.qn-mobile-close-btn {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  min-width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: 1px solid var(--portal-color, v.$color-base-purple-primary);
+  border-radius: 4px;
+  color: v.$campaign-portal-text-bright;
+  font-size: 14px;
+  cursor: pointer;
+  z-index: 10;
+  transition: background 0.18s ease, border-color 0.18s ease, color 0.18s ease;
+  padding: 4px 4px;
+
+  &:hover {
+    background: rgba(200, 224, 128, 0.10);
+    border-color: var(--portal-color, v.$color-base-purple-primary);
+    color: v.$campaign-portal-text-bright;
+  }
+
+  @media (min-width: 768px) {
+    display: none;
+  }
+}
+
+/* ── Mobile: left-slide + width expansion ─────────────────────────────── */
+@media (max-width: 767px) {
+  .qn-panel {
+    &.qn-panel--mobile-expanded {
+      position: relative;
+      z-index: 10;
+    }
   }
 }

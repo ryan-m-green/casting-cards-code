@@ -20,19 +20,24 @@
     <!-- Detail panel -->
     <div class="subLoc-detail-panel" [style.height]="panelHeight()" [class.detail-panel--mobile-expanded]="detailExpanded()">
 
+      @if (detailExpanded()) {
+        <button class="detail-close-btn" (click)="toggleDetail()" title="Close panel">Close</button>
+      }
+
       <div class="detail-panel-content" #detailContent>
 
         <!-- Panel action bar (GM only) -->
         <app-detail-panel-actions
           [isDm]="isDm()"
           [editing]="editing()"
+          [editBtnBorderColor]="'#C0D4F0'"
           (startEditingClick)="startEditing()"
           (saveDetailsClick)="saveDetails()"
           (saveToLibraryClick)="saveToLibrary()"
           (cancelEditingClick)="cancelEditing()"
         />
 
-        <!-- Sublocation Title -->
+        <!-- Sublocation Name -->
         @if (editing()) {
           <div class="detail-portrait-row">
             <label class="detail-portrait-label" [class.detail-portrait-label--filled]="imagePreviewUrl() || sublocation()?.imageUrl">
@@ -56,18 +61,18 @@
             </label>
             <div class="detail-portrait-fields">
               <div class="detail-desc">
-                <span class="detail-label">Sublocation Title</span>
+                <span class="detail-label">Sublocation Name</span>
                 <input class="detail-input"
                        [ngModel]="editName()"
                        (ngModelChange)="editName.set($event)"
-                       placeholder="Sublocation title…"
+                       placeholder="Sublocation name..."
                        autocomplete="off" />
               </div>
             </div>
           </div>
         } @else {
           <div class="detail-desc">
-            <span class="detail-label">Sublocation Title</span>
+            <span class="detail-label">Sublocation Name</span>
             <span class="detail-value">{{ subLoc.name }}</span>
           </div>
         }
@@ -285,7 +290,7 @@
   @if (isDm() && campaign()) {
     <div class="subLoc-cast-section">
 
-      <app-section-label title="Cast of Characters"></app-section-label>
+      <app-section-label title="Cast of Characters" color="rgb(232, 201, 106)"></app-section-label>
         @if (sublocationCasts().length) {
           <button
             class="cast-reveal-all-btn"
