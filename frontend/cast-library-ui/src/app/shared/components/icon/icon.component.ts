@@ -1,7 +1,7 @@
 import { Component, input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
-export type IconName = 'cast' | 'sublocation' | 'location' | 'faction' | 'campaign';
+export type IconName = 'cast' | 'sublocation' | 'location' | 'faction' | 'campaign' | 'library';
 export type IconVariant = 'watermark' | 'inline';
 
 @Component({
@@ -13,7 +13,7 @@ export type IconVariant = 'watermark' | 'inline';
   styles: [`
     :host { display: flex; align-items: center; justify-content: center; }
     :host(.variant-inline) { height: 100%; }
-    .icon-svg { width: auto; height: 100%; display: block; flex-shrink: 0; opacity: 0.2; }
+    .icon-svg { width: auto; height: 100%; display: block; flex-shrink: 0; opacity: 0.7; }
   `]
 })
 export class IconComponent {

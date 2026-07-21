@@ -1,11 +1,18 @@
-@if (isDm()) {
-  <div class="detail-panel-actions">
-    @if (!editing()) {
-      <button class="detail-edit-btn" [style.border-color]="editBtnBorderColor() || ''" (click)="startEditingClick.emit()">✎ Edit Details</button>
-    } @else {
-      <button class="campaign-primary-btn" (click)="saveDetailsClick.emit()">✔ Campaign</button>
-      <button class="campaign-primary-btn" (click)="saveToLibraryClick.emit()">✔ Campaign + Library</button>
-      <button class="campaign-secondary-btn" (click)="cancelEditingClick.emit()">✖</button>
+<div class="detail-panel-actions">
+  @if (detailExpanded() && !editing()) {
+    <button class="detail-close-btn" (click)="closeClick.emit()" title="Close panel">Close</button>
+  }
+  <div class="detail-actions-right">
+    @if (isDm()) {
+      @if (!editing()) {
+        <button class="detail-edit-btn" [style.border-color]="editBtnBorderColor() || ''" (click)="startEditingClick.emit()">
+          <app-feather-icon [white]="true" /> Edit
+        </button>
+      } @else {
+        <button class="campaign-primary-btn" (click)="saveDetailsClick.emit()" title="Save to campaign">Save <app-icon name="campaign" /></button>
+        <button class="campaign-primary-btn" (click)="saveToLibraryClick.emit()" title="Save to campaign and library">Save <app-icon name="campaign" /> + <app-icon name="library" /></button>
+        <button class="campaign-secondary-btn" (click)="cancelEditingClick.emit()">✖</button>
+      }
     }
   </div>
-}
+</div>

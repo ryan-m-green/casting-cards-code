@@ -1,3 +1,4 @@
+using System.Text.Json;
 using CastLibrary.Logic.Interfaces;
 using CastLibrary.Shared.Domain;
 using Dapper;
@@ -27,6 +28,7 @@ public class FactionUpdateRepository(
             faction.Hidden,
             faction.Description,
             faction.DmNotes,
+            Colors     = JsonSerializer.Serialize(faction.Colors),
             faction.SymbolPath,
         };
         const string sql =
@@ -34,7 +36,7 @@ public class FactionUpdateRepository(
                  SET name = @Name, type = @Type, influence = @Influence,
                      perception = @Perception,
                      hidden = @Hidden,
-                     description = @Description, dm_notes = @DmNotes, symbol_path = @SymbolPath
+                     description = @Description, dm_notes = @DmNotes, symbol_path = @SymbolPath, colors = @Colors::jsonb
                WHERE faction_id = @FactionId";
 
         logging.LogDbOperation(correlation.TraceId, spanId, "UPDATE", "factions", @params);

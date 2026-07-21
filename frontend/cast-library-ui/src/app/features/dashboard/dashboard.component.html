@@ -8,7 +8,12 @@
     <img src="/rat_wizard.PNG" alt="Rat wizard" class="rat-wizard-image" />
     <app-journal-title [title]="'Welcome back, ' + (auth.currentUser()?.displayName ?? '')" />
 
-  <div class="dashboard-subtitle">Card Deck Collection</div>
+  <div class="dashboard-subtitle">
+  <div class="library-icon-wrapper">
+    <app-icon name="library" variant="inline" />
+  </div>
+  Card Deck Library
+</div>
 
   <!-- Stats -->
   <div class="sc section-label-mb">

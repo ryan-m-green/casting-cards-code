@@ -14,7 +14,7 @@
       [ngModel]="dayLengthHours()"
       (ngModelChange)="onDayLengthChange($event)"
     />
-    <span class="tod-unit">hours</span>
+    <span class="tod-unit">HOURS</span>
   </div>
 
   <!-- ── Live preview bar ── -->
@@ -49,48 +49,88 @@
           >↓</button>
         </div>
 
-        <div class="tod-color-wrap">
-          <input
-            type="color"
-            class="color-swatch-input tod-color-input"
-            [value]="slice.color"
-            [attr.aria-label]="'Color for slice ' + (i + 1)"
-            (input)="updateSliceField(i, 'color', $any($event.target).value)"
-          />
+        <div class="tod-slice-row__content">
+          <div class="tod-slice-row__colors">
+            <div class="tod-color-field">
+              <div class="tod-color-wrap">
+                <label class="tod-field-label">Slice Color</label>
+                <input
+                  type="color"
+                  class="color-swatch-input tod-color-input"
+                  [value]="slice.color"
+                  [attr.aria-label]="'Color for slice ' + (i + 1)"
+                  (input)="updateSliceField(i, 'color', $any($event.target).value)"
+                />
+              </div>
+            </div>
+            <div class="tod-color-field">
+              <div class="tod-color-wrap">
+                <label class="tod-field-label">Text Color</label>
+                <input
+                  type="color"
+                  class="color-swatch-input tod-color-input"
+                  [value]="slice.fontColor || '#ffffff'"
+                  [attr.aria-label]="'Font color for slice ' + (i + 1)"
+                  (input)="updateSliceField(i, 'fontColor', $any($event.target).value)"
+                />
+                <button
+                  type="button"
+                  class="tod-copy-color-btn"
+                  [attr.aria-label]="'Copy font color to all slices'"
+                  (click)="copyFontColorToAll(i)"
+                  title="Copy font color to all slices"
+                >
+                  <img src="/rotation_refresh_arrows.svg" alt="Copy color" width="24" height="24" />
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div class="tod-slice-row__main">
+            <div class="tod-slice-row__name-time">
+              <div class="tod-field-group">
+                <label class="tod-field-label">Label</label>
+                <input
+                  type="text"
+                  class="fi fi-no-mb tod-label-input"
+                  placeholder="Label"
+                  [value]="slice.label"
+                  [attr.aria-label]="'Label for slice ' + (i + 1)"
+                  (input)="updateSliceField(i, 'label', $any($event.target).value)"
+                />
+              </div>
+
+              <div class="tod-field-group">
+                <label class="tod-field-label">Duration (hrs)</label>
+                <div class="tod-duration-wrap">
+                  <input
+                    type="number"
+                    class="fi fi-no-mb tod-duration-input"
+                    min="0"
+                    step="0.5"
+                    [value]="slice.durationHours"
+                    [max]="dayLengthHours() - (sliceTotal() - slice.durationHours)"
+                    [attr.aria-label]="'Duration in hours for slice ' + (i + 1)"
+                    (input)="updateSliceField(i, 'durationHours', +$any($event.target).value)"
+                    (blur)="clampDurationOnBlur(i)"
+                  />
+                </div>
+              </div>
+            </div>
+
+            <div class="tod-field-group">
+              <label class="tod-field-label">GM notes</label>
+              <textarea
+                class="fi fi-no-mb tod-notes-input"
+                placeholder="GM notes…"
+                rows="1"
+                [value]="slice.dmNotes"
+                [attr.aria-label]="'GM notes for ' + (slice.label || 'slice ' + (i + 1))"
+                (input)="updateSliceField(i, 'dmNotes', $any($event.target).value)"
+              ></textarea>
+            </div>
+          </div>
         </div>
-
-        <input
-          type="text"
-          class="fi fi-no-mb tod-label-input"
-          placeholder="Label"
-          [value]="slice.label"
-          [attr.aria-label]="'Label for slice ' + (i + 1)"
-          (input)="updateSliceField(i, 'label', $any($event.target).value)"
-        />
-
-        <div class="tod-duration-wrap">
-          <input
-            type="number"
-            class="fi fi-no-mb tod-duration-input"
-            min="0"
-            step="0.5"
-            [value]="slice.durationHours"
-            [max]="dayLengthHours() - (sliceTotal() - slice.durationHours)"
-            [attr.aria-label]="'Duration in hours for slice ' + (i + 1)"
-            (input)="updateSliceField(i, 'durationHours', +$any($event.target).value)"
-            (blur)="clampDurationOnBlur(i)"
-          />
-          <span class="tod-unit">h</span>
-        </div>
-
-        <textarea
-          class="fi fi-no-mb tod-notes-input"
-          placeholder="GM notes…"
-          rows="1"
-          [value]="slice.dmNotes"
-          [attr.aria-label]="'GM notes for ' + (slice.label || 'slice ' + (i + 1))"
-          (input)="updateSliceField(i, 'dmNotes', $any($event.target).value)"
-        ></textarea>
 
         <button
           type="button"

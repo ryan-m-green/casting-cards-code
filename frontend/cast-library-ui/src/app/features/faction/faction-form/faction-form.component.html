@@ -36,13 +36,26 @@
 <img src="/death_awaits.PNG" alt="Death awaits" class="death-awaits-image" />
         <div class="wr form-row-gap">
           <div class="form-field">
-            <app-journal-dropdown 
+            <app-journal-dropdown
               [options]="typeOptions"
               [label]="'Type'"
               [control]="typeControl">
             </app-journal-dropdown>
           </div>
           <div class="form-field"></div>
+        </div>
+        <div class="form-field form-field--colors">
+          <label class="fi-label">Faction Colors</label>
+          <div class="color-pickers-container">
+            <div class="color-picker-wrapper">
+              <span class="color-picker-label">Evil</span>
+              <input id="evil-color-input" type="color" class="fi fi--color" formControlName="evilColor" />
+            </div>
+            <div class="color-picker-wrapper">
+              <span class="color-picker-label">Good</span>
+              <input id="good-color-input" type="color" class="fi fi--color" formControlName="goodColor" />
+            </div>
+          </div>
         </div>
         <div class="form-field form-field--toggle">
           <label class="fi-label" for="faction-hidden-toggle">Faction Visibility</label>
@@ -78,7 +91,9 @@
           <div class="fi-label">Perception</div>
           <div class="perception-card"
                [class.perception-card--hostile]="(form.value.perception ?? 0) < 0"
-               [class.perception-card--friendly]="(form.value.perception ?? 0) > 0">
+               [class.perception-card--friendly]="(form.value.perception ?? 0) > 0"
+               [style.--faction-good-color]="form.value.goodColor ?? '#FFC0DC'"
+               [style.--faction-evil-color]="form.value.evilColor ?? '#B8D820'">
             <input id="faction-perception-input"
                    type="range" min="-5" max="5" step="1"
                    formControlName="perception"
@@ -91,9 +106,9 @@
               }
             </div>
             <div class="perception-labels">
-              <span class="perception-label-end">Hostile</span>
+              <span class="perception-label-end">Enemy</span>
               <span class="perception-label-center">{{ perceptionLabel(form.value.perception ?? 0) }}</span>
-              <span class="perception-label-end">Devoted</span>
+              <span class="perception-label-end">Trusted</span>
             </div>
           </div>
         </div>

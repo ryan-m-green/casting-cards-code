@@ -7,25 +7,36 @@
   </div>
 
   @if (camp.locations.some(l => !l.isPartyAnchor)) {
-    <div class="location-cards-section">
-      <app-section-label title="Locations" color="rgb(200, 224, 128)"></app-section-label>
-      
-      <div class="location-cards-container">
+    <div class="location-card-grid-wrapper">
+      <app-card-grid-layout
+        sectionTitle="Locations"
+        sectionColor="rgb(200, 224, 128)"
+        [items]="camp.locations.filter(l => !l.isPartyAnchor)"
+        cardType="location"
+        [isDm]="false"
+        [showImportCard]="false"
+        trackBy="instanceId"
+        gridClass="locations-grid"
+        paddingClass=""
+        [getTiltFn]="tiltFor"
+      >
         @for (location of camp.locations; track location.instanceId) {
           @if (!location.isPartyAnchor) {
-          <div [class.is-locking]="isLocking(location.instanceId)">
-            <app-location-card
-              [location]="location"
-              [flippable]="false"
-              [editable]="false"
-              [secrets]="false"
-              [tilt]="tiltFor(location.instanceId)"
-              [campaignMode]="true"
-              (cardClick)="goToLocationDetail(location.instanceId)"
-            />
-          </div>
+            <div [class.is-locking]="isLocking(location.instanceId)" (click)="goToLocationDetail(location.instanceId)">
+              <app-location-card
+                [location]="location"
+                [flippable]="false"
+                [editable]="false"
+                [secrets]="false"
+                [tilt]="tiltFor(location.instanceId)"
+                [campaignMode]="true"
+              />
+            </div>
           }
         }
+      </app-card-grid-layout>
+      <div class="import-card-spacer">
+        <div class="scroll-target"></div>
       </div>
     </div>
   }

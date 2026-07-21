@@ -57,6 +57,7 @@ public class CampaignsController(
     IAddSublocationShopItemCommandHandler addSublocationShopItemCommand,
     IToggleShopItemScratchCommandHandler toggleShopItemScratchCommand,
     IUpdateShopItemCommandHandler updateShopItemCommand,
+    IDeleteShopItemCommandHandler deleteShopItemCommand,
     IPurchaseShopItemCommandHandler purchaseShopItemCommand,
     ICampaignWebMapper campaignMapper,
     IUserRetriever userRetriever,
@@ -416,6 +417,21 @@ public class CampaignsController(
         var item = await addSublocationShopItemCommand.HandleAsync(
             new AddSublocationShopItemCommand(instanceId, request));
 
+        await hubContext.Clients.Group(id.ToString()).SendAsync("ShopItemAdded", new
+        {
+            campaignId            = id,
+            sublocationInstanceId = instanceId,
+            shopItem = new
+            {
+                id              = item.Id,
+                name            = item.Name,
+                priceAmount     = item.PriceAmount,
+                priceCurrencyType = item.PriceCurrencyType,
+                description     = item.Description,
+                isScratchedOff  = item.IsScratchedOff,
+            },
+        });
+
         return Ok(new ShopItemResponse
         {
             Id              = item.Id,
@@ -459,6 +475,23 @@ public class CampaignsController(
             sublocationInstanceId = instanceId,
             shopItemId,
             isScratchedOff,
+        });
+
+        return NoContent();
+    }
+
+    [HttpDelete("{id}/sublocations/{instanceId}/shop-items/{shopItemId}")]
+    [Authorize(Roles = "DM,Admin")]
+    public async Task<IActionResult> DeleteShopItem(Guid id, Guid instanceId, Guid shopItemId)
+    {
+        if (!await CallerOwns(id)) return Forbid();
+        await deleteShopItemCommand.HandleAsync(new DeleteShopItemCommand(id, shopItemId));
+
+        await hubContext.Clients.Group(id.ToString()).SendAsync("ShopItemDeleted", new
+        {
+            campaignId            = id,
+            sublocationInstanceId = instanceId,
+            shopItemId,
         });
 
         return NoContent();

@@ -716,15 +716,16 @@
   width: 100%;
   height: 34px;
   padding: 0;
-  background: rgba(v.$color-base-cast-tan, 0.04);
+  background: v.$color-base-cast-tan;
   border: none;
-  border-top: 1px solid rgba(v.$color-base-cast-tan, 0.14);
+  border-top: 1px solid v.$color-base-gold-2;
   border-radius: 0 0 6px 6px;
   cursor: pointer;
   font-family: v.$font-header;
   font-size: 12px;
   letter-spacing: 0.12em;
-  color: v.$color-base-gold-bright-hex;
+  color: #000;
+  opacity: 0.5;
   transition: background 0.18s ease, color 0.18s ease;
 
   &:hover {

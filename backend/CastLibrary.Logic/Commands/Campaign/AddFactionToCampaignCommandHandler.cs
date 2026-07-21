@@ -34,6 +34,7 @@ public class AddFactionToCampaignCommandHandler(
             Description        = faction.Description,
             DmNotes            = faction.DmNotes,
             SymbolPath         = faction.SymbolPath,
+            Colors             = faction.Colors,
             CreatedAt          = DateTime.UtcNow,
         };
 

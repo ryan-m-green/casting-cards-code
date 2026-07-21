@@ -11,4 +11,5 @@ import { CommonModule } from '@angular/common';
 export class SectionLabelComponent {
   @Input() title = '';
   @Input() color = '';
+  @Input() fontWeight: string = '';
 }

@@ -51,6 +51,16 @@ public class ValidateAntiforgeryTokenFilter : Attribute, IAsyncAuthorizationFilt
             return;
         }
 
+        // Skip validation for campaign management endpoints (protected by JWT authentication)
+        if (path.StartsWithSegments("/api/campaigns") ||
+            path.StartsWithSegments("/api/locations") ||
+            path.StartsWithSegments("/api/sublocations") ||
+            path.StartsWithSegments("/api/cast") ||
+            path.StartsWithSegments("/api/factions"))
+        {
+            return;
+        }
+
         // Log request details for debugging
         logger?.LogInformation("Antiforgery validation for {Method} {Path}", method, path);
         var xsrfHeader = context.HttpContext.Request.Headers["X-XSRF-TOKEN"].FirstOrDefault();

@@ -80,6 +80,25 @@
   }
 }
 
+// ── Campaign name row ───────────────────────────────────────────────────────────
+.campaign-name-row {
+  display: flex;
+  gap: 8px;
+  align-items: flex-start;
+}
+
+.campaign-fields-container {
+  &.disabled {
+    opacity: 0.5;
+    pointer-events: none;
+
+    input,
+    textarea {
+      pointer-events: none;
+    }
+  }
+}
+
 // ── Demo campaign control (admin-only) ────────────────────────────────────────
 .demo-control {
   margin-top: 20px;
@@ -244,6 +263,18 @@
   padding: 2px;
   background: transparent;
   cursor: pointer;
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    pointer-events: none;
+  }
+}
+
+textarea.fi:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  pointer-events: none;
 }
 
 .color-swatch-preview {

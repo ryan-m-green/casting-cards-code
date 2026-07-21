@@ -14,11 +14,15 @@
   <!-- Detail panel -->
   <div class="location-detail-panel" [style.height]="panelHeight()" [class.detail-panel--mobile-expanded]="detailExpanded()">
 
-    @if (detailExpanded()) {
-      <button class="detail-close-btn" (click)="toggleDetail()" title="Close panel">Close</button>
-    }
-
     <div class="detail-panel-content" #detailContent>
+
+      <!-- Panel header -->
+      <app-detail-panel-actions
+        [isDm]="false"
+        [editing]="false"
+        [detailExpanded]="detailExpanded()"
+        (closeClick)="toggleDetail()"
+      />
 
       @if (c.description) {
       <div class="detail-desc">
@@ -128,24 +132,38 @@
 
 <!-- ── Sublocations section ── -->
       @if (locationSublocations().length) {
-<div class="location-sublocations-section">
-
-  <app-section-label title="Sublocations" color="rgb(144, 180, 216)"></app-section-label>
-
-  <div class="sublocations-grid">
-    @for (subLoc of locationSublocations(); track subLoc.instanceId) {
-    <app-sublocation-card [sublocation]="subLoc"
-                          [flippable]="false"
-                          [editable]="false"
-                          [secrets]="false"
-                          [tilt]="tiltFor(subLoc.instanceId)"
-                          [campaignMode]="true"
-                          [symbolPath]="subLoc.symbolPath ?? null"
-                          (cardClick)="goToSublocation(subLoc)" />
-    }
-  </div>
-
-</div>
+      <div class="location-card-grid-wrapper">
+        <app-card-grid-layout
+          sectionTitle="Sublocations"
+          sectionColor="rgb(144, 180, 216)"
+          [items]="locationSublocations()"
+          cardType="sublocation"
+          [isDm]="false"
+          [showImportCard]="false"
+          trackBy="instanceId"
+          gridClass="sublocations-grid"
+          paddingClass=""
+          [getTiltFn]="tiltFor"
+        >
+          @for (subLoc of locationSublocations(); track subLoc.instanceId) {
+            <div class="sublocation-card-wrapper" (click)="goToSublocation(subLoc)">
+              <app-sublocation-card
+                [sublocation]="subLoc"
+                [flippable]="false"
+                [editable]="false"
+                [secrets]="false"
+                [tilt]="tiltFor(subLoc.instanceId)"
+                [campaignMode]="true"
+                [symbolPath]="subLoc.symbolPath ?? null"
+                (cardClick)="goToSublocation(subLoc)"
+              />
+            </div>
+          }
+        </app-card-grid-layout>
+      <div class="import-card-spacer">
+        <div class="scroll-target"></div>
+      </div>
+      </div>
     }
 
 }

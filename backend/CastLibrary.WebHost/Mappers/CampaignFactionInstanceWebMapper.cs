@@ -32,6 +32,7 @@ public class CampaignFactionInstanceWebMapper(
             Description        = d.Description,
             DmNotes            = d.DmNotes,
             SymbolPath             = d.SymbolPath,
+            Colors                = d.Colors,
             CreatedAt              = d.CreatedAt,
             SubLocationInstanceIds        = d.SubLocationInstanceIds,
             CastInstanceIds               = d.CastInstanceIds,

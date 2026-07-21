@@ -24,6 +24,7 @@ public class UpsertTimeOfDayCommandHandler(
                 CampaignId    = command.CampaignId,
                 Label         = s.Label,
                 Color         = s.Color,
+                FontColor     = s.FontColor,
                 DurationHours = s.DurationHours,
                 SortOrder     = i,
                 DmNotes       = s.DmNotes,

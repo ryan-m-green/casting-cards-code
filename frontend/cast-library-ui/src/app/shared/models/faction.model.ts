@@ -1,3 +1,8 @@
+export interface FactionColors {
+  evilColor: string;
+  goodColor: string;
+}
+
 export interface Faction {
   id: string;
   dmUserId: string;
@@ -10,10 +15,12 @@ export interface Faction {
   dmNotes?: string;
   symbolPath?: string;
   imageUrl?: string;
+  colors: FactionColors;
   createdAt: string;
 }
 
 export interface CreateFactionRequest {
+  colors: FactionColors;
   name: string;
   type: string;
   hidden: boolean;
@@ -58,6 +65,7 @@ export interface CampaignFactionInstance {
   description?: string;
   dmNotes?: string;
   symbolPath?: string;
+  colors?: FactionColors;
   createdAt: string;
   subLocationInstanceIds: string[];
   castInstanceIds: string[];

@@ -1,0 +1,262 @@
+@if (playerCard(); as card) {
+  <div class="character-page">
+
+  <!-- ── Header with navigation ── -->
+  <div class="character-header">
+    <div class="character-header-content">
+      <h1 class="character-title">My Character</h1>
+      <button class="nav-btn" (click)="goToParty()">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+          <circle cx="9" cy="7" r="4"/>
+          <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+          <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+        </svg>
+        The Party
+      </button>
+    </div>
+  </div>
+
+  <!-- ── Character info ── -->
+    <div class="char-header">
+      <label class="char-portrait" [class.char-portrait--filled]="card.imageUrl" title="Replace portrait">
+        <input type="file" accept="image/jpeg,image/png,image/webp" class="char-portrait-file-input"
+               (change)="onPortraitFileSelected($event)" [disabled]="portraitUploading()" />
+        @if (portraitUploading()) {
+          <div class="char-portrait-uploading">Uploading…</div>
+        } @else if (card.imageUrl) {
+          <img [src]="card.imageUrl" alt="" class="char-portrait-img" />
+          <div class="char-portrait-overlay">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
+              <circle cx="12" cy="13" r="4"/>
+            </svg>
+          </div>
+        } @else {
+          <div class="char-portrait-placeholder">
+            <div class="char-portrait-initial">{{ initial(card.name) }}</div>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
+              <circle cx="12" cy="13" r="4"/>
+            </svg>
+          </div>
+        }
+      </label>
+      <div class="char-info">
+        <button class="char-edit-btn" (click)="showInfoEditor.set(true)" title="Edit character">
+          <div class="char-name">{{ card.name }}</div>
+          <div class="char-subtitle">{{ card.race }} · {{ card.class }}</div>
+        </button>
+        @if (card.description) {
+          <div class="char-description-wrapper" (click)="descriptionExpanded.set(!descriptionExpanded()); $event.stopPropagation()">
+            <!-- Always collapsed preview — never changes size -->
+            <div class="char-description-preview">{{ card.description }}</div>
+            <div class="char-description-toggle" [attr.aria-label]="descriptionExpanded() ? 'Collapse description' : 'Expand description'">
+              <svg class="char-description-toggle-icon" viewBox="0 0 16 8" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                @if (descriptionExpanded()) {
+                  <polyline points="1,7 8,1 15,7"/>
+                } @else {
+                  <polyline points="1,1 8,7 15,1"/>
+                }
+              </svg>
+            </div>
+            <!-- Expanded overlay — absolutely positioned, does not affect layout -->
+            @if (descriptionExpanded()) {
+              <div class="char-description-overlay">
+                <div class="char-description-overlay-text">{{ card.description }}</div>
+                <div class="char-description-toggle char-description-toggle--overlay">
+                  <svg class="char-description-toggle-icon" viewBox="0 0 16 8" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="1,7 8,1 15,7"/>
+                  </svg>
+                </div>
+              </div>
+            }
+          </div>
+        }
+        @if (conditions().length) {
+          <div class="char-conditions">
+            @for (c of conditions(); track c.id) {
+              <span class="condition-pill">{{ c.conditionName }}</span>
+            }
+          </div>
+        }
+      </div>
+    </div>
+
+    <!-- ── Tabs ── -->
+    <div class="tabs-bar" role="tablist" aria-label="Character views">
+      <button
+        class="tab-btn"
+        [class.tab-btn--active]="activeTab() === 'secrets'"
+        role="tab"
+        [attr.aria-selected]="activeTab() === 'secrets'"
+        aria-controls="character-panel-secrets"
+        id="character-tab-secrets"
+        (click)="setTab('secrets')"
+      >Secrets</button>
+      <button
+        class="tab-btn"
+        [class.tab-btn--active]="activeTab() === 'motive'"
+        role="tab"
+        [attr.aria-selected]="activeTab() === 'motive'"
+        aria-controls="character-panel-motive"
+        id="character-tab-motive"
+        (click)="setTab('motive')"
+      >Motivation</button>
+    </div>
+
+    <!-- ════════════════════════════════════════════ MOTIVE ══ -->
+    @if (activeTab() === 'motive') {
+      <div class="tab-content">
+
+        <div class="motive-body-content">
+          <!-- Goals -->
+          <div class="motive-section-wrapper">
+            <div class="motive-section">
+              <div class="motive-section-header">
+                <div class="motive-section-label">Goals</div>
+              </div>
+              @for (trait of goals(); track trait.id) {
+                <div class="motive-item" [class.motive-item--completed]="trait.isCompleted">
+                  <button class="goal-toggle" (click)="toggleGoal(trait)" [title]="trait.isCompleted ? 'Mark active' : 'Mark done'">
+                    @if (trait.isCompleted) {
+                      <img src="/dart_hitting_target_bullseye.svg" class="goal-toggle-icon goal-toggle-icon--completed" alt="Completed" />
+                    } @else {
+                      <img src="/target_circles.svg" class="goal-toggle-icon goal-toggle-icon--incomplete" alt="Incomplete" />
+                    }
+                  </button>
+                  <span class="motive-item-content">{{ trait.content }}</span>
+                  <button class="delete-btn" (click)="deleteTrait(trait.id)">
+                    <img src="/icons/weapons/fantasy_dagger.svg" class="delete-btn-img" alt="Delete" />
+                  </button>
+                </div>
+              }
+              @if (addingGoal()) {
+                <div class="motive-add-row">
+                  <input class="motive-add-input" [ngModel]="newGoalContent()" (ngModelChange)="newGoalContent.set($event)" placeholder="Enter goal…" autocomplete="off" />
+                  <button class="motive-confirm-btn" (click)="confirmAddGoal()" type="button">✔</button>
+                  <button class="motive-cancel-btn-small" (click)="cancelAddingGoal()" type="button">✕</button>
+                </div>
+              }
+              <button class="motive-add-btn" (click)="startAddingGoal()" type="button">+ Add Goal</button>
+            </div>
+          </div>
+
+          <!-- Known Fears -->
+          <div class="motive-section-wrapper">
+            <div class="motive-section">
+              <div class="motive-section-header">
+                <div class="motive-section-label">Known Fears</div>
+              </div>
+              @for (trait of fears(); track trait.id) {
+                <div class="motive-item">
+                  <img src="/death_thoughts_inside_human_brain.svg" class="motive-type-icon motive-type-icon--fear" alt="Fear icon" />
+                  <span class="motive-item-content">{{ trait.content }}</span>
+                  <button class="delete-btn" (click)="deleteTrait(trait.id)">
+                    <img src="/icons/weapons/fantasy_dagger.svg" class="delete-btn-img" alt="Delete" />
+                  </button>
+                </div>
+              }
+              @if (addingFear()) {
+                <div class="motive-add-row">
+                  <input class="motive-add-input" [ngModel]="newFearContent()" (ngModelChange)="newFearContent.set($event)" placeholder="Enter fear…" autocomplete="off" />
+                  <button class="motive-confirm-btn" (click)="confirmAddFear()" type="button">✔</button>
+                  <button class="motive-cancel-btn-small" (click)="cancelAddingFear()" type="button">✕</button>
+                </div>
+              }
+              <button class="motive-add-btn" (click)="startAddingFear()" type="button">+ Add Fear</button>
+            </div>
+          </div>
+
+          <!-- Flaws -->
+          <div class="motive-section-wrapper">
+            <div class="motive-section">
+              <div class="motive-section-header">
+                <div class="motive-section-label">Flaws</div>
+              </div>
+              @for (trait of flaws(); track trait.id) {
+                <div class="motive-item">
+                  <img src="/broken_shield_sword.svg" class="motive-type-icon motive-type-icon--flaw" alt="Flaw icon" />
+                  <span class="motive-item-content">{{ trait.content }}</span>
+                  <button class="delete-btn" (click)="deleteTrait(trait.id)">
+                    <img src="/icons/weapons/fantasy_dagger.svg" class="delete-btn-img" alt="Delete" />
+                  </button>
+                </div>
+              }
+              @if (addingFlaw()) {
+                <div class="motive-add-row">
+                  <input class="motive-add-input" [ngModel]="newFlawContent()" (ngModelChange)="newFlawContent.set($event)" placeholder="Enter flaw…" autocomplete="off" />
+                  <button class="motive-confirm-btn" (click)="confirmAddFlaw()" type="button">✔</button>
+                  <button class="motive-cancel-btn-small" (click)="cancelAddingFlaw()" type="button">✕</button>
+                </div>
+              }
+              <button class="motive-add-btn" (click)="startAddingFlaw()" type="button">+ Add Flaw</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    }
+
+    <!-- ════════════════════════════════════════════ SECRETS ══ -->
+    @if (activeTab() === 'secrets') {
+      <div class="tab-content">
+
+        <div class="secrets-section">
+          <div class="secrets-section-label"><app-lock-icon /> Held in Confidence</div>
+          @if (heldSecrets().length === 0) {
+            <div class="empty-state">No private secrets.</div>
+          }
+          @for (secret of heldSecrets(); track secret.id) {
+            <div class="secret-entry">
+              <div class="secret-content">{{ secret.content }}</div>
+              <div class="secret-meta">
+                Delivered {{ secret.deliveredAt | date:'mediumDate' }}
+              </div>
+              <button
+                class="share-btn"
+                (click)="shareSecret(secret.id)"
+                [disabled]="sharingSecretId() === secret.id"
+              >
+                <img src="/monk_sitting_by_campfire.svg" class="share-btn-icon" />
+                Share with Party
+              </button>
+            </div>
+          }
+        </div>
+
+        <div class="secrets-section">
+          <div class="secrets-section-label"><app-lock-icon [open]="true" /> Party Knowledge</div>
+          @if (partySecrets().length === 0) {
+            <div class="empty-state">No shared secrets yet.</div>
+          }
+          @for (secret of partySecrets(); track secret.id) {
+            <div class="secret-entry secret-entry--shared">
+              <div class="secret-content">{{ secret.content }}</div>
+              <div class="secret-meta">
+                Shared {{ secret.sharedAt | date:'mediumDate' }}
+                @if (secret.sharedBy) { · by {{ secret.sharedBy === 'DM' ? 'GM' : 'you' }} }
+              </div>
+            </div>
+          }
+        </div>
+
+      </div>
+    }
+
+  </div>
+
+} @else {
+  <div class="loading-state">Loading your character…</div>
+}
+
+<app-character-info-editor
+  [visible]="showInfoEditor()"
+  [campaignId]="campaignId()"
+  [playerCardId]="playerCardId()"
+  [name]="playerCard()?.name ?? ''"
+  [race]="playerCard()?.race ?? ''"
+  [classValue]="playerCard()?.class ?? ''"
+  [description]="playerCard()?.description ?? null"
+  (closed)="showInfoEditor.set(false)"
+  (saved)="onInfoSaved($event)"
+/>

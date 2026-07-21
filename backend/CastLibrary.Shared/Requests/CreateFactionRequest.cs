@@ -1,3 +1,5 @@
+using CastLibrary.Shared.Domain;
+
 namespace CastLibrary.Shared.Requests;
 
 public class CreateFactionRequest
@@ -10,4 +12,5 @@ public class CreateFactionRequest
     public string Description { get; set; }
     public string DmNotes { get; set; }
     public string SymbolPath { get; set; }
+    public FactionColors Colors { get; set; } = new FactionColors();
 }

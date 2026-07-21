@@ -161,6 +161,7 @@ export class TimeOfDayBarComponent implements OnInit, OnChanges, OnDestroy {
     return {
       'flex-basis':       `${widthPct}%`,
       'background-image': gradient,
+      'color':            slice.fontColor || undefined,
     };
   }
 

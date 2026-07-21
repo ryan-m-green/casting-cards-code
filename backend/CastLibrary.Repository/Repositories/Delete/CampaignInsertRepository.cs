@@ -21,6 +21,7 @@ public interface ICampaignInsertRepository
     Task ClearFactionSublocationPrimaryAsync(Guid factionInstanceId);
     Task ClearFactionCastMemberPrimaryAsync(Guid factionInstanceId);
     Task<CampaignFactionRelationshipDomain> InsertFactionRelationshipAsync(CampaignFactionRelationshipDomain domain);
+    Task<bool> FactionRelationshipExistsAsync(Guid campaignId, Guid factionInstanceIdA, Guid factionInstanceIdB, Guid? dmUserId);
 }
 
 public class CampaignInsertRepository(
@@ -434,6 +435,53 @@ public class CampaignInsertRepository(
 
         logging.LogDbOperation(correlation.TraceId, spanId, "INSERT", "campaign_faction_instance_relationships", @params, rows);
         return domain;
+    }
+
+    public async Task<bool> FactionRelationshipExistsAsync(Guid campaignId, Guid factionInstanceIdA, Guid factionInstanceIdB, Guid? dmUserId)
+    {
+        var spanId = correlation.NewSpan();
+        string sql;
+        object @params;
+
+        if (dmUserId.HasValue)
+        {
+            sql = @"SELECT COUNT(*) 
+                    FROM campaign_faction_instance_relationships
+                    WHERE campaign_id = @CampaignId
+                      AND faction_instance_id_a = @FactionInstanceIdA
+                      AND faction_instance_id_b = @FactionInstanceIdB
+                      AND dm_user_id = @DmUserId";
+            @params = new
+            {
+                CampaignId = campaignId,
+                FactionInstanceIdA = factionInstanceIdA,
+                FactionInstanceIdB = factionInstanceIdB,
+                DmUserId = dmUserId.Value
+            };
+        }
+        else
+        {
+            sql = @"SELECT COUNT(*) 
+                    FROM campaign_faction_instance_relationships
+                    WHERE campaign_id = @CampaignId
+                      AND faction_instance_id_a = @FactionInstanceIdA
+                      AND faction_instance_id_b = @FactionInstanceIdB
+                      AND dm_user_id IS NULL";
+            @params = new
+            {
+                CampaignId = campaignId,
+                FactionInstanceIdA = factionInstanceIdA,
+                FactionInstanceIdB = factionInstanceIdB
+            };
+        }
+
+        logging.LogDbOperation(correlation.TraceId, spanId, "SELECT", "campaign_faction_instance_relationships", @params);
+
+        using var conn = CreateConnection();
+        var count = await conn.QuerySingleAsync<int>(sql, @params);
+
+        logging.LogDbOperation(correlation.TraceId, spanId, "SELECT", "campaign_faction_instance_relationships", @params, count);
+        return count > 0;
     }
 
     }

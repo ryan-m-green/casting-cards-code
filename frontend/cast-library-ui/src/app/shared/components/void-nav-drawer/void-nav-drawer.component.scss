@@ -17,25 +17,12 @@
   border: 1px solid color-mix(in srgb, var(--portal-color, v.$color-base-purple-primary), transparent 50%);
   border-radius: 8px;
   cursor: pointer;
-  animation: nav-btn-pulse 8.4s ease-in-out infinite;
-  transition: background 0.18s ease, border-color 0.18s ease, animation 0s;
+  transition: background 0.18s ease, border-color 0.18s ease;
 
   &:hover,
   &.is-open {
     background: v.$campaign-portal-border-accent;
     border-color: color-mix(in srgb, var(--portal-color, v.$color-base-purple-primary), transparent 20%);
-    animation: none;
-  }
-}
-
-@keyframes nav-btn-pulse {
-  0%, 100% {
-    border-color: color-mix(in srgb, var(--portal-color, v.$color-base-purple-primary), transparent 60%);
-    box-shadow: 0 0 4px color-mix(in srgb, var(--portal-color, v.$color-base-purple-primary), transparent 80%);
-  }
-  50% {
-    border-color: color-mix(in srgb, var(--portal-color, v.$color-base-purple-primary), transparent 20%);
-    box-shadow: 0 0 10px color-mix(in srgb, var(--portal-color, v.$color-base-purple-primary), transparent 45%);
   }
 }
 

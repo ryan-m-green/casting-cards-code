@@ -16,11 +16,12 @@ import { Subscription } from 'rxjs';
 import { CastCardComponent } from '../../../shared/components/cast-card/cast-card.component';
 import { LockIconComponent } from '../../../shared/components/lock-icon/lock-icon.component';
 import { DetailPanelActionsComponent } from '../../../shared/components/detail-panel-actions/detail-panel-actions.component';
+import { TravelAnchorComponent } from '../../../shared/components/travel-anchor/travel-anchor.component';
 
 @Component({
   selector: 'app-campaign-cast-detail',
   standalone: true,
-  imports: [CommonModule, FormsModule, CastCardComponent, LockIconComponent, DetailPanelActionsComponent],
+  imports: [CommonModule, FormsModule, CastCardComponent, LockIconComponent, DetailPanelActionsComponent, TravelAnchorComponent],
   templateUrl: './campaign-cast-detail.component.html',
   styleUrl: './campaign-cast-detail.component.scss'
 })
@@ -33,6 +34,7 @@ export class CampaignCastDetailComponent implements OnInit, OnDestroy {
   private shellSvc = inject(CampaignShellService);
   private transition = inject(PortalTransitionService);
   private hubSubscriptions: Subscription[] = [];
+  private paramsSub?: Subscription;
 
   @ViewChild('detailContent') private detailContentRef!: ElementRef<HTMLElement>;
   @ViewChild('expandBtn')     private expandBtnRef!: ElementRef<HTMLElement>;
@@ -86,7 +88,6 @@ export class CampaignCastDetailComponent implements OnInit, OnDestroy {
   newSecretContent = signal('');
 
   // Travel drawer
-  private paramsSub?: Subscription;
   travelDrawerOpen   = signal(false);
   selectedLocationId = signal<string | null>(null);
 
@@ -443,7 +444,7 @@ export class CampaignCastDetailComponent implements OnInit, OnDestroy {
     this.selectedLocationId.set(null);
   }
 
-  selectLocation(locationId: string) {
+  selectLocation(locationId: string | null) {
     this.selectedLocationId.set(locationId);
   }
 

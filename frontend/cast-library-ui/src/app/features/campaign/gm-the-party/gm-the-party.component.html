@@ -42,71 +42,28 @@
               [tilt]="companionTiltFor(cast.instanceId)"
               (cardClick)="goToCompanion(cast)"
             />
-            <div class="travel-btn-row">
-              <button class="campaign-primary-btn" type="button" (click)="toggleTravelFor(cast.instanceId)">
-                Travel {{ openTravelFor() === cast.instanceId ? '↑' : '↓' }}
-              </button>
-            </div>
-            @if (openTravelFor() === cast.instanceId) {
-              <div class="travel-drawer">
-                @if (travelSelectedLoc() === null) {
-                  <div class="travel-list">
-                    <button
-                      class="travel-item travel-item--party"
-                      type="button"
-                      [disabled]="!partyAnchor()"
-                      [class.travel-item--disabled]="!partyAnchor()"
-                      (click)="partyAnchor() && travelCast(cast, partyAnchor()!.locationInstanceId, partyAnchor()!.instanceId)">
-                      <span class="travel-item-name">⚔ The Party</span>
-                      @if (partyAnchor() && cast.sublocationInstanceId === partyAnchor()!.instanceId) {
-                        <span class="travel-checkmark">✓</span>
-                      }
-                    </button>
-                    <div class="travel-divider"></div>
-                    @for (loc of travelLocations(); track loc.instanceId) {
-                      @if (sublocationsByLocation()[loc.instanceId]?.length) {
-                        <button
-                          class="travel-item"
-                          type="button"
-                          (click)="travelSelectedLoc.set(loc.instanceId)">
-                          <span class="travel-item-name">{{ loc.name }}</span>
-                          @if (cast.locationInstanceId === loc.instanceId && cast.sublocationInstanceId !== partyAnchor()?.instanceId) {
-                            <span class="travel-checkmark travel-checkmark--faint">✓</span>
-                          }
-                        </button>
-                      } @else {
-                        <span class="travel-item travel-item--disabled">
-                          <span class="travel-item-name">{{ loc.name }}</span>
-                        </span>
-                      }
-                    }
-                    @if (!partyAnchor() && !travelLocations().length) {
-                      <span class="travel-empty">No locations available.</span>
-                    }
-                  </div>
-                } @else {
-                  <div class="travel-list">
-                    <button class="travel-back" type="button" (click)="travelSelectedLoc.set(null)">← Back</button>
-                    @for (sub of sublocationsByLocation()[travelSelectedLoc()!]; track sub.instanceId) {
-                      <button
-                        class="travel-item"
-                        type="button"
-                        (click)="travelCast(cast, sub.locationInstanceId, sub.instanceId)">
-                        <span class="travel-item-name">{{ sub.name }}</span>
-                        @if (cast.sublocationInstanceId === sub.instanceId) {
-                          <span class="travel-checkmark">✓</span>
-                        }
-                      </button>
-                    }
-                  </div>
-                }
-              </div>
-            }
+            <app-travel-anchor
+              [drawerOpen]="openTravelFor() === cast.instanceId"
+              [selectedLocationId]="travelSelectedLoc()"
+              [campaignId]="campaignId()"
+              [castInstanceId]="cast.instanceId"
+              [sublocationInstanceId]="partySublocationInstanceId()!"
+              [partyAnchor]="partyAnchor()"
+              [travelLocations]="travelLocations()"
+              [sublocationsByLocation]="sublocationsByLocation()"
+              [currentSublocationId]="cast.sublocationInstanceId"
+              [currentLocationId]="cast.locationInstanceId"
+              (toggleDrawer)="toggleTravelFor(cast.instanceId)"
+              (selectLocation)="travelSelectedLoc.set($event)"
+              (travelCast)="travelCast(cast, $event.locationInstanceId, $event.sublocationInstanceId)"
+            />
           </div>
         }
       </div>
     </div>
   }
+
+  <div class="companions-spacer"></div>
 
 <!-- ════════════════════ PARTY GOLD MODAL ══ -->
 @if (partyGoldModalOpen()) {

@@ -18,11 +18,15 @@
     <!-- Detail panel -->
     <div class="faction-detail-panel" [style.height]="panelHeight()" [class.detail-panel--mobile-expanded]="detailExpanded()">
 
-      @if (detailExpanded()) {
-        <button class="detail-close-btn" (click)="toggleDetail()" title="Close panel">Close</button>
-      }
-
       <div class="detail-panel-content" #detailContent>
+
+        <!-- Panel header -->
+        <app-detail-panel-actions
+          [isDm]="false"
+          [editing]="false"
+          [detailExpanded]="detailExpanded()"
+          (closeClick)="toggleDetail()"
+        />
 
         <!-- Name -->
         <div class="detail-desc">
@@ -123,10 +127,7 @@
   <!-- ── Known Sublocations ── -->
   @if (factionSublocations().length) {
     <div class="faction-members-section">
-      <div class="faction-members-header">
-        <span class="faction-members-label">Known Sublocations</span>
-        <span class="faction-members-line"></span>
-      </div>
+      <app-section-label title="Known Sublocations" color="rgb(48, 72, 96)"></app-section-label>
       <div class="faction-members-grid">
         @for (sub of factionSublocations(); track sub.instanceId) {
           <app-sublocation-card
@@ -149,10 +150,7 @@
   <!-- ── Known Cast ── -->
   @if (factionCast().length) {
     <div class="faction-members-section">
-      <div class="faction-members-header">
-        <span class="faction-members-label">Known Cast Members</span>
-        <span class="faction-members-line"></span>
-      </div>
+      <app-section-label title="Known Cast Members" color="rgb(138, 104, 32)"></app-section-label>
       <div class="faction-members-grid">
         @for (cast of factionCast(); track cast.instanceId) {
           <app-cast-card

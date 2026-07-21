@@ -12,6 +12,54 @@
   margin-right: auto;
 }
 
+/* ── Header with navigation ────────────────────────────────────── */
+.party-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 32px 20px;
+  border-bottom: 1px solid rgba(v.$color-lib-location-1, 0.22);
+}
+
+.party-header-content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.party-title {
+  font-family: v.$font-header;
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  color: v.$campaign-portal-text-primary;
+  text-shadow: 0 0 12px v.$campaign-portal-border-bold;
+  margin: 0;
+}
+
+.nav-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: v.$font-header;
+  font-size: 12px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: v.$campaign-portal-text-bright;
+  background: v.$campaign-portal-bg-hover;
+  border: 1px solid var(--portal-color, v.$color-base-purple-primary);
+  border-radius: 6px;
+  padding: 8px 16px;
+  cursor: pointer;
+  transition: all 0.18s ease;
+
+  &:hover {
+    background: v.$campaign-portal-border-medium;
+    border-color: var(--portal-color, v.$color-base-purple-primary);
+  }
+}
+
 /* ── Void canvas ─────────────────────────────────────────────── */
 .void-canvas {
   width: 100%;
@@ -262,6 +310,7 @@
   font-style: italic;
   display: -webkit-box;
   -webkit-line-clamp: 3;
+  line-clamp: 3;
   -webkit-box-orient: vertical;
   overflow: hidden;
   // Fixed height — never changes, never causes reflow
@@ -364,7 +413,7 @@
   }
 
   &--active {
-    color: v.$campaign-portal-text-bright;
+    color: v.$color-base-gold-mid;
     border-bottom-color: v.$color-border-accent;
   }
 }
@@ -388,7 +437,7 @@
   font-size: 12px;
   letter-spacing: 0.22em;
   text-transform: uppercase;
-  color: v.$campaign-portal-text-bright;
+  color: v.$color-base-gold-mid;
 }
 
 .add-btn {
@@ -643,7 +692,23 @@
 
 .tab-content .card-grid {
   padding: 0;
-  row-gap: 56px;
+  display: flex;
+  flex-direction: row;
+  gap: 24px;
+  row-gap: 36px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.tab-content .card-grid app-casting-card-player.is-first-card {
+  margin-right: 0;
+}
+
+.party-divider {
+  width: 2px;
+  height: 200px;
+  background: linear-gradient(to bottom, transparent, v.$campaign-portal-border-medium);
+  margin: 0 8px;
 }
 
 /* ── Cast tab ────────────────────────────────────────────────── */
@@ -944,7 +1009,7 @@
 }
 
 .secret-entry {
-  background: v.$color-base-mist-blue2;
+  background: v.$campaign-portal-bg-dark;
   border: 1px solid v.$color-base-gold-mid;
   border-radius: 8px;
   padding: 16px 18px;
@@ -952,7 +1017,7 @@
 
   &--shared {
     border-color: v.$color-base-gold-bright;
-    background: v.$color-ext-601;
+    background: v.$campaign-portal-bg-dark;
   }
 }
 

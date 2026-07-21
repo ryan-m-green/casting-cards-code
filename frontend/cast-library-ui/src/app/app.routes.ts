@@ -89,6 +89,10 @@ export const routes: Routes = [
         loadComponent: () => import('./features/player/player-the-party/player-the-party.component').then(m => m.PlayerThePartyComponent),
       },
       {
+        path: 'my-character',
+        loadComponent: () => import('./features/player/player-character/player-character.component').then(m => m.PlayerCharacterComponent),
+      },
+      {
         path: 'player-card/new',
         loadComponent: () => import('./features/player/player-card-form/player-card-form.component').then(m => m.PlayerCardFormComponent),
       },

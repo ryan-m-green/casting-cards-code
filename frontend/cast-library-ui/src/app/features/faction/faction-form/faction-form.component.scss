@@ -28,8 +28,8 @@
 
   .death-awaits-image {
     position: absolute;
-    top: -24px;
-    right: 0;
+    top: -54px;
+    right: -32px;
     width: 144px;
     height: auto;
     z-index: 10;
@@ -89,6 +89,67 @@
   cursor: pointer;
   accent-color: v.$color-base-gold-1;
   margin-top: 4px;
+}
+
+.fi--color {
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  margin-top:10px;
+  border: none;
+  border-radius: 2px;
+  background: transparent;
+  cursor: pointer;
+  transition: opacity 0.2s ease;
+
+  &:hover {
+    opacity: 0.9;
+  }
+
+  &::-webkit-color-swatch-wrapper {
+    padding: 0;
+  }
+
+  &::-webkit-color-swatch {
+    border: none;
+    border-radius: 2px;
+  }
+}
+
+.color-picker-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 4px 0px;
+  border: 1px solid rgba(v.$color-base-brown-14, 0.3);
+  border-radius: 4px;
+  background: rgba(v.$color-base-brown-warm, 0.05);
+  transition: border-color 0.2s ease;
+  height: 40px;
+  width: 116px;
+
+  &:hover {
+    border-color: rgba(v.$color-base-gold-1, 0.5);
+  }
+}
+
+.color-pickers-container {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+
+.form-field-min {
+  margin-bottom: 16px;
+}
+
+.color-picker-label {
+  font-family: v.$font-header;
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  color: v.$color-base-brown-14;
+  white-space: nowrap;
 }
 
 // ── Slider row (influence + ticks) ────────────────────────────────────────────
@@ -154,8 +215,8 @@
   accent-color: v.$color-base-gold-1;
   cursor: pointer;
 
-  &.slider-friendly { accent-color: #3a7a3a; }
-  &.slider-hostile  { accent-color: #b03030; }
+  &.slider-friendly { accent-color: var(--faction-good-color, #FFC0DC); }
+  &.slider-hostile  { accent-color: var(--faction-evil-color, #B8D820); }
 }
 
 .perception-ticks {
@@ -196,6 +257,7 @@
   display: flex;
   flex-direction: column;
   gap: 8px;
+  margin-bottom: 16px;
 
   .toggle-row {
     display: flex;
@@ -207,6 +269,10 @@
     margin-bottom: 0;
     flex-shrink: 0;
   }
+}
+
+.form-field--colors {
+  margin-bottom: 16px;
 }
 
 // ── Form Fields Column Layout ──────────────────────────────────────────────────

@@ -2,6 +2,7 @@ import { Component, input, output, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { CampaignFactionInstance, FactionRelationship } from '../../models/faction.model';
 import { FactionCardComponent } from '../faction-card/faction-card.component';
+import { SectionLabelComponent } from '../section-label/section-label.component';
 
 export interface SaveRelationshipEvent {
   factionInstanceIdB: string;
@@ -12,7 +13,7 @@ export interface SaveRelationshipEvent {
 @Component({
   selector: 'app-faction-relationships-section',
   standalone: true,
-  imports: [CommonModule, FactionCardComponent],
+  imports: [CommonModule, FactionCardComponent, SectionLabelComponent],
   templateUrl: './faction-relationships-section.component.html',
   styleUrl: './faction-relationships-section.component.scss',
 })

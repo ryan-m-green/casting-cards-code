@@ -46,7 +46,7 @@
             (click)="toggleSlicePanel(slice.id)"
             type="button"
           >
-            <span class="tod-slice__label">{{ slice.label }}</span>
+            <span class="tod-slice__label" [style.color]="slice.fontColor || undefined">{{ slice.label }}</span>
           </button>
         }
 

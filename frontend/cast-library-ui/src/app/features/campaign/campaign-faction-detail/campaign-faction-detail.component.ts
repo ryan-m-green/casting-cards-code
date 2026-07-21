@@ -17,11 +17,13 @@ import { FactionDetailPanelComponent } from './faction-detail-panel/faction-deta
 import { SublocationCardComponent } from '../../../shared/components/sublocation-card/sublocation-card.component';
 import { CastCardComponent } from '../../../shared/components/cast-card/cast-card.component';
 import { FactionRelationshipsSectionComponent, SaveRelationshipEvent } from '../../../shared/components/faction-relationships-section/faction-relationships-section.component';
+import { SectionLabelComponent } from '../../../shared/components/section-label/section-label.component';
+import { DetailPanelActionsComponent } from '../../../shared/components/detail-panel-actions/detail-panel-actions.component';
 
 @Component({
   selector: 'app-campaign-faction-detail',
   standalone: true,
-  imports: [CommonModule, FormsModule, FactionCardComponent, FactionDetailPanelComponent, SublocationCardComponent, CastCardComponent, FactionRelationshipsSectionComponent],
+  imports: [CommonModule, FormsModule, FactionCardComponent, FactionDetailPanelComponent, SublocationCardComponent, CastCardComponent, FactionRelationshipsSectionComponent, SectionLabelComponent, DetailPanelActionsComponent],
   templateUrl: './campaign-faction-detail.component.html',
   styleUrl: './campaign-faction-detail.component.scss',
 })
@@ -50,6 +52,17 @@ export class CampaignFactionDetailComponent implements OnInit, OnDestroy {
         } : c);
       })
     );
+
+    this.hubSubscriptions.push(
+      this.hub.factionInstanceUpdated$.subscribe(event => {
+        if (!event || event.campaignId !== this.campaignId()) return;
+        if (event.factionInstanceId !== this.factionInstanceId()) return;
+        // Re-fetch campaign data when faction is updated
+        this.http.get<CampaignDetail>(`${environment.apiUrl}/api/campaigns/${this.campaignId()}`).subscribe(c => {
+          this.campaign.set(c);
+        });
+      })
+    );
   }
 
   private paramsSub?: Subscription;
@@ -69,6 +82,8 @@ export class CampaignFactionDetailComponent implements OnInit, OnDestroy {
   editInfluence   = signal(0);
   editPerception  = signal(0);
   editSymbolPath  = signal<string | null>(null);
+  editGoodColor   = signal('#ff99bb');
+  editEvilColor   = signal('#004d1a');
 
   // Membership drawers
   sublocationDrawerOpen = signal(false);
@@ -111,6 +126,13 @@ export class CampaignFactionDetailComponent implements OnInit, OnDestroy {
     const f = this.faction();
     if (!c || !f) return [];
     return c.casts.filter(ca => f.castInstanceIds.includes(ca.instanceId));
+  });
+
+  /** Sublocations available for faction membership (excludes party anchor) */
+  availableSublocations = computed<CampaignSublocationInstance[]>(() => {
+    const c = this.campaign();
+    if (!c) return [];
+    return c.sublocations.filter(s => !s.isPartyAnchor);
   });
 
   /** Sublocation IDs claimed by any OTHER faction in this campaign. */
@@ -367,6 +389,8 @@ export class CampaignFactionDetailComponent implements OnInit, OnDestroy {
     this.editInfluence.set(f.influence ?? 0);
     this.editPerception.set(f.perception ?? 0);
     this.editSymbolPath.set(f.symbolPath ?? null);
+    this.editGoodColor.set((f.colors?.goodColor && f.colors?.goodColor !== '#000000') ? f.colors?.goodColor : '#ff99bb');
+    this.editEvilColor.set((f.colors?.evilColor && f.colors?.evilColor !== '#000000') ? f.colors?.evilColor : '#004d1a');
     this.editing.set(true);
     if (!this.detailExpanded()) {
       requestAnimationFrame(() => this.expandPanel());
@@ -409,6 +433,10 @@ export class CampaignFactionDetailComponent implements OnInit, OnDestroy {
       influence:   this.editInfluence(),
       perception:  this.editPerception(),
       symbolPath:  this.editSymbolPath() ?? undefined,
+      colors: {
+        goodColor: this.editGoodColor(),
+        evilColor: this.editEvilColor(),
+      },
       syncLibrary,
     };
     this.http.patch(

@@ -22,6 +22,7 @@ import { CardFlipComponent } from '../../../shared/components/card-flip/card-fli
 import { CastingCardPlayerComponent } from '../../../shared/components/casting-card-player/casting-card-player.component';
 import { CurrencyDisplayComponent, CurrencyLine } from '../../../shared/components/currency-display/currency-display.component';
 import { PlayerSecretsDrawerComponent } from '../../../shared/components/player-secrets-drawer/player-secrets-drawer.component';
+import { TravelAnchorComponent } from '../../../shared/components/travel-anchor/travel-anchor.component';
 
 const D5E_CONDITIONS = [
   'Blinded', 'Charmed', 'Deafened', 'Exhaustion', 'Frightened', 'Grappled',
@@ -34,7 +35,7 @@ type Currency = 'cp' | 'sp' | 'ep' | 'gp' | 'pp';
 @Component({
   selector: 'app-gm-the-party',
   standalone: true,
-  imports: [CommonModule, FormsModule, CastingCardPlayerComponent, CastCardComponent, PlayerSecretsDrawerComponent],
+  imports: [CommonModule, FormsModule, CastingCardPlayerComponent, CastCardComponent, PlayerSecretsDrawerComponent, TravelAnchorComponent],
   templateUrl: './gm-the-party.component.html',
   styleUrl: './gm-the-party.component.scss',
 })

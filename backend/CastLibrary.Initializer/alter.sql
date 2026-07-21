@@ -179,3 +179,44 @@ BEGIN
         ALTER TABLE factions ADD CONSTRAINT chk_factions_perception CHECK (perception BETWEEN -5 AND 5);
     END IF;
 END $$;
+
+-- ============================================================
+-- Add font_color column to campaign_tod_slices table
+-- ============================================================
+
+ALTER TABLE campaign_tod_slices ADD COLUMN IF NOT EXISTS font_color TEXT NOT NULL DEFAULT '';
+
+-- ============================================================
+-- Add colors column to factions table
+-- ============================================================
+
+ALTER TABLE factions ADD COLUMN IF NOT EXISTS colors JSONB;
+
+-- ============================================================
+-- Add colors column to campaign_faction_instances table
+-- ============================================================
+
+ALTER TABLE campaign_faction_instances ADD COLUMN IF NOT EXISTS colors JSONB NOT NULL DEFAULT '{}';
+
+-- ============================================================
+-- Add perception column to campaign_faction_instances table
+-- ============================================================
+
+ALTER TABLE campaign_faction_instances ADD COLUMN IF NOT EXISTS perception SMALLINT NOT NULL DEFAULT 0;
+
+-- ============================================================
+-- Drop unique constraint on campaign_faction_instance_relationships
+-- ============================================================
+-- Allow both GM-created (dm_user_id has value) and player-created (dm_user_id is null)
+-- relationships for the same faction pair within a campaign
+-- Validation is now handled in code via AddFactionRelationshipCommandHandler
+DO $$
+BEGIN
+    IF EXISTS (
+        SELECT 1 FROM pg_constraint
+        WHERE conname = 'uq_campaign_faction_instance_relationship'
+    ) THEN
+        ALTER TABLE campaign_faction_instance_relationships
+        DROP CONSTRAINT uq_campaign_faction_instance_relationship;
+    END IF;
+END $$;

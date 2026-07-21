@@ -26,7 +26,7 @@ public class FactionReadRepository(
         const string sql =
             @"SELECT faction_id AS FactionId, dm_user_id AS DmUserId, name, type,
                      influence, perception, hidden, description, dm_notes AS DmNotes,
-                     symbol_path AS SymbolPath, created_at AS CreatedAt
+                     symbol_path AS SymbolPath, colors, created_at AS CreatedAt
                 FROM factions
                WHERE dm_user_id = @DmUserId
                ORDER BY name";
@@ -47,7 +47,7 @@ public class FactionReadRepository(
         const string sql =
             @"SELECT faction_id AS FactionId, dm_user_id AS DmUserId, name, type,
                      influence, perception, hidden, description, dm_notes AS DmNotes,
-                     symbol_path AS SymbolPath, created_at AS CreatedAt
+                     symbol_path AS SymbolPath, colors, created_at AS CreatedAt
                 FROM factions
                WHERE faction_id = @FactionId";
 

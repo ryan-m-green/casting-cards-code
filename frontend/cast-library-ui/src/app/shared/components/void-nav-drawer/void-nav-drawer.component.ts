@@ -244,12 +244,12 @@ export class VoidNavDrawerComponent implements OnChanges {
   }
 
   goToParty() {
-    this.router.navigate([`/campaign/${this.campaignId()}`, 'the-party']);
+    this.router.navigate([this.base, 'the-party']);
     this.close();
   }
 
   goToFactions() {
-    this.router.navigate([`/campaign/${this.campaignId()}`, 'factions']);
+    this.router.navigate([this.base, 'factions']);
     this.close();
   }
 

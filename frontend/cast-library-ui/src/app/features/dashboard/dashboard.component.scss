@@ -31,10 +31,23 @@
   text-transform: uppercase;
   color: v.$color-base-amber-brown;
   margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.library-icon-wrapper {
+  width: 64px;
+  height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 // ─── Stat tile lift on hover ──────────────────────────────────────────────────
 .sv {
+  position: relative;
+  z-index: 1;
   transition: background v.$transition-std, transform 0.2s ease;
 
   &:hover {

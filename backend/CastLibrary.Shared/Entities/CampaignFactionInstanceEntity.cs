@@ -15,6 +15,7 @@ public class CampaignFactionInstanceEntity
     public string Description { get; set; }
     public string DmNotes { get; set; }
     public string SymbolPath { get; set; }
+    public string Colors { get; set; } = string.Empty;
     public DateTime CreatedAt { get; set; }
     public List<Guid> SubLocationInstanceIds { get; set; } = [];
     public List<Guid> CastInstanceIds { get; set; } = [];

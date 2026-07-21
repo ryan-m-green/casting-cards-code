@@ -252,6 +252,16 @@ public class CampaignReadRepository(
             @params, r is null ? 0 : 1);
 
         if (r is null) return null;
+
+        var factionSymbols = await conn.QueryAsync<dynamic>(
+            @"SELECT cfi.faction_instance_id, cfi.symbol_path
+              FROM campaign_faction_cast_members cfcm
+              INNER JOIN campaign_faction_instances cfi ON cfi.faction_instance_id = cfcm.faction_instance_id
+              WHERE cfcm.cast_instance_id = @InstanceId AND cfcm.dm_user_id IS NULL",
+            @params);
+
+        var symbols = factionSymbols.Select(f => new FactionSymbolDomain(f.faction_instance_id.ToString(), (string)f.symbol_path)).ToList();
+
         return new CampaignCastInstanceDomain
         {
             InstanceId = r.instance_id,
@@ -275,7 +285,7 @@ public class CampaignReadRepository(
             CustomItems = ParseCustomItems((string)r.custom_items),
             Keywords = r.keywords ?? Array.Empty<string>(),
             DmNotes = r.dm_notes ?? string.Empty,
-            FactionSymbols = ParseFactionSymbols((string)r.faction_symbols),
+            FactionSymbols = symbols,
         };
     }
 
@@ -739,8 +749,9 @@ public class CampaignReadRepository(
         const string sql =
             @"SELECT cfi.faction_instance_id, cfi.source_faction_id, cfi.campaign_id, cfi.dm_user_id,
                      cfi.name, cfi.type, cfi.hidden, cfi.is_visible_to_players, cfi.description, cfi.dm_notes, cfi.symbol_path, cfi.created_at,
+                     cfi.colors,
                      COALESCE(pn.influence, cfi.influence) AS influence,
-                     COALESCE(pn.perception, cfi.perception) AS perception
+                     cfi.perception
               FROM campaign_faction_instances cfi
               LEFT JOIN campaign_faction_player_notes pn
                      ON pn.faction_instance_id = cfi.faction_instance_id
@@ -816,6 +827,11 @@ public class CampaignReadRepository(
         return rows.Select(r =>
         {
             var fid = (Guid)r.faction_instance_id;
+            FactionColors? colors = null;
+            if (r.colors != null)
+            {
+                colors = System.Text.Json.JsonSerializer.Deserialize<FactionColors>(r.colors);
+            }
             return new CampaignFactionInstanceDomain
             {
                 FactionInstanceId = fid,
@@ -832,6 +848,7 @@ public class CampaignReadRepository(
                 Perception = r.perception,
                 SymbolPath = r.symbol_path,
                 CreatedAt = r.created_at,
+                Colors = colors,
                 SubLocationInstanceIds = sublocationMap.TryGetValue(fid, out var subs) ? subs : [],
                 CastInstanceIds = castMap.TryGetValue(fid, out var casts) ? casts : [],
                 PrimarySublocationInstanceId = primarySublocationMap.TryGetValue(fid, out var ps) ? ps : null,
@@ -848,8 +865,9 @@ public class CampaignReadRepository(
         const string sql =
             @"SELECT cfi.faction_instance_id, cfi.source_faction_id, cfi.campaign_id, cfi.dm_user_id,
                      cfi.name, cfi.type, cfi.hidden, cfi.is_visible_to_players, cfi.description, cfi.dm_notes, cfi.symbol_path, cfi.created_at,
+                     cfi.colors,
                      COALESCE(pn.influence, cfi.influence) AS influence,
-                     COALESCE(pn.perception, cfi.perception) AS perception
+                     cfi.perception
               FROM campaign_faction_instances cfi
               LEFT JOIN campaign_faction_player_notes pn
                      ON pn.faction_instance_id = cfi.faction_instance_id
@@ -864,6 +882,11 @@ public class CampaignReadRepository(
         logging.LogDbOperation(correlation.TraceId, spanId, "SELECT", "campaign_faction_instances", @params, r is null ? 0 : 1);
 
         if (r is null) return null;
+        FactionColors? colors = null;
+        if (r.colors != null)
+        {
+            colors = System.Text.Json.JsonSerializer.Deserialize<FactionColors>(r.colors);
+        }
         return new CampaignFactionInstanceDomain
         {
             FactionInstanceId = r.faction_instance_id,
@@ -880,6 +903,7 @@ public class CampaignReadRepository(
             DmNotes = r.dm_notes ?? string.Empty,
             SymbolPath = r.symbol_path,
             CreatedAt = r.created_at,
+            Colors = colors,
         };
     }
 
@@ -912,17 +936,18 @@ public class CampaignReadRepository(
 
         // Only factions the DM has made visible
         const string sql =
-            @"SELECT cfi.faction_instance_id, 
-                                cfi.source_faction_id, 
-                                cfi.campaign_id, 
+            @"SELECT cfi.faction_instance_id,
+                                cfi.source_faction_id,
+                                cfi.campaign_id,
                                 cfi.dm_user_id,
-                                cfi.name, 
-                                pn.type, 
-                                cfi.hidden, 
-                                cfi.is_visible_to_players, 
+                                cfi.name,
+                                pn.type,
+                                cfi.hidden,
+                                cfi.is_visible_to_players,
                                 cfi.description,
-                                cfi.symbol_path, 
+                                cfi.symbol_path,
                                 cfi.created_at,
+                                cfi.colors,
                                 pn.influence AS influence,
                                 pn.perception AS perception
               FROM campaign_faction_instances cfi
@@ -951,11 +976,12 @@ public class CampaignReadRepository(
                   WHERE campaign_id = @CampaignId AND is_visible_to_players = TRUE
               )";
 
-        // All relationships (DM-created and player-created) for visible factions
+        // All relationships (player-created only) for visible factions
         const string relSql =
             @"SELECT id, campaign_id, faction_instance_id_a, faction_instance_id_b, relationship_type, strength, created_at, dm_user_id
               FROM campaign_faction_instance_relationships
-              WHERE campaign_id = @CampaignId";
+              WHERE campaign_id = @CampaignId
+                AND dm_user_id IS NULL";
 
         logging.LogDbOperation(correlation.TraceId, spanId, "SELECT", "campaign_faction_instances (player)", @params);
 
@@ -1002,6 +1028,11 @@ public class CampaignReadRepository(
         return rows.Select(r =>
         {
             var fid = (Guid)r.faction_instance_id;
+            FactionColors? colors = null;
+            if (r.colors != null)
+            {
+                colors = System.Text.Json.JsonSerializer.Deserialize<FactionColors>(r.colors);
+            }
             return new CampaignFactionInstanceDomain
             {
                 FactionInstanceId = fid,
@@ -1018,6 +1049,7 @@ public class CampaignReadRepository(
                 DmNotes = string.Empty,
                 SymbolPath = r.symbol_path,
                 CreatedAt = r.created_at,
+                Colors = colors,
                 SubLocationInstanceIds = sublocationMap.TryGetValue(fid, out var subs) ? subs : [],
                 CastInstanceIds = castMap.TryGetValue(fid, out var casts) ? casts : [],
                 PrimarySublocationInstanceId = primarySublocationMap.TryGetValue(fid, out var ps) ? ps : null,

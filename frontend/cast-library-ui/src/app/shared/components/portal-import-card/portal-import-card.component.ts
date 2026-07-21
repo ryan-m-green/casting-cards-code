@@ -85,6 +85,7 @@ export class PortalImportCardComponent implements OnInit, OnChanges {
   // ── ViewChild ─────────────────────────────────────────────────────────────
   @ViewChild('drawerContainer') drawerContainerRef!: ElementRef<HTMLElement>;
   @ViewChild('drawerInner') drawerInnerRef!: ElementRef<HTMLElement>;
+  @ViewChild('spacer') spacerRef!: ElementRef<HTMLElement>;
   @ViewChild('selectorGrid') selectorGridRef!: ElementRef<HTMLElement>;
 
   private http = inject(HttpClient);
@@ -100,6 +101,11 @@ export class PortalImportCardComponent implements OnInit, OnChanges {
   searchTerm       = signal('');
   limitReached     = signal(false);
   drawerHeight     = signal('auto');
+
+  // ── Pagination state ──────────────────────────────────────────────────────
+  currentPage      = signal(1);
+  isMobile         = signal(window.innerWidth < 768);
+  readonly itemsPerPage = computed(() => this.isMobile() ? 14 : 35); // 14 on mobile (2x7), 35 on desktop (5x7)
 
   readonly isCreateDisabled = computed(() => {
     if (this.auth.isExempt()) return false;
@@ -160,6 +166,8 @@ export class PortalImportCardComponent implements OnInit, OnChanges {
     influence:   [0],
     perception:  [0],
     hidden:      [false],
+    goodColor:   ['#ff99bb'],
+    evilColor:   ['#004d1a'],
   });
 
   sizeOptions         = SIZE_OPTIONS;
@@ -325,6 +333,96 @@ export class PortalImportCardComponent implements OnInit, OnChanges {
     return avail.filter(l => l.name.toLowerCase().includes(term));
   });
 
+  // ── Pagination computed properties ───────────────────────────────────────
+  paginatedLocations = computed(() => {
+    const items = this.filteredAvailable();
+    const start = (this.currentPage() - 1) * this.itemsPerPage();
+    return items.slice(start, start + this.itemsPerPage());
+  });
+
+  paginatedSublocations = computed(() => {
+    const items = this.filteredAvailableSublocations();
+    const start = (this.currentPage() - 1) * this.itemsPerPage();
+    return items.slice(start, start + this.itemsPerPage());
+  });
+
+  paginatedCasts = computed(() => {
+    const items = this.filteredAvailableCasts();
+    const start = (this.currentPage() - 1) * this.itemsPerPage();
+    return items.slice(start, start + this.itemsPerPage());
+  });
+
+  paginatedFactions = computed(() => {
+    const items = this.filteredAvailableFactions();
+    const start = (this.currentPage() - 1) * this.itemsPerPage();
+    return items.slice(start, start + this.itemsPerPage());
+  });
+
+  totalPages = computed(() => {
+    const items = this.cardType === 'location' ? this.filteredAvailable() :
+                  this.cardType === 'sublocation' ? this.filteredAvailableSublocations() :
+                  this.cardType === 'cast' ? this.filteredAvailableCasts() :
+                  this.filteredAvailableFactions();
+    return Math.ceil(items.length / this.itemsPerPage());
+  });
+
+  hasPrevPage = computed(() => this.currentPage() > 1);
+  hasNextPage = computed(() => this.currentPage() < this.totalPages());
+
+  // ── Pagination methods ─────────────────────────────────────────────────────
+  nextPage() {
+    if (this.hasNextPage()) {
+      this._scrollToGridTop(() => {
+        this.currentPage.update(p => p + 1);
+      });
+    }
+  }
+
+  prevPage() {
+    if (this.hasPrevPage()) {
+      this._scrollToGridTop(() => {
+        this.currentPage.update(p => p - 1);
+      });
+    }
+  }
+
+  goToPage(page: number) {
+    if (page >= 1 && page <= this.totalPages()) {
+      this._scrollToGridTop(() => {
+        this.currentPage.set(page);
+      });
+    }
+  }
+
+  resetPagination() {
+    this.currentPage.set(1);
+  }
+
+  private _scrollToGridTop(callback?: () => void) {
+    const scrollTarget = document.querySelector('.scroll-target') as HTMLElement;
+    if (scrollTarget) {
+      scrollTarget.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+      if (callback) {
+        // Use Intersection Observer to detect when scroll completes
+        const observer = new IntersectionObserver(
+          (entries) => {
+            entries.forEach((entry) => {
+              if (entry.isIntersecting) {
+                observer.disconnect();
+                callback();
+              }
+            });
+          },
+          { threshold: 0.1 }
+        );
+        observer.observe(scrollTarget);
+      }
+    } else if (callback) {
+      callback();
+    }
+  }
+
   /**
    * Derives which instances can be removed based on whether they have children.
    * Locations are removable only when they have no sublocation children.
@@ -367,7 +465,7 @@ export class PortalImportCardComponent implements OnInit, OnChanges {
 
   tabLabel = computed(() => {
     switch (this.cardType) {
-      case 'sublocation': return { select: 'Select Sublocation', new: '+ New Sublocation' };
+      case 'sublocation': return { select: 'Select Sub-loc', new: '+ New Sub-loc' };
       case 'cast':        return { select: 'Select Cast',        new: '+ New Cast' };
       case 'faction':     return { select: 'Select Faction',     new: '+ New Faction' };
       default:            return { select: 'Select Location',    new: '+ New Location' };
@@ -398,8 +496,9 @@ export class PortalImportCardComponent implements OnInit, OnChanges {
       // Use actual rendered grid height instead of calculating
       const actualGridHeight = selectorGridRect.height;
 
-      // Add additional 120px buffer as requested
-      const bufferSpacing = 120;
+      // Add additional buffer to account for spacer and scroll area
+      // Faction, location, and cast forms are taller, so use larger buffer
+      const bufferSpacing = this.cardType === 'faction' || this.cardType === 'location' || this.cardType === 'cast' ? 550 : 300;
 
       // Calculate final drawer height
       const calculatedHeight = drawerToFirstRowSpacing + actualGridHeight + bufferSpacing;
@@ -439,9 +538,22 @@ export class PortalImportCardComponent implements OnInit, OnChanges {
     }
   });
 
+  // Reset pagination when search term changes
+  private _searchEffect = effect(() => {
+    this.searchTerm();
+    this.resetPagination();
+  });
+
+  // Reset pagination when screen size changes to avoid invalid page numbers
+  private _screenSizeEffect = effect(() => {
+    this.isMobile();
+    this.resetPagination();
+  });
+
   // ── Lifecycle ─────────────────────────────────────────────────────────────
 
   private resizeListener?: () => void;
+  private screenSizeListener?: () => void;
 
   ngOnInit() {
     if (this.cardType === 'sublocation') {
@@ -459,14 +571,21 @@ export class PortalImportCardComponent implements OnInit, OnChanges {
     }
     this.loadEntityLimits();
 
-    // Add window resize listener
+    // Add window resize listener for drawer height
     this.resizeListener = () => this._calculateDrawerHeight();
     window.addEventListener('resize', this.resizeListener);
+
+    // Add window resize listener for screen size detection
+    this.screenSizeListener = () => this.isMobile.set(window.innerWidth < 768);
+    window.addEventListener('resize', this.screenSizeListener);
   }
 
   ngOnDestroy() {
     if (this.resizeListener) {
       window.removeEventListener('resize', this.resizeListener);
+    }
+    if (this.screenSizeListener) {
+      window.removeEventListener('resize', this.screenSizeListener);
     }
   }
 
@@ -538,7 +657,9 @@ export class PortalImportCardComponent implements OnInit, OnChanges {
           if (scrollEl && drawerEl) {
             const drawerTop = drawerEl.getBoundingClientRect().top;
             const targetTop = window.innerHeight * 0.25;
-            scrollEl.scrollBy({ top: drawerTop - targetTop, behavior: 'smooth' });
+            const currentScrollTop = scrollEl.scrollTop;
+            const requiredScrollTop = currentScrollTop + drawerTop - targetTop;
+            scrollEl.scrollTo({ top: requiredScrollTop, behavior: 'smooth' });
           }
         }, 400);
       }, 1200);
@@ -556,7 +677,13 @@ export class PortalImportCardComponent implements OnInit, OnChanges {
     }
   }
 
-  setTab(tab: 'select' | 'new') { this.activeTab.set(tab); }
+  setTab(tab: 'select' | 'new') {
+    this.activeTab.set(tab);
+    // Recalculate height when switching to new tab for factions
+    if (tab === 'new' && this.cardType === 'faction') {
+      this._calculateDrawerHeight();
+    }
+  }
 
   // ── Select ────────────────────────────────────────────────────────────────
 
@@ -1077,6 +1204,7 @@ export class PortalImportCardComponent implements OnInit, OnChanges {
         hidden:                 faction.hidden,
         isVisibleToPlayers:     false,
         symbolPath:             faction.symbolPath,
+        colors:                 faction.colors ?? { evilColor: '#B8D820', goodColor: '#FFC0DC' },
         createdAt:              faction.createdAt,
         subLocationInstanceIds: [],
         castInstanceIds:        [],
@@ -1420,6 +1548,10 @@ export class PortalImportCardComponent implements OnInit, OnChanges {
       influence:   raw.influence ?? 0,
       perception:  raw.perception ?? 0,
       symbolPath:  this.selectedFactionIcon() ?? undefined,
+      colors: {
+        goodColor: raw.goodColor ?? '#ff99bb',
+        evilColor: raw.evilColor ?? '#004d1a',
+      },
     };
 
     this.http.post<Faction>(`${environment.apiUrl}/api/factions`, payload)
@@ -1463,6 +1595,7 @@ export class PortalImportCardComponent implements OnInit, OnChanges {
             hidden:                 instance.hidden,
             isVisibleToPlayers:     false,
             symbolPath:             instance.symbolPath,
+            colors:                 instance.colors ?? { evilColor: '#B8D820', goodColor: '#FFC0DC' },
             createdAt:              instance.createdAt,
             subLocationInstanceIds: [],
             castInstanceIds:        [],
@@ -1485,6 +1618,8 @@ export class PortalImportCardComponent implements OnInit, OnChanges {
             influence:   0,
             perception:  0,
             hidden:      false,
+            goodColor:   '#ff99bb',
+            evilColor:   '#004d1a',
           });
           this.selectedFactionIcon.set(null);
         });

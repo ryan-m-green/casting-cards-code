@@ -1,5 +1,10 @@
 .autocomplete-wrapper {
   position: relative;
+
+  &.disabled {
+    opacity: 0.5;
+    pointer-events: none;
+  }
 }
 
 .autocomplete-wrapper input {

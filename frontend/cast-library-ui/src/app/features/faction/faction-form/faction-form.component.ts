@@ -7,7 +7,7 @@ import { catchError } from 'rxjs/operators';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { EMPTY } from 'rxjs';
 import { environment } from '../../../../environments/environment';
-import { Faction } from '../../../shared/models/faction.model';
+import { Faction, FactionColors } from '../../../shared/models/faction.model';
 import { SparkleService } from '../../../shared/services/sparkle.service';
 import { FactionCardComponent } from '../../../shared/components/faction-card/faction-card.component';
 import { IconPickerComponent } from '../../../shared/components/icon-picker/icon-picker.component';
@@ -18,17 +18,17 @@ import { SubscriptionDrawerService } from '../../../core/subscription-drawer.ser
 import { AuthService } from '../../../core/auth/auth.service';
 
 export function perceptionLabel(v: number): string {
-  if (v ===  5) return 'Revered';
-  if (v ===  4) return 'Admired';
-  if (v ===  3) return 'Respected';
-  if (v ===  2) return 'Liked';
+  if (v ===  5) return 'Trusted';
+  if (v ===  4) return 'Allied';
+  if (v ===  3) return 'Loyal';
+  if (v ===  2) return 'Welcoming';
   if (v ===  1) return 'Friendly';
   if (v ===  0) return 'Neutral';
-  if (v === -1) return 'Suspicious';
-  if (v === -2) return 'Distrusted';
-  if (v === -3) return 'Disliked';
-  if (v === -4) return 'Despised';
-  if (v === -5) return 'Reviled';
+  if (v === -1) return 'Wary';
+  if (v === -2) return 'Suspicious';
+  if (v === -3) return 'Unfriendly';
+  if (v === -4) return 'Hostile';
+  if (v === -5) return 'Enemy';
   return 'Neutral';
 }
 
@@ -74,6 +74,8 @@ export class FactionFormComponent implements OnInit {
     dmNotes:     [''],
     influence:   [0],
     perception:  [0],
+    evilColor:   ['#004d1a'],
+    goodColor:   ['#ff99bb'],
   });
 
   private formValue = signal(this.form.value);
@@ -89,6 +91,10 @@ export class FactionFormComponent implements OnInit {
       perception: v.perception ?? 0,
       hidden:     v.hidden ?? false,
       imageUrl:   this.imageUrl() ?? undefined,
+      colors:     {
+        evilColor: v.evilColor ?? '#000000',
+        goodColor: v.goodColor ?? '#000000',
+      },
       createdAt:  '',
     };
   });
@@ -104,6 +110,8 @@ export class FactionFormComponent implements OnInit {
       this.http.get<Faction>(`${environment.apiUrl}/api/factions/${id}`).subscribe(f => {
         this.form.patchValue({
           name:        f.name,
+          evilColor:   f.colors?.evilColor ?? '#000000',
+          goodColor:   f.colors?.goodColor ?? '#000000',
           type:        f.type,
           hidden:      f.hidden,
           description: f.description ?? '',
@@ -140,6 +148,10 @@ export class FactionFormComponent implements OnInit {
     this.saveStatus.set('saving');
     const value = this.form.value;
     const payload = {
+      colors:      {
+        evilColor: value.evilColor ?? '#000000',
+        goodColor: value.goodColor ?? '#000000',
+      },
       name:        value.name,
       type:        value.type,
       hidden:      value.hidden ?? false,

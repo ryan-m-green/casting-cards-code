@@ -12,12 +12,13 @@ import { CampaignHubService } from '../../../core/hub/campaign-hub.service';
 import { PlayerLocationNotesComponent } from '../player-location-notes/player-location-notes.component';
 import { LocationCardComponent } from '../../../shared/components/location-card/location-card.component';
 import { SublocationCardComponent } from '../../../shared/components/sublocation-card/sublocation-card.component';
-import { SectionLabelComponent } from '../../../shared/components/section-label/section-label.component';
+import { DetailPanelActionsComponent } from '../../../shared/components/detail-panel-actions/detail-panel-actions.component';
+import { CardGridLayoutComponent } from '../../../shared/components/card-grid-layout/card-grid-layout.component';
 
 @Component({
   selector: 'app-player-location-detail',
   standalone: true,
-  imports: [CommonModule, PlayerLocationNotesComponent, LocationCardComponent, SublocationCardComponent, SectionLabelComponent],
+  imports: [CommonModule, PlayerLocationNotesComponent, LocationCardComponent, SublocationCardComponent, CardGridLayoutComponent, DetailPanelActionsComponent],
   templateUrl: './player-location-detail.component.html',
   styleUrl: './player-location-detail.component.scss'
 })
@@ -60,6 +61,19 @@ export class PlayerLocationDetailComponent implements OnInit, OnDestroy {
   });
 
   constructor() {
+    effect(() => {
+      const loc = this.location();
+      if (!loc) return;
+      const id = this.campaignId();
+      this.shellSvc.setTitleContext({
+        pageType: 'location',
+        campaignId: id,
+        campaignName: this.shellSvc.campaign()?.name,
+        baseRoute: '/player/campaign',
+        location: loc,
+      });
+    });
+
     this.hubSubscriptions.push(
       this.hub.cardVisibilityChanged$.subscribe(event => {
         if (!event || event.cardType !== 'location') return;
@@ -83,17 +97,6 @@ export class PlayerLocationDetailComponent implements OnInit, OnDestroy {
       this.locationInstanceId.set(locationInstId);
       this.detailExpanded.set(false);
       this.panelHeight.set('220px');
-
-      const loc = this.location();
-      if (loc) {
-        this.shellSvc.setTitleContext({
-          pageType: 'location',
-          campaignId: id,
-          campaignName: this.shellSvc.campaign()?.name,
-          baseRoute: '/player/campaign',
-          location: loc,
-        });
-      }
     });
   }
 

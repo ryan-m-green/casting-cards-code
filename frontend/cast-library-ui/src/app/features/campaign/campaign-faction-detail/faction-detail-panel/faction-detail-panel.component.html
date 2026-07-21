@@ -1,4 +1,4 @@
-<!-- Faction Name + In Hiding -->
+<!-- Faction Name -->
 <div class="detail-name-row">
   <div class="detail-desc detail-desc--grow">
     <span class="detail-label">Faction Name</span>
@@ -11,20 +11,6 @@
              autocomplete="off" />
     } @else {
       <span class="detail-value">{{ faction().name }}</span>
-    }
-  </div>
-
-  <div class="detail-cell detail-cell--inline">
-    <span class="detail-label">In Hiding</span>
-    @if (editing()) {
-      <label class="toggle-switch">
-        <input type="checkbox"
-               [ngModel]="editHidden()"
-               (ngModelChange)="editHiddenChange.emit($event)" />
-        <span class="toggle-slider"></span>
-      </label>
-    } @else {
-      <span class="detail-value">{{ faction().hidden ? 'Yes' : 'No' }}</span>
     }
   </div>
 </div>
@@ -67,6 +53,44 @@
       </datalist>
     } @else if (faction().type) {
       <span class="detail-value">{{ faction().type }}</span>
+    }
+  </div>
+
+  <!-- Color Pickers -->
+  @if (editing()) {
+    <div class="detail-desc">
+      <span class="detail-label">Faction Colors</span>
+      <span class="detail-line"></span>
+      <div class="color-pickers-container">
+        <div class="color-picker-wrapper">
+          <span class="color-picker-label">Evil</span>
+          <input type="color" class="detail-input detail-input--color"
+                 [ngModel]="(faction().colors?.evilColor && faction().colors?.evilColor !== '#000000') ? faction().colors?.evilColor : '#004d1a'"
+                 (ngModelChange)="editEvilColorChange.emit($event)" />
+        </div>
+        <div class="color-picker-wrapper">
+          <span class="color-picker-label">Good</span>
+          <input type="color" class="detail-input detail-input--color"
+                 [ngModel]="(faction().colors?.goodColor && faction().colors?.goodColor !== '#000000') ? faction().colors?.goodColor : '#ff99bb'"
+                 (ngModelChange)="editGoodColorChange.emit($event)" />
+        </div>
+      </div>
+    </div>
+  }
+
+  <!-- In Hiding -->
+  <div class="detail-desc">
+    <span class="detail-label">In Hiding</span>
+    <span class="detail-line"></span>
+    @if (editing()) {
+      <label class="toggle-switch">
+        <input type="checkbox"
+               [ngModel]="editHidden()"
+               (ngModelChange)="editHiddenChange.emit($event)" />
+        <span class="toggle-slider"></span>
+      </label>
+    } @else {
+      <span class="detail-value">{{ faction().hidden ? 'Yes' : 'No' }}</span>
     }
   </div>
 
@@ -120,7 +144,9 @@
       @if (editing()) {
         <div class="perception-card"
              [class.perception-card--hostile]="editPerception() < 0"
-             [class.perception-card--friendly]="editPerception() > 0">
+             [class.perception-card--friendly]="editPerception() > 0"
+             [style.--faction-good-color]="goodColor"
+             [style.--faction-evil-color]="evilColor">
           <input type="range"
                  min="-5" max="5" step="1"
                  [ngModel]="editPerception()"

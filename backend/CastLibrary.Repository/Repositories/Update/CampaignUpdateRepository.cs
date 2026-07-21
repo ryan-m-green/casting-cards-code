@@ -25,6 +25,7 @@ public interface ICampaignUpdateRepository
     Task UpdateSublocationInstanceKeywordsAsync(Guid instanceId, string[] keywords);
     Task ToggleShopItemScratchAsync(Guid shopItemId, bool isScratchedOff);
     Task UpdateShopItemAsync(Guid shopItemId, string name, int priceAmount, string priceCurrencyType);
+    Task DeleteShopItemAsync(Guid shopItemId);
     Task TravelCastAsync(Guid instanceId, Guid locationInstanceId, Guid sublocationInstanceId);
     Task UpdateFactionInstanceAsync(CampaignFactionInstanceDomain instance);
     Task UpdateFactionInstanceVisibilityAsync(Guid instanceId, bool isVisibleToPlayers);
@@ -202,6 +203,21 @@ public class CampaignUpdateRepository(
             @params);
 
         logging.LogDbOperation(correlation.TraceId, spanId, "UPDATE", "campaign_sublocation_shop_items", @params, rows);
+    }
+
+    public async Task DeleteShopItemAsync(Guid shopItemId)
+    {
+        var spanId = correlation.NewSpan();
+        var @params = new { ShopItemId = shopItemId };
+
+        logging.LogDbOperation(correlation.TraceId, spanId, "DELETE", "campaign_sublocation_shop_items", @params);
+
+        using var conn = CreateConnection();
+        var rows = await conn.ExecuteAsync(
+            "DELETE FROM campaign_sublocation_shop_items WHERE id=@ShopItemId",
+            @params);
+
+        logging.LogDbOperation(correlation.TraceId, spanId, "DELETE", "campaign_sublocation_shop_items", @params, rows);
     }
 
     public async Task UpdateLocationInstanceVisibilityAsync(Guid instanceId, bool isVisibleToPlayers)
@@ -403,6 +419,7 @@ public class CampaignUpdateRepository(
             instance.DmNotes,
             instance.Influence,
             instance.Perception,
+            Colors = instance.Colors != null ? System.Text.Json.JsonSerializer.Serialize(instance.Colors) : null,
         };
 
         logging.LogDbOperation(correlation.TraceId, spanId, "UPDATE", "campaign_faction_instances", @params);
@@ -411,7 +428,7 @@ public class CampaignUpdateRepository(
         var rows = await conn.ExecuteAsync(
             @"UPDATE campaign_faction_instances
               SET name=@Name, type=@Type, description=@Description, hidden=@Hidden, dm_notes=@DmNotes,
-                  influence=@Influence, perception=@Perception
+                  influence=@Influence, perception=@Perception, colors=@Colors::jsonb
               WHERE faction_instance_id=@FactionInstanceId",
             @params);
 

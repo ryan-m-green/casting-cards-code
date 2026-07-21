@@ -1,6 +1,7 @@
 using CastLibrary.Logic.Commands.Faction;
 using CastLibrary.Repository.Repositories.Read;
 using CastLibrary.Repository.Repositories.Update;
+using CastLibrary.Shared.Domain;
 using CastLibrary.Shared.Requests;
 
 namespace CastLibrary.Logic.Commands.Campaign;
@@ -27,6 +28,15 @@ public class UpdateFactionInstanceCommandHandler(
         instance.DmNotes     = command.Request.DmNotes;
         instance.Influence   = command.Request.Influence;
         instance.Perception  = command.Request.Perception;
+
+        if (command.Request.Colors != null)
+        {
+            instance.Colors = new FactionColors
+            {
+                GoodColor = command.Request.Colors.GoodColor,
+                EvilColor = command.Request.Colors.EvilColor,
+            };
+        }
 
         await campaignUpdateRepository.UpdateFactionInstanceAsync(instance);
 

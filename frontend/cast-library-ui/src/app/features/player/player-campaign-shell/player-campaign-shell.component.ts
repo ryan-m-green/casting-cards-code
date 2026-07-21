@@ -247,6 +247,59 @@ export class PlayerCampaignShellComponent implements OnInit, OnDestroy {
       })
     );
 
+    // Re-fetch campaign when a secret is revealed/resealed/created/deleted (refreshes secrets for players)
+    this.hubSubscriptions.push(
+      this.hub.secretRevealed$.subscribe(event => {
+        if (!event || event.campaignId !== this.campaignId()) return;
+
+        this.http
+          .get<CampaignDetail>(`${environment.apiUrl}/api/campaigns/${this.campaignId()}/player`)
+          .subscribe(c => {
+            this.campaign.set(c);
+            this.shellSvc.setCampaign(c);
+          });
+      })
+    );
+
+    this.hubSubscriptions.push(
+      this.hub.secretResealed$.subscribe(event => {
+        if (!event || event.campaignId !== this.campaignId()) return;
+
+        this.http
+          .get<CampaignDetail>(`${environment.apiUrl}/api/campaigns/${this.campaignId()}/player`)
+          .subscribe(c => {
+            this.campaign.set(c);
+            this.shellSvc.setCampaign(c);
+          });
+      })
+    );
+
+    this.hubSubscriptions.push(
+      this.hub.secretCreated$.subscribe(event => {
+        if (!event || event.campaignId !== this.campaignId()) return;
+
+        this.http
+          .get<CampaignDetail>(`${environment.apiUrl}/api/campaigns/${this.campaignId()}/player`)
+          .subscribe(c => {
+            this.campaign.set(c);
+            this.shellSvc.setCampaign(c);
+          });
+      })
+    );
+
+    this.hubSubscriptions.push(
+      this.hub.secretDeleted$.subscribe(event => {
+        if (!event || event.campaignId !== this.campaignId()) return;
+
+        this.http
+          .get<CampaignDetail>(`${environment.apiUrl}/api/campaigns/${this.campaignId()}/player`)
+          .subscribe(c => {
+            this.campaign.set(c);
+            this.shellSvc.setCampaign(c);
+          });
+      })
+    );
+
     // Update a shop item's isScratchedOff flag in-place when the DM toggles the scratch state
     this.hubSubscriptions.push(
       this.hub.shopItemScratchToggled$.subscribe(event => {
@@ -663,7 +716,7 @@ export class PlayerCampaignShellComponent implements OnInit, OnDestroy {
   }
 
   goToMyCharacter() {
-    this.router.navigate(['/player/campaign', this.campaignId(), 'the-party']);
+    this.router.navigate(['/player/campaign', this.campaignId(), 'my-character']);
   }
 
   goToCampaignInsight() {

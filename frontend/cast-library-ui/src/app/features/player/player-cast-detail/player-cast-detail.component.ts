@@ -14,11 +14,12 @@ import { PlayerCampaignShellService } from '../../../core/player-campaign-shell.
 import { CampaignHubService } from '../../../core/hub/campaign-hub.service';
 import { catchError, EMPTY, Subscription } from 'rxjs';
 import { FactionSymbolPickerComponent, FactionSymbolAssignment } from '../../../shared/components/faction-symbol-picker/faction-symbol-picker.component';
+import { DetailPanelActionsComponent } from '../../../shared/components/detail-panel-actions/detail-panel-actions.component';
 
 @Component({
   selector: 'app-player-cast-detail',
   standalone: true,
-  imports: [CommonModule, PlayerCastNotesComponent, CastCardComponent, FactionSymbolPickerComponent],
+  imports: [CommonModule, PlayerCastNotesComponent, CastCardComponent, FactionSymbolPickerComponent, DetailPanelActionsComponent],
   templateUrl: './player-cast-detail.component.html',
   styleUrl: './player-cast-detail.component.scss'
 })
@@ -48,6 +49,7 @@ export class PlayerCastDetailComponent implements OnInit, OnDestroy {
   castOverride       = signal<CampaignCastInstance | null>(null);
 
   castFactionSymbols = signal<{ factionInstanceId: string; symbolPath: string }[]>([]);
+  pendingFactionUpdate = signal(false);
 
   visibleFactions = computed(() =>
     (this.campaign()?.factions ?? []).filter(f => f.isVisibleToPlayers)
@@ -83,11 +85,6 @@ export class PlayerCastDetailComponent implements OnInit, OnDestroy {
   private hubSubscriptions: Subscription[] = [];
 
   constructor() {
-    effect(() => {
-      const ca = this.cast();
-      if (!ca) return;
-      this.castFactionSymbols.set(ca.factionSymbols ?? []);
-    });
 
     this.hubSubscriptions.push(
       this.hub.cardVisibilityChanged$.subscribe(event => {
@@ -100,7 +97,12 @@ export class PlayerCastDetailComponent implements OnInit, OnDestroy {
         if (event.isVisible) {
           this.http.get<CampaignCastInstance>(
             `${environment.apiUrl}/api/campaigns/${campaignId}/casts/${castId}`
-          ).subscribe(ca => this.castOverride.set(ca));
+          ).subscribe(ca => {
+            this.castOverride.set(ca);
+            if (!this.pendingFactionUpdate()) {
+              this.castFactionSymbols.set(ca.factionSymbols ?? []);
+            }
+          });
         } else {
           this.transition.quickCover();
           this.router.navigate(['/player/campaign', campaignId]);
@@ -119,7 +121,9 @@ export class PlayerCastDetailComponent implements OnInit, OnDestroy {
           `${environment.apiUrl}/api/campaigns/${campaignId}/casts/${castId}`
         ).subscribe(ca => {
           this.castOverride.set(ca);
-          this.castFactionSymbols.set(ca.factionSymbols ?? []);
+          if (!this.pendingFactionUpdate()) {
+            this.castFactionSymbols.set(ca.factionSymbols ?? []);
+          }
         });
       })
     );
@@ -167,6 +171,9 @@ export class PlayerCastDetailComponent implements OnInit, OnDestroy {
         if (event.entityType !== 'cast' || event.instanceId !== untracked(() => this.castInstanceId())) {
           return;
         }
+        if (this.pendingFactionUpdate()) {
+          return;
+        }
         const castId = untracked(() => this.castInstanceId());
         const campaignId = untracked(() => this.campaignId());
         this.http.get<CampaignCastInstance>(
@@ -191,24 +198,23 @@ export class PlayerCastDetailComponent implements OnInit, OnDestroy {
       this.castInstanceId.set(castId);
       this.castOverride.set(null);
       this.playerNotes.set(null);
+      this.castFactionSymbols.set([]);
+      this.pendingFactionUpdate.set(true);
 
       this.http.get<CampaignCastPlayerNotes>(
         `${environment.apiUrl}/api/campaigns/${id}/cast-player-notes/${castId}`
       ).pipe(catchError(() => EMPTY)).subscribe(n => this.playerNotes.set(n));
 
-      const shellCampaign = this.shell.campaign();
-      const alreadyInShell = shellCampaign?.casts.some(ca => ca.instanceId === castId) ?? false;
-      if (!alreadyInShell) {
-        this.http.get<CampaignCastInstance>(
-          `${environment.apiUrl}/api/campaigns/${id}/casts/${castId}`
-        ).subscribe(ca => {
-          this.castOverride.set(ca);
-          this.castFactionSymbols.set(ca.factionSymbols ?? []);
-        });
-      } else {
-        const ca = this.cast();
-        if (ca) this.castFactionSymbols.set(ca.factionSymbols ?? []);
-      }
+      this.http.get<CampaignCastInstance>(
+        `${environment.apiUrl}/api/campaigns/${id}/casts/${castId}`
+      ).subscribe(ca => {
+        console.log('[PlayerCastDetail] Cast loaded from API:', ca);
+        console.log('[PlayerCastDetail] Faction symbols from API:', ca.factionSymbols);
+        this.castOverride.set(ca);
+        this.castFactionSymbols.set(ca.factionSymbols ?? []);
+        console.log('[PlayerCastDetail] castFactionSymbols set to:', this.castFactionSymbols());
+        setTimeout(() => this.pendingFactionUpdate.set(false), 500);
+      });
     });
   }
 
@@ -277,6 +283,8 @@ export class PlayerCastDetailComponent implements OnInit, OnDestroy {
     this.castFactionSymbols.set(
       symbols.map(s => ({ factionInstanceId: s.factionInstanceId, symbolPath: s.symbolPath }))
     );
+    this.pendingFactionUpdate.set(true);
+    setTimeout(() => this.pendingFactionUpdate.set(false), 2000);
   }
 
 }

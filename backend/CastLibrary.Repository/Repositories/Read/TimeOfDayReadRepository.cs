@@ -41,7 +41,7 @@ public class TimeOfDayReadRepository(
         }
 
         var slices = (await conn.QueryAsync<dynamic>(
-            @"SELECT id, campaign_id, label, color, duration_hours, sort_order, dm_notes, player_notes
+            @"SELECT id, campaign_id, label, color, font_color, duration_hours, sort_order, dm_notes, player_notes
               FROM campaign_tod_slices
               WHERE campaign_id = @CampaignId
               ORDER BY sort_order",
@@ -62,6 +62,7 @@ public class TimeOfDayReadRepository(
                 CampaignId    = s.campaign_id,
                 Label         = s.label ?? string.Empty,
                 Color         = s.color ?? string.Empty,
+                FontColor     = s.font_color ?? string.Empty,
                 DurationHours = s.duration_hours,
                 SortOrder     = s.sort_order,
                 DmNotes       = s.dm_notes ?? string.Empty,

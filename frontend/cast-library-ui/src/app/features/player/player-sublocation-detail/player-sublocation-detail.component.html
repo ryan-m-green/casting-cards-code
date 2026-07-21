@@ -18,11 +18,15 @@
       <!-- Detail panel -->
       <div class="subLoc-detail-panel" [style.height]="panelHeight()" [class.detail-panel--mobile-expanded]="detailExpanded()">
 
-        @if (detailExpanded()) {
-          <button class="detail-close-btn" (click)="toggleDetail()" title="Close panel">Close</button>
-        }
-
         <div class="detail-panel-content" #detailContent>
+
+          <!-- Panel header -->
+          <app-detail-panel-actions
+            [isDm]="false"
+            [editing]="false"
+            [detailExpanded]="detailExpanded()"
+            (closeClick)="toggleDetail()"
+          />
 
           @if (subLoc.description) {
             <div class="detail-desc">
@@ -113,43 +117,51 @@
     </div>
 
     <!-- ── Cast section ── -->
-    @if (sublocationCasts().length) {
-      <div class="subLoc-cast-section">
-
-        <app-section-label title="Cast Of Characters" color="rgb(232, 201, 106)"></app-section-label>
-
-        <div class="cast-grid">
-          @for (cast of fadingOut(); track cast.instanceId) {
-            <div class="cast-card-wrapper cast-card-wrapper--fading-out">
-              <app-cast-card
-                [cast]="cast"
-                [flippable]="false"
-                [editable]="false"
-                [secrets]="false"
-                [tilt]="tiltFor(cast.instanceId)"
-                [campaignMode]="true"
-                [setStars]="castRating(cast.instanceId)"
-                [factionSymbols]="cast.factionSymbols ?? []"
-              />
-            </div>
-          }
-          @for (cast of sublocationCasts(); track cast.instanceId) {
-            <div class="cast-card-wrapper" (click)="goToCast(cast)">
-              <app-cast-card
-                [cast]="cast"
-                [flippable]="false"
-                [editable]="false"
-                [secrets]="false"
-                [tilt]="tiltFor(cast.instanceId)"
-                [campaignMode]="true"
-                [setStars]="castRating(cast.instanceId)"
-                [factionSymbols]="cast.factionSymbols ?? []"
-                (cardClick)="goToCast(cast)"
-              />
-            </div>
-          }
-        </div>
-
+    @if (sublocationCasts().length || fadingOut().length) {
+      <div class="subLoc-card-grid-wrapper">
+        <app-card-grid-layout
+          sectionTitle="Cast Of Characters"
+          sectionColor="rgb(232, 201, 106)"
+          [items]="[...sublocationCasts(), ...fadingOut()]"
+          cardType="cast"
+          [isDm]="false"
+          [showImportCard]="false"
+          trackBy="instanceId"
+          gridClass="cast-grid"
+          paddingClass=""
+          [getTiltFn]="tiltFor"
+          (cardClick)="onCardClick($event)"
+        >
+        @for (cast of fadingOut(); track cast.instanceId) {
+          <div class="cast-card-wrapper cast-card-wrapper--fading-out">
+            <app-cast-card
+              [cast]="cast"
+              [flippable]="false"
+              [editable]="false"
+              [secrets]="false"
+              [tilt]="tiltFor(cast.instanceId)"
+              [campaignMode]="true"
+              [setStars]="castRating(cast.instanceId)"
+              [factionSymbols]="cast.factionSymbols ?? []"
+            />
+          </div>
+        }
+        @for (cast of sublocationCasts(); track cast.instanceId) {
+          <div class="cast-card-wrapper" (click)="goToCast(cast)">
+            <app-cast-card
+              [cast]="cast"
+              [flippable]="false"
+              [editable]="false"
+              [secrets]="false"
+              [tilt]="tiltFor(cast.instanceId)"
+              [campaignMode]="true"
+              [setStars]="castRating(cast.instanceId)"
+              [factionSymbols]="cast.factionSymbols ?? []"
+              (cardClick)="goToCast(cast)"
+            />
+          </div>
+        }
+      </app-card-grid-layout>
       </div>
     }
 }

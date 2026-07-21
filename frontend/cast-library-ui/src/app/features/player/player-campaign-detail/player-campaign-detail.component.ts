@@ -11,12 +11,12 @@ import { CampaignHubService } from '../../../core/hub/campaign-hub.service';
 import { PlayerCampaignShellService } from '../../../core/player-campaign-shell.service';
 import { LocationCardComponent } from '../../../shared/components/location-card/location-card.component';
 import { PlayerCampaignNotesComponent } from '../player-campaign-notes/player-campaign-notes.component';
-import { SectionLabelComponent } from '../../../shared/components/section-label/section-label.component';
+import { CardGridLayoutComponent } from '../../../shared/components/card-grid-layout/card-grid-layout.component';
 
 @Component({
   selector: 'app-player-campaign-detail',
   standalone: true,
-  imports: [CommonModule, LocationCardComponent, PlayerCampaignNotesComponent, SectionLabelComponent],
+  imports: [CommonModule, LocationCardComponent, PlayerCampaignNotesComponent, CardGridLayoutComponent],
   templateUrl: './player-campaign-detail.component.html',
   styleUrl: './player-campaign-detail.component.scss'
 })

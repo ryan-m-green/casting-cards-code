@@ -34,7 +34,21 @@ export class FactionDetailPanelComponent {
   editInfluenceChange   = output<number>();
   editPerceptionChange  = output<number>();
   editSymbolPathChange  = output<string | null>();
+  editGoodColorChange   = output<string>();
+  editEvilColorChange   = output<string>();
 
   typeOptions     = FACTION_TYPE_OPTIONS;
   perceptionLabel = perceptionLabel;
+
+  get goodColor(): string {
+    const customColor = this.faction().colors?.goodColor;
+    if (customColor && customColor !== '#000000') return customColor;
+    return '#ff99bb';
+  }
+
+  get evilColor(): string {
+    const customColor = this.faction().colors?.evilColor;
+    if (customColor && customColor !== '#000000') return customColor;
+    return '#004d1a';
+  }
 }

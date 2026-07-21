@@ -34,7 +34,6 @@ namespace CastLibrary.Repository.Repositories.Delete
             //   - campaign_notes
             //   - campaign_cast_relationships
             //   - campaign_cast_player_notes
-            //   - location_political_notes
             //   - campaign_sublocation_shop_items
             // - locations (where dm_user_id = userId)
             //   - sublocations (ON DELETE SET NULL)

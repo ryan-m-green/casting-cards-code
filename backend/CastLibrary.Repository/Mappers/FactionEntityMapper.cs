@@ -1,3 +1,4 @@
+using System.Text.Json;
 using CastLibrary.Shared.Domain;
 using CastLibrary.Shared.Entities;
 
@@ -23,6 +24,9 @@ public class FactionEntityMapper : IFactionEntityMapper
         Description = entity.Description,
         DmNotes    = entity.DmNotes,
         SymbolPath = entity.SymbolPath,
+        Colors     = string.IsNullOrWhiteSpace(entity.Colors)
+            ? new FactionColors()
+            : JsonSerializer.Deserialize<FactionColors>(entity.Colors) ?? new FactionColors(),
         CreatedAt  = entity.CreatedAt,
     };
 
@@ -38,6 +42,7 @@ public class FactionEntityMapper : IFactionEntityMapper
         Description = domain.Description,
         DmNotes    = domain.DmNotes,
         SymbolPath = domain.SymbolPath,
+        Colors     = JsonSerializer.Serialize(domain.Colors),
         CreatedAt  = domain.CreatedAt,
     };
 }

@@ -15,7 +15,8 @@
 
 /* ── Factions section ────────────────────────────────────────── */
 .factions-section {
-  padding: 8px 32px 40px;
+  padding-left: 32px;
+  padding-right: 32px;
   position: relative;
   z-index: 1;
 }
@@ -117,6 +118,14 @@ app-portal-import-card {
   margin-top: 80px;
   margin-left: -40px;
   margin-right: -40px;
+}
+
+.factions-section {
+  app-portal-import-card {
+    .pic-drawer-inner {
+      margin-left: -42px;
+    }
+  }
 }
 
 // ── Social Compass cast selector ──────────────────────────────────────────────

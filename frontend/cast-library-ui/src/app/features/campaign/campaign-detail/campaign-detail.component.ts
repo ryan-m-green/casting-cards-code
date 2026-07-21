@@ -12,15 +12,14 @@ import { CampaignHubService } from '../../../core/hub/campaign-hub.service';
 import { PortalTransitionService } from '../../../core/portal-transition.service';
 import { CampaignShellService } from '../../../core/campaign-shell.service';
 import { LocationCardComponent } from '../../../shared/components/location-card/location-card.component';
-import { PortalImportCardComponent } from '../../../shared/components/portal-import-card/portal-import-card.component';
-import { SectionLabelComponent } from '../../../shared/components/section-label/section-label.component';
+import { CardGridLayoutComponent } from '../../../shared/components/card-grid-layout/card-grid-layout.component';
 
 
 
 @Component({
   selector: 'app-campaign-detail',
   standalone: true,
-  imports: [CommonModule, LocationCardComponent, PortalImportCardComponent, SectionLabelComponent],
+  imports: [CommonModule, LocationCardComponent, CardGridLayoutComponent],
   templateUrl: './campaign-detail.component.html',
   styleUrl: './campaign-detail.component.scss'
 })
@@ -31,11 +30,11 @@ export class CampaignDetailComponent implements OnInit, OnDestroy {
   }
   get locationsGridEl(): HTMLElement | null { return this._locationsGridEl(); }
 
-  private _importCard = signal<PortalImportCardComponent | null>(null);
-  @ViewChild('importCard') set importCardSetter(ref: PortalImportCardComponent | undefined) {
+  private _importCard = signal<any | null>(null);
+  @ViewChild('importCard') set importCardSetter(ref: any | undefined) {
     this._importCard.set(ref ?? null);
   }
-  get importCardRef(): PortalImportCardComponent | null { return this._importCard(); }
+  get importCardRef(): any | null { return this._importCard(); }
 
   private route          = inject(ActivatedRoute);
   private router         = inject(Router);
@@ -230,5 +229,13 @@ export class CampaignDetailComponent implements OnInit, OnDestroy {
     const updater = (c: CampaignDetail | null) => c ? { ...c, locations: c.locations.filter(l => l.instanceId !== instanceId) } : c;
     this.campaign.update(updater);
     this.shellSvc.updateCampaign(updater);
+  }
+
+  getRemovableInstanceIds(): Set<string> {
+    return this.importCardRef?.removableInstanceIds() ?? new Set();
+  }
+
+  getPendingInstanceIds(): Set<string> {
+    return this.importCardRef?.pendingInstanceIds() ?? new Set();
   }
 }

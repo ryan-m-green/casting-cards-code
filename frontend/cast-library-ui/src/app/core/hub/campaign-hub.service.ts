@@ -48,6 +48,25 @@ export interface FactionRemovedEvent {
   factionInstanceId: string;
 }
 
+export interface ShopItemDeletedEvent {
+  campaignId: string;
+  sublocationInstanceId: string;
+  shopItemId: string;
+}
+
+export interface ShopItemAddedEvent {
+  campaignId: string;
+  sublocationInstanceId: string;
+  shopItem: {
+    id: string;
+    name: string;
+    priceAmount: number;
+    priceCurrencyType: string;
+    description: string;
+    isScratchedOff: boolean;
+  };
+}
+
 export interface FactionLockedEvent {
   campaignId: string;
   factionInstanceId: string;
@@ -163,6 +182,8 @@ export class CampaignHubService {
   private factionLockedSubject             = new Subject<FactionLockedEvent | null>();
   private shopItemUpdatedSubject            = new Subject<ShopItemUpdatedEvent | null>();
   private shopItemScratchToggledSubject     = new Subject<ShopItemScratchToggledEvent | null>();
+  private shopItemDeletedSubject            = new Subject<ShopItemDeletedEvent | null>();
+  private shopItemAddedSubject              = new Subject<ShopItemAddedEvent | null>();
   private castInstanceUpdatedSubject        = new Subject<CastInstanceUpdatedEvent | null>();
   private locationInstanceUpdatedSubject    = new Subject<LocationInstanceUpdatedEvent | null>();
   private sublocationInstanceUpdatedSubject = new Subject<SublocationInstanceUpdatedEvent | null>();
@@ -204,6 +225,8 @@ export class CampaignHubService {
   readonly factionSymbolAssigned$     = this.factionSymbolAssignedSubject.asObservable();
   readonly shopItemUpdated$            = this.shopItemUpdatedSubject.asObservable();
   readonly shopItemScratchToggled$     = this.shopItemScratchToggledSubject.asObservable();
+  readonly shopItemAdded$              = this.shopItemAddedSubject.asObservable();
+  readonly shopItemDeleted$            = this.shopItemDeletedSubject.asObservable();
   readonly castInstanceUpdated$        = this.castInstanceUpdatedSubject.asObservable();
   readonly locationInstanceUpdated$    = this.locationInstanceUpdatedSubject.asObservable();
   readonly sublocationInstanceUpdated$ = this.sublocationInstanceUpdatedSubject.asObservable();
@@ -358,6 +381,14 @@ export class CampaignHubService {
 
     this.connection.on('ShopItemScratchToggled', (event: ShopItemScratchToggledEvent) => {
       this.shopItemScratchToggledSubject.next(event);
+    });
+
+    this.connection.on('ShopItemDeleted', (event: ShopItemDeletedEvent) => {
+      this.shopItemDeletedSubject.next(event);
+    });
+
+    this.connection.on('ShopItemAdded', (event: ShopItemAddedEvent) => {
+      this.shopItemAddedSubject.next(event);
     });
 
     this.connection.on('CastInstanceUpdated', (event: CastInstanceUpdatedEvent) => {

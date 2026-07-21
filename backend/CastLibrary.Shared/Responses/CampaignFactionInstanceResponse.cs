@@ -1,3 +1,5 @@
+using CastLibrary.Shared.Domain;
+
 namespace CastLibrary.Shared.Responses;
 
 public class CampaignFactionInstanceResponse
@@ -15,6 +17,7 @@ public class CampaignFactionInstanceResponse
     public string Description { get; set; }
     public string DmNotes { get; set; }
     public string SymbolPath { get; set; }
+    public FactionColors Colors { get; set; } = new FactionColors();
     public DateTime CreatedAt { get; set; }
     public List<Guid> SubLocationInstanceIds { get; set; } = [];
     public List<Guid> CastInstanceIds { get; set; } = [];

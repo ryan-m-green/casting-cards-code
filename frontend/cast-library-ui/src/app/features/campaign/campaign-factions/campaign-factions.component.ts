@@ -18,6 +18,7 @@ import { FactionWebComponent } from '../faction-web/faction-web.component';
 import { CampaignDropdownComponent, CampaignDropdownOption } from '../../../shared/components/campaign-dropdown/campaign-dropdown.component';
 import { CastCardComponent } from '../../../shared/components/cast-card/cast-card.component';
 import { CastRelationshipsTabComponent } from '../cast-relationships-tab/cast-relationships-tab.component';
+import { CardGridLayoutComponent } from '../../../shared/components/card-grid-layout/card-grid-layout.component';
 
 // ── Social Compass constants ───────────────────────────────────────────────────
 const COMPASS_CX            = 280;
@@ -68,7 +69,7 @@ interface SliceLine {
 @Component({
   selector: 'app-campaign-factions',
   standalone: true,
-  imports: [CommonModule, FactionCardComponent, PortalImportCardComponent, FactionWebComponent, CampaignDropdownComponent, CastCardComponent, CastRelationshipsTabComponent],
+  imports: [CommonModule, FactionCardComponent, PortalImportCardComponent, FactionWebComponent, CampaignDropdownComponent, CastCardComponent, CastRelationshipsTabComponent, CardGridLayoutComponent],
   templateUrl: './campaign-factions.component.html',
   styleUrl: './campaign-factions.component.scss',
 })
@@ -638,6 +639,22 @@ export class CampaignFactionsComponent implements OnInit, OnChanges {
       return;
     }
     this.router.navigate(['/campaign', this.campaignId(), 'factions', faction.factionInstanceId]);
+  }
+
+  goToFactionById(instanceId: string) {
+    const factions = this.mode === 'player' ? this.resolvedFactions() : this.campaign()?.factions ?? [];
+    const faction = factions.find(f => f.factionInstanceId === instanceId);
+    if (faction) {
+      this.goToFaction(faction);
+    }
+  }
+
+  getRemovableInstanceIds(): Set<string> {
+    return this.importCardRef?.removableInstanceIds() ?? new Set();
+  }
+
+  getPendingInstanceIds(): Set<string> {
+    return this.importCardRef?.pendingInstanceIds() ?? new Set();
   }
 
   toggleFactionVisibility(faction: CampaignFactionInstance) {

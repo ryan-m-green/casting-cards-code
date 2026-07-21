@@ -17,11 +17,13 @@ import { FactionCardComponent } from '../../../shared/components/faction-card/fa
 import { FactionRelationshipsSectionComponent, SaveRelationshipEvent } from '../../../shared/components/faction-relationships-section/faction-relationships-section.component';
 import { SublocationCardComponent } from '../../../shared/components/sublocation-card/sublocation-card.component';
 import { CastCardComponent } from '../../../shared/components/cast-card/cast-card.component';
+import { SectionLabelComponent } from '../../../shared/components/section-label/section-label.component';
+import { DetailPanelActionsComponent } from '../../../shared/components/detail-panel-actions/detail-panel-actions.component';
 
 @Component({
   selector: 'app-player-faction-detail',
   standalone: true,
-  imports: [CommonModule, PlayerFactionNotesComponent, FactionCardComponent, FactionRelationshipsSectionComponent, SublocationCardComponent, CastCardComponent],
+  imports: [CommonModule, PlayerFactionNotesComponent, FactionCardComponent, FactionRelationshipsSectionComponent, SublocationCardComponent, CastCardComponent, SectionLabelComponent, DetailPanelActionsComponent],
   templateUrl: './player-faction-detail.component.html',
   styleUrl: './player-faction-detail.component.scss',
 })

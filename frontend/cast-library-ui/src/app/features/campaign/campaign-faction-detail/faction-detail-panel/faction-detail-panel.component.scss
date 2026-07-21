@@ -4,7 +4,7 @@ $color-arcane-border: v.$color-lib-location-1;
 
 /* ── GM-only Box ─────────────────────────────────────────────────────────── */
 .detail-gm-box {
-  border: 1px solid rgba($color-arcane-border, 0.2);
+  border: 1px solid v.$color-faction-neutral-accent;
   border-radius: 8px;
   margin: 4px 0 0;
   padding: 0;
@@ -14,7 +14,7 @@ $color-arcane-border: v.$color-lib-location-1;
     font-size: 12px;
     letter-spacing: 0.18em;
     text-transform: uppercase;
-    color: rgba($color-arcane-border, 0.5);
+    color: v.$color-faction-neutral-accent;
     padding: 0 8px;
     margin-left: 8px;
   }
@@ -37,8 +37,65 @@ $color-arcane-border: v.$color-lib-location-1;
   margin-top: 12px;
 }
 
+/* ── Color Pickers ───────────────────────────────────────────────────────── */
+.color-pickers-container {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
 
-/* ── Name + In Hiding row ────────────────────────────────────────────────── */
+.color-picker-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 4px 0px;
+  border: 1px solid rgba(v.$color-base-brown-14, 0.3);
+  border-radius: 4px;
+  background: rgba(v.$color-base-brown-warm, 0.05);
+  transition: border-color 0.2s ease;
+  height: 40px;
+  width: 116px;
+
+  &:hover {
+    border-color: rgba(v.$color-base-gold-1, 0.5);
+  }
+}
+
+.color-picker-label {
+  font-family: v.$font-header;
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  color: v.$color-faction-neutral-accent;
+  white-space: nowrap;
+}
+
+.detail-input--color {
+  width: 32px !important;
+  height: 32px !important;
+  padding: 4px !important;
+  border: none;
+  border-radius: 2px;
+  background: transparent;
+  cursor: pointer;
+  transition: opacity 0.2s ease;
+
+  &:hover {
+    opacity: 0.9;
+  }
+
+  &::-webkit-color-swatch-wrapper {
+    padding: 0;
+  }
+
+  &::-webkit-color-swatch {
+    border: none;
+    border-radius: 2px;
+  }
+}
+
+
+/* ── Name row ─────────────────────────────────────────────────────────────── */
 .detail-name-row {
   display: flex;
   align-items: stretch;
@@ -48,15 +105,6 @@ $color-arcane-border: v.$color-lib-location-1;
 .detail-desc--grow {
   flex: 1;
   border-bottom: none;
-}
-
-.detail-cell--inline {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-  padding: 12px 16px;
-  border-left: 1px solid rgba($color-arcane-border, 0.08);
-  flex-shrink: 0;
 }
 
 
@@ -100,7 +148,7 @@ $color-arcane-border: v.$color-lib-location-1;
   font-size: 12px;
   letter-spacing: 0.18em;
   text-transform: uppercase;
-  color: rgba($color-arcane-border, 0.85);
+  color: v.$color-faction-neutral-accent;
 }
 
 .detail-line {
@@ -213,7 +261,7 @@ $color-arcane-border: v.$color-lib-location-1;
   font-family: v.$font-header;
   font-size: 12px;
   letter-spacing: 0.08em;
-  color: rgba($color-arcane-border, 0.55);
+  color: v.$color-faction-neutral-accent;
   padding: 0 2px;
 }
 
@@ -227,8 +275,8 @@ $color-arcane-border: v.$color-lib-location-1;
   gap: 4px;
   transition: border-color 0.25s;
 
-  &--hostile  { border-color: v.$color-faction-evil-accent; }
-  &--friendly { border-color: v.$color-faction-good-accent; }
+  &--hostile  { border-color: var(--faction-evil-color, v.$color-faction-evil-accent); }
+  &--friendly { border-color: var(--faction-good-color, v.$color-faction-good-accent); }
 }
 
 .perception-slider {
@@ -236,8 +284,8 @@ $color-arcane-border: v.$color-lib-location-1;
   accent-color: rgba($color-arcane-border, 0.85);
   cursor: pointer;
 
-  &.slider-friendly { accent-color: v.$color-faction-good-accent; }
-  &.slider-hostile  { accent-color: v.$color-faction-evil-accent; }
+  &.slider-friendly { accent-color: var(--faction-good-color, v.$color-faction-good-accent); }
+  &.slider-hostile  { accent-color: var(--faction-evil-color, v.$color-faction-evil-accent); }
 }
 
 .perception-ticks {
@@ -260,17 +308,17 @@ $color-arcane-border: v.$color-lib-location-1;
   font-family: v.$font-header;
   font-size: 12px;
   letter-spacing: 0.10em;
-  color: rgba($color-arcane-border, 0.60);
+  color: v.$color-faction-neutral-accent;
 }
 
 .perception-label-center {
   font-weight: 600;
-  color: rgba($color-arcane-border, 0.85);
+  color: v.$color-faction-neutral-accent;
   text-align: center;
 }
 
 .perception-label-end {
-  color: rgba($color-arcane-border, 0.55);
+  color: v.$color-faction-neutral-accent;
 }
 
 /* ── Slider row (influence edit mode) ───────────────────────────────────── */

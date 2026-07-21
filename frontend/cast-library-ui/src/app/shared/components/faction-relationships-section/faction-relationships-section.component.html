@@ -1,7 +1,4 @@
-<div class="faction-members-header">
-  <span class="faction-members-label">Faction Relationships</span>
-  <span class="faction-members-line"></span>
-</div>
+<app-section-label title="Faction Relationships" color="rgb(200, 216, 232)"></app-section-label>
 
 <div class="faction-relationship-btn-row">
   <button class="campaign-primary-btn" type="button" (click)="toggleDrawer()">
@@ -24,7 +21,7 @@
                 >
                   <span class="relationship-item-name">{{ other.name }}</span>
                   @if (relatedFactionIds().has(other.factionInstanceId)) {
-                    <span class="relationship-checkmark">✓</span>
+                    <img class="relationship-checkmark" src="/scroll_check_mark_icon.svg" alt="">
                   } @else {
                     <span class="relationship-arrow">›</span>
                   }

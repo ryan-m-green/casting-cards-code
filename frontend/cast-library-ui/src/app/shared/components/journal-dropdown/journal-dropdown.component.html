@@ -1,23 +1,24 @@
 <ng-container>
   <label [for]="dropdownId" class="fi-label">{{ label }}</label>
-  <div class="autocomplete-wrapper">
-    <input 
-      [id]="dropdownId" 
-      class="fi" 
-      [formControl]="control" 
+  <div class="autocomplete-wrapper" [class.disabled]="disabled">
+    <input
+      [id]="dropdownId"
+      class="fi"
+      [formControl]="control"
       placeholder="Pick one"
       autocomplete="off"
-      (click)="showDropdown()"
+      [disabled]="disabled"
+      (click)="!disabled && showDropdown()"
       (input)="onInput($event)"
       (blur)="onBlur()" />
-    <button class="chevron-button" (click)="toggleDropdown($event)" type="button">
+    <button class="chevron-button" (click)="!disabled && toggleDropdown($event)" type="button" [disabled]="disabled">
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
         <polyline points="6 9 12 15 18 9"></polyline>
       </svg>
     </button>
-    <div class="autocomplete-dropdown" [class.hidden]="!isDropdownVisible">
-      <div 
-        *ngFor="let option of filteredOptions" 
+    <div class="autocomplete-dropdown" [class.hidden]="!isDropdownVisible || disabled">
+      <div
+        *ngFor="let option of filteredOptions"
         class="autocomplete-option"
         (mousedown)="selectOption(option)">
         {{ option }}

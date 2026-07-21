@@ -7,18 +7,10 @@
 }
 
 /* ── Location cards section ──────────────────────────────────── */
-.location-cards-section {
-  padding: 8px 40px 40px;
+.location-card-grid-wrapper {
+  padding: 0 24px;
   position: relative;
   z-index: 1;
-}
-
-
-.location-cards-container {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 18px;
-  align-items: flex-start;
 }
 
 .campaign-notes-panel {
@@ -42,4 +34,13 @@
 .is-locking {
   animation: card-lock-out 0.65s cubic-bezier(0.55, 0.06, 0.45, 0.94) forwards;
   pointer-events: none;
+}
+
+.import-card-spacer {
+  height: 164px;
+  margin-bottom: -120px;
+
+  .scroll-target {
+    display: block;
+  }
 }

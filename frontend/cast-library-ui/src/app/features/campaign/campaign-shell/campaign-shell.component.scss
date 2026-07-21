@@ -110,7 +110,7 @@
   height: 46px;
   padding: 0;
   background: v.$color-ext-22;
-  border: 1px solid v.$campaign-portal-border-bold;
+  border: 1px solid color-mix(in srgb, var(--portal-color, v.$color-base-purple-primary), transparent 50%);
   border-radius: 8px;
   cursor: pointer;
   transition: background 0.18s ease, border-color 0.18s ease;

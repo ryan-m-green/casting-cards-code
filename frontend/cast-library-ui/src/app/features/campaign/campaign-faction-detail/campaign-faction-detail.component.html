@@ -20,24 +20,19 @@
     <!-- Detail panel -->
     <div class="faction-detail-panel" [style.--panel-height]="panelHeight()" [class.detail-panel--mobile-expanded]="detailExpanded()">
 
-      @if (detailExpanded()) {
-        <button class="detail-close-btn" (click)="toggleDetail()" title="Close panel">Close</button>
-      }
-
       <div class="detail-panel-content" #detailContent>
 
         <!-- Panel header with edit toggle -->
-        @if (isDm()) {
-          <div class="detail-panel-actions">
-            @if (!editing()) {
-              <button class="detail-edit-btn" (click)="startEditing()">✎ Edit Details</button>
-            } @else {
-              <button class="campaign-primary-btn" (click)="saveDetails()">✔ Campaign</button>
-              <button class="campaign-primary-btn" (click)="saveToLibrary()">✔ Campaign & Library</button>
-              <button class="campaign-secondary-btn" (click)="cancelEditing()">Cancel</button>
-            }
-          </div>
-        }
+        <app-detail-panel-actions
+          [isDm]="isDm()"
+          [editing]="editing()"
+          [detailExpanded]="detailExpanded()"
+          (startEditingClick)="startEditing()"
+          (saveDetailsClick)="saveDetails()"
+          (saveToLibraryClick)="saveToLibrary()"
+          (cancelEditingClick)="cancelEditing()"
+          (closeClick)="toggleDetail()"
+        />
 
         <app-faction-detail-panel
           [faction]="f"
@@ -59,6 +54,8 @@
           (editInfluenceChange)="editInfluence.set($event)"
           (editPerceptionChange)="editPerception.set($event)"
           (editSymbolPathChange)="editSymbolPath.set($event)"
+          (editGoodColorChange)="editGoodColor.set($event)"
+          (editEvilColorChange)="editEvilColor.set($event)"
         />
 
       </div>
@@ -75,11 +72,7 @@
   <!-- ── Known Sublocations ── -->
   @if (isDm() && campaign()) {
     <div class="faction-members-section">
-
-      <div class="faction-members-header">
-        <span class="faction-members-label">Known Sublocations</span>
-        <span class="faction-members-line"></span>
-      </div>
+      <app-section-label title="Known Sublocations" color="rgb(48, 72, 96)" fontWeight="700"></app-section-label>
 
       <div class="faction-relationship-btn-row">
         <button class="campaign-primary-btn" type="button" (click)="sublocationDrawerOpen.set(!sublocationDrawerOpen())">
@@ -89,10 +82,10 @@
 
       @if (sublocationDrawerOpen()) {
         <div class="faction-relationship-drawer">
-          <div class="relationship-list">
-            @for (sub of campaign()!.sublocations; track sub.instanceId) {
+          <div class="relationship-list relationship-list--sublocation">
+            @for (sub of availableSublocations(); track sub.instanceId) {
               <button
-                class="relationship-item"
+                class="relationship-item relationship-item--sublocation"
                 [class.relationship-item--disabled]="isSublocationClaimed(sub.instanceId)"
                 type="button"
                 (click)="toggleSublocation(sub)"
@@ -111,7 +104,7 @@
                 }
                 <span class="relationship-item-name">{{ sub.name }}</span>
                 @if (isSublocationMember(sub.instanceId)) {
-                  <span class="relationship-checkmark">✓</span>
+                  <img class="relationship-checkmark" src="/scroll_check_mark_icon.svg" alt="">
                 } @else if (isSublocationClaimed(sub.instanceId)) {
                   <span class="relationship-claimed">In use</span>
                 }
@@ -146,11 +139,7 @@
   <!-- ── Known Cast ── -->
   @if (isDm() && campaign()) {
     <div class="faction-members-section">
-
-      <div class="faction-members-header">
-        <span class="faction-members-label">Known Cast Members</span>
-        <span class="faction-members-line"></span>
-      </div>
+      <app-section-label title="Known Cast Members" color="rgb(138, 104, 32)"></app-section-label>
 
       <div class="faction-relationship-btn-row">
         <button class="campaign-primary-btn" type="button" (click)="castDrawerOpen.set(!castDrawerOpen())">
@@ -160,9 +149,9 @@
 
       @if (castDrawerOpen()) {
         <div class="faction-relationship-drawer">
-          <div class="relationship-list">
+          <div class="relationship-list relationship-list--cast">
             @for (cast of campaign()!.casts; track cast.instanceId) {
-              <button class="relationship-item" type="button" (click)="toggleCastMember(cast)">
+              <button class="relationship-item relationship-item--cast" type="button" (click)="toggleCastMember(cast)">
                 @if (isCastMember(cast.instanceId)) {
                   <input
                     class="relationship-primary-checkbox"
@@ -176,7 +165,7 @@
                 }
                 <span class="relationship-item-name">{{ cast.name }}</span>
                 @if (isCastMember(cast.instanceId)) {
-                  <span class="relationship-checkmark">✓</span>
+                  <img class="relationship-checkmark" src="/scroll_check_mark_icon.svg" alt="">
                 }
               </button>
             }

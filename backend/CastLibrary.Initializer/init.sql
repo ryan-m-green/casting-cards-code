@@ -486,28 +486,6 @@ CREATE TABLE IF NOT EXISTS campaign_cast_player_notes (
 CREATE INDEX IF NOT EXISTS idx_cast_player_notes_campaign ON campaign_cast_player_notes(campaign_id);
 CREATE INDEX IF NOT EXISTS idx_cast_player_notes_cast     ON campaign_cast_player_notes(cast_instance_id);
 
--- ─── Location Political Notes ─────────────────────────────────────────────────────
--- One shared record per location instance per campaign, writable by any campaign player.
--- Stores structured political observations as JSON text:
---   factions      — player-observed factions (name, type, influence, isHidden)
---   relationships — faction-to-faction edges (type, strength, notes)
---   npc_roles     — cast instances linked to factions (role, motivation)
-CREATE TABLE IF NOT EXISTS location_political_notes (
-    id                   UUID         PRIMARY KEY DEFAULT gen_random_uuid(),
-    campaign_id          UUID         NOT NULL REFERENCES campaigns(id)                              ON DELETE CASCADE,
-    location_instance_id UUID         NOT NULL REFERENCES campaign_location_instances(instance_id)   ON DELETE CASCADE,
-    general_notes        TEXT         NOT NULL DEFAULT '',
-    factions             TEXT         NOT NULL DEFAULT '[]',
-    relationships        TEXT         NOT NULL DEFAULT '[]',
-    npc_roles            TEXT         NOT NULL DEFAULT '[]',
-    created_at           TIMESTAMPTZ  NOT NULL DEFAULT NOW(),
-    updated_at           TIMESTAMPTZ  NOT NULL DEFAULT NOW(),
-    CONSTRAINT uq_location_political_notes UNIQUE (campaign_id, location_instance_id)
-);
-
-CREATE INDEX IF NOT EXISTS idx_location_pol_notes_campaign ON location_political_notes(campaign_id);
-CREATE INDEX IF NOT EXISTS idx_location_pol_notes_location ON location_political_notes(location_instance_id);
-
 -- ─── Campaign Storyline ───────────────────────────────────────────────────────
 -- DM story scene entries per campaign (active only).
 CREATE TABLE IF NOT EXISTS campaign_storyline (

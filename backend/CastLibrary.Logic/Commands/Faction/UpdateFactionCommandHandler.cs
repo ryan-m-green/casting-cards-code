@@ -28,6 +28,7 @@ public class UpdateFactionCommandHandler(
         existing.Description = command.Request.Description;
         existing.DmNotes    = command.Request.DmNotes;
         existing.SymbolPath = command.Request.SymbolPath;
+        existing.Colors     = command.Request.Colors;
 
         return await factionUpdateRepository.UpdateAsync(existing);
     }

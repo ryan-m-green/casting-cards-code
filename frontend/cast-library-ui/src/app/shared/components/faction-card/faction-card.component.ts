@@ -1,6 +1,6 @@
-import { Component, Input, Output, EventEmitter, inject } from '@angular/core';
+import { Component, inject, input, Output, EventEmitter, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Faction } from '../../models/faction.model';
+import { Faction, CampaignFactionInstance } from '../../models/faction.model';
 import { LockIconComponent } from '../lock-icon/lock-icon.component';
 import { CampaignShellService } from '../../../core/campaign-shell.service';
 
@@ -16,17 +16,17 @@ export type FactionAlignment = 'good' | 'neutral' | 'evil';
 export class FactionCardComponent {
   private shellSvc = inject(CampaignShellService);
 
-  @Input({ required: true }) faction!: Faction;
-  @Input() tilt            = 0;
-  @Input() flippable       = true;
-  @Input() editable        = true;
-  @Input() imageUpload     = false;
-  @Input() campaignMode    = false;
-  @Input() secrets         = false;
-  @Input() secretsRevealed = false;
-  @Input() influenceGlow: number | null | undefined = undefined;
-  @Input() relationshipType: string | null = null;
-  @Input() relationshipStrength: number | null = null;
+  faction = input.required<Faction | CampaignFactionInstance>();
+  tilt = input(0);
+  flippable = input(true);
+  editable = input(true);
+  imageUpload = input(false);
+  campaignMode = input(false);
+  secrets = input(false);
+  secretsRevealed = input(false);
+  influenceGlow = input<number | null | undefined>(undefined);
+  relationshipType = input<string | null>(null);
+  relationshipStrength = input<number | null>(null);
 
   @Output() editClick    = new EventEmitter<void>();
   @Output() deleteClick  = new EventEmitter<void>();
@@ -37,7 +37,7 @@ export class FactionCardComponent {
   flipped = false;
 
   get alignment(): FactionAlignment {
-    const p = this.faction.perception ?? 0;
+    const p = this.faction().perception ?? 0;
     if (p > 0) return 'good';
     if (p < 0) return 'evil';
     return 'neutral';
@@ -48,15 +48,15 @@ export class FactionCardComponent {
   get isEvil(): boolean    { return this.alignment === 'evil'; }
 
   get alignLabel(): string {
-    if (this.isGood)    return 'Benevolent Faction';
+    if (this.isGood)    return 'Friendly Faction';
     if (this.isNeutral) return 'Unknown Alignment';
-    return 'Malevolent Faction';
+    return 'Hostile Faction';
   }
 
   get alignStat(): string {
-    if (this.isGood)    return 'Benevolent';
+    if (this.isGood)    return 'Friendly';
     if (this.isNeutral) return 'Unknown';
-    return 'Malevolent';
+    return 'Hostile';
   }
 
   get portraitHint(): string {
@@ -65,13 +65,36 @@ export class FactionCardComponent {
     return 'Mark of the Dark Order';
   }
 
+  get imageUrl(): string | undefined {
+    const f = this.faction();
+    return 'imageUrl' in f ? f.imageUrl : undefined;
+  }
+
+  goodColor = computed(() => {
+    const customColor = this.faction().colors?.goodColor;
+    if (customColor && customColor !== '#000000') return customColor;
+    return '#ff99bb';
+  });
+
+  evilColor = computed(() => {
+    const customColor = this.faction().colors?.evilColor;
+    if (customColor && customColor !== '#000000') return customColor;
+    return '#004d1a';
+  });
+
   get tiltTransform(): string {
-    return this.tilt ? `rotate(${this.tilt}deg)` : '';
+    return this.tilt() ? `rotate(${this.tilt()}deg)` : '';
+  }
+
+  get hasGlow(): boolean {
+    const glow = this.influenceGlow();
+    return glow != null && glow > 0;
   }
 
   get glowBoxShadow(): string {
-    if (this.influenceGlow == null || this.influenceGlow <= 0) return '';
-    const val    = Math.min(10, Math.max(1, this.influenceGlow));
+    const glow = this.influenceGlow();
+    if (glow == null || glow <= 0) return '';
+    const val    = Math.min(10, Math.max(1, glow));
     const t      = val / 10;
     // Floor alpha so level 1 is clearly visible; scale up to full intensity at 10
     const alpha1 = (0.35 + t * 0.65).toFixed(2);
@@ -84,14 +107,14 @@ export class FactionCardComponent {
 
   get stats(): { k: string; v: string }[] {
     return [
-      { k: 'Type',      v: this.faction.type },
-      { k: 'Influence', v: this.faction.influence ? String(this.faction.influence) : '' },
+      { k: 'Type',      v: this.faction().type },
+      { k: 'Influence', v: this.faction().influence ? String(this.faction().influence) : '' },
     ];
   }
 
   toggleFlip(e: Event): void {
-    if (this.campaignMode) { this.cardClick.emit(); return; }
-    if (this.flippable) this.flipped = !this.flipped;
+    if (this.campaignMode()) { this.cardClick.emit(); return; }
+    if (this.flippable()) this.flipped = !this.flipped;
     else this.cardClick.emit();
   }
 
@@ -117,6 +140,6 @@ export class FactionCardComponent {
 
   onNameClick(e: Event): void {
     e.stopPropagation();
-    this.shellSvc.openChronicleDrawerWithSearch(this.faction.name);
+    this.shellSvc.openChronicleDrawerWithSearch(this.faction().name);
   }
 }

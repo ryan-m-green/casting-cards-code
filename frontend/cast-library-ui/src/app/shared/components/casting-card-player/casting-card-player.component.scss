@@ -109,10 +109,10 @@
   }
 }
 
-.cc-corner--tl { top: 29px;  left: 3px; }
-.cc-corner--tr { top: 29px;  right: 3px; transform: scaleX(-1); }
-.cc-corner--bl { bottom: 18px; left: 3px; transform: scaleY(-1); }
-.cc-corner--br { bottom: 18px; right: 3px; transform: scale(-1); }
+.cc-corner--tl { top: 35px;  left: 3px; }
+.cc-corner--tr { top: 35px;  right: 3px; transform: scaleX(-1); }
+.cc-corner--bl { bottom: 12px; left: 3px; transform: scaleY(-1); }
+.cc-corner--br { bottom: 12px; right: 3px; transform: scale(-1); }
 
 /* ── Banner (crimson) ────────────────────────────────────────── */
 .cc-banner {
@@ -157,7 +157,7 @@
   font-family: 'Cinzel', serif;
   font-size: 6px;
   letter-spacing: .12em;
-  color: #d9c090;
+  color: #e8c96a;
   margin-top: 1px;
   opacity: .8;
   white-space: nowrap;
@@ -168,10 +168,9 @@
 /* ── Portrait ────────────────────────────────────────────────── */
 .cc-portrait {
   flex: 1;
-  margin: 5px 5px 0;
+  margin: 5px;
   border: 1.5px solid rgba(0,0,0,.25);
-  border-bottom: none;
-  border-radius: 3px 3px 0 0;
+  border-radius: 3px;
   position: relative;
   overflow: hidden;
   display: flex;

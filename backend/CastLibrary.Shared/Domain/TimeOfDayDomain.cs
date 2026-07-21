@@ -16,6 +16,7 @@ public class TimeOfDaySliceDomain
     public Guid CampaignId { get; set; }
     public string Label { get; set; } = string.Empty;
     public string Color { get; set; } = string.Empty;
+    public string FontColor { get; set; } = string.Empty;
     public decimal DurationHours { get; set; }
     public int SortOrder { get; set; }
     public string DmNotes { get; set; } = string.Empty;

@@ -16,7 +16,7 @@
   cursor: pointer;
   position: relative;
   transition: transform 0.2s ease;
-
+  border-radius:20px;
   &:hover {
     transform: translateY(-6px) scale(1.03) !important;
   }
@@ -75,13 +75,13 @@
   .fac-card--good & {
     background: linear-gradient(
       145deg,
-      v.$color-faction-good-frame-1 0%,
-      v.$color-faction-good-frame-2 15%,
-      v.$color-faction-good-frame-3 40%,
-      v.$color-faction-good-frame-4 55%,
-      v.$color-faction-good-frame-5 70%,
-      v.$color-faction-good-frame-6 85%,
-      v.$color-faction-good-frame-7 100%
+      var(--faction-good-color) 0%,
+      var(--faction-good-color) 15%,
+      v.$color-base-white 40%,
+      var(--faction-good-color) 55%,
+      var(--faction-good-color) 70%,
+      v.$color-base-white 85%,
+      var(--faction-good-color) 100%
     );
   }
 
@@ -90,7 +90,7 @@
       145deg,
       v.$color-faction-neutral-frame-1 0%,
       v.$color-faction-neutral-frame-2 15%,
-      v.$color-faction-neutral-frame-3 40%,
+      v.$color-base-white 40%,
       v.$color-faction-neutral-frame-4 55%,
       v.$color-faction-neutral-frame-5 70%,
       v.$color-faction-neutral-frame-6 85%,
@@ -101,13 +101,13 @@
   .fac-card--evil & {
     background: linear-gradient(
       145deg,
-      v.$color-faction-evil-frame-1 0%,
-      v.$color-faction-evil-frame-2 15%,
-      v.$color-faction-evil-frame-3 40%,
-      v.$color-faction-evil-frame-4 55%,
-      v.$color-faction-evil-frame-5 70%,
-      v.$color-faction-evil-frame-6 85%,
-      v.$color-faction-evil-frame-7 100%
+      var(--faction-evil-color) 0%,
+      var(--faction-evil-color) 15%,
+      v.$color-base-black 40%,
+      var(--faction-evil-color) 55%,
+      var(--faction-evil-color) 70%,
+      v.$color-base-black 85%,
+      var(--faction-evil-color) 100%
     );
   }
 }
@@ -163,7 +163,7 @@
 // ── Hidden Faction Icon ──────────────────────────────────────────────────────
 .fac-hidden-label {
   font-family: 'Cinzel', serif;
-  font-size: 6.5px;
+  font-size: 7px;
   font-style: normal;
   letter-spacing: 0.15em;
   text-align: center;
@@ -177,7 +177,7 @@
 
   .fac-card--good & {
     background: rgba(30, 5, 20, 0.75);
-    color: v.$color-faction-good-accent;
+    color: v.$color-faction-neutral-accent;
   }
 
   .fac-card--neutral & {
@@ -186,8 +186,8 @@
   }
 
   .fac-card--evil & {
-    background: rgba(10, 8, 0, 0.8);
-    color: v.$color-faction-evil-accent;
+    background: rgba(40, 40, 40, 0.8);
+    color: v.$color-faction-neutral-accent;
   }
 }
 
@@ -199,16 +199,16 @@
   z-index: 5;
   pointer-events: none;
 
-  &--tl { top: 29px;    left: 3px;   }
-  &--tr { top: 29px;    right: 3px;  transform: scaleX(-1); }
-  &--bl { bottom: 18px; left: 3px;   transform: scaleY(-1); }
-  &--br { bottom: 18px; right: 3px;  transform: scale(-1); }
+  &--tl { top: 41px;    left: 3px;   }
+  &--tr { top: 41px;    right: 3px;  transform: scaleX(-1); }
+  &--bl { bottom: 26px; left: 3px;   transform: scaleY(-1); }
+  &--br { bottom: 26px; right: 3px;  transform: scale(-1); }
 
   svg { display: block; }
 
-  .fac-card--good & svg     { color: v.$color-faction-good-corner; }
+  .fac-card--good & svg     { color: var(--faction-good-color); }
   .fac-card--neutral & svg  { color: v.$color-faction-neutral-corner; }
-  .fac-card--evil & svg     { color: v.$color-faction-evil-corner; }
+  .fac-card--evil & svg     { color: var(--faction-evil-color); }
 }
 
 // ── Banner ─────────────────────────────────────────────────────────────────────
@@ -229,7 +229,7 @@
 
   .fac-card--good & {
     background: linear-gradient(180deg, v.$color-faction-good-banner-1 0%, v.$color-faction-good-banner-2 100%);
-    border-bottom: 2px solid v.$color-faction-good-border;
+    border-bottom: 2px solid var(--faction-good-color);
     &::after { background: linear-gradient(90deg, transparent, v.$color-faction-good-accent, transparent); }
   }
 
@@ -241,7 +241,7 @@
 
   .fac-card--evil & {
     background: linear-gradient(180deg, v.$color-faction-evil-banner-1 0%, v.$color-faction-evil-banner-2 100%);
-    border-bottom: 2px solid v.$color-faction-evil-border;
+    border-bottom: 2px solid var(--faction-evil-color);
     &::after { background: linear-gradient(90deg, transparent, v.$color-faction-evil-accent, transparent); }
   }
 }
@@ -258,10 +258,7 @@
   text-shadow: 0 1px 4px rgba(0, 0, 0, 0.8);
   cursor: pointer;
   transition: color 0.2s ease, text-decoration 0.2s ease;
-
-  .fac-card--good &    { color: v.$color-faction-good-accent; }
-  .fac-card--neutral & { color: v.$color-faction-neutral-accent; }
-  .fac-card--evil &    { color: v.$color-faction-evil-accent; }
+  color: v.$color-faction-neutral-accent;
 
   &:hover {
     text-decoration: underline;
@@ -270,14 +267,11 @@
 
 .fac-sub {
   font-family: 'Cinzel', serif;
-  font-size: 6px;
+  font-size: 9px;
   letter-spacing: 0.12em;
   margin-top: 1px;
   opacity: 0.8;
-
-  .fac-card--good &    { color: v.$color-faction-good-sub; }
-  .fac-card--neutral & { color: v.$color-faction-neutral-sub; }
-  .fac-card--evil &    { color: v.$color-faction-evil-sub; }
+  color: v.$color-faction-neutral-accent;
 }
 
 // ── Portrait / Emblem ─────────────────────────────────────────────────────────
@@ -296,6 +290,10 @@
   &--uploadable {
     cursor: pointer;
   }
+
+  .fac-card--evil & {
+    border-color: rgba(255, 255, 255, 0.4);
+  }
 }
 
 .fac-portrait-img {
@@ -311,7 +309,7 @@
 
   .fac-card--good &    { filter: brightness(0) invert(0.15) sepia(1) saturate(0.8) hue-rotate(60deg); }
   .fac-card--neutral & { filter: brightness(0) invert(0.15) sepia(1) saturate(0.3); }
-  .fac-card--evil &    { filter: brightness(0) invert(0.15) sepia(1) saturate(0.8) hue-rotate(320deg); }
+  .fac-card--evil &    { filter: brightness(0) invert(0.8); }
 }
 
 .fac-upload-input {
@@ -380,6 +378,7 @@
 // ── Flavor / Tagline ──────────────────────────────────────────────────────────
 .fac-flavor {
   margin: 0 5px;
+  margin-bottom:6px;
   padding: 4px 6px;
   border: 1px solid rgba(128, 128, 64, 0.15);
   border-top: none;
@@ -387,20 +386,33 @@
 
   .fac-card--good & {
     background: rgba(v.$color-base-white, 0.06);
+    border-left: 1px solid rgba(0, 0, 0, 0.35);
+    border-right: 1px solid rgba(0, 0, 0, 0.35);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.35);
   }
 
-  .fac-card--neutral &,
+  .fac-card--neutral & {
+    background: rgba(0, 0, 0, 0.35);
+    border-left: 1px solid rgba(0, 0, 0, 0.35);
+    border-right: 1px solid rgba(0, 0, 0, 0.35);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.35);
+  }
+
   .fac-card--evil & {
     background: rgba(0, 0, 0, 0.35);
+    border-left: 1px solid rgba(255, 255, 255, 0.4);
+    border-right: 1px solid rgba(255, 255, 255, 0.4);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.4);
   }
 }
 
 .fac-flavor-text {
   font-family: 'IM Fell English', serif;
   font-style: italic;
-  font-size: 12px;
+  font-size: 10px;
   line-height: 1.45;
   text-align: center;
+  text-transform: uppercase;
   color: v.$color-base-white-2;
 
   .fac-card--good & {
@@ -419,7 +431,7 @@
 
   .fac-card--good & {
     background: linear-gradient(180deg, v.$color-faction-good-banner-2 0%, v.$color-faction-good-banner-1 100%);
-    border-top: 1.5px solid v.$color-faction-good-border;
+    border-top: 1.5px solid var(--faction-good-color);
   }
 
   .fac-card--neutral & {
@@ -429,7 +441,7 @@
 
   .fac-card--evil & {
     background: linear-gradient(180deg, v.$color-faction-evil-banner-2 0%, v.$color-faction-evil-banner-1 100%);
-    border-top: 1.5px solid v.$color-faction-evil-border;
+    border-top: 1.5px solid var(--faction-evil-color);
   }
 }
 
@@ -438,10 +450,7 @@
   font-size: 6.5px;
   letter-spacing: 0.2em;
   text-transform: uppercase;
-
-  .fac-card--good &    { color: v.$color-faction-good-accent; }
-  .fac-card--neutral & { color: v.$color-faction-neutral-accent; }
-  .fac-card--evil &    { color: v.$color-faction-evil-accent; }
+  color: v.$color-faction-neutral-accent;
 }
 
 .fac-pip-row {
@@ -454,9 +463,9 @@
   height: 4px;
   border-radius: 50%;
 
-  .fac-card--good &    { background: v.$color-faction-good-corner; }
+  .fac-card--good &    { background: var(--faction-good-color); }
   .fac-card--neutral & { background: v.$color-faction-neutral-corner; }
-  .fac-card--evil &    { background: v.$color-faction-evil-corner; }
+  .fac-card--evil &    { background: var(--faction-evil-color); }
 }
 
 // ── Relationship Overlay ─────────────────────────────────────────────────
@@ -612,6 +621,7 @@
   text-align: left;
   display: -webkit-box;
   -webkit-line-clamp: 4;
+  line-clamp: 4;
   -webkit-box-orient: vertical;
   overflow: hidden;
 

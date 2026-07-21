@@ -2,13 +2,24 @@
 
 .detail-panel-actions {
   display: flex;
-  justify-content: flex-end;
   align-items: center;
   gap: 8px;
   padding: 10px 16px 0;
+  margin-bottom:12px;
 }
 
-.detail-edit-btn {
+.detail-actions-right {
+  margin-left: auto;
+  display: flex;
+  gap: 8px;
+}
+
+.campaign-secondary-btn {
+  margin-left: 4px;
+}
+
+.detail-edit-btn,
+.detail-close-btn {
   background: none;
   border: 1px solid v.$campaign-portal-border-strong;
   border-radius: 4px;
@@ -24,5 +35,12 @@
   &:hover {
     background: v.$campaign-portal-bg-hover;
     border-color: v.$campaign-portal-border-active;
+  }
+}
+
+.campaign-primary-btn {
+  app-icon {
+    width: 24px;
+    height: 24px;
   }
 }

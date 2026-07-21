@@ -279,6 +279,7 @@ public class CampaignWebMapper(
                     Id = s.Id,
                     Label = s.Label,
                     Color = s.Color,
+                    FontColor = s.FontColor,
                     DurationHours = s.DurationHours,
                     StartPercent = Math.Round(start, 4),
                     EndPercent = Math.Round(end, 4),

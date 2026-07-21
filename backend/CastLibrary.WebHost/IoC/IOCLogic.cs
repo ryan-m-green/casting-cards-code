@@ -122,6 +122,7 @@ namespace CastLibrary.WebHost.IoC
             services.AddScoped<IAddSublocationShopItemCommandHandler, AddSublocationShopItemCommandHandler>();
             services.AddScoped<IToggleShopItemScratchCommandHandler, ToggleShopItemScratchCommandHandler>();
             services.AddScoped<IUpdateShopItemCommandHandler, UpdateShopItemCommandHandler>();
+            services.AddScoped<IDeleteShopItemCommandHandler, DeleteShopItemCommandHandler>();
 
             services.AddScoped<IDeleteUserCommandHandler, DeleteUserCommandHandler>();
             services.AddScoped<ICreatePlayerCommandHandler, CreatePlayerCommandHandler>();

@@ -45,7 +45,14 @@
   <!-- ── Tab: Factions ── -->
   @if (activeTab() === 'factions') {
   <div id="factions-panel-factions" role="tabpanel" aria-labelledby="factions-tab-factions">
-  <div class="cl-grid" #factionsGrid>
+  <app-card-grid-layout
+    #factionsGrid
+    sectionTitle="Factions"
+    sectionColor="rgb(144, 180, 216)"
+    [isDm]="true"
+    gridClass="cl-grid"
+    paddingClass="dm-padding"
+    [showImportCard]="true">
     @for (faction of camp.factions; track faction.factionInstanceId) {
       <div class="cl-loc-wrap" [attr.data-instance-id]="faction.factionInstanceId">
         <app-faction-card
@@ -74,7 +81,7 @@
     @if (!camp.factions.length) {
       <p class="factions-empty">No factions yet — use the ✦ button below to add some.</p>
     }
-  </div>
+  </app-card-grid-layout>
   </div>
   }
 
@@ -324,7 +331,13 @@
   <!-- ── Tab: Factions ── -->
   @if (activeTab() === 'factions') {
   <div id="factions-panel-factions" role="tabpanel" aria-labelledby="factions-tab-factions">
-  <div class="cl-grid">
+  <app-card-grid-layout
+    sectionTitle="Factions"
+    sectionColor="rgb(144, 180, 216)"
+    [isDm]="false"
+    gridClass="cl-grid"
+    paddingClass="dm-padding"
+    [showImportCard]="true">
     @for (faction of resolvedFactions(); track faction.factionInstanceId) {
       <div class="cl-loc-wrap" [attr.data-instance-id]="faction.factionInstanceId">
         <app-faction-card
@@ -342,7 +355,7 @@
     @if (!resolvedFactions().length) {
       <p class="factions-empty">No factions have been revealed yet.</p>
     }
-  </div>
+  </app-card-grid-layout>
   </div>
   }
 

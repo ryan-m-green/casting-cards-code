@@ -84,7 +84,7 @@ export class PortalTransitionService {
           opacity:       '1',
           transition:    'none',
           willChange:    'transform, opacity',
-          transform:     'scale(30)',
+          transform:     'scale(80)',
         });
         document.body.appendChild(ghost);
         void ghost.offsetWidth;
@@ -112,7 +112,7 @@ export class PortalTransitionService {
           zIndex:       '1001',
           pointerEvents:'none',
           opacity:      '1',
-          transform:    'scale(30)',
+          transform:    'scale(80)',
           transition:   'none',
           willChange:   'transform, opacity',
           margin:       '0',

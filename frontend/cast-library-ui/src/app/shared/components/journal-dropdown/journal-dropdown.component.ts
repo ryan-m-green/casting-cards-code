@@ -16,6 +16,7 @@ export class JournalDropdownComponent implements OnInit, OnDestroy {
   @Input() label: string = '';
   @Input() control: FormControl = new FormControl('');
   @Input() randomizeGroupId: string | null = null;
+  @Input() disabled: boolean = false;
 
   private randomizeService = inject(JournalRandomizeService);
   private subscription: Subscription | null = null;

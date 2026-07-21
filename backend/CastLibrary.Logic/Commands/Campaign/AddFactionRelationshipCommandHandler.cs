@@ -14,6 +14,19 @@ public class AddFactionRelationshipCommandHandler(
 {
     public async Task<CampaignFactionRelationshipDomain> HandleAsync(AddFactionRelationshipCommand command)
     {
+        // Validate that a relationship doesn't already exist with the same dm_user_id state
+        var exists = await campaignInsertRepository.FactionRelationshipExistsAsync(
+            command.CampaignId,
+            command.Request.FactionInstanceIdA,
+            command.Request.FactionInstanceIdB,
+            command.DmUserId);
+
+        if (exists)
+        {
+            var userType = command.DmUserId.HasValue ? "GM" : "player";
+            throw new InvalidOperationException($"A relationship already exists between these factions created by a {userType}.");
+        }
+
         var domain = new CampaignFactionRelationshipDomain
         {
             Id                 = Guid.NewGuid(),

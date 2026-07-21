@@ -28,4 +28,16 @@
       <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
     </svg>
   }
+  @case ('library') {
+    <svg [class]="variant() === 'inline' ? 'icon-svg' : 'sv-icon'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <rect x="1.5" y="19.5" width="21" height="2.5"/>
+      <rect x="3.3" y="8.5" width="17.4" height="11"/>
+      <line x1="5.8" y1="8.5" x2="5.8" y2="19.5"/>
+      <line x1="18.2" y1="8.5" x2="18.2" y2="19.5"/>
+      <polygon points="1.5,8.5 12,1 22.5,8.5"/>
+      <line x1="12" y1="11" x2="12" y2="16.5"/>
+      <path d="M12 11 Q 10.2 10.2 8.1 11 L 8.1 18 Q 10.2 17.2 12 18"/>
+      <path d="M12 11 Q 13.8 10.2 15.9 11 L 15.9 18 Q 13.8 17.2 12 18"/>
+    </svg>
+  }
 }

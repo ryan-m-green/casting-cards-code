@@ -18,6 +18,7 @@ interface SliceDraft {
   id?: string;
   label: string;
   color: string;
+  fontColor: string;
   durationHours: number;
   dmNotes: string;
   playerNotes: string;
@@ -68,7 +69,8 @@ export class TimeOfDayEditorComponent implements OnInit, OnDestroy {
       running    += d.durationHours || 0;
       return {
         id: d.id ?? `preview-${i}`, label: d.label || `Slice ${i + 1}`,
-        color: d.color || '#888888', durationHours: d.durationHours || 0,
+        color: d.color || '#888888', fontColor: d.fontColor || '#ffffff',
+        durationHours: d.durationHours || 0,
         startPercent: start, endPercent: (running / total) * 100,
         dmNotes: d.dmNotes, playerNotes: d.playerNotes,
       };
@@ -82,15 +84,15 @@ export class TimeOfDayEditorComponent implements OnInit, OnDestroy {
         next: tod => {
           this.dayLengthHours.set(tod.dayLengthHours);
           this.slices.set(tod.slices.map(s => ({
-            id: s.id, label: s.label, color: s.color,
+            id: s.id, label: s.label, color: s.color, fontColor: s.fontColor || '#ffffff',
             durationHours: s.durationHours, dmNotes: s.dmNotes, playerNotes: s.playerNotes,
           })));
         },
         error: () => {
           this.slices.set([
-            { label: 'Morning', color: '#f59e0b', durationHours: 6,  dmNotes: '', playerNotes: '' },
-            { label: 'Midday',  color: '#3b82f6', durationHours: 12, dmNotes: '', playerNotes: '' },
-            { label: 'Night',   color: '#1e1b4b', durationHours: 6,  dmNotes: '', playerNotes: '' },
+            { label: 'Morning', color: '#f59e0b', fontColor: '#ffffff', durationHours: 6,  dmNotes: '', playerNotes: '' },
+            { label: 'Midday',  color: '#3b82f6', fontColor: '#ffffff', durationHours: 12, dmNotes: '', playerNotes: '' },
+            { label: 'Night',   color: '#1e1b4b', fontColor: '#ffffff', durationHours: 6,  dmNotes: '', playerNotes: '' },
           ]);
           this.scheduleAutosave();
         },
@@ -117,7 +119,7 @@ export class TimeOfDayEditorComponent implements OnInit, OnDestroy {
     this.addSliceWarning.set('');
     this.slices.update(s => [
       ...s,
-      { label: '', color: '#6366f1', durationHours: 1, dmNotes: '', playerNotes: '' },
+      { label: '', color: '#6366f1', fontColor: '#ffffff', durationHours: 1, dmNotes: '', playerNotes: '' },
     ]);
     this.scheduleAutosave();
   }
@@ -154,6 +156,14 @@ export class TimeOfDayEditorComponent implements OnInit, OnDestroy {
     this.scheduleAutosave();
   }
 
+  copyFontColorToAll(sourceIndex: number) {
+    const sourceColor = this.slices()[sourceIndex].fontColor || '#ffffff';
+    this.slices.update(s =>
+      s.map((d, i) => ({ ...d, fontColor: sourceColor }))
+    );
+    this.scheduleAutosave();
+  }
+
   clampDurationOnBlur(index: number): void {
     const slice = this.slices()[index];
     const max = this.dayLengthHours() - (this.sliceTotal() - slice.durationHours);
@@ -177,7 +187,7 @@ export class TimeOfDayEditorComponent implements OnInit, OnDestroy {
       {
         dayLengthHours: this.dayLengthHours(),
         slices: this.slices().map(d => ({
-          id: d.id, label: d.label, color: d.color,
+          id: d.id, label: d.label, color: d.color, fontColor: d.fontColor,
           durationHours: d.durationHours, dmNotes: d.dmNotes, playerNotes: d.playerNotes,
         })),
       }
@@ -185,7 +195,7 @@ export class TimeOfDayEditorComponent implements OnInit, OnDestroy {
       next: tod => {
         this.autoSaveStatus.set('saved');
         this.slices.set(tod.slices.map(s => ({
-          id: s.id, label: s.label, color: s.color,
+          id: s.id, label: s.label, color: s.color, fontColor: s.fontColor || '#ffffff',
           durationHours: s.durationHours, dmNotes: s.dmNotes, playerNotes: s.playerNotes,
         })));
         setTimeout(() => this.autoSaveStatus.set('idle'), 2000);

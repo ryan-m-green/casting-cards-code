@@ -1,0 +1,74 @@
+<div class="travel-anchor">
+  <div class="travel-btn-row">
+    <button class="campaign-primary-btn" type="button" (click)="onToggleTravelDrawer()">
+      Travel {{ drawerOpen ? '↑' : '↓' }}
+    </button>
+  </div>
+
+  <!-- ── Travel drawer ── -->
+  @if (drawerOpen) {
+    <div class="travel-drawer">
+
+    @if (selectedLocationId === null) {
+      <!-- Locations list -->
+      <div class="travel-list">
+
+        <!-- The Party -->
+        <button
+          class="travel-item travel-item--party"
+          type="button"
+          [disabled]="!partyAnchor"
+          [class.travel-item--disabled]="!partyAnchor"
+          (click)="partyAnchor && onTravelCast(partyAnchor!.locationInstanceId, partyAnchor!.instanceId)">
+          <span class="travel-item-name">⚔ The Party</span>
+          @if (partyAnchor && currentSublocationId === partyAnchor!.instanceId) {
+            <img class="travel-checkmark" src="/scroll_check_mark_icon.svg" alt="">
+          }
+        </button>
+        <div class="travel-divider"></div>
+
+        <!-- Regular locations -->
+        @for (loc of travelLocations; track loc.instanceId) {
+          @if (sublocationsByLocation[loc.instanceId]?.length) {
+            <button
+              class="travel-item"
+              type="button"
+              (click)="onSelectLocation(loc.instanceId)">
+              <span class="travel-item-name">{{ loc.name }}</span>
+              @if (currentLocationId === loc.instanceId && currentSublocationId !== partyAnchor?.instanceId) {
+                <img class="travel-checkmark travel-checkmark--faint" src="/scroll_check_mark_icon.svg" alt="">
+              }
+            </button>
+          } @else {
+            <span class="travel-item travel-item--disabled">
+              <span class="travel-item-name">{{ loc.name }}</span>
+            </span>
+          }
+        }
+        @if (!partyAnchor && !travelLocations.length) {
+          <span class="travel-empty">No locations available.</span>
+        }
+
+      </div>
+    } @else {
+      <!-- Sublocations list -->
+      <div class="travel-list">
+        <button class="travel-back" type="button" (click)="onSelectLocation(null)">← Back</button>
+        <div class="travel-divider"></div>
+        @for (sub of sublocationsByLocation[selectedLocationId!]; track sub.instanceId) {
+          <button
+            class="travel-item travel-item--sublocation"
+            type="button"
+            (click)="onTravelCast(sub.locationInstanceId, sub.instanceId)">
+            <span class="travel-item-name">{{ sub.name }}</span>
+            @if (currentSublocationId === sub.instanceId) {
+              <img class="travel-checkmark" src="/scroll_check_mark_icon.svg" alt="">
+            }
+          </button>
+        }
+      </div>
+    }
+
+      </div>
+    }
+  </div>

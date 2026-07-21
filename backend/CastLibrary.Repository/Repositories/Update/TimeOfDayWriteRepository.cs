@@ -59,14 +59,15 @@ public class TimeOfDayWriteRepository(
             var slice = domain.Slices[i];
             var row = await conn.QueryFirstAsync<dynamic>(
                 @"INSERT INTO campaign_tod_slices
-                    (campaign_id, label, color, duration_hours, sort_order, dm_notes, player_notes)
-                  VALUES (@CampaignId, @Label, @Color, @DurationHours, @SortOrder, @DmNotes, @PlayerNotes)
-                  RETURNING id, campaign_id, label, color, duration_hours, sort_order, dm_notes, player_notes",
+                    (campaign_id, label, color, font_color, duration_hours, sort_order, dm_notes, player_notes)
+                  VALUES (@CampaignId, @Label, @Color, @FontColor, @DurationHours, @SortOrder, @DmNotes, @PlayerNotes)
+                  RETURNING id, campaign_id, label, color, font_color, duration_hours, sort_order, dm_notes, player_notes",
                 new
                 {
                     domain.CampaignId,
                     slice.Label,
                     slice.Color,
+                    slice.FontColor,
                     slice.DurationHours,
                     SortOrder  = i,
                     slice.DmNotes,
@@ -79,6 +80,7 @@ public class TimeOfDayWriteRepository(
                 CampaignId    = row.campaign_id,
                 Label         = row.label,
                 Color         = row.color,
+                FontColor     = row.font_color ?? string.Empty,
                 DurationHours = row.duration_hours,
                 SortOrder     = row.sort_order,
                 DmNotes       = row.dm_notes ?? string.Empty,

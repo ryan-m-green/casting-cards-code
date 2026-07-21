@@ -61,6 +61,7 @@ const EMPTY_SUBLOCATION_BASE: Omit<Sublocation, 'name' | 'imageUrl'> = {
 const EMPTY_FACTION_BASE: Omit<Faction, 'name' | 'imageUrl'> = {
   id: '', dmUserId: '', type: '', influence: 0, perception: 0,
   hidden: false, description: '', dmNotes: '', symbolPath: '', createdAt: '',
+  colors: { evilColor: '#000000', goodColor: '#000000' },
 };
 
 @Component({

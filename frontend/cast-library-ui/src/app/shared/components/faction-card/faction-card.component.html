@@ -1,13 +1,15 @@
 <div class="fac-card"
      [class.fac-card--flipped]="flipped"
-     [class.fac-card--no-flip]="!flippable"
+     [class.fac-card--no-flip]="!flippable()"
      [class.fac-card--good]="isGood"
      [class.fac-card--neutral]="isNeutral"
      [class.fac-card--evil]="isEvil"
-     [class.fac-card--hidden]="faction.hidden"
-     [class.fac-card--glow]="influenceGlow != null && influenceGlow > 0"
+     [class.fac-card--hidden]="faction().hidden"
+     [class.fac-card--glow]="hasGlow"
      [style.box-shadow]="glowBoxShadow"
      [style.transform]="tiltTransform"
+     [style.--faction-good-color]="goodColor()"
+     [style.--faction-evil-color]="evilColor()"
      (click)="toggleFlip($event)">
   <div class="fac-card__inner">
 
@@ -76,14 +78,14 @@
             }
           </div>
 
-          <div class="fac-back-name">{{ faction.name }}</div>
+          <div class="fac-back-name">{{ faction().name }}</div>
           <div class="fac-back-divider"></div>
 
           <div class="fac-back-flavor">
-            <div class="fac-back-flavor-text">{{ faction.description ? '"' + faction.description + '"' : '—' }}</div>
+            <div class="fac-back-flavor-text">{{ faction().description ? '"' + faction().description + '"' : '—' }}</div>
           </div>
 
-          @if (editable) {
+          @if (editable()) {
             <div class="fac-back-actions">
               <button class="fac-btn fac-btn--gold" (click)="onEditClick($event)">✦ Edit</button>
               <button class="fac-btn fac-btn--red"  (click)="onDeleteClick($event)">✦ Delete</button>
@@ -131,29 +133,29 @@
             </svg>
           </div>
 
-          @if (secrets) {
+          @if (secrets()) {
             <button class="fac-secrets-btn"
-                    [class.fac-secrets-btn--revealed]="secretsRevealed"
+                    [class.fac-secrets-btn--revealed]="secretsRevealed()"
                     (click)="onSecretsClick($event)"
-                    [attr.aria-label]="(secretsRevealed ? 'Hide ' : 'Reveal ') + faction.name + ' to players'"
-                    [title]="secretsRevealed ? 'Hide from players' : 'Reveal to players'">
-              <app-lock-icon [open]="secretsRevealed" />
+                    [attr.aria-label]="(secretsRevealed() ? 'Hide ' : 'Reveal ') + faction().name + ' to players'"
+                    [title]="secretsRevealed() ? 'Hide from players' : 'Reveal to players'">
+              <app-lock-icon [open]="secretsRevealed()" />
             </button>
           }
 
           <!-- Banner -->
           <div class="fac-banner">
-            <div class="fac-name" (click)="onNameClick($event)">{{ faction.name }}</div>
+            <div class="fac-name" (click)="onNameClick($event)">{{ faction().name }}</div>
             <div class="fac-sub">{{ alignLabel }}</div>
           </div>
 
           <!-- Portrait / emblem area -->
           <div class="fac-portrait"
-               [class.fac-portrait--uploadable]="imageUpload">
-            @if (imageUpload) {
+               [class.fac-portrait--uploadable]="imageUpload()">
+            @if (imageUpload()) {
               <label class="fac-upload-label">
                 <input type="file" accept="image/jpeg,image/png,image/webp"
-                       [attr.aria-label]="'Upload emblem image for ' + faction.name"
+                       [attr.aria-label]="'Upload emblem image for ' + faction().name"
                        class="fac-upload-input" (change)="onFileInputChange($event)" />
                 <div class="fac-upload-overlay">
                   <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
@@ -163,8 +165,8 @@
                 </div>
               </label>
             }
-            @if (faction.imageUrl || faction.symbolPath) {
-              <img [src]="faction.imageUrl || faction.symbolPath" [alt]="'Emblem of ' + faction.name" class="fac-portrait-img" (error)="$any($event.target).style.display='none'" />
+            @if (imageUrl || faction().symbolPath) {
+              <img [src]="imageUrl || faction().symbolPath" [alt]="'Emblem of ' + faction().name" class="fac-portrait-img" (error)="$any($event.target).style.display='none'" />
             } @else {
               <div class="fac-portrait-inner">
                 <!-- Good emblem (small) -->
@@ -206,18 +208,18 @@
                 <div class="fac-portrait-label">{{ portraitHint }}</div>
               </div>
             }
-            @if (relationshipType) {
-              <div class="fac-rel-overlay fac-rel-overlay--{{ relationshipType }}">
-                <div class="fac-rel-overlay-bar" [style.width.%]="((relationshipStrength ?? 0) / 5) * 100"></div>
-                <span class="fac-rel-overlay-label">{{ relationshipType }}</span>
+            @if (relationshipType()) {
+              <div class="fac-rel-overlay fac-rel-overlay--{{ relationshipType() }}">
+                <div class="fac-rel-overlay-bar" [style.width.%]="((relationshipStrength() ?? 0) / 5) * 100"></div>
+                <span class="fac-rel-overlay-label">{{ relationshipType() }}</span>
               </div>
             }
           </div>
 
           <!-- Flavor -->
           <div class="fac-flavor">
-            <div class="fac-flavor-text">{{ faction.type }}</div>
-            @if (faction.hidden) {
+            <div class="fac-flavor-text">{{ faction().type }}</div>
+            @if (faction().hidden) {
               <div class="fac-hidden-label">Hidden</div>
             }
           </div>

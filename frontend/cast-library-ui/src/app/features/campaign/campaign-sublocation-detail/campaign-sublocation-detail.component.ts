@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, signal, computed, inject, HostListener, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, OnDestroy, signal, computed, inject, HostListener, ViewChild, ElementRef, Output, EventEmitter } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { Subscription } from 'rxjs';
@@ -18,13 +18,14 @@ import { SublocationCardComponent } from '../../../shared/components/sublocation
 import { CastCardComponent } from '../../../shared/components/cast-card/cast-card.component';
 import { PortalImportCardComponent } from '../../../shared/components/portal-import-card/portal-import-card.component';
 import { LockIconComponent } from '../../../shared/components/lock-icon/lock-icon.component';
+import { FeatherIconComponent } from '../../../shared/components/feather-icon/feather-icon.component';
 import { DetailPanelActionsComponent } from '../../../shared/components/detail-panel-actions/detail-panel-actions.component';
-import { SectionLabelComponent } from '../../../shared/components/section-label/section-label.component';
+import { CardGridLayoutComponent } from '../../../shared/components/card-grid-layout/card-grid-layout.component';
 
 @Component({
   selector: 'app-campaign-sublocation-detail',
   standalone: true,
-  imports: [CommonModule, FormsModule, SublocationCardComponent, CastCardComponent, PortalImportCardComponent, LockIconComponent, DetailPanelActionsComponent, SectionLabelComponent],
+  imports: [CommonModule, FormsModule, SublocationCardComponent, CastCardComponent, LockIconComponent, FeatherIconComponent, DetailPanelActionsComponent, CardGridLayoutComponent],
   templateUrl: './campaign-sublocation-detail.component.html',
   styleUrl: './campaign-sublocation-detail.component.scss'
 })
@@ -41,6 +42,8 @@ export class CampaignSublocationDetailComponent implements OnInit, OnDestroy {
   @ViewChild('detailContent') private detailContentRef!: ElementRef<HTMLElement>;
   @ViewChild('expandBtn')     private expandBtnRef!: ElementRef<HTMLElement>;
 
+  @Output() secretRevealed = new EventEmitter<CampaignSecret>();
+
   private _castImportCard = signal<PortalImportCardComponent | null>(null);
   @ViewChild('castImportCard') set castImportCardSetter(ref: PortalImportCardComponent | undefined) {
     this._castImportCard.set(ref ?? null);
@@ -50,6 +53,8 @@ export class CampaignSublocationDetailComponent implements OnInit, OnDestroy {
   }
 
   castDrawerOpen = signal(false);
+  removableIds = new Set<string>();
+  pendingIds = new Set<string>();
 
   private _castGridEl = signal<HTMLElement | null>(null);
   @ViewChild('castGrid') set castGridRef(ref: ElementRef<HTMLElement> | undefined) {
@@ -157,6 +162,24 @@ export class CampaignSublocationDetailComponent implements OnInit, OnDestroy {
               ...ca,
               factionSymbols: (ca.factionSymbols ?? []).filter(fs => fs.factionInstanceId !== event.factionInstanceId),
             })),
+          };
+        });
+      })
+    );
+
+    this.hubSubscriptions.push(
+      this.hub.shopItemDeleted$.subscribe(event => {
+        if (!event || event.campaignId !== this.campaignId()) return;
+        if (event.sublocationInstanceId !== this.sublocationInstanceId()) return;
+        this.campaign.update(c => {
+          if (!c) return c;
+          return {
+            ...c,
+            sublocations: c.sublocations.map(l =>
+              l.instanceId === this.sublocationInstanceId()
+                ? { ...l, shopItems: l.shopItems.filter(s => s.id !== event.shopItemId) }
+                : l
+            ),
           };
         });
       })
@@ -348,6 +371,7 @@ export class CampaignSublocationDetailComponent implements OnInit, OnDestroy {
           )
         };
       });
+      this.secretRevealed.emit(secret);
     });
   }
 
@@ -380,6 +404,21 @@ export class CampaignSublocationDetailComponent implements OnInit, OnDestroy {
         sublocations: c.sublocations.map(l =>
           l.instanceId === this.sublocationInstanceId()
             ? { ...l, shopItems: l.shopItems.map(s => s.id === item.id ? { ...s, isScratchedOff: !s.isScratchedOff } : s) }
+            : l
+        )
+      } : c);
+    });
+  }
+
+  deleteShopItem(itemId: string) {
+    this.http.delete(
+      `${environment.apiUrl}/api/campaigns/${this.campaignId()}/sublocations/${this.sublocationInstanceId()}/shop-items/${itemId}`
+    ).subscribe(() => {
+      this.campaign.update(c => c ? {
+        ...c,
+        sublocations: c.sublocations.map(l =>
+          l.instanceId === this.sublocationInstanceId()
+            ? { ...l, shopItems: l.shopItems.filter(s => s.id !== itemId) }
             : l
         )
       } : c);
@@ -547,6 +586,13 @@ export class CampaignSublocationDetailComponent implements OnInit, OnDestroy {
   }
 
   // ── Cast ──────────────────────────────────────────────────────────────────
+
+  onCardClick(instanceId: string) {
+    const cast = this.sublocationCasts().find(c => c.instanceId === instanceId);
+    if (cast) {
+      this.goToCast(cast);
+    }
+  }
 
   goToCast(cast: CampaignCastInstance) {
     this.router.navigate(['/campaign', this.campaignId(), 'sublocations', this.sublocationInstanceId(), 'cast', cast.instanceId]);

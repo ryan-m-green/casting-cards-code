@@ -18,89 +18,26 @@
       />
 
       @if (isDm()) {
-        <div class="travel-anchor">
-          <div class="travel-btn-row">
-            <button class="campaign-primary-btn" type="button" (click)="toggleTravelDrawer()">
-              Travel {{ travelDrawerOpen() ? '↑' : '↓' }}
-            </button>
-          </div>
-
-          <!-- ── Travel drawer ── -->
-          @if (travelDrawerOpen()) {
-            <div class="travel-drawer">
-
-          @if (selectedLocationId() === null) {
-            <!-- Locations list -->
-            <div class="travel-list">
-
-              <!-- The Party -->
-              <button
-                class="travel-item travel-item--party"
-                type="button"
-                [disabled]="!partyAnchor()"
-                [class.travel-item--disabled]="!partyAnchor()"
-                (click)="partyAnchor() && travelCast(partyAnchor()!.locationInstanceId, partyAnchor()!.instanceId)">
-                <span class="travel-item-name">⚔ The Party</span>
-                @if (partyAnchor() && currentSublocationId() === partyAnchor()!.instanceId) {
-                  <img class="travel-checkmark" src="/scroll_check_mark_icon.svg" alt="">
-                }
-              </button>
-              <div class="travel-divider"></div>
-
-              <!-- Regular locations -->
-              @for (loc of travelLocations(); track loc.instanceId) {
-                @if (sublocationsByLocation()[loc.instanceId]?.length) {
-                  <button
-                    class="travel-item"
-                    type="button"
-                    (click)="selectLocation(loc.instanceId)">
-                    <span class="travel-item-name">{{ loc.name }}</span>
-                    @if (currentLocationId() === loc.instanceId && currentSublocationId() !== partyAnchor()?.instanceId) {
-                      <img class="travel-checkmark travel-checkmark--faint" src="/scroll_check_mark_icon.svg" alt="">
-                    }
-                  </button>
-                } @else {
-                  <span class="travel-item travel-item--disabled">
-                    <span class="travel-item-name">{{ loc.name }}</span>
-                  </span>
-                }
-              }
-              @if (!partyAnchor() && !travelLocations().length) {
-                <span class="travel-empty">No locations available.</span>
-              }
-
-            </div>
-          } @else {
-            <!-- Sublocations list -->
-            <div class="travel-list">
-              <button class="travel-back" type="button" (click)="selectedLocationId.set(null)">← Back</button>
-              <div class="travel-divider"></div>
-              @for (sub of sublocationsByLocation()[selectedLocationId()!]; track sub.instanceId) {
-                <button
-                  class="travel-item travel-item--sublocation"
-                  type="button"
-                  (click)="travelCast(sub.locationInstanceId, sub.instanceId)">
-                  <span class="travel-item-name">{{ sub.name }}</span>
-                  @if (currentSublocationId() === sub.instanceId) {
-                    <img class="travel-checkmark" src="/scroll_check_mark_icon.svg" alt="">
-                  }
-                </button>
-              }
-            </div>
-          }
-
-            </div>
-          }
-        </div>
+        <app-travel-anchor
+          [drawerOpen]="travelDrawerOpen()"
+          [selectedLocationId]="selectedLocationId()"
+          [campaignId]="campaignId()"
+          [castInstanceId]="castInstanceId()"
+          [sublocationInstanceId]="sublocationInstanceId()"
+          [partyAnchor]="partyAnchor()"
+          [travelLocations]="travelLocations()"
+          [sublocationsByLocation]="sublocationsByLocation()"
+          [currentSublocationId]="currentSublocationId()"
+          [currentLocationId]="currentLocationId()"
+          (toggleDrawer)="toggleTravelDrawer()"
+          (selectLocation)="selectLocation($event)"
+          (travelCast)="travelCast($event.locationInstanceId, $event.sublocationInstanceId)"
+        />
       }
     </div>
 
     <!-- Detail panel -->
     <div class="cast-detail-panel" [style.height]="panelHeight()" [class.detail-panel--mobile-expanded]="detailExpanded()">
-
-      @if (detailExpanded()) {
-        <button class="detail-close-btn" (click)="toggleDetail()" title="Close panel">Close</button>
-      }
 
       <div class="detail-panel-content" #detailContent>
 
@@ -108,11 +45,13 @@
       <app-detail-panel-actions
         [isDm]="isDm()"
         [editing]="editing()"
+        [detailExpanded]="detailExpanded()"
         [editBtnBorderColor]="'#D4AF37'"
         (startEditingClick)="startEditing()"
         (saveDetailsClick)="saveDetails()"
         (saveToLibraryClick)="saveToLibrary()"
         (cancelEditingClick)="cancelEditing()"
+        (closeClick)="toggleDetail()"
       />
 
       <!-- Cast Name -->

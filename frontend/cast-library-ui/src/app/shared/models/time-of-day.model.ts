@@ -11,6 +11,7 @@ export interface TimeOfDaySlice {
   id: string;
   label: string;
   color: string;
+  fontColor: string;
   durationHours: number;
   startPercent: number;
   endPercent: number;

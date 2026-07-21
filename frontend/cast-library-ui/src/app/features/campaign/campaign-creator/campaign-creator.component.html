@@ -107,10 +107,24 @@
 
   <form [formGroup]="form">
     <label class="fi-label">Campaign Name</label>
-    <input class="fi" formControlName="name" />
+    <div class="campaign-name-row">
+      <input class="fi" formControlName="name" />
+      @if (!campaignId()) {
+        <button
+          type="button"
+          class="campaign-primary-btn"
+          [disabled]="!form.controls.name.valid"
+          (click)="startCampaign()"
+          title="Start Campaign"
+        >
+          Start
+        </button>
+      }
+    </div>
     @if (form.controls.name.touched && form.controls.name.invalid) {
       <div class="fi-error">Campaign name is required before adding locations.</div>
     }
+    <div class="campaign-fields-container" [class.disabled]="fieldsDisabled()">
     <label class="fi-label">Campaign Color</label>
     <div class="color-picker-row">
       <input type="color" class="color-swatch-input" formControlName="spineColor" />
@@ -120,10 +134,12 @@
     <app-journal-dropdown
       [options]="fantasyTypeOptions"
       [label]="'Fantasy Type'"
-      [control]="fantasyTypeControl">
+      [control]="fantasyTypeControl"
+      [disabled]="fieldsDisabled()">
     </app-journal-dropdown>
     <label class="fi-label">Description</label>
     <textarea class="fi" formControlName="description" rows="3" placeholder="A brief synopsis…"></textarea>
+  </div>
   </form>
 
   @if (isAdmin()) {
@@ -169,8 +185,6 @@
     </div>
   }
 
-  } <!-- end @if world-setup -->
-
   @if (isEditMode()) {
     <div class="campaign-danger-zone">
       <button class="campaign-primary-btn campaign-primary-btn--delete" (click)="requestDelete()" type="button">
@@ -178,6 +192,8 @@
       </button>
     </div>
   }
+
+  } <!-- end @if world-setup -->
 
 </div>
 

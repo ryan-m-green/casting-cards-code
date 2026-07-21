@@ -20,21 +20,19 @@
     <!-- Detail panel -->
     <div class="subLoc-detail-panel" [style.height]="panelHeight()" [class.detail-panel--mobile-expanded]="detailExpanded()">
 
-      @if (detailExpanded()) {
-        <button class="detail-close-btn" (click)="toggleDetail()" title="Close panel">Close</button>
-      }
-
       <div class="detail-panel-content" #detailContent>
 
         <!-- Panel action bar (GM only) -->
         <app-detail-panel-actions
           [isDm]="isDm()"
           [editing]="editing()"
+          [detailExpanded]="detailExpanded()"
           [editBtnBorderColor]="'#C0D4F0'"
           (startEditingClick)="startEditing()"
           (saveDetailsClick)="saveDetails()"
           (saveToLibraryClick)="saveToLibrary()"
           (cancelEditingClick)="cancelEditing()"
+          (closeClick)="toggleDetail()"
         />
 
         <!-- Sublocation Name -->
@@ -160,7 +158,9 @@
                         @if (editing()) {
                           <button class="shop-edit-btn"
                                   (click)="startEditingShopItem(item)"
-                                  title="Edit item">✎</button>
+                                  title="Edit item">
+                            <app-feather-icon [white]="true" />
+                          </button>
                         }
                         <button
                           class="shop-scratch-btn"
@@ -168,6 +168,11 @@
                           (click)="toggleScratch(item)"
                           [title]="item.isScratchedOff ? 'Mark as available' : 'Mark as sold'"
                         >{{ item.isScratchedOff ? 'SOLD' : 'SELL' }}</button>
+                        @if (editing()) {
+                          <button class="delete-btn delete-btn--dagger" (click)="deleteShopItem(item.id)" title="Delete item">
+                            <img src="/icons/weapons/fantasy_dagger.svg" class="delete-btn-img" alt="Delete" />
+                          </button>
+                        }
                       }
                     </div>
                   </div>
@@ -288,65 +293,65 @@
 
   <!-- ── Cast section ── -->
   @if (isDm() && campaign()) {
-    <div class="subLoc-cast-section">
-
-      <app-section-label title="Cast of Characters" color="rgb(232, 201, 106)"></app-section-label>
-        @if (sublocationCasts().length) {
-          <button
-            class="cast-reveal-all-btn"
-            [class.cast-reveal-all-btn--visible]="allCastsVisible()"
-            (click)="toggleAllCastVisibility()"
-            [title]="allCastsVisible() ? 'Hide all cast from players' : 'Reveal all cast to players'"
-          >
-            <app-lock-icon [open]="allCastsVisible()" class="detail-page-lock-icon" />{{ allCastsVisible() ? ' Hide All' : ' Reveal All' }}
-          </button>
-        }
-      </div>
-
-      <div class="cast-grid" #castGrid>
-        @for (cast of sublocationCasts(); track cast.instanceId) {
-          <div class="cl-cast-wrap" [attr.data-instance-id]="cast.instanceId">
-            <app-cast-card
-              [cast]="cast"
-              [flippable]="false"
-              [editable]="false"
-              [secrets]="true"
-              [secretsRevealed]="cast.isVisibleToPlayers"
-              [campaignMode]="true"
-              [dmMode]="true"
-              [tilt]="castTilt(cast.instanceId)"
-              [style.opacity]="castImportCardRef?.pendingInstanceIds()?.has(cast.instanceId) ? 0 : 1"
-              (secretsClick)="toggleCastVisibility(cast)"
-              (cardClick)="goToCast(cast)"
-            />
-            @if (castDrawerOpen()) {
-              <button
-                class="cl-cast-remove-btn"
-                (click)="castImportCardRef!.removeCard(cast.instanceId, $event)"
-                type="button"
-                aria-label="Remove cast member"
-              >✘</button>
-            }
-          </div>
-        }
-        @if (!sublocationCasts().length) {
-          <p class="wbd">No cast members yet — use the ✪ button below to add some.</p>
-        }
-      </div>
-
-      <app-portal-import-card
-        #castImportCard
-        [campaign]="campaign()"
-        [cardType]="'cast'"
-        [targetGridEl]="castGridEl"
-        [initialInstances]="sublocationCasts()"
-        [sublocationInstanceId]="sublocationInstanceId()"
-        [locationInstanceId]="sublocation()?.locationInstanceId ?? null"
-        (drawerOpenChange)="castDrawerOpen.set($event)"
-        (castAdded)="onCastAdded($event)"
-        (castRemoved)="onCastRemoved($event)"
-      />
-
+    <app-card-grid-layout
+      sectionTitle="Cast of Characters"
+      sectionColor="rgb(232, 201, 106)"
+      [items]="sublocationCasts()"
+      cardType="cast"
+      [isDm]="isDm()"
+      [showImportCard]="true"
+      trackBy="instanceId"
+      gridClass="cl-grid"
+      paddingClass="dm-padding"
+      [campaign]="campaign()"
+      [importCardRef]="castImportCardRef"
+      [targetGridEl]="castGridEl"
+      [initialInstances]="sublocationCasts()"
+      [sublocationInstanceId]="sublocationInstanceId()"
+      [locationInstanceId]="sublocation()?.locationInstanceId || ''"
+      [drawerOpen]="castDrawerOpen()"
+      [removableInstanceIds]="castImportCardRef?.removableInstanceIds() || removableIds"
+      [pendingInstanceIds]="castImportCardRef?.pendingInstanceIds() || pendingIds"
+      [allVisible]="allCastsVisible()"
+      [showRevealAll]="true"
+      [getTiltFn]="castTilt"
+      (cardClick)="onCardClick($event)"
+      (removeClick)="castImportCardRef!.removeCard($event.instanceId, $event.event)"
+      (secretsClick)="toggleCastVisibility($event)"
+      (importAdded)="onCastAdded($event)"
+      (importRemoved)="onCastRemoved($event)"
+      (revealAllClick)="toggleAllCastVisibility()"
+      (drawerOpenChange)="castDrawerOpen.set($event)"
+    >
+      @for (cast of sublocationCasts(); track cast.instanceId) {
+        <div class="cl-cast-wrap" [attr.data-instance-id]="cast.instanceId">
+          <app-cast-card
+            [cast]="cast"
+            [flippable]="false"
+            [editable]="false"
+            [secrets]="true"
+            [secretsRevealed]="cast.isVisibleToPlayers"
+            [campaignMode]="true"
+            [dmMode]="true"
+            [tilt]="castTilt(cast.instanceId)"
+            [style.opacity]="castImportCardRef?.pendingInstanceIds()?.has(cast.instanceId) ? 0 : 1"
+            (secretsClick)="toggleCastVisibility(cast)"
+            (cardClick)="goToCast(cast)"
+          />
+          @if (castDrawerOpen() && castImportCardRef?.removableInstanceIds()?.has(cast.instanceId)) {
+            <button
+              class="cl-cast-remove-btn"
+              (click)="castImportCardRef!.removeCard(cast.instanceId, $event)"
+              type="button"
+              aria-label="Remove cast member"
+            >✘</button>
+          }
+        </div>
+      }
+      @if (!sublocationCasts().length) {
+        <p class="wbd">No cast members yet — use the ✪ button below to add some.</p>
+      }
+    </app-card-grid-layout>
   }
 
 }

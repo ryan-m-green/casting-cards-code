@@ -43,8 +43,15 @@
             @if (filteredAvailable().length === 0) {
               <p class="pic-tab-empty">No results for "{{ searchTerm() }}".</p>
             } @else {
+              @if (totalPages() > 1) {
+                <div class="pic-pagination">
+                  <button class="pic-pagination-btn" [disabled]="!hasPrevPage()" (click)="prevPage()" type="button">← Previous</button>
+                  <span class="pic-pagination-info">Page {{ currentPage() }} of {{ totalPages() }}</span>
+                  <button class="pic-pagination-btn" [disabled]="!hasNextPage()" (click)="nextPage()" type="button">Next →</button>
+                </div>
+              }
               <div class="pic-selector-grid" #selectorGrid>
-                @for (loc of filteredAvailable(); track loc.id) {
+                @for (loc of paginatedLocations(); track loc.id) {
                   <div class="pic-selector-card-wrap" [attr.data-source-id]="loc.id" (click)="selectLocation(loc, $any($event.currentTarget))">
                     <app-location-card
                       [location]="loc"
@@ -55,7 +62,16 @@
                   </div>
                 }
               </div>
+              @if (totalPages() > 1) {
+                <div class="pic-pagination">
+                  <button class="pic-pagination-btn" [disabled]="!hasPrevPage()" (click)="prevPage()" type="button">← Previous</button>
+                  <span class="pic-pagination-info">Page {{ currentPage() }} of {{ totalPages() }}</span>
+                  <button class="pic-pagination-btn" [disabled]="!hasNextPage()" (click)="nextPage()" type="button">Next →</button>
+                </div>
+              }
             }
+            <div class="pic-selector-spacer" #spacer>
+            </div>
           }
         }
         @if (cardType === 'sublocation') {
@@ -75,8 +91,15 @@
             @if (filteredAvailableSublocations().length === 0) {
               <p class="pic-tab-empty">No results for "{{ searchTerm() }}".</p>
             } @else {
+              @if (totalPages() > 1) {
+                <div class="pic-pagination">
+                  <button class="pic-pagination-btn" [disabled]="!hasPrevPage()" (click)="prevPage()" type="button">← Previous</button>
+                  <span class="pic-pagination-info">Page {{ currentPage() }} of {{ totalPages() }}</span>
+                  <button class="pic-pagination-btn" [disabled]="!hasNextPage()" (click)="nextPage()" type="button">Next →</button>
+                </div>
+              }
               <div class="pic-selector-grid" #selectorGrid>
-                @for (loc of filteredAvailableSublocations(); track loc.id) {
+                @for (loc of paginatedSublocations(); track loc.id) {
                   <div class="pic-selector-card-wrap" [attr.data-source-id]="loc.id" (click)="selectSublocation(loc, $any($event.currentTarget))">
                     <app-sublocation-card
                       [sublocation]="loc"
@@ -87,7 +110,16 @@
                   </div>
                 }
               </div>
+              @if (totalPages() > 1) {
+                <div class="pic-pagination">
+                  <button class="pic-pagination-btn" [disabled]="!hasPrevPage()" (click)="prevPage()" type="button">← Previous</button>
+                  <span class="pic-pagination-info">Page {{ currentPage() }} of {{ totalPages() }}</span>
+                  <button class="pic-pagination-btn" [disabled]="!hasNextPage()" (click)="nextPage()" type="button">Next →</button>
+                </div>
+              }
             }
+            <div class="pic-selector-spacer" #spacer>
+            </div>
           }
         }
         @if (cardType === 'cast') {
@@ -107,8 +139,15 @@
             @if (filteredAvailableCasts().length === 0) {
               <p class="pic-tab-empty">No results for &quot;{{ searchTerm() }}&quot;.</p>
             } @else {
+              @if (totalPages() > 1) {
+                <div class="pic-pagination">
+                  <button class="pic-pagination-btn" [disabled]="!hasPrevPage()" (click)="prevPage()" type="button">← Previous</button>
+                  <span class="pic-pagination-info">Page {{ currentPage() }} of {{ totalPages() }}</span>
+                  <button class="pic-pagination-btn" [disabled]="!hasNextPage()" (click)="nextPage()" type="button">Next →</button>
+                </div>
+              }
               <div class="pic-selector-grid" #selectorGrid>
-                @for (cast of filteredAvailableCasts(); track cast.id) {
+                @for (cast of paginatedCasts(); track cast.id) {
                   <div class="pic-selector-card-wrap" [attr.data-source-id]="cast.id" (click)="selectCast(cast, $any($event.currentTarget))">
                     <app-cast-card
                       [cast]="$any(cast)"
@@ -120,7 +159,16 @@
                   </div>
                 }
               </div>
+              @if (totalPages() > 1) {
+                <div class="pic-pagination">
+                  <button class="pic-pagination-btn" [disabled]="!hasPrevPage()" (click)="prevPage()" type="button">← Previous</button>
+                  <span class="pic-pagination-info">Page {{ currentPage() }} of {{ totalPages() }}</span>
+                  <button class="pic-pagination-btn" [disabled]="!hasNextPage()" (click)="nextPage()" type="button">Next →</button>
+                </div>
+              }
             }
+            <div class="pic-selector-spacer" #spacer>
+            </div>
           }
         }
         @if (cardType === 'faction') {
@@ -140,8 +188,15 @@
             @if (filteredAvailableFactions().length === 0) {
               <p class="pic-tab-empty">No results for &quot;{{ searchTerm() }}&quot;.</p>
             } @else {
+              @if (totalPages() > 1) {
+                <div class="pic-pagination">
+                  <button class="pic-pagination-btn" [disabled]="!hasPrevPage()" (click)="prevPage()" type="button">← Previous</button>
+                  <span class="pic-pagination-info">Page {{ currentPage() }} of {{ totalPages() }}</span>
+                  <button class="pic-pagination-btn" [disabled]="!hasNextPage()" (click)="nextPage()" type="button">Next →</button>
+                </div>
+              }
               <div class="pic-selector-grid" #selectorGrid>
-                @for (faction of filteredAvailableFactions(); track faction.id) {
+                @for (faction of paginatedFactions(); track faction.id) {
                   <div class="pic-selector-card-wrap" [attr.data-source-id]="faction.id" (click)="selectFaction(faction, $any($event.currentTarget))">
                     <app-faction-card
                       [faction]="$any(faction)"
@@ -152,7 +207,16 @@
                   </div>
                 }
               </div>
+              @if (totalPages() > 1) {
+                <div class="pic-pagination">
+                  <button class="pic-pagination-btn" [disabled]="!hasPrevPage()" (click)="prevPage()" type="button">← Previous</button>
+                  <span class="pic-pagination-info">Page {{ currentPage() }} of {{ totalPages() }}</span>
+                  <button class="pic-pagination-btn" [disabled]="!hasNextPage()" (click)="nextPage()" type="button">Next →</button>
+                </div>
+              }
             }
+            <div class="pic-selector-spacer" #spacer>
+            </div>
           }
         }
       }
@@ -162,9 +226,10 @@
         @if (cardType === 'location') {
           <div class="pic-new-form-wrap">
             <div class="randomize-button-container">
+              <img src="/snail.PNG" alt="Snail" class="snail-image" />
               <app-journal-randomize-button [randomizeGroupId]="'portal-location-form'"></app-journal-randomize-button>
             </div>
-            <form [formGroup]="form" class="pic-new-form pic-new-form--wrap">
+            <form [formGroup]="form" class="pic-new-form pic-new-form--wrap pic-new-form--location">
 
               <div class="pic-new-form-top">
 
@@ -200,44 +265,44 @@
                     </app-journal-dropdown>
                   </div>
                 </div>
-
-                <div class="wr form-row-gap">
-                  <div class="form-field">
-                    <app-journal-dropdown
-                      [options]="sizeOptions"
-                      [label]="'Size'"
-                      [control]="sizeControl"
-                      [randomizeGroupId]="'portal-location-form'">
-                    </app-journal-dropdown>
-                  </div>
-                  <div class="form-field">
-                    <app-journal-dropdown
-                      [options]="conditionOptions"
-                      [label]="'Condition'"
-                      [control]="conditionControl"
-                      [randomizeGroupId]="'portal-location-form'">
-                    </app-journal-dropdown>
-                  </div>
-                  <div class="form-field">
-                    <app-journal-dropdown
-                      [options]="geographyOptions"
-                      [label]="'Geography'"
-                      [control]="geographyControl"
-                      [randomizeGroupId]="'portal-location-form'">
-                    </app-journal-dropdown>
-                  </div>
-                  <div class="form-field">
-                    <app-journal-dropdown
-                      [options]="architectureOptions"
-                      [label]="'Architecture'"
-                      [control]="architectureControl"
-                      [randomizeGroupId]="'portal-location-form'">
-                    </app-journal-dropdown>
-                  </div>
-                </div>
               </div>
 
               </div><!-- /.pic-new-form-top -->
+
+              <div class="wr form-row-gap">
+                <div class="form-field">
+                  <app-journal-dropdown
+                    [options]="sizeOptions"
+                    [label]="'Size'"
+                    [control]="sizeControl"
+                    [randomizeGroupId]="'portal-location-form'">
+                  </app-journal-dropdown>
+                </div>
+                <div class="form-field">
+                  <app-journal-dropdown
+                    [options]="conditionOptions"
+                    [label]="'Condition'"
+                    [control]="conditionControl"
+                    [randomizeGroupId]="'portal-location-form'">
+                  </app-journal-dropdown>
+                </div>
+                <div class="form-field">
+                  <app-journal-dropdown
+                    [options]="geographyOptions"
+                    [label]="'Geography'"
+                    [control]="geographyControl"
+                    [randomizeGroupId]="'portal-location-form'">
+                  </app-journal-dropdown>
+                </div>
+                <div class="form-field">
+                  <app-journal-dropdown
+                    [options]="architectureOptions"
+                    [label]="'Architecture'"
+                    [control]="architectureControl"
+                    [randomizeGroupId]="'portal-location-form'">
+                  </app-journal-dropdown>
+                </div>
+              </div>
 
               <div class="wr form-row-gap">
                 <div class="form-field">
@@ -319,7 +384,7 @@
         }
         @if (cardType === 'sublocation') {
           <div class="pic-new-form-wrap">
-            <form [formGroup]="sublocationForm" class="pic-new-form pic-new-form--wrap">
+            <form [formGroup]="sublocationForm" class="pic-new-form pic-new-form--wrap pic-new-form--sublocation">
 
               <div class="pic-new-form-top">
 
@@ -341,14 +406,18 @@
               </label>
 
               <div class="pic-new-form-header-fields">
-                <label for="pic-sub-name" class="fi-label">Sublocation Name</label>
-                <input id="pic-sub-name" class="fi" formControlName="name" placeholder="The Broken Anvil" autocomplete="off" />
-
-                <label for="pic-sub-description" class="fi-label">Description</label>
-                <textarea id="pic-sub-description" class="fi" formControlName="description" rows="3" placeholder="A dimly lit smithy…" autocomplete="off"></textarea>
+                <div class="wr form-row-gap">
+                  <div class="form-field-wide">
+                    <label for="pic-sub-name" class="fi-label">Sublocation Name</label>
+                    <input id="pic-sub-name" class="fi" formControlName="name" placeholder="The Broken Anvil" autocomplete="off" />
+                  </div>
+                </div>
               </div>
 
               </div><!-- /.pic-new-form-top -->
+
+              <label for="pic-sub-description" class="fi-label">Description</label>
+              <textarea id="pic-sub-description" class="fi" formControlName="description" rows="3" placeholder="A dimly lit smithy…" autocomplete="off"></textarea>
 
               <fieldset class="form-gm-box">
                 <legend class="form-gm-box__legend">FOR GM EYES ONLY</legend>
@@ -407,7 +476,7 @@
             <div class="randomize-button-container">
               <app-journal-randomize-button [randomizeGroupId]="'portal-cast-form'"></app-journal-randomize-button>
             </div>
-            <form [formGroup]="castForm" class="pic-new-form pic-new-form--wrap">
+            <form [formGroup]="castForm" class="pic-new-form pic-new-form--wrap pic-new-form--cast">
 
               <div class="pic-new-form-top">
 
@@ -430,11 +499,11 @@
 
               <div class="pic-new-form-header-fields">
                 <div class="wr form-row-gap">
-                  <div class="form-field-min">
+                  <div class="form-field-wide">
                     <label for="pic-cast-name" class="fi-label">Name</label>
                     <input id="pic-cast-name" class="fi" formControlName="name" placeholder="Aldric the Bold" autocomplete="off" />
                   </div>
-                  <div class="form-field-min">
+                  <div class="form-field">
                     <app-journal-dropdown
                       [options]="roleOptions"
                       [label]="'Role / Class'"
@@ -443,24 +512,28 @@
                     </app-journal-dropdown>
                   </div>
                 </div>
+              </div>
 
-                <div class="wr form-row-gap">
-                  <div class="form-field">
-                    <app-journal-dropdown
-                      [options]="raceOptions"
-                      [label]="'Race'"
-                      [control]="raceControl"
-                      [randomizeGroupId]="'portal-cast-form'">
-                    </app-journal-dropdown>
-                  </div>
-                  <div class="form-field">
-                    <app-journal-dropdown
-                      [options]="ageOptions"
-                      [label]="'Age'"
-                      [control]="ageControl"
-                      [randomizeGroupId]="'portal-cast-form'">
-                    </app-journal-dropdown>
-                  </div>
+              </div><!-- /.pic-new-form-top -->
+
+              <div class="wr form-row-gap">
+                <div class="form-field">
+                  <app-journal-dropdown
+                    [options]="raceOptions"
+                    [label]="'Race'"
+                    [control]="raceControl"
+                    [randomizeGroupId]="'portal-cast-form'">
+                  </app-journal-dropdown>
+                </div>
+                <div class="form-field">
+                  <app-journal-dropdown
+                    [options]="ageOptions"
+                    [label]="'Age'"
+                    [control]="ageControl"
+                    [randomizeGroupId]="'portal-cast-form'">
+                  </app-journal-dropdown>
+                </div>
+                <div class="form-field">
                   <app-journal-dropdown
                     [options]="pronounOptions"
                     [label]="'Pronouns'"
@@ -469,8 +542,6 @@
                   </app-journal-dropdown>
                 </div>
               </div>
-
-              </div><!-- /.pic-new-form-top -->
 
               <div class="wr form-row-gap">
                 <div class="form-field">
@@ -553,8 +624,10 @@
                                   </div>
                                 </div>
 
-                                <label for="pic-fac-description" class="fi-label">Description</label>
-                                <textarea id="pic-fac-description" class="fi fi--textarea" formControlName="description" rows="4" placeholder="A shadowy guild operating across three kingdoms…" autocomplete="off"></textarea>
+                                <div class="form-field">
+                                  <label for="pic-fac-description" class="fi-label">Description</label>
+                                  <textarea id="pic-fac-description" class="fi fi--textarea" formControlName="description" rows="4" placeholder="A shadowy guild operating across three kingdoms…" autocomplete="off"></textarea>
+                                </div>
 
                                 <fieldset class="form-gm-box">
                                   <legend class="form-gm-box__legend">FOR GM EYES ONLY</legend>
@@ -569,6 +642,19 @@
                                     </div>
                                     <div class="form-field"></div>
                                   </div>
+
+                                  <label class="fi-label">Faction Colors</label>
+                                  <div class="color-pickers-container">
+                                    <div class="color-picker-wrapper">
+                                      <span class="color-picker-label">Evil</span>
+                                      <input type="color" class="fi fi--color" formControlName="evilColor" />
+                                    </div>
+                                    <div class="color-picker-wrapper">
+                                      <span class="color-picker-label">Good</span>
+                                      <input type="color" class="fi fi--color" formControlName="goodColor" />
+                                    </div>
+                                  </div>
+
                                   <div class="form-field--toggle form-field">
                                     <label class="fi-label" for="pic-fac-hidden">Faction Visibility</label>
                                     <div class="toggle-row">
@@ -580,14 +666,20 @@
                                     </div>
                                   </div>
 
-                                                  <label for="pic-fac-dm-notes" class="fi-label">GM Notes</label>
-                                                  <textarea id="pic-fac-dm-notes" class="fi fi--textarea" formControlName="dmNotes" rows="4" placeholder="Secret objectives, key contacts…" autocomplete="off"></textarea>
+                                  <div class="form-field-min">
+                                    <label for="pic-fac-dm-notes" class="fi-label">GM Notes</label>
+                                    <textarea id="pic-fac-dm-notes" class="fi fi--textarea" formControlName="dmNotes" rows="4" placeholder="Secret objectives, key contacts…" autocomplete="off"></textarea>
+                                  </div>
 
-                                                  <label for="pic-fac-influence" class="fi-label">Political Influence <span class="fi-value-badge">{{ factionForm.value.influence }}</span></label>
-                                                  <input id="pic-fac-influence" type="range" class="fi-slider" formControlName="influence" min="0" max="10" step="1" />
+                                  <div class="form-field-min">
+                                    <label for="pic-fac-influence" class="fi-label">Political Influence <span class="fi-value-badge">{{ factionForm.value.influence }}</span></label>
+                                    <input id="pic-fac-influence" type="range" class="fi-slider" formControlName="influence" min="0" max="10" step="1" />
+                                  </div>
 
-                                                  <label for="pic-fac-perception" class="fi-label">Perception <span class="fi-value-badge">{{ perceptionLabel(factionForm.value.perception ?? 0) }}</span></label>
-                                                  <input id="pic-fac-perception" type="range" class="fi-slider" formControlName="perception" min="-5" max="5" step="1" />
+                                  <div class="form-field-min">
+                                    <label for="pic-fac-perception" class="fi-label">Perception <span class="fi-value-badge">{{ perceptionLabel(factionForm.value.perception ?? 0) }}</span></label>
+                                    <input id="pic-fac-perception" type="range" class="fi-slider" formControlName="perception" min="-5" max="5" step="1" />
+                                  </div>
 
                                                 </fieldset>
 
@@ -601,10 +693,6 @@
                                 }
 
                                 <div class="pic-save-row">
-                                  <span class="save-label"
-                                        [class.save-label--saving]="factionSaveStatus() === 'saving'"
-                                        [class.save-label--error]="factionSaveStatus() === 'error'"
-                                        [style.opacity]="factionLabelVisible() ? 1 : 0">{{ factionLabelText() }}</span>
                                   <button class="btn-primary" type="button"
                                           [disabled]="factionForm.invalid || !selectedFactionIcon() || factionSaveStatus() === 'saving'"
                                           (click)="onSaveNewFaction()">Save</button>

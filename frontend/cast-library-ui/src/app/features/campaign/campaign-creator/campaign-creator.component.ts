@@ -175,6 +175,8 @@ export class CampaignCreatorComponent implements OnInit, OnDestroy {
     spineColor:  ['#ffffff'],
   });
 
+  fieldsDisabled = computed(() => !this.campaignId());
+
   get fantasyTypeControl() { return this.form.get('fantasyType') as FormControl; }
 
   ngOnInit() {
@@ -202,7 +204,7 @@ export class CampaignCreatorComponent implements OnInit, OnDestroy {
     }
 
     this.form.valueChanges.subscribe(() => {
-      if (!this.form.controls.name.valid) return;
+      if (!this.form.controls.name.valid || !this.campaignId()) return;
       clearTimeout(this.formSaveTimer);
       this.formSaveStatus.set('saving');
       this.formSaveTimer = setTimeout(() => {
@@ -222,20 +224,33 @@ export class CampaignCreatorComponent implements OnInit, OnDestroy {
         if (cid) {
           this.http.patch(`${environment.apiUrl}/api/campaigns/${cid}`, this.form.value)
             .subscribe({ next: onSuccess, error: onError });
-        } else {
-          this.http.post<{ id: string }>(`${environment.apiUrl}/api/campaigns`, {
-            ...this.form.value,
-            locationIds: [],
-            ...(this.isAdmin() ? { isDemo: this.isDemoChecked() } : {}),
-          })
-            .subscribe({ next: campaign => {
-              this.campaignId.set(campaign.id);
-              this.router.navigate(['/gm/campaigns', campaign.id], { replaceUrl: true });
-              onSuccess();
-            }, error: onError });
         }
       }, 800);
     });
+  }
+
+  startCampaign() {
+    if (!this.form.controls.name.valid) return;
+    this.formSaveStatus.set('saving');
+    this.http.post<{ id: string }>(`${environment.apiUrl}/api/campaigns`, {
+      ...this.form.value,
+      locationIds: [],
+      ...(this.isAdmin() ? { isDemo: this.isDemoChecked() } : {}),
+    })
+      .subscribe({
+        next: campaign => {
+          this.campaignId.set(campaign.id);
+          this.router.navigate(['/gm/campaigns', campaign.id], { replaceUrl: true });
+          this.formSaveStatus.set('saved');
+          setTimeout(() => this.formSaveStatus.set('idle'), 2000);
+        },
+        error: (err: HttpErrorResponse) => {
+          if (err.status === 403) {
+            this.limitError.set(err.error);
+          }
+          this.formSaveStatus.set('idle');
+        }
+      });
   }
 
   ngOnDestroy() {

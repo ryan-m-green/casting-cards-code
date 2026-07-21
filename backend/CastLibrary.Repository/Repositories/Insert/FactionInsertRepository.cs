@@ -1,3 +1,4 @@
+using System.Text.Json;
 using CastLibrary.Logic.Interfaces;
 using CastLibrary.Shared.Domain;
 using Dapper;
@@ -29,13 +30,14 @@ public class FactionInsertRepository(
             faction.Description,
             faction.DmNotes,
             faction.SymbolPath,
+            Colors     = JsonSerializer.Serialize(faction.Colors),
             faction.CreatedAt,
         };
         const string sql =
             @"INSERT INTO factions
-                (faction_id, dm_user_id, name, type, influence, perception, hidden, description, dm_notes, symbol_path, created_at)
+                (faction_id, dm_user_id, name, type, influence, perception, hidden, description, dm_notes, symbol_path, colors, created_at)
               VALUES
-                (@FactionId, @DmUserId, @Name, @Type, @Influence, @Perception, @Hidden, @Description, @DmNotes, @SymbolPath, @CreatedAt)";
+                (@FactionId, @DmUserId, @Name, @Type, @Influence, @Perception, @Hidden, @Description, @DmNotes, @SymbolPath, @Colors::jsonb, @CreatedAt)";
 
         logging.LogDbOperation(correlation.TraceId, spanId, "INSERT", "factions", @params);
 

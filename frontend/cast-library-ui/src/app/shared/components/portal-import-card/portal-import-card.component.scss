@@ -49,9 +49,8 @@
   transition: max-height 0.8s ease-in-out;
   position: relative;
   margin-top: -30px;
-
   &--open {
-    max-height: 2000px;
+    max-height: 10000px;
   }
 }
 
@@ -75,7 +74,7 @@
   font-size: 10px;
   letter-spacing: 0.16em;
   text-transform: uppercase;
-  padding: 9px 20px;
+  padding: 16px 20px;
   background: transparent;
   border: 1px solid transparent;
   border-bottom: none;
@@ -113,8 +112,12 @@
   text-align: center;
 }
 
-.pic-search-row   { margin-bottom: 20px; margin-left:20px; }
-.pic-search-input { max-width: 340px; }
+.pic-search-row {
+  margin-bottom: 20px;
+  display: flex;
+  justify-content: center;
+}
+.pic-search-input { max-width: 318px; }
 
 /* ── Selector grid ───────────────────────────────────────────── */
 .pic-selector-grid {
@@ -122,8 +125,7 @@
   flex-wrap: wrap;
   gap: 18px;
   align-items: flex-start;
-  padding-bottom: 40px;
-  margin-left:20px;
+  justify-content: center;
 }
 
 .pic-selector-card-wrap {
@@ -133,11 +135,94 @@
   &:active { transform: scale(0.96); }
 }
 
+.pic-selector-spacer {
+  height: 164px;
+
+  div {
+    display: block;
+    height: 4px;
+  }
+}
+
+/* ── Pagination ───────────────────────────────────────────────── */
+.pic-pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  margin-top: 20px;
+  padding: 12px 0;
+}
+
+.pic-pagination-btn {
+  font-family: v.$font-header;
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 8px 16px;
+  background: v.$color-input-bg;
+  border: 1px solid v.$color-border-light;
+  border-radius: 4px;
+  color: v.$color-base-brown-14;
+  cursor: pointer;
+  transition: background 0.18s ease, border-color 0.18s ease, color 0.18s ease;
+
+  &:hover:not(:disabled) {
+    background: v.$color-base-brown-14;
+    color: v.$color-input-bg;
+    border-color: v.$color-base-brown-14;
+  }
+
+  &:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+  }
+}
+
+.pic-pagination-info {
+  font-family: v.$font-header;
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: v.$color-base-brown-15;
+}
+
 /* ── New form ────────────────────────────────────────────────── */
-.pic-new-form-wrap { max-width: 760px; }
+.pic-new-form-wrap { max-width: 960px; }
 
 .randomize-button-container {
   margin-bottom: 8px;
+  padding-left: 12px;
+  position: relative;
+}
+
+.snail-image {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%) scaleX(-1);
+  left: -128px;
+  width: 144px;
+  height: auto;
+  z-index: 10;
+  pointer-events: none;
+  animation: snailCrawl 200s linear infinite;
+}
+
+@keyframes snailCrawl {
+  0% {
+    left: -150px;
+    opacity: 0;
+  }
+  2% {
+    opacity: 1;
+  }
+  98% {
+    opacity: 1;
+  }
+  100% {
+    left: 800px;
+    opacity: 0;
+  }
 }
 
 .form-gm-box {
@@ -161,12 +246,81 @@
 
 .pic-shop-gap { margin-top: 20px; }
 
+// Consistent spacing between form rows
+.form-row-gap {
+  gap: 16px;
+}
+
+// Consistent vertical spacing for all form sections
+.pic-new-form > * {
+  margin-bottom: 16px;
+}
+
+.pic-new-form > *:last-child {
+  margin-bottom: 0;
+}
+
+// Ensure form fields have adequate width
+.form-field {
+  min-width: 180px;
+  flex: 1;
+}
+
+.form-field-wide {
+  min-width: 280px;
+  flex: 2;
+}
+
+.form-field-min {
+  min-width: 160px;
+  flex: 1;
+  margin-bottom: 16px;
+}
+
+// Responsive adjustments for smaller screens
+@media (max-width: 500px) {
+  .pic-new-form-wrap {
+    max-width: 100%;
+  }
+
+  .form-field {
+    min-width: 120px;
+    flex: 1 1 auto;
+  }
+
+  .form-field-wide {
+    min-width: 120px;
+    flex: 1 1 auto;
+  }
+
+  .form-field-min {
+    min-width: 100px;
+    margin-bottom: 16px;
+    flex: 1 1 auto;
+  }
+
+  .pic-new-form-header-fields {
+    width: 100%;
+  }
+
+  .form-row-gap {
+    flex-wrap: wrap;
+  }
+}
+
 .pic-new-form {
   display: flex;
-  gap: 16px;
+  flex-direction: column;
+  gap: 0;
   align-items: flex-start;
   padding-left: 12px;
   padding-right: 12px;
+}
+
+// Allow dropdown rows to extend to left edge
+.pic-new-form > .wr.form-row-gap {
+  margin-left: -12px;
+  padding-left: 12px;
 }
 
 .pic-save-row {
@@ -298,9 +452,9 @@
 // ── Toggle switch (faction hidden field) ─────────────────────────────────────
 .form-field--toggle {
   display: flex;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 10px;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 16px;
 
   .fi-label {
     margin-bottom: 0;
@@ -355,10 +509,48 @@
   }
 }
 
+.toggle-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* ── Color Pickers ───────────────────────────────────────────────────────── */
+.color-pickers-container {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  margin-bottom: 16px;
+  margin-top: 8px;
+}
+
+.color-picker-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.color-picker-label {
+  font-family: v.$font-header;
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  color: v.$color-base-brown-15;
+}
+
+.fi--color {
+  width: 40px;
+  height: 40px;
+  border: 1px solid v.$color-border-accent;
+  border-radius: 4px;
+  cursor: pointer;
+  padding: 0;
+  background: transparent;
+}
+
 .toggle-hint {
   font-family: 'IM Fell English', serif;
   font-style: italic;
-  font-size: 0.75rem;
+  font-size: 14px;
   color: v.$color-base-brown-15;
   flex-shrink: 0;
 }
@@ -413,7 +605,7 @@
   min-width: 0;
   display: flex;
   flex-direction: column;
-  gap: 0;
+  gap: 16px;
 }
 
 .pic-new-portrait-label {
@@ -441,6 +633,33 @@
     border-style: solid;
     border-color: rgba(v.$color-base-brown-14, 0.3);
   }
+
+  // Location form uses location card border color
+  .pic-new-form--location & {
+    border: 4px solid v.$color-base-yellow-green;
+
+    &:hover {
+      border-color: v.$color-base-yellow-green;
+    }
+  }
+
+  // Sublocation form uses sublocation card border color
+  .pic-new-form--sublocation & {
+    border: 4px solid v.$color-ext-675;
+
+    &:hover {
+      border-color: v.$color-ext-675;
+    }
+  }
+
+  // Cast form uses cast card border color
+  .pic-new-form--cast & {
+    border: 4px solid v.$color-base-gold-bright-hex;
+
+    &:hover {
+      border-color: v.$color-base-gold-bright-hex;
+    }
+  }
 }
 
 .pic-portrait-file-input {
@@ -449,6 +668,10 @@
   height: 0;
   opacity: 0;
   pointer-events: none;
+}
+
+#pic-fac-name {
+  max-width: 400px;
 }
 
 .pic-new-portrait-img {

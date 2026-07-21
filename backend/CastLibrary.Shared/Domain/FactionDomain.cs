@@ -12,6 +12,7 @@ public class FactionDomain
     public string Description { get; set; }
     public string DmNotes { get; set; }
     public string SymbolPath { get; set; }
+    public FactionColors Colors { get; set; } = new FactionColors();
     public string ImageUrl { get; set; } = string.Empty;
     public DateTime CreatedAt { get; set; }
 }

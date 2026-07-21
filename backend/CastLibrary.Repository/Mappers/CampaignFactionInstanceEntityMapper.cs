@@ -1,3 +1,4 @@
+using System.Text.Json;
 using CastLibrary.Shared.Domain;
 using CastLibrary.Shared.Entities;
 
@@ -26,6 +27,9 @@ public class CampaignFactionInstanceEntityMapper : ICampaignFactionInstanceEntit
         Description         = entity.Description,
         DmNotes             = entity.DmNotes,
         SymbolPath              = entity.SymbolPath,
+        Colors                 = string.IsNullOrWhiteSpace(entity.Colors)
+            ? new FactionColors()
+            : JsonSerializer.Deserialize<FactionColors>(entity.Colors) ?? new FactionColors(),
         CreatedAt               = entity.CreatedAt,
         SubLocationInstanceIds  = entity.SubLocationInstanceIds,
         CastInstanceIds         = entity.CastInstanceIds,
@@ -46,6 +50,7 @@ public class CampaignFactionInstanceEntityMapper : ICampaignFactionInstanceEntit
         Description         = domain.Description,
         DmNotes             = domain.DmNotes,
         SymbolPath              = domain.SymbolPath,
+        Colors                 = JsonSerializer.Serialize(domain.Colors),
         CreatedAt               = domain.CreatedAt,
         SubLocationInstanceIds  = domain.SubLocationInstanceIds,
         CastInstanceIds         = domain.CastInstanceIds,

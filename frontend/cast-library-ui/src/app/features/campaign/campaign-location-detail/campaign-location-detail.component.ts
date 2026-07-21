@@ -26,15 +26,14 @@ import { CampaignShellService } from '../../../core/campaign-shell.service';
 import { PortalTransitionService } from '../../../core/portal-transition.service';
 import { LocationCardComponent } from '../../../shared/components/location-card/location-card.component';
 import { SublocationCardComponent } from '../../../shared/components/sublocation-card/sublocation-card.component';
-import { PortalImportCardComponent } from '../../../shared/components/portal-import-card/portal-import-card.component';
 import { LockIconComponent } from '../../../shared/components/lock-icon/lock-icon.component';
 import { DetailPanelActionsComponent } from '../../../shared/components/detail-panel-actions/detail-panel-actions.component';
-import { SectionLabelComponent } from '../../../shared/components/section-label/section-label.component';
+import { CardGridLayoutComponent } from '../../../shared/components/card-grid-layout/card-grid-layout.component';
 
 @Component({
   selector: 'app-campaign-location-detail',
   standalone: true,
-  imports: [CommonModule, FormsModule, LocationCardComponent, SublocationCardComponent, PortalImportCardComponent, LockIconComponent, DetailPanelActionsComponent, SectionLabelComponent],
+  imports: [CommonModule, FormsModule, LocationCardComponent, SublocationCardComponent, LockIconComponent, DetailPanelActionsComponent, CardGridLayoutComponent],
   templateUrl: './campaign-location-detail.component.html',
   styleUrl: './campaign-location-detail.component.scss'
 })
@@ -50,22 +49,6 @@ export class CampaignLocationDetailComponent implements OnInit, OnDestroy {
 
   @ViewChild('detailContent') private detailContentRef!: ElementRef<HTMLElement>;
   @ViewChild('expandBtn')     private expandBtnRef!: ElementRef<HTMLElement>;
-
-  private _sublocationImportCard = signal<PortalImportCardComponent | null>(null);
-  @ViewChild('sublocationImportCard') set sublocationImportCardSetter(ref: PortalImportCardComponent | undefined) {
-    this._sublocationImportCard.set(ref ?? null);
-  }
-  get sublocationImportCardRef(): PortalImportCardComponent | null {
-    return this._sublocationImportCard();
-  }
-
-  sublocationDrawerOpen = signal(false);
-
-  private _sublocationsGridEl = signal<HTMLElement | null>(null);
-  @ViewChild('sublocationsGrid') set sublocationsGridRef(ref: ElementRef<HTMLElement> | undefined) {
-    this._sublocationsGridEl.set(ref?.nativeElement ?? null);
-  }
-  get sublocationsGridEl(): HTMLElement | null { return this._sublocationsGridEl(); }
 
   private paramsSub?: Subscription;
   campaignId         = signal('');

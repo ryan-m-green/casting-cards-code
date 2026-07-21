@@ -12,5 +12,6 @@ public class FactionEntity
     public string Description { get; set; }
     public string DmNotes { get; set; }
     public string SymbolPath { get; set; }
+    public string Colors { get; set; }
     public DateTime CreatedAt { get; set; }
 }

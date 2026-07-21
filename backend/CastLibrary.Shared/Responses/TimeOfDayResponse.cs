@@ -15,6 +15,7 @@ public class TimeOfDaySliceResponse
     public Guid Id { get; set; }
     public string Label { get; set; } = string.Empty;
     public string Color { get; set; } = string.Empty;
+    public string FontColor { get; set; } = string.Empty;
     public decimal DurationHours { get; set; }
     public decimal StartPercent { get; set; }
     public decimal EndPercent { get; set; }

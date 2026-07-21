@@ -25,12 +25,13 @@ import { PlayerCampaignShellService } from '../../../core/player-campaign-shell.
 import { CampaignHubService } from '../../../core/hub/campaign-hub.service';
 import { PlayerSublocationNotesComponent } from '../player-sublocation-notes/player-sublocation-notes.component';
 import { FactionSymbolPickerComponent, FactionSymbolAssignment } from '../../../shared/components/faction-symbol-picker/faction-symbol-picker.component';
-import { SectionLabelComponent } from '../../../shared/components/section-label/section-label.component';
+import { DetailPanelActionsComponent } from '../../../shared/components/detail-panel-actions/detail-panel-actions.component';
+import { CardGridLayoutComponent } from '../../../shared/components/card-grid-layout/card-grid-layout.component';
 
 @Component({
   selector: 'app-player-sublocation-detail',
   standalone: true,
-  imports: [CommonModule, SublocationCardComponent, CastCardComponent, PlayerSublocationNotesComponent, FactionSymbolPickerComponent, SectionLabelComponent],
+  imports: [CommonModule, SublocationCardComponent, CastCardComponent, PlayerSublocationNotesComponent, FactionSymbolPickerComponent, DetailPanelActionsComponent, CardGridLayoutComponent],
   templateUrl: './player-sublocation-detail.component.html',
   styleUrl: './player-sublocation-detail.component.scss'
 })
@@ -78,7 +79,9 @@ export class PlayerSublocationDetailComponent implements OnInit, OnDestroy {
   sublocationSecrets = computed<CampaignSecret[]>(() => {
     const c = this.campaign();
     if (!c) return [];
-    return c.secrets.filter(s => s.sublocationInstanceId === this.sublocationInstanceId());
+    return c.secrets.filter(s => 
+      s.sublocationInstanceId === this.sublocationInstanceId() && s.isRevealed
+    );
   });
 
   private baseCasts = computed<CampaignCastInstance[]>(() => {
@@ -246,6 +249,13 @@ export class PlayerSublocationDetailComponent implements OnInit, OnDestroy {
         panel.style.width      = `${window.innerWidth - 40}px`;
       }
       this.detailExpanded.set(true);
+    }
+  }
+
+  onCardClick(instanceId: string) {
+    const cast = this.sublocationCasts().find(c => c.instanceId === instanceId);
+    if (cast) {
+      this.goToCast(cast);
     }
   }
 

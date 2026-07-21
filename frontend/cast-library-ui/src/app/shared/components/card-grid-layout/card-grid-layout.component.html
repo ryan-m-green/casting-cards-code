@@ -1,0 +1,39 @@
+<div class="card-grid-section" [ngClass]="paddingClass">
+  @if (showSectionLabel) {
+    <app-section-label [title]="sectionTitle" [color]="sectionColor"></app-section-label>
+  }
+  
+  @if (showRevealAll && isDm) {
+    <button
+      class="reveal-all-btn"
+      [class.reveal-all-btn--visible]="allVisible"
+      (click)="onRevealAllClick()"
+      [title]="allVisible ? 'Hide all from players' : 'Reveal all to players'"
+    >
+      <app-lock-icon [open]="allVisible" class="detail-page-lock-icon" />{{ allVisible ? ' Hide All' : ' Reveal All' }}
+    </button>
+  }
+
+  <div class="card-grid" [ngClass]="gridClass" #gridElement>
+    <ng-content />
+  </div>
+
+  @if (showImportCard && isDm) {
+    <div class="import-card-spacer">
+      <div #scrollTarget class="scroll-target"></div>
+    </div>
+    <app-portal-import-card
+      #importCard
+      [campaign]="campaign"
+      [cardType]="cardType"
+      [targetGridEl]="targetGridEl"
+      [initialInstances]="initialInstances"
+      [locationInstanceId]="locationInstanceId"
+      (drawerOpenChange)="drawerOpenChange.emit($event)"
+      (locationAdded)="importAdded.emit($event)"
+      (locationRemoved)="importRemoved.emit($event)"
+      (sublocationAdded)="importAdded.emit($event)"
+      (sublocationRemoved)="importRemoved.emit($event)"
+    />
+  }
+</div>

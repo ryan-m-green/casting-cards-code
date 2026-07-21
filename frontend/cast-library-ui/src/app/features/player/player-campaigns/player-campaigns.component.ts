@@ -230,6 +230,14 @@ export class PlayerCampaignsComponent implements OnInit, OnDestroy {
     ghost.style.transform  = 'scale(0.4)';
     ghost.style.visibility = '';
 
+    // Make inner portal area solid black and wider for darker zoom effect
+    const innerPortal = ghost.querySelector('.portal-oval-inner') as HTMLElement;
+    if (innerPortal) {
+      innerPortal.style.background = '#000';
+      innerPortal.style.boxShadow = 'none';
+      innerPortal.style.inset = '0';
+    }
+
     this.transition.ghostTemplate = ghost.cloneNode(true) as HTMLElement;
     this.transition.originRect    = null;
     this.transition.spineColor    = color;
@@ -279,16 +287,15 @@ export class PlayerCampaignsComponent implements OnInit, OnDestroy {
 
         setTimeout(() => {
           ghost.style.transition = 'transform 1.5s cubic-bezier(0.4,0,0.8,1)';
-          ghost.style.transform  = 'scale(30)';
+          ghost.style.transform  = 'scale(80)';
 
-          this.transition.show();
-
-          setTimeout(() => {
+          ghost.addEventListener('transitionend', () => {
+            this.transition.show();
             ghost.remove();
             sparks.forEach(s => s.remove());
             this.isEntering = false;
             this.router.navigate(['/player/campaign', id], { state: { noFlip: true, portalEntry: true } });
-          }, 2000);
+          }, { once: true });
         }, 260);
       }, 150);
     }, 600);

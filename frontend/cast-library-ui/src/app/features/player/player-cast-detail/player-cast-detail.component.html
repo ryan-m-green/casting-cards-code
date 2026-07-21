@@ -37,11 +37,15 @@
     <!-- Detail panel -->
     <div class="cast-detail-panel" [style.height]="panelHeight()" [class.detail-panel--mobile-expanded]="detailExpanded()">
 
-      @if (detailExpanded()) {
-        <button class="detail-close-btn" (click)="toggleDetail()" title="Close panel">Close</button>
-      }
-
         <div class="detail-panel-content" #detailContent>
+
+        <!-- Panel header -->
+        <app-detail-panel-actions
+          [isDm]="false"
+          [editing]="false"
+          [detailExpanded]="detailExpanded()"
+          (closeClick)="toggleDetail()"
+        />
 
         @if (ca.publicDescription) {
           <div class="detail-desc">
