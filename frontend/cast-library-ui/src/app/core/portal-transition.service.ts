@@ -84,18 +84,19 @@ export class PortalTransitionService {
           opacity:       '1',
           transition:    'none',
           willChange:    'transform, opacity',
-          transform:     'scale(80)',
+          transform:     'scale(80) rotate(3deg)',
         });
         document.body.appendChild(ghost);
         void ghost.offsetWidth;
 
-        ghost.style.transition = 'transform 2s cubic-bezier(0.2,0,0.6,1), opacity 0.5s ease 1.8s';
-        ghost.style.transform  = 'scale(1)';
+        // Use CSS transitions for reliability
+        ghost.style.transition = 'transform 1300ms cubic-bezier(0.2,0,0.6,1), opacity 300ms ease 1300ms';
+        ghost.style.transform  = 'scale(1.0) rotate(0deg)';
         ghost.style.opacity    = '0';
         this.hide();
 
-        setTimeout(() => this.spawnExitSparks(vw / 2, vh / 2), 1800);
-        setTimeout(() => ghost.remove(), 2500);
+        setTimeout(() => this.spawnExitSparks(vw / 2, vh / 2), 1100);
+        setTimeout(() => ghost.remove(), 1700);
       } else {
         const color  = this.spineColor || '#6e28d0';
         const ghostW = 150;
@@ -112,7 +113,7 @@ export class PortalTransitionService {
           zIndex:       '1001',
           pointerEvents:'none',
           opacity:      '1',
-          transform:    'scale(80)',
+          transform:    'scale(80) rotate(3deg)',
           transition:   'none',
           willChange:   'transform, opacity',
           margin:       '0',
@@ -216,19 +217,21 @@ export class PortalTransitionService {
         document.body.appendChild(exitGhost);
         void exitGhost.offsetWidth;
 
-        exitGhost.style.transition = 'transform 2s cubic-bezier(0.2,0,0.6,1), opacity 0.5s ease 1.8s';
-        exitGhost.style.transform  = 'scale(1)';
+        // Use CSS transitions for reliability
+        exitGhost.style.transition = 'transform 1300ms cubic-bezier(0.2,0,0.6,1), opacity 300ms ease 1300ms';
+        exitGhost.style.transform  = 'scale(1.0) rotate(0deg)';
         exitGhost.style.opacity    = '0';
         this.hide();
 
-        setTimeout(() => this.spawnExitSparks(vw / 2, vh / 2), 1800);
-        setTimeout(() => exitGhost.remove(), 2500);
+        setTimeout(() => this.spawnExitSparks(vw / 2, vh / 2), 1100);
+        setTimeout(() => exitGhost.remove(), 1700);
       }
-    }, 1600);
+    }, 1200);
   }
 
   private spawnExitSparks(cx: number, cy: number) {
     const color = this.spineColor || '#6e28d0';
+    const sparks: HTMLElement[] = [];
     for (let i = 0; i < 30; i++) {
       const angle = (i / 30) * 2 * Math.PI + Math.random() * 0.5;
       const dist  = 60 + Math.random() * 80;
@@ -246,13 +249,24 @@ export class PortalTransitionService {
         zIndex:        '1003',
         pointerEvents: 'none',
         opacity:       '1',
-        transition:    'transform 2500ms ease-out, opacity 2500ms ease-out',
+        willChange:    'transform, opacity',
       });
       document.body.appendChild(sp);
-      void sp.offsetWidth;
-      sp.style.transform = `translate(${Math.cos(angle) * dist}px, ${Math.sin(angle) * dist}px)`;
-      sp.style.opacity   = '0';
-      setTimeout(() => sp.remove(), 2600);
+      sparks.push(sp);
     }
+
+    // Animate sparks radiating outward using Web Animations API
+    sparks.forEach(sp => {
+      const angle = Math.random() * 2 * Math.PI;
+      const dist = 60 + Math.random() * 80;
+      sp.animate([
+        { transform: 'translate(0, 0)', opacity: 1 },
+        { transform: `translate(${Math.cos(angle) * dist}px, ${Math.sin(angle) * dist}px)`, opacity: 0 }
+      ], {
+        duration: 1200,
+        easing: 'cubic-bezier(0.4, 0, 0.6, 1)',
+        fill: 'forwards'
+      }).finished.then(() => sp.remove());
+    });
   }
 }

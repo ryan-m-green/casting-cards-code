@@ -235,7 +235,7 @@ export class CampaignLibraryComponent implements OnInit, OnDestroy {
 
     ghost.style.top        = (cy - actualH / 2) + 'px';
     ghost.style.left       = (cx - actualW / 2) + 'px';
-    ghost.style.transform  = 'scale(0.4)';
+    ghost.style.transform  = 'scale(0.4) rotate(-3deg)';
     ghost.style.visibility = '';
 
     // Make inner portal area solid black and wider for darker zoom effect
@@ -250,7 +250,7 @@ export class CampaignLibraryComponent implements OnInit, OnDestroy {
     this.transition.originRect    = null;
     this.transition.spineColor    = color;
 
-    // Spawn converging sparks
+    // Spawn converging sparks with staggered timing
     const sparks: HTMLElement[] = [];
     for (let i = 0; i < 30; i++) {
       const angle  = (i / 30) * 2 * Math.PI + Math.random() * 0.5;
@@ -271,47 +271,57 @@ export class CampaignLibraryComponent implements OnInit, OnDestroy {
         zIndex:        '9001',
         pointerEvents: 'none',
         opacity:       '1',
-        transition:    'transform 600ms cubic-bezier(0.4,0,0.6,1), opacity 600ms ease-in',
+        willChange:    'transform, opacity',
       });
       document.body.appendChild(sp);
       sparks.push(sp);
-      void sp.offsetWidth;
-      sp.style.transform = `translate(${cx - startX}px, ${cy - startY}px)`;
-      sp.style.opacity   = '0';
     }
 
     void ghost.offsetWidth;
 
-    // Phase 0: spring zoom in with fade
-    ghost.style.transition = 'opacity 550ms ease-out, transform 600ms cubic-bezier(0.34,1.2,0.64,1)';
-    ghost.style.opacity    = '1';
-    ghost.style.transform  = 'scale(1.04)';
+    // Animate sparks converging
+    const sparkAnimations = sparks.map(sp => {
+      const dx = cx - parseFloat(sp.style.left) - parseFloat(sp.style.width) / 2;
+      const dy = cy - parseFloat(sp.style.top) - parseFloat(sp.style.height) / 2;
+      return sp.animate([
+        { transform: 'translate(0, 0)', opacity: 1 },
+        { transform: `translate(${dx}px, ${dy}px)`, opacity: 0 }
+      ], {
+        duration: 800,
+        easing: 'cubic-bezier(0.4, 0, 0.6, 1)',
+        fill: 'forwards'
+      });
+    });
 
-    setTimeout(() => {
-      // Settle
-      ghost.style.transition = 'transform 150ms ease-out';
-      ghost.style.transform  = 'scale(1.0)';
+    // Phase 1: Spring zoom in with rotation
+    const entryAnimation = ghost.animate([
+      { transform: 'scale(0.4) rotate(-3deg)', opacity: 0 },
+      { transform: 'scale(1.0) rotate(0deg)', opacity: 1 }
+    ], {
+      duration: 500,
+      easing: 'cubic-bezier(0.34, 1.2, 0.64, 1)',
+      fill: 'forwards'
+    });
 
-      setTimeout(() => {
-        // Breathe pulse
-        ghost.style.transition = 'transform 0.26s ease-in-out';
-        ghost.style.transform  = 'scale(1.06)';
+    // Phase 2: Zoom into void
+    entryAnimation.finished.then(() => {
+      const zoomAnimation = ghost.animate([
+        { transform: 'scale(1.0)' },
+        { transform: 'scale(80)' }
+      ], {
+        duration: 1100,
+        easing: 'cubic-bezier(0.4, 0, 0.8, 1)',
+        fill: 'forwards'
+      });
 
-        setTimeout(() => {
-          // Zoom into void
-          ghost.style.transition = 'transform 1.5s cubic-bezier(0.4,0,0.8,1)';
-          ghost.style.transform  = 'scale(80)';
-
-          ghost.addEventListener('transitionend', () => {
-            this.transition.show();
-            ghost.remove();
-            sparks.forEach(s => s.remove());
-            this.isEntering = false;
-            this.router.navigate([routePrefix, id], { state: { noFlip: true, portalEntry: true } });
-          }, { once: true });
-        }, 260);
-      }, 150);
-    }, 600);
+      zoomAnimation.finished.then(() => {
+        this.transition.show();
+        ghost.remove();
+        sparks.forEach(s => s.remove());
+        this.isEntering = false;
+        this.router.navigate([routePrefix, id], { state: { noFlip: true, portalEntry: true } });
+      });
+    });
   }
 
   edit(id: string) { this.router.navigate(['/gm/campaigns', id]); }
