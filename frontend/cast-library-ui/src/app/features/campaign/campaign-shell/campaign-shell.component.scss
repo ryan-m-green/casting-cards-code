@@ -32,7 +32,7 @@
   position: fixed;
   inset: 0;
   pointer-events: none;
-  z-index: 10001;
+  z-index: 7000;
   transform: translateZ(0);
   animation: portal-inward-breathe 8.4s ease-in-out infinite;
 }

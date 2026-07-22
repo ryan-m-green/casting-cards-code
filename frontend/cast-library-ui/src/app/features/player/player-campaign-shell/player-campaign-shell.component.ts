@@ -10,6 +10,7 @@ import { CampaignFactionInstance } from '../../../shared/models/faction.model';
 import { CampaignHubService } from '../../../core/hub/campaign-hub.service';
 import { AuthService } from '../../../core/auth/auth.service';
 import { PortalTransitionService } from '../../../core/portal-transition.service';
+import { PortalAnimationService } from '../../../core/portal-animation.service';
 import { PlayerCampaignShellService } from '../../../core/player-campaign-shell.service';
 import { CampaignShellService } from '../../../core/campaign-shell.service';
 import { TimeOfDayBarComponent } from '../../../shared/components/time-of-day-bar/time-of-day-bar.component';
@@ -39,6 +40,7 @@ export class PlayerCampaignShellComponent implements OnInit, OnDestroy {
   private hub        = inject(CampaignHubService);
   private auth       = inject(AuthService);
   private transition = inject(PortalTransitionService);
+  private animationService = inject(PortalAnimationService);
   private ngZone     = inject(NgZone);
   shellSvc           = inject(PlayerCampaignShellService);
   campaignShellSvc   = inject(CampaignShellService);
@@ -725,7 +727,7 @@ export class PlayerCampaignShellComponent implements OnInit, OnDestroy {
 
   exitPortal() {
     const destination = this.auth.isDm() ? '/gm/campaigns' : '/player/campaigns';
-    this.transition.exitToLibrary(() =>
+    this.animationService.exit(() =>
       this.router.navigate([destination], { state: { noFlip: true } })
     );
   }

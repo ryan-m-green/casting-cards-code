@@ -10,6 +10,7 @@ import { CampaignLocationInstance } from '../../../shared/models/location.model'
 import { AuthService } from '../../../core/auth/auth.service';
 import { CampaignHubService } from '../../../core/hub/campaign-hub.service';
 import { PortalTransitionService } from '../../../core/portal-transition.service';
+import { PortalAnimationService } from '../../../core/portal-animation.service';
 import { CampaignShellService } from '../../../core/campaign-shell.service';
 import { LocationCardComponent } from '../../../shared/components/location-card/location-card.component';
 import { CardGridLayoutComponent } from '../../../shared/components/card-grid-layout/card-grid-layout.component';
@@ -40,6 +41,7 @@ export class CampaignDetailComponent implements OnInit, OnDestroy {
   private router         = inject(Router);
   private http           = inject(HttpClient);
   private transition     = inject(PortalTransitionService);
+  private animationService = inject(PortalAnimationService);
   private hub            = inject(CampaignHubService);
   private shellSvc       = inject(CampaignShellService);
   private hubSubscriptions: Subscription[] = [];
@@ -193,7 +195,7 @@ export class CampaignDetailComponent implements OnInit, OnDestroy {
 
 
   exitPortal() {
-    this.transition.exitToLibrary(() =>
+    this.animationService.exit(() =>
       this.router.navigate(['/dm/campaigns'], { state: { noFlip: true } })
     );
   }

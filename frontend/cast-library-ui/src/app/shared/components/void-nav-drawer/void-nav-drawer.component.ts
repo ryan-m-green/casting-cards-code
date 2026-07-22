@@ -16,6 +16,7 @@ import { FormsModule } from '@angular/forms';
 import { CampaignDetail } from '../../models/campaign.model';
 import { CampaignLocationInstance } from '../../models/location.model';
 import { PortalTransitionService } from '../../../core/portal-transition.service';
+import { PortalAnimationService } from '../../../core/portal-animation.service';
 
 @Component({
   selector: 'app-void-nav-drawer',
@@ -27,6 +28,7 @@ import { PortalTransitionService } from '../../../core/portal-transition.service
 export class VoidNavDrawerComponent implements OnChanges {
   private router     = inject(Router);
   private transition = inject(PortalTransitionService);
+  private animationService = inject(PortalAnimationService);
 
   campaignId  = input.required<string>();
   campaign    = input<CampaignDetail | null>(null);
@@ -233,7 +235,7 @@ export class VoidNavDrawerComponent implements OnChanges {
 
   exitToLibrary() {
     const route = this.mode() === 'player' ? ['/player/campaigns'] : ['/gm/campaigns'];
-    this.transition.exitToLibrary(() =>
+    this.animationService.exit(() =>
       this.router.navigate(route, { state: { noFlip: true } })
     );
   }

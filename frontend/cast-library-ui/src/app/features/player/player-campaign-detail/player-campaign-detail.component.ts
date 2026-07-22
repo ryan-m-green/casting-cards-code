@@ -7,6 +7,7 @@ import { environment } from '../../../../environments/environment';
 import { CampaignDetail } from '../../../shared/models/campaign.model';
 import { TimeOfDay } from '../../../shared/models/time-of-day.model';
 import { PortalTransitionService } from '../../../core/portal-transition.service';
+import { PortalAnimationService } from '../../../core/portal-animation.service';
 import { CampaignHubService } from '../../../core/hub/campaign-hub.service';
 import { PlayerCampaignShellService } from '../../../core/player-campaign-shell.service';
 import { LocationCardComponent } from '../../../shared/components/location-card/location-card.component';
@@ -25,6 +26,7 @@ export class PlayerCampaignDetailComponent implements OnInit {
   private router     = inject(Router);
   private http       = inject(HttpClient);
   private transition = inject(PortalTransitionService);
+  private animationService = inject(PortalAnimationService);
   private hub        = inject(CampaignHubService);
   private shellSvc   = inject(PlayerCampaignShellService);
 
@@ -103,7 +105,7 @@ export class PlayerCampaignDetailComponent implements OnInit {
   }
 
   goToCampaigns() {
-    this.transition.exitToLibrary(() => {
+    this.animationService.exit(() => {
       this.router.navigate(['/player/campaigns'], { state: { exitAnimation: true } });
     });
   }

@@ -6,7 +6,7 @@ import { environment } from '../../../../environments/environment';
 import { CampaignDetail } from '../../../shared/models/campaign.model';
 import { AuthService } from '../../../core/auth/auth.service';
 import { CampaignHubService } from '../../../core/hub/campaign-hub.service';
-import { PortalTransitionService } from '../../../core/portal-transition.service';
+import { PortalAnimationService } from '../../../core/portal-animation.service';
 import { CampaignShellService } from '../../../core/campaign-shell.service';
 import { SubscriptionDrawerService } from '../../../core/subscription-drawer.service';
 import { TimeOfDayBarComponent } from '../../../shared/components/time-of-day-bar/time-of-day-bar.component';
@@ -27,7 +27,7 @@ export class CampaignShellComponent implements OnInit, OnDestroy {
   private router         = inject(Router);
   private http           = inject(HttpClient);
   private hub            = inject(CampaignHubService);
-  private transition     = inject(PortalTransitionService);
+  private animationService = inject(PortalAnimationService);
   auth = inject(AuthService);
   private drawerService  = inject(SubscriptionDrawerService);
   private hubSubscriptions: Subscription[] = [];
@@ -67,9 +67,9 @@ export class CampaignShellComponent implements OnInit, OnDestroy {
   ngOnInit() {
     if (history.state?.portalEntry) {
       this.portalEntry = true;
-      setTimeout(() => this.transition.hide(), 300);
+      setTimeout(() => this.animationService.hide(), 300);
     } else {
-      this.transition.hide();
+      this.animationService.hide();
     }
 
     const id = this.route.snapshot.paramMap.get('id')!;
@@ -79,7 +79,7 @@ export class CampaignShellComponent implements OnInit, OnDestroy {
       .subscribe(c => {
         this.campaign.set(c);
         this.shellSvc.setCampaign(c);
-        this.transition.spineColor = c.spineColor;
+        this.animationService.spineColor = c.spineColor;
       });
 
     const connectAndJoin = !this.hub.isConnected()

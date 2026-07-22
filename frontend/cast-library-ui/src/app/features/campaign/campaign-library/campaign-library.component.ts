@@ -11,6 +11,7 @@ import { UpgradeBadgeComponent } from '../../../shared/components/upgrade-badge/
 import { environment } from '../../../../environments/environment';
 import { Campaign } from '../../../shared/models/campaign.model';
 import { PortalTransitionService } from '../../../core/portal-transition.service';
+import { PortalAnimationService } from '../../../core/portal-animation.service';
 import { AuthService } from '../../../core/auth/auth.service';
 import { CampaignHubService } from '../../../core/hub/campaign-hub.service';
 import { StripeService } from '../../../core/stripe.service';
@@ -29,6 +30,7 @@ export class CampaignLibraryComponent implements OnInit, OnDestroy {
   private transition     = inject(PortalTransitionService);
   private el             = inject(ElementRef);
   private hub            = inject(CampaignHubService);
+  private animationService = inject(PortalAnimationService);
   private hubSubscriptions: Subscription[] = [];
   private stripe         = inject(StripeService);
   auth = inject(AuthService);
@@ -204,127 +206,25 @@ export class CampaignLibraryComponent implements OnInit, OnDestroy {
     if (this.isEntering) return;
     this.isEntering = true;
 
-    const card  = event.currentTarget as HTMLElement;
-    const ghostW = card.offsetWidth  || 170;
-    const ghostH = card.offsetHeight || 240;
-    const cx     = window.innerWidth  / 2;
-    const cy     = window.innerHeight / 2;
-    const color  = this.safeColor(spineColor);
+    const card = event.currentTarget as HTMLElement;
 
-    // Clone card, measure off-screen, then center at small scale
-    const ghost = card.cloneNode(true) as HTMLElement;
-    Object.assign(ghost.style, {
-      position:      'fixed',
-      top:           '-9999px',
-      left:          '-9999px',
-      width:         ghostW + 'px',
-      margin:        '0',
-      overflow:      'visible',
-      zIndex:        '9000',
-      pointerEvents: 'none',
-      opacity:       '0',
-      transition:    'none',
-      willChange:    'transform, opacity',
-      visibility:    'hidden',
-    });
-    document.body.appendChild(ghost);
-    void ghost.offsetWidth;
-
-    const actualW = ghost.offsetWidth  || ghostW;
-    const actualH = ghost.offsetHeight || ghostH;
-
-    ghost.style.top        = (cy - actualH / 2) + 'px';
-    ghost.style.left       = (cx - actualW / 2) + 'px';
-    ghost.style.transform  = 'scale(0.4) rotate(-3deg)';
-    ghost.style.visibility = '';
-
-    // Make inner portal area solid black and wider for darker zoom effect
-    const innerPortal = ghost.querySelector('.portal-oval-inner') as HTMLElement;
-    if (innerPortal) {
-      innerPortal.style.background = '#000';
-      innerPortal.style.boxShadow = 'none';
-      innerPortal.style.inset = '0';
-    }
-
-    this.transition.ghostTemplate = ghost.cloneNode(true) as HTMLElement;
-    this.transition.originRect    = null;
-    this.transition.spineColor    = color;
-
-    // Spawn converging sparks with staggered timing
-    const sparks: HTMLElement[] = [];
-    for (let i = 0; i < 30; i++) {
-      const angle  = (i / 30) * 2 * Math.PI + Math.random() * 0.5;
-      const dist   = 80 + Math.random() * 80;
-      const size   = 5 + Math.random() * 6;
-      const startX = cx + Math.cos(angle) * dist;
-      const startY = cy + Math.sin(angle) * dist;
-      const sp     = document.createElement('div');
-      Object.assign(sp.style, {
-        position:      'fixed',
-        width:         size + 'px',
-        height:        size + 'px',
-        borderRadius:  '50%',
-        background:    color,
-        boxShadow:     `0 0 ${size * 3}px ${color}, 0 0 ${size * 7}px ${color}, 0 0 ${size * 12}px ${color}`,
-        left:          (startX - size / 2) + 'px',
-        top:           (startY - size / 2) + 'px',
-        zIndex:        '9001',
-        pointerEvents: 'none',
-        opacity:       '1',
-        willChange:    'transform, opacity',
-      });
-      document.body.appendChild(sp);
-      sparks.push(sp);
-    }
-
-    void ghost.offsetWidth;
-
-    // Animate sparks converging
-    const sparkAnimations = sparks.map(sp => {
-      const dx = cx - parseFloat(sp.style.left) - parseFloat(sp.style.width) / 2;
-      const dy = cy - parseFloat(sp.style.top) - parseFloat(sp.style.height) / 2;
-      return sp.animate([
-        { transform: 'translate(0, 0)', opacity: 1 },
-        { transform: `translate(${dx}px, ${dy}px)`, opacity: 0 }
-      ], {
-        duration: 800,
-        easing: 'cubic-bezier(0.4, 0, 0.6, 1)',
-        fill: 'forwards'
-      });
-    });
-
-    // Phase 1: Spring zoom in with rotation
-    const entryAnimation = ghost.animate([
-      { transform: 'scale(0.4) rotate(-3deg)', opacity: 0 },
-      { transform: 'scale(1.0) rotate(0deg)', opacity: 1 }
-    ], {
-      duration: 500,
-      easing: 'cubic-bezier(0.34, 1.2, 0.64, 1)',
-      fill: 'forwards'
-    });
-
-    // Phase 2: Zoom into void
-    entryAnimation.finished.then(() => {
-      const zoomAnimation = ghost.animate([
-        { transform: 'scale(1.0)' },
-        { transform: 'scale(80)' }
-      ], {
-        duration: 1100,
-        easing: 'cubic-bezier(0.4, 0, 0.8, 1)',
-        fill: 'forwards'
-      });
-
-      zoomAnimation.finished.then(() => {
-        this.transition.show();
-        ghost.remove();
-        sparks.forEach(s => s.remove());
-        this.isEntering = false;
+    this.animationService.enter({
+      card,
+      id,
+      spineColor,
+      routePrefix,
+      onNavigate: (routePrefix, id) => {
         this.router.navigate([routePrefix, id], { state: { noFlip: true, portalEntry: true } });
-      });
+        this.isEntering = false;
+      },
+      enableNavigation: true // Set to true to enable navigation
     });
   }
 
-  edit(id: string) { this.router.navigate(['/gm/campaigns', id]); }
+  edit(event: Event, id: string) {
+    event.stopPropagation();
+    this.router.navigate(['/gm/campaigns', id]);
+  }
 
   requestDelete(campaign: Campaign) { this.confirmTarget.set(campaign); }
   cancelDelete() { this.confirmTarget.set(null); }

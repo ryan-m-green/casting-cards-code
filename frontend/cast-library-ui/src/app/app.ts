@@ -23,8 +23,8 @@ import { SubscriptionDrawerComponent } from './shared/components/subscription-dr
       background: #000;
       opacity: 0;
       pointer-events: none;
-      z-index: 3000;
-      transition: opacity 1600ms ease;
+      z-index: 8000;
+      transition: opacity 3000ms ease;
 
       &.active {
         opacity: 1;

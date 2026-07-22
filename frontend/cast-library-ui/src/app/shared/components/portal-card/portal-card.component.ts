@@ -15,7 +15,7 @@ export class PortalCardComponent {
   @Input() showPortal: boolean = true;
   @Input() showSettings: boolean = true;
   @Input() sceneText: string = '';
-  @Output() settingsClick = new EventEmitter<void>();
+  @Output() settingsClick = new EventEmitter<Event>();
 
   safeColor(): string {
     const color = this.portalColor;
@@ -24,6 +24,6 @@ export class PortalCardComponent {
 
   onSettingsClick(event: Event) {
     event.stopPropagation();
-    this.settingsClick.emit();
+    this.settingsClick.emit(event);
   }
 }

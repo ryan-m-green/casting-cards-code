@@ -42,7 +42,7 @@
               [portalColor]="campaign.spineColor"
               [showPortal]="true"
               [showSettings]="true"
-              (settingsClick)="edit(campaign.id)"
+              (settingsClick)="edit($event, campaign.id)"
             />
           </div>
         }

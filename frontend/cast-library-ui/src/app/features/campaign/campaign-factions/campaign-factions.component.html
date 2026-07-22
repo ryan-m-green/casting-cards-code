@@ -337,7 +337,8 @@
     [isDm]="false"
     gridClass="cl-grid"
     paddingClass="dm-padding"
-    [showImportCard]="true">
+    [showImportCard]="true"
+    [showSectionLabel]="false">
     @for (faction of resolvedFactions(); track faction.factionInstanceId) {
       <div class="cl-loc-wrap" [attr.data-instance-id]="faction.factionInstanceId">
         <app-faction-card

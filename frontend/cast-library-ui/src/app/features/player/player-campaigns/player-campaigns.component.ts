@@ -9,6 +9,7 @@ import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../../environments/environment';
 import { Campaign } from '../../../shared/models/campaign.model';
 import { PortalTransitionService } from '../../../core/portal-transition.service';
+import { PortalAnimationService } from '../../../core/portal-animation.service';
 import { AuthService } from '../../../core/auth/auth.service';
 import { CampaignHubService } from '../../../core/hub/campaign-hub.service';
 
@@ -25,6 +26,7 @@ export class PlayerCampaignsComponent implements OnInit, OnDestroy {
   private transition = inject(PortalTransitionService);
   private el         = inject(ElementRef);
   private hub        = inject(CampaignHubService);
+  private animationService = inject(PortalAnimationService);
   private hubSubscriptions: Subscription[] = [];
   auth               = inject(AuthService);
 
@@ -197,107 +199,18 @@ export class PlayerCampaignsComponent implements OnInit, OnDestroy {
     if (this.isEntering) return;
     this.isEntering = true;
 
-    const card   = event.currentTarget as HTMLElement;
-    const ghostW = card.offsetWidth  || 170;
-    const ghostH = card.offsetHeight || 240;
-    const cx     = window.innerWidth  / 2;
-    const cy     = window.innerHeight / 2;
-    const color  = this.safeColor(spineColor);
+    const card = event.currentTarget as HTMLElement;
 
-    const ghost = card.cloneNode(true) as HTMLElement;
-    Object.assign(ghost.style, {
-      position:      'fixed',
-      top:           '-9999px',
-      left:          '-9999px',
-      width:         ghostW + 'px',
-      margin:        '0',
-      overflow:      'visible',
-      zIndex:        '9000',
-      pointerEvents: 'none',
-      opacity:       '0',
-      transition:    'none',
-      willChange:    'transform, opacity',
-      visibility:    'hidden',
+    this.animationService.enter({
+      card,
+      id,
+      spineColor,
+      routePrefix: '/player/campaign',
+      onNavigate: (routePrefix, id) => {
+        this.router.navigate([routePrefix, id], { state: { noFlip: true, portalEntry: true } });
+        this.isEntering = false;
+      },
+      enableNavigation: true // Set to true to enable navigation
     });
-    document.body.appendChild(ghost);
-    void ghost.offsetWidth;
-
-    const actualW = ghost.offsetWidth  || ghostW;
-    const actualH = ghost.offsetHeight || ghostH;
-
-    ghost.style.top        = (cy - actualH / 2) + 'px';
-    ghost.style.left       = (cx - actualW / 2) + 'px';
-    ghost.style.transform  = 'scale(0.4)';
-    ghost.style.visibility = '';
-
-    // Make inner portal area solid black and wider for darker zoom effect
-    const innerPortal = ghost.querySelector('.portal-oval-inner') as HTMLElement;
-    if (innerPortal) {
-      innerPortal.style.background = '#000';
-      innerPortal.style.boxShadow = 'none';
-      innerPortal.style.inset = '0';
-    }
-
-    this.transition.ghostTemplate = ghost.cloneNode(true) as HTMLElement;
-    this.transition.originRect    = null;
-    this.transition.spineColor    = color;
-
-    const sparks: HTMLElement[] = [];
-    for (let i = 0; i < 30; i++) {
-      const angle  = (i / 30) * 2 * Math.PI + Math.random() * 0.5;
-      const dist   = 80 + Math.random() * 80;
-      const size   = 5 + Math.random() * 6;
-      const startX = cx + Math.cos(angle) * dist;
-      const startY = cy + Math.sin(angle) * dist;
-      const sp     = document.createElement('div');
-      Object.assign(sp.style, {
-        position:      'fixed',
-        width:         size + 'px',
-        height:        size + 'px',
-        borderRadius:  '50%',
-        background:    color,
-        boxShadow:     `0 0 ${size * 3}px ${color}, 0 0 ${size * 7}px ${color}, 0 0 ${size * 12}px ${color}`,
-        left:          (startX - size / 2) + 'px',
-        top:           (startY - size / 2) + 'px',
-        zIndex:        '9001',
-        pointerEvents: 'none',
-        opacity:       '1',
-        transition:    'transform 600ms cubic-bezier(0.4,0,0.6,1), opacity 600ms ease-in',
-      });
-      document.body.appendChild(sp);
-      sparks.push(sp);
-      void sp.offsetWidth;
-      sp.style.transform = `translate(${cx - startX}px, ${cy - startY}px)`;
-      sp.style.opacity   = '0';
-    }
-
-    void ghost.offsetWidth;
-
-    ghost.style.transition = 'opacity 550ms ease-out, transform 600ms cubic-bezier(0.34,1.2,0.64,1)';
-    ghost.style.opacity    = '1';
-    ghost.style.transform  = 'scale(1.04)';
-
-    setTimeout(() => {
-      ghost.style.transition = 'transform 150ms ease-out';
-      ghost.style.transform  = 'scale(1.0)';
-
-      setTimeout(() => {
-        ghost.style.transition = 'transform 0.26s ease-in-out';
-        ghost.style.transform  = 'scale(1.06)';
-
-        setTimeout(() => {
-          ghost.style.transition = 'transform 1.5s cubic-bezier(0.4,0,0.8,1)';
-          ghost.style.transform  = 'scale(80)';
-
-          ghost.addEventListener('transitionend', () => {
-            this.transition.show();
-            ghost.remove();
-            sparks.forEach(s => s.remove());
-            this.isEntering = false;
-            this.router.navigate(['/player/campaign', id], { state: { noFlip: true, portalEntry: true } });
-          }, { once: true });
-        }, 260);
-      }, 150);
-    }, 600);
   }
 }
