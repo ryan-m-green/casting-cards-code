@@ -4,49 +4,13 @@
   display: block;
   position: absolute;
   top: 0;
-  left: 72px;
-  right: 62px;
-  transform: none;
+  left: 75px;
+  right: 130px;
   z-index: 2003;
   width: auto;
+  min-width: 150px;
   max-width: 600px;
-
-  @media (min-width: 336px) {
-    width: 148px;
-  }
-  @media (min-width: 360px) {
-    width: 164px;
-  }
-  @media (min-width: 375px) {
-    width: 178px;
-  }
-  @media (min-width: 390px) {
-    width: 192px;
-  }
-   @media (min-width: 400px) {
-    width: 215px;
-  }
-  @media (min-width: 430px) {
-    width: 232px;
-  }
-  @media (min-width: 540px){
-    left: calc(50% - 24px);
-    transform: translateX(-50%);
-    right: auto;
-    width: 324px;
-  }
-  @media (min-width: 768px) {
-    left: calc(50% - 24px);
-    transform: translateX(-50%);
-    right: auto;
-    width: 554px;
-  }
-  @media (min-width: 900px) {
-    left: 50%;
-    transform: translateX(-50%);
-    right: auto;
-    width: 100%;
-  }
+  margin: 0 auto;
 
   &.qn-animating {
     .qn-panel-clip {
@@ -165,12 +129,17 @@
 
 .qn-spacer {
   flex: 1;
+
+  @media (max-width: 400px) {
+    display: none;
+  }
 }
 
 .qn-chevron {
   font-size: 10px;
   color: v.$campaign-portal-text-muted;
   transition: transform 0.2s ease;
+  margin-right: 4px;
 
   &.rotated {
     transform: rotate(180deg);
