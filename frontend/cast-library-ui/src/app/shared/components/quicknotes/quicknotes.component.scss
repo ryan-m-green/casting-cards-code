@@ -63,7 +63,7 @@
   right: 0;
   z-index: 300;
   max-height: 0;
-  overflow: hidden;
+  overflow: visible;
   opacity: 0;
   animation: qn-slide-down 1s cubic-bezier(0.22, 1, 0.36, 1) forwards;
 }
@@ -185,7 +185,7 @@
   right: 0;
   z-index: 300;
   max-height: 0;
-  overflow: hidden;
+  overflow: visible;
   opacity: 0;
   animation: qn-slide-down 1s cubic-bezier(0.22, 1, 0.36, 1) forwards;
 }
