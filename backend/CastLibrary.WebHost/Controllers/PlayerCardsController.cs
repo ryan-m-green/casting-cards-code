@@ -1,5 +1,7 @@
 ﻿using CastLibrary.Logic.Commands.PlayerCard;
+using CastLibrary.Logic.Commands.Campaign;
 using CastLibrary.Logic.Queries.PlayerCard;
+using CastLibrary.Logic.Queries.Campaign;
 using CastLibrary.Logic.Services;
 using CastLibrary.Shared.Requests;
 using CastLibrary.WebHost.Hubs;
@@ -42,6 +44,8 @@ public class PlayerCardsController(
     IDeletePlayerCardSecretCommandHandler deletePlayerCardSecret,
     IUpsertPlayerCastPerceptionCommandHandler upsertPerception,
     IAwardCurrencyCommandHandler awardGold,
+    IGetPlayerInventoryQueryHandler getPlayerInventoryQuery,
+    IUseInventoryItemCommandHandler useInventoryItemCommand,
     IPlayerCardWebMapper mapper,
     ICampaignWebMapper campaignMapper,
     IHubContext<CampaignHub> hub,
@@ -343,6 +347,40 @@ public class PlayerCardsController(
         return Ok(mapper.ToResponse(perception));
     }
 
+
+    [HttpGet("inventory/mine")]
+    public async Task<IActionResult> GetMyInventory(Guid campaignId)
+    {
+        if (!await CallerCanAccess(campaignId)) return Forbid();
+        var playerUserId = userRetriever.GetUserId(User);
+        var inventory = await getPlayerInventoryQuery.HandleAsync(
+            new GetPlayerInventoryQuery(campaignId, playerUserId));
+        return Ok(inventory);
+    }
+
+    [HttpPost("inventory/use")]
+    public async Task<IActionResult> UseInventoryItem(Guid campaignId, [FromBody] UseInventoryItemRequest request)
+    {
+        if (!await CallerCanAccess(campaignId)) return Forbid();
+        var playerUserId = userRetriever.GetUserId(User);
+        var result = await useInventoryItemCommand.HandleAsync(
+            new UseInventoryItemCommand(campaignId, playerUserId, request));
+        if (!result) return NotFound();
+
+        await hub.Clients.Group(campaignId.ToString()).SendAsync("InventoryItemUsed", new { campaignId, playerUserId, inventoryItemId = request.InventoryItemId });
+
+        return NoContent();
+    }
+
+    [HttpGet("inventory/{playerUserId}")]
+    [Authorize(Roles = "DM,Admin")]
+    public async Task<IActionResult> GetPlayerInventory(Guid campaignId, Guid playerUserId)
+    {
+        if (!await CallerOwns(campaignId)) return Forbid();
+        var inventory = await getPlayerInventoryQuery.HandleAsync(
+            new GetPlayerInventoryQuery(campaignId, playerUserId));
+        return Ok(inventory);
+    }
 
     [HttpPost("/api/campaigns/{campaignId}/gold-award")]
     public async Task<IActionResult> AwardGold(Guid campaignId, [FromBody] AwardCurrencyRequest request)

@@ -160,6 +160,7 @@ namespace CastLibrary.WebHost.IoC
             services.AddScoped<IUpsertPlayerCastPerceptionCommandHandler, UpsertPlayerCastPerceptionCommandHandler>();
             services.AddScoped<IAwardCurrencyCommandHandler, AwardCurrencyCommandHandler>();
             services.AddScoped<IPurchaseShopItemCommandHandler, PurchaseShopItemCommandHandler>();
+            services.AddScoped<IUseInventoryItemCommandHandler, UseInventoryItemCommandHandler>();
             services.AddScoped<ISubmitBugReportCommandHandler, SubmitBugReportCommandHandler>();
             services.AddScoped<IMarkBugFixedCommandHandler, MarkBugFixedCommandHandler>();
             services.AddScoped<ICleanupBugReportsCommandHandler, CleanupBugReportsCommandHandler>();
@@ -236,6 +237,7 @@ namespace CastLibrary.WebHost.IoC
             services.AddScoped<IGetCampaignDetailQueryHandler, GetCampaignDetailQueryHandler>();
             services.AddScoped<IGetPlayerCampaignDetailQueryHandler, GetPlayerCampaignDetailQueryHandler>();
             services.AddScoped<IGetCampaignInviteCodeQueryHandler, GetCampaignInviteCodeQueryHandler>();
+            services.AddScoped<IGetPlayerInventoryQueryHandler, GetPlayerInventoryQueryHandler>();
 
             services.AddScoped<IGetCastRelationshipsQueryHandler, GetCastRelationshipsQueryHandler>();
             services.AddScoped<IGetCastRelationshipByIdQueryHandler, GetCastRelationshipByIdQueryHandler>();

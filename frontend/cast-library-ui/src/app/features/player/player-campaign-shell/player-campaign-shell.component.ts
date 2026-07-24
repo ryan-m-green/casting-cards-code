@@ -21,15 +21,15 @@ import {
 } from '../../../shared/components/card-reveal-overlay/card-reveal-overlay.component';
 import { EventCardComponent } from '../../../shared/components/event-card/event-card.component';
 import { VoidTitleSegmentsComponent } from '../../../shared/components/void-title-segments/void-title-segments.component';
-import { CurrencyDisplayComponent, CurrencyLine } from '../../../shared/components/currency-display/currency-display.component';
 import { VoidNavDrawerComponent } from '../../../shared/components/void-nav-drawer/void-nav-drawer.component';
 import { QuicknotesComponent } from '../../../shared/components/quicknotes/quicknotes.component';
 import { CampaignChronicleDrawerComponent } from '../../../shared/components/campaign-chronicle-drawer/campaign-chronicle-drawer.component';
+import { PlayerInventoryDrawerComponent } from '../../../shared/components/player-inventory-drawer/player-inventory-drawer.component';
 
 @Component({
   selector: 'app-player-campaign-shell',
   standalone: true,
-  imports: [RouterOutlet, CommonModule, TimeOfDayBarComponent, CardRevealBadgeComponent, CardRevealOverlayComponent, EventCardComponent, CurrencyDisplayComponent, VoidNavDrawerComponent, VoidTitleSegmentsComponent, QuicknotesComponent, CampaignChronicleDrawerComponent],
+  imports: [RouterOutlet, CommonModule, TimeOfDayBarComponent, CardRevealBadgeComponent, CardRevealOverlayComponent, EventCardComponent, VoidNavDrawerComponent, VoidTitleSegmentsComponent, QuicknotesComponent, CampaignChronicleDrawerComponent, PlayerInventoryDrawerComponent],
   templateUrl: './player-campaign-shell.component.html',
   styleUrl: './player-campaign-shell.component.scss',
 })
@@ -60,13 +60,12 @@ export class PlayerCampaignShellComponent implements OnInit, OnDestroy {
   showOverlay       = signal(false);
   cardRevealQueue   = signal<CardRevealOverlayData[]>([]);
 
-  // ── Purse popover ──────────────────────────────────────────────────────────
-  showPurse        = signal(false);
-  purse            = signal<CurrencyLine[]>([]);
-
   // ── Chronicle drawer ───────────────────────────────────────────────────────
   chronicleDrawer = viewChild.required<CampaignChronicleDrawerComponent>('chronicleDrawer');
+// ── Inventory drawer ───────────────────────────────────────────────────────
+  inventoryDrawer = viewChild.required<PlayerInventoryDrawerComponent>('inventoryDrawer');
 
+  
   private hubSubscriptions: Subscription[] = [];
 
   constructor() {
@@ -548,14 +547,6 @@ export class PlayerCampaignShellComponent implements OnInit, OnDestroy {
           portalColor: this.campaign()?.spineColor ?? '#6e28d0',
         };
         this.cardRevealQueue.update(queue => [...queue, currencyData]);
-        // Update purse balance for the awarded currency type
-        this.purse.update(lines => {
-          const existing = lines.find(l => l.type === mine.currency);
-          if (existing) {
-            return lines.map(l => l.type === mine.currency ? { ...l, amount: l.amount + mine.amount } : l);
-          }
-          return [...lines, { type: mine.currency, amount: mine.amount }];
-        });
       })
     );
 
@@ -601,6 +592,13 @@ export class PlayerCampaignShellComponent implements OnInit, OnDestroy {
     );
   }
 
+  loadQueueCount(id: string) {
+    this.http
+      .get<{ id: string }[]>(`${environment.apiUrl}/api/campaigns/${id}/quicknote-queue`)
+      .pipe(catchError(() => EMPTY))
+      .subscribe(items => this.shellSvc.quicknoteQueueCount.set(items.length));
+  }
+
   ngOnInit() {
     if (history.state?.portalEntry) {
       setTimeout(() => this.transition.hide(), 300);
@@ -640,44 +638,6 @@ export class PlayerCampaignShellComponent implements OnInit, OnDestroy {
         this.campaign.set(c);
         this.shellSvc.setCampaign(c);
       });
-
-    this.http
-      .get<{ currencyBalances: { currency: string; amount: number }[] }>(
-        `${environment.apiUrl}/api/campaigns/${id}/player-cards/mine`
-      )
-      .pipe(catchError(() => EMPTY))
-      .subscribe(card => {
-        this.purse.set(
-          (card.currencyBalances ?? []).map(b => ({ type: b.currency, amount: b.amount }))
-        );
-      });
-  }
-
-  refreshPurse() {
-    const id = this.campaignId();
-    if (!id) return;
-    this.http
-      .get<{ currencyBalances: { currency: string; amount: number }[] }>(
-        `${environment.apiUrl}/api/campaigns/${id}/player-cards/mine`
-      )
-      .pipe(catchError(() => EMPTY))
-      .subscribe(card => {
-        this.purse.set(
-          (card.currencyBalances ?? []).map(b => ({ type: b.currency, amount: b.amount }))
-        );
-      });
-  }
-
-  ngOnDestroy() {
-    this.hub.leaveCampaign(this.campaignId()).catch(() => {});
-    this.hubSubscriptions.forEach(sub => sub.unsubscribe());
-  }
-
-  private loadQueueCount(id: string) {
-    this.http
-      .get<{ id: string }[]>(`${environment.apiUrl}/api/campaigns/${id}/quicknote-queue`)
-      .pipe(catchError(() => EMPTY))
-      .subscribe(items => this.shellSvc.quicknoteQueueCount.set(items.length));
   }
 
   dismissOverlay() {
@@ -705,16 +665,12 @@ export class PlayerCampaignShellComponent implements OnInit, OnDestroy {
       .then(() => this.transition.hide());
   }
 
-  togglePurse() {
-    this.showPurse.update(v => !v);
-  }
-
-  closePurse() {
-    this.showPurse.set(false);
-  }
-
   openChronicleDrawer() {
     this.chronicleDrawer().open();
+  }
+
+  openInventoryDrawer() {
+    this.inventoryDrawer().open();
   }
 
   goToMyCharacter() {
@@ -803,5 +759,9 @@ export class PlayerCampaignShellComponent implements OnInit, OnDestroy {
       };
     }
     return null;
+  }
+
+  ngOnDestroy() {
+    this.hubSubscriptions.forEach(sub => sub.unsubscribe());
   }
 }

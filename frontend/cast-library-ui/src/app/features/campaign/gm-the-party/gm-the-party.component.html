@@ -1,6 +1,6 @@
 <!-- ── Party-wide treasure button ── -->
   <div class="party-actions">
-    <button class="party-gold-btn" (click)="openPartyGoldModal()">
+    <button class="party-gold-btn" [style.border-color]="spineColor()" (click)="openPartyGoldDrawer()">
       <img class="party-gold-icon" src="/treasure_chest_gold_coins.svg" alt="" /> Party
     </button>
   </div>
@@ -65,65 +65,6 @@
 
   <div class="companions-spacer"></div>
 
-<!-- ════════════════════ PARTY GOLD MODAL ══ -->
-@if (partyGoldModalOpen()) {
-  <div class="modal-backdrop" (click)="partyGoldModalOpen.set(false)" role="dialog" aria-modal="true" aria-labelledby="party-gold-modal-title">
-    <div class="modal-panel" (click)="$event.stopPropagation()">
-      <div class="modal-header">
-        <span id="party-gold-modal-title" class="modal-title">Award Treasure to Party</span>
-        <button class="modal-close" (click)="partyGoldModalOpen.set(false)">✕</button>
-      </div>
-      <div class="modal-body modal-body--overflow-visible">
-        <div class="modal-field">
-          <label for="party-gold-amount-input" class="modal-label">Amount</label>
-          <div class="price-input-group">
-            <input #partyGoldAmountInput id="party-gold-amount-input" class="modal-input price-amount"
-                   type="text"
-                   inputmode="numeric"
-                   [ngModel]="partyGoldAmount() || ''"
-                   (ngModelChange)="onPartyGoldAmountChange($event)"
-                   placeholder="0" />
-            <div class="currency-dropdown">
-              <button class="currency-dropdown-trigger"
-                      type="button"
-                      aria-label="Select currency type"
-                      aria-haspopup="listbox"
-                      [attr.aria-expanded]="partyCurrencyDropdownOpen()"
-                      (click)="partyCurrencyDropdownOpen.set(!partyCurrencyDropdownOpen()); $event.stopPropagation()">
-                <span>{{ partyGoldCurrency() }}</span>
-                <span class="currency-dropdown-caret" [class.currency-dropdown-caret--open]="partyCurrencyDropdownOpen()" aria-hidden="true">▾</span>
-              </button>
-              @if (partyCurrencyDropdownOpen()) {
-                <div class="currency-dropdown-panel" role="listbox" aria-label="Currency types">
-                  @for (c of partyCurrencies; track c) {
-                    <div class="currency-dropdown-item"
-                         role="option"
-                         [attr.aria-selected]="partyGoldCurrency() === c"
-                         [class.currency-dropdown-item--selected]="partyGoldCurrency() === c"
-                         (click)="partyGoldCurrency.set(c); partyCurrencyDropdownOpen.set(false); $event.stopPropagation()">
-                      {{ c }}
-                    </div>
-                  }
-                </div>
-              }
-            </div>
-          </div>
-        </div>
-        <div class="modal-field">
-          <label for="party-gold-note-input" class="modal-label">Note (optional)</label>
-          <input id="party-gold-note-input" class="modal-input" type="text"
-                 [ngModel]="partyGoldNote()"
-                 (ngModelChange)="partyGoldNote.set($event)"
-                 placeholder="Reason…" />
-        </div>
-      </div>
-      <div class="modal-footer">
-        <button class="campaign-primary-btn" (click)="awardPartyGold()" [disabled]="!partyGoldAmount() || partyGoldAmount() <= 0 || partyGoldSaving()">
-          {{ partyGoldSaving() ? 'Awarding…' : 'Award Treasures' }}
-        </button>
-      </div>
-    </div>
-  </div>
-}
+<app-party-gold-drawer [portalColor]="spineColor()" (goldAwarded)="onPartyGoldAwarded($event)"></app-party-gold-drawer>
 
 <app-player-secrets-drawer [portalColor]="spineColor()" mode="dm"></app-player-secrets-drawer>

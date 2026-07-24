@@ -1,0 +1,260 @@
+@use '../../../../styles/variables' as v;
+
+.inventory-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 2004;
+  background: rgba(0, 0, 0, 0.6);
+  animation: backdrop-in 0.22s ease both;
+
+  &.is-closing {
+    animation: backdrop-out 0.24s ease both;
+  }
+}
+
+@keyframes backdrop-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes backdrop-out {
+  from { opacity: 1; }
+  to { opacity: 0; }
+}
+
+.inventory-drawer {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 75vw;
+  max-width: 500px;
+  z-index: 2005;
+  display: flex;
+  flex-direction: column;
+  background: v.$campaign-portal-bg-dark;
+  border-left: none;
+  box-shadow: none;
+  animation: drawer-slide-in 0.26s cubic-bezier(0.22, 1, 0.36, 1) both, portal-inward-breathe 8.4s ease-in-out infinite;
+  overflow: hidden;
+
+  @media (max-width: 768px) {
+    width: 100vw;
+    max-width: none;
+  }
+
+  &.is-closing {
+    animation: drawer-slide-out 0.24s cubic-bezier(0.4, 0, 1, 1) both;
+  }
+}
+
+@keyframes drawer-slide-in {
+  from { transform: translateX(100%); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
+}
+
+@keyframes drawer-slide-out {
+  from { transform: translateX(0); opacity: 1; }
+  to { transform: translateX(100%); opacity: 0; }
+}
+
+@keyframes portal-inward-breathe {
+  0%, 100% {
+    box-shadow:
+      inset 0 0 0    1px color-mix(in srgb, var(--portal-color, v.$color-base-purple-primary) 40%, white 60%),
+      inset 0 0  6px  1px color-mix(in srgb, var(--portal-color, v.$color-base-purple-primary), transparent 28%),
+      inset 0 0 14px  2px color-mix(in srgb, var(--portal-color, v.$color-base-purple-primary), transparent 52%),
+      inset 0 0 25px  4px color-mix(in srgb, var(--portal-color, v.$color-base-purple-primary), transparent 76%);
+  }
+  50% {
+    box-shadow:
+      inset 0 0 0    1px color-mix(in srgb, var(--portal-color, v.$color-base-purple-primary) 25%, white 75%),
+      inset 0 0  9px  1.5px color-mix(in srgb, var(--portal-color, v.$color-base-purple-primary), transparent 12%),
+      inset 0 0 19px  3px color-mix(in srgb, var(--portal-color, v.$color-base-purple-primary), transparent 36%),
+      inset 0 0 35px  6px color-mix(in srgb, var(--portal-color, v.$color-base-purple-primary), transparent 64%);
+  }
+}
+
+.inventory-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 20px;
+  border-bottom: 1px solid v.$campaign-portal-border-bold;
+  flex-shrink: 0;
+}
+
+.inventory-header-title {
+  font-family: v.$font-header;
+  font-size: 14px;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: v.$campaign-portal-text-bright;
+}
+
+.inventory-close-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  background: none;
+  border: 1px solid v.$campaign-portal-border-bold;
+  border-radius: 6px;
+  color: v.$campaign-portal-text-muted;
+  font-size: 12px;
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease;
+  flex-shrink: 0;
+
+  &:hover {
+    background: v.$campaign-portal-bg-medium;
+    color: v.$campaign-portal-text-bright;
+  }
+}
+
+.inventory-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 24px;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(v.$campaign-portal-border-bold, 0.3) transparent;
+
+  @media (max-width: 600px) {
+    padding: 16px;
+  }
+
+  &::-webkit-scrollbar { width: 4px; }
+  &::-webkit-scrollbar-thumb { background: rgba(v.$campaign-portal-border-bold, 0.3); border-radius: 2px; }
+}
+
+.inventory-currency-section {
+  margin-bottom: 20px;
+  background: v.$campaign-portal-bg-dark;
+  border: 1px solid color-mix(in srgb, var(--portal-color, v.$color-base-purple-primary), transparent 30%);
+  border-radius: 6px;
+  padding: 16px;
+
+  ::ng-deep .currency-display {
+    color: v.$campaign-portal-text-muted;
+
+    .currency-line {
+      font-family: v.$font-body;
+      font-size: 14px;
+      color: v.$campaign-portal-text-muted;
+    }
+
+    .currency-amount {
+      font-family: v.$font-header;
+      font-size: 16px;
+      color: v.$campaign-portal-text-bright;
+      font-weight: 600;
+    }
+
+    .currency-label {
+      font-family: v.$font-header;
+      font-size: 12px;
+      color: rgba(255, 255, 255, 0.6);
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+    }
+  }
+}
+
+.inventory-divider {
+  height: 1px;
+  background: v.$campaign-portal-border-bold;
+  margin: 0 0 24px 0;
+}
+
+.inventory-empty {
+  text-align: center;
+  padding: 60px 20px;
+  color: v.$campaign-portal-text-muted;
+  font-family: v.$font-header;
+  font-size: 14px;
+  letter-spacing: 0.1em;
+}
+
+.inventory-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.inventory-item {
+  background: v.$campaign-portal-bg-medium;
+  border: 1px solid color-mix(in srgb, var(--portal-color, v.$color-base-purple-primary), transparent 30%);
+  border-radius: 8px;
+  padding: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  transition: border-color 0.15s ease;
+
+  &:hover {
+    border-color: color-mix(in srgb, var(--portal-color, v.$color-base-purple-primary), transparent 50%);
+  }
+}
+
+.inventory-item-content {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.inventory-item-name {
+  font-family: v.$font-header;
+  font-size: 14px;
+  letter-spacing: 0.1em;
+  color: v.$campaign-portal-text-bright;
+  font-weight: 600;
+}
+
+.inventory-item-description {
+  font-size: 13px;
+  color: v.$campaign-portal-text-muted;
+  line-height: 1.4;
+}
+
+.inventory-item-count {
+  font-family: v.$font-header;
+  font-size: 12px;
+  letter-spacing: 0.1em;
+  color: v.$campaign-portal-text-purple-light;
+  align-self: flex-start;
+}
+
+.inventory-use-btn {
+  padding: 4px 12px;
+  background: v.$color-base-green-2;
+  border: 1px solid v.$campaign-btn-primary-border;
+  border-radius: 4px;
+  color: v.$color-base-white-2;
+  font-family: v.$font-header;
+  font-size: 12px;
+  font-weight: bolder;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background 0.18s ease, border-color 0.18s ease, color 0.18s ease;
+  flex-shrink: 0;
+
+  &:hover {
+    background: v.$color-base-green-4;
+    border-color: v.$color-base-green-5;
+    color: v.$color-base-white-3;
+  }
+
+  &:active {
+    transform: translateY(1px);
+  }
+
+  &:disabled,
+  &.disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}

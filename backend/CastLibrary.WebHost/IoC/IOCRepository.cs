@@ -106,6 +106,9 @@ services.AddScoped<ICampaignSessionArchivedReadRepository, CampaignSessionArchiv
             services.AddScoped<IPlayerNotesReadRepository, PlayerNotesReadRepository>();
             services.AddScoped<IPlayerNotesDeleteRepository, PlayerNotesDeleteRepository>();
             services.AddScoped<ICampaignPlayerNotesUpdateRepository, CampaignPlayerNotesUpdateRepository>();
+            services.AddScoped<IPlayerCampaignInventoryReadRepository, PlayerCampaignInventoryReadRepository>();
+            services.AddScoped<IPlayerCampaignInventoryInsertRepository, PlayerCampaignInventoryInsertRepository>();
+            services.AddScoped<IPlayerCampaignInventoryUpdateRepository, PlayerCampaignInventoryUpdateRepository>();
             services.AddScoped<ICampaignEventInsertRepository, StorylineInsertRepository>();
             services.AddScoped<IStorylineReadRepository, StorylineReadRepository>();
             services.AddScoped<IStorylineUpdateRepository, StorylineUpdateRepository>();
@@ -155,6 +158,7 @@ services.AddScoped<ICampaignSessionArchivedReadRepository, CampaignSessionArchiv
             services.AddScoped<ICampaignSessionChroniclesEntityMapper, CampaignSessionChroniclesEntityMapper>();
             services.AddScoped<IPlayerQuicknoteQueueEntityMapper, PlayerQuicknoteQueueEntityMapper>();
             services.AddScoped<ICampaignEventEntityMapper, CampaignEventEntityMapper>();
+            services.AddScoped<IPlayerCampaignInventoryEntityMapper, PlayerCampaignInventoryEntityMapper>();
             services.AddScoped<ISubscriptionEntityMapper, SubscriptionEntityMapper>();
             services.AddScoped<IPricingModelEntityMapper, PricingModelEntityMapper>();
             services.AddScoped<IQuicknoteQueueReadRepository, QuicknoteQueueReadRepository>();

@@ -15,6 +15,9 @@ public class CampaignHub : Hub
     public async Task RevealSecret(string campaignId, string secretId) =>
         await Clients.Group(campaignId).SendAsync("SecretRevealed", new { secretId, campaignId });
 
+    public async Task InventoryItemUsed(Guid campaignId, Guid playerUserId, Guid inventoryItemId) =>
+        await Clients.Group(campaignId.ToString()).SendAsync("InventoryItemUsed", new { campaignId, playerUserId, inventoryItemId });
+
     public async Task NotifySubscriptionLockLevelChanged(Guid userId, string newLockLevel) =>
         await Clients.User(userId.ToString()).SendAsync("SubscriptionLockLevelChanged", new { userId, newLockLevel });
 }

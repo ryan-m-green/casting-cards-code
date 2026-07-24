@@ -291,9 +291,6 @@ export class PlayerSublocationDetailComponent implements OnInit, OnDestroy {
         this.purchaseResult.set(result);
         this.purchasePopupVisible.set(true);
         this.purchasingItemId.set(null);
-        if (result.success) {
-          this.shell.refreshPurse();
-        }
       },
       error: () => this.purchasingItemId.set(null),
     });

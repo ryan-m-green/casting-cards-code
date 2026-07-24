@@ -109,6 +109,12 @@ export interface SubscriptionLockLevelChangedEvent {
   lockLevel: string;
 }
 
+export interface InventoryItemUsedEvent {
+  campaignId: string;
+  playerUserId: string;
+  inventoryItemId: string;
+}
+
 export interface ShopItemUpdatedEvent {
   campaignId: string;
   sublocationInstanceId: string;
@@ -196,6 +202,7 @@ export class CampaignHubService {
   private sessionEndedSubject                = new Subject<SessionEndedEvent | null>();
   private sessionStartedSubject              = new Subject<SessionStartedEvent | null>();
   private subscriptionLockLevelChangedSubject = new Subject<SubscriptionLockLevelChangedEvent | null>();
+  private inventoryItemUsedSubject           = new Subject<InventoryItemUsedEvent | null>();
   private _isConnected = signal(false);
 
   readonly secretRevealed$            = this.secretRevealedSubject.asObservable();
@@ -238,6 +245,7 @@ export class CampaignHubService {
   readonly sessionEnded$                = this.sessionEndedSubject.asObservable();
   readonly sessionStarted$              = this.sessionStartedSubject.asObservable();
   readonly subscriptionLockLevelChanged$ = this.subscriptionLockLevelChangedSubject.asObservable();
+  readonly inventoryItemUsed$           = this.inventoryItemUsedSubject.asObservable();
 
   isConnected(): boolean {
     return this._isConnected();
@@ -437,6 +445,10 @@ export class CampaignHubService {
 
     this.connection.on('SessionStarted', (event: SessionStartedEvent | null) => {
       this.sessionStartedSubject.next(event);
+    });
+
+    this.connection.on('InventoryItemUsed', (event: InventoryItemUsedEvent) => {
+      this.inventoryItemUsedSubject.next(event);
     });
   }
 

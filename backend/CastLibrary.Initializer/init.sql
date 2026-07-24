@@ -755,6 +755,20 @@ CREATE TABLE IF NOT EXISTS campaign_session_chronicles (
 CREATE INDEX IF NOT EXISTS idx_campaign_session_chronicles_campaign ON campaign_session_chronicles(campaign_id);
 CREATE INDEX IF NOT EXISTS idx_campaign_session_chronicles_archived_session ON campaign_session_chronicles(archived_session_id);
 
+-- ─── Player Campaign Inventory ───────────────────────────────────────────────────
+-- Tracks items purchased by players from shop locations.
+CREATE TABLE IF NOT EXISTS player_campaign_inventory (
+    id            UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    campaign_id   UUID NOT NULL REFERENCES campaigns(id) ON DELETE CASCADE,
+    player_user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    name          VARCHAR(255) NOT NULL,
+    description   TEXT,
+    count         INT NOT NULL DEFAULT 1 CHECK (count > 0)
+);
+
+CREATE INDEX IF NOT EXISTS idx_player_campaign_inventory_campaign ON player_campaign_inventory(campaign_id);
+CREATE INDEX IF NOT EXISTS idx_player_campaign_inventory_player ON player_campaign_inventory(player_user_id);
+
 -- Create castcards_configuration table with key/value pattern
 CREATE TABLE IF NOT EXISTS castcards_configuration (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),

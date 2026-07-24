@@ -1,6 +1,8 @@
+using CastLibrary.Repository.Repositories.Insert;
 using CastLibrary.Repository.Repositories.Read;
 using CastLibrary.Repository.Repositories.Update;
 using CastLibrary.Shared.Domain;
+using CastLibrary.Shared.Entities;
 using CastLibrary.Shared.Requests;
 using CastLibrary.Shared.Responses;
 
@@ -15,7 +17,10 @@ public class PurchaseShopItemCommandHandler(
     ICampaignReadRepository campaignReadRepository,
     ICampaignPlayerReadRepository campaignPlayerReadRepository,
     ICurrencyBalanceReadRepository currencyBalanceReadRepository,
-    ICurrencyTransactionUpdateRepository currencyTransactionUpdateRepository) : IPurchaseShopItemCommandHandler
+    ICurrencyTransactionUpdateRepository currencyTransactionUpdateRepository,
+    IPlayerCampaignInventoryReadRepository playerCampaignInventoryReadRepository,
+    IPlayerCampaignInventoryInsertRepository playerCampaignInventoryInsertRepository,
+    IPlayerCampaignInventoryUpdateRepository playerCampaignInventoryUpdateRepository) : IPurchaseShopItemCommandHandler
 {
     // D&D 5e exchange rates in copper pieces (low → high)
     private static readonly string[] CoinOrder = ["cp", "sp", "ep", "gp", "pp"];
@@ -73,6 +78,37 @@ public class PurchaseShopItemCommandHandler(
             remainderCp %= rate;
             await currencyTransactionUpdateRepository.SetAmountAsync(
                 command.CampaignId, command.PlayerUserId, coin, newAmt);
+        }
+
+        // Add item to player inventory
+        PlayerCampaignInventoryEntity existingInventory;
+        try
+        {
+            existingInventory = await playerCampaignInventoryReadRepository.GetByCampaignPlayerAndNameAsync(
+                command.CampaignId, command.PlayerUserId, item.Name);
+        }
+        catch (InvalidOperationException)
+        {
+            existingInventory = null;
+        }
+
+        // Only increment if the existing item has valid campaign/player IDs
+        if (existingInventory is not null && existingInventory.CampaignId != Guid.Empty && existingInventory.PlayerUserId != Guid.Empty)
+        {
+            await playerCampaignInventoryUpdateRepository.IncrementCountAsync(existingInventory.Id);
+        }
+        else
+        {
+            var newInventory = new CastLibrary.Shared.Domain.PlayerCampaignInventoryDomain
+            {
+                Id = Guid.NewGuid(),
+                CampaignId = command.CampaignId,
+                PlayerUserId = command.PlayerUserId,
+                Name = item.Name,
+                Description = item.Description,
+                Count = 1
+            };
+            await playerCampaignInventoryInsertRepository.InsertAsync(newInventory);
         }
 
         return Success(item, player);

@@ -23,6 +23,7 @@ import { CastingCardPlayerComponent } from '../../../shared/components/casting-c
 import { CurrencyDisplayComponent, CurrencyLine } from '../../../shared/components/currency-display/currency-display.component';
 import { PlayerSecretsDrawerComponent } from '../../../shared/components/player-secrets-drawer/player-secrets-drawer.component';
 import { TravelAnchorComponent } from '../../../shared/components/travel-anchor/travel-anchor.component';
+import { PartyGoldDrawerComponent } from '../../../shared/components/party-gold-drawer/party-gold-drawer.component';
 
 const D5E_CONDITIONS = [
   'Blinded', 'Charmed', 'Deafened', 'Exhaustion', 'Frightened', 'Grappled',
@@ -35,7 +36,7 @@ type Currency = 'cp' | 'sp' | 'ep' | 'gp' | 'pp';
 @Component({
   selector: 'app-gm-the-party',
   standalone: true,
-  imports: [CommonModule, FormsModule, CastingCardPlayerComponent, CastCardComponent, PlayerSecretsDrawerComponent, TravelAnchorComponent],
+  imports: [CommonModule, FormsModule, CastingCardPlayerComponent, CastCardComponent, PlayerSecretsDrawerComponent, TravelAnchorComponent, PartyGoldDrawerComponent],
   templateUrl: './gm-the-party.component.html',
   styleUrl: './gm-the-party.component.scss',
 })
@@ -142,6 +143,9 @@ export class GmThePartyComponent implements OnInit {
   // ── View Secrets drawer ───────────────────────────────────────────────────────
   @ViewChild(PlayerSecretsDrawerComponent) secretsDrawer: PlayerSecretsDrawerComponent | null = null;
 
+  // ── Party Gold drawer ───────────────────────────────────────────────────────────
+  @ViewChild(PartyGoldDrawerComponent) partyGoldDrawer: PartyGoldDrawerComponent | null = null;
+
   ngOnInit() {
     const id = this.route.snapshot.paramMap.get('id')!;
     this.campaignId.set(id);
@@ -167,66 +171,23 @@ export class GmThePartyComponent implements OnInit {
     this.router.navigate(['/campaign', this.campaignId(), 'sublocations', sublocationId, 'cast', cast.instanceId]);
   }
 
-  // ── Party-wide gold award modal ──────────────────────────────────────────────────
-  partyGoldModalOpen = signal(false);
-  partyGoldAmount = signal(0);
-  partyGoldCurrency = signal<Currency>('gp');
-  partyGoldNote = signal('');
-  partyGoldSaving = signal(false);
-  partyCurrencyDropdownOpen = signal(false);
-  readonly partyCurrencies: Currency[] = ['cp', 'sp', 'ep', 'gp', 'pp'];
-  partyGoldAmountInput = viewChild.required<ElementRef<HTMLInputElement>>('partyGoldAmountInput');
-
-  openPartyGoldModal() {
-    this.partyGoldModalOpen.set(true);
-    this.partyGoldAmount.set(0);
-    this.partyGoldCurrency.set('gp');
-    this.partyGoldNote.set('');
-    this.partyCurrencyDropdownOpen.set(false);
-    setTimeout(() => {
-      this.partyGoldAmountInput().nativeElement.focus();
-    });
+  // ── Party-wide gold award drawer ─────────────────────────────────────────────────
+  openPartyGoldDrawer() {
+    this.partyGoldDrawer?.open(this.campaignId());
   }
 
-  onPartyGoldAmountChange(value: string): void {
-    const stripped = value.replace(/[^0-9]/g, '');
-    const num = parseInt(stripped, 10);
-    this.partyGoldAmount.set(isNaN(num) ? 0 : num);
-  }
-
-  awardPartyGold() {
-    const amount = this.partyGoldAmount();
-    if (!amount || amount <= 0) return;
-    this.partyGoldSaving.set(true);
-    const id = this.campaignId();
-    const currency = this.partyGoldCurrency();
-
-    const body = {
-      amount,
-      currency: currency,
-      note: this.partyGoldNote() || null,
-      playerCardId: null,
-    };
-
-    this.http.post<{ currency: string; playerAwards: { playerUserId: string; amount: number }[] }>(
-      `${environment.apiUrl}/api/campaigns/${id}/gold-award`, body)
-      .subscribe({
-        next: (response) => {
-          const splits = response.playerAwards;
-          this.playerCards.update(list => list.map(c => {
-            const split = splits.find(s => s.playerUserId === c.playerUserId);
-            if (!split || split.amount === 0) return c;
-            const existing = c.currencyBalances.find(b => b.currency === currency);
-            const updated = existing
-              ? c.currencyBalances.map(b => b.currency === currency ? { ...b, amount: b.amount + split.amount } : b)
-              : [...c.currencyBalances, { currency, amount: split.amount }];
-            return { ...c, currencyBalances: updated };
-          }));
-          this.partyGoldSaving.set(false);
-          this.partyGoldModalOpen.set(false);
-        },
-        error: () => this.partyGoldSaving.set(false),
-      });
+  onPartyGoldAwarded(response: { currency: string; playerAwards: { playerUserId: string; amount: number }[] }) {
+    const splits = response.playerAwards;
+    const currency = response.currency;
+    this.playerCards.update(list => list.map(c => {
+      const split = splits.find(s => s.playerUserId === c.playerUserId);
+      if (!split || split.amount === 0) return c;
+      const existing = c.currencyBalances.find(b => b.currency === currency);
+      const updated = existing
+        ? c.currencyBalances.map(b => b.currency === currency ? { ...b, amount: b.amount + split.amount } : b)
+        : [...c.currencyBalances, { currency, amount: split.amount }];
+      return { ...c, currencyBalances: updated };
+    }));
   }
 
   // ── Drawer methods ──────────────────────────────────────────────────────────────

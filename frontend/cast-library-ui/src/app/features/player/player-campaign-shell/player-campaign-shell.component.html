@@ -22,15 +22,9 @@
   <div class="void-topbar">
     <div class="topbar-row">
       <div class="topbar-right">
-        <div class="purse-wrap">
-          <button class="topbar-purse-btn" (click)="togglePurse()" title="Fortune"><img class="purse-icon" src="/treasure_chest_gold_coins.svg" alt="Fortune" /></button>
-          @if (showPurse()) {
-            <div class="purse-backdrop" (click)="closePurse()"></div>
-            <div class="purse-panel">
-              <app-currency-display [purse]="purse()" />
-            </div>
-          }
-        </div>
+        <button class="topbar-purse-btn" (click)="openInventoryDrawer()" title="Purse">
+          <img class="purse-icon" src="/treasure_chest_gold_coins.svg" alt="Purse" />
+        </button>
         <button class="topbar-chronicle-btn" (click)="openChronicleDrawer()" title="Chronicles">
           <img class="chronicle-icon" src="/open_book_star_moon_storytelling.svg" alt="Chronicles" />
         </button>
@@ -71,6 +65,10 @@
 <app-campaign-chronicle-drawer #chronicleDrawer
   [campaignId]="campaignId()"
   [isDmMode]="false"
+  [portalColor]="safeColor(campaign()?.spineColor)"
+/>
+<app-player-inventory-drawer #inventoryDrawer
+  [campaignId]="campaignId()"
   [portalColor]="safeColor(campaign()?.spineColor)"
 />
 <div class="void-letterbox-top"></div>
