@@ -37,10 +37,8 @@ export class CampaignCastDetailComponent implements OnInit, OnDestroy {
   private paramsSub?: Subscription;
 
   @ViewChild('detailContent') private detailContentRef!: ElementRef<HTMLElement>;
-  @ViewChild('expandBtn')     private expandBtnRef!: ElementRef<HTMLElement>;
 
   detailExpanded = signal(false);
-  panelHeight    = signal('220px');
 
   campaignId         = signal('');
   sublocationInstanceId = signal('');
@@ -522,7 +520,6 @@ export class CampaignCastDetailComponent implements OnInit, OnDestroy {
   toggleDetail() {
     const panel = this.detailContentRef.nativeElement.parentElement as HTMLElement;
     if (this.detailExpanded()) {
-      this.panelHeight.set('220px');
       panel.style.marginLeft = '';
       panel.style.width = '';
       this.detailExpanded.set(false);
@@ -533,10 +530,7 @@ export class CampaignCastDetailComponent implements OnInit, OnDestroy {
   }
 
   private expandPanel(applyMobileWidth = false) {
-    const panel    = this.detailContentRef.nativeElement.parentElement as HTMLElement;
-    const contentH = this.detailContentRef.nativeElement.scrollHeight;
-    const btnH     = this.expandBtnRef.nativeElement.offsetHeight;
-    this.panelHeight.set(`${contentH + btnH}px`);
+    const panel = this.detailContentRef.nativeElement.parentElement as HTMLElement;
     if (applyMobileWidth && window.innerWidth < 768) {
       const left = panel.getBoundingClientRect().left;
       panel.style.marginLeft = `${-(left - 20)}px`;

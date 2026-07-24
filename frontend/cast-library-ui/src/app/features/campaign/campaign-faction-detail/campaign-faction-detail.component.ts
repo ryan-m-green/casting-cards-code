@@ -29,7 +29,6 @@ import { DetailPanelActionsComponent } from '../../../shared/components/detail-p
 })
 export class CampaignFactionDetailComponent implements OnInit, OnDestroy {
   @ViewChild('detailContent') private detailContentRef!: ElementRef<HTMLElement>;
-  @ViewChild('expandBtn')     private expandBtnRef!: ElementRef<HTMLElement>;
 
   private route    = inject(ActivatedRoute);
   private router   = inject(Router);
@@ -70,7 +69,6 @@ export class CampaignFactionDetailComponent implements OnInit, OnDestroy {
   factionInstanceId = signal('');
   campaign          = signal<CampaignDetail | null>(null);
   detailExpanded    = signal(false);
-  panelHeight       = signal('220px');
 
   // Edit mode
   editing         = signal(false);
@@ -398,10 +396,7 @@ export class CampaignFactionDetailComponent implements OnInit, OnDestroy {
   }
 
   private expandPanel() {
-    const panel    = this.detailContentRef.nativeElement.parentElement as HTMLElement;
-    const contentH = this.detailContentRef.nativeElement.scrollHeight;
-    const btnH     = this.expandBtnRef.nativeElement.offsetHeight;
-    this.panelHeight.set(`${contentH + btnH + 268}px`);
+    const panel = this.detailContentRef.nativeElement.parentElement as HTMLElement;
     if (window.innerWidth < 768) {
       const left = panel.getBoundingClientRect().left;
       panel.style.marginLeft = `${-(left - 20)}px`;
@@ -414,7 +409,6 @@ export class CampaignFactionDetailComponent implements OnInit, OnDestroy {
     const panel = this.detailContentRef.nativeElement.parentElement as HTMLElement;
     panel.style.marginLeft = '';
     panel.style.width = '';
-    this.panelHeight.set('220px');
     this.detailExpanded.set(false);
   }
 
@@ -488,14 +482,10 @@ export class CampaignFactionDetailComponent implements OnInit, OnDestroy {
   toggleDetail() {
     const panel = this.detailContentRef.nativeElement.parentElement as HTMLElement;
     if (this.detailExpanded()) {
-      this.panelHeight.set('220px');
       panel.style.marginLeft = '';
       panel.style.width = '';
       this.detailExpanded.set(false);
     } else {
-      const contentH = this.detailContentRef.nativeElement.scrollHeight;
-      const btnH     = this.expandBtnRef.nativeElement.offsetHeight;
-      this.panelHeight.set(`${contentH + btnH + 60}px`);
       if (window.innerWidth < 768) {
         const left = panel.getBoundingClientRect().left;
         panel.style.marginLeft = `${-(left - 20)}px`;

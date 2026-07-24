@@ -33,12 +33,10 @@ export class PlayerLocationDetailComponent implements OnInit, OnDestroy {
   private hubSubscriptions: Subscription[] = [];
 
   @ViewChild('detailContent')   private detailContentRef!: ElementRef<HTMLElement>;
-  @ViewChild('expandBtn')       private expandBtnRef!: ElementRef<HTMLElement>;
 
   campaignId     = signal('');
   locationInstanceId = signal('');
   detailExpanded = signal(false);
-  panelHeight    = signal('220px');
 
   campaign = () => this.shell.campaign();
 
@@ -96,7 +94,6 @@ export class PlayerLocationDetailComponent implements OnInit, OnDestroy {
       this.campaignId.set(id);
       this.locationInstanceId.set(locationInstId);
       this.detailExpanded.set(false);
-      this.panelHeight.set('220px');
     });
   }
 
@@ -108,14 +105,10 @@ export class PlayerLocationDetailComponent implements OnInit, OnDestroy {
   toggleDetail() {
     const panel = this.detailContentRef.nativeElement.parentElement as HTMLElement;
     if (this.detailExpanded()) {
-      this.panelHeight.set('220px');
       panel.style.marginLeft = '';
       panel.style.width = '';
       this.detailExpanded.set(false);
     } else {
-      const contentH = this.detailContentRef.nativeElement.scrollHeight;
-      const btnH     = this.expandBtnRef.nativeElement.offsetHeight;
-      this.panelHeight.set(`${contentH + btnH}px`);
       if (window.innerWidth < 768) {
         const left = panel.getBoundingClientRect().left;
         panel.style.marginLeft = `${-(left - 20)}px`;

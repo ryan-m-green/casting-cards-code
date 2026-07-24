@@ -48,14 +48,12 @@ export class CampaignLocationDetailComponent implements OnInit, OnDestroy {
   private hubSubscriptions: Subscription[] = [];
 
   @ViewChild('detailContent') private detailContentRef!: ElementRef<HTMLElement>;
-  @ViewChild('expandBtn')     private expandBtnRef!: ElementRef<HTMLElement>;
 
   private paramsSub?: Subscription;
   campaignId         = signal('');
   locationInstanceId = signal('');
   campaign           = signal<CampaignDetail | null>(null);
   detailExpanded     = signal(false);
-  panelHeight        = signal('220px');
 
   // Edit mode
   editing          = signal(false);
@@ -215,10 +213,7 @@ export class CampaignLocationDetailComponent implements OnInit, OnDestroy {
   }
 
   private expandPanel(applyMobileWidth = false) {
-    const panel    = this.detailContentRef.nativeElement.parentElement as HTMLElement;
-    const contentH = this.detailContentRef.nativeElement.scrollHeight;
-    const btnH     = this.expandBtnRef.nativeElement.offsetHeight;
-    this.panelHeight.set(`${contentH + btnH}px`);
+    const panel = this.detailContentRef.nativeElement.parentElement as HTMLElement;
     if (applyMobileWidth && window.innerWidth < 768) {
       const left = panel.getBoundingClientRect().left;
       panel.style.marginLeft = `${-(left - 20)}px`;
@@ -386,15 +381,11 @@ export class CampaignLocationDetailComponent implements OnInit, OnDestroy {
   toggleDetail() {
     const panel = this.detailContentRef.nativeElement.parentElement as HTMLElement;
     if (this.detailExpanded()) {
-      this.panelHeight.set('220px');
       panel.style.marginLeft = '';
       panel.style.width = '';
       this.detailExpanded.set(false);
       this.editing.set(false);
     } else {
-      const contentH = this.detailContentRef.nativeElement.scrollHeight;
-      const btnH     = this.expandBtnRef.nativeElement.offsetHeight;
-      this.panelHeight.set(`${contentH + btnH}px`);
       if (window.innerWidth < 768) {
         const left = panel.getBoundingClientRect().left;
         panel.style.marginLeft = `${-(left - 20)}px`;

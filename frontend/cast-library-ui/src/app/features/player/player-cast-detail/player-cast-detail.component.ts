@@ -34,10 +34,8 @@ export class PlayerCastDetailComponent implements OnInit, OnDestroy {
 
   @ViewChild(PlayerCastNotesComponent) private notesComp?: PlayerCastNotesComponent;
   @ViewChild('detailContent') private detailContentRef!: ElementRef<HTMLElement>;
-  @ViewChild('expandBtn')     private expandBtnRef!: ElementRef<HTMLElement>;
 
   detailExpanded = signal(false);
-  panelHeight    = signal('220px');
 
   campaignId         = signal('');
   sublocationInstanceId = signal('');
@@ -267,12 +265,8 @@ export class PlayerCastDetailComponent implements OnInit, OnDestroy {
 
   toggleDetail() {
     if (this.detailExpanded()) {
-      this.panelHeight.set('220px');
       this.detailExpanded.set(false);
     } else {
-      const contentH = this.detailContentRef.nativeElement.scrollHeight;
-      const btnH     = this.expandBtnRef.nativeElement.offsetHeight;
-      this.panelHeight.set(`${contentH + btnH}px`);
       this.detailExpanded.set(true);
     }
   }

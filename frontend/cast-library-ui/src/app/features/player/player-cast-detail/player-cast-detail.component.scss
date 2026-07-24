@@ -243,10 +243,15 @@
   overflow: hidden;
   display: flex;
   flex-direction: column;
-  transition: height 0.35s cubic-bezier(0.4, 0, 0.2, 1),
+  max-height: 220px;
+  transition: max-height 0.35s cubic-bezier(0.4, 0, 0.2, 1),
               margin-left 0.35s cubic-bezier(0.4, 0, 0.2, 1),
               width 0.35s cubic-bezier(0.4, 0, 0.2, 1);
   position: relative;
+
+  &.detail-panel--expanded {
+    max-height: 2000px;
+  }
 }
 
 .detail-close-btn {
