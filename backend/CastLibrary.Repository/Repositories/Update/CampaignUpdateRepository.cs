@@ -24,7 +24,7 @@ public interface ICampaignUpdateRepository
     Task UpdateCastInstanceKeywordsAsync(Guid instanceId, string[] keywords);
     Task UpdateSublocationInstanceKeywordsAsync(Guid instanceId, string[] keywords);
     Task ToggleShopItemScratchAsync(Guid shopItemId, bool isScratchedOff);
-    Task UpdateShopItemAsync(Guid shopItemId, string name, int priceAmount, string priceCurrencyType);
+    Task UpdateShopItemAsync(Guid shopItemId, string name, int priceAmount, string priceCurrencyType, string description);
     Task DeleteShopItemAsync(Guid shopItemId);
     Task TravelCastAsync(Guid instanceId, Guid locationInstanceId, Guid sublocationInstanceId);
     Task UpdateFactionInstanceAsync(CampaignFactionInstanceDomain instance);
@@ -190,16 +190,16 @@ public class CampaignUpdateRepository(
         logging.LogDbOperation(correlation.TraceId, spanId, "UPDATE", "campaign_sublocation_shop_items", @params, rows);
     }
 
-    public async Task UpdateShopItemAsync(Guid shopItemId, string name, int priceAmount, string priceCurrencyType)
+    public async Task UpdateShopItemAsync(Guid shopItemId, string name, int priceAmount, string priceCurrencyType, string description)
     {
         var spanId = correlation.NewSpan();
-        var @params = new { ShopItemId = shopItemId, Name = name, PriceAmount = priceAmount, PriceCurrencyType = priceCurrencyType };
+        var @params = new { ShopItemId = shopItemId, Name = name, PriceAmount = priceAmount, PriceCurrencyType = priceCurrencyType, Description = description };
 
         logging.LogDbOperation(correlation.TraceId, spanId, "UPDATE", "campaign_sublocation_shop_items", @params);
 
         using var conn = CreateConnection();
         var rows = await conn.ExecuteAsync(
-            "UPDATE campaign_sublocation_shop_items SET name=@Name, price_amount=@PriceAmount, price_currency_type=@PriceCurrencyType WHERE id=@ShopItemId",
+            "UPDATE campaign_sublocation_shop_items SET name=@Name, price_amount=@PriceAmount, price_currency_type=@PriceCurrencyType, description=@Description WHERE id=@ShopItemId",
             @params);
 
         logging.LogDbOperation(correlation.TraceId, spanId, "UPDATE", "campaign_sublocation_shop_items", @params, rows);

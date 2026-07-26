@@ -10,9 +10,7 @@ import { CampaignHubService } from '../../../core/hub/campaign-hub.service';
 import { environment } from '../../../../environments/environment';
 import { NoteDestinationPickerComponent } from '../../../shared/components/note-destination-picker/note-destination-picker.component';
 import { LockIconComponent } from '../../../shared/components/lock-icon/lock-icon.component';
-import { ConfirmDialogComponent } from '../../../shared/components/confirm-dialog/confirm-dialog.component';
 import { StorylineFilterBarComponent } from '../../../shared/components/storyline-filter-bar/storyline-filter-bar.component';
-import { EntityBadgeComponent } from '../../../shared/components/entity-badge/entity-badge.component';
 import { CampaignLocationInstance } from '../../../shared/models/location.model';
 import { CampaignSublocationInstance } from '../../../shared/models/sublocation.model';
 import { CampaignCastInstance } from '../../../shared/models/cast.model';
@@ -25,7 +23,7 @@ import { CampaignSecret } from '../../../shared/models/secret.model';
 import { Subscription } from 'rxjs';
 
 type EventsTab = 'events' | 'create-events' | 'create-handout';
-type DestType = 'cast' | 'faction' | 'campaign' | 'sublocation' | 'location' | 'player' | 'none' | 'time-of-day';
+type DestType = 'cast' | 'faction' | 'campaign' | 'sublocation' | 'location' | 'player' | 'none' | 'time-of-day' | 'cast-traveled';
 
 interface LinkedItem {
   entityType: string | null;
@@ -33,6 +31,7 @@ interface LinkedItem {
   entityName: string | null;
   todPositionPercent?: number | null;
   originalEntityType?: string;
+  visibleToPlayers?: boolean;
 }
 
 interface CampaignEvent {
@@ -84,6 +83,7 @@ export class GmEventsComponent implements OnInit, OnDestroy {
   editDestType     = signal<DestType | null>(null);
   editEntityId     = signal('');
   editLinkedEntities = signal<LinkedItem[]>([]);
+  editVisibleToPlayers = signal(false);
   editTodPositionPercent = signal<number | null>(null);
   editFile         = signal<File | null>(null);
   editPreviewUrl   = signal<string | null>(null);
@@ -139,6 +139,8 @@ export class GmEventsComponent implements OnInit, OnDestroy {
         const linkedEntityType = ev.linkedEntities.length > 0 ? ev.linkedEntities[0].entityType ?? 'none' : 'none';
         if (linkedEntityType === 'campaign') {
           effectiveType = 'campaign-event';
+        } else if (linkedEntityType === 'cast-traveled') {
+          effectiveType = 'cast-traveled';
         } else if (ev.sceneType === 'campaign-handout') {
           effectiveType = 'campaign-handout';
         } else if (ev.imageUrl) {
@@ -366,6 +368,17 @@ export class GmEventsComponent implements OnInit, OnDestroy {
     this.http.get<CampaignEvent[]>(`${environment.apiUrl}/api/campaigns/${this.campaignId}/events`)
       .subscribe({
         next:  data => {
+          console.log('loadEvents - loaded events:', data);
+          console.log('loadEvents - events with visibility details:', data.map(ev => ({
+            id: ev.id,
+            title: ev.title,
+            sceneType: ev.sceneType,
+            visibleToPlayers: ev.visibleToPlayers,
+            linkedEntities: ev.linkedEntities.map(le => ({
+              entityType: le.entityType,
+              visibleToPlayers: le.visibleToPlayers
+            }))
+          })));
           this.events.set(data);
           this.loadingEvents.set(false);
         },
@@ -419,6 +432,12 @@ export class GmEventsComponent implements OnInit, OnDestroy {
       this.editDestType.set((firstLinked?.entityType as DestType) ?? 'none');
       this.editEntityId.set(firstLinked?.entityId ?? '');
       this.editTodPositionPercent.set(firstLinked?.todPositionPercent ?? null);
+      // Initialize visibleToPlayers from linked entity for cast-traveled
+      if (firstLinked?.entityType === 'cast-traveled') {
+        this.editVisibleToPlayers.set(firstLinked.visibleToPlayers ?? false);
+      } else {
+        this.editVisibleToPlayers.set(false);
+      }
       this.editFile.set(null);
       const prev = this.editPreviewUrl();
       if (prev) URL.revokeObjectURL(prev);
@@ -448,6 +467,39 @@ export class GmEventsComponent implements OnInit, OnDestroy {
     this.editDestType.set(value as DestType);
     this.editEntityId.set('');
     if (value !== 'time-of-day') this.editTodPositionPercent.set(null);
+  }
+
+  onEditVisibleToPlayersChange(value: boolean) {
+    const entities = this.editLinkedEntities();
+    const updated = entities.map(entity => {
+      if (entity.entityType === 'cast-traveled') {
+        return { ...entity, visibleToPlayers: value };
+      }
+      return entity;
+    });
+    this.editLinkedEntities.set(updated);
+  }
+
+  onVisibleToPlayersChange(value: boolean) {
+    const entities = this.linkedEntities();
+    const updated = entities.map(entity => {
+      if (entity.entityType === 'cast-traveled') {
+        return { ...entity, visibleToPlayers: value };
+      }
+      return entity;
+    });
+    this.linkedEntities.set(updated);
+  }
+
+  onHandoutVisibleToPlayersChange(value: boolean) {
+    const entities = this.handoutLinkedEntities();
+    const updated = entities.map(entity => {
+      if (entity.entityType === 'cast-traveled') {
+        return { ...entity, visibleToPlayers: value };
+      }
+      return entity;
+    });
+    this.handoutLinkedEntities.set(updated);
   }
 
   onEditSceneTypeChange(value: 'campaign-event' | 'campaign-handout') {
@@ -494,12 +546,21 @@ export class GmEventsComponent implements OnInit, OnDestroy {
 
     const resolvedTodPercent = destType === 'time-of-day' ? this.editTodPositionPercent() : null;
 
+    // Determine visibility - for cast-traveled, use the linked entity visibility, otherwise use event visibility
+    let visibleToPlayers = ev.visibleToPlayers;
+    const hasCastTravel = linkedEntities.some(le => le.entityType === 'cast-traveled');
+    if (hasCastTravel) {
+      const castTravelEntity = linkedEntities.find(le => le.entityType === 'cast-traveled');
+      visibleToPlayers = castTravelEntity?.visibleToPlayers ?? false;
+    }
+
     const payload = {
       title,
       body: this.editDraft(),
       sceneType: this.editSceneType(),
       linkedEntities,
       todPositionPercent: resolvedTodPercent,
+      visibleToPlayers,
     };
 
     this.http.patch(
@@ -517,13 +578,13 @@ export class GmEventsComponent implements OnInit, OnDestroy {
           ).subscribe({
             next: (res: any) => {
               this.events.update(evs => evs.map(e => e.id === ev.id
-                ? { ...e, title, body: this.editDraft(), sceneType: this.editSceneType(), linkedEntities, todPositionPercent: resolvedTodPercent, imageUrl: res.imageUrl, visibleToPlayers: e.visibleToPlayers }
+                ? { ...e, title, body: this.editDraft(), sceneType: this.editSceneType(), linkedEntities, todPositionPercent: resolvedTodPercent, imageUrl: res.imageUrl, visibleToPlayers }
                 : e));
               this._finishEditSave(ev.id);
             },
             error: () => {
               this.events.update(evs => evs.map(e => e.id === ev.id
-                ? { ...e, title, body: this.editDraft(), sceneType: this.editSceneType(), linkedEntities, todPositionPercent: resolvedTodPercent, visibleToPlayers: e.visibleToPlayers }
+                ? { ...e, title, body: this.editDraft(), sceneType: this.editSceneType(), linkedEntities, todPositionPercent: resolvedTodPercent, imageUrl: e.imageUrl, visibleToPlayers }
                 : e));
               this.editSaving.set(false);
               this.editSaveError.set('Details saved but image upload failed.');
@@ -532,7 +593,7 @@ export class GmEventsComponent implements OnInit, OnDestroy {
         } else {
           const shouldClearImage = ev.sceneType === 'campaign-handout' && this.editSceneType() === 'campaign-event';
           this.events.update(evs => evs.map(e => e.id === ev.id
-            ? { ...e, title, body: this.editDraft(), sceneType: this.editSceneType(), linkedEntities, todPositionPercent: resolvedTodPercent, imageUrl: shouldClearImage ? undefined : e.imageUrl, visibleToPlayers: e.visibleToPlayers }
+            ? { ...e, title, body: this.editDraft(), sceneType: this.editSceneType(), linkedEntities, todPositionPercent: resolvedTodPercent, imageUrl: shouldClearImage ? undefined : e.imageUrl, visibleToPlayers }
             : e));
           this._finishEditSave(ev.id);
         }
@@ -586,23 +647,45 @@ export class GmEventsComponent implements OnInit, OnDestroy {
     });
   }
 
+  // Helper method for template to trigger change detection
+  trackById(index: number, ev: CampaignEvent): string {
+    return ev.id;
+  }
+
+  // Check if archive button should be shown (GM-only campaign event OR cast travel with hidden triggers)
+  shouldShowArchiveButton(event: CampaignEvent): boolean {
+    const isGmOnlyCampaignEvent = event.linkedEntities.length === 0
+      && event.sceneType === 'campaign-event';
+
+    if (isGmOnlyCampaignEvent) {
+      return true;
+    }
+
+    // Check if it's a cast travel item with any trigger visibleToPlayers == false
+    const hasCastTravelTrigger = event.linkedEntities.some(le => le.entityType === 'cast-traveled');
+    if (hasCastTravelTrigger) {
+      const hasHiddenTrigger = event.linkedEntities.some(le => le.visibleToPlayers === false);
+      return hasHiddenTrigger;
+    }
+
+    return false;
+  }
+
   toggleVisibility(event: CampaignEvent, domEvent: Event) {
+    console.log('toggleVisibility called for event:', event.id);
     domEvent.stopPropagation();
 
     const next = !event.visibleToPlayers;
 
-    console.log('toggleVisibility called - event:', event);
-    console.log('toggleVisibility - linkedEntities:', event.linkedEntities);
-    console.log('toggleVisibility - next:', next);
-
-    const entityVisibilities = event.linkedEntities.map(le => ({
-      entityType: le.entityType,
-      entityId: le.entityId,
-      todPositionPercent: le.todPositionPercent,
-      isVisible: next
-    }));
-
-    console.log('toggleVisibility - entityVisibilities after map:', entityVisibilities);
+    const entityVisibilities = event.linkedEntities.map(le => {
+      const visibility: any = {
+        entityType: le.entityType,
+        entityId: le.entityType === 'cast-traveled' ? event.id : le.entityId,
+        todPositionPercent: le.todPositionPercent,
+        isVisible: next
+      };
+      return visibility;
+    });
 
     const isGmOnlyCampaignEvent = event.linkedEntities.length === 0
       && event.sceneType === 'campaign-event';
@@ -616,17 +699,13 @@ export class GmEventsComponent implements OnInit, OnDestroy {
       });
     }
 
-    console.log('toggleVisibility - entityVisibilities after campaign event push:', entityVisibilities);
-
     const body = { entityVisibilities };
 
-    console.log('toggleVisibility - request body:', body);
-    console.log('toggleVisibility - API URL:', `${environment.apiUrl}/api/campaigns/${this.campaignId}/events/${event.id}/visibility`);
-
+    console.log('Sending visibility update request:', body);
     this.http.patch(`${environment.apiUrl}/api/campaigns/${this.campaignId}/events/${event.id}/visibility`, body)
       .subscribe({
         next: () => {
-          console.log('toggleVisibility - request successful');
+          console.log('Visibility update successful for event:', event.id);
           this.events.update(evs => evs.map(e => e.id === event.id ? { ...e, visibleToPlayers: next } : e));
         },
       });
@@ -656,6 +735,9 @@ export class GmEventsComponent implements OnInit, OnDestroy {
       // Use originalEntityType to determine the display name
       const originalType = first.originalEntityType || 'secret';
       return first.entityName ?? 'Secret';
+    }
+    if (first.entityType === 'cast-traveled') {
+      return first.entityName ?? 'Cast Travel';
     }
     const id = first.entityId;
     if (!id) return '';
@@ -694,6 +776,11 @@ export class GmEventsComponent implements OnInit, OnDestroy {
           continue;
         }
       }
+      // For cast-traveled, use the entityName directly
+      if (item.entityType === 'cast-traveled') {
+        groups[type].push(name || item.entityId);
+        continue;
+      }
       groups[type].push(name || item.entityId);
     }
     return groups;
@@ -716,8 +803,21 @@ export class GmEventsComponent implements OnInit, OnDestroy {
       'time-of-day': `<svg viewBox="0 0 24 24" fill="none" stroke="#e94560" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>`,
       'campaign': `<svg viewBox="0 0 24 24" fill="none" stroke="#e94560" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>`,
       'secret': `<svg viewBox="0 0 24 24" fill="none" stroke="#e94560" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 22h20L12 2z"/></svg>`,
+      'cast-traveled': `<svg viewBox="0 0 24 24" fill="none" stroke="#e94560" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>`,
+      'gm-note': `<svg viewBox="0 0 24 24" fill="none" stroke="#e94560" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>`,
     };
     return this.sanitizer.bypassSecurityTrustHtml(icons[type] || icons['campaign']);
+  }
+
+  getEventTypeForArchive(event: CampaignEvent): string {
+    if (event.linkedEntities.length === 0) {
+      return 'gm-note';
+    }
+    const firstLinked = event.linkedEntities[0];
+    if (firstLinked.entityType === 'secret') {
+      return firstLinked.originalEntityType || 'secret';
+    }
+    return firstLinked.entityType || 'campaign';
   }
 
 parseSecretValue(value: string): { innerType: string, content: string } | null {
@@ -1071,7 +1171,11 @@ parseSecretValue(value: string): { innerType: string, content: string } | null {
     return this.events().filter(ev => {
       const isUnlockedOrMarked = ev.visibleToPlayers || ev.markedForArchive;
       const isGmNote = ev.sceneType === 'campaign-event' && ev.linkedEntities.length === 0;
-      return isUnlockedOrMarked && !isGmNote;
+      const hasLinkedEntities = ev.linkedEntities.length > 0;
+      const isVisibleToPlayers = ev.visibleToPlayers;
+      // Storyline items with linked entities that are not visible to players should go to GM notes section
+      const isHiddenStorylineItem = hasLinkedEntities && !isVisibleToPlayers;
+      return isUnlockedOrMarked && !isGmNote && !isHiddenStorylineItem;
     });
   }
 
@@ -1079,7 +1183,11 @@ parseSecretValue(value: string): { innerType: string, content: string } | null {
     return this.events().filter(ev => {
       const isUnlockedOrMarked = ev.visibleToPlayers || ev.markedForArchive;
       const isGmNote = ev.sceneType === 'campaign-event' && ev.linkedEntities.length === 0;
-      return isUnlockedOrMarked && isGmNote;
+      const hasLinkedEntities = ev.linkedEntities.length > 0;
+      const isVisibleToPlayers = ev.visibleToPlayers;
+      // Storyline items with linked entities that are not visible to players should go here
+      const isHiddenStorylineItem = hasLinkedEntities && !isVisibleToPlayers;
+      return isUnlockedOrMarked && (isGmNote || isHiddenStorylineItem);
     });
   }
 }

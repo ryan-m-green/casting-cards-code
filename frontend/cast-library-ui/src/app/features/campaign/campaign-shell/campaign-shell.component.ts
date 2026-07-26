@@ -53,6 +53,38 @@ export class CampaignShellComponent implements OnInit, OnDestroy {
       })
     );
 
+    // Update cast's sublocation in campaign when a cast travels — keeps the nav drawer in sync
+    this.hubSubscriptions.push(
+      this.hub.castTravel$.subscribe(event => {
+        if (!event || event.campaignId !== this.campaignId()) return;
+
+        const update = (c: CampaignDetail | null): CampaignDetail | null => {
+          if (!c) return c;
+          return {
+            ...c,
+            casts: c.casts.map(ca => {
+              if (ca.instanceId === event.castInstanceId) {
+                // When hiding, move back to fromSublocationInstanceId
+                // When revealing, move to toSublocationInstanceId
+                const targetSublocationId = event.isVisible
+                  ? event.toSublocationInstanceId
+                  : event.fromSublocationInstanceId;
+                return {
+                  ...ca,
+                  sublocationInstanceId: targetSublocationId,
+                  locationInstanceId: event.toLocationInstanceId
+                };
+              }
+              return ca;
+            }),
+          };
+        };
+
+        this.campaign.update(update);
+        this.shellSvc.updateCampaign(update);
+      })
+    );
+
     this.hubSubscriptions.push(
       this.shellSvc.openChronicleWithSearch.subscribe(query => {
         this.chronicleDrawer().openWithSearch(query);
@@ -107,5 +139,9 @@ export class CampaignShellComponent implements OnInit, OnDestroy {
 
   openChronicleDrawer() {
     this.chronicleDrawer().open();
+  }
+
+  goToEvents() {
+    this.router.navigate(['/campaign', this.campaignId(), 'plot']);
   }
 }

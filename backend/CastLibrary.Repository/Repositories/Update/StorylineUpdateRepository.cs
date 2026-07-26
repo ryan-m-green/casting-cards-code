@@ -9,7 +9,7 @@ public interface IStorylineUpdateRepository
     Task UpdateVisibilityAsync(Guid eventId, bool isVisibleToPlayers);
     Task UpdateBodyAsync(Guid eventId, string body);
     Task UpdateFilePathAsync(Guid eventId, string filePath);
-    Task UpdateDetailsAsync(Guid eventId, string title, string body, string sceneType, string filePath, string linkedEntities);
+    Task UpdateDetailsAsync(Guid eventId, string title, string body, string sceneType, string filePath, string linkedEntities, bool visibleToPlayers);
     Task ReorderAsync(IList<Guid> eventIds);
     Task UpdateMarkedForArchiveAsync(Guid eventId, bool markedForArchive);
 }
@@ -76,10 +76,10 @@ public class StorylineUpdateRepository(
         logging.LogDbOperation(correlation.TraceId, spanId, "UPDATE", "campaign_storyline", @params, rows);
     }
 
-    public async Task UpdateDetailsAsync(Guid eventId, string title, string body, string sceneType, string filePath, string linkedEntities)
+    public async Task UpdateDetailsAsync(Guid eventId, string title, string body, string sceneType, string filePath, string linkedEntities, bool visibleToPlayers)
     {
         var spanId  = correlation.NewSpan();
-        var @params = new { Id = eventId, Title = title, Body = body, SceneType = sceneType, FilePath = filePath, LinkedEntities = linkedEntities, UpdatedAt = DateTime.UtcNow };
+        var @params = new { Id = eventId, Title = title, Body = body, SceneType = sceneType, FilePath = filePath, LinkedEntities = linkedEntities, VisibleToPlayers = visibleToPlayers, UpdatedAt = DateTime.UtcNow };
 
         const string sql =
             @"UPDATE campaign_storyline
@@ -88,6 +88,7 @@ public class StorylineUpdateRepository(
                   scene_type         = @SceneType,
                   file_path          = @FilePath,
                   linked_entities    = @LinkedEntities::jsonb,
+                  visible_to_players  = @VisibleToPlayers,
                   updated_at         = @UpdatedAt
               WHERE id = @Id";
 

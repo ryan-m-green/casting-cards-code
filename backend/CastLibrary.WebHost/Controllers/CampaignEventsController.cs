@@ -137,6 +137,19 @@ public class CampaignEventsController(
             {
                 responseObject = new { campaignId = result.CampaignId, positionPercent = result.PositionPercentMoved };
             }
+            else if (result.CardType == EntityTypes.CastTraveled)
+            {
+                responseObject = new
+                {
+                    campaignId = campaignId,
+                    castInstanceId = result.CastInstanceId ?? Guid.Empty,
+                    fromSublocationInstanceId = result.FromSublocationInstanceId,
+                    toLocationInstanceId = result.ToLocationInstanceId ?? Guid.Empty,
+                    toSublocationInstanceId = result.ToSublocationInstanceId ?? Guid.Empty,
+                    traveledToTheParty = result.TraveledToTheParty,
+                    isVisible = result.IsVisible
+                };
+            }
             else
             {
                 responseObject = new CardVisibilityChangedEvent
@@ -169,7 +182,7 @@ public class CampaignEventsController(
     {
         if (!await CallerOwns(campaignId)) return Forbid();
 
-        await updateArchiveMarkCommand.HandleAsync(new UpdateStorylineArchiveMarkCommand(eventId, markedForArchive));
+        var result = await updateArchiveMarkCommand.HandleAsync(new UpdateStorylineArchiveMarkCommand(eventId, markedForArchive));
 
         // SignalR event for real-time update
         await hubContext.Clients.Group(campaignId.ToString())
@@ -179,6 +192,22 @@ public class CampaignEventsController(
                 eventId,
                 markedForArchive
             });
+
+        // Broadcast CastTraveled event if cast travel occurred
+        if (result.CastTravelOccurred)
+        {
+            await hubContext.Clients.Group(campaignId.ToString())
+                .SendAsync("CastTraveled", new
+                {
+                    campaignId,
+                    castInstanceId = result.CastTravelData.CastInstanceId,
+                    fromSublocationInstanceId = result.CastTravelData.FromSublocationInstanceId,
+                    toLocationInstanceId = result.CastTravelData.ToLocationInstanceId,
+                    toSublocationInstanceId = result.CastTravelData.ToSublocationInstanceId,
+                    traveledToTheParty = false, // TODO: Check if traveled to party
+                    isVisible = result.CastTravelData.IsVisible
+                });
+        }
 
         return NoContent();
     }

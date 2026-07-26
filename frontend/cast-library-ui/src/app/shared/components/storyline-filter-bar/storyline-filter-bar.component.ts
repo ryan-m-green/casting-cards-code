@@ -18,6 +18,7 @@ export class StorylineFilterBarComponent {
   @Input() showCampaign = true;
   @Input() showHandout = true;
   @Input() showPlayerNote = true;
+  @Input() showCastTraveled = true;
   @Input() disablePlayerNote: boolean | null = null;
   @Input() showVisibilityFilters = false;
 

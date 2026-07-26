@@ -52,14 +52,15 @@ public class CampaignCastTravelController(
 
         var travelResponse = await travelCommand.HandleAsync(new TravelCastInstanceCommand(campaignId, castInstanceId, request));
 
-        await hubContext.Clients.Group(campaignId.ToString()).SendAsync("CastTravelled", new CastTravelledEvent
+        await hubContext.Clients.Group(campaignId.ToString()).SendAsync("CastTraveled", new CastTraveledEvent
         {
             CampaignId = campaignId,
             CastInstanceId = castInstanceId,
             FromSublocationInstanceId = request.FromSublocationInstanceId,
             ToLocationInstanceId = request.LocationInstanceId,
             ToSublocationInstanceId = request.SublocationInstanceId,
-            TraveledToTheParty = travelResponse.TraveledToTheParty
+            TraveledToTheParty = travelResponse.TraveledToTheParty,
+            IsVisible = true
         });
 
         return NoContent();

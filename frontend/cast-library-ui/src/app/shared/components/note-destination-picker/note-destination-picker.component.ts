@@ -8,6 +8,7 @@ import { CampaignPlayer } from '../../models/campaign.model';
 import { TimeOfDay, TimeOfDaySlice } from '../../models/time-of-day.model';
 import { CampaignDropdownComponent, CampaignDropdownOption } from '../campaign-dropdown/campaign-dropdown.component';
 import { CampaignSecret } from '../../models/secret.model';
+import { TravelAnchorComponent } from '../travel-anchor/travel-anchor.component';
 
 interface LinkedItem {
   entityType: string | null;
@@ -15,12 +16,13 @@ interface LinkedItem {
   entityName: string | null;
   todPositionPercent?: number | null;
   originalEntityType?: string; // Store original entity type for icon display when secret is selected
+  visibleToPlayers?: boolean; // Store visibility state per trigger
 }
 
 @Component({
   selector: 'app-note-destination-picker',
   standalone: true,
-  imports: [CommonModule, CampaignDropdownComponent],
+  imports: [CommonModule, CampaignDropdownComponent, TravelAnchorComponent],
   templateUrl: './note-destination-picker.component.html',
   styleUrl: './note-destination-picker.component.scss',
 })
@@ -94,6 +96,7 @@ export class NoteDestinationPickerComponent {
     this.secretsSignal.set(value);
   }
   @Input() showSecretPicker: boolean | null = null;
+  @Input() showCastTravel = false;
 
   @Output() destTypeChange = new EventEmitter<string>();
   @Output() entityIdChange = new EventEmitter<string>();
@@ -102,8 +105,13 @@ export class NoteDestinationPickerComponent {
   @Output() linkedEntitiesChange = new EventEmitter<LinkedItem[]>();
   @Output() visibleToPlayersChange = new EventEmitter<boolean>();
   @Output() selectedSecretChange = new EventEmitter<string>();
+  @Output() castTravelTriggerChange = new EventEmitter<{castInstanceId: string; toLocationInstanceId: string; toSublocationInstanceId: string; fromSublocationInstanceId?: string | null}>();
 
   selectedSecret = signal<string>('');
+  selectedCastForTravel = signal<string>('');
+  travelDrawerOpen = signal(false);
+  selectedTravelLocationId = signal<string | null>(null);
+  savedTravelDestination = signal<{castInstanceId: string; toLocationInstanceId: string; toSublocationInstanceId: string; fromSublocationInstanceId?: string | null} | null>(null);
 
   private elRef = inject(ElementRef);
 
@@ -113,6 +121,12 @@ export class NoteDestinationPickerComponent {
       || this.destTypeSignal() === 'player' || this.destTypeSignal() === 'time-of-day';
   }
 
+  get isCastTravelSelected(): boolean {
+    // Only disable buttons if cast travel is selected AND there are cast travel triggers
+    const hasCastTravelTriggers = this.linkedEntities().some(item => item.entityType === 'cast-traveled');
+    return this.destTypeSignal() === 'cast-traveled' && hasCastTravelTriggers;
+  }
+
   get showPills(): boolean {
     return this.multiselect && this.linkedEntities().length > 0;
   }
@@ -120,7 +134,8 @@ export class NoteDestinationPickerComponent {
   get isToggleDisabled(): boolean {
     return this.destTypeSignal() === 'cast' || this.destTypeSignal() === 'faction'
       || this.destTypeSignal() === 'sublocation' || this.destTypeSignal() === 'location'
-      || this.destTypeSignal() === 'player' || this.destTypeSignal() === 'time-of-day';
+      || this.destTypeSignal() === 'player' || this.destTypeSignal() === 'time-of-day'
+      || this.destTypeSignal() === 'cast-traveled';
   }
 
   get hasTimeTrigger(): boolean {
@@ -135,6 +150,10 @@ export class NoteDestinationPickerComponent {
     // If "none" or "time-of-day", it's not visible to players
     if (this.destTypeSignal() === 'none' || this.destTypeSignal() === 'time-of-day') {
       return 'Not Visible To Players';
+    }
+    // For cast-traveled, check the actual visibleToPlayers state
+    if (this.destTypeSignal() === 'cast-traveled') {
+      return this.visibleToPlayers ? 'Visible To Players' : 'Not Visible To Players';
     }
     // All other entity types are visible to players
     return 'Visible To Players';
@@ -183,6 +202,13 @@ export class NoteDestinationPickerComponent {
         return { value: c.instanceId, label };
       }),
     ];
+});
+
+readonly castTravelOptions = computed<CampaignDropdownOption[]>(() => {
+  return [
+    { value: '', label: '— select cast member —' },
+    ...this.casts.map(c => ({ value: c.instanceId, label: c.name })),
+  ];
 });
 
   readonly factionOptions = computed<CampaignDropdownOption[]>(() => [
@@ -299,6 +325,10 @@ private countSecretsForFaction(factionId: string): number {
 }
 
   onDestTypeChange(value: string): void {
+    // Close travel drawer if it's open when switching to a different type
+    if (this.travelDrawerOpen() && value !== 'cast-traveled') {
+      this.travelDrawerOpen.set(false);
+    }
     if (this.destTypeSignal() === 'time-of-day' && value !== 'time-of-day') {
       this.todPositionPercentChange.emit(null);
     }
@@ -341,6 +371,38 @@ private countSecretsForFaction(factionId: string): number {
     const entityId = this.entityId;
     const destType = this.destTypeSignal();
     const selectedSecret = this.selectedSecret();
+
+    // Handle cast-traveled trigger type
+    if (destType === 'cast-traveled') {
+      const savedDestination = this.savedTravelDestination();
+      if (!savedDestination) return;
+
+      const cast = this.casts.find(c => c.instanceId === savedDestination.castInstanceId);
+      const toSublocation = this.sublocations.find(s => s.instanceId === savedDestination.toSublocationInstanceId);
+      const toSublocationName = toSublocation?.name ?? 'Unknown';
+
+      const travelData = {
+        castInstanceId: savedDestination.castInstanceId,
+        toLocationInstanceId: savedDestination.toLocationInstanceId,
+        toSublocationInstanceId: savedDestination.toSublocationInstanceId,
+        fromSublocationInstanceId: savedDestination.fromSublocationInstanceId
+      };
+      const finalEntityId = JSON.stringify(travelData);
+      const entityName = `Cast: ${cast?.name ?? 'Unknown'} → Sublocation: ${toSublocationName}`;
+
+      const newItem: LinkedItem = {
+        entityType: 'cast-traveled',
+        entityId: finalEntityId,
+        entityName,
+        visibleToPlayers: this.visibleToPlayers
+      };
+
+      this.linkedEntitiesChange.emit([...this.linkedEntities(), newItem]);
+      this.savedTravelDestination.set(null);
+      // Keep the toggle state for subsequent triggers (do not reset)
+      // Keep destType as cast-traveled to keep travel button highlighted
+      return;
+    }
 
     // If a secret is selected, only add the secret entity, not the regular entity
     if (selectedSecret) {
@@ -455,6 +517,113 @@ private countSecretsForFaction(factionId: string): number {
   }
 
   onVisibleToPlayersToggle(): void {
-    this.visibleToPlayersChange.emit(!this.visibleToPlayers);
+    this._visibleToPlayers = !this.visibleToPlayers;
+    this.visibleToPlayersChange.emit(this._visibleToPlayers);
+  }
+
+  onCastTravelSelect(): void {
+    this._destType = 'cast-traveled';
+    this.destTypeSignal.set('cast-traveled');
+    this.destTypeChange.emit('cast-traveled');
+    this.entityIdChange.emit('');
+    this.selectedCastForTravel.set('');
+    this.travelDrawerOpen.set(false);
+    this.selectedTravelLocationId.set(null);
+    this.savedTravelDestination.set(null);
+  }
+
+  onCancelTravel(): void {
+    this._destType = 'none';
+    this.destTypeSignal.set('none');
+    this.destTypeChange.emit('none');
+    this.entityIdChange.emit('');
+    this.selectedCastForTravel.set('');
+    this.travelDrawerOpen.set(false);
+    this.selectedTravelLocationId.set(null);
+    this.savedTravelDestination.set(null);
+  }
+
+  onToggleTravelDrawer(): void {
+    this.travelDrawerOpen.update(open => !open);
+  }
+
+  getCurrentCastSublocation(): string {
+    const castInstanceId = this.selectedCastForTravel();
+    if (!castInstanceId) return '';
+    const cast = this.casts.find(c => c.instanceId === castInstanceId);
+    return cast?.sublocationInstanceId ?? '';
+  }
+
+  getCurrentCastLocation(): string {
+    const castInstanceId = this.selectedCastForTravel();
+    if (!castInstanceId) return '';
+    const cast = this.casts.find(c => c.instanceId === castInstanceId);
+    return cast?.locationInstanceId ?? '';
+  }
+
+  getPartyAnchor(): CampaignSublocationInstance | null {
+    return this.sublocations.find(s => s.isPartyAnchor) ?? null;
+  }
+
+  getSublocationsByLocation(): Record<string, CampaignSublocationInstance[]> {
+    const result: Record<string, CampaignSublocationInstance[]> = {};
+    this.sublocations.forEach(s => {
+      if (!result[s.locationInstanceId]) {
+        result[s.locationInstanceId] = [];
+      }
+      result[s.locationInstanceId].push(s);
+    });
+    return result;
+  }
+
+  onSelectTravelLocation(locationId: string | null): void {
+    this.selectedTravelLocationId.set(locationId);
+  }
+
+  onTravelCastToDestination(event: { locationInstanceId: string; sublocationInstanceId: string }): void {
+    const castInstanceId = this.selectedCastForTravel();
+    if (!castInstanceId) return;
+
+    const cast = this.casts.find(c => c.instanceId === castInstanceId);
+    if (!cast) return;
+
+    // Save the travel destination in state instead of immediately adding the trigger
+    this.savedTravelDestination.set({
+      castInstanceId,
+      toLocationInstanceId: event.locationInstanceId,
+      toSublocationInstanceId: event.sublocationInstanceId,
+      fromSublocationInstanceId: cast.sublocationInstanceId
+    });
+
+    // Close the drawer but keep cast selection and destType as cast-traveled
+    this.travelDrawerOpen.set(false);
+    this.selectedTravelLocationId.set(null);
+  }
+
+  getSelectedDestinationName(): string {
+    const savedDestination = this.savedTravelDestination();
+    if (!savedDestination) return '';
+
+    const cast = this.casts.find(c => c.instanceId === savedDestination.castInstanceId);
+    const toSublocation = this.sublocations.find(s => s.instanceId === savedDestination.toSublocationInstanceId);
+    const toSublocationName = toSublocation?.name ?? 'Unknown';
+    const visibilityText = this.visibleToPlayers ? '(Visible to Players)' : '(Not Visible to Players)';
+
+    return `Cast: ${cast?.name ?? 'Unknown'} → Sublocation: ${toSublocationName} ${visibilityText}`;
+  }
+
+  clearTravelDestination(): void {
+    this.savedTravelDestination.set(null);
+  }
+
+  onTravelCast(castInstanceId: string, toLocationInstanceId: string, toSublocationInstanceId: string, fromSublocationInstanceId?: string | null): void {
+    this.castTravelTriggerChange.emit({
+      castInstanceId,
+      toLocationInstanceId,
+      toSublocationInstanceId,
+      fromSublocationInstanceId
+    });
+    this.travelDrawerOpen.set(false);
+    this.selectedCastForTravel.set('');
   }
 }

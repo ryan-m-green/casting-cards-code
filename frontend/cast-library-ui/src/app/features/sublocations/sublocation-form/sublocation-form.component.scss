@@ -49,9 +49,30 @@
   margin-bottom: 8px;
 }
 
-.shop-item-fields {
+.shop-item-top-row {
   gap: 8px;
   align-items: flex-end;
+}
+
+.btn-item-confirm {
+  flex-shrink: 0;
+  background: #3b8c3b;
+  border: 1px solid #3b8c3b;
+  border-radius: 4px;
+  padding: 6px 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 13px;
+  cursor: pointer;
+  transition: background 0.18s ease, border-color 0.18s ease, color 0.18s ease;
+  margin-bottom: 2px;
+
+  &:hover {
+    background: #4ca64c;
+    border-color: #4ca64c;
+  }
 }
 
 .btn-item-remove {

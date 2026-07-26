@@ -450,7 +450,7 @@ public class CampaignsController(
     {
         if (!await CallerOwns(id)) return Forbid();
         await updateShopItemCommand.HandleAsync(new UpdateShopItemCommand(
-            shopItemId, request.Name, request.PriceAmount, request.PriceCurrencyType));
+            shopItemId, request.Name, request.PriceAmount, request.PriceCurrencyType, request.Description));
 
         await hubContext.Clients.Group(id.ToString()).SendAsync("ShopItemUpdated", new
         {

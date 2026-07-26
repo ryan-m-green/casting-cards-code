@@ -983,6 +983,7 @@ export class PortalImportCardComponent implements OnInit, OnChanges {
 
   addSublocationItem()             { this.sublocationShopItems.push(this.newSublocationItem()); }
   removeSublocationItem(i: number) { this.sublocationShopItems.removeAt(i); }
+  confirmSublocationItem(i: number) { /* Item is already in the array, no action needed */ }
 
   // ── New sublocation form ────────────────────────────────────────────
 

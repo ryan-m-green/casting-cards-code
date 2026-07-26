@@ -34,13 +34,14 @@ export interface PlayerRemovedEvent {
   campaignId: string;
 }
 
-export interface CastTravelledEvent {
+export interface CastTraveledEvent {
   campaignId: string;
   castInstanceId: string;
   fromSublocationInstanceId: string | null;
   toLocationInstanceId: string;
   toSublocationInstanceId: string;
   traveledToTheParty: boolean;
+  isVisible: boolean;
 }
 
 export interface FactionRemovedEvent {
@@ -183,7 +184,7 @@ export class CampaignHubService {
   private playerSecretDeletedSubject       = new Subject<PlayerSecretDeletedEvent | null>();
   private playerJoinedSubject              = new Subject<PlayerJoinedEvent | null>();
   private playerRemovedSubject             = new Subject<PlayerRemovedEvent | null>();
-  private castTravelledSubject             = new Subject<CastTravelledEvent | null>();
+  private castTravelSubject             = new Subject<CastTraveledEvent | null>();
   private factionRemovedSubject            = new Subject<FactionRemovedEvent | null>();
   private factionLockedSubject             = new Subject<FactionLockedEvent | null>();
   private shopItemUpdatedSubject            = new Subject<ShopItemUpdatedEvent | null>();
@@ -226,7 +227,7 @@ export class CampaignHubService {
   readonly playerSecretDeleted$       = this.playerSecretDeletedSubject.asObservable();
   readonly playerJoined$              = this.playerJoinedSubject.asObservable();
   readonly playerRemoved$             = this.playerRemovedSubject.asObservable();
-  readonly castTravelled$             = this.castTravelledSubject.asObservable();
+  readonly castTravel$             = this.castTravelSubject.asObservable();
   readonly factionRemoved$            = this.factionRemovedSubject.asObservable();
   readonly factionLocked$             = this.factionLockedSubject.asObservable();
   readonly factionSymbolAssigned$     = this.factionSymbolAssignedSubject.asObservable();
@@ -371,8 +372,9 @@ export class CampaignHubService {
       this.playerRemovedSubject.next(event);
     });
 
-    this.connection.on('CastTravelled', (event: CastTravelledEvent) => {
-      this.castTravelledSubject.next(event);
+    this.connection.on('CastTraveled', (event: CastTraveledEvent) => {
+      console.log('cast-traveled SignalR event received:', event);
+      this.castTravelSubject.next(event);
     });
 
     this.connection.on('FactionRemoved', (event: FactionRemovedEvent) => {

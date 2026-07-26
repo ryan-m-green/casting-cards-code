@@ -3,6 +3,8 @@ using CastLibrary.Shared.Domain;
 using CastLibrary.Shared.Enums;
 using Microsoft.Extensions.Logging;
 using System.Collections.Concurrent;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace CastLibrary.Repository.Services;
 
@@ -67,7 +69,8 @@ public class KeywordExtractionService : IKeywordExtractionService
             { EntityType.PlayerCard.GetDescription(), (entity, keywords) => ExtractPlayerKeywordsAsync(entity, keywords) },
             { EntityType.TimeOfDay.GetDescription(), (entity, keywords) => ExtractGenericEntityKeywordsAsync(entity, keywords) },
             { EntityType.CampaignHandout.GetDescription(), (entity, keywords) => ExtractGenericEntityKeywordsAsync(entity, keywords) },
-            { EntityType.Secret.GetDescription(), (entity, keywords) => ExtractSecretEntityKeywordsAsync(entity, keywords)}
+            { EntityType.Secret.GetDescription(), (entity, keywords) => ExtractSecretEntityKeywordsAsync(entity, keywords) },
+            { EntityType.CastTraveled.GetDescription(), (entity, keywords) => ExtractCastTraveledKeywordsAsync(entity, keywords) }
         };
     }
 
@@ -284,5 +287,66 @@ public class KeywordExtractionService : IKeywordExtractionService
 
         AddTokenized("secret", keywords);
         AddTokenized(secret.Content, keywords);
+    }
+
+    private async Task ExtractCastTraveledKeywordsAsync(LinkedEntityTrigger entity, KeywordsHeap keywords)
+    {
+        try
+        {
+            // Use the CardMovement wrapper instead of parsing JSON from EntityId
+            if (!entity.CardMovement.ToInstanceId.HasValue)
+            {
+                return;
+            }
+
+            // EntityId now contains the cast instance ID
+            if (Guid.TryParse(entity.EntityId, out var castInstanceId))
+            {
+                var cast = await campaignCastInstanceRepository.GetByIdAsync(castInstanceId);
+                if (cast != null)
+                {
+                    AddTokenized(cast.Name, keywords);
+                }
+            }
+
+            if (entity.CardMovement.FromInstanceId.HasValue)
+            {
+                var fromSublocation = await campaignSublocationInstanceRepository.GetByIdAsync(entity.CardMovement.FromInstanceId.Value);
+                if (fromSublocation != null)
+                {
+                    keywords.Add($"from {fromSublocation.Name}");
+                    entity.CardMovement.FromSublocationName = fromSublocation.Name;
+                }
+            }
+
+            if (entity.CardMovement.ToInstanceId.HasValue)
+            {
+                var toSublocation = await campaignSublocationInstanceRepository.GetByIdAsync(entity.CardMovement.ToInstanceId.Value);
+                if (toSublocation != null)
+                {
+                    keywords.Add($"to {toSublocation.Name}");
+                    entity.CardMovement.ToSublocationName = toSublocation.Name;
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Failed to extract cast-traveled keywords");
+        }
+    }
+
+    private class CastTravelTriggerData
+    {
+        [JsonPropertyName("castInstanceId")]
+        public Guid CastInstanceId { get; set; }
+
+        [JsonPropertyName("toLocationInstanceId")]
+        public Guid ToLocationInstanceId { get; set; }
+
+        [JsonPropertyName("toSublocationInstanceId")]
+        public Guid ToSublocationInstanceId { get; set; }
+
+        [JsonPropertyName("fromSublocationInstanceId")]
+        public Guid? FromSublocationInstanceId { get; set; }
     }
 }

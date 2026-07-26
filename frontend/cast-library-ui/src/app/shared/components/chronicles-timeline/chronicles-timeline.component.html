@@ -98,15 +98,9 @@
           
                 <div class="event-card-footer">
                              @if (chronicle.linkedEntities && chronicle.linkedEntities.length > 0) {
-                        <app-entity-badge [entities]="chronicle.linkedEntities" [timeOfDay]="timeOfDay" />
+                        <app-entity-badge [entities]="chronicle.linkedEntities" [timeOfDay]="timeOfDay" [isGmOnly]="chronicle.isGmOnly" />
                       }
                   @if (isDmMode) {
-                    @if (chronicle.isGmOnly) {
-                      <span class="chronicle-gm-tag">
-                        <img src="/eye_vision_sight_seeing_surveillance.svg" class="chronicle-gm-icon" alt="" />
-                        GM ONLY
-                      </span>
-                    }
                     <button class="chronicle-edit-btn" (click)="openChronicleEdit(chronicle, session.sessionId); $event.stopPropagation()" [disabled]="chronicleEditingId === chronicle.id">Edit</button>
                   } @else if (hasPlayerNote(chronicle)) {
                     <button class="chronicle-edit-btn" (click)="openChronicleEdit(chronicle, session.sessionId); $event.stopPropagation()" [disabled]="chronicleEditingId === chronicle.id">Edit</button>

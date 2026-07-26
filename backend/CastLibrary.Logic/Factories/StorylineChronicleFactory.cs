@@ -50,6 +50,22 @@ public class StorylineChronicleFactory(IKeywordExtractionService keywordExtracti
                     null,
                     evt.LinkedEntities);
 
+                // Determine IsGmOnly based on cast-traveled linked entity visibility
+                bool isGmOnly;
+                var castTraveledEntity = evt.LinkedEntities?.FirstOrDefault(le => 
+                    le.EntityType.ToLower() == EntityType.CastTraveled.GetDescription());
+                
+                if (castTraveledEntity != null)
+                {
+                    // Use cast-traveled linked entity's VisibleToPlayers property
+                    isGmOnly = !castTraveledEntity.VisibleToPlayers;
+                }
+                else
+                {
+                    // Fall back to storyline event's VisibleToPlayers
+                    isGmOnly = !evt.VisibleToPlayers;
+                }
+
                 return new CampaignSessionChroniclesDomain
                 {
                     Id = Guid.NewGuid(),
@@ -65,7 +81,7 @@ public class StorylineChronicleFactory(IKeywordExtractionService keywordExtracti
                     CreatedAt = evt.CreatedAt,
                     UpdatedAt = evt.UpdatedAt,
                     Keywords = keywords,
-                    IsGmOnly = evt.VisibleToPlayers == false
+                    IsGmOnly = isGmOnly
                 };
             }
             finally

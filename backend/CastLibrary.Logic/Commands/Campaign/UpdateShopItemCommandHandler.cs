@@ -16,22 +16,25 @@ public class UpdateShopItemCommandHandler(
             command.ShopItemId,
             command.Name,
             command.PriceAmount,
-            command.PriceCurrencyType);
+            command.PriceCurrencyType,
+            command.Description);
     }
 }
 
 public class UpdateShopItemCommand
 {
-    public UpdateShopItemCommand(Guid shopItemId, string name, int priceAmount, string priceCurrencyType)
+    public UpdateShopItemCommand(Guid shopItemId, string name, int priceAmount, string priceCurrencyType, string description)
     {
         ShopItemId        = shopItemId;
         Name              = name;
         PriceAmount       = priceAmount;
         PriceCurrencyType = priceCurrencyType;
+        Description       = description;
     }
 
     public Guid   ShopItemId        { get; }
     public string Name              { get; }
     public int    PriceAmount       { get; }
     public string PriceCurrencyType { get; }
+    public string Description       { get; }
 }

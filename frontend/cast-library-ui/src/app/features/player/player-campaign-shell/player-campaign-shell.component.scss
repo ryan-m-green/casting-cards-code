@@ -52,7 +52,7 @@
   right: 0;
   background: #000;
   pointer-events: none;
-  z-index: 10000;
+  z-index: 99999;
 }
 
 .void-letterbox-top    { top: 0;    height: env(safe-area-inset-top, 0px);    }
@@ -112,10 +112,17 @@
 /* ── Topbar right group ───────────────────────────────────────── */
 .topbar-right {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   gap: 8px;
   margin-left: auto;
   margin-right: -12px;
+}
+
+/* ── Topbar button column ─────────────────────────────────────── */
+.topbar-button-column {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
 }
 
 /* ── Purse button & panel ────────────────────────────────────── */
@@ -195,6 +202,33 @@
     height: 22px;
     display: block;
     filter: brightness(0) invert(1);
+  }
+
+  &:hover {
+    background: v.$campaign-portal-border-accent;
+    border-color: color-mix(in srgb, var(--portal-color, v.$color-base-purple-primary), transparent 20%);
+  }
+}
+
+/* ── Storyline button ─────────────────────────────────────────── */
+.topbar-storyline-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 46px;
+  height: 46px;
+  padding: 0;
+  background: v.$color-ext-22;
+  border: 1px solid color-mix(in srgb, var(--portal-color, v.$color-base-purple-primary), transparent 50%);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.18s ease, border-color 0.18s ease;
+
+  .storyline-icon {
+    width: 22px;
+    height: 22px;
+    display: block;
+    color: v.$color-ext-160;
   }
 
   &:hover {

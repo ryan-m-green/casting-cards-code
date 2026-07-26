@@ -761,6 +761,11 @@
     opacity: 0.35;
     pointer-events: none;
   }
+
+  // Allow travel-anchor drawer to expand when in edit mode
+  &:has(.ev-edit-form) {
+    overflow: visible;
+  }
 }
 
 .ev-item-header {
@@ -806,6 +811,10 @@
   width: 18px;
   height: 18px;
   flex-shrink: 0;
+  
+  &[src] {
+    filter: invert(1);
+  }
 }
 
 .ev-badge-label {
@@ -929,6 +938,17 @@
 
   &:hover  { background: v.$color-secrets-hover; transform: scale(1.1); }
   &:active { transform: scale(0.95); }
+
+  .ev-lock-icon {
+    width: 16px;
+    height: 16px;
+    color: v.$campaign-portal-text-secondary;
+  }
+
+  .ev-lock-icon-img {
+    width: 16px;
+    height: 16px;
+  }
 
   &--revealed {
     background: v.$color-secrets-revealed;
@@ -1604,6 +1624,20 @@
   background: v.$campaign-portal-bg-medium;
   border: 1px solid v.$campaign-portal-border-bold;
   border-radius: 6px;
+}
+
+.ev-end-session-panel-event-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+  
+  svg {
+    width: 100%;
+    height: 100%;
+  }
 }
 
 .ev-end-session-panel-event-title {

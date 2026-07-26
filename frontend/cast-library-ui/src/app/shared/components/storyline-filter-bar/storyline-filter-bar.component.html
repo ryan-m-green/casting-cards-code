@@ -58,6 +58,11 @@
         <img src="/old_paper_document_feather_pen.svg" class="ev-filter-icon ev-filter-icon--player-note" alt="" />
       </button>
     }
+    @if (showCastTraveled) {
+      <button type="button" class="ev-filter-btn" [class.ev-filter-btn--active]="activeTypeFilters.includes('cast-traveled')" (click)="toggleTypeFilter('cast-traveled')" title="Cast Traveled">
+        <img src="/about/cast_travel_system.svg" class="ev-filter-icon ev-filter-icon--cast-traveled" alt="" />
+      </button>
+    }
   </div>
 
   @if (showVisibilityFilters) {

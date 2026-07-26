@@ -433,7 +433,7 @@
               <div formArrayName="shopItems">
                 @for (item of sublocationShopItems.controls; track $index; let i = $index) {
                   <div [formGroupName]="i" class="wb shop-item-card">
-                    <div class="wr shop-item-fields">
+                    <div class="wr shop-item-top-row">
                       <div class="form-field-wide">
                         <label class="fi-label">Item Name</label>
                         <input class="fi fi-no-mb" formControlName="name" placeholder="Iron Sword" autocomplete="off" />
@@ -450,6 +450,7 @@
                           </select>
                         </div>
                       </div>
+                      <button type="button" class="btn-ghost btn-item-confirm" (click)="confirmSublocationItem(i)">✔</button>
                       <button type="button" class="btn-ghost btn-item-remove" (click)="removeSublocationItem(i)">✕</button>
                     </div>
                     <label class="fi-label fi-label-mt">Description</label>

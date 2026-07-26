@@ -90,4 +90,3 @@ public class ChroniclesFactory(IImageStorageOperator imageStorageOperator) : ICh
 
     }
 }
-

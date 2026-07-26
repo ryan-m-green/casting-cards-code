@@ -18,6 +18,7 @@ interface PurchaseResult {
   playerDisplayName: string;
   denialReason: string;
 }
+
 import { SublocationCardComponent } from '../../../shared/components/sublocation-card/sublocation-card.component';
 import { CastCardComponent } from '../../../shared/components/cast-card/cast-card.component';
 import { PlayerCampaignShellComponent } from '../player-campaign-shell/player-campaign-shell.component';
@@ -27,11 +28,12 @@ import { PlayerSublocationNotesComponent } from '../player-sublocation-notes/pla
 import { FactionSymbolPickerComponent, FactionSymbolAssignment } from '../../../shared/components/faction-symbol-picker/faction-symbol-picker.component';
 import { DetailPanelActionsComponent } from '../../../shared/components/detail-panel-actions/detail-panel-actions.component';
 import { CardGridLayoutComponent } from '../../../shared/components/card-grid-layout/card-grid-layout.component';
+import { ShopPurchaseDrawerComponent } from '../../../shared/components/shop-purchase-drawer/shop-purchase-drawer.component';
 
 @Component({
   selector: 'app-player-sublocation-detail',
   standalone: true,
-  imports: [CommonModule, SublocationCardComponent, CastCardComponent, PlayerSublocationNotesComponent, FactionSymbolPickerComponent, DetailPanelActionsComponent, CardGridLayoutComponent],
+  imports: [CommonModule, SublocationCardComponent, CastCardComponent, PlayerSublocationNotesComponent, FactionSymbolPickerComponent, DetailPanelActionsComponent, CardGridLayoutComponent, ShopPurchaseDrawerComponent],
   templateUrl: './player-sublocation-detail.component.html',
   styleUrl: './player-sublocation-detail.component.scss'
 })
@@ -57,6 +59,9 @@ export class PlayerSublocationDetailComponent implements OnInit, OnDestroy {
   purchasingItemId     = signal<string | null>(null);
   purchaseResult       = signal<PurchaseResult | null>(null);
   purchasePopupVisible = signal(false);
+
+  // Drawer reference
+  @ViewChild(ShopPurchaseDrawerComponent) private purchaseDrawer!: ShopPurchaseDrawerComponent;
 
   sublocationSymbolPath = signal<string | null>(null);
   sublocationFactionId  = signal<string | null>(null);
@@ -124,7 +129,7 @@ export class PlayerSublocationDetailComponent implements OnInit, OnDestroy {
     });
 
     this.hubSubscriptions.push(
-      this.hub.castTravelled$.subscribe(event => {
+      this.hub.castTravel$.subscribe(event => {
         if (!event) return;
         const currentSub = this.sublocationInstanceId();
         if (!currentSub) return;
@@ -280,20 +285,13 @@ export class PlayerSublocationDetailComponent implements OnInit, OnDestroy {
     this.router.navigate(['/player/campaign', this.campaignId()]);
   }
 
-  buyItem(item: ShopItem) {
-    if (this.purchasingItemId()) return;
-    this.purchasingItemId.set(item.id);
-    this.http.post<PurchaseResult>(
-      `${environment.apiUrl}/api/campaigns/${this.campaignId()}/sublocations/${this.sublocationInstanceId()}/shop-items/${item.id}/purchase`,
-      {}
-    ).subscribe({
-      next: result => {
-        this.purchaseResult.set(result);
-        this.purchasePopupVisible.set(true);
-        this.purchasingItemId.set(null);
-      },
-      error: () => this.purchasingItemId.set(null),
-    });
+  openPurchaseDrawer(item: ShopItem) {
+    this.purchaseDrawer.open(item);
+  }
+
+  onPurchaseComplete(result: PurchaseResult) {
+    this.purchaseResult.set(result);
+    this.purchasePopupVisible.set(true);
   }
 
   closeReceipt() {

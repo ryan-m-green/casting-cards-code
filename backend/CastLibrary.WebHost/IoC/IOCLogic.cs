@@ -345,6 +345,7 @@ namespace CastLibrary.WebHost.IoC
             services.AddScoped<IEntityVisibilityUpdater, TimeOfDayEntityVisibilityUpdater>();
             services.AddScoped<IEntityVisibilityUpdater, PlayerEntityVisibilityUpdater>();
             services.AddScoped<IEntityVisibilityUpdater, SecretEntityVisibilityUpdater>();
+            services.AddScoped<IEntityVisibilityUpdater, CastTraveledEntityVisibilityUpdater>();
 
             // Subscription event strategies
             services.AddScoped<ISubscriptionEventStrategy, SubscriptionCreatedStrategy>();

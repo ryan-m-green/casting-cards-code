@@ -112,6 +112,58 @@
   border: 1px solid rgba(212, 196, 150, 0.6);
 }
 
+// GM-only badge uses original styling: black background with gold border
+.entity-badge--gm-only {
+  background: #1a1a1a;
+  border: 1px solid #d4af37;
+  
+  .entity-badge-inner {
+    padding: 4px 8px;
+    color: #d4af37;
+    background-color: #1a1a1a;
+  }
+  
+  .entity-badge-icon {
+    width: 16px;
+    height: 16px;
+    filter: brightness(0) invert(1);
+  }
+}
+
+// Word badge for "from" and "to" text
+.entity-badge--word {
+  background: linear-gradient(145deg,
+    #6b7280 0%, #4b5563 20%, #374151 45%,
+    #6b7280 55%, #4b5563 70%, #374151 85%, #1f2937 100%
+  );
+  border: 1px solid rgba(107, 114, 128, 0.5);
+  
+  .entity-badge-inner {
+    font-style: italic;
+    font-size: 0.9em;
+    padding: 4px 8px;
+  }
+}
+
+// Travel badge with traveler icon
+.entity-badge--travel {
+  background: linear-gradient(145deg,
+    #059669 0%, #047857 20%, #065f46 45%,
+    #10b981 55%, #059669 70%, #047857 85%, #064e3b 100%
+  );
+  border: 1px solid rgba(16, 185, 129, 0.5);
+  
+  .entity-badge-inner {
+    padding: 4px 8px;
+  }
+  
+  .entity-badge-icon--travel {
+    width: 18px;
+    height: 18px;
+    filter: brightness(0) invert(1);
+  }
+}
+
 // Secret badge wrapper for positioning triangle and entity icons
 .secret-badge-wrapper {
   position: relative;

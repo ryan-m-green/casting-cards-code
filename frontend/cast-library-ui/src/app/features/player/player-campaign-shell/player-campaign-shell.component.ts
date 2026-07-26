@@ -552,7 +552,7 @@ export class PlayerCampaignShellComponent implements OnInit, OnDestroy {
 
     // Update cast's sublocation in campaign when a cast travels — keeps the nav drawer in sync
     this.hubSubscriptions.push(
-      this.hub.castTravelled$.subscribe(event => {
+      this.hub.castTravel$.subscribe(event => {
         if (!event || event.campaignId !== this.campaignId()) return;
 
         const update = (c: CampaignDetail): CampaignDetail => ({
@@ -671,6 +671,10 @@ export class PlayerCampaignShellComponent implements OnInit, OnDestroy {
 
   openInventoryDrawer() {
     this.inventoryDrawer().open();
+  }
+
+  goToEvents() {
+    this.router.navigate(['/player/campaign', this.campaignId(), 'plot']);
   }
 
   goToMyCharacter() {

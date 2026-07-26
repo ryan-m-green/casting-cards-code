@@ -70,14 +70,61 @@ public class PurchaseShopItemCommandHandler(
         if (totalCp < costCp)
             return Denied(string.Empty, item.Name, item.PriceAmount, item.PriceCurrencyType);
 
-        var remainderCp = totalCp - costCp;
-        foreach (var coin in CoinOrder.Reverse())
+        // Deduct cost starting from lowest denomination to preserve higher denominations
+        var remainingCostCp = costCp;
+        var newBalances = new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase);
+        var remainderToAdd = 0; // Track remainder to add to already-processed lower denominations
+
+        foreach (var coin in CoinOrder) // cp, sp, ep, gp, pp
         {
-            var rate    = CopperValue[coin];
-            var newAmt  = remainderCp / rate;
-            remainderCp %= rate;
+            var rate = CopperValue[coin];
+            var currentAmount = bal[coin];
+            var currentCp = currentAmount * rate;
+
+            // Add any remainder from higher denomination breakdown
+            currentAmount += remainderToAdd / rate;
+            remainderToAdd %= rate;
+
+            if (remainingCostCp <= 0)
+            {
+                newBalances[coin] = currentAmount;
+                continue;
+            }
+
+            if (remainingCostCp <= currentCp)
+            {
+                // This denomination covers the remaining cost
+                var coinsToDeduct = remainingCostCp / rate;
+                var remainderCp = remainingCostCp % rate;
+
+                if (remainderCp > 0)
+                {
+                    // Need to break down one more coin to cover remainder
+                    coinsToDeduct++;
+                    newBalances[coin] = currentAmount - coinsToDeduct;
+                    // Remainder will be added to lower denominations in next iterations
+                    remainderToAdd = remainderCp;
+                }
+                else
+                {
+                    newBalances[coin] = currentAmount - coinsToDeduct;
+                }
+
+                remainingCostCp = 0;
+            }
+            else
+            {
+                // Use all of this denomination, continue to next
+                remainingCostCp -= currentCp;
+                newBalances[coin] = 0;
+            }
+        }
+
+        // Update all coin balances
+        foreach (var coin in CoinOrder)
+        {
             await currencyTransactionUpdateRepository.SetAmountAsync(
-                command.CampaignId, command.PlayerUserId, coin, newAmt);
+                command.CampaignId, command.PlayerUserId, coin, newBalances[coin]);
         }
 
         // Add item to player inventory

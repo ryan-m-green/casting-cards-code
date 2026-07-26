@@ -80,16 +80,18 @@ export class CampaignSublocationDetailComponent implements OnInit, OnDestroy {
   newSecretContent = signal('');
 
   // Add shop item
-  addingShopItem       = signal(false);
-  newShopItemName      = signal('');
-  newShopItemAmount    = signal('');
-  newShopItemCurrency  = signal('gp');
+  addingShopItem          = signal(false);
+  newShopItemName         = signal('');
+  newShopItemAmount       = signal('');
+  newShopItemCurrency     = signal('gp');
+  newShopItemDescription  = signal('');
 
   // Edit existing shop item
-  editingShopItemId    = signal<string | null>(null);
-  editShopItemName     = signal('');
-  editShopItemAmount   = signal('');
-  editShopItemCurrency = signal('gp');
+  editingShopItemId       = signal<string | null>(null);
+  editShopItemName        = signal('');
+  editShopItemAmount      = signal('');
+  editShopItemCurrency    = signal('gp');
+  editShopItemDescription = signal('');
 
   // Currency dropdown
   readonly currencies      = ['cp', 'sp', 'ep', 'gp', 'pp'];
@@ -458,6 +460,7 @@ export class CampaignSublocationDetailComponent implements OnInit, OnDestroy {
     this.newShopItemName.set('');
     this.newShopItemAmount.set('');
     this.newShopItemCurrency.set('gp');
+    this.newShopItemDescription.set('');
     this.addingShopItem.set(true);
   }
 
@@ -471,7 +474,8 @@ export class CampaignSublocationDetailComponent implements OnInit, OnDestroy {
     if (!name) return;
     const amount   = String(this.newShopItemAmount() ?? '').trim();
     const currency = this.newShopItemCurrency();
-    const body = { name, priceAmount: parseInt(amount) || 0, priceCurrencyType: currency, description: '' };
+    const description = this.newShopItemDescription().trim();
+    const body = { name, priceAmount: parseInt(amount) || 0, priceCurrencyType: currency, description };
      this.http.post<ShopItem>(
       `${environment.apiUrl}/api/campaigns/${this.campaignId()}/sublocations/${this.sublocationInstanceId()}/shop-items`,
       body
@@ -493,6 +497,7 @@ export class CampaignSublocationDetailComponent implements OnInit, OnDestroy {
     this.editShopItemName.set(item.name);
     this.editShopItemAmount.set(String(item.priceAmount));
     this.editShopItemCurrency.set(item.priceCurrencyType);
+    this.editShopItemDescription.set(item.description ?? '');
     this.openDropdownId.set(null);
   }
 
@@ -508,6 +513,7 @@ export class CampaignSublocationDetailComponent implements OnInit, OnDestroy {
       name,
       priceAmount: parseInt(this.editShopItemAmount()) || 0,
       priceCurrencyType: this.editShopItemCurrency(),
+      description: this.editShopItemDescription().trim(),
     };
     this.http.patch(
       `${environment.apiUrl}/api/campaigns/${this.campaignId()}/sublocations/${this.sublocationInstanceId()}/shop-items/${item.id}`,

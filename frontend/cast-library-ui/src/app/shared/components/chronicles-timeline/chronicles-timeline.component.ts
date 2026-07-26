@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { Component, Input, Output, EventEmitter, OnChanges } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { EntityBadgeComponent } from '../entity-badge/entity-badge.component';
@@ -14,7 +14,7 @@ import { TimeOfDay } from '../../models/time-of-day.model';
   templateUrl: './chronicles-timeline.component.html',
   styleUrls: ['./chronicles-timeline.component.scss']
 })
-export class ChroniclesTimelineComponent {
+export class ChroniclesTimelineComponent implements OnChanges {
   @Input() chronicles: ChroniclesResponse | null = null;
   @Input() expandedSessionIds: Set<string> = new Set();
   @Input() isDmMode: boolean = false;
@@ -36,6 +36,23 @@ export class ChroniclesTimelineComponent {
   @Output() sessionChange = new EventEmitter<string>();
   @Output() sortOrderChange = new EventEmitter<number>();
   @Output() deleteSession = new EventEmitter<string>();
+
+  constructor() {
+    // Debug: Log chronicles when they change
+    console.log('ChroniclesTimelineComponent initialized');
+  }
+
+  ngOnChanges() {
+    console.log('Chronicles updated:', this.chronicles);
+    if (this.chronicles) {
+      this.chronicles.sessions.forEach(session => {
+        console.log('Session:', session.sessionNumber, session.chronicles);
+        session.chronicles.forEach(chronicle => {
+          console.log('Chronicle:', chronicle.id, chronicle.linkedEntities);
+        });
+      });
+    }
+  }
 
   toggleSessionExpand(sessionId: string) {
     this.sessionExpand.emit(sessionId);

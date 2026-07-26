@@ -155,7 +155,7 @@ export class PlayerCastDetailComponent implements OnInit, OnDestroy {
     });
 
     this.hubSubscriptions.push(
-      this.hub.castTravelled$.subscribe(event => {
+      this.hub.castTravel$.subscribe(event => {
         if (!event || event.castInstanceId !== untracked(() => this.castInstanceId())) return;
         this.sublocationInstanceId.set(event.toSublocationInstanceId);
       })

@@ -148,7 +148,7 @@ export class PlayerThePartyComponent implements OnInit, OnDestroy {
     );
 
     this.hubSubscriptions.push(
-      this.hub.castTravelled$.subscribe(event => {
+      this.hub.castTravel$.subscribe(event => {
         if (!event) return;
         const partySubId = untracked(() => this.discoveredCast()?.partyAnchorSublocationInstanceId);
         if (!partySubId) return;

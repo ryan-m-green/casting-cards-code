@@ -54,15 +54,21 @@
               <div class="detail-shop-grid">
                 @for (item of subLoc.shopItems; track item.id) {
                   <div class="detail-shop-item">
-                    <span class="detail-shop-item-name" [class.detail-shop-item-name--sold]="item.isScratchedOff">{{ item.name }}</span>
+                    <div class="detail-shop-item-content">
+                      <span class="detail-shop-item-name" [class.detail-shop-item-name--sold]="item.isScratchedOff">{{ item.name }}</span>
+                      @if (item.description) {
+                        <span class="detail-shop-item-description">{{ item.description }}</span>
+                      }
+                    </div>
                     <div class="detail-shop-item-right">
                       <span class="detail-shop-item-price">{{ item.priceAmount }} {{ item.priceCurrencyType }}</span>
                       @if (item.priceAmount > 0 && !item.isScratchedOff) {
-                        <button class="shop-buy-btn"
-                          [class.shop-buy-btn--loading]="purchasingItemId() === item.id"
+                        <button class="shop-view-btn"
+                          [class.shop-view-btn--loading]="purchasingItemId() === item.id"
                           [disabled]="purchasingItemId() !== null"
-                          (click)="buyItem(item)">
-                          {{ purchasingItemId() === item.id ? '…' : 'Buy' }}
+                          (click)="openPurchaseDrawer(item)"
+                          aria-label="View {{ item.name }}">
+                          <img class="shop-view-btn-icon" src="/eye_vision_sight_seeing_surveillance.svg" alt="View" />
                         </button>
                       }
                     </div>
@@ -267,7 +273,14 @@
         </div>
       }
 
-      <button class="receipt-dismiss-btn" (click)="closeReceipt()">Dismiss</button>
+      <button class="receipt-dismiss-btn" (click)="closeReceipt()">Close</button>
     </div>
   </div>
 }
+
+<!-- ── Shop Purchase Drawer ── -->
+<app-shop-purchase-drawer
+  [portalColor]="'#6e28d0'"
+  [campaignId]="campaignId()"
+  [sublocationInstanceId]="sublocationInstanceId()"
+  (purchaseComplete)="onPurchaseComplete($event)" />

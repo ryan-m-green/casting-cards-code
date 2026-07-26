@@ -3,6 +3,12 @@ import { CommonModule } from '@angular/common';
 import { LinkedEntityTrigger } from '../../models/chronicle.model';
 import { TimeOfDay, TimeOfDaySlice } from '../../models/time-of-day.model';
 
+interface CastTravelData {
+  castInstanceId: string;
+  toSublocationInstanceId: string;
+  fromSublocationInstanceId?: string;
+}
+
 @Component({
   selector: 'app-entity-badge',
   standalone: true,
@@ -13,9 +19,112 @@ import { TimeOfDay, TimeOfDaySlice } from '../../models/time-of-day.model';
 export class EntityBadgeComponent {
   @Input() entities: LinkedEntityTrigger[] = [];
   @Input() timeOfDay: TimeOfDay | null = null;
+  @Input() isGmOnly: boolean = false;
 
   get filteredEntities(): LinkedEntityTrigger[] {
     return this.entities.filter(e => e.entityType.toLowerCase() !== 'time-of-day');
+  }
+
+  getExpandedEntities(): LinkedEntityTrigger[] {
+    const expanded: LinkedEntityTrigger[] = [];
+    
+    // Add GM-only badge first if isGmOnly is true
+    if (this.isGmOnly) {
+      expanded.push({
+        entityType: 'gm-only',
+        entityId: '',
+        entityName: 'GM ONLY',
+        originalEntityType: 'gm-only',
+        cardMovement: { locationInstanceId: '', fromInstanceId: '', toInstanceId: '', fromSublocationName: '', toSublocationName: '' }
+      });
+    }
+    
+    for (const entity of this.filteredEntities) {
+      if (entity.entityType.toLowerCase() === 'cast-traveled') {
+        const travelData = this.parseCastTravelDataFromProperties(entity);
+        if (travelData) {
+          expanded.push(...this.expandCastTravelEntity(entity, travelData));
+        } else {
+          expanded.push(entity);
+        }
+      } else {
+        expanded.push(entity);
+      }
+    }
+    
+    return expanded;
+  }
+
+  private parseCastTravelDataFromProperties(entity: LinkedEntityTrigger): CastTravelData | null {
+    if (!entity.cardMovement || !entity.cardMovement.toInstanceId) {
+      return null;
+    }
+
+    return {
+      castInstanceId: entity.entityId,
+      fromSublocationInstanceId: entity.cardMovement.fromInstanceId,
+      toSublocationInstanceId: entity.cardMovement.toInstanceId
+    };
+  }
+
+  private expandCastTravelEntity(entity: LinkedEntityTrigger, travelData: CastTravelData): LinkedEntityTrigger[] {
+    const expanded: LinkedEntityTrigger[] = [];
+    
+    // Cast badge (from entityName)
+    expanded.push({
+      entityType: 'cast',
+      entityId: travelData.castInstanceId,
+      entityName: entity.entityName,
+      originalEntityType: 'cast-traveled',
+      cardMovement: { locationInstanceId: '', fromInstanceId: '', toInstanceId: '', fromSublocationName: '', toSublocationName: '' }
+    });
+    
+    // Traveler badge
+    expanded.push({
+      entityType: 'cast-traveled-icon',
+      entityId: '',
+      entityName: 'Traveled',
+      originalEntityType: 'cast-traveled',
+      cardMovement: { locationInstanceId: '', fromInstanceId: '', toInstanceId: '', fromSublocationName: '', toSublocationName: '' }
+    });
+    
+    // From badge
+    if (travelData.fromSublocationInstanceId) {
+      expanded.push({
+        entityType: 'word-badge',
+        entityId: '',
+        entityName: 'from',
+        originalEntityType: 'cast-traveled',
+        cardMovement: { locationInstanceId: '', fromInstanceId: '', toInstanceId: '', fromSublocationName: '', toSublocationName: '' }
+      });
+      
+      expanded.push({
+        entityType: 'sublocation',
+        entityId: travelData.fromSublocationInstanceId,
+        entityName: entity.cardMovement.fromSublocationName,
+        originalEntityType: 'cast-traveled',
+        cardMovement: { locationInstanceId: '', fromInstanceId: '', toInstanceId: '', fromSublocationName: '', toSublocationName: '' }
+      });
+    }
+    
+    // To badge
+    expanded.push({
+      entityType: 'word-badge',
+      entityId: '',
+      entityName: 'to',
+      originalEntityType: 'cast-traveled',
+      cardMovement: { locationInstanceId: '', fromInstanceId: '', toInstanceId: '', fromSublocationName: '', toSublocationName: '' }
+    });
+    
+    expanded.push({
+      entityType: 'sublocation',
+      entityId: travelData.toSublocationInstanceId,
+      entityName: entity.cardMovement.toSublocationName,
+      originalEntityType: 'cast-traveled',
+      cardMovement: { locationInstanceId: '', fromInstanceId: '', toInstanceId: '', fromSublocationName: '', toSublocationName: '' }
+    });
+    
+    return expanded;
   }
 
   cleanSecretEntityName(entityName: string): string {
@@ -39,7 +148,9 @@ export class EntityBadgeComponent {
       'player': 'entity-badge--player',
       'campaign-handout': 'entity-badge--handout',
       'secret': 'entity-badge--secret',
-      'player-note': 'entity-badge--player-note'
+      'player-note': 'entity-badge--player-note',
+      'cast-traveled': 'entity-badge--cast',
+      'gm-only': 'entity-badge--gm-only'
     };
 
     return typeMap[type] || 'entity-badge--cast';
@@ -56,7 +167,9 @@ export class EntityBadgeComponent {
       campaign: '<svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>',
       secret: '<svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-13h2v6h-2zm0 8h2v2h-2z"/></svg>',
       handout: '<svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>',
-      'player-note': '<svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><path d="M12 18h-2"/><path d="M12 14h-2"/><path d="M12 10h-2"/></svg>'
+      'player-note': '<svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><path d="M12 18h-2"/><path d="M12 14h-2"/><path d="M12 10h-2"/></svg>',
+      'cast-traveled': '<svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>',
+      'gm-only': ''  // GM-only uses original eye icon image, not SVG
     };
     return icons[type] || icons['cast'];
   }

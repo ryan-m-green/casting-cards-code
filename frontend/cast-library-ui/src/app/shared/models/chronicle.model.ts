@@ -3,6 +3,16 @@ export interface LinkedEntityTrigger {
   entityId: string;
   entityName: string;
   originalEntityType?: string;
+  visibleToPlayers?: boolean;
+  cardMovement: CardMovementData;
+}
+
+export interface CardMovementData {
+  locationInstanceId?: string;
+  fromInstanceId?: string;
+  toInstanceId?: string;
+  fromSublocationName: string;
+  toSublocationName: string;
 }
 
 export interface ChronicleItem {

@@ -15,5 +15,12 @@
         public string PlayerCardRace { get; set; }
         public string PlayerCardClass { get; set; }
         public string PlayerCardImageUrl { get; set; }
+
+        // Cast travel properties
+        public Guid? CastInstanceId { get; set; }
+        public Guid? FromSublocationInstanceId { get; set; }
+        public Guid? ToLocationInstanceId { get; set; }
+        public Guid? ToSublocationInstanceId { get; set; }
+        public bool TraveledToTheParty { get; set; }
     }
 }

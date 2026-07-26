@@ -129,6 +129,7 @@ export class SublocationFormComponent implements OnInit {
 
   addItem()             { this.shopItems.push(this.newItem()); }
   removeItem(i: number) { this.shopItems.removeAt(i); }
+  confirmItem(i: number) { /* Item is already in the array, no action needed */ }
 
   onSave(e: MouseEvent): void {
     if (this.form.invalid || this.saveStatus() === 'saving') return;

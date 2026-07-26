@@ -22,7 +22,9 @@ public enum EntityType
     [Description("campaign-event")]
     CampaignEvent,
     [Description("secret")]
-    Secret
+    Secret,
+    [Description("cast-traveled")]
+    CastTraveled
 }
 
 public static class EntityTypeExtensions

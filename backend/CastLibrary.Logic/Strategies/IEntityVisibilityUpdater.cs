@@ -1,10 +1,10 @@
-﻿using CastLibrary.Logic.Commands.Campaign;
-using CastLibrary.Repository.Repositories.Read;
+﻿using CastLibrary.Repository.Repositories.Read;
 using CastLibrary.Repository.Repositories.Update;
 using CastLibrary.Shared.Domain;
 using CastLibrary.Shared.Requests;
-using ImageMagick;
 using Microsoft.Extensions.DependencyInjection;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace CastLibrary.Logic.Strategies
 {
@@ -19,11 +19,13 @@ namespace CastLibrary.Logic.Strategies
         public const string CampaignHandout = "campaign-handout";
         public const string Player = "player";
         public const string Secret = "secret";
+        public const string CastTraveled = "cast-traveled";
     }
     public static class EventNames
     {
         public const string CardVisibilityChanged = "CardVisibilityChanged";
         public const string TimeOfDayCursorMoved = "TimeCursorMoved";
+        public const string CastTraveled = "CastTraveled";
     }
 
     public interface IEntityVisibilityUpdater
@@ -312,5 +314,96 @@ namespace CastLibrary.Logic.Strategies
         }
     }
 
+    public class CastTraveledEntityVisibilityUpdater(ICampaignUpdateRepository campaignUpdateRepository, ICampaignReadRepository campaignReadRepository, IStorylineReadRepository storylineReadRepository, IStorylineUpdateRepository storylineUpdateRepository) : IEntityVisibilityUpdater
+    {
+        public bool IsMatch(EntityVisibility entityVisibility)
+        {
+            return entityVisibility.EntityType.ToLower() == EntityTypes.CastTraveled;
+        }
 
+        public async Task<EntityVisibilityResult> Update(Guid campaignId, EntityVisibility entityVisibility)
+        {
+            // Look up the storyline event to get the cast-traveled trigger data
+            var campaignEvent = await storylineReadRepository.GetByIdAsync(entityVisibility.EntityId);
+            if (campaignEvent?.LinkedEntities == null)
+            {
+                return new EntityVisibilityResult()
+                {
+                    CampaignId = campaignId,
+                    EntityInstanceId = Guid.Empty,
+                    EventName = EventNames.CardVisibilityChanged,
+                    IsVisible = false,
+                    CardType = EntityTypes.CastTraveled
+                };
+            }
+
+            // Find the cast-traveled linked entity
+            var castTraveledEntity = campaignEvent.LinkedEntities.FirstOrDefault(le => le.EntityType.ToLower() == EntityTypes.CastTraveled);
+            if (castTraveledEntity == null)
+            {
+                return new EntityVisibilityResult()
+                {
+                    CampaignId = campaignId,
+                    EntityInstanceId = Guid.Empty,
+                    EventName = EventNames.CardVisibilityChanged,
+                    IsVisible = false,
+                    CardType = EntityTypes.CastTraveled
+                };
+            }
+
+            // Use the CardMovement wrapper instead of parsing JSON from EntityId
+            if (!castTraveledEntity.CardMovement.ToInstanceId.HasValue)
+            {
+                return new EntityVisibilityResult()
+                {
+                    CampaignId = campaignId,
+                    EntityInstanceId = Guid.Empty,
+                    EventName = EventNames.CardVisibilityChanged,
+                    IsVisible = false,
+                    CardType = EntityTypes.CastTraveled
+                };
+            }
+
+            // Update storyline event visibility to match entity visibility
+            await storylineUpdateRepository.UpdateVisibilityAsync(entityVisibility.EntityId, entityVisibility.IsVisible);
+
+            // Handle cast travel based on visibility state
+            if (entityVisibility.IsVisible)
+            {
+                // Revealing: move cast member to new sublocation
+                await campaignUpdateRepository.TravelCastAsync(
+                    Guid.Parse(castTraveledEntity.EntityId),
+                    castTraveledEntity.CardMovement.LocationInstanceId ?? Guid.Empty,
+                    castTraveledEntity.CardMovement.ToInstanceId.Value);
+            }
+            else
+            {
+                // Hiding: move cast member back to original sublocation
+                if (castTraveledEntity.CardMovement.FromInstanceId.HasValue)
+                {
+                    await campaignUpdateRepository.TravelCastAsync(
+                        Guid.Parse(castTraveledEntity.EntityId),
+                        castTraveledEntity.CardMovement.LocationInstanceId ?? Guid.Empty,
+                        castTraveledEntity.CardMovement.FromInstanceId.Value);
+                }
+            }
+
+            // Check if traveled to party sublocation
+            var partySublocationInstance = await campaignReadRepository.GetPartySublocationInstanceByCampaignAsync(campaignId);
+            var traveledToTheParty = partySublocationInstance?.InstanceId == castTraveledEntity.CardMovement.ToInstanceId.Value;
+
+            return new EntityVisibilityResult()
+            {
+                CampaignId = campaignId,
+                EntityInstanceId = Guid.Empty,
+                EventName = EventNames.CastTraveled,
+                IsVisible = entityVisibility.IsVisible,
+                CardType = EntityTypes.CastTraveled,
+                CastInstanceId = Guid.Parse(castTraveledEntity.EntityId),
+                FromSublocationInstanceId = castTraveledEntity.CardMovement.FromInstanceId,
+                ToSublocationInstanceId = castTraveledEntity.CardMovement.ToInstanceId.Value,
+                TraveledToTheParty = traveledToTheParty
+            };
+        }
+    }
 }

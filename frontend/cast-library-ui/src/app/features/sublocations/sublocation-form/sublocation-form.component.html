@@ -55,7 +55,7 @@
     <div formArrayName="shopItems">
       @for (item of shopItems.controls; track $index; let i = $index) {
         <div [formGroupName]="i" class="wb shop-item-card">
-          <div class="wr shop-item-fields">
+          <div class="wr shop-item-top-row">
             <div class="form-field-wide">
               <label class="fi-label">Item Name</label>
               <input class="fi fi-no-mb" formControlName="name" placeholder="Iron Sword" autocomplete="off" />
@@ -64,7 +64,7 @@
               <label class="fi-label">Price</label>
               <div class="price-input-group">
                 <input class="fi fi-no-mb price-amount" type="number" formControlName="priceAmount"
-                       min="1" max="9999" placeholder="15" />
+                       min="1" max="9999" placeholder="15" autocomplete="off" />
                 <select class="fi fi-no-mb price-currency" formControlName="priceCurrencyType">
                   <option value="cp">cp</option>
                   <option value="sp">sp</option>
@@ -74,6 +74,7 @@
                 </select>
               </div>
             </div>
+            <button type="button" class="btn-ghost btn-item-confirm" (click)="confirmItem(i)">✔</button>
             <button type="button" class="btn-ghost btn-item-remove" (click)="removeItem(i)">✕</button>
           </div>
           <label class="fi-label fi-label-mt">Description</label>

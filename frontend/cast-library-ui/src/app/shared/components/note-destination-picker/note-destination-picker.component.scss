@@ -69,6 +69,14 @@
   flex-shrink: 0;
 }
 
+.ndp-dest-icon--travel {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+  object-fit: contain;
+  filter: brightness(0) invert(1);
+}
+
 /* ── Linked entities pills ───────────────────────────────────── */
 .ndp-pills {
   display: flex;
@@ -340,4 +348,185 @@
 
 .ndp-advanced-dropdown {
   width: 100%;
+}
+
+/* ── Cast Travel Panel ─────────────────────────────────────── */
+.ndp-cast-travel-panel {
+  margin-top: 12px;
+  padding: 12px;
+  background: color-mix(in srgb, v.$campaign-portal-bg-dark 40%, v.$color-base-arcane-purple 60%);
+  border: 1px solid v.$campaign-portal-border-strong-focus;
+  border-radius: 4px;
+}
+
+.ndp-travel-title {
+  font-family: v.$font-header;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: v.$campaign-portal-text-bright;
+  margin-bottom: 10px;
+}
+
+.ndp-travel-row {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.ndp-travel-label {
+  font-family: v.$font-body;
+  font-size: 12px;
+  font-weight: 500;
+  color: v.$campaign-portal-text-muted;
+}
+
+.ndp-travel-dropdown {
+  width: 100%;
+}
+
+.ndp-travel-actions {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+  margin-top: 12px;
+}
+
+.ndp-travel-cancel-btn {
+  padding: 6px 12px;
+  background: transparent;
+  border: 1px solid v.$campaign-portal-border-bold;
+  border-radius: 3px;
+  color: v.$campaign-portal-text-muted;
+  font-family: v.$font-header;
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+
+  &:hover {
+    background: v.$campaign-portal-bg-medium;
+    border-color: v.$campaign-portal-border-strong-focus;
+    color: v.$campaign-portal-text-bright;
+  }
+}
+
+.ndp-travel-add-btn {
+  padding: 6px 12px;
+  background: color-mix(in srgb, v.$campaign-portal-bg-dark 30%, v.$color-base-arcane-purple 70%);
+  border: 1px solid v.$campaign-portal-border-strong-focus;
+  border-radius: 3px;
+  color: v.$campaign-portal-text-bright;
+  font-family: v.$font-header;
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background 0.15s ease, border-color 0.15s ease, opacity 0.15s ease;
+
+  &:hover:not(:disabled) {
+    background: color-mix(in srgb, v.$campaign-portal-bg-dark 20%, v.$color-base-arcane-purple 80%);
+    border-color: v.$campaign-portal-border-strong-focus;
+  }
+
+  &:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+  }
+}
+
+.ndp-visibility-row {
+  display: flex;
+  align-items: center;
+  margin-top: 12px;
+}
+
+.ndp-visibility-toggle {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  user-select: none;
+}
+
+.ndp-visibility-toggle-input {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.ndp-visibility-toggle-slider {
+  position: relative;
+  width: 40px;
+  height: 20px;
+  background-color: #4a4a4a;
+  border-radius: 20px;
+  transition: background-color 0.2s ease;
+
+  &::before {
+    content: '';
+    position: absolute;
+    width: 16px;
+    height: 16px;
+    left: 2px;
+    bottom: 2px;
+    background-color: #1a1a1a;
+    border-radius: 50%;
+    transition: transform 0.2s ease;
+  }
+}
+
+.ndp-visibility-toggle-input:checked + .ndp-visibility-toggle-slider {
+  background-color: v.$color-base-arcane-purple;
+
+  &::before {
+    transform: translateX(20px);
+  }
+}
+
+.ndp-visibility-toggle-label {
+  font-family: v.$font-body;
+  font-size: 12px;
+  font-weight: 500;
+  color: v.$campaign-portal-text-muted;
+}
+
+.ndp-destination-label {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 12px;
+  background: v.$campaign-portal-bg-medium;
+  border: 1px solid v.$campaign-portal-border-bold;
+  border-radius: 3px;
+  margin-top: 8px;
+  font-family: v.$font-body;
+  font-size: 12px;
+  color: v.$campaign-portal-text-bright;
+}
+
+.ndp-clear-destination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  background: transparent;
+  border: none;
+  color: v.$campaign-portal-text-muted;
+  cursor: pointer;
+  transition: color 0.15s ease;
+
+  &:hover {
+    color: v.$campaign-portal-text-bright;
+  }
+
+  svg {
+    width: 14px;
+    height: 14px;
+    stroke-width: 2;
+  }
 }

@@ -1,6 +1,6 @@
 namespace CastLibrary.Shared.Responses;
 
-public class CastTravelledEvent
+public class CastTraveledEvent
 {
     public Guid CampaignId { get; set; }
     public Guid CastInstanceId { get; set; }
@@ -8,4 +8,5 @@ public class CastTravelledEvent
     public Guid ToLocationInstanceId { get; set; }
     public Guid ToSublocationInstanceId { get; set; }
     public bool TraveledToTheParty { get; set; }
+    public bool IsVisible { get; set; }
 }

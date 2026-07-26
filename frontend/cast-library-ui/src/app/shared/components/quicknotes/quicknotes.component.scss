@@ -27,7 +27,7 @@
   right: 0;
   z-index: 300;
   max-height: 0;
-  overflow: visible;
+  overflow: hidden;
   opacity: 0;
   animation: qn-slide-down 1s cubic-bezier(0.22, 1, 0.36, 1) forwards;
 }
@@ -51,6 +51,8 @@
   gap: 8px;
   height: 56px;
   padding: 8px 20px;
+  position: relative;
+  z-index: 301;
 
   @media (max-width: 540px) {
     padding-left: 10px;
@@ -154,7 +156,7 @@
   right: 0;
   z-index: 300;
   max-height: 0;
-  overflow: visible;
+  overflow: hidden;
   opacity: 0;
   animation: qn-slide-down 1s cubic-bezier(0.22, 1, 0.36, 1) forwards;
 }
@@ -183,8 +185,14 @@
 }
 
 @keyframes qn-slide-up {
-  from { transform: translateY(0); }
-  to   { transform: translateY(-100%); }
+  from {
+    max-height: 1000px;
+    opacity: 1;
+  }
+  to {
+    max-height: 0;
+    opacity: 0;
+  }
 }
 
 .qn-panel--closing {

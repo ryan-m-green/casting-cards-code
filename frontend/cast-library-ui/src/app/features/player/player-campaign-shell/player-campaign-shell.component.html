@@ -25,9 +25,21 @@
         <button class="topbar-purse-btn" (click)="openInventoryDrawer()" title="Purse">
           <img class="purse-icon" src="/treasure_chest_gold_coins.svg" alt="Purse" />
         </button>
-        <button class="topbar-chronicle-btn" (click)="openChronicleDrawer()" title="Chronicles">
-          <img class="chronicle-icon" src="/open_book_star_moon_storytelling.svg" alt="Chronicles" />
-        </button>
+        <div class="topbar-button-column">
+          <button class="topbar-chronicle-btn" (click)="openChronicleDrawer()" title="Chronicles">
+            <img class="chronicle-icon" src="/open_book_star_moon_storytelling.svg" alt="Chronicles" />
+          </button>
+          <button class="topbar-storyline-btn" (click)="goToEvents()" title="Storyline">
+            <svg class="storyline-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="4" y1="6" x2="20" y2="6"/>
+              <line x1="4" y1="12" x2="16" y2="12"/>
+              <line x1="4" y1="18" x2="18" y2="18"/>
+              <circle cx="22" cy="6" r="1.5" fill="currentColor"/>
+              <circle cx="22" cy="12" r="1.5" fill="currentColor"/>
+              <circle cx="22" cy="18" r="1.5" fill="currentColor"/>
+            </svg>
+          </button>
+        </div>
       </div>
     </div>
     @if (shellSvc.titleContext(); as ctx) {
@@ -83,10 +95,3 @@
     (goToSecrets)="navigateToSecrets()"
   />
 }
-
-@* Event card disabled - using badge system instead *@
-@* <app-event-card
-  [eventTitle]="eventCardTitle()"
-  [portalColor]="campaign()?.spineColor ?? '#6e28d0'"
-  (dismissed)="dismissEventCard()"
-/> *@

@@ -39,7 +39,8 @@ public class UpdateCampaignEventDetailsCommandHandler(
             command.Request.Body,
             command.Request.SceneType,
             filePath,
-            linkedEntities);
+            linkedEntities,
+            command.Request.VisibleToPlayers);
     }
 }
 

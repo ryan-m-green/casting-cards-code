@@ -353,8 +353,8 @@
 
 .detail-shop-grid {
   display: flex;
-  flex-wrap: wrap;
-  gap: 0 16px;
+  flex-direction: column;
+  gap: 0;
 }
 
 .detail-shop-item {
@@ -362,9 +362,17 @@
   justify-content: space-between;
   align-items: center;
   gap: 12px;
-  width: calc(50% - 8px);
+  width: 100%;
   padding: 6px 0;
   border-bottom: 1px solid rgba(v.$color-lib-location-1, 0.12);
+}
+
+.detail-shop-item-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
 }
 
 .detail-shop-item-name {
@@ -374,13 +382,19 @@
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  flex: 1;
-  min-width: 0;
 
   &--sold {
     text-decoration: line-through;
     opacity: 0.45;
   }
+}
+
+.detail-shop-item-description {
+  font-size: 12px;
+  color: rgba(v.$color-ext-608, 0.7);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .detail-shop-item-price {
@@ -489,24 +503,23 @@
   flex-shrink: 0;
 }
 
-.shop-buy-btn {
-  font-family: v.$font-header;
-  font-size: 12px;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  padding: 3px 10px;
+.shop-view-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  padding: 0;
   background: rgba(v.$color-lib-location-1, 0.12);
   border: 1px solid rgba(v.$color-lib-location-1, 0.45);
-  border-radius: 2px;
-  color: rgba(v.$color-lib-location-1, 0.95);
+  border-radius: 4px;
   cursor: pointer;
-  transition: background 0.16s ease, border-color 0.16s ease, color 0.16s ease;
-  white-space: nowrap;
+  transition: background 0.16s ease, border-color 0.16s ease, transform 0.16s ease;
 
   &:hover:not(:disabled) {
     background: rgba(v.$color-lib-location-1, 0.26);
     border-color: rgba(v.$color-lib-location-1, 0.75);
-    color: #fff;
+    transform: scale(1.05);
   }
 
   &:disabled {
@@ -517,6 +530,13 @@
   &--loading {
     opacity: 0.65;
   }
+}
+
+.shop-view-btn-icon {
+  width: 28px;
+  height: 28px;
+  opacity: 0.85;
+  filter: brightness(0) invert(1);
 }
 
 // ── Receipt overlay ──────────────────────────────────────────────────────────
@@ -586,7 +606,7 @@
 
   &--tl { top: 6px;  left: 6px;  }
   &--tr { top: 6px;  right: 6px; transform: scaleX(-1); }
-  &--bl { bottom: 6px; left: 6px;  transform: scaleY(-1); }
+  &--bl { bottom: 6px; left: 6px; transform: scaleY(-1); }
   &--br { bottom: 6px; right: 6px; transform: scale(-1, -1); }
 }
 
@@ -729,3 +749,4 @@
     color: #2a1a04;
   }
 }
+

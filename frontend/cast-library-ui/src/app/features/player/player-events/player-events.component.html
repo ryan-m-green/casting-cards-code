@@ -3,12 +3,13 @@
   @if (loading()) {
     <div class="pe-empty">Loading…</div>
   } @else if (!events().length) {
-    <div class="pe-empty">No plot events have been shared with you yet.</div>
+    <div class="pe-empty">No storyline content has been shared with you yet.</div>
   } @else {
     <app-storyline-filter-bar
       [activeTypeFilters]="typeFilters()"
       [showVisibilityFilters]="false"
       [disablePlayerNote]="true"
+      [showCastTraveled]="true"
       (typeFilterChange)="onTypeFilterChange($event)"
     ></app-storyline-filter-bar>
 
