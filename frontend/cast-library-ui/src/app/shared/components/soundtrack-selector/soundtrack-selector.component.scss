@@ -1,0 +1,100 @@
+@use '../../../../styles/variables' as v;
+
+.ss-container {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.ss-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.ss-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-family: v.$font-header;
+  font-size: 12px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: v.$campaign-portal-text-bright;
+  border: 1px solid v.$campaign-portal-border-strong-focus;
+  background: color-mix(in srgb, v.$campaign-portal-bg-dark 30%, v.$color-base-arcane-purple 70%);
+  border-radius: 3px;
+  padding: 6px 7px 6px 9px;
+}
+
+.ss-pill-remove {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  color: v.$campaign-portal-text-bright;
+  transition: opacity 0.15s;
+
+  &:hover {
+    opacity: 0.65;
+  }
+}
+
+.ss-pill-remove-img {
+  width: 16px;
+  height: 16px;
+  opacity: 0.8;
+  filter: brightness(0) invert(1);
+}
+
+.ss-add-row {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.ss-add-row ::ng-deep app-campaign-dropdown {
+  flex: 1;
+}
+
+.ss-add-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 10px;
+  background: color-mix(in srgb, v.$campaign-portal-bg-dark 30%, v.$color-base-arcane-purple 70%);
+  border: 1px solid v.$campaign-portal-border-strong-focus;
+  border-radius: 4px;
+  color: v.$campaign-portal-text-bright;
+  font-family: v.$font-header;
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background 0.15s ease, border-color 0.15s ease, opacity 0.15s ease;
+
+  &:hover:not(:disabled) {
+    background: color-mix(in srgb, v.$campaign-portal-bg-dark 20%, v.$color-base-arcane-purple 80%);
+    border-color: v.$campaign-portal-border-strong-focus;
+  }
+
+  &:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+  }
+
+  span {
+    font-weight: 600;
+  }
+
+  svg {
+    width: 14px;
+    height: 14px;
+    flex-shrink: 0;
+  }
+}

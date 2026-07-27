@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, signal, computed, inject, HostBinding, viewChild } from '@angular/core';
+import { Component, OnInit, OnDestroy, signal, computed, inject, HostBinding, viewChild, TemplateRef } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { ActivatedRoute, Router, RouterLink, RouterOutlet } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
@@ -8,17 +8,22 @@ import { AuthService } from '../../../core/auth/auth.service';
 import { CampaignHubService } from '../../../core/hub/campaign-hub.service';
 import { PortalAnimationService } from '../../../core/portal-animation.service';
 import { CampaignShellService } from '../../../core/campaign-shell.service';
-import { SubscriptionDrawerService } from '../../../core/subscription-drawer.service';
 import { TimeOfDayBarComponent } from '../../../shared/components/time-of-day-bar/time-of-day-bar.component';
 import { VoidNavDrawerComponent } from '../../../shared/components/void-nav-drawer/void-nav-drawer.component';
 import { VoidTitleSegmentsComponent } from '../../../shared/components/void-title-segments/void-title-segments.component';
 import { UpgradeBadgeComponent } from '../../../shared/components/upgrade-badge/upgrade-badge.component';
-import { CampaignChronicleDrawerComponent } from '../../../shared/components/campaign-chronicle-drawer/campaign-chronicle-drawer.component';
+import { SoundtrackControlPanelComponent } from '../../../shared/components/soundtrack-control-panel/soundtrack-control-panel.component';
+import { RightDrawerComponent } from '../../../shared/components/right-drawer/right-drawer.component';
+import { ChronicleContentComponent } from '../../../shared/components/right-drawer/chronicle-content.component';
+import { PlayerSecretsContentComponent } from '../../../shared/components/right-drawer/player-secrets-content.component';
+import { PartyGoldContentComponent } from '../../../shared/components/right-drawer/party-gold-content.component';
+import { SubscriptionContentComponent } from '../../../shared/components/right-drawer/subscription-content.component';
+import { PlayerCardWithDetails } from '../../../shared/models/player-card.model';
 
 @Component({
   selector: 'app-campaign-shell',
   standalone: true,
-  imports: [RouterOutlet, TimeOfDayBarComponent, VoidNavDrawerComponent, VoidTitleSegmentsComponent, UpgradeBadgeComponent, CampaignChronicleDrawerComponent],
+  imports: [RouterOutlet, TimeOfDayBarComponent, VoidNavDrawerComponent, VoidTitleSegmentsComponent, UpgradeBadgeComponent, SoundtrackControlPanelComponent, RightDrawerComponent, ChronicleContentComponent, PlayerSecretsContentComponent, PartyGoldContentComponent, SubscriptionContentComponent],
   templateUrl: './campaign-shell.component.html',
   styleUrl: './campaign-shell.component.scss',
 })
@@ -29,7 +34,6 @@ export class CampaignShellComponent implements OnInit, OnDestroy {
   private hub            = inject(CampaignHubService);
   private animationService = inject(PortalAnimationService);
   auth = inject(AuthService);
-  private drawerService  = inject(SubscriptionDrawerService);
   private hubSubscriptions: Subscription[] = [];
   shellSvc           = inject(CampaignShellService);
 
@@ -41,8 +45,19 @@ export class CampaignShellComponent implements OnInit, OnDestroy {
 
   isDm = computed(() => this.campaign()?.dmUserId === this.auth.currentUser()?.id);
 
-  // ── Chronicle drawer ───────────────────────────────────────────────────────
-  chronicleDrawer = viewChild.required<CampaignChronicleDrawerComponent>('chronicleDrawer');
+  // ── Soundtrack control panel state ─────────────────────────────────────
+  isSoundtrackOpen = signal(false);
+
+  // ── Right drawer state ─────────────────────────────────────────────────────
+  rightDrawer = viewChild.required<RightDrawerComponent>('rightDrawer');
+  chronicleContentTemplate = viewChild.required<TemplateRef<any>>('chronicleContentTemplate');
+  playerSecretsContentTemplate = viewChild.required<TemplateRef<any>>('playerSecretsContentTemplate');
+  partyGoldContentTemplate = viewChild.required<TemplateRef<any>>('partyGoldContentTemplate');
+  subscriptionContentTemplate = viewChild.required<TemplateRef<any>>('subscriptionContentTemplate');
+
+  drawerTitle = signal('');
+  currentContentTemplate = signal<TemplateRef<any> | null>(null);
+  currentContentContext = signal<any>(null);
 
   constructor() {
     this.hubSubscriptions.push(
@@ -87,7 +102,24 @@ export class CampaignShellComponent implements OnInit, OnDestroy {
 
     this.hubSubscriptions.push(
       this.shellSvc.openChronicleWithSearch.subscribe(query => {
-        this.chronicleDrawer().openWithSearch(query);
+        this.openChronicleDrawer();
+      })
+    );
+
+    // Listen for drawer requests from child components
+    this.hubSubscriptions.push(
+      this.shellSvc.openDrawerRequest.subscribe(request => {
+        this.drawerTitle.set(request.title);
+        this.currentContentTemplate.set(request.template);
+        this.currentContentContext.set(request.context);
+        this.rightDrawer().open();
+      })
+    );
+
+    // Listen for party gold drawer requests
+    this.hubSubscriptions.push(
+      this.shellSvc.openPartyGold.subscribe(() => {
+        this.openPartyGoldDrawer();
       })
     );
   }
@@ -134,11 +166,55 @@ export class CampaignShellComponent implements OnInit, OnDestroy {
   }
 
   openUpgradeDrawer() {
-    this.drawerService.open();
+    this.openSubscriptionDrawer();
   }
 
   openChronicleDrawer() {
-    this.chronicleDrawer().open();
+    this.drawerTitle.set('Campaign Chronicles');
+    this.currentContentTemplate.set(this.chronicleContentTemplate());
+    this.currentContentContext.set({
+      campaignId: this.campaignId(),
+      isDmMode: true,
+      portalColor: this.safeColor(this.campaign()?.spineColor)
+    });
+    this.rightDrawer().open();
+  }
+
+  openPlayerSecretsDrawer(member: PlayerCardWithDetails) {
+    this.drawerTitle.set(member.name);
+    this.currentContentTemplate.set(this.playerSecretsContentTemplate());
+    this.currentContentContext.set({
+      member: member,
+      campaignId: this.campaignId(),
+      mode: 'dm',
+      portalColor: this.safeColor(this.campaign()?.spineColor)
+    });
+    this.rightDrawer().open();
+  }
+
+  openPartyGoldDrawer() {
+    this.drawerTitle.set('Award Treasure to Party');
+    this.currentContentTemplate.set(this.partyGoldContentTemplate());
+    this.currentContentContext.set({
+      campaignId: this.campaignId(),
+      portalColor: this.safeColor(this.campaign()?.spineColor)
+    });
+    this.rightDrawer().open();
+  }
+
+  openSubscriptionDrawer() {
+    this.drawerTitle.set('Upgrade Your Plan');
+    this.currentContentTemplate.set(this.subscriptionContentTemplate());
+    this.currentContentContext.set({});
+    this.rightDrawer().open();
+  }
+
+  onPartyGoldAwarded(response: { currency: string; playerAwards: { playerUserId: string; amount: number }[] }) {
+    this.shellSvc.partyGoldAwarded.next(response);
+  }
+
+  onSoundtrackOpenChange(isOpen: boolean) {
+    this.isSoundtrackOpen.set(isOpen);
   }
 
   goToEvents() {

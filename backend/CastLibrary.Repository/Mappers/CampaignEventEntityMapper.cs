@@ -7,6 +7,7 @@ namespace CastLibrary.Repository.Mappers;
 public interface ICampaignEventEntityMapper
 {
     CampaignStorylineDomain ToDomain(CampaignEventEntity entity);
+    CampaignEventEntity ToEntity(CampaignStorylineDomain domain);
 }
 
 public class CampaignEventEntityMapper : ICampaignEventEntityMapper
@@ -25,12 +26,37 @@ public class CampaignEventEntityMapper : ICampaignEventEntityMapper
         VisibleToPlayers = entity.VisibleToPlayers,
         MarkedForArchive = entity.MarkedForArchive,
         SceneType = entity.SceneType ?? "campaign-event",
+        SoundtrackIds = string.IsNullOrWhiteSpace(entity.SoundtrackIds)
+            ? []
+            : JsonSerializer.Deserialize<List<Guid>>(entity.SoundtrackIds) ?? [],
         CreatedAt = entity.CreatedAt,
         UpdatedAt = entity.UpdatedAt,
+    };
+
+    public CampaignEventEntity ToEntity(CampaignStorylineDomain domain) => new()
+    {
+        Id = domain.Id,
+        CampaignId = domain.CampaignId,
+        Title = domain.Title,
+        Body = domain.Body,
+        SortOrder = domain.SortOrder,
+        LinkedEntities = ToJson(domain.LinkedEntities),
+        FilePath = domain.FilePath,
+        VisibleToPlayers = domain.VisibleToPlayers,
+        MarkedForArchive = domain.MarkedForArchive,
+        SceneType = domain.SceneType,
+        SoundtrackIds = ToJson(domain.SoundtrackIds),
+        CreatedAt = domain.CreatedAt,
+        UpdatedAt = domain.UpdatedAt,
     };
 
     public static string ToJson(List<LinkedEntityTrigger> linkedEntities) =>
         linkedEntities == null || linkedEntities.Count == 0 
             ? "[]" 
             : JsonSerializer.Serialize(linkedEntities);
+
+    public static string ToJson(List<Guid> soundtrackIds) =>
+        soundtrackIds == null || soundtrackIds.Count == 0 
+            ? "[]" 
+            : JsonSerializer.Serialize(soundtrackIds);
 }

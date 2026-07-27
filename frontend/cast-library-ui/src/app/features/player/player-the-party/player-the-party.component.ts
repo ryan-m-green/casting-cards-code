@@ -1,10 +1,9 @@
-import { Component, OnInit, OnDestroy, signal, computed, inject, untracked, ViewChild } from '@angular/core';
+import { Component, OnInit, OnDestroy, signal, computed, inject, untracked } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { CastingCardPlayerComponent } from '../../../shared/components/casting-card-player/casting-card-player.component';
 import { CastCardComponent } from '../../../shared/components/cast-card/cast-card.component';
-import { PlayerSecretsDrawerComponent } from '../../../shared/components/player-secrets-drawer/player-secrets-drawer.component';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../../environments/environment';
 import { PortalTransitionService } from '../../../core/portal-transition.service';
@@ -23,7 +22,7 @@ import {
 @Component({
   selector: 'app-player-the-party',
   standalone: true,
-  imports: [CommonModule, CastingCardPlayerComponent, CastCardComponent, PlayerSecretsDrawerComponent],
+  imports: [CommonModule, CastingCardPlayerComponent, CastCardComponent],
   templateUrl: './player-the-party.component.html',
   styleUrl: './player-the-party.component.scss',
 })
@@ -42,9 +41,6 @@ export class PlayerThePartyComponent implements OnInit, OnDestroy {
   playerCard   = signal<PlayerCardWithDetails | null>(null);
 
   portalColor = signal(this.transition.spineColor);
-
-  // ── View Secrets drawer ───────────────────────────────────────────────────────
-  @ViewChild(PlayerSecretsDrawerComponent) secretsDrawer: PlayerSecretsDrawerComponent | null = null;
 
   // ── Cast ─────────────────────────────────────────────────────────────────
   discoveredCast  = signal<DiscoveredCastResponse | null>(null);
@@ -234,11 +230,6 @@ export class PlayerThePartyComponent implements OnInit, OnDestroy {
         });
       }
     });
-  }
-
-  // ── View Secrets drawer ───────────────────────────────────────────────────────
-  viewSecrets(member: PlayerCardWithDetails) {
-    this.secretsDrawer?.open(member, this.campaignId());
   }
 
   // ── Navigation ───────────────────────────────────────────────────────────────

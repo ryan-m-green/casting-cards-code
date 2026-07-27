@@ -18,16 +18,16 @@
       aria-controls="events-panel-create-events"
       id="events-tab-create-events"
       (click)="setTab('create-events')"
-    >Create Scenes</button>
+    >Create Content</button>
     <button
       class="tab-btn"
-      [class.tab-btn--active]="activeTab() === 'create-handout'"
+      [class.tab-btn--active]="activeTab() === 'soundtracks'"
       role="tab"
-      [attr.aria-selected]="activeTab() === 'create-handout'"
-      aria-controls="events-panel-create-handout"
-      id="events-tab-create-handout"
-      (click)="setTab('create-handout')"
-    >Create Handout</button>
+      [attr.aria-selected]="activeTab() === 'soundtracks'"
+      aria-controls="events-panel-soundtracks"
+      id="events-tab-soundtracks"
+      (click)="setTab('soundtracks')"
+    >Soundtracks</button>
   </div>
 
   @if (activeTab() === 'events') {
@@ -36,7 +36,7 @@
       @if (loadingEvents()) {
         <div class="ev-empty">Loading…</div>
       } @else if (!events().length) {
-        <div class="ev-empty">No storyline yet. Create one in the Create Scenes tab.</div>
+        <div class="ev-empty">No storyline yet. Create one in the Create Content tab.</div>
       } @else {
 
         <!-- Filter bar -->
@@ -336,6 +336,25 @@
 
                 <span class="ev-title">{{ ev.title }}</span>
 
+                @if (ev.soundtrackIds && ev.soundtrackIds.length > 0) {
+                <button
+                  class="ev-play-soundtracks-btn"
+                  (click)="playEventSoundtrack(ev)"
+                  title="Play soundtracks"
+                  aria-label="Play soundtracks"
+                >
+                  @if (areEventTracksPlaying(ev)) {
+                  <svg viewBox="0 0 24 24" fill="currentColor" stroke="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="6" y="6" width="12" height="12"></rect>
+                  </svg>
+                  } @else {
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <polygon points="5 3 19 12 5 21 5 3"></polygon>
+                  </svg>
+                  }
+                </button>
+                }
+
                 @if (shouldShowArchiveButton(ev)) {
                 <button
                   class="ev-archive-btn"
@@ -363,7 +382,6 @@
                 </button>
                 }
 
-               
 
                 <span class="ev-chevron" [class.ev-chevron--open]="expandedIds().has(ev.id)">&#9660;</span>
               </div>
@@ -469,6 +487,15 @@
                       </div>
                       <div class="event-panel-divider"></div>
                       <div class="event-form-field">
+                        <label class="event-label">Soundtracks</label>
+                        <app-soundtrack-selector
+                          [soundtracks]="soundtracks()"
+                          [selectedSoundtrackIds]="editSoundtrackIds()"
+                          (selectedSoundtracksChange)="editSoundtrackIds.set($event)"
+                        />
+                      </div>
+                      <div class="event-panel-divider"></div>
+                      <div class="event-form-field">
                         <label class="event-label">Associate with</label>
                         <app-note-destination-picker
                           [showQueue]="false"
@@ -554,6 +581,15 @@
                       </div>
                       <div class="event-panel-divider"></div>
                       <div class="event-form-field">
+                        <label class="event-label">Soundtracks</label>
+                        <app-soundtrack-selector
+                          [soundtracks]="soundtracks()"
+                          [selectedSoundtrackIds]="editSoundtrackIds()"
+                          (selectedSoundtracksChange)="editSoundtrackIds.set($event)"
+                        />
+                      </div>
+                      <div class="event-panel-divider"></div>
+                      <div class="event-form-field">
                         <label class="event-label">Associate with</label>
                         <app-note-destination-picker
                           [showQueue]="false"
@@ -616,13 +652,22 @@
       <div class="event-form">
 
         <div class="event-panel">
+          <div class="scene-type-toggle-header">
+            <span class="scene-type-toggle-label">Scene</span>
+            <label class="scene-type-toggle-switch">
+              <input type="checkbox" [checked]="createSceneType() === 'campaign-handout'" (change)="onCreateSceneTypeChange($event.target.checked ? 'campaign-handout' : 'campaign-event')" />
+              <span class="scene-type-toggle-slider"></span>
+            </label>
+            <span class="scene-type-toggle-label">Handout</span>
+          </div>
+
           <div class="event-form-field">
             <label class="event-label" for="event-title">Title</label>
             <input
               id="event-title"
               class="fi event-title-input"
               type="text"
-              placeholder="Scene title…"
+              placeholder="Title…"
               [ngModel]="eventTitle()"
               (ngModelChange)="eventTitle.set($event)"
               maxlength="200"
@@ -630,20 +675,89 @@
             />
           </div>
 
-          <div class="event-form-field">
-            <label class="event-label" for="event-body">Scene</label>
-            <textarea
-              id="event-body"
-              class="fi event-body-textarea"
-              placeholder="Write your story scene here…"
-              [ngModel]="eventBody()"
-              (ngModelChange)="eventBody.set($event)"
-              maxlength="50000"
-              rows="18"
-            ></textarea>
-          </div>
+          @if (createSceneType() === 'campaign-handout') {
+            <div class="event-form-field">
+              <label class="event-label" for="event-body">Caption (optional)</label>
+              <textarea
+                id="event-body"
+                class="fi event-body-textarea handout-caption-textarea"
+                placeholder="Optional caption or description…"
+                [ngModel]="eventBody()"
+                (ngModelChange)="eventBody.set($event)"
+                maxlength="2000"
+                rows="3"
+              ></textarea>
+            </div>
 
-          <div class="event-panel-divider"></div>
+            <div class="event-panel-divider"></div>
+
+            <div class="event-form-field">
+              <label class="event-label">File</label>
+              <label class="handout-upload-label">
+                <input
+                  type="file"
+                  accept="image/jpeg,image/png,image/webp,application/pdf"
+                  class="handout-upload-input"
+                  aria-label="Select image or PDF to upload as handout"
+                  (change)="onCreateFileSelected($event)"
+                />
+                <div class="handout-upload-btn">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                    <polyline points="17 8 12 3 7 8"/>
+                    <line x1="12" y1="3" x2="12" y2="15"/>
+                  </svg>
+                  {{ createFile() ? createFile()!.name : 'Choose image or PDF…' }}
+                </div>
+              </label>
+            </div>
+
+            @if (createPreviewUrl()) {
+              <div class="handout-preview">
+                <img class="handout-preview-img" [src]="createPreviewUrl()!" alt="Handout preview" />
+              </div>
+            } @else if (createFile() && !createPreviewUrl()) {
+              <div class="handout-pdf-indicator">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                  <polyline points="14 2 14 8 20 8"/>
+                  <line x1="16" y1="13" x2="8" y2="13"/>
+                  <line x1="16" y1="17" x2="8" y2="17"/>
+                  <polyline points="10 9 9 9 8 9"/>
+                </svg>
+                <span>{{ createFile()!.name }}</span>
+                <span class="handout-pdf-note">Will be converted to image on upload</span>
+              </div>
+            }
+
+            <div class="event-panel-divider"></div>
+          }
+
+        @else {
+            <div class="event-form-field">
+              <label class="event-label" for="event-body">Scene</label>
+              <textarea
+                id="event-body"
+                class="fi event-body-textarea"
+                placeholder="Write your story scene here…"
+                [ngModel]="eventBody()"
+                (ngModelChange)="eventBody.set($event)"
+                maxlength="50000"
+                rows="18"
+              ></textarea>
+            </div>
+
+            <div class="event-panel-divider"></div>
+          }
+
+          <div class="event-form-field">
+            <label class="event-label">Soundtracks</label>
+            <app-soundtrack-selector
+              [soundtracks]="soundtracks()"
+              [selectedSoundtrackIds]="selectedSoundtrackIds()"
+              (selectedSoundtracksChange)="selectedSoundtrackIds.set($event)"
+            />
+          </div>
 
           <div class="event-form-field">
             <label class="event-label">Associate with</label>
@@ -680,13 +794,13 @@
               <span class="event-error">{{ saveError() }}</span>
             }
             @if (saveSuccess()) {
-              <span class="event-success">Event saved.</span>
+              <span class="event-success">Saved.</span>
             }
             <button
               class="campaign-primary-btn"
               [disabled]="saving() || !canSave()"
               (click)="saveEvent()"
-            >{{ saving() ? 'Saving…' : 'Save Event' }}</button>
+            >{{ saving() ? 'Saving…' : (createSceneType() === 'campaign-handout' ? 'Upload Handout' : 'Save Scene') }}</button>
           </div>
         </div>
 
@@ -695,127 +809,149 @@
     </div>
   }
 
-  @if (activeTab() === 'create-handout') {
-    <div class="tab-content" id="events-panel-create-handout" role="tabpanel" aria-labelledby="events-tab-create-handout">
-
-      <div class="event-form">
-        <div class="event-panel">
-
-          <div class="event-form-field">
-            <label class="event-label" for="handout-title">Title</label>
-            <input
-              id="handout-title"
-              class="fi event-title-input"
-              type="text"
-              placeholder="Handout title…"
-              [ngModel]="handoutTitle()"
-              (ngModelChange)="handoutTitle.set($event)"
-              maxlength="200"
-              autocomplete="off"
-            />
-          </div>
-
-          <div class="event-form-field">
-            <label class="event-label" for="handout-caption">Caption (optional)</label>
-            <textarea
-              id="handout-caption"
-              class="fi event-body-textarea handout-caption-textarea"
-              placeholder="Optional caption or description…"
-              [ngModel]="handoutBody()"
-              (ngModelChange)="handoutBody.set($event)"
-              maxlength="2000"
-              rows="4"
-            ></textarea>
-          </div>
-
-          <div class="event-panel-divider"></div>
-
-          <div class="event-form-field">
-            <label class="event-label">File</label>
-            <label class="handout-upload-label">
-              <input
-                type="file"
-                accept="image/jpeg,image/png,image/webp,application/pdf"
-                class="handout-upload-input"
-                aria-label="Select image or PDF to upload as handout"
-                (change)="onHandoutFileSelected($event)"
-              />
-              <div class="handout-upload-btn">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-                  <polyline points="17 8 12 3 7 8"/>
-                  <line x1="12" y1="3" x2="12" y2="15"/>
-                </svg>
-                {{ handoutFile() ? handoutFile()!.name : 'Choose image or PDF…' }}
-              </div>
-            </label>
-          </div>
-
-          @if (handoutPreviewUrl()) {
-            <div class="handout-preview">
-              <img class="handout-preview-img" [src]="handoutPreviewUrl()!" alt="Handout preview" />
-            </div>
-          } @else if (handoutFile() && !handoutPreviewUrl()) {
-            <div class="handout-pdf-indicator">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
-                <polyline points="14 2 14 8 20 8"/>
-                <line x1="16" y1="13" x2="8" y2="13"/>
-                <line x1="16" y1="17" x2="8" y2="17"/>
-                <polyline points="10 9 9 9 8 9"/>
-              </svg>
-              <span>{{ handoutFile()!.name }}</span>
-              <span class="handout-pdf-note">Will be converted to image on upload</span>
-            </div>
-          }
-
-          <div class="event-panel-divider"></div>
-
-          <div class="event-form-field">
-            <label class="event-label">Associate with</label>
-            <app-note-destination-picker
-              [showQueue]="false"
-              [showNone]="true"
-              [showCampaign]="true"
-              [showTimeOfDay]="true"
-              [showCastTravel]="true"
-              [multiselect]="true"
-              [linkedEntities]="handoutLinkedEntities()"
-              [campaignId]="campaignId"
-              [destType]="handoutDestType()"
-              [entityId]="handoutEntityId()"
-              [tod]="tod()"
-              [todPositionPercent]="handoutTodPositionPercent()"
-              [locations]="locations()"
-              [sublocations]="sublocations()"
-              [casts]="casts()"
-              [factions]="factions()"
-              [players]="players()"
-              (destTypeChange)="onHandoutDestTypeChange($event)"
-              (entityIdChange)="handoutEntityId.set($event)"
-              (todPositionPercentChange)="handoutTodPositionPercent.set($event)"
-              (linkedEntitiesChange)="handoutLinkedEntities.set($event)"
-              (visibleToPlayersChange)="onHandoutVisibleToPlayersChange($event)"
-            />
-          </div>
-
-          <div class="event-form-actions">
-            @if (handoutError()) {
-              <span class="event-error">{{ handoutError() }}</span>
-            }
-            @if (handoutSuccess()) {
-              <span class="event-success">Handout uploaded.</span>
-            }
+  @if (activeTab() === 'soundtracks') {
+    <div class="tab-content" id="events-panel-soundtracks" role="tabpanel" aria-labelledby="events-tab-soundtracks">
+      <div class="soundtracks-container">
+        @if (loadingSoundtracks()) {
+          <div class="ev-empty">Loading soundtracks…</div>
+        } @else {
+          <div class="soundtracks-header">
             <button
               class="campaign-primary-btn"
-              [disabled]="handoutUploading() || !canUploadHandout()"
-              (click)="uploadHandout()"
-            >{{ handoutUploading() ? 'Uploading…' : 'Upload Handout' }}</button>
+              (click)="openUploadSoundtrack()"
+            >Upload Soundtrack</button>
           </div>
 
-        </div>
+          @if (!soundtracks().length) {
+            <div class="ev-empty">No soundtracks uploaded yet.</div>
+          } @else {
+            <div class="soundtracks-list">
+              @for (track of soundtracks(); track track.id) {
+                <div class="soundtrack-item">
+                  @if (editingSoundtrackId() === track.id) {
+                    <div class="soundtrack-edit-wrapper">
+                      <input
+                        type="text"
+                        id="soundtrack-title-input-{{ track.id }}"
+                        class="soundtrack-title-input"
+                        [value]="track.title"
+                        #titleInput
+                        placeholder="Title"
+                      />
+                      <div class="soundtrack-edit-controls">
+                        <div class="soundtrack-volume-control">
+                          <label>Volume:</label>
+                          <input
+                            type="number"
+                            min="0"
+                            max="100"
+                            [value]="editingVolume()"
+                            (input)="editingVolume.set($any($event.target).value)"
+                            class="volume-number-input"
+                          />
+                          <input
+                            type="range"
+                            min="0"
+                            max="100"
+                            [value]="editingVolume()"
+                            (input)="editingVolume.set($any($event.target).value)"
+                            class="volume-slider"
+                          />
+                        </div>
+                        <div class="soundtrack-loop-control">
+                          <label class="toggle-switch">
+                            <input
+                              type="checkbox"
+                              [checked]="editingIsLoop()"
+                              (change)="editingIsLoop.set($any($event.target).checked)"
+                            />
+                            <span class="toggle-slider"></span>
+                            <span class="toggle-label">Loop</span>
+                          </label>
+                          <div class="soundtrack-loop-delay-control">
+                            <label for="loop-delay-input-{{ track.id }}">Delay (seconds):</label>
+                            <div class="loop-delay-input-wrapper">
+                              <button
+                                type="button"
+                                class="loop-delay-btn loop-delay-btn--down"
+                                (click)="decrementLoopDelay()"
+                                [disabled]="!editingIsLoop()"
+                                title="Decrease delay"
+                              >▼</button>
+                              <input
+                                type="number"
+                                id="loop-delay-input-{{ track.id }}"
+                                min="1"
+                                max="60"
+                                [value]="editingLoopDelaySeconds() ?? 0"
+                                (input)="editingLoopDelaySeconds.set(onLoopDelayChange($any($event.target).value))"
+                                [disabled]="!editingIsLoop()"
+                                class="loop-delay-input"
+                              />
+                              <button
+                                type="button"
+                                class="loop-delay-btn loop-delay-btn--up"
+                                (click)="incrementLoopDelay()"
+                                [disabled]="!editingIsLoop()"
+                                title="Increase delay"
+                              >▲</button>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="soundtrack-edit-buttons">
+                          <button
+                            class="soundtrack-btn"
+                            (click)="saveSoundtrackEdit(track)"
+                          >Save</button>
+                          <button
+                            class="soundtrack-btn"
+                            (click)="cancelSoundtrackEdit()"
+                          >Cancel</button>
+                        </div>
+                      </div>
+                    </div>
+                  } @else {
+                    <div class="soundtrack-info">
+                      <h3 class="soundtrack-name">{{ getDisplayName(track.title) }}</h3>
+                      <div class="soundtrack-status">
+                        <span class="soundtrack-volume-label">Volume: {{ track.volume }}%</span>
+                        @if (track.isLoop) {
+                          <span class="soundtrack-loop-label">Loop: On</span>
+                          @if (track.loopDelaySeconds) {
+                            <span class="soundtrack-delay-label">Delay: {{ track.loopDelaySeconds }}s</span>
+                          }
+                        }
+                      </div>
+                    </div>
+                    <div class="soundtrack-controls">
+                      <button
+                        class="soundtrack-btn"
+                        (click)="playSoundtrack(track)"
+                        title="Play"
+                      >▶ Play</button>
+                      <button
+                        class="soundtrack-btn"
+                        (click)="stopSoundtrack(track.id)"
+                        title="Stop"
+                      >⏹ Stop</button>
+                      <button
+                        class="soundtrack-btn"
+                        (click)="editSoundtrack(track)"
+                        title="Edit"
+                      >✏ Edit</button>
+                      <button
+                        class="soundtrack-btn soundtrack-btn--danger"
+                        (click)="deleteSoundtrack(track.id)"
+                        title="Delete"
+                      >🗑 Delete</button>
+                    </div>
+                  }
+                </div>
+              }
+            </div>
+          }
+        }
       </div>
-
     </div>
   }
 

@@ -1,0 +1,33 @@
+<div class="inventory-body">
+  <!-- Currency display -->
+  <div class="inventory-currency-section">
+    <app-currency-display [purse]="purse()"></app-currency-display>
+  </div>
+
+  <div class="inventory-divider"></div>
+
+  @if (loadingInventory()) {
+    <div class="inventory-empty">Loading inventory…</div>
+  }
+
+  @if (!loadingInventory() && inventoryItems().length === 0) {
+    <div class="inventory-empty">No items in inventory</div>
+  }
+
+  @if (!loadingInventory() && inventoryItems().length > 0) {
+    <div class="inventory-list">
+      @for (item of inventoryItems(); track item.id) {
+        <div class="inventory-item">
+          <div class="inventory-item-content">
+            <div class="inventory-item-name">{{ item.name }}</div>
+            @if (item.description) {
+              <div class="inventory-item-description">{{ item.description }}</div>
+            }
+            <div class="inventory-item-count">×{{ item.count }}</div>
+          </div>
+          <button class="inventory-use-btn" (click)="useItem(item.id)" aria-label="Use {{ item.name }}">Use</button>
+        </div>
+      }
+    </div>
+  }
+</div>

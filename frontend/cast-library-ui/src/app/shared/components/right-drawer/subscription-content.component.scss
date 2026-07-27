@@ -1,0 +1,9 @@
+@use '../../../../styles/variables' as v;
+
+.subscription-body {
+  padding: 24px;
+
+  @media (max-width: 480px) {
+    padding: 16px;
+  }
+}

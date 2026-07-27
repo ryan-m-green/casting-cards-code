@@ -13,6 +13,7 @@ public class CampaignStorylineDomain
     public bool VisibleToPlayers { get; set; }
     public bool MarkedForArchive { get; set; }
     public string SceneType { get; set; } = "campaign-event";
+    public List<Guid> SoundtrackIds { get; set; } = [];
     public DateTime CreatedAt { get; set; }
     public DateTime UpdatedAt { get; set; }
 }

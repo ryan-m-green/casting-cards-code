@@ -27,6 +27,28 @@
   &::-webkit-scrollbar { display: none; }
 }
 
+/* ── Soundtrack control wrapper ───────────────────────────────── */
+.soundtrack-control-wrapper {
+  position: fixed;
+  top: 0;
+  left: 75px;
+  right: 130px;
+  z-index: 2003;
+  pointer-events: none;
+
+  app-soundtrack-control-panel {
+    pointer-events: auto;
+  }
+
+  &.scp-open {
+    @media (max-width: 767px) {
+      left: 0;
+      right: 0;
+      z-index: 2004;
+    }
+  }
+}
+
 :host::after {
   content: '';
   position: fixed;
@@ -80,8 +102,8 @@
 
 .upgrade-badge-shell {
   position: absolute;
-  top: 20px;
-  right: 32px;
+  top: 75px;
+  right: 20px;
 }
 
 /* ── Topbar row ─────────────────────────────────────────────── */

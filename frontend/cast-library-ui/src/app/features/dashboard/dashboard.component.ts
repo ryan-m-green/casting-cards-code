@@ -6,11 +6,11 @@ import { environment } from '../../../environments/environment';
 import { AuthService } from '../../core/auth/auth.service';
 import { Campaign } from '../../shared/models/campaign.model';
 import { PortalTransitionService } from '../../core/portal-transition.service';
-import { SubscriptionDrawerService } from '../../core/subscription-drawer.service';
 import { JournalTitleComponent } from '../../shared/components/journal-title/journal-title.component';
 import { IconComponent } from '../../shared/components/icon/icon.component';
 import { UpgradeBadgeComponent } from '../../shared/components/upgrade-badge/upgrade-badge.component';
 import { CampaignHubService } from '../../core/hub/campaign-hub.service';
+import { SubscriptionDrawerService } from '../../core/subscription-drawer.service';
 
 interface DashboardStats {
   campaignCount: number;
@@ -51,8 +51,8 @@ export class DashboardComponent implements OnInit {
   private router         = inject(Router);
   private transition     = inject(PortalTransitionService);
   auth                   = inject(AuthService);
-  private drawerService  = inject(SubscriptionDrawerService);
   private hub            = inject(CampaignHubService);
+  private subscriptionDrawerService = inject(SubscriptionDrawerService);
 
   @ViewChild('portalGhostTpl') private portalGhostTpl!: ElementRef<HTMLElement>;
   private isEntering = false;
@@ -265,6 +265,6 @@ export class DashboardComponent implements OnInit {
   }
 
   openUpgradeDrawer() {
-    this.drawerService.open();
+    this.subscriptionDrawerService.open();
   }
 }

@@ -24,7 +24,9 @@ public enum EntityType
     [Description("secret")]
     Secret,
     [Description("cast-traveled")]
-    CastTraveled
+    CastTraveled,
+    [Description("soundtrack")]
+    Soundtrack
 }
 
 public static class EntityTypeExtensions

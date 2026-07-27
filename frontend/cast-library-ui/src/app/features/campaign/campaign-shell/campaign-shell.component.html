@@ -6,6 +6,54 @@
   [style.--portal-color]="safeColor(shellSvc.campaign()?.spineColor)"
 />
 
+<!-- Templates for drawer content -->
+<ng-template #chronicleContentTemplate let-campaignId="campaignId" let-isDmMode="isDmMode" let-portalColor="portalColor">
+  <app-chronicle-content
+    [campaignId]="campaignId"
+    [isDmMode]="isDmMode"
+    [portalColor]="portalColor"
+  />
+</ng-template>
+
+<ng-template #playerSecretsContentTemplate let-member="member" let-campaignId="campaignId" let-mode="mode" let-portalColor="portalColor">
+  <app-player-secrets-content
+    [member]="member"
+    [campaignId]="campaignId"
+    [mode]="mode"
+    [portalColor]="portalColor"
+  />
+</ng-template>
+
+<ng-template #partyGoldContentTemplate let-campaignId="campaignId" let-portalColor="portalColor">
+  <app-party-gold-content
+    [campaignId]="campaignId"
+    [portalColor]="portalColor"
+    (goldAwarded)="onPartyGoldAwarded($event)"
+    (closeDrawer)="rightDrawer.close()"
+  />
+</ng-template>
+
+<ng-template #subscriptionContentTemplate>
+  <app-subscription-content
+    (closeDrawer)="rightDrawer.close()"
+  />
+</ng-template>
+
+<!-- Single RightDrawerComponent at shell level -->
+<app-right-drawer #rightDrawer
+  [portalColor]="safeColor(shellSvc.campaign()?.spineColor)"
+  [title]="drawerTitle()"
+  [contentTemplate]="currentContentTemplate()"
+  [contentContext]="currentContentContext()"
+/>
+
+<!-- ── Soundtrack control panel ── -->
+@if (isDm()) {
+  <div class="soundtrack-control-wrapper" [class.scp-open]="isSoundtrackOpen()">
+    <app-soundtrack-control-panel [campaignId]="campaignId()" (openStateChange)="onSoundtrackOpenChange($event)" />
+  </div>
+}
+
 <div class="void-canvas" [style.--portal-color]="safeColor(shellSvc.campaign()?.spineColor)">
 
   <!-- ── Top bar ── -->
@@ -55,10 +103,5 @@
 
 </div>
 
-<app-campaign-chronicle-drawer #chronicleDrawer
-  [campaignId]="campaignId()"
-  [isDmMode]="true"
-  [portalColor]="safeColor(shellSvc.campaign()?.spineColor)"
-/>
 <div class="void-letterbox-top"></div>
 <div class="void-letterbox-bottom"></div>

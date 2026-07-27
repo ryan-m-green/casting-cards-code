@@ -34,10 +34,18 @@
   flex-shrink: 0;
 }
 
-@media (max-width: 600px) {
+// When search bar wraps below filter buttons, make divider horizontal
+@media (max-width: 560px) {
   .ev-filter-divider {
-    width: 100%;
+    width: 356px; // 252px input + 44px + 44px buttons + 16px gaps
     height: 1px;
+    margin-right: auto;
+  }
+
+  @media (max-width: 400px) {
+    .ev-filter-divider {
+      width: 272px; // 168px input + 44px + 44px buttons + 16px gaps
+    }
   }
 }
 
@@ -149,7 +157,7 @@
     box-shadow: 0 0 0 2px color-mix(in srgb, v.$campaign-portal-border-strong-focus 20%, transparent);
   }
 }
-@media (max-width: 600px) {
+@media (max-width: 560px) {
   .ev-search-input {
     width: auto;
     flex: 1;

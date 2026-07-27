@@ -57,6 +57,17 @@ export class AuthService implements OnDestroy {
       // Mark as ready to allow app to function, will initialize via APP_INITIALIZER
       this._isTokenReady.set(true);
     }
+
+    // Debug: Log auth object
+    console.log('Auth Object Debug:', {
+      currentUser: this._currentUser(),
+      subscription: this._subscription(),
+      isFreeTrial: this.isFreeTrial(),
+      isDm: this.isDm(),
+      isAdmin: this.isAdmin(),
+      lockLevel: this._lockLevel(),
+      bypassPayment: this._bypassPayment()
+    });
   }
 
   login(request: LoginRequest): Observable<AuthResponse> {

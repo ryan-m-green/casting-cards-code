@@ -11,6 +11,7 @@ import { environment } from '../../../../environments/environment';
 import { NoteDestinationPickerComponent } from '../../../shared/components/note-destination-picker/note-destination-picker.component';
 import { LockIconComponent } from '../../../shared/components/lock-icon/lock-icon.component';
 import { StorylineFilterBarComponent } from '../../../shared/components/storyline-filter-bar/storyline-filter-bar.component';
+import { SoundtrackSelectorComponent } from '../../../shared/components/soundtrack-selector/soundtrack-selector.component';
 import { CampaignLocationInstance } from '../../../shared/models/location.model';
 import { CampaignSublocationInstance } from '../../../shared/models/sublocation.model';
 import { CampaignCastInstance } from '../../../shared/models/cast.model';
@@ -20,9 +21,12 @@ import { TimeOfDay } from '../../../shared/models/time-of-day.model';
 import { Session } from '../../../shared/models/session.model';
 import { CampaignDropdownOption } from '../../../shared/components/campaign-dropdown/campaign-dropdown.component';
 import { CampaignSecret } from '../../../shared/models/secret.model';
+import { SoundtrackDomain } from '../../../shared/models/soundtrack.model';
+import { AudioPlayerService } from '../../../core/audio-player.service';
+import { SoundtrackSyncService } from '../../../core/soundtrack-sync.service';
 import { Subscription } from 'rxjs';
 
-type EventsTab = 'events' | 'create-events' | 'create-handout';
+type EventsTab = 'events' | 'create-events' | 'soundtracks';
 type DestType = 'cast' | 'faction' | 'campaign' | 'sublocation' | 'location' | 'player' | 'none' | 'time-of-day' | 'cast-traveled';
 
 interface LinkedItem {
@@ -48,12 +52,14 @@ interface CampaignEvent {
   todPositionPercent: number | null;
   archived: boolean;
   sceneType: string;
+  soundtrackIds: string[];
+  updatedAt: string;
 }
 
 @Component({
   selector: 'app-gm-events',
   standalone: true,
-  imports: [CommonModule, FormsModule, NoteDestinationPickerComponent, LockIconComponent, StorylineFilterBarComponent],
+  imports: [CommonModule, FormsModule, NoteDestinationPickerComponent, LockIconComponent, StorylineFilterBarComponent, SoundtrackSelectorComponent],
   templateUrl: './gm-events.component.html',
   styleUrl: './gm-events.component.scss',
 })
@@ -64,6 +70,8 @@ export class GmEventsComponent implements OnInit, OnDestroy {
   sanitizer = inject(DomSanitizer);
   private sessionService = inject(SessionService);
   private hub      = inject(CampaignHubService);
+  private audioPlayer = inject(AudioPlayerService);
+  private soundtrackSync = inject(SoundtrackSyncService);
   private hubSubscriptions: Subscription[] = [];
 
   campaignId = '';
@@ -74,6 +82,17 @@ export class GmEventsComponent implements OnInit, OnDestroy {
   events        = signal<CampaignEvent[]>([]);
   loadingEvents = signal(false);
   expandedIds   = signal<Set<string>>(new Set());
+
+  // Soundtracks
+  soundtracks = signal<SoundtrackDomain[]>([]);
+  loadingSoundtracks = signal(false);
+  selectedSoundtrackIds = signal<string[]>([]);
+  editingSoundtrackId = signal<string | null>(null);
+  editingVolume = signal(80);
+  editingIsLoop = signal(false);
+  editingLoopDelaySeconds = signal<number | null>(null);
+  playingEventId = signal<string | null>(null);
+  activeTrackIds = signal<string[]>([]);
 
   // Inline edit
   editingId        = signal<string | null>(null);
@@ -87,6 +106,7 @@ export class GmEventsComponent implements OnInit, OnDestroy {
   editTodPositionPercent = signal<number | null>(null);
   editFile         = signal<File | null>(null);
   editPreviewUrl   = signal<string | null>(null);
+  editSoundtrackIds = signal<string[]>([]);
   editSaving       = signal(false);
   editSaveError    = signal<string | null>(null);
   editSaveSuccess  = signal(false);
@@ -195,6 +215,9 @@ export class GmEventsComponent implements OnInit, OnDestroy {
   // Create event form
   eventTitle = signal('');
   eventBody  = signal('');
+  createSceneType = signal<'campaign-event' | 'campaign-handout'>('campaign-event');
+  createFile = signal<File | null>(null);
+  createPreviewUrl = signal<string | null>(null);
   destType   = signal<DestType>('none');
   entityId   = signal('');
   linkedEntities = signal<LinkedItem[]>([]);
@@ -203,31 +226,6 @@ export class GmEventsComponent implements OnInit, OnDestroy {
   saveError  = signal<string | null>(null);
   saveSuccess = signal(false);
 
-  // Create handout form
-  handoutTitle      = signal('');
-  handoutBody       = signal('');
-  handoutFile       = signal<File | null>(null);
-  handoutPreviewUrl = signal<string | null>(null);
-  handoutUploading  = signal(false);
-  handoutError      = signal<string | null>(null);
-  handoutSuccess    = signal(false);
-  handoutDestType   = signal<DestType>('none');
-  handoutEntityId   = signal('');
-  handoutLinkedEntities = signal<LinkedItem[]>([]);
-  handoutTodPositionPercent = signal<number | null>(null);
-
-  canUploadHandout = computed(() => {
-    const title = this.handoutTitle();
-    const file  = this.handoutFile();
-    const d     = this.handoutDestType();
-    const eId   = this.handoutEntityId();
-    const linked = this.handoutLinkedEntities();
-    if (!title.trim() || !file) return false;
-    const needsEntity = d === 'cast' || d === 'faction' || d === 'location' || d === 'sublocation' || d === 'player';
-    if (needsEntity && !eId && linked.length === 0) return false;
-    return true;
-  });
-
   readonly allUsedEntities = computed<LinkedItem[]>(() => {
     const allItems: LinkedItem[] = [];
     for (const ev of this.events()) {
@@ -235,11 +233,6 @@ export class GmEventsComponent implements OnInit, OnDestroy {
     }
     return allItems;
   });
-
-  onHandoutDestTypeChange(value: string) {
-    this.handoutDestType.set(value as DestType);
-    this.handoutEntityId.set('');
-  }
 
   // Campaign data from shell (already loaded by the shell component)
   locations = computed(() => this.shellSvc.campaign()?.locations ?? []);
@@ -253,23 +246,55 @@ export class GmEventsComponent implements OnInit, OnDestroy {
   canSave = computed(() => {
     const title = this.eventTitle();
     const body  = this.eventBody();
+    const sceneType = this.createSceneType();
     const d     = this.destType();
     const eId   = this.entityId();
-    if (!title.trim() || !body.trim()) return false;
+    const file  = this.createFile();
+    const linked = this.linkedEntities();
+
+    if (!title.trim()) return false;
+
+    if (sceneType === 'campaign-event') {
+      if (!body.trim()) return false;
+    } else {
+      if (!file) return false;
+    }
+
     const needsEntity = d === 'cast' || d === 'faction' || d === 'location' || d === 'sublocation' || d === 'player';
-    if (needsEntity && !eId && this.linkedEntities().length === 0) return false;
+    if (needsEntity && !eId && linked.length === 0) return false;
+
     return true;
   });
 
   setTab(tab: EventsTab) {
     this.activeTab.set(tab);
     if (tab === 'events') this.loadEvents();
+    if (tab === 'soundtracks' || tab === 'create-events') this.loadSoundtracks();
   }
 
   onDestTypeChange(value: string) {
     this.destType.set(value as DestType);
     this.entityId.set('');
     if (value !== 'time-of-day') this.todPositionPercent.set(null);
+  }
+
+  onCreateSceneTypeChange(value: 'campaign-event' | 'campaign-handout') {
+    this.createSceneType.set(value);
+    if (value === 'campaign-event') {
+      const prev = this.createPreviewUrl();
+      if (prev && prev.startsWith('blob:')) URL.revokeObjectURL(prev);
+      this.createPreviewUrl.set(null);
+      this.createFile.set(null);
+    }
+  }
+
+  onCreateFileSelected(event: Event) {
+    const file = (event.target as HTMLInputElement).files?.[0];
+    if (!file) return;
+    const prev = this.createPreviewUrl();
+    if (prev && prev.startsWith('blob:')) URL.revokeObjectURL(prev);
+    this.createFile.set(file);
+    this.createPreviewUrl.set(file.type.startsWith('image/') ? URL.createObjectURL(file) : null);
   }
 
   ngOnDestroy() {
@@ -285,6 +310,27 @@ export class GmEventsComponent implements OnInit, OnDestroy {
     this.loadEvents();
     this.loadActiveSession();
     this.loadSessionCount();
+    this.loadSoundtracks();
+
+    // Subscribe to SoundtrackTriggered events
+    this.hubSubscriptions.push(
+      this.hub.soundtrackTriggered$.subscribe(event => {
+        if (!event || event.campaignId !== this.campaignId) return;
+        console.log('SoundtrackTriggered received:', event);
+        const track = this.soundtracks().find(t => t.id === event.soundtrackId);
+        if (track) {
+          console.log('Playing track from SoundtrackTriggered:', track.title);
+          this.audioPlayer.playTrack(track);
+        }
+      })
+    );
+
+    // Subscribe to active track IDs from audio player service
+    this.hubSubscriptions.push(
+      this.audioPlayer.activeTrackIds$.subscribe(ids => {
+        this.activeTrackIds.set(ids);
+      })
+    );
 
     // Subscribe to secret state changes to update dropdown options
     this.hubSubscriptions.push(
@@ -368,17 +414,6 @@ export class GmEventsComponent implements OnInit, OnDestroy {
     this.http.get<CampaignEvent[]>(`${environment.apiUrl}/api/campaigns/${this.campaignId}/events`)
       .subscribe({
         next:  data => {
-          console.log('loadEvents - loaded events:', data);
-          console.log('loadEvents - events with visibility details:', data.map(ev => ({
-            id: ev.id,
-            title: ev.title,
-            sceneType: ev.sceneType,
-            visibleToPlayers: ev.visibleToPlayers,
-            linkedEntities: ev.linkedEntities.map(le => ({
-              entityType: le.entityType,
-              visibleToPlayers: le.visibleToPlayers
-            }))
-          })));
           this.events.set(data);
           this.loadingEvents.set(false);
         },
@@ -442,6 +477,7 @@ export class GmEventsComponent implements OnInit, OnDestroy {
       const prev = this.editPreviewUrl();
       if (prev) URL.revokeObjectURL(prev);
       this.editPreviewUrl.set(ev.imageUrl ?? null);
+      this.editSoundtrackIds.set(ev.soundtrackIds ?? []);
       this.editSaveError.set(null);
       this.editSaveSuccess.set(false);
     }
@@ -458,6 +494,7 @@ export class GmEventsComponent implements OnInit, OnDestroy {
     const prev = this.editPreviewUrl();
     if (prev) URL.revokeObjectURL(prev);
     this.editPreviewUrl.set(null);
+    this.editSoundtrackIds.set([]);
     this.editSaving.set(false);
     this.editSaveError.set(null);
     this.editSaveSuccess.set(false);
@@ -489,17 +526,6 @@ export class GmEventsComponent implements OnInit, OnDestroy {
       return entity;
     });
     this.linkedEntities.set(updated);
-  }
-
-  onHandoutVisibleToPlayersChange(value: boolean) {
-    const entities = this.handoutLinkedEntities();
-    const updated = entities.map(entity => {
-      if (entity.entityType === 'cast-traveled') {
-        return { ...entity, visibleToPlayers: value };
-      }
-      return entity;
-    });
-    this.handoutLinkedEntities.set(updated);
   }
 
   onEditSceneTypeChange(value: 'campaign-event' | 'campaign-handout') {
@@ -561,6 +587,7 @@ export class GmEventsComponent implements OnInit, OnDestroy {
       linkedEntities,
       todPositionPercent: resolvedTodPercent,
       visibleToPlayers,
+      soundtrackIds: this.editSoundtrackIds(),
     };
 
     this.http.patch(
@@ -578,13 +605,13 @@ export class GmEventsComponent implements OnInit, OnDestroy {
           ).subscribe({
             next: (res: any) => {
               this.events.update(evs => evs.map(e => e.id === ev.id
-                ? { ...e, title, body: this.editDraft(), sceneType: this.editSceneType(), linkedEntities, todPositionPercent: resolvedTodPercent, imageUrl: res.imageUrl, visibleToPlayers }
+                ? { ...e, title, body: this.editDraft(), sceneType: this.editSceneType(), linkedEntities, todPositionPercent: resolvedTodPercent, imageUrl: res.imageUrl, visibleToPlayers, soundtrackIds: this.editSoundtrackIds() }
                 : e));
               this._finishEditSave(ev.id);
             },
             error: () => {
               this.events.update(evs => evs.map(e => e.id === ev.id
-                ? { ...e, title, body: this.editDraft(), sceneType: this.editSceneType(), linkedEntities, todPositionPercent: resolvedTodPercent, imageUrl: e.imageUrl, visibleToPlayers }
+                ? { ...e, title, body: this.editDraft(), sceneType: this.editSceneType(), linkedEntities, todPositionPercent: resolvedTodPercent, imageUrl: e.imageUrl, visibleToPlayers, soundtrackIds: this.editSoundtrackIds() }
                 : e));
               this.editSaving.set(false);
               this.editSaveError.set('Details saved but image upload failed.');
@@ -593,7 +620,7 @@ export class GmEventsComponent implements OnInit, OnDestroy {
         } else {
           const shouldClearImage = ev.sceneType === 'campaign-handout' && this.editSceneType() === 'campaign-event';
           this.events.update(evs => evs.map(e => e.id === ev.id
-            ? { ...e, title, body: this.editDraft(), sceneType: this.editSceneType(), linkedEntities, todPositionPercent: resolvedTodPercent, imageUrl: shouldClearImage ? undefined : e.imageUrl, visibleToPlayers }
+            ? { ...e, title, body: this.editDraft(), sceneType: this.editSceneType(), linkedEntities, todPositionPercent: resolvedTodPercent, imageUrl: shouldClearImage ? undefined : e.imageUrl, visibleToPlayers, soundtrackIds: this.editSoundtrackIds() }
             : e));
           this._finishEditSave(ev.id);
         }
@@ -926,6 +953,7 @@ parseSecretValue(value: string): { innerType: string, content: string } | null {
     const d   = this.destType();
     let linkedEntities = this.linkedEntities();
     let todPct = d === 'time-of-day' ? this.todPositionPercent() : null;
+    const sceneType = this.createSceneType();
 
     // For time-of-day, automatically add it to linkedEntities if not already present
     if (d === 'time-of-day' && !linkedEntities.some(e => e.entityType === 'time-of-day')) {
@@ -944,114 +972,98 @@ parseSecretValue(value: string): { innerType: string, content: string } | null {
       todPct = timeOfDayEntity.todPositionPercent;
     }
 
-    const isVisibleToPlayers = false;
-
     this.saving.set(true);
     this.saveError.set(null);
     this.saveSuccess.set(false);
 
-    this.http.post(
-      `${environment.apiUrl}/api/campaigns/${this.campaignId}/events`,
-      { title: this.eventTitle().trim(), body: this.eventBody().trim(), linkedEntities, todPositionPercent: todPct, isVisibleToPlayers }
-    ).subscribe({
-      next: () => {
-        this.eventTitle.set('');
-        this.eventBody.set('');
-        this.destType.set('none');
-        this.entityId.set('');
-        this.todPositionPercent.set(null);
-        this.linkedEntities.set([]);
-        this.saving.set(false);
-        this.saveSuccess.set(true);
-        setTimeout(() => this.saveSuccess.set(false), 3000);
-        this.loadEvents();
-      },
-      error: () => {
-        this.saving.set(false);
-        this.saveError.set('Failed to save event. Please try again.');
-      },
-    });
+    if (sceneType === 'campaign-event') {
+      const isVisibleToPlayers = false;
+      this.http.post(
+        `${environment.apiUrl}/api/campaigns/${this.campaignId}/events`,
+        { title: this.eventTitle().trim(), body: this.eventBody().trim(), linkedEntities, todPositionPercent: todPct, isVisibleToPlayers, soundtrackIds: this.selectedSoundtrackIds() }
+      ).subscribe({
+        next: () => {
+          this._resetCreateForm();
+          this.saving.set(false);
+          this.saveSuccess.set(true);
+          setTimeout(() => this.saveSuccess.set(false), 3000);
+          this.loadEvents();
+        },
+        error: () => {
+          this.saving.set(false);
+          this.saveError.set('Failed to save event. Please try again.');
+        },
+      });
+    } else {
+      const payload: { title: string; body?: string; linkedEntities: LinkedItem[]; soundtrackIds: string[] } = {
+        title: this.eventTitle().trim(),
+        linkedEntities,
+        soundtrackIds: this.selectedSoundtrackIds(),
+      };
+      const body = this.eventBody().trim();
+      if (body) payload.body = body;
+
+      this.http.post<{ id: string }>(
+        `${environment.apiUrl}/api/campaigns/${this.campaignId}/events/handout`,
+        payload
+      ).subscribe({
+        next: (created) => {
+          const file = this.createFile();
+          if (file) {
+            const formData = new FormData();
+            formData.append('file', file);
+            this.http.post(
+              `${environment.apiUrl}/api/campaigns/${this.campaignId}/events/${created.id}/handout-image`,
+              formData
+            ).subscribe({
+              next: () => {
+                this._resetCreateForm();
+                this.saving.set(false);
+                this.saveSuccess.set(true);
+                setTimeout(() => this.saveSuccess.set(false), 3000);
+                this.loadEvents();
+              },
+              error: (err) => {
+                this._resetCreateForm();
+                this.saving.set(false);
+                const raw = err?.error;
+                const msg = typeof raw === 'string' && raw.length > 0 ? raw : 'Handout saved but image upload failed.';
+                this.saveError.set(msg);
+              },
+            });
+          } else {
+            this._resetCreateForm();
+            this.saving.set(false);
+            this.saveSuccess.set(true);
+            setTimeout(() => this.saveSuccess.set(false), 3000);
+            this.loadEvents();
+          }
+        },
+        error: (err) => {
+          this.saving.set(false);
+          const raw = err?.error;
+          const msg = typeof raw === 'string' && raw.length > 0
+            ? raw
+            : 'Failed to save handout. Please try again.';
+          this.saveError.set(msg);
+        },
+      });
+    }
   }
 
-  onHandoutFileSelected(event: Event) {
-    const input = event.target as HTMLInputElement;
-    const file  = input.files?.[0];
-    if (!file) return;
-
-    const prev = this.handoutPreviewUrl();
-    if (prev) URL.revokeObjectURL(prev);
-
-    const isImage = file.type.startsWith('image/');
-    this.handoutFile.set(file);
-    this.handoutPreviewUrl.set(isImage ? URL.createObjectURL(file) : null);
-  }
-
-  uploadHandout() {
-    if (!this.canUploadHandout()) return;
-
-    this.handoutUploading.set(true);
-    this.handoutError.set(null);
-    this.handoutSuccess.set(false);
-
-    const linkedEntities = this.handoutLinkedEntities();
-    
-    const payload: { title: string; body?: string; linkedEntities: LinkedItem[] } = {
-      title: this.handoutTitle().trim(),
-      linkedEntities,
-    };
-    const body = this.handoutBody().trim();
-    if (body) payload.body = body;
-
-    this.http.post<{ id: string }>(
-      `${environment.apiUrl}/api/campaigns/${this.campaignId}/events/handout`,
-      payload
-    ).subscribe({
-      next: (created) => {
-        const file = this.handoutFile();
-        if (file) {
-          const formData = new FormData();
-          formData.append('file', file);
-          this.http.post(
-            `${environment.apiUrl}/api/campaigns/${this.campaignId}/events/${created.id}/handout-image`,
-            formData
-          ).subscribe({
-            next: () => this._resetHandoutForm(),
-            error: (err) => {
-              // Event was created but image upload failed — still reload
-              this._resetHandoutForm();
-              const raw = err?.error;
-              const msg = typeof raw === 'string' && raw.length > 0 ? raw : 'Handout saved but image upload failed.';
-              this.handoutError.set(msg);
-            },
-          });
-        } else {
-          this._resetHandoutForm();
-        }
-      },
-      error: (err) => {
-        this.handoutUploading.set(false);
-        const raw = err?.error;
-        const msg = typeof raw === 'string' && raw.length > 0
-          ? raw
-          : 'Failed to save handout. Please try again.';
-        this.handoutError.set(msg);
-      },
-    });
-  }
-
-  private _resetHandoutForm() {
-    const prev = this.handoutPreviewUrl();
-    if (prev) URL.revokeObjectURL(prev);
-    this.handoutTitle.set('');
-    this.handoutBody.set('');
-    this.handoutFile.set(null);
-    this.handoutPreviewUrl.set(null);
-    this.handoutDestType.set('none');
-    this.handoutEntityId.set('');
-    this.handoutUploading.set(false);
-    this.handoutSuccess.set(true);
-    setTimeout(() => this.handoutSuccess.set(false), 3000);
-    this.loadEvents();
+  private _resetCreateForm() {
+    this.eventTitle.set('');
+    this.eventBody.set('');
+    this.createSceneType.set('campaign-event');
+    const prev = this.createPreviewUrl();
+    if (prev && prev.startsWith('blob:')) URL.revokeObjectURL(prev);
+    this.createPreviewUrl.set(null);
+    this.createFile.set(null);
+    this.destType.set('none');
+    this.entityId.set('');
+    this.todPositionPercent.set(null);
+    this.linkedEntities.set([]);
+    this.selectedSoundtrackIds.set([]);
   }
 
   requestStartSession() {
@@ -1189,5 +1201,165 @@ parseSecretValue(value: string): { innerType: string, content: string } | null {
       const isHiddenStorylineItem = hasLinkedEntities && !isVisibleToPlayers;
       return isUnlockedOrMarked && (isGmNote || isHiddenStorylineItem);
     });
+  }
+
+  // Soundtrack CRUD methods
+  loadSoundtracks() {
+    this.loadingSoundtracks.set(true);
+    this.http.get<SoundtrackDomain[]>(`${environment.apiUrl}/api/campaigns/${this.campaignId}/soundtracks`).subscribe({
+      next: (tracks) => {
+        this.soundtracks.set(tracks);
+        this.loadingSoundtracks.set(false);
+      },
+      error: () => {
+        this.loadingSoundtracks.set(false);
+      }
+    });
+  }
+
+  openUploadSoundtrack() {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = 'audio/*';
+    input.onchange = (event) => {
+      const file = (event.target as HTMLInputElement).files?.[0];
+      if (file) this.uploadSoundtrack(file);
+    };
+    input.click();
+  }
+
+  uploadSoundtrack(file: File) {
+    const formData = new FormData();
+    formData.append('file', file);
+    formData.append('title', file.name);
+    formData.append('volume', '80');
+    formData.append('isLoop', 'false');
+
+    this.http.post<SoundtrackDomain>(`${environment.apiUrl}/api/campaigns/${this.campaignId}/soundtracks`, formData).subscribe({
+      next: (track) => {
+        this.soundtracks.update(tracks => [...tracks, track]);
+        this.soundtrackSync.triggerRefresh();
+      },
+      error: () => {
+        alert('Failed to upload soundtrack. Please check the file size (max 25MB) and format.');
+      }
+    });
+  }
+
+  playSoundtrack(track: SoundtrackDomain) {
+    console.log('Playing track from playSoundtrack:', track.title);
+    this.audioPlayer.playTrack(track);
+  }
+
+  stopSoundtrack(trackId: string) {
+    this.audioPlayer.stopTrack(trackId);
+  }
+
+  getDisplayName(title: string): string {
+    const lastDotIndex = title.lastIndexOf('.');
+    return lastDotIndex > 0 ? title.substring(0, lastDotIndex) : title;
+  }
+
+  deleteSoundtrack(trackId: string) {
+    if (!confirm('Are you sure you want to delete this soundtrack?')) return;
+
+    this.http.delete(`${environment.apiUrl}/api/campaigns/${this.campaignId}/soundtracks/${trackId}`).subscribe({
+      next: () => {
+        this.soundtracks.update(tracks => tracks.filter(t => t.id !== trackId));
+        this.audioPlayer.stopTrack(trackId);
+        this.soundtrackSync.triggerRefresh();
+      },
+      error: () => {
+        alert('Failed to delete soundtrack.');
+      }
+    });
+  }
+
+  playEventSoundtrack(event: CampaignEvent) {
+    if (!event.soundtrackIds || event.soundtrackIds.length === 0) return;
+    
+    console.log('playEventSoundtrack called for event:', event.id, event.title);
+    
+    // Check if tracks are already playing - toggle behavior
+    const alreadyPlaying = event.soundtrackIds.some(id => this.activeTrackIds().includes(id));
+    if (alreadyPlaying) {
+      console.log('Tracks already playing, stopping them');
+      // Stop all tracks associated with this event
+      event.soundtrackIds.forEach(soundtrackId => {
+        console.log('Stopping track:', soundtrackId);
+        this.audioPlayer.stopTrack(soundtrackId);
+      });
+      return;
+    }
+    
+    // Play all soundtracks using the same audio player service as the control panel
+    event.soundtrackIds.forEach(soundtrackId => {
+      const track = this.soundtracks().find(t => t.id === soundtrackId);
+      if (track) {
+        console.log('Playing track from playEventSoundtrack:', track.title);
+        this.audioPlayer.playTrack(track);
+      }
+    });
+  }
+
+  areEventTracksPlaying(event: CampaignEvent): boolean {
+    if (!event.soundtrackIds || event.soundtrackIds.length === 0) return false;
+    return event.soundtrackIds.some(id => this.activeTrackIds().includes(id));
+  }
+
+  editSoundtrack(track: SoundtrackDomain) {
+    this.editingSoundtrackId.set(track.id);
+    this.editingVolume.set(track.volume);
+    this.editingIsLoop.set(track.isLoop);
+    this.editingLoopDelaySeconds.set(track.loopDelaySeconds ?? null);
+  }
+
+  saveSoundtrackEdit(track: SoundtrackDomain) {
+    const titleInput = document.querySelector('.soundtrack-title-input') as HTMLInputElement;
+    const title = titleInput?.value || track.title;
+
+    this.http.patch<SoundtrackDomain>(
+      `${environment.apiUrl}/api/campaigns/${this.campaignId}/soundtracks/${track.id}`,
+      { title, volume: this.editingVolume(), isLoop: this.editingIsLoop(), loopDelaySeconds: this.editingLoopDelaySeconds() }
+    ).subscribe({
+      next: (updatedTrack) => {
+        this.soundtracks.update(tracks => 
+          tracks.map(t => t.id === track.id ? updatedTrack : t)
+        );
+        this.editingSoundtrackId.set(null);
+        this.soundtrackSync.triggerRefresh();
+        
+        // Update currently playing track in real-time without stopping
+        this.audioPlayer.updateTrackVolume(track.id, this.editingVolume());
+        this.audioPlayer.updateTrackLoop(track.id, this.editingIsLoop(), this.editingLoopDelaySeconds() ?? undefined);
+      },
+      error: () => {
+        alert('Failed to update soundtrack.');
+      }
+    });
+  }
+
+  cancelSoundtrackEdit() {
+    this.editingSoundtrackId.set(null);
+  }
+
+  onLoopDelayChange(value: string): number | null {
+    return value ? Number(value) : null;
+  }
+
+  incrementLoopDelay(): void {
+    const current = this.editingLoopDelaySeconds() ?? 0;
+    if (current < 60) {
+      this.editingLoopDelaySeconds.set(current + 1);
+    }
+  }
+
+  decrementLoopDelay(): void {
+    const current = this.editingLoopDelaySeconds() ?? 0;
+    if (current > 1) {
+      this.editingLoopDelaySeconds.set(current - 1);
+    } else {
+      this.editingLoopDelaySeconds.set(null);
+    }
   }
 }

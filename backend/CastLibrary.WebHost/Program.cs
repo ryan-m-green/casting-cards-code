@@ -436,7 +436,8 @@ app.Use(async (context, next) =>
     if (!path.StartsWithSegments("/api") &&
         !path.StartsWithSegments("/hubs") &&
         !path.StartsWithSegments("/health") &&
-        !path.StartsWithSegments("/images"))
+        !path.StartsWithSegments("/images") &&
+        !path.StartsWithSegments("/audio"))
     {
         context.Request.Path = "/api" + path;
     }
@@ -462,11 +463,24 @@ app.UseMiddleware<CorrelationIdMiddleware>();
 
 var imagesPath = builder.Configuration["ImageStorage:LocalPath"]!;
 if (Directory.Exists(imagesPath))
+{
     app.UseStaticFiles(new StaticFileOptions
     {
         FileProvider = new PhysicalFileProvider(imagesPath),
         RequestPath = "/images"
     });
+
+    // Also serve audio files from the audio subdirectory
+    var audioPath = Path.Combine(imagesPath, "audio");
+    if (Directory.Exists(audioPath))
+    {
+        app.UseStaticFiles(new StaticFileOptions
+        {
+            FileProvider = new PhysicalFileProvider(audioPath),
+            RequestPath = "/audio"
+        });
+    }
+}
 
 app.UseAuthentication();
 app.UseMiddleware<SubscriptionLockMiddleware>();

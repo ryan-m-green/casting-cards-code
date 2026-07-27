@@ -23,6 +23,7 @@ public class CampaignEventWebMapper : ICampaignEventWebMapper
         MarkedForArchive = domain.MarkedForArchive,
         ImageUrl = domain.ImageUrl,
         SceneType = domain.SceneType ?? "campaign-event",
+        SoundtrackIds = domain.SoundtrackIds,
         CreatedAt = domain.CreatedAt,
     };
 }

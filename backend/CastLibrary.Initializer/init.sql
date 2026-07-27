@@ -487,7 +487,7 @@ CREATE INDEX IF NOT EXISTS idx_cast_player_notes_campaign ON campaign_cast_playe
 CREATE INDEX IF NOT EXISTS idx_cast_player_notes_cast     ON campaign_cast_player_notes(cast_instance_id);
 
 -- ─── Campaign Storyline ───────────────────────────────────────────────────────
--- DM story scene entries per campaign (active only).
+--- DM story scene entries per campaign (active only).
 CREATE TABLE IF NOT EXISTS campaign_storyline (
     id                  UUID         PRIMARY KEY DEFAULT gen_random_uuid(),
     campaign_id         UUID         NOT NULL REFERENCES campaigns(id) ON DELETE CASCADE,
@@ -499,11 +499,28 @@ CREATE TABLE IF NOT EXISTS campaign_storyline (
     visible_to_players  BOOLEAN      NOT NULL DEFAULT FALSE,
     scene_type          VARCHAR(50)  NOT NULL DEFAULT 'campaign-event',
     marked_for_archive  BOOLEAN      NOT NULL DEFAULT FALSE,
+    soundtrack_ids      JSONB        NOT NULL DEFAULT '[]'::jsonb,
     created_at          TIMESTAMPTZ  NOT NULL DEFAULT NOW(),
     updated_at          TIMESTAMPTZ  NOT NULL DEFAULT NOW()
 );
 
 CREATE INDEX IF NOT EXISTS idx_campaign_storyline_campaign ON campaign_storyline(campaign_id);
+
+-- ─── Campaign Soundtracks ─────────────────────────────────────────────────────
+-- Campaign audio files for atmosphere
+CREATE TABLE IF NOT EXISTS campaign_soundtracks (
+    id           UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    campaign_id  UUID         NOT NULL REFERENCES campaigns(id) ON DELETE CASCADE,
+    title        VARCHAR(200) NOT NULL,
+    file_name    VARCHAR(255) NOT NULL,
+    file_url     TEXT         NOT NULL,
+    volume       INTEGER      NOT NULL DEFAULT 80,
+    is_loop      BOOLEAN      NOT NULL DEFAULT false,
+    loop_delay_seconds INTEGER,
+    created_at   TIMESTAMPTZ  NOT NULL DEFAULT NOW()
+);
+
+CREATE INDEX IF NOT EXISTS idx_campaign_soundtracks_campaign_id ON campaign_soundtracks(campaign_id);
 
 -- ─── Campaign Sessions ─────────────────────────────────────────────────────────
 -- Session tracking for campaign play sessions

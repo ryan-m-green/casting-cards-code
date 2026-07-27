@@ -1,0 +1,83 @@
+@use '../../../../styles/variables' as v;
+
+.purchase-body {
+  padding: 24px;
+
+  @media (max-width: 600px) {
+    padding: 16px;
+  }
+}
+
+.purchase-item-card {
+  background: v.$campaign-portal-bg-medium;
+  border: 1px solid color-mix(in srgb, var(--portal-color, v.$color-base-purple-primary), transparent 30%);
+  border-radius: 8px;
+  padding: 20px;
+  margin-bottom: 24px;
+}
+
+.purchase-item-name {
+  font-family: v.$font-header;
+  font-size: 18px;
+  letter-spacing: 0.12em;
+  color: v.$campaign-portal-text-bright;
+  font-weight: 600;
+  margin: 0 0 12px 0;
+}
+
+.purchase-item-price {
+  font-family: v.$font-header;
+  font-size: 24px;
+  letter-spacing: 0.1em;
+  color: v.$campaign-portal-text-purple-light;
+  font-weight: 600;
+  margin-bottom: 16px;
+}
+
+.purchase-item-description {
+  font-size: 14px;
+  color: v.$campaign-portal-text-muted;
+  line-height: 1.6;
+  margin: 0;
+}
+
+.purchase-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+}
+
+.purchase-buy-btn {
+  padding: 12px 32px;
+  background: v.$color-base-green-2;
+  border: 1px solid v.$campaign-btn-primary-border;
+  border-radius: 6px;
+  color: v.$color-base-white-2;
+  font-family: v.$font-header;
+  font-size: 14px;
+  font-weight: bolder;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background 0.18s ease, border-color 0.18s ease, color 0.18s ease;
+
+  &:hover:not(:disabled) {
+    background: v.$color-base-green-4;
+    border-color: v.$color-base-green-5;
+    color: v.$color-base-white-3;
+  }
+
+  &:active:not(:disabled) {
+    transform: translateY(1px);
+  }
+
+  &:disabled,
+  &.disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  &.purchase-buy-btn--loading {
+    opacity: 0.7;
+  }
+}

@@ -1,0 +1,139 @@
+@use '../../../../styles/variables' as v;
+
+.inventory-body {
+  padding: 24px;
+
+  @media (max-width: 600px) {
+    padding: 16px;
+  }
+}
+
+.inventory-currency-section {
+  margin-bottom: 20px;
+  background: v.$campaign-portal-bg-dark;
+  border: 1px solid color-mix(in srgb, var(--portal-color, v.$color-base-purple-primary), transparent 30%);
+  border-radius: 6px;
+  padding: 16px;
+
+  ::ng-deep .currency-display {
+    color: v.$campaign-portal-text-muted;
+
+    .currency-line {
+      font-family: v.$font-body;
+      font-size: 14px;
+      color: v.$campaign-portal-text-muted;
+    }
+
+    .currency-amount {
+      font-family: v.$font-header;
+      font-size: 16px;
+      color: v.$campaign-portal-text-bright;
+      font-weight: 600;
+    }
+
+    .currency-label {
+      font-family: v.$font-header;
+      font-size: 12px;
+      color: rgba(255, 255, 255, 0.6);
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+    }
+  }
+}
+
+.inventory-divider {
+  height: 1px;
+  background: v.$campaign-portal-border-bold;
+  margin: 0 0 24px 0;
+}
+
+.inventory-empty {
+  text-align: center;
+  padding: 60px 20px;
+  color: v.$campaign-portal-text-muted;
+  font-family: v.$font-header;
+  font-size: 14px;
+  letter-spacing: 0.1em;
+}
+
+.inventory-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.inventory-item {
+  background: v.$campaign-portal-bg-medium;
+  border: 1px solid color-mix(in srgb, var(--portal-color, v.$color-base-purple-primary), transparent 30%);
+  border-radius: 8px;
+  padding: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  transition: border-color 0.15s ease;
+
+  &:hover {
+    border-color: color-mix(in srgb, var(--portal-color, v.$color-base-purple-primary), transparent 50%);
+  }
+}
+
+.inventory-item-content {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.inventory-item-name {
+  font-family: v.$font-header;
+  font-size: 14px;
+  letter-spacing: 0.1em;
+  color: v.$campaign-portal-text-bright;
+  font-weight: 600;
+}
+
+.inventory-item-description {
+  font-size: 13px;
+  color: v.$campaign-portal-text-muted;
+  line-height: 1.4;
+}
+
+.inventory-item-count {
+  font-family: v.$font-header;
+  font-size: 12px;
+  letter-spacing: 0.1em;
+  color: v.$campaign-portal-text-purple-light;
+  align-self: flex-start;
+}
+
+.inventory-use-btn {
+  padding: 4px 12px;
+  background: v.$color-base-green-2;
+  border: 1px solid v.$campaign-btn-primary-border;
+  border-radius: 4px;
+  color: v.$color-base-white-2;
+  font-family: v.$font-header;
+  font-size: 12px;
+  font-weight: bolder;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background 0.18s ease, border-color 0.18s ease, color 0.18s ease;
+  flex-shrink: 0;
+
+  &:hover {
+    background: v.$color-base-green-4;
+    border-color: v.$color-base-green-5;
+    color: v.$color-base-white-3;
+  }
+
+  &:active {
+    transform: translateY(1px);
+  }
+
+  &:disabled,
+  &.disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}

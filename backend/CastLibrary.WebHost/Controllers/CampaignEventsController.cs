@@ -242,7 +242,7 @@ public class CampaignEventsController(
             return BadRequest("Title is required and must not exceed 200 characters.");
 
         var domain = await uploadHandoutCommand.HandleAsync(
-            new UploadCampaignEventHandoutCommand(campaignId, request.Title.Trim(), request.Body?.Trim(), request.LinkedEntities ?? []));
+            new UploadCampaignEventHandoutCommand(campaignId, request.Title.Trim(), request.Body?.Trim(), request.LinkedEntities ?? [], request.SoundtrackIds ?? []));
 
         var response = mapper.ToResponse(domain);
 

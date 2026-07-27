@@ -84,6 +84,7 @@ public class CreateCampaignStorylineCommandHandler(
             LinkedEntities = cleanedLinkedEntities,
             VisibleToPlayers = command.Request.IsVisibleToPlayers,
             SceneType = "campaign-event",
+            SoundtrackIds = command.Request.SoundtrackIds ?? [],
             CreatedAt = DateTime.UtcNow,
             UpdatedAt = DateTime.UtcNow,
         };

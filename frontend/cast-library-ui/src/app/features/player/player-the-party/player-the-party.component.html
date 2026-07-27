@@ -22,7 +22,6 @@
               [member]="member"
               [tilt]="partyMemberTiltFor(member.id)"
               mode="player"
-              (cardActions)="viewSecrets($event)"
               [class.is-first-card]="isFirst"
             />
             @if (isFirst && filteredParty().length > 1) {
@@ -63,4 +62,4 @@
 
   </div>
 
-<app-player-secrets-drawer [portalColor]="portalColor()"></app-player-secrets-drawer>
+</div>

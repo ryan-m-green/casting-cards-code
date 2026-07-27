@@ -1,0 +1,35 @@
+<div class="ss-container">
+  <div class="ss-pills">
+    @for (item of getSelectedSoundtracks(); track item.id; let i = $index) {
+      <span class="ss-pill">
+        <span>{{ item.title }}</span>
+        <button class="ss-pill-remove" (click)="removeSoundtrack(i)" title="Remove" aria-label="Remove">
+          <img src="/icons/chronicle/delete.svg" alt="Remove" class="ss-pill-remove-img" />
+        </button>
+      </span>
+    }
+  </div>
+
+  <div class="ss-add-row">
+    <app-campaign-dropdown
+      [options]="soundtrackOptions()"
+      [value]="editingSoundtrackId() || ''"
+      (valueChange)="onSoundtrackChange($event)"
+      fontSize="13px"
+      [triggerTabIndex]="0"
+    />
+    <button 
+      type="button" 
+      class="ss-add-btn" 
+      [disabled]="!editingSoundtrackId()"
+      (click)="addSoundtrack(editingSoundtrackId()!)"
+      title="Add soundtrack"
+    >
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="12" y1="5" x2="12" y2="19"></line>
+        <line x1="5" y1="12" x2="19" y2="12"></line>
+      </svg>
+      Add
+    </button>
+  </div>
+</div>

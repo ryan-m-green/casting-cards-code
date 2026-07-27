@@ -9,9 +9,10 @@ public interface IStorylineUpdateRepository
     Task UpdateVisibilityAsync(Guid eventId, bool isVisibleToPlayers);
     Task UpdateBodyAsync(Guid eventId, string body);
     Task UpdateFilePathAsync(Guid eventId, string filePath);
-    Task UpdateDetailsAsync(Guid eventId, string title, string body, string sceneType, string filePath, string linkedEntities, bool visibleToPlayers);
+    Task UpdateDetailsAsync(Guid eventId, string title, string body, string sceneType, string filePath, string linkedEntities, string soundtrackIds, bool visibleToPlayers);
     Task ReorderAsync(IList<Guid> eventIds);
     Task UpdateMarkedForArchiveAsync(Guid eventId, bool markedForArchive);
+    Task RemoveSoundtrackIdFromAllEventsAsync(Guid soundtrackId);
 }
 
 public class StorylineUpdateRepository(
@@ -76,10 +77,10 @@ public class StorylineUpdateRepository(
         logging.LogDbOperation(correlation.TraceId, spanId, "UPDATE", "campaign_storyline", @params, rows);
     }
 
-    public async Task UpdateDetailsAsync(Guid eventId, string title, string body, string sceneType, string filePath, string linkedEntities, bool visibleToPlayers)
+    public async Task UpdateDetailsAsync(Guid eventId, string title, string body, string sceneType, string filePath, string linkedEntities, string soundtrackIds, bool visibleToPlayers)
     {
         var spanId  = correlation.NewSpan();
-        var @params = new { Id = eventId, Title = title, Body = body, SceneType = sceneType, FilePath = filePath, LinkedEntities = linkedEntities, VisibleToPlayers = visibleToPlayers, UpdatedAt = DateTime.UtcNow };
+        var @params = new { Id = eventId, Title = title, Body = body, SceneType = sceneType, FilePath = filePath, LinkedEntities = linkedEntities, SoundtrackIds = soundtrackIds, VisibleToPlayers = visibleToPlayers, UpdatedAt = DateTime.UtcNow };
 
         const string sql =
             @"UPDATE campaign_storyline
@@ -88,6 +89,7 @@ public class StorylineUpdateRepository(
                   scene_type         = @SceneType,
                   file_path          = @FilePath,
                   linked_entities    = @LinkedEntities::jsonb,
+                  soundtrack_ids     = @SoundtrackIds::jsonb,
                   visible_to_players  = @VisibleToPlayers,
                   updated_at         = @UpdatedAt
               WHERE id = @Id";
@@ -135,6 +137,29 @@ public class StorylineUpdateRepository(
               SET marked_for_archive = @MarkedForArchive,
                   updated_at         = @UpdatedAt
               WHERE id = @Id";
+
+        logging.LogDbOperation(correlation.TraceId, spanId, "UPDATE", "campaign_storyline", @params);
+
+        using var conn = sqlConnectionFactory.GetConnection();
+        var rows = await conn.ExecuteAsync(sql, @params);
+
+        logging.LogDbOperation(correlation.TraceId, spanId, "UPDATE", "campaign_storyline", @params, rows);
+    }
+
+    public async Task RemoveSoundtrackIdFromAllEventsAsync(Guid soundtrackId)
+    {
+        var spanId  = correlation.NewSpan();
+        var @params = new { SoundtrackId = soundtrackId, UpdatedAt = DateTime.UtcNow };
+        
+        const string sql =
+            @"UPDATE campaign_storyline
+              SET soundtrack_ids = (
+                  SELECT jsonb_agg(elem)
+                  FROM jsonb_array_elements(soundtrack_ids) AS elem
+                  WHERE elem::text != @SoundtrackId::text
+              ),
+              updated_at = @UpdatedAt
+              WHERE soundtrack_ids @> @SoundtrackId::jsonb";
 
         logging.LogDbOperation(correlation.TraceId, spanId, "UPDATE", "campaign_storyline", @params);
 

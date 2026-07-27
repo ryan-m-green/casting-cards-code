@@ -12,4 +12,5 @@ public class UpdateCampaignEventDetailsRequest
     public decimal? TodPositionPercent { get; set; }
     [JsonPropertyName("visibleToPlayers")]
     public bool VisibleToPlayers { get; set; }
+    public List<Guid> SoundtrackIds { get; set; } = [];
 }

@@ -53,6 +53,7 @@ public class StorylineReadRepository(
                      visible_to_players AS VisibleToPlayers,
                      marked_for_archive AS MarkedForArchive,
                      scene_type      AS SceneType,
+                     soundtrack_ids  AS SoundtrackIds,
                      created_at      AS CreatedAt,
                      updated_at      AS UpdatedAt
               FROM campaign_storyline
@@ -84,6 +85,7 @@ public class StorylineReadRepository(
                      visible_to_players AS VisibleToPlayers,
                      marked_for_archive AS MarkedForArchive,
                      scene_type      AS SceneType,
+                     soundtrack_ids  AS SoundtrackIds,
                      created_at      AS CreatedAt,
                      updated_at      AS UpdatedAt
               FROM campaign_storyline
@@ -116,6 +118,7 @@ public class StorylineReadRepository(
                      visible_to_players AS VisibleToPlayers,
                      marked_for_archive AS MarkedForArchive,
                      scene_type      AS SceneType,
+                     soundtrack_ids  AS SoundtrackIds,
                      created_at      AS CreatedAt,
                      updated_at      AS UpdatedAt
               FROM campaign_storyline

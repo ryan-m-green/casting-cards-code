@@ -11,6 +11,6 @@
       <div class="feature-chip">{{ freeTrialLimits()?.cast ?? 3 }} Cast Cards</div>
     </div>
     <img class="plan-video" [class.negative-margin]="useNegativeMargin()" src="/candle.gif" alt="Free trial plan preview">
-    <button (click)="handleStartFreeTrial()" [disabled]="loading()">{{ loading() ? 'Processing...' : 'Start Free Trial' }}</button>
+    <button (click)="handleStartFreeTrial()" [disabled]="loading()">{{ loading() ? 'Processing...' : 'Stay On Free Trial' }}</button>
   </div>
 </div>

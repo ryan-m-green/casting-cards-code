@@ -122,6 +122,11 @@ export interface ShopItemUpdatedEvent {
   shopItemId: string;
 }
 
+export interface SoundtrackTriggeredEvent {
+  campaignId: string;
+  soundtrackId: string;
+}
+
 export interface ShopItemScratchToggledEvent {
   campaignId: string;
   sublocationInstanceId: string;
@@ -204,6 +209,7 @@ export class CampaignHubService {
   private sessionStartedSubject              = new Subject<SessionStartedEvent | null>();
   private subscriptionLockLevelChangedSubject = new Subject<SubscriptionLockLevelChangedEvent | null>();
   private inventoryItemUsedSubject           = new Subject<InventoryItemUsedEvent | null>();
+  private soundtrackTriggeredSubject         = new Subject<SoundtrackTriggeredEvent | null>();
   private _isConnected = signal(false);
 
   readonly secretRevealed$            = this.secretRevealedSubject.asObservable();
@@ -247,6 +253,7 @@ export class CampaignHubService {
   readonly sessionStarted$              = this.sessionStartedSubject.asObservable();
   readonly subscriptionLockLevelChanged$ = this.subscriptionLockLevelChangedSubject.asObservable();
   readonly inventoryItemUsed$           = this.inventoryItemUsedSubject.asObservable();
+  readonly soundtrackTriggered$         = this.soundtrackTriggeredSubject.asObservable();
 
   isConnected(): boolean {
     return this._isConnected();
@@ -437,16 +444,16 @@ export class CampaignHubService {
       this.sessionEndedSubject.next(event);
     });
 
-
     this.connection.on('SessionCancelled', (event: SessionCancelledEvent | null) => {
       this.sessionCancelledSubject.next(event);
     });
-    this.connection.on('SubscriptionLockLevelChanged', (event: SubscriptionLockLevelChangedEvent | null) => {
-      this.subscriptionLockLevelChangedSubject.next(event);
+
+    this.connection.on('SoundtrackTriggered', (event: SoundtrackTriggeredEvent) => {
+      this.soundtrackTriggeredSubject.next(event);
     });
 
-    this.connection.on('SessionStarted', (event: SessionStartedEvent | null) => {
-      this.sessionStartedSubject.next(event);
+    this.connection.on('SubscriptionLockLevelChanged', (event: SubscriptionLockLevelChangedEvent | null) => {
+      this.subscriptionLockLevelChangedSubject.next(event);
     });
 
     this.connection.on('InventoryItemUsed', (event: InventoryItemUsedEvent) => {

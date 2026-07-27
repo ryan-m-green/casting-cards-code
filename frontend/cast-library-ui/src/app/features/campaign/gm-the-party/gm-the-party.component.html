@@ -65,6 +65,12 @@
 
   <div class="companions-spacer"></div>
 
-<app-party-gold-drawer [portalColor]="spineColor()" (goldAwarded)="onPartyGoldAwarded($event)"></app-party-gold-drawer>
-
-<app-player-secrets-drawer [portalColor]="spineColor()" mode="dm"></app-player-secrets-drawer>
+<!-- Template for player secrets content -->
+<ng-template #playerSecretsContentTemplate let-member="member" let-campaignId="campaignId" let-mode="mode" let-portalColor="portalColor">
+  <app-player-secrets-content
+    [member]="member"
+    [campaignId]="campaignId"
+    [mode]="mode"
+    [portalColor]="portalColor"
+  />
+</ng-template>

@@ -9,4 +9,5 @@ public class CreateCampaignEventRequest
     public List<Domain.LinkedEntityTrigger> LinkedEntities { get; set; } = [];
     public decimal? TodPositionPercent { get; set; }
     public bool IsVisibleToPlayers { get; set; }
+    public List<Guid> SoundtrackIds { get; set; } = [];
 }

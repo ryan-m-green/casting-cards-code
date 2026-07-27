@@ -24,16 +24,16 @@ import { CastCardComponent } from '../../../shared/components/cast-card/cast-car
 import { PlayerCampaignShellComponent } from '../player-campaign-shell/player-campaign-shell.component';
 import { PlayerCampaignShellService } from '../../../core/player-campaign-shell.service';
 import { CampaignHubService } from '../../../core/hub/campaign-hub.service';
+import { CampaignShellService } from '../../../core/campaign-shell.service';
 import { PlayerSublocationNotesComponent } from '../player-sublocation-notes/player-sublocation-notes.component';
 import { FactionSymbolPickerComponent, FactionSymbolAssignment } from '../../../shared/components/faction-symbol-picker/faction-symbol-picker.component';
 import { DetailPanelActionsComponent } from '../../../shared/components/detail-panel-actions/detail-panel-actions.component';
 import { CardGridLayoutComponent } from '../../../shared/components/card-grid-layout/card-grid-layout.component';
-import { ShopPurchaseDrawerComponent } from '../../../shared/components/shop-purchase-drawer/shop-purchase-drawer.component';
 
 @Component({
   selector: 'app-player-sublocation-detail',
   standalone: true,
-  imports: [CommonModule, SublocationCardComponent, CastCardComponent, PlayerSublocationNotesComponent, FactionSymbolPickerComponent, DetailPanelActionsComponent, CardGridLayoutComponent, ShopPurchaseDrawerComponent],
+  imports: [CommonModule, SublocationCardComponent, CastCardComponent, PlayerSublocationNotesComponent, FactionSymbolPickerComponent, DetailPanelActionsComponent, CardGridLayoutComponent],
   templateUrl: './player-sublocation-detail.component.html',
   styleUrl: './player-sublocation-detail.component.scss'
 })
@@ -44,6 +44,7 @@ export class PlayerSublocationDetailComponent implements OnInit, OnDestroy {
   private transition = inject(PortalTransitionService);
   private shell      = inject(PlayerCampaignShellComponent);
   private shellService = inject(PlayerCampaignShellService);
+  private campaignShellService = inject(CampaignShellService);
   private hub        = inject(CampaignHubService);
 
   @ViewChild('detailContent') private detailContentRef!: ElementRef<HTMLElement>;
@@ -59,9 +60,6 @@ export class PlayerSublocationDetailComponent implements OnInit, OnDestroy {
   purchasingItemId     = signal<string | null>(null);
   purchaseResult       = signal<PurchaseResult | null>(null);
   purchasePopupVisible = signal(false);
-
-  // Drawer reference
-  @ViewChild(ShopPurchaseDrawerComponent) private purchaseDrawer!: ShopPurchaseDrawerComponent;
 
   sublocationSymbolPath = signal<string | null>(null);
   sublocationFactionId  = signal<string | null>(null);
@@ -195,6 +193,15 @@ export class PlayerSublocationDetailComponent implements OnInit, OnDestroy {
         });
       })
     );
+
+    // Listen for shop purchase complete events
+    this.hubSubscriptions.push(
+      this.campaignShellService.shopPurchaseComplete.subscribe(result => {
+        setTimeout(() => {
+          this.onPurchaseComplete(result);
+        }, 500);
+      })
+    );
   }
 
   ngOnInit() {
@@ -286,7 +293,7 @@ export class PlayerSublocationDetailComponent implements OnInit, OnDestroy {
   }
 
   openPurchaseDrawer(item: ShopItem) {
-    this.purchaseDrawer.open(item);
+    this.shellService.openShopPurchaseDrawer(item, this.sublocationInstanceId());
   }
 
   onPurchaseComplete(result: PurchaseResult) {

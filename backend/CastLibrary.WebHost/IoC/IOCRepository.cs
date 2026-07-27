@@ -161,6 +161,7 @@ services.AddScoped<ICampaignSessionArchivedReadRepository, CampaignSessionArchiv
             services.AddScoped<IPlayerCampaignInventoryEntityMapper, PlayerCampaignInventoryEntityMapper>();
             services.AddScoped<ISubscriptionEntityMapper, SubscriptionEntityMapper>();
             services.AddScoped<IPricingModelEntityMapper, PricingModelEntityMapper>();
+            services.AddScoped<ISoundtrackEntityMapper, SoundtrackEntityMapper>();
             services.AddScoped<IQuicknoteQueueReadRepository, QuicknoteQueueReadRepository>();
             services.AddScoped<IQuicknoteQueueInsertRepository, QuicknoteQueueInsertRepository>();
             services.AddScoped<IQuicknoteQueueUpdateRepository, QuicknoteQueueUpdateRepository>();
@@ -178,6 +179,10 @@ services.AddScoped<ICampaignSessionArchivedReadRepository, CampaignSessionArchiv
             services.AddScoped<IPricingModelReadRepository, PricingModelReadRepository>();
             services.AddScoped<IPricingModelUpdateRepository, PricingModelUpdateRepository>();
             services.AddScoped<IAuditReadRepository, AuditReadRepository>();
+            services.AddScoped<ISoundtrackReadRepository, SoundtrackReadRepository>();
+            services.AddScoped<ISoundtrackInsertRepository, SoundtrackInsertRepository>();
+            services.AddScoped<ISoundtrackUpdateRepository, SoundtrackUpdateRepository>();
+            services.AddScoped<ISoundtrackDeleteRepository, SoundtrackDeleteRepository>();
         }
     }
 }

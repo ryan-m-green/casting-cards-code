@@ -1,18 +1,33 @@
-import { Component, inject, OnInit, OnDestroy } from '@angular/core';
+import { Component, inject, OnInit, OnDestroy, signal, viewChild, TemplateRef } from '@angular/core';
 import { Router, RouterOutlet, NavigationCancel, NavigationError } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { filter } from 'rxjs/operators';
 import { PortalTransitionService } from './core/portal-transition.service';
 import { AuthService } from './core/auth/auth.service';
-import { SubscriptionDrawerComponent } from './shared/components/subscription-drawer/subscription-drawer.component';
+import { RightDrawerComponent } from './shared/components/right-drawer/right-drawer.component';
+import { SubscriptionContentComponent } from './shared/components/right-drawer/subscription-content.component';
+import { SubscriptionDrawerService } from './core/subscription-drawer.service';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, SubscriptionDrawerComponent],
+  imports: [RouterOutlet, RightDrawerComponent, SubscriptionContentComponent],
   template: `
     <div class="portal-transition-overlay" [class.active]="transition.active()" [class.instant]="transition.instant()"></div>
     <router-outlet />
-    <app-subscription-drawer />
+    
+    <!-- Templates for drawer content -->
+    <ng-template #subscriptionContentTemplate>
+      <app-subscription-content
+        (closeDrawer)="rightDrawer.close()"
+      />
+    </ng-template>
+
+    <!-- RightDrawerComponent at screen level -->
+    <app-right-drawer #rightDrawer
+      [title]="drawerTitle()"
+      [contentTemplate]="currentContentTemplate()"
+      [contentContext]="currentContentContext()"
+    />
   `,
   styles: [`
     :host { display: block; height: 100%; }
@@ -43,9 +58,22 @@ export class App implements OnInit, OnDestroy {
   transition = inject(PortalTransitionService);
   private router = inject(Router);
   private authService = inject(AuthService);
+  private subscriptionDrawerService = inject(SubscriptionDrawerService);
   private _navSub: Subscription | null = null;
+  private _drawerSub?: Subscription;
+
+  rightDrawer = viewChild<RightDrawerComponent>('rightDrawer');
+  subscriptionContentTemplate = viewChild<TemplateRef<any>>('subscriptionContentTemplate');
+  drawerTitle = signal('Upgrade Your Plan');
+  currentContentTemplate = signal<TemplateRef<any> | null>(null);
+  currentContentContext = signal<any>(null);
 
   ngOnInit() {
+    // Listen for subscription drawer open requests
+    this._drawerSub = this.subscriptionDrawerService.open$.subscribe(() => {
+      this.openSubscriptionDrawer();
+    });
+
     // Check if returning from Stripe checkout and start subscription refresh interval
     this.checkForStripeReturn();
 
@@ -119,5 +147,22 @@ export class App implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     this._navSub?.unsubscribe();
+    if (this._drawerSub) {
+      this._drawerSub.unsubscribe();
+    }
+  }
+
+  openSubscriptionDrawer() {
+    const drawer = this.rightDrawer();
+    const template = this.subscriptionContentTemplate();
+    
+    if (!drawer || !template) {
+      return;
+    }
+    
+    this.drawerTitle.set('Upgrade Your Plan');
+    this.currentContentTemplate.set(template);
+    this.currentContentContext.set({});
+    drawer.open();
   }
 }

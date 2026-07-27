@@ -1,18 +1,13 @@
-import { Injectable, signal } from '@angular/core';
+import { Injectable } from '@angular/core';
+import { Subject } from 'rxjs';
 
 @Injectable({ providedIn: 'root' })
 export class SubscriptionDrawerService {
-  isOpen = signal(false);
+  private openRequest$ = new Subject<void>();
+
+  readonly open$ = this.openRequest$.asObservable();
 
   open(): void {
-    this.isOpen.set(true);
-  }
-
-  close(): void {
-    this.isOpen.set(false);
-  }
-
-  toggle(): void {
-    this.isOpen.update(v => !v);
+    this.openRequest$.next();
   }
 }

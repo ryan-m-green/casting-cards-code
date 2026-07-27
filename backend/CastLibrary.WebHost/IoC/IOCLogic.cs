@@ -3,6 +3,7 @@ using CastLibrary.Logic.Commands.Auth;
 using CastLibrary.Logic.Commands.BugReport;
 using CastLibrary.Logic.Commands.Campaign;
 using CastLibrary.Logic.Commands.CampaignChronicles;
+using CastLibrary.Logic.Commands.Soundtrack;
 using CastLibrary.Logic.Commands.Cast;
 using CastLibrary.Logic.Commands.Faction;
 using CastLibrary.Logic.Commands.Location;
@@ -26,6 +27,7 @@ using CastLibrary.Logic.Queries.PlayerCard;
 using CastLibrary.Logic.Queries.PlayerNotes;
 using CastLibrary.Logic.Queries.QuicknoteQueue;
 using CastLibrary.Logic.Queries.Sublocation;
+using CastLibrary.Logic.Queries.Soundtrack;
 using CastLibrary.Logic.Queries.Subscription;
 using CastLibrary.Logic.Services;
 using CastLibrary.Logic.Strategies;
@@ -204,12 +206,16 @@ namespace CastLibrary.WebHost.IoC
             services.AddScoped<IDeleteCampaignEventCommandHandler, DeleteCampaignEventCommandHandler>();
             services.AddScoped<IReorderCampaignEventsCommandHandler, ReorderCampaignEventsCommandHandler>();
 
-            services.AddScoped<IStartSessionCommandHandler, StartSessionCommandHandler>();
-            services.AddScoped<IUpdateSessionCommandHandler, UpdateSessionCommandHandler>();
-            services.AddScoped<ICancelSessionCommandHandler, CancelSessionCommandHandler>();
             services.AddScoped<IUpdateChronicleCommandHandler, UpdateChronicleCommandHandler>();
             services.AddScoped<IMigrateStorylineToChroniclesCommandHandler, MigrateStorylineToChroniclesCommandHandler>();
 
+            services.AddScoped<IUploadSoundtrackCommandHandler, UploadSoundtrackCommandHandler>();
+            services.AddScoped<IDeleteSoundtrackCommandHandler, DeleteSoundtrackCommandHandler>();
+            services.AddScoped<IUpdateSoundtrackCommandHandler, UpdateSoundtrackCommandHandler>();
+
+            services.AddScoped<IStartSessionCommandHandler, StartSessionCommandHandler>();
+            services.AddScoped<IUpdateSessionCommandHandler, UpdateSessionCommandHandler>();
+            services.AddScoped<ICancelSessionCommandHandler, CancelSessionCommandHandler>();
             services.AddScoped<IEndSessionCommandHandler, EndSessionCommandHandler>();
             services.AddScoped<ICreateFreeTrialSubscriptionCommandHandler, CreateFreeTrialSubscriptionCommandHandler>();
             services.AddScoped<IGetOrCreateStripeCustomerCommandHandler, GetOrCreateStripeCustomerCommandHandler>();
@@ -238,6 +244,8 @@ namespace CastLibrary.WebHost.IoC
             services.AddScoped<IGetPlayerCampaignDetailQueryHandler, GetPlayerCampaignDetailQueryHandler>();
             services.AddScoped<IGetCampaignInviteCodeQueryHandler, GetCampaignInviteCodeQueryHandler>();
             services.AddScoped<IGetPlayerInventoryQueryHandler, GetPlayerInventoryQueryHandler>();
+
+            services.AddScoped<IGetCampaignSoundtracksQueryHandler, GetCampaignSoundtracksQueryHandler>();
 
             services.AddScoped<IGetCastRelationshipsQueryHandler, GetCastRelationshipsQueryHandler>();
             services.AddScoped<IGetCastRelationshipByIdQueryHandler, GetCastRelationshipByIdQueryHandler>();

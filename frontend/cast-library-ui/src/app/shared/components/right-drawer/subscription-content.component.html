@@ -1,0 +1,19 @@
+<div class="subscription-body">
+  @if (pricingData()) {
+    <div class="plan-cards">
+      <app-premium-plan-card
+        [pricingData]="pricingData()"
+        [loading]="loading()"
+        [subscribe]="subscribeNow.bind(this)"
+        [useNegativeMargin]="true"
+      ></app-premium-plan-card>
+
+      <app-free-trial-plan-card
+        [freeTrialLimits]="freeTrialLimits"
+        [loading]="loading()"
+        [startFreeTrial]="startFreeTrial.bind(this)"
+        [useNegativeMargin]="true"
+      ></app-free-trial-plan-card>
+    </div>
+  }
+</div>

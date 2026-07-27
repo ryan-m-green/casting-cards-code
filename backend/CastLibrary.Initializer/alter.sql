@@ -220,3 +220,23 @@ BEGIN
         DROP CONSTRAINT uq_campaign_faction_instance_relationship;
     END IF;
 END $$;
+
+-- ============================================================
+-- Soundtrack Feature Implementation
+-- ============================================================
+
+-- Add soundtrack_id column to campaign_storyline table (for existing databases)
+ALTER TABLE campaign_storyline ADD COLUMN IF NOT EXISTS soundtrack_id UUID;
+
+-- Create foreign key constraint for soundtrack_id
+DO $$
+BEGIN
+    IF NOT EXISTS (
+        SELECT 1 FROM pg_constraint
+        WHERE conname = 'fk_campaign_storyline_soundtrack'
+    ) THEN
+        ALTER TABLE campaign_storyline
+        ADD CONSTRAINT fk_campaign_storyline_soundtrack
+        FOREIGN KEY (soundtrack_id) REFERENCES campaign_soundtracks(id) ON DELETE SET NULL;
+    END IF;
+END $$;

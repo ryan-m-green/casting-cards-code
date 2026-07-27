@@ -10,9 +10,9 @@ import { JournalTitleComponent } from '../../../shared/components/journal-title/
 import { JournalWatermarkComponent } from '../../../shared/components/journal-watermark/journal-watermark.component';
 import { UpgradeBadgeComponent } from '../../../shared/components/upgrade-badge/upgrade-badge.component';
 import { StripeService, EntityLimitsResponse } from '../../../core/stripe.service';
-import { SubscriptionDrawerService } from '../../../core/subscription-drawer.service';
 import { AuthService } from '../../../core/auth/auth.service';
 import { CampaignHubService } from '../../../core/hub/campaign-hub.service';
+import { SubscriptionDrawerService } from '../../../core/subscription-drawer.service';
 
 @Component({
   selector: 'app-cast-library',
@@ -25,9 +25,9 @@ export class CastLibraryComponent implements OnInit {
   private http       = inject(HttpClient);
   router             = inject(Router);
   private stripe     = inject(StripeService);
-  private drawerService  = inject(SubscriptionDrawerService);
   auth = inject(AuthService);
   private hub        = inject(CampaignHubService);
+  private subscriptionDrawerService = inject(SubscriptionDrawerService);
 
   cast            = signal<Cast[]>([]);
   searchTerm      = signal('');
@@ -98,6 +98,6 @@ export class CastLibraryComponent implements OnInit {
   }
 
   openUpgradeDrawer() {
-    this.drawerService.open();
+    this.subscriptionDrawerService.open();
   }
 }

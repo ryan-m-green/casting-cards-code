@@ -1,0 +1,15 @@
+@if (isOpen()) {
+  <div class="drawer-backdrop" [class.is-closing]="isClosing()" (click)="onBackdropClick($event)"></div>
+
+  <div class="drawer-container" [class.is-closing]="isClosing()" [style.width]="width" role="dialog" [attr.aria-label]="ariaLabel" [style.--portal-color]="portalColor">
+    <div class="drawer-header">
+      <button class="drawer-close-btn" (click)="close()" aria-label="Close">✕</button>
+      <span class="drawer-header-title">{{ titleSignal() }}</span>
+    </div>
+
+    <div class="drawer-body">
+      <ng-container *ngIf="contentTemplate" [ngTemplateOutlet]="contentTemplate" [ngTemplateOutletContext]="contentContext"></ng-container>
+      <ng-content *ngIf="!contentTemplate"></ng-content>
+    </div>
+  </div>
+}

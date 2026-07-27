@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, signal, computed, inject, untracked, NgZone, viewChild } from '@angular/core';
+import { Component, OnInit, OnDestroy, signal, computed, inject, untracked, NgZone, viewChild, TemplateRef } from '@angular/core';
 import { RouterOutlet, RouterLink, ActivatedRoute, Router, NavigationEnd } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
@@ -14,22 +14,22 @@ import { PortalAnimationService } from '../../../core/portal-animation.service';
 import { PlayerCampaignShellService } from '../../../core/player-campaign-shell.service';
 import { CampaignShellService } from '../../../core/campaign-shell.service';
 import { TimeOfDayBarComponent } from '../../../shared/components/time-of-day-bar/time-of-day-bar.component';
-import { CardRevealBadgeComponent } from '../../../shared/components/card-reveal-badge/card-reveal-badge.component';
 import {
   CardRevealOverlayComponent,
   CardRevealOverlayData,
 } from '../../../shared/components/card-reveal-overlay/card-reveal-overlay.component';
-import { EventCardComponent } from '../../../shared/components/event-card/event-card.component';
 import { VoidTitleSegmentsComponent } from '../../../shared/components/void-title-segments/void-title-segments.component';
 import { VoidNavDrawerComponent } from '../../../shared/components/void-nav-drawer/void-nav-drawer.component';
 import { QuicknotesComponent } from '../../../shared/components/quicknotes/quicknotes.component';
-import { CampaignChronicleDrawerComponent } from '../../../shared/components/campaign-chronicle-drawer/campaign-chronicle-drawer.component';
-import { PlayerInventoryDrawerComponent } from '../../../shared/components/player-inventory-drawer/player-inventory-drawer.component';
+import { RightDrawerComponent } from '../../../shared/components/right-drawer/right-drawer.component';
+import { ChronicleContentComponent } from '../../../shared/components/right-drawer/chronicle-content.component';
+import { PlayerInventoryContentComponent } from '../../../shared/components/right-drawer/player-inventory-content.component';
+import { ShopPurchaseContentComponent } from '../../../shared/components/right-drawer/shop-purchase-content.component';
 
 @Component({
   selector: 'app-player-campaign-shell',
   standalone: true,
-  imports: [RouterOutlet, CommonModule, TimeOfDayBarComponent, CardRevealBadgeComponent, CardRevealOverlayComponent, EventCardComponent, VoidNavDrawerComponent, VoidTitleSegmentsComponent, QuicknotesComponent, CampaignChronicleDrawerComponent, PlayerInventoryDrawerComponent],
+  imports: [RouterOutlet, CommonModule, TimeOfDayBarComponent, CardRevealOverlayComponent, VoidNavDrawerComponent, VoidTitleSegmentsComponent, QuicknotesComponent, RightDrawerComponent, ChronicleContentComponent, PlayerInventoryContentComponent, ShopPurchaseContentComponent],
   templateUrl: './player-campaign-shell.component.html',
   styleUrl: './player-campaign-shell.component.scss',
 })
@@ -60,12 +60,16 @@ export class PlayerCampaignShellComponent implements OnInit, OnDestroy {
   showOverlay       = signal(false);
   cardRevealQueue   = signal<CardRevealOverlayData[]>([]);
 
-  // ── Chronicle drawer ───────────────────────────────────────────────────────
-  chronicleDrawer = viewChild.required<CampaignChronicleDrawerComponent>('chronicleDrawer');
-// ── Inventory drawer ───────────────────────────────────────────────────────
-  inventoryDrawer = viewChild.required<PlayerInventoryDrawerComponent>('inventoryDrawer');
+  // ── Right drawer state ─────────────────────────────────────────────────────
+  rightDrawer = viewChild.required<RightDrawerComponent>('rightDrawer');
+  chronicleContentTemplate = viewChild.required<TemplateRef<any>>('chronicleContentTemplate');
+  playerInventoryContentTemplate = viewChild.required<TemplateRef<any>>('playerInventoryContentTemplate');
+  shopPurchaseContentTemplate = viewChild.required<TemplateRef<any>>('shopPurchaseContentTemplate');
 
-  
+  drawerTitle = signal('');
+  currentContentTemplate = signal<TemplateRef<any> | null>(null);
+  currentContentContext = signal<any>(null);
+
   private hubSubscriptions: Subscription[] = [];
 
   constructor() {
@@ -587,7 +591,32 @@ export class PlayerCampaignShellComponent implements OnInit, OnDestroy {
     // Subscribe to chronicle drawer search requests
     this.hubSubscriptions.push(
       this.campaignShellSvc.openChronicleWithSearch.subscribe((query: string) => {
-        this.chronicleDrawer().openWithSearch(query);
+        // Open the new drawer with chronicle content
+        this.drawerTitle.set('Campaign Chronicles');
+        this.currentContentTemplate.set(this.chronicleContentTemplate());
+        this.currentContentContext.set({
+          campaignId: this.campaignId(),
+          isDmMode: false,
+          portalColor: this.safeColor(this.campaign()?.spineColor)
+        });
+        this.rightDrawer().open();
+      })
+    );
+
+    // Listen for drawer requests from child components
+    this.hubSubscriptions.push(
+      this.campaignShellSvc.openDrawerRequest.subscribe(request => {
+        this.drawerTitle.set(request.title);
+        this.currentContentTemplate.set(request.template);
+        this.currentContentContext.set(request.context);
+        this.rightDrawer().open();
+      })
+    );
+
+    // Listen for shop purchase drawer requests
+    this.hubSubscriptions.push(
+      this.campaignShellSvc.openShopPurchase.subscribe(({ item, sublocationInstanceId }) => {
+        this.openShopPurchaseDrawer(item, sublocationInstanceId);
       })
     );
   }
@@ -666,11 +695,40 @@ export class PlayerCampaignShellComponent implements OnInit, OnDestroy {
   }
 
   openChronicleDrawer() {
-    this.chronicleDrawer().open();
+    this.drawerTitle.set('Campaign Chronicles');
+    this.currentContentTemplate.set(this.chronicleContentTemplate());
+    this.currentContentContext.set({
+      campaignId: this.campaignId(),
+      isDmMode: false,
+      portalColor: this.safeColor(this.campaign()?.spineColor)
+    });
+    this.rightDrawer().open();
   }
 
   openInventoryDrawer() {
-    this.inventoryDrawer().open();
+    this.drawerTitle.set('Inventory');
+    this.currentContentTemplate.set(this.playerInventoryContentTemplate());
+    this.currentContentContext.set({
+      campaignId: this.campaignId(),
+      portalColor: this.safeColor(this.campaign()?.spineColor)
+    });
+    this.rightDrawer().open();
+  }
+
+  openShopPurchaseDrawer(item: any, sublocationInstanceId: string) {
+    this.drawerTitle.set('Purchase Item');
+    this.currentContentTemplate.set(this.shopPurchaseContentTemplate());
+    this.currentContentContext.set({
+      campaignId: this.campaignId(),
+      sublocationInstanceId: sublocationInstanceId,
+      portalColor: this.safeColor(this.campaign()?.spineColor),
+      item: item
+    });
+    this.rightDrawer().open();
+  }
+
+  onShopPurchaseComplete(result: any) {
+    this.campaignShellSvc.shopPurchaseComplete.next(result);
   }
 
   goToEvents() {

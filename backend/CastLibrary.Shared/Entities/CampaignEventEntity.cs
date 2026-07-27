@@ -12,6 +12,7 @@ public class CampaignEventEntity
     public bool VisibleToPlayers { get; set; }
     public bool MarkedForArchive { get; set; }
     public string SceneType { get; set; } = "campaign-event";
+    public string SoundtrackIds { get; set; } = "[]";
     public DateTime CreatedAt { get; set; }
     public DateTime UpdatedAt { get; set; }
 }

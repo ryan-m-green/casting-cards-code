@@ -34,7 +34,7 @@ export class CampaignLibraryComponent implements OnInit, OnDestroy {
   private hubSubscriptions: Subscription[] = [];
   private stripe         = inject(StripeService);
   auth = inject(AuthService);
-  private drawerService  = inject(SubscriptionDrawerService);
+  private subscriptionDrawerService = inject(SubscriptionDrawerService);
 
   activeTab             = signal<'mine' | 'joined'>('mine');
   campaigns             = signal<Campaign[]>([]);
@@ -239,6 +239,6 @@ export class CampaignLibraryComponent implements OnInit, OnDestroy {
   }
 
   openUpgradeDrawer() {
-    this.drawerService.open();
+    this.subscriptionDrawerService.open();
   }
 }

@@ -1,4 +1,4 @@
-import { Component, OnInit, signal, computed, inject, viewChild, ElementRef, ViewChild } from '@angular/core';
+import { Component, OnInit, signal, computed, inject, viewChild, ElementRef, ViewChild, TemplateRef, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -21,9 +21,9 @@ import {
 import { CardFlipComponent } from '../../../shared/components/card-flip/card-flip.component';
 import { CastingCardPlayerComponent } from '../../../shared/components/casting-card-player/casting-card-player.component';
 import { CurrencyDisplayComponent, CurrencyLine } from '../../../shared/components/currency-display/currency-display.component';
-import { PlayerSecretsDrawerComponent } from '../../../shared/components/player-secrets-drawer/player-secrets-drawer.component';
+import { PlayerSecretsContentComponent } from '../../../shared/components/right-drawer/player-secrets-content.component';
 import { TravelAnchorComponent } from '../../../shared/components/travel-anchor/travel-anchor.component';
-import { PartyGoldDrawerComponent } from '../../../shared/components/party-gold-drawer/party-gold-drawer.component';
+import { Subscription } from 'rxjs';
 
 const D5E_CONDITIONS = [
   'Blinded', 'Charmed', 'Deafened', 'Exhaustion', 'Frightened', 'Grappled',
@@ -36,11 +36,11 @@ type Currency = 'cp' | 'sp' | 'ep' | 'gp' | 'pp';
 @Component({
   selector: 'app-gm-the-party',
   standalone: true,
-  imports: [CommonModule, FormsModule, CastingCardPlayerComponent, CastCardComponent, PlayerSecretsDrawerComponent, TravelAnchorComponent, PartyGoldDrawerComponent],
+  imports: [CommonModule, FormsModule, CastingCardPlayerComponent, CastCardComponent, PlayerSecretsContentComponent, TravelAnchorComponent],
   templateUrl: './gm-the-party.component.html',
   styleUrl: './gm-the-party.component.scss',
 })
-export class GmThePartyComponent implements OnInit {
+export class GmThePartyComponent implements OnInit, OnDestroy {
   private route      = inject(ActivatedRoute);
   private router     = inject(Router);
   private http       = inject(HttpClient);
@@ -51,6 +51,8 @@ export class GmThePartyComponent implements OnInit {
   campaignId   = signal('');
   campaign     = signal<CampaignDetail | null>(null);
   playerCards  = signal<PlayerCardWithDetails[]>([]);
+
+  private partyGoldAwardedSubscription?: Subscription;
 
   spineColor = computed(() => this.campaign()?.spineColor ?? '#6e28d0');
 
@@ -141,10 +143,7 @@ export class GmThePartyComponent implements OnInit {
   }
 
   // ── View Secrets drawer ───────────────────────────────────────────────────────
-  @ViewChild(PlayerSecretsDrawerComponent) secretsDrawer: PlayerSecretsDrawerComponent | null = null;
-
-  // ── Party Gold drawer ───────────────────────────────────────────────────────────
-  @ViewChild(PartyGoldDrawerComponent) partyGoldDrawer: PartyGoldDrawerComponent | null = null;
+  @ViewChild('playerSecretsContentTemplate') playerSecretsContentTemplate: TemplateRef<any> | null = null;
 
   ngOnInit() {
     const id = this.route.snapshot.paramMap.get('id')!;
@@ -153,6 +152,17 @@ export class GmThePartyComponent implements OnInit {
     this.http.get<CampaignDetail>(`${environment.apiUrl}/api/campaigns/${id}`)
       .subscribe(c => this.campaign.set(c));
     this.loadCards(id);
+
+    // Subscribe to party gold awarded events from the service
+    this.partyGoldAwardedSubscription = this.shellSvc.partyGoldAwarded.subscribe(response => {
+      this.onPartyGoldAwarded(response);
+    });
+  }
+
+  ngOnDestroy() {
+    if (this.partyGoldAwardedSubscription) {
+      this.partyGoldAwardedSubscription.unsubscribe();
+    }
   }
 
   private loadCards(id: string) {
@@ -173,7 +183,7 @@ export class GmThePartyComponent implements OnInit {
 
   // ── Party-wide gold award drawer ─────────────────────────────────────────────────
   openPartyGoldDrawer() {
-    this.partyGoldDrawer?.open(this.campaignId());
+    this.shellSvc.openPartyGoldDrawer();
   }
 
   onPartyGoldAwarded(response: { currency: string; playerAwards: { playerUserId: string; amount: number }[] }) {
@@ -192,7 +202,18 @@ export class GmThePartyComponent implements OnInit {
 
   // ── Drawer methods ──────────────────────────────────────────────────────────────
   onCardActions(card: PlayerCardWithDetails) {
-    this.secretsDrawer?.open(card, this.campaignId(), 'secrets');
+    if (this.playerSecretsContentTemplate) {
+      this.shellSvc.openDrawerWithContent(
+        card.name,
+        this.playerSecretsContentTemplate,
+        {
+          member: card,
+          campaignId: this.campaignId(),
+          mode: 'dm',
+          portalColor: this.spineColor()
+        }
+      );
+    }
   }
 
   cardPurse(card: PlayerCardWithDetails): CurrencyLine[] {

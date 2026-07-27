@@ -34,12 +34,14 @@ namespace CastLibrary.WebHost.IoC
             if (useLocalStorage)
             {
                 services.AddScoped<IImageStorageOperator, LocalFileImageStorageOperator>();
+                services.AddScoped<IAudioFileStorageOperator, LocalAudioFileStorageOperator>();
             }
             else
             {
                 services.AddScoped<IFileStorageConfiguration>(sp =>
                     new FileStorageConfiguration(sp.GetRequiredService<IConfiguration>()));
                 services.AddScoped<IImageStorageOperator, FileImageStorageOperator>();
+                services.AddScoped<IAudioFileStorageOperator, AudioFileStorageOperator>();
             }
 
             services.AddSingleton<Shared.Configuration.IConfigurationCache, Repository.Configuration.ConfigurationCache>();

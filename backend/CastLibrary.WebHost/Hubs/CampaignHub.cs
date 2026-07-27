@@ -20,4 +20,7 @@ public class CampaignHub : Hub
 
     public async Task NotifySubscriptionLockLevelChanged(Guid userId, string newLockLevel) =>
         await Clients.User(userId.ToString()).SendAsync("SubscriptionLockLevelChanged", new { userId, newLockLevel });
+
+    public async Task TriggerSoundtrack(Guid campaignId, Guid soundtrackId, Guid dmUserId) =>
+        await Clients.User(dmUserId.ToString()).SendAsync("SoundtrackTriggered", new { campaignId, soundtrackId });
 }

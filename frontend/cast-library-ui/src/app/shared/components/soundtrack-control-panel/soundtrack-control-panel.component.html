@@ -1,0 +1,65 @@
+<div class="scp-bar" (click)="toggle()" [class.open]="isOpen() && !isClosing()">
+  <span class="scp-icon-wrap">
+    <img class="scp-music-icon" src="/musical_instruments_grey.svg" alt="" aria-hidden="true" />
+  </span>
+  <span class="scp-label">SOUNDTRACK</span>
+  <span class="scp-spacer"></span>
+  <span class="scp-chevron" [class.rotated]="isOpen() && !isClosing()">&#9660;</span>
+</div>
+
+@if (isOpen()) {
+  <div class="scp-panel-clip">
+    <div #scpPanel class="scp-panel" [class.scp-panel--closing]="isClosing()">
+      <div class="scp-panel-content">
+        <!-- Soundtrack list -->
+        <div class="soundtrack-list">
+          @for (track of soundtracks(); track track.id) {
+            <div class="soundtrack-list-item" [class.playing]="isTrackPlaying(track.id)">
+              <div class="soundtrack-list-item-buttons">
+                <button
+                  class="soundtrack-list-btn soundtrack-list-btn--play"
+                  (click)="playTrack(track)"
+                  title="Play"
+                  [disabled]="isTrackPlaying(track.id)"
+                >▶</button>
+                <button
+                  class="soundtrack-list-btn soundtrack-list-btn--stop"
+                  (click)="stopTrack(track.id)"
+                  title="Stop"
+                  [disabled]="!isTrackPlaying(track.id)"
+                >⏹</button>
+              </div>
+              <div class="soundtrack-list-item-info">
+                <span class="soundtrack-list-item-name">{{ getDisplayName(track.title) }}</span>
+              </div>
+            </div>
+          } @empty {
+            <div class="soundtrack-list-empty">No soundtracks uploaded</div>
+          }
+        </div>
+
+        <div class="soundtrack-control-panel__volume-control">
+          <label class="soundtrack-control-panel__volume-label" for="master-volume">Master Volume</label>
+          <input
+            id="master-volume"
+            type="range"
+            min="0"
+            max="100"
+            [value]="masterVolume()"
+            (input)="onVolumeChange($event)"
+            class="soundtrack-control-panel__volume-slider"
+          />
+          <span class="soundtrack-control-panel__volume-value">{{ masterVolume() }}%</span>
+        </div>
+
+        <button
+          class="soundtrack-control-panel__stop-all-btn"
+          (click)="stopAll()"
+          [disabled]="activeTrackCount() === 0"
+        >
+          Stop All
+        </button>
+      </div>
+    </div>
+  </div>
+}

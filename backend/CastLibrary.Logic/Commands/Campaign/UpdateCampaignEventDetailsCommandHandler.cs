@@ -20,6 +20,7 @@ public class UpdateCampaignEventDetailsCommandHandler(
     public async Task HandleAsync(UpdateCampaignEventDetailsCommand command)
     {
         var linkedEntities = CampaignEventEntityMapper.ToJson(command.Request.LinkedEntities);
+        var soundtrackIds = CampaignEventEntityMapper.ToJson(command.Request.SoundtrackIds);
         
         // Get current event to check for file cleanup
         var currentEvent = await readRepository.GetByIdAsync(command.EventId);
@@ -40,6 +41,7 @@ public class UpdateCampaignEventDetailsCommandHandler(
             command.Request.SceneType,
             filePath,
             linkedEntities,
+            soundtrackIds,
             command.Request.VisibleToPlayers);
     }
 }

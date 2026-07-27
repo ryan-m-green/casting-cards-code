@@ -209,7 +209,7 @@
   display: flex;
   flex-direction: column;
   gap: 6px;
-  margin-bottom: 12px;
+  margin-bottom: 24px;
 }
 
 .event-label {
@@ -953,6 +953,30 @@
   &--revealed {
     background: v.$color-secrets-revealed;
     &:hover { background: v.$color-secrets-revealed-hover; }
+  }
+}
+
+.ev-play-soundtracks-btn {
+  flex-shrink: 0;
+  width: 28px;
+  height: 28px;
+  border: none;
+  border-radius: 50%;
+  background: v.$color-secrets-bg;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background 0.15s, transform 0.15s;
+  box-shadow: 0 1px 4px v.$color-shadow-medium;
+
+  &:hover  { background: v.$color-secrets-hover; transform: scale(1.1); }
+  &:active { transform: scale(0.95); }
+
+  svg {
+    width: 14px;
+    height: 14px;
+    color: v.$campaign-portal-text-secondary;
   }
 }
 
@@ -1770,4 +1794,368 @@
 .scene-type-toggle-switch input:checked + .scene-type-toggle-slider:before {
   transform: translateX(24px);
   background-color: v.$campaign-portal-text-bright;
+}
+
+// ── Soundtrack styles ─────────────────────────────────────────────────────────
+
+.soundtracks-container {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.soundtracks-header {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 8px;
+}
+
+.soundtracks-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.soundtrack-item {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+  background: v.$campaign-portal-bg-medium;
+  border: 1px solid v.$campaign-portal-border-bold;
+  border-radius: 8px;
+  padding: 12px 16px;
+  gap: 12px;
+}
+
+.soundtrack-info {
+  width: 100%;
+  padding: 0;
+}
+
+.soundtrack-controls {
+  display: flex;
+  gap: 8px;
+  width: 100%;
+}
+
+.soundtrack-edit-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  flex: 1;
+  min-width: 0;
+  width: 100%;
+}
+
+.soundtrack-title-input {
+  padding: 6px 10px;
+  background: v.$campaign-portal-bg-dark;
+  border: 1px solid v.$campaign-portal-border-bold;
+  border-radius: 4px;
+  color: v.$campaign-portal-text-bright;
+  font-size: 14px;
+  font-family: v.$font-body;
+  width: 100%;
+  margin: 0;
+
+  &:focus {
+    outline: none;
+    border-color: v.$campaign-portal-border-strong-focus;
+  }
+}
+
+.soundtrack-info {
+  flex: 1;
+  min-width: 0;
+  padding: 8px 0 0 8px;
+}
+
+.soundtrack-name {
+  font-family: v.$font-header;
+  font-size: 14px;
+  font-weight: 600;
+  color: v.$campaign-portal-text-bright;
+  margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.soundtrack-status {
+  display: flex;
+  gap: 12px;
+  font-size: 12px;
+  color: v.$campaign-portal-text-muted;
+  margin-top: 4px;
+}
+
+.soundtrack-volume-label {
+  white-space: nowrap;
+}
+
+.soundtrack-loop-label {
+  white-space: nowrap;
+}
+
+.soundtrack-delay-label {
+  white-space: nowrap;
+}
+
+.soundtrack-filename {
+  font-size: 12px;
+  color: v.$campaign-portal-text-muted;
+  margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.soundtrack-controls {
+  display: flex;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.soundtrack-edit-controls {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 200px;
+  flex-shrink: 0;
+}
+
+.soundtrack-volume-control {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  color: v.$campaign-portal-text-muted;
+
+  label {
+    white-space: nowrap;
+  }
+
+  .volume-number-input {
+    width: 60px;
+    padding: 4px 8px;
+    background: v.$campaign-portal-bg-dark;
+    border: 1px solid v.$campaign-portal-border-bold;
+    border-radius: 4px;
+    color: v.$campaign-portal-text-bright;
+    font-size: 12px;
+    font-family: v.$font-body;
+    text-align: center;
+
+    &:focus {
+      outline: none;
+      border-color: v.$campaign-portal-border-strong-focus;
+    }
+  }
+
+  .volume-slider {
+    flex: 1;
+    height: 4px;
+    -webkit-appearance: none;
+    background: v.$campaign-portal-bg-dark;
+    border: 1px solid v.$campaign-portal-border-bold;
+    border-radius: 2px;
+    cursor: pointer;
+
+    &::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 14px;
+      height: 14px;
+      background: v.$color-base-purple-primary;
+      border-radius: 50%;
+      cursor: pointer;
+    }
+
+    &::-moz-range-thumb {
+      width: 14px;
+      height: 14px;
+      background: v.$color-base-purple-primary;
+      border-radius: 50%;
+      cursor: pointer;
+      border: none;
+    }
+  }
+}
+
+.soundtrack-loop-control {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 12px;
+  color: v.$campaign-portal-text-muted;
+}
+
+.toggle-switch {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  position: relative;
+
+  input[type="checkbox"] {
+    position: absolute;
+    opacity: 0;
+    width: 0;
+    height: 0;
+  }
+
+  .toggle-slider {
+    position: relative;
+    display: inline-block;
+    width: 36px;
+    height: 20px;
+    background: v.$campaign-portal-border-bold;
+    border-radius: 20px;
+    transition: background 0.3s ease;
+    flex-shrink: 0;
+
+    &::after {
+      content: '';
+      position: absolute;
+      top: 2px;
+      left: 2px;
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      background: v.$campaign-portal-text-softer;
+      transition: transform 0.3s ease;
+    }
+  }
+
+  input[type="checkbox"]:checked + .toggle-slider {
+    background: v.$campaign-btn-primary-border;
+
+    &::after {
+      transform: translateX(16px);
+      background: white;
+    }
+  }
+
+  .toggle-label {
+    font-family: v.$font-header;
+    font-size: 12px;
+    font-weight: bolder;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: v.$campaign-portal-text-muted;
+  }
+}
+
+.soundtrack-loop-delay-control {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+
+  label {
+    white-space: nowrap;
+    color: v.$campaign-portal-text-muted;
+  }
+
+  .loop-delay-input-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  .loop-delay-input {
+    width: 50px;
+    padding: 4px 6px;
+    background: v.$campaign-portal-bg-dark;
+    border: 1px solid v.$campaign-portal-border-bold;
+    border-radius: 4px;
+    color: v.$campaign-portal-text-bright;
+    font-size: 12px;
+    font-family: v.$font-body;
+    text-align: center;
+
+    // Hide default spinner
+    -moz-appearance: textfield;
+    appearance: none;
+
+    &::-webkit-outer-spin-button,
+    &::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+
+    &:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+
+    &:focus {
+      outline: none;
+      border-color: v.$campaign-portal-border-strong-focus;
+    }
+  }
+
+  .loop-delay-btn {
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    background: v.$campaign-portal-bg-dark;
+    border: 1px solid v.$campaign-portal-border-bold;
+    border-radius: 4px;
+    color: v.$campaign-portal-text-softer;
+    font-size: 10px;
+    cursor: pointer;
+    transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+
+    &:hover:not(:disabled) {
+      background: v.$campaign-portal-bg-medium;
+      border-color: v.$campaign-portal-border-strong-focus;
+      color: v.$campaign-portal-text-bright;
+    }
+
+    &:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+  }
+}
+
+.soundtrack-edit-buttons {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+  width: 100%;
+}
+
+.soundtrack-btn {
+  padding: 6px 12px;
+  background: v.$campaign-portal-bg-dark;
+  border: 1px solid v.$campaign-portal-border-bold;
+  border-radius: 4px;
+  color: v.$campaign-portal-text-bright;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+  white-space: nowrap;
+
+  &:hover {
+    background: v.$campaign-portal-bg-medium;
+    border-color: v.$campaign-portal-border-strong-focus;
+    color: v.$campaign-portal-text-bright;
+  }
+
+  &--danger {
+    border-color: v.$color-base-red-3;
+    color: v.$color-base-red-1;
+
+    &:hover {
+      background: v.$color-base-red-1;
+      border-color: v.$color-base-red-5;
+      color: v.$color-base-white-2;
+    }
+  }
 }

@@ -26,6 +26,7 @@ public class UploadCampaignStorylineHandoutCommandHandler(
             FilePath = null,
             VisibleToPlayers = false,
             SceneType = "campaign-handout",
+            SoundtrackIds = command.SoundtrackIds,
             CreatedAt = DateTime.UtcNow,
             UpdatedAt = DateTime.UtcNow,
         };
@@ -38,16 +39,18 @@ public class UploadCampaignStorylineHandoutCommandHandler(
 
 public class UploadCampaignEventHandoutCommand
 {
-    public UploadCampaignEventHandoutCommand(Guid campaignId, string title, string body, List<DomainLinkedEntityTrigger> linkedEntities)
+    public UploadCampaignEventHandoutCommand(Guid campaignId, string title, string body, List<DomainLinkedEntityTrigger> linkedEntities, List<Guid> soundtrackIds)
     {
         CampaignId       = campaignId;
         Title            = title;
         Body             = body;
         LinkedEntities   = linkedEntities;
+        SoundtrackIds    = soundtrackIds;
     }
 
     public Guid                        CampaignId     { get; }
     public string                      Title          { get; }
     public string                      Body           { get; }
     public List<DomainLinkedEntityTrigger>   LinkedEntities { get; }
+    public List<Guid>                  SoundtrackIds { get; }
 }

@@ -1,0 +1,127 @@
+@use '../../../../styles/variables' as v;
+
+.party-gold-body {
+  padding: 24px;
+  
+  @media (max-width: 480px) {
+    padding: 16px;
+  }
+}
+
+// ── Drawer sections ─────────────────────────────────────────────────────────────
+.drawer-section {
+  padding: 4px 0;
+}
+
+.drawer-field {
+  margin-bottom: 20px;
+}
+
+.drawer-label {
+  display: block;
+  margin-bottom: 8px;
+  font-family: v.$font-header;
+  font-size: 11px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: v.$campaign-portal-text-muted;
+}
+
+.drawer-input {
+  width: 100%;
+  padding: 10px 12px;
+  background: v.$campaign-portal-bg-medium;
+  border: 1px solid v.$campaign-portal-border-bold;
+  border-radius: 6px;
+  color: v.$campaign-portal-text-bright;
+  font-size: 14px;
+  outline: none;
+  transition: border-color 0.15s ease;
+
+  &:focus {
+    border-color: var(--portal-color, v.$color-base-purple-primary);
+  }
+
+  &::placeholder {
+    color: v.$campaign-portal-text-muted;
+  }
+}
+
+.drawer-actions {
+  margin-top: 24px;
+  padding-top: 20px;
+  border-top: 1px solid v.$campaign-portal-border-bold;
+}
+
+// ── Price input group ───────────────────────────────────────────────────────────
+.price-input-group {
+  display: flex;
+  gap: 8px;
+}
+
+.price-amount {
+  flex: 1;
+}
+
+.currency-dropdown {
+  position: relative;
+}
+
+.currency-dropdown-trigger {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 12px;
+  background: v.$campaign-portal-bg-medium;
+  border: 1px solid v.$campaign-portal-border-bold;
+  border-radius: 6px;
+  color: v.$campaign-portal-text-bright;
+  font-size: 14px;
+  cursor: pointer;
+  transition: border-color 0.15s ease;
+  min-width: 60px;
+  justify-content: space-between;
+
+  &:hover {
+    border-color: var(--portal-color, v.$color-base-purple-primary);
+  }
+}
+
+.currency-dropdown-caret {
+  font-size: 10px;
+  transition: transform 0.15s ease;
+
+  &.currency-dropdown-caret--open {
+    transform: rotate(180deg);
+  }
+}
+
+.currency-dropdown-panel {
+  position: absolute;
+  top: calc(100% + 4px);
+  right: 0;
+  z-index: 10;
+  background: v.$campaign-portal-bg-dark;
+  border: 1px solid v.$campaign-portal-border-bold;
+  border-radius: 6px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+  min-width: 60px;
+  overflow: hidden;
+}
+
+.currency-dropdown-item {
+  padding: 8px 12px;
+  color: v.$campaign-portal-text-muted;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease;
+
+  &:hover {
+    background: v.$campaign-portal-bg-medium;
+    color: v.$campaign-portal-text-bright;
+  }
+
+  &.currency-dropdown-item--selected {
+    color: var(--portal-color, v.$color-base-purple-primary);
+  }
+}

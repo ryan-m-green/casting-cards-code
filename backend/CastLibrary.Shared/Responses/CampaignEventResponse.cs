@@ -19,5 +19,6 @@ public class CampaignEventResponse
     public decimal? TodPositionPercent { get; set; }
     public bool Archived { get; set; }
     public string SceneType { get; set; } = "campaign-event";
+    public List<Guid> SoundtrackIds { get; set; } = [];
     public DateTime CreatedAt { get; set; }
 }

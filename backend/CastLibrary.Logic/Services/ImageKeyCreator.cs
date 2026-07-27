@@ -24,6 +24,8 @@ namespace CastLibrary.Logic.Services
                     return $"{dmUserId}/factions/{entityId}.png";
                 case EntityType.CampaignHandout:
                     return $"{dmUserId}/campaigns/{campaignId}/handouts/{entityId}.png";
+                case EntityType.Soundtrack:
+                    return $"{dmUserId}/campaigns/{campaignId}/{entityId}";
                 default: return string.Empty;
             }
         }
