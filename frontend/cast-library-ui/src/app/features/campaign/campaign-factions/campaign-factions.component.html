@@ -52,7 +52,8 @@
     [isDm]="true"
     gridClass="cl-grid"
     paddingClass="dm-padding"
-    [showImportCard]="true">
+    [showImportCard]="true"
+    [showSectionLabel]="false">
     @for (faction of camp.factions; track faction.factionInstanceId) {
       <div class="cl-loc-wrap" [attr.data-instance-id]="faction.factionInstanceId">
         <app-faction-card
