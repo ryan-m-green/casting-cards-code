@@ -39,6 +39,13 @@
   />
 </ng-template>
 
+<ng-template #soundtrackContentTemplate let-campaignId="campaignId" let-portalColor="portalColor">
+  <app-soundtrack-content
+    [campaignId]="campaignId"
+    [portalColor]="portalColor"
+  />
+</ng-template>
+
 <!-- Single RightDrawerComponent at shell level -->
 <app-right-drawer #rightDrawer
   [portalColor]="safeColor(shellSvc.campaign()?.spineColor)"
@@ -47,12 +54,6 @@
   [contentContext]="currentContentContext()"
 />
 
-<!-- ── Soundtrack control panel ── -->
-@if (isDm()) {
-  <div class="soundtrack-control-wrapper" [class.scp-open]="isSoundtrackOpen()">
-    <app-soundtrack-control-panel [campaignId]="campaignId()" (openStateChange)="onSoundtrackOpenChange($event)" />
-  </div>
-}
 
 <div class="void-canvas" [style.--portal-color]="safeColor(shellSvc.campaign()?.spineColor)">
 
@@ -60,19 +61,30 @@
   <div class="void-topbar">
     <div class="topbar-row">
       <div class="topbar-right">
-        <button class="topbar-storyline-btn" (click)="goToEvents()" title="Storyline">
-          <svg class="storyline-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-            <line x1="4" y1="6" x2="20" y2="6"/>
-            <line x1="4" y1="12" x2="16" y2="12"/>
-            <line x1="4" y1="18" x2="18" y2="18"/>
-            <circle cx="22" cy="6" r="1.5" fill="currentColor"/>
-            <circle cx="22" cy="12" r="1.5" fill="currentColor"/>
-            <circle cx="22" cy="18" r="1.5" fill="currentColor"/>
-          </svg>
-        </button>
-        <button class="topbar-chronicle-btn" (click)="openChronicleDrawer()" title="Chronicles">
-          <img class="chronicle-icon" src="/open_book_star_moon_storytelling.svg" alt="Chronicles" />
-        </button>
+        <div class="topbar-button-grid">
+          <div class="topbar-button-row">
+            @if (isDm()) {
+              <button class="topbar-soundtrack-btn" (click)="openSoundtrackDrawer()" title="Soundtrack">
+                <img class="soundtrack-icon" src="/musical_instruments_grey.svg" alt="Soundtrack" />
+              </button>
+            }
+            <button class="topbar-chronicle-btn" (click)="openChronicleDrawer()" title="Chronicles">
+              <img class="chronicle-icon" src="/open_book_star_moon_storytelling.svg" alt="Chronicles" />
+            </button>
+          </div>
+          <div class="topbar-button-row">
+            <button class="topbar-storyline-btn" (click)="goToEvents()" title="Storyline">
+              <svg class="storyline-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="4" y1="6" x2="20" y2="6"/>
+                <line x1="4" y1="12" x2="16" y2="12"/>
+                <line x1="4" y1="18" x2="18" y2="18"/>
+                <circle cx="22" cy="6" r="1.5" fill="currentColor"/>
+                <circle cx="22" cy="12" r="1.5" fill="currentColor"/>
+                <circle cx="22" cy="18" r="1.5" fill="currentColor"/>
+              </svg>
+            </button>
+          </div>
+        </div>
       </div>
     </div>
     @if (shellSvc.titleContext(); as ctx) {

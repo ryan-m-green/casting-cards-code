@@ -1,0 +1,52 @@
+<!-- Soundtrack list -->
+<div class="soundtrack-list">
+  @for (track of soundtracks(); track track.id) {
+    <div class="soundtrack-list-item" [class.playing]="isTrackPlaying(track.id)">
+      <div class="soundtrack-list-item-buttons">
+        <button
+          class="soundtrack-list-btn soundtrack-list-btn--play"
+          (click)="playTrack(track)"
+          title="Play"
+          [disabled]="isTrackPlaying(track.id)"
+        >
+          <img src="/musical_instruments_grey.svg" class="soundtrack-list-btn-icon" alt="Play" />
+        </button>
+        <button
+          class="soundtrack-list-btn soundtrack-list-btn--stop"
+          (click)="stopTrack(track.id)"
+          title="Stop"
+          [disabled]="!isTrackPlaying(track.id)"
+        >
+          <img src="/hand_wave_hello_stop_gesture.svg" class="soundtrack-list-btn-icon" alt="Stop" />
+        </button>
+      </div>
+      <div class="soundtrack-list-item-info">
+        <span class="soundtrack-list-item-name">{{ getDisplayName(track.title) }}</span>
+      </div>
+    </div>
+  } @empty {
+    <div class="soundtrack-list-empty">No soundtracks uploaded</div>
+  }
+</div>
+
+<div class="soundtrack-content__volume-control">
+  <label class="soundtrack-content__volume-label" for="master-volume">Master Volume</label>
+  <input
+    id="master-volume"
+    type="range"
+    min="0"
+    max="100"
+    [value]="masterVolume()"
+    (input)="onVolumeChange($event)"
+    class="soundtrack-content__volume-slider"
+  />
+  <span class="soundtrack-content__volume-value">{{ masterVolume() }}%</span>
+</div>
+
+<button
+  class="soundtrack-content__stop-all-btn"
+  (click)="stopAll()"
+  [disabled]="activeTrackCount() === 0"
+>
+  Stop All
+</button>

@@ -12,18 +12,18 @@ import { TimeOfDayBarComponent } from '../../../shared/components/time-of-day-ba
 import { VoidNavDrawerComponent } from '../../../shared/components/void-nav-drawer/void-nav-drawer.component';
 import { VoidTitleSegmentsComponent } from '../../../shared/components/void-title-segments/void-title-segments.component';
 import { UpgradeBadgeComponent } from '../../../shared/components/upgrade-badge/upgrade-badge.component';
-import { SoundtrackControlPanelComponent } from '../../../shared/components/soundtrack-control-panel/soundtrack-control-panel.component';
 import { RightDrawerComponent } from '../../../shared/components/right-drawer/right-drawer.component';
 import { ChronicleContentComponent } from '../../../shared/components/right-drawer/chronicle-content.component';
 import { PlayerSecretsContentComponent } from '../../../shared/components/right-drawer/player-secrets-content.component';
 import { PartyGoldContentComponent } from '../../../shared/components/right-drawer/party-gold-content.component';
 import { SubscriptionContentComponent } from '../../../shared/components/right-drawer/subscription-content.component';
+import { SoundtrackContentComponent } from '../../../shared/components/right-drawer/soundtrack-content.component';
 import { PlayerCardWithDetails } from '../../../shared/models/player-card.model';
 
 @Component({
   selector: 'app-campaign-shell',
   standalone: true,
-  imports: [RouterOutlet, TimeOfDayBarComponent, VoidNavDrawerComponent, VoidTitleSegmentsComponent, UpgradeBadgeComponent, SoundtrackControlPanelComponent, RightDrawerComponent, ChronicleContentComponent, PlayerSecretsContentComponent, PartyGoldContentComponent, SubscriptionContentComponent],
+  imports: [RouterOutlet, TimeOfDayBarComponent, VoidNavDrawerComponent, VoidTitleSegmentsComponent, UpgradeBadgeComponent, RightDrawerComponent, ChronicleContentComponent, PlayerSecretsContentComponent, PartyGoldContentComponent, SubscriptionContentComponent, SoundtrackContentComponent],
   templateUrl: './campaign-shell.component.html',
   styleUrl: './campaign-shell.component.scss',
 })
@@ -45,15 +45,13 @@ export class CampaignShellComponent implements OnInit, OnDestroy {
 
   isDm = computed(() => this.campaign()?.dmUserId === this.auth.currentUser()?.id);
 
-  // ── Soundtrack control panel state ─────────────────────────────────────
-  isSoundtrackOpen = signal(false);
-
   // ── Right drawer state ─────────────────────────────────────────────────────
   rightDrawer = viewChild.required<RightDrawerComponent>('rightDrawer');
   chronicleContentTemplate = viewChild.required<TemplateRef<any>>('chronicleContentTemplate');
   playerSecretsContentTemplate = viewChild.required<TemplateRef<any>>('playerSecretsContentTemplate');
   partyGoldContentTemplate = viewChild.required<TemplateRef<any>>('partyGoldContentTemplate');
   subscriptionContentTemplate = viewChild.required<TemplateRef<any>>('subscriptionContentTemplate');
+  soundtrackContentTemplate = viewChild.required<TemplateRef<any>>('soundtrackContentTemplate');
 
   drawerTitle = signal('');
   currentContentTemplate = signal<TemplateRef<any> | null>(null);
@@ -209,12 +207,18 @@ export class CampaignShellComponent implements OnInit, OnDestroy {
     this.rightDrawer().open();
   }
 
-  onPartyGoldAwarded(response: { currency: string; playerAwards: { playerUserId: string; amount: number }[] }) {
-    this.shellSvc.partyGoldAwarded.next(response);
+  openSoundtrackDrawer() {
+    this.drawerTitle.set('Soundtrack Control');
+    this.currentContentTemplate.set(this.soundtrackContentTemplate());
+    this.currentContentContext.set({
+      campaignId: this.campaignId(),
+      portalColor: this.safeColor(this.campaign()?.spineColor)
+    });
+    this.rightDrawer().open();
   }
 
-  onSoundtrackOpenChange(isOpen: boolean) {
-    this.isSoundtrackOpen.set(isOpen);
+  onPartyGoldAwarded(response: { currency: string; playerAwards: { playerUserId: string; amount: number }[] }) {
+    this.shellSvc.partyGoldAwarded.next(response);
   }
 
   goToEvents() {

@@ -27,28 +27,6 @@
   &::-webkit-scrollbar { display: none; }
 }
 
-/* ── Soundtrack control wrapper ───────────────────────────────── */
-.soundtrack-control-wrapper {
-  position: fixed;
-  top: 0;
-  left: 75px;
-  right: 130px;
-  z-index: 2003;
-  pointer-events: none;
-
-  app-soundtrack-control-panel {
-    pointer-events: auto;
-  }
-
-  &.scp-open {
-    @media (max-width: 767px) {
-      left: 0;
-      right: 0;
-      z-index: 2004;
-    }
-  }
-}
-
 :host::after {
   content: '';
   position: fixed;
@@ -117,10 +95,24 @@
 /* ── Topbar right group ───────────────────────────────────────── */
 .topbar-right {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   gap: 8px;
   margin-left: auto;
   margin-right: -12px;
+}
+
+/* ── Topbar button grid ───────────────────────────────────────── */
+.topbar-button-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* ── Topbar button row ─────────────────────────────────────────── */
+.topbar-button-row {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
 }
 
 /* ── Chronicle button ─────────────────────────────────────────── */
@@ -169,6 +161,33 @@
     height: 22px;
     display: block;
     color: v.$color-ext-160;
+  }
+
+  &:hover {
+    background: v.$campaign-portal-border-accent;
+    border-color: v.$campaign-portal-border-strong-focus;
+  }
+}
+
+/* ── Soundtrack button ─────────────────────────────────────────── */
+.topbar-soundtrack-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 46px;
+  height: 46px;
+  padding: 0;
+  background: v.$color-ext-22;
+  border: 1px solid color-mix(in srgb, var(--portal-color, v.$color-base-purple-primary), transparent 50%);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.18s ease, border-color 0.18s ease;
+
+  .soundtrack-icon {
+    width: 22px;
+    height: 22px;
+    display: block;
+    filter: brightness(0) invert(1);
   }
 
   &:hover {
