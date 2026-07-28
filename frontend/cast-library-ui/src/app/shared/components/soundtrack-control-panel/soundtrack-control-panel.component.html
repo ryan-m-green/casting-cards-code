@@ -21,13 +21,17 @@
                   (click)="playTrack(track)"
                   title="Play"
                   [disabled]="isTrackPlaying(track.id)"
-                >▶</button>
+                >
+                  <img src="/musical_instruments_grey.svg" class="soundtrack-list-btn-icon" alt="Play" />
+                </button>
                 <button
                   class="soundtrack-list-btn soundtrack-list-btn--stop"
                   (click)="stopTrack(track.id)"
                   title="Stop"
                   [disabled]="!isTrackPlaying(track.id)"
-                >⏹</button>
+                >
+                  <img src="/hand_wave_hello_stop_gesture.svg" class="soundtrack-list-btn-icon" alt="Stop" />
+                </button>
               </div>
               <div class="soundtrack-list-item-info">
                 <span class="soundtrack-list-item-name">{{ getDisplayName(track.title) }}</span>

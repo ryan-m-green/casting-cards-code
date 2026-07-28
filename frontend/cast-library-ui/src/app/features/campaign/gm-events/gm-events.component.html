@@ -336,25 +336,6 @@
 
                 <span class="ev-title">{{ ev.title }}</span>
 
-                @if (ev.soundtrackIds && ev.soundtrackIds.length > 0) {
-                <button
-                  class="ev-play-soundtracks-btn"
-                  (click)="playEventSoundtrack(ev)"
-                  title="Play soundtracks"
-                  aria-label="Play soundtracks"
-                >
-                  @if (areEventTracksPlaying(ev)) {
-                  <svg viewBox="0 0 24 24" fill="currentColor" stroke="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <rect x="6" y="6" width="12" height="12"></rect>
-                  </svg>
-                  } @else {
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <polygon points="5 3 19 12 5 21 5 3"></polygon>
-                  </svg>
-                  }
-                </button>
-                }
-
                 @if (shouldShowArchiveButton(ev)) {
                 <button
                   class="ev-archive-btn"
@@ -388,6 +369,24 @@
 
               @if (expandedIds().has(ev.id)) {
                 <div class="ev-item-edit-bar">
+                  @if (ev.soundtrackIds && ev.soundtrackIds.length > 0) {
+                  <button
+                    class="ev-play-soundtracks-btn"
+                    (click)="playEventSoundtrack(ev)"
+                    title="Play soundtracks"
+                    aria-label="Play soundtracks"
+                  >
+                    <div class="ev-play-soundtracks-btn-content">
+                      @if (areEventTracksPlaying(ev)) {
+                      <img src="/hand_wave_hello_stop_gesture.svg" class="ev-play-soundtracks-icon" alt="Stop" />
+                      <span class="ev-play-soundtracks-label">Stop</span>
+                      } @else {
+                      <img src="/musical_instruments_grey.svg" class="ev-play-soundtracks-icon" alt="Play" />
+                      <span class="ev-play-soundtracks-label">Play</span>
+                      }
+                    </div>
+                  </button>
+                  }
                    @if (editingId() === ev.id) {
                   <div class="scene-type-toggle-header">
                     <span class="scene-type-toggle-label">Scene</span>
@@ -928,22 +927,42 @@
                         class="soundtrack-btn"
                         (click)="playSoundtrack(track)"
                         title="Play"
-                      >▶ Play</button>
+                      >
+                        <div class="soundtrack-btn-content">
+                          <img src="/musical_instruments_grey.svg" class="soundtrack-play-icon" alt="Play" />
+                          <span class="soundtrack-btn-label">Play</span>
+                        </div>
+                      </button>
                       <button
                         class="soundtrack-btn"
                         (click)="stopSoundtrack(track.id)"
                         title="Stop"
-                      >⏹ Stop</button>
+                      >
+                        <div class="soundtrack-btn-content">
+                          <img src="/hand_wave_hello_stop_gesture.svg" class="soundtrack-stop-icon" alt="Stop" />
+                          <span class="soundtrack-btn-label">Stop</span>
+                        </div>
+                      </button>
                       <button
                         class="soundtrack-btn"
                         (click)="editSoundtrack(track)"
                         title="Edit"
-                      >✏ Edit</button>
+                      >
+                        <div class="soundtrack-btn-content">
+                          <img src="/feather_quill_writing_tool.svg" class="soundtrack-edit-icon" alt="Edit" />
+                          <span class="soundtrack-btn-label">Edit</span>
+                        </div>
+                      </button>
                       <button
                         class="soundtrack-btn soundtrack-btn--danger"
                         (click)="deleteSoundtrack(track.id)"
                         title="Delete"
-                      >🗑 Delete</button>
+                      >
+                        <div class="soundtrack-btn-content">
+                          <img src="/icons/weapons/fantasy_dagger.svg" class="soundtrack-delete-icon" alt="Delete" />
+                          <span class="soundtrack-btn-label">Delete</span>
+                        </div>
+                      </button>
                     </div>
                   }
                 </div>

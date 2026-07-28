@@ -61,7 +61,7 @@ interface CampaignEvent {
   standalone: true,
   imports: [CommonModule, FormsModule, NoteDestinationPickerComponent, LockIconComponent, StorylineFilterBarComponent, SoundtrackSelectorComponent],
   templateUrl: './gm-events.component.html',
-  styleUrl: './gm-events.component.scss',
+  styleUrls: ['./gm-events.component.scss', './gm-events.soundtracks.scss', './gm-events.chronicles.scss', './gm-events.handouts.scss'],
 })
 export class GmEventsComponent implements OnInit, OnDestroy {
   private route    = inject(ActivatedRoute);
