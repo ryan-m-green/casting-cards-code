@@ -373,14 +373,9 @@
 
 /* ── Mobile: width expansion ─────────────────────────────── */
 @media (max-width: 767px) {
-  :host {
-    z-index: 2004 !important;
-  }
-
   .scp-panel {
     &.scp-panel--mobile-expanded {
       position: relative;
-      z-index: 10;
     }
   }
 }
