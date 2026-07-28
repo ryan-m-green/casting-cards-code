@@ -42,11 +42,9 @@ export class SubscriptionLockBannerComponent {
   private wasOnCover = this.router.url === '/' || this.router.url === '';
 
   constructor() {
-    console.log('[SubscriptionLockBanner] Component instantiated');
     // If we started on the cover page, wait longer for the flip animation
     const delay = this.wasOnCover ? 1200 : 1000;
     setTimeout(() => {
-      console.log('[SubscriptionLockBanner] Initial flip complete');
       this.initialFlipComplete.set(true);
     }, delay);
   }

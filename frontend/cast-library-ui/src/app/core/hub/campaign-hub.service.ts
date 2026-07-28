@@ -298,12 +298,10 @@ export class CampaignHubService {
     });
 
     this.connection.on('SecretCreated', (event: SecretCreatedEvent) => {
-      console.log('CampaignHubService: SecretCreated event received from backend:', event);
       this.secretCreatedSubject.next(event);
     });
 
     this.connection.on('SecretDeleted', (event: SecretDeletedEvent) => {
-      console.log('CampaignHubService: SecretDeleted event received from backend:', event);
       this.secretDeletedSubject.next(event);
     });
 
@@ -380,7 +378,6 @@ export class CampaignHubService {
     });
 
     this.connection.on('CastTraveled', (event: CastTraveledEvent) => {
-      console.log('cast-traveled SignalR event received:', event);
       this.castTravelSubject.next(event);
     });
 

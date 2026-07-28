@@ -338,8 +338,8 @@
       (cardClick)="onCardClick($event)"
       (removeClick)="castImportCardRef!.removeCard($event.instanceId, $event.event)"
       (secretsClick)="toggleCastVisibility($event)"
-      (importAdded)="onCastAdded($event)"
-      (importRemoved)="onCastRemoved($event)"
+      (castAdded)="onCastAdded($event)"
+      (castRemoved)="onCastRemoved($event)"
       (revealAllClick)="toggleAllCastVisibility()"
       (drawerOpenChange)="castDrawerOpen.set($event)"
     >

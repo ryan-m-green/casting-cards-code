@@ -82,7 +82,6 @@ export class PlayerCampaignShellComponent implements OnInit, OnDestroy {
 
         // Handle secret visibility changes
         if (event.cardType === 'secret') {
-          console.log('Secret visibility change detected - event:', event);
           
           // Re-fetch campaign data to get the latest secrets
           this.http
@@ -93,21 +92,15 @@ export class PlayerCampaignShellComponent implements OnInit, OnDestroy {
                 this.shellSvc.setCampaign(c);
               });
               
-              console.log('Secret handling: refreshed campaign secrets:', c.secrets);
-              
               // Find the secret in the campaign data
               const secret = c.secrets?.find(s => s.id === event.instanceId);
               if (!secret) {
-                console.log('Secret handling: secret not found with instanceId:', event.instanceId);
                 return;
               }
-
-              console.log('Secret handling: found secret:', secret);
 
               // Get the associated card type and instance ID
               const instanceId = secret.castInstanceId ?? secret.locationInstanceId ?? secret.sublocationInstanceId;
               if (!instanceId) {
-                console.log('Secret handling: no associated instanceId found');
                 return;
               }
 
@@ -116,24 +109,16 @@ export class PlayerCampaignShellComponent implements OnInit, OnDestroy {
                              : secret.sublocationInstanceId ? 'sublocation'
                              : 'faction';
 
-              console.log('Secret handling: cardType:', cardType, 'instanceId:', instanceId);
-
               const data = await this.buildOverlayFromVisibilityEvent(c, instanceId, cardType, event.title, event.body, event.playerCardName, event.playerCardRace, event.playerCardClass, event.playerCardImageUrl);
               if (data) {
                 const secretRevealData = { ...data, secretContent: secret.content };
-                console.log('Secret handling: built overlay data:', secretRevealData);
-                console.log('Secret handling: eventCardTitle:', this.eventCardTitle());
                 this.ngZone.run(() => {
                   if (this.eventCardTitle() !== null) {
-                    console.log('Secret handling: setting pendingOverlayData');
                     this.pendingOverlayData = secretRevealData;
                   } else {
-                    console.log('Secret handling: adding to cardRevealQueue');
                     this.cardRevealQueue.update(queue => [...queue, secretRevealData]);
                   }
                 });
-              } else {
-                console.log('Secret handling: buildOverlayFromVisibilityEvent returned null');
               }
             });
           return;

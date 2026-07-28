@@ -46,6 +46,8 @@ export class CardGridLayoutComponent {
   @Output() secretsClick = new EventEmitter<any>();
   @Output() importAdded = new EventEmitter<any>();
   @Output() importRemoved = new EventEmitter<any>();
+  @Output() castAdded = new EventEmitter<any>();
+  @Output() castRemoved = new EventEmitter<any>();
   @Output() revealAllClick = new EventEmitter<void>();
   @Output() drawerOpenChange = new EventEmitter<boolean>();
 

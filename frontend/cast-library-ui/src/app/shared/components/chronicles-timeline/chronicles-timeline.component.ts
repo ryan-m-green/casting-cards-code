@@ -38,20 +38,9 @@ export class ChroniclesTimelineComponent implements OnChanges {
   @Output() deleteSession = new EventEmitter<string>();
 
   constructor() {
-    // Debug: Log chronicles when they change
-    console.log('ChroniclesTimelineComponent initialized');
   }
 
   ngOnChanges() {
-    console.log('Chronicles updated:', this.chronicles);
-    if (this.chronicles) {
-      this.chronicles.sessions.forEach(session => {
-        console.log('Session:', session.sessionNumber, session.chronicles);
-        session.chronicles.forEach(chronicle => {
-          console.log('Chronicle:', chronicle.id, chronicle.linkedEntities);
-        });
-      });
-    }
   }
 
   toggleSessionExpand(sessionId: string) {

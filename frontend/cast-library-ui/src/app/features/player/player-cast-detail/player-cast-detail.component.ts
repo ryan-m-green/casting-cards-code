@@ -206,11 +206,8 @@ export class PlayerCastDetailComponent implements OnInit, OnDestroy {
       this.http.get<CampaignCastInstance>(
         `${environment.apiUrl}/api/campaigns/${id}/casts/${castId}`
       ).subscribe(ca => {
-        console.log('[PlayerCastDetail] Cast loaded from API:', ca);
-        console.log('[PlayerCastDetail] Faction symbols from API:', ca.factionSymbols);
         this.castOverride.set(ca);
         this.castFactionSymbols.set(ca.factionSymbols ?? []);
-        console.log('[PlayerCastDetail] castFactionSymbols set to:', this.castFactionSymbols());
         setTimeout(() => this.pendingFactionUpdate.set(false), 500);
       });
     });

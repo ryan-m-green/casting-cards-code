@@ -316,10 +316,8 @@ export class GmEventsComponent implements OnInit, OnDestroy {
     this.hubSubscriptions.push(
       this.hub.soundtrackTriggered$.subscribe(event => {
         if (!event || event.campaignId !== this.campaignId) return;
-        console.log('SoundtrackTriggered received:', event);
         const track = this.soundtracks().find(t => t.id === event.soundtrackId);
         if (track) {
-          console.log('Playing track from SoundtrackTriggered:', track.title);
           this.audioPlayer.playTrack(track);
         }
       })
@@ -348,12 +346,9 @@ export class GmEventsComponent implements OnInit, OnDestroy {
         });
       }),
       this.hub.secretCreated$.subscribe(event => {
-        console.log('SecretCreated event received:', event);
         if (!event || event.campaignId !== this.campaignId) {
-          console.log('SecretCreated event ignored - campaignId mismatch or null event');
           return;
         }
-        console.log('SecretCreated event - adding new secret to campaign');
         // Add the new secret to the campaign secrets array
         this.shellSvc.updateCampaign(c => {
           if (!c) return c;
@@ -368,21 +363,16 @@ export class GmEventsComponent implements OnInit, OnDestroy {
             isRevealed: false,
             revealedAt: null
           };
-          console.log('New secret to add:', newSecret);
           return {
             ...c,
             secrets: [...c.secrets, newSecret]
           };
         });
-        console.log('Campaign secrets updated');
       }),
       this.hub.secretDeleted$.subscribe(event => {
-        console.log('SecretDeleted event received:', event);
         if (!event || event.campaignId !== this.campaignId) {
-          console.log('SecretDeleted event ignored - campaignId mismatch or null event');
           return;
         }
-        console.log('SecretDeleted event - removing secret from campaign');
         // Remove the deleted secret from the campaign secrets array
         this.shellSvc.updateCampaign(c => {
           if (!c) return c;
@@ -391,7 +381,6 @@ export class GmEventsComponent implements OnInit, OnDestroy {
             secrets: c.secrets.filter(s => s.id !== event.secretId)
           };
         });
-        console.log('Campaign secrets updated');
       }),
       this.hub.secretResealed$.subscribe(event => {
         if (!event || event.campaignId !== this.campaignId) return;
@@ -699,7 +688,6 @@ export class GmEventsComponent implements OnInit, OnDestroy {
   }
 
   toggleVisibility(event: CampaignEvent, domEvent: Event) {
-    console.log('toggleVisibility called for event:', event.id);
     domEvent.stopPropagation();
 
     const next = !event.visibleToPlayers;
@@ -728,11 +716,9 @@ export class GmEventsComponent implements OnInit, OnDestroy {
 
     const body = { entityVisibilities };
 
-    console.log('Sending visibility update request:', body);
     this.http.patch(`${environment.apiUrl}/api/campaigns/${this.campaignId}/events/${event.id}/visibility`, body)
       .subscribe({
         next: () => {
-          console.log('Visibility update successful for event:', event.id);
           this.events.update(evs => evs.map(e => e.id === event.id ? { ...e, visibleToPlayers: next } : e));
         },
       });
@@ -1247,7 +1233,6 @@ parseSecretValue(value: string): { innerType: string, content: string } | null {
   }
 
   playSoundtrack(track: SoundtrackDomain) {
-    console.log('Playing track from playSoundtrack:', track.title);
     this.audioPlayer.playTrack(track);
   }
 
@@ -1278,15 +1263,11 @@ parseSecretValue(value: string): { innerType: string, content: string } | null {
   playEventSoundtrack(event: CampaignEvent) {
     if (!event.soundtrackIds || event.soundtrackIds.length === 0) return;
     
-    console.log('playEventSoundtrack called for event:', event.id, event.title);
-    
     // Check if tracks are already playing - toggle behavior
     const alreadyPlaying = event.soundtrackIds.some(id => this.activeTrackIds().includes(id));
     if (alreadyPlaying) {
-      console.log('Tracks already playing, stopping them');
       // Stop all tracks associated with this event
       event.soundtrackIds.forEach(soundtrackId => {
-        console.log('Stopping track:', soundtrackId);
         this.audioPlayer.stopTrack(soundtrackId);
       });
       return;
@@ -1296,7 +1277,6 @@ parseSecretValue(value: string): { innerType: string, content: string } | null {
     event.soundtrackIds.forEach(soundtrackId => {
       const track = this.soundtracks().find(t => t.id === soundtrackId);
       if (track) {
-        console.log('Playing track from playEventSoundtrack:', track.title);
         this.audioPlayer.playTrack(track);
       }
     });

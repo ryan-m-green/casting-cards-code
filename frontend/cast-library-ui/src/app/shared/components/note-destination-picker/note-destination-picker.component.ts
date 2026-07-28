@@ -91,7 +91,6 @@ export class NoteDestinationPickerComponent {
     return this._secrets;
   }
   set secrets(value: CampaignSecret[]) {
-    console.log('note-destination-picker: secrets input updated, count:', value.length);
     this._secrets = value;
     this.secretsSignal.set(value);
   }
@@ -228,7 +227,6 @@ readonly castTravelOptions = computed<CampaignDropdownOption[]>(() => {
 readonly hasSecretsForType = computed(() => {
   const entityType = this.destTypeSignal();
   const secrets = this.secretsSignal();
-  console.log('hasSecretsForType recomputed - entityType:', entityType, 'total secrets:', secrets.length);
   if (!entityType) return false;
 
   const result = secrets.some(secret => {
@@ -240,7 +238,6 @@ readonly hasSecretsForType = computed(() => {
       case 'location':
         return secret.locationInstanceId !== null;
       case 'sublocation':
-        console.log('hasSecretsForType sublocation check - secret.sublocationInstanceId:', secret.sublocationInstanceId);
         return secret.sublocationInstanceId !== null;
       case 'faction':
         return secret.castInstanceId === null &&
@@ -250,7 +247,6 @@ readonly hasSecretsForType = computed(() => {
         return false;
     }
   });
-  console.log('hasSecretsForType result:', result);
   return result;
 });
 
@@ -259,7 +255,6 @@ readonly secretOptions = computed<CampaignDropdownOption[]>(() => {
   const entityType = this.destTypeSignal();
   const entityId = this.entityIdSignal();
   const secrets = this.secretsSignal();
-  console.log('secretOptions computed - entityType:', entityType, 'entityId:', entityId, 'total secrets:', secrets.length);
 
   if (!entityId || !entityType) return options;
 
@@ -276,7 +271,6 @@ readonly secretOptions = computed<CampaignDropdownOption[]>(() => {
         break;
       case 'sublocation':
         matches = secret.sublocationInstanceId === entityId;
-        console.log('Sublocation secret check - secret.sublocationInstanceId:', secret.sublocationInstanceId, 'entityId:', entityId, 'matches:', matches, 'secret:', secret);
         break;
       case 'faction':
         matches = secret.castInstanceId === null &&
@@ -289,7 +283,6 @@ readonly secretOptions = computed<CampaignDropdownOption[]>(() => {
     return matches;
   });
 
-  console.log('Filtered secrets count:', filteredSecrets.length);
   return [
     ...options,
     ...filteredSecrets.map(s => ({ value: s.id, label: `Secret: ${s.content.substring(0, 30)}${s.content.length > 30 ? '...' : ''}` }))
@@ -297,20 +290,15 @@ readonly secretOptions = computed<CampaignDropdownOption[]>(() => {
 });
 
 private countSecretsForLocation(locationId: string): number {
-  console.log('countSecretsForLocation - locationId:', locationId, 'secrets:', this.secrets);
   return this.secrets.filter(s => !s.isRevealed && s.locationInstanceId === locationId).length;
 }
 
 private countSecretsForSublocation(sublocationId: string): number {
-  console.log('countSecretsForSublocation - sublocationId:', sublocationId, 'total secrets:', this.secrets.length);
-  const result = this.secrets.filter(s => {
+  return this.secrets.filter(s => {
     const isRevealed = s.isRevealed;
     const matchesId = s.sublocationInstanceId === sublocationId;
-    console.log('  Secret - id:', s.id, 'isRevealed:', isRevealed, 'sublocationInstanceId:', s.sublocationInstanceId, 'matchesId:', matchesId, 'secret:', s);
     return !isRevealed && matchesId;
   }).length;
-  console.log('countSecretsForSublocation result:', result);
-  return result;
 }
 
 private countSecretsForCast(castId: string): number {

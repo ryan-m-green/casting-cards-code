@@ -29,11 +29,14 @@
       [targetGridEl]="targetGridEl"
       [initialInstances]="initialInstances"
       [locationInstanceId]="locationInstanceId"
+      [sublocationInstanceId]="sublocationInstanceId"
       (drawerOpenChange)="drawerOpenChange.emit($event)"
       (locationAdded)="importAdded.emit($event)"
       (locationRemoved)="importRemoved.emit($event)"
       (sublocationAdded)="importAdded.emit($event)"
       (sublocationRemoved)="importRemoved.emit($event)"
+      (castAdded)="castAdded.emit($event)"
+      (castRemoved)="castRemoved.emit($event)"
     />
   }
 </div>
