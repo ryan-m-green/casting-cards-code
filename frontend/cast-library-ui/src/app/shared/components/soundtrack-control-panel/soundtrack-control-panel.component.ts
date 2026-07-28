@@ -87,23 +87,21 @@ export class SoundtrackControlPanelComponent {
 
   toggle() {
     if (this.isOpen() && !this.isClosing()) {
-      // Reset mobile styles after slide-up animation completes
-      if (window.innerWidth < 768) {
-        setTimeout(() => {
+      this.isClosing.set(true);
+      setTimeout(() => {
+        this.isOpen.set(false);
+        this.isClosing.set(false);
+        this.openStateChange.emit(false);
+        // Reset mobile styles after slide-up animation completes
+        if (window.innerWidth < 768) {
           const host = this.elementRef.nativeElement as HTMLElement;
           host.style.left = '';
           host.style.right = '';
           host.style.transform = '';
           host.style.width = '';
           host.style.maxWidth = '';
-        }, 40);
-      }
-      this.isClosing.set(true);
-      setTimeout(() => {
-        this.isOpen.set(false);
-        this.isClosing.set(false);
-        this.openStateChange.emit(false);
-      }, this.SLIDE_DURATION);
+        }
+      }, 100);
     } else if (!this.isOpen()) {
       this.isOpen.set(true);
       this.openStateChange.emit(true);

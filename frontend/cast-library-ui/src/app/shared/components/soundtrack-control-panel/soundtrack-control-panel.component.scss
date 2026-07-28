@@ -11,6 +11,7 @@
   min-width: 150px;
   max-width: 600px;
   margin: 0 auto;
+  transition: left 0.1s cubic-bezier(0.22, 1, 0.36, 1), right 0.1s cubic-bezier(0.22, 1, 0.36, 1), width 0.1s cubic-bezier(0.22, 1, 0.36, 1), max-width 0.1s cubic-bezier(0.22, 1, 0.36, 1);
 
   &.scp-animating {
     .scp-panel-clip {
@@ -178,7 +179,7 @@
 }
 
 .scp-panel--closing {
-  animation: scp-slide-up 0.26s cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation: scp-slide-up 0.1s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
 .scp-panel-content {
