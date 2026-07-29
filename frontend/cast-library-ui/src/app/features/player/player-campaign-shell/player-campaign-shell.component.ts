@@ -25,11 +25,12 @@ import { RightDrawerComponent } from '../../../shared/components/right-drawer/ri
 import { ChronicleContentComponent } from '../../../shared/components/right-drawer/chronicle-content.component';
 import { PlayerInventoryContentComponent } from '../../../shared/components/right-drawer/player-inventory-content.component';
 import { ShopPurchaseContentComponent } from '../../../shared/components/right-drawer/shop-purchase-content.component';
+import { CardRevealBadgeComponent } from '../../../shared/components/card-reveal-badge/card-reveal-badge.component';
 
 @Component({
   selector: 'app-player-campaign-shell',
   standalone: true,
-  imports: [RouterOutlet, CommonModule, TimeOfDayBarComponent, CardRevealOverlayComponent, VoidNavDrawerComponent, VoidTitleSegmentsComponent, QuicknotesComponent, RightDrawerComponent, ChronicleContentComponent, PlayerInventoryContentComponent, ShopPurchaseContentComponent],
+  imports: [RouterOutlet, CommonModule, TimeOfDayBarComponent, CardRevealOverlayComponent, VoidNavDrawerComponent, VoidTitleSegmentsComponent, QuicknotesComponent, RightDrawerComponent, ChronicleContentComponent, PlayerInventoryContentComponent, ShopPurchaseContentComponent, CardRevealBadgeComponent],
   templateUrl: './player-campaign-shell.component.html',
   styleUrl: './player-campaign-shell.component.scss',
 })
@@ -582,7 +583,8 @@ export class PlayerCampaignShellComponent implements OnInit, OnDestroy {
         this.currentContentContext.set({
           campaignId: this.campaignId(),
           isDmMode: false,
-          portalColor: this.safeColor(this.campaign()?.spineColor)
+          portalColor: this.safeColor(this.campaign()?.spineColor),
+          initialSearchQuery: query
         });
         this.rightDrawer().open();
       })

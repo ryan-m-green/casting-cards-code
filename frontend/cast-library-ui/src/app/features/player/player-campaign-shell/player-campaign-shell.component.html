@@ -8,11 +8,12 @@
 />
 
 <!-- Templates for drawer content -->
-<ng-template #chronicleContentTemplate let-campaignId="campaignId" let-isDmMode="isDmMode" let-portalColor="portalColor">
+<ng-template #chronicleContentTemplate let-campaignId="campaignId" let-isDmMode="isDmMode" let-portalColor="portalColor" let-initialSearchQuery="initialSearchQuery">
   <app-chronicle-content
     [campaignId]="campaignId"
     [isDmMode]="isDmMode"
     [portalColor]="portalColor"
+    [initialSearchQuery]="initialSearchQuery"
   />
 </ng-template>
 
@@ -79,11 +80,11 @@
       </div>
     </div>
     @if (shellSvc.titleContext(); as ctx) {
-      <span class="void-title" [style.margin-top]="shellSvc.voidTitleTopMargin()">
+      <span class="void-title">
         <app-void-title-segments [context]="ctx" />
       </span>
     } @else {
-      <span class="void-title" [style.margin-top]="shellSvc.voidTitleTopMargin()">{{ shellSvc.title() }}</span>
+      <span class="void-title">{{ shellSvc.title() }}</span>
     }
   </div>
 
@@ -97,6 +98,15 @@
       [todInput]="camp.timeOfDay ?? null"
     />
   }
+
+  <!-- ── Card reveal badge ── -->
+  <div class="card-reveal-badge-container">
+    <app-card-reveal-badge
+      [count]="cardRevealQueue().length"
+      [hidden]="cardRevealQueue().length === 0"
+      (badgeClicked)="onBadgeClick()"
+    />
+  </div>
 
   <!-- ── Page content ── -->
   <router-outlet />

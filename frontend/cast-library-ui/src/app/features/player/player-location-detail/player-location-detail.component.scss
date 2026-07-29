@@ -382,14 +382,10 @@
   justify-content: center;
 }
 
-.import-card-spacer {
-  height: 164px;
-  margin-bottom: -120px;
-
-  .scroll-target {
-    display: block;
-  }
+.sublocation-spacing {
+  height: 60px;
 }
+
 
 /* ── Mobile: left-slide + downward accordion ─────────────────────────────── */
 @media (max-width: 767px) {

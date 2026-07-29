@@ -7,11 +7,12 @@
 />
 
 <!-- Templates for drawer content -->
-<ng-template #chronicleContentTemplate let-campaignId="campaignId" let-isDmMode="isDmMode" let-portalColor="portalColor">
+<ng-template #chronicleContentTemplate let-campaignId="campaignId" let-isDmMode="isDmMode" let-portalColor="portalColor" let-initialSearchQuery="initialSearchQuery">
   <app-chronicle-content
     [campaignId]="campaignId"
     [isDmMode]="isDmMode"
     [portalColor]="portalColor"
+    [initialSearchQuery]="initialSearchQuery"
   />
 </ng-template>
 

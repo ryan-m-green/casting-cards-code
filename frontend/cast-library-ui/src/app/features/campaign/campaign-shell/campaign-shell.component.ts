@@ -100,7 +100,7 @@ export class CampaignShellComponent implements OnInit, OnDestroy {
 
     this.hubSubscriptions.push(
       this.shellSvc.openChronicleWithSearch.subscribe(query => {
-        this.openChronicleDrawer();
+        this.openChronicleDrawer(query);
       })
     );
 
@@ -167,13 +167,14 @@ export class CampaignShellComponent implements OnInit, OnDestroy {
     this.openSubscriptionDrawer();
   }
 
-  openChronicleDrawer() {
+  openChronicleDrawer(query?: string) {
     this.drawerTitle.set('Campaign Chronicles');
     this.currentContentTemplate.set(this.chronicleContentTemplate());
     this.currentContentContext.set({
       campaignId: this.campaignId(),
       isDmMode: true,
-      portalColor: this.safeColor(this.campaign()?.spineColor)
+      portalColor: this.safeColor(this.campaign()?.spineColor),
+      initialSearchQuery: query
     });
     this.rightDrawer().open();
   }
