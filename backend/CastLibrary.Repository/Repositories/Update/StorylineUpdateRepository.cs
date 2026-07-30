@@ -159,7 +159,7 @@ public class StorylineUpdateRepository(
                   WHERE elem::text != @SoundtrackId::text
               ),
               updated_at = @UpdatedAt
-              WHERE soundtrack_ids @> @SoundtrackId::jsonb";
+              WHERE soundtrack_ids @> @SoundtrackId::text::jsonb";
 
         logging.LogDbOperation(correlation.TraceId, spanId, "UPDATE", "campaign_storyline", @params);
 
