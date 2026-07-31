@@ -54,7 +54,11 @@ public class SoundtracksController(
         var validationResult = await fileValidationService.ValidateFileAsync(file, 25 * 1024 * 1024, audioTypes);
 
         if (!validationResult.IsValid)
+        {
+            Console.WriteLine($"File validation failed: {validationResult.ErrorMessage}");
+            Console.WriteLine($"File name: {file.FileName}, Content-Type: {file.ContentType}, Size: {file.Length}");
             return BadRequest(validationResult.ErrorMessage);
+        }
 
         var resolvedContentType = validationResult.DetectedContentType;
 
