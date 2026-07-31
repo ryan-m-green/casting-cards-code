@@ -54,8 +54,8 @@ export class AudioPlayerService {
     this.activeTracks.set(soundtrack.id, activeTrack);
     this.activeTrackIdsSubject.next(Array.from(this.activeTracks.keys()));
     
-    // If loop delay is set, wait before first play
-    if (soundtrack.loopDelaySeconds) {
+    // If delay is set (without loop), wait before first play, then stop when done
+    if (soundtrack.loopDelaySeconds && !soundtrack.isLoop) {
       setTimeout(() => {
         if (this.activeTracks.has(soundtrack.id)) {
           audio.play().catch(error => {
@@ -67,6 +67,7 @@ export class AudioPlayerService {
         }
       }, soundtrack.loopDelaySeconds * 1000);
     } else {
+      // Play immediately (either looping or non-looping without delay)
       audio.play().catch(error => {
         console.error('Failed to play audio:', error);
         this.activeTracks.delete(soundtrack.id);
@@ -77,28 +78,16 @@ export class AudioPlayerService {
 
     audio.onended = () => {
       if (activeTrack.isLoop) {
-        if (activeTrack.loopDelaySeconds) {
-          // Custom loop with delay
-          setTimeout(() => {
-            if (this.activeTracks.has(soundtrack.id)) {
-              audio.currentTime = 0;
-              audio.play().catch(error => {
-                console.error('Failed to replay audio:', error);
-                this.stopTrack(soundtrack.id);
-              });
-            }
-          }, activeTrack.loopDelaySeconds * 1000);
-        } else {
-          // Seamless loop without fade - restart immediately
-          if (this.activeTracks.has(soundtrack.id)) {
-            audio.currentTime = 0;
-            audio.play().catch(error => {
-              console.error('Failed to replay audio:', error);
-              this.stopTrack(soundtrack.id);
-            });
-          }
+        // Seamless loop without fade - restart immediately
+        if (this.activeTracks.has(soundtrack.id)) {
+          audio.currentTime = 0;
+          audio.play().catch(error => {
+            console.error('Failed to replay audio:', error);
+            this.stopTrack(soundtrack.id);
+          });
         }
       } else {
+        // Non-looping track - stop when done
         this.stopTrack(soundtrack.id);
       }
     };

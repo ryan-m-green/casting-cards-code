@@ -882,7 +882,6 @@
                                 type="button"
                                 class="loop-delay-btn loop-delay-btn--down"
                                 (click)="decrementLoopDelay()"
-                                [disabled]="!editingIsLoop()"
                                 title="Decrease delay"
                               >▼</button>
                               <input
@@ -892,14 +891,12 @@
                                 max="60"
                                 [value]="editingLoopDelaySeconds() ?? 0"
                                 (input)="editingLoopDelaySeconds.set(onLoopDelayChange($any($event.target).value))"
-                                [disabled]="!editingIsLoop()"
                                 class="loop-delay-input"
                               />
                               <button
                                 type="button"
                                 class="loop-delay-btn loop-delay-btn--up"
                                 (click)="incrementLoopDelay()"
-                                [disabled]="!editingIsLoop()"
                                 title="Increase delay"
                               >▲</button>
                             </div>
