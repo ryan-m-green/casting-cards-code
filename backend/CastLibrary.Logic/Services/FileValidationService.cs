@@ -107,6 +107,19 @@ namespace CastLibrary.Logic.Services
                     return false;
             }
 
+            // Additional validation for M4A files
+            if (contentType == "audio/mp4")
+            {
+                // M4A files should have "ftyp" at bytes 4-7 (size field in bytes 0-3 can vary)
+                if (bytesRead < 8)
+                    return false;
+                
+                // Check for "ftyp" identifier at bytes 4-7
+                var ftypIdentifier = new byte[] { 0x66, 0x74, 0x79, 0x70 }; // "ftyp"
+                if (!header.Skip(4).Take(4).SequenceEqual(ftypIdentifier))
+                    return false;
+            }
+
             return true;
         }
 
