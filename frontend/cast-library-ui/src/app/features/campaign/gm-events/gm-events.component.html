@@ -370,22 +370,30 @@
               @if (expandedIds().has(ev.id)) {
                 <div class="ev-item-edit-bar">
                   @if (ev.soundtrackIds && ev.soundtrackIds.length > 0) {
-                  <button
-                    class="ev-play-soundtracks-btn"
-                    (click)="playEventSoundtrack(ev)"
-                    title="Play soundtracks"
-                    aria-label="Play soundtracks"
-                  >
-                    <div class="ev-play-soundtracks-btn-content">
-                      @if (areEventTracksPlaying(ev)) {
-                      <img src="/hand_wave_hello_stop_gesture.svg" class="ev-play-soundtracks-icon" alt="Stop" />
-                      <span class="ev-play-soundtracks-label">Stop</span>
-                      } @else {
-                      <img src="/musical_instruments_grey.svg" class="ev-play-soundtracks-icon" alt="Play" />
-                      <span class="ev-play-soundtracks-label">Play</span>
-                      }
-                    </div>
-                  </button>
+                  <div class="ev-soundtrack-buttons">
+                    <button
+                      class="ev-play-soundtracks-btn"
+                      (click)="playEventSoundtrack(ev)"
+                      title="Play soundtracks"
+                      aria-label="Play soundtracks"
+                    >
+                      <div class="ev-play-soundtracks-btn-content">
+                        <img src="/musical_instruments_grey.svg" class="ev-play-soundtracks-icon" alt="Play" />
+                        <span class="ev-play-soundtracks-label">Play</span>
+                      </div>
+                    </button>
+                    <button
+                      class="ev-play-soundtracks-btn"
+                      (click)="stopEventSoundtrack(ev)"
+                      title="Stop soundtracks"
+                      aria-label="Stop soundtracks"
+                    >
+                      <div class="ev-play-soundtracks-btn-content">
+                        <img src="/hand_wave_hello_stop_gesture.svg" class="ev-play-soundtracks-icon" alt="Stop" />
+                        <span class="ev-play-soundtracks-label">Stop</span>
+                      </div>
+                    </button>
+                  </div>
                   }
                    @if (editingId() === ev.id) {
                   <div class="scene-type-toggle-header">

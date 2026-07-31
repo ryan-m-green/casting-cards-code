@@ -39,12 +39,8 @@ export class AudioPlayerService {
     const audio = new Audio(soundtrack.fileUrl);
     audio.volume = (soundtrack.volume / 100) * (this.masterVolume.value / 100);
     
-    // Don't use native loop property when we have custom loop delay
-    if (soundtrack.isLoop && !soundtrack.loopDelaySeconds) {
-      audio.loop = true;
-    } else {
-      audio.loop = false;
-    }
+    // Don't use native loop property - use custom loop for seamless playback
+    audio.loop = false;
 
     const activeTrack: ActiveTrack = {
       id: soundtrack.id,
@@ -58,13 +54,26 @@ export class AudioPlayerService {
     this.activeTracks.set(soundtrack.id, activeTrack);
     this.activeTrackIdsSubject.next(Array.from(this.activeTracks.keys()));
     
-    audio.play().catch(error => {
-      console.error('Failed to play audio:', error);
-      this.activeTracks.delete(soundtrack.id);
-      this.activeTrackIdsSubject.next(Array.from(this.activeTracks.keys()));
-    });
-
-    this.trackStartedSubject.next({ id: soundtrack.id, title: soundtrack.title });
+    // If loop delay is set, wait before first play
+    if (soundtrack.loopDelaySeconds) {
+      setTimeout(() => {
+        if (this.activeTracks.has(soundtrack.id)) {
+          audio.play().catch(error => {
+            console.error('Failed to play audio:', error);
+            this.activeTracks.delete(soundtrack.id);
+            this.activeTrackIdsSubject.next(Array.from(this.activeTracks.keys()));
+          });
+          this.trackStartedSubject.next({ id: soundtrack.id, title: soundtrack.title });
+        }
+      }, soundtrack.loopDelaySeconds * 1000);
+    } else {
+      audio.play().catch(error => {
+        console.error('Failed to play audio:', error);
+        this.activeTracks.delete(soundtrack.id);
+        this.activeTrackIdsSubject.next(Array.from(this.activeTracks.keys()));
+      });
+      this.trackStartedSubject.next({ id: soundtrack.id, title: soundtrack.title });
+    }
 
     audio.onended = () => {
       if (activeTrack.isLoop) {
@@ -79,8 +88,16 @@ export class AudioPlayerService {
               });
             }
           }, activeTrack.loopDelaySeconds * 1000);
+        } else {
+          // Seamless loop without fade - restart immediately
+          if (this.activeTracks.has(soundtrack.id)) {
+            audio.currentTime = 0;
+            audio.play().catch(error => {
+              console.error('Failed to replay audio:', error);
+              this.stopTrack(soundtrack.id);
+            });
+          }
         }
-        // If no delay, native loop is already enabled
       } else {
         this.stopTrack(soundtrack.id);
       }

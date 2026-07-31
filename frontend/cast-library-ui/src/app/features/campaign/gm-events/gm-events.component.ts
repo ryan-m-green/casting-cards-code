@@ -1263,22 +1263,21 @@ parseSecretValue(value: string): { innerType: string, content: string } | null {
   playEventSoundtrack(event: CampaignEvent) {
     if (!event.soundtrackIds || event.soundtrackIds.length === 0) return;
     
-    // Check if tracks are already playing - toggle behavior
-    const alreadyPlaying = event.soundtrackIds.some(id => this.activeTrackIds().includes(id));
-    if (alreadyPlaying) {
-      // Stop all tracks associated with this event
-      event.soundtrackIds.forEach(soundtrackId => {
-        this.audioPlayer.stopTrack(soundtrackId);
-      });
-      return;
-    }
-    
-    // Play all soundtracks using the same audio player service as the control panel
+    // Play all soundtracks for this event
     event.soundtrackIds.forEach(soundtrackId => {
       const track = this.soundtracks().find(t => t.id === soundtrackId);
       if (track) {
         this.audioPlayer.playTrack(track);
       }
+    });
+  }
+
+  stopEventSoundtrack(event: CampaignEvent) {
+    if (!event.soundtrackIds || event.soundtrackIds.length === 0) return;
+    
+    // Stop all soundtracks for this event
+    event.soundtrackIds.forEach(soundtrackId => {
+      this.audioPlayer.stopTrack(soundtrackId);
     });
   }
 
