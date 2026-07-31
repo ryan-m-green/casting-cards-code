@@ -27,7 +27,7 @@ namespace CastLibrary.Logic.Services
             { "audio/mpeg", new byte[] { 0xFF, 0xFB } }, // MP3
             { "audio/wav", new byte[] { 0x52, 0x49, 0x46, 0x46 } }, // RIFF header (WAV)
             { "audio/ogg", new byte[] { 0x4F, 0x67, 0x67, 0x53 } }, // OggS
-            { "audio/mp4", new byte[] { 0x00, 0x00, 0x00, 0x20, 0x66, 0x74, 0x79, 0x70 } }, // M4A (ftyp)
+            { "audio/mp4", new byte[] { 0x66, 0x74, 0x79, 0x70 } }, // M4A (ftyp) - just the identifier
             { "audio/flac", new byte[] { 0x66, 0x4C, 0x61, 0x43 } } // fLaC
         };
 
@@ -67,6 +67,16 @@ namespace CastLibrary.Logic.Services
             if (!FileSignatures.TryGetValue(contentType, out var signature))
                 return false;
 
+            // Special case for M4A: check for "ftyp" at bytes 4-7
+            if (contentType == "audio/mp4")
+            {
+                if (bytesRead < 8)
+                    return false;
+                
+                var ftypIdentifier = new byte[] { 0x66, 0x74, 0x79, 0x70 }; // "ftyp"
+                return header.Skip(4).Take(4).SequenceEqual(ftypIdentifier);
+            }
+
             // Basic signature check
             if (bytesRead < signature.Length || !header.Take(signature.Length).SequenceEqual(signature))
             {
@@ -104,19 +114,6 @@ namespace CastLibrary.Logic.Services
                 // Check for "WAVE" identifier at bytes 8-11
                 var waveIdentifier = new byte[] { 0x57, 0x41, 0x56, 0x45 }; // "WAVE"
                 if (!header.Skip(8).Take(4).SequenceEqual(waveIdentifier))
-                    return false;
-            }
-
-            // Additional validation for M4A files
-            if (contentType == "audio/mp4")
-            {
-                // M4A files should have "ftyp" at bytes 4-7 (size field in bytes 0-3 can vary)
-                if (bytesRead < 8)
-                    return false;
-                
-                // Check for "ftyp" identifier at bytes 4-7
-                var ftypIdentifier = new byte[] { 0x66, 0x74, 0x79, 0x70 }; // "ftyp"
-                if (!header.Skip(4).Take(4).SequenceEqual(ftypIdentifier))
                     return false;
             }
 
