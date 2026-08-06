@@ -1,0 +1,201 @@
+@use '../../../../../styles/variables' as v;
+@use '../variables-v2' as v2;
+
+// ─── cc-campaign-dropdown Component Fonts ───────────────────────────────────────────────
+$font-cc-campaign-dropdown: v2.$font-v2-components;
+
+:host {
+  display: block;
+  margin-top: 8px;
+  margin-bottom: 8px;
+}
+
+.cc-campaign-dropdown {
+  position: relative;
+}
+
+.cc-campaign-dropdown-label {
+  display: block;
+  font-family: $font-cc-campaign-dropdown;
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: v.$color-lib-location-1;
+  margin-bottom: 4px;
+}
+
+.cc-campaign-dropdown-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+
+  &.disabled {
+    opacity: 0.5;
+    pointer-events: none;
+  }
+}
+
+.cc-campaign-dropdown-input {
+  all: unset;
+  display: block;
+  flex: 1;
+  width: 100%;
+  box-sizing: border-box;
+  background: v.$color-ext-346;
+  border: 1px solid v.$campaign-portal-border-medium;
+  border-radius: 5px;
+  color: v.$campaign-portal-text-bright;
+  font-family: $font-cc-campaign-dropdown;
+  font-size: var(--dd-font-size, 14px);
+  padding: 8px 80px 8px 10px;
+  cursor: text;
+  transition: border-color 0.15s ease;
+  text-align: left;
+  appearance: none;
+  -webkit-appearance: none;
+
+  &:focus {
+    border-color: v.$campaign-portal-border-active;
+    outline: none;
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    background: v.$color-ext-346;
+
+    &:hover,
+    &:focus {
+      border-color: v.$campaign-portal-border-medium;
+    }
+  }
+
+  &::placeholder {
+    color: v.$campaign-portal-text-secondary;
+  }
+}
+
+.cc-campaign-dropdown-clear {
+  all: unset;
+  position: absolute;
+  right: 36px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  color: v.$campaign-portal-text-secondary;
+  font-size: 14px;
+  cursor: pointer;
+  padding: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0.6;
+  transition: opacity 0.15s ease;
+
+  &:hover {
+    opacity: 1;
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+    opacity: 0.3;
+  }
+}
+
+.cc-campaign-dropdown-caret {
+  all: unset;
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  color: v.$campaign-portal-text-secondary;
+  font-size: 12px;
+  cursor: pointer;
+  transition: transform 0.15s ease;
+  padding: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  &:disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+  }
+
+  &--open { transform: translateY(-50%) rotate(180deg); }
+}
+
+.cc-campaign-dropdown-panel {
+  position: absolute;
+  top: calc(100%);
+  left: 0;
+  right: 0;
+  background: v.$color-ext-633;
+  border: 1px solid v.$campaign-portal-border-bold;
+  border-radius: 5px;
+  list-style: none;
+  margin: 0;
+  padding: 4px 0;
+  z-index: 100;
+  box-shadow: 0 6px 20px v.$journal-spine-band-shadow;
+}
+
+.cc-campaign-dropdown-item {
+  all: unset;
+  font-family: $font-cc-campaign-dropdown;
+  font-size: var(--dd-font-size, 14px);
+  color: v.$campaign-portal-text-bright;
+  padding: 9px 12px 9px 28px;
+  cursor: pointer;
+  transition: background 0.12s ease;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  position: relative;
+  appearance: none;
+  -webkit-appearance: none;
+
+  &:hover {
+    background: v.$campaign-portal-bg-placeholder;
+  }
+
+  &--selected {
+    background: transparent;
+    color: v.$campaign-portal-text-bright;
+
+    &:hover,
+    &--active {
+      background: transparent;
+    }
+  }
+
+  &--active {
+    background: v.$campaign-portal-bg-placeholder;
+    outline: none;
+  }
+
+  &--no-results {
+    color: v.$campaign-portal-text-secondary;
+    cursor: default;
+  }
+}
+
+.cc-dd-icon-img {
+  width: 18px;
+  height: 18px;
+  object-fit: contain;
+  flex-shrink: 0;
+  opacity: 0.85;
+  filter: invert(1);
+}
+
+.cc-campaign-dropdown-checkmark {
+  color: v.$campaign-portal-text-primary;
+  font-weight: bold;
+  font-size: 16px;
+  position: absolute;
+  left: 12px;
+}

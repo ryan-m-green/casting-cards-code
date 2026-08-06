@@ -164,6 +164,7 @@ public class CampaignsController(
         return NoContent();
     }
 
+    //TODO: Remove
     [HttpGet("{id}")]
     public async Task<IActionResult> GetById(Guid id)
     {
@@ -202,7 +203,7 @@ public class CampaignsController(
 
         return Ok(response);
     }
-
+    //TODO: Remove
     [HttpGet("{id}/player")]
     public async Task<IActionResult> GetPlayerView(Guid id)
     {
@@ -269,7 +270,7 @@ public class CampaignsController(
 
         return NoContent();
     }
-
+    //TODO: Remove
     [HttpPatch("{id}/locations/{instanceId}/visibility")]
     [Authorize(Roles = "DM,Admin")]
     public async Task<IActionResult> UpdateLocationInstanceVisibility(Guid id, Guid instanceId,
@@ -288,7 +289,7 @@ public class CampaignsController(
 
         return NoContent();
     }
-
+    //TODO: Remove
     [HttpDelete("{id}/locations/{instanceId}")]
     [Authorize(Roles = "DM,Admin")]
     public async Task<IActionResult> DeleteLocationInstance(Guid id, Guid instanceId)
@@ -300,7 +301,7 @@ public class CampaignsController(
 
         return NoContent();
     }
-
+    //Investigate: Is this already handled in v2 controller?
     [HttpPost("{id}/casts")]
     [Authorize(Roles = "DM,Admin")]
     public async Task<IActionResult> AddCast(Guid id, [FromBody] AddCastToCampaignRequest request)
@@ -318,7 +319,7 @@ public class CampaignsController(
 
         return Ok(response);
     }
-
+    //TODO: Remove
     [HttpPatch("{id}/casts/{instanceId}")]
     [Authorize(Roles = "DM,Admin")]
     public async Task<IActionResult> UpdateCast(Guid id, Guid instanceId,
@@ -336,7 +337,7 @@ public class CampaignsController(
 
         return NoContent();
     }
-
+    //TODO: Remove
     [HttpPatch("{id}/casts/{instanceId}/custom-items")]
     [Authorize(Roles = "DM,Admin")]
     public async Task<IActionResult> UpdateCastCustomItems(Guid id, Guid instanceId,
@@ -347,7 +348,7 @@ public class CampaignsController(
 
         return NoContent();
     }
-
+    //TODO: Does this already exist in v2 controller?
     [HttpPatch("{id}/sublocations/{instanceId}/custom-items")]
     [Authorize(Roles = "DM,Admin")]
     public async Task<IActionResult> UpdateSublocationCustomItems(Guid id, Guid instanceId,
@@ -358,7 +359,7 @@ public class CampaignsController(
 
         return NoContent();
     }
-
+    //TODO: Remove
     [HttpDelete("{id}/casts/{instanceId}")]
     [Authorize(Roles = "DM,Admin")]
     public async Task<IActionResult> DeleteCast(Guid id, Guid instanceId)
@@ -370,7 +371,7 @@ public class CampaignsController(
 
         return NoContent();
     }
-
+    //TODO: Remove
     [HttpPost("{id}/sublocations")]
     [Authorize(Roles = "DM,Admin")]
     public async Task<IActionResult> AddSublocation(Guid id, [FromBody] AddSublocationToCampaignRequest request)
@@ -389,7 +390,7 @@ public class CampaignsController(
 
         return Ok(response);
     }
-
+    //TODO: Remove
     [HttpPatch("{id}/sublocations/{instanceId}")]
     [Authorize(Roles = "DM,Admin")]
     public async Task<IActionResult> UpdateSublocationInstance(Guid id, Guid instanceId,
@@ -407,7 +408,7 @@ public class CampaignsController(
 
         return NoContent();
     }
-
+    //TODO: Remove
     [HttpPost("{id}/sublocations/{instanceId}/shop-items")]
     [Authorize(Roles = "DM,Admin")]
     public async Task<IActionResult> AddSublocationShopItem(Guid id, Guid instanceId,
@@ -442,7 +443,7 @@ public class CampaignsController(
             IsScratchedOff  = item.IsScratchedOff,
         });
     }
-
+    //TODO: Remove
     [HttpPatch("{id}/sublocations/{instanceId}/shop-items/{shopItemId}")]
     [Authorize(Roles = "DM,Admin")]
     public async Task<IActionResult> UpdateShopItem(Guid id, Guid instanceId, Guid shopItemId,

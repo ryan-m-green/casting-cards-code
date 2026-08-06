@@ -1,0 +1,331 @@
+@use '../../../styles/variables' as v;
+@use '../../../styles/_campaign-shell-vars' as shell;
+
+:host {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+:host.portal-entry {
+  animation: portal-fade-in 2000ms ease-out 200ms both;
+}
+
+@keyframes portal-fade-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+/* ── Void canvas ─────────────────────────────────────────────── */
+.void-canvas {
+  position: fixed;
+  inset: 0;
+  background: shell.$shell-base-black;
+  overflow: hidden; /* Changed from auto to hidden to prevent scrolling */
+  overscroll-behavior: none;
+  scrollbar-width: none;
+
+  &::-webkit-scrollbar { display: none; }
+}
+
+/* ── Portal breathing border (highest z-index) ─────────────────────────────────── */
+.portal-breathing-border {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 100000;
+  transform: translateZ(0);
+  animation: portal-inward-breathe 8.4s ease-in-out infinite;
+}
+
+@keyframes portal-inward-breathe {
+  0%, 100% {
+    box-shadow:
+      inset 0 0 0    1px color-mix(in srgb, var(--portal-color, shell.$shell-purple-primary) 40%, white 60%),
+      inset 0 0  6px  2px color-mix(in srgb, var(--portal-color, shell.$shell-purple-primary), transparent 28%),
+      inset 0 0 14px  4px color-mix(in srgb, var(--portal-color, shell.$shell-purple-primary), transparent 52%),
+      inset 0 0 25px  8px color-mix(in srgb, var(--portal-color, shell.$shell-purple-primary), transparent 76%);
+  }
+  50% {
+    box-shadow:
+      inset 0 0 0    1px color-mix(in srgb, var(--portal-color, shell.$shell-purple-primary) 25%, white 75%),
+      inset 0 0  9px  3px color-mix(in srgb, var(--portal-color, shell.$shell-purple-primary), transparent 12%),
+      inset 0 0 19px  6px color-mix(in srgb, var(--portal-color, shell.$shell-purple-primary), transparent 36%),
+      inset 0 0 35px 12px color-mix(in srgb, var(--portal-color, shell.$shell-purple-primary), transparent 64%);
+  }
+}
+
+/* ── Safe-area letterbox bars ───────────────────────────────── */
+.void-letterbox-top,
+.void-letterbox-bottom {
+  position: fixed;
+  left: 0;
+  right: 0;
+  background: #000;
+  pointer-events: none;
+  z-index: 99999;
+}
+
+.void-letterbox-top    { top: 0;    height: env(safe-area-inset-top, 0px);    }
+.void-letterbox-bottom { bottom: 0; height: env(safe-area-inset-bottom, 0px); }
+
+/* ── 3x3 Grid Container ───────────────────────────────────────── */
+.grid-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 300vw; /* 3x viewport width */
+  height: 300vh; /* 3x viewport height */
+  display: grid;
+  grid-template-columns: repeat(3, 100vw);
+  grid-template-rows: repeat(3, 100vh);
+  transition: transform 1.5s cubic-bezier(0.4, 0, 0.2, 1); /* Smooth animation */
+  will-change: transform;
+}
+
+/* ── Grid Areas ───────────────────────────────────────────────── */
+.grid-area {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Position each area in the grid */
+.top-left     { grid-column: 1; grid-row: 1; }
+.top-middle   { grid-column: 2; grid-row: 1; }
+.top-right    { grid-column: 3; grid-row: 1; }
+.middle-left  { grid-column: 1; grid-row: 2; }
+.middle-middle { grid-column: 2; grid-row: 2; }
+.middle-right { grid-column: 3; grid-row: 2; }
+.bottom-left   { grid-column: 1; grid-row: 3; }
+.bottom-middle { grid-column: 2; grid-row: 3; }
+.bottom-right  { grid-column: 3; grid-row: 3; }
+
+/* ── Area Return Button (positioned within grid areas) ─────────── */
+.area-return-button {
+  position: absolute;
+  padding: 12px 24px;
+  background: linear-gradient(135deg, #dc2626 0%, #991b1b 100%);
+  color: white;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  z-index: 100000;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(220, 38, 38, 0.4);
+  
+  &:hover {
+    background: linear-gradient(135deg, #ef4444 0%, #b91c1c 100%);
+    border-color: rgba(255, 255, 255, 0.5);
+    box-shadow: 0 6px 20px rgba(220, 38, 38, 0.6);
+  }
+}
+
+/* ── Area Navigation Button (positioned within grid areas) ─────── */
+.area-nav-button {
+  position: absolute;
+  padding: 10px 20px;
+  background: linear-gradient(135deg, #6e28d0 0%, #4c1d95 100%);
+  color: white;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  z-index: 99999;
+  transition: all 0.3s ease;
+  box-shadow: 0 3px 10px rgba(110, 40, 208, 0.3);
+  white-space: nowrap;
+  
+  &:hover {
+    background: linear-gradient(135deg, #7c3aed 0%, #5b21b6 100%);
+    border-color: rgba(255, 255, 255, 0.5);
+    box-shadow: 0 4px 15px rgba(110, 40, 208, 0.5);
+  }
+}
+
+/* ── Button Positioning Classes (shared by return and nav buttons) ─── */
+.area-return-button.bottom-right,
+.area-nav-button.bottom-right {
+  bottom: 20px;
+  right: 20px;
+  
+  &:hover {
+    transform: translateY(-2px);
+  }
+}
+
+.area-return-button.bottom-middle,
+.area-nav-button.bottom-middle {
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  
+  &:hover {
+    transform: translateX(-50%) translateY(-2px);
+  }
+}
+
+.area-return-button.bottom-left,
+.area-nav-button.bottom-left {
+  bottom: 20px;
+  left: 20px;
+  
+  &:hover {
+    transform: translateY(-2px);
+  }
+}
+
+.area-return-button.right-middle,
+.area-nav-button.right-middle {
+  top: 50%;
+  right: 20px;
+  transform: translateY(-50%);
+  
+  &:hover {
+    transform: translateY(-50%) translateY(-2px);
+  }
+}
+
+.area-return-button.left-middle,
+.area-nav-button.left-middle {
+  top: 50%;
+  left: 20px;
+  transform: translateY(-50%);
+  
+  &:hover {
+    transform: translateY(-50%) translateY(-2px);
+  }
+}
+
+.area-return-button.top-right,
+.area-nav-button.top-right {
+  top: 20px;
+  right: 20px;
+  
+  &:hover {
+    transform: translateY(-2px);
+  }
+}
+
+.area-return-button.top-middle,
+.area-nav-button.top-middle {
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  
+  &:hover {
+    transform: translateX(-50%) translateY(-2px);
+  }
+}
+
+.area-return-button.top-left,
+.area-nav-button.top-left {
+  top: 20px;
+  left: 20px;
+  
+  &:hover {
+    transform: translateY(-2px);
+  }
+}
+
+/* ── Navigation Buttons Container ───────────────────────────────── */
+.nav-buttons {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 100000;
+}
+
+/* ── Navigation Button Base Styles ─────────────────────────────────── */
+.nav-button {
+  position: absolute;
+  padding: 10px 16px;
+  background: linear-gradient(135deg, #6e28d0 0%, #4c1d95 100%);
+  color: white;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  pointer-events: auto;
+  transition: all 0.3s ease;
+  box-shadow: 0 3px 10px rgba(110, 40, 208, 0.3);
+  white-space: nowrap;
+  
+  &:hover {
+    background: linear-gradient(135deg, #7c3aed 0%, #5b21b6 100%);
+    border-color: rgba(255, 255, 255, 0.5);
+    transform: scale(1.05);
+    box-shadow: 0 4px 15px rgba(110, 40, 208, 0.5);
+  }
+  
+  &:active {
+    transform: scale(0.98);
+  }
+}
+
+/* ── Navigation Button Positions ────────────────────────────────── */
+.nav-button.top-left {
+  top: 20px;
+  left: 20px;
+}
+
+.nav-button.top-middle {
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  
+  &:hover {
+    transform: translateX(-50%) scale(1.05);
+  }
+}
+
+.nav-button.top-right {
+  top: 20px;
+  right: 20px;
+}
+
+.nav-button.middle-left {
+  top: 50%;
+  left: 20px;
+  transform: translateY(-50%);
+  
+  &:hover {
+    transform: translateY(-50%) scale(1.05);
+  }
+}
+
+.nav-button.middle-right {
+  top: 50%;
+  right: 20px;
+  transform: translateY(-50%);
+  
+  &:hover {
+    transform: translateY(-50%) scale(1.05);
+  }
+}
+
+.nav-button.bottom-left {
+  bottom: 20px;
+  left: 20px;
+}
+
+.nav-button.bottom-middle {
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  
+  &:hover {
+    transform: translateX(-50%) scale(1.05);
+  }
+}
+
+.nav-button.bottom-right {
+  bottom: 20px;
+  right: 20px;
+}

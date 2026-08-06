@@ -1,0 +1,138 @@
+@use '../../../../../styles/variables' as v;
+@use '../variables-v2' as v2;
+
+// ─── cc-counter-badge Component Fonts ───────────────────────────────────────────────
+$font-cc-counter-badge-label: v2.$font-v2-components;
+
+:host {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+// ─── Label ───────────────────────────────────────────────────────────────────────
+.counter-badge-label {
+  font-family: $font-cc-counter-badge-label;
+  font-size: 0.75rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: v.$color-base-brown-14;
+  opacity: 0.8;
+}
+
+.counter-badge-label--campaign {
+  color: v.$color-base-mist-blue;
+}
+
+// ─── Counter Badge Wrapper ───────────────────────────────────────────────────────
+.counter-badge-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  border: 2px solid v.$color-base-gold-1;
+  border-radius: 12px;
+  padding: 4px;
+  width:118px;
+}
+
+.counter-badge--campaign .counter-badge-wrapper {
+  border-color: v.$color-lib-location-1;
+}
+
+// ─── Counter Badge Circle ───────────────────────────────────────────────────────
+.counter-badge-circle {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: v.$color-input-bg;
+  border: 2px solid v.$color-base-gold-1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.counter-badge-circle--campaign {
+  background: v.$color-base-black;
+  border-color: v.$color-lib-location-1;
+}
+
+// ─── Counter Value ─────────────────────────────────────────────────────────────
+.counter-badge-value {
+  font-family: $font-cc-counter-badge-label;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: v.$color-base-brown-14;
+  letter-spacing: 0.05em;
+  text-align: center;
+  z-index: 1;
+}
+
+.counter-badge-value--campaign {
+  color: v.$color-base-mist-blue;
+}
+
+// ─── Counter Buttons ───────────────────────────────────────────────────────────
+.counter-badge-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  width: 24px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  transition: background 0.2s ease;
+  color: v.$color-base-brown-14;
+  padding: 2px 0;
+
+  &:hover:not(.counter-badge-btn--disabled) {
+    background: rgba(v.$color-base-gold-1, 0.2);
+  }
+
+  &:active:not(.counter-badge-btn--disabled) {
+    transform: scale(0.95);
+  }
+
+  &--disabled {
+    cursor: not-allowed;
+    opacity: 0.3;
+  }
+
+  svg {
+    width: 24px;
+    height: 48px;
+    display: block;
+  }
+}
+
+.counter-badge-btn--decrement svg {
+  transform: rotate(0deg);
+}
+
+.counter-badge-btn--increment svg {
+  transform: rotate(180deg);
+}
+
+// Feather quill rotation for journal context
+.counter-badge-btn--decrement .feather-quill-icon {
+  transform: rotate(150deg) scale(1.5);
+}
+
+.counter-badge-btn--increment .feather-quill-icon {
+  transform: rotate(328deg) scale(1.5);
+}
+
+.counter-badge--campaign .counter-badge-btn {
+  color: v.$color-base-mist-blue;
+
+  &:hover:not(.counter-badge-btn--disabled) {
+    background: rgba(v.$color-base-mist-blue, 0.2);
+  }
+}

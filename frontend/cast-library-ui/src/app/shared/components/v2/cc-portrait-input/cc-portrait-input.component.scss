@@ -1,0 +1,338 @@
+@use '../../../../../styles/variables' as v;
+@use '../variables-v2' as v2;
+
+// ─── cc-portrait-input Component Fonts ───────────────────────────────────────────────
+$font-cc-portrait-input: v2.$font-v2-components;
+
+// ─── Targeted Reset ─────────────────────────────────────────────────────────────────
+// Only reset specific elements to avoid SVG rendering issues
+.cc-portrait-input-label-area,
+.cc-portrait-input-empty,
+.cc-portrait-input-overlay,
+.cc-portrait-input-hint,
+.cc-portrait-input-remove-btn {
+  all: revert;
+}
+
+:host {
+  display: block;
+  margin-top: 8px;
+  margin-bottom: 8px;
+}
+
+// ─── Component Container ─────────────────────────────────────────────────────────────
+.cc-portrait-input-inner--journal {
+  width: 100%;
+  height: 100%;
+  border-radius: 5px;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  background: linear-gradient(160deg, #f0e2b6 0%, #e5d49a 50%, #d4c07a 100%);
+}
+
+.cc-portrait-input-inner--campaign {
+  width: 100%;
+  height: 100%;
+  border-radius: 5px;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  background: linear-gradient(160deg, #1e100a 0%, #2a1a0f 100%);
+}
+
+// ── Journal Context Styles ─────────────────────────────────────────────────────
+.cc-portrait-input-label--journal {
+  font-family: $font-cc-portrait-input;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  color: v.$color-base-brown-14;
+  display: block;
+  margin-bottom: 8px;
+}
+
+.cc-portrait-input-label-area--journal {
+  flex-shrink: 0;
+  display: inline-flex;
+  position: relative;
+  width: 84px;
+  height: 117px;
+  border-radius: 8px;
+  padding: 4px;
+  background: linear-gradient(145deg, #f0d060 0%, #c9a84c 20%, #8a6820 45%, #e8c96a 55%, #c9a84c 70%, #5a4010 85%, #d4a840 100%);
+  box-shadow:
+    0 0 0 1px #1a0f00,
+    0 6px 22px rgba(0,0,0,0.9),
+    inset 0 1px 0 rgba(255, 230, 100, 0.3);
+  cursor: pointer;
+  overflow: hidden;
+  transition: box-shadow 0.18s ease;
+
+  &:hover:not(.cc-portrait-input-label-area--disabled) {
+    box-shadow:
+      0 0 0 1px #1a0f00,
+      0 8px 26px rgba(0,0,0,0.95),
+      inset 0 1px 0 rgba(255, 230, 100, 0.4);
+    .cc-portrait-input-overlay--journal { opacity: 1; }
+    .cc-portrait-input-empty--journal   { opacity: 0.85; }
+  }
+
+  &--filled {
+    box-shadow:
+      0 0 0 1px #1a0f00,
+      0 4px 18px rgba(0,0,0,0.85),
+      inset 0 1px 0 rgba(255, 230, 100, 0.35);
+  }
+
+  &--disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
+
+.cc-portrait-input-file-input {
+  position: absolute;
+  width: 0;
+  height: 0;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.cc-portrait-input-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.cc-portrait-input-overlay--journal {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.45);
+  color: v.$color-base-brown-14;
+  opacity: 0;
+  transition: opacity 0.18s ease;
+
+  .cc-portrait-input-camera-icon {
+    stroke: currentColor;
+    stroke-width: 2;
+  }
+}
+
+.cc-portrait-input-camera-icon {
+  display: block;
+  width: inherit;
+  height: inherit;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  fill: none;
+  stroke: currentColor;
+}
+
+.cc-portrait-input-empty--journal {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  height: 100%;
+  color: v.$color-base-brown-14;
+  transition: opacity 0.18s ease;
+  min-height: 80px;
+
+  .cc-portrait-input-camera-icon {
+    color: v.$color-base-brown-14;
+    width: 32px;
+    height: 32px;
+    stroke: currentColor;
+    stroke-width: 2;
+  }
+}
+
+.cc-portrait-input-hint--journal {
+  font-family: $font-cc-portrait-input;
+  font-size: 12px;
+  text-align: center;
+  line-height: 1.4;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: v.$color-base-brown-14;
+
+  em {
+    font-style: italic;
+    font-size: 12px;
+    opacity: 0.75;
+    text-transform: none;
+  }
+}
+
+.cc-portrait-input-remove-btn--journal {
+  font-family: $font-cc-portrait-input;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  color: v.$color-base-brown-14;
+  cursor: pointer;
+  padding: 6px 12px;
+  margin-top: 8px;
+  border-radius: 4px;
+  border: 1px solid rgba(v.$color-base-brown-14, 0.3);
+  background: transparent;
+  transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+  appearance: none;
+  -webkit-appearance: none;
+
+  &:hover {
+    background: rgba(v.$color-base-brown-14, 0.1);
+    border-color: rgba(v.$color-base-brown-14, 0.5);
+  }
+
+  &:focus-visible {
+    outline: 2px solid v.$color-input-focus-border;
+    outline-offset: 2px;
+  }
+}
+
+// ── Campaign Context Styles ───────────────────────────────────────────────────
+.cc-portrait-input-label--campaign {
+  font-family: $font-cc-portrait-input;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  color: v.$color-lib-location-1;
+  display: block;
+  margin-bottom: 8px;
+}
+
+.cc-portrait-input-label-area--campaign {
+  flex-shrink: 0;
+  display: inline-flex;
+  position: relative;
+  width: 84px;
+  height: 117px;
+  border-radius: 8px;
+  padding: 4px;
+  background: linear-gradient(145deg, #f0d060 0%, #c9a84c 20%, #8a6820 45%, #e8c96a 55%, #c9a84c 70%, #5a4010 85%, #d4a840 100%);
+  box-shadow:
+    0 0 0 1px #1a0f00,
+    0 6px 22px rgba(0,0,0,0.9),
+    inset 0 1px 0 rgba(255, 230, 100, 0.3);
+  cursor: pointer;
+  overflow: hidden;
+  transition: box-shadow 0.18s ease;
+
+  &:hover:not(.cc-portrait-input-label-area--disabled) {
+    box-shadow:
+      0 0 0 1px #1a0f00,
+      0 8px 26px rgba(0,0,0,0.95),
+      inset 0 1px 0 rgba(255, 230, 100, 0.4);
+    .cc-portrait-input-overlay--campaign { opacity: 1; }
+    .cc-portrait-input-empty--campaign   { opacity: 0.85; }
+  }
+
+  &--filled {
+    box-shadow:
+      0 0 0 1px #1a0f00,
+      0 4px 18px rgba(0,0,0,0.85),
+      inset 0 1px 0 rgba(255, 230, 100, 0.35);
+  }
+
+  &--disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
+
+.cc-portrait-input-overlay--campaign {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.45);
+  color: v.$color-base-mist-blue;
+  opacity: 0;
+  transition: opacity 0.18s ease;
+
+  .cc-portrait-input-camera-icon {
+    stroke: currentColor;
+    stroke-width: 2;
+  }
+}
+
+.cc-portrait-input-empty--campaign {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  height: 100%;
+  color: v.$color-lib-location-1;
+  transition: opacity 0.18s ease;
+  min-height: 80px;
+
+  .cc-portrait-input-camera-icon {
+    color: v.$color-lib-location-1;
+    width: 32px;
+    height: 32px;
+    stroke: currentColor;
+    stroke-width: 2;
+  }
+}
+
+.cc-portrait-input-hint--campaign {
+  font-family: $font-cc-portrait-input;
+  font-size: 12px;
+  text-align: center;
+  line-height: 1.4;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: v.$color-lib-location-1;
+
+  em {
+    font-style: italic;
+    font-size: 12px;
+    opacity: 0.75;
+    text-transform: none;
+  }
+}
+
+.cc-portrait-input-remove-btn--campaign {
+  font-family: $font-cc-portrait-input;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  color: v.$color-base-mist-blue;
+  cursor: pointer;
+  padding: 6px 12px;
+  margin-top: 8px;
+  border-radius: 4px;
+  border: 1px solid rgba(v.$color-lib-location-1, 0.5);
+  background: transparent;
+  transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+  appearance: none;
+  -webkit-appearance: none;
+
+  &:hover {
+    background: rgba(v.$color-lib-location-1, 0.2);
+    border-color: v.$color-lib-location-1;
+  }
+
+  &:focus-visible {
+    outline: 2px solid v.$color-lib-location-1;
+    outline-offset: 2px;
+  }
+}

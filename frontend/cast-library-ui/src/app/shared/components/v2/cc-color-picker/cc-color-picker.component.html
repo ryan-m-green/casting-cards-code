@@ -1,0 +1,24 @@
+@if (label()) {
+  <label [class.cc-color-picker-journal-label]="!isCampaignContext()" [class.cc-color-picker-campaign-label]="isCampaignContext()">{{ label() }}</label>
+}
+
+<div class="cc-color-picker-wrapper" [class.cc-color-picker-wrapper--campaign]="isCampaignContext()">
+  <label class="cc-color-picker-button"
+         [class.cc-color-picker-button--journal]="!isCampaignContext()"
+         [class.cc-color-picker-button--campaign]="isCampaignContext()"
+         [class.cc-color-picker-button--disabled]="disabled()"
+         [style.background-color]="color()">
+    <input
+      type="color"
+      class="cc-color-picker-input"
+      [value]="color()"
+      (input)="onColorChange($event)"
+      [disabled]="disabled()"
+    />
+    @if (internalLabel()) {
+      <span class="cc-color-picker-button-text"
+            [class.cc-color-picker-button-text--journal]="!isCampaignContext()"
+            [class.cc-color-picker-button-text--campaign]="isCampaignContext()">{{ internalLabel() }}</span>
+    }
+  </label>
+</div>

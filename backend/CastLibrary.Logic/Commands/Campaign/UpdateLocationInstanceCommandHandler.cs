@@ -31,6 +31,7 @@ public class UpdateLocationInstanceCommandHandler(
         instance.Vibe = command.Request.Vibe;
         instance.Languages = command.Request.Languages;
         instance.DmNotes = command.Request.DmNotes;
+        instance.Keywords = command.Request.Keywords;
 
         await campaignUpdateRepository.UpdateLocationInstanceAsync(instance);
 

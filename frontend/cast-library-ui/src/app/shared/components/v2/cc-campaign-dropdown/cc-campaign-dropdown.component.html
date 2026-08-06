@@ -1,0 +1,74 @@
+<div class="cc-campaign-dropdown" [style.--dd-font-size]="fontSize()">
+  @if (label()) {
+    <label class="cc-campaign-dropdown-label">{{ label() }}</label>
+  }
+  <div class="cc-campaign-dropdown-wrapper" [class.disabled]="disabled()">
+    <input
+      class="cc-campaign-dropdown-input"
+      [attr.aria-expanded]="isOpen()"
+      [attr.aria-label]="'Select campaign: ' + (selected?.label ?? 'None selected')"
+      [attr.aria-activedescendant]="isOpen() && activeIndex() >= 0 ? 'dd-opt-' + activeIndex() : null"
+      [tabIndex]="triggerTabIndex()"
+      [disabled]="disabled()"
+      [value]="inputValue()"
+      placeholder="Select or type..."
+      autocomplete="off"
+      (focus)="onFocus()"
+      (input)="onInput($event)"
+      (blur)="onBlur()"
+      (keydown)="onTriggerKeydown($event)"
+    />
+    @if (inputValue()) {
+      <button
+        class="cc-campaign-dropdown-clear"
+        [disabled]="disabled()"
+        (click)="clearValue($event)"
+        type="button"
+        aria-label="Clear">
+        ✕
+      </button>
+    }
+    <button
+      class="cc-campaign-dropdown-caret"
+      [class.cc-campaign-dropdown-caret--open]="isOpen()"
+      [disabled]="disabled()"
+      (click)="toggle($event)"
+      type="button"
+      aria-hidden="true">
+      ▾
+    </button>
+  </div>
+  @if (isOpen()) {
+    <ul class="cc-campaign-dropdown-panel" role="listbox">
+      @for (option of filteredOptions(); track option.value; let i = $index) {
+        <li
+          #optionItem
+          [id]="'dd-opt-' + i"
+          class="cc-campaign-dropdown-item"
+          [class.cc-campaign-dropdown-item--selected]="value() === option.value"
+          [class.cc-campaign-dropdown-item--active]="activeIndex() === i"
+          role="option"
+          [attr.aria-selected]="value() === option.value"
+          (mousedown)="select(option)"
+          (mouseenter)="activeIndex.set(i)"
+        >
+          @if (value() === option.value) {
+            <span class="cc-campaign-dropdown-checkmark">✓</span>
+          }
+          @if (option.icon) {
+            @if (option.icon.startsWith('/')) {
+              <img [src]="option.icon" [alt]="option.label" class="cc-dd-icon-img" />
+            } @else {
+              {{ option.icon }}
+            }
+          }{{ option.label }}
+        </li>
+      }
+      @if (filteredOptions().length === 0) {
+        <li class="cc-campaign-dropdown-item cc-campaign-dropdown-item--no-results">
+          No matches
+        </li>
+      }
+    </ul>
+  }
+</div>

@@ -1,0 +1,63 @@
+<div class="cc-shop-inventory" 
+     [class.cc-shop-inventory--spaced]="spaced()"
+     [class.cc-shop-inventory--journal]="!isCampaignContext()"
+     [class.cc-shop-inventory--campaign]="isCampaignContext()">
+  @if (label()) {
+    <label class="cc-shop-inventory-label" 
+           [class.cc-shop-inventory-label--journal]="!isCampaignContext()"
+           [class.cc-shop-inventory-label--campaign]="isCampaignContext()">{{ label() }}</label>
+  }
+  
+  <div class="cc-shop-inventory-currency-bar"
+       [class.cc-shop-inventory-currency-bar--journal]="!isCampaignContext()"
+       [class.cc-shop-inventory-currency-bar--campaign]="isCampaignContext()">
+    <label class="cc-shop-inventory-currency-label"
+           [class.cc-shop-inventory-currency-label--journal]="!isCampaignContext()"
+           [class.cc-shop-inventory-currency-label--campaign]="isCampaignContext()">Currency:</label>
+    @for (currency of currencyOptions; track currency.value) {
+      <button
+        type="button"
+        class="cc-shop-inventory-currency-btn"
+        [class.cc-shop-inventory-currency-btn--journal]="!isCampaignContext()"
+        [class.cc-shop-inventory-currency-btn--campaign]="isCampaignContext()"
+        [disabled]="disabled() || hasCoinTypeValue()"
+        (click)="insertCurrency(currency.value)"
+        aria-label="Insert {{ currency.label }}">
+        {{ currency.label }}
+      </button>
+    }
+  </div>
+
+  <div class="cc-shop-inventory-textarea-wrapper"
+       [class.cc-shop-inventory-textarea-wrapper--journal]="!isCampaignContext()"
+       [class.cc-shop-inventory-textarea-wrapper--campaign]="isCampaignContext()">
+    <app-cc-textbox
+      #textbox
+      type="textarea"
+      [rows]="rows()"
+      [disabled]="disabled()"
+      [placeholder]="dynamicPlaceholder()"
+      [context]="context()"
+      [ngModel]="inventoryText()"
+      (ngModelChange)="onTextChange($event)"
+      (blur)="onTouched()"
+    ></app-cc-textbox>
+    
+    <button
+      type="button"
+      class="cc-shop-inventory-fab"
+      [class.cc-shop-inventory-fab--journal]="!isCampaignContext()"
+      [class.cc-shop-inventory-fab--campaign]="isCampaignContext()"
+      [disabled]="disabled()"
+      (click)="onAddItem()"
+      aria-label="Add item">
+      +
+    </button>
+  </div>
+
+  <div class="cc-shop-inventory-help"
+       [class.cc-shop-inventory-help--journal]="!isCampaignContext()"
+       [class.cc-shop-inventory-help--campaign]="isCampaignContext()">
+    <small>Format: Each item has "Name:", "Description:", "Price:", and "Coin Type:" on separate lines. <br />Click currency buttons to insert at the last Coin Type. Separate items with blank lines.</small>
+  </div>
+</div>

@@ -19,11 +19,20 @@
       [visible]="auth.isFreeTrial()"
       (badgeClick)="openUpgradeDrawer()"
       class="upgrade-badge-library" />
-    <a class="campaign-primary-btn wr-ml-auto" 
-       [class.disabled]="campaignLimitReached()"
-       [attr.disabled]="campaignLimitReached() ? 'true' : null"
-       [routerLink]="campaignLimitReached() ? null : '/gm/campaigns/new'"
-       (click)="campaignLimitReached() ? $event.preventDefault() : null">+ New Campaign</a>
+    <div class="header-buttons">
+      @if (auth.isAdmin()) {
+        <a class="campaign-secondary-btn" 
+           routerLink="/v2/campaign-library"
+           title="Access V2 Campaign Area">
+          V2 Shell
+        </a>
+      }
+      <a class="campaign-primary-btn" 
+         [class.disabled]="campaignLimitReached()"
+         [attr.disabled]="campaignLimitReached() ? 'true' : null"
+         [routerLink]="campaignLimitReached() ? null : '/gm/campaigns/new'"
+         (click)="campaignLimitReached() ? $event.preventDefault() : null">+ New Campaign</a>
+    </div>
   </div>
 
   <div class="tab-bar">

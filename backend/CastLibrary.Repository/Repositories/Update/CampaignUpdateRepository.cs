@@ -91,6 +91,7 @@ public class CampaignUpdateRepository(
             instance.Vibe,
             instance.Languages,
             instance.DmNotes,
+            instance.Keywords,
         };
 
         logging.LogDbOperation(correlation.TraceId, spanId, "UPDATE", "campaign_location_instances", @params);
@@ -101,7 +102,7 @@ public class CampaignUpdateRepository(
               SET name=@Name, description=@Description, classification=@Classification, size=@Size,
                   condition=@Condition, geography=@Geography, architecture=@Architecture,
                   climate=@Climate, religion=@Religion, vibe=@Vibe,
-                  languages=@Languages, dm_notes=@DmNotes
+                  languages=@Languages, dm_notes=@DmNotes, keywords=@Keywords
               WHERE instance_id=@InstanceId",
             @params);
 
@@ -127,6 +128,7 @@ public class CampaignUpdateRepository(
             instance.VoicePlacement,
             instance.VoiceNotes,
             instance.DmNotes,
+            instance.Keywords,
         };
 
         logging.LogDbOperation(correlation.TraceId, spanId, "UPDATE", "campaign_cast_instances", @params);
@@ -146,7 +148,8 @@ public class CampaignUpdateRepository(
                   speed=@Speed,
                   voice_placement=@VoicePlacement,
                   voice_notes=@VoiceNotes,
-                  dm_notes=@DmNotes
+                  dm_notes=@DmNotes,
+                  keywords=@Keywords
               WHERE instance_id=@InstanceId",
             @params);
 
@@ -161,6 +164,7 @@ public class CampaignUpdateRepository(
             instance.InstanceId,
             instance.Description,
             instance.DmNotes,
+            instance.Keywords,
         };
 
         logging.LogDbOperation(correlation.TraceId, spanId, "UPDATE", "campaign_sublocation_instances", @params);
@@ -168,7 +172,7 @@ public class CampaignUpdateRepository(
         using var conn = CreateConnection();
         var rows = await conn.ExecuteAsync(
             @"UPDATE campaign_sublocation_instances
-              SET description=@Description, dm_notes=@DmNotes
+              SET description=@Description, dm_notes=@DmNotes, keywords=@Keywords
               WHERE instance_id=@InstanceId",
             @params);
 

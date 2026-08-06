@@ -15,5 +15,6 @@ public class UpdateCastInstanceRequest
     public string[] VoicePlacement    { get; set; } = [];
     public string   VoiceNotes        { get; set; } = string.Empty;
     public string   DmNotes           { get; set; } = string.Empty;
+    public string[] Keywords          { get; set; } = [];
     public bool     SyncLibrary       { get; set; } = false;
 }

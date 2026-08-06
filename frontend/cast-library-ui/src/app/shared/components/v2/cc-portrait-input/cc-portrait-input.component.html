@@ -1,0 +1,60 @@
+<div class="cc-portrait-input"
+     [class.cc-portrait-input--journal]="!isCampaignContext()"
+     [class.cc-portrait-input--campaign]="isCampaignContext()">
+  @if (label()) {
+    <label class="cc-portrait-input-label"
+           [class.cc-portrait-input-label--journal]="!isCampaignContext()"
+           [class.cc-portrait-input-label--campaign]="isCampaignContext()">{{ label() }}</label>
+  }
+
+  <label class="cc-portrait-input-label-area"
+         [class.cc-portrait-input-label-area--journal]="!isCampaignContext()"
+         [class.cc-portrait-input-label-area--campaign]="isCampaignContext()"
+         [class.cc-portrait-input-label-area--filled]="hasImage()"
+         [class.cc-portrait-input-label-area--disabled]="disabled()">
+    <div class="cc-portrait-input-inner"
+         [class.cc-portrait-input-inner--journal]="!isCampaignContext()"
+         [class.cc-portrait-input-inner--campaign]="isCampaignContext()">
+      <input type="file"
+             accept="image/jpeg,image/png,image/webp"
+             class="cc-portrait-input-file-input"
+             [disabled]="disabled()"
+             (change)="onFileSelected($event)" />
+      
+      @if (hasImage()) {
+        <img [src]="imagePreviewUrl()!" class="cc-portrait-input-img" alt="Portrait preview" />
+        <div class="cc-portrait-input-overlay"
+             [class.cc-portrait-input-overlay--journal]="!isCampaignContext()"
+             [class.cc-portrait-input-overlay--campaign]="isCampaignContext()">
+          <svg class="cc-portrait-input-camera-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
+            <circle cx="12" cy="13" r="4"/>
+          </svg>
+        </div>
+      } @else {
+        <div class="cc-portrait-input-empty"
+             [class.cc-portrait-input-empty--journal]="!isCampaignContext()"
+             [class.cc-portrait-input-empty--campaign]="isCampaignContext()">
+          <svg class="cc-portrait-input-camera-icon" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
+            <circle cx="12" cy="13" r="4"/>
+          </svg>
+          <span class="cc-portrait-input-hint"
+                [class.cc-portrait-input-hint--journal]="!isCampaignContext()"
+                [class.cc-portrait-input-hint--campaign]="isCampaignContext()">Portrait<br><em>optional</em></span>
+        </div>
+      }
+    </div>
+  </label>
+
+  @if (hasImage() && !disabled()) {
+    <button type="button"
+            class="cc-portrait-input-remove-btn"
+            [class.cc-portrait-input-remove-btn--journal]="!isCampaignContext()"
+            [class.cc-portrait-input-remove-btn--campaign]="isCampaignContext()"
+            (click)="removeImage()"
+            aria-label="Remove portrait">
+      Remove Portrait
+    </button>
+  }
+</div>

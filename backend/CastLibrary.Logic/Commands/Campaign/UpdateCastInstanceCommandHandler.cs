@@ -32,6 +32,7 @@ public class UpdateCastInstanceCommandHandler(
         instance.Speed             = command.Request.Speed;
         instance.VoicePlacement    = command.Request.VoicePlacement;
         instance.DmNotes           = command.Request.DmNotes;
+        instance.Keywords          = command.Request.Keywords;
 
         await campaignUpdateRepository.UpdateCastInstanceAsync(instance);
 

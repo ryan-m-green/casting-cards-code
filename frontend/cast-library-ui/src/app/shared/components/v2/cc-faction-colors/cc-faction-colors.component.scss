@@ -1,0 +1,328 @@
+@use '../../../../../styles/variables' as v;
+@use '../variables-v2' as v2;
+
+// ─── cc-color-pickers Component Fonts ───────────────────────────────────────────────
+$font-cc-color-pickers: v2.$font-v2-components;
+
+// ─── Targeted Reset ─────────────────────────────────────────────────────────────────
+.color-pickers-container,
+.color-picker-wrapper,
+.color-picker-button,
+.color-picker-input,
+.color-picker-button-text,
+.color-picker-text-bg,
+.perception-main-label,
+.perception-card,
+.perception-slider,
+.perception-ticks,
+.perception-labels {
+  all: revert;
+}
+
+:host {
+  display: block;
+  margin-top: 8px;
+  margin-bottom: 8px;
+}
+
+// ─── Component Container ─────────────────────────────────────────────────────────────
+.cc-color-pickers-label--journal {
+  font-family: $font-cc-color-pickers;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  color: v.$color-base-brown-14;
+  display: block;
+  margin-bottom: 8px;
+}
+
+.cc-color-pickers-label--campaign {
+  font-family: $font-cc-color-pickers;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  color: v.$color-lib-location-1;
+  display: block;
+  margin-bottom: 8px;
+}
+
+// ── Journal Context Styles ─────────────────────────────────────────────────────
+.color-pickers-container--journal {
+  display: flex;
+  gap: 16px;
+  align-items: flex-start;
+}
+
+.color-picker-wrapper--journal {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  align-items: flex-start;
+}
+
+.color-picker-button--journal {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 80px;
+  height: 36px;
+  border-radius: 4px;
+  border: 2px solid v.$color-base-brown-14;
+  cursor: pointer;
+  overflow: hidden;
+  transition: border-color 0.15s ease, transform 0.15s ease, box-shadow 0.15s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+
+  &:hover:not(.color-picker-button--disabled) {
+    border-color: rgba(v.$color-base-brown-14, 0.8);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  }
+
+  &--disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  &:focus-within {
+    outline: 2px solid v.$color-input-focus-border;
+    outline-offset: 2px;
+  }
+}
+
+.color-picker-input {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  cursor: pointer;
+  padding: 0;
+  margin: 0;
+  appearance: none;
+  -webkit-appearance: none;
+
+  &::-webkit-color-swatch-wrapper {
+    padding: 0;
+  }
+
+  &::-webkit-color-swatch {
+    border: none;
+  }
+
+  &::-moz-color-swatch {
+    border: none;
+  }
+}
+
+.color-picker-button-text--journal {
+  font-family: $font-cc-color-pickers;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: #fff;
+  pointer-events: none;
+  position: relative;
+  z-index: 2;
+}
+
+.color-picker-text-bg {
+  display: inline-block;
+  padding: 2px 6px;
+  background: rgba(0, 0, 0, 0.6);
+  border-radius: 3px;
+  font-size: inherit;
+  font-weight: inherit;
+  text-transform: inherit;
+  letter-spacing: inherit;
+}
+
+// ── Campaign Context Styles ───────────────────────────────────────────────────
+.color-pickers-container--campaign {
+  display: flex;
+  gap: 16px;
+  align-items: flex-start;
+  padding: 8px;
+  border-radius: 4px;
+  max-width:180px;
+}
+
+.color-picker-wrapper--campaign {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  align-items: flex-start;
+}
+
+.color-picker-button--campaign {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 80px;
+  height: 36px;
+  border-radius: 4px;
+  border: 2px solid v.$color-lib-location-1;
+  cursor: pointer;
+  overflow: hidden;
+  transition: border-color 0.15s ease, transform 0.15s ease, box-shadow 0.15s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+
+  &:hover:not(.color-picker-button--disabled) {
+    border-color: rgba(v.$color-lib-location-1, 0.8);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
+  }
+
+  &--disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  &:focus-within {
+    outline: 2px solid v.$color-input-focus-border;
+    outline-offset: 2px;
+  }
+}
+
+.color-picker-button-text--campaign {
+  font-family: $font-cc-color-pickers;
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: #fff;
+  pointer-events: none;
+  position: relative;
+  z-index: 2;
+}
+
+// ── Perception Bar ─────────────────────────────────────────────────────────────
+.perception-main-label {
+  display: block;
+  margin-top: 12px;
+  margin-bottom: 6px;
+}
+
+.perception-main-label--journal {
+  font-family: $font-cc-color-pickers;
+  font-size: 11px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: v.$color-base-brown-14;
+}
+
+.perception-main-label--campaign {
+  font-family: $font-cc-color-pickers;
+  font-size: 10px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: v.$color-lib-location-1;
+}
+
+.perception-card {
+  border-radius: 4px;
+  padding: 10px 12px 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  transition: border-color 0.25s;
+}
+
+.perception-card--journal {
+  border: 1px solid rgba(v.$color-base-gold-1, 0.30);
+
+  &--hostile  { border-color: #b03030; }
+  &--friendly { border-color: #3a7a3a; }
+}
+
+.perception-card--campaign {
+  border: 1px solid rgba(128, 128, 128, 0.25);
+
+  &--hostile  { border-color: var(--faction-evil-color, v.$color-faction-evil-accent); }
+  &--friendly { border-color: var(--faction-good-color, v.$color-faction-good-accent); }
+}
+
+.perception-slider {
+  width: 100%;
+  cursor: pointer;
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
+
+.perception-slider--journal {
+  accent-color: v.$color-base-gold-1;
+
+  &.slider-friendly { accent-color: var(--faction-good-color, #FFC0DC); }
+  &.slider-hostile  { accent-color: var(--faction-evil-color, #B8D820); }
+}
+
+.perception-slider--campaign {
+  accent-color: rgba(128, 128, 128, 0.85);
+
+  &.slider-friendly { accent-color: var(--faction-good-color, v.$color-faction-good-accent); }
+  &.slider-hostile  { accent-color: var(--faction-evil-color, v.$color-faction-evil-accent); }
+}
+
+.perception-ticks {
+  display: flex;
+  justify-content: space-between;
+  padding: 0 7px;
+  margin-top: -2px;
+
+  span {
+    width: 4px;
+    height: 8px;
+    border-radius: 1px;
+  }
+}
+
+.perception-ticks--journal span {
+  background: rgba(v.$color-base-gold-1, 0.30);
+}
+
+.perception-ticks--campaign span {
+  background: rgba(128, 128, 128, 0.30);
+}
+
+.perception-labels {
+  display: flex;
+  justify-content: space-between;
+  font-family: $font-cc-color-pickers;
+  font-size: 10px;
+  letter-spacing: 0.10em;
+}
+
+.perception-labels--journal {
+  color: rgba(v.$color-base-brown-14, 0.60);
+}
+
+.perception-labels--campaign {
+  color: v.$color-faction-neutral-accent;
+}
+
+.perception-label-center {
+  font-weight: 600;
+  text-align: center;
+}
+
+.perception-label-center--journal {
+  color: rgba(v.$color-base-brown-14, 0.85);
+}
+
+.perception-label-center--campaign {
+  color: v.$color-faction-neutral-accent;
+}
+
+.perception-label-end {
+  color: inherit;
+}

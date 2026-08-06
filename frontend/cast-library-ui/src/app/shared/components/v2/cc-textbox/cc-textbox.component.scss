@@ -1,0 +1,198 @@
+@use '../../../../../styles/variables' as v;
+@use '../variables-v2' as v2;
+
+// ─── cc-textbox Component Fonts ───────────────────────────────────────────────
+$font-cc-textbox-label: v2.$font-v2-components;
+$font-cc-textbox-input: v2.$font-v2-components;
+
+:host {
+  display: block;
+  margin-top: 8px;
+  margin-bottom: 8px;
+}
+
+// ─── Input Wrapper ─────────────────────────────────────────────────────────────
+.cc-textbox-input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+// ── Journal Context Styles ─────────────────────────────────────────────────────
+.cc-textbox-journal-field {
+  width: 100%;
+  background: v.$color-input-bg;
+  border: 1px solid v.$color-border-solid;
+  border-radius: 2px;
+  outline: none;
+  font-family: $font-cc-textbox-input;
+  font-size: 14px;
+  font-style: italic;
+  color: v.$color-base-brown-14;
+  padding: 5px 8px;
+  padding-right: 32px;
+  margin-bottom: 10px;
+  box-sizing: border-box;
+  display: block;
+  appearance: none;
+  -webkit-appearance: none;
+
+  &::placeholder {
+    color: v.$color-base-brown-17;
+    font-style: italic;
+  }
+
+  &:focus {
+    border-color: v.$color-input-focus-border;
+    background: v.$color-input-focus-bg;
+    outline: none;
+  }
+}
+
+.cc-textbox-journal-textarea {
+  width: 100%;
+  background: v.$color-input-bg;
+  border: 1px solid v.$color-border;
+  border-radius: 2px;
+  outline: none;
+  font-family: $font-cc-textbox-input;
+  font-size: 14px;
+  font-style: italic;
+  color: v.$color-base-brown-14;
+  padding: 6px 8px;
+  margin-bottom: 10px;
+  box-sizing: border-box;
+  display: block;
+  resize: none;
+  min-height: 80px;
+  line-height: 1.55;
+  appearance: none;
+  -webkit-appearance: none;
+  will-change: transform;
+
+  &::placeholder {
+    color: v.$color-base-brown-17;
+    font-style: italic;
+  }
+
+  &:focus {
+    border-color: v.$color-input-focus-border;
+    background: v.$color-input-focus-bg;
+    outline: none;
+  }
+}
+
+.cc-textbox-journal-label {
+  display: block;
+  font-family: $font-cc-textbox-label;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  margin-bottom: 2px;
+}
+
+// ── Campaign Context Styles ───────────────────────────────────────────────────
+.cc-textbox-campaign-field {
+  width: 100%;
+  background: v.$color-base-black;
+  border: 1px solid v.$color-lib-location-1;
+  border-radius: 3px;
+  padding: 5px 8px;
+  padding-right: 32px;
+  font-family: $font-cc-textbox-input;
+  font-size: 14px;
+  color: v.$color-base-mist-blue;
+  box-sizing: border-box;
+  outline: none;
+  display: block;
+  appearance: none;
+  -webkit-appearance: none;
+
+  &::placeholder {
+    color: v.$color-lib-location-1;
+  }
+
+  &:focus {
+    border-color: v.$color-lib-location-1;
+  }
+}
+
+.cc-textbox-campaign-textarea {
+  width: 100%;
+  background: v.$color-base-black;
+  border: 1px solid v.$color-lib-location-1;
+  border-radius: 3px;
+  padding: 5px 8px;
+  font-family: $font-cc-textbox-input;
+  font-size: 14px;
+  color: v.$color-base-mist-blue;
+  box-sizing: border-box;
+  outline: none;
+  display: block;
+  resize: none;
+  min-height: 48px;
+  appearance: none;
+  -webkit-appearance: none;
+
+  &::placeholder {
+    color: v.$color-lib-location-1;
+  }
+
+  &:focus {
+    border-color: v.$color-lib-location-1;
+  }
+}
+
+.cc-textbox-campaign-label {
+  display: block;
+  font-family: $font-cc-textbox-label;
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: v.$color-lib-location-1;
+  margin-bottom: 4px;
+}
+
+// ─── Clear Button ──────────────────────────────────────────────────────────────
+.cc-textbox-clear {
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  cursor: pointer;
+  width: 20px;
+  height: 20px;
+  font-size: 0.8rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  transition: background 0.2s ease, color 0.2s ease;
+  z-index: 10;
+
+  &:disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+  }
+}
+
+.cc-textbox-clear--journal {
+  color: rgba(v.$color-base-brown-14, 0.6);
+
+  &:hover:not(:disabled) {
+    background: rgba(v.$color-base-brown-14, 0.1);
+    color: v.$color-base-brown-14;
+  }
+}
+
+.cc-textbox-clear--campaign {
+  color: rgba(v.$color-base-mist-blue, 0.7);
+
+  &:hover:not(:disabled) {
+    background: rgba(v.$color-base-mist-blue, 0.15);
+    color: v.$color-base-mist-blue;
+  }
+}

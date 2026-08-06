@@ -1,0 +1,291 @@
+@use '../../../../../styles/variables' as v;
+@use '../variables-v2' as v2;
+
+// ─── cc-shop-inventory Component Fonts ───────────────────────────────────────────────
+$font-cc-shop-inventory: v2.$font-v2-components;
+
+// ─── Reset ───────────────────────────────────────────────────────────────────────────
+* {
+  all: unset;
+  display: revert;
+}
+
+:host {
+  display: block;
+  margin-top: 8px;
+  margin-bottom: 8px;
+}
+
+// ── Journal Context Styles ─────────────────────────────────────────────────────
+.cc-shop-inventory--journal {
+  &.cc-shop-inventory--spaced {
+    margin-top: 20px;
+  }
+}
+
+.cc-shop-inventory-label--journal {
+  font-family: $font-cc-shop-inventory;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  color: v.$color-base-brown-14;
+}
+
+.cc-shop-inventory-currency-bar--journal {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 8px;
+  flex-wrap: wrap;
+  align-items: center;
+  padding: 8px;
+  border: 0.5px solid v.$color-border-solid;
+  border-radius: 2px;
+  background: rgba(v.$color-input-bg, 0.3);
+}
+
+.cc-shop-inventory-currency-label--journal {
+  font-family: $font-cc-shop-inventory;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  color: v.$color-base-brown-17;
+  margin-right: 4px;
+}
+
+.cc-shop-inventory-currency-btn--journal {
+  font-family: $font-cc-shop-inventory;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  color: v.$color-base-brown-14;
+  cursor: pointer;
+  padding: 4px 10px;
+  border-radius: 4px;
+  border: 1px solid rgba(v.$color-base-brown-14, 0.3);
+  transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+  appearance: none;
+  -webkit-appearance: none;
+
+  &:hover:not(:disabled) {
+    background: rgba(v.$color-base-brown-14, 0.1);
+    border-color: rgba(v.$color-base-brown-14, 0.5);
+  }
+
+  &--active {
+    background: rgba(v.$color-base-brown-14, 0.15);
+    color: v.$color-base-brown-14;
+    font-weight: 700;
+    border-color: rgba(v.$color-base-brown-14, 0.6);
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    border-color: rgba(v.$color-base-brown-14, 0.2);
+  }
+
+  &:focus-visible {
+    outline: 2px solid v.$color-input-focus-border;
+    outline-offset: 2px;
+  }
+}
+
+.cc-shop-inventory-textarea-wrapper--journal {
+  position: relative;
+}
+
+.cc-shop-inventory-fab--journal {
+  position: absolute;
+  bottom: 8px;
+  right: 24px;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: v.$color-base-brown-14;
+  color: white;
+  font-family: $font-cc-shop-inventory;
+  font-size: 24px;
+  font-weight: 300;
+  line-height: 1;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  transition: background 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+  appearance: none;
+  -webkit-appearance: none;
+  z-index: 10;
+
+  &:hover:not(:disabled) {
+    background: lighten(v.$color-base-brown-14, 10%);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+  }
+
+  &:active:not(:disabled) {
+    transform: translateY(0);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    background: v.$color-base-brown-17;
+  }
+
+  &:focus-visible {
+    outline: 2px solid v.$color-input-focus-border;
+    outline-offset: 2px;
+  }
+}
+
+.cc-shop-inventory-help--journal {
+  small {
+    font-family: $font-cc-shop-inventory;
+    font-size: 11px;
+    color: v.$color-base-brown-17;
+    font-style: italic;
+    line-height: 1.4;
+  }
+}
+
+// ── Campaign Context Styles ───────────────────────────────────────────────────
+.cc-shop-inventory--campaign {
+  &.cc-shop-inventory--spaced {
+    margin-top: 20px;
+  }
+}
+
+.cc-shop-inventory-label--campaign {
+  font-family: $font-cc-shop-inventory;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  color: v.$color-lib-location-1;
+}
+
+.cc-shop-inventory-currency-bar--campaign {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 8px;
+  flex-wrap: wrap;
+  align-items: center;
+  padding: 8px;
+  border: 1px solid v.$color-lib-location-1;
+  border-radius: 3px;
+  background: rgba(v.$color-base-black, 0.5);
+}
+
+.cc-shop-inventory-currency-label--campaign {
+  font-family: $font-cc-shop-inventory;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  color: v.$color-lib-location-1;
+  margin-right: 4px;
+}
+
+.cc-shop-inventory-currency-btn--campaign {
+  font-family: $font-cc-shop-inventory;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  color: v.$color-base-mist-blue;
+  cursor: pointer;
+  padding: 4px 10px;
+  border-radius: 4px;
+  border: 1px solid rgba(v.$color-lib-location-1, 0.5);
+  transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+  appearance: none;
+  -webkit-appearance: none;
+
+  &:hover:not(:disabled) {
+    background: rgba(v.$color-lib-location-1, 0.2);
+    border-color: v.$color-lib-location-1;
+  }
+
+  &--active {
+    background: rgba(v.$color-lib-location-1, 0.3);
+    color: v.$color-base-mist-blue;
+    font-weight: 700;
+    border-color: v.$color-lib-location-1;
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    border-color: rgba(v.$color-lib-location-1, 0.3);
+  }
+
+  &:focus-visible {
+    outline: 2px solid v.$color-lib-location-1;
+    outline-offset: 2px;
+  }
+}
+
+.cc-shop-inventory-textarea-wrapper--campaign {
+  position: relative;
+}
+
+.cc-shop-inventory-fab--campaign {
+  position: absolute;
+  bottom: 8px;
+  right: 24px;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: v.$color-lib-location-1;
+  color: v.$color-base-black;
+  font-family: $font-cc-shop-inventory;
+  font-size: 24px;
+  font-weight: 300;
+  line-height: 1;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  transition: background 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+  appearance: none;
+  -webkit-appearance: none;
+  z-index: 10;
+
+  &:hover:not(:disabled) {
+    background: lighten(v.$color-lib-location-1, 15%);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4);
+  }
+
+  &:active:not(:disabled) {
+    transform: translateY(0);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    background: rgba(v.$color-lib-location-1, 0.5);
+  }
+
+  &:focus-visible {
+    outline: 2px solid v.$color-lib-location-1;
+    outline-offset: 2px;
+  }
+}
+
+.cc-shop-inventory-help--campaign {
+  small {
+    font-family: $font-cc-shop-inventory;
+    font-size: 11px;
+    color: v.$color-lib-location-1;
+    font-style: italic;
+    line-height: 1.4;
+  }
+}

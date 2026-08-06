@@ -1,0 +1,130 @@
+<!-- Main Canvas with Black Background (3x viewport size) -->
+<div class="void-canvas" [style.--portal-color]="safeColor(shellSvc.campaign()?.spineColor)">
+  
+  <!-- ── 3x3 Grid Container ── -->
+  <div class="grid-container" [style.transform]="'translate(' + viewportPosition().x + 'vw, ' + viewportPosition().y + 'vh)'">
+    
+    <!-- ── Top Row ── -->
+    <div class="grid-area top-left">
+      <app-v2-campaign-placeholder areaName="Top Left" />
+      <!-- Navigation buttons -->
+      <button class="area-nav-button right-middle" (click)="moveToTopMiddle()">→ Top Middle</button>
+      <button class="area-nav-button bottom-middle" (click)="moveToMiddleLeft()">↓ Middle Left</button>
+      <!-- Return button -->
+      <button class="area-return-button bottom-right" (click)="moveToCenter()">
+        ← Return to Center
+      </button>
+    </div>
+    <div class="grid-area top-middle">
+      <app-v2-campaign-placeholder areaName="Top Middle" />
+      <!-- Navigation buttons -->
+      <button class="area-nav-button left-middle" (click)="moveToTopLeft()">← Top Left</button>
+      <button class="area-nav-button right-middle" (click)="moveToTopRight()">Top Right →</button>
+      <button class="area-nav-button bottom-middle" (click)="moveToCenter()">↓ Center</button>
+      <!-- Return button -->
+      <button class="area-return-button bottom-middle" (click)="moveToCenter()">
+        ↑ Return to Center
+      </button>
+    </div>
+    <div class="grid-area top-right">
+      <app-v2-campaign-placeholder areaName="Top Right" />
+      <!-- Navigation buttons -->
+      <button class="area-nav-button left-middle" (click)="moveToTopMiddle()">← Top Middle</button>
+      <button class="area-nav-button bottom-middle" (click)="moveToMiddleRight()">↓ Middle Right</button>
+      <!-- Return button -->
+      <button class="area-return-button bottom-left" (click)="moveToCenter()">
+        Return to Center →
+      </button>
+    </div>
+    
+    <!-- ── Middle Row ── -->
+    <div class="grid-area middle-left">
+      <app-v2-campaign-placeholder areaName="Middle Left" />
+      <!-- Navigation buttons -->
+      <button class="area-nav-button top-middle" (click)="moveToTopLeft()">↑ Top Left</button>
+      <button class="area-nav-button right-middle" (click)="moveToCenter()">→ Center</button>
+      <button class="area-nav-button bottom-middle" (click)="moveToBottomLeft()">↓ Bottom Left</button>
+      <!-- Return button -->
+      <button class="area-return-button right-middle" (click)="moveToCenter()">
+        ← Return to Center
+      </button>
+    </div>
+    <div class="grid-area middle-middle">
+      <!-- Router outlet in center -->
+      <router-outlet />
+      
+      <!-- Navigation buttons -->
+      <div class="nav-buttons">
+        <!-- Top Left -->
+        <button class="nav-button top-left" (click)="moveToTopLeft()">↖ Top Left</button>
+        <!-- Top Middle -->
+        <button class="nav-button top-middle" (click)="moveToTopMiddle()">↑ Top Middle</button>
+        <!-- Top Right -->
+        <button class="nav-button top-right" (click)="moveToTopRight()">Top Right ↗</button>
+        <!-- Middle Left -->
+        <button class="nav-button middle-left" (click)="moveToMiddleLeft()">← Middle Left</button>
+        <!-- Middle Right -->
+        <button class="nav-button middle-right" (click)="moveToMiddleRight()">Middle Right →</button>
+        <!-- Bottom Left -->
+        <button class="nav-button bottom-left" (click)="moveToBottomLeft()">↙ Bottom Left</button>
+        <!-- Bottom Middle -->
+        <button class="nav-button bottom-middle" (click)="moveToBottomMiddle()">↓ Bottom Middle</button>
+        <!-- Bottom Right -->
+        <button class="nav-button bottom-right" (click)="moveToBottomRight()">Bottom Right ↘</button>
+      </div>
+    </div>
+    <div class="grid-area middle-right">
+      <app-v2-campaign-placeholder areaName="Middle Right" />
+      <!-- Navigation buttons -->
+      <button class="area-nav-button top-middle" (click)="moveToTopRight()">↑ Top Right</button>
+      <button class="area-nav-button left-middle" (click)="moveToCenter()">← Center</button>
+      <button class="area-nav-button bottom-middle" (click)="moveToBottomRight()">↓ Bottom Right</button>
+      <!-- Return button -->
+      <button class="area-return-button left-middle" (click)="moveToCenter()">
+        Return to Center →
+      </button>
+    </div>
+    
+    <!-- ── Bottom Row ── -->
+    <div class="grid-area bottom-left">
+      <app-v2-campaign-placeholder areaName="Bottom Left" />
+      <!-- Navigation buttons -->
+      <button class="area-nav-button top-middle" (click)="moveToMiddleLeft()">↑ Middle Left</button>
+      <button class="area-nav-button right-middle" (click)="moveToBottomMiddle()">→ Bottom Middle</button>
+      <!-- Return button -->
+      <button class="area-return-button top-right" (click)="moveToCenter()">
+        ← Return to Center
+      </button>
+    </div>
+    <div class="grid-area bottom-middle">
+      <app-v2-campaign-placeholder areaName="Bottom Middle" />
+      <!-- Navigation buttons -->
+      <button class="area-nav-button left-middle" (click)="moveToBottomLeft()">← Bottom Left</button>
+      <button class="area-nav-button top-middle" (click)="moveToCenter()">↑ Center</button>
+      <button class="area-nav-button right-middle" (click)="moveToBottomRight()">Bottom Right →</button>
+      <!-- Return button -->
+      <button class="area-return-button top-middle" (click)="moveToCenter()">
+        Return to Center ↓
+      </button>
+    </div>
+    <div class="grid-area bottom-right">
+      <app-v2-campaign-placeholder areaName="Bottom Right" />
+      <!-- Navigation buttons -->
+      <button class="area-nav-button top-middle" (click)="moveToMiddleRight()">↑ Middle Right</button>
+      <button class="area-nav-button left-middle" (click)="moveToBottomMiddle()">← Bottom Middle</button>
+      <!-- Return button -->
+      <button class="area-return-button top-left" (click)="moveToCenter()">
+        Return to Center →
+      </button>
+    </div>
+    
+  </div>
+  
+  <!-- ── Portal breathing border (highest z-index) ── -->
+  <div class="portal-breathing-border"></div>
+  
+</div>
+
+<!-- ── Letterbox bars for safe area ── -->
+<div class="void-letterbox-top"></div>
+<div class="void-letterbox-bottom"></div>

@@ -1,0 +1,74 @@
+<div class="cc-journal-dropdown" [style.--dd-font-size]="fontSize()">
+  @if (label()) {
+    <label class="cc-journal-dropdown-label">{{ label() }}</label>
+  }
+  <div class="cc-journal-dropdown-wrapper" [class.disabled]="disabled()">
+    <input
+      class="cc-journal-dropdown-input"
+      [attr.aria-expanded]="isOpen()"
+      [attr.aria-label]="'Select journal: ' + (selected?.label ?? 'None selected')"
+      [attr.aria-activedescendant]="isOpen() && activeIndex() >= 0 ? 'dd-opt-' + activeIndex() : null"
+      [tabIndex]="triggerTabIndex()"
+      [disabled]="disabled()"
+      [value]="inputValue()"
+      placeholder="Select or type..."
+      autocomplete="off"
+      (focus)="onFocus()"
+      (input)="onInput($event)"
+      (blur)="onBlur()"
+      (keydown)="onTriggerKeydown($event)"
+    />
+    @if (inputValue()) {
+      <button
+        class="cc-journal-dropdown-clear"
+        [disabled]="disabled()"
+        (click)="clearValue($event)"
+        type="button"
+        aria-label="Clear">
+        ✕
+      </button>
+    }
+    <button
+      class="cc-journal-dropdown-caret"
+      [class.cc-journal-dropdown-caret--open]="isOpen()"
+      [disabled]="disabled()"
+      (click)="toggle($event)"
+      type="button"
+      aria-hidden="true">
+      ▾
+    </button>
+  </div>
+  @if (isOpen()) {
+    <ul class="cc-journal-dropdown-panel" role="listbox">
+      @for (option of filteredOptions(); track option.value; let i = $index) {
+        <li
+          #optionItem
+          [id]="'dd-opt-' + i"
+          class="cc-journal-dropdown-item"
+          [class.cc-journal-dropdown-item--selected]="value() === option.value"
+          [class.cc-journal-dropdown-item--active]="activeIndex() === i"
+          role="option"
+          [attr.aria-selected]="value() === option.value"
+          (mousedown)="select(option)"
+          (mouseenter)="activeIndex.set(i)"
+        >
+          @if (value() === option.value) {
+            <span class="cc-journal-dropdown-checkmark">✓</span>
+          }
+          @if (option.icon) {
+            @if (option.icon.startsWith('/')) {
+              <img [src]="option.icon" [alt]="option.label" class="cc-dd-icon-img" />
+            } @else {
+              {{ option.icon }}
+            }
+          }{{ option.label }}
+        </li>
+      }
+      @if (filteredOptions().length === 0) {
+        <li class="cc-journal-dropdown-item cc-journal-dropdown-item--no-results">
+          No matches
+        </li>
+      }
+    </ul>
+  }
+</div>
