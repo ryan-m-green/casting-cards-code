@@ -3,7 +3,7 @@ import { Component, Input, Output, EventEmitter, inject } from '@angular/core';
 import { Sublocation, CampaignSublocationInstance } from '../../models/sublocation.model';
 
 import { LockIconComponent } from '../lock-icon/lock-icon.component';
-
+import { CcSublocationIconComponent } from '../v2/cc-sublocation-icon/cc-sublocation-icon.component';
 import { CampaignShellService } from '../../../core/campaign-shell.service';
 
 
@@ -14,7 +14,7 @@ import { CampaignShellService } from '../../../core/campaign-shell.service';
 
   standalone: true,
 
-  imports: [LockIconComponent],
+  imports: [LockIconComponent, CcSublocationIconComponent],
 
   templateUrl: './sublocation-card.component.html',
 
@@ -92,7 +92,12 @@ export class SublocationCardComponent {
 
   toggleFlip(e: Event): void {
 
-    if (this.campaignMode) { this.cardClick.emit(); return; }
+    if (this.campaignMode) { 
+      this.cardClick.emit(); 
+      // Still allow flipping in campaign mode
+      if (this.flippable) this.flipped = !this.flipped;
+      return; 
+    }
 
     if (this.flippable) this.flipped = !this.flipped;
 

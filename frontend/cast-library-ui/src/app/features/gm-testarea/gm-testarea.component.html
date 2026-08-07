@@ -1,98 +1,196 @@
 <app-journal-title title="GM Test Area"></app-journal-title>
 
 <div class="testarea-container">
-  <div class="tod-preview-shell" [style.--portal-color]="portalColor">
-    <h3 class="tod-preview-title">Campaign Test Area</h3>
-    <app-cc-textbox label="Campaign Input" placeholder="Enter text here..." [context]="'campaign'"></app-cc-textbox>
-    <app-cc-textbox label="Campaign Textarea" type="textarea" placeholder="Enter longer text here..." [rows]="4" [context]="'campaign'"></app-cc-textbox>
-    <div class="divider divider--campaign"></div>
-    <cc-campaign-dropdown label="Campaign Select" [options]="campaignOptions" [(ngModel)]="selectedCampaign"></cc-campaign-dropdown>
-    <cc-campaign-dropdown label="Disabled Campaign Select" [options]="campaignOptions" [(ngModel)]="disabledCampaign" [disabled]="true"></cc-campaign-dropdown>
-    <div class="divider divider--campaign"></div>
-    <cc-lang-picker label="Languages (Campaign)" [context]="'campaign'" [(ngModel)]="campaignLanguages"></cc-lang-picker>
-    <div class="divider divider--campaign"></div>
-    <cc-portrait-input label="Portrait (Campaign)" [context]="'campaign'" [(ngModel)]="campaignPortrait"></cc-portrait-input>
-    <div class="divider divider--campaign"></div>
-    <cc-shop-inventory label="Shop Inventory" [context]="'campaign'" [(ngModel)]="shopItems"></cc-shop-inventory>
-    <div class="divider divider--campaign"></div>
-    <div class="checkbox-row">
-      <label class="checkbox-label">
-        <input type="checkbox" [(ngModel)]="campaignHideColorPickers" />
-        <span>Hide Color Pickers</span>
-      </label>
+  <!-- Campaign Test Area -->
+  <div class="collapsible-section">
+    <div class="collapsible-header" (click)="toggleCampaign()">
+      <h3 class="collapsible-title">Campaign Test Area</h3>
+      <span class="collapse-icon">{{ isCampaignCollapsed ? '▶' : '▼' }}</span>
     </div>
-    <cc-faction-colors label="Faction Colors (Campaign)" [context]="'campaign'" [(evilColor)]="campaignEvilColor" [(goodColor)]="campaignGoodColor" [(perception)]="campaignPerception" [hideColorPickers]="campaignHideColorPickers"></cc-faction-colors>
-  <div class="divider divider--campaign"></div>
-  <cc-color-picker label="Single Color (Campaign)" [context]="'campaign'" [(color)]="campaignSingleColor" [internalLabel]="'Primary'"></cc-color-picker>
-  <div class="divider divider--campaign"></div>
-  <cc-counter-badge label="Counter (Campaign)" [context]="'campaign'" [(count)]="campaignCounter" [min]="0" [max]="99" style="margin-left: 200px;"></cc-counter-badge>
-  <div class="divider divider--campaign"></div>
-  <cc-political-influence label="Political Influence (Campaign)" [context]="'campaign'" [(influence)]="campaignPoliticalInfluence"></cc-political-influence>
-  <div class="divider divider--campaign"></div>
-  <cc-symbol-picker [context]="'campaign'" [(selectedIcon)]="campaignSymbol"></cc-symbol-picker>
-  <div class="divider divider--campaign"></div>
-  <div class="card-grid">
-    <app-portal-card name="Test Campaign" description="A test campaign portal" [portalColor]="portalColor"></app-portal-card>
-    <app-currency-card [amount]="150" currency="gp" note="Party funds" [portalColor]="portalColor"></app-currency-card>
-    <app-whisper-card content="This is a secret whisper message" recipient="Party" [portalColor]="portalColor"></app-whisper-card>
-    <app-location-card [location]="testLocation"></app-location-card>
-    <app-sublocation-card [sublocation]="testSublocation"></app-sublocation-card>
-    <app-cast-card [cast]="testCast"></app-cast-card>
-    <app-faction-card [faction]="testFaction"></app-faction-card>
-    <app-casting-card-player [member]="testPlayerCard"></app-casting-card-player>
-  </div>
-  <div class="divider divider--campaign"></div>
-  <div class="icon-grid">
-    <cc-cast-icon [width]="32" color="white"></cc-cast-icon>
-    <cc-faction-icon [width]="32" color="white"></cc-faction-icon>
-    <cc-location-icon [width]="32" color="white"></cc-location-icon>
-    <cc-sublocation-icon [width]="32" color="white"></cc-sublocation-icon>
-    <cc-player-icon [width]="32" color="white"></cc-player-icon>
-    <cc-campaign-icon [width]="32" color="white"></cc-campaign-icon>
-    <cc-handout-icon [width]="32" color="white"></cc-handout-icon>
-  </div>
+    <div class="collapsible-content" [class.collapsed]="isCampaignCollapsed">
+      <div class="tod-preview-shell" [style.--portal-color]="portalColor">
+        <app-cc-textbox label="Campaign Input" placeholder="Enter text here..." [context]="'campaign'"></app-cc-textbox>
+        <app-cc-textbox label="Campaign Textarea" type="textarea" placeholder="Enter longer text here..." [rows]="4" [context]="'campaign'"></app-cc-textbox>
+        <div class="divider divider--campaign"></div>
+        <div class="campaign-dropdown-wrapper">
+          <button class="random-button" (click)="randomizeCampaign()" type="button">🎲 Random</button>
+          <cc-campaign-dropdown label="Campaign Select" [options]="campaignOptions" [(ngModel)]="selectedCampaign"></cc-campaign-dropdown>
+        </div>
+        <cc-campaign-dropdown label="Disabled Campaign Select" [options]="campaignOptions" [(ngModel)]="disabledCampaign" [disabled]="true"></cc-campaign-dropdown>
+        <div class="divider divider--campaign"></div>
+        <cc-lang-picker label="Languages (Campaign)" [context]="'campaign'" [(ngModel)]="campaignLanguages"></cc-lang-picker>
+        <div class="divider divider--campaign"></div>
+        <cc-portrait-input label="Portrait (Campaign)" [context]="'campaign'" [(ngModel)]="campaignPortrait"></cc-portrait-input>
+        <div class="divider divider--campaign"></div>
+        <cc-shop-inventory label="Shop Inventory" [context]="'campaign'" [(ngModel)]="shopItems"></cc-shop-inventory>
+        <div class="divider divider--campaign"></div>
+        <div class="checkbox-row">
+          <label class="checkbox-label">
+            <input type="checkbox" [(ngModel)]="campaignHideColorPickers" />
+            <span>Hide Color Pickers</span>
+          </label>
+        </div>
+        <cc-faction-colors label="Faction Colors (Campaign)" [context]="'campaign'" [(evilColor)]="campaignEvilColor" [(goodColor)]="campaignGoodColor" [(perception)]="campaignPerception" [hideColorPickers]="campaignHideColorPickers"></cc-faction-colors>
+      <div class="divider divider--campaign"></div>
+      <cc-color-picker label="Single Color (Campaign)" [context]="'campaign'" [(color)]="campaignSingleColor" [internalLabel]="'Primary'"></cc-color-picker>
+      <div class="divider divider--campaign"></div>
+      <cc-counter-badge label="Counter (Campaign)" [context]="'campaign'" [(count)]="campaignCounter" [min]="0" [max]="99" style="margin-left: 200px;"></cc-counter-badge>
+      <div class="divider divider--campaign"></div>
+      <cc-political-influence label="Political Influence (Campaign)" [context]="'campaign'" [(influence)]="campaignPoliticalInfluence"></cc-political-influence>
+      <div class="divider divider--campaign"></div>
+      <cc-symbol-picker [context]="'campaign'" [(selectedIcon)]="campaignSymbol"></cc-symbol-picker>
+      <div class="divider divider--campaign"></div>
+      <div class="card-grid">
+        <app-portal-card name="Test Campaign" description="A test campaign portal" [portalColor]="portalColor"></app-portal-card>
+        <app-currency-card [amount]="150" currency="gp" note="Party funds" [portalColor]="portalColor"></app-currency-card>
+        <app-whisper-card content="This is a secret whisper message" recipient="Party" [portalColor]="portalColor"></app-whisper-card>
+        <app-location-card [location]="testLocation"></app-location-card>
+        <app-sublocation-card [sublocation]="testSublocation"></app-sublocation-card>
+        <app-cast-card [cast]="testCast"></app-cast-card>
+        <app-faction-card [faction]="testFaction"></app-faction-card>
+        <app-casting-card-player [member]="testPlayerCard"></app-casting-card-player>
+      </div>
+      <div class="divider divider--campaign"></div>
+      <div class="simple-card-section">
+        <app-simple-location-card [location]="simpleTestLocation"></app-simple-location-card>
+        <app-simple-sublocation-card [sublocation]="simpleTestSublocation"></app-simple-sublocation-card>
+        <app-simple-cast-card [cast]="simpleTestCast"></app-simple-cast-card>
+      </div>
+      <div class="divider divider--campaign"></div>
+      <div class="icon-grid">
+        <cc-cast-icon [width]="32" color="white"></cc-cast-icon>
+        <cc-faction-icon [width]="32" color="white"></cc-faction-icon>
+        <cc-location-icon [width]="32" color="white"></cc-location-icon>
+        <cc-sublocation-icon [width]="32" color="white"></cc-sublocation-icon>
+        <cc-player-icon [width]="32" color="white"></cc-player-icon>
+        <cc-campaign-icon [width]="32" color="white"></cc-campaign-icon>
+        <cc-handout-icon [width]="32" color="white"></cc-handout-icon>
+      </div>
+      </div>
+    </div>
   </div>
   
-  <fieldset class="test-fieldset">
-    <legend>Journal Test Area</legend>
-    <app-cc-textbox label="Journal Input" placeholder="Enter text here..." [context]="'journal'"></app-cc-textbox>
-    <app-cc-textbox label="Journal Textarea" type="textarea" placeholder="Enter longer text here..." [rows]="4" [context]="'journal'"></app-cc-textbox>
-    <div class="divider divider--journal"></div>
-    <div class="journal-dropdown-wrapper">
-      <button class="random-button" (click)="randomizeJournal()" type="button">🎲 Random</button>
-      <cc-journal-dropdown label="Journal Select" [options]="journalOptions" [(ngModel)]="selectedJournal" [randomizeGroupId]="journalRandomizeGroupId"></cc-journal-dropdown>
+  <!-- Journal Test Area -->
+  <div class="collapsible-section">
+    <div class="collapsible-header" (click)="toggleJournal()">
+      <h3 class="collapsible-title">Journal Test Area</h3>
+      <span class="collapse-icon">{{ isJournalCollapsed ? '▶' : '▼' }}</span>
     </div>
-    <div class="divider divider--journal"></div>
-    <cc-lang-picker label="Languages (Journal)" [context]="'journal'" [(ngModel)]="journalLanguages"></cc-lang-picker>
-    <div class="divider divider--journal"></div>
-    <cc-portrait-input label="Portrait (Journal)" [context]="'journal'" [(ngModel)]="journalPortrait"></cc-portrait-input>
-    <div class="divider divider--journal"></div>
-    <cc-shop-inventory label="Shop Inventory (Journal)" [context]="'journal'" [(ngModel)]="shopItemsJournal"></cc-shop-inventory>
-    <div class="divider divider--journal"></div>
-    <div class="checkbox-row">
-      <label class="checkbox-label">
-        <input type="checkbox" [(ngModel)]="journalHideColorPickers" />
-        <span>Hide Color Pickers</span>
-      </label>
+    <div class="collapsible-content" [class.collapsed]="isJournalCollapsed">
+      <fieldset class="test-fieldset">
+        <app-cc-textbox label="Journal Input" placeholder="Enter text here..." [context]="'journal'"></app-cc-textbox>
+        <app-cc-textbox label="Journal Textarea" type="textarea" placeholder="Enter longer text here..." [rows]="4" [context]="'journal'"></app-cc-textbox>
+        <div class="divider divider--journal"></div>
+        <div class="journal-dropdown-wrapper">
+          <button class="random-button" (click)="randomizeJournal()" type="button">🎲 Random</button>
+          <cc-journal-dropdown label="Journal Select" [options]="journalOptions" [(ngModel)]="selectedJournal" [randomizeGroupId]="journalRandomizeGroupId"></cc-journal-dropdown>
+        </div>
+        <div class="divider divider--journal"></div>
+        <cc-lang-picker label="Languages (Journal)" [context]="'journal'" [(ngModel)]="journalLanguages"></cc-lang-picker>
+        <div class="divider divider--journal"></div>
+        <cc-portrait-input label="Portrait (Journal)" [context]="'journal'" [(ngModel)]="journalPortrait"></cc-portrait-input>
+        <div class="divider divider--journal"></div>
+        <cc-shop-inventory label="Shop Inventory (Journal)" [context]="'journal'" [(ngModel)]="shopItemsJournal"></cc-shop-inventory>
+        <div class="divider divider--journal"></div>
+        <div class="checkbox-row">
+          <label class="checkbox-label">
+            <input type="checkbox" [(ngModel)]="journalHideColorPickers" />
+            <span>Hide Color Pickers</span>
+          </label>
+        </div>
+        <cc-faction-colors label="Faction Colors (Journal)" [context]="'journal'" [(evilColor)]="journalEvilColor" [(goodColor)]="journalGoodColor" [(perception)]="journalPerception" [hideColorPickers]="journalHideColorPickers"></cc-faction-colors>
+        <div class="divider divider--journal"></div>
+        <cc-color-picker label="Single Color (Journal)" [context]="'journal'" [(color)]="journalSingleColor" [internalLabel]="'Accent'"></cc-color-picker>
+        <div class="divider divider--journal"></div>
+        <cc-counter-badge label="Counter (Journal)" [context]="'journal'" [(count)]="journalCounter" [min]="0" [max]="99"></cc-counter-badge>
+        <div class="divider divider--journal"></div>
+        <cc-political-influence label="Political Influence (Journal)" [context]="'journal'" [(influence)]="journalPoliticalInfluence"></cc-political-influence>
+        <div class="divider divider--journal"></div>
+        <cc-symbol-picker [context]="'journal'" [(selectedIcon)]="journalSymbol"></cc-symbol-picker>
+        <div class="divider divider--journal"></div>
+        <div class="icon-grid">
+          <cc-cast-icon [width]="32" color="black"></cc-cast-icon>
+          <cc-faction-icon [width]="32" color="black"></cc-faction-icon>
+          <cc-location-icon [width]="32" color="black"></cc-location-icon>
+          <cc-sublocation-icon [width]="32" color="black"></cc-sublocation-icon>
+          <cc-player-icon [width]="32" color="black"></cc-player-icon>
+          <cc-campaign-icon [width]="32" color="black"></cc-campaign-icon>
+          <cc-handout-icon [width]="32" color="black"></cc-handout-icon>
+        </div>
+      </fieldset>
     </div>
-    <cc-faction-colors label="Faction Colors (Journal)" [context]="'journal'" [(evilColor)]="journalEvilColor" [(goodColor)]="journalGoodColor" [(perception)]="journalPerception" [hideColorPickers]="journalHideColorPickers"></cc-faction-colors>
-    <div class="divider divider--journal"></div>
-    <cc-color-picker label="Single Color (Journal)" [context]="'journal'" [(color)]="journalSingleColor" [internalLabel]="'Accent'"></cc-color-picker>
-    <div class="divider divider--journal"></div>
-    <cc-counter-badge label="Counter (Journal)" [context]="'journal'" [(count)]="journalCounter" [min]="0" [max]="99"></cc-counter-badge>
-    <div class="divider divider--journal"></div>
-    <cc-political-influence label="Political Influence (Journal)" [context]="'journal'" [(influence)]="journalPoliticalInfluence"></cc-political-influence>
-    <div class="divider divider--journal"></div>
-    <cc-symbol-picker [context]="'journal'" [(selectedIcon)]="journalSymbol"></cc-symbol-picker>
-    <div class="divider divider--journal"></div>
-    <div class="icon-grid">
-      <cc-cast-icon [width]="32" color="black"></cc-cast-icon>
-      <cc-faction-icon [width]="32" color="black"></cc-faction-icon>
-      <cc-location-icon [width]="32" color="black"></cc-location-icon>
-      <cc-sublocation-icon [width]="32" color="black"></cc-sublocation-icon>
-      <cc-player-icon [width]="32" color="black"></cc-player-icon>
-      <cc-campaign-icon [width]="32" color="black"></cc-campaign-icon>
-      <cc-handout-icon [width]="32" color="black"></cc-handout-icon>
+  </div>
+
+  <!-- SignalR Test Section -->
+  <div class="signalr-test-section">
+    <div class="signalr-test-header">
+      <h3>SignalR Events Test</h3>
+      <div class="signalr-test-buttons">
+        <button
+          class="signalr-test-button signalr-test-button--load"
+          (click)="loadSignalrEvents()"
+          [disabled]="isLoadingSignalrEvents">
+          {{ isLoadingSignalrEvents ? 'Loading...' : '📡 Load All SignalR Events' }}
+        </button>
+        <button
+          class="signalr-test-button signalr-test-button--clear"
+          (click)="clearSignalrEvents()"
+          [disabled]="signalrEvents.length === 0">
+          🗑️ Clear
+        </button>
+      </div>
     </div>
-  </fieldset>
+
+    <!-- Debug info -->
+    <div class="signalr-debug">
+      <span>Events count: {{ signalrEvents.length }}</span>
+      <span>Loading: {{ isLoadingSignalrEvents }}</span>
+      <span>Error: {{ signalrError || 'None' }}</span>
+    </div>
+
+    <div *ngIf="signalrError" class="signalr-error">
+      ❌ {{ signalrError }}
+    </div>
+
+    <!-- Events table -->
+    <div *ngIf="signalrEvents.length > 0" class="signalr-events-grid">
+      <div class="signalr-events-info">
+        <span class="signalr-events-count">📊 {{ signalrEvents.length }} events loaded</span>
+      </div>
+
+      <div *ngFor="let eventType of getUniqueEventTypes()" class="event-group">
+        <div class="group-header-row" (click)="toggleGroup(eventType)">
+          <span class="group-title">{{ eventType }}</span>
+          <span class="collapse-icon">{{ isGroupCollapsed(eventType) ? '▶' : '▼' }}</span>
+        </div>
+
+        <div class="group-events" [class.collapsed]="isGroupCollapsed(eventType)">
+          <table class="signalr-events-table group-table">
+            <thead>
+              <tr>
+                <th width="50">#</th>
+                <th>Event Details</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let event of getEventsByType(eventType); let i = index">
+                <td class="signalr-event-index">{{ event.index }}</td>
+                <td class="signalr-event-details">
+                  <div class="event-name-row">
+                    <span class="event-badge">{{ event.eventName }}</span>
+                  </div>
+                  <pre class="payload-json">{{ event.mockPayload | json }}</pre>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <div *ngIf="signalrEvents.length === 0 && !isLoadingSignalrEvents" class="signalr-empty">
+      No events loaded. Click the button above to load SignalR events.
+    </div>
+</div>
+
 </div>

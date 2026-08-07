@@ -1,0 +1,39 @@
+<div class="simple-cast-card">
+  <div class="simple-card-frame">
+    <div class="simple-card-inner">
+      <!-- banner -->
+      <div class="simple-card-banner">
+        <div class="simple-card-name">{{ cast().name }}</div>
+        <div class="simple-card-subtitle">{{ cast().role }} · {{ cast().race }}</div>
+      </div>
+
+      <!-- portrait -->
+      <div class="simple-card-portrait">
+        @if (cast().imageUrl) {
+          <img [src]="cast().imageUrl" [alt]="'Portrait of ' + cast().name + ', a ' + cast().race + ' ' + cast().role" class="simple-card-portrait-img" (error)="$any($event.target).style.display='none'" (load)="$any($event.target).style.display=''" />
+        } @else {
+          <div class="simple-card-portrait-placeholder">
+            <cc-cast-icon [width]="22" color="black"></cc-cast-icon>
+          </div>
+        }
+      </div>
+
+      <!-- bottom strip -->
+      <div class="simple-card-strip">
+        <div class="simple-strip-left">
+          <div class="simple-pip-row">
+            <div class="simple-pip"></div>
+            <div class="simple-pip"></div>
+            <div class="simple-pip"></div>
+          </div>
+        </div>
+        <span class="simple-strip-label">Cast</span>
+        <div class="simple-pip-row">
+          <div class="simple-pip"></div>
+          <div class="simple-pip"></div>
+          <div class="simple-pip"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

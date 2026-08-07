@@ -169,42 +169,9 @@
               <img [src]="imageUrl || faction().symbolPath" [alt]="'Emblem of ' + faction().name" class="fac-portrait-img" (error)="$any($event.target).style.display='none'" />
             } @else {
               <div class="fac-portrait-inner">
-                <!-- Good emblem (small) -->
-                @if (isGood) {
-                  <svg width="60" height="60" viewBox="0 0 80 80">
-                    <circle cx="40" cy="40" r="35" fill="none" stroke="currentColor" stroke-width=".8" opacity=".25"/>
-                    <path d="M40 8L58 20V44Q58 60 40 70Q22 60 22 44V20Z" fill="none" stroke="currentColor" stroke-width="1.4" opacity=".65"/>
-                    <line x1="40" y1="22" x2="40" y2="58" stroke="currentColor" stroke-width="1.2" opacity=".55"/>
-                    <line x1="27" y1="40" x2="53" y2="40" stroke="currentColor" stroke-width="1.2" opacity=".55"/>
-                    <circle cx="40" cy="8"  r="3" fill="currentColor" opacity=".6"/>
-                    <circle cx="58" cy="20" r="2" fill="currentColor" opacity=".4"/>
-                    <circle cx="22" cy="20" r="2" fill="currentColor" opacity=".4"/>
-                  </svg>
-                }
-                <!-- Neutral emblem (small) -->
-                @if (isNeutral) {
-                  <svg width="60" height="60" viewBox="0 0 80 80">
-                    <circle cx="40" cy="40" r="35" fill="none" stroke="currentColor" stroke-width=".7" opacity=".18" stroke-dasharray="2 5"/>
-                    <path d="M 14,40 Q 20,20 40,18 Q 60,20 66,40 Q 60,58 40,60 Q 20,58 14,40 Z"
-                          fill="none" stroke="currentColor" stroke-width="1.2" opacity=".45"/>
-                    <ellipse cx="40" cy="40" rx="11" ry="9" fill="none" stroke="currentColor" stroke-width="1.1" opacity=".6"/>
-                    <ellipse cx="40" cy="40" rx="5"  ry="5" fill="currentColor" opacity=".22"/>
-                    <ellipse cx="40" cy="40" rx="2.5" ry="2.5" fill="currentColor" opacity=".45"/>
-                    <ellipse cx="37" cy="37.5" rx="1.5" ry="1" fill="white" opacity=".35"/>
-                  </svg>
-                }
-                <!-- Evil emblem (small) -->
-                @if (isEvil) {
-                  <svg width="60" height="60" viewBox="0 0 80 80">
-                    <circle cx="40" cy="40" r="35" fill="none" stroke="currentColor" stroke-width=".8" opacity=".22" stroke-dasharray="3 4"/>
-                    <polygon points="40,10 66,56 14,56" fill="none" stroke="currentColor" stroke-width="1.4" opacity=".65"/>
-                    <ellipse cx="40" cy="46" rx="11" ry="7" fill="none" stroke="currentColor" stroke-width="1" opacity=".55"/>
-                    <circle  cx="40" cy="46" r="3.5" fill="currentColor" opacity=".4"/>
-                    <circle  cx="40" cy="46" r="1.5" fill="currentColor" opacity=".7"/>
-                    <ellipse cx="38" cy="44.5" rx="1.2" ry=".8" fill="white" opacity=".3"/>
-                    <line x1="40" y1="10" x2="40" y2="38" stroke="currentColor" stroke-width=".8" opacity=".3"/>
-                  </svg>
-                }
+                <div class="fac-portrait-icon-wrapper">
+                  <cc-faction-icon [width]="60" color="black"></cc-faction-icon>
+                </div>
                 <div class="fac-portrait-label">{{ portraitHint }}</div>
               </div>
             }

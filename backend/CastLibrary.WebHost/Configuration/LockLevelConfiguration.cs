@@ -45,6 +45,16 @@ public static class LockLevelConfiguration
                 "/api/auth/forgot-password",
                 "/api/auth/reset-password",
                 "/api/auth/verify-email",
+
+                // V2 Campaign endpoints (read access for GM testarea)
+                "/api/campaign/*/locationinstances",
+                "/api/campaign/*/sublocationinstances",
+                "/api/campaign/*/castinstances",
+                "/api/campaign/*/factions",
+                "/api/campaign/*/players",
+                "/api/campaign/*/settings",
+                "/api/campaign/*/daycycle",
+                "/api/campaign/*/secrets"
             }
         },
         {
@@ -69,6 +79,16 @@ public static class LockLevelConfiguration
                 "/api/auth/forgot-password",
                 "/api/auth/reset-password",
                 "/api/auth/verify-email",
+
+                // V2 Campaign endpoints (read access for GM testarea)
+                "/api/campaign/*/locationinstances",
+                "/api/campaign/*/sublocationinstances",
+                "/api/campaign/*/castinstances",
+                "/api/campaign/*/factions",
+                "/api/campaign/*/players",
+                "/api/campaign/*/settings",
+                "/api/campaign/*/daycycle",
+                "/api/campaign/*/secrets"
             }
         }
     };

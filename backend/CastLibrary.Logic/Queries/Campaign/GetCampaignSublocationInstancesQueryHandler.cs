@@ -39,6 +39,7 @@ public class GetCampaignSublocationInstancesQueryHandler(
         // Add image URLs to match the existing behavior
         filenameService.AddImageUrls(campaign.DmUserId, campaignId, [], sublocationBag, [], []);
         
-        return sublocationBag.ToList();
+        // Sort sublocations alphabetically by name
+        return sublocationBag.OrderBy(s => s.Name).ToList();
     }
 }

@@ -676,7 +676,7 @@ public class CampaignsController(
             return NotFound();
         }
 
-        await hubContext.Clients.Group(id.ToString()).SendAsync("SecretRevealed", new SecretRevealedEvent
+        await hubContext.Clients.Group(id.ToString()).SendAsync("PlayerSecretRevealed", new SecretRevealedEvent
         {
             SecretId           = secretId,
             CampaignId         = id,

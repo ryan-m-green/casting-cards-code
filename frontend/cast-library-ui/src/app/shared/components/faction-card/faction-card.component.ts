@@ -2,6 +2,7 @@ import { Component, inject, input, Output, EventEmitter, computed } from '@angul
 import { CommonModule } from '@angular/common';
 import { Faction, CampaignFactionInstance } from '../../models/faction.model';
 import { LockIconComponent } from '../lock-icon/lock-icon.component';
+import { CcFactionIconComponent } from '../v2/cc-faction-icon/cc-faction-icon.component';
 import { CampaignShellService } from '../../../core/campaign-shell.service';
 
 export type FactionAlignment = 'good' | 'neutral' | 'evil';
@@ -9,7 +10,7 @@ export type FactionAlignment = 'good' | 'neutral' | 'evil';
 @Component({
   selector: 'app-faction-card',
   standalone: true,
-  imports: [CommonModule, LockIconComponent],
+  imports: [CommonModule, LockIconComponent, CcFactionIconComponent],
   templateUrl: './faction-card.component.html',
   styleUrl: './faction-card.component.scss'
 })

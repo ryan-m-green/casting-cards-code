@@ -245,6 +245,11 @@ namespace CastLibrary.WebHost.IoC
             services.AddScoped<IGetCampaignInviteCodeQueryHandler, GetCampaignInviteCodeQueryHandler>();
             services.AddScoped<IGetPlayerInventoryQueryHandler, GetPlayerInventoryQueryHandler>();
 
+            // V2 Campaign query handlers
+            services.AddScoped<IGetCampaignLocationInstancesQueryHandler, GetCampaignLocationInstancesQueryHandler>();
+            services.AddScoped<IGetCampaignSublocationInstancesQueryHandler, GetCampaignSublocationInstancesQueryHandler>();
+            services.AddScoped<IGetCampaignCastInstancesQueryHandler, GetCampaignCastInstancesQueryHandler>();
+
             services.AddScoped<IGetCampaignSoundtracksQueryHandler, GetCampaignSoundtracksQueryHandler>();
 
             services.AddScoped<IGetCastRelationshipsQueryHandler, GetCastRelationshipsQueryHandler>();

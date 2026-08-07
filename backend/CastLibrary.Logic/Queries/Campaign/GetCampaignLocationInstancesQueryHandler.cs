@@ -39,6 +39,7 @@ public class GetCampaignLocationInstancesQueryHandler(
         // Add image URLs to match the existing behavior
         filenameService.AddImageUrls(campaign.DmUserId, campaignId, locationBag, [], [], []);
         
-        return locationBag.ToList();
+        // Sort locations alphabetically by name
+        return locationBag.OrderBy(l => l.Name).ToList();
     }
 }

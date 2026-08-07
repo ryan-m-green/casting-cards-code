@@ -1,12 +1,13 @@
 import { Component, Input, Output, EventEmitter, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { PlayerCardWithDetails } from '../../models/player-card.model';
+import { CcPlayerIconComponent } from '../v2/cc-player-icon/cc-player-icon.component';
 import { CampaignShellService } from '../../../core/campaign-shell.service';
 
 @Component({
   selector: 'app-casting-card-player',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, CcPlayerIconComponent],
   templateUrl: './casting-card-player.component.html',
   styleUrl: './casting-card-player.component.scss',
 })

@@ -1,12 +1,13 @@
 import { Component, Input, Output, EventEmitter, inject } from '@angular/core';
 import { Location } from '../../models/location.model';
 import { LockIconComponent } from '../lock-icon/lock-icon.component';
+import { CcLocationIconComponent } from '../v2/cc-location-icon/cc-location-icon.component';
 import { CampaignShellService } from '../../../core/campaign-shell.service';
 
 @Component({
   selector: 'app-location-card',
   standalone: true,
-  imports: [LockIconComponent],
+  imports: [LockIconComponent, CcLocationIconComponent],
   templateUrl: './location-card.component.html',
   styleUrl: './location-card.component.scss'
 })
@@ -59,7 +60,12 @@ export class LocationCardComponent {
   }
 
   toggleFlip(e: Event): void {
-    if (this.campaignMode) { this.cardClick.emit(); return; }
+    if (this.campaignMode) { 
+      this.cardClick.emit(); 
+      // Still allow flipping in campaign mode
+      if (this.flippable) this.flipped = !this.flipped;
+      return; 
+    }
     if (this.flippable) this.flipped = !this.flipped;
   }
 

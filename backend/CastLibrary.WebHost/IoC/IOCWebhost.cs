@@ -3,6 +3,7 @@ using CastLibrary.WebHost.Filters;
 using CastLibrary.WebHost.Infrastructure;
 using CastLibrary.WebHost.Mappers;
 using CastLibrary.WebHost.MetadataHelpers;
+using CastLibrary.WebHost.Services;
 
 namespace CastLibrary.WebHost.IoC
 {
@@ -33,6 +34,8 @@ namespace CastLibrary.WebHost.IoC
             // instance within a single request so every log entry carries the
             // same trace_id.
             services.AddScoped<ICorrelationContext, CorrelationContext>();
+
+            services.AddScoped<ISignalRNotificationService, SignalRNotificationService>();
 
             return services;
         }

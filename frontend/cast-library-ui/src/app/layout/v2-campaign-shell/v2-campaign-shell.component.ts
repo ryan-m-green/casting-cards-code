@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy, signal, computed, inject, HostBinding } from '@angular/core';
 import { Subscription } from 'rxjs';
-import { ActivatedRoute, Router, RouterOutlet } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
 import { environment } from '../../../environments/environment';
@@ -10,11 +10,12 @@ import { CampaignHubService } from '../../core/hub/campaign-hub.service';
 import { PortalAnimationService } from '../../core/portal-animation.service';
 import { V2CampaignShellService } from '../../core/v2-campaign-shell.service';
 import { V2CampaignPlaceholderComponent } from '../../features/campaign/v2-campaign-placeholder/v2-campaign-placeholder.component';
+import { CcCardNavigationComponent } from '../../shared/components/cc-card-navigation/cc-card-navigation.component';
 
 @Component({
   selector: 'app-v2-campaign-shell',
   standalone: true,
-  imports: [CommonModule, RouterOutlet, V2CampaignPlaceholderComponent],
+  imports: [CommonModule, V2CampaignPlaceholderComponent, CcCardNavigationComponent],
   templateUrl: './v2-campaign-shell.component.html',
   styleUrl: './v2-campaign-shell.component.scss',
 })
@@ -32,6 +33,11 @@ export class V2CampaignShellComponent implements OnInit, OnDestroy {
   
   campaignId = signal('');
   campaign = signal<CampaignDetail | null>(null);
+  
+  // Getter for campaign ID to pass to child component
+  get campaignIdValue(): string {
+    return this.campaignId();
+  }
   
   // Viewport positioning state
   viewportPosition = signal({ x: -100, y: -100 }); // Current viewport offset (start in middle middle)

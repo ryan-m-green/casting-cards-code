@@ -293,7 +293,7 @@ export class CampaignHubService {
       // Ping received
     });
 
-    this.connection.on('SecretRevealed', (event: SecretRevealedEvent) => {
+    this.connection.on('PlayerSecretRevealed', (event: SecretRevealedEvent) => {
       this.secretRevealedSubject.next(event);
     });
 
@@ -467,7 +467,7 @@ export class CampaignHubService {
   }
 
   async revealSecret(campaignId: string, secretId: string): Promise<void> {
-    await this.connection?.invoke('RevealSecret', campaignId, secretId);
+    await this.connection?.invoke('PlayerSecretRevealed', campaignId, secretId);
   }
 
   async disconnect(): Promise<void> {

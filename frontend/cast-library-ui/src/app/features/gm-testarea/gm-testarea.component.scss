@@ -13,23 +13,136 @@
   padding-bottom: 4rem;
 }
 
+// ── Tab Navigation ─────────────────────────────────────────────────────────
+.tab-navigation {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 2rem;
+  border-bottom: 2px solid rgba(0, 0, 0, 0.2);
+  padding-bottom: 0;
+}
+
+.tab-button {
+  padding: 0.75rem 1.5rem;
+  background: transparent;
+  border: none;
+  border-bottom: 3px solid transparent;
+  font-family: var(--font-header, serif);
+  font-size: 16px;
+  font-weight: 600;
+  color: #666;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  margin-bottom: -2px;
+
+  &:hover {
+    color: black;
+    background: rgba(0, 0, 0, 0.05);
+  }
+
+  &.active {
+    color: black;
+    border-bottom-color: black;
+    background: rgba(0, 0, 0, 0.08);
+  }
+}
+
+.tab-content {
+  min-height: 400px;
+}
+
+.tab-pane {
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+// ── Collapsible Sections ───────────────────────────────────────────────────────────
+.collapsible-section {
+  margin-bottom: 1.5rem;
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.95);
+  overflow: hidden;
+}
+
+.collapsible-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem;
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(42, 24, 4, 0.2);
+  border-radius: 8px 8px 0 0;
+  cursor: pointer;
+  transition: background 0.2s, border-color 0.2s;
+
+  &:hover {
+    background: rgba(0, 0, 0, 0.4);
+    border-color: rgba(42, 24, 4, 0.3);
+  }
+
+  .collapsible-title {
+    font-family: var(--font-header, serif);
+    font-size: 1rem;
+    font-weight: 600;
+    color: black;
+    margin: 0;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+  }
+
+  .collapse-icon {
+    font-family: monospace;
+    font-size: 14px;
+    color: black;
+    transition: transform 0.2s ease;
+  }
+}
+
+.collapsible-content {
+  transition: max-height 0.3s ease, opacity 0.3s ease, padding 0.3s ease;
+  max-height: 10000px;
+  opacity: 1;
+  overflow: hidden;
+
+  &.collapsed {
+    max-height: 0;
+    opacity: 0;
+    padding-top: 0;
+    padding-bottom: 0;
+  }
+
+  .tod-preview-shell {
+    margin-top: 0;
+    border-radius: 0 0 8px 8px;
+    border-top: none;
+  }
+
+  .test-fieldset {
+    margin-top: 0;
+    border-top: none;
+    border-radius: 0 0 8px 8px;
+  }
+}
+
 // ── TOD Preview Shell ───────────────────────────────────────────────────────────
 .tod-preview-shell {
   padding: 20px;
   border-radius: 8px;
   background: #000;
   animation: tod-preview-breathe 8.4s ease-in-out infinite;
-  margin-bottom: 2rem;
-}
-
-.tod-preview-title {
-  font-family: 'OpenDyslexic', sans-serif;
-  font-size: 16px;
-  font-weight: 700;
-  color: v.$color-lib-location-1;
-  margin: 0 0 16px 0;
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
+  margin-bottom: 0;
+  height: 3400px;
 }
 
 @keyframes tod-preview-breathe {
@@ -52,8 +165,9 @@
 // ── Fieldset ───────────────────────────────────────────────────────────────────
 .test-fieldset {
   border: 1px solid rgba(42, 24, 4, 0.2);
-  border-radius: 8px;
-  padding: 0 16px;
+  border-top: none;
+  border-radius: 0 0 8px 8px;
+  padding: 0 16px 16px 16px;
   flex-direction: column;
   
   legend {
@@ -94,6 +208,24 @@
   margin-top: 16px;
 }
 
+// ── Campaign Dropdown Wrapper ───────────────────────────────────────────────────
+.campaign-dropdown-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 16px;
+}
+
+// ── Simple Card Section ────────────────────────────────────────────────────────
+.simple-card-section {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
 .random-button {
   padding: 8px 12px;
   background: rgba(42, 24, 4, 0.1);
@@ -122,6 +254,15 @@
 }
 
 .journal-dropdown-wrapper .no-margin {
+  margin-top: 0 !important;
+  margin-bottom: 0 !important;
+}
+
+.campaign-dropdown-wrapper cc-campaign-dropdown {
+  flex: 1;
+}
+
+.campaign-dropdown-wrapper .no-margin {
   margin-top: 0 !important;
   margin-bottom: 0 !important;
 }
@@ -167,4 +308,355 @@
   margin-top: 16px;
   flex-wrap: wrap;
   align-items: center;
+}
+
+// ── SignalR Test Section ─────────────────────────────────────────────────────
+.signalr-test-section {
+  margin-top: 2rem;
+  padding: 1.5rem;
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.95);
+}
+
+.signalr-debug {
+  padding: 0.5rem 1rem;
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 4px;
+  margin-bottom: 1rem;
+  font-family: 'OpenDyslexic', sans-serif;
+  font-size: 14px;
+  color: black;
+  display: flex;
+  gap: 1rem;
+
+  span {
+    display: inline-block;
+  }
+}
+
+.signalr-test-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+  flex-wrap: wrap;
+  gap: 1rem;
+
+  h3 {
+    font-family: var(--font-header, serif);
+    font-size: 1rem;
+    font-weight: 600;
+    color: black;
+    margin: 0;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+  }
+}
+
+.signalr-test-buttons {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.signalr-test-button {
+  padding: 0.5rem 1rem;
+  border: 1px solid rgba(42, 24, 4, 0.3);
+  border-radius: 4px;
+  font-family: 'OpenDyslexic', sans-serif;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.2s;
+  background: rgba(42, 24, 4, 0.1);
+  color: black;
+
+  &:hover:not(:disabled) {
+    background: rgba(42, 24, 4, 0.2);
+    border-color: rgba(42, 24, 4, 0.5);
+    transform: translateY(-1px);
+  }
+
+  &:active:not(:disabled) {
+    transform: translateY(0);
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  &--load {
+    background: rgba(110, 40, 208, 0.1);
+    border-color: rgba(110, 40, 208, 0.3);
+    color: black;
+
+    &:hover:not(:disabled) {
+      background: rgba(110, 40, 208, 0.2);
+      border-color: rgba(110, 40, 208, 0.5);
+    }
+  }
+
+  &--clear {
+    background: rgba(220, 38, 38, 0.1);
+    border-color: rgba(220, 38, 38, 0.3);
+    color: black;
+
+    &:hover:not(:disabled) {
+      background: rgba(220, 38, 38, 0.2);
+      border-color: rgba(220, 38, 38, 0.5);
+    }
+  }
+}
+
+.signalr-error {
+  padding: 1rem;
+  background: rgba(220, 38, 38, 0.1);
+  border: 1px solid rgba(220, 38, 38, 0.3);
+  border-radius: 4px;
+  color: #fca5a5;
+  font-family: 'OpenDyslexic', sans-serif;
+  font-size: 14px;
+  margin-bottom: 1rem;
+}
+
+.signalr-empty {
+  padding: 1rem;
+  background: rgba(0, 0, 0, 0.05);
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  border-radius: 4px;
+  color: black;
+  font-family: 'OpenDyslexic', sans-serif;
+  font-size: 14px;
+  text-align: center;
+}
+
+.signalr-events-grid {
+  margin-top: 1rem;
+}
+
+.event-group {
+  margin-bottom: 1.5rem;
+}
+
+.group-header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem 1rem;
+  background: rgba(0, 0, 0, 0.08);
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background 0.2s, border-color 0.2s;
+
+  &:hover {
+    background: rgba(0, 0, 0, 0.12);
+    border-color: rgba(0, 0, 0, 0.3);
+  }
+
+  .group-title {
+    font-family: var(--font-header, serif);
+    font-size: 13px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: black;
+  }
+
+  .collapse-icon {
+    font-family: monospace;
+    font-size: 14px;
+    color: black;
+    transition: transform 0.2s ease;
+  }
+}
+
+.group-events {
+  transition: max-height 0.3s ease, opacity 0.3s ease;
+  max-height: 10000px;
+  opacity: 1;
+  overflow: hidden;
+
+  &.collapsed {
+    max-height: 0;
+    opacity: 0;
+  }
+}
+
+.group-table {
+  margin-top: 0;
+  border-radius: 0 0 4px 4px;
+}
+
+.signalr-events-info {
+  display: flex;
+  gap: 1.5rem;
+  margin-bottom: 1rem;
+  padding: 0.75rem 1rem;
+  background: rgba(0, 0, 0, 0.05);
+  border-radius: 4px;
+  font-family: 'OpenDyslexic', sans-serif;
+  font-size: 14px;
+  color: black;
+
+  span {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+}
+
+.signalr-events-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+  background: white;
+  border-radius: 4px;
+  overflow: hidden;
+  border: 1px solid rgba(0, 0, 0, 0.3);
+
+  thead {
+    background: rgba(0, 0, 0, 0.05);
+
+    tr {
+      th {
+        padding: 0.75rem 1rem;
+        text-align: left;
+        font-family: var(--font-header, serif);
+        font-weight: 600;
+        font-size: 12px;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        color: black;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.2);
+      }
+    }
+  }
+
+  tbody {
+    tr {
+      border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+
+      &:last-child {
+        border-bottom: none;
+      }
+
+      &:hover {
+        background: rgba(0, 0, 0, 0.05);
+      }
+    }
+
+    td {
+      padding: 0.75rem 1rem;
+      vertical-align: top;
+      color: black;
+      border-right: 1px solid rgba(0, 0, 0, 0.1);
+      
+      &:last-child {
+        border-right: none;
+      }
+    }
+  }
+
+  .group-header {
+    padding: 0.75rem 1rem;
+    background: rgba(0, 0, 0, 0.1);
+    font-family: var(--font-header, serif);
+    font-size: 13px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: black;
+    border-bottom: 2px solid rgba(0, 0, 0, 0.3);
+  }
+}
+
+.signalr-event-index {
+  font-family: 'OpenDyslexic', sans-serif;
+  font-weight: 600;
+  color: black;
+  text-align: center;
+}
+
+.signalr-event-name {
+  .event-badge {
+    display: inline-block;
+    padding: 0.25rem 0.5rem;
+    background: rgba(0, 0, 0, 0.1);
+    border: 1px solid rgba(0, 0, 0, 0.2);
+    border-radius: 3px;
+    font-family: 'OpenDyslexic', sans-serif;
+    font-size: 12px;
+    color: black;
+    font-weight: 600;
+    word-break: break-word;
+  }
+}
+
+.signalr-event-details {
+  padding: 0.75rem 1rem;
+  vertical-align: top;
+  color: black;
+
+  .event-name-row {
+    margin-bottom: 0.5rem;
+  }
+
+  .payload-json {
+    margin: 0;
+    padding: 0.5rem;
+    background: rgba(0, 0, 0, 0.05);
+    border: 1px solid rgba(0, 0, 0, 0.2);
+    border-radius: 3px;
+    font-family: 'Courier New', monospace;
+    font-size: 11px;
+    color: black;
+    white-space: pre-wrap;
+    word-break: break-all;
+    max-height: 200px;
+    overflow-y: auto;
+    line-height: 1.4;
+  }
+}
+
+// ── Journal Fieldset ───────────────────────────────────────────────────────
+.journal-fieldset {
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  border-radius: 4px;
+  padding: 1.5rem;
+  background: rgba(255, 255, 255, 0.95);
+  min-height: 200px;
+
+  legend {
+    font-family: var(--font-header, serif);
+    font-size: 14px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: black;
+    padding: 0 0.5rem;
+  }
+}
+
+// ── Placeholder Styling ─────────────────────────────────────────────────────
+.shell-placeholder,
+.fieldset-placeholder {
+  padding: 2rem;
+  text-align: center;
+  border: 2px dashed rgba(0, 0, 0, 0.3);
+  border-radius: 8px;
+  background: rgba(0, 0, 0, 0.05);
+  min-height: 150px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  .placeholder-text {
+    font-family: 'OpenDyslexic', sans-serif;
+    font-size: 18px;
+    color: black;
+    font-weight: 600;
+    font-style: italic;
+    margin: 0;
+  }
 }

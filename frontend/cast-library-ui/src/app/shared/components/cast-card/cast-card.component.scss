@@ -236,6 +236,7 @@
   justify-content: center;
   width: 100%;
   height: 100%;
+  opacity: 0.3;
 }
 
 .cast-portrait--uploadable {
@@ -327,6 +328,7 @@
   opacity: 0.8;
   display: -webkit-box;
   -webkit-line-clamp: 2;
+  line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
@@ -540,6 +542,7 @@
   text-align: left;
   display: -webkit-box;
   -webkit-line-clamp: 4;
+  line-clamp: 4;
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
@@ -660,6 +663,7 @@
   color: v.$color-ext-641;
   display: -webkit-box;
   -webkit-line-clamp: 4;
+  line-clamp: 4;
   -webkit-box-orient: vertical;
   overflow: hidden;
 }

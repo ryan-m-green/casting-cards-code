@@ -1,12 +1,13 @@
 import { Component, Input, Output, EventEmitter, signal, inject } from '@angular/core';
 import { Cast } from '../../models/cast.model';
 import { LockIconComponent } from '../lock-icon/lock-icon.component';
+import { CcCastIconComponent } from '../v2/cc-cast-icon/cc-cast-icon.component';
 import { CampaignShellService } from '../../../core/campaign-shell.service';
 
 @Component({
   selector: 'app-cast-card',
   standalone: true,
-  imports: [LockIconComponent],
+  imports: [LockIconComponent, CcCastIconComponent],
   templateUrl: './cast-card.component.html',
   styleUrl: './cast-card.component.scss'
 })

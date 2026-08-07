@@ -9,6 +9,7 @@ import { Component, input } from '@angular/core';
 export class CcSublocationIconComponent {
   width = input<number>(24);
   color = input<'black' | 'white'>('black');
+  opacity = input<number>(1);
   private aspectRatio = 1; // 24x24 viewBox, so 1:1 ratio
 
   get height(): number {

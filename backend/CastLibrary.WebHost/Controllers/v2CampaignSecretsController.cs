@@ -5,13 +5,12 @@ using CastLibrary.Logic.Validators;
 using CastLibrary.Shared.Exceptions;
 using CastLibrary.Shared.Requests;
 using CastLibrary.Shared.Responses;
-using CastLibrary.WebHost.Hubs;
 using CastLibrary.WebHost.Mappers;
 using CastLibrary.WebHost.MetadataHelpers;
+using CastLibrary.WebHost.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
-using Microsoft.AspNetCore.SignalR;
 
 namespace CastLibrary.WebHost.Controllers;
 
@@ -29,7 +28,7 @@ public class CampaignSecretsController(
     ICampaignWebMapper mapper,
     IUserRetriever userRetriever,
     ICampaignAccessService campaignAccess,
-    IHubContext<CampaignHub> hubContext) : ControllerBase
+    ISignalRNotificationService notificationService) : ControllerBase
 {
     private Task<bool> CallerCanView(Guid campaignId) =>
         campaignAccess.IsMemberOrOwnerAsync(campaignId, userRetriever.GetUserId(User));
@@ -71,7 +70,7 @@ public class CampaignSecretsController(
         var secret = await addSecretCommand.HandleAsync(new AddCampaignSecretCommand(campaignId, request));
         var response = mapper.ToSecretResponse(secret);
 
-        await hubContext.Clients.Group(campaignId.ToString()).SendAsync("SecretCreated", new
+        await notificationService.BroadcastSecretCreatedAsync(campaignId, new
         {
             secretId = secret.Id,
             campaignId = secret.CampaignId,
@@ -93,7 +92,7 @@ public class CampaignSecretsController(
         var secret = await updateSecretCommand.HandleAsync(new UpdateSecretCommand(campaignId, secretId, request));
         if (secret is null) return NotFound();
 
-        await hubContext.Clients.Group(campaignId.ToString()).SendAsync("SecretUpdated", new
+        await notificationService.BroadcastToCampaignAsync(campaignId, "SecretUpdated", new
         {
             campaignId = campaignId,
             secretId = secretId,
@@ -111,7 +110,7 @@ public class CampaignSecretsController(
         var secret = await revealSecretCommand.HandleAsync(new RevealSecretCommand(secretId, campaignId));
         if (secret is null) return NotFound();
 
-        await hubContext.Clients.Group(campaignId.ToString()).SendAsync("SecretRevealed", new SecretRevealedEvent
+        await notificationService.BroadcastPlayerSecretRevealedAsync(campaignId, new SecretRevealedEvent
         {
             SecretId = secretId,
             CampaignId = campaignId,
@@ -133,7 +132,7 @@ public class CampaignSecretsController(
         var secret = await resealSecretCommand.HandleAsync(new ResealSecretCommand(secretId, campaignId));
         if (secret is null) return NotFound();
 
-        await hubContext.Clients.Group(campaignId.ToString()).SendAsync("SecretResealed", new SecretResealedEvent
+        await notificationService.BroadcastSecretResealedAsync(campaignId, new SecretResealedEvent
         {
             SecretId = secretId,
             CampaignId = campaignId,
@@ -154,7 +153,7 @@ public class CampaignSecretsController(
         var deleted = await deleteSecretCommand.HandleAsync(new DeleteCampaignSecretCommand(secretId, campaignId));
         if (!deleted) return NotFound();
 
-        await hubContext.Clients.Group(campaignId.ToString()).SendAsync("SecretDeleted", new
+        await notificationService.BroadcastSecretDeletedAsync(campaignId, new
         {
             secretId = secretId,
             campaignId = campaignId

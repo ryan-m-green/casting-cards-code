@@ -117,10 +117,7 @@
               <img [src]="member.imageUrl" [alt]="member.name" class="cc-portrait-img" (error)="$any($event.target).style.display='none'" />
             } @else {
               <div class="cc-portrait-inner">
-                <svg width="36" height="50" viewBox="0 0 58 80" opacity=".2">
-                  <ellipse cx="29" cy="17" rx="13" ry="14" fill="#3d2a10"/>
-                  <path d="M8 80Q8 52 29 44Q50 52 50 80" fill="#3d2a10"/>
-                </svg>
+                <cc-player-icon [width]="36" color="black"></cc-player-icon>
                 <div class="cc-portrait-label">{{ initial(member.name) }}</div>
               </div>
             }

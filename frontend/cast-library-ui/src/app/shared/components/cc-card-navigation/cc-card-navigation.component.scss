@@ -1,0 +1,391 @@
+.cc-card-navigation {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 80%; // 80% of screen width in desktop
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  
+  @media (max-width: 1024px) {
+    width: 100%; // Full width on tablet/mobile
+  }
+  
+  &.loading {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  &.error {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #ff6b6b;
+  }
+}
+
+.loading-state,
+.error-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  text-align: center;
+  
+  button {
+    margin-top: 1rem;
+    padding: 0.5rem 1rem;
+    background: #6e28d0;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    
+    &:hover {
+      background: #5a23b0;
+    }
+  }
+}
+
+.spinner {
+  width: 40px;
+  height: 40px;
+  border: 4px solid rgba(110, 40, 208, 0.3);
+  border-top-color: #6e28d0;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* Rolodex Container */
+.rolodex-container {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 0; // Remove gap to let row heights control spacing
+}
+
+/* Rows Wrapper - Contains middle and bottom rows for synchronized scrolling */
+.rows-wrapper {
+  width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+  cursor: grab;
+  user-select: none;
+  scroll-behavior: smooth;
+  
+  &:active {
+    cursor: grabbing;
+  }
+  
+  // Hide scrollbar
+  &::-webkit-scrollbar {
+    display: none;
+  }
+  
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+  
+  // Hide content that overflows the 80% width with fade effect on both sides
+  mask-image: linear-gradient(to right, transparent 0%, black 5%, black 95%, transparent 100%);
+  -webkit-mask-image: linear-gradient(to right, transparent 0%, black 5%, black 95%, transparent 100%);
+  
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+/* Row Styles */
+.row {
+  width: 100%;
+  position: relative;
+}
+
+/* Top Row - Previously Viewed Cards */
+.top-row {
+  flex: 0 0 auto;
+  height: 160px; // Fixed height
+  background: rgba(0, 0, 0, 0.8); // Void-portal background
+  padding: 0 2rem; // Only left and right padding
+  opacity: 0.8;
+
+  .cards-row {
+    gap: 24px; // Match middle row gap
+    align-items: flex-end; // Cards at bottom for consistent alignment
+    justify-content: center; // Center cards horizontally
+  }
+}
+
+/* Middle Row - Active Cards */
+.middle-row {
+  flex: 0 0 auto;
+  height: 260px; // Fixed height
+  padding: 0 2rem; // Only left and right padding, no top/bottom
+
+  .cards-row {
+    gap: 24px;
+    align-items: center; // Cards centered vertically
+  }
+}
+
+/* Bottom Row - Next Level Cards */
+.bottom-row {
+  flex: 0 0 auto;
+  height: 160px; // Fixed height
+  padding: 0 2rem; // Only left and right padding
+  opacity: 0.7;
+
+  .cards-row {
+    gap: 24px; // Match middle row gap
+    align-items: flex-start; // Cards at top to reduce visual gap with middle row
+  }
+}
+
+/* Cards Row */
+.cards-row {
+  display: flex;
+  height: 100%;
+  min-width: max-content;
+}
+
+/* Card Wrappers */
+.card-wrapper {
+  flex: 0 0 auto;
+  transition: opacity 0.2s ease-in;
+}
+
+/* Top Row Cards - Simple card size */
+.top-row-card {
+  opacity: 0.6;
+  transform: scale(1);
+  margin: 0 37.5px; // Center 75px simple card within 150px location card width: (150-75)/2 = 37.5px
+}
+
+/* Middle Row Cards - Normal size, full opacity */
+.middle-row-card {
+  &:hover {
+    transform: scale(1.05);
+  }
+}
+
+/* Drop spots for card positioning - match simple-location-card size and center over 2nd row location cards */
+.drop-spot {
+  width: 75px; // Match simple-location-card width
+  height: 110px; // Match simple-location-card height
+  margin: 0 37.5px; // Center 75px drop spot within 150px 2nd-row location card
+  flex: 0 0 auto;
+  opacity: 0.3;
+  pointer-events: none;
+  border: 2px solid white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Sublocation Stack Wrapper */
+.sublocation-stack-wrapper {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex: 0 0 auto;
+  width: 75px; // Match simple card width
+  height: 110px; // Match simple card height
+  margin: 0 37.5px; // Center 75px simple card within 150px location card width: (150-75)/2 = 37.5px
+}
+
+/* Empty placeholder for alignment */
+.empty-placeholder {
+  visibility: hidden;
+  pointer-events: none;
+}
+
+/* Sublocation Stack */
+.sublocation-stack {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  cursor: pointer;
+  pointer-events: auto;
+}
+
+/* Sublocation Card Wrapper */
+.sublocation-card-wrapper {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 75px; // Match simple card width
+  height: 110px; // Match simple card height
+  opacity: 0.6;
+  filter: grayscale(0.5);
+  pointer-events: none;
+}
+
+/* Cast Stack Wrapper */
+.cast-stack-wrapper {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex: 0 0 auto;
+  width: 75px; // Match simple card width
+  height: 110px; // Match simple card height
+  margin: 0 37.5px; // Center 75px simple card within 150px location card width: (150-75)/2 = 37.5px
+}
+
+/* Cast Stack */
+.cast-stack {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  cursor: pointer;
+  pointer-events: auto;
+}
+
+/* Cast Card Wrapper */
+.cast-card-wrapper {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 75px; // Match simple card width
+  height: 110px; // Match simple card height
+  opacity: 0.6;
+  filter: grayscale(0.5);
+  pointer-events: none;
+}
+
+// Mobile Responsive Design
+@media (max-width: 768px) {
+  .cc-card-navigation {
+    border-radius: 8px;
+    margin-top: 0; // No vertical shift on mobile
+  }
+  
+  .top-row,
+  .middle-row,
+  .bottom-row {
+    height: 33.33%; // Equal heights on mobile for better usability
+  }
+  
+  .top-row,
+  .bottom-row {
+    padding: 0 1rem; // Only left and right padding on mobile
+    min-height: 80px; // Ensure visible even when empty on mobile
+
+    .cards-row {
+      gap: 16px; // Match mobile middle row gap
+    }
+  }
+
+  .top-row-card {
+    margin: 0 30px; // Mobile: center 60px simple card within 120px location card: (120-60)/2 = 30px
+  }
+
+  .sublocation-stack-wrapper {
+    margin: 0 30px; // Mobile: center 60px simple card within 120px location card: (120-60)/2 = 30px
+  }
+
+  .cast-stack-wrapper {
+    margin: 0 30px; // Mobile: center 60px simple card within 120px location card: (120-60)/2 = 30px
+  }
+  
+  .middle-row {
+    padding: 0 1rem; // Only left and right padding, no top/bottom
+    
+    .cards-row {
+      gap: 16px;
+    }
+  }
+
+  .sublocation-card-wrapper {
+    width: 60px; // Scaled down for mobile (80% of simple card)
+    height: 88px; // Scaled down for mobile (80% of simple card)
+  }
+
+  .sublocation-stack-wrapper {
+    width: 60px; // Scaled down for mobile (80% of simple card)
+    height: 88px; // Scaled down for mobile (80% of simple card)
+  }
+
+  .cast-card-wrapper {
+    width: 60px; // Scaled down for mobile (80% of simple card)
+    height: 88px; // Scaled down for mobile (80% of simple card)
+  }
+
+  .cast-stack-wrapper {
+    width: 60px; // Scaled down for mobile (80% of simple card)
+    height: 88px; // Scaled down for mobile (80% of simple card)
+  }
+}
+
+@media (max-width: 480px) {
+  .top-row,
+  .middle-row,
+  .bottom-row {
+    height: 33.33%; // All rows same height
+  }
+  
+  .top-row,
+  .bottom-row {
+    padding: 0 0.75rem; // Only left and right padding on small mobile
+    min-height: 60px; // Ensure visible even when empty on small mobile
+
+    .cards-row {
+      gap: 12px; // Match small mobile middle row gap
+    }
+  }
+
+  .top-row-card {
+    margin: 0 26.5px; // Small mobile: center 52px simple card within 105px location card: (105-52)/2 = 26.5px
+  }
+
+  .sublocation-stack-wrapper {
+    margin: 0 26.5px; // Small mobile: center 52px simple card within 105px location card: (105-52)/2 = 26.5px
+  }
+
+  .cast-stack-wrapper {
+    margin: 0 26.5px; // Small mobile: center 52px simple card within 105px location card: (105-52)/2 = 26.5px
+  }
+  
+  .middle-row {
+    padding: 0 0.75rem; // Only left and right padding, no top/bottom
+    
+    .cards-row {
+      gap: 12px;
+    }
+  }
+
+  .sublocation-card-wrapper {
+    width: 52px; // Further scaled down for small mobile (70% of simple card)
+    height: 77px; // Further scaled down for small mobile (70% of simple card)
+  }
+
+  .sublocation-stack-wrapper {
+    width: 52px; // Further scaled down for small mobile (70% of simple card)
+    height: 77px; // Further scaled down for small mobile (70% of simple card)
+  }
+
+  .cast-card-wrapper {
+    width: 52px; // Further scaled down for small mobile (70% of simple card)
+    height: 77px; // Further scaled down for small mobile (70% of simple card)
+  }
+
+  .cast-stack-wrapper {
+    width: 52px; // Further scaled down for small mobile (70% of simple card)
+    height: 77px; // Further scaled down for small mobile (70% of simple card)
+  }
+}

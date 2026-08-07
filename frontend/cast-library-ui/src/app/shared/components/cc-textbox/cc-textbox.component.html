@@ -1,0 +1,31 @@
+@if (label()) {
+  <label [for]="id()" [class.cc-textbox-journal-label]="!isCampaignContext()" [class.cc-textbox-campaign-label]="isCampaignContext()">{{ label() }}</label>
+}
+
+@if (isTextarea()) {
+  <textarea
+    [id]="id()"
+    [class.cc-textbox-journal-textarea]="!isCampaignContext()"
+    [class.cc-textbox-campaign-textarea]="isCampaignContext()"
+    [rows]="rows()"
+    [placeholder]="placeholder()"
+    [disabled]="disabled()"
+    [autocomplete]="autocomplete()"
+    [ngModel]="value()"
+    (ngModelChange)="onValueChange($event)"
+    (blur)="onTouched()"
+  ></textarea>
+} @else {
+  <input
+    [id]="id()"
+    [class.cc-textbox-journal-field]="!isCampaignContext()"
+    [class.cc-textbox-campaign-field]="isCampaignContext()"
+    type="text"
+    [placeholder]="placeholder()"
+    [disabled]="disabled()"
+    [autocomplete]="autocomplete()"
+    [ngModel]="value()"
+    (ngModelChange)="onValueChange($event)"
+    (blur)="onTouched()"
+  />
+}

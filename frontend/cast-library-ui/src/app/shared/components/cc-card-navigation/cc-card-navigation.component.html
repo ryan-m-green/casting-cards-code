@@ -1,0 +1,171 @@
+<div class="cc-card-navigation" [class.loading]="loading()" [class.error]="error() !== null">
+  <!-- Loading State -->
+  @if (loading()) {
+    <div class="loading-state">
+      <div class="spinner"></div>
+      <p>Loading location data...</p>
+    </div>
+  }
+  
+  <!-- Error State -->
+  @if (error()) {
+    <div class="error-state">
+      <p>{{ error() }}</p>
+      <button (click)="loadCardData()">Retry</button>
+    </div>
+  }
+  
+  <!-- 3-Row Navigation System -->
+  @if (!loading() && !error()) {
+    <div class="rolodex-container">
+      
+      <!-- Row 1: Top Row (Previously Viewed Cards) -->
+      <div class="row top-row"
+           (click)="currentView() === 'casts' ? navigateToSublocationsFromCasts() : navigateToLocations()">
+        <div class="cards-row">
+          @if (currentView() === 'casts') {
+            <!-- Create drop spots -->
+            @for (dropSpot of [0, 1, 2, 3, 4]; track dropSpot) {
+              <div class="drop-spot" #dropSpots></div>
+            }
+            @if (parentSublocation()) {
+              <div class="card-wrapper top-row-card" #topRowCard>
+                <app-simple-sublocation-card [sublocation]="parentSublocation()!"></app-simple-sublocation-card>
+              </div>
+            }
+          } @else {
+            <!-- Create drop spots -->
+            @for (dropSpot of [0, 1, 2, 3, 4]; track dropSpot) {
+              <div class="drop-spot" #dropSpots></div>
+            }
+            @if (parentLocation()) {
+              <div class="card-wrapper top-row-card" #topRowCard>
+                <app-simple-location-card [location]="parentLocation()!"></app-simple-location-card>
+              </div>
+            }
+          }
+        </div>
+      </div>
+      
+      <!-- Row 2 & 3 Wrapper for Synchronized Dragging -->
+      <div class="rows-wrapper"
+           #scrollContainer
+           (mousedown)="onMouseDown($event)"
+           (mouseleave)="onMouseLeave()"
+           (mouseup)="onMouseUp()"
+           (mousemove)="onMouseMove($event)"
+           (touchstart)="onTouchStart($event)"
+           (touchend)="onTouchEnd()"
+           (touchmove)="onTouchMove($event)">
+      
+        <!-- Row 2: Middle Row (Active Cards) -->
+        <div class="row middle-row">
+        <div class="cards-row">
+          @if (currentView() === 'locations') {
+            @for (card of middleRowLocations(); track card.instanceId) {
+              <div class="card-wrapper middle-row-card">
+                <app-location-card
+                  [location]="card"
+                  [flippable]="true"
+                  [editable]="false"
+                  [campaignMode]="true">
+                </app-location-card>
+              </div>
+            }
+          } @else if (currentView() === 'sublocations') {
+            @for (card of middleRowSublocations(); track card.instanceId) {
+              <div class="card-wrapper middle-row-card"
+                   (click)="getCastsForSublocation(card.instanceId).length > 0 ? navigateToCasts(card) : null">
+                <app-sublocation-card
+                  [sublocation]="card"
+                  [flippable]="true"
+                  [editable]="false"
+                  [campaignMode]="true">
+                </app-sublocation-card>
+              </div>
+            }
+          } @else if (currentView() === 'casts') {
+            @for (card of middleRowCasts(); track card.instanceId) {
+              <div class="card-wrapper middle-row-card">
+                <app-cast-card
+                  [cast]="card"
+                  [flippable]="true"
+                  [editable]="false"
+                  [campaignMode]="true">
+                </app-cast-card>
+              </div>
+            }
+          }
+        </div>
+      </div>
+      
+      <!-- Row 3: Bottom Row (Next Level Cards) -->
+      @if (currentView() === 'locations') {
+        <div class="row bottom-row">
+          <div class="cards-row">
+            @for (location of locations(); track location.instanceId) {
+              @if (getSublocationsForLocation(location.instanceId).length > 0) {
+                <div class="sublocation-stack-wrapper">
+                  <!-- Sublocation Stack Only -->
+                  <div class="sublocation-stack" (click)="navigateToSublocations(location); $event.stopPropagation()">
+                    @for (sublocation of getSublocationsForLocation(location.instanceId); track sublocation.instanceId; let i = $index) {
+                      @let sublocations = getSublocationsForLocation(location.instanceId);
+                      @let totalCards = sublocations.length;
+                      @let centerIndex = (totalCards - 1) / 2;
+                      @let fromCenter = i - centerIndex;
+                      @let spreadAngle = totalCards > 1 ? fromCenter * 12 : 0;
+                      @let translateY = totalCards > 1 ? abs(fromCenter) * 2 + i * 2 : i * 3;
+                      @let translateX = totalCards > 1 ? fromCenter * 8 : 0;
+                      <div class="sublocation-card-wrapper"
+                           [style.transform]="'translateY(' + translateY + 'px) translateX(' + translateX + 'px) rotate(' + spreadAngle + 'deg)'"
+                           [style.opacity]="totalCards > 1 ? 1 - (abs(fromCenter) * 0.15) - (i * 0.1) : 1 - (i * 0.25)"
+                           [style.z-index]="totalCards > 1 ? 10 - abs(fromCenter) - i : 10 - i">
+                        <app-simple-sublocation-card [sublocation]="sublocation"></app-simple-sublocation-card>
+                      </div>
+                    }
+                  </div>
+                </div>
+              } @else {
+                <!-- Empty placeholder to maintain alignment with parent cards -->
+                <div class="sublocation-stack-wrapper empty-placeholder"></div>
+              }
+            }
+          </div>
+        </div>
+      } @else if (currentView() === 'sublocations') {
+        <div class="row bottom-row">
+          <div class="cards-row">
+            @for (sublocation of middleRowSublocations(); track sublocation.instanceId) {
+              @if (getCastsForSublocation(sublocation.instanceId).length > 0) {
+                <div class="cast-stack-wrapper">
+                  <!-- Cast Stack -->
+                  <div class="cast-stack" (click)="navigateToCasts(sublocation); $event.stopPropagation()">
+                    @for (cast of getCastsForSublocation(sublocation.instanceId); track cast.instanceId; let i = $index) {
+                      @let casts = getCastsForSublocation(sublocation.instanceId);
+                      @let totalCards = casts.length;
+                      @let centerIndex = (totalCards - 1) / 2;
+                      @let fromCenter = i - centerIndex;
+                      @let spreadAngle = totalCards > 1 ? fromCenter * 12 : 0;
+                      @let translateY = totalCards > 1 ? abs(fromCenter) * 2 + i * 2 : i * 3;
+                      @let translateX = totalCards > 1 ? fromCenter * 8 : 0;
+                      <div class="cast-card-wrapper"
+                           [style.transform]="'translateY(' + translateY + 'px) translateX(' + translateX + 'px) rotate(' + spreadAngle + 'deg)'"
+                           [style.opacity]="totalCards > 1 ? 1 - (abs(fromCenter) * 0.15) - (i * 0.1) : 1 - (i * 0.25)"
+                           [style.z-index]="totalCards > 1 ? 10 - abs(fromCenter) - i : 10 - i">
+                        <app-simple-cast-card [cast]="cast"></app-simple-cast-card>
+                      </div>
+                    }
+                  </div>
+                </div>
+              } @else {
+                <!-- Empty placeholder to maintain alignment with parent cards -->
+                <div class="cast-stack-wrapper empty-placeholder"></div>
+              }
+            }
+          </div>
+        </div>
+      }
+    </div>
+      </div>
+  }
+</div>
