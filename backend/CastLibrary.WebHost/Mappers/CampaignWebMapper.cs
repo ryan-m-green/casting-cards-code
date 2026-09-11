@@ -16,6 +16,7 @@ public interface ICampaignWebMapper
     CampaignPlayerResponse ToPlayerResponse(CampaignPlayerDomain d);
     CampaignInviteCodeResponse ToInviteCodeResponse(CampaignInviteCodeDomain d);
     TimeOfDayResponse ToTimeOfDayResponse(TimeOfDayDomain d);
+    LocationResponse ToResponse(LocationDomain domain);
 }
 /// <summary>
 /// Maps Campaign-related domain objects to API response objects.
@@ -294,6 +295,37 @@ public class CampaignWebMapper(
             Ns, "CampaignWebMapper.ToTimeOfDayResponse",
             "domain?response",
             d, response);
+
+        return response;
+    }
+
+    public LocationResponse ToResponse(LocationDomain domain)
+    {
+        var response = new LocationResponse
+        {
+            Id = domain.Id,
+            DmUserId = domain.DmUserId,
+            Name = domain.Name,
+            Classification = domain.Classification,
+            Size = domain.Size,
+            Condition = domain.Condition,
+            Geography = domain.Geography,
+            Architecture = domain.Architecture,
+            Climate = domain.Climate,
+            Religion = domain.Religion,
+            Vibe = domain.Vibe,
+            Languages = domain.Languages,
+            Description = domain.Description,
+            DmNotes = domain.DmNotes,
+            ImageUrl = domain.ImageUrl,
+            CreatedAt = domain.CreatedAt,
+        };
+
+        logging.LogMapping(
+            correlation.TraceId, correlation.SpanId,
+            Ns, "LocationWebMapper.ToResponse",
+            "domain?response",
+            domain, response);
 
         return response;
     }

@@ -1,0 +1,73 @@
+<div class="party-panel" [style.--portal-color]="portalColor()">
+  <div class="party-actions">
+    <button type="button" class="party-gold-btn" [style.border-color]="portalColor()" (click)="openPartyGoldDrawer()">
+      <img class="party-gold-icon" src="/treasure_chest_gold_coins.svg" alt="" aria-hidden="true" />
+      Award Party
+    </button>
+  </div>
+
+  <div class="card-grid swiper" #cardGrid [class.compact]="companionsExpanded()">
+    <div class="swiper-wrapper">
+      @for (card of playerCards(); track card.id) {
+        <div class="swiper-slide">
+          @if (companionsExpanded()) {
+            <app-simple-player-card
+              [player]="card"
+              (cardClick)="onPlayerCardClick()"
+            />
+          } @else {
+            <app-casting-card-player
+              [member]="card"
+              [tilt]="playerCardTiltFor(card.id)"
+              mode="dm"
+              (cardActions)="onCardActions($event)"
+            />
+          }
+        </div>
+      }
+    </div>
+
+    @if (playerCards().length === 0) {
+      <p class="empty-state">No player cards yet. Players must enter the campaign first.</p>
+    }
+  </div>
+
+  <!-- ── Questing Companions ── -->
+  @if (questingCompanions().length) {
+    <div class="companions-section">
+      <div class="companions-header">
+        <span class="companions-label">Questing Companions</span>
+        <span class="companions-line"></span>
+      </div>
+      <div class="companions-grid swiper" #companionsGrid [class.expanded]="companionsExpanded()">
+        <div class="swiper-wrapper">
+          @for (cast of questingCompanions(); track cast.instanceId) {
+            <div class="swiper-slide">
+              @if (companionsExpanded()) {
+                <app-cast-card
+                  [cast]="cast"
+                  [flippable]="true"
+                  [editable]="false"
+                  [secrets]="false"
+                  [campaignMode]="true"
+                  [readonlyStars]="true"
+                  [dmMode]="true"
+                  [tilt]="companionTiltFor(cast.instanceId)"
+                  (cardClick)="goToCompanion(cast)"
+                />
+              } @else {
+                <div class="companion-card-wrap"
+                     [style.transform]="'rotate(' + companionTiltFor(cast.instanceId) + 'deg)'">
+                  <app-simple-cast-card
+                    [cast]="cast"
+                    (cardClick)="onCompanionCardClick()"
+                  />
+                </div>
+              }
+            </div>
+          }
+        </div>
+      </div>
+    </div>
+  }
+</div>

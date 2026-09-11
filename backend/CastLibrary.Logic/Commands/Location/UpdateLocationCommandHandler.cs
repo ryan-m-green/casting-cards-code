@@ -1,3 +1,4 @@
+using CastLibrary.Repository.Repositories.Insert;
 using CastLibrary.Repository.Repositories.Read;
 using CastLibrary.Repository.Repositories.Update;
 using CastLibrary.Shared.Domain;
@@ -11,7 +12,8 @@ public interface IUpdateLocationCommandHandler
 }
 public class UpdateLocationCommandHandler(
     ILocationReadRepository locationReadRepository,
-    ILocationUpdateRepository locationUpdateRepository) : IUpdateLocationCommandHandler
+    ILocationUpdateRepository locationUpdateRepository,
+    ICampaignKeywordInsertRepository campaignKeywordInsertRepository) : IUpdateLocationCommandHandler
 {
     public async Task<LocationDomain> HandleAsync(UpdateLocationCommand command)
     {
@@ -22,8 +24,11 @@ public class UpdateLocationCommandHandler(
         existing.Geography = command.Request.Geography; existing.Architecture = command.Request.Architecture;
         existing.Climate = command.Request.Climate; existing.Religion = command.Request.Religion;
         existing.Vibe = command.Request.Vibe; existing.Languages = command.Request.Languages;
+        existing.Keywords = command.Request.Keywords;
         existing.Description = command.Request.Description; existing.DmNotes = command.Request.DmNotes;
-        return await locationUpdateRepository.UpdateAsync(existing);
+        var result = await locationUpdateRepository.UpdateAsync(existing);
+        await campaignKeywordInsertRepository.MergeKeywordsAsync(command.DmUserId, "location", existing.Keywords);
+        return result;
     }
 }
 

@@ -33,7 +33,17 @@
 
       <fieldset class="form-gm-box">
         <legend class="form-gm-box__legend">FOR GM EYES ONLY</legend>
-<img src="/death_awaits.PNG" alt="Death awaits" class="death-awaits-image" />
+
+        <cc-keyword-tags
+          [options]="keywordOptions()"
+          [label]="'Hashtags / Keywords'"
+          [placeholder]="'Add or select hashtags…'"
+          [ngModel]="keywords()"
+          [ngModelOptions]="{ standalone: true }"
+          (ngModelChange)="keywords.set($event)">
+        </cc-keyword-tags>
+
+        <img src="/death_awaits.PNG" alt="Death awaits" class="death-awaits-image" />
         <div class="wr form-row-gap">
           <div class="form-field">
             <app-journal-dropdown
@@ -143,7 +153,7 @@
                 (click)="onSave($event)">Save</button>
       </div>
     </div>
-    <app-icon-picker [selectedIcon]="selectedIcon()" (iconSelected)="onIconSelected($event)" />
+    <cc-symbol-picker [selectedIcon]="selectedIcon()" (iconSelected)="onIconSelected($event)" />
   </div>
 
   @if (limitError()) {

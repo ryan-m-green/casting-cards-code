@@ -1,4 +1,5 @@
-﻿using CastLibrary.Repository.Repositories.Read;
+﻿using CastLibrary.Repository.Repositories.Insert;
+using CastLibrary.Repository.Repositories.Read;
 using CastLibrary.Repository.Repositories.Update;
 using CastLibrary.Shared.Domain;
 using CastLibrary.Shared.Requests;
@@ -11,7 +12,8 @@ public interface IUpdateCastCommandHandler
 }
 public class UpdateCastCommandHandler(
     ICastReadRepository castReadRepository,
-    ICastUpdateRepository castUpdateRepository) : IUpdateCastCommandHandler
+    ICastUpdateRepository castUpdateRepository,
+    ICampaignKeywordInsertRepository campaignKeywordInsertRepository) : IUpdateCastCommandHandler
 {
     public async Task<CastDomain> HandleAsync(UpdateCastCommand command)
     {
@@ -26,12 +28,14 @@ public class UpdateCastCommandHandler(
         existing.Alignment = command.Request.Alignment;
         existing.Posture = command.Request.Posture;
         existing.Speed = command.Request.Speed;
-        existing.VoicePlacement = command.Request.VoicePlacement;
+        existing.Keywords = command.Request.Keywords;
         existing.VoiceNotes = command.Request.VoiceNotes;
         existing.Description = command.Request.Description;
         existing.PublicDescription = command.Request.PublicDescription;
 
-        return await castUpdateRepository.UpdateAsync(existing);
+        var result = await castUpdateRepository.UpdateAsync(existing);
+        await campaignKeywordInsertRepository.MergeKeywordsAsync(command.DmUserId, "cast", existing.Keywords);
+        return result;
     }
 }
 

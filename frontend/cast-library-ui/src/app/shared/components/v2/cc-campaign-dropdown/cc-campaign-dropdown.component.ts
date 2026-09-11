@@ -1,4 +1,4 @@
-import { Component, input, output, signal, computed, forwardRef, HostListener, ElementRef, QueryList, ViewChildren, OnInit } from '@angular/core';
+import { Component, effect, input, output, signal, computed, forwardRef, HostListener, ElementRef, QueryList, ViewChildren, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { NG_VALUE_ACCESSOR, ControlValueAccessor } from '@angular/forms';
 
@@ -28,6 +28,7 @@ export class CampaignDropdownComponent implements ControlValueAccessor, OnInit {
   readonly fontSize = input<string>('14px');
   readonly triggerTabIndex = input<number>(0);
   readonly disabled = input<boolean>(false);
+  readonly placeholder = input<string>('Select or type...');
   readonly valueChange = output<string>();
 
   value = signal<string>('');
@@ -42,13 +43,25 @@ export class CampaignDropdownComponent implements ControlValueAccessor, OnInit {
   private onChange: (value: string) => void = () => {};
   onTouched: () => void = () => {};
 
+  constructor() {
+    effect(() => {
+      const opts = this.options();
+      this.filteredOptions.set(opts);
+      const selectedOption = opts.find(o => o.value === this.value());
+      if (selectedOption) {
+        this.inputValue.set(selectedOption.label);
+      }
+    });
+  }
+
   get selected(): CampaignDropdownOption | undefined {
     return this.options().find(o => o.value === this.value());
   }
 
   ngOnInit(): void {
     this.filteredOptions.set(this.options());
-    this.inputValue.set(this.value());
+    const selectedOption = this.options().find(o => o.value === this.value());
+    this.inputValue.set(selectedOption?.label || this.value());
   }
 
   toggle(e: MouseEvent) {

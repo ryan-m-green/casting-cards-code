@@ -1,0 +1,126 @@
+<div class="cast-detail-content">
+  <!-- Panel actions -->
+  <cc-detail-panel-actions
+    [isDm]="true"
+    [editing]="editing()"
+    [detailExpanded]="false"
+    [editBtnBorderColor]="'#C8E080'"
+    [portraitUrl]="cast().imageUrl || ''"
+    [portraitFile]="imageFile()"
+    [cardType]="'cast'"
+    (portraitFileChange)="imageFile.set($event)"
+    (startEditingClick)="startEditing()"
+    (saveDetailsClick)="saveDetails()"
+    (saveToLibraryClick)="saveToLibrary()"
+    (cancelEditingClick)="cancelEditing()"
+    (closeClick)="closePanel()"
+  />
+
+  <div class="detail-content-body">
+    <!-- Cast Name -->
+    @if (editing()) {
+      <div class="detail-desc">
+        <app-cc-textbox
+          label="Cast Name"
+          placeholder="Cast name…"
+          context="campaign"
+          [(ngModel)]="cast().name"
+        />
+      </div>
+    } @else {
+      <div class="detail-header">
+        <h2 class="detail-title">{{ cast().name }}</h2>
+      </div>
+    }
+
+    @if (hasField(cast().role) || hasField(cast().race) || hasField(cast().age) || hasField(cast().pronouns) || hasField(cast().alignment)) {
+      <div class="detail-grid">
+        @if (hasField(cast().role)) {
+          <div class="detail-item">
+            <span class="detail-label">Role</span>
+            <span class="detail-value">{{ cast().role }}</span>
+          </div>
+        }
+        @if (hasField(cast().race)) {
+          <div class="detail-item">
+            <span class="detail-label">Race</span>
+            <span class="detail-value">{{ cast().race }}</span>
+          </div>
+        }
+        @if (hasField(cast().age)) {
+          <div class="detail-item">
+            <span class="detail-label">Age</span>
+            <span class="detail-value">{{ cast().age }}</span>
+          </div>
+        }
+        @if (hasField(cast().pronouns)) {
+          <div class="detail-item">
+            <span class="detail-label">Pronouns</span>
+            <span class="detail-value">{{ cast().pronouns }}</span>
+          </div>
+        }
+        @if (hasField(cast().alignment)) {
+          <div class="detail-item">
+            <span class="detail-label">Alignment</span>
+            <span class="detail-value">{{ cast().alignment }}</span>
+          </div>
+        }
+      </div>
+    }
+
+    @if (hasField(cast().posture) || (cast().voicePlacement && cast().voicePlacement.length > 0) || hasField(cast().voiceNotes)) {
+      <div class="detail-section">
+        <span class="detail-section-label">Voice & Movement</span>
+      </div>
+    }
+
+    @if (hasField(cast().posture)) {
+      <div class="detail-block">
+        <span class="detail-block-label">Posture</span>
+        <p class="detail-block-content">{{ cast().posture }}</p>
+      </div>
+    }
+    @if (cast().voicePlacement && cast().voicePlacement.length > 0) {
+      <div class="detail-block">
+        <span class="detail-block-label">Voice Placement</span>
+        <p class="detail-block-content">{{ cast().voicePlacement.join(', ') }}</p>
+      </div>
+    }
+    @if (hasField(cast().voiceNotes)) {
+      <div class="detail-block">
+        <span class="detail-block-label">Voice Notes</span>
+        <p class="detail-block-content">{{ cast().voiceNotes }}</p>
+      </div>
+    }
+
+    @if (hasField(cast().publicDescription) || hasField(cast().description)) {
+      <div class="detail-section">
+        <span class="detail-section-label">Descriptions</span>
+      </div>
+    }
+
+    @if (hasField(cast().publicDescription)) {
+      <div class="detail-block">
+        <span class="detail-block-label">Public Description</span>
+        <p class="detail-block-content">{{ cast().publicDescription }}</p>
+      </div>
+    }
+    @if (hasField(cast().description)) {
+      <div class="detail-block">
+        <span class="detail-block-label">Private Description</span>
+        <p class="detail-block-content">{{ cast().description }}</p>
+      </div>
+    }
+
+    <cc-secrets-manager
+      [secrets]="currentSecrets()"
+      [context]="'campaign'"
+      [isDm]="true"
+      [editing]="editing()"
+      (reveal)="onRevealSecret($event)"
+      (reseal)="onResealSecret($event)"
+      (add)="onAddSecret($event)"
+      (delete)="onDeleteSecret($event)"
+    />
+  </div>
+</div>

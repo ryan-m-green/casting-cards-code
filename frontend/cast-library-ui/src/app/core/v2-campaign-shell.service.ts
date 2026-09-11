@@ -3,6 +3,7 @@ import { Subject } from 'rxjs';
 import { CampaignDetail } from '../shared/models/campaign.model';
 import { VoidTitleContext } from '../shared/components/void-title-segments/void-title-segments.component';
 import { PlayerCardWithDetails } from '../shared/models/player-card.model';
+import { AmbianceDomain } from '../shared/models/soundtrack.model';
 
 @Injectable({ providedIn: 'root' })
 export class V2CampaignShellService {
@@ -26,10 +27,13 @@ export class V2CampaignShellService {
   // ── Event Streams ─────────────────────────────────────────────────────────────
   openChronicleWithSearch = new Subject<string>();
   openPartyGold = new Subject<void>();
+  openPlayerSecrets = new Subject<{ member: PlayerCardWithDetails; campaignId: string; portalColor: string }>();
   openShopPurchase = new Subject<{ item: any; sublocationInstanceId: string }>();
   shopPurchaseComplete = new Subject<any>();
   partyGoldAwarded = new Subject<{ currency: string; playerAwards: { playerUserId: string; amount: number }[] }>();
-  
+  openAmbianceEditor = new Subject<{ ambiance: AmbianceDomain; campaignId: string; portalColor: string }>();
+  ambianceChanged = new Subject<void>();
+
   // Drawer state
   openDrawerRequest = new Subject<{ title: string; template: TemplateRef<any>; context: any }>();
   
@@ -68,12 +72,20 @@ export class V2CampaignShellService {
   openDrawerWithContent(title: string, template: TemplateRef<any>, context: any) {
     this.openDrawerRequest.next({ title, template, context });
   }
-  
+
+  openPlayerSecretsDrawer(member: PlayerCardWithDetails, campaignId: string, portalColor: string) {
+    this.openPlayerSecrets.next({ member, campaignId, portalColor });
+  }
+
   openPartyGoldDrawer() {
     this.openPartyGold.next();
   }
   
   openShopPurchaseDrawer(item: any, sublocationInstanceId: string) {
     this.openShopPurchase.next({ item, sublocationInstanceId });
+  }
+
+  openAmbianceEditorDrawer(ambiance: AmbianceDomain, campaignId: string, portalColor: string) {
+    this.openAmbianceEditor.next({ ambiance, campaignId, portalColor });
   }
 }

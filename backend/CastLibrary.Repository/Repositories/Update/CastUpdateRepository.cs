@@ -27,7 +27,7 @@ namespace CastLibrary.Repository.Repositories.Update
                 cast.Alignment,
                 cast.Posture,
                 cast.Speed,
-                cast.VoicePlacement,
+                cast.Keywords,
                 cast.VoiceNotes,
                 cast.Description,
                 cast.PublicDescription,
@@ -36,7 +36,7 @@ namespace CastLibrary.Repository.Repositories.Update
                 @"UPDATE casts
               SET name=@Name, pronouns=@Pronouns, race=@Race, role=@Role, age=@Age,
                   alignment=@Alignment, posture=@Posture, speed=@Speed,
-                  voice_placement=@VoicePlacement::text[], voice_notes=@VoiceNotes,
+                  keywords=@Keywords::text[], voice_notes=@VoiceNotes,
                   description=@Description, public_description=@PublicDescription
               WHERE id=@Id";
 

@@ -120,6 +120,31 @@ export class CampaignShellComponent implements OnInit, OnDestroy {
         this.openPartyGoldDrawer();
       })
     );
+
+    // Update shop item's isScratchedOff flag when DM toggles the scratch state
+    this.hubSubscriptions.push(
+      this.hub.shopItemScratchToggled$.subscribe(event => {
+        if (!event || event.campaignId !== this.campaignId()) return;
+
+        const update = (c: CampaignDetail | null): CampaignDetail | null => {
+          if (!c) return c;
+          return {
+            ...c,
+            sublocations: c.sublocations.map((s: any) =>
+              s.instanceId !== event.sublocationInstanceId ? s : {
+                ...s,
+                shopItems: (s.shopItems ?? []).map((item: any) =>
+                  item.id !== event.shopItemId ? item : { ...item, isScratchedOff: event.isScratchedOff }
+                ),
+              }
+            ),
+          };
+        };
+
+        this.campaign.update(update);
+        this.shellSvc.updateCampaign(update);
+      })
+    );
   }
 
   safeColor(color: string | undefined): string {

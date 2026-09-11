@@ -1,13 +1,14 @@
 using CastLibrary.Logic.Commands.Campaign;
+using CastLibrary.Logic.Commands.Location;
 using CastLibrary.Logic.Queries.Campaign;
+using CastLibrary.Logic.Queries.Location;
 using CastLibrary.Logic.Services;
-using CastLibrary.Logic.Validators;
-using CastLibrary.Shared.Exceptions;
 using CastLibrary.Shared.Requests;
 using CastLibrary.Shared.Responses;
 using CastLibrary.WebHost.Hubs;
 using CastLibrary.WebHost.Mappers;
 using CastLibrary.WebHost.MetadataHelpers;
+using CastLibrary.WebHost.Requests;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
@@ -25,9 +26,11 @@ public class CampaignLocationsController(
     IUpdateLocationInstanceCommandHandler updateLocationInstanceCommand,
     IUpdateLocationInstanceVisibilityCommandHandler updateLocationInstanceVisibilityCommand,
     IDeleteLocationInstanceCommandHandler deleteLocationInstanceCommand,
-    ICampaignWebMapper mapper,
+    ICampaignWebMapper campaignMapper,
     IUserRetriever userRetriever,
     ICampaignAccessService campaignAccess,
+    IUploadLocationImageCommandHandler uploadLocationImageCommandHandler,
+    IFileValidationService fileValidationService,
     IHubContext<CampaignHub> hubContext) : ControllerBase
 {
     private Task<bool> CallerCanView(Guid campaignId) =>
@@ -42,7 +45,7 @@ public class CampaignLocationsController(
         if (!await CallerCanView(campaignId)) return Forbid();
 
         var locations = await getLocationsQuery.HandleAsync(campaignId);
-        var response = locations.Select(mapper.ToLocationInstanceResponse).ToList();
+        var response = locations.Select(campaignMapper.ToLocationInstanceResponse).ToList();
 
         return Ok(response);
     }
@@ -58,7 +61,7 @@ public class CampaignLocationsController(
             return NotFound();
         }
 
-        var response = mapper.ToLocationInstanceResponse(locations.First());
+        var response = campaignMapper.ToLocationInstanceResponse(locations.First());
         return Ok(response);
     }
 
@@ -73,7 +76,7 @@ public class CampaignLocationsController(
             return NotFound();
         }
 
-        var response = mapper.ToLocationInstanceResponse(instance);
+        var response = campaignMapper.ToLocationInstanceResponse(instance);
 
         await hubContext.Clients.Group(campaignId.ToString()).SendAsync("CampaignNavChanged", new { campaignId = campaignId });
 
@@ -127,5 +130,32 @@ public class CampaignLocationsController(
         await hubContext.Clients.Group(campaignId.ToString()).SendAsync("CampaignNavChanged", new { campaignId = campaignId });
 
         return NoContent();
+    }
+
+    [HttpPost("{id}/image")]
+    [Consumes("multipart/form-data")]
+    public async Task<IActionResult> UploadImage(Guid campaignId, Guid id, [FromForm] UploadLocationImageRequest request)
+    {
+        var validationResult = await fileValidationService.ValidateFileAsync(request.File, 20 * 1024 * 1024,
+            new[] { "image/jpeg", "image/png", "image/webp" });
+
+        if (!validationResult.IsValid)
+            return BadRequest(validationResult.ErrorMessage);
+        var userId = userRetriever.GetUserId(User);
+        var (success, _) = await uploadLocationImageCommandHandler.HandleAsync(
+            new UploadLocationImageCommand(request.SourceLocationId, userId, request.File.OpenReadStream(), validationResult.DetectedContentType));
+
+        if (!success)
+        {
+            return NotFound();
+        }
+
+        await hubContext.Clients.Group(campaignId.ToString()).SendAsync("LocationInstanceUpdated", new
+        {
+            campaignId = campaignId,
+            locationInstanceId = id,
+        });
+
+        return Ok();
     }
 }

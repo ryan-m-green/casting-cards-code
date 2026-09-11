@@ -19,7 +19,8 @@ namespace CastLibrary.Logic.Factories
                 Perception = faction.Perception,
                 Description = faction.Description,
                 Hidden = faction.Hidden,
-                SymbolPath = faction.SymbolPath
+                SymbolPath = faction.SymbolPath,
+                Keywords = faction.Keywords
             };
         }
     }

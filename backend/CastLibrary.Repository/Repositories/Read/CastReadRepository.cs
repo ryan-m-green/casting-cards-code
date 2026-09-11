@@ -26,7 +26,7 @@ public class CastReadRepository(
         var @params = new { DmUserId = dmUserId };
         const string sql =
             @"SELECT id, dm_user_id AS DmUserId, name, pronouns, race, role, age, alignment, posture, speed,
-                     voice_placement AS VoicePlacement, voice_notes AS VoiceNotes,
+                     keywords AS Keywords, voice_notes AS VoiceNotes,
                      description, public_description AS PublicDescription,
                      created_at AS CreatedAt
                 FROM casts
@@ -47,7 +47,7 @@ public class CastReadRepository(
         var @params = new { Id = id };
         const string sql =
             @"SELECT id, dm_user_id AS DmUserId, name, pronouns, race, role, age, alignment, posture, speed,
-                     voice_placement AS VoicePlacement, voice_notes AS VoiceNotes,
+                     keywords AS Keywords, voice_notes AS VoiceNotes,
                      description, public_description AS PublicDescription,
                      created_at AS CreatedAt
                 FROM casts

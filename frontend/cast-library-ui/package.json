@@ -18,15 +18,22 @@
     "@angular/forms": "^21.2.18",
     "@angular/platform-browser": "^21.2.18",
     "@angular/router": "^21.2.18",
+    "@falkordb/canvas": "^0.2.5",
     "@microsoft/signalr": "^10.0.0",
+    "d3-hierarchy": "^3.1.2",
+    "radial-menu": "^0.0.1",
+    "raphael": "^2.3.0",
     "rxjs": "~7.8.0",
+    "swiper": "^14.1.0",
     "tslib": "^2.3.0",
-    "video.js": "^8.23.8"
+    "video.js": "^8.23.8",
+    "wheelnav": "^1.7.1"
   },
   "devDependencies": {
     "@angular/build": "^21.2.17",
     "@angular/cli": "^21.2.17",
     "@angular/compiler-cli": "^21.2.18",
+    "@types/d3-hierarchy": "^3.1.7",
     "jsdom": "^28.0.0",
     "prettier": "^3.8.1",
     "typescript": "~5.9.2",

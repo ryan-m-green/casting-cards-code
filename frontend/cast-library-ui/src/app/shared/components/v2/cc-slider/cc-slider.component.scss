@@ -1,0 +1,85 @@
+@use '../../../../../styles/variables' as v;
+
+// ─── cc-slider Shared Range Slider ────────────────────────────────────────────
+// Visual language mirrors the range input used in cc-political-influence:
+// a native range input tinted via accent-color, an optional tick strip, and an
+// optional numeric readout. The accent follows --cc-slider-accent (when set) and
+// otherwise inherits the surrounding --portal-color theme variable.
+
+:host {
+  display: block;
+  min-width: 0;
+  color: inherit;
+}
+
+// ─── Label ───────────────────────────────────────────────────────────────────
+.cc-slider-label {
+  font-family: v.$font-header;
+  font-size: 11px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: color-mix(in srgb, currentColor 75%, transparent);
+  display: block;
+  margin-bottom: 6px;
+}
+
+// ─── Row ─────────────────────────────────────────────────────────────────────
+.cc-slider-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+
+.cc-slider-track {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.cc-slider-input {
+  width: 100%;
+  margin: 0;
+  min-width: 0;
+  cursor: pointer;
+  accent-color: var(--cc-slider-accent, var(--portal-color, v.$color-base-purple-primary));
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
+
+.cc-slider-ticks {
+  display: flex;
+  justify-content: space-between;
+  padding: 0 7px;
+
+  span {
+    width: 1px;
+    height: 4px;
+    border-radius: 1px;
+    background: color-mix(
+      in srgb,
+      var(--cc-slider-accent, var(--portal-color, v.$color-base-purple-primary)) 40%,
+      transparent
+    );
+  }
+}
+
+// ─── Value readout ───────────────────────────────────────────────────────────
+.cc-slider-value {
+  flex-shrink: 0;
+  min-width: 46px;
+  text-align: right;
+}
+
+.cc-slider-value-text {
+  font-family: v.$font-header;
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  white-space: nowrap;
+}

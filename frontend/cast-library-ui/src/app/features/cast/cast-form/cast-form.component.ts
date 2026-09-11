@@ -1,7 +1,7 @@
 import { Component, OnInit, signal, computed, inject, ViewChild, ElementRef } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { ReactiveFormsModule, FormBuilder, FormArray, Validators, FormControl } from '@angular/forms';
+import { ReactiveFormsModule, FormsModule, FormBuilder, Validators, FormControl } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { catchError } from 'rxjs/operators';
 import { EMPTY } from 'rxjs';
@@ -12,11 +12,10 @@ import { CastCardComponent } from '../../../shared/components/cast-card/cast-car
 import { JournalTitleComponent } from '../../../shared/components/journal-title/journal-title.component';
 import { JournalDropdownComponent } from '../../../shared/components/journal-dropdown/journal-dropdown.component';
 import { JournalRandomizeButtonComponent } from '../../../shared/components/journal-randomize-button/journal-randomize-button.component';
+import { KeywordTagsComponent } from '../../../shared/components/v2/cc-keyword-tags/cc-keyword-tags.component';
 import { HttpErrorResponse } from '@angular/common/http';
 import { SubscriptionDrawerService } from '../../../core/subscription-drawer.service';
 import { AuthService } from '../../../core/auth/auth.service';
-
-const VOICE_OPTIONS = ['chest', 'throat', 'mouth / oral', 'nasal', 'head / sinus'];
 
 const POSTURE_OPTIONS = [
   'upright', 'slouched', 'hunched', 'rigid', 'relaxed', 'open', 'closed‑off', 'confident', 'defensive', 'aggressive', 'passive', 'dominant', 'submissive', 'balanced', 'unsteady', 'leaning forward', 'leaning back', 'leaning to the side', 'arms crossed', 'hands on hips', 'hands behind back', 'military‑straight', 'casual', 'tense', 'loose', 'curved spine', 'straight spine', 'reclined', 'perched', 'crouched', 'kneeling', 'squatting', 'wide‑stance', 'narrow‑stance', 'asymmetrical', 'symmetrical', 'tall', 'compressed'
@@ -24,12 +23,6 @@ const POSTURE_OPTIONS = [
 
 const SPEED_OPTIONS = [
   'slow & deliberate', 'steady drumbeat', 'brisk', 'quick & hurried', 'nervous & rushed', 'measured', 'lumbering', 'graceful', 'sluggish', 'easygoing', 'calm & steady', 'smooth‑moving', 'relaxed pace', 'casual stride', 'purposeful stride', 'energetic', 'lively', 'darting', 'jittery', 'frantic', 'rapid‑fire', 'snappy', 'hurried', 'urgent', 'plodding', 'creeping', 'tentative', 'cautious', 'bold & decisive', 'fluid', 'sprightly', 'swift', 'nimble', 'light‑footed', 'heavy‑footed', 'stomping', 'drifting', 'wandering', 'methodical', 'stop‑and‑go', 'erratic', 'unpredictable'
-];
-
-const ALIGNMENT_OPTIONS = [
-  'lawful good', 'neutral good', 'chaotic good',
-  'lawful neutral', 'true neutral', 'chaotic neutral',
-  'lawful evil', 'neutral evil', 'chaotic evil',
 ];
 
 const PRONOUN_OPTIONS = [
@@ -52,7 +45,7 @@ const RACE_OPTIONS = [
 @Component({
   selector: 'app-cast-form',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, RouterLink, CastCardComponent, JournalTitleComponent, JournalDropdownComponent, JournalRandomizeButtonComponent],
+  imports: [CommonModule, ReactiveFormsModule, FormsModule, RouterLink, CastCardComponent, JournalTitleComponent, JournalDropdownComponent, JournalRandomizeButtonComponent, KeywordTagsComponent],
   templateUrl: './cast-form.component.html',
   styleUrl: './cast-form.component.scss'
 })
@@ -74,14 +67,14 @@ export class CastFormComponent implements OnInit {
   imageUploading  = signal(false);
   imageFile       = signal<File | null>(null);
   imagePreviewUrl = signal<string | null>(null);
-  voiceOptions     = VOICE_OPTIONS;
   pronounOptions   = PRONOUN_OPTIONS;
   ageOptions       = AGE_OPTIONS;
   roleOptions      = ROLE_OPTIONS;
   raceOptions      = RACE_OPTIONS;
-  alignmentOptions = ALIGNMENT_OPTIONS;
   postureOptions   = POSTURE_OPTIONS;
   speedOptions     = SPEED_OPTIONS;
+  keywords         = signal<string[]>([]);
+  keywordOptions   = signal<string[]>([]);
 
   labelText    = signal<'Saved' | 'Saving…' | 'Error'>('Saved');
   labelVisible = signal(false);
@@ -91,19 +84,16 @@ export class CastFormComponent implements OnInit {
     role:              [''],
     race:              [''],
     age:               [''],
-    alignment:         [''],
     pronouns:          [''],
     posture:           [''],
     speed:             [''],
     publicDescription: [''],
     description:       [''],
-    voicePlacement:    this.fb.array(VOICE_OPTIONS.map(() => false)),
     voiceNotes:        [''],
   });
 
   previewCast = computed<Cast>(() => {
     const v = this.form.value;
-    const vp = (v.voicePlacement as boolean[] | undefined) ?? [];
     return {
       id: this.castId() ?? '',
       dmUserId: '',
@@ -111,11 +101,11 @@ export class CastFormComponent implements OnInit {
       role: v.role ?? '',
       race: v.race ?? '',
       age: v.age ?? '',
-      alignment: v.alignment ?? '',
+      alignment: '',
       pronouns: v.pronouns ?? '',
       posture: v.posture ?? '',
       speed: v.speed ?? '',
-      voicePlacement: VOICE_OPTIONS.filter((_, i) => vp[i]),
+      keywords: this.keywords(),
       voiceNotes: v.voiceNotes ?? '',
       description: v.description ?? '',
       publicDescription: v.publicDescription ?? '',
@@ -125,27 +115,24 @@ export class CastFormComponent implements OnInit {
   });
 
   ngOnInit() {
+    this.http.get<{ keywords: string[] }>(`${environment.apiUrl}/api/campaign-keywords?cardType=cast`)
+      .subscribe(res => this.keywordOptions.set(res.keywords ?? []));
+
     const id = this.route.snapshot.paramMap.get('id');
     if (id) {
       this.castId.set(id);
       this.http.get<Cast>(`${environment.apiUrl}/api/cast/${id}`).subscribe(cast => {
         this.form.patchValue({
           name: cast.name, role: cast.role, race: cast.race, age: cast.age,
-          alignment: cast.alignment, pronouns: cast.pronouns, posture: cast.posture,
+          pronouns: cast.pronouns, posture: cast.posture,
           speed: cast.speed, publicDescription: cast.publicDescription, description: cast.description,
           voiceNotes: cast.voiceNotes,
         });
-        const vpArray = this.form.get('voicePlacement') as FormArray;
-        const normalize = (s: string) => s.toLowerCase().replace(/\s*\/\s*/g, '/').trim();
-        VOICE_OPTIONS.forEach((opt, i) => {
-          vpArray.at(i).setValue(cast.voicePlacement?.some(v => normalize(v) === normalize(opt)) ?? false);
-        });
+        this.keywords.set(cast.keywords ?? []);
         this.imageUrl.set(cast.imageUrl ?? null);
       });
     }
   }
-
-  get voicePlacementArray() { return this.form.get('voicePlacement') as FormArray; }
 
   get pronounsControl() { return this.form.get('pronouns') as FormControl; }
 
@@ -158,8 +145,6 @@ export class CastFormComponent implements OnInit {
   get postureControl() { return this.form.get('posture') as FormControl; }
 
   get speedControl() { return this.form.get('speed') as FormControl; }
-
-  get alignmentControl() { return this.form.get('alignment') as FormControl; }
 
   onSave(e: MouseEvent): void {
     if (this.form.invalid || this.saveStatus() === 'saving') return;
@@ -258,7 +243,8 @@ export class CastFormComponent implements OnInit {
     const raw = this.form.value;
     return {
       ...raw,
-      voicePlacement: VOICE_OPTIONS.filter((_, i) => (raw.voicePlacement as boolean[])[i]),
+      alignment: '',
+      keywords: this.keywords(),
     };
   }
 

@@ -1,7 +1,7 @@
 import { Component, OnInit, signal, computed, inject, ViewChild, ElementRef } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { ReactiveFormsModule, FormBuilder, Validators, FormControl } from '@angular/forms';
+import { ReactiveFormsModule, FormsModule, FormBuilder, Validators, FormControl } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { catchError } from 'rxjs/operators';
 import { EMPTY } from 'rxjs';
@@ -12,6 +12,7 @@ import { LocationCardComponent } from '../../../shared/components/location-card/
 import { JournalTitleComponent } from '../../../shared/components/journal-title/journal-title.component';
 import { JournalDropdownComponent } from '../../../shared/components/journal-dropdown/journal-dropdown.component';
 import { JournalRandomizeButtonComponent } from '../../../shared/components/journal-randomize-button/journal-randomize-button.component';
+import { KeywordTagsComponent } from '../../../shared/components/v2/cc-keyword-tags/cc-keyword-tags.component';
 import { HttpErrorResponse } from '@angular/common/http';
 import { SubscriptionDrawerService } from '../../../core/subscription-drawer.service';
 import { AuthService } from '../../../core/auth/auth.service';
@@ -59,7 +60,7 @@ const VIBE_OPTIONS = [
 @Component({
   selector: 'app-location-form',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, RouterLink, LocationCardComponent, JournalTitleComponent, JournalDropdownComponent, JournalRandomizeButtonComponent],
+  imports: [CommonModule, ReactiveFormsModule, FormsModule, RouterLink, LocationCardComponent, JournalTitleComponent, JournalDropdownComponent, JournalRandomizeButtonComponent, KeywordTagsComponent],
   templateUrl: './location-form.component.html',
   styleUrl: './location-form.component.scss'
 })
@@ -95,6 +96,8 @@ export class LocationFormComponent implements OnInit {
   imageUploading  = signal(false);
   imageFile       = signal<File | null>(null);
   imagePreviewUrl = signal<string | null>(null);
+  keywords         = signal<string[]>([]);
+  keywordOptions   = signal<string[]>([]);
 
   labelText    = signal<'Saved' | 'Saving…' | 'Error'>('Saved');
   labelVisible = signal(false);
@@ -129,6 +132,7 @@ export class LocationFormComponent implements OnInit {
       religion: v.religion ?? '',
       vibe: v.vibe ?? '',
       languages: v.languages ?? '',
+      keywords: this.keywords(),
       description: v.description ?? '',
       imageUrl: this.imageUrl() ?? undefined,
       createdAt: '',
@@ -136,11 +140,15 @@ export class LocationFormComponent implements OnInit {
   });
 
   ngOnInit() {
+    this.http.get<{ keywords: string[] }>(`${environment.apiUrl}/api/campaign-keywords?cardType=location`)
+      .subscribe(res => this.keywordOptions.set(res.keywords ?? []));
+
     const id = this.route.snapshot.paramMap.get('id');
     if (id) {
       this.locationId.set(id);
       this.http.get<Location>(`${environment.apiUrl}/api/locations/${id}`).subscribe(c => {
         this.form.patchValue(c);
+        this.keywords.set(c.keywords ?? []);
         this.imageUrl.set(c.imageUrl ?? null);
         const existing = (c.languages ?? '').split(',').map((l: string) => l.trim()).filter(Boolean);
         this.selectedLanguages.set(existing);
@@ -192,9 +200,10 @@ export class LocationFormComponent implements OnInit {
   save() {
     if (this.form.invalid) return;
     this.saveStatus.set('saving');
+    const payload = { ...this.form.value, keywords: this.keywords() };
     const req = this.locationId()
-      ? this.http.put<Location>(`${environment.apiUrl}/api/locations/${this.locationId()}`, this.form.value)
-      : this.http.post<Location>(`${environment.apiUrl}/api/locations`, this.form.value);
+      ? this.http.put<Location>(`${environment.apiUrl}/api/locations/${this.locationId()}`, payload)
+      : this.http.post<Location>(`${environment.apiUrl}/api/locations`, payload);
 
     req.pipe(
       catchError((err: HttpErrorResponse) => {

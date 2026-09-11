@@ -24,7 +24,7 @@ namespace CastLibrary.Logic.Factories
                         Alignment = "Neutral Good",
                         Posture = "Slouched",
                         Speed = "Slow",
-                        VoicePlacement = ["Chest", "Throat"],
+                        Keywords = ["Chest", "Throat"],
                         Description = "Private DM notes about this Cast.",
                         PublicDescription = "What the players see and know.",
                         ImageFileName = "cast_aldric_vane.png",
@@ -36,6 +36,7 @@ namespace CastLibrary.Logic.Factories
                     {
                         Name = "The Rusty Flagon",
                         Description = "A dimly lit tavern on the docks.",
+                        Keywords = ["tavern", "docks"],
                         ImageFileName = "loc_rusty_flagon.png",
                         ShopItems =
                         [
@@ -58,6 +59,7 @@ namespace CastLibrary.Logic.Factories
                          Religion = "The Old Gods",
                          Vibe = "Gritty",
                          Languages = "Common, Dwarvish",
+                         Keywords = ["coastal", "trade"],
                          Description = "A port Location known for its iron trade.",
                          ImageFileName = "location_ironhaven.png",
                      },
@@ -70,7 +72,8 @@ namespace CastLibrary.Logic.Factories
                         Influence = 8,
                         Perception = 3,
                         Hidden = false,
-                        Description = "A powerful merchant guild with ties to the city's underworld."
+                        Description = "A powerful merchant guild with ties to the city's underworld.",
+                        Keywords = ["merchant guild"]
                     },
                 ],
             };

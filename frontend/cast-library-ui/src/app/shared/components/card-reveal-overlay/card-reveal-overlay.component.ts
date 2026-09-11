@@ -43,24 +43,24 @@ export interface CardRevealOverlayData {
 
 const EMPTY_CAST_BASE: Omit<Cast, 'name' | 'imageUrl'> = {
   id: '', dmUserId: '', pronouns: '', race: '', role: '', age: '',
-  alignment: '', posture: '', speed: '', voicePlacement: [],
+  alignment: '', posture: '', speed: '', keywords: [],
   voiceNotes: '', description: '', publicDescription: '', createdAt: '',
 };
 
 const EMPTY_LOCATION_BASE: Omit<Location, 'name' | 'imageUrl'> = {
   id: '', dmUserId: '', classification: '', size: '', condition: '',
   geography: '', architecture: '', climate: '', religion: '', vibe: '',
-  languages: '', description: '', createdAt: '',
+  languages: '', keywords: [], description: '', createdAt: '',
 };
 
 const EMPTY_SUBLOCATION_BASE: Omit<Sublocation, 'name' | 'imageUrl'> = {
-  id: '', locationId: '', dmUserId: '', description: '',
+  id: '', locationId: '', dmUserId: '', description: '', keywords: [],
   shopItems: [], createdAt: '',
 };
 
 const EMPTY_FACTION_BASE: Omit<Faction, 'name' | 'imageUrl'> = {
   id: '', dmUserId: '', type: '', influence: 0, perception: 0,
-  hidden: false, description: '', dmNotes: '', symbolPath: '', createdAt: '',
+  hidden: false, description: '', dmNotes: '', symbolPath: '', keywords: [], createdAt: '',
   colors: { evilColor: '#000000', goodColor: '#000000' },
 };
 

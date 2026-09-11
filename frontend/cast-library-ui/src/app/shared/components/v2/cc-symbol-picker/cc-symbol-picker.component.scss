@@ -71,6 +71,10 @@ $font-cc-symbol-picker: v2.$font-v2-components;
 }
 
 .sp-preview-image {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
   width: 100px;
   height: 100px;
   object-fit: contain;
@@ -505,8 +509,8 @@ $font-cc-symbol-picker: v2.$font-v2-components;
   }
 
   .sp-preview-circle {
-    width: 120px;
-    height: 120px;
+    width: 130px;
+    height: 130px;
   }
 
   .sp-preview-clear {

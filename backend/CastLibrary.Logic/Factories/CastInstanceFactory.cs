@@ -32,7 +32,8 @@ public class CastInstanceFactory(IImageKeyCreator imageKeyCreator, IImageStorage
             Posture = source.Posture,
             Speed = source.Speed,
             ImageUrl = imageUrl,
-            VoicePlacement = source.VoicePlacement,
+            VoicePlacement = [],
+            Keywords = source.Keywords,
             Description = source.Description,
             PublicDescription = source.PublicDescription,
             IsVisibleToPlayers = false

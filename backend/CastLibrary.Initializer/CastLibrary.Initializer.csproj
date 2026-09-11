@@ -18,6 +18,7 @@
   <ItemGroup>
     <None Include="init.sql" CopyToOutputDirectory="Always" />
     <None Include="alter.sql" CopyToOutputDirectory="Always" />
+    <None Include="v2Alter.sql" CopyToOutputDirectory="Always" />
     <None Update="appsettings.json" CopyToOutputDirectory="Always" />
   </ItemGroup>
 

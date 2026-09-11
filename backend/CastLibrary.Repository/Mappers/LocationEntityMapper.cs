@@ -22,6 +22,7 @@ public class LocationEntityMapper : ILocationEntityMapper
         Religion = entity.Religion ?? string.Empty,
         Vibe = entity.Vibe ?? string.Empty,
         Languages = entity.Languages ?? string.Empty,
+        Keywords = entity.Keywords ?? [],
         Description = entity.Description ?? string.Empty,
         DmNotes = entity.DmNotes ?? string.Empty,
         CampaignId = entity.CampaignId,

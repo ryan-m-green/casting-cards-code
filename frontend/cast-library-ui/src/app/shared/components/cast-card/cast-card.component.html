@@ -50,6 +50,12 @@
               <button class="cast-btn cast-btn--red" (click)="onDeleteClick($event)">✦ Delete</button>
             </div>
           }
+
+          @if (campaignMode) {
+            <div class="cast-back-actions">
+              <button class="cast-btn cast-btn--blue" (click)="onDetailsClick($event)">✦ Details</button>
+            </div>
+          }
         </div>
       </div>
     </div>

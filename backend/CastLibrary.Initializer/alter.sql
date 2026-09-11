@@ -240,3 +240,73 @@ BEGIN
         FOREIGN KEY (soundtrack_id) REFERENCES campaign_soundtracks(id) ON DELETE SET NULL;
     END IF;
 END $$;
+
+-- ============================================================
+-- Ambiance Feature Implementation
+-- ============================================================
+
+-- Add kind column to campaign_soundtracks (music | sound_effect)
+ALTER TABLE campaign_soundtracks ADD COLUMN IF NOT EXISTS kind VARCHAR(20) NOT NULL DEFAULT 'music';
+
+-- Create campaign_ambiances table (persisted "ambiance button" playlists)
+CREATE TABLE IF NOT EXISTS campaign_ambiances (
+    id              UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    campaign_id     UUID         NOT NULL REFERENCES campaigns(id) ON DELETE CASCADE,
+    title           VARCHAR(200) NOT NULL,
+    randomize_music BOOLEAN      NOT NULL DEFAULT false,
+    created_at      TIMESTAMPTZ  NOT NULL DEFAULT NOW()
+);
+
+ALTER TABLE campaign_ambiances ADD COLUMN IF NOT EXISTS randomize_music BOOLEAN NOT NULL DEFAULT false;
+
+CREATE INDEX IF NOT EXISTS idx_campaign_ambiances_campaign_id ON campaign_ambiances(campaign_id);
+
+-- Create campaign_ambiance_items table (ordered playlist entries)
+CREATE TABLE IF NOT EXISTS campaign_ambiance_items (
+    id                  UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    ambiance_id         UUID NOT NULL REFERENCES campaign_ambiances(id) ON DELETE CASCADE,
+    soundtrack_id       UUID NOT NULL REFERENCES campaign_soundtracks(id) ON DELETE CASCADE,
+    sort_order          INTEGER NOT NULL DEFAULT 0,
+    volume              INTEGER NOT NULL DEFAULT 80,
+    pause_mode          VARCHAR(20) NOT NULL DEFAULT 'none',
+    pause_delay_seconds INTEGER,
+    pause_min_seconds   INTEGER,
+    pause_max_seconds   INTEGER
+);
+
+ALTER TABLE campaign_ambiance_items ADD COLUMN IF NOT EXISTS volume INTEGER NOT NULL DEFAULT 80;
+
+CREATE INDEX IF NOT EXISTS idx_campaign_ambiance_items_ambiance_id ON campaign_ambiance_items(ambiance_id);
+CREATE INDEX IF NOT EXISTS idx_campaign_ambiance_items_soundtrack_id ON campaign_ambiance_items(soundtrack_id);
+
+-- ============================================================
+-- Cast Keywords: rename casts.voice_placement -> casts.keywords
+-- ============================================================
+DO $$
+BEGIN
+    IF EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'casts' AND column_name = 'voice_placement') THEN
+        ALTER TABLE casts RENAME COLUMN voice_placement TO keywords;
+    END IF;
+END $$;
+
+-- ============================================================
+-- Campaign Keywords table + trigram index
+-- ============================================================
+CREATE TABLE IF NOT EXISTS campaign_keywords (
+    id         UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    dm_user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    card_type  VARCHAR(20) NOT NULL CHECK (card_type IN ('location','sublocation','cast','faction')),
+    keyword    VARCHAR(100) NOT NULL,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    UNIQUE (dm_user_id, card_type, keyword)
+);
+
+CREATE INDEX IF NOT EXISTS idx_campaign_keywords_keyword_trgm
+    ON campaign_keywords USING gin (keyword gin_trgm_ops);
+
+-- ============================================================
+-- Library card keywords columns
+-- ============================================================
+ALTER TABLE locations ADD COLUMN IF NOT EXISTS keywords TEXT[] NOT NULL DEFAULT '{}';
+ALTER TABLE sublocations ADD COLUMN IF NOT EXISTS keywords TEXT[] NOT NULL DEFAULT '{}';
+ALTER TABLE factions ADD COLUMN IF NOT EXISTS keywords TEXT[] NOT NULL DEFAULT '{}';

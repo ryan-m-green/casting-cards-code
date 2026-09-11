@@ -1,0 +1,182 @@
+@if (draftItems().length > 0) {
+  <div class="st-draft-sheet">
+    <div class="st-draft-header">
+      <input
+        class="st-input st-draft-title"
+        type="text"
+        [ngModel]="draftTitle()"
+        (ngModelChange)="draftTitle.set($event)"
+        placeholder="Ambiance name"
+      />
+      <label class="st-draft-random">
+        <app-toggle-switch [checked]="draftRandomizeMusic()" (checkedChange)="draftRandomizeMusic.set($event)" />
+        Randomize music
+      </label>
+      <button type="button" class="st-btn st-btn--ghost" (click)="clearDraft()">Clear</button>
+      <button type="button" class="st-btn st-btn--primary" (click)="saveDraft()">Save</button>
+    </div>
+
+    <div class="st-draft-items">
+      @for (item of draftItems(); track item.soundtrackId) {
+        <div class="st-draft-item">
+          <span class="st-draft-name">{{ soundtrackTitle(item.soundtrackId) }}</span>
+
+          <cc-slider
+            class="st-item-volume"
+            [min]="0"
+            [max]="100"
+            [step]="1"
+            [value]="item.volume"
+            (commit)="onDraftVolumeChange(item, $event)"
+            [showValue]="false"
+            ariaLabel="Volume"
+            title="Volume"
+          />
+
+          @if (isSoundEffect(item.soundtrackId)) {
+            <app-ambiance-item-pause-control
+              [(pauseMode)]="item.pauseMode"
+              [(pauseDelaySeconds)]="item.pauseDelaySeconds"
+              [(pauseMinSeconds)]="item.pauseMinSeconds"
+              [(pauseMaxSeconds)]="item.pauseMaxSeconds"
+            />
+          } @else {
+            <span class="st-draft-loops">Loops</span>
+          }
+
+          <button type="button" class="st-icon-btn st-icon-btn--danger" (click)="removeDraftItem(item.soundtrackId)" title="Remove">&#10005;</button>
+        </div>
+      }
+    </div>
+  </div>
+}
+
+<div class="st-panel" [style.--portal-color]="portalColor()">
+  <div class="st-topbar">
+    <div class="st-upload-group">
+      <button type="button" class="st-btn st-btn--primary" (click)="openUpload('music')" [disabled]="uploading()">
+        {{ uploading() ? 'Uploading...' : 'Upload Music' }}
+      </button>
+      <button type="button" class="st-btn st-btn--primary" (click)="openUpload('sound_effect')" [disabled]="uploading()">
+        {{ uploading() ? 'Uploading...' : 'Upload SFX' }}
+      </button>
+    </div>
+
+    <div class="st-volume">
+      <cc-slider
+        label="Volume"
+        suffix="%"
+        [min]="0"
+        [max]="100"
+        [step]="1"
+        [value]="masterVolume()"
+        (valueChange)="onVolumeChange($event)"
+      />
+    </div>
+
+    <button type="button" class="st-btn st-btn--danger" (click)="stopAll()">Stop All</button>
+  </div>
+
+  @if (errorMessage()) {
+    <div class="st-error">{{ errorMessage() }}</div>
+  }
+
+  <div class="st-body">
+    <section class="st-section">
+      <div class="st-section-header">
+        <h3 class="st-section-title">Library</h3>
+        <span class="st-section-count">{{ soundtracks().length }}</span>
+      </div>
+
+      <div class="st-library-list">
+        @for (track of soundtracks(); track track.id) {
+          <div
+            class="st-library-item"
+            [class.playing]="isTrackPlaying(track.id)"
+            [class.in-draft]="isInDraft(track.id)"
+            (click)="toggleDraft(track)"
+          >
+            <button
+              type="button"
+              class="st-play-btn"
+              (click)="$event.stopPropagation(); isTrackPlaying(track.id) ? stopTrack(track.id) : playTrack(track)"
+              [title]="isTrackPlaying(track.id) ? 'Stop' : 'Play'"
+            >
+              {{ isTrackPlaying(track.id) ? '&#9632;' : '&#9654;' }}
+            </button>
+            <span class="st-library-name">{{ getDisplayName(track.title) }}</span>
+            <cc-slider
+              class="st-item-volume"
+              [min]="0"
+              [max]="100"
+              [step]="1"
+              [value]="track.volume"
+              (commit)="onTrackVolumeChange(track, $event)"
+              (click)="$event.stopPropagation()"
+              [showValue]="false"
+              ariaLabel="Volume"
+              title="Volume"
+            />
+            <button
+              type="button"
+              class="st-kind-badge"
+              [class.st-kind-badge--sfx]="track.kind === 'sound_effect'"
+              (click)="$event.stopPropagation(); toggleKind(track)"
+              [title]="track.kind === 'music' ? 'Click to mark as sound effect' : 'Click to mark as music'"
+            >
+              {{ track.kind === 'music' ? 'music' : 'sfx' }}
+            </button>
+            <button
+              type="button"
+              class="st-icon-btn st-icon-btn--danger"
+              [class.confirming]="pendingDeleteTrackId() === track.id"
+              (click)="$event.stopPropagation(); requestDeleteTrack(track.id)"
+              [title]="pendingDeleteTrackId() === track.id ? 'Tap again to confirm' : 'Delete'"
+            >
+              {{ pendingDeleteTrackId() === track.id ? 'Confirm?' : '&#10005;' }}
+            </button>
+          </div>
+        } @empty {
+          <p class="st-empty">No soundtracks yet. Upload music or sound effects to get started.</p>
+        }
+      </div>
+    </section>
+
+    <section class="st-section">
+      <div class="st-section-header">
+        <h3 class="st-section-title">Ambiance Buttons</h3>
+      </div>
+
+      <div class="st-ambiance-list">
+        @for (ambiance of ambiances(); track ambiance.id) {
+          <div class="st-ambiance-item" [class.playing]="isAmbiancePlaying(ambiance.id)">
+            <button
+              type="button"
+              class="st-play-btn"
+              (click)="playAmbiance(ambiance)"
+              [title]="isAmbiancePlaying(ambiance.id) ? 'Stop' : 'Play'"
+            >
+              {{ isAmbiancePlaying(ambiance.id) ? '&#9632;' : '&#9654;' }}
+            </button>
+            <div class="st-ambiance-info">
+              <span class="st-ambiance-name">{{ ambiance.title }}</span>
+              <span class="st-ambiance-meta">{{ ambiance.items.length }} track{{ ambiance.items.length === 1 ? '' : 's' }}</span>
+            </div>
+            <button type="button" class="st-icon-btn" (click)="editAmbiance(ambiance)" title="Edit">&#9998;</button>
+            <button
+              type="button"
+              class="st-icon-btn st-icon-btn--danger"
+              [class.confirming]="pendingDeleteAmbianceId() === ambiance.id"
+              (click)="requestDeleteAmbiance(ambiance.id)"
+              [title]="pendingDeleteAmbianceId() === ambiance.id ? 'Tap again to confirm' : 'Delete'"
+            >
+              {{ pendingDeleteAmbianceId() === ambiance.id ? 'Confirm?' : '&#10005;' }}
+            </button>
+          </div>
+        } @empty {
+          <p class="st-empty">No ambiance buttons yet. Tap tracks above to build one.</p>
+        }
+      </div>
+    </section>
+  </div>
+</div>

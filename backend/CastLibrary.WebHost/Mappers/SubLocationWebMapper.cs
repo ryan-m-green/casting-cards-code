@@ -28,6 +28,7 @@ public class SublocationWebMapper(
             Name = domain.Name,
             Description = domain.Description,
             DmNotes = domain.DmNotes,
+            Keywords = domain.Keywords,
             ImageUrl = domain.ImageUrl,
             CreatedAt = domain.CreatedAt,
             ShopItems = domain.ShopItems.Select(s => new ShopItemResponse

@@ -34,6 +34,7 @@ public class LocationWebMapper(
             Religion       = domain.Religion,
             Vibe           = domain.Vibe,
             Languages      = domain.Languages,
+            Keywords       = domain.Keywords,
             Description    = domain.Description,
             DmNotes        = domain.DmNotes,
             ImageUrl       = domain.ImageUrl,

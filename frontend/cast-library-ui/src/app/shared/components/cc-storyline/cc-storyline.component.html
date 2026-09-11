@@ -1,0 +1,111 @@
+<div class="sl-root" [style.--portal-color]="portalColor()">
+  <div class="sl-toolbar">
+    <span class="sl-count">{{ readyCount() }} ready</span>
+    @if (errorMessage()) {
+      <span class="sl-error">{{ errorMessage() }}</span>
+    }
+    <button type="button" class="campaign-primary-btn sl-new-btn" (click)="requestCreate.emit()">
+      ＋ New Content
+    </button>
+  </div>
+
+  <div class="sl-scroll">
+    @if (loading()) {
+      <div class="sl-empty">Loading…</div>
+    } @else if (items().length === 0) {
+      <div class="sl-empty">No storyline content yet. Use “＋ New Content” to add scenes &amp; handouts for your sessions.</div>
+    } @else {
+      <div class="sl-list swiper" #storylineSwiper>
+        <div class="swiper-wrapper">
+          @for (item of items(); track item.id) {
+            <div class="swiper-slide">
+              <div class="sl-card">
+            <div class="sl-card-banner">
+              <span class="sl-card-title" [title]="item.title">{{ item.title }}</span>
+            </div>
+
+            <div class="sl-card-body">
+              <div class="sl-card-body-content">
+                @if (item.imageUrl) {
+                  <img class="sl-card-img" [src]="item.imageUrl" [alt]="item.title" />
+                }
+                @if (item.sceneType !== 'campaign-handout' && item.body) {
+                  <div class="sl-card-text">{{ item.body }}</div>
+                }
+                @if (!item.imageUrl && (item.sceneType === 'campaign-handout' || !item.body)) {
+                  <div class="sl-card-empty-body">No content yet</div>
+                }
+              </div>
+
+              <app-cc-view-btn
+                label="View storyline content"
+                (clicked)="requestView.emit(item)"
+              />
+            </div>
+
+            <div class="sl-card-actions">
+              <span class="sl-delete-slot">
+                @if (pendingDeleteId() === item.id) {
+                  <button type="button" class="sl-action sl-action--cancel" (click)="cancelDelete()" title="Cancel" aria-label="Cancel delete">✕</button>
+                  <button type="button" class="sl-action sl-action--confirm" [disabled]="workingId() === item.id" (click)="confirmDelete(item)">Delete</button>
+                } @else {
+                  <button
+                    type="button"
+                    class="sl-action sl-action--danger"
+                    [disabled]="workingId() === item.id"
+                    (click)="requestDelete(item)"
+                    title="Delete"
+                    aria-label="Delete storyline item"
+                  >
+                    <img src="/icons/weapons/fantasy_dagger.svg" class="sl-action-icon" alt="Delete" />
+                  </button>
+                }
+              </span>
+
+              <button
+                  type="button"
+                  class="sl-action"
+                  [disabled]="workingId() === item.id"
+                  (click)="requestEdit.emit(item)"
+                  title="Edit"
+                  aria-label="Edit storyline item"
+                >
+                  <img src="/feather_quill_writing_tool.svg" class="sl-action-icon" alt="Edit" />
+                </button>
+
+                <span class="sl-chronicle-wrap">
+                  <button
+                    type="button"
+                    class="campaign-primary-btn sl-chronicle-btn"
+                    [class.sl-chronicle-btn--active]="openMenuId() === item.id"
+                    [disabled]="workingId() === item.id"
+                    (click)="openMenu(item)"
+                    title="Send to campaign chronicles"
+                    aria-label="Send to campaign chronicles"
+                  >
+                    <img src="/magic_book_shining_diamond.svg" class="sl-action-icon" alt="Send to chronicles" />
+                    @if (workingId() === item.id) {
+                      <span class="sl-working-dot"></span>
+                    }
+                  </button>
+
+                  @if (openMenuId() === item.id) {
+                    <div class="sl-chronicle-menu">
+                      <button type="button" class="sl-chronicle-menu-item" (click)="sendToChronicle(item, true)">
+                        Chronicle (GM only)
+                      </button>
+                      <button type="button" class="sl-chronicle-menu-item" (click)="sendToChronicle(item, false)">
+                        Chronicle (everyone)
+                      </button>
+                    </div>
+                  }
+                </span>
+              </div>
+            </div>
+            </div>
+          }
+        </div>
+      </div>
+    }
+  </div>
+</div>

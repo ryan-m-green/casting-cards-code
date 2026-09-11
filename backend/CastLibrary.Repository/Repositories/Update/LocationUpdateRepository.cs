@@ -29,6 +29,7 @@ namespace CastLibrary.Repository.Repositories.Update
                 Location.Religion,
                 Location.Vibe,
                 Location.Languages,
+                Location.Keywords,
                 Location.Description,
                 Location.DmNotes,
             };
@@ -36,7 +37,7 @@ namespace CastLibrary.Repository.Repositories.Update
                 @"UPDATE locations
               SET name=@Name, classification=@Classification, size=@Size, condition=@Condition,
                   geography=@Geography, architecture=@Architecture, climate=@Climate,
-                  religion=@Religion, vibe=@Vibe, languages=@Languages, description=@Description,
+                  religion=@Religion, vibe=@Vibe, languages=@Languages, keywords=@Keywords::text[], description=@Description,
                   dm_notes=@DmNotes
               WHERE id=@Id";
 

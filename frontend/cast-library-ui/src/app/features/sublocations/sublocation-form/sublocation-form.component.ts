@@ -1,7 +1,7 @@
 import { Component, OnInit, signal, computed, inject, ViewChild, ElementRef } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { ReactiveFormsModule, FormBuilder, FormArray, Validators, FormGroup } from '@angular/forms';
+import { ReactiveFormsModule, FormsModule, FormBuilder, FormArray, Validators, FormGroup } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { catchError } from 'rxjs/operators';
 import { EMPTY } from 'rxjs';
@@ -10,6 +10,7 @@ import { Sublocation } from '../../../shared/models/sublocation.model';
 import { SparkleService } from '../../../shared/services/sparkle.service';
 import { SublocationCardComponent } from '../../../shared/components/sublocation-card/sublocation-card.component';
 import { JournalTitleComponent } from '../../../shared/components/journal-title/journal-title.component';
+import { KeywordTagsComponent } from '../../../shared/components/v2/cc-keyword-tags/cc-keyword-tags.component';
 import { HttpErrorResponse } from '@angular/common/http';
 import { SubscriptionDrawerService } from '../../../core/subscription-drawer.service';
 import { AuthService } from '../../../core/auth/auth.service';
@@ -17,7 +18,7 @@ import { AuthService } from '../../../core/auth/auth.service';
 @Component({
   selector: 'app-sublocation-form',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, RouterLink, SublocationCardComponent, JournalTitleComponent],
+  imports: [CommonModule, ReactiveFormsModule, FormsModule, RouterLink, SublocationCardComponent, JournalTitleComponent, KeywordTagsComponent],
   templateUrl: './sublocation-form.component.html',
   styleUrl: './sublocation-form.component.scss'
 })
@@ -39,6 +40,8 @@ export class SublocationFormComponent implements OnInit {
   imageUploading  = signal(false);
   imageFile       = signal<File | null>(null);
   imagePreviewUrl = signal<string | null>(null);
+  keywords         = signal<string[]>([]);
+  keywordOptions   = signal<string[]>([]);
 
   labelText    = signal<'Saved' | 'Saving…' | 'Error'>('Saved');
   labelVisible = signal(false);
@@ -59,6 +62,7 @@ export class SublocationFormComponent implements OnInit {
       dmUserId: '',
       name: v.name ?? '',
       description: v.description ?? '',
+      keywords: this.keywords(),
       imageUrl: this.imageUrl() ?? undefined,
       shopItems: (v.shopItems ?? []).map((item: any, i: number) => ({
         id: String(i),
@@ -73,11 +77,15 @@ export class SublocationFormComponent implements OnInit {
   });
 
   ngOnInit() {
+    this.http.get<{ keywords: string[] }>(`${environment.apiUrl}/api/campaign-keywords?cardType=sublocation`)
+      .subscribe(res => this.keywordOptions.set(res.keywords ?? []));
+
     const id = this.route.snapshot.paramMap.get('id');
     if (id) {
       this.sublocationId.set(id);
       this.http.get<Sublocation>(`${environment.apiUrl}/api/sublocations/${id}`).subscribe(l => {
         this.form.patchValue({ name: l.name, description: l.description, dmNotes: l.dmNotes ?? '' });
+        this.keywords.set(l.keywords ?? []);
         l.shopItems?.forEach(item => this.shopItems.push(this.newItem(item.name, item.priceAmount, item.priceCurrencyType, item.description)));
         this.imageUrl.set(l.imageUrl ?? null);
       });
@@ -152,6 +160,7 @@ export class SublocationFormComponent implements OnInit {
     const formValue = this.form.value;
     const payload = {
       ...formValue,
+      keywords: this.keywords(),
       shopItems: formValue.shopItems?.map((item: any) => ({
         name:             item.name,
         priceAmount:      item.priceAmount ?? 0,

@@ -135,6 +135,8 @@
             [flippable]="false"
             [editable]="false"
             [campaignMode]="true"
+            [campaignId]="campaignId()"
+            [sublocationInstanceId]="sub.instanceId"
             [isPrimary]="isPrimarySublocation(sub.instanceId)"
             [canSetPrimary]="true"
             [primaryLocked]="hasPrimarySublocation() && !isPrimarySublocation(sub.instanceId)"

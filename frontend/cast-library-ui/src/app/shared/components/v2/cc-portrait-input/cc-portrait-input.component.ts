@@ -1,4 +1,4 @@
-import { Component, input, signal, forwardRef, computed } from '@angular/core';
+import { Component, input, signal, forwardRef, computed, effect } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 
@@ -20,6 +20,8 @@ export class CcPortraitInputComponent implements ControlValueAccessor {
   readonly label = input<string>('');
   readonly disabled = input<boolean>(false);
   readonly context = input<'journal' | 'campaign'>('journal');
+  readonly initialImageUrl = input<string>('');
+  readonly cardType = input<'location' | 'sublocation' | 'cast' | 'faction'>('location');
 
   isCampaignContext = computed(() => this.context() === 'campaign');
 
@@ -27,6 +29,16 @@ export class CcPortraitInputComponent implements ControlValueAccessor {
   imagePreviewUrl = signal<string | null>(null);
 
   hasImage = computed(() => this.imagePreviewUrl() !== null);
+
+  constructor() {
+    // Initialize and react to initialImageUrl changes
+    effect(() => {
+      const url = this.initialImageUrl();
+      if (url) {
+        this.imagePreviewUrl.set(url);
+      }
+    });
+  }
 
   private onChange: (value: File | null) => void = () => {};
   onTouched: () => void = () => {};
@@ -52,19 +64,6 @@ export class CcPortraitInputComponent implements ControlValueAccessor {
     this.onTouched();
   }
 
-  removeImage(): void {
-    if (this.disabled()) return;
-    
-    // Clean up preview URL
-    const prev = this.imagePreviewUrl();
-    if (prev) URL.revokeObjectURL(prev);
-
-    this.imageFile.set(null);
-    this.imagePreviewUrl.set(null);
-    this.onChange(null);
-    this.onTouched();
-  }
-
   writeValue(value: File | null): void {
     if (value) {
       this.imageFile.set(value);
@@ -74,9 +73,12 @@ export class CcPortraitInputComponent implements ControlValueAccessor {
       this.imagePreviewUrl.set(URL.createObjectURL(value));
     } else {
       this.imageFile.set(null);
-      const prev = this.imagePreviewUrl();
-      if (prev) URL.revokeObjectURL(prev);
-      this.imagePreviewUrl.set(null);
+      // Only clear the preview if it was created from a file and not from an initial image URL
+      if (!this.initialImageUrl()) {
+        const prev = this.imagePreviewUrl();
+        if (prev) URL.revokeObjectURL(prev);
+        this.imagePreviewUrl.set(null);
+      }
     }
   }
 

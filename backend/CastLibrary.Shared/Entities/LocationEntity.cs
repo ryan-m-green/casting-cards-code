@@ -14,6 +14,7 @@ public class LocationEntity
     public string Religion { get; set; }
     public string Vibe { get; set; }
     public string Languages { get; set; }
+    public string[] Keywords { get; set; }
     public string Description { get; set; }
     public string DmNotes { get; set; }
     public Guid? CampaignId { get; set; }

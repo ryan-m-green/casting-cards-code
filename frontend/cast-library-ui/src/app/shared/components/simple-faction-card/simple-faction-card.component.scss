@@ -1,0 +1,260 @@
+@use '../../../../styles/variables' as v;
+
+:host {
+  display: block;
+  width: 75px;
+  height: 110px;
+  flex-shrink: 0;
+}
+
+.simple-faction-card {
+  width: 100%;
+  height: 100%;
+  perspective: 350px;
+  cursor: pointer;
+  position: relative;
+}
+
+.simple-fac-frame {
+  position: absolute;
+  inset: 0;
+  border-radius: 4px;
+  padding: 2px;
+  background: linear-gradient(
+    145deg,
+    v.$color-faction-neutral-frame-1 0%, v.$color-faction-neutral-frame-2 15%, v.$color-faction-neutral-frame-3 40%,
+    v.$color-faction-neutral-frame-4 55%, v.$color-faction-neutral-frame-5 70%, v.$color-faction-neutral-frame-6 85%, v.$color-faction-neutral-frame-7 100%
+  );
+  box-shadow:
+    0 0 0 1px v.$color-base-black-7,
+    0 3px 11px v.$color-shadow-dark,
+    inset 0 0.5px 0 rgba(v.$color-base-white, 0.08);
+  overflow: hidden;
+
+  .simple-faction-card--good & {
+    background: linear-gradient(
+      145deg,
+      var(--faction-good-color) 0%, var(--faction-good-color) 15%, v.$color-base-white 40%,
+      var(--faction-good-color) 55%, var(--faction-good-color) 70%, v.$color-base-white 85%, var(--faction-good-color) 100%
+    );
+  }
+
+  .simple-faction-card--evil & {
+    background: linear-gradient(
+      145deg,
+      var(--faction-evil-color) 0%, var(--faction-evil-color) 15%, v.$color-base-black 40%,
+      var(--faction-evil-color) 55%, var(--faction-evil-color) 70%, v.$color-base-black 85%, var(--faction-evil-color) 100%
+    );
+  }
+}
+
+.simple-fac-inner {
+  width: 100%;
+  height: 100%;
+  border-radius: 2.5px;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  background: linear-gradient(160deg, v.$color-faction-neutral-inner-1 0%, v.$color-faction-neutral-inner-2 50%, v.$color-faction-neutral-inner-3 100%);
+
+  .simple-faction-card--good & {
+    background: linear-gradient(160deg, v.$color-faction-good-inner-1 0%, v.$color-faction-good-inner-2 50%, v.$color-faction-good-inner-3 100%);
+  }
+
+  .simple-faction-card--evil & {
+    background: linear-gradient(160deg, v.$color-faction-evil-inner-1 0%, v.$color-faction-evil-inner-2 60%, v.$color-faction-evil-inner-3 100%);
+  }
+
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 10;
+    pointer-events: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='250' height='250'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='250' height='250' filter='url(%23n)' opacity='.1'/%3E%3C/svg%3E");
+    mix-blend-mode: multiply;
+  }
+}
+
+// ── Banner ────────────────────────────────────────────────────────────────────
+.simple-fac-banner {
+  padding: 3px 4px 2.5px;
+  position: relative;
+  flex-shrink: 0;
+  background: linear-gradient(180deg, v.$color-faction-neutral-banner-1 0%, v.$color-faction-neutral-banner-2 100%);
+  border-bottom: 0.75px solid v.$color-faction-neutral-border;
+
+  .simple-faction-card--good & {
+    background: linear-gradient(180deg, v.$color-faction-good-banner-1 0%, v.$color-faction-good-banner-2 100%);
+    border-bottom: 0.75px solid v.$color-faction-good-border;
+  }
+
+  .simple-faction-card--evil & {
+    background: linear-gradient(180deg, v.$color-faction-evil-banner-1 0%, v.$color-faction-evil-banner-2 100%);
+    border-bottom: 0.75px solid v.$color-faction-evil-border;
+  }
+
+  &::after {
+    content: '';
+    position: absolute;
+    bottom: -1.5px;
+    left: 0;
+    right: 0;
+    height: 0.75px;
+    background: linear-gradient(90deg, transparent, v.$color-faction-neutral-accent, transparent);
+    opacity: 0.5;
+
+    .simple-faction-card--good & {
+      background: linear-gradient(90deg, transparent, v.$color-faction-good-accent, transparent);
+    }
+
+    .simple-faction-card--evil & {
+      background: linear-gradient(90deg, transparent, v.$color-faction-evil-accent, transparent);
+    }
+  }
+}
+
+.simple-fac-name {
+  font-family: 'Cinzel', serif;
+  font-weight: 700;
+  font-size: 6px;
+  letter-spacing: 0.03em;
+  line-height: 1.2;
+  color: v.$color-faction-neutral-accent;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-shadow: 0 0.5px 2px v.$color-shadow-dark;
+  text-align: center;
+  max-width: 100%;
+
+  .simple-faction-card--good & {
+    color: v.$color-faction-good-accent;
+  }
+
+  .simple-faction-card--evil & {
+    color: v.$color-faction-evil-accent;
+  }
+}
+
+.simple-fac-subtitle {
+  font-family: 'Cinzel', serif;
+  font-size: 3px;
+  letter-spacing: 0.12em;
+  color: v.$color-faction-neutral-accent;
+  margin-top: 0.5px;
+  opacity: 0.8;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-align: center;
+
+  .simple-faction-card--good & {
+    color: v.$color-faction-good-accent;
+  }
+
+  .simple-faction-card--evil & {
+    color: v.$color-faction-evil-accent;
+  }
+}
+
+// ── Portrait ──────────────────────────────────────────────────────────────────
+.simple-fac-portrait {
+  flex: 1;
+  margin: 2.5px;
+  border: 0.75px solid rgba(0, 0, 0, 0.35);
+  border-radius: 1.5px;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  .simple-faction-card--good & {
+    background: linear-gradient(160deg, v.$color-faction-good-inner-3, v.$color-faction-good-inner-2, v.$color-faction-good-inner-1);
+  }
+
+  .simple-faction-card--neutral & {
+    background: linear-gradient(160deg, v.$color-faction-neutral-inner-3, v.$color-faction-neutral-inner-2, v.$color-faction-neutral-inner-1);
+  }
+
+  .simple-faction-card--evil & {
+    background: linear-gradient(160deg, v.$color-faction-evil-inner-3, v.$color-faction-evil-inner-2, v.$color-faction-evil-inner-1);
+    border-color: rgba(255, 255, 255, 0.4);
+  }
+}
+
+.simple-fac-portrait-placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  opacity: 0.3;
+
+  .simple-faction-card--good &    { color: v.$color-faction-good-corner; }
+  .simple-faction-card--neutral & { color: v.$color-faction-neutral-corner; }
+  .simple-faction-card--evil &    { color: v.$color-faction-evil-corner; }
+}
+
+.simple-fac-portrait-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  filter: brightness(0) invert(0.15);
+
+  .simple-faction-card--good &    { filter: brightness(0) invert(0.15) sepia(1) saturate(0.8) hue-rotate(60deg); }
+  .simple-faction-card--neutral & { filter: brightness(0) invert(0.15) sepia(1) saturate(0.3); }
+  .simple-faction-card--evil &    { filter: brightness(0) invert(0.8); }
+}
+
+// ── Bottom Strip ───────────────────────────────────────────────────────────────
+.simple-fac-strip {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 2px 4px;
+  background: linear-gradient(180deg, v.$color-faction-neutral-banner-2 0%, v.$color-faction-neutral-banner-1 100%);
+  border-top: 0.75px solid v.$color-faction-neutral-border;
+  flex-shrink: 0;
+
+  .simple-faction-card--good & {
+    background: linear-gradient(180deg, v.$color-faction-good-banner-2 0%, v.$color-faction-good-banner-1 100%);
+    border-top: 0.75px solid v.$color-faction-good-border;
+  }
+
+  .simple-faction-card--evil & {
+    background: linear-gradient(180deg, v.$color-faction-evil-banner-2 0%, v.$color-faction-evil-banner-1 100%);
+    border-top: 0.75px solid v.$color-faction-evil-border;
+  }
+}
+
+.simple-fac-pip-row {
+  display: flex;
+  gap: 1px;
+}
+
+.simple-fac-pip {
+  width: 2px;
+  height: 2px;
+  border-radius: 50%;
+  background-color: v.$color-faction-neutral-corner;
+  opacity: 0.7;
+
+  .simple-faction-card--good &    { background-color: var(--faction-good-color); }
+  .simple-faction-card--evil &    { background-color: var(--faction-evil-color); }
+}
+
+.simple-fac-strip-label {
+  font-family: 'Cinzel', serif;
+  font-size: 3px;
+  letter-spacing: 0.12em;
+  color: v.$color-faction-neutral-accent;
+  opacity: 0.8;
+  text-transform: uppercase;
+
+  .simple-faction-card--good & { color: v.$color-faction-good-accent; }
+  .simple-faction-card--evil & { color: v.$color-faction-evil-accent; }
+}

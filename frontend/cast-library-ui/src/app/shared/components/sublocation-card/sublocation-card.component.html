@@ -98,6 +98,12 @@
 
           }
 
+          @if (campaignMode) {
+            <div class="sub-back-actions">
+              <button class="sub-btn sub-btn--blue" (click)="onDetailsClick($event)">✦ Details</button>
+            </div>
+          }
+
         </div>
 
       </div>

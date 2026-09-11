@@ -336,6 +336,8 @@
             [secrets]="true"
             [secretsRevealed]="subLoc.isVisibleToPlayers"
             [campaignMode]="true"
+            [campaignId]="campaignId()"
+            [sublocationInstanceId]="subLoc.instanceId"
             [tilt]="sublocationTilt(subLoc.instanceId)"
             (secretsClick)="toggleSublocationVisibility(subLoc)"
             (cardClick)="goToSublocation(subLoc)"

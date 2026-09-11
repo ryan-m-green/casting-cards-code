@@ -55,6 +55,10 @@
         <app-simple-location-card [location]="simpleTestLocation"></app-simple-location-card>
         <app-simple-sublocation-card [sublocation]="simpleTestSublocation"></app-simple-sublocation-card>
         <app-simple-cast-card [cast]="simpleTestCast"></app-simple-cast-card>
+        <app-simple-faction-card [faction]="simpleTestFactionGood"></app-simple-faction-card>
+        <app-simple-faction-card [faction]="simpleTestFactionNeutral"></app-simple-faction-card>
+        <app-simple-faction-card [faction]="simpleTestFactionEvil"></app-simple-faction-card>
+        <app-simple-player-card [player]="simpleTestPlayerCard"></app-simple-player-card>
       </div>
       <div class="divider divider--campaign"></div>
       <div class="icon-grid">
@@ -65,6 +69,25 @@
         <cc-player-icon [width]="32" color="white"></cc-player-icon>
         <cc-campaign-icon [width]="32" color="white"></cc-campaign-icon>
         <cc-handout-icon [width]="32" color="white"></cc-handout-icon>
+      </div>
+      <div class="divider divider--campaign"></div>
+      <h4 class="test-section-title">Radial Navigation</h4>
+      <app-cc-radial-nav [activeArea]="radialNavActiveArea" [portalColor]="portalColor" (navigate)="onRadialNav($event)"></app-cc-radial-nav>
+      <div class="divider divider--campaign"></div>
+      <h4 class="test-section-title">Campaign Watermarks</h4>
+      <div class="watermark-demo-grid">
+        <div class="watermark-demo-box">
+          <app-cc-campaign-watermark type="party"></app-cc-campaign-watermark>
+        </div>
+        <div class="watermark-demo-box">
+          <app-cc-campaign-watermark type="faction"></app-cc-campaign-watermark>
+        </div>
+        <div class="watermark-demo-box">
+          <app-cc-campaign-watermark type="combined"></app-cc-campaign-watermark>
+        </div>
+        <div class="watermark-demo-box">
+          <app-cc-campaign-watermark type="hierarchy"></app-cc-campaign-watermark>
+        </div>
       </div>
       </div>
     </div>

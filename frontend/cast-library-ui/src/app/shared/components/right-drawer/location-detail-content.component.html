@@ -1,0 +1,208 @@
+<div class="location-detail-content">
+  <!-- Panel actions -->
+  <cc-detail-panel-actions
+    [isDm]="true"
+    [editing]="editing()"
+    [detailExpanded]="false"
+    [editBtnBorderColor]="'#C8E080'"
+    [portraitUrl]="location().imageUrl || ''"
+    [portraitFile]="imageFile()"
+    [cardType]="'location'"
+    (portraitFileChange)="imageFile.set($event)"
+    (startEditingClick)="startEditing()"
+    (saveDetailsClick)="saveDetails()"
+    (saveToLibraryClick)="saveToLibrary()"
+    (cancelEditingClick)="cancelEditing()"
+    (closeClick)="closePanel()"
+  />
+
+  <div class="detail-content-body">
+    <!-- Location Name -->
+    @if (editing()) {
+      <div class="detail-desc">
+        <app-cc-textbox
+          label="Location Name"
+          placeholder="Location name…"
+          context="campaign"
+          [(ngModel)]="editName"
+        />
+      </div>
+    } @else {
+      <div class="detail-header">
+        <h2 class="detail-title">{{ location().name }}</h2>
+      </div>
+    }
+
+    <!-- Data fields -->
+    @if (editing() || hasField(location().classification) || hasField(location().size) || hasField(location().condition) || hasField(location().geography) || hasField(location().architecture) || hasField(location().climate) || hasField(location().religion) || hasField(location().vibe) || hasField(location().languages)) {
+      <div class="detail-grid">
+        @if (editing() || hasField(location().classification)) {
+          <div class="detail-item">
+            @if (editing()) {
+              <app-cc-textbox
+                label="Classification"
+                placeholder="Classification…"
+                context="campaign"
+                [(ngModel)]="editClassification"
+              />
+            } @else {
+              <span class="detail-label">Classification</span>
+              <span class="detail-value">{{ location().classification }}</span>
+            }
+          </div>
+        }
+        @if (editing() || hasField(location().size)) {
+          <div class="detail-item">
+            @if (editing()) {
+              <app-cc-textbox
+                label="Size"
+                placeholder="Size…"
+                context="campaign"
+                [(ngModel)]="editSize"
+              />
+            } @else {
+              <span class="detail-label">Size</span>
+              <span class="detail-value">{{ location().size }}</span>
+            }
+          </div>
+        }
+        @if (editing() || hasField(location().condition)) {
+          <div class="detail-item">
+            @if (editing()) {
+              <app-cc-textbox
+                label="Condition"
+                placeholder="Condition…"
+                context="campaign"
+                [(ngModel)]="editCondition"
+              />
+            } @else {
+              <span class="detail-label">Condition</span>
+              <span class="detail-value">{{ location().condition }}</span>
+            }
+          </div>
+        }
+        @if (editing() || hasField(location().geography)) {
+          <div class="detail-item">
+            @if (editing()) {
+              <app-cc-textbox
+                label="Geography"
+                placeholder="Geography…"
+                context="campaign"
+                [(ngModel)]="editGeography"
+              />
+            } @else {
+              <span class="detail-label">Geography</span>
+              <span class="detail-value">{{ location().geography }}</span>
+            }
+          </div>
+        }
+        @if (editing() || hasField(location().architecture)) {
+          <div class="detail-item">
+            @if (editing()) {
+              <app-cc-textbox
+                label="Architecture"
+                placeholder="Architecture…"
+                context="campaign"
+                [(ngModel)]="editArchitecture"
+              />
+            } @else {
+              <span class="detail-label">Architecture</span>
+              <span class="detail-value">{{ location().architecture }}</span>
+            }
+          </div>
+        }
+        @if (editing() || hasField(location().climate)) {
+          <div class="detail-item">
+            @if (editing()) {
+              <app-cc-textbox
+                label="Climate"
+                placeholder="Climate…"
+                context="campaign"
+                [(ngModel)]="editClimate"
+              />
+            } @else {
+              <span class="detail-label">Climate</span>
+              <span class="detail-value">{{ location().climate }}</span>
+            }
+          </div>
+        }
+        @if (editing() || hasField(location().religion)) {
+          <div class="detail-item">
+            @if (editing()) {
+              <app-cc-textbox
+                label="Religion"
+                placeholder="Religion…"
+                context="campaign"
+                [(ngModel)]="editReligion"
+              />
+            } @else {
+              <span class="detail-label">Religion</span>
+              <span class="detail-value">{{ location().religion }}</span>
+            }
+          </div>
+        }
+        @if (editing() || hasField(location().vibe)) {
+          <div class="detail-item">
+            @if (editing()) {
+              <app-cc-textbox
+                label="Vibe"
+                placeholder="Vibe…"
+                context="campaign"
+                [(ngModel)]="editVibe"
+              />
+            } @else {
+              <span class="detail-label">Vibe</span>
+              <span class="detail-value">{{ location().vibe }}</span>
+            }
+          </div>
+        }
+        @if (editing() || hasField(location().languages)) {
+          <div class="detail-item">
+            @if (editing()) {
+              <app-cc-textbox
+                label="Languages"
+                placeholder="Languages…"
+                context="campaign"
+                [(ngModel)]="editLanguages"
+              />
+            } @else {
+              <span class="detail-label">Languages</span>
+              <span class="detail-value">{{ location().languages }}</span>
+            }
+          </div>
+        }
+      </div>
+    }
+
+    <!-- Description -->
+    @if (editing() || hasField(location().description)) {
+      <div class="detail-block">
+        @if (editing()) {
+          <app-cc-textbox
+            label="Description"
+            type="textarea"
+            [rows]="4"
+            placeholder="Description…"
+            context="campaign"
+            [(ngModel)]="editDescription"
+          />
+        } @else {
+          <span class="detail-block-label">Description</span>
+          <p class="detail-block-content">{{ location().description }}</p>
+        }
+      </div>
+    }
+
+    <!-- Secrets -->
+    <cc-secrets-manager
+      [secrets]="currentSecrets()"
+      [context]="'campaign'"
+      [isDm]="true"
+      [editing]="editing()"
+      (reveal)="onRevealSecret($event)"
+      (reseal)="onResealSecret($event)"
+      (add)="onAddSecret($event)"
+      (delete)="onDeleteSecret($event)"
+    />
+  </div>
+</div>

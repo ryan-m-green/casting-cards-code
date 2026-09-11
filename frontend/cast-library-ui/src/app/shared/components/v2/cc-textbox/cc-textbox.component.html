@@ -4,6 +4,7 @@
 
 @if (isTextarea()) {
   <textarea
+    #textareaElement
     [id]="id()"
     [class.cc-textbox-journal-textarea]="!isCampaignContext()"
     [class.cc-textbox-campaign-textarea]="isCampaignContext()"

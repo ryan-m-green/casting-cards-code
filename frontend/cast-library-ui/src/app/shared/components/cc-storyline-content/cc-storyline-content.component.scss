@@ -1,0 +1,234 @@
+@use '../../../../styles/variables' as v;
+
+:host {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
+/* ── Scrollable area under the cc-grid-area-title ──────────────────── */
+.storyline-scroll {
+  flex: 1 1 auto;
+  min-height: 0;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  padding: 0;
+}
+
+.storyline-form {
+  flex: 1 1 auto;
+  min-height: 0;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* ── Scene / handout panel ─────────────────────────────────────────── */
+.storyline-panel {
+  flex: 1 1 auto;
+  width: 100%;
+  background: v.$campaign-portal-bg-dark;
+  border: 1px solid v.$campaign-portal-border-bold;
+  border-radius: 10px;
+  padding: 60px 24px 24px;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* Scene textarea fills the remaining drawer height so its bottom gutter
+   matches its left/right gutters inside the panel. */
+.storyline-scene-body {
+  flex: 1 1 auto;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 0;
+}
+
+.storyline-scene-body ::ng-deep .cc-textbox-campaign-textarea {
+  flex: 1 1 auto !important;
+  min-height: 0 !important;
+  resize: vertical;
+}
+
+.storyline-form-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.storyline-label {
+  font-family: v.$font-header;
+  font-size: 12px;
+  font-weight: bolder;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: v.$campaign-portal-text-softer;
+}
+
+.storyline-error {
+  font-family: v.$font-body;
+  font-size: 12px;
+  color: v.$color-ui-error-text;
+}
+
+.storyline-success {
+  font-family: v.$font-body;
+  font-size: 12px;
+  color: v.$campaign-portal-text-bright;
+}
+
+/* ── Scene / Handout toggle, pinned to the top-left of the panel ───── */
+.scene-type-toggle-header {
+  position: absolute;
+  top: 12px;
+  left: 8px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 4px 12px;
+  background: v.$color-overlay-darker;
+  border: 1px solid v.$campaign-portal-border-bold;
+  border-radius: 20px;
+}
+
+/* Save/upload button + status, pinned to the top-right of the panel */
+.storyline-form-actions {
+  position: absolute;
+  top: 14px;
+  right: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 12px;
+  flex-wrap: wrap;
+  max-width: 60%;
+}
+
+.scene-type-toggle-label {
+  font-family: v.$font-body;
+  font-size: 13px;
+  color: v.$campaign-portal-text-muted;
+  font-weight: 500;
+}
+
+.scene-type-toggle-switch {
+  position: relative;
+  display: inline-block;
+  width: 48px;
+  height: 24px;
+
+  input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+  }
+}
+
+.scene-type-toggle-slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: v.$color-overlay-darker;
+  border: 1px solid v.$campaign-portal-border-bold;
+  transition: 0.3s;
+  border-radius: 24px;
+
+  &:before {
+    position: absolute;
+    content: "";
+    height: 18px;
+    width: 18px;
+    left: 2px;
+    bottom: 2px;
+    background-color: v.$campaign-portal-text-muted;
+    transition: 0.3s;
+    border-radius: 50%;
+  }
+}
+
+.scene-type-toggle-switch input:checked + .scene-type-toggle-slider {
+  background-color: v.$campaign-portal-bg-hover;
+  border-color: v.$campaign-portal-text-bright;
+}
+
+.scene-type-toggle-switch input:checked + .scene-type-toggle-slider:before {
+  transform: translateX(24px);
+  background-color: v.$campaign-portal-text-bright;
+}
+
+/* ── Handout upload / preview (from gm-events.handouts.scss) ────────── */
+.handout-upload-input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+.handout-upload-label {
+  display: block;
+  cursor: pointer;
+}
+
+.handout-upload-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: v.$font-body;
+  font-size: 13px;
+  color: v.$campaign-portal-text-muted;
+  background: v.$color-overlay-darker;
+  border: 1px dashed v.$campaign-portal-border-bold;
+  border-radius: 6px;
+  padding: 10px 16px;
+  transition: border-color 0.15s ease, color 0.15s ease;
+
+  .handout-upload-label:hover & {
+    border-color: v.$color-border-accent;
+    color: v.$campaign-portal-text-bright;
+  }
+}
+
+.handout-preview {
+  border-radius: 6px;
+  overflow: hidden;
+  border: 1px solid v.$campaign-portal-border-bold;
+  max-width: 480px;
+}
+
+.handout-preview-img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.handout-pdf-indicator {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  background: v.$color-overlay-darker;
+  border: 1px solid v.$campaign-portal-border-bold;
+  border-radius: 6px;
+  color: v.$campaign-portal-text-muted;
+  font-family: v.$font-body;
+  font-size: 13px;
+}
+
+.handout-pdf-note {
+  font-size: 12px;
+  color: v.$campaign-portal-text-softer;
+  margin-left: auto;
+}

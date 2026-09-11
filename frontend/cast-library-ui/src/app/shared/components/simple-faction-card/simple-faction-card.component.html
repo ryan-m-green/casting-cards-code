@@ -1,0 +1,42 @@
+<div class="simple-faction-card"
+     [class.simple-faction-card--good]="isGood"
+     [class.simple-faction-card--neutral]="isNeutral"
+     [class.simple-faction-card--evil]="isEvil"
+     [style.--faction-good-color]="goodColor()"
+     [style.--faction-evil-color]="evilColor()">
+  <div class="simple-fac-frame">
+    <div class="simple-fac-inner">
+      <!-- banner -->
+      <div class="simple-fac-banner">
+        <div class="simple-fac-name">{{ faction().name }}</div>
+        <div class="simple-fac-subtitle">{{ alignLabel }}</div>
+      </div>
+
+      <!-- portrait -->
+      <div class="simple-fac-portrait">
+        @if (imageUrl || faction().symbolPath) {
+          <img [src]="imageUrl || faction().symbolPath" [alt]="'Emblem of ' + faction().name" class="simple-fac-portrait-img" (error)="$any($event.target).style.display='none'" (load)="$any($event.target).style.display=''" />
+        } @else {
+          <div class="simple-fac-portrait-placeholder">
+            <cc-faction-icon [width]="22" [color]="isEvil ? 'white' : 'black'"></cc-faction-icon>
+          </div>
+        }
+      </div>
+
+      <!-- bottom strip -->
+      <div class="simple-fac-strip">
+        <div class="simple-fac-pip-row">
+          <div class="simple-fac-pip"></div>
+          <div class="simple-fac-pip"></div>
+          <div class="simple-fac-pip"></div>
+        </div>
+        <span class="simple-fac-strip-label">Faction</span>
+        <div class="simple-fac-pip-row">
+          <div class="simple-fac-pip"></div>
+          <div class="simple-fac-pip"></div>
+          <div class="simple-fac-pip"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

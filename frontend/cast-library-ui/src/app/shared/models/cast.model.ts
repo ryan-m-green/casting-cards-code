@@ -9,7 +9,7 @@ export interface Cast {
   alignment: string;
   posture: string;
   speed: string;
-  voicePlacement: string[];
+  keywords: string[];
   voiceNotes: string;
   description: string;
   publicDescription: string;
@@ -26,7 +26,7 @@ export interface CreateCastRequest {
   alignment: string;
   posture: string;
   speed: string;
-  voicePlacement: string[];
+  keywords: string[];
   voiceNotes: string;
   description: string;
   publicDescription: string;
@@ -39,6 +39,7 @@ export interface CampaignCastInstance extends Cast {
   locationInstanceId: string | null;
   sublocationInstanceId: string | null;
   isVisibleToPlayers: boolean;
+  voicePlacement: string[];
   keywords: string[];
   dmNotes: string;
   factionSymbols?: { factionInstanceId: string; symbolPath: string }[];

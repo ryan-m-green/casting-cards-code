@@ -70,6 +70,7 @@ public class GetPlayerCampaignDetailQueryHandler(
         var playerBag = new ConcurrentBag<CampaignPlayerDomain>(players);
 
         filenameService.AddImageUrls(campaign.DmUserId, campaignId, locationBag, sublocationBag, castBag, playerBag);
+        filenameService.AddWorldMapImageUrl(campaign.DmUserId, campaignId, campaign);
 
         return (campaign, locationBag.ToList(), castBag.ToList(), sublocationBag.ToList(), secrets, timeOfDay, playerBag.ToList(), factions);
     }

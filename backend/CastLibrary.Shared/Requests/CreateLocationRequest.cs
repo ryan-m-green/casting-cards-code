@@ -12,6 +12,7 @@ public class CreateLocationRequest
     public string Religion { get; set; } = string.Empty;
     public string Vibe { get; set; } = string.Empty;
     public string Languages { get; set; } = string.Empty;
+    public string[] Keywords { get; set; } = [];
     public string Description { get; set; } = string.Empty;
     public string DmNotes { get; set; } = string.Empty;
 }

@@ -1,0 +1,58 @@
+@use '../../../../../styles/variables' as v;
+
+.detail-panel-actions {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 10px 16px 0;
+  margin-bottom:12px;
+}
+
+.detail-actions-left {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  flex-shrink: 0;
+
+  cc-portrait-input {
+    margin: 0;
+  }
+}
+
+.detail-actions-right {
+  margin-left: auto;
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+}
+
+.campaign-secondary-btn {
+  margin-left: 4px;
+}
+
+.detail-edit-btn,
+.detail-close-btn {
+  background: none;
+  border: 1px solid v.$campaign-portal-border-strong;
+  border-radius: 4px;
+  padding: 4px 12px;
+  font-family: v.$font-header;
+  font-size: 12px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: v.$campaign-portal-text-bright;
+  cursor: pointer;
+  transition: background 0.18s ease, border-color 0.18s ease;
+
+  &:hover {
+    background: v.$campaign-portal-bg-hover;
+    border-color: v.$campaign-portal-border-active;
+  }
+}
+
+.campaign-primary-btn {
+  app-icon {
+    width: 24px;
+    height: 24px;
+  }
+}

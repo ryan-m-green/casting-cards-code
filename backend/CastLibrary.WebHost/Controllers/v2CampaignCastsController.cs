@@ -1,4 +1,5 @@
 using CastLibrary.Logic.Commands.Campaign;
+using CastLibrary.Logic.Commands.Cast;
 using CastLibrary.Logic.Queries.Campaign;
 using CastLibrary.Logic.Services;
 using CastLibrary.Logic.Validators;
@@ -8,6 +9,7 @@ using CastLibrary.Shared.Responses;
 using CastLibrary.WebHost.Hubs;
 using CastLibrary.WebHost.Mappers;
 using CastLibrary.WebHost.MetadataHelpers;
+using CastLibrary.WebHost.Requests;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
@@ -29,6 +31,8 @@ public class CampaignCastsController(
     ICampaignWebMapper mapper,
     IUserRetriever userRetriever,
     ICampaignAccessService campaignAccess,
+    IUploadCastImageCommandHandler uploadCastImageCommandHandler,
+    IFileValidationService fileValidationService,
     IHubContext<CampaignHub> hubContext) : ControllerBase
 {
     private Task<bool> CallerCanView(Guid campaignId) =>
@@ -165,5 +169,32 @@ public class CampaignCastsController(
         });
 
         return NoContent();
+    }
+
+    [HttpPost("{id}/image")]
+    [Consumes("multipart/form-data")]
+    public async Task<IActionResult> UploadImage(Guid campaignId, Guid id, [FromForm] UploadCastImageRequest request)
+    {
+        var validationResult = await fileValidationService.ValidateFileAsync(request.File, 20 * 1024 * 1024,
+            new[] { "image/jpeg", "image/png", "image/webp" });
+
+        if (!validationResult.IsValid)
+            return BadRequest(validationResult.ErrorMessage);
+        var userId = userRetriever.GetUserId(User);
+        var (success, _) = await uploadCastImageCommandHandler.HandleAsync(
+            new UploadCastImageCommand(request.SourceCastId, userId, request.File.OpenReadStream(), validationResult.DetectedContentType));
+
+        if (!success)
+        {
+            return NotFound();
+        }
+
+        await hubContext.Clients.Group(campaignId.ToString()).SendAsync("CastInstanceUpdated", new
+        {
+            campaignId = campaignId,
+            castInstanceId = id,
+        });
+
+        return Ok();
     }
 }

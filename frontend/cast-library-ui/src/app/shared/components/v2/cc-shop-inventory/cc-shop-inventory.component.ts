@@ -121,6 +121,11 @@ export class CcShopInventoryComponent implements ControlValueAccessor {
     this.inventoryText.set(newText);
     this.onChange(this.parseTextToItems(newText));
     this.onTouched();
+    
+    // Scroll to bottom of textarea
+    setTimeout(() => {
+      this.textbox?.scrollToBottom();
+    }, 50);
   }
 
   insertCurrency(currency: string): void {
@@ -250,7 +255,12 @@ export class CcShopInventoryComponent implements ControlValueAccessor {
       });
     }
 
-    return items;
+    // Filter out incomplete items (must have name, price, and coin type)
+    return items.filter(item => 
+      item.name.trim().length > 0 && 
+      item.priceAmount !== null && 
+      item.priceAmount > 0
+    );
   }
 
   private itemsToText(items: ShopItemData[]): string {

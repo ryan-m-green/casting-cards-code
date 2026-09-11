@@ -1,0 +1,321 @@
+@use '../../../../styles/variables' as v;
+
+:host {
+  display: block;
+  width: 100%;
+  height: 100%;
+  position: relative;
+  overscroll-behavior: contain;
+}
+
+.sl-root {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 56px 16px;
+  box-sizing: border-box;
+  gap: 10px;
+  overscroll-behavior: contain;
+}
+
+/* ── Toolbar ─────────────────────────────────────────────────────── */
+.sl-toolbar {
+  width: 100%;
+  max-width: 1000px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.sl-count {
+  font-family: v.$font-body;
+  font-size: 12px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: v.$campaign-portal-text-softer;
+  margin-left:49px;
+}
+
+.sl-error {
+  font-family: v.$font-body;
+  font-size: 12px;
+  color: v.$color-ui-error-text;
+}
+
+.sl-new-btn {
+  margin-left: auto;
+  margin-right:49px;
+}
+
+/* ── Scrollable list ─────────────────────────────────────────────── */
+.sl-scroll {
+  flex: none;
+  width: 100%;
+  max-width: 1000px;
+  overscroll-behavior: contain;
+}
+
+.sl-empty {
+  font-family: v.$font-body;
+  font-size: 14px;
+  color: v.$campaign-portal-text-softer;
+  padding: 32px 8px;
+  text-align: center;
+}
+
+/* ── Cards (sized like the cast card) ────────────────────────────── */
+.sl-list {
+  width: 100%;
+  overflow: hidden;
+  padding: 0 24px 12px;
+  box-sizing: border-box;
+  overscroll-behavior-x: contain;
+
+  .swiper-wrapper {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+  }
+
+  .swiper-slide {
+    flex: 0 0 auto;
+    width: 150px;
+    height: 220px;
+    box-sizing: border-box;
+  }
+}
+
+.sl-card {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  background: v.$campaign-portal-bg-dark;
+  border: 1px solid v.$campaign-portal-border-bold;
+  border-radius: 8px;
+}
+
+.sl-card-banner {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 8px;
+  border-bottom: 1px solid v.$campaign-portal-border;
+  flex-shrink: 0;
+}
+
+.sl-card-title {
+  flex: 1;
+  min-width: 0;
+  font-family: v.$font-body;
+  font-size: 11px;
+  color: v.$campaign-portal-text-bright;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.sl-card-body {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.sl-card-body-content {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  scrollbar-width: thin;
+  scrollbar-color: v.$campaign-portal-border-bold transparent;
+
+  &::-webkit-scrollbar { width: 4px; }
+  &::-webkit-scrollbar-thumb {
+    background: v.$campaign-portal-border-bold;
+    border-radius: 2px;
+  }
+}
+
+/* 44x44 read-only view button pinned to the bottom-right of the card body */
+app-cc-view-btn {
+  position: absolute;
+  right: 4px;
+  bottom: 4px;
+  z-index: 6;
+}
+
+.sl-card-img {
+  display: block;
+  width: 100%;
+  object-fit: cover;
+  max-height:150px;
+}
+
+.sl-card-text {
+  padding: 8px;
+  font-family: v.$font-body;
+  font-size: 11px;
+  line-height: 1.45;
+  color: v.$campaign-portal-text-muted;
+  white-space: pre-wrap;
+  max-height: 150px;
+  overflow-y: hidden;
+}
+
+.sl-card-empty-body {
+  padding: 8px;
+  font-family: v.$font-body;
+  font-size: 11px;
+  font-style: italic;
+  color: v.$campaign-portal-text-softer;
+}
+
+/* ── Card actions (bottom row) ───────────────────────────────────── */
+.sl-card-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-evenly;
+  gap: 4px;
+  padding: 4px;
+  border-top: 1px solid v.$campaign-portal-border;
+  flex-shrink: 0;
+}
+
+.sl-action {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  background: transparent;
+  border: 1px solid v.$campaign-portal-border-bold;
+  border-radius: 5px;
+  color: v.$campaign-portal-text-muted;
+  cursor: pointer;
+  transition: border-color 0.18s ease, color 0.18s ease;
+
+  &:hover:not(:disabled) {
+    color: v.$campaign-portal-text-bright;
+    border-color: v.$color-border-accent;
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  &--active {
+    color: v.$campaign-portal-text-bright;
+    border-color: v.$color-border-accent;
+  }
+
+  &--danger:hover:not(:disabled) {
+    color: #f87171;
+    border-color: rgba(#f87171, 0.6);
+  }
+
+  &--confirm {
+    width: auto;
+    height: 32px;
+    padding: 0 5px;
+    font-family: v.$font-body;
+    font-size: 10px;
+    background: #dc2626;
+    border-color: #dc2626;
+    color: #fff;
+
+    &:hover:not(:disabled) { background: #b91c1c; }
+  }
+}
+
+.sl-delete-slot {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+}
+
+.sl-action-icon {
+  width: 22px;
+  height: 22px;
+  filter: invert(1);
+  opacity: 0.85;
+}
+
+.sl-working-dot {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: v.$color-border-accent;
+  animation: sl-pulse 1s ease-in-out infinite;
+}
+
+@keyframes sl-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.3; }
+}
+
+/* ── Send-to-chronicles menu (opens upward) ──────────────────────── */
+.sl-chronicle-wrap {
+  position: relative;
+  display: inline-flex;
+}
+
+/* Campaign primary button variant used for Send to Chronicles inside the card */
+.sl-chronicle-btn {
+  padding: 0 4px;
+  min-height: 32px;
+  height: 32px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  &--active {
+    border-color: v.$color-border-accent;
+  }
+}
+
+.sl-chronicle-menu {
+  position: absolute;
+  bottom: calc(100% + 6px);
+  top: auto;
+  right: 0;
+  z-index: 9990;
+  min-width: 140px;
+  display: flex;
+  flex-direction: column;
+  padding: 6px;
+  background: v.$campaign-portal-bg-dark;
+  border: 1px solid v.$campaign-portal-border-bold;
+  border-radius: 8px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45);
+}
+
+.sl-chronicle-menu-item {
+  text-align: left;
+  font-family: v.$font-body;
+  font-size: 11px;
+  color: v.$campaign-portal-text-bright;
+  background: transparent;
+  border: none;
+  border-radius: 5px;
+  padding: 6px 7px;
+  cursor: pointer;
+
+  &:hover {
+    background: v.$campaign-portal-bg-hover;
+  }
+}

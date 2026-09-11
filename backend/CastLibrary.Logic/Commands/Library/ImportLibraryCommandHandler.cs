@@ -106,6 +106,7 @@ public class ImportLibraryCommandHandler(
                     DmUserId = dmUserId,
                     ImageUrl = string.Empty,
                     SymbolPath = card.SymbolPath,
+                    Keywords = card.Keywords,
                     CreatedAt = DateTime.UtcNow
                 };
                 await factionInsertRepository.InsertAsync(domain);
@@ -163,6 +164,7 @@ public class ImportLibraryCommandHandler(
                     DmUserId = dmUserId,
                     Name = card.Name,
                     Description = card.Description,
+                    Keywords = card.Keywords,
                     CreatedAt = DateTime.UtcNow,
                     ShopItems = card.ShopItems.Select((item, i) => new ShopItemDomain
                     {
@@ -239,6 +241,7 @@ public class ImportLibraryCommandHandler(
                     Religion = card.Religion,
                     Vibe = card.Vibe,
                     Languages = card.Languages,
+                    Keywords = card.Keywords,
                     Description = card.Description,
                     CreatedAt = DateTime.UtcNow
                 };
@@ -306,7 +309,7 @@ public class ImportLibraryCommandHandler(
                     Alignment = card.Alignment,
                     Posture = card.Posture,
                     Speed = card.Speed,
-                    VoicePlacement = card.VoicePlacement,
+                    Keywords = card.Keywords,
                     Description = card.Description,
                     PublicDescription = card.PublicDescription,
                     CreatedAt = DateTime.UtcNow,

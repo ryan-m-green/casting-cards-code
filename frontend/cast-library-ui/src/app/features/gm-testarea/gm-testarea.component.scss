@@ -142,7 +142,7 @@
   background: #000;
   animation: tod-preview-breathe 8.4s ease-in-out infinite;
   margin-bottom: 0;
-  height: 3400px;
+  height: 4500px;
 }
 
 @keyframes tod-preview-breathe {
@@ -659,4 +659,22 @@
     font-style: italic;
     margin: 0;
   }
+}
+
+// ── Campaign Watermark Demo ──────────────────────────────────────────────────
+.watermark-demo-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  padding: 1rem 0;
+}
+
+.watermark-demo-box {
+  position: relative;
+  width: 260px;
+  height: 260px;
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  border-radius: 8px;
+  background: rgba(0, 0, 0, 0.1);
+  overflow: hidden;
 }

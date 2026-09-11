@@ -11,7 +11,8 @@ public interface ICreateSublocationCommandHandler
 }
 public class CreateSublocationCommandHandler(
     ISublocationInsertRepository sublocationInsertRepository,
-    ISubscriptionLimitService subscriptionLimitService) : ICreateSublocationCommandHandler
+    ISubscriptionLimitService subscriptionLimitService,
+    ICampaignKeywordInsertRepository campaignKeywordInsertRepository) : ICreateSublocationCommandHandler
 {
     public async Task<SublocationDomain> HandleAsync(CreateSublocationCommand command)
     {
@@ -23,6 +24,7 @@ public class CreateSublocationCommandHandler(
             DmUserId = command.DmUserId,
             LocationId = command.Request.LocationId,
             Name = command.Request.Name, Description = command.Request.Description, DmNotes = command.Request.DmNotes,
+            Keywords = command.Request.Keywords,
             CreatedAt = DateTime.UtcNow,
             ShopItems = command.Request.ShopItems.Select((item, i) => new ShopItemDomain
             {
@@ -33,7 +35,9 @@ public class CreateSublocationCommandHandler(
                 Description = item.Description, SortOrder = i,
             }).ToList(),
         };
-        return await sublocationInsertRepository.InsertAsync(domain);
+        var result = await sublocationInsertRepository.InsertAsync(domain);
+        await campaignKeywordInsertRepository.MergeKeywordsAsync(command.DmUserId, "sublocation", domain.Keywords);
+        return result;
     }
 }
 

@@ -39,6 +39,12 @@
               <button class="loc-btn loc-btn--red" (click)="onDeleteClick($event)">✦ Delete</button>
             </div>
           }
+
+          @if (campaignMode) {
+            <div class="loc-back-actions">
+              <button class="loc-btn loc-btn--blue" (click)="onDetailsClick($event)">✦ Details</button>
+            </div>
+          }
         </div>
       </div>
     </div>

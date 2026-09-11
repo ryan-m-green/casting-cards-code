@@ -18,7 +18,7 @@ public class CastCard
     public string Alignment { get; set; } = string.Empty;
     public string Posture { get; set; } = string.Empty;
     public string Speed { get; set; } = string.Empty;
-    public string[] VoicePlacement { get; set; } = [];
+    public string[] Keywords { get; set; } = [];
     public string Description { get; set; } = string.Empty;
     public string PublicDescription { get; set; } = string.Empty;
     public string ImageFileName { get; set; }
@@ -36,6 +36,7 @@ public class LocationCard
     public string Religion { get; set; } = string.Empty;
     public string Vibe { get; set; } = string.Empty;
     public string Languages { get; set; } = string.Empty;
+    public string[] Keywords { get; set; } = [];
     public string Description { get; set; } = string.Empty;
     public string ImageFileName { get; set; }
 }
@@ -49,12 +50,14 @@ public class FactionCard
     public bool Hidden { get; set; }
     public string Description { get; set; }
     public string SymbolPath { get; set; }
+    public string[] Keywords { get; set; } = [];
 }
 
 public class SublocationCard
 {
     public string Name { get; set; } = string.Empty;
     public string Description { get; set; } = string.Empty;
+    public string[] Keywords { get; set; } = [];
     public string ImageFileName { get; set; }
     public List<ShopItemCard> ShopItems { get; set; } = [];
 }

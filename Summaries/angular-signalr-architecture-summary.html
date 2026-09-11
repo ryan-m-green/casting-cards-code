@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Casting Cards — v1 vs v2 Campaign, SignalR &amp; Angular Architecture</title>
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+  <style>
+    :root { --bg: #f8f9fa; --panel: #ffffff; --text: #212529; --code: #f4f4f4; --accent: #0d6efd; --v1: #dc3545; --v2: #198754; }
+    * { box-sizing: border-box; }
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; margin: 0; padding: 0; }
+    main { max-width: 1200px; margin: 0 auto; padding: 2rem; }
+    header { margin-bottom: 2rem; border-bottom: 3px solid var(--accent); padding-bottom: 1rem; }
+    h1 { margin: 0; font-size: 2.2rem; }
+    h2 { margin-top: 2.5rem; color: var(--accent); border-bottom: 2px solid #dee2e6; padding-bottom: .5rem; }
+    h3 { margin-top: 1.8rem; }
+    h4 { margin-top: 1.4rem; color: #495057; }
+    section { background: var(--panel); border-radius: 8px; padding: 1.5rem; margin-bottom: 1.5rem; box-shadow: 0 1px 4px rgba(0,0,0,.08); }
+    code, pre { font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace; font-size: .9em; }
+    code { background: var(--code); padding: .1rem .35rem; border-radius: 4px; }
+    pre { background: var(--code); padding: 1rem; border-radius: 6px; overflow-x: auto; border: 1px solid #e9ecef; }
+    ul { padding-left: 1.25rem; }
+    li { margin-bottom: .5rem; }
+    table { width: 100%; border-collapse: collapse; margin: 1rem 0; }
+    th, td { border: 1px solid #dee2e6; padding: .65rem; text-align: left; }
+    th { background: #e9ecef; }
+    .v1 { color: var(--v1); font-weight: 600; }
+    .v2 { color: var(--v2); font-weight: 600; }
+    .mermaid { display: flex; justify-content: center; margin: 1.5rem 0; background: #fff; border: 1px solid #e9ecef; border-radius: 6px; padding: 1rem; }
+    .diagram-caption { text-align: center; font-style: italic; color: #6c757d; margin-top: .5rem; }
+    .note { background: #e7f1ff; border-left: 4px solid var(--accent); padding: 1rem; border-radius: 4px; }
+    .legend { display: flex; gap: 1rem; justify-content: center; margin-top: .5rem; }
+    .legend span { padding: .2rem .6rem; border-radius: 4px; font-size: .9rem; }
+    .legend .v1box { background: #f8d7da; color: #842029; }
+    .legend .v2box { background: #d1e7dd; color: #0f5132; }
+    .legend .sharedbox { background: #e2e3e5; color: #41464b; }
+  </style>
+</head>
+<body>
+  <main>
+    <header>
+      <h1>Casting Cards — v1 vs v2 Campaign, SignalR &amp; Angular Architecture</h1>
+      <p>
+        This document explicitly separates the legacy <span class="v1">v1 campaign shell</span>
+        from the new <span class="v2">v2 campaign shell</span>, then explains the shared SignalR
+        hub, Angular signals, and the eventing workflows that both shells use.
+      </p>
+    </header>
+
+    <section>
+      <h2>1. v1 vs v2 Campaign Architecture — The Big Picture</h2>
+
+      <p>
+        The codebase currently maintains two parallel campaign shells. <span class="v1">v1</span>
+        is the original route-based shell with dedicated feature pages. <span class="v2">v2</span>
+        is a newer, unified shell with radial navigation, viewport panning, and a shared right drawer.
+      </p>
+
+      <table>
+        <thead>
+          <tr>
+            <th>Aspect</th>
+            <th class="v1">v1 Campaign</th>
+            <th class="v2">v2 Campaign</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Route</strong></td>
+            <td><code>/campaign/:id</code></td>
+            <td><code>/v2/campaign/:id</code></td>
+          </tr>
+          <tr>
+            <td><strong>Shell component</strong></td>
+            <td><code>CampaignShellComponent</code><br><code>features/campaign/campaign-shell</code></td>
+            <td><code>V2CampaignShellComponent</code><br><code>layout/v2-campaign-shell</code></td>
+          </tr>
+          <tr>
+            <td><strong>State service</strong></td>
+            <td><code>CampaignShellService</code></td>
+            <td><code>V2CampaignShellService</code></td>
+          </tr>
+          <tr>
+            <td><strong>Navigation</strong></td>
+            <td>Route changes to dedicated pages (locations, sublocations, cast, factions, plot)</td>
+            <td>Single-page radial grid; viewport pans to areas; right drawer shows detail cards</td>
+          </tr>
+          <tr>
+            <td><strong>Detail views</strong></td>
+            <td>Full-page feature components<br>(<code>campaign-location-detail</code>, <code>campaign-sublocation-detail</code>, etc.)</td>
+            <td>Right drawer with <code>*-detail-content</code> components and v2 reusable components</td>
+          </tr>
+          <tr>
+            <td><strong>Component style</strong></td>
+            <td>Mix of NgModule and newer standalone components; inline secrets sections</td>
+            <td>Standalone components, <code>shared/components/v2/</code> reusable building blocks (e.g. <code>cc-secrets-manager</code>)</td>
+          </tr>
+          <tr>
+            <td><strong>Real-time</strong></td>
+            <td colspan="2" style="text-align:center;">Both share <code>CampaignHubService</code> and the same <code>/hubs/campaign</code> SignalR connection</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="legend">
+        <span class="v1box">v1 only</span>
+        <span class="v2box">v2 only</span>
+        <span class="sharedbox">Shared by both</span>
+      </div>
+
+      <h3>Side-by-side architecture diagram</h3>
+      <div class="mermaid">
+flowchart TB
+    subgraph Shared["Shared Infrastructure"]
+        HUB[CampaignHubService
+            SignalR /hubs/campaign]
+        API[ASP.NET Core API]
+        CAMPAIGN[CampaignDetail model
+            locations, sublocations, casts, secrets, etc.]
+    end
+
+    subgraph V1["v1 Campaign Shell — /campaign/:id"]
+        V1SHELL[CampaignShellComponent]
+        V1SVC[CampaignShellService]
+        V1PAGE1[campaign-location-detail]
+        V1PAGE2[campaign-sublocation-detail]
+        V1PAGE3[campaign-cast-detail]
+        V1PAGE4[gm-events / the-party]
+    end
+
+    subgraph V2["v2 Campaign Shell — /v2/campaign/:id"]
+        V2SHELL[V2CampaignShellComponent]
+        V2SVC[V2CampaignShellService]
+        RADIAL[CcRadialNav]
+        VIEWPORT[Viewport panning]
+        DRAWER[RightDrawerComponent]
+        V2COMP[cc-secrets-manager
+                cc-shop-inventory
+                cc-card-navigation]
+    end
+
+    API --> HUB
+    HUB --> V1SVC
+    HUB --> V2SVC
+    V1SVC --> V1SHELL
+    V1SHELL --> V1PAGE1
+    V1SHELL --> V1PAGE2
+    V1SHELL --> V1PAGE3
+    V1SHELL --> V1PAGE4
+    V2SVC --> V2SHELL
+    V2SHELL --> RADIAL
+    RADIAL --> VIEWPORT
+    VIEWPORT --> DRAWER
+    DRAWER --> V2COMP
+      </div>
+      <p class="diagram-caption">v1 navigates by full route changes; v2 keeps the user in one shell and swaps detail cards in a drawer.</p>
+    </section>
+
+    <section>
+      <h2>2. SignalR Setup — Shared by v1 and v2</h2>
+      <p>
+        Both shells use the same <code>CampaignHubService</code> singleton. It opens one
+        WebSocket/SSE connection per browser session and joins the campaign group.
+      </p>
+
+      <h3>Connection bootstrap</h3>
+      <pre><code>// src/app/core/hub/campaign-hub.service.ts
+async connect(): Promise&lt;void&gt; {
+  this.connection = new signalR.HubConnectionBuilder()
+    .withUrl(`${environment.apiUrl}/hubs/campaign`, {
+      accessTokenFactory: () => localStorage.getItem('cast_library_token') || '',
+      transport: signalR.HttpTransportType.WebSockets
+                 | signalR.HttpTransportType.ServerSentEvents
+    })
+    .withAutomaticReconnect([0, 2000, 5000, 10000, 30000])
+    .withServerTimeout(90000)
+    .configureLogging(environment.production ?
+                      signalR.LogLevel.None : signalR.LogLevel.Trace)
+    .build();
+
+  await this.connection.start();
+  this._isConnected.set(true);
+
+  // One RxJS Subject per server event
+  this.connection.on('SecretCreated', (event) => {
+    this.secretCreatedSubject.next(event);
+  });
+  // ... SecretRevealed, ShopItemAdded, CastTraveled, etc.
+}</code></pre>
+
+      <h3>Connection lifecycle</h3>
+      <div class="mermaid">
+flowchart LR
+    subgraph Browser["Browser"]
+        SHELL["CampaignShellComponent or V2CampaignShellComponent"]
+        HUB["CampaignHubService"]
+        SIG["_isConnected signal"]
+    end
+    subgraph Server["ASP.NET Core"]
+        H["CampaignHub"]
+        G["Campaign group"]
+    end
+
+    SHELL -->|inject| HUB
+    HUB -->|HubConnectionBuilder with JWT| H
+    H -->|Start / JoinCampaign| G
+    G -->|Broadcast events| H
+    H -->|connection.on| HUB
+    HUB -->|Subject.next| SIG
+    SIG -->|UI update| SHELL
+
+    style Browser fill:#e7f1ff
+    style Server fill:#d1e7dd
+      </div>
+      <p class="diagram-caption">The shell starts the hub, joins the campaign group, and the service surfaces inbound events as typed RxJS observables.</p>
+
+      <h3>Event fan-out</h3>
+      <p>
+        Each server hub method is mapped to a private <code>Subject</code> and exposed as a
+        read-only <code>Observable</code>. Components subscribe to react to real-time changes.
+      </p>
+      <pre><code>private secretCreatedSubject = new Subject&lt;SecretCreatedEvent | null&gt;();
+readonly secretCreated$ = this.secretCreatedSubject.asObservable();
+
+// Consumer
+this.campaignHub.secretCreated$.subscribe(event => {
+  this.shellSvc.updateCampaign(c => ...);
+});</code></pre>
+    </section>
+
+    <section>
+      <h2>3. Angular Design Patterns</h2>
+
+      <h3>Standalone components</h3>
+      <p>
+        v2 and right-drawer components are Angular standalone components. They declare their
+        own imports and do not depend on an <code>NgModule</code>.
+      </p>
+      <pre><code>@Component({
+  selector: 'cc-secrets-manager',
+  standalone: true,
+  imports: [CommonModule, FormsModule],
+  templateUrl: './cc-secrets-manager.component.html',
+  styleUrl: './cc-secrets-manager.component.scss'
+})
+export class CcSecretsManagerComponent { ... }</code></pre>
+
+      <h3>Signals for reactive state</h3>
+      <ul>
+        <li><code>input.required&lt;T&gt;()</code> / <code>input&lt;T&gt;()</code> — component inputs.</li>
+        <li><code>output&lt;T&gt;()</code> — component events (replaces <code>@Output</code>).</li>
+        <li><code>signal()</code> — local mutable state.</li>
+        <li><code>computed()</code> — derived read-only state.</li>
+      </ul>
+      <pre><code>readonly secrets  = input.required&lt;CampaignSecret[]&gt;();
+readonly editing  = input&lt;boolean&gt;(false);
+readonly add      = output&lt;string&gt;();
+
+adding           = signal(false);
+newSecretContent = signal('');
+currentSecrets   = computed(() => this.secretsState() ?? this.secrets());</code></pre>
+
+      <h3>v2 sharable component example: <code>cc-secrets-manager</code></h3>
+      <p>
+        Built to replace duplicated <code>detail-secrets-section</code> markup across v2 detail
+        content components. It receives data through inputs and reports actions through outputs.
+      </p>
+      <pre><code>&lt;cc-secrets-manager
+  [secrets]="currentSecrets()"
+  [context]="'campaign'"
+  [isDm]="true"
+  [editing]="editing()"
+  (reveal)="onRevealSecret($event)"
+  (reseal)="onResealSecret($event)"
+  (add)="onAddSecret($event)"
+  (delete)="onDeleteSecret($event)" /&gt;</code></pre>
+    </section>
+
+    <section>
+      <h2>4. v2 SignalR Eventing Path</h2>
+      <p>
+        This diagram follows one server-side event from the backend hub all the way to the v2
+        component that consumes it. It does not include HTTP write paths or parent/child binding;
+        it is purely the real-time notification pipeline.
+      </p>
+      <div class="mermaid">
+sequenceDiagram
+    participant Server as "ASP.NET Core CampaignHub"
+    participant Conn as "SignalR connection (one per browser)"
+    participant HubSvc as "CampaignHubService"
+    participant Subj as "RxJS Subject (e.g. secretCreated$)"
+    participant V2Shell as "V2CampaignShellComponent"
+    participant V2Svc as "V2CampaignShellService"
+    participant V2Comp as "v2 component (cc-secrets-manager)"
+
+    Server->>Conn: Send "SecretCreated" to campaign group
+    Conn->>HubSvc: connection.on('SecretCreated', event)
+    HubSvc->>Subj: subject.next(event)
+    Subj->>V2Shell: this.hub.secretCreated$.subscribe(...)
+    V2Shell->>V2Svc: updateCampaign(c => ...)
+    V2Svc->>V2Comp: campaign signal changes → computed input updates
+    V2Comp->>V2Comp: Re-render with new secret
+      </div>
+      <p class="diagram-caption">A single real-time event flows from the server connection into a typed RxJS stream, reaches the v2 shell, updates the shared campaign signal, and finally re-renders the affected v2 component.</p>
+    </section>
+
+    <section>
+      <h2>5. v2 Dependency Hierarchy</h2>
+      <p>
+        This diagram shows the static injection and component tree for the v2 campaign shell. It
+        is not an event flow — it is the parent/child and service ownership structure.
+      </p>
+      <div class="mermaid">
+flowchart TD
+    subgraph Services
+        API[HttpClient]
+        HUB[CampaignHubService
+            singleton, root]
+        V2SVC[V2CampaignShellService
+            singleton, root]
+    end
+
+    subgraph V2ShellTree
+        SHELL[V2CampaignShellComponent]
+        RADIAL[CcRadialNavComponent]
+        VIEWPORT[CcCardNavigation / viewport cards]
+        DRAWER[RightDrawerComponent]
+        SDC[sublocation-detail-content]
+        LDC[location-detail-content]
+        CDC[cast-detail-content]
+        SEC[cc-secrets-manager]
+        SHOP[cc-shop-inventory]
+    end
+
+    SHELL --> RADIAL
+    SHELL --> VIEWPORT
+    SHELL --> DRAWER
+    DRAWER --> SDC
+    DRAWER --> LDC
+    DRAWER --> CDC
+    SDC --> SEC
+    SDC --> SHOP
+    LDC --> SEC
+    CDC --> SEC
+
+    SHELL -.->|inject| API
+    SHELL -.->|inject| HUB
+    SHELL -.->|inject| V2SVC
+    SDC -.->|inject| API
+    SEC -.->|no inject| SDC
+      </div>
+      <p class="diagram-caption">Services are singletons injected at the top. The shell owns radial navigation, viewport cards, and the drawer. Detail content components render inside the drawer and host reusable v2 components.</p>
+    </section>
+
+    <section>
+      <h2>6. Key Files Reference</h2>
+      <table>
+        <thead>
+          <tr><th>Area</th><th>Path</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>SignalR hub</td><td><code>src/app/core/hub/campaign-hub.service.ts</code></td></tr>
+          <tr><td>v1 shell service</td><td><code>src/app/core/campaign-shell.service.ts</code></td></tr>
+          <tr><td>v1 shell</td><td><code>src/app/features/campaign/campaign-shell/campaign-shell.component.ts</code></td></tr>
+          <tr><td>v2 shell service</td><td><code>src/app/core/v2-campaign-shell.service.ts</code></td></tr>
+          <tr><td>v2 shell</td><td><code>src/app/layout/v2-campaign-shell/v2-campaign-shell.component.ts</code></td></tr>
+          <tr><td>Routing</td><td><code>src/app/app.routes.ts</code></td></tr>
+          <tr><td>v2 reusable secrets</td><td><code>src/app/shared/components/v2/cc-secrets-manager/</code></td></tr>
+          <tr><td>v2 drawer consumers</td><td><code>src/app/shared/components/right-drawer/*-detail-content.component.ts</code></td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <footer style="text-align:center; padding:2rem 0; color:#6c757d; font-size:.9rem;">
+      Open this file in a browser to render the Mermaid diagrams.
+    </footer>
+  </main>
+
+  <script>
+    mermaid.initialize({ startOnLoad: true, theme: 'default' });
+  </script>
+</body>
+</html>

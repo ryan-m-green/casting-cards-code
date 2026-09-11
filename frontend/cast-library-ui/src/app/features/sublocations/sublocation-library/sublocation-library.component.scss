@@ -8,6 +8,13 @@
   right: 20px;
 }
 
+.cc-keyword-editor-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 6px;
+}
+
 .shop-item-row {
   justify-content: space-between;
   margin-bottom: 6px;

@@ -82,6 +82,8 @@ public class CampaignsController(
     IAssignFactionToSublocationCommandHandler assignFactionToSublocationCommand,
     IAssignFactionToCastCommandHandler assignFactionToCastCommand,
     IUpdateCampaignLastAccessedCommandHandler updateLastAccessedCommand,
+    IUploadCampaignWorldMapImageCommandHandler uploadWorldMapImageCommand,
+    IFileValidationService fileValidationService,
     ICampaignAccessService campaignAccess) : ControllerBase
 {
     private Task<bool> CallerOwns(Guid campaignId) =>
@@ -188,6 +190,7 @@ public class CampaignsController(
             FantasyType = campaign.FantasyType,
             Description = campaign.Description,
             SpineColor = campaign.SpineColor,
+            WorldMapImageUrl = campaign.WorldMapImageUrl,
             Status = campaign.Status.ToString(),
             IsDemo = campaign.IsDemo,
             Locations = locations.Select(o => campaignMapper.ToLocationInstanceResponse(o)).ToList(),
@@ -222,6 +225,7 @@ public class CampaignsController(
             FantasyType = campaign.FantasyType,
             Description = campaign.Description,
             SpineColor = campaign.SpineColor,
+            WorldMapImageUrl = campaign.WorldMapImageUrl,
             Status = campaign.Status.ToString(),
             Locations = locations.Select(campaignMapper.ToLocationInstanceResponse).ToList(),
             Casts = casts.Select(campaignMapper.ToCastInstanceResponse).ToList(),
@@ -233,6 +237,25 @@ public class CampaignsController(
         };
 
         return Ok(response);
+    }
+
+    [HttpPost("{id}/worldmap-image")]
+    [Authorize(Roles = "DM,Admin")]
+    [Consumes("multipart/form-data")]
+    public async Task<IActionResult> UploadWorldMapImage(Guid id, IFormFile file)
+    {
+        if (!await CallerOwns(id)) return Forbid();
+
+        var validationResult = await fileValidationService.ValidateFileAsync(file, 20 * 1024 * 1024,
+            new[] { "image/jpeg", "image/png", "image/webp" });
+
+        if (!validationResult.IsValid)
+            return BadRequest(validationResult.ErrorMessage);
+
+        var imageUrl = await uploadWorldMapImageCommand.HandleAsync(
+            new UploadCampaignWorldMapImageCommand(id, file.OpenReadStream(), validationResult.DetectedContentType));
+
+        return Ok(new { imageUrl });
     }
 
     [HttpPost("{id}/locations")]

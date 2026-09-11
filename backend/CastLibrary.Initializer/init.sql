@@ -60,6 +60,7 @@ CREATE TABLE IF NOT EXISTS locations (
     vibe           TEXT,
     languages      TEXT,
     description    TEXT,
+    keywords       TEXT[]       NOT NULL DEFAULT '{}',
     created_at     TIMESTAMPTZ  NOT NULL DEFAULT NOW()
 );
 
@@ -70,6 +71,7 @@ CREATE TABLE IF NOT EXISTS sublocations (
     dm_user_id   UUID         NOT NULL REFERENCES users(id) ON DELETE CASCADE,
     name         VARCHAR(255) NOT NULL,
     description  TEXT,
+    keywords     TEXT[]       NOT NULL DEFAULT '{}',
     created_at   TIMESTAMPTZ  NOT NULL DEFAULT NOW()
 );
 
@@ -94,10 +96,20 @@ CREATE TABLE IF NOT EXISTS casts (
     alignment          VARCHAR(100),
     posture            VARCHAR(100),
     speed              VARCHAR(100),
-    voice_placement    TEXT[],
+    keywords           TEXT[],
     description        TEXT,
     public_description TEXT,
     created_at         TIMESTAMPTZ  NOT NULL DEFAULT NOW()
+);
+
+-- ─── Campaign Keywords ─────────────────────────────────────────────────────────
+CREATE TABLE IF NOT EXISTS campaign_keywords (
+    id         UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    dm_user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    card_type  VARCHAR(20) NOT NULL CHECK (card_type IN ('location','sublocation','cast','faction')),
+    keyword    VARCHAR(100) NOT NULL,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    UNIQUE (dm_user_id, card_type, keyword)
 );
 
 -- ─── Campaign Instances: Locations ──────────────────────────────────────────────
@@ -139,6 +151,7 @@ CREATE TABLE IF NOT EXISTS factions (
     symbol_path  TEXT,
     description  TEXT,
     dm_notes     TEXT,
+    keywords     TEXT[]       NOT NULL DEFAULT '{}',
     created_at   TIMESTAMPTZ  NOT NULL DEFAULT NOW()
 );
 
@@ -517,10 +530,38 @@ CREATE TABLE IF NOT EXISTS campaign_soundtracks (
     volume       INTEGER      NOT NULL DEFAULT 80,
     is_loop      BOOLEAN      NOT NULL DEFAULT false,
     loop_delay_seconds INTEGER,
+    kind         VARCHAR(20)  NOT NULL DEFAULT 'music',
     created_at   TIMESTAMPTZ  NOT NULL DEFAULT NOW()
 );
 
 CREATE INDEX IF NOT EXISTS idx_campaign_soundtracks_campaign_id ON campaign_soundtracks(campaign_id);
+
+-- ─── Campaign Ambiances ────────────────────────────────────────────────────────
+-- Persisted "ambiance button" playlists that combine music and sound effects
+CREATE TABLE IF NOT EXISTS campaign_ambiances (
+    id              UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    campaign_id     UUID         NOT NULL REFERENCES campaigns(id) ON DELETE CASCADE,
+    title           VARCHAR(200) NOT NULL,
+    randomize_music BOOLEAN      NOT NULL DEFAULT false,
+    created_at      TIMESTAMPTZ  NOT NULL DEFAULT NOW()
+);
+
+CREATE INDEX IF NOT EXISTS idx_campaign_ambiances_campaign_id ON campaign_ambiances(campaign_id);
+
+CREATE TABLE IF NOT EXISTS campaign_ambiance_items (
+    id                  UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    ambiance_id         UUID NOT NULL REFERENCES campaign_ambiances(id) ON DELETE CASCADE,
+    soundtrack_id       UUID NOT NULL REFERENCES campaign_soundtracks(id) ON DELETE CASCADE,
+    sort_order          INTEGER NOT NULL DEFAULT 0,
+    volume              INTEGER NOT NULL DEFAULT 80,
+    pause_mode          VARCHAR(20) NOT NULL DEFAULT 'none',
+    pause_delay_seconds INTEGER,
+    pause_min_seconds   INTEGER,
+    pause_max_seconds   INTEGER
+);
+
+CREATE INDEX IF NOT EXISTS idx_campaign_ambiance_items_ambiance_id ON campaign_ambiance_items(ambiance_id);
+CREATE INDEX IF NOT EXISTS idx_campaign_ambiance_items_soundtrack_id ON campaign_ambiance_items(soundtrack_id);
 
 -- ─── Campaign Sessions ─────────────────────────────────────────────────────────
 -- Session tracking for campaign play sessions
@@ -837,6 +878,9 @@ CREATE INDEX IF NOT EXISTS idx_campaign_session_archived_keywords_trgm
 
 CREATE INDEX IF NOT EXISTS idx_campaign_session_chronicles_keywords_trgm
     ON campaign_session_chronicles USING gin (keywords gin_trgm_ops);
+
+CREATE INDEX IF NOT EXISTS idx_campaign_keywords_keyword_trgm
+    ON campaign_keywords USING gin (keyword gin_trgm_ops);
 
 -- ============================================================
 -- Stripe Subscription Integration - Slice 1

@@ -1,7 +1,7 @@
 import { Component, OnInit, signal, computed, inject, ViewChild, ElementRef, DestroyRef } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { ReactiveFormsModule, FormBuilder, Validators, FormControl } from '@angular/forms';
+import { ReactiveFormsModule, FormsModule, FormBuilder, Validators, FormControl } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { catchError } from 'rxjs/operators';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
@@ -10,9 +10,10 @@ import { environment } from '../../../../environments/environment';
 import { Faction, FactionColors } from '../../../shared/models/faction.model';
 import { SparkleService } from '../../../shared/services/sparkle.service';
 import { FactionCardComponent } from '../../../shared/components/faction-card/faction-card.component';
-import { IconPickerComponent } from '../../../shared/components/icon-picker/icon-picker.component';
+import { CcSymbolPickerComponent } from '../../../shared/components/v2/cc-symbol-picker/cc-symbol-picker.component';
 import { JournalTitleComponent } from '../../../shared/components/journal-title/journal-title.component';
 import { JournalDropdownComponent } from '../../../shared/components/journal-dropdown/journal-dropdown.component';
+import { KeywordTagsComponent } from '../../../shared/components/v2/cc-keyword-tags/cc-keyword-tags.component';
 import { HttpErrorResponse } from '@angular/common/http';
 import { SubscriptionDrawerService } from '../../../core/subscription-drawer.service';
 import { AuthService } from '../../../core/auth/auth.service';
@@ -39,7 +40,7 @@ export const FACTION_TYPE_OPTIONS = [
 @Component({
   selector: 'app-faction-form',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, RouterLink, FactionCardComponent, IconPickerComponent, JournalTitleComponent, JournalDropdownComponent],
+  imports: [CommonModule, ReactiveFormsModule, FormsModule, RouterLink, FactionCardComponent, CcSymbolPickerComponent, JournalTitleComponent, JournalDropdownComponent, KeywordTagsComponent],
   templateUrl: './faction-form.component.html',
   styleUrl: './faction-form.component.scss'
 })
@@ -60,6 +61,8 @@ export class FactionFormComponent implements OnInit {
   limitError     = signal<string | null>(null);
   imageUrl       = signal<string | null>(null);
   selectedIcon   = signal<string | null>(null);
+  keywords       = signal<string[]>([]);
+  keywordOptions = signal<string[]>([]);
   typeOptions      = FACTION_TYPE_OPTIONS;
   perceptionLabel  = perceptionLabel;
 
@@ -90,6 +93,7 @@ export class FactionFormComponent implements OnInit {
       influence:  v.influence ?? 0,
       perception: v.perception ?? 0,
       hidden:     v.hidden ?? false,
+      keywords:   this.keywords(),
       imageUrl:   this.imageUrl() ?? undefined,
       colors:     {
         evilColor: v.evilColor ?? '#000000',
@@ -100,6 +104,9 @@ export class FactionFormComponent implements OnInit {
   });
 
   ngOnInit() {
+    this.http.get<{ keywords: string[] }>(`${environment.apiUrl}/api/campaign-keywords?cardType=faction`)
+      .subscribe(res => this.keywordOptions.set(res.keywords ?? []));
+
     this.form.valueChanges
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe(v => this.formValue.set(v));
@@ -119,6 +126,7 @@ export class FactionFormComponent implements OnInit {
           influence:   f.influence ?? 0,
           perception:  f.perception ?? 0,
         });
+        this.keywords.set(f.keywords ?? []);
         this.imageUrl.set(f.imageUrl ?? null);
         if (f.symbolPath) {
           this.selectedIcon.set(f.symbolPath);
@@ -159,6 +167,7 @@ export class FactionFormComponent implements OnInit {
       dmNotes:     value.dmNotes ?? undefined,
       influence:   value.influence ?? 0,
       perception:  value.perception ?? 0,
+      keywords:    this.keywords(),
       symbolPath:  this.selectedIcon() ?? undefined,
     };
 
@@ -190,8 +199,9 @@ export class FactionFormComponent implements OnInit {
   }
 
   onIconSelected(path: string): void {
-    this.selectedIcon.set(path);
-    this.imageUrl.set(path);
+    const value = path || null;
+    this.selectedIcon.set(value);
+    this.imageUrl.set(value);
   }
 
   get typeControl() { return this.form.get('type') as FormControl; }

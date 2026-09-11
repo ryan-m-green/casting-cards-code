@@ -21,7 +21,7 @@ namespace CastLibrary.Logic.Factories
                 Alignment = cast.Alignment,
                 Posture = cast.Posture,
                 Speed = cast.Speed,
-                VoicePlacement = cast.VoicePlacement,
+                Keywords = cast.Keywords,
                 Description = cast.Description,
                 PublicDescription = cast.PublicDescription,
                 ImageFileName = imageFileName,

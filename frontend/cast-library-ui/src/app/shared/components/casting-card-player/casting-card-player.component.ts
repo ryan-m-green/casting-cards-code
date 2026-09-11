@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter, inject } from '@angular/core';
+import { Component, Input, Output, EventEmitter, ElementRef, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { PlayerCardWithDetails } from '../../models/player-card.model';
 import { CcPlayerIconComponent } from '../v2/cc-player-icon/cc-player-icon.component';
@@ -13,6 +13,7 @@ import { CampaignShellService } from '../../../core/campaign-shell.service';
 })
 export class CastingCardPlayerComponent {
   private shellSvc = inject(CampaignShellService);
+  private el = inject(ElementRef);
 
   @Input({ required: true }) member!: PlayerCardWithDetails;
   @Input() mode: 'player' | 'dm' = 'player';
@@ -36,21 +37,36 @@ export class CastingCardPlayerComponent {
   private _backScrollStartTop = 0;
   private _backScrollActive   = false;
 
+  private inSwiper(): boolean {
+    return !!this.el.nativeElement?.closest('.swiper-slide');
+  }
+
   onPointerDown(e: PointerEvent): void {
     this._ptrStartX = e.clientX;
     this._ptrStartY = e.clientY;
     this._dragging  = false;
+    if (this.inSwiper()) return;
   }
 
   onPointerMove(e: PointerEvent): void {
+    if (this.inSwiper()) return;
     if (Math.abs(e.clientX - this._ptrStartX) > 5 ||
         Math.abs(e.clientY - this._ptrStartY) > 5) {
       this._dragging = true;
     }
   }
 
-  toggleFlip(): void {
-    if (this._dragging) { this._dragging = false; return; }
+  toggleFlip(e?: MouseEvent): void {
+    if (this.inSwiper()) {
+      if (!e ||
+          Math.abs(e.clientX - this._ptrStartX) > 5 ||
+          Math.abs(e.clientY - this._ptrStartY) > 5) {
+        return;
+      }
+    } else if (this._dragging) {
+      this._dragging = false;
+      return;
+    }
     this.flipped = !this.flipped;
   }
 

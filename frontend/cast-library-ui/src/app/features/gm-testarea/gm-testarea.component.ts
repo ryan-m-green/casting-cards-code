@@ -16,6 +16,10 @@ import { CastingCardPlayerComponent } from '../../shared/components/casting-card
 import { SimpleLocationCardComponent } from '../../shared/components/simple-location-card/simple-location-card.component';
 import { SimpleSublocationCardComponent } from '../../shared/components/simple-sublocation-card/simple-sublocation-card.component';
 import { SimpleCastCardComponent } from '../../shared/components/simple-cast-card/simple-cast-card.component';
+import { SimpleFactionCardComponent } from '../../shared/components/simple-faction-card/simple-faction-card.component';
+import { SimplePlayerCardComponent } from '../../shared/components/simple-player-card/simple-player-card.component';
+import { CcRadialNavComponent } from '../../shared/components/cc-radial-nav/cc-radial-nav.component';
+import { CcCampaignWatermarkComponent } from '../../shared/components/cc-campaign-watermark/cc-campaign-watermark.component';
 import { Location } from '../../shared/models/location.model';
 import { Sublocation, CampaignSublocationInstance } from '../../shared/models/sublocation.model';
 import { Cast } from '../../shared/models/cast.model';
@@ -26,7 +30,7 @@ import { environment } from '../../../environments/environment';
 @Component({
   selector: 'app-gm-testarea',
   standalone: true,
-  imports: [CommonModule, FormsModule, JournalTitleComponent, CcTextboxComponent, CampaignDropdownComponent, JournalDropdownComponent, CcShopInventoryComponent, CcLangPickerComponent, CcPortraitInputComponent, CcFactionColorsComponent, CcColorPickerComponent, CcCounterBadgeComponent, CcPoliticalInfluenceComponent, CcSymbolPickerComponent, CcCastIconComponent, CcFactionIconComponent, CcLocationIconComponent, CcSublocationIconComponent, CcPlayerIconComponent, CcCampaignIconComponent, CcHandoutIconComponent, PortalCardComponent, CurrencyCardComponent, WhisperCardComponent, LocationCardComponent, SublocationCardComponent, CastCardComponent, FactionCardComponent, CastingCardPlayerComponent, SimpleLocationCardComponent, SimpleSublocationCardComponent, SimpleCastCardComponent],
+  imports: [CommonModule, FormsModule, JournalTitleComponent, CcTextboxComponent, CampaignDropdownComponent, JournalDropdownComponent, CcShopInventoryComponent, CcLangPickerComponent, CcPortraitInputComponent, CcFactionColorsComponent, CcColorPickerComponent, CcCounterBadgeComponent, CcPoliticalInfluenceComponent, CcSymbolPickerComponent, CcCastIconComponent, CcFactionIconComponent, CcLocationIconComponent, CcSublocationIconComponent, CcPlayerIconComponent, CcCampaignIconComponent, CcHandoutIconComponent, PortalCardComponent, CurrencyCardComponent, WhisperCardComponent, LocationCardComponent, SublocationCardComponent, CastCardComponent, FactionCardComponent, CastingCardPlayerComponent, SimpleLocationCardComponent, SimpleSublocationCardComponent, SimpleCastCardComponent, SimpleFactionCardComponent, SimplePlayerCardComponent, CcRadialNavComponent, CcCampaignWatermarkComponent],
   
   templateUrl: './gm-testarea.component.html',
   styleUrl: './gm-testarea.component.scss'
@@ -232,6 +236,13 @@ export class GmTestareaComponent {
   campaignCounter = 5;
   journalCounter = 3;
 
+  radialNavActiveArea = 'middle-middle';
+
+  onRadialNav(area: string) {
+    this.radialNavActiveArea = area;
+    console.log('Radial navigation selected:', area);
+  }
+
   // Mock data for cards
 testLocation: Location = {
   id: 'test-loc-1',
@@ -246,6 +257,7 @@ testLocation: Location = {
   religion: 'Forgotten',
   vibe: 'Haunted',
   languages: 'Common',
+  keywords: [],
   description: 'A dark and mysterious manor',
   createdAt: '2024-01-01'
 };
@@ -263,6 +275,7 @@ simpleTestLocation: Location = {
   religion: 'Druidic',
   vibe: 'Magical',
   languages: 'Common, Sylvan',
+  keywords: [],
   description: 'A glowing underground cavern',
   createdAt: '2024-01-02'
 };
@@ -325,7 +338,7 @@ simpleTestCast: Cast = {
   alignment: 'Neutral Good',
   posture: 'Graceful',
   speed: 'Medium',
-  voicePlacement: ['Medium'],
+  keywords: ['Medium'],
   voiceNotes: 'Soft and melodic',
   description: 'An ancient elven wizard seeking forgotten knowledge',
   publicDescription: 'A wise elven scholar',
@@ -343,7 +356,7 @@ testCast: Cast = {
   alignment: 'Lawful Good',
   posture: 'Upright',
   speed: 'Medium',
-  voicePlacement: ['Deep'],
+  keywords: ['Deep'],
   voiceNotes: 'Noble tone',
   description: 'A noble paladin',
   publicDescription: 'A knight in shining armor',
@@ -358,6 +371,58 @@ testFaction: Faction = {
   influence: 5,
   hidden: false,
   description: 'Noble order of knights',
+  keywords: [],
+  colors: {
+    evilColor: '#004d1a',
+    goodColor: '#ff99bb'
+  },
+  createdAt: '2024-01-01'
+};
+
+simpleTestFactionGood: Faction = {
+  id: 'test-faction-good',
+  dmUserId: 'test-dm-1',
+  name: 'Dawn Keepers',
+  type: 'Order',
+  influence: 7,
+  perception: 1,
+  hidden: false,
+  description: 'Heroic protectors of the realm',
+  keywords: [],
+  colors: {
+    evilColor: '#004d1a',
+    goodColor: '#ff99bb'
+  },
+  createdAt: '2024-01-01'
+};
+
+simpleTestFactionNeutral: Faction = {
+  id: 'test-faction-neutral',
+  dmUserId: 'test-dm-1',
+  name: 'Veil Merchants',
+  type: 'Guild',
+  influence: 4,
+  perception: 0,
+  hidden: false,
+  description: 'Traders with uncertain motives',
+  keywords: [],
+  colors: {
+    evilColor: '#004d1a',
+    goodColor: '#ff99bb'
+  },
+  createdAt: '2024-01-01'
+};
+
+simpleTestFactionEvil: Faction = {
+  id: 'test-faction-evil',
+  dmUserId: 'test-dm-1',
+  name: 'Ash Covenant',
+  type: 'Cult',
+  influence: 6,
+  perception: -1,
+  hidden: false,
+  description: 'Dark pact worshippers',
+  keywords: [],
   colors: {
     evilColor: '#004d1a',
     goodColor: '#ff99bb'
@@ -373,6 +438,19 @@ testPlayerCard: PlayerCardWithDetails = {
   name: 'Aldric the Brave',
   race: 'Human',
   class: 'Fighter',
+  conditions: [],
+  currencyBalances: [],
+  traits: []
+};
+
+simpleTestPlayerCard: PlayerCardWithDetails = {
+  id: 'test-player-2',
+  campaignId: 'test-campaign-1',
+  playerUserId: 'player-2',
+  playerDisplayName: 'Player 2',
+  name: 'Lyra Thornwick',
+  race: 'Halfling',
+  class: 'Rogue',
   conditions: [],
   currencyBalances: [],
   traits: []

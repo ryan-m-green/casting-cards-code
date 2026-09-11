@@ -21,7 +21,7 @@ export class SoundtrackContentComponent implements OnInit, OnDestroy {
   private soundtrackSync = inject(SoundtrackSyncService);
   private subscriptions: Subscription[] = [];
 
-  campaignId = input.required<string>();
+  campaignId = input<string>('');
   portalColor = input<string>('#6e28d0');
   masterVolume = signal(100);
   activeTrackCount = signal(0);

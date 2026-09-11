@@ -50,7 +50,7 @@ public class UpdateCastInstanceCommandHandler(
                 Alignment         = command.Request.Alignment,
                 Posture           = command.Request.Posture,
                 Speed             = command.Request.Speed,
-                VoicePlacement    = command.Request.VoicePlacement,
+                Keywords          = command.Request.Keywords,
             };
             await updateCastHandler.HandleAsync(
                 new UpdateCastCommand(instance.SourceCastId, libraryRequest, command.DmUserId));

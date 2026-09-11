@@ -7,17 +7,118 @@ import { AuthService } from './core/auth/auth.service';
 import { RightDrawerComponent } from './shared/components/right-drawer/right-drawer.component';
 import { SubscriptionContentComponent } from './shared/components/right-drawer/subscription-content.component';
 import { SubscriptionDrawerService } from './core/subscription-drawer.service';
+import { DrawerService, DrawerConfig } from './core/drawer.service';
+import { ShopPurchaseContentComponent } from './shared/components/right-drawer/shop-purchase-content.component';
+import { PlayerSecretsContentComponent } from './shared/components/right-drawer/player-secrets-content.component';
+import { PlayerInventoryContentComponent } from './shared/components/right-drawer/player-inventory-content.component';
+import { PartyGoldContentComponent } from './shared/components/right-drawer/party-gold-content.component';
+import { ChronicleContentComponent } from './shared/components/right-drawer/chronicle-content.component';
+import { SoundtrackContentComponent } from './shared/components/right-drawer/soundtrack-content.component';
+import { LocationDetailContentComponent } from './shared/components/right-drawer/location-detail-content.component';
+import { SublocationDetailContentComponent } from './shared/components/right-drawer/sublocation-detail-content.component';
+import { CastDetailContentComponent } from './shared/components/right-drawer/cast-detail-content.component';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, RightDrawerComponent, SubscriptionContentComponent],
+  imports: [
+    RouterOutlet,
+    RightDrawerComponent,
+    SubscriptionContentComponent,
+    ShopPurchaseContentComponent,
+    PlayerSecretsContentComponent,
+    PlayerInventoryContentComponent,
+    PartyGoldContentComponent,
+    ChronicleContentComponent,
+    SoundtrackContentComponent,
+    LocationDetailContentComponent,
+    SublocationDetailContentComponent,
+    CastDetailContentComponent
+  ],
   template: `
     <div class="portal-transition-overlay" [class.active]="transition.active()" [class.instant]="transition.instant()"></div>
     <router-outlet />
     
     <!-- Templates for drawer content -->
-    <ng-template #subscriptionContentTemplate>
+    <ng-template #subscriptionContentTemplate let-context>
       <app-subscription-content
+        (closeDrawer)="rightDrawer.close()"
+      />
+    </ng-template>
+
+    <ng-template #shopPurchaseContentTemplate let-context>
+      <app-shop-purchase-content
+        (closeDrawer)="rightDrawer.close()"
+      />
+    </ng-template>
+
+    <ng-template #playerSecretsContentTemplate let-context>
+      <app-player-secrets-content
+        [portalColor]="context?.portalColor"
+        [mode]="context?.mode || 'player'"
+        [member]="context?.member"
+        (closeDrawer)="rightDrawer.close()"
+      />
+    </ng-template>
+
+    <ng-template #playerInventoryContentTemplate let-context>
+      <app-player-inventory-content
+        [portalColor]="context?.portalColor"
+        [campaignId]="context?.campaignId || ''"
+        (closeDrawer)="rightDrawer.close()"
+      />
+    </ng-template>
+
+    <ng-template #partyGoldContentTemplate let-context>
+      <app-party-gold-content
+        [campaignId]="context?.campaignId || ''"
+        [portalColor]="context?.portalColor"
+        (closeDrawer)="rightDrawer.close()"
+      />
+    </ng-template>
+
+    <ng-template #chronicleContentTemplate let-context>
+      <app-chronicle-content
+        [portalColor]="context?.portalColor"
+        [isDmMode]="context?.isDmMode || false"
+        [campaignId]="context?.campaignId || ''"
+        [initialSearchQuery]="context?.initialSearchQuery || ''"
+        (closeDrawer)="rightDrawer.close()"
+      />
+    </ng-template>
+
+    <ng-template #soundtrackContentTemplate let-context>
+      <app-soundtrack-content
+        [campaignId]="context?.campaignId || ''"
+        [portalColor]="context?.portalColor"
+        (closeDrawer)="rightDrawer.close()"
+      />
+    </ng-template>
+
+    <ng-template #locationDetailContentTemplate let-context>
+      <app-location-detail-content
+        [location]="context?.location"
+        [secrets]="context?.secrets || []"
+        [campaignId]="context?.campaignId || ''"
+        (closeDrawer)="rightDrawer.close()"
+      />
+    </ng-template>
+
+    <ng-template #sublocationDetailContentTemplate let-context>
+      <app-sublocation-detail-content
+        [sublocation]="context?.sublocation"
+        [secrets]="context?.secrets || []"
+        [campaignId]="context?.campaignId"
+        [sublocationInstanceId]="context?.sublocationInstanceId"
+        (closeDrawer)="rightDrawer.close()"
+      />
+    </ng-template>
+
+    <ng-template #castDetailContentTemplate let-context>
+      <app-cast-detail-content
+        [cast]="context?.cast"
+        [secrets]="context?.secrets || []"
+        [campaignId]="context?.campaignId"
+        [castInstanceId]="context?.castInstanceId"
         (closeDrawer)="rightDrawer.close()"
       />
     </ng-template>
@@ -27,6 +128,8 @@ import { SubscriptionDrawerService } from './core/subscription-drawer.service';
       [title]="drawerTitle()"
       [contentTemplate]="currentContentTemplate()"
       [contentContext]="currentContentContext()"
+      [onOpen]="currentOnOpen()"
+      [onClose]="currentOnClose()"
     />
   `,
   styles: [`
@@ -59,19 +162,38 @@ export class App implements OnInit, OnDestroy {
   private router = inject(Router);
   private authService = inject(AuthService);
   private subscriptionDrawerService = inject(SubscriptionDrawerService);
+  private drawerService = inject(DrawerService);
   private _navSub: Subscription | null = null;
   private _drawerSub?: Subscription;
+  private _genericDrawerSub?: Subscription;
 
   rightDrawer = viewChild<RightDrawerComponent>('rightDrawer');
   subscriptionContentTemplate = viewChild<TemplateRef<any>>('subscriptionContentTemplate');
-  drawerTitle = signal('Upgrade Your Plan');
+  shopPurchaseContentTemplate = viewChild<TemplateRef<any>>('shopPurchaseContentTemplate');
+  playerSecretsContentTemplate = viewChild<TemplateRef<any>>('playerSecretsContentTemplate');
+  playerInventoryContentTemplate = viewChild<TemplateRef<any>>('playerInventoryContentTemplate');
+  partyGoldContentTemplate = viewChild<TemplateRef<any>>('partyGoldContentTemplate');
+  chronicleContentTemplate = viewChild<TemplateRef<any>>('chronicleContentTemplate');
+  soundtrackContentTemplate = viewChild<TemplateRef<any>>('soundtrackContentTemplate');
+  locationDetailContentTemplate = viewChild<TemplateRef<any>>('locationDetailContentTemplate');
+  sublocationDetailContentTemplate = viewChild<TemplateRef<any>>('sublocationDetailContentTemplate');
+  castDetailContentTemplate = viewChild<TemplateRef<any>>('castDetailContentTemplate');
+  
+  drawerTitle = signal('');
   currentContentTemplate = signal<TemplateRef<any> | null>(null);
   currentContentContext = signal<any>(null);
+  currentOnOpen = signal<(() => Promise<void> | void) | null>(null);
+  currentOnClose = signal<(() => Promise<void> | void) | null>(null);
 
   ngOnInit() {
-    // Listen for subscription drawer open requests
+    // Listen for subscription drawer open requests (legacy support)
     this._drawerSub = this.subscriptionDrawerService.open$.subscribe(() => {
       this.openSubscriptionDrawer();
+    });
+
+    // Listen for generic drawer open requests
+    this._genericDrawerSub = this.drawerService.open$.subscribe((config: DrawerConfig) => {
+      this.openDrawer(config);
     });
 
     // Check if returning from Stripe checkout and start subscription refresh interval
@@ -150,19 +272,73 @@ export class App implements OnInit, OnDestroy {
     if (this._drawerSub) {
       this._drawerSub.unsubscribe();
     }
+    if (this._genericDrawerSub) {
+      this._genericDrawerSub.unsubscribe();
+    }
   }
 
   openSubscriptionDrawer() {
+    this.openDrawer({
+      contentType: 'subscription',
+      title: 'Upgrade Your Plan',
+      context: {}
+    });
+  }
+
+  openDrawer(config: DrawerConfig) {
     const drawer = this.rightDrawer();
-    const template = this.subscriptionContentTemplate();
-    
-    if (!drawer || !template) {
+    if (!drawer) {
       return;
     }
-    
-    this.drawerTitle.set('Upgrade Your Plan');
+
+    // Get the appropriate template based on content type
+    let template: TemplateRef<any> | null = null;
+    switch (config.contentType) {
+      case 'subscription':
+        template = this.subscriptionContentTemplate() ?? null;
+        break;
+      case 'shop-purchase':
+        template = this.shopPurchaseContentTemplate() ?? null;
+        break;
+      case 'player-secrets':
+        template = this.playerSecretsContentTemplate() ?? null;
+        break;
+      case 'player-inventory':
+        template = this.playerInventoryContentTemplate() ?? null;
+        break;
+      case 'party-gold':
+        template = this.partyGoldContentTemplate() ?? null;
+        break;
+      case 'chronicle':
+        template = this.chronicleContentTemplate() ?? null;
+        break;
+      case 'soundtrack':
+        template = this.soundtrackContentTemplate() ?? null;
+        break;
+      case 'location-detail':
+        template = this.locationDetailContentTemplate() ?? null;
+        break;
+      case 'sublocation-detail':
+        template = this.sublocationDetailContentTemplate() ?? null;
+        break;
+      case 'cast-detail':
+        template = this.castDetailContentTemplate() ?? null;
+        break;
+    }
+
+    if (!template) {
+      console.error(`Template not found for content type: ${config.contentType}`);
+      return;
+    }
+
+    // Set drawer configuration
+    this.drawerTitle.set(config.title || '');
     this.currentContentTemplate.set(template);
-    this.currentContentContext.set({});
+    this.currentContentContext.set({ $implicit: config.context || {} });
+    this.currentOnOpen.set(config.onOpen || null);
+    this.currentOnClose.set(config.onClose || null);
+
+    // Open the drawer
     drawer.open();
   }
 }

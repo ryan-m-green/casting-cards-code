@@ -1,4 +1,4 @@
-import { Component, input, output, signal, computed, forwardRef } from '@angular/core';
+import { Component, input, output, signal, computed, forwardRef, ViewChild, ElementRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 
@@ -30,6 +30,8 @@ export class CcTextboxComponent implements ControlValueAccessor {
   readonly valueChange = output<string>();
   
   value = signal<string>('');
+  
+  @ViewChild('textareaElement') textareaElement!: ElementRef<HTMLTextAreaElement>;
   
   private onChange: (value: string) => void = () => {};
   onTouched: () => void = () => {};
@@ -64,5 +66,14 @@ export class CcTextboxComponent implements ControlValueAccessor {
   
   setDisabledState(isDisabled: boolean): void {
     // Handled via disabled input
+  }
+  
+  scrollToBottom(): void {
+    if (this.isTextarea() && this.textareaElement) {
+      setTimeout(() => {
+        const textarea = this.textareaElement.nativeElement;
+        textarea.scrollTop = textarea.scrollHeight;
+      }, 0);
+    }
   }
 }

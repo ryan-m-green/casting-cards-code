@@ -1,0 +1,109 @@
+<div class="cc-root" [style.--portal-color]="portalColor">
+
+  <!-- ── Search + type filters ─────────────────────────────────────── -->
+  <div class="cc-controls">
+    <div class="cc-search">
+      <img class="cc-search__icon" src="/magnifying_glass_landscape_search.svg" alt="" aria-hidden="true" />
+      <input
+        class="cc-search__input"
+        type="search"
+        placeholder="Search the chronicle…"
+        aria-label="Search the campaign chronicle"
+        [value]="searchQuery()"
+        (input)="onSearchInput($any($event.target).value)"
+      />
+      @if (searchQuery()) {
+        <button class="cc-search__clear" type="button" aria-label="Clear search" (click)="onSearchInput('')">✕</button>
+      }
+    </div>
+
+    <div class="cc-chips" role="group" aria-label="Filter chronicle entries by type">
+      <button
+        class="cc-chip"
+        type="button"
+        [class.cc-chip--active]="activeTypes().length === 0"
+        [attr.aria-pressed]="activeTypes().length === 0"
+        (click)="clearFilters()"
+      >
+        All <span class="cc-chip__count">{{ entries().length }}</span>
+      </button>
+
+      @for (type of typeCounts(); track type.value) {
+        <button
+          class="cc-chip"
+          type="button"
+          [class.cc-chip--active]="isTypeActive(type.value)"
+          [attr.aria-pressed]="isTypeActive(type.value)"
+          (click)="toggleType(type.value)"
+        >
+          <img class="cc-chip__icon" [src]="type.icon" alt="" aria-hidden="true" />
+          {{ type.label }} <span class="cc-chip__count">{{ type.count }}</span>
+        </button>
+      }
+    </div>
+
+    @if (searchQuery() || activeTypes().length) {
+      <div class="cc-summary">
+        <span>{{ resultCount() }} {{ resultCount() === 1 ? 'entry' : 'entries' }} match</span>
+        <button class="cc-summary__reset" type="button" (click)="clearFilters()">Reset</button>
+      </div>
+    }
+  </div>
+
+  <!-- ── Body ─────────────────────────────────────────────────────── -->
+  @if (loading()) {
+    <div class="cc-empty">Loading the chronicle…</div>
+  } @else if (error()) {
+    <div class="cc-empty cc-empty--error">{{ error() }}</div>
+  } @else if (groups().length === 0) {
+    <div class="cc-empty">
+      {{ entries().length ? 'No chronicle entries match your search or filters.' : 'This chronicle is empty.' }}
+    </div>
+  } @else {
+    @for (group of groups(); track group.key) {
+      <section class="cc-day">
+        <header class="cc-day__head">
+          <span class="cc-day__date">{{ group.date }}</span>
+          <span class="cc-day__meta">
+            {{ group.weekday }} · {{ group.entries.length }} {{ group.entries.length === 1 ? 'entry' : 'entries' }}
+          </span>
+        </header>
+
+        @for (entry of group.entries; track entry.id) {
+          <article class="cc-entry" [class.cc-entry--gm]="entry.isGmOnly">
+            <header class="cc-entry__head">
+              <span class="cc-entry__type">
+                <img class="cc-entry__type-icon" [src]="typeMeta(entry.contentType).icon" alt="" aria-hidden="true" />
+                {{ typeMeta(entry.contentType).label }}
+              </span>
+              @if (entry.todSliceName) {
+                <span class="cc-entry__tod" [innerHTML]="highlightText(entry.todSliceName)"></span>
+              }
+              @if (entry.isGmOnly && isDmMode) {
+                <span class="cc-entry__gm">GM only</span>
+              }
+            </header>
+
+            @if (imageFor(entry); as imageSrc) {
+              <img class="cc-entry__image" [src]="imageSrc" [alt]="entry.title" />
+            }
+
+            <h3 class="cc-entry__title" [innerHTML]="highlightText(entry.title)"></h3>
+
+            @if (entry.body) {
+              <p class="cc-entry__body" [innerHTML]="highlightText(entry.body)"></p>
+            }
+
+            @if (displayEntities(entry).length) {
+              <div class="cc-entry__tags">
+                @for (entity of displayEntities(entry); track entity.entityType + entity.entityId) {
+                  <span class="cc-tag cc-tag--entity" [innerHTML]="highlightText(entity.entityName)"></span>
+                }
+              </div>
+            }
+          </article>
+        }
+      </section>
+    }
+  }
+</div>

@@ -31,6 +31,7 @@ public class SoundtrackReadRepository(
                      volume,
                      is_loop         AS IsLoop,
                      loop_delay_seconds AS LoopDelaySeconds,
+                     kind,
                      created_at      AS CreatedAt
               FROM campaign_soundtracks
               WHERE campaign_id = @CampaignId
@@ -59,6 +60,7 @@ public class SoundtrackReadRepository(
                      volume,
                      is_loop         AS IsLoop,
                      loop_delay_seconds AS LoopDelaySeconds,
+                     kind,
                      created_at      AS CreatedAt
               FROM campaign_soundtracks
               WHERE id = @SoundtrackId";

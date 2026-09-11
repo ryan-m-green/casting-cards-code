@@ -11,7 +11,7 @@
       [tabIndex]="triggerTabIndex()"
       [disabled]="disabled()"
       [value]="inputValue()"
-      placeholder="Select or type..."
+      [placeholder]="placeholder()"
       autocomplete="off"
       (focus)="onFocus()"
       (input)="onInput($event)"

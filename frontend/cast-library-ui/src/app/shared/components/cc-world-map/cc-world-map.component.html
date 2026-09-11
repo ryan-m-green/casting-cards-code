@@ -1,0 +1,40 @@
+@if (worldMapImageUrl(); as url) {
+  <div class="world-map" [style.--portal-color]="portalColor()">
+    <img class="world-map__image" [src]="url" alt="World map" />
+    <app-cc-view-btn label="View world map" (clicked)="requestView.emit()" />
+    @if (isDm()) {
+      <label class="world-map__upload">
+        <input
+          type="file"
+          accept="image/jpeg,image/png,image/webp"
+          class="world-map__input"
+          (change)="onFileSelected($event)"
+        />
+        <span class="world-map__upload-btn">
+          {{ uploading() ? 'Uploading…' : 'Replace map' }}
+        </span>
+      </label>
+    }
+  </div>
+} @else {
+  <div class="world-map world-map--empty" [style.--portal-color]="portalColor()">
+    @if (isDm()) {
+      <label class="world-map__upload">
+        <input
+          type="file"
+          accept="image/jpeg,image/png,image/webp"
+          class="world-map__input"
+          (change)="onFileSelected($event)"
+        />
+        <span class="world-map__upload-btn">
+          {{ uploading() ? 'Uploading…' : 'Upload world map' }}
+        </span>
+      </label>
+      @if (error()) {
+        <p class="world-map__error">{{ error() }}</p>
+      }
+    } @else {
+      <p class="world-map__placeholder">No world map yet</p>
+    }
+  </div>
+}

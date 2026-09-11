@@ -13,14 +13,17 @@ public interface ICreateCastCommandHandler
 public class CreateCastCommandHandler(
     ICastInsertRepository castRepository,
     ICastFactory castFactory,
-    ISubscriptionLimitService subscriptionLimitService) : ICreateCastCommandHandler
+    ISubscriptionLimitService subscriptionLimitService,
+    ICampaignKeywordInsertRepository campaignKeywordInsertRepository) : ICreateCastCommandHandler
 {
     public async Task<CastDomain> HandleAsync(CreateCastCommand command)
     {
         await subscriptionLimitService.CheckLimitAsync(command.DmUserId, "Cast");
         
         var domain = castFactory.Create(command.Request, command.DmUserId);
-        return await castRepository.InsertAsync(domain);
+        var result = await castRepository.InsertAsync(domain);
+        await campaignKeywordInsertRepository.MergeKeywordsAsync(command.DmUserId, "cast", domain.Keywords);
+        return result;
     }
 }
 

@@ -1,0 +1,328 @@
+.cc-card-faction-navigation {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 70%;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+
+  @media (max-width: 1024px) {
+    width: 100%;
+  }
+
+  &.loading {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  &.error {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #ff6b6b;
+  }
+}
+
+.loading-state,
+.error-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  text-align: center;
+
+  button {
+    margin-top: 1rem;
+    padding: 0.5rem 1rem;
+    background: #6e28d0;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+
+    &:hover {
+      background: #5a23b0;
+    }
+  }
+}
+
+.spinner {
+  width: 40px;
+  height: 40px;
+  border: 4px solid rgba(110, 40, 208, 0.3);
+  border-top-color: #6e28d0;
+  border-radius: 50%;
+}
+
+/* Rolodex Container */
+.rolodex-container {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  z-index: 1;
+  // Hide content that overflows the width with fade effect on both sides
+  mask-image: linear-gradient(to right, transparent 1%, black 50%, black 99%, transparent 100%);
+  -webkit-mask-image: linear-gradient(to right, transparent 1%, black 1%, black 99%, transparent 100%);
+}
+
+/* Rows Wrapper - Contains middle row for Swiper */
+.rows-wrapper {
+  width: 100%;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+/* Dropzones Layer */
+.dropzones-layer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 5;
+}
+
+/* Row Styles */
+.row {
+  width: 100%;
+  box-sizing: border-box;
+  position: relative;
+}
+
+/* Top Row - Parent Faction Breadcrumb */
+.top-row {
+  flex: 0 0 auto;
+  min-height: 120px;
+
+  .cards-row {
+    column-gap: 24px;
+    align-items: center;
+    justify-content: center;
+  }
+}
+
+/* Middle Row - Active Cards */
+.middle-row {
+  flex: 0 0 auto;
+  height: auto;
+  min-height: 380px; // card 220 + gap 24 + stack 110 + buffer 26
+  padding: 0 2rem;
+
+  .cards-row {
+    gap: 24px;
+    align-items: center;
+  }
+}
+
+/* Swiper Container on the row */
+.swiper {
+  width: 100%;
+  height: auto;
+  overflow: hidden;
+}
+
+/* Swiper Wrapper */
+.swiper-wrapper {
+  display: flex;
+  height: 100%;
+  flex-direction: row;
+  position: relative;
+  padding-top: 6px;
+}
+
+/* Swiper Slide */
+.swiper-slide {
+  box-sizing: border-box;
+  flex: 0 0 auto;
+  width: 174px; /* outer width: 12px padding + 150px card + 12px padding */
+  height: auto;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  flex-shrink: 0;
+  padding: 0 12px;
+  margin-top: 12px;
+}
+
+/* Slide content container */
+.slide-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 24px;
+}
+
+/* Bottom row content within slide */
+.bottom-row-content {
+  position: relative;
+}
+
+/* Cards Row */
+.cards-row {
+  display: flex;
+  height: 100%;
+  min-width: max-content;
+}
+
+/* Card Wrappers */
+.card-wrapper {
+  flex: 0 0 auto;
+}
+
+/* Top Row Cards - Simple card size */
+.top-row-card {
+  margin: 0;
+}
+
+/* Drop zone container for centered positioning */
+.drop-zone-container {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  gap: 24px;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Drop spots for card positioning - match simple-faction-card size */
+.drop-spot {
+  width: 75px; // Match simple-faction-card width
+  height: 110px; // Match simple-faction-card height
+  margin: 0;
+  flex: 0 0 auto;
+  pointer-events: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+/* Cards within dropzones */
+.drop-spot .top-row-card {
+  opacity: 1;
+  pointer-events: auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  cursor: pointer;
+}
+
+/* Cast Stack Wrapper (children of a faction) */
+.cast-stack-wrapper {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex: 0 0 auto;
+  width: 75px; // Match simple card width
+  height: 110px; // Match simple card height
+  margin: 0 37.5px; // Center 75px simple card within 150px faction card width: (150-75)/2 = 37.5px
+}
+
+/* Cast Stack */
+.cast-stack {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  cursor: pointer;
+  pointer-events: auto;
+}
+
+/* Cast Card Wrapper */
+.cast-card-wrapper {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 75px; // Match simple card width
+  height: 110px; // Match simple card height
+  opacity: 0.6;
+  filter: grayscale(0.5);
+  pointer-events: none;
+}
+
+// Mobile Responsive Design
+@media (max-width: 768px) {
+  .cc-card-faction-navigation {
+    border-radius: 8px;
+    margin-top: 0;
+  }
+
+  .top-row {
+    padding: 0 1rem;
+
+    .cards-row {
+      gap: 16px;
+    }
+  }
+
+  .top-row-card {
+    margin: 0;
+  }
+
+  .cast-stack-wrapper {
+    margin: 0 30px;
+  }
+
+  .middle-row {
+    padding: 0 1rem;
+
+    .cards-row {
+      gap: 16px;
+    }
+  }
+
+  .cast-card-wrapper,
+  .cast-stack-wrapper {
+    width: 60px;
+    height: 88px;
+  }
+}
+
+@media (max-width: 480px) {
+  .top-row {
+    padding: 0 0.75rem;
+
+    .cards-row {
+      gap: 12px;
+    }
+  }
+
+  .top-row-card {
+    margin: 0;
+  }
+
+  .cast-stack-wrapper {
+    margin: 0 26.5px;
+  }
+
+  .middle-row {
+    padding: 0 0.75rem;
+
+    .cards-row {
+      gap: 12px;
+    }
+  }
+
+  .cast-card-wrapper,
+  .cast-stack-wrapper {
+    width: 52px;
+    height: 77px;
+  }
+}

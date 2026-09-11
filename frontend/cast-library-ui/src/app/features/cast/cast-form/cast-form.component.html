@@ -109,29 +109,14 @@
     <fieldset class="form-gm-box">
       <legend class="form-gm-box__legend">FOR GM EYES ONLY</legend>
 
-      <div class="wr form-row-gap">
-        <div class="form-field">
-          <app-journal-dropdown 
-            [options]="alignmentOptions" 
-            [label]="'Alignment'"
-            [control]="alignmentControl"
-            [randomizeGroupId]="'cast-form'">
-          </app-journal-dropdown>
-        </div>
-        <div class="form-field"></div>
-      </div>
-
-      <div class="voice-section">
-        <label class="fi-label voice-section-label">Voice Placement (select all that apply)</label>
-        <div class="wr" formArrayName="voicePlacement">
-          @for (opt of voiceOptions; track opt; let i = $index) {
-            <label class="wr checkbox-label">
-              <input type="checkbox" [formControlName]="i" class="checkbox-input" />
-              {{ opt }}
-            </label>
-          }
-        </div>
-      </div>
+      <cc-keyword-tags
+        [options]="keywordOptions()"
+        [label]="'Hashtags / Keywords'"
+        [placeholder]="'Add or select hashtags…'"
+        [ngModel]="keywords()"
+        [ngModelOptions]="{ standalone: true }"
+        (ngModelChange)="keywords.set($event)">
+      </cc-keyword-tags>
 
       <label for="cast-voice-notes-textarea" class="fi-label">Additional Voice Notes</label>
       <textarea id="cast-voice-notes-textarea" class="fi" formControlName="voiceNotes" rows="3" placeholder="Speaks with a slight stammer when nervous…" autocomplete="off"></textarea>

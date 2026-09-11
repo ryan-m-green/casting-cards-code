@@ -58,6 +58,7 @@ export class PortalImportCardComponent implements OnInit, OnChanges {
   // ── Inputs ────────────────────────────────────────────────────────────────
   @Input({ required: true }) set campaign(val: CampaignDetail | null) { this._campaign.set(val); }
   private _campaign = signal<CampaignDetail | null>(null);
+  get campaignId(): string | null { return this._campaign()?.id ?? null; }
   @Input({ required: true }) cardType!: ImportCardType;
   /** Ref to the parent grid where selected cards land */
   @Input() targetGridEl: HTMLElement | null = null;
@@ -1139,7 +1140,7 @@ export class PortalImportCardComponent implements OnInit, OnChanges {
         alignment:            cast.alignment,
         posture:              cast.posture,
         speed:                cast.speed,
-        voicePlacement:       cast.voicePlacement,
+        voicePlacement:       [],
         voiceNotes:           cast.voiceNotes,
         description:          cast.description,
         publicDescription:    cast.publicDescription,
@@ -1147,7 +1148,7 @@ export class PortalImportCardComponent implements OnInit, OnChanges {
         createdAt:            cast.createdAt,
         dmUserId:             cast.dmUserId,
         isVisibleToPlayers:   false,
-        keywords:             [],
+        keywords:             cast.keywords,
         dmNotes:              '',
       } as CampaignCastInstance;
 

@@ -97,11 +97,69 @@
 .top-middle   { grid-column: 2; grid-row: 1; }
 .top-right    { grid-column: 3; grid-row: 1; }
 .middle-left  { grid-column: 1; grid-row: 2; }
-.middle-middle { grid-column: 2; grid-row: 2; }
+.middle-middle {
+  grid-column: 2;
+  grid-row: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
 .middle-right { grid-column: 3; grid-row: 2; }
+
+/* ── Grid area titles ─────────────────────────────────────────── */
+.area-title {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  z-index: 10;
+}
 .bottom-left   { grid-column: 1; grid-row: 3; }
 .bottom-middle { grid-column: 2; grid-row: 3; }
 .bottom-right  { grid-column: 3; grid-row: 3; }
+
+/* ── Day counter (1/4) + world map (3/4) in top-middle ─────────── */
+.top-middle-center {
+  position: absolute;
+  inset: 0;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0 12px 12px; /* 12px gutter for the world-map frame (sides + bottom) */
+  box-sizing: border-box;
+}
+
+.top-middle-day-counter {
+  position: relative;
+  top: 25px; /* nudges down ~20px on screen (zoom: 0.8 scales this offset) */
+  flex: 0 0 25%;
+  width: 100%;
+  max-width: 960px;
+  zoom: 0.8;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 0 20px 34px;
+  margin-bottom: 12px;
+}
+
+.top-middle-world-map {
+  /* Frame top: 24px below the visible bottom of the day counter, plus the
+     counter's own 12px margin-bottom (so the on-screen gap is ~36px).
+     The counter is nudged down 25px (renders as 20px because of zoom: 0.8) and
+     keeps 34px of bottom padding inside that zoomed box, so it carries
+     (34px - 25px) * 0.8 = 7.2px of invisible space below the bar - subtract it
+     so the gap is measured from the bar, not from the counter's box. */
+  margin-top: calc(24px - (34px - 25px) * 0.8);
+  /* Frame's bottom border sits 200px above the bottom of the screen:
+     100px here + the container's 12px bottom gutter. */
+  margin-bottom: 100px;
+  /* Fill whatever is left between the counter and those gutters */
+  flex: 1 1 0;
+  width: 100%;
+  min-height: 0;
+}
 
 /* ── Area Return Button (positioned within grid areas) ─────────── */
 .area-return-button {
@@ -328,4 +386,33 @@
 .nav-button.bottom-right {
   bottom: 20px;
   right: 20px;
+}
+
+/* ── Rolodex Box Blockers ─────────────────────────────────────────── */
+.rolodex-box-blocker-left{
+  min-height: 500px;
+  min-width: 14%;
+  position: absolute;
+  top: 108px;
+  left: 22px;
+  z-index: 1001;
+  background: black;
+
+  @media (max-width: 1024px) {
+    display: none;
+  }
+}
+
+.rolodex-box-blocker-right{
+  min-height: 500px;
+  min-width: 14%;
+  position: absolute;
+  top: 108px;
+  right: 22px;
+  z-index: 1001;
+  background: black;
+
+  @media (max-width: 1024px) {
+    display: none;
+  }
 }

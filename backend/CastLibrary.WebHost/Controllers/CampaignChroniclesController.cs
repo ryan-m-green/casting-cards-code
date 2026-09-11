@@ -23,6 +23,8 @@ public class CampaignChroniclesController(
     IUpdateChronicleCommandHandler updateCommand,
     IDeleteSessionCommandHandler deleteSessionCommand,
     IMigratePlayerNoteToChronicleCommandHandler migratePlayerNoteCommand,
+    IAddChronicleCommandHandler addChronicleCommand,
+    IGetChronicleFeedQueryHandler getChronicleFeedQuery,
     ICampaignAccessService campaignAccess,
     IUserRetriever userRetriever,
     IHubContext<CampaignHub> hubContext,
@@ -95,6 +97,23 @@ public class CampaignChroniclesController(
         return Ok(response);
     }
 
+    // v2 - Standalone chronicle feed for the campaign (date-ordered, no session grouping).
+    [HttpGet("feed")]
+    [Authorize(Roles = "Player,DM,Admin")]
+    public async Task<IActionResult> GetChronicleFeed(
+        Guid campaignId,
+        [FromQuery] string[] contentTypes = null,
+        [FromQuery] int limit = 200)
+    {
+        if (!await CallerIsMemberOrOwner(campaignId)) return Forbid();
+
+        var isDm = await CallerOwns(campaignId);
+        var entries = await getChronicleFeedQuery.HandleAsync(
+            new GetChronicleFeedQuery(campaignId, isDm, contentTypes, limit));
+
+        return Ok(entries);
+    }
+
     [HttpPatch("{chronicleId}")]
     [Authorize(Roles = "Player,DM,Admin")]
     public async Task<IActionResult> UpdateChronicle(
@@ -152,6 +171,35 @@ public class CampaignChroniclesController(
         await hubContext.Clients.Group(campaignId.ToString()).SendAsync("SessionDeleted", new { sessionId });
 
         return NoContent();
+    }
+
+    // v2 - Add content of any supported type to the standalone chronicle feed (copy, no session).
+    // content_type is dispatched to a per-type archive strategy.
+    [HttpPost]
+    [Authorize(Roles = "Player,DM,Admin")]
+    public async Task<IActionResult> AddToChronicle(
+        Guid campaignId,
+        [FromBody] CreateChronicleRequest request)
+    {
+        if (!await CallerIsMemberOrOwner(campaignId)) return Forbid();
+
+        // Players may chronicle their own visible content, but never GM-only entries.
+        var isDm = await CallerOwns(campaignId);
+        if (!isDm && request.IsGmOnly == true) return Forbid();
+
+        try
+        {
+            var chronicleId = await addChronicleCommand.HandleAsync(new AddChronicleCommand(campaignId, request));
+
+            await hubContext.Clients.Group(campaignId.ToString())
+                .SendAsync("ChronicleAdded", new { campaignId, chronicleId });
+
+            return Ok(new { chronicleId });
+        }
+        catch (ArgumentException ex)
+        {
+            return BadRequest(ex.Message);
+        }
     }
 
     [HttpPost("migrate-player-note")]

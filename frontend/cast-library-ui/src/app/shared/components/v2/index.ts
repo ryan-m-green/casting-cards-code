@@ -1,4 +1,6 @@
 export * from './cc-textbox/cc-textbox.component';
+export * from './cc-slider/cc-slider.component';
+export * from './cc-detail-panel-actions/cc-detail-panel-actions.component';
 export * from './cc-campaign-dropdown/cc-campaign-dropdown.component';
 export * from './cc-journal-dropdown/cc-journal-dropdown.component';
 export * from './cc-shop-inventory/cc-shop-inventory.component';
@@ -16,3 +18,5 @@ export * from './cc-sublocation-icon/cc-sublocation-icon.component';
 export * from './cc-player-icon/cc-player-icon.component';
 export * from './cc-campaign-icon/cc-campaign-icon.component';
 export * from './cc-handout-icon/cc-handout-icon.component';
+export * from './cc-secrets-manager/cc-secrets-manager.component';
+export * from './cc-grid-area-title/cc-grid-area-title.component';

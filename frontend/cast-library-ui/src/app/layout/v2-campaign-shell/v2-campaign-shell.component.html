@@ -1,121 +1,213 @@
-<!-- Main Canvas with Black Background (3x viewport size) -->
+<!-- Templates for right drawer content -->
+<ng-template #playerSecretsContentTemplate let-member="member" let-campaignId="campaignId" let-mode="mode" let-portalColor="portalColor">
+  <app-cc-player-secrets-content
+    [member]="member"
+    [campaignId]="campaignId"
+    [mode]="mode"
+    [portalColor]="portalColor"
+  />
+</ng-template>
+
+<ng-template #partyGoldContentTemplate let-campaignId="campaignId" let-portalColor="portalColor">
+  <app-cc-party-gold-content
+    [campaignId]="campaignId"
+    [portalColor]="portalColor"
+    (goldAwarded)="onPartyGoldAwarded($event)"
+    (closeDrawer)="rightDrawer.close()"
+  />
+</ng-template>
+
+<ng-template #ambianceEditorContentTemplate let-ambiance="ambiance" let-campaignId="campaignId" let-portalColor="portalColor">
+  <app-ambiance-builder-content
+    [ambiance]="ambiance"
+    [campaignId]="campaignId"
+    [portalColor]="portalColor"
+    (closeDrawer)="rightDrawer.close()"
+  />
+</ng-template>
+
+<ng-template #storylineCreateContentTemplate>
+  <app-cc-storyline-content
+    [campaignId]="campaignIdValue"
+    [portalColor]="safeColor(campaign()?.spineColor)"
+    (created)="onStorylineCreated()"
+  />
+</ng-template>
+
+<ng-template #storylineEditContentTemplate>
+  <app-cc-storyline-content
+    [campaignId]="campaignIdValue"
+    [portalColor]="safeColor(campaign()?.spineColor)"
+    [editItem]="storylineEditItem()"
+  />
+</ng-template>
+
+<ng-template #storylineViewContentTemplate>
+  @if (storylineViewItem(); as viewItem) {
+    <app-cc-storyline-view
+      [item]="viewItem"
+      [portalColor]="safeColor(campaign()?.spineColor)"
+    />
+  }
+</ng-template>
+
+<ng-template #worldMapContentTemplate>
+  <app-cc-worldmap-content
+    [worldMapImageUrl]="campaign()?.worldMapImageUrl ?? null"
+    [portalColor]="safeColor(campaign()?.spineColor)"
+  />
+</ng-template>
+
+<ng-template #chroniclesContentTemplate>
+  <app-cc-campaign-chronicle-content
+    [campaignId]="campaignIdValue"
+    [isDmMode]="isDm()"
+    [portalColor]="safeColor(campaign()?.spineColor)"
+  />
+</ng-template>
+
+<!-- Single RightDrawerComponent at shell level, outside the transformed grid -->
+<app-right-drawer #rightDrawer
+  [portalColor]="safeColor(shellSvc.campaign()?.spineColor)"
+  [title]="drawerTitle()"
+  [contentTemplate]="currentContentTemplate()"
+  [contentContext]="currentContentContext()"
+/>
+
+<!-- Main Canvas with Black Background (3x3 viewport size) -->
 <div class="void-canvas" [style.--portal-color]="safeColor(shellSvc.campaign()?.spineColor)">
+
+  <!-- ── Radial grid navigator (top-left FAB) ── -->
+  <app-cc-radial-nav
+    [activeArea]="currentArea()"
+    [portalColor]="safeColor(campaign()?.spineColor)"
+    (navigate)="onRadialNav($event)"
+    (chronicles)="openChroniclesDrawer()"
+  />
   
   <!-- ── 3x3 Grid Container ── -->
   <div class="grid-container" [style.transform]="'translate(' + viewportPosition().x + 'vw, ' + viewportPosition().y + 'vh)'">
     
     <!-- ── Top Row ── -->
     <div class="grid-area top-left">
-      <app-v2-campaign-placeholder areaName="Top Left" />
-      <!-- Navigation buttons -->
-      <button class="area-nav-button right-middle" (click)="moveToTopMiddle()">→ Top Middle</button>
-      <button class="area-nav-button bottom-middle" (click)="moveToMiddleLeft()">↓ Middle Left</button>
-      <!-- Return button -->
-      <button class="area-return-button bottom-right" (click)="moveToCenter()">
-        ← Return to Center
-      </button>
+      <cc-grid-area-title
+        class="area-title"
+        [title]="['Storyline']"
+        icon="/storyline.svg"
+      />
+      @if (isDm()) {
+        <app-cc-storyline
+          [campaignId]="campaignIdValue"
+          [portalColor]="safeColor(campaign()?.spineColor)"
+          [refreshTick]="storylineRefreshTick()"
+          (requestCreate)="openStorylineCreate()"
+          (requestEdit)="openStorylineEdit($event)"
+          (requestView)="openStorylineView($event)"
+        />
+      } @else {
+        <app-v2-campaign-placeholder areaName="Top Left" />
+      }
     </div>
     <div class="grid-area top-middle">
-      <app-v2-campaign-placeholder areaName="Top Middle" />
-      <!-- Navigation buttons -->
-      <button class="area-nav-button left-middle" (click)="moveToTopLeft()">← Top Left</button>
-      <button class="area-nav-button right-middle" (click)="moveToTopRight()">Top Right →</button>
-      <button class="area-nav-button bottom-middle" (click)="moveToCenter()">↓ Center</button>
-      <!-- Return button -->
-      <button class="area-return-button bottom-middle" (click)="moveToCenter()">
-        ↑ Return to Center
-      </button>
+      <cc-grid-area-title
+        class="area-title"
+        [title]="['The Realm of', campaign()?.name ?? '']"
+        icon="/hourglass_passing_time.svg"
+      />
+      @if (campaign(); as camp) {
+        <div class="top-middle-center">
+          <app-cc-day-counter
+            class="top-middle-day-counter"
+            [campaignId]="campaignIdValue"
+            [isDm]="isDm()"
+            [allowInteraction]="!isDm()"
+            [panelTheme]="'dark'"
+            [todInput]="camp.timeOfDay ?? null"
+            [portalColor]="safeColor(camp.spineColor)"
+          />
+          <app-cc-world-map
+            class="top-middle-world-map"
+            [campaignId]="campaignIdValue"
+            [worldMapImageUrl]="camp.worldMapImageUrl"
+            [isDm]="isDm()"
+            [portalColor]="safeColor(camp.spineColor)"
+            (imageUploaded)="onWorldMapUploaded($event)"
+            (requestView)="openWorldMapDrawer()"
+          />
+        </div>
+      }
     </div>
     <div class="grid-area top-right">
-      <app-v2-campaign-placeholder areaName="Top Right" />
-      <!-- Navigation buttons -->
-      <button class="area-nav-button left-middle" (click)="moveToTopMiddle()">← Top Middle</button>
-      <button class="area-nav-button bottom-middle" (click)="moveToMiddleRight()">↓ Middle Right</button>
-      <!-- Return button -->
-      <button class="area-return-button bottom-left" (click)="moveToCenter()">
-        Return to Center →
-      </button>
+      <cc-grid-area-title
+        class="area-title"
+        [title]="['The Party']"
+        icon="/player_icon.svg"
+      />
+      @if (campaign(); as camp) {
+        <app-cc-party-panel
+          [campaignId]="campaignIdValue"
+          [portalColor]="safeColor(camp.spineColor)"
+        />
+      }
     </div>
     
     <!-- ── Middle Row ── -->
     <div class="grid-area middle-left">
-      <app-v2-campaign-placeholder areaName="Middle Left" />
-      <!-- Navigation buttons -->
-      <button class="area-nav-button top-middle" (click)="moveToTopLeft()">↑ Top Left</button>
-      <button class="area-nav-button right-middle" (click)="moveToCenter()">→ Center</button>
-      <button class="area-nav-button bottom-middle" (click)="moveToBottomLeft()">↓ Bottom Left</button>
-      <!-- Return button -->
-      <button class="area-return-button right-middle" (click)="moveToCenter()">
-        ← Return to Center
-      </button>
+      <cc-grid-area-title
+        class="area-title"
+        [title]="['Factions']"
+        icon="/factions.svg"
+      />
+      <app-cc-card-faction-navigation [campaignId]="campaignIdValue" />
     </div>
     <div class="grid-area middle-middle">
+      <cc-grid-area-title
+        class="area-title"
+        [title]="['The Realm of', campaign()?.name ?? '']"
+        icon="/tarot_cards_star.svg"
+      />
+      @if (showRolodexBlockers()) {
+        <div class="rolodex-box-blocker-left">&nbsp;</div>
+        <div class="rolodex-box-blocker-right">&nbsp;</div>
+      }
       <!-- Hierarchical Card Navigation -->
       <app-cc-card-navigation [campaignId]="campaignIdValue" />
-      
-      <!-- Navigation buttons -->
-      <div class="nav-buttons">
-        <!-- Top Left -->
-        <button class="nav-button top-left" (click)="moveToTopLeft()">↖ Top Left</button>
-        <!-- Top Middle -->
-        <button class="nav-button top-middle" (click)="moveToTopMiddle()">↑ Top Middle</button>
-        <!-- Top Right -->
-        <button class="nav-button top-right" (click)="moveToTopRight()">Top Right ↗</button>
-        <!-- Middle Left -->
-        <button class="nav-button middle-left" (click)="moveToMiddleLeft()">← Middle Left</button>
-        <!-- Middle Right -->
-        <button class="nav-button middle-right" (click)="moveToMiddleRight()">Middle Right →</button>
-        <!-- Bottom Left -->
-        <button class="nav-button bottom-left" (click)="moveToBottomLeft()">↙ Bottom Left</button>
-        <!-- Bottom Middle -->
-        <button class="nav-button bottom-middle" (click)="moveToBottomMiddle()">↓ Bottom Middle</button>
-        <!-- Bottom Right -->
-        <button class="nav-button bottom-right" (click)="moveToBottomRight()">Bottom Right ↘</button>
-      </div>
     </div>
     <div class="grid-area middle-right">
-      <app-v2-campaign-placeholder areaName="Middle Right" />
-      <!-- Navigation buttons -->
-      <button class="area-nav-button top-middle" (click)="moveToTopRight()">↑ Top Right</button>
-      <button class="area-nav-button left-middle" (click)="moveToCenter()">← Center</button>
-      <button class="area-nav-button bottom-middle" (click)="moveToBottomRight()">↓ Bottom Right</button>
-      <!-- Return button -->
-      <button class="area-return-button left-middle" (click)="moveToCenter()">
-        Return to Center →
-      </button>
+      <cc-grid-area-title
+        class="area-title"
+        [title]="['Soundtracks']"
+        icon="/musical_instruments_grey.svg"
+      />
+      @if (campaign(); as camp) {
+        <app-cc-soundtracks
+          [campaignId]="campaignIdValue"
+          [portalColor]="safeColor(camp.spineColor)"
+        />
+      }
     </div>
     
     <!-- ── Bottom Row ── -->
     <div class="grid-area bottom-left">
+      <cc-grid-area-title
+        class="area-title"
+        [title]="['More To Come']"
+      />
       <app-v2-campaign-placeholder areaName="Bottom Left" />
-      <!-- Navigation buttons -->
-      <button class="area-nav-button top-middle" (click)="moveToMiddleLeft()">↑ Middle Left</button>
-      <button class="area-nav-button right-middle" (click)="moveToBottomMiddle()">→ Bottom Middle</button>
-      <!-- Return button -->
-      <button class="area-return-button top-right" (click)="moveToCenter()">
-        ← Return to Center
-      </button>
     </div>
     <div class="grid-area bottom-middle">
+      <cc-grid-area-title
+        class="area-title"
+        [title]="['More To Come']"
+      />
       <app-v2-campaign-placeholder areaName="Bottom Middle" />
-      <!-- Navigation buttons -->
-      <button class="area-nav-button left-middle" (click)="moveToBottomLeft()">← Bottom Left</button>
-      <button class="area-nav-button top-middle" (click)="moveToCenter()">↑ Center</button>
-      <button class="area-nav-button right-middle" (click)="moveToBottomRight()">Bottom Right →</button>
-      <!-- Return button -->
-      <button class="area-return-button top-middle" (click)="moveToCenter()">
-        Return to Center ↓
-      </button>
     </div>
     <div class="grid-area bottom-right">
+      <cc-grid-area-title
+        class="area-title"
+        [title]="['More To Come']"
+      />
       <app-v2-campaign-placeholder areaName="Bottom Right" />
-      <!-- Navigation buttons -->
-      <button class="area-nav-button top-middle" (click)="moveToMiddleRight()">↑ Middle Right</button>
-      <button class="area-nav-button left-middle" (click)="moveToBottomMiddle()">← Bottom Middle</button>
-      <!-- Return button -->
-      <button class="area-return-button top-left" (click)="moveToCenter()">
-        Return to Center →
-      </button>
     </div>
     
   </div>

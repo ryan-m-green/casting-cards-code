@@ -23,6 +23,7 @@ namespace CastLibrary.Logic.Factories
                 Religion = location.Religion,
                 Vibe = location.Vibe,
                 Languages = location.Languages,
+                Keywords = location.Keywords,
                 Description = location.Description,
                 ImageFileName = imageFileName
             };

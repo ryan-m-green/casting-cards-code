@@ -1,0 +1,100 @@
+<div class="cc-card-faction-navigation" [class.loading]="loading()" [class.error]="error() !== null">
+  <!-- Loading State -->
+  @if (loading()) {
+  <div class="loading-state">
+    <div class="spinner"></div>
+    <p>Loading faction data...</p>
+  </div>
+  }
+
+  <!-- Error State -->
+  @if (error()) {
+  <div class="error-state">
+    <p>{{ error() }}</p>
+    <button (click)="loadCardData()">Retry</button>
+  </div>
+  }
+
+  <!-- 2-Level Navigation System -->
+  @if (!loading() && !error()) {
+  <div class="rolodex-container">
+
+    <!-- Row 1: Top Row (Parent Faction Breadcrumb) -->
+    <div class="row top-row">
+      <div class="cards-row">
+        <div class="drop-zone-container">
+          <div class="drop-spot faction-dropzone">
+            @if (parentFaction()) {
+            <div class="card-wrapper top-row-card" (click)="navigateToFactions()">
+              <app-simple-faction-card [faction]="parentFaction()!"></app-simple-faction-card>
+            </div>
+            }
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Row 2: Middle Row (Active Cards) -->
+    <div class="rows-wrapper">
+      <div class="row middle-row swiper" #middleRow>
+        <div class="swiper-wrapper">
+          <!-- Dropzones Layer (dynamically populated by JavaScript) -->
+          <div class="dropzones-layer"></div>
+
+          <!-- Cards -->
+          @if (currentView() === 'factions') {
+          @for (card of middleRowFactions(); track card.factionInstanceId) {
+          <div class="swiper-slide">
+            <div class="slide-content">
+              <div class="card-wrapper middle-row-card">
+                <app-faction-card [faction]="card" [flippable]="true" [editable]="false"
+                  [secrets]="true" [secretsRevealed]="card.isVisibleToPlayers"
+                  [tilt]="factionTilt(card.factionInstanceId)" (secretsClick)="toggleFactionVisibility(card)">
+                </app-faction-card>
+              </div>
+              @if (getCastsForFaction(card).length > 0) {
+              <div class="bottom-row-content">
+                <div class="cast-stack-wrapper">
+                  <div class="cast-stack" (click)="navigateToCasts(card); $event.stopPropagation()">
+                    @for (cast of getCastsForFaction(card); track cast.instanceId; let i = $index) {
+                    @let castList = getCastsForFaction(card);
+                    @let totalCards = castList.length;
+                    @let centerIndex = (totalCards - 1) / 2;
+                    @let fromCenter = i - centerIndex;
+                    @let spreadAngle = totalCards > 1 ? fromCenter * 12 : 0;
+                    @let translateY = totalCards > 1 ? abs(fromCenter) * 2 + i * 2 : i * 3;
+                    @let translateX = totalCards > 1 ? fromCenter * 8 : 0;
+                    <div class="cast-card-wrapper"
+                      [style.transform]="'translateY(' + translateY + 'px) translateX(' + translateX + 'px) rotate(' + spreadAngle + 'deg)'"
+                      [style.opacity]="totalCards > 1 ? 1 - (abs(fromCenter) * 0.15) - (i * 0.1) : 1 - (i * 0.25)"
+                      [style.z-index]="totalCards > 1 ? 10 - abs(fromCenter) - i : 10 - i">
+                      <app-simple-cast-card [cast]="cast"></app-simple-cast-card>
+                    </div>
+                    }
+                  </div>
+                </div>
+              </div>
+              }
+            </div>
+          </div>
+          }
+          } @else if (currentView() === 'casts') {
+          @for (card of middleRowCasts(); track card.instanceId) {
+          <div class="swiper-slide">
+            <div class="slide-content">
+              <div class="card-wrapper middle-row-card">
+                <app-cast-card [cast]="card" [campaignId]="internalCampaignId()" [flippable]="true" [editable]="false"
+                  [campaignMode]="true" [secrets]="true" [secretsRevealed]="card.isVisibleToPlayers" [dmMode]="true"
+                  [tilt]="castTilt(card.instanceId)" (secretsClick)="toggleCastVisibility(card)">
+                </app-cast-card>
+              </div>
+            </div>
+          </div>
+          }
+          }
+        </div>
+      </div>
+    </div>
+  </div>
+  }
+</div>

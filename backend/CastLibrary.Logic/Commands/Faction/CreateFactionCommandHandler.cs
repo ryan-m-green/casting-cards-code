@@ -14,14 +14,17 @@ public interface ICreateFactionCommandHandler
 public class CreateFactionCommandHandler(
     IFactionInsertRepository factionRepository,
     IFactionFactory factionFactory,
-    ISubscriptionLimitService subscriptionLimitService) : ICreateFactionCommandHandler
+    ISubscriptionLimitService subscriptionLimitService,
+    ICampaignKeywordInsertRepository campaignKeywordInsertRepository) : ICreateFactionCommandHandler
 {
     public async Task<FactionDomain> HandleAsync(CreateFactionCommand command)
     {
         await subscriptionLimitService.CheckLimitAsync(command.DmUserId, "Faction");
         
         var domain = factionFactory.Create(command.Request, command.DmUserId);
-        return await factionRepository.InsertAsync(domain);
+        var result = await factionRepository.InsertAsync(domain);
+        await campaignKeywordInsertRepository.MergeKeywordsAsync(command.DmUserId, "faction", domain.Keywords);
+        return result;
     }
 }
 

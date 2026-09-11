@@ -1,0 +1,317 @@
+@use '../../../../styles/variables' as v;
+
+// ── Variables ───────────────────────────────────────────────────────────────
+$spring-easing:       cubic-bezier(0.22, 1, 0.36, 1);
+
+// ── Host container ───────────────────────────────────────────────────────────
+:host {
+  display: block;
+  padding: 0 20px 40px;
+  max-width: 960px;
+  margin: 0 auto;
+}
+
+// ── Wrapper ─────────────────────────────────────────────────────────────────
+.tod-wrapper {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  width: 100%;
+  user-select: none;
+}
+
+// ── Day counter label ────────────────────────────────────────────────────────
+.tod-day-counter {
+  position: relative;
+  overflow: hidden;
+  text-align: center;
+  font-family: v.$font-header;
+  font-size: 18px;
+  letter-spacing: 0.10em;
+  color: v.$campaign-portal-text-bright;
+  margin-bottom: 6px;
+  line-height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+
+  .tod-wrapper--dark & {
+    color: v.$campaign-portal-text-bright;
+  }
+}
+
+// ── Bar row (bar + Next Day button side by side) ─────────────────────────────
+.tod-bar-row {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  touch-action: none;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+// ── Next Day button ───────────────────────────────────────────────────────────
+.tod-next-day {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 32px;
+  width: 32px;
+  min-width: 44px;
+  min-height: 44px;
+  padding: 0;
+  border-radius: 6px;
+  border: 1px solid color-mix(in srgb, var(--portal-color, v.$color-base-purple-primary), transparent 35%);
+  background: v.$color-ext-700;
+  color: v.$color-ext-701;
+  font-family: v.$font-header;
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  cursor: pointer;
+  white-space: nowrap;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+  transition: background 0.15s ease, color 0.15s ease;
+
+  &:hover,
+  &:focus-visible,
+  &:active {
+    background: v.$color-ext-702;
+    border-color: color-mix(in srgb, var(--portal-color, v.$color-base-purple-primary), transparent 10%);
+    color: v.$color-ext-704;
+  }
+
+  &:focus-visible {
+    outline: 2px solid v.$color-ext-705;
+    outline-offset: 2px;
+  }
+
+  &:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+    pointer-events: none;
+    display:inline-flex;
+  }
+
+  .tod-wrapper--dark & {
+    background: v.$color-ext-706;
+    color: v.$color-ext-708;
+
+    &:hover,
+    &:focus-visible {
+      background: v.$color-ext-709;
+      border-color: color-mix(in srgb, var(--portal-color, v.$color-base-purple-primary), transparent 10%);
+      color: v.$campaign-portal-text-lavender;
+    }
+  }
+}
+
+// ── Lock button ──────────────────────────────────────────────────────────────
+.tod-lock-btn {
+  display: inline-flex;
+  vertical-align: middle;
+  align-items: center;
+  justify-content: center;
+  height: 32px;
+  width: 32px;
+  min-width: 44px;
+  min-height: 44px;
+  padding: 0;
+  margin-right: 8px;
+  border-radius: 6px;
+  border: 1px solid color-mix(in srgb, var(--portal-color, v.$color-base-purple-primary), transparent 35%);
+  background: v.$color-tod-lock-unlocked;
+  cursor: pointer;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+  transition: background 0.15s ease, box-shadow 0.15s ease;
+
+  &--locked {
+    background: rgba(212, 168, 67, 0.18);
+    border-color: color-mix(in srgb, var(--portal-color, v.$color-base-purple-primary), transparent 35%);
+    box-shadow: 0 0 6px rgba(212, 168, 67, 0.35);
+  }
+
+  &:hover,
+  &:focus-visible {
+    background: v.$color-ext-702;
+    border-color: color-mix(in srgb, var(--portal-color, v.$color-base-purple-primary), transparent 10%);
+  }
+
+  &:focus-visible {
+    outline: 2px solid v.$color-ext-705;
+    outline-offset: 2px;
+  }
+
+  .tod-wrapper--dark & {
+    background: v.$color-tod-lock-unlocked;
+    border-color: color-mix(in srgb, var(--portal-color, v.$color-base-purple-primary), transparent 35%);
+
+    &--locked {
+      background: rgba(212, 168, 67, 0.18);
+      border-color: color-mix(in srgb, var(--portal-color, v.$color-base-purple-primary), transparent 35%);
+      box-shadow: 0 0 6px rgba(212, 168, 67, 0.35);
+    }
+
+    &:hover,
+    &:focus-visible {
+      background: v.$color-ext-709;
+      border-color: color-mix(in srgb, var(--portal-color, v.$color-base-purple-primary), transparent 10%);
+    }
+  }
+}
+
+// ── Bar ─────────────────────────────────────────────────────────────────────
+.tod-bar {
+  position: relative;
+  display: flex;
+  flex: 1;
+  height: 48px;
+  border-radius: 8px;
+  overflow: visible;
+  box-shadow: 0 2px 12px v.$color-ext-722;
+  isolation: isolate;
+  -webkit-tap-highlight-color: transparent;
+
+  // shimmer wave overlay for player view
+  &--shimmering::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background: linear-gradient(
+      90deg,
+      transparent 0%,
+      v.$color-ext-723 40%,
+      v.$color-ext-724 50%,
+      v.$color-ext-723 60%,
+      transparent 100%
+    );
+    background-size: 200% 100%;
+    animation: shimmer-wave 1.2s ease-in-out 1;
+    pointer-events: none;
+    z-index: 10;
+
+    @media (prefers-reduced-motion: reduce) {
+      animation: none;
+    }
+  }
+}
+
+@keyframes shimmer-wave {
+  0%   { background-position: 200% 0; opacity: 0; }
+  10%  { opacity: 1; }
+  90%  { opacity: 1; }
+  100% { background-position: -200% 0; opacity: 0; }
+}
+
+// ── Slice labels ─────────────────────────────────────────────────────────────
+.tod-bar__labels {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+}
+
+.tod-bar__label {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  box-sizing: border-box;
+  padding: 0 6px;
+  font-size: 12px;
+  font-weight: 600;
+  color: v.$color-ext-726;
+  text-shadow: 0 1px 3px v.$color-ext-727;
+  letter-spacing: 0.03em;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  pointer-events: none;
+}
+
+// ── Cursor ───────────────────────────────────────────────────────────────────
+.tod-cursor {
+  position: absolute;
+  top: 28px;
+  transform: translateX(-50%) translateZ(0);
+  z-index: 20;
+  cursor: ew-resize;
+  touch-action: none;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+  will-change: left;
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+
+  // Smooth glide for player-received cursor moves
+  &--glide {
+    transition: left 0.7s $spring-easing;
+    will-change: left, transform;
+
+    @media (prefers-reduced-motion: reduce) {
+      transition: none;
+    }
+  }
+
+  &--dragging {
+    cursor: grabbing;
+
+    .tod-cursor__planchette {
+      filter: drop-shadow(0 0 8px v.$color-ext-728);
+    }
+  }
+
+  &--readonly {
+    cursor: default;
+    pointer-events: none;
+    opacity: 0.55;
+  }
+
+  &:focus-visible {
+    outline: 2px solid v.$color-ext-729;
+    border-radius: 4px;
+  }
+
+  &__planchette {
+    display: block;
+    transform: rotate(180deg);
+    filter: drop-shadow(0 0 5px v.$color-ext-730);
+    transition: filter 0.15s ease;
+    pointer-events: none;
+    -webkit-user-select: none;
+    user-select: none;
+    -webkit-touch-callout: none;
+
+    svg, path, circle {
+      pointer-events: none;
+      -webkit-user-select: none;
+      user-select: none;
+    }
+  }
+}
+
+// ── Empty state ───────────────────────────────────────────────────────────────
+.tod-empty {
+  font-family: v.$font-body;
+  font-style: italic;
+  font-size: 0.82rem;
+  color: rgba(v.$color-lib-location-1, 0.85);
+  margin: 0;
+  padding: 8px 0;
+}
+
+// ── High-contrast mode ────────────────────────────────────────────────────────
+@media (forced-colors: active) {
+  .tod-bar          { border: 2px solid ButtonText; }
+  .tod-cursor__planchette { forced-color-adjust: none; }
+}

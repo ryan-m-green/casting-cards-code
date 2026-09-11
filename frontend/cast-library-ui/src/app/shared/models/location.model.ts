@@ -11,6 +11,7 @@ export interface Location {
   religion: string;
   vibe: string;
   languages: string;
+  keywords: string[];
   description: string;
   dmNotes?: string;
   imageUrl?: string;

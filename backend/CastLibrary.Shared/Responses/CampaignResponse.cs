@@ -22,6 +22,7 @@ public class CampaignDetailResponse
     public string FantasyType { get; set; } = string.Empty;
     public string Description { get; set; } = string.Empty;
     public string SpineColor { get; set; } = string.Empty;
+    public string WorldMapImageUrl { get; set; } = string.Empty;
     public string Status { get; set; } = string.Empty;
     public bool? IsDemo { get; set; }
     public List<CampaignLocationInstanceResponse> Locations { get; set; } = [];

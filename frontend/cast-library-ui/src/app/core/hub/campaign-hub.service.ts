@@ -127,6 +127,12 @@ export interface SoundtrackTriggeredEvent {
   soundtrackId: string;
 }
 
+export interface SoundtrackVolumeChangedEvent {
+  campaignId: string;
+  soundtrackId: string;
+  volume: number;
+}
+
 export interface ShopItemScratchToggledEvent {
   campaignId: string;
   sublocationInstanceId: string;
@@ -210,6 +216,7 @@ export class CampaignHubService {
   private subscriptionLockLevelChangedSubject = new Subject<SubscriptionLockLevelChangedEvent | null>();
   private inventoryItemUsedSubject           = new Subject<InventoryItemUsedEvent | null>();
   private soundtrackTriggeredSubject         = new Subject<SoundtrackTriggeredEvent | null>();
+  private soundtrackVolumeChangedSubject      = new Subject<SoundtrackVolumeChangedEvent | null>();
   private _isConnected = signal(false);
 
   readonly secretRevealed$            = this.secretRevealedSubject.asObservable();
@@ -254,6 +261,7 @@ export class CampaignHubService {
   readonly subscriptionLockLevelChanged$ = this.subscriptionLockLevelChangedSubject.asObservable();
   readonly inventoryItemUsed$           = this.inventoryItemUsedSubject.asObservable();
   readonly soundtrackTriggered$         = this.soundtrackTriggeredSubject.asObservable();
+  readonly soundtrackVolumeChanged$     = this.soundtrackVolumeChangedSubject.asObservable();
 
   isConnected(): boolean {
     return this._isConnected();
@@ -410,6 +418,7 @@ export class CampaignHubService {
     });
 
     this.connection.on('LocationInstanceUpdated', (event: LocationInstanceUpdatedEvent) => {
+      console.log('CampaignHubService - LocationInstanceUpdated received from server:', event);
       this.locationInstanceUpdatedSubject.next(event);
     });
 
@@ -455,6 +464,10 @@ export class CampaignHubService {
 
     this.connection.on('InventoryItemUsed', (event: InventoryItemUsedEvent) => {
       this.inventoryItemUsedSubject.next(event);
+    });
+
+    this.connection.on('SoundtrackVolumeChanged', (event: SoundtrackVolumeChangedEvent) => {
+      this.soundtrackVolumeChangedSubject.next(event);
     });
   }
 

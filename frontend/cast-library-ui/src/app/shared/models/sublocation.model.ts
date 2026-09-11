@@ -13,6 +13,7 @@ export interface Sublocation {
   dmUserId: string;
   name: string;
   description: string;
+  keywords: string[];
   dmNotes?: string;
   imageUrl?: string;
   shopItems: ShopItem[];

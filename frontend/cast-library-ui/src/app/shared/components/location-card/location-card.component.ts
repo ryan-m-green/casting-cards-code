@@ -3,6 +3,7 @@ import { Location } from '../../models/location.model';
 import { LockIconComponent } from '../lock-icon/lock-icon.component';
 import { CcLocationIconComponent } from '../v2/cc-location-icon/cc-location-icon.component';
 import { CampaignShellService } from '../../../core/campaign-shell.service';
+import { DrawerService } from '../../../core/drawer.service';
 
 @Component({
   selector: 'app-location-card',
@@ -13,6 +14,7 @@ import { CampaignShellService } from '../../../core/campaign-shell.service';
 })
 export class LocationCardComponent {
   private shellSvc = inject(CampaignShellService);
+  private drawerService = inject(DrawerService);
 
   @Input({ required: true }) location!: Location;
   @Input() editable        = true;
@@ -24,12 +26,15 @@ export class LocationCardComponent {
   @Input() secretsRevealed = false;
   @Input() campaignMode    = false;
   @Input() secretContent: string | null = null;
+  @Input() cardSecrets: any[] = [];
+  @Input() campaignId: string = '';
 
   @Output() editClick    = new EventEmitter<void>();
   @Output() deleteClick  = new EventEmitter<void>();
   @Output() fileSelected = new EventEmitter<File>();
   @Output() secretsClick = new EventEmitter<void>();
   @Output() cardClick    = new EventEmitter<void>();
+  @Output() detailsClick  = new EventEmitter<void>();
 
   flipped = false;
 
@@ -60,12 +65,6 @@ export class LocationCardComponent {
   }
 
   toggleFlip(e: Event): void {
-    if (this.campaignMode) { 
-      this.cardClick.emit(); 
-      // Still allow flipping in campaign mode
-      if (this.flippable) this.flipped = !this.flipped;
-      return; 
-    }
     if (this.flippable) this.flipped = !this.flipped;
   }
 
@@ -89,8 +88,19 @@ export class LocationCardComponent {
     if (file) this.fileSelected.emit(file);
   }
 
+  onDetailsClick(e: Event): void {
+    e.stopPropagation();
+    this.drawerService.openLocationDetail({
+      location: this.location,
+      secrets: this.cardSecrets,
+      campaignId: this.campaignId
+    });
+  }
+
   onNameClick(e: Event): void {
     e.stopPropagation();
-    this.shellSvc.openChronicleDrawerWithSearch(this.location.name);
+    this.drawerService.openChronicle({
+      initialSearchQuery: this.location.name
+    });
   }
 }

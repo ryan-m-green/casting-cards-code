@@ -8,11 +8,14 @@
       class="upgrade-badge-library" />
     <input class="search-bar search-bar--header" type="text" placeholder="Name · Race · Role…"
            [value]="searchTerm()" (input)="searchTerm.set($any($event.target).value)" />
-    <button class="campaign-primary-btn wr-ml-auto"
-            [class.disabled]="castLimitReached() || isCreateDisabled()"
-            [attr.disabled]="(castLimitReached() || isCreateDisabled()) ? 'true' : null"
-            [routerLink]="(castLimitReached() || isCreateDisabled()) ? null : '/gm/cast/new'"
-            (click)="(castLimitReached() || isCreateDisabled()) ? $event.preventDefault() : null">+ Create</button>
+    <div class="wr-ml-auto cc-keyword-editor-wrap">
+      <button class="campaign-primary-btn"
+              [class.disabled]="castLimitReached() || isCreateDisabled()"
+              [attr.disabled]="(castLimitReached() || isCreateDisabled()) ? 'true' : null"
+              [routerLink]="(castLimitReached() || isCreateDisabled()) ? null : '/gm/cast/new'"
+              (click)="(castLimitReached() || isCreateDisabled()) ? $event.preventDefault() : null">+ Create</button>
+      <cc-keyword-editor [cardType]="'cast'"></cc-keyword-editor>
+    </div>
   </div>
 
   <div class="card-grid">

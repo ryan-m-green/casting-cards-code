@@ -20,7 +20,7 @@ public class CastFactory : ICastFactory
         Alignment = request.Alignment,
         Posture = request.Posture,
         Speed = request.Speed,
-        VoicePlacement = request.VoicePlacement,
+        Keywords = request.Keywords,
         VoiceNotes = request.VoiceNotes,
         Description = request.Description,
         PublicDescription = request.PublicDescription,
