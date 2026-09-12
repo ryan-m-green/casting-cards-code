@@ -108,7 +108,7 @@ export class V2CampaignShellComponent implements OnInit, OnDestroy {
     // Listen for player secrets drawer requests from child components
     this.hubSubscriptions.push(
       this.shellSvc.openPlayerSecrets.subscribe(request => {
-        this.drawerTitle.set(request.member.name);
+        this.drawerTitle.set('Player');
         this.currentContentTemplate.set(this.playerSecretsContentTemplate());
         this.currentContentContext.set({
           member: request.member,

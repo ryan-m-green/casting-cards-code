@@ -1,14 +1,49 @@
 <div class="location-detail-content">
-  <!-- Panel actions -->
+  <!-- Card title (above the portrait) -->
+  @if (editing()) {
+    <div class="detail-desc">
+      <app-cc-textbox
+        label="Location Name"
+        placeholder="Location name…"
+        context="campaign"
+        [(ngModel)]="editName"
+      />
+    </div>
+  } @else {
+    <div class="detail-header">
+      <h2 class="detail-title">{{ view().name }}</h2>
+    </div>
+  }
+
+  <!-- Portrait pinned top-left; always visible, only swappable in edit mode -->
+  <div class="detail-portrait-row">
+    <cc-portrait-input
+      context="campaign"
+      [initialImageUrl]="view().imageUrl || ''"
+      [cardType]="'location'"
+      [disabled]="!editing()"
+      [ngModel]="imageFile()"
+      (ngModelChange)="imageFile.set($event)"
+    />
+  </div>
+
+  <!-- Detail tabs -->
+  <div class="detail-tabs">
+    <button class="detail-tab" type="button"
+            [class.detail-tab--active]="activeTab() === 'details'"
+            (click)="setTab('details')">Details</button>
+    <button class="detail-tab" type="button"
+            [class.detail-tab--active]="activeTab() === 'secrets'"
+            (click)="setTab('secrets')">Secrets</button>
+  </div>
+
+@if (activeTab() === 'details') {
+  <!-- Panel actions live inside the details tab -->
   <cc-detail-panel-actions
     [isDm]="true"
     [editing]="editing()"
     [detailExpanded]="false"
     [editBtnBorderColor]="'#C8E080'"
-    [portraitUrl]="location().imageUrl || ''"
-    [portraitFile]="imageFile()"
-    [cardType]="'location'"
-    (portraitFileChange)="imageFile.set($event)"
     (startEditingClick)="startEditing()"
     (saveDetailsClick)="saveDetails()"
     (saveToLibraryClick)="saveToLibrary()"
@@ -17,26 +52,10 @@
   />
 
   <div class="detail-content-body">
-    <!-- Location Name -->
-    @if (editing()) {
-      <div class="detail-desc">
-        <app-cc-textbox
-          label="Location Name"
-          placeholder="Location name…"
-          context="campaign"
-          [(ngModel)]="editName"
-        />
-      </div>
-    } @else {
-      <div class="detail-header">
-        <h2 class="detail-title">{{ location().name }}</h2>
-      </div>
-    }
-
     <!-- Data fields -->
-    @if (editing() || hasField(location().classification) || hasField(location().size) || hasField(location().condition) || hasField(location().geography) || hasField(location().architecture) || hasField(location().climate) || hasField(location().religion) || hasField(location().vibe) || hasField(location().languages)) {
+    @if (editing() || hasField(view().classification) || hasField(view().size) || hasField(view().condition) || hasField(view().geography) || hasField(view().architecture) || hasField(view().climate) || hasField(view().religion) || hasField(view().vibe) || hasField(view().languages)) {
       <div class="detail-grid">
-        @if (editing() || hasField(location().classification)) {
+        @if (editing() || hasField(view().classification)) {
           <div class="detail-item">
             @if (editing()) {
               <app-cc-textbox
@@ -47,11 +66,11 @@
               />
             } @else {
               <span class="detail-label">Classification</span>
-              <span class="detail-value">{{ location().classification }}</span>
+              <span class="detail-value">{{ view().classification }}</span>
             }
           </div>
         }
-        @if (editing() || hasField(location().size)) {
+        @if (editing() || hasField(view().size)) {
           <div class="detail-item">
             @if (editing()) {
               <app-cc-textbox
@@ -62,11 +81,11 @@
               />
             } @else {
               <span class="detail-label">Size</span>
-              <span class="detail-value">{{ location().size }}</span>
+              <span class="detail-value">{{ view().size }}</span>
             }
           </div>
         }
-        @if (editing() || hasField(location().condition)) {
+        @if (editing() || hasField(view().condition)) {
           <div class="detail-item">
             @if (editing()) {
               <app-cc-textbox
@@ -77,11 +96,11 @@
               />
             } @else {
               <span class="detail-label">Condition</span>
-              <span class="detail-value">{{ location().condition }}</span>
+              <span class="detail-value">{{ view().condition }}</span>
             }
           </div>
         }
-        @if (editing() || hasField(location().geography)) {
+        @if (editing() || hasField(view().geography)) {
           <div class="detail-item">
             @if (editing()) {
               <app-cc-textbox
@@ -92,11 +111,11 @@
               />
             } @else {
               <span class="detail-label">Geography</span>
-              <span class="detail-value">{{ location().geography }}</span>
+              <span class="detail-value">{{ view().geography }}</span>
             }
           </div>
         }
-        @if (editing() || hasField(location().architecture)) {
+        @if (editing() || hasField(view().architecture)) {
           <div class="detail-item">
             @if (editing()) {
               <app-cc-textbox
@@ -107,11 +126,11 @@
               />
             } @else {
               <span class="detail-label">Architecture</span>
-              <span class="detail-value">{{ location().architecture }}</span>
+              <span class="detail-value">{{ view().architecture }}</span>
             }
           </div>
         }
-        @if (editing() || hasField(location().climate)) {
+        @if (editing() || hasField(view().climate)) {
           <div class="detail-item">
             @if (editing()) {
               <app-cc-textbox
@@ -122,11 +141,11 @@
               />
             } @else {
               <span class="detail-label">Climate</span>
-              <span class="detail-value">{{ location().climate }}</span>
+              <span class="detail-value">{{ view().climate }}</span>
             }
           </div>
         }
-        @if (editing() || hasField(location().religion)) {
+        @if (editing() || hasField(view().religion)) {
           <div class="detail-item">
             @if (editing()) {
               <app-cc-textbox
@@ -137,11 +156,11 @@
               />
             } @else {
               <span class="detail-label">Religion</span>
-              <span class="detail-value">{{ location().religion }}</span>
+              <span class="detail-value">{{ view().religion }}</span>
             }
           </div>
         }
-        @if (editing() || hasField(location().vibe)) {
+        @if (editing() || hasField(view().vibe)) {
           <div class="detail-item">
             @if (editing()) {
               <app-cc-textbox
@@ -152,22 +171,21 @@
               />
             } @else {
               <span class="detail-label">Vibe</span>
-              <span class="detail-value">{{ location().vibe }}</span>
+              <span class="detail-value">{{ view().vibe }}</span>
             }
           </div>
         }
-        @if (editing() || hasField(location().languages)) {
-          <div class="detail-item">
+        @if (editing() || hasField(view().languages)) {
+          <div class="detail-item" [class.detail-item--full]="editing()">
             @if (editing()) {
-              <app-cc-textbox
+              <cc-lang-picker
                 label="Languages"
-                placeholder="Languages…"
-                context="campaign"
+                [context]="'campaign'"
                 [(ngModel)]="editLanguages"
               />
             } @else {
               <span class="detail-label">Languages</span>
-              <span class="detail-value">{{ location().languages }}</span>
+              <span class="detail-value">{{ view().languages }}</span>
             }
           </div>
         }
@@ -175,7 +193,7 @@
     }
 
     <!-- Description -->
-    @if (editing() || hasField(location().description)) {
+    @if (editing() || hasField(view().description)) {
       <div class="detail-block">
         @if (editing()) {
           <app-cc-textbox
@@ -188,21 +206,22 @@
           />
         } @else {
           <span class="detail-block-label">Description</span>
-          <p class="detail-block-content">{{ location().description }}</p>
+          <p class="detail-block-content">{{ view().description }}</p>
         }
       </div>
     }
 
-    <!-- Secrets -->
+  </div>
+} @else {
+  <div class="detail-content-body">
     <cc-secrets-manager
-      [secrets]="currentSecrets()"
+      [secrets]="secrets()"
+      [cardType]="'location'"
+      [campaignId]="campaignId()"
+      [instanceId]="locationInstanceId"
       [context]="'campaign'"
       [isDm]="true"
-      [editing]="editing()"
-      (reveal)="onRevealSecret($event)"
-      (reseal)="onResealSecret($event)"
-      (add)="onAddSecret($event)"
-      (delete)="onDeleteSecret($event)"
     />
   </div>
+}
 </div>

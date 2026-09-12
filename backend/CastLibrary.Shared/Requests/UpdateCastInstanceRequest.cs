@@ -9,7 +9,9 @@ public class UpdateCastInstanceRequest
     public string   Race              { get; set; } = string.Empty;
     public string   Role              { get; set; } = string.Empty;
     public string   Age               { get; set; } = string.Empty;
-    public string   Alignment         { get; set; } = string.Empty;
+    public int      MaxHitPoints      { get; set; }
+    public int      LostHitPoints     { get; set; }
+    public int      TempHitPoints     { get; set; }
     public string   Posture           { get; set; } = string.Empty;
     public string   Speed             { get; set; } = string.Empty;
     public string[] VoicePlacement    { get; set; } = [];

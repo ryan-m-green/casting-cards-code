@@ -54,11 +54,6 @@ export class CampaignCastDetailComponent implements OnInit, OnDestroy {
     'Slow & Deliberate', 'Steady Drumbeat', 'Brisk', 'Quick & Hurried',
     'Nervous & Rushed', 'Measured', 'Lumbering', 'Graceful',
   ];
-  readonly alignmentOptions = [
-    'Lawful Good', 'Neutral Good', 'Chaotic Good',
-    'Lawful Neutral', 'True Neutral', 'Chaotic Neutral',
-    'Lawful Evil', 'Neutral Evil', 'Chaotic Evil',
-  ];
   readonly pronounOptions = [
     'he/him', 'she/her', 'they/them', 'he/they', 'she/they', 'it/its', 'any pronouns',
   ];
@@ -72,7 +67,9 @@ export class CampaignCastDetailComponent implements OnInit, OnDestroy {
   editRace             = signal('');
   editRole             = signal('');
   editAge              = signal('');
-  editAlignment        = signal('');
+  editMaxHitPoints     = signal<number>(0);
+  editLostHitPoints    = signal<number>(0);
+  editTempHitPoints    = signal<number>(0);
   editPosture          = signal('');
   editSpeed            = signal('');
   editVoicePlacement   = signal<string[]>([]);
@@ -288,7 +285,9 @@ export class CampaignCastDetailComponent implements OnInit, OnDestroy {
     this.editRace.set(ca.race ?? '');
     this.editRole.set(ca.role ?? '');
     this.editAge.set(ca.age ?? '');
-    this.editAlignment.set(ca.alignment ?? '');
+    this.editMaxHitPoints.set(ca.maxHitPoints ?? 0);
+    this.editLostHitPoints.set(ca.lostHitPoints ?? 0);
+    this.editTempHitPoints.set(ca.tempHitPoints ?? 0);
     this.editPosture.set(ca.posture ?? '');
     this.editSpeed.set(ca.speed ?? '');
     this.editVoicePlacement.set([...(ca.voicePlacement ?? [])]);
@@ -326,7 +325,9 @@ export class CampaignCastDetailComponent implements OnInit, OnDestroy {
       race:              this.editRace(),
       role:              this.editRole(),
       age:               this.editAge(),
-      alignment:         this.editAlignment(),
+      maxHitPoints:      this.editMaxHitPoints(),
+      lostHitPoints:     this.editLostHitPoints(),
+      tempHitPoints:     this.editTempHitPoints(),
       posture:           this.editPosture(),
       speed:             this.editSpeed(),
       voicePlacement:    this.editVoicePlacement(),

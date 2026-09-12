@@ -43,7 +43,7 @@ export interface CardRevealOverlayData {
 
 const EMPTY_CAST_BASE: Omit<Cast, 'name' | 'imageUrl'> = {
   id: '', dmUserId: '', pronouns: '', race: '', role: '', age: '',
-  alignment: '', posture: '', speed: '', keywords: [],
+  maxHitPoints: 0, posture: '', speed: '', keywords: [],
   voiceNotes: '', description: '', publicDescription: '', createdAt: '',
 };
 

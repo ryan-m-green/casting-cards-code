@@ -30,7 +30,7 @@ public class CastWebMapper(
             Race              = domain.Race,
             Role              = domain.Role,
             Age               = domain.Age,
-            Alignment         = domain.Alignment,
+            MaxHitPoints      = domain.MaxHitPoints,
             Posture           = domain.Posture,
             Speed             = domain.Speed,
             Keywords          = domain.Keywords,

@@ -2,32 +2,66 @@
 
 .detail-panel-actions {
   display: flex;
-  align-items: flex-start;
-  gap: 8px;
   padding: 10px 16px 0;
-  margin-bottom:12px;
+  margin-bottom: 12px;
 }
 
-.detail-actions-left {
-  display: flex;
-  align-items: flex-start;
-  gap: 8px;
-  flex-shrink: 0;
-
-  cc-portrait-input {
-    margin: 0;
-  }
-}
-
+// Action buttons align to the right edge so Cancel occupies the same slot the
+// Edit button uses. `nowrap` keeps every action button on that single row.
 .detail-actions-right {
   margin-left: auto;
   display: flex;
+  flex-wrap: nowrap;
   align-items: flex-start;
+  justify-content: flex-end;
   gap: 8px;
 }
 
 .campaign-secondary-btn {
   margin-left: 4px;
+}
+
+/* ── Save button + slide-out menu (mirrors the storyline chronicle menu) ── */
+.detail-save-wrap {
+  position: relative;
+  display: inline-flex;
+}
+
+.detail-save-btn {
+  &--active {
+    border-color: v.$color-border-accent;
+  }
+}
+
+.detail-save-menu {
+  position: absolute;
+  top: calc(100% + 6px);
+  right: 0;
+  z-index: 9990;
+  min-width: 150px;
+  display: flex;
+  flex-direction: column;
+  padding: 6px;
+  background: v.$campaign-portal-bg-dark;
+  border: 1px solid v.$campaign-portal-border-bold;
+  border-radius: 8px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45);
+}
+
+.detail-save-menu-item {
+  text-align: left;
+  font-family: v.$font-body;
+  font-size: 11px;
+  color: v.$campaign-portal-text-bright;
+  background: transparent;
+  border: none;
+  border-radius: 5px;
+  padding: 6px 7px;
+  cursor: pointer;
+
+  &:hover {
+    background: v.$campaign-portal-bg-hover;
+  }
 }
 
 .detail-edit-btn,

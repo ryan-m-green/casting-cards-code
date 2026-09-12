@@ -13,6 +13,7 @@ import { JournalTitleComponent } from '../../../shared/components/journal-title/
 import { JournalDropdownComponent } from '../../../shared/components/journal-dropdown/journal-dropdown.component';
 import { JournalRandomizeButtonComponent } from '../../../shared/components/journal-randomize-button/journal-randomize-button.component';
 import { KeywordTagsComponent } from '../../../shared/components/v2/cc-keyword-tags/cc-keyword-tags.component';
+import { CcHpCounterComponent } from '../../../shared/components/v2/cc-hp-counter/cc-hp-counter.component';
 import { HttpErrorResponse } from '@angular/common/http';
 import { SubscriptionDrawerService } from '../../../core/subscription-drawer.service';
 import { AuthService } from '../../../core/auth/auth.service';
@@ -45,7 +46,7 @@ const RACE_OPTIONS = [
 @Component({
   selector: 'app-cast-form',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, FormsModule, RouterLink, CastCardComponent, JournalTitleComponent, JournalDropdownComponent, JournalRandomizeButtonComponent, KeywordTagsComponent],
+  imports: [CommonModule, ReactiveFormsModule, FormsModule, RouterLink, CastCardComponent, JournalTitleComponent, JournalDropdownComponent, JournalRandomizeButtonComponent, KeywordTagsComponent, CcHpCounterComponent],
   templateUrl: './cast-form.component.html',
   styleUrl: './cast-form.component.scss'
 })
@@ -84,6 +85,7 @@ export class CastFormComponent implements OnInit {
     role:              [''],
     race:              [''],
     age:               [''],
+    maxHitPoints:      [0],
     pronouns:          [''],
     posture:           [''],
     speed:             [''],
@@ -101,7 +103,7 @@ export class CastFormComponent implements OnInit {
       role: v.role ?? '',
       race: v.race ?? '',
       age: v.age ?? '',
-      alignment: '',
+      maxHitPoints: Number(v.maxHitPoints) || 0,
       pronouns: v.pronouns ?? '',
       posture: v.posture ?? '',
       speed: v.speed ?? '',
@@ -124,6 +126,7 @@ export class CastFormComponent implements OnInit {
       this.http.get<Cast>(`${environment.apiUrl}/api/cast/${id}`).subscribe(cast => {
         this.form.patchValue({
           name: cast.name, role: cast.role, race: cast.race, age: cast.age,
+          maxHitPoints: cast.maxHitPoints ?? 0,
           pronouns: cast.pronouns, posture: cast.posture,
           speed: cast.speed, publicDescription: cast.publicDescription, description: cast.description,
           voiceNotes: cast.voiceNotes,
@@ -243,7 +246,7 @@ export class CastFormComponent implements OnInit {
     const raw = this.form.value;
     return {
       ...raw,
-      alignment: '',
+      maxHitPoints: Number(raw.maxHitPoints) || 0,
       keywords: this.keywords(),
     };
   }

@@ -31,7 +31,6 @@ export type ImportCardType = 'location' | 'sublocation' | 'cast' | 'faction';
 const VOICE_OPTIONS        = ['chest', 'throat', 'mouth / oral', 'nasal', 'head / sinus'];
 const POSTURE_OPTIONS      = ['upright', 'slouched', 'hunched', 'rigid', 'relaxed', 'open', 'closed‑off', 'confident', 'defensive', 'aggressive', 'passive', 'dominant', 'submissive', 'balanced', 'unsteady', 'leaning forward', 'leaning back', 'leaning to the side', 'arms crossed', 'hands on hips', 'hands behind back', 'military‑straight', 'casual', 'tense', 'loose', 'curved spine', 'straight spine', 'reclined', 'perched', 'crouched', 'kneeling', 'squatting', 'wide‑stance', 'narrow‑stance', 'asymmetrical', 'symmetrical', 'tall', 'compressed'];
 const SPEED_OPTIONS        = ['slow & deliberate', 'steady drumbeat', 'brisk', 'quick & hurried', 'nervous & rushed', 'measured', 'lumbering', 'graceful', 'sluggish', 'easygoing', 'calm & steady', 'smooth‑moving', 'relaxed pace', 'casual stride', 'purposeful stride', 'energetic', 'lively', 'darting', 'jittery', 'frantic', 'rapid‑fire', 'snappy', 'hurried', 'urgent', 'plodding', 'creeping', 'tentative', 'cautious', 'bold & decisive', 'fluid', 'sprightly', 'swift', 'nimble', 'light‑footed', 'heavy‑footed', 'stomping', 'drifting', 'wandering', 'methodical', 'stop‑and‑go', 'erratic', 'unpredictable'];
-const ALIGNMENT_OPTIONS    = ['lawful good', 'neutral good', 'chaotic good', 'lawful neutral', 'true neutral', 'chaotic neutral', 'lawful evil', 'neutral evil', 'chaotic evil'];
 const PRONOUN_OPTIONS      = ['he/him', 'she/her', 'they/them', 'he/they', 'she/they', 'it/its', 'any pronouns'];
 const SIZE_OPTIONS         = ['Hamlet', 'Village', 'Town', 'Large Town', 'Location', 'Large Location', 'Metropolis'];
 const CONDITION_OPTIONS    = ['calm', 'peaceful', 'bustling', 'crowded', 'quiet', 'deserted', 'lively', 'festive', 'tense', 'volatile', 'dangerous', 'unstable', 'war‑torn', 'recovering', 'thriving', 'prosperous', 'struggling', 'impoverished', 'neglected', 'fortified', 'guarded', 'patrolled', 'abandoned', 'ruined', 'decaying', 'overgrown', 'pristine', 'untouched', 'polluted', 'toxic', 'hazardous', 'stormy', 'windy', 'rainy', 'flooded', 'drought‑stricken', 'frozen', 'snow‑covered', 'foggy', 'smoky', 'dusty', 'scorching', 'humid', 'temperate', 'frigid', 'eerie', 'cursed', 'blessed', 'sacred', 'corrupted', 'chaotic', 'orderly', 'lawless', 'controlled', 'contested', 'occupied', 'besieged', 'isolated', 'remote', 'connected', 'central', 'strategic', 'forgotten', 'hidden', 'exposed'];
@@ -182,7 +181,6 @@ export class PortalImportCardComponent implements OnInit, OnChanges {
   voiceOptions     = VOICE_OPTIONS;
   postureOptions   = POSTURE_OPTIONS;
   speedOptions     = SPEED_OPTIONS;
-  alignmentOptions = ALIGNMENT_OPTIONS;
   pronounOptions   = PRONOUN_OPTIONS;
   ageOptions       = AGE_OPTIONS;
   roleOptions      = ROLE_OPTIONS;
@@ -217,7 +215,7 @@ export class PortalImportCardComponent implements OnInit, OnChanges {
     role:              [''],
     race:              [''],
     age:               [''],
-    alignment:         [''],
+    maxHitPoints:      [0],
     pronouns:          [''],
     posture:           [''],
     speed:             [''],
@@ -246,7 +244,7 @@ export class PortalImportCardComponent implements OnInit, OnChanges {
   get pronounsControl() { return this.castForm.get('pronouns') as FormControl; }
   get postureControl() { return this.castForm.get('posture') as FormControl; }
   get speedControl() { return this.castForm.get('speed') as FormControl; }
-  get alignmentControl() { return this.castForm.get('alignment') as FormControl; }
+  get maxHitPointsControl() { return this.castForm.get('maxHitPoints') as FormControl; }
 
   // Faction form controls
   get factionTypeControl() { return this.factionForm.get('type') as FormControl; }
@@ -1137,7 +1135,9 @@ export class PortalImportCardComponent implements OnInit, OnChanges {
         race:                 cast.race,
         role:                 cast.role,
         age:                  cast.age,
-        alignment:            cast.alignment,
+        maxHitPoints:         cast.maxHitPoints,
+        lostHitPoints:        0,
+        tempHitPoints:        0,
         posture:              cast.posture,
         speed:                cast.speed,
         voicePlacement:       [],
@@ -1674,7 +1674,9 @@ export class PortalImportCardComponent implements OnInit, OnChanges {
             race:                 instance.race,
             role:                 instance.role,
             age:                  instance.age,
-            alignment:            instance.alignment,
+            maxHitPoints:         instance.maxHitPoints,
+            lostHitPoints:        instance.lostHitPoints,
+            tempHitPoints:        instance.tempHitPoints,
             posture:              instance.posture,
             speed:                instance.speed,
             voicePlacement:       instance.voicePlacement,

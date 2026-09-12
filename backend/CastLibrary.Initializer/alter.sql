@@ -307,6 +307,29 @@ CREATE INDEX IF NOT EXISTS idx_campaign_keywords_keyword_trgm
 -- ============================================================
 -- Library card keywords columns
 -- ============================================================
-ALTER TABLE locations ADD COLUMN IF NOT EXISTS keywords TEXT[] NOT NULL DEFAULT '{}';
-ALTER TABLE sublocations ADD COLUMN IF NOT EXISTS keywords TEXT[] NOT NULL DEFAULT '{}';
-ALTER TABLE factions ADD COLUMN IF NOT EXISTS keywords TEXT[] NOT NULL DEFAULT '{}';
+-- ============================================================
+-- Cast Hit Points: replace casts.alignment with casts.max_hit_points
+-- ============================================================
+DO $$
+BEGIN
+    IF EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'casts' AND column_name = 'alignment') THEN
+        ALTER TABLE casts DROP COLUMN alignment;
+    END IF;
+END $$;
+
+ALTER TABLE casts ADD COLUMN IF NOT EXISTS max_hit_points INT NOT NULL DEFAULT 0;
+
+-- ============================================================
+-- Campaign cast instance Hit Points:
+-- replace campaign_cast_instances.alignment with max/lost/temp hit points
+-- ============================================================
+DO $$
+BEGIN
+    IF EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'campaign_cast_instances' AND column_name = 'alignment') THEN
+        ALTER TABLE campaign_cast_instances DROP COLUMN alignment;
+    END IF;
+END $$;
+
+ALTER TABLE campaign_cast_instances ADD COLUMN IF NOT EXISTS max_hit_points  INT NOT NULL DEFAULT 0;
+ALTER TABLE campaign_cast_instances ADD COLUMN IF NOT EXISTS lost_hit_points INT NOT NULL DEFAULT 0;
+ALTER TABLE campaign_cast_instances ADD COLUMN IF NOT EXISTS temp_hit_points INT NOT NULL DEFAULT 0;

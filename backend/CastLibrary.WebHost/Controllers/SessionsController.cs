@@ -41,7 +41,7 @@ public class SessionsController(
 
         if (session is null)
         {
-            return Ok((SessionResponse?)null);
+            return Ok((SessionResponse)null);
         }
 
         var response = new SessionResponse

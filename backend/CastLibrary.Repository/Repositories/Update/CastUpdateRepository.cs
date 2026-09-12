@@ -24,7 +24,7 @@ namespace CastLibrary.Repository.Repositories.Update
                 cast.Race,
                 cast.Role,
                 cast.Age,
-                cast.Alignment,
+                cast.MaxHitPoints,
                 cast.Posture,
                 cast.Speed,
                 cast.Keywords,
@@ -35,7 +35,7 @@ namespace CastLibrary.Repository.Repositories.Update
             const string sql =
                 @"UPDATE casts
               SET name=@Name, pronouns=@Pronouns, race=@Race, role=@Role, age=@Age,
-                  alignment=@Alignment, posture=@Posture, speed=@Speed,
+                  max_hit_points=@MaxHitPoints, posture=@Posture, speed=@Speed,
                   keywords=@Keywords::text[], voice_notes=@VoiceNotes,
                   description=@Description, public_description=@PublicDescription
               WHERE id=@Id";

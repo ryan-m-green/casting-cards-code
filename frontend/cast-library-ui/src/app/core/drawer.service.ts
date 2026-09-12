@@ -11,7 +11,8 @@ export type DrawerContentType =
   | 'soundtrack'
   | 'location-detail'
   | 'sublocation-detail'
-  | 'cast-detail';
+  | 'cast-detail'
+  | 'faction-detail';
 
 export interface DrawerConfig {
   contentType: DrawerContentType;
@@ -107,6 +108,14 @@ export class DrawerService {
     this.open({
       contentType: 'cast-detail',
       title: 'Character Details',
+      context
+    });
+  }
+
+  openFactionDetail(context?: any): void {
+    this.open({
+      contentType: 'faction-detail',
+      title: 'Faction Details',
       context
     });
   }

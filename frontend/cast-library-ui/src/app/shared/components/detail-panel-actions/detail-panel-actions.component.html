@@ -9,9 +9,9 @@
           <app-feather-icon [white]="true" /> Edit
         </button>
       } @else {
-        <button class="campaign-primary-btn" (click)="saveDetailsClick.emit()" title="Save to campaign">Save <app-icon name="campaign" /></button>
-        <button class="campaign-primary-btn" (click)="saveToLibraryClick.emit()" title="Save to campaign and library">Save <app-icon name="campaign" /> + <app-icon name="library" /></button>
-        <button class="campaign-secondary-btn" (click)="cancelEditingClick.emit()">✖</button>
+        <button class="campaign-primary-btn" (click)="saveDetailsClick.emit()" title="Save to campaign">Save <app-icon name="campaign" variant="inline" /></button>
+        <button class="campaign-primary-btn" (click)="saveToLibraryClick.emit()" title="Save to campaign and library">Save <app-icon name="campaign" variant="inline" /> + <app-icon name="library" variant="inline" /></button>
+        <button class="campaign-secondary-btn" (click)="cancelEditingClick.emit()" title="Cancel editing" aria-label="Cancel editing">Cancel</button>
       }
     }
   </div>

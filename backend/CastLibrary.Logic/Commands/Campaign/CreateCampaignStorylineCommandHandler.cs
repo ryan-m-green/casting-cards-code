@@ -111,7 +111,7 @@ public class CreateCampaignStorylineCommandHandler(
         }
     }
 
-    private CastTravelTriggerData? ParseCastTravelData(string entityId)
+    private CastTravelTriggerData ParseCastTravelData(string entityId)
     {
         try
         {

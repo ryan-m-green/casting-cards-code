@@ -10,7 +10,7 @@ public class UpdateFactionInstanceRequest
     public short  Influence   { get; set; } = 0;
     public short  Perception  { get; set; } = 0;
     public bool   SyncLibrary { get; set; } = false;
-    public FactionColorsRequest? Colors { get; set; }
+    public FactionColorsRequest Colors { get; set; }
 }
 
 public class FactionColorsRequest

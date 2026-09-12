@@ -10,6 +10,6 @@ public class CreateCastRequestValidator : AbstractValidator<CreateCastRequest>
         RuleFor(x => x.Race).MaximumLength(100);
         RuleFor(x => x.Role).MaximumLength(100);
         RuleFor(x => x.Age).MaximumLength(20);
-        RuleFor(x => x.Alignment).MaximumLength(100);
+        RuleFor(x => x.MaxHitPoints).GreaterThanOrEqualTo(0);
     }
 }

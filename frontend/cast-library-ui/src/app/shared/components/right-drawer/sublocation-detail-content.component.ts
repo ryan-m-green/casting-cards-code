@@ -8,16 +8,18 @@ import { CampaignDetail } from '../../models/campaign.model';
 import { environment } from '../../../../environments/environment';
 import { CampaignShellService } from '../../../core/campaign-shell.service';
 import { CampaignHubService } from '../../../core/hub/campaign-hub.service';
-import { CcSecretsManagerComponent } from '../v2';
+import { CcSecretsManagerComponent, CcPortraitInputComponent } from '../v2';
 import { SublocationService } from '../../../core/sublocation.service';
 import { CcTextboxComponent } from '../v2/cc-textbox/cc-textbox.component';
 import { CcDetailPanelActionsComponent } from '../v2/cc-detail-panel-actions/cc-detail-panel-actions.component';
 import { CcShopInventoryComponent, ShopItemData } from '../v2';
 
+type DetailTab = 'details' | 'secrets';
+
 @Component({
   selector: 'app-sublocation-detail-content',
   standalone: true,
-  imports: [CommonModule, FormsModule, CcDetailPanelActionsComponent, CcTextboxComponent, CcShopInventoryComponent, CcSecretsManagerComponent],
+  imports: [CommonModule, FormsModule, CcDetailPanelActionsComponent, CcTextboxComponent, CcShopInventoryComponent, CcSecretsManagerComponent, CcPortraitInputComponent],
   templateUrl: './sublocation-detail-content.component.html',
   styleUrls: ['./sublocation-detail-content.component.scss']
 })
@@ -33,16 +35,18 @@ export class SublocationDetailContentComponent implements OnInit, OnDestroy {
   sublocationInstanceId = input.required<string>();
   closeDrawer = output<void>();
 
-  // Local reactive secret state that can be updated after reveal/reseal/add/delete
-  secretsState = signal<CampaignSecret[] | null>(null);
-
-  currentSecrets = computed(() => this.secretsState() ?? this.secrets());
-
   // Local reactive sublocation state that can be updated after save
   sublocationState = signal<Sublocation | CampaignSublocationInstance | null>(null);
   
   private subscriptions: any[] = [];
   cardType = input<'location' | 'sublocation' | 'cast' | 'faction'>('sublocation');
+
+  // Detail tabs
+  activeTab = signal<DetailTab>('details');
+
+  setTab(tab: DetailTab): void {
+    this.activeTab.set(tab);
+  }
 
   // Edit mode state
   editing = signal<boolean>(false);
@@ -234,6 +238,10 @@ export class SublocationDetailContentComponent implements OnInit, OnDestroy {
     const file = this.imageFile();
     const currentCardType = this.cardType();
 
+    // Save always drops the panel out of edit mode, regardless of the async
+    // persistence outcome (mirrors the Cancel behaviour).
+    this.editing.set(false);
+
     console.log('SublocationDetailContent - saveDetails called');
     console.log('SublocationDetailContent - campaignId:', campaignId);
     console.log('SublocationDetailContent - instanceId:', (subloc as CampaignSublocationInstance).instanceId);
@@ -308,45 +316,6 @@ export class SublocationDetailContentComponent implements OnInit, OnDestroy {
   closePanel() {
     this.editing.set(false);
     this.closeDrawer.emit();
-  }
-
-  onRevealSecret(secret: CampaignSecret): void {
-    this.http.post(
-      `${environment.apiUrl}/api/campaigns/${this.campaignId()}/secrets/${secret.id}/reveal`,
-      {}
-    ).subscribe(() => {
-      this.secretsState.set(this.currentSecrets().map(s => s.id === secret.id ? { ...s, isRevealed: true } : s));
-    });
-  }
-
-  onResealSecret(secret: CampaignSecret): void {
-    this.http.patch(
-      `${environment.apiUrl}/api/campaigns/${this.campaignId()}/secrets/${secret.id}/reseal`,
-      {}
-    ).subscribe(() => {
-      this.secretsState.set(this.currentSecrets().map(s => s.id === secret.id ? { ...s, isRevealed: false } : s));
-    });
-  }
-
-  onDeleteSecret(secret: CampaignSecret): void {
-    this.http.delete(
-      `${environment.apiUrl}/api/campaigns/${this.campaignId()}/secrets/${secret.id}`
-    ).subscribe(() => {
-      this.secretsState.set(this.currentSecrets().filter(s => s.id !== secret.id));
-    });
-  }
-
-  onAddSecret(content: string): void {
-    const campaignId = this.campaignId();
-    const instanceId = this.sublocationInstanceId();
-    if (!campaignId || !instanceId) return;
-
-    this.http.post<CampaignSecret>(
-      `${environment.apiUrl}/api/campaigns/${campaignId}/secrets`,
-      { instanceId, entityType: 'Sublocation', content }
-    ).subscribe(s => {
-      this.secretsState.set([...this.currentSecrets(), s]);
-    });
   }
 
   private convertShopItemsToShopItemData(shopItems: any[]): ShopItemData[] {

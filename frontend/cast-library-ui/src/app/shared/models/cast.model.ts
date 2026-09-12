@@ -6,7 +6,7 @@ export interface Cast {
   race: string;
   role: string;
   age: string;
-  alignment: string;
+  maxHitPoints: number;
   posture: string;
   speed: string;
   keywords: string[];
@@ -23,7 +23,7 @@ export interface CreateCastRequest {
   race: string;
   role: string;
   age: string;
-  alignment: string;
+  maxHitPoints: number;
   posture: string;
   speed: string;
   keywords: string[];
@@ -39,6 +39,8 @@ export interface CampaignCastInstance extends Cast {
   locationInstanceId: string | null;
   sublocationInstanceId: string | null;
   isVisibleToPlayers: boolean;
+  lostHitPoints: number;
+  tempHitPoints: number;
   voicePlacement: string[];
   keywords: string[];
   dmNotes: string;

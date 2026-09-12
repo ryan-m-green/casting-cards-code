@@ -10,7 +10,7 @@ public interface IStorylineReadRepository
 {
     Task<List<CampaignStorylineDomain>> GetByCampaignIdAsync(Guid campaignId, bool? isVisibleToPlayers = null, bool? markedForArchive = null);
     Task<List<CampaignStorylineDomain>> GetVisibleByCampaignIdAsync(Guid campaignId);
-    Task<CampaignStorylineDomain?> GetByIdAsync(Guid eventId);
+    Task<CampaignStorylineDomain> GetByIdAsync(Guid eventId);
 }
 
 public class StorylineReadRepository(

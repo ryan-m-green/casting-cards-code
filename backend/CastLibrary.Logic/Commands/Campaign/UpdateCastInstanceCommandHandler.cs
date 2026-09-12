@@ -27,7 +27,9 @@ public class UpdateCastInstanceCommandHandler(
         instance.Race              = command.Request.Race;
         instance.Role              = command.Request.Role;
         instance.Age               = command.Request.Age;
-        instance.Alignment         = command.Request.Alignment;
+        instance.MaxHitPoints      = command.Request.MaxHitPoints;
+        instance.LostHitPoints     = command.Request.LostHitPoints;
+        instance.TempHitPoints     = command.Request.TempHitPoints;
         instance.Posture           = command.Request.Posture;
         instance.Speed             = command.Request.Speed;
         instance.VoicePlacement    = command.Request.VoicePlacement;
@@ -47,7 +49,7 @@ public class UpdateCastInstanceCommandHandler(
                 Race              = command.Request.Race,
                 Role              = command.Request.Role,
                 Age               = command.Request.Age,
-                Alignment         = command.Request.Alignment,
+                MaxHitPoints      = command.Request.MaxHitPoints,
                 Posture           = command.Request.Posture,
                 Speed             = command.Request.Speed,
                 Keywords          = command.Request.Keywords,

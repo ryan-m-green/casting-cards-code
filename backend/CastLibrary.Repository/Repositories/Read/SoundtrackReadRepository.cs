@@ -9,7 +9,7 @@ namespace CastLibrary.Repository.Repositories.Read;
 public interface ISoundtrackReadRepository
 {
     Task<List<SoundtrackDomain>> GetByCampaignIdAsync(Guid campaignId);
-    Task<SoundtrackDomain?> GetByIdAsync(Guid soundtrackId);
+    Task<SoundtrackDomain> GetByIdAsync(Guid soundtrackId);
 }
 
 public class SoundtrackReadRepository(
@@ -47,7 +47,7 @@ public class SoundtrackReadRepository(
         return rows.Select(mapper.ToDomain).ToList();
     }
 
-    public async Task<SoundtrackDomain?> GetByIdAsync(Guid soundtrackId)
+    public async Task<SoundtrackDomain> GetByIdAsync(Guid soundtrackId)
     {
         var spanId = correlation.NewSpan();
         var @params = new { SoundtrackId = soundtrackId };

@@ -34,7 +34,7 @@ public class GetChronicleFeedQuery
     public GetChronicleFeedQuery(
         Guid campaignId,
         bool includeGmOnly,
-        string[]? contentTypes = null,
+        string[] contentTypes = null,
         int limit = 200)
     {
         CampaignId = campaignId;
@@ -45,6 +45,6 @@ public class GetChronicleFeedQuery
 
     public Guid CampaignId { get; }
     public bool IncludeGmOnly { get; }
-    public string[]? ContentTypes { get; }
+    public string[] ContentTypes { get; }
     public int Limit { get; }
 }

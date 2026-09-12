@@ -81,7 +81,7 @@ public class AmbiancesController(
             PauseMaxSeconds = i.PauseMaxSeconds
         }).ToList();
 
-    private static string? Validate(string title, List<AmbianceItemRequest> items)
+    private static string Validate(string title, List<AmbianceItemRequest> items)
     {
         if (string.IsNullOrWhiteSpace(title) || title.Length > 200)
             return "Title is required and must not exceed 200 characters.";

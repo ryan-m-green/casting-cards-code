@@ -42,24 +42,24 @@ export class CcFactionColorsComponent {
     return 'Neutral';
   });
 
-  onEvilColorChange(event: Event): void {
+  onEvilColorChange(value: string | Event): void {
     if (this.disabled()) return;
-    const color = (event.target as HTMLInputElement).value;
+    const color = typeof value === 'string' ? value : (value.target as HTMLInputElement).value;
     this.evilColor.set(color);
     this.evilColorChange.emit(color);
   }
 
-  onGoodColorChange(event: Event): void {
+  onGoodColorChange(value: string | Event): void {
     if (this.disabled()) return;
-    const color = (event.target as HTMLInputElement).value;
+    const color = typeof value === 'string' ? value : (value.target as HTMLInputElement).value;
     this.goodColor.set(color);
     this.goodColorChange.emit(color);
   }
 
-  onPerceptionChange(event: Event): void {
+  onPerceptionChange(value: number | Event): void {
     if (this.disabled()) return;
-    const value = +(event.target as HTMLInputElement).value;
-    this.perception.set(value);
-    this.perceptionChange.emit(value);
+    const next = typeof value === 'number' ? value : +(value.target as HTMLInputElement).value;
+    this.perception.set(next);
+    this.perceptionChange.emit(next);
   }
 }

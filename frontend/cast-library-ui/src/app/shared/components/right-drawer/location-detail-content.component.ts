@@ -1,4 +1,4 @@
-import { Component, input, output, signal, inject, computed } from '@angular/core';
+import { Component, computed, effect, input, output, signal, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
@@ -6,13 +6,17 @@ import { environment } from '../../../../environments/environment';
 import { Location, CampaignLocationInstance } from '../../models/location.model';
 import { CampaignSecret } from '../../models/secret.model';
 import { CcTextboxComponent } from '../v2/cc-textbox/cc-textbox.component';
+import { CcLangPickerComponent } from '../v2/cc-lang-picker/cc-lang-picker.component';
 import { CcDetailPanelActionsComponent } from '../v2/cc-detail-panel-actions/cc-detail-panel-actions.component';
 import { CcSecretsManagerComponent } from '../v2/cc-secrets-manager/cc-secrets-manager.component';
+import { CcPortraitInputComponent } from '../v2/cc-portrait-input/cc-portrait-input.component';
+
+type DetailTab = 'details' | 'secrets';
 
 @Component({
   selector: 'app-location-detail-content',
   standalone: true,
-  imports: [CommonModule, FormsModule, CcDetailPanelActionsComponent, CcTextboxComponent, CcSecretsManagerComponent],
+  imports: [CommonModule, FormsModule, CcDetailPanelActionsComponent, CcTextboxComponent, CcLangPickerComponent, CcSecretsManagerComponent, CcPortraitInputComponent],
   templateUrl: './location-detail-content.component.html',
   styleUrl: './location-detail-content.component.scss'
 })
@@ -25,12 +29,8 @@ export class LocationDetailContentComponent {
   closeDrawer = output<void>();
   cardType = input<'location' | 'sublocation' | 'cast' | 'faction'>('location');
 
-  // Local reactive secret state that can be updated after reveal/reseal/add/delete
-  secretsState = signal<CampaignSecret[] | null>(null);
-
-  currentSecrets = computed(() => this.secretsState() ?? this.secrets());
-
-  private get locationInstanceId(): string {
+  /** Instance id of the location card, passed to the shared secrets manager. */
+  get locationInstanceId(): string {
     return (this.location() as CampaignLocationInstance).instanceId ?? '';
   }
 
@@ -47,6 +47,13 @@ export class LocationDetailContentComponent {
         `${environment.apiUrl}/api/campaign/${campaignId}/factioninstances/${instanceId}/image`
     };
     return endpoints[cardType];
+  }
+
+  // Detail tabs
+  activeTab = signal<DetailTab>('details');
+
+  setTab(tab: DetailTab): void {
+    this.activeTab.set(tab);
   }
 
   // Edit mode state
@@ -68,12 +75,30 @@ export class LocationDetailContentComponent {
   editLanguages = signal('');
   editDescription = signal('');
 
+  /**
+   * Locally-updated copy of the location. Saving writes the edited fields back
+   * through the API; holding the latest saved values here lets the read-only
+   * view reflect them immediately instead of waiting for the parent to hand us
+   * fresh data. Cleared whenever a different location arrives.
+   */
+  private savedLocation = signal<Location | CampaignLocationInstance | null>(null);
+
+  /** Effective location for display: the local saved copy when present, else the input. */
+  readonly view = computed(() => this.savedLocation() ?? this.location());
+
+  constructor() {
+    effect(() => {
+      this.location(); // react to a new location being passed in
+      this.savedLocation.set(null);
+    });
+  }
+
   hasField(...values: (string | undefined | null)[]): boolean {
     return values.some(v => v && v.trim().length > 0);
   }
 
   startEditing() {
-    const loc = this.location();
+    const loc = this.view();
     this.editName.set(loc.name || '');
     this.editClassification.set(loc.classification || '');
     this.editSize.set(loc.size || '');
@@ -90,55 +115,73 @@ export class LocationDetailContentComponent {
   }
 
   saveDetails() {
-    const loc = this.location();
+    this.persistLocation(false);
+  }
+
+  saveToLibrary() {
+    this.persistLocation(true);
+  }
+
+  /**
+   * Persists the edited fields to the campaign location instance (and, when
+   * `syncLibrary` is true, back to the source library location), then uploads a
+   * new portrait if one was selected.
+   */
+  private persistLocation(syncLibrary: boolean) {
+    const loc = this.view() as CampaignLocationInstance;
     const campaignId = this.campaignId();
     const file = this.imageFile();
     const currentCardType = this.cardType();
 
-    console.log('LocationDetailContent - saveDetails called');
-    console.log('LocationDetailContent - campaignId:', campaignId);
-    console.log('LocationDetailContent - instanceId:', (loc as CampaignLocationInstance).instanceId);
-    console.log('LocationDetailContent - cardType:', currentCardType);
-    console.log('LocationDetailContent - has file:', !!file);
+    // Save always drops the panel out of edit mode, regardless of the async
+    // persistence outcome (mirrors the Cancel behaviour).
+    this.editing.set(false);
 
-    if (!campaignId || !(loc as CampaignLocationInstance).instanceId) {
-      console.warn('Cannot save: missing campaignId or instanceId');
-      this.editing.set(false);
+    if (!campaignId || !loc?.instanceId) {
+      console.warn('LocationDetailContent - Cannot save: missing campaignId or instanceId');
       return;
     }
 
-    const instanceId = (loc as CampaignLocationInstance).instanceId;
-    const sourceLocationId = (loc as CampaignLocationInstance).sourceLocationId;
+    // Fields edited in the drawer. dmNotes/keywords are not editable here, so
+    // pass their current values through rather than clearing them.
+    const fields = {
+      name: this.editName(),
+      description: this.editDescription(),
+      classification: this.editClassification(),
+      size: this.editSize(),
+      condition: this.editCondition(),
+      geography: this.editGeography(),
+      architecture: this.editArchitecture(),
+      climate: this.editClimate(),
+      religion: this.editReligion(),
+      vibe: this.editVibe(),
+      languages: this.editLanguages(),
+      dmNotes: loc.dmNotes ?? '',
+      keywords: loc.keywords ?? [],
+    };
 
-    // Upload image if selected
+    this.http.patch(
+      `${environment.apiUrl}/api/campaigns/${campaignId}/locations/${loc.instanceId}`,
+      { ...fields, syncLibrary }
+    ).subscribe({
+      next: () => {
+        // Reflect the saved values in the read-only view immediately.
+        this.savedLocation.set({ ...(this.view() as CampaignLocationInstance), ...fields });
+      },
+      error: (err) => console.error('LocationDetailContent - Failed to save location:', err),
+    });
+
+    // Upload the portrait if one was selected.
     if (file) {
       const formData = new FormData();
       formData.append('file', file);
-      formData.append('sourceLocationId', sourceLocationId);
-      const endpoint = this.getEndpointMapping(currentCardType);
-      const url = endpoint(campaignId, instanceId);
-      console.log('LocationDetailContent - uploading image to:', url);
-      this.http.post(
-        url,
-        formData
-      ).subscribe({
-        next: () => {
-          console.log('LocationDetailContent - Image uploaded successfully');
-          this.imageFile.set(null);
-          this.editing.set(false);
-        },
-        error: (err) => {
-          console.error('LocationDetailContent - Failed to upload image:', err);
-          this.editing.set(false);
-        }
+      formData.append('sourceLocationId', loc.sourceLocationId);
+      const url = this.getEndpointMapping(currentCardType)(campaignId, loc.instanceId);
+      this.http.post(url, formData).subscribe({
+        next: () => this.imageFile.set(null),
+        error: (err) => console.error('LocationDetailContent - Failed to upload image:', err),
       });
-    } else {
-      this.editing.set(false);
     }
-  }
-
-  saveToLibrary() {
-    this.saveDetails();
   }
 
   cancelEditing() {
@@ -148,44 +191,5 @@ export class LocationDetailContentComponent {
   closePanel() {
     this.editing.set(false);
     this.closeDrawer.emit();
-  }
-
-  onRevealSecret(secret: CampaignSecret): void {
-    this.http.post(
-      `${environment.apiUrl}/api/campaigns/${this.campaignId()}/secrets/${secret.id}/reveal`,
-      {}
-    ).subscribe(() => {
-      this.secretsState.set(this.currentSecrets().map(s => s.id === secret.id ? { ...s, isRevealed: true } : s));
-    });
-  }
-
-  onResealSecret(secret: CampaignSecret): void {
-    this.http.patch(
-      `${environment.apiUrl}/api/campaigns/${this.campaignId()}/secrets/${secret.id}/reseal`,
-      {}
-    ).subscribe(() => {
-      this.secretsState.set(this.currentSecrets().map(s => s.id === secret.id ? { ...s, isRevealed: false } : s));
-    });
-  }
-
-  onDeleteSecret(secret: CampaignSecret): void {
-    this.http.delete(
-      `${environment.apiUrl}/api/campaigns/${this.campaignId()}/secrets/${secret.id}`
-    ).subscribe(() => {
-      this.secretsState.set(this.currentSecrets().filter(s => s.id !== secret.id));
-    });
-  }
-
-  onAddSecret(content: string): void {
-    const campaignId = this.campaignId();
-    const instanceId = this.locationInstanceId;
-    if (!campaignId || !instanceId) return;
-
-    this.http.post<CampaignSecret>(
-      `${environment.apiUrl}/api/campaigns/${campaignId}/secrets`,
-      { instanceId, entityType: 'Location', content }
-    ).subscribe(s => {
-      this.secretsState.set([...this.currentSecrets(), s]);
-    });
   }
 }

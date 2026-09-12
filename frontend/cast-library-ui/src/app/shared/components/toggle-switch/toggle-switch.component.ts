@@ -8,7 +8,9 @@ import { Component, input, model } from '@angular/core';
       type="button"
       class="toggle"
       [class.toggle--on]="checked()"
-      (click)="checked.set(!checked())"
+      [class.toggle--disabled]="disabled()"
+      [disabled]="disabled()"
+      (click)="onToggle()"
       role="switch"
       [attr.aria-checked]="checked()"
       [attr.aria-label]="label()"
@@ -50,10 +52,22 @@ import { Component, input, model } from '@angular/core';
       .toggle--on .toggle__thumb {
         transform: translateX(18px);
       }
+
+      .toggle--disabled {
+        cursor: default;
+        opacity: 0.5;
+        pointer-events: none;
+      }
     `,
   ],
 })
 export class ToggleSwitchComponent {
   checked = model(false);
   label = input('');
+  disabled = input(false);
+
+  onToggle(): void {
+    if (this.disabled()) return;
+    this.checked.set(!this.checked());
+  }
 }

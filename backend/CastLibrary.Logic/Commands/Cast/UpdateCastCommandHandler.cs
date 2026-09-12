@@ -25,7 +25,7 @@ public class UpdateCastCommandHandler(
         existing.Race = command.Request.Race;
         existing.Role = command.Request.Role;
         existing.Age = command.Request.Age;
-        existing.Alignment = command.Request.Alignment;
+        existing.MaxHitPoints = command.Request.MaxHitPoints;
         existing.Posture = command.Request.Posture;
         existing.Speed = command.Request.Speed;
         existing.Keywords = command.Request.Keywords;

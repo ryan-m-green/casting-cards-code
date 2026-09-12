@@ -17,6 +17,7 @@ import { SoundtrackContentComponent } from './shared/components/right-drawer/sou
 import { LocationDetailContentComponent } from './shared/components/right-drawer/location-detail-content.component';
 import { SublocationDetailContentComponent } from './shared/components/right-drawer/sublocation-detail-content.component';
 import { CastDetailContentComponent } from './shared/components/right-drawer/cast-detail-content.component';
+import { FactionDetailContentComponent } from './shared/components/right-drawer/faction-detail-content.component';
 
 @Component({
   selector: 'app-root',
@@ -32,7 +33,8 @@ import { CastDetailContentComponent } from './shared/components/right-drawer/cas
     SoundtrackContentComponent,
     LocationDetailContentComponent,
     SublocationDetailContentComponent,
-    CastDetailContentComponent
+    CastDetailContentComponent,
+    FactionDetailContentComponent
   ],
   template: `
     <div class="portal-transition-overlay" [class.active]="transition.active()" [class.instant]="transition.instant()"></div>
@@ -123,6 +125,14 @@ import { CastDetailContentComponent } from './shared/components/right-drawer/cas
       />
     </ng-template>
 
+    <ng-template #factionDetailContentTemplate let-context>
+      <app-faction-detail-content
+        [faction]="context?.faction"
+        [campaignId]="context?.campaignId || ''"
+        (closeDrawer)="rightDrawer.close()"
+      />
+    </ng-template>
+
     <!-- RightDrawerComponent at screen level -->
     <app-right-drawer #rightDrawer
       [title]="drawerTitle()"
@@ -178,6 +188,7 @@ export class App implements OnInit, OnDestroy {
   locationDetailContentTemplate = viewChild<TemplateRef<any>>('locationDetailContentTemplate');
   sublocationDetailContentTemplate = viewChild<TemplateRef<any>>('sublocationDetailContentTemplate');
   castDetailContentTemplate = viewChild<TemplateRef<any>>('castDetailContentTemplate');
+  factionDetailContentTemplate = viewChild<TemplateRef<any>>('factionDetailContentTemplate');
   
   drawerTitle = signal('');
   currentContentTemplate = signal<TemplateRef<any> | null>(null);
@@ -323,6 +334,9 @@ export class App implements OnInit, OnDestroy {
         break;
       case 'cast-detail':
         template = this.castDetailContentTemplate() ?? null;
+        break;
+      case 'faction-detail':
+        template = this.factionDetailContentTemplate() ?? null;
         break;
     }
 

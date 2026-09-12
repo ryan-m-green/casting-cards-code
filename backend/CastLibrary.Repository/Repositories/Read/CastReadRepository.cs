@@ -25,7 +25,7 @@ public class CastReadRepository(
         var spanId = correlation.NewSpan();
         var @params = new { DmUserId = dmUserId };
         const string sql =
-            @"SELECT id, dm_user_id AS DmUserId, name, pronouns, race, role, age, alignment, posture, speed,
+            @"SELECT id, dm_user_id AS DmUserId, name, pronouns, race, role, age, max_hit_points AS MaxHitPoints, posture, speed,
                      keywords AS Keywords, voice_notes AS VoiceNotes,
                      description, public_description AS PublicDescription,
                      created_at AS CreatedAt
@@ -46,7 +46,7 @@ public class CastReadRepository(
         var spanId = correlation.NewSpan();
         var @params = new { Id = id };
         const string sql =
-            @"SELECT id, dm_user_id AS DmUserId, name, pronouns, race, role, age, alignment, posture, speed,
+            @"SELECT id, dm_user_id AS DmUserId, name, pronouns, race, role, age, max_hit_points AS MaxHitPoints, posture, speed,
                      keywords AS Keywords, voice_notes AS VoiceNotes,
                      description, public_description AS PublicDescription,
                      created_at AS CreatedAt

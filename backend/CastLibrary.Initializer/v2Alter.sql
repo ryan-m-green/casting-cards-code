@@ -14,7 +14,7 @@ COMMENT ON COLUMN casts.pronouns IS 'V1 & V2';
 COMMENT ON COLUMN casts.race IS 'V1 & V2';
 COMMENT ON COLUMN casts.role IS 'V1 & V2';
 COMMENT ON COLUMN casts.age IS 'V1 & V2';
-COMMENT ON COLUMN casts.alignment IS 'V1';
+COMMENT ON COLUMN casts.max_hit_points IS 'V1 & V2';
 COMMENT ON COLUMN casts.posture IS 'V1';
 COMMENT ON COLUMN casts.speed IS 'V1';
 COMMENT ON COLUMN casts.keywords IS 'V2';

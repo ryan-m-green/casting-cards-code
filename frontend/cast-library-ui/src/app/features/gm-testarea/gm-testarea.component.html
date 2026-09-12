@@ -36,6 +36,8 @@
       <div class="divider divider--campaign"></div>
       <cc-counter-badge label="Counter (Campaign)" [context]="'campaign'" [(count)]="campaignCounter" [min]="0" [max]="99" style="margin-left: 200px;"></cc-counter-badge>
       <div class="divider divider--campaign"></div>
+      <cc-hp-counter label="Hit Points (Campaign)" [context]="'campaign'" [(ngModel)]="campaignHitPoints"></cc-hp-counter>
+      <div class="divider divider--campaign"></div>
       <cc-political-influence label="Political Influence (Campaign)" [context]="'campaign'" [(influence)]="campaignPoliticalInfluence"></cc-political-influence>
       <div class="divider divider--campaign"></div>
       <cc-symbol-picker [context]="'campaign'" [(selectedIcon)]="campaignSymbol"></cc-symbol-picker>
@@ -215,5 +217,51 @@
       No events loaded. Click the button above to load SignalR events.
     </div>
 </div>
+
+  <!-- Secrets Manager Test Section -->
+  <div class="secrets-test-section">
+    <div class="secrets-test-header">
+      <h3>Secrets Manager</h3>
+      <p class="secrets-test-description">
+        <code>cc-secrets-manager</code> — a self-contained, card-type aware secrets component. It renders the
+        card's secrets in a single column and appends new secrets to that list. Set a real campaign &amp;
+        instance id to exercise the live API.
+      </p>
+    </div>
+
+    <div class="secrets-test-controls">
+      <label class="secrets-test-field">
+        <span>Card Type</span>
+        <select [(ngModel)]="secretsTestCardType">
+          <option value="location">location</option>
+          <option value="sublocation">sublocation</option>
+          <option value="cast">cast</option>
+          <option value="faction">faction</option>
+          <option value="player">player</option>
+        </select>
+      </label>
+
+      <label class="secrets-test-field">
+        <span>Campaign ID</span>
+        <input type="text" [(ngModel)]="secretsTestCampaignId" placeholder="campaign guid" />
+      </label>
+
+      <label class="secrets-test-field">
+        <span>Instance ID</span>
+        <input type="text" [(ngModel)]="secretsTestInstanceId" placeholder="instance guid" />
+      </label>
+    </div>
+
+    <div class="secrets-test-preview">
+      <cc-secrets-manager
+        [secrets]="secretsTestSecrets"
+        [cardType]="secretsTestCardType"
+        [campaignId]="secretsTestCampaignId"
+        [instanceId]="secretsTestInstanceId"
+        [context]="'campaign'"
+        [isDm]="true"
+      />
+    </div>
+  </div>
 
 </div>

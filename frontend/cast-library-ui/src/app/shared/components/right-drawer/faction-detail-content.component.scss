@@ -1,20 +1,9 @@
 @use '../../../../styles/variables' as v;
 
-.location-detail-content {
+.faction-detail-content {
   display: flex;
   flex-direction: column;
   height: 100%;
-}
-
-// ── Detail portrait (pinned top-left, always visible) ────────────────────────
-.detail-portrait-row {
-  display: flex;
-  justify-content: flex-start;
-  padding: 12px 0;
-
-  cc-portrait-input {
-    margin: 0;
-  }
 }
 
 // ── Detail tabs (Details / Secrets) ──────────────────────────────────────────
@@ -49,9 +38,10 @@
 }
 
 .detail-header {
-  padding: 0px 20px 6px 20px;
+  padding-bottom:12px;
   border-bottom: 1px solid v.$campaign-portal-border-bold;
   background: rgba(v.$campaign-portal-bg-medium, 0.2);
+  margin-bottom:12px;
 }
 
 .detail-title {
@@ -63,57 +53,22 @@
   margin: 0;
 }
 
+.detail-subtitle {
+  font-family: v.$font-header;
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: v.$campaign-portal-text-muted;
+}
+
 .detail-content-body {
   flex: 1;
   overflow-y: auto;
   padding: 20px;
 }
 
-.detail-grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 16px;
-  margin-bottom: 24px;
-
-  @media (max-width: 600px) {
-    grid-template-columns: 1fr;
-  }
-}
-
-.detail-item--full {
-  grid-column: 1 / -1;
-}
-
-.detail-item {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-  padding-bottom: 12px;  
-  border-bottom: 1px solid rgba(v.$campaign-portal-border-bold, 0.3);
-  &:first-child {
-    padding-top: 8px;
-  }
-  &:last-child {
-    border-bottom: none;
-  }
-}
-
-.detail-label {
-  font-family: v.$font-header;
-  font-size: 10px;
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-  color: v.$campaign-portal-text-muted;
-}
-
-.detail-value {
-  font-size: 14px;
-  color: v.$campaign-portal-text-bright;
-  line-height: 1.4;
-}
-
 .detail-block {
-  margin-bottom: 24px;
+  margin-bottom: 12px;
   padding-bottom: 20px;
   border-bottom: 1px solid rgba(v.$campaign-portal-border-bold, 0.3);
 }
@@ -135,3 +90,19 @@
   margin: 0;
 }
 
+.detail-block--toggle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+
+  .detail-block-label {
+    margin-bottom: 0;
+  }
+}
+
+// View (non-edit) mode: keep the field components rendered exactly as in edit
+// mode so their accent colours stay visible, but block all interaction.
+.field-readonly {
+  pointer-events: none;
+}

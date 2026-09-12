@@ -11,7 +11,7 @@ public interface ICampaignChroniclesFeedReadRepository
     Task<List<CampaignChroniclesDomain>> GetByCampaignIdAsync(
         Guid campaignId,
         bool includeGmOnly,
-        string[]? contentTypes,
+        string[] contentTypes,
         int limit);
 }
 

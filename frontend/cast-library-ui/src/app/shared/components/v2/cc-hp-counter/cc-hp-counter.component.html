@@ -1,0 +1,61 @@
+<div class="cc-hp-counter"
+     [class.cc-hp-counter--journal]="!isCampaignContext()"
+     [class.cc-hp-counter--campaign]="isCampaignContext()">
+  @if (label()) {
+    <span class="cc-hp-counter-label">{{ label() }}</span>
+  }
+
+  <div class="cc-hp-counter-dials" role="group" [attr.aria-label]="ariaLabel() ?? label()">
+    @for (place of placeValues; track place) {
+      <!--
+        Only the top and bottom arrow areas are clickable.
+        The number reel is not clickable (it can still be dragged to spin).
+      -->
+      <div class="cc-hp-counter-dial"
+           [class.cc-hp-counter-dial--disabled]="disabled()"
+           [class.cc-hp-counter-dial--dragging]="draggingPlace() === place"
+           role="spinbutton"
+           [attr.tabindex]="disabled() ? -1 : 0"
+           [attr.aria-label]="placeLabel(place)"
+           [attr.aria-valuenow]="digitFor(place)"
+           aria-valuemin="0"
+           aria-valuemax="9"
+           (wheel)="onWheel($event, place)"
+           (keydown)="onKeydown($event, place)">
+
+        <button type="button"
+                class="cc-hp-counter-arrow cc-hp-counter-arrow--up"
+                [class.cc-hp-counter-arrow--first]="$first"
+                [class.cc-hp-counter-arrow--last]="$last"
+                [disabled]="disabled()"
+                [attr.aria-label]="'Increase ' + placeLabel(place)"
+                tabindex="-1"
+                (click)="increment(place)">
+          <svg viewBox="0 0 10 6"><path d="M5 0 10 6 0 6Z" /></svg>
+        </button>
+
+        <div class="cc-hp-counter-reel"
+             aria-hidden="true"
+             (pointerdown)="onReelPointerDown($event, place)"
+             (pointermove)="onReelPointerMove($event, place)"
+             (pointerup)="onReelPointerUp($event, place)"
+             (pointercancel)="onReelPointerCancel($event, place)">
+          <span class="cc-hp-counter-digit cc-hp-counter-digit--ghost">{{ prevDigit(place) }}</span>
+          <span class="cc-hp-counter-digit cc-hp-counter-digit--current">{{ digitFor(place) }}</span>
+          <span class="cc-hp-counter-digit cc-hp-counter-digit--ghost">{{ nextDigit(place) }}</span>
+        </div>
+
+        <button type="button"
+                class="cc-hp-counter-arrow cc-hp-counter-arrow--down"
+                [class.cc-hp-counter-arrow--first]="$first"
+                [class.cc-hp-counter-arrow--last]="$last"
+                [disabled]="disabled()"
+                [attr.aria-label]="'Decrease ' + placeLabel(place)"
+                tabindex="-1"
+                (click)="decrement(place)">
+          <svg viewBox="0 0 10 6"><path d="M0 0 10 0 5 6Z" /></svg>
+        </button>
+      </div>
+    }
+  </div>
+</div>

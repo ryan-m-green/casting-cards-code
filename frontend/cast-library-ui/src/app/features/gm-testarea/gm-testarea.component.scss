@@ -319,6 +319,101 @@
   background: rgba(255, 255, 255, 0.95);
 }
 
+// ── Secrets Manager Test Section ─────────────────────────────────────────────
+.secrets-test-section {
+  margin-top: 2rem;
+  padding: 1.5rem;
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.95);
+}
+
+.secrets-test-header {
+  margin-bottom: 1rem;
+
+  h3 {
+    font-family: var(--font-header, serif);
+    font-size: 1rem;
+    font-weight: 600;
+    color: black;
+    margin: 0 0 0.5rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+  }
+}
+
+.secrets-test-description {
+  font-family: 'OpenDyslexic', sans-serif;
+  font-size: 13px;
+  color: rgba(0, 0, 0, 0.7);
+  margin: 0;
+
+  code {
+    font-family: monospace;
+    background: rgba(0, 0, 0, 0.06);
+    padding: 0 3px;
+    border-radius: 3px;
+  }
+}
+
+.secrets-test-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-bottom: 1.25rem;
+}
+
+.secrets-test-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  font-family: 'OpenDyslexic', sans-serif;
+  font-size: 13px;
+  color: black;
+
+  span {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: rgba(0, 0, 0, 0.6);
+  }
+
+  select,
+  input[type='text'] {
+    padding: 0.4rem 0.6rem;
+    border: 1px solid rgba(42, 24, 4, 0.3);
+    border-radius: 4px;
+    font-family: 'OpenDyslexic', sans-serif;
+    font-size: 13px;
+    background: rgba(255, 255, 255, 0.95);
+    color: black;
+    min-width: 180px;
+  }
+
+  &--checkbox {
+    flex-direction: row;
+    align-items: center;
+    gap: 0.5rem;
+
+    span {
+      text-transform: none;
+      letter-spacing: normal;
+      font-size: 13px;
+      color: black;
+    }
+  }
+}
+
+.secrets-test-preview {
+  max-width: 480px;
+  padding: 1.25rem;
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  border-radius: 6px;
+  // The secrets manager is styled for the dark campaign portal, so the preview
+  // uses a dark backdrop to render it the way a DM would see it.
+  background: #1b1b24;
+}
+
 .signalr-debug {
   padding: 0.5rem 1rem;
   background: rgba(255, 255, 255, 0.9);

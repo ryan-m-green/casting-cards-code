@@ -47,7 +47,7 @@
           <div class="swiper-slide">
             <div class="slide-content">
               <div class="card-wrapper middle-row-card">
-                <app-faction-card [faction]="card" [flippable]="true" [editable]="false"
+                <app-faction-card [faction]="card" [flippable]="true" [editable]="false" [details]="true"
                   [secrets]="true" [secretsRevealed]="card.isVisibleToPlayers"
                   [tilt]="factionTilt(card.factionInstanceId)" (secretsClick)="toggleFactionVisibility(card)">
                 </app-faction-card>

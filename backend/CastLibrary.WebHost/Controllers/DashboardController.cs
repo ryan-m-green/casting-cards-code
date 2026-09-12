@@ -23,12 +23,8 @@ public class DashboardController(
     IGetSublocationLibraryQueryHandler getSublocationLibraryQuery,
     IGetCastLibraryQueryHandler getCastLibraryQuery,
     IGetFactionLibraryQueryHandler getFactionLibraryQuery,
-    IExportLibraryQueryHandler exportLibraryQuery,
     ICampaignWebMapper campaignMapper,
-    IUserRetriever userRetriever,
-    IGetImportTemplateQueryHandler getImportTemplateQueryHandler,
-    IZipArchiveMapper zipArchiveMapper,
-    IZipLibraryImportCommandHandler zipLibraryImportCommandHandler) : ControllerBase
+    IUserRetriever userRetriever) : ControllerBase
 {
     [HttpGet("stats")]
     public async Task<IActionResult> GetStats()

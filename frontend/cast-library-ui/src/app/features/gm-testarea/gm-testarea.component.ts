@@ -1,7 +1,7 @@
 import { Component, inject, ChangeDetectorRef } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { JournalTitleComponent } from '../../shared/components/journal-title/journal-title.component';
-import { CcTextboxComponent, CampaignDropdownComponent, CampaignDropdownOption, JournalDropdownComponent, JournalDropdownOption, CcShopInventoryComponent, ShopItemData, CcLangPickerComponent, CcPortraitInputComponent, CcFactionColorsComponent, CcColorPickerComponent, CcCounterBadgeComponent, CcPoliticalInfluenceComponent, CcSymbolPickerComponent, CcCastIconComponent, CcFactionIconComponent, CcLocationIconComponent, CcSublocationIconComponent, CcPlayerIconComponent, CcCampaignIconComponent, CcHandoutIconComponent } from '../../shared/components/v2';
+import { CcTextboxComponent, CampaignDropdownComponent, CampaignDropdownOption, JournalDropdownComponent, JournalDropdownOption, CcShopInventoryComponent, ShopItemData, CcLangPickerComponent, CcPortraitInputComponent, CcFactionColorsComponent, CcColorPickerComponent, CcCounterBadgeComponent, CcPoliticalInfluenceComponent, CcSymbolPickerComponent, CcCastIconComponent, CcFactionIconComponent, CcLocationIconComponent, CcSublocationIconComponent, CcPlayerIconComponent, CcCampaignIconComponent, CcHandoutIconComponent, CcSecretsManagerComponent, CcHpCounterComponent } from '../../shared/components/v2';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { JournalRandomizeService } from '../../shared/services/journal-randomize.service';
@@ -26,11 +26,12 @@ import { Cast } from '../../shared/models/cast.model';
 import { Faction, CampaignFactionInstance } from '../../shared/models/faction.model';
 import { PlayerCardWithDetails } from '../../shared/models/player-card.model';
 import { environment } from '../../../environments/environment';
+import { CampaignSecret, SecretCardType } from '../../shared/models/secret.model';
 
 @Component({
   selector: 'app-gm-testarea',
   standalone: true,
-  imports: [CommonModule, FormsModule, JournalTitleComponent, CcTextboxComponent, CampaignDropdownComponent, JournalDropdownComponent, CcShopInventoryComponent, CcLangPickerComponent, CcPortraitInputComponent, CcFactionColorsComponent, CcColorPickerComponent, CcCounterBadgeComponent, CcPoliticalInfluenceComponent, CcSymbolPickerComponent, CcCastIconComponent, CcFactionIconComponent, CcLocationIconComponent, CcSublocationIconComponent, CcPlayerIconComponent, CcCampaignIconComponent, CcHandoutIconComponent, PortalCardComponent, CurrencyCardComponent, WhisperCardComponent, LocationCardComponent, SublocationCardComponent, CastCardComponent, FactionCardComponent, CastingCardPlayerComponent, SimpleLocationCardComponent, SimpleSublocationCardComponent, SimpleCastCardComponent, SimpleFactionCardComponent, SimplePlayerCardComponent, CcRadialNavComponent, CcCampaignWatermarkComponent],
+  imports: [CommonModule, FormsModule, JournalTitleComponent, CcTextboxComponent, CampaignDropdownComponent, JournalDropdownComponent, CcShopInventoryComponent, CcLangPickerComponent, CcPortraitInputComponent, CcFactionColorsComponent, CcColorPickerComponent, CcCounterBadgeComponent, CcPoliticalInfluenceComponent, CcSymbolPickerComponent, CcCastIconComponent, CcFactionIconComponent, CcLocationIconComponent, CcSublocationIconComponent, CcPlayerIconComponent, CcCampaignIconComponent, CcHandoutIconComponent, PortalCardComponent, CurrencyCardComponent, WhisperCardComponent, LocationCardComponent, SublocationCardComponent, CastCardComponent, FactionCardComponent, CastingCardPlayerComponent, SimpleLocationCardComponent, SimpleSublocationCardComponent, SimpleCastCardComponent, SimpleFactionCardComponent, SimplePlayerCardComponent, CcRadialNavComponent, CcCampaignWatermarkComponent, CcSecretsManagerComponent, CcHpCounterComponent],
   
   templateUrl: './gm-testarea.component.html',
   styleUrl: './gm-testarea.component.scss'
@@ -49,6 +50,35 @@ export class GmTestareaComponent {
   signalrEvents: SignalrEvent[] = [];
   isLoadingSignalrEvents = false;
   signalrError: string | null = null;
+
+  // Secrets Manager (cc-secrets-manager) test state
+  secretsTestCardType: SecretCardType = 'location';
+  secretsTestCampaignId = '';
+  secretsTestInstanceId = '';
+  secretsTestSecrets: CampaignSecret[] = [
+    {
+      id: 'demo-secret-1',
+      campaignId: '',
+      castInstanceId: null,
+      locationInstanceId: null,
+      sublocationInstanceId: null,
+      content: 'The mayor is secretly a doppelganger.',
+      sortOrder: 0,
+      isRevealed: false,
+      revealedAt: null
+    },
+    {
+      id: 'demo-secret-2',
+      campaignId: '',
+      castInstanceId: null,
+      locationInstanceId: null,
+      sublocationInstanceId: null,
+      content: 'A hidden door behind the tavern fireplace leads to the smugglers’ tunnel.',
+      sortOrder: 1,
+      isRevealed: true,
+      revealedAt: '2024-01-01T00:00:00.000Z'
+    }
+  ];
 
   setActiveTab(tab: string) {
     this.activeTab = tab;
@@ -234,6 +264,7 @@ export class GmTestareaComponent {
   journalSingleColor = '#B8D820';
 
   campaignCounter = 5;
+  campaignHitPoints = 42;
   journalCounter = 3;
 
   radialNavActiveArea = 'middle-middle';
@@ -335,7 +366,7 @@ simpleTestCast: Cast = {
   race: 'Elf',
   role: 'Wizard',
   age: '125',
-  alignment: 'Neutral Good',
+  maxHitPoints: 45,
   posture: 'Graceful',
   speed: 'Medium',
   keywords: ['Medium'],
@@ -353,7 +384,7 @@ testCast: Cast = {
   race: 'Human',
   role: 'Paladin',
   age: '35',
-  alignment: 'Lawful Good',
+  maxHitPoints: 60,
   posture: 'Upright',
   speed: 'Medium',
   keywords: ['Deep'],

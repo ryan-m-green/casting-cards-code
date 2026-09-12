@@ -6,6 +6,48 @@
   height: 100%;
 }
 
+// ── Detail portrait (pinned top-left, always visible) ────────────────────────
+.detail-portrait-row {
+  display: flex;
+  justify-content: flex-start;
+  padding: 12px 0;
+
+  cc-portrait-input {
+    margin: 0;
+  }
+}
+
+// ── Detail tabs (Details / Secrets) ──────────────────────────────────────────
+.detail-tabs {
+  display: flex;
+  flex-shrink: 0;
+  border-bottom: 1px solid v.$campaign-portal-border-bold;
+}
+
+.detail-tab {
+  flex: 1;
+  padding: 12px 8px;
+  background: transparent;
+  border: none;
+  border-bottom: 2px solid transparent;
+  color: v.$campaign-portal-text-muted;
+  font-family: v.$font-header;
+  font-size: 11px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: color 0.15s ease, border-color 0.15s ease;
+
+  &:hover {
+    color: v.$campaign-portal-text-bright;
+  }
+
+  &.detail-tab--active {
+    color: v.$campaign-portal-text-bright;
+    border-bottom-color: var(--portal-color, v.$color-base-purple-primary);
+  }
+}
+
 .detail-header {
   padding: 20px 20px 16px 20px;
   border-bottom: 1px solid v.$campaign-portal-border-bold;

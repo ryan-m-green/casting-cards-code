@@ -3,22 +3,17 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../../environments/environment';
-import { PlayerCardSecret, PlayerCardWithDetails, PlayerCardCondition } from '../../models/player-card.model';
+import { PlayerCardSecret, PlayerCardWithDetails } from '../../models/player-card.model';
+import { CcSecretsManagerComponent } from '../v2';
 
-type DrawerTab = 'secrets' | 'gold' | 'conditions' | 'deliver';
-
-const D5E_CONDITIONS = [
-  'Blinded', 'Charmed', 'Deafened', 'Exhaustion', 'Frightened', 'Grappled',
-  'Incapacitated', 'Invisible', 'Paralyzed', 'Petrified', 'Poisoned',
-  'Prone', 'Restrained', 'Stunned', 'Unconscious',
-];
+type DrawerTab = 'details' | 'secrets' | 'gold';
 
 type Currency = 'cp' | 'sp' | 'ep' | 'gp' | 'pp';
 
 @Component({
   selector: 'app-cc-player-secrets-content',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, CcSecretsManagerComponent],
   templateUrl: './cc-player-secrets-content.component.html',
   styleUrl: './cc-player-secrets-content.component.scss'
 })
@@ -29,11 +24,11 @@ export class CcPlayerSecretsContentComponent implements OnInit, OnChanges {
   @Input() mode: 'player' | 'dm' = 'player';
   @Input() member: PlayerCardWithDetails | null = null;
   @Input() campaignId: string = '';
-  @Input() initialTab: DrawerTab = 'secrets';
+  @Input() initialTab: DrawerTab = 'details';
 
   loading = signal(false);
   secrets = signal<PlayerCardSecret[]>([]);
-  activeTab = signal<DrawerTab>('secrets');
+  activeTab = signal<DrawerTab>('details');
 
   // Gold tab state
   goldAmount = signal(0);
@@ -44,34 +39,17 @@ export class CcPlayerSecretsContentComponent implements OnInit, OnChanges {
   readonly currencies: Currency[] = ['cp', 'sp', 'ep', 'gp', 'pp'];
   goldAmountInput = viewChild.required<ElementRef<HTMLInputElement>>('goldAmountInput');
 
-  // Conditions tab state
-  condInput = signal('');
-  condStandard = D5E_CONDITIONS;
-  conditions = signal<PlayerCardCondition[]>([]);
-
-  // Deliver secret tab state
-  secretContent = signal('');
-  secretSaving = signal(false);
-
   ngOnInit() {
     this.activeTab.set(this.initialTab);
-    this.conditions.set(this.member?.conditions ?? []);
     if (this.initialTab === 'secrets') {
       this.loadSecrets();
     } else if (this.initialTab === 'gold') {
       this.resetGoldState();
-    } else if (this.initialTab === 'conditions') {
-      this.condInput.set('');
-    } else if (this.initialTab === 'deliver') {
-      this.secretContent.set('');
     }
   }
 
   ngOnChanges(changes: SimpleChanges) {
     const memberChanged = changes['member'];
-    if (memberChanged) {
-      this.conditions.set(this.member?.conditions ?? []);
-    }
     if ((memberChanged && !memberChanged.isFirstChange()) || (changes['campaignId'] && !changes['campaignId'].isFirstChange())) {
       this.setTab(this.activeTab());
     }
@@ -81,8 +59,10 @@ export class CcPlayerSecretsContentComponent implements OnInit, OnChanges {
     if (!this.member || !this.campaignId) return;
     this.loading.set(true);
     this.secrets.set([]);
+    // DMs see every delivered secret; players only see the ones shared with the party.
+    const suffix = this.mode === 'dm' ? '' : '/shared';
     this.http.get<PlayerCardSecret[]>(
-      `${environment.apiUrl}/api/campaigns/${this.campaignId}/player-cards/${this.member.id}/secrets/shared`
+      `${environment.apiUrl}/api/campaigns/${this.campaignId}/player-cards/${this.member.id}/secrets${suffix}`
     ).subscribe({
       next: s => { this.secrets.set(s); this.loading.set(false); },
       error: () => this.loading.set(false),
@@ -107,11 +87,6 @@ export class CcPlayerSecretsContentComponent implements OnInit, OnChanges {
       this.loadSecrets();
     } else if (tab === 'gold') {
       this.resetGoldState();
-    } else if (tab === 'conditions') {
-      this.condInput.set('');
-      this.conditions.set(this.member?.conditions ?? []);
-    } else if (tab === 'deliver') {
-      this.secretContent.set('');
     }
   }
 
@@ -147,62 +122,12 @@ export class CcPlayerSecretsContentComponent implements OnInit, OnChanges {
       });
   }
 
-  // ── Conditions tab methods ───────────────────────────────────────────────────────
-  conditionsForCard(): PlayerCardCondition[] {
-    return this.conditions();
+  // ── Details tab ──────────────────────────────────────────────────────────────
+  initial(name: string | undefined): string {
+    return (name || '?').trim().charAt(0).toUpperCase();
   }
 
-  isConditionActive(name: string): boolean {
-    return this.conditions().some(c => c.conditionName === name);
-  }
-
-  assignCondition(conditionName: string) {
-    const member = this.member;
-    if (!member) return;
-    const id = this.campaignId;
-    this.http.post<PlayerCardCondition>(
-      `${environment.apiUrl}/api/campaigns/${id}/player-cards/${member.id}/conditions`,
-      { conditionName }
-    ).subscribe(cond => {
-      this.conditions.update(list => [...list, cond]);
-    });
-  }
-
-  removeCondition(conditionId: string) {
-    const member = this.member;
-    if (!member) return;
-    const id = this.campaignId;
-    this.http.delete(`${environment.apiUrl}/api/campaigns/${id}/player-cards/${member.id}/conditions/${conditionId}`)
-      .subscribe(() => {
-        this.conditions.update(list => list.filter(c => c.id !== conditionId));
-      });
-  }
-
-  // ── Deliver secret tab methods ───────────────────────────────────────────────────
-  deliverSecret() {
-    const member = this.member;
-    if (!member || !this.secretContent().trim()) return;
-    this.secretSaving.set(true);
-    const id = this.campaignId;
-    this.http.post(
-      `${environment.apiUrl}/api/campaigns/${id}/player-cards/${member.id}/secrets`,
-      { content: this.secretContent().trim() }
-    ).subscribe({
-      next: () => {
-        this.secretSaving.set(false);
-      },
-      error: () => this.secretSaving.set(false),
-    });
-  }
-
-  // ── Secrets tab methods ─────────────────────────────────────────────────────────
-  deleteSecret(secretId: string) {
-    const member = this.member;
-    if (!member) return;
-    const id = this.campaignId;
-    this.http.delete(`${environment.apiUrl}/api/campaigns/${id}/player-cards/${member.id}/secrets/${secretId}`)
-      .subscribe(() => {
-        this.secrets.update(s => s.filter(sec => sec.id !== secretId));
-      });
+  raceClass(member: PlayerCardWithDetails): string {
+    return [member.race, member.class].filter(Boolean).join(' · ');
   }
 }

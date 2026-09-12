@@ -197,8 +197,8 @@ export class CampaignFactionsComponent implements OnInit, OnChanges {
     const items = relatedCasts.map(cast => {
       const rel          = rels.find(r => r.sourceCastInstanceId === selected.instanceId && r.targetCastInstanceId === cast.instanceId);
       const value        = rel?.value ?? 0;
-      const alignment    = cast.alignment || 'Lawful Neutral';
-      const isUnassessed = !cast.alignment;
+      const alignment    = 'Lawful Neutral';
+      const isUnassessed = true;
       const alignAngleDeg = ALIGNMENT_ANGLES[alignment] ?? ALIGNMENT_ANGLES['Lawful Neutral'];
       return { cast, value, alignment, isUnassessed, alignAngleDeg, radialR: this.dispositionRadius(value) };
     });
@@ -331,8 +331,8 @@ export class CampaignFactionsComponent implements OnInit, OnChanges {
     const items = unlockedCasts.map(cast => {
       const note         = notes.find(n => n.castInstanceId === cast.instanceId);
       const perception   = note?.perception ?? 0;
-      const alignment    = cast.alignment || 'Lawful Neutral';
-      const isUnassessed = !cast.alignment;
+      const alignment    = 'Lawful Neutral';
+      const isUnassessed = true;
       const alignAngleDeg = ALIGNMENT_ANGLES[alignment] ?? ALIGNMENT_ANGLES['Lawful Neutral'];
       return { cast, value: perception, alignment, isUnassessed, alignAngleDeg, radialR: this.dispositionRadius(perception) };
     });

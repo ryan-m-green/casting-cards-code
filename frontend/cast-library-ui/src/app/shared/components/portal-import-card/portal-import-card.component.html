@@ -572,12 +572,8 @@
 
                 <div class="wr form-row-gap">
                   <div class="form-field">
-                    <app-journal-dropdown
-                      [options]="alignmentOptions"
-                      [label]="'Alignment'"
-                      [control]="alignmentControl"
-                      [randomizeGroupId]="'portal-cast-form'">
-                    </app-journal-dropdown>
+                    <label for="pic-cast-max-hp" class="fi-label">Max Hit Points</label>
+                    <input id="pic-cast-max-hp" type="number" class="fi" formControlName="maxHitPoints" min="0" placeholder="0" autocomplete="off" />
                   </div>
                   <div class="form-field"></div>
                 </div>

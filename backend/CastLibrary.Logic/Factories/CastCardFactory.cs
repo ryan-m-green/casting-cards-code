@@ -18,7 +18,7 @@ namespace CastLibrary.Logic.Factories
                 Race = cast.Race,
                 Role = cast.Role,
                 Age = cast.Age,
-                Alignment = cast.Alignment,
+                MaxHitPoints = cast.MaxHitPoints,
                 Posture = cast.Posture,
                 Speed = cast.Speed,
                 Keywords = cast.Keywords,

@@ -16,8 +16,7 @@ public class AwardCurrencyCommandHandler(
     IPlayerCardReadRepository playerCardReadRepository,
     ICampaignPlayerReadRepository campaignPlayerReadRepository,
     ICurrencyBalanceReadRepository currencyBalanceReadRepository,
-    ICurrencyTransactionUpdateRepository currencyTransactionUpdateRepository,
-    ISystemValuesService systemValuesService) : IAwardCurrencyCommandHandler
+    ICurrencyTransactionUpdateRepository currencyTransactionUpdateRepository) : IAwardCurrencyCommandHandler
 {
     public async Task<AwardCurrencyResult> HandleAsync(AwardCurrencyCommand command)
     {

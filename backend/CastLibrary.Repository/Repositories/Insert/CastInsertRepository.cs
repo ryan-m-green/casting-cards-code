@@ -25,7 +25,7 @@ namespace CastLibrary.Repository.Repositories.Insert
                 cast.Race,
                 cast.Role,
                 cast.Age,
-                cast.Alignment,
+                cast.MaxHitPoints,
                 cast.Posture,
                 cast.Speed,
                 cast.Keywords,
@@ -36,10 +36,10 @@ namespace CastLibrary.Repository.Repositories.Insert
             };
             const string sql =
                 @"INSERT INTO casts
-                (id, dm_user_id, name, pronouns, race, role, age, alignment, posture, speed,
+                (id, dm_user_id, name, pronouns, race, role, age, max_hit_points, posture, speed,
                  keywords, voice_notes, description, public_description, created_at)
               VALUES
-                (@Id, @DmUserId, @Name, @Pronouns, @Race, @Role, @Age, @Alignment, @Posture, @Speed,
+                (@Id, @DmUserId, @Name, @Pronouns, @Race, @Role, @Age, @MaxHitPoints, @Posture, @Speed,
                  @Keywords::text[], @VoiceNotes, @Description, @PublicDescription, @CreatedAt)";
 
             logging.LogDbOperation(correlation.TraceId, spanId, "INSERT", "casts", @params);

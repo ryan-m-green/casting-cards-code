@@ -91,6 +91,12 @@
               <button class="fac-btn fac-btn--red"  (click)="onDeleteClick($event)">✦ Delete</button>
             </div>
           }
+
+          @if (details()) {
+            <div class="fac-back-actions">
+              <button class="fac-btn fac-btn--blue" (click)="onDetailsClick($event)">✦ Details</button>
+            </div>
+          }
         </div>
       </div>
     </div>

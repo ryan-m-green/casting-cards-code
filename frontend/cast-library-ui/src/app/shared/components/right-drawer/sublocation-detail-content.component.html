@@ -1,14 +1,49 @@
 <div class="sublocation-detail-content">
-  <!-- Panel actions -->
+  <!-- Card title (above the portrait) -->
+  @if (editing()) {
+    <div class="detail-desc">
+      <app-cc-textbox
+        label="Sublocation Name"
+        placeholder="Sublocation name…"
+        context="campaign"
+        [(ngModel)]="editName"
+      />
+    </div>
+  } @else {
+    <div class="detail-header">
+      <h2 class="detail-title">{{ currentSublocation().name }}</h2>
+    </div>
+  }
+
+  <!-- Portrait pinned top-left; always visible, only swappable in edit mode -->
+  <div class="detail-portrait-row">
+    <cc-portrait-input
+      context="campaign"
+      [initialImageUrl]="sublocation().imageUrl || ''"
+      [cardType]="'sublocation'"
+      [disabled]="!editing()"
+      [ngModel]="imageFile()"
+      (ngModelChange)="imageFile.set($event)"
+    />
+  </div>
+
+  <!-- Detail tabs -->
+  <div class="detail-tabs">
+    <button class="detail-tab" type="button"
+            [class.detail-tab--active]="activeTab() === 'details'"
+            (click)="setTab('details')">Details</button>
+    <button class="detail-tab" type="button"
+            [class.detail-tab--active]="activeTab() === 'secrets'"
+            (click)="setTab('secrets')">Secrets</button>
+  </div>
+
+@if (activeTab() === 'details') {
+  <!-- Panel actions live inside the details tab -->
   <cc-detail-panel-actions
     [isDm]="true"
     [editing]="editing()"
     [detailExpanded]="false"
     [editBtnBorderColor]="'#C8E080'"
-    [portraitUrl]="sublocation().imageUrl || ''"
-    [portraitFile]="imageFile()"
-    [cardType]="'sublocation'"
-    (portraitFileChange)="imageFile.set($event)"
     (startEditingClick)="startEditing()"
     (saveDetailsClick)="saveDetails()"
     (saveToLibraryClick)="saveToLibrary()"
@@ -17,22 +52,6 @@
   />
 
   <div class="detail-content-body">
-    <!-- Sublocation Name -->
-    @if (editing()) {
-      <div class="detail-desc">
-        <app-cc-textbox
-          label="Sublocation Name"
-          placeholder="Sublocation name…"
-          context="campaign"
-          [(ngModel)]="editName"
-        />
-      </div>
-    } @else {
-      <div class="detail-header">
-        <h2 class="detail-title">{{ currentSublocation().name }}</h2>
-      </div>
-    }
-
     @if (editing() || hasField(currentSublocation().description)) {
       <div class="detail-block">
         @if (editing()) {
@@ -106,15 +125,17 @@
       </div>
     }
 
+  </div>
+} @else {
+  <div class="detail-content-body">
     <cc-secrets-manager
-      [secrets]="currentSecrets()"
+      [secrets]="secrets()"
+      [cardType]="'sublocation'"
+      [campaignId]="campaignId()"
+      [instanceId]="sublocationInstanceId()"
       [context]="'campaign'"
       [isDm]="true"
-      [editing]="editing()"
-      (reveal)="onRevealSecret($event)"
-      (reseal)="onResealSecret($event)"
-      (add)="onAddSecret($event)"
-      (delete)="onDeleteSecret($event)"
     />
   </div>
+}
 </div>

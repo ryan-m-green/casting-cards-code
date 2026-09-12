@@ -21,7 +21,7 @@ public class StorylineChronicleArchiveStrategy(
 
     public async Task<CampaignChroniclesDomain> BuildAsync(Guid campaignId, CreateChronicleRequest request)
     {
-        CampaignStorylineDomain? source = null;
+        CampaignStorylineDomain source = null;
 
         if (request.SourceId.HasValue)
         {

@@ -17,7 +17,7 @@ public class CastFactory : ICastFactory
         Race = request.Race,
         Role = request.Role,
         Age = request.Age,
-        Alignment = request.Alignment,
+        MaxHitPoints = request.MaxHitPoints,
         Posture = request.Posture,
         Speed = request.Speed,
         Keywords = request.Keywords,

@@ -1,29 +1,41 @@
 <div class="detail-panel-actions">
-  <div class="detail-actions-left">
-    @if (editing()) {
-      <cc-portrait-input
-        context="campaign"
-        [initialImageUrl]="portraitUrl()"
-        [(ngModel)]="portraitFile"
-        [cardType]="cardType()"
-        (ngModelChange)="portraitFileChange.emit($event)"
-      />
-    }
-    @if (detailExpanded() && !editing()) {
-      <button class="detail-close-btn" (click)="closeClick.emit()" title="Close panel">Close</button>
-    }
-  </div>
+  <!-- Action buttons (right-aligned) so Cancel lines up with Edit -->
   <div class="detail-actions-right">
     @if (isDm()) {
       @if (!editing()) {
-        <button class="detail-edit-btn" [style.border-color]="editBtnBorderColor() || ''" (click)="startEditingClick.emit()">
+        <button class="detail-edit-btn" type="button" [style.border-color]="editBtnBorderColor() || ''" (click)="startEditingClick.emit()">
           <app-feather-icon [white]="true" /> Edit
         </button>
       } @else {
-        <button class="campaign-primary-btn" (click)="saveDetailsClick.emit()" title="Save to campaign">Save <app-icon name="campaign" /></button>
-        <button class="campaign-primary-btn" (click)="saveToLibraryClick.emit()" title="Save to campaign and library">Save <app-icon name="campaign" /> + <app-icon name="library" /></button>
-        <button class="campaign-secondary-btn" (click)="cancelEditingClick.emit()">✖</button>
+        <span class="detail-save-wrap">
+          <button class="campaign-primary-btn detail-save-btn"
+                  type="button"
+                  [class.detail-save-btn--active]="saveMenuOpen()"
+                  [attr.aria-expanded]="saveMenuOpen()"
+                  (click)="toggleSaveMenu()"
+                  title="Save"
+                  aria-label="Save">
+            Save <app-icon name="campaign" variant="inline" />
+          </button>
+
+          @if (saveMenuOpen()) {
+            <div class="detail-save-menu" role="menu">
+              <button type="button" class="detail-save-menu-item" role="menuitem" (click)="chooseSave(false)">
+                Campaign
+              </button>
+              <button type="button" class="detail-save-menu-item" role="menuitem" (click)="chooseSave(true)">
+                Campaign + Library
+              </button>
+            </div>
+          }
+        </span>
+
+        <button class="campaign-secondary-btn" type="button" (click)="cancelEditingClick.emit()" title="Cancel editing" aria-label="Cancel editing">Cancel</button>
       }
+    }
+
+    @if (detailExpanded() && !editing()) {
+      <button class="detail-close-btn" type="button" (click)="closeClick.emit()" title="Close panel">Close</button>
     }
   </div>
 </div>

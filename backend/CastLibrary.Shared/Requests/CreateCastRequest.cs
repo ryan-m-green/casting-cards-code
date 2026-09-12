@@ -7,7 +7,7 @@ public class CreateCastRequest
     public string Race { get; set; } = string.Empty;
     public string Role { get; set; } = string.Empty;
     public string Age { get; set; } = string.Empty;
-    public string Alignment { get; set; } = string.Empty;
+    public int MaxHitPoints { get; set; }
     public string Posture { get; set; } = string.Empty;
     public string Speed { get; set; } = string.Empty;
     public string[] Keywords { get; set; } = [];

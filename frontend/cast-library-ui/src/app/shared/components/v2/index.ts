@@ -9,6 +9,7 @@ export * from './cc-portrait-input/cc-portrait-input.component';
 export * from './cc-faction-colors/cc-faction-colors.component';
 export * from './cc-color-picker/cc-color-picker.component';
 export * from './cc-counter-badge/cc-counter-badge.component';
+export * from './cc-hp-counter/cc-hp-counter.component';
 export * from './cc-political-influence/cc-political-influence.component';
 export * from './cc-symbol-picker/cc-symbol-picker.component';
 export * from './cc-cast-icon/cc-cast-icon.component';

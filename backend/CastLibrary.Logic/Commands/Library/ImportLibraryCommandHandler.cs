@@ -306,7 +306,7 @@ public class ImportLibraryCommandHandler(
                     Race = card.Race,
                     Role = card.Role,
                     Age = card.Age,
-                    Alignment = card.Alignment,
+                    MaxHitPoints = card.MaxHitPoints,
                     Posture = card.Posture,
                     Speed = card.Speed,
                     Keywords = card.Keywords,

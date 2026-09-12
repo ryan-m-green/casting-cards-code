@@ -13,7 +13,7 @@ public static class AntiforgeryHelper
         HttpResponse response,
         string cookieToken,
         bool isSecure,
-        ILogger? logger = null)
+        ILogger logger = null)
     {
         if (string.IsNullOrEmpty(cookieToken))
         {
@@ -38,7 +38,7 @@ public static class AntiforgeryHelper
     /// <summary>
     /// Validates that antiforgery tokens were generated successfully.
     /// </summary>
-    public static bool ValidateTokensGenerated(AntiforgeryTokenSet tokens, ILogger? logger = null)
+    public static bool ValidateTokensGenerated(AntiforgeryTokenSet tokens, ILogger logger = null)
     {
         if (tokens.CookieToken == null)
         {
@@ -60,7 +60,7 @@ public static class AntiforgeryHelper
     /// Gets a validated cookie domain from environment variables.
     /// Returns null if the domain is invalid or not set.
     /// </summary>
-    public static string? GetValidatedCookieDomain()
+    public static string GetValidatedCookieDomain()
     {
         var cookieDomain = Environment.GetEnvironmentVariable("COOKIE_DOMAIN");
         if (string.IsNullOrEmpty(cookieDomain))

@@ -9,14 +9,13 @@ namespace CastLibrary.Repository.Repositories.Read;
 public interface IAmbianceReadRepository
 {
     Task<List<AmbianceDomain>> GetByCampaignIdAsync(Guid campaignId);
-    Task<AmbianceDomain?> GetByIdAsync(Guid ambianceId);
+    Task<AmbianceDomain> GetByIdAsync(Guid ambianceId);
 }
 
 public class AmbianceReadRepository(
     ISqlConnectionFactory sqlConnectionFactory,
     ILoggingService logging,
     ICorrelationContext correlation,
-    IAmbianceEntityMapper mapper,
     IAmbianceItemEntityMapper itemMapper) : IAmbianceReadRepository
 {
     private const string HeaderColumns =
@@ -81,7 +80,7 @@ public class AmbianceReadRepository(
         }).ToList();
     }
 
-    public async Task<AmbianceDomain?> GetByIdAsync(Guid ambianceId)
+    public async Task<AmbianceDomain> GetByIdAsync(Guid ambianceId)
     {
         var spanId = correlation.NewSpan();
         var @params = new { AmbianceId = ambianceId };

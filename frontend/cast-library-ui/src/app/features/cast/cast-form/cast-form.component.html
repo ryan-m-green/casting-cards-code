@@ -118,6 +118,11 @@
         (ngModelChange)="keywords.set($event)">
       </cc-keyword-tags>
 
+      <cc-hp-counter
+        [label]="'Max Hit Points'"
+        formControlName="maxHitPoints">
+      </cc-hp-counter>
+
       <label for="cast-voice-notes-textarea" class="fi-label">Additional Voice Notes</label>
       <textarea id="cast-voice-notes-textarea" class="fi" formControlName="voiceNotes" rows="3" placeholder="Speaks with a slight stammer when nervous…" autocomplete="off"></textarea>
 

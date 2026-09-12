@@ -21,7 +21,7 @@ namespace CastLibrary.Logic.Factories
                         Race = "Human",
                         Role = "Merchant",
                         Age = "45",
-                        Alignment = "Neutral Good",
+                        MaxHitPoints = 10,
                         Posture = "Slouched",
                         Speed = "Slow",
                         Keywords = ["Chest", "Throat"],

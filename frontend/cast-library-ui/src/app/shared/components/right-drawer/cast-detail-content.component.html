@@ -1,14 +1,49 @@
 <div class="cast-detail-content">
-  <!-- Panel actions -->
+  <!-- Card title (above the portrait) -->
+  @if (editing()) {
+    <div class="detail-desc">
+      <app-cc-textbox
+        label="Cast Name"
+        placeholder="Cast name…"
+        context="campaign"
+        [(ngModel)]="cast().name"
+      />
+    </div>
+  } @else {
+    <div class="detail-header">
+      <h2 class="detail-title">{{ cast().name }}</h2>
+    </div>
+  }
+
+  <!-- Portrait pinned top-left; always visible, only swappable in edit mode -->
+  <div class="detail-portrait-row">
+    <cc-portrait-input
+      context="campaign"
+      [initialImageUrl]="cast().imageUrl || ''"
+      [cardType]="'cast'"
+      [disabled]="!editing()"
+      [ngModel]="imageFile()"
+      (ngModelChange)="imageFile.set($event)"
+    />
+  </div>
+
+  <!-- Detail tabs -->
+  <div class="detail-tabs">
+    <button class="detail-tab" type="button"
+            [class.detail-tab--active]="activeTab() === 'details'"
+            (click)="setTab('details')">Details</button>
+    <button class="detail-tab" type="button"
+            [class.detail-tab--active]="activeTab() === 'secrets'"
+            (click)="setTab('secrets')">Secrets</button>
+  </div>
+
+@if (activeTab() === 'details') {
+  <!-- Panel actions live inside the details tab -->
   <cc-detail-panel-actions
     [isDm]="true"
     [editing]="editing()"
     [detailExpanded]="false"
     [editBtnBorderColor]="'#C8E080'"
-    [portraitUrl]="cast().imageUrl || ''"
-    [portraitFile]="imageFile()"
-    [cardType]="'cast'"
-    (portraitFileChange)="imageFile.set($event)"
     (startEditingClick)="startEditing()"
     (saveDetailsClick)="saveDetails()"
     (saveToLibraryClick)="saveToLibrary()"
@@ -17,23 +52,7 @@
   />
 
   <div class="detail-content-body">
-    <!-- Cast Name -->
-    @if (editing()) {
-      <div class="detail-desc">
-        <app-cc-textbox
-          label="Cast Name"
-          placeholder="Cast name…"
-          context="campaign"
-          [(ngModel)]="cast().name"
-        />
-      </div>
-    } @else {
-      <div class="detail-header">
-        <h2 class="detail-title">{{ cast().name }}</h2>
-      </div>
-    }
-
-    @if (hasField(cast().role) || hasField(cast().race) || hasField(cast().age) || hasField(cast().pronouns) || hasField(cast().alignment)) {
+    @if (hasField(cast().role) || hasField(cast().race) || hasField(cast().age) || hasField(cast().pronouns) || cast().maxHitPoints > 0) {
       <div class="detail-grid">
         @if (hasField(cast().role)) {
           <div class="detail-item">
@@ -59,10 +78,10 @@
             <span class="detail-value">{{ cast().pronouns }}</span>
           </div>
         }
-        @if (hasField(cast().alignment)) {
+        @if (cast().maxHitPoints > 0) {
           <div class="detail-item">
-            <span class="detail-label">Alignment</span>
-            <span class="detail-value">{{ cast().alignment }}</span>
+            <span class="detail-label">Max Hit Points</span>
+            <span class="detail-value">{{ cast().maxHitPoints }}</span>
           </div>
         }
       </div>
@@ -112,15 +131,17 @@
       </div>
     }
 
+  </div>
+} @else {
+  <div class="detail-content-body">
     <cc-secrets-manager
-      [secrets]="currentSecrets()"
+      [secrets]="secrets()"
+      [cardType]="'cast'"
+      [campaignId]="campaignId()"
+      [instanceId]="castInstanceId()"
       [context]="'campaign'"
       [isDm]="true"
-      [editing]="editing()"
-      (reveal)="onRevealSecret($event)"
-      (reseal)="onResealSecret($event)"
-      (add)="onAddSecret($event)"
-      (delete)="onDeleteSecret($event)"
     />
   </div>
+}
 </div>

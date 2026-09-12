@@ -4,13 +4,13 @@ namespace CastLibrary.Repository.Repositories.Read;
 
 public interface ICampaignKeywordReadRepository
 {
-    Task<string[]> GetKeywordsAsync(Guid dmUserId, string? cardType);
+    Task<string[]> GetKeywordsAsync(Guid dmUserId, string cardType);
 }
 
 public class CampaignKeywordReadRepository(
     ISqlConnectionFactory sqlConnectionFactory) : ICampaignKeywordReadRepository
 {
-    public async Task<string[]> GetKeywordsAsync(Guid dmUserId, string? cardType)
+    public async Task<string[]> GetKeywordsAsync(Guid dmUserId, string cardType)
     {
         using var conn = sqlConnectionFactory.GetConnection();
         var result = await conn.QueryAsync<string>(

@@ -17,7 +17,7 @@ public class CampaignKeywordsController(
     IUserRetriever userRetriever) : ControllerBase
 {
     [HttpGet]
-    public async Task<IActionResult> GetKeywords([FromQuery] string? cardType)
+    public async Task<IActionResult> GetKeywords([FromQuery] string cardType)
     {
         var keywords = await getCampaignKeywordsQuery.HandleAsync(
             userRetriever.GetUserId(User), cardType);
@@ -37,7 +37,7 @@ public class CampaignKeywordsController(
     }
 
     [HttpDelete("{keyword}")]
-    public async Task<IActionResult> DeleteKeyword(string keyword, [FromQuery] string? cardType)
+    public async Task<IActionResult> DeleteKeyword(string keyword, [FromQuery] string cardType)
     {
         await deleteCampaignKeywordCommand.HandleAsync(
             new DeleteCampaignKeywordCommand(userRetriever.GetUserId(User), cardType ?? string.Empty, keyword));
