@@ -17,6 +17,19 @@ export class JournalDropdownComponent implements OnInit, OnDestroy {
   @Input() control: FormControl = new FormControl('');
   @Input() randomizeGroupId: string | null = null;
   @Input() disabled: boolean = false;
+  /** When false the field is read-only: no typing, only a picked option lands in the control. */
+  @Input() allowTyping: boolean = true;
+  /**
+   * Optional colour blocks, keyed by option value: each option wearing its own colour in the list,
+   * and the picked one wearing its colour in the field. Left empty, no blocks are drawn.
+   */
+  @Input() swatches: Record<string, string> = {};
+
+  /** The colour block the picked value wears, or null when this dropdown is not a colour one. */
+  get selectedSwatch(): string | null {
+    const value = this.control?.value as string | undefined;
+    return value ? (this.swatches[value] ?? null) : null;
+  }
 
   private randomizeService = inject(JournalRandomizeService);
   private subscription: Subscription | null = null;
@@ -46,7 +59,7 @@ export class JournalDropdownComponent implements OnInit, OnDestroy {
   showDropdown(): void {
     this.isDropdownVisible = !this.isDropdownVisible;
     if (this.isDropdownVisible) {
-      this.filterOptions(this.control.value);
+      this.refreshOptions();
     }
   }
 
@@ -55,8 +68,21 @@ export class JournalDropdownComponent implements OnInit, OnDestroy {
     event.stopPropagation();
     this.isDropdownVisible = !this.isDropdownVisible;
     if (this.isDropdownVisible) {
-      this.filterOptions(this.control.value);
+      this.refreshOptions();
     }
+  }
+
+  /**
+   * Readies the list as the panel opens. A read-only field has nothing to filter by, so it always
+   * offers every option; a typeable one narrows to what has been typed into it so far.
+   */
+  private refreshOptions(): void {
+    if (!this.allowTyping) {
+      this.filteredOptions = this.options;
+      return;
+    }
+
+    this.filterOptions(this.control.value);
   }
 
   onInput(event: Event): void {

@@ -1,0 +1,28 @@
+<div class="ccd-stat" [attr.title]="label()">
+  <div class="ccd-stat-frame">
+    <div class="ccd-stat-inner">
+      <div class="ccd-stat-banner">
+        <div class="ccd-stat-name">{{ label() }}</div>
+      </div>
+
+      <div class="ccd-stat-count" aria-hidden="true">
+        <span class="ccd-stat-watermark"></span>
+        <span class="ccd-stat-value">{{ count() }}</span>
+      </div>
+
+      <div class="ccd-stat-strip">
+        <div class="ccd-stat-pip-row">
+          <div class="ccd-stat-pip"></div>
+          <div class="ccd-stat-pip"></div>
+          <div class="ccd-stat-pip"></div>
+        </div>
+        <span class="ccd-stat-strip-label">Entries</span>
+        <div class="ccd-stat-pip-row">
+          <div class="ccd-stat-pip"></div>
+          <div class="ccd-stat-pip"></div>
+          <div class="ccd-stat-pip"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,62 @@
+<div class="pc scroll-body">
+  <app-journal-watermark pageType="rule" />
+  <app-journal-title title="Cheat Sheet Library" />
+
+  <cc-keyword-filters
+    [cardType]="''"
+    [cards]="entries()"
+    label="Filter by hashtag"
+    (selectedChange)="activeKeywords.set($event)" />
+
+  <div class="wr wr-page-header">
+    <input class="search-bar search-bar--header" type="text" placeholder="Name · Definition…"
+           [value]="searchTerm()" (input)="searchTerm.set($any($event.target).value)" />
+  </div>
+
+  @if (failed()) {
+    <p class="wbd-journal empty-state-pad">
+      Could not reach your cheat sheet.
+      <button type="button" class="btn-ghost" (click)="retry()">Try again</button>
+    </p>
+  } @else if (loading() && !entries().length) {
+    <p class="wbd-journal empty-state-pad">Gathering your entries…</p>
+  } @else {
+    <div class="card-grid swiper" #entryRow>
+      <div class="swiper-wrapper">
+        @for (entry of filtered(); track entry.id) {
+          <div class="swiper-slide">
+            <div class="cheat-slot">
+              <cc-rule-card [rule]="entry" (open)="edit($event.id)" />
+
+              <div class="cheat-actions">
+                <cc-edit-button
+                  class="cheat-edit"
+                  label="Edit entry"
+                  (clicked)="edit(entry.id)" />
+
+                <cc-delete-button
+                  class="cheat-delete"
+                  label="Delete entry"
+                  confirmLabel="Delete"
+                  (confirmed)="remove(entry.id)" />
+              </div>
+            </div>
+          </div>
+        }
+        @empty {
+          @if (activeKeywords().length) {
+            <p class="wbd-journal empty-state-pad">No entries carry those hashtags.</p>
+          } @else {
+            <p class="wbd-journal empty-state-pad">No entries found. Create your first entry to get started.</p>
+          }
+        }
+        <div class="swiper-slide">
+          <cc-card-add-tile
+            label="New entry"
+            title="Add an entry to your cheat sheet"
+            link="/gm/cheat-sheets/new" />
+        </div>
+      </div>
+    </div>
+  }
+</div>

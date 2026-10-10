@@ -210,6 +210,7 @@ namespace CastLibrary.WebHost.IoC
             services.AddScoped<ICreateCampaignRuleCommandHandler, CreateCampaignRuleCommandHandler>();
             services.AddScoped<IUpdateCampaignRuleCommandHandler, UpdateCampaignRuleCommandHandler>();
             services.AddScoped<IDeleteCampaignRuleCommandHandler, DeleteCampaignRuleCommandHandler>();
+            services.AddScoped<IDeleteLibraryRuleCommandHandler, DeleteLibraryRuleCommandHandler>();
         services.AddScoped<ILinkCampaignRulesCommandHandler, LinkCampaignRulesCommandHandler>();
             services.AddScoped<ICreateConditionCommandHandler, CreateConditionCommandHandler>();
             services.AddScoped<IUpdateConditionCommandHandler, UpdateConditionCommandHandler>();
@@ -309,6 +310,7 @@ namespace CastLibrary.WebHost.IoC
             services.AddScoped<IGetQuicknoteQueueQueryHandler, GetQuicknoteQueueQueryHandler>();
             services.AddScoped<IGetCampaignRulesQueryHandler, GetCampaignRulesQueryHandler>();
         services.AddScoped<IGetAvailableCampaignRulesQueryHandler, GetAvailableCampaignRulesQueryHandler>();
+            services.AddScoped<IGetLibraryRulesQueryHandler, GetLibraryRulesQueryHandler>();
             services.AddScoped<IGetConditionsQueryHandler, GetConditionsQueryHandler>();
             services.AddScoped<IGetAvailableConditionsQueryHandler, GetAvailableConditionsQueryHandler>();
             services.AddScoped<IGetLibraryConditionsQueryHandler, GetLibraryConditionsQueryHandler>();

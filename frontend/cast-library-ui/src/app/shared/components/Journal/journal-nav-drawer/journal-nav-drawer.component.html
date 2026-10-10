@@ -61,6 +61,10 @@
               <span class="jnd-item-marker">◈</span>
               <span class="jnd-item-label">Conditions Library</span>
             </button>
+            <button class="jnd-item" [class.is-active]="isActive('/gm/cheat-sheets')" [class.disabled]="isLibraryDisabled()" [attr.disabled]="isLibraryDisabled() ? 'true' : null" (click)="isLibraryDisabled() ? null : navigate('/gm/cheat-sheets')">
+              <span class="jnd-item-marker">◈</span>
+              <span class="jnd-item-label">Cheat Sheet Library</span>
+            </button>
             <button class="jnd-item" [class.is-active]="isActive('/gm/soundtracks')" [class.disabled]="isLibraryDisabled()" [attr.disabled]="isLibraryDisabled() ? 'true' : null" (click)="isLibraryDisabled() ? null : navigate('/gm/soundtracks')">
               <span class="jnd-item-marker">◈</span>
               <span class="jnd-item-label">Soundtracks Library</span>

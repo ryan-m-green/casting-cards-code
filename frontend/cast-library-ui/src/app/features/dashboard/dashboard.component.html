@@ -25,6 +25,12 @@
     <button type="button" class="stat-tile" (click)="goto('/gm/campaigns')" [attr.aria-label]="'Go to Campaigns page. You have ' + stats().campaignCount + ' campaigns.'">
       <cc-card-stat type="campaign" [count]="stats().campaignCount" label="Campaigns" />
     </button>
+    <button type="button" class="stat-tile stat-tile--conditions" (click)="goto('/gm/conditions')" [attr.aria-label]="'Go to Conditions page. You have ' + stats().conditionCount + ' conditions.'" title="Conditions">
+      <cc-dash-conditions-card [count]="stats().conditionCount" />
+    </button>
+    <button type="button" class="stat-tile stat-tile--cheatsheet" (click)="goto('/gm/cheat-sheets')" [attr.aria-label]="'Go to Cheat Sheet page. You have ' + stats().cheatSheetCount + ' entries.'" title="Cheat Sheet">
+      <cc-cheatsheet-dash-card [count]="stats().cheatSheetCount" />
+    </button>
     <button type="button" class="stat-tile stat-tile--soundtrack" (click)="goto('/gm/soundtracks')" [attr.aria-label]="'Go to Soundtracks page. You have ' + stats().soundtrackCount + ' soundtracks.'" title="Soundtracks">
       <cc-soundtrack-card
         [count]="stats().soundtrackCount"

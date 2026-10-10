@@ -1,0 +1,149 @@
+@use 'sass:color';
+@use '../../../../styles/variables' as v;
+
+/*
+ * The dashboard's Cheat Sheet tile — the entry card's own frame (see
+ * `Campaign/Rules/cc-rule-card`), drawn small as one of the dashboard's stat cards: the burnt
+ * orange border, the plum banner, the parchment body, and the count in the middle.
+ */
+:host {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+/* The frame colours are the rule card's own mixes, so the tile reads as that card at a glance. */
+$ccd-frame-orange:      color.mix(v.$color-base-copper,       v.$color-base-burnt-sienna, 55%);
+$ccd-frame-orange-mid:  color.mix(v.$color-base-burnt-sienna, v.$color-base-rust, 62%);
+$ccd-frame-orange-deep: color.mix(v.$color-base-rust,         v.$color-base-dark-brown, 62%);
+$ccd-frame-orange-lift: color.mix(v.$color-base-orange-warm,  v.$color-base-copper, 45%);
+
+$ccd-plum-deep: color.mix(v.$color-base-purple-6, v.$color-base-arcane-dark, 55%);
+$ccd-plum-mid:  color.mix(v.$color-base-purple-5, v.$color-base-purple-6, 60%);
+$ccd-plum-lift: color.mix(v.$color-base-purple-4, v.$color-base-purple-5, 45%);
+
+.ccd-stat {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.ccd-stat-frame {
+  position: absolute;
+  inset: 0;
+  border-radius: 4px;
+  padding: 3px;
+  box-shadow:
+    0 0 0 1px v.$color-base-black-7,
+    0 3px 11px v.$color-shadow-dark;
+  overflow: hidden;
+  background: linear-gradient(
+    145deg,
+    $ccd-frame-orange 0%, $ccd-frame-orange-mid 20%, $ccd-frame-orange-deep 45%,
+    $ccd-frame-orange-lift 55%, $ccd-frame-orange-mid 70%, $ccd-frame-orange-deep 85%, $ccd-frame-orange 100%
+  );
+}
+
+.ccd-stat-inner {
+  width: 100%;
+  height: 100%;
+  border-radius: 2.5px;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  background: linear-gradient(160deg, v.$color-base-tan-14 0%, v.$color-base-tan-15 50%, v.$color-base-tan-16 100%);
+}
+
+.ccd-stat-banner {
+  flex-shrink: 0;
+  padding: 4px 5px 3px;
+  text-align: center;
+  position: relative;
+  z-index: 2;
+  border-bottom: 1px solid $ccd-frame-orange-deep;
+  background: linear-gradient(180deg, $ccd-plum-deep 0%, $ccd-plum-mid 55%, $ccd-plum-lift 100%);
+}
+
+.ccd-stat-name {
+  color: v.$color-base-gold-bright-hex;
+  font-family: v.$font-header;
+  font-weight: 700;
+  font-size: 9px;
+  letter-spacing: 0.08em;
+  line-height: 1.1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.ccd-stat-count {
+  position: relative;
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  font-family: v.$font-header;
+  font-weight: 700;
+  font-size: 30px;
+  line-height: 1;
+  color: v.$color-base-brown-16;
+}
+
+/* The cheat sheet's own sigil — the icon the bottom-right grid area titles itself with — worn large
+   and faint behind the count. It is masked rather than drawn, so the greyscale asset can be taken in
+   the journal's brown (the way the soundtrack card wears its instruments sigil). */
+.ccd-stat-watermark {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 71.75%;
+  height: 71.75%;
+  z-index: 0;
+  background-color: v.$color-base-brown-16;
+  opacity: 0.15;
+  -webkit-mask: url('/scroll_check_mark_icon.svg') center / contain no-repeat;
+  mask: url('/scroll_check_mark_icon.svg') center / contain no-repeat;
+  pointer-events: none;
+}
+
+.ccd-stat-value {
+  position: relative;
+  z-index: 1;
+}
+
+.ccd-stat-strip {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 3px 5px;
+  position: relative;
+  z-index: 2;
+  border-top: 1px solid $ccd-frame-orange-deep;
+  background: linear-gradient(180deg, $ccd-plum-deep 0%, $ccd-plum-mid 55%, $ccd-plum-lift 100%);
+}
+
+.ccd-stat-pip-row {
+  display: flex;
+  gap: 2px;
+}
+
+.ccd-stat-pip {
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  opacity: 0.7;
+  background-color: $ccd-frame-orange-lift;
+}
+
+.ccd-stat-strip-label {
+  color: v.$color-base-gold-bright-hex;
+  font-family: v.$font-header;
+  font-size: 7px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  opacity: 0.85;
+}

@@ -1,12 +1,14 @@
 <ng-container>
   <label [for]="dropdownId" class="fi-label">{{ label }}</label>
-  <div class="autocomplete-wrapper" [class.disabled]="disabled">
+  <div class="autocomplete-wrapper" [class.disabled]="disabled" [class.has-swatch]="selectedSwatch">
+    <span class="option-swatch field-swatch" *ngIf="selectedSwatch" [style.background]="selectedSwatch"></span>
     <input
       [id]="dropdownId"
       class="fi"
       [formControl]="control"
       placeholder="Pick one"
       autocomplete="off"
+      [readonly]="!allowTyping"
       [attr.disabled]="disabled ? '' : null"
       (click)="!disabled && showDropdown()"
       (input)="onInput($event)"
@@ -21,7 +23,8 @@
         *ngFor="let option of filteredOptions"
         class="autocomplete-option"
         (mousedown)="selectOption(option)">
-        {{ option }}
+        <span class="option-swatch" *ngIf="swatches[option]" [style.background]="swatches[option]"></span>
+        <span class="autocomplete-option-label">{{ option }}</span>
       </div>
       <div *ngIf="filteredOptions.length === 0" class="autocomplete-option no-results">
         No matches

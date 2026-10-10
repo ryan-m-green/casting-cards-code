@@ -9,6 +9,28 @@ export interface PortalAnimationConfig {
   enableNavigation?: boolean;
 }
 
+/**
+ * How much slower than the original the portal's zoom runs. The whole transition is scaled by it —
+ * the entry pop and its sparks, the zoom itself, the moment the overlay takes over, and the moment
+ * navigation is let through — so the choreography is unchanged, only drawn out. Raise it to slow the
+ * zoom further; 1 is the original pace.
+ */
+const ZOOM_PACE = 1.2;
+
+/** The entry's own timeline (see `ZOOM_PACE`). */
+const ENTRY_SPARK_MS    = Math.round(600 * ZOOM_PACE);
+const ENTRY_POP_MS      = Math.round(500 * ZOOM_PACE);
+const ENTER_COVER_MS    = Math.round(400 * ZOOM_PACE);
+const ENTER_NAVIGATE_MS = Math.round(1200 * ZOOM_PACE);
+
+/** The zoom itself, in both directions (see `ZOOM_PACE`). */
+const ZOOM_MS           = Math.round(2100 * ZOOM_PACE);
+
+/** The exit's own timeline (see `ZOOM_PACE`). */
+const EXIT_START_MS     = Math.round(1000 * ZOOM_PACE);
+const EXIT_COVER_MS     = Math.round(1700 * ZOOM_PACE);
+const EXIT_SPARK_MS     = Math.round(1200 * ZOOM_PACE);
+
 @Injectable({ providedIn: 'root' })
 export class PortalAnimationService {
   readonly active   = signal(false);
@@ -164,7 +186,7 @@ export class PortalAnimationService {
         { transform: 'translate(0, 0)', opacity: 1 },
         { transform: `translate(${dx}px, ${dy}px)`, opacity: 0 }
       ], {
-        duration: 600,
+        duration: ENTRY_SPARK_MS,
         easing: 'cubic-bezier(0.25, 0.1, 0.25, 1)',
         fill: 'forwards'
       });
@@ -175,20 +197,20 @@ export class PortalAnimationService {
       { transform: 'scale(1.05) rotate(1deg)', opacity: 1 },
       { transform: 'scale(1.0) rotate(0deg)', opacity: 1 }
     ], {
-      duration: 500,
+      duration: ENTRY_POP_MS,
       easing: 'cubic-bezier(0.34, 1.2, 0.64, 1)',
       fill: 'forwards'
     });
 
     entryAnimation.finished.then(() => {
       let hasTriggeredOverlay = false;
-      const triggerTime = 400;
+      const triggerTime = ENTER_COVER_MS;
 
       const zoomAnimation = ghost.animate([
         { transform: 'scale(1.0)' },
         { transform: 'scale(100)' }
       ], {
-        duration: 2100,
+        duration: ZOOM_MS,
         easing: 'cubic-bezier(0.4, 0, 0.8, 1)',
         fill: 'forwards'
       });
@@ -202,7 +224,7 @@ export class PortalAnimationService {
           hasTriggeredOverlay = true;
         }
 
-        if (elapsed < 2100) {
+        if (elapsed < ZOOM_MS) {
           requestAnimationFrame(checkProgress);
         }
       };
@@ -215,7 +237,7 @@ export class PortalAnimationService {
             onNavigate(routePrefix, id);
           }
         }
-      }, 1200);
+      }, ENTER_NAVIGATE_MS);
 
       zoomAnimation.finished.then(() => {
         ghost.remove();
@@ -259,13 +281,13 @@ export class PortalAnimationService {
         void ghost.offsetWidth;
 
         let hasHiddenOverlay = false;
-        const triggerTime = 1700;
+        const triggerTime = EXIT_COVER_MS;
 
         const zoomAnimation = ghost.animate([
           { transform: 'scale(80) rotate(3deg)' },
           { transform: 'scale(0.1) rotate(-3deg)' }
         ], {
-          duration: 2100,
+          duration: ZOOM_MS,
           easing: 'cubic-bezier(0.4, 0, 0.8, 1)',
           fill: 'forwards'
         });
@@ -279,7 +301,7 @@ export class PortalAnimationService {
             hasHiddenOverlay = true;
           }
 
-          if (elapsed < 2100) {
+          if (elapsed < ZOOM_MS) {
             requestAnimationFrame(checkProgress);
           }
         };
@@ -404,13 +426,13 @@ export class PortalAnimationService {
         void exitGhost.offsetWidth;
 
         let hasHiddenOverlay = false;
-        const triggerTime = 1700;
+        const triggerTime = EXIT_COVER_MS;
 
         const zoomAnimation = exitGhost.animate([
           { transform: 'scale(100) rotate(3deg)' },
           { transform: 'scale(0.1) rotate(-3deg)' }
         ], {
-          duration: 2100,
+          duration: ZOOM_MS,
           easing: 'cubic-bezier(0.4, 0, 0.8, 1)',
           fill: 'forwards'
         });
@@ -424,7 +446,7 @@ export class PortalAnimationService {
             hasHiddenOverlay = true;
           }
 
-          if (elapsed < 2100) {
+          if (elapsed < ZOOM_MS) {
             requestAnimationFrame(checkProgress);
           }
         };
@@ -436,7 +458,7 @@ export class PortalAnimationService {
           this.spawnExitSparks(vw / 2, vh / 2);
         });
       }
-    }, 1000);
+    }, EXIT_START_MS);
   }
 
   private spawnExitSparks(cx: number, cy: number) {
@@ -472,7 +494,7 @@ export class PortalAnimationService {
         { transform: 'translate(0, 0)', opacity: 1 },
         { transform: `translate(${Math.cos(angle) * dist}px, ${Math.sin(angle) * dist}px)`, opacity: 0 }
       ], {
-        duration: 1200,
+        duration: EXIT_SPARK_MS,
         easing: 'cubic-bezier(0.4, 0, 0.6, 1)',
         fill: 'forwards'
       }).finished.then(() => sp.remove());

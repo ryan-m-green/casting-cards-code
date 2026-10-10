@@ -147,6 +147,18 @@ public class DashboardStatsResponse
     public int SublocationCount { get; set; }
     public int CastCount { get; set; }
     public int FactionCount { get; set; }
+    /// <summary>
+    /// How many conditions the caller's own condition library holds. Conditions belong to the GM's
+    /// account and are shared across every campaign they run, so this is the Conditions Library
+    /// count shown on the dashboard's Conditions tile.
+    /// </summary>
+    public int ConditionCount { get; set; }
+    /// <summary>
+    /// How many cheat-sheet entries the caller's own library holds. Entries belong to the DM's
+    /// account and are shared across every campaign they run (see `campaign_rules`), so this is
+    /// the count shown on the dashboard's Cheat Sheet tile.
+    /// </summary>
+    public int CheatSheetCount { get; set; }
     public int SoundtrackCount { get; set; }
     public CampaignListResponse ActiveCampaign { get; set; }
     /// <summary>

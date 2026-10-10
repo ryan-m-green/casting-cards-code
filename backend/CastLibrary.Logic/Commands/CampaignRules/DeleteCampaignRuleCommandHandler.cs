@@ -25,3 +25,28 @@ public class DeleteCampaignRuleCommand
     public Guid Id { get; }
     public Guid CampaignId { get; }
 }
+
+public interface IDeleteLibraryRuleCommandHandler
+{
+    Task<int> HandleAsync(DeleteLibraryRuleCommand command);
+}
+
+/// <summary>Deletes a cheat-sheet entry from the GM's library outright (used by the library page).</summary>
+public class DeleteLibraryRuleCommandHandler(
+    ICampaignRuleDeleteRepository deleteRepository) : IDeleteLibraryRuleCommandHandler
+{
+    public Task<int> HandleAsync(DeleteLibraryRuleCommand command)
+        => deleteRepository.DeleteAsync(command.RuleId, command.DmUserId);
+}
+
+public class DeleteLibraryRuleCommand
+{
+    public DeleteLibraryRuleCommand(Guid ruleId, Guid dmUserId)
+    {
+        RuleId   = ruleId;
+        DmUserId = dmUserId;
+    }
+
+    public Guid RuleId { get; }
+    public Guid DmUserId { get; }
+}

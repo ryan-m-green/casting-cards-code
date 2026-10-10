@@ -10,6 +10,7 @@ public interface ICampaignRuleReadRepository
 {
     Task<List<CampaignRuleDomain>> GetByCampaignAsync(Guid campaignId);
     Task<List<CampaignRuleDomain>> GetAvailableAsync(Guid campaignId, Guid dmUserId);
+    Task<List<CampaignRuleDomain>> GetByDmUserIdAsync(Guid dmUserId);
     Task<CampaignRuleDomain> GetByIdAsync(Guid id, Guid dmUserId);
 }
 
@@ -61,6 +62,25 @@ public class CampaignRuleReadRepository(
                                             FROM   campaign_rule_links l
                                             WHERE  l.rule_id     = r.id
                                               AND  l.campaign_id = @CampaignId)
+                         ORDER BY r.created_at";
+
+        logging.LogDbOperation(correlation.TraceId, spanId, "SELECT", "campaign_rules", @params);
+
+        using var conn = sqlConnectionFactory.GetConnection();
+        var rows = (await conn.QueryAsync<CampaignRuleEntity>(sql, @params)).ToList();
+
+        logging.LogDbOperation(correlation.TraceId, spanId, "SELECT", "campaign_rules", @params, rows.Count);
+
+        return rows.Select(mapper.ToDomain).ToList();
+    }
+
+    public async Task<List<CampaignRuleDomain>> GetByDmUserIdAsync(Guid dmUserId)
+    {
+        var spanId  = correlation.NewSpan();
+        var @params = new { DmUserId = dmUserId };
+        var sql     = $@"SELECT {Columns("0")}
+                         FROM   campaign_rules r
+                         WHERE  r.dm_user_id = @DmUserId
                          ORDER BY r.created_at";
 
         logging.LogDbOperation(correlation.TraceId, spanId, "SELECT", "campaign_rules", @params);

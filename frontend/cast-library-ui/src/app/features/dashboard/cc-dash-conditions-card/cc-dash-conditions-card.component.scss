@@ -1,0 +1,197 @@
+@use '../../../../styles/variables' as v;
+
+/*
+ * The dashboard's Conditions tile — the soundtrack card's stat frame (see
+ * `Soundtracks/_soundtrack-card.scss`) dressed in the condition library's colours: a warm yellow
+ * border edged in the journal's dark brown, a dark brown banner and foot strip, and gold lettering.
+ */
+:host {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+$cdc-border: v.$color-base-dark-brown;
+$cdc-frame: linear-gradient(145deg,
+  v.$color-base-gold-13 0%, v.$color-base-gold-2 20%, v.$color-base-gold-12 45%,
+  v.$color-base-gold-14 55%, v.$color-base-gold-4 70%, v.$color-base-gold-dark-hex 100%);
+$cdc-banner: linear-gradient(180deg, v.$color-base-deep-brown 0%, v.$color-base-dark-brown 100%);
+/* The ring's colour when none is set: the condition ring's own default. */
+$cdc-ring: v.$color-base-purple-primary;
+
+.cdc-stat {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.cdc-stat-frame {
+  position: absolute;
+  inset: 0;
+  border-radius: 4px;
+  padding: 3px;
+  box-shadow:
+    0 0 0 1px $cdc-border,
+    0 3px 11px v.$color-shadow-dark;
+  overflow: hidden;
+  background: $cdc-frame;
+}
+
+.cdc-stat-inner {
+  width: 100%;
+  height: 100%;
+  border-radius: 2.5px;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  background: v.$color-base-tan-3;
+}
+
+.cdc-stat-banner {
+  flex-shrink: 0;
+  padding: 4px 5px 3px;
+  text-align: center;
+  position: relative;
+  z-index: 2;
+  border-bottom: 1px solid $cdc-border;
+  background: $cdc-banner;
+}
+
+.cdc-stat-name {
+  color: v.$color-base-gold-bright-hex;
+  font-family: v.$font-header;
+  font-weight: 700;
+  font-size: 9px;
+  letter-spacing: 0.08em;
+  line-height: 1.1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.cdc-stat-count {
+  position: relative;
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  font-family: v.$font-header;
+  font-weight: 700;
+  font-size: 30px;
+  line-height: 1;
+  color: v.$color-base-brown-14;
+}
+
+/* The cast card's sigil, worn large and faint behind the count (as `cc-condition-card` wears it). */
+.cdc-stat-watermark {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 82%;
+  height: 82%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: v.$color-base-brown-14;
+  opacity: 0.15;
+  z-index: 0;
+  pointer-events: none;
+}
+
+/* The watermark component draws at its authored card size; fit it to the count instead. */
+.cdc-stat-count .cdc-stat-watermark ::ng-deep cc-card-watermark {
+  width: 100%;
+  height: 100%;
+}
+
+.cdc-stat-count .cdc-stat-watermark ::ng-deep .card-watermark {
+  --icon-opacity: 1;
+  color: v.$color-base-brown-14;
+}
+
+.cdc-stat-value {
+  position: relative;
+  z-index: 1;
+}
+
+.cdc-stat-strip {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 3px 5px;
+  position: relative;
+  z-index: 2;
+  border-top: 1px solid $cdc-border;
+  background: $cdc-banner;
+}
+
+.cdc-stat-pip-row {
+  display: flex;
+  gap: 2px;
+}
+
+.cdc-stat-pip {
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  opacity: 0.7;
+  background-color: v.$color-base-gold-4;
+}
+
+.cdc-stat-strip-label {
+  color: v.$color-base-gold-bright-hex;
+  font-family: v.$font-header;
+  font-size: 7px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  opacity: 0.85;
+}
+
+/*
+ * A condition ring worn across the card (see `cc-condition-card`): a lens of colour whose ends
+ * stick out 2px past the card's left and right borders and whose bottom edge sits a third of the
+ * card's height above its bottom border. It carries the card's own word.
+ */
+.cdc-stat-ring {
+  position: absolute;
+  left: -2px;
+  right: -2px;
+  bottom: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 24px;
+  padding: 0 8px;
+  border-radius: 50% / 100%;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.5) 0%, rgba(255, 255, 255, 0.12) 38%, rgba(0, 0, 0, 0.34) 100%),
+    linear-gradient(90deg, rgba(0, 0, 0, 0.7) 0%, var(--ring-color, #{$cdc-ring}) 22%, var(--ring-color, #{$cdc-ring}) 78%, rgba(0, 0, 0, 0.7) 100%);
+  box-shadow:
+    0 1px 2px rgba(0, 0, 0, 0.45),
+    inset 0 1px 0 rgba(255, 255, 255, 0.4);
+  color: #fff;
+  font-family: v.$font-body;
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  line-height: 1;
+  text-transform: uppercase;
+  white-space: nowrap;
+  text-shadow: 0 1px 1px rgba(0, 0, 0, 0.75), 0 0 2px rgba(0, 0, 0, 0.55);
+  pointer-events: none;
+  z-index: 3;
+}
+
+.cdc-stat-ring-label {
+  max-width: 100%;
+  overflow: hidden;
+  padding: 1.5px calc(4px - 0.08em) 1.5px 4px;
+  background: rgba(0, 0, 0, 0.78);
+  border-radius: 999px;
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.4);
+  text-overflow: ellipsis;
+}

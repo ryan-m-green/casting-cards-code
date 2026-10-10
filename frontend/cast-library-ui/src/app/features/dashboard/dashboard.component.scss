@@ -93,7 +93,9 @@ app-journal-title ::ng-deep .jt-heading {
   }
 }
 
-.stat-tile--soundtrack {
+.stat-tile--soundtrack,
+.stat-tile--conditions,
+.stat-tile--cheatsheet {
   display: block;
   aspect-ratio: 75 / 110;
 }

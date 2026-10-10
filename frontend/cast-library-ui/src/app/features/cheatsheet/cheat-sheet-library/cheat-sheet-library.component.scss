@@ -1,0 +1,60 @@
+@use '../../../../styles/variables' as v;
+
+:host { display: block; height: 100%; }
+
+/* The library's cards are swept as a row rather than laid on a grid (see the component's
+   `initSwiper`): the first card stands in the middle of the page, with the rest of the stack
+   trailing off to its right. The row is clipped so the page never grows a sideways scrollbar. */
+.card-grid {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 20px 0 v.$spacing-md;
+  overflow: hidden;
+  overscroll-behavior-x: contain;
+
+  .swiper-wrapper {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+  }
+
+  .swiper-slide {
+    flex: 0 0 auto;
+    width: v.$card-width;
+    height: v.$card-height;
+    box-sizing: border-box;
+  }
+}
+
+/* The entry card with its edit / delete tools hung over its bottom corners, the way the condition
+   library hangs them on its cards — siblings of the card, so they never nest inside its button. */
+.cheat-slot {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.cheat-actions {
+  position: absolute;
+  left: 10px;
+  right: 10px;
+  bottom: 10px;
+  z-index: 5;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  pointer-events: none;
+
+  > * { pointer-events: auto; }
+}
+
+.cheat-edit {
+  --cc-edit-size: 30px;
+  --cc-edit-icon-size: 17px;
+}
+
+.cheat-delete {
+  --cc-delete-size: 30px;
+  --cc-delete-icon-size: 17px;
+  --cc-delete-font-size: 11px;
+}

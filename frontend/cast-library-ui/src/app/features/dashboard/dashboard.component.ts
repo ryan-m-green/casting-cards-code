@@ -12,6 +12,8 @@ import { CampaignHubService } from '../../core/hub/campaign-hub.service';
 import { SubscriptionDrawerService } from '../../core/subscription-drawer.service';
 import { PortalCardComponent } from '../../shared/components/Journal/portal-card/portal-card.component';
 import { CcCardStatComponent } from './cc-card-stat/cc-card-stat.component';
+import { CcDashConditionsCardComponent } from './cc-dash-conditions-card/cc-dash-conditions-card.component';
+import { CcCheatsheetDashCardComponent } from './cc-cheatsheet-dash-card/cc-cheatsheet-dash-card.component';
 import { CcSoundtrackCardComponent } from '../../shared/components/Campaign/Soundtracks/cc-soundtrack-card/cc-soundtrack-card.component';
 
 interface DashboardStats {
@@ -20,6 +22,8 @@ interface DashboardStats {
   sublocationCount: number;
   castCount: number;
   factionCount: number;
+  conditionCount: number;
+  cheatSheetCount: number;
   soundtrackCount: number;
   activeCampaign: Campaign | null;
   lastPlayedCampaign: Campaign | null;
@@ -46,7 +50,7 @@ interface ImportFailure {
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [CommonModule, JournalTitleComponent, UpgradeBadgeComponent, CcCardStatComponent, CcSoundtrackCardComponent, PortalCardComponent],
+  imports: [CommonModule, JournalTitleComponent, UpgradeBadgeComponent, CcCardStatComponent, CcDashConditionsCardComponent, CcCheatsheetDashCardComponent, CcSoundtrackCardComponent, PortalCardComponent],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.scss'
 })
@@ -61,7 +65,7 @@ export class DashboardComponent implements OnInit {
   private isEntering = false;
 
   stats = signal<DashboardStats>({
-    campaignCount: 0, locationCount: 0, sublocationCount: 0, castCount: 0, factionCount: 0, soundtrackCount: 0,
+    campaignCount: 0, locationCount: 0, sublocationCount: 0, castCount: 0, factionCount: 0, conditionCount: 0, cheatSheetCount: 0, soundtrackCount: 0,
     activeCampaign: null, lastPlayedCampaign: null
   });
 

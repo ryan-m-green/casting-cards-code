@@ -1,5 +1,7 @@
 using CastLibrary.Logic.Queries.Campaign;
+using CastLibrary.Logic.Queries.CampaignRules;
 using CastLibrary.Logic.Queries.Cast;
+using CastLibrary.Logic.Queries.Conditions;
 using CastLibrary.Logic.Queries.Faction;
 using CastLibrary.Logic.Queries.Location;
 using CastLibrary.Logic.Queries.Soundtrack;
@@ -23,6 +25,8 @@ public class DashboardController(
     IGetSublocationLibraryQueryHandler getSublocationLibraryQuery,
     IGetCastLibraryQueryHandler getCastLibraryQuery,
     IGetFactionLibraryQueryHandler getFactionLibraryQuery,
+    IGetLibraryConditionsQueryHandler getLibraryConditionsQuery,
+    IGetLibraryRulesQueryHandler getLibraryRulesQuery,
     IGetSoundtracksQueryHandler getSoundtracksQuery,
     ICampaignWebMapper campaignMapper,
     IUserRetriever userRetriever) : ControllerBase
@@ -36,6 +40,8 @@ public class DashboardController(
         var sublocations = await getSublocationLibraryQuery.HandleAsync(userId);
         var casts = await getCastLibraryQuery.HandleAsync(userId);
         var factions = await getFactionLibraryQuery.HandleAsync(userId);
+        var conditions = await getLibraryConditionsQuery.HandleAsync(userId);
+        var cheatSheets = await getLibraryRulesQuery.HandleAsync(userId);
         var soundtracks = await getSoundtracksQuery.HandleAsync(new GetSoundtracksQuery(userId));
         var active = campaigns.Where(o => o.Status == CampaignStatus.Active && o.LastAccessedAt.HasValue)
             .OrderByDescending(o => o.LastAccessedAt).FirstOrDefault();
@@ -61,6 +67,8 @@ public class DashboardController(
             SublocationCount = sublocations.Count,
             CastCount = casts.Count,
             FactionCount = factions.Count,
+            ConditionCount = conditions.Count,
+            CheatSheetCount = cheatSheets.Count,
             SoundtrackCount = soundtracks.Count,
             ActiveCampaign = active is null ? null : campaignMapper.ToListResponse(active),
             LastPlayedCampaign = lastPlayed is null ? null : campaignMapper.ToListResponse(lastPlayed),

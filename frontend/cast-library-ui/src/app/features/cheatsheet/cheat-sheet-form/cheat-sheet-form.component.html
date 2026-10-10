@@ -1,0 +1,102 @@
+<div class="pc scroll-body">
+  <app-journal-title [title]="editing() ? 'Edit Cheat Sheet Entry' : 'New Cheat Sheet Entry'" />
+
+  <div class="wr wr-page-header">
+    <a class="btn-ghost" routerLink="/gm/cheat-sheets">← Library</a>
+  </div>
+
+  @if (notFound()) {
+    <p class="wbd-journal">That entry is no longer in your cheat sheet.</p>
+  } @else {
+    <label for="cheat-name-input" class="fi-label">{{ grouped() ? 'Group Name' : 'Entry Name' }}</label>
+    <input
+      id="cheat-name-input"
+      class="fi"
+      [value]="name()"
+      (input)="name.set($any($event.target).value)"
+      autocomplete="off"
+      placeholder="What is this entry called?" />
+
+    <label for="cheat-definition-input" class="fi-label">
+      {{ grouped() ? 'Group Definition (optional)' : 'Definition' }}
+    </label>
+    <textarea
+      id="cheat-definition-input"
+      class="fi"
+      rows="6"
+      [value]="definition()"
+      (input)="definition.set($any($event.target).value)"
+      [placeholder]="grouped() ? 'What this group covers…' : 'What the entry says…'"
+      autocomplete="off"></textarea>
+
+    <cc-keyword-tags
+      label="Hashtags / Keywords"
+      placeholder="Add or select hashtags…"
+      [options]="keywordOptions()"
+      [ngModel]="keywords()"
+      [ngModelOptions]="{ standalone: true }"
+      (ngModelChange)="keywords.set($event)">
+    </cc-keyword-tags>
+
+    <div class="cheat-group-head">
+      <span class="fi-label">Sub-entries</span>
+    </div>
+
+    @if (childCount() === 0) {
+      <p class="cheat-group-empty">No sub-entries yet. Use ＋ Add sub-entry to give this entry the entries that sit beneath it.</p>
+    }
+
+    @for (child of children(); track child.id; let index = $index) {
+      <div class="cheat-child">
+        <span class="cheat-child-index">{{ index + 1 }}</span>
+
+        <div class="cheat-child-fields">
+          <label class="fi-label" [attr.for]="'cheat-child-name-' + index">Sub-entry name</label>
+          <input
+            [id]="'cheat-child-name-' + index"
+            class="fi"
+            [value]="child.name"
+            (input)="onChildName(index, $any($event.target).value)"
+            autocomplete="off"
+            placeholder="Name…" />
+
+          <label class="fi-label" [attr.for]="'cheat-child-def-' + index">Definition</label>
+          <textarea
+            [id]="'cheat-child-def-' + index"
+            class="fi"
+            rows="3"
+            [value]="child.definition"
+            (input)="onChildDefinition(index, $any($event.target).value)"
+            autocomplete="off"
+            placeholder="What it says…"></textarea>
+        </div>
+
+        <button
+          type="button"
+          class="cheat-child-remove"
+          [attr.aria-label]="'Remove sub-entry ' + (index + 1)"
+          title="Remove sub-entry"
+          (click)="removeChild(index)">✕</button>
+      </div>
+    }
+
+    <button type="button" class="cheat-add-child" (click)="addChild()">＋ Add sub-entry</button>
+
+    @if (error()) {
+      <div class="cheat-form-error">{{ error() }}</div>
+    }
+
+    <div class="form-save-footer">
+      @if (editing()) {
+        <button class="cheat-delete-btn" type="button" [disabled]="saving()" (click)="remove()">Delete</button>
+      }
+      <button
+        class="campaign-primary-btn"
+        type="button"
+        [disabled]="saving() || !canSave()"
+        (click)="save()">
+        {{ saving() ? 'Saving…' : 'Save' }}
+      </button>
+    </div>
+  }
+</div>

@@ -1,0 +1,34 @@
+<div class="cdc-stat" [attr.title]="title()">
+  <div class="cdc-stat-frame">
+    <div class="cdc-stat-inner">
+      <div class="cdc-stat-banner">
+        <div class="cdc-stat-name">{{ title() }}</div>
+      </div>
+
+      <div class="cdc-stat-count" aria-hidden="true">
+        <span class="cdc-stat-watermark">
+          <cc-card-watermark name="cast" />
+        </span>
+        <span class="cdc-stat-value">{{ count() }}</span>
+      </div>
+
+      <div class="cdc-stat-strip">
+        <div class="cdc-stat-pip-row">
+          <div class="cdc-stat-pip"></div>
+          <div class="cdc-stat-pip"></div>
+          <div class="cdc-stat-pip"></div>
+        </div>
+        <span class="cdc-stat-strip-label">{{ title() }}</span>
+        <div class="cdc-stat-pip-row">
+          <div class="cdc-stat-pip"></div>
+          <div class="cdc-stat-pip"></div>
+          <div class="cdc-stat-pip"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <span class="cdc-stat-ring">
+    <span class="cdc-stat-ring-label">{{ title() }}</span>
+  </span>
+</div>

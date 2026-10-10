@@ -19,7 +19,12 @@
 
       <div class="wr form-row-gap">
         <div class="form-field">
-          <cc-color-dropdown label="Ring Color" formControlName="color" />
+          <app-journal-dropdown
+            label="Ring Color"
+            [options]="colorOptions"
+            [swatches]="colorSwatches"
+            [control]="colorControl"
+            [allowTyping]="false" />
         </div>
       </div>
 

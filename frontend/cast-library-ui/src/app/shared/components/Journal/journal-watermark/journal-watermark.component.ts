@@ -1,7 +1,7 @@
 import { Component, input } from '@angular/core';
 import { CcSublocationIconComponent } from '../../Shared/cc-sublocation-icon/cc-sublocation-icon.component';
 
-export type WatermarkPageType = 'cast' | 'sublocation' | 'location' | 'faction' | 'campaign' | 'condition' | 'soundtrack';
+export type WatermarkPageType = 'cast' | 'sublocation' | 'location' | 'faction' | 'campaign' | 'condition' | 'soundtrack' | 'rule';
 
 @Component({
   selector: 'app-journal-watermark',

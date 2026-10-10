@@ -175,6 +175,21 @@ export const routes: Routes = [
             loadComponent: () => import('./features/condition/condition-form/condition-form.component').then(m => m.ConditionFormComponent),
           },
           {
+            path: 'cheat-sheets',
+            canActivate: [libraryAccessGuard],
+            loadComponent: () => import('./features/cheatsheet/cheat-sheet-library/cheat-sheet-library.component').then(m => m.CheatSheetLibraryComponent),
+          },
+          {
+            path: 'cheat-sheets/new',
+            canActivate: [subscriptionLockGuard],
+            loadComponent: () => import('./features/cheatsheet/cheat-sheet-form/cheat-sheet-form.component').then(m => m.CheatSheetFormComponent),
+          },
+          {
+            path: 'cheat-sheets/:id',
+            canActivate: [subscriptionLockGuard],
+            loadComponent: () => import('./features/cheatsheet/cheat-sheet-form/cheat-sheet-form.component').then(m => m.CheatSheetFormComponent),
+          },
+          {
             path: 'soundtracks',
             canActivate: [libraryAccessGuard],
             loadComponent: () => import('./features/soundtrack/soundtrack-library/soundtrack-library.component').then(m => m.SoundtrackLibraryComponent),

@@ -47,7 +47,11 @@ public class CreateCampaignRuleCommandHandler(
         };
 
         var saved = await insertRepository.InsertAsync(domain);
-        await linkRepository.InsertAsync(command.CampaignId, saved.Id);
+
+        // An entry written inside a campaign is linked to it; one written from the GM's
+        // library stands on its own until a campaign adds it.
+        if (command.CampaignId is Guid campaignId && campaignId != Guid.Empty)
+            await linkRepository.InsertAsync(campaignId, saved.Id);
 
         return saved;
     }
@@ -55,14 +59,14 @@ public class CreateCampaignRuleCommandHandler(
 
 public class CreateCampaignRuleCommand
 {
-    public CreateCampaignRuleCommand(Guid campaignId, Guid dmUserId, CreateCampaignRuleRequest request)
+    public CreateCampaignRuleCommand(Guid? campaignId, Guid dmUserId, CreateCampaignRuleRequest request)
     {
         CampaignId = campaignId;
         DmUserId   = dmUserId;
         Request    = request;
     }
 
-    public Guid CampaignId { get; }
+    public Guid? CampaignId { get; }
     public Guid DmUserId { get; }
     public CreateCampaignRuleRequest Request { get; }
 }

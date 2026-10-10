@@ -1,0 +1,124 @@
+@use '../../../../styles/variables' as v;
+
+:host { display: block; height: 100%; }
+
+/* The save sits at the bottom-left of the page, as it does on the journal's other forms. */
+.form-save-footer {
+  justify-content: flex-start;
+  gap: 12px;
+}
+
+/* ── Sub-entries ──────────────────────────────────────────────────────────────
+   The journal's take on the drawer editor's sub-entry list: a numbered, bordered block per child,
+   the same `fi` fields inside it, so a group reads down the page rather than in a panel. */
+.cheat-group-head {
+  margin-top: 18px;
+  padding-top: 12px;
+  border-top: 1px solid v.$color-border;
+}
+
+.cheat-group-empty {
+  margin: 6px 0 12px;
+  font-family: v.$font-body;
+  font-size: 13px;
+  font-style: italic;
+  line-height: 1.4;
+  color: v.$color-base-brown-15;
+}
+
+.cheat-child {
+  position: relative;
+  display: flex;
+  gap: 10px;
+  padding: 10px 34px 0 10px;
+  margin-bottom: 10px;
+  border: 1px solid v.$color-border;
+  border-radius: 4px;
+  background: v.$color-input-bg;
+}
+
+.cheat-child-index {
+  flex: 0 0 auto;
+  width: 18px;
+  padding-top: 4px;
+  font-family: v.$font-header;
+  font-weight: 700;
+  font-size: 12px;
+  text-align: center;
+  color: v.$color-base-amber-brown;
+}
+
+.cheat-child-fields {
+  flex: 1;
+  min-width: 0;
+}
+
+.cheat-child-remove {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 22px;
+  height: 22px;
+  padding: 0;
+  background: none;
+  border: 1px solid v.$color-border;
+  border-radius: 50%;
+  font-size: 11px;
+  line-height: 1;
+  color: v.$color-base-brown-15;
+  cursor: pointer;
+  transition: border-color 0.15s ease, color 0.15s ease;
+
+  &:hover {
+    border-color: v.$color-base-brick;
+    color: v.$color-base-brick;
+  }
+}
+
+.cheat-add-child {
+  padding: 7px 12px;
+  background: none;
+  border: 1px dashed v.$color-border-accent;
+  border-radius: 4px;
+  font-family: v.$font-header;
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: v.$color-base-amber-brown;
+  cursor: pointer;
+  transition: border-color 0.15s ease, color 0.15s ease;
+
+  &:hover {
+    border-color: v.$color-arcane-border;
+    color: v.$color-base-gold-1;
+  }
+}
+
+.cheat-form-error {
+  margin: 12px 0;
+  padding: 10px 14px;
+  background: rgba(v.$color-base-brick, 0.1);
+  border: 1px solid rgba(v.$color-base-brick, 0.3);
+  border-radius: 6px;
+  font-family: v.$font-body;
+  font-size: 14px;
+  line-height: 1.4;
+  color: v.$color-base-brick;
+}
+
+.cheat-delete-btn {
+  padding: 10px 16px;
+  background: none;
+  border: 1px solid v.$color-base-brick;
+  border-radius: 2px;
+  font-family: v.$font-header;
+  font-size: 12px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: v.$color-base-brick;
+  cursor: pointer;
+  transition: background 0.15s ease;
+
+  &:hover:not(:disabled) { background: rgba(v.$color-base-brick, 0.1); }
+  &:disabled { opacity: 0.5; cursor: default; }
+}

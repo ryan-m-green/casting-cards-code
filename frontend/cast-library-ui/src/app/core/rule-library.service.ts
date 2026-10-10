@@ -22,6 +22,85 @@ export class RuleLibraryService {
     return this.availableShelves().get(campaignId) ?? [];
   }
 
+  /**
+   * The sentinel shelf key the GM's whole cheat sheet is held under. Campaign shelves are keyed by
+   * campaign id (a GUID), so this can never collide with one.
+   */
+  private static readonly LIBRARY_SHELF = '__library__';
+
+  /** Every entry the DM owns — the Cheat Sheet Library page's shelf. */
+  libraryRules(): readonly Rule[] {
+    return this.rules(RuleLibraryService.LIBRARY_SHELF);
+  }
+
+  isLoadingLibrary(): boolean {
+    return this.isLoading(RuleLibraryService.LIBRARY_SHELF);
+  }
+
+  hasFailedLibrary(): boolean {
+    return this.hasFailed(RuleLibraryService.LIBRARY_SHELF);
+  }
+
+  /** Reads the DM's whole cheat sheet the first time it is asked for; later calls do nothing. */
+  loadLibrary(): Observable<void> {
+    const key = RuleLibraryService.LIBRARY_SHELF;
+    if (this.shelves().has(key)) return of(void 0);
+
+    this.setMember(this.pending, key, true);
+
+    return this.http.get<unknown>(`${environment.apiUrl}/api/rules`).pipe(
+      tap(payload => {
+        this.write(key, this.toShelf(payload));
+        this.setMember(this.failed, key, false);
+      }),
+      map((): void => undefined),
+      catchError(() => {
+        this.setMember(this.failed, key, true);
+        return of(void 0);
+      }),
+      tap(() => this.setMember(this.pending, key, false))
+    );
+  }
+
+  reloadLibrary(): Observable<void> {
+    this.forget(RuleLibraryService.LIBRARY_SHELF);
+    return this.loadLibrary();
+  }
+
+  createInLibrary(draft: Rule): Observable<Rule> {
+    const body = {
+      name: draft.name.trim(),
+      definition: draft.definition,
+      children: this.toChildrenBody(draft.children),
+      keywords: this.toKeywords(draft.keywords),
+    };
+
+    return this.http.post<unknown>(`${environment.apiUrl}/api/rules`, body).pipe(
+      map(payload => this.toRule(payload)),
+      tap(created => this.append(RuleLibraryService.LIBRARY_SHELF, created))
+    );
+  }
+
+  updateInLibrary(draft: Rule): Observable<Rule> {
+    const body = {
+      name: draft.name.trim(),
+      definition: draft.definition,
+      children: this.toChildrenBody(draft.children),
+      keywords: this.toKeywords(draft.keywords),
+    };
+
+    return this.http.put<unknown>(`${environment.apiUrl}/api/rules/${draft.id}`, body).pipe(
+      map(payload => this.toRule(payload)),
+      tap(saved => this.replace(RuleLibraryService.LIBRARY_SHELF, saved))
+    );
+  }
+
+  removeFromLibrary(ruleId: string): Observable<void> {
+    return this.http.delete<void>(`${environment.apiUrl}/api/rules/${ruleId}`).pipe(
+      tap(() => this.drop(RuleLibraryService.LIBRARY_SHELF, ruleId))
+    );
+  }
+
   isLoadingAvailable(campaignId: string): boolean {
     return this.availablePending().has(campaignId);
   }
