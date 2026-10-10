@@ -9,7 +9,6 @@ using CastLibrary.WebHost.MetadataHelpers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
-using System.Security.Claims;
 
 namespace CastLibrary.WebHost.Controllers;
 

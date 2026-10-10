@@ -1,0 +1,17 @@
+<div class="sv-root" [style.--portal-color]="portalColor()">
+  <h3 class="sv-title">{{ item().title }}</h3>
+
+  @if (item().imageUrl) {
+    <div class="sv-image-wrap">
+      <img class="sv-image" [src]="item().imageUrl" [alt]="item().title" />
+    </div>
+  }
+
+  @if (item().body) {
+    <div class="sv-body">{{ item().body }}</div>
+  }
+
+  @if (!item().imageUrl && !item().body) {
+    <div class="sv-empty">No content.</div>
+  }
+</div>

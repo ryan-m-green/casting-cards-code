@@ -1,0 +1,51 @@
+<div class="party-gold-body">
+  <div class="drawer-section">
+    <div class="drawer-field">
+      <label for="party-gold-amount-input" class="drawer-label">Amount</label>
+      <div class="price-input-group">
+        <input #goldAmountInput id="party-gold-amount-input" class="drawer-input price-amount"
+               type="text"
+               inputmode="numeric"
+               [ngModel]="goldAmount() || ''"
+               (ngModelChange)="onGoldAmountChange($event)"
+               placeholder="0" />
+        <div class="currency-dropdown">
+          <button class="currency-dropdown-trigger"
+                  type="button"
+                  aria-label="Select currency type"
+                  aria-haspopup="listbox"
+                  [attr.aria-expanded]="currencyDropdownOpen()"
+                  (click)="currencyDropdownOpen.set(!currencyDropdownOpen()); $event.stopPropagation()">
+            <span>{{ goldCurrency() }}</span>
+            <span class="currency-dropdown-caret" [class.currency-dropdown-caret--open]="currencyDropdownOpen()" aria-hidden="true">▾</span>
+          </button>
+          @if (currencyDropdownOpen()) {
+            <div class="currency-dropdown-panel" role="listbox" aria-label="Currency types">
+              @for (c of currencies; track c) {
+                <div class="currency-dropdown-item"
+                     role="option"
+                     [attr.aria-selected]="goldCurrency() === c"
+                     [class.currency-dropdown-item--selected]="goldCurrency() === c"
+                     (click)="goldCurrency.set(c); currencyDropdownOpen.set(false); $event.stopPropagation()">
+                  {{ c }}
+                </div>
+              }
+            </div>
+          }
+        </div>
+      </div>
+    </div>
+    <div class="drawer-field">
+      <label for="party-gold-note-input" class="drawer-label">Note (optional)</label>
+      <input id="party-gold-note-input" class="drawer-input" type="text"
+             [ngModel]="goldNote()"
+             (ngModelChange)="goldNote.set($event)"
+             placeholder="Reason…" />
+    </div>
+    <div class="drawer-actions">
+      <button class="campaign-primary-btn" (click)="awardGold()" [disabled]="!goldAmount() || goldAmount() <= 0 || goldSaving()">
+        {{ goldSaving() ? 'Awarding…' : 'Award Treasures' }}
+      </button>
+    </div>
+  </div>
+</div>

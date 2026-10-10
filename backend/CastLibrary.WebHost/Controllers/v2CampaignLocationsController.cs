@@ -1,18 +1,16 @@
 using CastLibrary.Logic.Commands.Campaign;
 using CastLibrary.Logic.Commands.Location;
 using CastLibrary.Logic.Queries.Campaign;
-using CastLibrary.Logic.Queries.Location;
 using CastLibrary.Logic.Services;
 using CastLibrary.Shared.Requests;
 using CastLibrary.Shared.Responses;
-using CastLibrary.WebHost.Hubs;
 using CastLibrary.WebHost.Mappers;
 using CastLibrary.WebHost.MetadataHelpers;
 using CastLibrary.WebHost.Requests;
+using CastLibrary.WebHost.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
-using Microsoft.AspNetCore.SignalR;
 
 namespace CastLibrary.WebHost.Controllers;
 
@@ -31,7 +29,7 @@ public class CampaignLocationsController(
     ICampaignAccessService campaignAccess,
     IUploadLocationImageCommandHandler uploadLocationImageCommandHandler,
     IFileValidationService fileValidationService,
-    IHubContext<CampaignHub> hubContext) : ControllerBase
+    ISignalRNotificationService notifications) : ControllerBase
 {
     private Task<bool> CallerCanView(Guid campaignId) =>
         campaignAccess.IsMemberOrOwnerAsync(campaignId, userRetriever.GetUserId(User));
@@ -78,7 +76,7 @@ public class CampaignLocationsController(
 
         var response = campaignMapper.ToLocationInstanceResponse(instance);
 
-        await hubContext.Clients.Group(campaignId.ToString()).SendAsync("CampaignNavChanged", new { campaignId = campaignId });
+        await notifications.BroadcastCampaignNavChangedAsync(campaignId, new { campaignId = campaignId });
 
         return Ok(response);
     }
@@ -92,10 +90,17 @@ public class CampaignLocationsController(
         var dmUserId = userRetriever.GetDmUserId(User);
         await updateLocationInstanceCommand.HandleAsync(new UpdateLocationInstanceCommand(instanceId, request, dmUserId));
 
-        await hubContext.Clients.Group(campaignId.ToString()).SendAsync("LocationInstanceUpdated", new
+        // The card as the campaign now holds it goes out with the event, so a watcher takes the
+        // change on from what it is handed rather than reading the card back over the API: read
+        // once here, where the write has just landed, instead of once per watching client. The id
+        // stays on the payload for watchers that only want to know which card moved.
+        var updated = (await getLocationsQuery.HandleAsync(campaignId, instanceId)).FirstOrDefault();
+
+        await notifications.BroadcastLocationInstanceUpdatedAsync(campaignId, new
         {
-            campaignId          = campaignId,
-            locationInstanceId  = instanceId,
+            campaignId,
+            locationInstanceId = instanceId,
+            location = updated is null ? null : campaignMapper.ToLocationInstanceResponse(updated),
         });
 
         return NoContent();
@@ -109,7 +114,10 @@ public class CampaignLocationsController(
         if (!await CallerOwns(campaignId)) return Forbid();
         await updateLocationInstanceVisibilityCommand.HandleAsync(new UpdateLocationInstanceVisibilityCommand(instanceId, request));
 
-        await hubContext.Clients.Group(campaignId.ToString()).SendAsync("CardVisibilityChanged", new CardVisibilityChangedEvent
+        // Broadcast through the notification service rather than the hub context directly: it is
+        // the one place that records every send, which is what the Admin's SignalR inspector reads
+        // (see AdminSignalRController). The event the clients receive is unchanged.
+        await notifications.BroadcastCardVisibilityChangedAsync(campaignId, new CardVisibilityChangedEvent
         {
             CampaignId = campaignId,
             InstanceId = instanceId,
@@ -127,7 +135,7 @@ public class CampaignLocationsController(
         if (!await CallerOwns(campaignId)) return Forbid();
         await deleteLocationInstanceCommand.HandleAsync(new DeleteLocationInstanceCommand(instanceId));
 
-        await hubContext.Clients.Group(campaignId.ToString()).SendAsync("CampaignNavChanged", new { campaignId = campaignId });
+        await notifications.BroadcastCampaignNavChangedAsync(campaignId, new { campaignId = campaignId });
 
         return NoContent();
     }
@@ -150,7 +158,7 @@ public class CampaignLocationsController(
             return NotFound();
         }
 
-        await hubContext.Clients.Group(campaignId.ToString()).SendAsync("LocationInstanceUpdated", new
+        await notifications.BroadcastLocationInstanceUpdatedAsync(campaignId, new
         {
             campaignId = campaignId,
             locationInstanceId = id,

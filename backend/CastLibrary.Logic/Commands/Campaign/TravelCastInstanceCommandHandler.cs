@@ -7,6 +7,11 @@ namespace CastLibrary.Logic.Commands.Campaign;
 
 public interface ITravelCastInstanceCommandHandler
 {
+    /// <summary>
+    /// Moves a campaign's cast card to another sublocation. Null when the card does not exist or
+    /// is not that campaign's own, so the caller is told the card is not there rather than told
+    /// the travel landed.
+    /// </summary>
     Task<CastTravelDomain> HandleAsync(TravelCastInstanceCommand command);
 }
 
@@ -16,14 +21,21 @@ public class TravelCastInstanceCommandHandler(
 {
     public async Task<CastTravelDomain> HandleAsync(TravelCastInstanceCommand command)
     {
+        var instance = await campaignReadRepository.GetCastInstanceByIdAsync(command.CastInstanceId);
+        if (instance is null || instance.CampaignId != command.CampaignId) return null;
+
         await campaignUpdateRepository.TravelCastAsync(
             command.CastInstanceId,
             command.Request.LocationInstanceId,
             command.Request.SublocationInstanceId);
-        var partySublocationInstance = await campaignReadRepository.GetPartySublocationInstanceByCampaignAsync(command.CampaignId);
-        var isPartySublocation = partySublocationInstance.InstanceId == command.Request.SublocationInstanceId;
-        return new CastTravelDomain(isPartySublocation);
 
+        // Whether the card has landed with the party: a campaign's party anchor is the sublocation
+        // instance under its own party location, and a campaign that has none (an older one, or one
+        // whose party location was taken away) simply is not where the card went — which is what
+        // the `?.` says, rather than an exception over a lookup that found nothing.
+        var partySublocationInstance = await campaignReadRepository.GetPartySublocationInstanceByCampaignAsync(command.CampaignId);
+        var isPartySublocation = partySublocationInstance?.InstanceId == command.Request.SublocationInstanceId;
+        return new CastTravelDomain(isPartySublocation);
     }
 }
 

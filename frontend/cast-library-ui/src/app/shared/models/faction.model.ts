@@ -39,7 +39,7 @@ export interface FactionRelationship {
   relationshipType: string;
   strength: number;
   createdAt: string;
-  dmUserId: string | null;
+  gmUserId: string | null;
 }
 
 export interface FactionPlayerNotes {

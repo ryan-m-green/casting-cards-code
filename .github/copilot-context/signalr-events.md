@@ -17,6 +17,7 @@ This file defines all real-time events used in the Cast Library application.
 ## Condition Events
 - ConditionAssigned
 - ConditionRemoved
+- CampaignConditionsChanged
 
 ## Time Events
 - TimeOfDayUpdated
@@ -27,8 +28,29 @@ This file defines all real-time events used in the Cast Library application.
 ## Notes
 - NoteUpdated
 
+## Chronicle Events
+- ChronicleAdded
+
+## Encounter Events
+- EncounterUpdated
+- EncounterTurnChanged
+- EncounterCombatantUpdated
+- TrophyAwarded
+- FieldJournalUpdated
+- EncounterEnded
+
 ## Nav Events
 - CampaignNavChanged
+
+## Rule Events
+- CampaignRulesChanged
+
+## World Map Events
+- WorldMapImageChanged
+
+## Player Card Events
+- PlayerCardTraitsChanged
+- PlayerCardUpdated
 
 ---
 

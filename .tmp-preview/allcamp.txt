@@ -1,0 +1,97 @@
+﻿core\condition-library.service.ts:120: return `${environment.apiUrl}/api/campaigns/${campaignId}/conditions`;
+core\player-field-journal.service.ts:28: return `${environment.apiUrl}/api/campaigns/${campaignId}/field-journal`;
+core\rule-library.service.ts:135: return `${environment.apiUrl}/api/campaigns/${campaignId}/rules`;
+core\sublocation.service.ts:59: `${environment.apiUrl}/api/campaigns/${campaignId}/sublocations/${instanceId}/shop-items/${existingItem.id}`,
+core\sublocation.service.ts:73: `${environment.apiUrl}/api/campaigns/${campaignId}/sublocations/${instanceId}/shop-items`,
+core\sublocation.service.ts:91: `${environment.apiUrl}/api/campaigns/${campaignId}/sublocations/${instanceId}/shop-items/${item.id}`
+core\sublocation.service.ts:168: `${environment.apiUrl}/api/campaigns/${campaignId}/sublocations/${instanceId}`,
+features\campaign\campaign-creator\campaign-creator.component.ts:197: campaign: this.http.get<CampaignDetail>(`${environment.apiUrl}/api/campaigns/${id}`),
+features\campaign\campaign-creator\campaign-creator.component.ts:225: this.http.patch(`${environment.apiUrl}/api/campaigns/${cid}`, this.form.value)
+features\campaign\campaign-creator\campaign-creator.component.ts:235: this.http.post<{ id: string }>(`${environment.apiUrl}/api/campaigns`, {
+features\campaign\campaign-creator\campaign-creator.component.ts:453: this.http.post<{ id: string }>(`${environment.apiUrl}/api/campaigns/${cid}/secrets`, {
+features\campaign\campaign-creator\campaign-creator.component.ts:482: this.http.delete(`${environment.apiUrl}/api/campaigns/${cid}/secrets/${secret.id}`).subscribe();
+features\campaign\campaign-creator\campaign-creator.component.ts:516: this.http.post<CampaignInviteCode>(`${environment.apiUrl}/api/campaigns/${cid}/invite-code`, {})
+features\campaign\campaign-creator\campaign-creator.component.ts:545: this.http.delete(`${environment.apiUrl}/api/campaigns/${cid}/players/${userId}`)
+features\campaign\campaign-creator\campaign-creator.component.ts:643: this.http.post<{ id: string }>(`${environment.apiUrl}/api/campaigns`, body).subscribe({
+features\campaign\campaign-creator\campaign-creator.component.ts:656: `${environment.apiUrl}/api/campaigns/${campaignId}/locations`,
+features\campaign\campaign-creator\campaign-creator.component.ts:675: this.http.delete(`${environment.apiUrl}/api/campaigns/${cid}/locations/${draft.instanceId}`).subscribe();
+features\campaign\campaign-creator\campaign-creator.component.ts:686: `${environment.apiUrl}/api/campaigns/${cid}/locations/${current.instanceId}/keywords`,
+features\campaign\campaign-creator\campaign-creator.component.ts:698: this.http.patch(`${environment.apiUrl}/api/campaigns/${cid}/locations/${current.instanceId}`, {
+features\campaign\campaign-creator\campaign-creator.component.ts:777: this.http.delete(`${environment.apiUrl}/api/campaigns/${id}`).subscribe({
+features\campaign\campaign-creator\campaign-creator.component.ts:788: this.http.patch(`${environment.apiUrl}/api/campaigns/${id}`, {
+features\campaign\campaign-library\campaign-library.component.ts:71: this.http.get<Campaign[]>(`${environment.apiUrl}/api/campaigns`).subscribe(c => this.campaigns.set(c));
+features\campaign\campaign-library\campaign-library.component.ts:92: this.http.get<Campaign[]>(`${environment.apiUrl}/api/campaigns/joined`).subscribe(c => this.joinedCampaigns.set(c));
+features\campaign\campaign-library\campaign-library.component.ts:100: this.http.post<Campaign>(`${environment.apiUrl}/api/campaigns/redeem`, { code }).subscribe({
+features\campaign\campaign-library\campaign-library.component.ts:235: this.http.delete(`${environment.apiUrl}/api/campaigns/${c.id}`).subscribe(() => {
+features\campaign\time-of-day-editor\time-of-day-editor.component.ts:82: this.http.get<TimeOfDay>(`${environment.apiUrl}/api/campaigns/${this.campaignId}/time-of-day`)
+features\campaign\time-of-day-editor\time-of-day-editor.component.ts:186: `${environment.apiUrl}/api/campaigns/${this.campaignId}/time-of-day`,
+features\player\player-campaigns\player-campaigns.component.ts:65: this.http.get<Campaign[]>(`${environment.apiUrl}/api/campaigns`).subscribe(c => this.campaigns.set(c));
+features\player\player-campaigns\player-campaigns.component.ts:79: this.http.post<Campaign>(`${environment.apiUrl}/api/campaigns/redeem`, { code }).subscribe({
+layout\v2-campaign-shell\v2-campaign-shell.component.ts:125: ? `${environment.apiUrl}/api/campaigns/${id}`
+layout\v2-campaign-shell\v2-campaign-shell.component.ts:126: : `${environment.apiUrl}/api/campaigns/${id}/player`;
+layout\v2-campaign-shell\v2-campaign-shell.component.ts:881: const playerUrl = `${environment.apiUrl}/api/campaigns/${id}/player`;
+layout\v2-campaign-shell\v2-campaign-shell.component.ts:882: const ownerUrl = `${environment.apiUrl}/api/campaigns/${id}`;
+shared\components\right-drawer\location-detail-content.component.ts:170: `${environment.apiUrl}/api/campaigns/${campaignId}/locations/${loc.instanceId}`,
+shared\components\right-drawer\shop-purchase-content.component.ts:52: `${environment.apiUrl}/api/campaigns/${this.campaignId}/sublocations/${this.sublocationInstanceId}/shop-items/${item.id}/purchase`,
+shared\components\v2\CardNavigation\cc-cast-new-form\cc-cast-new-form.component.ts:147: `${environment.apiUrl}/api/campaigns/${this.campaignId()}/casts`,
+shared\components\v2\CardNavigation\cc-cast-picker\cc-cast-picker.component.ts:168: `${environment.apiUrl}/api/campaigns/${this.campaignId()}/casts`,
+shared\components\v2\CardNavigation\cc-location-new-form\cc-location-new-form.component.ts:110: `${environment.apiUrl}/api/campaigns/${this.campaignId()}/locations`,
+shared\components\v2\CardNavigation\cc-location-picker\cc-location-picker.component.ts:165: `${environment.apiUrl}/api/campaigns/${this.campaignId()}/locations`,
+shared\components\v2\CardNavigation\cc-sublocation-new-form\cc-sublocation-new-form.component.ts:77: `${environment.apiUrl}/api/campaigns/${this.campaignId()}/sublocations`,
+shared\components\v2\CardNavigation\cc-sublocation-picker\cc-sublocation-picker.component.ts:167: `${environment.apiUrl}/api/campaigns/${this.campaignId()}/sublocations`,
+shared\components\v2\Encounters\cc-combatant-details\cc-combatant-details.component.ts:353: this.http.get<PlayerCardWithDetails[]>(`${environment.apiUrl}/api/campaigns/${this.campaignId()}/player-cards`)
+shared\components\v2\Encounters\cc-encounter-circle\cc-encounter-circle.component.ts:517: `${environment.apiUrl}/api/campaigns/${this.encounter().campaignId}/player-cards`
+shared\components\v2\Inventory\cc-player-inventory\cc-player-inventory.component.ts:124: `${environment.apiUrl}/api/campaigns/${this.campaignId()}/player-cards/inventory/mine`
+shared\components\v2\Inventory\cc-player-inventory\cc-player-inventory.component.ts:143: `${environment.apiUrl}/api/campaigns/${this.campaignId()}/player-cards/mine`
+shared\components\v2\Inventory\cc-player-inventory\cc-player-inventory.component.ts:160: `${environment.apiUrl}/api/campaigns/${this.campaignId()}/player-cards/inventory/use`,
+shared\components\v2\Inventory\cc-player-inventory-content\cc-player-inventory-content.component.ts:48: `${environment.apiUrl}/api/campaigns/${this.campaignId}/player-cards/inventory/use`,
+shared\components\v2\Quicknotes\cc-quicknotes\cc-quicknotes.component.ts:120: `${environment.apiUrl}/api/campaigns/${campaignId}/quicknote-queue`,
+shared\components\v2\Quicknotes\cc-quicknotes\cc-quicknotes.component.ts:200: `${environment.apiUrl}/api/campaigns/${this.campaignId()}/quicknote-queue/${item.id}`
+shared\components\v2\Quicknotes\cc-quicknotes\cc-quicknotes.component.ts:237: `${environment.apiUrl}/api/campaigns/${this.campaignId()}/chronicles`,
+shared\components\v2\Quicknotes\cc-quicknotes\cc-quicknotes.component.ts:264: `${environment.apiUrl}/api/campaigns/${campaignId}/quicknote-queue`
+shared\components\v2\Quicknotes\cc-quicknotes\cc-quicknotes.component.ts:287: return `${environment.apiUrl}/api/campaigns/${this.campaignId()}/quicknote-queue/${itemId}`;
+shared\components\v2\Shared\cc-cast-travel-picker\cc-cast-travel-picker.component.ts:240: `${environment.apiUrl}/api/campaigns/${this.campaignId()}/casts/${this.castInstanceId()}/travel`,
+shared\components\v2\Shared\cc-secrets-manager\cc-secrets-manager.component.ts:137: ? `${environment.apiUrl}/api/campaigns/${this.campaignId()}/player-cards/${this.instanceId()}/secrets`
+shared\components\v2\Shared\cc-secrets-manager\cc-secrets-manager.component.ts:269: `${environment.apiUrl}/api/campaigns/${campaignId}/player`
+shared\components\v2\Shell\cc-campaign-chronicle-content\cc-campaign-chronicle-content.component.ts:165: `${environment.apiUrl}/api/campaigns/${this.campaignId}/chronicles/feed?limit=200`
+shared\components\v2\Soundtracks\cc-soundtrack-content\cc-soundtrack-content.component.ts:116: this.http.get<SoundtrackDomain[]>(`${environment.apiUrl}/api/campaigns/${this.campaignId()}/soundtracks`).subscribe({
+shared\components\v2\Soundtracks\cc-soundtrack-content\cc-soundtrack-content.component.ts:184: `${environment.apiUrl}/api/campaigns/${this.campaignId()}/soundtracks/${soundtrackId}`,
+shared\components\v2\Soundtracks\cc-soundtrack-content\cc-soundtrack-content.component.ts:242: const url = `${environment.apiUrl}/api/campaigns/${this.campaignId()}/ambiances`;
+shared\components\v2\Soundtracks\cc-soundtrack-content\cc-soundtrack-content.component.ts:277: this.http.delete(`${environment.apiUrl}/api/campaigns/${this.campaignId()}/ambiances/${existing.id}`).subscribe({
+shared\components\v2\Soundtracks\cc-soundtracks\cc-soundtracks.component.ts:189: this.http.get<SoundtrackDomain[]>(`${environment.apiUrl}/api/campaigns/${id}/soundtracks`).subscribe({
+shared\components\v2\Soundtracks\cc-soundtracks\cc-soundtracks.component.ts:201: this.http.get<AmbianceDomain[]>(`${environment.apiUrl}/api/campaigns/${id}/ambiances`).subscribe({
+shared\components\v2\Soundtracks\cc-soundtracks\cc-soundtracks.component.ts:249: `${environment.apiUrl}/api/campaigns/${this.campaignId()}/soundtracks`,
+shared\components\v2\Soundtracks\cc-soundtracks\cc-soundtracks.component.ts:286: this.http.delete(`${environment.apiUrl}/api/campaigns/${this.campaignId()}/soundtracks/${trackId}`).subscribe({
+shared\components\v2\Soundtracks\cc-soundtracks\cc-soundtracks.component.ts:304: `${environment.apiUrl}/api/campaigns/${this.campaignId()}/soundtracks/${track.id}`,
+shared\components\v2\Soundtracks\cc-soundtracks\cc-soundtracks.component.ts:349: this.http.delete(`${environment.apiUrl}/api/campaigns/${this.campaignId()}/ambiances/${ambianceId}`).subscribe({
+shared\components\v2\Soundtracks\cc-soundtracks\cc-soundtracks.component.ts:374: `${environment.apiUrl}/api/campaigns/${this.campaignId()}/soundtracks/${trackId}`,
+shared\components\v2\Storyline\cc-storyline\cc-storyline.component.ts:87: `${environment.apiUrl}/api/campaigns/${this.campaignId()}/events/${item.id}/details`,
+shared\components\v2\Storyline\cc-storyline\cc-storyline.component.ts:188: this.http.get<StorylineListItem[]>(`${environment.apiUrl}/api/campaigns/${campaignId}/events`)
+shared\components\v2\Storyline\cc-storyline\cc-storyline.component.ts:212: this.http.delete(`${environment.apiUrl}/api/campaigns/${this.campaignId()}/events/${item.id}`)
+shared\components\v2\Storyline\cc-storyline\cc-storyline.component.ts:242: `${environment.apiUrl}/api/campaigns/${this.campaignId()}/chronicles`,
+shared\components\v2\Storyline\cc-storyline-content\cc-storyline-content.component.ts:149: `${environment.apiUrl}/api/campaigns/${campaignId}/events`,
+shared\components\v2\Storyline\cc-storyline-content\cc-storyline-content.component.ts:175: `${environment.apiUrl}/api/campaigns/${campaignId}/events/handout`,
+shared\components\v2\Storyline\cc-storyline-content\cc-storyline-content.component.ts:184: `${environment.apiUrl}/api/campaigns/${campaignId}/events/${created.id}/handout-image`,
+shared\components\v2\Storyline\cc-storyline-content\cc-storyline-content.component.ts:234: `${environment.apiUrl}/api/campaigns/${campaignId}/events/${item.id}/details`,
+shared\components\v2\Storyline\cc-storyline-content\cc-storyline-content.component.ts:243: `${environment.apiUrl}/api/campaigns/${campaignId}/events/${item.id}/handout-image`,
+shared\components\v2\TheParty\cc-my-character\cc-motivations-content.component.ts:66: `${environment.apiUrl}/api/campaigns/${this.campaignId()}/player-cards/mine`
+shared\components\v2\TheParty\cc-my-character\cc-motivations-content.component.ts:93: `${environment.apiUrl}/api/campaigns/${this.campaignId()}/player-cards/${playerCardId}/traits`,
+shared\components\v2\TheParty\cc-my-character\cc-motivations-content.component.ts:107: `${environment.apiUrl}/api/campaigns/${this.campaignId()}/player-cards/${playerCardId}/traits/${traitId}`
+shared\components\v2\TheParty\cc-my-character\cc-motivations-content.component.ts:118: `${environment.apiUrl}/api/campaigns/${this.campaignId()}/player-cards/${playerCardId}/traits/${trait.id}/toggle`,
+shared\components\v2\TheParty\cc-my-character\cc-motivations-content.component.ts:132: `${environment.apiUrl}/api/campaigns/${this.campaignId()}/player-cards/${playerCardId}/traits/${trait.id}/toggle-shared`,
+shared\components\v2\TheParty\cc-my-character\cc-motivations-content.component.ts:186: `${environment.apiUrl}/api/campaigns/${this.campaignId()}/player-cards/${playerCardId}/traits`
+shared\components\v2\TheParty\cc-my-character\cc-my-character-info-content.component.ts:54: `${environment.apiUrl}/api/campaigns/${this.campaignId()}/player-cards/mine`
+shared\components\v2\TheParty\cc-my-character\cc-my-character-info-content.component.ts:74: `${environment.apiUrl}/api/campaigns/${this.campaignId()}/player-cards/${playerCardId}/image`,
+shared\components\v2\TheParty\cc-my-character\cc-my-character-info-content.component.ts:114: `${environment.apiUrl}/api/campaigns/${this.campaignId()}/player-cards/${playerCardId}`,
+shared\components\v2\TheParty\cc-my-character\cc-my-character.component.ts:130: `${environment.apiUrl}/api/campaigns/${this.campaignId()}/player-cards/mine`
+shared\components\v2\TheParty\cc-my-character\cc-my-character.component.ts:140: `${environment.apiUrl}/api/campaigns/${this.campaignId()}/player-cards/${playerCardId}/traits`
+shared\components\v2\TheParty\cc-my-character\cc-my-character.component.ts:148: `${environment.apiUrl}/api/campaigns/${this.campaignId()}/player-cards/${playerCardId}/secrets`
+shared\components\v2\TheParty\cc-party-gold-content\cc-party-gold-content.component.ts:64: `${environment.apiUrl}/api/campaigns/${id}/gold-award`, body)
+shared\components\v2\TheParty\cc-party-panel\cc-party-panel.component.ts:162: `${environment.apiUrl}/api/campaigns/${this.campaignId()}/player-cards`
+shared\components\v2\TheParty\cc-player-secret-create-content\cc-player-secret-create-content.component.ts:39: `${environment.apiUrl}/api/campaigns/${this.campaignId()}/player-cards/${this.playerCardId()}/secrets`,
+shared\components\v2\TheParty\cc-player-secrets-content\cc-player-secrets-content.component.ts:105: `${environment.apiUrl}/api/campaigns/${this.campaignId}/player-cards/${this.member.id}/secrets${suffix}`
+shared\components\v2\TheParty\cc-player-secrets-content\cc-player-secrets-content.component.ts:159: `${environment.apiUrl}/api/campaigns/${id}/gold-award`, body)
+shared\components\v2\TheParty\cc-secret-detail-content\cc-secret-detail-content.component.ts:64: return `${environment.apiUrl}/api/campaigns/${this.campaignId()}/player-cards/${this.playerCardId()}/secrets`;
+shared\components\v2\TheParty\cc-secrets-whisper-row\cc-secrets-whisper-row.component.ts:181: return `${environment.apiUrl}/api/campaigns/${this.campaignId()}/player-cards/${this.playerCardId()}/secrets`;
+shared\components\v2\WorldView\cc-day-counter\cc-day-counter.component.ts:267: `${environment.apiUrl}/api/campaigns/${this.campaignId}/time-of-day/advance-day`,
+shared\components\v2\WorldView\cc-day-counter\cc-day-counter.component.ts:284: `${environment.apiUrl}/api/campaigns/${this.campaignId}/time-of-day/cursor`,

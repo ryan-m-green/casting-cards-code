@@ -1,0 +1,56 @@
+@use '../../../../../../styles/variables' as v;
+
+.bag-item {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 4px;
+  font-family: v.$font-body;
+  color: v.$campaign-portal-text-bright;
+}
+
+.bag-item-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.14);
+}
+
+.bag-item-name {
+  margin: 0;
+  font-size: 24px;
+  line-height: 1.2;
+  overflow-wrap: anywhere;
+}
+
+.bag-item-count {
+  flex: 0 0 auto;
+  font-size: 16px;
+  opacity: 0.8;
+}
+
+.bag-item-text {
+  margin: 0;
+  font-size: 16px;
+  line-height: 1.5;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+
+  &--empty {
+    opacity: 0.6;
+    font-style: italic;
+  }
+}
+
+.bag-item-actions {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.bag-item-error {
+  margin: 0;
+  font-size: 14px;
+  color: #ff9d9d;
+}

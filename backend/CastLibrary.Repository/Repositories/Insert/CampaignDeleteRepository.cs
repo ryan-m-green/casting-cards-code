@@ -12,9 +12,19 @@ public interface ICampaignDeleteRepository
     Task DeleteCastInstanceAsync(Guid instanceId);
     Task DeleteSublocationInstanceAsync(Guid instanceId);
     Task DeleteFactionInstanceAsync(Guid factionInstanceId);
-    Task RemoveFactionSublocationAsync(Guid factionInstanceId, Guid sublocationInstanceId);
-    Task RemoveFactionCastMemberAsync(Guid factionInstanceId, Guid castInstanceId);
-    Task DeleteFactionRelationshipAsync(Guid relationshipId);
+    /// <summary>
+    /// Takes a cast card off a faction's membership, on the side <paramref name="party"/> names:
+    /// the party's own row (no `dm_user_id`) or the GM's. Each side holds its own membership, so
+    /// taking a cast off one leaves the other's standing. Callers that say nothing take the GM's
+    /// off, as this always did.
+    /// </summary>
+    Task RemoveFactionCastMemberAsync(Guid factionInstanceId, Guid castInstanceId, bool party = false);
+    /// <summary>
+    /// Takes back a faction relationship, on the side <paramref name="party"/> names: the party's own
+    /// row (no `gm_user_id`) or the GM's. Each side holds its own ties, so taking one back leaves the
+    /// other's standing. Callers that say nothing take the GM's off, as this always did.
+    /// </summary>
+    Task DeleteFactionRelationshipAsync(Guid relationshipId, bool party = false);
 }
 
 public class CampaignDeleteRepository(
@@ -119,44 +129,38 @@ public class CampaignDeleteRepository(
         logging.LogDbOperation(correlation.TraceId, spanId, "DELETE", "campaign_faction_instances", @params, rows);
     }
 
-    public async Task RemoveFactionSublocationAsync(Guid factionInstanceId, Guid sublocationInstanceId)
-    {
-        var spanId = correlation.NewSpan();
-        var @params = new { FactionInstanceId = factionInstanceId, SublocationInstanceId = sublocationInstanceId };
-
-        logging.LogDbOperation(correlation.TraceId, spanId, "DELETE", "campaign_faction_sublocations", @params);
-
-        using var conn = CreateConnection();
-        var rows = await conn.ExecuteAsync(
-            "DELETE FROM campaign_faction_sublocations WHERE faction_instance_id = @FactionInstanceId AND sublocation_instance_id = @SublocationInstanceId", @params);
-
-        logging.LogDbOperation(correlation.TraceId, spanId, "DELETE", "campaign_faction_sublocations", @params, rows);
-    }
-
-    public async Task RemoveFactionCastMemberAsync(Guid factionInstanceId, Guid castInstanceId)
+    public async Task RemoveFactionCastMemberAsync(Guid factionInstanceId, Guid castInstanceId, bool party = false)
     {
         var spanId = correlation.NewSpan();
         var @params = new { FactionInstanceId = factionInstanceId, CastInstanceId = castInstanceId };
 
         logging.LogDbOperation(correlation.TraceId, spanId, "DELETE", "campaign_faction_cast_members", @params);
 
+        // One side's row alone: whose membership it is follows whose hand is taking it off (see
+        // the interface). The party's rows are the ones written with no dm_user_id.
+        var owner = party ? "dm_user_id IS NULL" : "dm_user_id IS NOT NULL";
+
         using var conn = CreateConnection();
         var rows = await conn.ExecuteAsync(
-            "DELETE FROM campaign_faction_cast_members WHERE faction_instance_id = @FactionInstanceId AND cast_instance_id = @CastInstanceId", @params);
+            $"DELETE FROM campaign_faction_cast_members WHERE faction_instance_id = @FactionInstanceId AND cast_instance_id = @CastInstanceId AND {owner}", @params);
 
         logging.LogDbOperation(correlation.TraceId, spanId, "DELETE", "campaign_faction_cast_members", @params, rows);
     }
 
-    public async Task DeleteFactionRelationshipAsync(Guid relationshipId)
+    public async Task DeleteFactionRelationshipAsync(Guid relationshipId, bool party = false)
     {
         var spanId = correlation.NewSpan();
         var @params = new { Id = relationshipId };
 
         logging.LogDbOperation(correlation.TraceId, spanId, "DELETE", "campaign_faction_instance_relationships", @params);
 
+        // One side's tie alone: whose it is follows whose hand is taking it back (see the interface).
+        // The party's rows are the ones written with no gm_user_id.
+        var owner = party ? "gm_user_id IS NULL" : "gm_user_id IS NOT NULL";
+
         using var conn = CreateConnection();
         var rows = await conn.ExecuteAsync(
-            "DELETE FROM campaign_faction_instance_relationships WHERE id = @Id", @params);
+            $"DELETE FROM campaign_faction_instance_relationships WHERE id = @Id AND {owner}", @params);
 
         logging.LogDbOperation(correlation.TraceId, spanId, "DELETE", "campaign_faction_instance_relationships", @params, rows);
     }

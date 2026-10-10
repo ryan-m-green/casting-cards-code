@@ -1,0 +1,259 @@
+<div class="cast-card"
+     [class.cast-card--flipped]="flipped"
+     [class.cast-card--no-flip]="!flippable"
+     [style.transform]="tiltTransform"
+     (click)="toggleFlip($event)">
+  @if (isPrimary || canSetPrimary) {
+    <img
+      class="cast-card__crown"
+      [class.cast-card__crown--active]="isPrimary"
+      [class.cast-card__crown--inactive]="canSetPrimary && !isPrimary && !primaryLocked"
+      [class.cast-card__crown--locked]="canSetPrimary && !isPrimary && primaryLocked"
+      src="crown_gems.svg"
+      alt="Primary"
+      (click)="onCrownClick($event)"
+    />
+  }
+  <div class="cast-card__inner">
+
+    <div class="cast-card__face cast-card__face--back">
+      <div class="cast-frame">
+        <div class="cast-back-inner">
+          <div class="cast-back-border"></div>
+          <div class="cast-back-border2"></div>
+
+          @if (campaignMode && deletable && (isDm || ownMembership)) {
+            <cc-delete-button
+              [label]="deleteLabel || ('Delete ' + cast.name)"
+              [confirmLabel]="deleteConfirmLabel || 'Delete'"
+              [disabled]="deleting"
+              (confirmed)="onConfirmDelete()"
+            />
+          }
+
+          <div class="cast-back-emblem">
+            <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="#e8c96a" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10.5" fill="none" stroke="#e8c96a" stroke-width="0.4" opacity=".55"/>
+              <circle cx="12" cy="12" r="8.5" fill="none" stroke="#e8c96a" stroke-width="0.2" opacity=".35"/>
+              <polygon points="12,1.5 12.9,3.5 12,2.8 11.1,3.5" fill="#e8c96a" opacity=".65"/>
+              <polygon points="12,22.5 12.9,20.5 12,21.2 11.1,20.5" fill="#e8c96a" opacity=".65"/>
+              <polygon points="1.5,12 3.5,11.1 2.8,12 3.5,12.9" fill="#e8c96a" opacity=".65"/>
+              <polygon points="22.5,12 20.5,11.1 21.2,12 20.5,12.9" fill="#e8c96a" opacity=".65"/>
+              <g transform="translate(12, 12) scale(0.5) translate(-12, -12)">
+                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>
+              </g>
+            </svg>
+          </div>
+
+          <div class="cast-back-name">{{ cast.name }}</div>
+          <div class="cast-back-divider"></div>
+
+          <div class="cast-back-flavor">
+            <div class="cast-back-flavor-text">{{ cast.publicDescription ? '"' + cast.publicDescription + '"' : '—' }}</div>
+          </div>
+
+          @if (editable) {
+            <div class="cast-back-actions">
+              <button class="cast-btn cast-btn--gold" (click)="onEditClick($event)">✦ Edit</button>
+              <button class="cast-btn cast-btn--red" (click)="onDeleteClick($event)">✦ Delete</button>
+            </div>
+          }
+
+          @if (campaignMode && (isDm || lockOpen)) {
+            <div class="cast-back-actions cast-back-actions--campaign">
+              @if (isDm && travelable && castInstanceId) {
+                <cc-cast-travel
+                  [campaignId]="campaignId"
+                  [castInstanceId]="castInstanceId"
+                  [castName]="cast.name"
+                  [sublocationInstanceId]="sublocationInstanceId"
+                />
+              }
+              <button class="cast-btn cast-btn--blue" (click)="onDetailsClick($event)">✦ Details</button>
+            </div>
+          }
+        </div>
+      </div>
+    </div>
+
+    <div class="cast-card__face cast-card__face--front">
+      <div class="cast-frame">
+        <div class="cast-inner">
+
+          @for (sym of resolvedFactionSymbols.slice(0, 4); track sym.factionInstanceId; let i = $index) {
+            <img class="cast-faction-symbol"
+                 [src]="sym.symbolPath"
+                 [style]="symbolStyle(i)"
+                 alt="Faction symbol" />
+          }
+
+          <div class="cast-corner cast-corner--tl">
+            <svg viewBox="0 0 20 20" fill="none" width="12" height="12">
+              <path d="M2 18L2 2L18 2" stroke="#c9a84c" stroke-width="1.5" stroke-linecap="round"/>
+              <path d="M2 10L6 10" stroke="#c9a84c" stroke-width="1" stroke-linecap="round"/>
+              <path d="M10 2L10 6" stroke="#c9a84c" stroke-width="1" stroke-linecap="round"/>
+              <rect x="8" y="8" width="4" height="4" fill="#c9a84c" transform="rotate(45 10 10)" opacity="0.7"/>
+            </svg>
+          </div>
+          <div class="cast-corner cast-corner--tr">
+            <svg viewBox="0 0 20 20" fill="none" width="12" height="12">
+              <path d="M2 18L2 2L18 2" stroke="#c9a84c" stroke-width="1.5" stroke-linecap="round"/>
+              <path d="M2 10L6 10" stroke="#c9a84c" stroke-width="1" stroke-linecap="round"/>
+              <path d="M10 2L10 6" stroke="#c9a84c" stroke-width="1" stroke-linecap="round"/>
+              <rect x="8" y="8" width="4" height="4" fill="#c9a84c" transform="rotate(45 10 10)" opacity="0.7"/>
+            </svg>
+          </div>
+          <div class="cast-corner cast-corner--bl">
+            <svg viewBox="0 0 20 20" fill="none" width="12" height="12">
+              <path d="M2 18L2 2L18 2" stroke="#c9a84c" stroke-width="1.5" stroke-linecap="round"/>
+              <path d="M2 10L6 10" stroke="#c9a84c" stroke-width="1" stroke-linecap="round"/>
+              <path d="M10 2L10 6" stroke="#c9a84c" stroke-width="1" stroke-linecap="round"/>
+              <rect x="8" y="8" width="4" height="4" fill="#c9a84c" transform="rotate(45 10 10)" opacity="0.7"/>
+            </svg>
+          </div>
+          <div class="cast-corner cast-corner--br">
+            <svg viewBox="0 0 20 20" fill="none" width="12" height="12">
+              <path d="M2 18L2 2L18 2" stroke="#c9a84c" stroke-width="1.5" stroke-linecap="round"/>
+              <path d="M2 10L6 10" stroke="#c9a84c" stroke-width="1" stroke-linecap="round"/>
+              <path d="M10 2L10 6" stroke="#c9a84c" stroke-width="1" stroke-linecap="round"/>
+              <rect x="8" y="8" width="4" height="4" fill="#c9a84c" transform="rotate(45 10 10)" opacity="0.7"/>
+            </svg>
+          </div>
+
+          @if (secrets && isDm) {
+            <button class="cast-secrets-btn"
+                    [class.cast-secrets-btn--revealed]="secretsRevealed"
+
+                    [class.cast-secrets-btn--disabled]="secretsDisabled"
+                    (click)="onSecretsClick($event)"
+                    [attr.aria-label]="(secretsRevealed ? 'Hide ' : 'Reveal ') + cast.name + ' to players'"
+                    [title]="secretsRevealed ? 'Hide from players' : 'Reveal to players'"
+
+                    [attr.aria-disabled]="secretsDisabled">
+              <cc-lock-button [open]="secretsRevealed" />
+            </button>
+          }
+
+          <div class="cast-banner">
+            <div class="cast-name" (click)="onNameClick($event)">{{ cast.name }}</div>
+            <div class="cast-subtitle">{{ cast.role }} · {{ cast.race }}</div>
+          </div>
+
+          <div class="cast-portrait"
+               [class.cast-portrait--uploadable]="imageUpload">
+            @if (imageUpload) {
+              <label class="cast-upload-label">
+                <input type="file" accept="image/jpeg,image/png,image/webp"
+                       aria-label="Upload portrait image for {{ cast.name }}"
+                       class="cast-upload-input" (change)="onFileInputChange($event)" />
+                <div class="cast-upload-overlay">
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#f0e8d8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
+                    <circle cx="12" cy="13" r="4"/>
+                  </svg>
+                </div>
+              </label>
+            }
+            @if (wornStars !== null) {
+              <div class="cast-stars cast-stars--readonly"
+                   role="group"
+                   [attr.aria-label]="'Importance of ' + cast.name + ': ' + wornStars + ' out of 3 stars'">
+                @for (n of starNums; track n) {
+                  <span>
+                    <svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true">
+                      <polygon
+                        points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"
+                        [attr.fill]="starFilled(n) ? '#f8d840' : 'none'"
+                        [attr.stroke]="starFilled(n) ? '#c9a000' : '#c9a84c'"
+                        stroke-width="1.5"
+                        stroke-linejoin="round"
+                      />
+                    </svg>
+                  </span>
+                }
+              </div>
+            } @else if (!dmMode) {
+              <div class="cast-stars"
+                   [class.cast-stars--readonly]="readonlyStars"
+                   (click)="$event.stopPropagation()"
+                   role="group"
+                   [attr.aria-label]="readonlyStars ? 'Importance of ' + cast.name + ': ' + rating + ' out of 3 stars' : 'Rate importance of ' + cast.name">
+                @for (n of starNums; track n) {
+                  <button
+                    type="button"
+                    [attr.aria-label]="readonlyStars ? '' : 'Rate ' + n + ' out of 5 stars'"
+                    [disabled]="readonlyStars"
+                    (click)="onStarClick($event, n)"
+                    (mouseenter)="starHover.set(readonlyStars ? null : n)"
+                    (mouseleave)="starHover.set(null)">
+                    <svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true">
+                      <polygon
+                        points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"
+                        [attr.fill]="starFilled(n) ? '#f8d840' : 'none'"
+                        [attr.stroke]="starFilled(n) ? '#c9a000' : '#c9a84c'"
+                        stroke-width="1.5"
+                        stroke-linejoin="round"
+                      />
+                    </svg>
+                  </button>
+                }
+              </div>
+            }
+            @if (cast.imageUrl) {
+              <img [src]="cast.imageUrl" [alt]="'Portrait of ' + cast.name + ', ' + cast.role" class="cast-portrait-img" (error)="$any($event.target).style.display='none'" (load)="$any($event.target).style.display=''" />
+            } @else {
+              <div class="cast-portrait-placeholder">
+                <cc-cast-icon [width]="36" color="black"></cc-cast-icon>
+              </div>
+            }
+          </div>
+
+          <div class="cast-strip"
+               [class.cast-strip--editable]="editable"
+               (click)="onEditClick($event)">
+            <div class="cast-strip-left">
+              <div class="cast-pip-row">
+                <div class="cast-pip"></div>
+                <div class="cast-pip"></div>
+                <div class="cast-pip"></div>
+              </div>
+            </div>
+            <span class="cast-strip-label">Character</span>
+            <div class="cast-pip-row">
+              <div class="cast-pip"></div>
+              <div class="cast-pip"></div>
+              <div class="cast-pip"></div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    @if (isTraveling) {
+      <div class="card-traveling-block">
+        <div class="card-secret-text">Traveling with your party</div>
+      </div>
+    }
+
+  </div>
+
+  @if (isDefeated) {
+    <cc-bloodied-cross />
+  }
+
+  @if (isCaptured) {
+    <img class="cast-card-status" src="/captured_rope_cross.svg" alt="Captured" />
+  }
+
+  @if (isEscaped) {
+    <cc-escaped-badge [label]="cast.name + ' has escaped'" />
+  }
+
+  @if (secretContent) {
+    <div class="card-secret-block">
+      <div class="card-secret-label">Secret Revealed</div>
+      <div class="card-secret-text">{{ secretContent }}</div>
+    </div>
+  }
+</div>

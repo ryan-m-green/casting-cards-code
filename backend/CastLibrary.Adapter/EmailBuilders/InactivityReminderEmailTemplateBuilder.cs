@@ -1,4 +1,5 @@
 using CastLibrary.Shared.Domain;
+using CastLibrary.Shared.Requests;
 
 namespace CastLibrary.Adapter.EmailBuilders;
 

@@ -1,0 +1,120 @@
+﻿CardNavigation\cc-card-navigation\cc-card-navigation.component.ts: this.http.get<CampaignLocationInstance[]>(`${environment.apiUrl}/api/campaign/${this.internalCampaignId()}/locationinstances`).toPromise(),
+CardNavigation\cc-card-navigation\cc-card-navigation.component.ts: this.http.get<CampaignSublocationInstance[]>(`${environment.apiUrl}/api/campaign/${this.internalCampaignId()}/sublocationinstances`).toPromise(),
+CardNavigation\cc-card-navigation\cc-card-navigation.component.ts: this.http.get<CampaignCastInstance[]>(`${environment.apiUrl}/api/campaign/${this.internalCampaignId()}/castinstances`).toPromise()
+CardNavigation\cc-card-navigation\cc-card-navigation.component.ts: this.http.get<CampaignLocationInstance[]>(`${environment.apiUrl}/api/campaign/${this.internalCampaignId()}/locationinstances`).toPromise(),
+CardNavigation\cc-card-navigation\cc-card-navigation.component.ts: this.http.get<CampaignSublocationInstance[]>(`${environment.apiUrl}/api/campaign/${this.internalCampaignId()}/sublocationinstances`).toPromise(),
+CardNavigation\cc-card-navigation\cc-card-navigation.component.ts: this.http.get<CampaignCastInstance[]>(`${environment.apiUrl}/api/campaign/${this.internalCampaignId()}/castinstances`).toPromise()
+CardNavigation\cc-card-navigation\cc-card-navigation.component.ts: `${environment.apiUrl}/api/campaign/${this.internalCampaignId()}/locationinstances/${location.instanceId}/visibility`,
+CardNavigation\cc-card-navigation\cc-card-navigation.component.ts: `${environment.apiUrl}/api/campaign/${this.internalCampaignId()}/sublocationinstances/${sublocation.instanceId}/visibility`,
+CardNavigation\cc-card-navigation\cc-card-navigation.component.ts: `${environment.apiUrl}/api/campaign/${this.internalCampaignId()}/castinstances/${cast.instanceId}/visibility`,
+CardNavigation\cc-card-navigation\cc-card-navigation.component.ts: `${environment.apiUrl}/api/campaign/${campaignId}/locationinstances/${instanceId}`
+CardNavigation\cc-card-navigation\cc-card-navigation.component.ts: `${environment.apiUrl}/api/campaign/${campaignId}/sublocationinstances/${instanceId}`
+CardNavigation\cc-card-navigation\cc-card-navigation.component.ts: `${environment.apiUrl}/api/campaign/${campaignId}/castinstances/${instanceId}`
+CardNavigation\cc-card-navigation\cc-card-navigation.component.ts: `${environment.apiUrl}/api/campaign/${this.internalCampaignId()}/locationinstances/${location.instanceId}`
+CardNavigation\cc-card-navigation\cc-card-navigation.component.ts: `${environment.apiUrl}/api/campaign/${this.internalCampaignId()}/sublocationinstances/${sublocation.instanceId}`
+CardNavigation\cc-card-navigation\cc-card-navigation.component.ts: `${environment.apiUrl}/api/campaign/${this.internalCampaignId()}/castinstances/${cast.instanceId}`
+CardNavigation\cc-cast-new-form\cc-cast-new-form.component.ts: `${environment.apiUrl}/api/campaign-keywords?cardType=cast`
+CardNavigation\cc-cast-new-form\cc-cast-new-form.component.ts: this.http.post<Cast>(`${environment.apiUrl}/api/cast`, details)
+CardNavigation\cc-cast-new-form\cc-cast-new-form.component.ts: `${environment.apiUrl}/api/campaigns/${this.campaignId()}/casts`,
+CardNavigation\cc-cast-new-form\cc-cast-new-form.component.ts: `${environment.apiUrl}/api/campaign/${this.campaignId()}/castinstances/${instance.instanceId}`,
+CardNavigation\cc-cast-new-form\cc-cast-new-form.component.ts: `${environment.apiUrl}/api/campaign/${this.campaignId()}/castinstances/${instance.instanceId}`
+CardNavigation\cc-cast-new-form\cc-cast-new-form.component.ts: this.http.post(`${environment.apiUrl}/api/campaign-keywords`, { cardType: 'cast', keyword })
+CardNavigation\cc-cast-picker\cc-cast-picker.component.ts: library: this.http.get<Cast[]>(`${environment.apiUrl}/api/cast`),
+CardNavigation\cc-cast-picker\cc-cast-picker.component.ts: `${environment.apiUrl}/api/campaign/${this.campaignId()}/castinstances`
+CardNavigation\cc-cast-picker\cc-cast-picker.component.ts: `${environment.apiUrl}/api/campaign-keywords?cardType=cast`
+CardNavigation\cc-cast-picker\cc-cast-picker.component.ts: `${environment.apiUrl}/api/campaigns/${this.campaignId()}/casts`,
+CardNavigation\cc-location-new-form\cc-location-new-form.component.ts: `${environment.apiUrl}/api/campaign-keywords?cardType=location`
+CardNavigation\cc-location-new-form\cc-location-new-form.component.ts: this.http.post<Location>(`${environment.apiUrl}/api/locations`, payload)
+CardNavigation\cc-location-new-form\cc-location-new-form.component.ts: `${environment.apiUrl}/api/campaigns/${this.campaignId()}/locations`,
+CardNavigation\cc-location-picker\cc-location-picker.component.ts: library: this.http.get<Location[]>(`${environment.apiUrl}/api/locations`),
+CardNavigation\cc-location-picker\cc-location-picker.component.ts: `${environment.apiUrl}/api/campaign/${this.campaignId()}/locationinstances`
+CardNavigation\cc-location-picker\cc-location-picker.component.ts: `${environment.apiUrl}/api/campaign-keywords?cardType=location`
+CardNavigation\cc-location-picker\cc-location-picker.component.ts: `${environment.apiUrl}/api/campaigns/${this.campaignId()}/locations`,
+CardNavigation\cc-sublocation-new-form\cc-sublocation-new-form.component.ts: `${environment.apiUrl}/api/campaign-keywords?cardType=sublocation`
+CardNavigation\cc-sublocation-new-form\cc-sublocation-new-form.component.ts: this.http.post<Sublocation>(`${environment.apiUrl}/api/sublocations`, payload)
+CardNavigation\cc-sublocation-new-form\cc-sublocation-new-form.component.ts: `${environment.apiUrl}/api/campaigns/${this.campaignId()}/sublocations`,
+CardNavigation\cc-sublocation-picker\cc-sublocation-picker.component.ts: library: this.http.get<Sublocation[]>(`${environment.apiUrl}/api/sublocations`),
+CardNavigation\cc-sublocation-picker\cc-sublocation-picker.component.ts: `${environment.apiUrl}/api/campaign/${this.campaignId()}/sublocationinstances`
+CardNavigation\cc-sublocation-picker\cc-sublocation-picker.component.ts: `${environment.apiUrl}/api/campaign-keywords?cardType=sublocation`
+CardNavigation\cc-sublocation-picker\cc-sublocation-picker.component.ts: `${environment.apiUrl}/api/campaigns/${this.campaignId()}/sublocations`,
+Diagnostics\cc-signalr-inspector\cc-signalr-inspector.component.ts: this.http.get<InspectorReport>(`${environment.apiUrl}/api/admin/signalr/state`, {
+Diagnostics\cc-signalr-inspector\cc-signalr-inspector.component.ts: this.http.post(`${environment.apiUrl}/api/admin/signalr/clear`, {}).subscribe({
+Encounters\cc-combatant-details\cc-combatant-details.component.ts: this.http.get<PlayerCardWithDetails[]>(`${environment.apiUrl}/api/campaigns/${this.campaignId()}/player-cards`)
+Encounters\cc-encounter-circle\cc-encounter-circle.component.ts: `${environment.apiUrl}/api/campaigns/${this.encounter().campaignId}/player-cards`
+FactionNavigation\cc-card-faction-navigation\cc-card-faction-navigation.component.ts: `${environment.apiUrl}/api/campaign/${event.campaignId}/castinstances/${event.castInstanceId}`
+FactionNavigation\cc-card-faction-navigation\cc-card-faction-navigation.component.ts: `${environment.apiUrl}/api/campaign/${this.internalCampaignId()}/castinstances`
+FactionNavigation\cc-card-faction-navigation\cc-card-faction-navigation.component.ts: this.http.get<CampaignCastInstance[]>(`${environment.apiUrl}/api/campaign/${this.internalCampaignId()}/castinstances`).toPromise()
+FactionNavigation\cc-card-faction-navigation\cc-card-faction-navigation.component.ts: const base = `${environment.apiUrl}/api/campaign/${this.internalCampaignId()}/factions`;
+FactionNavigation\cc-card-faction-navigation\cc-card-faction-navigation.component.ts: `${environment.apiUrl}/api/campaign/${this.internalCampaignId()}/factions/${faction.factionInstanceId}/visibility`,
+FactionNavigation\cc-card-faction-navigation\cc-card-faction-navigation.component.ts: `${environment.apiUrl}/api/campaign/${this.internalCampaignId()}/factions/${factionInstanceId}/${party}cast/primary`
+FactionNavigation\cc-card-faction-navigation\cc-card-faction-navigation.component.ts: `${environment.apiUrl}/api/campaign/${this.internalCampaignId()}/factions/${factionInstanceId}/${party}cast/${castInstanceId}/primary`,
+FactionNavigation\cc-card-faction-navigation\cc-card-faction-navigation.component.ts: `${environment.apiUrl}/api/campaign/${this.internalCampaignId()}/factions/${faction.factionInstanceId}/${party}cast/${cast.instanceId}`
+FactionNavigation\cc-card-faction-navigation\cc-card-faction-navigation.component.ts: `${environment.apiUrl}/api/campaign/${this.internalCampaignId()}/factions/${faction.factionInstanceId}`
+FactionNavigation\cc-faction-cast-picker\cc-faction-cast-picker.component.ts: `${environment.apiUrl}/api/campaign/${this.campaignId()}/factions/${this.factionInstanceId()}/${party}cast/${castInstanceId}`,
+FactionNavigation\cc-faction-new-form\cc-faction-new-form.component.ts: `${environment.apiUrl}/api/campaign-keywords?cardType=faction`
+FactionNavigation\cc-faction-new-form\cc-faction-new-form.component.ts: this.http.post<Faction>(`${environment.apiUrl}/api/factions`, payload)
+FactionNavigation\cc-faction-new-form\cc-faction-new-form.component.ts: `${environment.apiUrl}/api/campaign/${this.campaignId()}/factions`,
+FactionNavigation\cc-faction-new-form\cc-faction-new-form.component.ts: `${environment.apiUrl}/api/campaign/${this.campaignId()}/factions/${instance.factionInstanceId}`,
+FactionNavigation\cc-faction-picker\cc-faction-picker.component.ts: `${environment.apiUrl}/api/campaign/${this.campaignId()}/factions/library`,
+FactionNavigation\cc-faction-picker\cc-faction-picker.component.ts: `${environment.apiUrl}/api/campaign/${this.campaignId()}/factions/library/keywords`,
+FactionNavigation\cc-faction-picker\cc-faction-picker.component.ts: `${environment.apiUrl}/api/campaign/${this.campaignId()}/factions`,
+Inventory\cc-player-inventory\cc-player-inventory.component.ts: `${environment.apiUrl}/api/campaigns/${this.campaignId()}/player-cards/inventory/mine`
+Inventory\cc-player-inventory\cc-player-inventory.component.ts: `${environment.apiUrl}/api/campaigns/${this.campaignId()}/player-cards/mine`
+Inventory\cc-player-inventory\cc-player-inventory.component.ts: `${environment.apiUrl}/api/campaigns/${this.campaignId()}/player-cards/inventory/use`,
+Inventory\cc-player-inventory-content\cc-player-inventory-content.component.ts: `${environment.apiUrl}/api/campaigns/${this.campaignId}/player-cards/inventory/use`,
+Quicknotes\cc-quicknotes\cc-quicknotes.component.ts: `${environment.apiUrl}/api/campaigns/${campaignId}/quicknote-queue`,
+Quicknotes\cc-quicknotes\cc-quicknotes.component.ts: `${environment.apiUrl}/api/campaigns/${this.campaignId()}/quicknote-queue/${item.id}`
+Quicknotes\cc-quicknotes\cc-quicknotes.component.ts: `${environment.apiUrl}/api/campaigns/${this.campaignId()}/chronicles`,
+Quicknotes\cc-quicknotes\cc-quicknotes.component.ts: `${environment.apiUrl}/api/campaigns/${campaignId}/quicknote-queue`
+Quicknotes\cc-quicknotes\cc-quicknotes.component.ts: return `${environment.apiUrl}/api/campaigns/${this.campaignId()}/quicknote-queue/${itemId}`;
+Shared\cc-cast-travel-picker\cc-cast-travel-picker.component.ts: `${environment.apiUrl}/api/campaigns/${this.campaignId()}/casts/${this.castInstanceId()}/travel`,
+Shared\cc-keyword-editor\cc-keyword-editor.component.ts: `${environment.apiUrl}/api/campaign-keywords?cardType=${this.cardType()}`
+Shared\cc-keyword-editor\cc-keyword-editor.component.ts: `${environment.apiUrl}/api/campaign-keywords`,
+Shared\cc-keyword-editor\cc-keyword-editor.component.ts: `${environment.apiUrl}/api/campaign-keywords/${encodeURIComponent(keyword)}?cardType=${this.cardType()}`
+Shared\cc-secrets-manager\cc-secrets-manager.component.ts: ? `${environment.apiUrl}/api/campaigns/${this.campaignId()}/player-cards/${this.instanceId()}/secrets`
+Shared\cc-secrets-manager\cc-secrets-manager.component.ts: : `${environment.apiUrl}/api/campaign/${this.campaignId()}/secrets`;
+Shared\cc-secrets-manager\cc-secrets-manager.component.ts: `${environment.apiUrl}/api/campaigns/${campaignId}/player`
+Shared\cc-secrets-manager\cc-secrets-manager.component.ts: `${environment.apiUrl}/api/campaign/${campaignId}/secrets`
+Shell\cc-campaign-chronicle-content\cc-campaign-chronicle-content.component.ts: `${environment.apiUrl}/api/campaigns/${this.campaignId}/chronicles/feed?limit=200`
+Soundtracks\cc-soundtrack-content\cc-soundtrack-content.component.ts: this.http.get<SoundtrackDomain[]>(`${environment.apiUrl}/api/campaigns/${this.campaignId()}/soundtracks`).subscribe({
+Soundtracks\cc-soundtrack-content\cc-soundtrack-content.component.ts: `${environment.apiUrl}/api/campaigns/${this.campaignId()}/soundtracks/${soundtrackId}`,
+Soundtracks\cc-soundtrack-content\cc-soundtrack-content.component.ts: const url = `${environment.apiUrl}/api/campaigns/${this.campaignId()}/ambiances`;
+Soundtracks\cc-soundtrack-content\cc-soundtrack-content.component.ts: this.http.delete(`${environment.apiUrl}/api/campaigns/${this.campaignId()}/ambiances/${existing.id}`).subscribe({
+Soundtracks\cc-soundtracks\cc-soundtracks.component.ts: this.http.get<SoundtrackDomain[]>(`${environment.apiUrl}/api/campaigns/${id}/soundtracks`).subscribe({
+Soundtracks\cc-soundtracks\cc-soundtracks.component.ts: this.http.get<AmbianceDomain[]>(`${environment.apiUrl}/api/campaigns/${id}/ambiances`).subscribe({
+Soundtracks\cc-soundtracks\cc-soundtracks.component.ts: `${environment.apiUrl}/api/campaigns/${this.campaignId()}/soundtracks`,
+Soundtracks\cc-soundtracks\cc-soundtracks.component.ts: this.http.delete(`${environment.apiUrl}/api/campaigns/${this.campaignId()}/soundtracks/${trackId}`).subscribe({
+Soundtracks\cc-soundtracks\cc-soundtracks.component.ts: `${environment.apiUrl}/api/campaigns/${this.campaignId()}/soundtracks/${track.id}`,
+Soundtracks\cc-soundtracks\cc-soundtracks.component.ts: this.http.delete(`${environment.apiUrl}/api/campaigns/${this.campaignId()}/ambiances/${ambianceId}`).subscribe({
+Soundtracks\cc-soundtracks\cc-soundtracks.component.ts: `${environment.apiUrl}/api/campaigns/${this.campaignId()}/soundtracks/${trackId}`,
+Storyline\cc-storyline\cc-storyline.component.ts: `${environment.apiUrl}/api/campaigns/${this.campaignId()}/events/${item.id}/details`,
+Storyline\cc-storyline\cc-storyline.component.ts: this.http.get<StorylineListItem[]>(`${environment.apiUrl}/api/campaigns/${campaignId}/events`)
+Storyline\cc-storyline\cc-storyline.component.ts: this.http.delete(`${environment.apiUrl}/api/campaigns/${this.campaignId()}/events/${item.id}`)
+Storyline\cc-storyline\cc-storyline.component.ts: `${environment.apiUrl}/api/campaigns/${this.campaignId()}/chronicles`,
+Storyline\cc-storyline-content\cc-storyline-content.component.ts: `${environment.apiUrl}/api/campaigns/${campaignId}/events`,
+Storyline\cc-storyline-content\cc-storyline-content.component.ts: `${environment.apiUrl}/api/campaigns/${campaignId}/events/handout`,
+Storyline\cc-storyline-content\cc-storyline-content.component.ts: `${environment.apiUrl}/api/campaigns/${campaignId}/events/${created.id}/handout-image`,
+Storyline\cc-storyline-content\cc-storyline-content.component.ts: `${environment.apiUrl}/api/campaigns/${campaignId}/events/${item.id}/details`,
+Storyline\cc-storyline-content\cc-storyline-content.component.ts: `${environment.apiUrl}/api/campaigns/${campaignId}/events/${item.id}/handout-image`,
+TheParty\cc-my-character\cc-motivations-content.component.ts: `${environment.apiUrl}/api/campaigns/${this.campaignId()}/player-cards/mine`
+TheParty\cc-my-character\cc-motivations-content.component.ts: `${environment.apiUrl}/api/campaigns/${this.campaignId()}/player-cards/${playerCardId}/traits`,
+TheParty\cc-my-character\cc-motivations-content.component.ts: `${environment.apiUrl}/api/campaigns/${this.campaignId()}/player-cards/${playerCardId}/traits/${traitId}`
+TheParty\cc-my-character\cc-motivations-content.component.ts: `${environment.apiUrl}/api/campaigns/${this.campaignId()}/player-cards/${playerCardId}/traits/${trait.id}/toggle`,
+TheParty\cc-my-character\cc-motivations-content.component.ts: `${environment.apiUrl}/api/campaigns/${this.campaignId()}/player-cards/${playerCardId}/traits/${trait.id}/toggle-shared`,
+TheParty\cc-my-character\cc-motivations-content.component.ts: `${environment.apiUrl}/api/campaigns/${this.campaignId()}/player-cards/${playerCardId}/traits`
+TheParty\cc-my-character\cc-my-character-info-content.component.ts: `${environment.apiUrl}/api/campaigns/${this.campaignId()}/player-cards/mine`
+TheParty\cc-my-character\cc-my-character-info-content.component.ts: `${environment.apiUrl}/api/campaigns/${this.campaignId()}/player-cards/${playerCardId}/image`,
+TheParty\cc-my-character\cc-my-character-info-content.component.ts: `${environment.apiUrl}/api/campaigns/${this.campaignId()}/player-cards/${playerCardId}`,
+TheParty\cc-my-character\cc-my-character.component.ts: `${environment.apiUrl}/api/campaigns/${this.campaignId()}/player-cards/mine`
+TheParty\cc-my-character\cc-my-character.component.ts: `${environment.apiUrl}/api/campaigns/${this.campaignId()}/player-cards/${playerCardId}/traits`
+TheParty\cc-my-character\cc-my-character.component.ts: `${environment.apiUrl}/api/campaigns/${this.campaignId()}/player-cards/${playerCardId}/secrets`
+TheParty\cc-party-gold-content\cc-party-gold-content.component.ts: `${environment.apiUrl}/api/campaigns/${id}/gold-award`, body)
+TheParty\cc-party-panel\cc-party-panel.component.ts: `${environment.apiUrl}/api/campaigns/${this.campaignId()}/player-cards`
+TheParty\cc-player-secret-create-content\cc-player-secret-create-content.component.ts: `${environment.apiUrl}/api/campaigns/${this.campaignId()}/player-cards/${this.playerCardId()}/secrets`,
+TheParty\cc-player-secrets-content\cc-player-secrets-content.component.ts: `${environment.apiUrl}/api/campaigns/${this.campaignId}/player-cards/${this.member.id}/secrets${suffix}`
+TheParty\cc-player-secrets-content\cc-player-secrets-content.component.ts: `${environment.apiUrl}/api/campaigns/${id}/gold-award`, body)
+TheParty\cc-secret-detail-content\cc-secret-detail-content.component.ts: return `${environment.apiUrl}/api/campaigns/${this.campaignId()}/player-cards/${this.playerCardId()}/secrets`;
+TheParty\cc-secrets-whisper-row\cc-secrets-whisper-row.component.ts: return `${environment.apiUrl}/api/campaigns/${this.campaignId()}/player-cards/${this.playerCardId()}/secrets`;
+WorldView\cc-day-counter\cc-day-counter.component.ts: `${environment.apiUrl}/api/campaigns/${this.campaignId}/time-of-day/advance-day`,
+WorldView\cc-day-counter\cc-day-counter.component.ts: `${environment.apiUrl}/api/campaigns/${this.campaignId}/time-of-day/cursor`,
+WorldView\cc-world-map\cc-world-map.component.ts: `${environment.apiUrl}/api/campaign/${this.campaignId()}/worldmap-image`,

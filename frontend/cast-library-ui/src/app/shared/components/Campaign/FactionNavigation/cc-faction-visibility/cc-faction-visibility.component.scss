@@ -1,0 +1,131 @@
+@use '../../../../../../styles/variables' as v;
+@use '../../variables-v2' as v2;
+
+$font-cc-fv: v2.$font-v2-components;
+
+:host {
+  display: block;
+}
+
+.cc-fv {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.cc-fv-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.cc-fv-hint {
+  min-width: 0;
+}
+
+.cc-fv-switch {
+  position: relative;
+  display: inline-block;
+  width: 42px;
+  height: 24px;
+  flex-shrink: 0;
+
+  input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+    position: absolute;
+  }
+}
+
+.cc-fv-slider {
+  position: absolute;
+  inset: 0;
+  border-radius: 24px;
+  cursor: pointer;
+  transition: background 0.2s ease, border-color 0.2s ease;
+
+  &::before {
+    content: '';
+    position: absolute;
+    width: 18px;
+    height: 18px;
+    left: 2px;
+    top: 2px;
+    border-radius: 50%;
+    transition: transform 0.2s ease, background 0.2s ease;
+  }
+}
+
+.cc-fv--journal {
+  .cc-fv-label {
+    display: block;
+    font-family: v.$font-header;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+  }
+
+  .cc-fv-hint {
+    font-family: 'IM Fell English', serif;
+    font-style: italic;
+    font-size: 14px;
+    color: v.$color-base-brown-15;
+  }
+
+  .cc-fv-slider {
+    background: rgba(v.$color-base-brown-warm, 0.25);
+    border: 1px solid rgba(v.$color-base-brown-warm, 0.6);
+  }
+
+  .cc-fv-slider::before {
+    background: v.$color-base-gold-1;
+  }
+
+  .cc-fv-switch input:checked + .cc-fv-slider {
+    background: rgba(v.$color-base-brown-warm, 0.55);
+    border-color: v.$color-base-brown-warm;
+  }
+
+  .cc-fv-switch input:checked + .cc-fv-slider::before {
+    transform: translateX(18px);
+    background: v.$color-base-gold-1;
+  }
+}
+
+.cc-fv--campaign {
+  .cc-fv-label {
+    display: block;
+    font-family: $font-cc-fv;
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: v.$color-lib-location-1;
+  }
+
+  .cc-fv-hint {
+    font-family: $font-cc-fv;
+    font-size: 14px;
+    color: v.$campaign-portal-text-muted;
+  }
+
+  .cc-fv-slider {
+    background: rgba(0, 0, 0, 0.45);
+    border: 1px solid v.$campaign-portal-border-bold;
+  }
+
+  .cc-fv-slider::before {
+    background: v.$campaign-portal-text-lavender;
+  }
+
+  .cc-fv-switch input:checked + .cc-fv-slider {
+    background: rgba(110, 40, 208, 0.85);
+    border-color: v.$campaign-portal-border-focus;
+  }
+
+  .cc-fv-switch input:checked + .cc-fv-slider::before {
+    transform: translateX(18px);
+    background: #fff;
+  }
+}

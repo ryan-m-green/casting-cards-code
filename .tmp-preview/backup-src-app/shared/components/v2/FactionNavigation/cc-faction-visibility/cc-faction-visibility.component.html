@@ -1,0 +1,12 @@
+<div class="cc-fv" [class.cc-fv--journal]="!isCampaign()" [class.cc-fv--campaign]="isCampaign()">
+  <label class="cc-fv-label" [for]="id()">{{ label() }}</label>
+
+  <div class="cc-fv-row">
+    <label class="cc-fv-switch">
+      <input [id]="id()" type="checkbox" [(ngModel)]="hidden" [disabled]="disabled()" />
+      <span class="cc-fv-slider"></span>
+    </label>
+
+    <span class="cc-fv-hint">{{ hidden() ? hiddenHint() : visibleHint() }}</span>
+  </div>
+</div>

@@ -39,4 +39,26 @@ public class ChronicleParticipant
     public string EntityType { get; set; } = string.Empty;
     public string EntityId { get; set; } = string.Empty;
     public string EntityName { get; set; } = string.Empty;
+
+    /// <summary>
+    /// Card face carried by a participant that is a simple card rather than a bare name. Only the
+    /// encounter archive fills these in; a plain linked card leaves them empty.
+    /// </summary>
+    public string EntityRole { get; set; } = string.Empty;
+
+    public string EntityRace { get; set; } = string.Empty;
+
+    public string EntityImageUrl { get; set; } = string.Empty;
+
+    /// <summary>
+    /// How the card finished the fight it was linked from: "defeated", "captured", "escaped", or
+    /// empty when it was left standing. Empty for participants that carry no encounter outcome.
+    /// </summary>
+    public string EntityState { get; set; } = string.Empty;
+
+    /// <summary>
+    /// How many copies of the card the fight held (1 for a card that stood in it alone, 0 for a
+    /// participant the count does not apply to).
+    /// </summary>
+    public int EntityCount { get; set; }
 }

@@ -20,7 +20,6 @@ export const dmGuard: CanActivateFn = () => {
   if (!auth.isLoggedIn()) {
     return router.createUrlTree(['/']);
   }
-  // Logged-in player attempting a DM page — log them out and send to login
   auth.logout();
   return false;
 };
@@ -53,15 +52,10 @@ export const subscriptionLockGuard: CanActivateFn = () => {
   const auth   = inject(AuthService);
   const router = inject(Router);
 
-  // Allow if exempt (admin or bypassPayment from JWT token for immediate bypass)
   if (auth.isExempt()) return true;
-  // Allow if on free trial
   if (auth.isFreeTrial()) return true;
-  // Check current lock level from auth service (from JWT token for immediate availability)
-  // Allow if FullAccess
   if (auth.lockLevel() === 'FullAccess') return true;
 
-  // Redirect to dashboard if locked (SoftLock, HardLock, Suspended)
   return router.createUrlTree(['/gm/dashboard']);
 };
 
@@ -69,33 +63,35 @@ export const libraryAccessGuard: CanActivateFn = () => {
   const auth   = inject(AuthService);
   const router = inject(Router);
 
-  // Allow if exempt (admin or bypassPayment from JWT token for immediate bypass)
   if (auth.isExempt()) return true;
-  // Allow if on free trial
   if (auth.isFreeTrial()) return true;
-  // Check current lock level from auth service (from JWT token for immediate availability)
   const level = auth.lockLevel();
-  // Allow if FullAccess or SoftLock
   if (level === 'FullAccess' || level === 'SoftLock') return true;
 
-  // Redirect to dashboard if HardLock or Suspended
   return router.createUrlTree(['/gm/dashboard']);
+};
+
+export const campaignShellAccessGuard: CanActivateFn = () => {
+  const auth   = inject(AuthService);
+  const router = inject(Router);
+
+  if (auth.isExempt()) return true;
+  if (auth.isFreeTrial()) return true;
+  const level = auth.lockLevel();
+  if (level === 'FullAccess' || level === 'SoftLock') return true;
+
+  return router.createUrlTree([auth.isDm() ? '/gm/dashboard' : '/player/campaigns']);
 };
 
 export const playerLibraryAccessGuard: CanActivateFn = () => {
   const auth   = inject(AuthService);
   const router = inject(Router);
 
-  // Allow if exempt (admin or bypassPayment from JWT token for immediate bypass)
   if (auth.isExempt()) return true;
-  // Allow if on free trial
   if (auth.isFreeTrial()) return true;
-  // Check current lock level from auth service (from JWT token for immediate availability)
   const level = auth.lockLevel();
-  // Allow if FullAccess or SoftLock
   if (level === 'FullAccess' || level === 'SoftLock') return true;
 
-  // Redirect to player dashboard if HardLock or Suspended
   return router.createUrlTree(['/player/campaigns']);
 };
 

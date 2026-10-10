@@ -1,0 +1,60 @@
+<div class="pause-control" [class.pause-control--journal]="isJournal()">
+  <div class="pause-modes" role="group" aria-label="How this track comes round again">
+    @for (choice of choices; track choice.mode) {
+      <button
+        type="button"
+        class="pause-mode"
+        [class.is-on]="pauseMode() === choice.mode"
+        [attr.aria-pressed]="pauseMode() === choice.mode"
+        (click)="pauseMode.set(choice.mode)">{{ choice.label }}</button>
+    }
+  </div>
+
+  @if (pauseMode() === 'manual') {
+    <div class="pause-values">
+      <label class="pause-field">
+        <input
+          type="number"
+          min="1"
+          max="3600"
+          [ngModel]="pauseDelaySeconds()"
+          (ngModelChange)="pauseDelaySeconds.set($event)"
+          aria-label="Pause delay in seconds"
+        />
+        <span class="pause-field-unit">seconds</span>
+      </label>
+    </div>
+  }
+
+  @if (pauseMode() === 'random') {
+    <div class="pause-values">
+      <label class="pause-field">
+        <span class="pause-field-label">Min</span>
+        <input
+          type="number"
+          min="1"
+          max="3600"
+          [ngModel]="pauseMinSeconds()"
+          (ngModelChange)="pauseMinSeconds.set($event)"
+          aria-label="Shortest pause in seconds"
+        />
+      </label>
+
+      <span class="pause-dash" aria-hidden="true">&ndash;</span>
+
+      <label class="pause-field">
+        <span class="pause-field-label">Max</span>
+        <input
+          type="number"
+          min="1"
+          max="3600"
+          [ngModel]="pauseMaxSeconds()"
+          (ngModelChange)="pauseMaxSeconds.set($event)"
+          aria-label="Longest pause in seconds"
+        />
+      </label>
+
+      <span class="pause-field-unit">seconds</span>
+    </div>
+  }
+</div>

@@ -1,3 +1,5 @@
+import { CardCondition } from './condition.model';
+
 export interface PlayerCard {
   id: string;
   campaignId: string;
@@ -16,22 +18,8 @@ export interface PlayerCardWithDetails extends PlayerCard {
   traits: PlayerTrait[];
 }
 
-export interface PlayerCardCondition {
-  id: string;
+export interface PlayerCardCondition extends CardCondition {
   playerCardId: string;
-  conditionName: string;
-  assignedAt: string;
-}
-
-export interface PlayerMemory {
-  id: string;
-  playerCardId: string;
-  sessionNumber?: number;
-  memoryType: 'KEY_EVENT' | 'ENCOUNTER' | 'DISCOVERY' | 'DECISION' | 'LOSS' | 'BOND';
-  title: string;
-  detail?: string;
-  memoryDate: string;
-  createdAt: string;
 }
 
 export interface PlayerTrait {
@@ -40,6 +28,7 @@ export interface PlayerTrait {
   traitType: 'GOAL' | 'FEAR' | 'FLAW';
   content: string;
   isCompleted: boolean;
+  isShared: boolean;
   createdAt: string;
 }
 
@@ -123,12 +112,16 @@ export interface GoldAwardedEvent {
 
 export interface ConditionRemovedEvent {
   playerCardId: string;
+  encounterId?: string;
+  combatantId?: string;
   conditionId: string;
   tickCount: number;
 }
 
 export interface ConditionAssignedEvent {
   playerCardId: string;
+  encounterId?: string;
+  combatantId?: string;
   conditionId: string;
   conditionName: string;
   assignedAt: string;

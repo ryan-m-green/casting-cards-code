@@ -29,8 +29,6 @@ public class CastInstanceFactory(IImageKeyCreator imageKeyCreator, IImageStorage
             Role = source.Role,
             Age = source.Age,
             MaxHitPoints = source.MaxHitPoints,
-            LostHitPoints = 0,
-            TempHitPoints = 0,
             Posture = source.Posture,
             Speed = source.Speed,
             ImageUrl = imageUrl,

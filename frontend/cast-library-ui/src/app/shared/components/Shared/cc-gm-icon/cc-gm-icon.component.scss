@@ -1,0 +1,12 @@
+@use '../../../../../styles/variables' as v;
+
+:host {
+  display: inline-block;
+}
+
+.gm-letters {
+  font-family: v.$font-bard;
+  font-size: 21px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}

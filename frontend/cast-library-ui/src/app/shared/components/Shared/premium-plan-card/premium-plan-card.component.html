@@ -1,0 +1,22 @@
+<div class="plan-card paid">
+  <h3>Premium</h3>
+  <div class="price" [class.strikethrough]="pricingData()?.active">
+    $14.99/mo
+  </div>
+  @if (pricingData()?.active) {
+    <div class="discount-label">
+      <div>Reduced for {{ pricingData()!.active!.modelName }} Phase</div>
+      <span class="discount-price">${{ pricingData()!.active!.priceInCents / 100 }}/mo</span>
+    </div>
+  }
+  <div class="plan-content">
+    <div class="plan-chips">
+      <div class="feature-chip">Unlimited Card Libraries</div>
+      <div class="feature-chip">Join the Guild Hall</div>
+      <div class="feature-chip">Influence Feature Requests</div>
+      <div class="feature-chip">Direct Developer Feedback</div>
+    </div>
+    <img class="plan-video" [class.negative-margin]="useNegativeMargin()" src="/sands.gif" alt="Premium plan preview">
+  </div>
+  <button (click)="handleSubscribe()" [disabled]="loading() || !pricingData()?.active">{{ loading() ? 'Complete Checkout on Stripe' : 'Subscribe Now' }}</button>
+</div>

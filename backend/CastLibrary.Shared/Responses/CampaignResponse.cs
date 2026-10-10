@@ -30,7 +30,6 @@ public class CampaignDetailResponse
     public List<CampaignSublocationInstanceResponse> Sublocations { get; set; } = [];
     public List<CampaignSecretResponse> Secrets { get; set; } = [];
     public List<CampaignPlayerResponse> Players { get; set; } = [];
-    public List<CampaignCastRelationshipResponse> Relationships { get; set; } = [];
     public CampaignInviteCodeResponse InviteCode { get; set; }
     public TimeOfDayResponse TimeOfDay { get; set; }
     public List<CampaignFactionInstanceResponse> Factions { get; set; } = [];
@@ -40,18 +39,6 @@ public class CampaignInviteCodeResponse
 {
     public string Code { get; set; } = string.Empty;
     public DateTime ExpiresAt { get; set; }
-}
-
-public class CampaignCastRelationshipResponse
-{
-    public Guid Id { get; set; }
-    public Guid CampaignId { get; set; }
-    public Guid SourceCastInstanceId { get; set; }
-    public Guid TargetCastInstanceId { get; set; }
-    public int Value { get; set; }
-    public string Explanation { get; set; }
-    public DateTime CreatedAt { get; set; }
-    public DateTime UpdatedAt { get; set; }
 }
 
 public class CampaignLocationInstanceResponse
@@ -95,8 +82,7 @@ public class CampaignCastInstanceResponse
     public string Role { get; set; } = string.Empty;
     public string Age { get; set; } = string.Empty;
     public int MaxHitPoints { get; set; }
-    public int LostHitPoints { get; set; }
-    public int TempHitPoints { get; set; }
+    public int StarsCount { get; set; }
     public string Posture { get; set; } = string.Empty;
     public string Speed { get; set; } = string.Empty;
     public string[] VoicePlacement { get; set; } = [];
@@ -161,5 +147,11 @@ public class DashboardStatsResponse
     public int SublocationCount { get; set; }
     public int CastCount { get; set; }
     public int FactionCount { get; set; }
+    public int SoundtrackCount { get; set; }
     public CampaignListResponse ActiveCampaign { get; set; }
+    /// <summary>
+    /// The campaign the caller is a player in (joined through someone else's invite code) that was
+    /// most recently active. Separate from <see cref="ActiveCampaign"/>, which is the caller's own.
+    /// </summary>
+    public CampaignListResponse LastPlayedCampaign { get; set; }
 }

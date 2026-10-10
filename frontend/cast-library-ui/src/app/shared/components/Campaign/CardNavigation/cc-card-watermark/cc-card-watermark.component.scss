@@ -1,0 +1,31 @@
+@use '../../../../../../styles/variables' as v;
+
+:host {
+  display: block;
+  width: v.$card-width;
+  height: v.$card-height;
+  overflow: hidden;
+  pointer-events: none;
+  user-select: none;
+}
+
+.card-watermark {
+  width: 100%;
+  height: 100%;
+}
+
+.card-watermark:not(.card-watermark--asset) {
+  --icon-opacity: 0.15;
+  color: v.$campaign-portal-text-lavender;
+}
+
+.card-watermark ::ng-deep .icon-svg {
+  width: 100%;
+  height: 100%;
+}
+
+.card-watermark--asset {
+  object-fit: contain;
+  opacity: 0.15;
+  filter: brightness(0) invert(1);
+}

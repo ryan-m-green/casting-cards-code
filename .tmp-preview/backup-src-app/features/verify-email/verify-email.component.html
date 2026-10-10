@@ -1,0 +1,22 @@
+<div class="pc">
+  <app-journal-title title="Verify Email" />
+  <p class="pnum form-subtitle">Confirming your email address</p>
+
+  @if (loading()) {
+    <div class="wb wb-narrow">
+      <p class="wbd-journal">Verifying your email…</p>
+    </div>
+  } @else if (success()) {
+    <div class="wb wb-narrow">
+      <p class="wbd-journal">Your email has been verified successfully.</p>
+      <a class="btn-primary btn-return-link" routerLink="/subscription-choice">Choose a plan</a>
+    </div>
+  } @else {
+    <div class="wb wb-narrow">
+      <p class="wbd-journal text-error">{{ errorMsg() }}</p>
+      <a class="btn-ghost btn-return-link" routerLink="/join">Return to Sign In</a>
+    </div>
+  }
+
+  <div class="orn orn-mt">· · ·</div>
+</div>

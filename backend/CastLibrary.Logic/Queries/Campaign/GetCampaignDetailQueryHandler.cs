@@ -1,10 +1,6 @@
-using CastLibrary.Logic.Commands.Campaign;
-using CastLibrary.Logic.Interfaces;
 using CastLibrary.Logic.Services;
-using CastLibrary.Repository.Repositories;
 using CastLibrary.Repository.Repositories.Read;
 using CastLibrary.Shared.Domain;
-using CastLibrary.Shared.Enums;
 using System.Collections.Concurrent;
 
 namespace CastLibrary.Logic.Queries.Campaign;
@@ -13,7 +9,7 @@ public interface IGetCampaignDetailQueryHandler
 {
     Task<(CampaignDomain Campaign, List<CampaignLocationInstanceDomain> locations,
         List<CampaignCastInstanceDomain> Casts, List<CampaignSublocationInstanceDomain> Locations,
-        List<CampaignSecretDomain> Secrets, List<CampaignCastRelationshipDomain> Relationships,
+        List<CampaignSecretDomain> Secrets,
         List<CampaignPlayerDomain> Players, CampaignInviteCodeDomain InviteCode,
         TimeOfDayDomain TimeOfDay, List<CampaignFactionInstanceDomain> Factions)>
         HandleAsync(Guid campaignId);
@@ -22,7 +18,6 @@ public interface IGetCampaignDetailQueryHandler
 public class GetCampaignDetailQueryHandler(
     ICampaignReadRepository campaignRepository,
     ISecretReadRepository secretReadRepository,
-    ICampaignCastRelationshipReadRepository relationshipRepository,
     ICampaignPlayerReadRepository playerReadRepository,
     IGetCampaignInviteCodeQueryHandler getInviteCodeQuery,
     ITimeOfDayReadRepository timeOfDayRepository,
@@ -30,13 +25,13 @@ public class GetCampaignDetailQueryHandler(
 {
     public async Task<(CampaignDomain Campaign, List<CampaignLocationInstanceDomain> locations,
         List<CampaignCastInstanceDomain> Casts, List<CampaignSublocationInstanceDomain> Locations,
-        List<CampaignSecretDomain> Secrets, List<CampaignCastRelationshipDomain> Relationships,
+        List<CampaignSecretDomain> Secrets,
         List<CampaignPlayerDomain> Players, CampaignInviteCodeDomain InviteCode,
         TimeOfDayDomain TimeOfDay, List<CampaignFactionInstanceDomain> Factions)>
         HandleAsync(Guid campaignId)
     {
         var campaign = await campaignRepository.GetByIdAsync(campaignId);
-        if (campaign is null) return (null, [], [], [], [], [], [], null, null, []);
+        if (campaign is null) return (null, [], [], [], [], [], null, null, []);
 
         var locations = await campaignRepository.GetLocationInstancesByCampaignAsync(campaignId);
         var casts = await campaignRepository.GetCastInstancesByCampaignAsync(campaignId);
@@ -44,7 +39,6 @@ public class GetCampaignDetailQueryHandler(
         var factions = await campaignRepository.GetFactionInstancesByCampaignAsync(campaignId, campaign.DmUserId);
 
         var secrets = await secretReadRepository.GetByCampaignAsync(campaignId);
-        var relationships = await relationshipRepository.GetByCampaignAsync(campaignId);
         var players = await playerReadRepository.GetByCampaignAsync(campaignId);
         var inviteCode = await getInviteCodeQuery.HandleAsync(campaignId);
         var timeOfDay = await timeOfDayRepository.GetByCampaignIdAsync(campaignId);
@@ -58,7 +52,7 @@ public class GetCampaignDetailQueryHandler(
         filenameService.AddWorldMapImageUrl(campaign.DmUserId, campaignId, campaign);
 
         return (campaign, locationBag.ToList(), castsBag.ToList(), 
-            sublocationBag.ToList(), secrets, relationships, playersBag.ToList(), 
+            sublocationBag.ToList(), secrets, playersBag.ToList(), 
             inviteCode, timeOfDay, factions);
     }
 }

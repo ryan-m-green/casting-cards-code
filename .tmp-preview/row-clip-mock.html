@@ -1,0 +1,47 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <style>
+    /* Geometry check for the journal row's hover clipping. The card is stood in as a plain box:
+       only the sizes and the transform matter here. */
+    body { margin: 0; padding: 14px; background: #fff; font: 12px sans-serif; color: #444; }
+    .row { display: flex; gap: 40px; align-items: flex-start; }
+    .case { text-align: center; }
+    .label { padding-bottom: 6px; }
+    .clip {
+      width: 174px; overflow: hidden; position: relative;
+      outline: 1px dashed #999;              /* the row's own edge, where the clip bites */
+      background: repeating-linear-gradient(45deg, #f6f2e8 0 6px, #efe9db 6px 12px);
+    }
+    .clip.old { height: 362px; }
+    .clip.new { height: 362px; padding-top: 14px; box-sizing: content-box; }
+
+    .card {
+      width: 150px; height: 220px; margin: 0 12px; box-sizing: border-box;
+      background: #1a1206; color: #e8d4a7; font: 11px/1.4 monospace;
+      display: flex; align-items: flex-start; justify-content: center; padding-top: 6px;
+      transition: transform 0.2s ease;
+    }
+    .card.lifted { transform: translateY(-6px) scale(1.03); }
+    .strip { width: 150px; height: 132px; margin: 10px 12px 0;
+      background: linear-gradient(135deg, #f3e5c8 0%, #e8d4a7 35%, #dfc691 70%, #ceb073 100%); }
+  </style>
+</head>
+<body>
+  <div class="row">
+    <div class="case">
+      <div class="label">before — row 362, no headroom</div>
+      <div class="clip old"><div class="card lifted">lifted 9.3px<br>top clipped</div></div>
+    </div>
+    <div class="case">
+      <div class="label">after — row 362 + 14px headroom</div>
+      <div class="clip new"><div class="card lifted">lifted 9.3px<br>top intact</div></div>
+    </div>
+    <div class="case">
+      <div class="label">after — at rest</div>
+      <div class="clip new"><div class="card">at rest</div></div>
+    </div>
+  </div>
+</body>
+</html>

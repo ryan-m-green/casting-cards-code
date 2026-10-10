@@ -1,0 +1,45 @@
+<div class="detail-panel-actions">
+  <div class="detail-actions-right">
+    @if (isDm()) {
+      @if (!editing()) {
+        <cc-edit-button
+          label="Edit"
+          (clicked)="startEditingClick.emit()"
+        />
+      } @else {
+        <span class="detail-save-wrap">
+          <button class="campaign-primary-btn detail-save-btn"
+                  type="button"
+                  [class.detail-save-btn--active]="saveMenuOpen()"
+                  [attr.aria-expanded]="saveMenuOpen()"
+                  (click)="toggleSaveMenu()"
+                  title="Save"
+                  aria-label="Save">
+            Save <app-icon name="campaign" variant="inline" />
+          </button>
+
+          @if (saveMenuOpen()) {
+            <div class="detail-save-menu" role="menu">
+              <button type="button" class="detail-save-menu-item" role="menuitem" (click)="chooseSave(false)">
+                Campaign
+              </button>
+              <button type="button" class="detail-save-menu-item" role="menuitem" (click)="chooseSave(true)">
+                Campaign + Library
+              </button>
+            </div>
+          }
+        </span>
+
+        <button class="campaign-secondary-btn detail-cancel-btn"
+                type="button"
+                (click)="cancelEditingClick.emit()"
+                title="Cancel editing"
+                aria-label="Cancel editing">✕</button>
+      }
+    }
+
+    @if (detailExpanded() && !editing()) {
+      <button class="detail-close-btn" type="button" (click)="closeClick.emit()" title="Close panel">Close</button>
+    }
+  </div>
+</div>

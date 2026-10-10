@@ -18,7 +18,7 @@ public class CreateAmbianceCommandHandler(
         var domain = new AmbianceDomain
         {
             Id = ambianceId,
-            CampaignId = command.CampaignId,
+            GmUserId = command.GmUserId,
             Title = command.Title.Trim(),
             CreatedAt = DateTime.UtcNow,
             RandomizeMusic = command.RandomizeMusic,
@@ -36,21 +36,29 @@ public class CreateAmbianceCommandHandler(
             }).ToList()
         };
 
-        return await insertRepository.AddAsync(domain);
+        var saved = await insertRepository.AddAsync(domain);
+
+        // A playlist built from a campaign's panel is adopted by that campaign too.
+        if (command.CampaignId is Guid campaignId && campaignId != Guid.Empty)
+            await insertRepository.LinkAsync(campaignId, saved.Id);
+
+        return saved;
     }
 }
 
 public class CreateAmbianceCommand
 {
-    public CreateAmbianceCommand(Guid campaignId, string title, List<AmbianceItemInput> items, bool randomizeMusic = false)
+    public CreateAmbianceCommand(Guid gmUserId, Guid? campaignId, string title, List<AmbianceItemInput> items, bool randomizeMusic = false)
     {
+        GmUserId = gmUserId;
         CampaignId = campaignId;
         Title = title;
         Items = items;
         RandomizeMusic = randomizeMusic;
     }
 
-    public Guid CampaignId { get; }
+    public Guid GmUserId { get; }
+    public Guid? CampaignId { get; }
     public string Title { get; }
     public List<AmbianceItemInput> Items { get; }
     public bool RandomizeMusic { get; }

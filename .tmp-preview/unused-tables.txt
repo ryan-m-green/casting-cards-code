@@ -1,0 +1,5 @@
+﻿admin_invite_codes|otherBackend=0|
+audit_logs|otherBackend=1|backend\CastLibrary.Logic\Services\AuditLoggingService.cs
+campaign_player_faction_relationships|otherBackend=0|
+faction_participants|otherBackend=0|
+faction_relationships|otherBackend=0|

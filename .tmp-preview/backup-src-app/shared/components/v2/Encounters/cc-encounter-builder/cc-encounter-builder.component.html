@@ -1,0 +1,318 @@
+<div class="builder" [style.--portal-color]="portalColor()">
+  @if (loading()) {
+    <p class="builder-note">Loading encounters…</p>
+  } @else {
+
+    @if (mode() === 'row') {
+      <div class="stage" [class.is-fading]="fading()">
+        @if (!encounters().length) {
+          <div class="builder-empty">
+            <p class="builder-note">No encounters yet.</p>
+            <p class="builder-hint">Add cast cards as groups — the encounter is saved as you go.</p>
+            <button type="button" class="builder-primary" [disabled]="busy()" (click)="newEncounter()">
+              New encounter
+            </button>
+          </div>
+        } @else {
+          <div class="card-tools">
+            <cc-edit-button
+              label="Conditions"
+              text="Conditions"
+              [disabled]="busy()"
+              (clicked)="openConditions()"
+            />
+          </div>
+
+          <div class="card-filters">
+            <div class="card-filter-split" role="group" aria-label="Filter the encounter cards by status">
+              @for (filter of statusFilters(); track filter.status) {
+                <button
+                  type="button"
+                  class="card-filter"
+                  [class.is-on]="filter.on"
+                  [attr.aria-pressed]="filter.on"
+                  [disabled]="!filter.count"
+                  [attr.title]="filter.title"
+                  (click)="toggleStatus(filter.status)"
+                >{{ filter.label }} <span class="card-filter-count">{{ filter.count }}</span></button>
+              }
+            </div>
+          </div>
+
+          <div class="card-band">
+            <div class="rolodex-box-frame-left"></div>
+            <div class="card-row swiper" #encounterRow>
+              <div class="swiper-wrapper">
+                @for (entry of visibleEncounters(); track entry.id) {
+                  <div class="swiper-slide">
+                    <cc-encounter-card
+                      [encounter]="entry"
+                      [portalColor]="portalColor()"
+                      [busy]="busy()"
+                      (editRequested)="openEdit(entry)"
+                      (circleRequested)="openCircle(entry)"
+                      (startRequested)="startFromCard(entry)"
+                    />
+                  </div>
+                }
+
+                <div class="swiper-slide">
+                  <button type="button" class="card-new" [disabled]="busy()" (click)="newEncounter()">
+                    <span class="card-new-plus">＋</span>
+                    <span class="card-new-label">New encounter</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+            <div class="rolodex-box-frame-right"></div>
+          </div>
+        }
+      </div>
+    }
+
+    @if (mode() === 'edit') {
+      <div class="stage stage--edit" [class.is-fading]="fading()">
+        <div class="builder-head">
+          @if (renamingEncounter()) {
+            <div class="builder-title">
+              <button
+                type="button"
+                class="builder-rename builder-rename--close"
+                title="Cancel the rename"
+                aria-label="Cancel the rename"
+                (click)="cancelRenameEncounter()"
+              >
+                <span class="builder-rename-glyph" aria-hidden="true">✕</span>
+              </button>
+
+              <input
+                #encounterNameInput
+                class="builder-name-input"
+                type="text"
+                aria-label="Encounter name"
+                [ngModel]="encounterNameDraft()"
+                (ngModelChange)="encounterNameDraft.set($event)"
+                (keydown.enter)="commitRenameEncounter()"
+              />
+            </div>
+          } @else {
+            <div class="builder-title">
+              <button
+                type="button"
+                class="builder-rename"
+                title="Rename the encounter"
+                aria-label="Rename the encounter"
+                (click)="startRenameEncounter()"
+              >
+                <img class="builder-rename-icon" src="/hammer_wrench_repair_tool.svg" alt="" aria-hidden="true" draggable="false" />
+              </button>
+              <h3 class="builder-name">{{ encounter().name }}</h3>
+            </div>
+          }
+
+          <cc-encounter-places
+            class="builder-places"
+            [players]="places().players"
+            [groups]="places().groups"
+            [total]="places().total"
+          />
+        </div>
+
+        <div class="combat-row swiper" #combatRow>
+          <div class="swiper-wrapper">
+            @for (spot of castSpots(); track spot.id) {
+              <div class="swiper-slide">
+                <article class="combat-spot">
+                  @if (castCards(spot).length > 1) {
+                    <div class="spot-bar" [class.spot-bar--renaming]="renamingSpotId() === spot.id">
+                      @if (renamingSpotId() === spot.id) {
+                        <input
+                          #spotNameInput
+                          class="spot-rename"
+                          type="text"
+                          aria-label="Group name"
+                          [ngModel]="spotNameDraft()"
+                          (ngModelChange)="spotNameDraft.set($event)"
+                          (keydown.enter)="commitRenameGroup(spot)"
+                          (blur)="commitRenameGroup(spot)"
+                        />
+                      } @else {
+                        <button
+                          type="button"
+                          class="spot-name"
+                          title="Rename this group"
+                          (click)="startRenameGroup(spot)"
+                        >{{ groupLabel(spot) }}<span class="spot-name-pencil">✎</span></button>
+                      }
+                    </div>
+                  }
+
+                  <div class="spot-cards">
+                    @for (card of castCards(spot); track card.id) {
+                      <div class="combatant">
+                        <cc-cast-card
+                          [cast]="asCast(card)"
+                          [flippable]="false"
+                          [editable]="false"
+                          [secrets]="false"
+                          [campaignMode]="false"
+                          [titleSearch]="false"
+                          [readonlyStars]="true"
+                          [dmMode]="true"
+                          [isDefeated]="card.isDefeated"
+                        />
+
+                        <button
+                          type="button"
+                          class="combatant-remove"
+                          title="Remove this card from the encounter"
+                          aria-label="Remove this card"
+                          (click)="removeCard(spot, card)"
+                        >✕</button>
+                      </div>
+                    }
+
+                    <div class="combatant-add-column">
+                      @if (castCards(spot).length > 1) {
+                        <span class="combatant-count" title="Cards in this group">×{{ castCards(spot).length }}</span>
+                      }
+
+                      <button
+                        type="button"
+                        class="combatant-add"
+                        [disabled]="busy()"
+                        title="Add cast cards to this group"
+                        aria-label="Add cast cards to this group"
+                        (click)="openAddToGroup(spot)"
+                      >＋</button>
+                    </div>
+                  </div>
+                </article>
+              </div>
+            }
+
+            <div class="swiper-slide">
+              <button
+                type="button"
+                class="combat-new"
+                [disabled]="busy() || spotsFull()"
+                [title]="spotsFull()
+                  ? 'The initiative circle holds ' + maxSpots + ' places, the party\'s included'
+                  : 'Add a group of cast cards'"
+                (click)="openNewGroup()"
+              >
+                <span class="combat-new-plus">＋</span>
+                <span class="combat-new-label">{{ spotsFull() ? 'Ring full' : 'Add group' }}</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <cc-encounter-controls
+          [busy]="busy()"
+          [canStart]="true"
+          [showEdit]="false"
+          (allRequested)="backToRow()"
+          (startRequested)="startFromCard(encounter())"
+        />
+      </div>
+    }
+
+    @if (mode() === 'circle') {
+      <div class="stage stage--circle" [class.is-fading]="fading()">
+        <cc-encounter-circle
+          [encounter]="encounter()"
+          [portalColor]="portalColor()"
+          [busy]="busy()"
+          [arrivals]="arrivals()"
+          (endRequested)="endCombat()"
+          (editRequested)="openEdit(encounter())"
+          (allRequested)="backToRow()"
+          (nextRequested)="nextTurn()"
+          (reorderRequested)="reorderSpots($event)"
+          (combatantSelected)="openCombatantDetails($event)"
+        />
+      </div>
+    }
+
+    @if (mode() === 'rolls') {
+      <div class="stage" [class.is-fading]="fading()">
+        <div class="rolls-actions rolls-actions--top">
+          <button type="button" class="rolls-action" [disabled]="busy()" title="View all the campaign's encounters" (click)="backToRow()">Encounters</button>
+        </div>
+
+        <div class="rolls-actions rolls-actions--bottom">
+          <cc-edit-button
+            label="Edit this encounter"
+            [disabled]="busy()"
+            (clicked)="openEdit(encounter())"
+          />
+        </div>
+
+        <div class="rolls-bar">
+          <button type="button" class="builder-primary" [disabled]="busy() || !rollsComplete()" (click)="finalizeOrder()">
+            Finalize order
+          </button>
+        </div>
+
+        <div class="rolls-row swiper" #rollsRow>
+          <div class="swiper-wrapper">
+            @for (spot of encounter().spots; track spot.id) {
+              <div class="swiper-slide">
+                <article class="roll-spot">
+                  @let named = spot.combatants.length > 1;
+
+                  <span
+                    class="roll-name"
+                    [class.is-blank]="!named"
+                    [title]="named ? spotLabel(spot) : ''"
+                  >{{ named ? spotLabel(spot) : '' }}</span>
+
+                  <div class="roll-cards">
+                    @for (card of spot.combatants; track card.id; let i = $index) {
+                      <div class="roll-card" [style.zIndex]="spot.combatants.length - i">
+                        @if (card.combatantType === 'player') {
+                          <cc-simple-player-card [player]="asPlayer(card)" />
+                        } @else {
+                          <cc-simple-cast-card [cast]="asCast(card)" [isDefeated]="card.isDefeated" />
+                        }
+                      </div>
+                    }
+                  </div>
+
+                  <div class="roll-counter">
+                    <cc-dial-counter
+                      context="campaign"
+                      [dials]="2"
+                      [min]="0"
+                      [max]="99"
+                      [disabled]="busy()"
+                      [ariaLabel]="'Initiative for ' + spotLabel(spot)"
+                      [ngModel]="rollFor(spot)"
+                      (ngModelChange)="setRoll(spot, $event)"
+                    />
+                  </div>
+                </article>
+              </div>
+            }
+          </div>
+
+          <span class="rolls-label">Add Initiative Roll Value</span>
+        </div>
+      </div>
+    }
+
+    @if (mode() === 'ended') {
+      <cc-encounter-ended
+        [encounter]="encounter()"
+        [campaignId]="campaignId()"
+        [portalColor]="portalColor()"
+        (backRequested)="backToRow()"
+      />
+    }
+
+    @if (error()) {
+      <p class="builder-error">{{ error() }}</p>
+    }
+  }
+</div>

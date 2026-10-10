@@ -1,0 +1,48 @@
+<div class="wm-root" [style.--portal-color]="portalColor()">
+  @if (worldMapImageUrl(); as url) {
+    <div
+      #stage
+      class="wm-stage"
+      [class.wm-stage--zoomed]="zoomed()"
+      tabindex="0"
+      role="group"
+      aria-label="World map. Pinch or scroll to zoom, drag to move, double-tap to reset."
+      (pointerdown)="onPointerDown()"
+      (pointerup)="onPointerUp()"
+      (pointercancel)="onPointerUp()"
+      (wheel)="onWheel($event)"
+      (keydown)="onKeydown($event)"
+    >
+      <div class="wm-swiper swiper" #swiperEl>
+        <div class="swiper-wrapper">
+          <div class="swiper-slide">
+            <div class="swiper-zoom-container">
+              <img
+                class="wm-image"
+                [src]="url"
+                alt="World map"
+                draggable="false"
+                (load)="onImageLoaded()"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      @if (zoomed()) {
+        <button
+          class="wm-reset"
+          type="button"
+          title="Reset the map view"
+          aria-label="Reset the map view"
+          (pointerdown)="$event.stopPropagation()"
+          (click)="resetView()"
+        >Reset view</button>
+      }
+    </div>
+
+    <p class="wm-hint">Pinch or scroll to zoom · drag to move · double-tap to reset</p>
+  } @else {
+    <div class="wm-empty">No world map yet.</div>
+  }
+</div>

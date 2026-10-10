@@ -1,0 +1,267 @@
+@use '../../../../../styles/variables' as v;
+@use '../../../../../styles/campaign-shell-vars' as shell;
+
+:host {
+  display: block;
+  margin-bottom: 10px;
+}
+
+.cc-dial-counter {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+}
+
+.cc-dial-counter-label {
+  display: block;
+  font-family: v.$font-header;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  margin-bottom: 2px;
+  color: v.$color-base-brown-14;
+}
+
+.cc-dial-counter-dials {
+  display: inline-flex;
+  align-items: stretch;
+  gap: 0;
+  padding: 4px;
+  background: v.$color-input-bg;
+  border: 1px solid v.$color-border-solid;
+  border-radius: 3px;
+  transition: border-color v.$transition-std, background v.$transition-std;
+
+  &:focus-within {
+    border-color: v.$color-input-focus-border;
+    background: v.$color-input-focus-bg;
+  }
+}
+
+.cc-dial-counter-dial {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  width: 32.5px;
+  height: 96px;
+  padding: 6px 0;
+  border-radius: 2px;
+  outline: none;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  transition: background v.$transition-fast, box-shadow v.$transition-fast;
+
+  &:focus-visible {
+    box-shadow: 0 0 0 2px rgba(v.$color-base-brown-warm, 0.35);
+  }
+
+  &--dragging {
+    background: rgba(v.$color-base-brown-warm, 0.10);
+
+    .cc-dial-counter-reel {
+      border-color: v.$color-input-focus-border;
+      cursor: grabbing;
+    }
+
+    .cc-dial-counter-digit--current {
+      transform: scale(1.08);
+    }
+  }
+
+  &--disabled {
+    opacity: 0.5;
+    pointer-events: none;
+  }
+}
+
+.cc-dial-counter-arrow {
+  display: flex;
+  flex: 1 1 auto;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  border: 1px solid v.$color-border-solid;
+  border-radius: 0;
+  background: none;
+  appearance: none;
+  -webkit-appearance: none;
+  box-sizing: border-box;
+  color: v.$color-base-brown-17;
+  cursor: pointer;
+  transition: color v.$transition-fast, transform v.$transition-fast;
+
+  svg {
+    display: block;
+    width: 13px;
+    height: 8px;
+    fill: currentColor;
+  }
+
+  &:hover:not(:disabled) {
+    color: v.$color-base-brown-14;
+    transform: scale(1.15);
+  }
+
+  &:active:not(:disabled) {
+    transform: scale(0.95);
+  }
+
+  &:disabled {
+    cursor: default;
+  }
+}
+
+.cc-dial-counter-arrow--first {
+  border-top-left-radius: 3px;
+  border-bottom-left-radius: 3px;
+}
+
+.cc-dial-counter-arrow--last {
+  border-top-right-radius: 3px;
+  border-bottom-right-radius: 3px;
+}
+
+.cc-dial-counter-reel {
+  display: flex;
+  flex: 0 0 auto;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-width: 24px;
+  padding: 3px 2px;
+  background: rgba(v.$color-base-brown-warm, 0.06);
+  border: 1px solid v.$color-border-light;
+  border-radius: 2px;
+  overflow: hidden;
+  cursor: grab;
+  touch-action: none;
+  transition: border-color v.$transition-fast;
+}
+
+.cc-dial-counter-digit {
+  font-family: v.$font-header;
+  line-height: 1;
+  text-align: center;
+  user-select: none;
+
+  &--current {
+    font-size: 24px;
+    font-weight: 700;
+    color: v.$color-base-brown-14;
+    text-shadow: 0 1px 0 rgba(255, 255, 255, 0.4);
+    transition: transform v.$transition-fast;
+  }
+
+  &--ghost {
+    font-size: 12px;
+    font-weight: 500;
+    color: v.$color-base-brown-17;
+    opacity: 0.55;
+  }
+}
+
+@media (pointer: coarse) {
+  .cc-dial-counter-dial {
+    width: 32.5px;
+    height: 124px;
+    padding: 8px 0;
+  }
+
+  .cc-dial-counter-reel {
+    min-width: 24px;
+    padding: 5px 2px;
+  }
+
+  .cc-dial-counter-arrow svg {
+    width: 15px;
+    height: 9px;
+  }
+
+  .cc-dial-counter-digit--current {
+    font-size: 30px;
+  }
+
+  .cc-dial-counter-digit--ghost {
+    font-size: 14px;
+  }
+}
+
+$dial-campaign-portal:   var(--portal-color, #{shell.$shell-purple-primary});
+$dial-campaign-hairline: color-mix(in srgb, #{$dial-campaign-portal} 32%, transparent);
+$dial-campaign-accent:   var(--dial-accent, #{$dial-campaign-portal});
+$dial-wash:              color-mix(in srgb, #{$dial-campaign-accent} 12%, transparent);
+$dial-fill:              color-mix(in srgb, #{$dial-campaign-accent} 18%, transparent);
+$dial-ring:              color-mix(in srgb, #{$dial-campaign-accent} 45%, transparent);
+$dial-line:              color-mix(in srgb, #{$dial-campaign-accent} 50%, transparent);
+$dial-ink:               color-mix(in srgb, #{$dial-campaign-accent} 75%, transparent);
+$dial-ink-hover:         color-mix(in srgb, #{$dial-campaign-accent}, white 25%);
+$dial-glow:              color-mix(in srgb, #{$dial-campaign-accent} 60%, transparent);
+
+.cc-dial-counter--campaign {
+  .cc-dial-counter-dial--thousands { --dial-accent: #{v.$color-base-gold-2}; }
+  .cc-dial-counter-dial--hundreds  { --dial-accent: #{v.$color-base-red-2}; }
+  .cc-dial-counter-dial--tens      { --dial-accent: #{v.$color-base-blue-11}; }
+  .cc-dial-counter-dial--ones      { --dial-accent: #{shell.$shell-portal-glow-bright}; }
+
+  .cc-dial-counter-label {
+    color: shell.$shell-portal-text-lavender;
+  }
+
+  .cc-dial-counter-dials {
+    background: shell.$shell-portal-bg-medium;
+    border-color: $dial-campaign-hairline;
+
+    &:focus-within {
+      background: shell.$shell-portal-bg-dark;
+      border-color: shell.$shell-portal-border-strong-focus;
+    }
+  }
+
+  .cc-dial-counter-dial {
+    &:hover {
+      background: $dial-wash;
+    }
+
+    &:focus-visible {
+      box-shadow: 0 0 0 2px $dial-ring;
+    }
+
+    &--dragging {
+      background: $dial-fill;
+
+      .cc-dial-counter-reel {
+        border-color: $dial-ink;
+      }
+    }
+  }
+
+  .cc-dial-counter-arrow {
+    border-color: $dial-campaign-hairline;
+    color: $dial-ink;
+
+    &:hover:not(:disabled) {
+      color: $dial-ink-hover;
+    }
+  }
+
+  .cc-dial-counter-reel {
+    background: $dial-fill;
+    border-color: $dial-line;
+  }
+
+  .cc-dial-counter-digit--current {
+    color: $dial-campaign-accent;
+    text-shadow: 0 0 6px $dial-glow;
+  }
+
+  .cc-dial-counter-digit--ghost {
+    color: $dial-campaign-accent;
+  }
+}

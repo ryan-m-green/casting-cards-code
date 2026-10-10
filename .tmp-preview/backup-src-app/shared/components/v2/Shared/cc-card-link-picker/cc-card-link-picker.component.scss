@@ -1,0 +1,184 @@
+@use '../../../../../../styles/variables' as v;
+
+:host {
+  display: block;
+}
+
+.clp {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  min-height: 100%;
+  box-sizing: border-box;
+}
+
+.clp-types {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.clp-type {
+  min-height: 36px;
+  padding: 8px 12px;
+  background: transparent;
+  border: 1px solid v.$campaign-portal-border-bold;
+  border-radius: 8px;
+  color: v.$campaign-portal-text-muted;
+  font-family: v.$font-header;
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+
+  &:hover { color: v.$campaign-portal-text-bright; border-color: v.$campaign-portal-border-hover; }
+
+  &.is-on {
+    background: rgba(46, 26, 94, 0.55);
+    border-color: v.$campaign-portal-border-focus;
+    color: v.$campaign-portal-text-bright;
+  }
+}
+
+.clp-type-count {
+  margin-left: 6px;
+  opacity: 0.7;
+}
+
+.clp-picked {
+  width: 100%;
+  overflow: hidden;
+  box-sizing: border-box;
+  padding: 8px 8px 10px;
+  overscroll-behavior-x: contain;
+
+  .swiper-wrapper {
+    display: flex;
+    flex-direction: row;
+    align-items: stretch;
+  }
+
+  .swiper-slide {
+    flex: 0 0 auto;
+    width: 75px;
+    height: 110px;
+    box-sizing: border-box;
+  }
+}
+
+.clp-picked-remove {
+  position: absolute;
+  top: -7px;
+  right: -7px;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  padding: 0;
+  background: var(--portal-color, v.$color-base-purple-primary);
+  border: 1px solid rgba(0, 0, 0, 0.45);
+  border-radius: 50%;
+  color: #fff;
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1;
+  cursor: pointer;
+
+  &:hover { background: v.$campaign-portal-border-accent; }
+}
+
+.clp-section {
+  margin: 0;
+  color: v.$campaign-portal-text-lavender;
+  font-family: v.$font-header;
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.clp-empty {
+  margin: 0;
+  color: v.$campaign-portal-text-muted;
+  font-size: 13px;
+  line-height: 1.5;
+  text-align: center;
+}
+
+.clp-error {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  margin: 0;
+  padding: 8px 10px;
+  background: rgba(40, 12, 12, 0.92);
+  border: 1px solid rgba(248, 113, 113, 0.5);
+  border-radius: 6px;
+  color: #f87171;
+  font-size: 12px;
+  line-height: 1.4;
+}
+
+.clp-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.clp-tile {
+  position: relative;
+  padding: 0;
+  background: none;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  cursor: pointer;
+  line-height: 0;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+
+  &:hover { border-color: v.$campaign-portal-border-hover; }
+
+  &.is-picked {
+    border-color: var(--portal-color, #{v.$color-base-purple-primary});
+    box-shadow: 0 0 0 2px rgba(110, 40, 208, 0.45);
+  }
+}
+
+.clp-tile-check {
+  position: absolute;
+  top: -7px;
+  right: -7px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  background: v.$color-base-purple-primary;
+  border-radius: 50%;
+  color: #fff;
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.clp-actions {
+  position: sticky;
+  bottom: 0;
+  margin-top: auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 0 4px;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.55), transparent);
+}
+
+.clp-total {
+  color: v.$campaign-portal-text-lavender;
+  font-size: 14px;
+}
+
+@media (max-width: 767px) {
+  .clp-type { min-height: 42px; }
+}

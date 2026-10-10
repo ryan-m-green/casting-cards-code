@@ -1,0 +1,19 @@
+backend .cs files: 724; IoC files: IOCAdapter.cs, IOCLogic.cs, IOCRepository.cs, IOCRootContainer.cs, IOCWebhost.cs
+
+===== SECTION 1 (category: "only reference is the IoC container"): registered but no consumer =====
+IUpdateCastCustomItemsCommandHandler  ->  UpdateCastCustomItemsCommandHandler   [reg IOCLogic.cs; decl C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\Campaign\UpdateCastCustomItemsCommandHandler.cs]
+IUpdateSublocationCustomItemsCommandHandler  ->  UpdateSublocationCustomItemsCommandHandler   [reg IOCLogic.cs; decl C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\Campaign\UpdateSubLocationCustomItemsCommandHandler.cs]
+IUpdateLocationSublocationsVisibilityCommandHandler  ->  UpdateLocationSubLocationsVisibilityCommandHandler   [reg IOCLogic.cs; decl C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\Campaign\UpdateLocationSubLocationsVisibilityCommandHandler.cs]
+IUpdateSublocationCastsVisibilityCommandHandler  ->  UpdateSublocationCastsVisibilityCommandHandler   [reg IOCLogic.cs; decl C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\Campaign\UpdateSubLocationCastsVisibilityCommandHandler.cs]
+IUpdateCastInstanceKeywordsCommandHandler  ->  UpdateCastInstanceKeywordsCommandHandler   [reg IOCLogic.cs; decl C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\Campaign\UpdateCastInstanceKeywordsCommandHandler.cs]
+IUpdateSublocationInstanceKeywordsCommandHandler  ->  UpdateSublocationInstanceKeywordsCommandHandler   [reg IOCLogic.cs; decl C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\Campaign\UpdateSubLocationInstanceKeywordsCommandHandler.cs]
+IEmailService  ->  EmailService   [reg IOCLogic.cs; decl C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Services\EmailService.cs]
+(count: 7)
+
+===== SECTION 2 (categories: "only references itself" / "zero references"): orphan files =====
+C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\CampaignChronicles\MigrateStorylineToChroniclesCommand.cs   [types: MigrateStorylineToChroniclesCommand]
+C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\Stripe\GetOrCreateStripeCustomerCommand.cs   [types: GetOrCreateStripeCustomerCommand]
+C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Strategies\SubscriptionEvent\StripeExtensions.cs   [types: StripeExtensions]
+C:\Repository\CastingCards\Code\backend\CastLibrary.Shared\Extensions\CastCardsConfigurationKeysExtensions.cs   [types: CastCardsConfigurationKeysExtensions]
+C:\Repository\CastingCards\Code\backend\CastLibrary.Shared\Responses\ChronicleItemResponse.cs   [types: ChronicleItemResponse]
+(count: 5)

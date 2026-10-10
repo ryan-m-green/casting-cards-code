@@ -4,8 +4,22 @@
 
 .pc.scroll-body {
   position: relative !important;
-  overflow: auto !important;
+  /* Down only — the page never pans sideways (see the shell's own .pc). */
+  overflow-x: hidden !important;
+  overflow-y: auto !important;
   max-height: 100%;
+  /* Seats the page's first content 12px from the top and 8px from the left. */
+  padding: 12px 8px 20px !important;
+}
+
+/* The journal title carries a 56px top margin tuned for the shell's 20px page
+   padding; the dashboard padding above already seats it, so it comes off. */
+app-journal-title {
+  margin-top: 0;
+}
+
+app-journal-title ::ng-deep .jt-heading {
+  font-size: 14px;
 }
 
 .upgrade-badge-dashboard {
@@ -16,47 +30,76 @@
 
 .rat-wizard-image {
   position: absolute;
-  top: 44px;
-  right: 22px;
+  /* Desktop: raised onto the portal cards' row (224px above their bottom border)
+     and centred in the space between the second (player) card's right edge and
+     the page's right border. The row is two 135px cards + a 28px gap, centred, so
+     its right edge sits at 50% + 149px and the page's right border at 100% + 8px;
+     their midpoint is 75% + 78.5px. */
+  top: calc(100% - 224px);
+  left: calc(75% + 78.5px);
+  transform: translateX(-50%);
   width: 144px;
   height: auto;
-  z-index: 9;
+  z-index: -1;
 }
 
 .dashboard-subtitle {
   font-family: v.$font-header;
-  font-size: 22px;
+  font-size: 14px;
   font-weight: 600;
   letter-spacing: 0.15em;
   text-transform: uppercase;
   color: v.$color-base-amber-brown;
   margin-bottom: 16px;
-  display: flex;
-  align-items: center;
+}
+
+/* The card-type tiles sit in a swipeable strip: one row that scrolls sideways,
+   each tile snapping into place, at the same footprint as the deck's cards.
+   Half a panel of padding either side brings the first (and last) card to rest
+   in the centre of the panel rather than against its left edge. */
+.sc {
+  --tile-w: #{v.$stat-tile-width};
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
   gap: 12px;
+  padding: 10px calc(50% - var(--tile-w) / 2) 12px;
+  scrollbar-width: none;
+
+  &::-webkit-scrollbar { display: none; }
 }
 
-.library-icon-wrapper {
-  width: 64px;
-  height: 64px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-// ─── Stat tile lift on hover ──────────────────────────────────────────────────
-.sv {
-  position: relative;
-  z-index: 1;
-  transition: background v.$transition-std, transform 0.2s ease;
+.stat-tile {
+  flex: 0 0 var(--tile-w);
+  min-width: var(--tile-w);
+  max-width: var(--tile-w);
+  scroll-snap-align: center;
+  border: none;
+  background: none;
+  padding: 0;
+  cursor: pointer;
+  transition: transform 0.2s ease;
 
   &:hover {
     transform: translateY(-6px) scale(1.03);
   }
+
+  &:focus-visible {
+    outline: 2px solid v.$color-base-amber-brown;
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
 }
 
-// ─── Quick action buttons ─────────────────────────────────────────────────────
+.stat-tile--soundtrack {
+  display: block;
+  aspect-ratio: 75 / 110;
+}
+
 .qa-btn {
+  width: 100%;
   border: none;
   padding: 3px;
   transition: background v.$transition-std, transform 0.2s ease;
@@ -70,8 +113,11 @@
     background: v.$color-base-tan-3;
     border-radius: 1px;
     height: 100%;
-    display: inline-flex;
+    display: flex;
     align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    white-space: nowrap;
   }
 
   &--cast {
@@ -112,106 +158,52 @@
   }
 }
 
-// ─── Stat tile borders matched to card type ───────────────────────────────────
-// Each tile uses a 4px gradient frame via padding + background, matching the
-// card's own frame gradient.
+/* The card-type dressing the stat tiles wear now lives in cc-card-stat. */
 
-.sv--cast {
-  background: linear-gradient(145deg,
-    v.$color-base-gold-2 0%, v.$color-base-gold-mid-hex 20%, v.$color-base-gold-dark-hex 45%,
-    v.$color-base-gold-bright-hex 55%, v.$color-base-gold-mid-hex 70%, v.$color-base-gold-3 85%, v.$color-base-gold-4 100%
-  );
-  padding: 3px;
-
-  .sv-inner { background: v.$color-base-tan-3; }
+.portal-title {
+  font-family: v.$font-header;
+  font-size: 16px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  color: v.$color-base-amber-brown;
+  margin-bottom: 14px;
 }
 
-.sv--sublocation {
-  background: linear-gradient(145deg,
-    v.$color-ext-675 0%, v.$color-ext-676 15%, v.$color-ext-677 40%,
-    v.$color-ext-678 55%, v.$color-ext-679 70%, v.$color-ext-680 85%, v.$color-ext-681 100%
-  );
-  padding: 3px;
-
-  .sv-inner { background: v.$color-base-tan-3; }
+.portal-cards {
+  position: relative;
+  z-index: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 28px;
+  justify-content: center;
+  margin-bottom: 32px;
 }
 
-.sv--location {
-  background: linear-gradient(145deg,
-    v.$color-base-yellow-green 0%, v.$color-base-mid-yellow-green 15%, v.$color-base-dark-yellow-green 40%,
-    v.$color-base-green-6 55%, v.$color-base-green-7 70%, v.$color-base-green-8 85%, v.$color-base-green-9 100%
-  );
-  padding: 3px;
-
-  .sv-inner { background: v.$color-base-tan-3; }
+.portal-slot {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
 }
 
-.sv--faction {
-  background: linear-gradient(145deg,
-    v.$color-faction-neutral-frame-1 0%, v.$color-faction-neutral-frame-2 15%,
-    v.$color-faction-neutral-frame-3 40%, v.$color-faction-neutral-frame-4 55%,
-    v.$color-faction-neutral-frame-5 70%, v.$color-faction-neutral-frame-6 85%,
-    v.$color-faction-neutral-frame-7 100%
-  );
-  padding: 3px;
-
-  .sv-inner { background: v.$color-base-tan-3; }
+.portal-slot-label {
+  font-family: v.$font-header;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: v.$color-base-amber-brown;
 }
 
-.sv--campaign {
-  background: linear-gradient(145deg,
-    v.$color-base-blue-4 0%, v.$color-base-blue-5 30%,
-    v.$color-base-black-3 60%, v.$color-base-blue-6 100%
-  );
-  padding: 3px;
+.portal-slot-card {
+  cursor: pointer;
 
-  .sv-inner { background: v.$color-base-tan-3; }
-}
+  app-portal-card { display: block; }
 
-.active-campaign-item {
-  margin-bottom: 16px;
-  transition: transform 0.2s ease;
-  background: linear-gradient(145deg,
-    v.$color-base-blue-4 0%, v.$color-base-blue-5 30%,
-    v.$color-base-black-3 60%, v.$color-base-blue-6 100%
-  ) !important;
-  padding: 3px;
-
-  &:hover {
-    transform: translateY(-6px) scale(1.03);
-  }
-
-  .sv-inner {
-    background: v.$color-base-tan-3;
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    gap: 16px;
-    padding: 0;
-  }
-
-  .active-campaign-icon .variant-inline{
-    max-height:100px;
-    padding-left:20px;
-    margin-right:-50px;
-    opacity:.30;
-  }
-
-  .active-campaign-icon {
-    align-self: stretch;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-    padding: 4px 0 4px 4px;
-    margin: 0 14px 0 18px;
-    color: v.$color-base-brown-14;
-  }
-
-  .active-campaign-content {
-    flex: 1;
-    min-width: 0;
-    margin: 4px 0;
+  &:focus-visible {
+    outline: 2px solid v.$color-base-amber-brown;
+    outline-offset: 4px;
+    border-radius: 12px;
   }
 }
 
@@ -220,7 +212,7 @@
 }
 
 .quick-actions {
-  margin-top: 44px;
+  margin-top: 4px;
 }
 
 .import-section {
@@ -240,24 +232,6 @@
   }
 }
 
-// ─── Portal ghost (hidden off-screen; cloned for animation) ───────────────────
-.portal-ghost-tpl {
-  position: fixed;
-  left: -9999px;
-  top: -9999px;
-  opacity: 0;
-  pointer-events: none;
-}
-
-// ─── Ghost button override (hidden in ghost template) ─────────────────────────
-.portal-ghost-tpl {
-  .portal-btn--delete,
-  .portal-btn--edit {
-    visibility: hidden;
-  }
-}
-
-// ─── Import Panel ─────────────────────────────────────────────────────────────
 .import-panel {
   margin-top: 8px;
   display: flex;
@@ -315,24 +289,15 @@
   justify-content: flex-end;
 }
 
-// ─── Import Result ────────────────────────────────────────────────────────────
 .import-result {
   margin-top: 8px;
 }
 
-// ─── Mobile ───────────────────────────────────────────────────────────────────
 @media (max-width: 600px) {
-  .sv {
-    flex: 0 0 98px;
-    width: 98px;
-    height: 98px;
-    min-width: unset;
-    aspect-ratio: unset;
-  }
-
   .rat-wizard-image {
-    top: 96px;
-    right: 0px;
+    /* Mobile: tucked 6px above the cards' bottom border, back on the page centre. */
+    top: calc(100% - 6px);
+    left: 50%;
     width: 104px;
   }
 }

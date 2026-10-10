@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>cracked compass v4 - dial, break and crack variants</title>
+<style>
+  body { margin: 0; padding: 14px 16px; background: rgb(14, 24, 32); font-family: system-ui, sans-serif; }
+  h2 { color: #c8e1eb; font: 11px/1 monospace; letter-spacing: .12em; text-transform: uppercase; margin: 16px 0 8px; }
+  .row { display: flex; align-items: flex-start; gap: 16px; }
+  .name { color: #7f9aa8; font: 11px/1.4 monospace; width: 96px; padding-top: 6px; }
+  .name b { color: #c8e1eb; font-weight: 400; display: block; }
+  .z { width: 24px; height: 24px; display: block; transform: scale(11); transform-origin: 0 0;
+       image-rendering: pixelated; }
+  .zw { width: 264px; height: 264px; overflow: hidden; }
+  .q { width: 340px; height: 340px; display: block; transform: scale(2); transform-origin: 0 0; }
+  .qw { width: 330px; height: 300px; overflow: hidden; }
+  img { filter: brightness(0) invert(1); }
+  .mark { display: block; object-fit: contain; }
+  .m72 { width: 72px; height: 72px; }
+  .m192 { width: 192px; height: 192px; }
+  .btn { display: inline-flex; align-items: center; gap: 8px; padding: 6px 14px 6px 10px;
+    background: transparent; border: 1px dashed rgba(167, 121, 233, 0.4); border-radius: 6px;
+    color: rgba(200, 225, 235, 0.88); font-family: Cinzel, Georgia, serif; font-size: 11px;
+    letter-spacing: 0.12em; text-transform: uppercase; }
+  .btn img { display: block; flex-shrink: 0; width: 24px; height: 24px; object-fit: contain; opacity: 0.65; }
+</style>
+</head>
+<body>
+
+<h2>each variant: 24px raster 11x, 72px, 192px, upper-left quadrant 2x, in button dress</h2>
+
+<div class="row">
+  <div class="name"><b>intact rim</b>the dial on its own</div>
+  <div class="zw"><img class="z" src="v4-intact.svg" alt="" /></div>
+  <img class="mark m72" src="v4-intact.svg" alt="" />
+  <img class="mark m192" src="v4-intact.svg" alt="" />
+  <div class="qw"><img class="q" src="v4-intact.svg" alt="" /></div>
+</div>
+
+<div class="row">
+  <div class="name"><b>break only</b>no crack</div>
+  <div class="zw"><img class="z" src="v4-nocrack.svg" alt="" /></div>
+  <img class="mark m72" src="v4-nocrack.svg" alt="" />
+  <img class="mark m192" src="v4-nocrack.svg" alt="" />
+  <div class="qw"><img class="q" src="v4-nocrack.svg" alt="" /></div>
+</div>
+
+<div class="row">
+  <div class="name"><b>crack A</b>floating, 3 jags</div>
+  <div class="zw"><img class="z" src="v4a.svg" alt="" /></div>
+  <img class="mark m72" src="v4a.svg" alt="" />
+  <img class="mark m192" src="v4a.svg" alt="" />
+  <div class="qw"><img class="q" src="v4a.svg" alt="" /></div>
+</div>
+
+<div class="row">
+  <div class="name"><b>crack B</b>joined to rim end</div>
+  <div class="zw"><img class="z" src="v4b.svg" alt="" /></div>
+  <img class="mark m72" src="v4b.svg" alt="" />
+  <img class="mark m192" src="v4b.svg" alt="" />
+  <div class="qw"><img class="q" src="v4b.svg" alt="" /></div>
+</div>
+
+<div class="row">
+  <div class="name"><b>crack C</b>filled, tapering</div>
+  <div class="zw"><img class="z" src="v4c.svg" alt="" /></div>
+  <img class="mark m72" src="v4c.svg" alt="" />
+  <img class="mark m192" src="v4c.svg" alt="" />
+  <div class="qw"><img class="q" src="v4c.svg" alt="" /></div>
+</div>
+
+<div class="row">
+  <div class="name"><b>v3 (shipped)</b>old dial and hook</div>
+  <div class="zw"><img class="z" src="../compass-cracked-motivation.svg" alt="" /></div>
+  <img class="mark m72" src="../compass-cracked-motivation.svg" alt="" />
+  <img class="mark m192" src="../compass-cracked-motivation.svg" alt="" />
+  <div class="qw"><img class="q" src="../compass-cracked-motivation.svg" alt="" /></div>
+</div>
+
+<h2>in button dress at 24px, all variants</h2>
+<div class="row">
+  <button class="btn" type="button"><img src="v4-intact.svg" alt="" /><span>+ Motivation</span></button>
+  <button class="btn" type="button"><img src="v4-nocrack.svg" alt="" /><span>+ Motivation</span></button>
+  <button class="btn" type="button"><img src="v4a.svg" alt="" /><span>+ Motivation</span></button>
+  <button class="btn" type="button"><img src="v4b.svg" alt="" /><span>+ Motivation</span></button>
+  <button class="btn" type="button"><img src="v4c.svg" alt="" /><span>+ Motivation</span></button>
+  <button class="btn" type="button"><img src="../compass-cracked-motivation.svg" alt="" /><span>+ Motivation</span></button>
+</div>
+
+</body>
+</html>

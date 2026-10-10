@@ -20,8 +20,10 @@ public class UpdateQuicknoteQueueItemCommandHandler(
         if (existing is null)
             return null;
 
-        existing.Content   = command.Request.Content;
-        existing.UpdatedAt = DateTime.UtcNow;
+        existing.Content          = command.Request.Content;
+        existing.LinkedEntities   = command.Request.LinkedEntities ?? existing.LinkedEntities;
+        existing.VisibleToPlayers = command.Request.VisibleToPlayers ?? existing.VisibleToPlayers;
+        existing.UpdatedAt        = DateTime.UtcNow;
 
         return await updateRepository.UpdateAsync(existing);
     }

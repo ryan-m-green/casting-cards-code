@@ -1,0 +1,9 @@
+<div class="coin-strip" [class.coin-strip--compact]="compact()">
+  @for (line of lines(); track line.type) {
+    <span [class]="'coin coin--' + line.type">
+      <span class="coin-name">{{ line.name }}</span>
+      <span class="coin-amount">{{ line.amount }}</span>
+      <cc-card-spotlight [cardId]="'coin-' + line.type" size="small" (dismissed)="onSpotlightDismissed()" />
+    </span>
+  }
+</div>

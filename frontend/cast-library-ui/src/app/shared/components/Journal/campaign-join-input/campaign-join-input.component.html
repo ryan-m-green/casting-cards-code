@@ -1,0 +1,18 @@
+<div class="join-section">
+  <div class="join-label">Join a campaign</div>
+  <div class="join-row">
+    <input
+      class="fi join-input"
+      type="text"
+      [ngModel]="code()"
+      (ngModelChange)="code.set($event.toUpperCase())"
+      (keydown.enter)="submit()"
+    />
+    <button class="campaign-primary-btn" (click)="submit()" [disabled]="!code().trim() || loading()">
+      {{ loading() ? '…' : 'Join' }}
+    </button>
+  </div>
+  @if (error()) {
+    <p class="join-error">{{ error() }}</p>
+  }
+</div>

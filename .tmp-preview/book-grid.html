@@ -1,0 +1,32 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><style>
+  body { margin: 0; background: #f2ede4; padding: 24px; font-family: monospace; }
+  .wrap { position: relative; width: 512px; height: 336px; }
+  .wrap img { position: absolute; inset: 0; width: 512px; height: 336px; display: block; }
+  .wrap svg { position: absolute; inset: 0; width: 512px; height: 336px; }
+  text { font-size: 9px; fill: #c00; }
+  line { stroke: rgba(200,0,0,0.35); stroke-width: 0.5; }
+  line.major { stroke: rgba(0,0,200,0.5); }
+</style></head><body>
+  <div class="wrap">
+    <img src="../frontend/cast-library-ui/public/book_quill_writing.svg">
+    <svg viewBox="0 0 512 336" xmlns="http://www.w3.org/2000/svg">
+      <g id="grid"></g>
+    </svg>
+  </div>
+  <script>
+    const g = document.getElementById('grid');
+    let s = '';
+    for (let x = 0; x <= 512; x += 25) {
+      const major = x % 100 === 0;
+      s += `<line class="${major ? 'major' : ''}" x1="${x}" y1="0" x2="${x}" y2="336"/>`;
+      if (major) s += `<text x="${x + 1}" y="10">${x}</text>`;
+    }
+    for (let y = 0; y <= 336; y += 25) {
+      const major = y % 100 === 0;
+      s += `<line class="${major ? 'major' : ''}" x1="0" y1="${y}" x2="512" y2="${y}"/>`;
+      if (major && y > 0) s += `<text x="1" y="${y - 1}">${y}</text>`;
+    }
+    g.innerHTML = s;
+  </script>
+</body></html>

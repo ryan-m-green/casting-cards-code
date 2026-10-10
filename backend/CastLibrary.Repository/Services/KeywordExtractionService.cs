@@ -3,8 +3,6 @@ using CastLibrary.Shared.Domain;
 using CastLibrary.Shared.Enums;
 using Microsoft.Extensions.Logging;
 using System.Collections.Concurrent;
-using System.Text.Json;
-using System.Text.Json.Serialization;
 
 namespace CastLibrary.Repository.Services;
 
@@ -333,20 +331,5 @@ public class KeywordExtractionService : IKeywordExtractionService
         {
             _logger.LogError(ex, "Failed to extract cast-traveled keywords");
         }
-    }
-
-    private class CastTravelTriggerData
-    {
-        [JsonPropertyName("castInstanceId")]
-        public Guid CastInstanceId { get; set; }
-
-        [JsonPropertyName("toLocationInstanceId")]
-        public Guid ToLocationInstanceId { get; set; }
-
-        [JsonPropertyName("toSublocationInstanceId")]
-        public Guid ToSublocationInstanceId { get; set; }
-
-        [JsonPropertyName("fromSublocationInstanceId")]
-        public Guid? FromSublocationInstanceId { get; set; }
     }
 }

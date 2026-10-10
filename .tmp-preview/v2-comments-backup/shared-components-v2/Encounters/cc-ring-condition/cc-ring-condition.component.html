@@ -1,0 +1,39 @@
+<!--
+  The card, with a ring for every condition it carries. The rings lie across the
+  card's width, the first one clipping on 24px up from its base and the rest
+  stacking up behind it — the way the coloured rings go on a mini one at a time.
+  The way off a ring is the red cross beside it: the band itself takes no clicks.
+-->
+<div class="cond-card-holder">
+  <ng-content />
+
+  @if (rings().length) {
+    <div class="cond-rings">
+      @for (ring of rings(); track ring.id) {
+        <!--
+          The band is what the card is wearing rather than a button: it takes no clicks
+          (the pointer passes through it to the card), and the way off is the red cross
+          hung beside it, clear of the ring and on the ring's own line.
+        -->
+        <div class="cond-ring-row">
+          <span class="cond-ring" [style.--ring-color]="ring.color">
+            <span class="cond-ring-label">{{ ring.name }}</span>
+          </span>
+
+          <button
+            type="button"
+            class="cond-ring-remove"
+            [disabled]="removing()"
+            [title]="'Remove ' + ring.name"
+            [attr.aria-label]="'Remove ' + ring.name + ' condition'"
+            (click)="remove(ring.id)"
+          >✕</button>
+        </div>
+      }
+    </div>
+  }
+</div>
+
+@if (error()) {
+  <p class="cond-error">{{ error() }}</p>
+}

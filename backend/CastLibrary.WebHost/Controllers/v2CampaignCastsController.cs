@@ -2,18 +2,15 @@ using CastLibrary.Logic.Commands.Campaign;
 using CastLibrary.Logic.Commands.Cast;
 using CastLibrary.Logic.Queries.Campaign;
 using CastLibrary.Logic.Services;
-using CastLibrary.Logic.Validators;
-using CastLibrary.Shared.Exceptions;
 using CastLibrary.Shared.Requests;
 using CastLibrary.Shared.Responses;
-using CastLibrary.WebHost.Hubs;
 using CastLibrary.WebHost.Mappers;
 using CastLibrary.WebHost.MetadataHelpers;
 using CastLibrary.WebHost.Requests;
+using CastLibrary.WebHost.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
-using Microsoft.AspNetCore.SignalR;
 
 namespace CastLibrary.WebHost.Controllers;
 
@@ -25,6 +22,7 @@ public class CampaignCastsController(
     IGetCampaignCastInstancesQueryHandler getCastsQuery,
     IAddCastToCampaignCommandHandler addCastCommand,
     IUpdateCastInstanceCommandHandler updateCastInstanceCommand,
+    IUpdateCastInstanceStarsCommandHandler updateCastInstanceStarsCommand,
     IDeleteCastInstanceCommandHandler deleteCastInstanceCommand,
     IUpdateCastInstanceVisibilityCommandHandler updateCastInstanceVisibilityCommand,
     IAssignFactionToCastCommandHandler assignFactionToCastCommand,
@@ -33,7 +31,7 @@ public class CampaignCastsController(
     ICampaignAccessService campaignAccess,
     IUploadCastImageCommandHandler uploadCastImageCommandHandler,
     IFileValidationService fileValidationService,
-    IHubContext<CampaignHub> hubContext) : ControllerBase
+    ISignalRNotificationService notifications) : ControllerBase
 {
     private Task<bool> CallerCanView(Guid campaignId) =>
         campaignAccess.IsMemberOrOwnerAsync(campaignId, userRetriever.GetUserId(User));
@@ -80,7 +78,7 @@ public class CampaignCastsController(
 
         var response = mapper.ToCastInstanceResponse(instance);
 
-        await hubContext.Clients.Group(campaignId.ToString()).SendAsync("CampaignNavChanged", new { campaignId = campaignId });
+        await notifications.BroadcastCampaignNavChangedAsync(campaignId, new { campaignId = campaignId });
 
         return Ok(response);
     }
@@ -94,10 +92,48 @@ public class CampaignCastsController(
         var dmUserId = userRetriever.GetDmUserId(User);
         await updateCastInstanceCommand.HandleAsync(new UpdateCastInstanceCommand(instanceId, request, dmUserId));
 
-        await hubContext.Clients.Group(campaignId.ToString()).SendAsync("CastInstanceUpdated", new
+        // The card as the campaign now holds it goes out with the event, so a watcher takes the
+        // change on from what it is handed rather than reading the card back over the API: read
+        // once here, where the write has just landed, instead of once per watching client. The id
+        // stays on the payload for watchers that only want to know which card moved.
+        var updated = (await getCastsQuery.HandleAsync(campaignId, instanceId)).FirstOrDefault();
+
+        await notifications.BroadcastCastInstanceUpdatedAsync(campaignId, new
         {
-            campaignId     = campaignId,
+            campaignId,
             castInstanceId = instanceId,
+            cast = updated is null ? null : mapper.ToCastInstanceResponse(updated),
+        });
+
+        return NoContent();
+    }
+
+    /// <summary>
+    /// The stars a cast card wears: the party's own rating of its importance, 1 to 3. Any member of
+    /// the campaign sets them — players rate the cards they meet — so this route asks only that the
+    /// caller may view the campaign (see UpdateCastInstanceStarsCommandHandler).
+    /// </summary>
+    [HttpPatch("{instanceId}/stars")]
+    [Authorize]
+    public async Task<IActionResult> UpdateCastInstanceStars(Guid campaignId, Guid instanceId,
+        [FromBody] UpdateCastInstanceStarsRequest request)
+    {
+        if (!await CallerCanView(campaignId)) return Forbid();
+
+        request.StarsCount = Math.Clamp(request.StarsCount, 0, 3);
+        await updateCastInstanceStarsCommand.HandleAsync(
+            new UpdateCastInstanceStarsCommand(instanceId, request));
+
+        var updated = (await getCastsQuery.HandleAsync(campaignId, instanceId)).FirstOrDefault();
+        if (updated is null) return NotFound();
+
+        // The card goes out with the event so a watching deck takes the new stars on from what it
+        // is handed, the same shape the DM's own edit of a card broadcasts.
+        await notifications.BroadcastCastInstanceUpdatedAsync(campaignId, new
+        {
+            campaignId,
+            castInstanceId = instanceId,
+            cast = mapper.ToCastInstanceResponse(updated),
         });
 
         return NoContent();
@@ -111,7 +147,10 @@ public class CampaignCastsController(
         if (!await CallerOwns(campaignId)) return Forbid();
         await updateCastInstanceVisibilityCommand.HandleAsync(new UpdateCastInstanceVisibilityCommand(instanceId, request));
 
-        await hubContext.Clients.Group(campaignId.ToString()).SendAsync("CardVisibilityChanged", new CardVisibilityChangedEvent
+        // Broadcast through the notification service rather than the hub context directly: it is
+        // the one place that records every send, which is what the Admin's SignalR inspector reads
+        // (see AdminSignalRController). The event the clients receive is unchanged.
+        await notifications.BroadcastCardVisibilityChangedAsync(campaignId, new CardVisibilityChangedEvent
         {
             CampaignId = campaignId,
             InstanceId = instanceId,
@@ -129,7 +168,7 @@ public class CampaignCastsController(
         if (!await CallerOwns(campaignId)) return Forbid();
         await deleteCastInstanceCommand.HandleAsync(new DeleteCastInstanceCommand(instanceId));
 
-        await hubContext.Clients.Group(campaignId.ToString()).SendAsync("CampaignNavChanged", new { campaignId = campaignId });
+        await notifications.BroadcastCampaignNavChangedAsync(campaignId, new { campaignId = campaignId });
 
         return NoContent();
     }
@@ -159,7 +198,7 @@ public class CampaignCastsController(
         await assignFactionToCastCommand.HandleAsync(
             new AssignFactionToCastCommand(campaignId, instanceId, request));
 
-        await hubContext.Clients.Group(campaignId.ToString()).SendAsync("FactionSymbolAssigned", new
+        await notifications.BroadcastFactionSymbolAssignedAsync(campaignId, new
         {
             campaignId = campaignId.ToString(),
             instanceId = instanceId.ToString(),
@@ -189,7 +228,7 @@ public class CampaignCastsController(
             return NotFound();
         }
 
-        await hubContext.Clients.Group(campaignId.ToString()).SendAsync("CastInstanceUpdated", new
+        await notifications.BroadcastCastInstanceUpdatedAsync(campaignId, new
         {
             campaignId = campaignId,
             castInstanceId = id,

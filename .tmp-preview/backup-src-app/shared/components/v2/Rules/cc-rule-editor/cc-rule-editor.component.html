@@ -1,0 +1,93 @@
+<div class="rule-editor">
+  <div class="rule-editor-bar">
+    <span class="rule-editor-actions">
+      @if (error()) {
+        <span class="rule-editor-error">{{ error() }}</span>
+      }
+      <button type="button" class="campaign-secondary-btn" [disabled]="saving()" (click)="cancel.emit()">
+        {{ cancelLabel() }}
+      </button>
+      <button
+        type="button"
+        class="campaign-primary-btn"
+        [disabled]="saving() || !canSave()"
+        (click)="save()"
+      >
+        {{ saving() ? 'Saving…' : 'Save' }}
+      </button>
+    </span>
+  </div>
+
+  <app-cc-textbox
+    [label]="grouped() ? 'Group name' : 'Entry name'"
+    placeholder="What is this called?"
+    context="campaign"
+    [ngModel]="name()"
+    (ngModelChange)="name.set($event)"
+  />
+
+  <app-cc-textbox
+    [label]="grouped() ? 'Group definition (optional)' : 'Definition'"
+    [placeholder]="grouped() ? 'What this group covers…' : 'What the entry says…'"
+    context="campaign"
+    type="textarea"
+    [rows]="grouped() ? 3 : 6"
+    [ngModel]="definition()"
+    (ngModelChange)="definition.set($event)"
+  />
+
+  <cc-keyword-tags
+    context="campaign"
+    [options]="keywordOptions()"
+    [ngModel]="keywords()"
+    (ngModelChange)="keywords.set($event)"
+  />
+
+  <div class="rule-group-head">
+    <span class="rule-group-label">Sub-entries</span>
+  </div>
+
+  @if (childCount() === 0) {
+    <p class="rule-group-empty">No sub-entries yet. Use ＋ Add sub-entry to give this entry the entries that sit beneath it.</p>
+  }
+
+  @for (child of children(); track child.id; let index = $index) {
+    <div class="rule-child">
+      <span class="rule-child-index">{{ index + 1 }}</span>
+
+      <div class="rule-child-fields">
+        <app-cc-textbox
+          label="Sub-entry name"
+          placeholder="Name…"
+          context="campaign"
+          [ngModel]="child.name"
+          (ngModelChange)="onChildName(index, $event)"
+        />
+
+        <app-cc-textbox
+          label="Definition"
+          placeholder="What it says…"
+          context="campaign"
+          type="textarea"
+          [rows]="3"
+          [ngModel]="child.definition"
+          (ngModelChange)="onChildDefinition(index, $event)"
+        />
+      </div>
+
+      <button
+        type="button"
+        class="rule-child-remove"
+        [attr.aria-label]="'Remove sub-entry ' + (index + 1)"
+        title="Remove sub-entry"
+        (click)="removeChild(index)"
+      >✕</button>
+    </div>
+  }
+
+  <button type="button" class="rule-add" (click)="addChild()">＋ Add sub-entry</button>
+
+  @if (childCount()) {
+    <button type="button" class="rule-clear" (click)="removeAllChildren()">Remove all sub-entries</button>
+  }
+</div>

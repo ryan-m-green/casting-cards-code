@@ -1,0 +1,151 @@
+@use '../../../../../styles/variables' as v;
+
+/* The tile is card-sized — it stands among the row's cards — and the host carries that size so a
+   caller's slide needs to say nothing about it. */
+:host {
+  display: block;
+  width: v.$card-width;
+  height: v.$card-height;
+  flex: 0 0 auto;
+}
+
+/*
+ * The journal's colours rather than the campaign shell's: the library pages lie on parchment, where
+ * that shell's lavender label and violet dashes would be all but invisible. The dashed card, the
+ * ＋ over an uppercase label and the lift on hover are the shell tile's, unchanged.
+ */
+.cc-card-add {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  height: 100%;
+  padding: 8px;
+  box-sizing: border-box;
+  background: transparent;
+  border: 1px dashed v.$color-border-accent;
+  border-radius: 8px;
+  font-family: v.$font-header;
+  color: v.$color-base-brown-14;
+  cursor: pointer;
+  transition: border-color 0.15s ease, color 0.15s ease, box-shadow 0.15s ease, transform 0.2s ease;
+
+  &:hover {
+    border-color: v.$color-arcane-border;
+    color: v.$color-base-gold-1;
+    box-shadow: 0 0 10px v.$color-arcane-glow-card;
+    transform: translateY(-6px);
+  }
+
+  /* A collection that has met its plan's limit keeps the tile it is used to and only dims it, so
+     the row does not change shape when the card that filled it was the last one it had room for. */
+  &--locked {
+    opacity: 0.45;
+    cursor: default;
+
+    &:hover {
+      border-color: v.$color-border-accent;
+      color: v.$color-base-brown-14;
+      box-shadow: none;
+      transform: none;
+    }
+  }
+}
+
+.cc-card-add-plus { font-size: 28px; line-height: 1; }
+
+.cc-card-add-label {
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+/*
+ * The capturing version of the tile (see `capture`): the same dashed card, with the field standing
+ * where the ＋ was. It is a field now, so it holds still — the lift and the lit border that invite a
+ * click on the ＋ tile would only promise something the code, once typed, has to keep.
+ */
+.cc-card-add--capture {
+  position: relative;
+  justify-content: center;
+  gap: 8px;
+  padding: 14px 10px 12px;
+  cursor: default;
+
+  &:hover {
+    border-color: v.$color-border-accent;
+    color: v.$color-base-brown-14;
+    box-shadow: none;
+    transform: none;
+  }
+}
+
+.cc-card-add-close {
+  position: absolute;
+  top: 4px;
+  right: 6px;
+  padding: 2px;
+  font-size: 11px;
+  line-height: 1;
+  color: v.$color-base-brown-15;
+  cursor: pointer;
+
+  &:hover { color: v.$color-base-brown-14; }
+}
+
+.cc-card-add-field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  width: 100%;
+}
+
+.cc-card-add-field-label {
+  font-size: 9px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: v.$color-base-brown-15;
+}
+
+.cc-card-add-input {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 5px 6px;
+  background: v.$color-base-parchment-pale;
+  border: 1px solid v.$color-border;
+  border-radius: 3px;
+  font-family: v.$font-header;
+  font-size: 12px;
+  letter-spacing: 0.14em;
+  text-align: center;
+  text-transform: uppercase;
+  color: v.$color-base-brown-14;
+  outline: none;
+
+  &:focus { border-color: v.$color-base-gold-1; }
+}
+
+.cc-card-add-submit {
+  width: 100%;
+  justify-content: center;
+}
+
+/* What the caller made of the code, said where the field is — the line the join field this tile
+   replaces used to keep under itself, in the same brick it used, and clamped the way a card's own
+   lines are (the whole of it stays on the title for a message too long for the card). */
+.cc-card-add-error {
+  margin: 0;
+  font-family: v.$font-body;
+  font-size: 11px;
+  line-height: 1.3;
+  text-align: center;
+  color: v.$color-ext-118;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}

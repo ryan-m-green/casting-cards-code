@@ -28,6 +28,30 @@ public class CoinRewardChronicleArchiveStrategy(IChronicleMapper chronicleMapper
     }
 }
 
+/// <summary>A day passing on the campaign clock (see the day counter's fast-forward).</summary>
+public class TimePassedChronicleArchiveStrategy(IChronicleMapper chronicleMapper) : IChronicleArchiveStrategy
+{
+    public bool Supports(ChronicleContentType contentType) => contentType == ChronicleContentType.TimePassed;
+
+    public Task<CampaignChroniclesDomain> BuildAsync(Guid campaignId, CreateChronicleRequest request)
+    {
+        var title = string.IsNullOrWhiteSpace(request.Title) ? "A Day Passed" : request.Title.Trim();
+
+        return Task.FromResult(new CampaignChroniclesDomain
+        {
+            ContentType = chronicleMapper.ToStorageValue(ChronicleContentType.TimePassed),
+            SourceId = request.SourceId,
+            Title = title,
+            Body = request.Body,
+            TodSliceName = request.TodSliceName,
+            IsGmOnly = request.IsGmOnly ?? false,
+            LinkedEntities = chronicleMapper.MapParticipants(request),
+            PlayedOn = (request.PlayedOn ?? DateTime.UtcNow).Date,
+            SessionNumber = request.SessionNumber
+        });
+    }
+}
+
 /// <summary>Items purchased by players through sublocation stores.</summary>
 public class ShopPurchaseChronicleArchiveStrategy(IChronicleMapper chronicleMapper) : IChronicleArchiveStrategy
 {

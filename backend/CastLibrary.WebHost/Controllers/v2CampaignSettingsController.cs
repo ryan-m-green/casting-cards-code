@@ -2,13 +2,12 @@ using CastLibrary.Logic.Commands.Campaign;
 using CastLibrary.Logic.Queries.Campaign;
 using CastLibrary.Logic.Services;
 using CastLibrary.Shared.Requests;
-using CastLibrary.WebHost.Hubs;
 using CastLibrary.WebHost.Mappers;
 using CastLibrary.WebHost.MetadataHelpers;
+using CastLibrary.WebHost.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
-using Microsoft.AspNetCore.SignalR;
 
 namespace CastLibrary.WebHost.Controllers;
 
@@ -23,7 +22,7 @@ public class CampaignSettingsController(
     ICampaignWebMapper campaignMapper,
     IUserRetriever userRetriever,
     ICampaignAccessService campaignAccess,
-    IHubContext<CampaignHub> hubContext) : ControllerBase
+    ISignalRNotificationService notifications) : ControllerBase
 {
     private Task<bool> CallerCanView(Guid campaignId) =>
         campaignAccess.IsMemberOrOwnerAsync(campaignId, userRetriever.GetUserId(User));
@@ -68,12 +67,11 @@ public class CampaignSettingsController(
             return BadRequest(new { message = "That code is invalid or has expired. Ask your DM to generate a new one." });
         }
 
-        await hubContext.Clients.Group(result.Campaign.Id.ToString())
-            .SendAsync("PlayerJoined", new
-            {
-                campaignId = result.Campaign.Id,
-                player = campaignMapper.ToPlayerResponse(result.Player),
-            });
+        await notifications.BroadcastPlayerJoinedAsync(result.Campaign.Id, new
+        {
+            campaignId = result.Campaign.Id,
+            player = campaignMapper.ToPlayerResponse(result.Player),
+        });
 
         var response = campaignMapper.ToListResponse(result.Campaign);
         return Ok(response);

@@ -1,0 +1,94 @@
+@use '../../../../../../styles/variables' as v;
+
+/*
+ * The button sizes come in as custom properties, so a host can scale the control. All three
+ * wear one size: 32px square, the size the shell's action buttons wear.
+ */
+
+:host {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--cc-delete-gap, 4px);
+}
+
+.cc-delete-action {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--cc-delete-size, 32px);
+  height: var(--cc-delete-size, 32px);
+  padding: 0;
+  background: transparent;
+  border: 1px solid v.$campaign-portal-border-bold;
+  border-radius: 5px;
+  color: v.$campaign-portal-text-muted;
+  font-family: v.$font-body;
+  cursor: pointer;
+  transition: background 0.18s ease, border-color 0.18s ease, color 0.18s ease;
+
+  &:hover:not(:disabled) {
+    color: v.$campaign-portal-text-bright;
+    border-color: v.$color-border-accent;
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  /*
+   * The dagger and the ✕ are the two quiet buttons: a dark grey wash rather than a solid
+   * fill, so the card behind them still shows through, and the focus-weight border (0.6)
+   * so they can be picked out on a dark card. Hover lifts both the grey and the border.
+   */
+  &--danger,
+  &--cancel {
+    background: rgba(56, 56, 62, 1);
+    border-color: v.$campaign-portal-border-focus;
+
+    &:hover:not(:disabled) {
+      background: rgba(74, 74, 82, 1);
+      border-color: v.$campaign-portal-border-strong-focus;
+    }
+  }
+
+  /* The dagger's hover says what it is on top of that: the border turns red with the dagger. */
+  &--danger:hover:not(:disabled) {
+    color: #f87171;
+    border-color: rgba(248, 113, 113, 0.7);
+  }
+
+  /* The one that deletes: red, but see-through like the rest rather than a solid block. */
+  &--confirm {
+    width: auto;
+    padding: 0 5px;
+    font-size: var(--cc-delete-font-size, 14px);
+    background: rgba(220, 38, 38, 0.85);
+    border-color: rgba(248, 113, 113, 0.75);
+    color: #fff;
+
+    &:hover:not(:disabled) {
+      background: rgba(185, 28, 28, 0.92);
+      border-color: rgba(248, 113, 113, 0.95);
+      color: #fff;
+    }
+  }
+}
+
+/*
+ * The dagger art, scaled to its 32px button and flipped so the blade points down.
+ *
+ * The turn about its middle takes the tip it was drawn with — up and to the right — to the other
+ * corner, and the mirror across the blade's own length (which the `rotate(90deg) scaleY(-1)` pair
+ * is: a mirror about the art's own diagonal) swaps its two long sides over the blade, the edge the
+ * art was drawn with becoming the spine and the spine the edge, while the tip keeps the direction
+ * the turn gave it. Mirroring the art on its own would have handed the card a left-handed dagger.
+ */
+.cc-delete-icon {
+  width: var(--cc-delete-icon-size, 20px);
+  height: var(--cc-delete-icon-size, 20px);
+  filter: invert(1);
+  opacity: 0.85;
+  transform: rotate(90deg) scaleY(-1);
+}

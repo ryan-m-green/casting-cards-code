@@ -1,0 +1,91 @@
+@use '../../../../../../styles/variables' as v;
+
+:host {
+  display: inline-flex;
+  align-items: stretch;
+  overflow: hidden;
+  background: color-mix(in srgb, var(--portal-color, #{v.$color-base-purple-primary}) 14%, rgba(8, 4, 20, 0.9));
+  border: 1px solid v.$campaign-portal-border-hover;
+  border-radius: 6px;
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.09) inset, 0 2px 6px rgba(0, 0, 0, 0.35);
+}
+
+.dynamic-filter {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  min-height: 34px;
+  padding: 0 16px;
+  background: none;
+  border: 0;
+  border-left: 1px solid v.$campaign-portal-border-bold;
+  color: v.$campaign-portal-text-lavender;
+  font-family: v.$font-header;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease;
+
+  &:first-child { border-left: 0; }
+
+  &:hover:not(:disabled) {
+    background: color-mix(in srgb, var(--portal-color, #{v.$color-base-purple-primary}) 30%, rgba(8, 4, 20, 0.85));
+    color: v.$campaign-portal-text-bright;
+  }
+
+  &.is-on {
+    background: color-mix(in srgb, var(--portal-color, #{v.$color-base-purple-primary}) 62%, rgba(8, 4, 20, 0.6));
+    box-shadow: 0 1px 0 rgba(255, 255, 255, 0.16) inset;
+    color: #fff;
+  }
+
+  &:disabled {
+    opacity: 0.55;
+    box-shadow: none;
+    cursor: not-allowed;
+  }
+
+  &:focus { outline: none; }
+
+  &:focus-visible {
+    outline: 2px solid v.$campaign-portal-border-focus;
+    outline-offset: -2px;
+  }
+}
+
+.dynamic-filter-count {
+  font-family: v.$font-body;
+  font-size: 12px;
+  letter-spacing: 0;
+  text-transform: none;
+  opacity: 0.9;
+}
+
+@media (max-width: 1024px) {
+  :host { width: 100%; }
+
+  .dynamic-filter {
+    flex: 1 1 0;
+    min-width: 0;
+    padding: 0 10px;
+    gap: 5px;
+  }
+}
+
+@media (max-width: 480px) {
+  .dynamic-filter {
+    flex-direction: column;
+    gap: 0;
+    min-height: 40px;
+    padding: 4px 6px;
+    font-size: 10px;
+    letter-spacing: 0.08em;
+    line-height: 1.15;
+    text-align: center;
+    white-space: normal;
+  }
+}

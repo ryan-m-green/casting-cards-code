@@ -1,5 +1,4 @@
 ﻿using CastLibrary.Logic.Interfaces;
-using CastLibrary.Repository.Mappers;
 using Dapper;
 
 namespace CastLibrary.Repository.Repositories.Delete

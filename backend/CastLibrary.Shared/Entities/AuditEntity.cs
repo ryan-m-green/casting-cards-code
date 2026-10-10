@@ -1,4 +1,3 @@
-using System;
 using CastLibrary.Shared.Enums;
 
 namespace CastLibrary.Shared.Entities;

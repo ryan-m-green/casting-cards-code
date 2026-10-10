@@ -1,0 +1,134 @@
+@use '../../../../../../styles/variables' as v;
+
+/* The three choices stand on one row; the values the chosen one needs drop to the row under them. */
+.pause-control {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+/*
+ * Bare: the caller is laying the rows out, so the wrapper steps aside and the play-mode row and the
+ * values row become the caller's own flex items. The buttons take the width left beside whatever the
+ * caller set next to them, and the values take a line of their own.
+ */
+:host(.is-bare),
+:host(.is-bare) .pause-control {
+  display: contents;
+}
+
+:host(.is-bare) .pause-modes {
+  flex: 1 0 auto;
+}
+
+:host(.is-bare) .pause-values {
+  flex: 0 0 100%;
+}
+
+.pause-modes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 3px;
+}
+
+.pause-mode {
+  padding: 2px 6px;
+  background: rgba(14, 24, 32, 0.8);
+  border: 1px solid rgba(167, 121, 233, 0.4);
+  border-radius: 6px;
+  color: rgba(200, 225, 235, 0.88);
+  font-family: v.$font-header;
+  font-size: 8px;
+  letter-spacing: 0.06em;
+  line-height: 1.2;
+  text-transform: uppercase;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background 0.18s ease, border-color 0.18s ease, color 0.18s ease;
+
+  &:hover {
+    color: #fff;
+    border-color: var(--portal-color, v.$color-base-purple-primary);
+  }
+
+  &.is-on {
+    background: var(--portal-color, v.$color-base-purple-primary);
+    border-color: var(--portal-color, v.$color-base-purple-primary);
+    color: #fff;
+  }
+}
+
+.pause-values {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.pause-field,
+.pause-dash,
+.pause-field-unit {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  font-family: v.$font-body;
+  font-size: 11px;
+  color: rgba(200, 225, 235, 0.88);
+  white-space: nowrap;
+}
+
+.pause-field input {
+  width: 42px;
+  background: rgba(14, 24, 32, 0.8);
+  border: 1px solid rgba(167, 121, 233, 0.4);
+  border-radius: 6px;
+  color: rgb(200, 225, 235);
+  font-family: v.$font-body;
+  font-size: 11px;
+  padding: 1px 5px;
+
+  &:focus {
+    outline: none;
+    border-color: var(--portal-color, v.$color-base-purple-primary);
+  }
+}
+
+/* ── The journal's parchment ─────────────────────────────────────────────────
+   The same control inked for a page rather than a dark panel. */
+.pause-control--journal {
+  .pause-mode {
+    flex: 1 0 auto;
+    padding: 3px 8px;
+    text-align: center;
+    background: transparent;
+    border: 1px dashed v.$color-border-accent;
+    border-radius: 4px;
+    color: v.$color-base-brown-14;
+
+    &:hover {
+      border-color: v.$color-arcane-border;
+      color: v.$color-base-gold-1;
+    }
+
+    &.is-on {
+      background: v.$color-base-gold-1;
+      border-style: solid;
+      border-color: v.$color-base-gold-1;
+      color: v.$color-base-parchment-pale;
+    }
+  }
+
+  .pause-field,
+  .pause-dash,
+  .pause-field-unit {
+    color: v.$color-base-brown-14;
+  }
+
+  .pause-field input {
+    background: rgba(v.$color-input-bg, 0.85);
+    border: 1px solid rgba(v.$color-base-brown-14, 0.3);
+    color: v.$color-base-brown-14;
+
+    &:focus { border-color: v.$color-arcane-border; }
+  }
+}

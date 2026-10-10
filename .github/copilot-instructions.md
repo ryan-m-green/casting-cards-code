@@ -91,3 +91,44 @@ Copilot should:
 - Use Angular Signals for state
 - Use strict null checks
 - Use pure functions for mappers
+
+---
+
+## 7. Never Run The Test Suite
+
+**Do not run `ng test` (or any `npm test` / vitest invocation) in this repository.** It hangs or aborts
+in this working environment and wastes a whole turn every time it is tried. The suite is configured —
+the vitest runner and the unit-test builder are in `frontend/cast-library-ui/angular.json` — but
+nothing runs it from here, and it must not be attempted. The same note sits in
+`frontend/cast-library-ui/package.json`, beside the `test` script it is about.
+
+Validate frontend work the way this repository does it:
+
+- `cd frontend/cast-library-ui; npx ng build --configuration development` — a clean full build, which
+  type-checks every template too (`strictTemplates` is on) and reports exactly what a spec run would
+  have needed: errors and warnings, per file.
+- Read the changed files back over once the build is clean.
+
+Specs may still be *written* when new logic is added — just never executed from here.
+
+---
+
+## 8. Never Write Comments In Code
+
+**No comments are written in this codebase — not in the front end, not in the back end.**
+
+This applies to every file that is authored or edited:
+
+- No `//` line comments, no `/* */` block comments, no `<!-- -->` template comments, no CSS
+  comments.
+- No JSDoc/TSDoc blocks, no TSDoc on types, interfaces, models or components, no C# XML doc
+  comments.
+- TypeScript, HTML, SCSS and CSS files, and every C# file: controllers, commands, queries, handlers,
+  validators, repositories, mappers, domains, entities and requests/responses alike.
+
+Meaning is carried by naming, types and small focused members — not by prose. If a line feels like it
+needs a comment to be understood, rename or restructure it until it does not. Explanations belong in
+the reply to the user, never in the source.
+
+Comments already in the code are left exactly as they are; only comments authored as part of the
+current work are the author's to remove.

@@ -1,8 +1,5 @@
-﻿using CastLibrary.Logic.Services;
-using CastLibrary.Repository.Repositories.Read;
+﻿using CastLibrary.Repository.Repositories.Read;
 using CastLibrary.Repository.Repositories.Update;
-using CastLibrary.Shared.Domain;
-using CastLibrary.Shared.Enums;
 using CastLibrary.Shared.Requests;
 
 namespace CastLibrary.Logic.Commands.PlayerCard;
@@ -34,6 +31,7 @@ public class AwardCurrencyCommandHandler(
             return new AwardCurrencyResult
             {
                 TargetPlayerUserId = card.PlayerUserId,
+                TargetPlayerName = card.Name,
                 Amount = command.Request.Amount,
                 Currency = command.Request.Currency,
                 Note = command.Request.Note,
@@ -61,7 +59,10 @@ public class AwardCurrencyCommandHandler(
 
                 await currencyTransactionUpdateRepository.SetAmountAsync(command.CampaignId, players[i].UserId, command.Request.Currency, newAmount);
 
-                awards.Add(new PlayerAwardSplit(players[i].UserId, playerAmount));
+                var playerName = string.IsNullOrWhiteSpace(players[i].PlayerCardName)
+                    ? players[i].DisplayName
+                    : players[i].PlayerCardName;
+                awards.Add(new PlayerAwardSplit(players[i].UserId, playerAmount, playerName));
             }
 
             return new AwardCurrencyResult
@@ -90,11 +91,12 @@ public class AwardCurrencyCommand
     public AwardCurrencyRequest Request { get; }
 }
 
-public record PlayerAwardSplit(Guid PlayerUserId, int Amount);
+public record PlayerAwardSplit(Guid PlayerUserId, int Amount, string PlayerName = null);
 
 public class AwardCurrencyResult
 {
     public Guid? TargetPlayerUserId { get; set; }
+    public string TargetPlayerName { get; set; }
     public int Amount { get; set; }
     public string Currency { get; set; } = "gp";
     public string Note { get; set; }

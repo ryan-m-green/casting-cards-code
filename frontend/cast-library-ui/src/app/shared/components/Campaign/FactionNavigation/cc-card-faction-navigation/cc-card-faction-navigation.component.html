@@ -1,0 +1,175 @@
+<div class="cc-card-faction-navigation" [class.loading]="loading()" [class.error]="error() !== null">
+  @if (loading()) {
+  <div class="loading-state">
+    <div class="spinner"></div>
+    <p>Loading faction data...</p>
+  </div>
+  }
+
+  @if (error()) {
+  <div class="error-state">
+    <p>{{ error() }}</p>
+    <button (click)="loadCardData()">Retry</button>
+  </div>
+  }
+
+  @if (!loading() && !error()) {
+  <div class="rolodex-box-frame-left"></div>
+  <div class="rolodex-container">
+
+    <div class="row top-row">
+      <div class="cards-row">
+        @if (isDm()) {
+        <cc-view-switch
+          [mode]="viewParty() ? 'party' : 'gm'"
+          (modeChange)="setPartyView($event === 'party')"
+        />
+        }
+        <div class="drop-zone-container">
+          <div class="drop-spot faction-dropzone">
+            @if (parentFaction()) {
+            <div class="card-wrapper top-row-card" (click)="navigateToFactions()">
+              <cc-simple-faction-card ccCardFade [ccCardFadeOut]="transitioning()" [faction]="parentFaction()!"></cc-simple-faction-card>
+            </div>
+            }
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="rows-wrapper">
+      <div class="row middle-row swiper" #middleRow>
+        <div class="swiper-wrapper">
+          <div class="dropzones-layer"></div>
+
+          <div class="swiper-slide">
+            <div class="slide-content">
+              <cc-card-watermark [name]="watermarkName()" />
+            </div>
+          </div>
+
+          @if (currentView() === 'factions') {
+          @for (card of middleRowFactions(); track card.factionInstanceId) {
+          <div class="swiper-slide">
+            <div class="slide-content">
+              <div class="card-wrapper middle-row-card">
+                <cc-faction-card ccCardFade [ccCardFadeOut]="transitioning()" [faction]="card" [flippable]="true" [editable]="false" [details]="isOpen(card)"
+                  [secrets]="isGmRow()" [secretsRevealed]="card.isVisibleToPlayers"
+                  [deletable]="isGmRow() && !getCastsForFaction(card).length"
+                  [deleting]="deletingFactionId() === card.factionInstanceId"
+                  [tilt]="factionTilt(card.factionInstanceId)"
+                  (secretsClick)="toggleFactionVisibility(card)"
+                  (deleteClick)="deleteFaction(card)">
+                </cc-faction-card>
+                <cc-card-spotlight [cardId]="card.factionInstanceId" />
+              </div>
+              @if (getCastsForFaction(card).length > 0) {
+              <div class="bottom-row-content">
+                <div class="cast-stack-wrapper">
+                  <div class="cast-stack" (click)="navigateToCasts(card); $event.stopPropagation()">
+                    @for (cast of getCastsForFaction(card); track cast.instanceId; let i = $index) {
+                    @let castList = getCastsForFaction(card);
+                    @let totalCards = castList.length;
+                    @let centerIndex = (totalCards - 1) / 2;
+                    @let fromCenter = i - centerIndex;
+                    @let spreadAngle = totalCards > 1 ? fromCenter * 12 : 0;
+                    @let translateY = totalCards > 1 ? abs(fromCenter) * 2 + i * 2 : i * 3;
+                    @let translateX = totalCards > 1 ? fromCenter * 8 : 0;
+                    <div class="cast-card-wrapper"
+                      [style.transform]="'translateY(' + translateY + 'px) translateX(' + translateX + 'px) rotate(' + spreadAngle + 'deg)'"
+                      [style.opacity]="totalCards > 1 ? 1 - (abs(fromCenter) * 0.15) - (i * 0.1) : 1 - (i * 0.25)"
+                      [style.z-index]="totalCards > 1 ? 10 - abs(fromCenter) - i : 10 - i">
+                      <cc-simple-cast-card ccCardFade [ccCardFadeOut]="transitioning()" [cast]="cast"></cc-simple-cast-card>
+                    </div>
+                    }
+                  </div>
+                </div>
+              </div>
+              } @else if (canAddCast(card)) {
+              <div class="bottom-row-content">
+                <div class="cast-stack-wrapper">
+                  <button
+                    type="button"
+                    class="cast-new"
+                    [title]="'Add a cast card to ' + card.name"
+                    (click)="openCastPicker(card); $event.stopPropagation()"
+                  >
+                    <span class="cast-new-plus" aria-hidden="true">＋</span>
+                    <span class="cast-new-label">Add cast</span>
+                  </button>
+                </div>
+              </div>
+              }
+            </div>
+          </div>
+          }
+          } @else if (currentView() === 'casts') {
+          @for (card of middleRowCasts(); track card.instanceId) {
+          <div class="swiper-slide">
+            <div class="slide-content">
+              <div class="card-wrapper middle-row-card">
+                <cc-cast-card ccCardFade [ccCardFadeOut]="transitioning()" [cast]="card" [campaignId]="internalCampaignId()" [flippable]="true" [editable]="false"
+                  [campaignMode]="true" [secrets]="false" [dmMode]="true" [isDm]="isDm()"
+                  [travelable]="false"
+                  [deletable]="canWorkMembership()" [ownMembership]="!isDm()"
+                  [deleting]="deletingCastId() === card.instanceId"
+                  [deleteLabel]="'Remove ' + card.name + ' from ' + (parentFaction()?.name ?? 'this faction')"
+                  deleteConfirmLabel="Remove"
+                  [isPrimary]="isPrimaryCast(card.instanceId)"
+                  [canSetPrimary]="canWorkMembership()"
+                  [primaryLocked]="hasPrimaryCast() && !isPrimaryCast(card.instanceId)"
+                  [tilt]="castTilt(card.instanceId)"
+                  (primaryToggled)="setPrimaryCast(card)"
+                  (deleteClick)="deleteCast(card)">
+                </cc-cast-card>
+              </div>
+            </div>
+          </div>
+          }
+
+          @if (parentFaction(); as faction) {
+          @if (canAddCast(faction)) {
+          <div class="swiper-slide">
+            <div class="slide-content">
+              <button
+                type="button"
+                class="cast-add"
+                [title]="'Add cast cards to ' + faction.name"
+                (click)="openCastPicker(faction)"
+              >
+                <span class="cast-add-plus" aria-hidden="true">＋</span>
+                <span class="cast-add-label">Add cast</span>
+              </button>
+            </div>
+          </div>
+          }
+          }
+          }
+
+          @if (currentView() === 'factions' && isGmRow()) {
+          <div class="swiper-slide">
+            <div class="slide-content">
+              <button
+                type="button"
+                class="faction-new"
+                title="Add a faction to this campaign"
+                (click)="openFactionPicker()"
+              >
+                <span class="faction-new-plus" aria-hidden="true">＋</span>
+                <span class="faction-new-label">New faction</span>
+              </button>
+            </div>
+          </div>
+          }
+        </div>
+      </div>
+    </div>
+
+    @if (deleteError()) {
+      <p class="nav-delete-error">{{ deleteError() }}</p>
+    }
+
+  </div>
+  <div class="rolodex-box-frame-right"></div>
+  }
+</div>

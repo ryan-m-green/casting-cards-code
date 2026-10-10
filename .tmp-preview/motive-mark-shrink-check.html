@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>motive-body-mark — the 10% pull-back, at 3× </title>
+<style>
+  body { margin: 0; padding: 20px 24px; font-family: system-ui, sans-serif; background: #f3ece0; color: #2a2018; }
+  h2 { font-size: 13px; letter-spacing: .12em; text-transform: uppercase; opacity: .7; margin: 0 0 14px; }
+  .row { display: flex; align-items: flex-start; gap: 34px; }
+  .pair { display: flex; align-items: flex-start; gap: 10px; }
+  .side { display: flex; flex-direction: column; gap: 6px; align-items: center; }
+  .cap { font-size: 11px; opacity: .75; }
+
+  /* the card at its real 75 x 110, magnified 3x so a 10% change is judgeable by eye */
+  .card { zoom: 3; width: 75px; height: 110px; display: flex; flex-direction: column;
+          background: rgb(14, 24, 32); border: 1px solid rgba(167, 121, 233, 0.4);
+          border-radius: 8px; position: relative; }
+  .banner { display: flex; align-items: center; justify-content: center; padding: 5px 6px;
+            border-bottom: 1px solid rgba(167, 121, 233, 0.2); flex-shrink: 0; }
+  .type { font-family: Cinzel, serif; font-size: 10px; letter-spacing: .06em; text-transform: uppercase;
+          color: rgba(200, 225, 235, 0.95); white-space: nowrap; }
+  .body { position: relative; flex: 1; min-height: 0; display: flex; align-items: center;
+          justify-content: center; padding: 6px; }
+  .content { position: relative; width: 100%; font-family: "Crimson Text", serif; font-size: 10px;
+             line-height: 1.4; color: rgba(200, 225, 235, 0.88); text-align: center; }
+
+  /* both at opacity 1 so the geometry, not the transparency, is what you see */
+  .mark { position: absolute; inset: 5%; width: 90%; height: 90%; object-fit: contain;
+          filter: brightness(0) invert(1); opacity: 1; pointer-events: none; }
+  .mark-fill { inset: 0; width: 100%; height: 100%; }
+</style>
+</head>
+<body>
+<h2>Fill the body (left) against the shipped 10% pull-back (right), both at opacity 1</h2>
+<div class="row">
+  <div class="pair">
+    <div class="side">
+      <div class="card"><div class="banner"><span class="type">Goal</span></div><div class="body"><img class="mark mark-fill" src="dart_hitting_target_bullseye.svg" alt="" /><div class="content">To buy back the mill my father lost</div></div></div>
+      <div class="cap">fill · 59.5 × 54.9</div>
+    </div>
+    <div class="side">
+      <div class="card"><div class="banner"><span class="type">Goal</span></div><div class="body"><img class="mark" src="dart_hitting_target_bullseye.svg" alt="" /><div class="content">To buy back the mill my father lost</div></div></div>
+      <div class="cap">90% · 53.5 × 49.4</div>
+    </div>
+  </div>
+  <div class="pair">
+    <div class="side">
+      <div class="card"><div class="banner"><span class="type">Flaw</span></div><div class="body"><img class="mark mark-fill" src="broken_shield_sword.svg" alt="" /><div class="content">I cannot walk past a wager</div></div></div>
+      <div class="cap">fill · 72.8 × 81.7, flush left</div>
+    </div>
+    <div class="side">
+      <div class="card"><div class="banner"><span class="type">Flaw</span></div><div class="body"><img class="mark" src="broken_shield_sword.svg" alt="" /><div class="content">I cannot walk past a wager</div></div></div>
+      <div class="cap">90% · 65.5 × 73.5</div>
+    </div>
+  </div>
+  <div class="pair">
+    <div class="side">
+      <div class="card"><div class="banner"><span class="type">Fear</span></div><div class="body"><img class="mark mark-fill" src="person_falling_from_cliff.svg" alt="" /><div class="content">Heights, and a rope going slack</div></div></div>
+      <div class="cap">fill · 63.2 × 52.3</div>
+    </div>
+    <div class="side">
+      <div class="card"><div class="banner"><span class="type">Fear</span></div><div class="body"><img class="mark" src="person_falling_from_cliff.svg" alt="" /><div class="content">Heights, and a rope going slack</div></div></div>
+      <div class="cap">90% · 56.9 × 47.0</div>
+    </div>
+  </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,256 @@
+<div class="cc-card-faction-navigation" [class.loading]="loading()" [class.error]="error() !== null">
+  <!-- Loading State -->
+  @if (loading()) {
+  <div class="loading-state">
+    <div class="spinner"></div>
+    <p>Loading faction data...</p>
+  </div>
+  }
+
+  <!-- Error State -->
+  @if (error()) {
+  <div class="error-state">
+    <p>{{ error() }}</p>
+    <button (click)="loadCardData()">Retry</button>
+  </div>
+  }
+
+  <!-- 2-Level Navigation System -->
+  @if (!loading() && !error()) {
+  <!--
+    The black bars that frame the rolodex: one on the component's own left edge and one on its
+    right, from just under the breadcrumb row down the length of the middle row, each with its
+    inner edge masked away so the cards come out of the black rather than off a hard line. The
+    same pair, in the same dress, frames the realm's card navigation — drawn by the shell itself,
+    either side of it (see .rolodex-box-frame-* in v2-campaign-shell).
+  -->
+  <div class="rolodex-box-frame-left"></div>
+  <div class="rolodex-container">
+
+    <!-- Row 1: Top Row (Parent Faction Breadcrumb) -->
+    <div class="row top-row">
+      <!--
+        The GM's own window onto the party's row: a two-position switch standing just above the
+        factions' card row, at the left of the row's own band (clear of the black bar that frames
+        it — see `.party-view-switch`). One side is the GM's own row, the other the party's:
+        pressing "Party view" puts the party's own cast associations up in place of the GM's — the
+        faction cards the party is handed, read with the party's membership and the party's crowned
+        leaders — and "GM view" hands the row back (see `setPartyView`). The party's side is a look,
+        not a place to write: nothing on the row writes while it is up.
+
+        It is dressed as the campaign's edit control is, in the campaign's own colour (see
+        cc-edit-button, and `.party-view-switch`): a dark wash in a campaign-coloured pill, with its
+        two halves read as GM and Party. The half that is showing wears that colour poured in, and the
+        colour slides with it — the same move the two halves make. Each half is named in full for a
+        screen reader while the word on it is kept short, so the control stays as small as it can.
+      -->
+      @if (isDm()) {
+      <div class="party-view-switch" role="group" aria-label="Whose factions the row is showing">
+        <div class="party-view-track" [class.is-party]="viewParty()">
+          <span class="party-view-thumb" aria-hidden="true"></span>
+          <button
+            type="button"
+            class="party-view-option"
+            [class.is-on]="!viewParty()"
+            [attr.aria-pressed]="!viewParty()"
+            aria-label="GM view"
+            title="Show your own factions and their members"
+            (click)="setPartyView(false)"
+          >GM</button>
+          <button
+            type="button"
+            class="party-view-option"
+            [class.is-on]="viewParty()"
+            [attr.aria-pressed]="viewParty()"
+            aria-label="Party view"
+            title="Show the party's own factions and their members"
+            (click)="setPartyView(true)"
+          >Party</button>
+        </div>
+      </div>
+      }
+      <div class="cards-row">
+        <div class="drop-zone-container">
+          <div class="drop-spot faction-dropzone">
+            @if (parentFaction()) {
+            <div class="card-wrapper top-row-card" (click)="navigateToFactions()">
+              <cc-simple-faction-card ccCardFade [ccCardFadeOut]="transitioning()" [faction]="parentFaction()!"></cc-simple-faction-card>
+            </div>
+            }
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Row 2: Middle Row (Active Cards) -->
+    <div class="rows-wrapper">
+      <div class="row middle-row swiper" #middleRow>
+        <div class="swiper-wrapper">
+          <!-- Dropzones Layer (dynamically populated by JavaScript) -->
+          <div class="dropzones-layer"></div>
+
+          <!-- Cards -->
+          @if (currentView() === 'factions') {
+          @for (card of middleRowFactions(); track card.factionInstanceId) {
+          <div class="swiper-slide">
+            <div class="slide-content">
+              <div class="card-wrapper middle-row-card">
+                <cc-faction-card ccCardFade [ccCardFadeOut]="transitioning()" [faction]="card" [flippable]="true" [editable]="false" [details]="isOpen(card)"
+                  [secrets]="isGmRow()" [secretsRevealed]="card.isVisibleToPlayers"
+                  [deletable]="isGmRow() && !getCastsForFaction(card).length"
+                  [deleting]="deletingFactionId() === card.factionInstanceId"
+                  [tilt]="factionTilt(card.factionInstanceId)"
+                  (secretsClick)="toggleFactionVisibility(card)"
+                  (deleteClick)="deleteFaction(card)">
+                </cc-faction-card>
+                <!-- The light a faction's reveal throws on its card, for the players alone (see cc-card-spotlight). -->
+                <cc-card-spotlight [cardId]="card.factionInstanceId" />
+              </div>
+              @if (getCastsForFaction(card).length > 0) {
+              <div class="bottom-row-content">
+                <div class="cast-stack-wrapper">
+                  <div class="cast-stack" (click)="navigateToCasts(card); $event.stopPropagation()">
+                    @for (cast of getCastsForFaction(card); track cast.instanceId; let i = $index) {
+                    @let castList = getCastsForFaction(card);
+                    @let totalCards = castList.length;
+                    @let centerIndex = (totalCards - 1) / 2;
+                    @let fromCenter = i - centerIndex;
+                    @let spreadAngle = totalCards > 1 ? fromCenter * 12 : 0;
+                    @let translateY = totalCards > 1 ? abs(fromCenter) * 2 + i * 2 : i * 3;
+                    @let translateX = totalCards > 1 ? fromCenter * 8 : 0;
+                    <div class="cast-card-wrapper"
+                      [style.transform]="'translateY(' + translateY + 'px) translateX(' + translateX + 'px) rotate(' + spreadAngle + 'deg)'"
+                      [style.opacity]="totalCards > 1 ? 1 - (abs(fromCenter) * 0.15) - (i * 0.1) : 1 - (i * 0.25)"
+                      [style.z-index]="totalCards > 1 ? 10 - abs(fromCenter) - i : 10 - i">
+                      <cc-simple-cast-card ccCardFade [ccCardFadeOut]="transitioning()" [cast]="cast"></cc-simple-cast-card>
+                    </div>
+                    }
+                  </div>
+                </div>
+              </div>
+              } @else if (canAddCast(card)) {
+              <!--
+                No cast in this faction yet: where its cast stack would stand, the way to give
+                it one. It is dressed as the factions row's "New faction" tile is and takes the
+                stack's own cc-simple-cast-card measurements, so the slot keeps the shape the
+                stack fills once a card is in it. The picker it opens offers the campaign's own
+                cast cards (see the shell) — a faction's members come from the campaign, not
+                the library — so nothing can be created from here. It stands wherever the
+                viewer's own membership does, the same for both roles (see `canAddCast`): the
+                GM's own cards, a player's the cards they are handed.
+              -->
+              <div class="bottom-row-content">
+                <div class="cast-stack-wrapper">
+                  <button
+                    type="button"
+                    class="cast-new"
+                    [title]="'Add a cast card to ' + card.name"
+                    (click)="openCastPicker(card); $event.stopPropagation()"
+                  >
+                    <span class="cast-new-plus" aria-hidden="true">＋</span>
+                    <span class="cast-new-label">Add cast</span>
+                  </button>
+                </div>
+              </div>
+              }
+            </div>
+          </div>
+          }
+          } @else if (currentView() === 'casts') {
+          @for (card of middleRowCasts(); track card.instanceId) {
+          <div class="swiper-slide">
+            <div class="slide-content">
+              <div class="card-wrapper middle-row-card">
+                <!--
+                  The faction's cast cards wear no lock here: this row is about who the faction
+                  is made of, so the card is shown without its reveal control (`secrets` false),
+                  and what it carries instead is the crown — and the way off the membership, its
+                  own back-face dagger. Both are the hand that holds the membership: the GM's own
+                  (`isDm`, and `deletable`), or the party's own where the viewer is a player
+                  (`ownMembership`), so a player crowns and removes their own cast cards and
+                  touches nothing the GM holds. The crown is one card at a time — it is taken off
+                  the current leader before another can take it, the rule the faction detail page
+                  keeps (see the component).
+                -->
+                <cc-cast-card ccCardFade [ccCardFadeOut]="transitioning()" [cast]="card" [campaignId]="internalCampaignId()" [flippable]="true" [editable]="false"
+                  [campaignMode]="true" [secrets]="false" [dmMode]="true" [isDm]="isDm()"
+                  [travelable]="false"
+                  [deletable]="canWorkMembership()" [ownMembership]="!isDm()"
+                  [deleting]="deletingCastId() === card.instanceId"
+                  [deleteLabel]="'Remove ' + card.name + ' from ' + (parentFaction()?.name ?? 'this faction')"
+                  deleteConfirmLabel="Remove"
+                  [isPrimary]="isPrimaryCast(card.instanceId)"
+                  [canSetPrimary]="canWorkMembership()"
+                  [primaryLocked]="hasPrimaryCast() && !isPrimaryCast(card.instanceId)"
+                  [tilt]="castTilt(card.instanceId)"
+                  (primaryToggled)="setPrimaryCast(card)"
+                  (deleteClick)="deleteCast(card)">
+                </cc-cast-card>
+              </div>
+            </div>
+          </div>
+          }
+
+          <!--
+            More cast cards for the faction being browsed: a card-sized ＋ at the end of the
+            row, standing beside the full cast cards the way the factions row's "New faction"
+            tile stands beside the faction cards (and the encounter builder's "Add group"
+            beside its own). It opens the campaign-cast picker for the panel's faction (see
+            the shell), which offers only the campaign's casts this faction does not hold.
+            The row is only ever reached through a faction's cast stack, so the panel always
+            knows which faction it is; the tile waits for it just the same.
+          -->
+          @if (parentFaction(); as faction) {
+          @if (canAddCast(faction)) {
+          <div class="swiper-slide">
+            <div class="slide-content">
+              <button
+                type="button"
+                class="cast-add"
+                [title]="'Add cast cards to ' + faction.name"
+                (click)="openCastPicker(faction)"
+              >
+                <span class="cast-add-plus" aria-hidden="true">＋</span>
+                <span class="cast-add-label">Add cast</span>
+              </button>
+            </div>
+          </div>
+          }
+          }
+          }
+
+          <!--
+            The way to the picker, at the end of the factions row: a card-sized ＋, the
+            same tile the Encounters row wears at its own end. It only stands in the
+            factions view — browsing a faction's casts is not a place to add one — and on
+            the GM's own row: a faction is not a player's to add, and the party's row is
+            only ever looked at.
+          -->
+          @if (currentView() === 'factions' && isGmRow()) {
+          <div class="swiper-slide">
+            <div class="slide-content">
+              <button
+                type="button"
+                class="faction-new"
+                title="Add a faction to this campaign"
+                (click)="openFactionPicker()"
+              >
+                <span class="faction-new-plus" aria-hidden="true">＋</span>
+                <span class="faction-new-label">New faction</span>
+              </button>
+            </div>
+          </div>
+          }
+        </div>
+      </div>
+    </div>
+
+    <!-- A delete that did not land, where the row it was aimed at is. -->
+    @if (deleteError()) {
+      <p class="nav-delete-error">{{ deleteError() }}</p>
+    }
+
+  </div>
+  <div class="rolodex-box-frame-right"></div>
+  }
+</div>

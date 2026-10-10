@@ -1,0 +1,467 @@
+<div class="builder" [style.--portal-color]="portalColor()">
+  @if (loading()) {
+    <p class="builder-note">Loading encounters…</p>
+  } @else {
+
+    <!-- ── Face: the campaign's encounters as cards in one swipeable row ── -->
+    @if (mode() === 'row') {
+      <div class="stage" [class.is-fading]="fading()">
+        @if (!encounters().length) {
+          <div class="builder-empty">
+            <p class="builder-note">No encounters yet.</p>
+            <p class="builder-hint">Add cast cards as groups — the encounter is saved as you go.</p>
+            <button type="button" class="builder-primary" [disabled]="busy()" (click)="newEncounter()">
+              New encounter
+            </button>
+          </div>
+        } @else {
+          <!--
+            The pool's own filter, standing above the row: one split button cut into the four
+            statuses a fight is in — a segment apiece, and whether the row is drawing it. The three a
+            campaign works through are alight when the area opens; a fight that has ended is history,
+            so its card stays out of the row until the DM asks for it. Every segment counts the whole
+            pool, so it reads the same whether its cards are in the row or held back, and a status the
+            pool holds none of waits greyed out — there is nothing to reveal and nothing to put away.
+          -->
+          <div class="card-filters">
+            <div class="card-filter-split" role="group" aria-label="Filter the encounter cards by status">
+              @for (filter of statusFilters(); track filter.status) {
+                <button
+                  type="button"
+                  class="card-filter"
+                  [class.is-on]="filter.on"
+                  [attr.aria-pressed]="filter.on"
+                  [disabled]="!filter.count"
+                  [attr.title]="filter.title"
+                  (click)="toggleStatus(filter.status)"
+                >{{ filter.label }} <span class="card-filter-count">{{ filter.count }}</span></button>
+              }
+            </div>
+          </div>
+
+          <!--
+            The band the pool's row stands in, and the box the row's own black bars frame (see the
+            stylesheet): the 70% of the area the realm's card row and the factions' row keep, with
+            the bars as children of the band rather than of the row — the shape
+            cc-card-faction-navigation gives its rolodex (see its template, where the same pair
+            stands either side of `.rolodex-container`) — so they are measured against the band and
+            not against the row's own clipped box, and so they can run past the row the way the
+            rolodex frames do.
+          -->
+          <div class="card-band">
+            <div class="rolodex-box-frame-left"></div>
+            <div class="card-row swiper" #encounterRow>
+              <div class="swiper-wrapper">
+                @for (entry of visibleEncounters(); track entry.id) {
+                  <div class="swiper-slide">
+                    <cc-encounter-card
+                      [encounter]="entry"
+                      [portalColor]="portalColor()"
+                      [busy]="busy()"
+                      (editRequested)="openEdit(entry)"
+                      (circleRequested)="openCircle(entry)"
+                    />
+                  </div>
+                }
+
+                <div class="swiper-slide">
+                  <button type="button" class="card-new" [disabled]="busy()" (click)="newEncounter()">
+                    <span class="card-new-plus">＋</span>
+                    <span class="card-new-label">New encounter</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+            <div class="rolodex-box-frame-right"></div>
+          </div>
+        }
+      </div>
+    }
+
+    <!-- ── Face: editing one encounter ──────────────────────────────────── -->
+    @if (mode() === 'edit') {
+      <div class="stage stage--edit" [class.is-fading]="fading()">
+        <!--
+          The band at the top of the face, holding the face's own pieces: the way back to the pool of
+          encounters and the fight's own initiative circle at its two ends, each keeping the board's 24px
+          inset from the pulsing border, and the encounter's own title hung 12px below the band — that is,
+          below the way back it stands under — by the stylesheet's own rule rather than by the face's
+          arithmetic, so the gap is the same 12px whatever the area's height. The band is outside the
+          face's own stack of content, so none of the three moves with anything else on the face, and the
+          circle's own face keeps the way back in the same place, so it does not move either as the DM
+          steps between the two faces.
+        -->
+        <div class="builder-top">
+          <button
+            type="button"
+            class="builder-ghost builder-ghost--primary"
+            [disabled]="busy()"
+            title="View all the campaign's encounters"
+            (click)="backToRow()"
+          >Encounters</button>
+
+          @if (renamingEncounter()) {
+            <!--
+              The name being edited: the box the title stands in, with the close in the repair tool's own
+              slot and the field 8px to the right of it — where the name's first letter stands — so nothing
+              moves as the label turns into the field.
+
+              The box is closed by the close and by nothing else: a click anywhere else on the face leaves
+              it open, draft and all, and there it waits. A name that is meant to be kept is saved with
+              Enter — the field's own commit, which is also what puts the label back.
+            -->
+            <div class="builder-title">
+              <button
+                type="button"
+                class="builder-rename builder-rename--close"
+                title="Cancel the rename"
+                aria-label="Cancel the rename"
+                (click)="cancelRenameEncounter()"
+              >
+                <span class="builder-rename-glyph" aria-hidden="true">✕</span>
+              </button>
+
+              <input
+                #encounterNameInput
+                class="builder-name-input"
+                type="text"
+                aria-label="Encounter name"
+                [ngModel]="encounterNameDraft()"
+                (ngModelChange)="encounterNameDraft.set($event)"
+                (keydown.enter)="commitRenameEncounter()"
+              />
+            </div>
+          } @else {
+            <!--
+              The encounter's name and the tool that renames it, in the order the pair reads: the tool
+              first, then the name — the shape the shell's own area titles wear (see cc-grid-area-title).
+              The wrench is the button, so a rename is something the DM presses rather than something
+              hidden inside the name's own words, and the name itself is the face's heading.
+            -->
+            <div class="builder-title">
+              <button
+                type="button"
+                class="builder-rename"
+                title="Rename the encounter"
+                aria-label="Rename the encounter"
+                (click)="startRenameEncounter()"
+              >
+                <img class="builder-rename-icon" src="/hammer_wrench_repair_tool.svg" alt="" aria-hidden="true" draggable="false" />
+              </button>
+              <h3 class="builder-name">{{ encounter().name }}</h3>
+            </div>
+          }
+
+          <!-- The card's own initiative-circle button: straight from the editor
+               to the fight's circle, without going back to the row first. Purple
+               like the way back to the pool, so the two read as one pair. -->
+          <button
+            type="button"
+            class="builder-ghost builder-ghost--icon builder-ghost--primary"
+            [disabled]="busy()"
+            title="Initiative circle"
+            aria-label="Initiative circle"
+            (click)="openCircle(encounter())"
+          >
+            <img class="builder-ghost-icon" src="/crossed_battle_axe_weapon.svg" alt="" />
+          </button>
+        </div>
+
+        <!--
+          What the ring is made of: the party's spots plus the DM's groups, out of the
+          total a circle holds. The numbers move as groups are added or removed.
+        -->
+        <cc-encounter-places
+          class="builder-places"
+          [players]="places().players"
+          [groups]="places().groups"
+          [total]="places().total"
+        />
+
+        <!--
+          The encounter's cast combatants, one swipeable row. Cards of the same spot sit 2px apart; whole
+          spots are a card's own 24px apart, which is the row's Swiper spacing (see CARD_GUTTER). The row
+          opens with the first group's first card — not the whole cluster — on the middle of the screen:
+          the first slide is padded to balance that card against the rest of its group, a figure the
+          component measures onto the row itself (see `measureSpotLeadPad` and the stylesheet).
+        -->
+        <div class="combat-row swiper" #combatRow>
+          <div class="swiper-wrapper">
+            @for (spot of castSpots(); track spot.id) {
+              <div class="swiper-slide">
+                <article class="combat-spot">
+                  <!-- A group holding a single card is named after that card, so it has no
+                       name of its own to show or change: the bar is for groups of two or
+                       more -->
+                  @if (castCards(spot).length > 1) {
+                    <div class="spot-bar" [class.spot-bar--renaming]="renamingSpotId() === spot.id">
+                      @if (renamingSpotId() === spot.id) {
+                        <input
+                          #spotNameInput
+                          class="spot-rename"
+                          type="text"
+                          aria-label="Group name"
+                          [ngModel]="spotNameDraft()"
+                          (ngModelChange)="spotNameDraft.set($event)"
+                          (keydown.enter)="commitRenameGroup(spot)"
+                          (blur)="commitRenameGroup(spot)"
+                        />
+                      } @else {
+                        <button
+                          type="button"
+                          class="spot-name"
+                          title="Rename this group"
+                          (click)="startRenameGroup(spot)"
+                        >{{ groupLabel(spot) }}<span class="spot-name-pencil">✎</span></button>
+                      }
+                    </div>
+                  }
+
+                  <div class="spot-cards">
+                    @for (card of castCards(spot); track card.id) {
+                      <div class="combatant">
+                        <!--
+                          The ring's own card, configured exactly as the circle face configures it (see
+                          cc-encounter-circle): the DM's board card, read-only and not flippable, with the
+                          bloodied cross for a card that has gone down.
+                        -->
+                        <cc-cast-card
+                          [cast]="asCast(card)"
+                          [flippable]="false"
+                          [editable]="false"
+                          [secrets]="false"
+                          [campaignMode]="false"
+                          [titleSearch]="false"
+                          [readonlyStars]="true"
+                          [dmMode]="true"
+                          [isDefeated]="card.isDefeated"
+                        />
+
+                        <button
+                          type="button"
+                          class="combatant-remove"
+                          title="Remove this card from the encounter"
+                          aria-label="Remove this card"
+                          (click)="removeCard(spot, card)"
+                        >✕</button>
+                      </div>
+                    }
+
+                    <!-- The group's card count, in the room the smaller add tile leaves
+                         above it (see .combatant-add-column) -->
+                    <div class="combatant-add-column">
+                      @if (castCards(spot).length > 1) {
+                        <span class="combatant-count" title="Cards in this group">×{{ castCards(spot).length }}</span>
+                      }
+
+                      <button
+                        type="button"
+                        class="combatant-add"
+                        [disabled]="busy()"
+                        title="Add cast cards to this group"
+                        aria-label="Add cast cards to this group"
+                        (click)="openAddToGroup(spot)"
+                      >＋</button>
+                    </div>
+                  </div>
+                </article>
+              </div>
+            }
+
+            <div class="swiper-slide">
+              <!-- A group needs a place of its own: the last slide says so instead of
+                   offering one the ring has not got (the party holds the rest) -->
+              <button
+                type="button"
+                class="combat-new"
+                [disabled]="busy() || spotsFull()"
+                [title]="spotsFull()
+                  ? 'The initiative circle holds ' + maxSpots + ' places, the party\'s included'
+                  : 'Add a group of cast cards'"
+                (click)="openNewGroup()"
+              >
+                <span class="combat-new-plus">＋</span>
+                <span class="combat-new-label">{{ spotsFull() ? 'Ring full' : 'Add group' }}</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    }
+
+    <!-- ── Face: the encounter's initiative circle ───────────────────────── -->
+    @if (mode() === 'circle') {
+      <div class="stage stage--circle" [class.is-fading]="fading()">
+        <cc-encounter-circle
+          [encounter]="encounter()"
+          [portalColor]="portalColor()"
+          [busy]="busy()"
+          (startRequested)="startInitiative()"
+          (endRequested)="endCombat()"
+          (editRequested)="openEdit(encounter())"
+          (allRequested)="backToRow()"
+          (nextRequested)="nextTurn()"
+          (reorderRequested)="reorderSpots($event)"
+          (combatantSelected)="openCombatantDetails($event)"
+        />
+      </div>
+    }
+
+    <!-- ── Face: rolling the initiative ─────────────────────────────────── -->
+    @if (mode() === 'rolls') {
+      <div class="stage" [class.is-fading]="fading()">
+        <!-- The same two ways in and out of the encounter as the ring's own buttons: the pool of
+             encounters at the top left, the editor at the bottom left (see the stylesheet) -->
+        <div class="rolls-actions rolls-actions--top">
+          <button type="button" class="rolls-action" [disabled]="busy()" title="View all the campaign's encounters" (click)="backToRow()">Encounters</button>
+        </div>
+
+        <div class="rolls-actions rolls-actions--bottom">
+          <!-- The editor, drawn as the card and the ring draw it (see cc-edit-button). -->
+          <cc-edit-button
+            label="Edit this encounter"
+            [disabled]="busy()"
+            (clicked)="openEdit(encounter())"
+          />
+        </div>
+
+        <!--
+          The number rolled for each spot in the fight is turned in here, under the cards it
+          belongs to. Nothing is written until the button is pressed, so the dials can be worked
+          through at the table.
+        -->
+        <div class="rolls-bar">
+          <button type="button" class="builder-primary" [disabled]="busy() || !rollsComplete()" (click)="finalizeOrder()">
+            Finalize order
+          </button>
+        </div>
+
+        <div class="rolls-row swiper" #rollsRow>
+          <div class="swiper-wrapper">
+            @for (spot of encounter().spots; track spot.id) {
+              <div class="swiper-slide">
+                <article class="roll-spot">
+                  <!--
+                    A group of more than one card is named, so its name sits over its cards. A lone
+                    card is named after itself and shows none — but the pill is drawn either way,
+                    blank for those, so every spot's cards share one line down the row (see .roll-name).
+                  -->
+                  @let named = spot.combatants.length > 1;
+
+                  <span
+                    class="roll-name"
+                    [class.is-blank]="!named"
+                    [title]="named ? spotLabel(spot) : ''"
+                  >{{ named ? spotLabel(spot) : '' }}</span>
+
+                  <div class="roll-cards">
+                    @for (card of spot.combatants; track card.id; let i = $index) {
+                      <div class="roll-card" [style.zIndex]="spot.combatants.length - i">
+                        @if (card.combatantType === 'player') {
+                          <cc-simple-player-card [player]="asPlayer(card)" />
+                        } @else {
+                          <cc-simple-cast-card [cast]="asCast(card)" [isDefeated]="card.isDefeated" />
+                        }
+                      </div>
+                    }
+                  </div>
+
+                  <!-- One dial per group, under the first of its cards: a group of three rolls once -->
+                  <div class="roll-counter">
+                    <cc-dial-counter
+                      context="campaign"
+                      [dials]="2"
+                      [min]="0"
+                      [max]="99"
+                      [disabled]="busy()"
+                      [ariaLabel]="'Initiative for ' + spotLabel(spot)"
+                      [ngModel]="rollFor(spot)"
+                      (ngModelChange)="setRoll(spot, $event)"
+                    />
+                  </div>
+                </article>
+              </div>
+            }
+          </div>
+
+          <!--
+            The dials' own caption, standing in the gutter between the cards and the dials. It is a
+            child of the row but not of its swiper content — only the wrapper inside the row is
+            ever moved — so turning the row through the fight's spots leaves the label where it
+            is, in line with the first card's left border. See the stylesheet for where it sits.
+          -->
+          <span class="rolls-label">Add Initiative Roll Value</span>
+        </div>
+      </div>
+    }
+
+    <!-- ── Face: the fight as it finished ────────────────────────────────── -->
+    @if (mode() === 'ended') {
+      <div class="stage stage--ended" [class.is-fading]="fading()">
+        <!-- The way back to the pool, kept at the top of the face the way the editor keeps it. -->
+        <div class="builder-top">
+          <button
+            type="button"
+            class="builder-ghost builder-ghost--primary"
+            title="View all the campaign's encounters"
+            (click)="backToRow()"
+          >Encounters</button>
+        </div>
+
+        <header class="ended-head">
+          <h2 class="ended-name">{{ endedTitle() }}</h2>
+          @if (endedAtLabel()) {
+            <p class="ended-when">Ended {{ endedAtLabel() }}</p>
+          }
+        </header>
+
+        <!--
+          What the fight put down: every card it held, one face per distinct card with how many
+          copies of it stood in the fight under it. The bloodied cross is for a card whose every
+          copy went down — a group still partly standing is not crossed — and the tally over the row
+          keeps the count of the cards that actually fell.
+        -->
+        <section class="ended-side">
+          <div class="ended-side-head">
+            <span class="ended-side-label">Your cards</span>
+            <span class="ended-side-line"></span>
+            @if (endedFoeCount()) {
+              <span class="ended-side-tally">{{ foesDown() }} of {{ endedFoeCount() }} down</span>
+            }
+          </div>
+
+          @if (endedFoes().length) {
+            <div class="ended-row swiper" #endedFoesRow>
+              <div class="swiper-wrapper">
+                @for (card of endedFoes(); track card.key) {
+                  <div class="swiper-slide">
+                    <article class="ended-card">
+                      <cc-cast-card
+                        [cast]="asCast(card.combatant)"
+                        [flippable]="true"
+                        [editable]="false"
+                        [secrets]="false"
+                        [campaignMode]="false"
+                        [titleSearch]="false"
+                        [readonlyStars]="true"
+                        [dmMode]="true"
+                        [isDefeated]="card.downCount === card.count"
+                      />
+                      <span class="ended-count" [title]="endedCountTitle(card)">×{{ card.count }}</span>
+                    </article>
+                  </div>
+                }
+              </div>
+            </div>
+          } @else {
+            <p class="ended-none">Nothing of the DM's was in this fight.</p>
+          }
+        </section>
+      </div>
+    }
+
+    @if (error()) {
+      <p class="builder-error">{{ error() }}</p>
+    }
+  }
+</div>

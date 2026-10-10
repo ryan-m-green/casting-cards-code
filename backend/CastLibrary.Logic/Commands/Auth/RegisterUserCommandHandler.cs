@@ -1,15 +1,12 @@
 ﻿using CastLibrary.Adapter.Operators;
 using CastLibrary.Logic.Commands.Subscription;
 using CastLibrary.Logic.Services;
-using CastLibrary.Repository.Repositories;
 using CastLibrary.Repository.Repositories.Insert;
 using CastLibrary.Repository.Repositories.Read;
-using CastLibrary.Repository.Repositories.Update;
 using CastLibrary.Shared.Configuration;
 using CastLibrary.Shared.Domain;
 using CastLibrary.Shared.Enums;
 using CastLibrary.Shared.Requests;
-using CastLibrary.Shared.Responses;
 
 namespace CastLibrary.Logic.Commands.Auth;
 

@@ -1,4 +1,3 @@
-using Amazon;
 using Amazon.S3;
 using Amazon.S3.Model;
 using CastLibrary.Logic.Interfaces;

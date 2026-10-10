@@ -1,0 +1,192 @@
+@use '../../../../../../styles/variables' as v;
+
+:host {
+  display: block;
+  width: 84px;
+  height: 118px;
+  flex-shrink: 0;
+}
+
+.condition-card {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.condition-card-body {
+  display: block;
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  background: none;
+  border: 0;
+  cursor: pointer;
+
+  &:focus-visible {
+    outline: 2px solid v.$campaign-portal-border-focus;
+    outline-offset: 2px;
+  }
+}
+
+.condition-mini-card {
+  display: block;
+  width: 100%;
+  height: 100%;
+  padding: 3px;
+  border-radius: 6px;
+  box-sizing: border-box;
+  background: linear-gradient(
+    145deg,
+    v.$color-base-gold-2 0%, v.$color-base-gold-mid-hex 20%, v.$color-base-gold-dark-hex 45%,
+    v.$color-base-gold-bright-hex 55%, v.$color-base-gold-mid-hex 70%, v.$color-base-gold-3 85%, v.$color-base-gold-4 100%
+  );
+  box-shadow:
+    0 0 0 1px v.$color-base-black-7,
+    0 3px 11px v.$color-shadow-dark,
+    inset 0 0.5px 0 v.$color-cast-gold-10;
+}
+
+.condition-mini-inner {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  border-radius: 4px;
+  background: linear-gradient(160deg, v.$color-base-tan-14 0%, v.$color-base-tan-15 50%, v.$color-base-tan-16 100%);
+}
+
+/* The cast card watermark stands its authored card size and is scaled into this smaller card, so it
+   reads exactly as it does in an empty slot in the card navigation. */
+.condition-watermark {
+  flex: 0 0 auto;
+  width: v.$card-width;
+  height: v.$card-height;
+  transform: scale(0.5);
+}
+
+/* `cc-card-watermark` inks its symbol in pale portal-lavender at 15% — it is built for the dark
+   empty slot it normally fills, and on this card's tan parchment that is invisible. Ink it for
+   parchment instead, and thicken the stroke a touch so it still reads at the half scale. */
+.condition-mini-inner ::ng-deep cc-card-watermark .card-watermark {
+  --icon-opacity: 0.32;
+  color: v.$color-base-brown-16;
+}
+
+.condition-mini-inner ::ng-deep cc-card-watermark .icon-svg {
+  stroke-width: 2.6;
+}
+
+/* The condition's ring stretches the card's length, the way `cc-ring-condition` draws its simple
+   rings across a `cc-simple-cast-card`, and its ends stick out 4px past the card's sides. It sits a
+   third of the card's height above the bottom border. */
+.condition-ring {
+  position: absolute;
+  left: -4px;
+  right: -4px;
+  bottom: calc(100% / 3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 24px;
+  padding: 0 8px;
+  border-radius: 50% / 100%;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.5) 0%, rgba(255, 255, 255, 0.12) 38%, rgba(0, 0, 0, 0.34) 100%),
+    linear-gradient(90deg, rgba(0, 0, 0, 0.7) 0%, var(--ring-color, #{v.$color-base-purple-primary}) 22%, var(--ring-color, #{v.$color-base-purple-primary}) 78%, rgba(0, 0, 0, 0.7) 100%);
+  box-shadow:
+    0 1px 2px rgba(0, 0, 0, 0.45),
+    inset 0 1px 0 rgba(255, 255, 255, 0.4);
+  color: #fff;
+  font-family: v.$font-body;
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  line-height: 1;
+  text-transform: uppercase;
+  white-space: nowrap;
+  text-shadow: 0 1px 1px rgba(0, 0, 0, 0.75), 0 0 2px rgba(0, 0, 0, 0.55);
+}
+
+.condition-ring-label {
+  max-width: 100%;
+  overflow: hidden;
+  padding: 1.5px calc(4px - 0.08em) 1.5px 4px;
+  background: rgba(0, 0, 0, 0.78);
+  border-radius: 999px;
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.4);
+  text-overflow: ellipsis;
+}
+
+/* The purple selection check a picker wears — the same one `cc-faction-cast-picker` puts on a
+   picked cast card. */
+.condition-card-check {
+  position: absolute;
+  top: -7px;
+  right: -7px;
+  z-index: 6;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  background: v.$color-base-purple-primary;
+  border-radius: 50%;
+  color: #fff;
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1;
+}
+
+/* ── The library's full-sized card ─────────────────────────────────────────────
+   The same card the campaign shows, drawn at the size of a library card so it stands in the
+   journal's card rows: the parchment fills the card, the watermark stands at its authored size,
+   and the ring stretches wider and taller to match. */
+:host(.is-full) {
+  width: v.$card-width;
+  height: v.$card-height;
+}
+
+.condition-card--full {
+  .condition-mini-card {
+    padding: 4px;
+    border-radius: 8px;
+  }
+
+  .condition-mini-inner {
+    border-radius: 6px;
+  }
+
+  .condition-watermark {
+    transform: scale(1);
+  }
+
+  .condition-ring {
+    left: -6px;
+    right: -6px;
+    height: 34px;
+    padding: 0 12px;
+    font-size: 13px;
+  }
+
+  .condition-ring-label {
+    padding: 2px calc(8px - 0.08em) 2px 8px;
+  }
+}
+
+/* The library's edit (bottom-left) and delete (bottom-right) buttons. */
+.condition-card-edit {
+  position: absolute;
+  left: 6px;
+  bottom: 6px;
+  z-index: 5;
+}
+
+.condition-card-delete {
+  position: absolute;
+  right: 6px;
+  bottom: 6px;
+  z-index: 5;
+}

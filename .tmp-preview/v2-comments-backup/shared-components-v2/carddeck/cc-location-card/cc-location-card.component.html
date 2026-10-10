@@ -1,0 +1,186 @@
+<div class="loc-card"
+     [class.loc-card--flipped]="flipped"
+     [class.loc-card--no-flip]="!flippable"
+     [style.transform]="tiltTransform"
+     (click)="toggleFlip($event)">
+  <div class="loc-card__inner">
+
+    <!-- ── BACK FACE ── -->
+    <div class="loc-card__face loc-card__face--back">
+      <div class="loc-frame">
+        <div class="loc-back-inner">
+          <div class="loc-back-border"></div>
+          <div class="loc-back-border2"></div>
+
+          <!--
+            The compact way off the card, top-right of the back face — the same corner the cast and
+            faction cards keep their own in, so the campaign's cards read alike. It asks before it
+            deletes (see cc-delete-button). Only ever drawn in campaign mode, and only when the GM
+            may say so and the caller says the card may go (`deletable`): the campaign's row hands
+            it the GM's answer for a location holding no sublocation, which is the only one that may
+            leave the campaign.
+          -->
+          @if (campaignMode && isDm && deletable) {
+            <cc-delete-button
+              [label]="'Delete ' + location.name"
+              [disabled]="deleting"
+              (confirmed)="onConfirmDelete()"
+            />
+          }
+
+          <div class="loc-back-emblem">
+            <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="#c8e080" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10.5" fill="none" stroke="#c8e080" stroke-width="0.4" opacity=".55"/>
+              <circle cx="12" cy="12" r="8.5" fill="none" stroke="#c8e080" stroke-width="0.2" opacity=".35"/>
+              <polygon points="12,1.5 12.9,3.5 12,2.8 11.1,3.5" fill="#c8e080" opacity=".65"/>
+              <polygon points="12,22.5 12.9,20.5 12,21.2 11.1,20.5" fill="#c8e080" opacity=".65"/>
+              <polygon points="1.5,12 3.5,11.1 2.8,12 3.5,12.9" fill="#c8e080" opacity=".65"/>
+              <polygon points="22.5,12 20.5,11.1 21.2,12 20.5,12.9" fill="#c8e080" opacity=".65"/>
+              <g transform="translate(12, 12) scale(0.5) translate(-12, -12)">
+                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/>
+              </g>
+            </svg>
+          </div>
+
+          <div class="loc-back-name">{{ location.name }}</div>
+          <div class="loc-back-divider"></div>
+
+          <div class="loc-back-flavor">
+            <div class="loc-back-flavor-text">{{ location.description ? '"' + location.description + '"' : '—' }}</div>
+          </div>
+
+          @if (editable) {
+            <div class="loc-back-actions">
+              <button class="loc-btn loc-btn--gold" (click)="onEditClick($event)">✦ Edit</button>
+              <button class="loc-btn loc-btn--red" (click)="onDeleteClick($event)">✦ Delete</button>
+            </div>
+          }
+
+          <!--
+            The way into the card. The GM/Admin always has it — this is their own panel — and
+            anyone else has it only while the card's lock is open: a locked card is a sealed
+            card, on the row and with nothing to press.
+          -->
+          @if (campaignMode && (isDm || secretsRevealed)) {
+            <div class="loc-back-actions">
+              <button class="loc-btn loc-btn--blue" (click)="onDetailsClick($event)">✦ Details</button>
+            </div>
+          }
+        </div>
+      </div>
+    </div>
+
+    <!-- ── FRONT FACE ── -->
+    <div class="loc-card__face loc-card__face--front">
+      <div class="loc-frame">
+        <div class="loc-inner">
+
+          <div class="loc-corner loc-corner--tl">
+            <svg viewBox="0 0 20 20" fill="none" width="12" height="12">
+              <path d="M2 18L2 2L18 2" stroke="#7aaa30" stroke-width="1.5" stroke-linecap="round"/>
+              <path d="M2 10L6 10" stroke="#7aaa30" stroke-width="1" stroke-linecap="round"/>
+              <path d="M10 2L10 6" stroke="#7aaa30" stroke-width="1" stroke-linecap="round"/>
+              <rect x="8" y="8" width="4" height="4" fill="#7aaa30" transform="rotate(45 10 10)" opacity="0.7"/>
+            </svg>
+          </div>
+          <div class="loc-corner loc-corner--tr">
+            <svg viewBox="0 0 20 20" fill="none" width="12" height="12">
+              <path d="M2 18L2 2L18 2" stroke="#7aaa30" stroke-width="1.5" stroke-linecap="round"/>
+              <path d="M2 10L6 10" stroke="#7aaa30" stroke-width="1" stroke-linecap="round"/>
+              <path d="M10 2L10 6" stroke="#7aaa30" stroke-width="1" stroke-linecap="round"/>
+              <rect x="8" y="8" width="4" height="4" fill="#7aaa30" transform="rotate(45 10 10)" opacity="0.7"/>
+            </svg>
+          </div>
+          <div class="loc-corner loc-corner--bl">
+            <svg viewBox="0 0 20 20" fill="none" width="12" height="12">
+              <path d="M2 18L2 2L18 2" stroke="#7aaa30" stroke-width="1.5" stroke-linecap="round"/>
+              <path d="M2 10L6 10" stroke="#7aaa30" stroke-width="1" stroke-linecap="round"/>
+              <path d="M10 2L10 6" stroke="#7aaa30" stroke-width="1" stroke-linecap="round"/>
+              <rect x="8" y="8" width="4" height="4" fill="#7aaa30" transform="rotate(45 10 10)" opacity="0.7"/>
+            </svg>
+          </div>
+          <div class="loc-corner loc-corner--br">
+            <svg viewBox="0 0 20 20" fill="none" width="12" height="12">
+              <path d="M2 18L2 2L18 2" stroke="#7aaa30" stroke-width="1.5" stroke-linecap="round"/>
+              <path d="M2 10L6 10" stroke="#7aaa30" stroke-width="1" stroke-linecap="round"/>
+              <path d="M10 2L10 6" stroke="#7aaa30" stroke-width="1" stroke-linecap="round"/>
+              <rect x="8" y="8" width="4" height="4" fill="#7aaa30" transform="rotate(45 10 10)" opacity="0.7"/>
+            </svg>
+          </div>
+
+          
+          <!-- The lock is the GM's own control, and is drawn for them alone. -->
+          @if (secrets && isDm) {
+            <button class="loc-secrets-btn"
+                    [class.loc-secrets-btn--revealed]="secretsRevealed"
+                    (click)="onSecretsClick($event)"
+                    [attr.aria-label]="(secretsRevealed ? 'Hide ' : 'Reveal ') + location.name + ' to players'"
+                    [title]="secretsRevealed ? 'Hide from players' : 'Reveal to players'">
+              <cc-lock-button [open]="secretsRevealed" />
+            </button>
+          }
+
+          <!-- banner -->
+          <div class="loc-banner">
+            <div class="loc-name" (click)="onNameClick($event)">{{ location.name }}</div>
+            <div class="loc-subtitle">Location · {{ location.classification }}</div>
+          </div>
+
+          <!-- portrait -->
+          <div class="loc-portrait"
+               [class.loc-portrait--uploadable]="imageUpload">
+            @if (imageUpload) {
+              <label class="loc-upload-label">
+                <input type="file" accept="image/jpeg,image/png,image/webp"
+                       aria-label="Upload image for {{ location.name }}"
+                       class="loc-upload-input" (change)="onFileInputChange($event)" />
+                <div class="loc-upload-overlay">
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#e8f0d0" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
+                    <circle cx="12" cy="13" r="4"/>
+                  </svg>
+                </div>
+              </label>
+            }
+            @if (location.imageUrl) {
+              <img [src]="location.imageUrl" [alt]="'Image of ' + location.name + ', a ' + location.classification" class="loc-portrait-img" (error)="$any($event.target).style.display='none'" (load)="$any($event.target).style.display=''" />
+            } @else {
+              <div class="loc-portrait-placeholder">
+                <cc-location-icon [width]="44" color="black"></cc-location-icon>
+              </div>
+            }
+          </div>
+
+          <!-- bottom strip -->
+          <div class="loc-strip"
+               [class.loc-strip--editable]="editable"
+               (click)="onEditClick($event)">
+            <div class="loc-strip-left">
+              <div class="loc-pip-row">
+                <div class="loc-pip"></div>
+                <div class="loc-pip"></div>
+                <div class="loc-pip"></div>
+              </div>
+            </div>
+            <span class="loc-strip-label">Location</span>
+            <div class="loc-pip-row">
+              <div class="loc-pip"></div>
+              <div class="loc-pip"></div>
+              <div class="loc-pip"></div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- secret content -->
+  @if (secretContent) {
+    <div class="card-secret-block">
+      <div class="card-secret-label">Secret Revealed</div>
+      <div class="card-secret-text">{{ secretContent }}</div>
+    </div>
+  }
+</div>

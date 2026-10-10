@@ -1,0 +1,51 @@
+﻿<div class="pc scroll-body">
+  <app-journal-watermark pageType="cast" />
+  <app-journal-title title="Cast Library" />
+  <div class="wr wr-page-header">
+    <app-upgrade-badge
+      [visible]="auth.isFreeTrial()"
+      (badgeClick)="openUpgradeDrawer()"
+      class="upgrade-badge-library" />
+    <input class="search-bar search-bar--header" type="text" placeholder="Name · Race · Role…"
+           [value]="searchTerm()" (input)="searchTerm.set($any($event.target).value)" />
+    <div class="wr-ml-auto cc-keyword-editor-wrap">
+      <button class="campaign-primary-btn"
+              [class.disabled]="castLimitReached() || isCreateDisabled()"
+              [attr.disabled]="(castLimitReached() || isCreateDisabled()) ? 'true' : null"
+              [routerLink]="(castLimitReached() || isCreateDisabled()) ? null : '/gm/cast/new'"
+              (click)="(castLimitReached() || isCreateDisabled()) ? $event.preventDefault() : null">+ Create</button>
+      <cc-keyword-editor [cardType]="'cast'"></cc-keyword-editor>
+    </div>
+  </div>
+
+  <div class="card-grid">
+    @for (cast of filtered(); track cast.id) {
+      <cc-cast-card
+        [cast]="cast"
+        [tilt]="tiltFor(cast.id)"
+        [titleSearch]="false"
+        [dmMode]="true"
+        (editClick)="edit(cast.id)"
+        (deleteClick)="confirmDelete(cast.id)">
+      </cc-cast-card>
+    }
+    @empty {
+      <p class="wbd-journal empty-state-pad">No cast found. Create your first cast member to get started.</p>
+    }
+  </div>
+</div>
+
+@if (pendingDeleteId()) {
+  <div class="delete-overlay" (click)="cancelDelete()">
+    <div class="delete-panel" (click)="$event.stopPropagation()">
+      <div class="delete-panel-title">Delete Cast Member?</div>
+      <p class="delete-panel-message">
+        This will permanently delete this cast member and their portrait, and remove them from any campaigns. This cannot be undone.
+      </p>
+      <div class="delete-btn-row">
+        <button class="btn-modal-cancel" (click)="cancelDelete()">Cancel</button>
+        <button class="btn-modal-delete" (click)="executeDelete()">Delete</button>
+      </div>
+    </div>
+  </div>
+}

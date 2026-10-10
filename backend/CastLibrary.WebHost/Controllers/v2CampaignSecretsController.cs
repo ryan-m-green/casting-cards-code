@@ -1,8 +1,6 @@
 using CastLibrary.Logic.Commands.Campaign;
 using CastLibrary.Logic.Queries.Campaign;
 using CastLibrary.Logic.Services;
-using CastLibrary.Logic.Validators;
-using CastLibrary.Shared.Exceptions;
 using CastLibrary.Shared.Requests;
 using CastLibrary.Shared.Responses;
 using CastLibrary.WebHost.Mappers;
@@ -14,6 +12,13 @@ using Microsoft.AspNetCore.RateLimiting;
 
 namespace CastLibrary.WebHost.Controllers;
 
+/// <summary>
+/// A campaign's secrets: the collection itself, and the writes that keep one secret's own words and
+/// state in step — written, resealed, dropped.
+///
+/// Revealing a secret is not here. It works for any secret of any card, so it stands on the
+/// campaign's own controller as the one door for all of them (see CampaignController.RevealSecret).
+/// </summary>
 [ApiController]
 [Route("api/campaign/{campaignId}/secrets")]
 [Authorize]
@@ -22,7 +27,6 @@ public class CampaignSecretsController(
     IGetCampaignSecretsQueryHandler getSecretsQuery,
     IAddCampaignSecretCommandHandler addSecretCommand,
     IUpdateSecretCommandHandler updateSecretCommand,
-    IRevealSecretCommandHandler revealSecretCommand,
     IResealSecretCommandHandler resealSecretCommand,
     IDeleteCampaignSecretCommandHandler deleteSecretCommand,
     ICampaignWebMapper mapper,
@@ -96,28 +100,6 @@ public class CampaignSecretsController(
         {
             campaignId = campaignId,
             secretId = secretId,
-        });
-
-        var response = mapper.ToSecretResponse(secret);
-        return Ok(response);
-    }
-
-    [HttpPost("{secretId}/reveal")]
-    [Authorize(Roles = "DM,Admin")]
-    public async Task<IActionResult> RevealSecret(Guid campaignId, Guid secretId)
-    {
-        if (!await CallerOwns(campaignId)) return Forbid();
-        var secret = await revealSecretCommand.HandleAsync(new RevealSecretCommand(secretId, campaignId));
-        if (secret is null) return NotFound();
-
-        await notificationService.BroadcastPlayerSecretRevealedAsync(campaignId, new SecretRevealedEvent
-        {
-            SecretId = secretId,
-            CampaignId = campaignId,
-            CastInstanceId = secret.CastInstanceId,
-            LocationInstanceId = secret.LocationInstanceId,
-            SublocationInstanceId = secret.SublocationInstanceId,
-            SecretContent = secret.Content,
         });
 
         var response = mapper.ToSecretResponse(secret);

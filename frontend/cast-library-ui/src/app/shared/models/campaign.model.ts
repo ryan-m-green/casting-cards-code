@@ -5,17 +5,6 @@ import { CampaignSublocationInstance } from './sublocation.model';
 import { TimeOfDay } from './time-of-day.model';
 import { CampaignFactionInstance } from './faction.model';
 
-export interface CampaignCastRelationship {
-  id: string;
-  campaignId: string;
-  sourceCastInstanceId: string;
-  targetCastInstanceId: string;
-  value: number;
-  explanation: string | null;
-  createdAt: string;
-  updatedAt: string;
-}
-
 export type CampaignStatus = 'Active' | 'Paused' | 'Completed';
 
 export interface Campaign {
@@ -62,45 +51,9 @@ export interface CampaignDetail {
   sublocations: CampaignSublocationInstance[];
   secrets: CampaignSecret[];
   players: CampaignPlayer[];
-  relationships: CampaignCastRelationship[];
   inviteCode: CampaignInviteCode | null;
   timeOfDay: TimeOfDay | null;
   factions: CampaignFactionInstance[];
-}
-
-export interface CampaignCastPlayerNotes {
-  id: string;
-  campaignId: string;
-  castInstanceId: string;
-  notes: string;
-  connections: string[];
-  alignment: string;
-  perception: number;
-  rating: number;
-  updatedAt: string;
-}
-
-export interface CampaignLocationPlayerNotes {
-  id: string;
-  campaignId: string;
-  locationInstanceId: string;
-  notes: string;
-}
-
-export interface CampaignSublocationPlayerNotes {
-  id: string;
-  campaignId: string;
-  sublocationInstanceId: string;
-  notes: string;
-}
-
-export interface CampaignFactionPlayerNotes {
-  id: string;
-  campaignId: string;
-  factionInstanceId: string;
-  notes: string;
-  influence: number | null;
-  perception: number | null;
 }
 
 export interface CampaignPlayerNotes {

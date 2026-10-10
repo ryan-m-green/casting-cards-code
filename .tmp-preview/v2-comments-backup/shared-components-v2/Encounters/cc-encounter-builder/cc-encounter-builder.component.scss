@@ -1,0 +1,1391 @@
+@use '../../../../../../styles/variables' as v;
+
+:host {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.builder {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  padding: 56px 0 24px; // clears the area title
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+/* Every face fades in and out of the same space. */
+.stage {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 12px;
+  flex: 1;
+  min-height: 0;
+  opacity: 1;
+  transition: opacity 0.22s ease;
+
+  &.is-fading { opacity: 0; }
+}
+
+.stage--circle {
+  gap: 0;
+
+  /*
+   * The shell's radial nav (cc-radial-nav) is fixed to the viewport's bottom-right
+   * corner: 267px square, pulled 60px off each edge, so it covers the last ~207px
+   * of the corner. The reserve caps the circle's size; it is taken off both ends
+   * evenly so the circle sits on the middle of the screen.
+   *
+   * The 34px row of action buttons is kept clear at the bottom, exactly where the row
+   * sat when it was a flex item of this stage: the circle keeps the size and the
+   * position it had, and the face drops its own bottom row into the space that leaves
+   * under the ring (see the circle's .circle-actions--bottom rule).
+   */
+  --radial-nav-reserve: 220px;
+  --circle-actions-row: 34px;
+  padding:
+    calc(var(--radial-nav-reserve) / 2)
+    0
+    calc(var(--radial-nav-reserve) / 2 + var(--circle-actions-row));
+
+  /* The circle takes the height that is left */
+  cc-encounter-circle {
+    flex: 1;
+    min-height: 0;
+  }
+}
+
+.builder-note {
+  margin: 0;
+  color: v.$campaign-portal-text-muted;
+  font-size: 13px;
+  letter-spacing: 0.06em;
+  text-align: center;
+}
+
+.builder-hint {
+  max-width: 320px;
+  margin: 0;
+  color: v.$campaign-portal-text-muted;
+  font-size: 11px;
+  line-height: 1.5;
+  text-align: center;
+}
+
+.builder-error {
+  margin: 8px 0 0;
+  color: #f87171;
+  font-size: 12px;
+  text-align: center;
+}
+
+.builder-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+}
+
+.builder-primary {
+  padding: 10px 18px;
+  background: linear-gradient(135deg, #6e28d0 0%, #4c1d95 100%);
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-radius: 8px;
+  color: #fff;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+
+  &:hover:not(:disabled) { transform: scale(1.03); }
+  &:disabled { opacity: 0.4; cursor: not-allowed; }
+}
+
+.builder-ghost {
+  padding: 8px 14px;
+  background: rgba(0, 0, 0, 0.25);
+  border: 1px solid v.$campaign-portal-border-bold;
+  border-radius: 8px;
+  color: v.$campaign-portal-text-lavender;
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: border-color 0.15s ease, color 0.15s ease;
+
+  &:hover:not(:disabled) {
+    border-color: v.$campaign-portal-border-hover;
+    color: v.$campaign-portal-text-bright;
+  }
+
+  &:disabled { opacity: 0.4; cursor: not-allowed; }
+}
+/*
+ * The one button in the face that is a call to action: the way back to the pool of
+ * encounters. The circle's own face paints the same button in this purple, so it reads
+ * the same on both faces — the rest of the editor's buttons stay ghosts.
+ */
+.builder-ghost--primary {
+  background: linear-gradient(135deg, #6e28d0 0%, #4c1d95 100%);
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  color: #fff;
+  font-weight: 700;
+  transition: transform 0.2s ease, border-color 0.2s ease;
+
+  &:hover:not(:disabled) {
+    color: #fff;
+    border-color: rgba(255, 255, 255, 0.45);
+    transform: scale(1.03);
+  }
+
+  &:focus { outline: none; }
+
+  &:focus-visible {
+    outline: 2px solid v.$campaign-portal-border-focus;
+    outline-offset: 2px;
+  }
+}
+
+/*
+ * The size of the face's square action button, in px: the fight button in the band at the top of the face
+ * (see .builder-ghost--icon), which is what gives the band its own height — and so the line the encounter's
+ * title hangs 12px below (see .builder-title).
+ */
+$face-action-size: 38px;
+
+/*
+ * The band's own square button: the encounter card's crossed-axes button, so the DM can jump straight to
+ * the fight's circle instead of going back to the row first. It borrows .builder-ghost's frame and the
+ * call-to-action purple, and squares itself up around the icon (the border included — see the global
+ * box-sizing), at the size the band's row is held to.
+ */
+.builder-ghost--icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: $face-action-size;
+  height: $face-action-size;
+  padding: 0;
+}
+
+/* Inked white, because the public SVG is drawn black (the same trick as the delete icons) */
+.builder-ghost-icon {
+  width: 18px;
+  height: 18px;
+  object-fit: contain;
+  display: block;
+  filter: invert(1);
+}
+
+
+
+/* ── The pool's filter, above its row ──────────────────────────────────────── */
+/*
+ * The statuses a fight is in, as the pool's own split button over the row of cards: one track cut
+ * into the four — a segment apiece — rather than four chips standing apart. Every segment is a
+ * button of its own, so any status can be turned off alone; the hairline between two of them belongs
+ * to the track, not to either button, so the four read as one control and the control reads as one
+ * strip to a thumb on a phone.
+ *
+ * They are painted brighter than the panel behind them — a lit fill for a status that is on, a
+ * readable dim for one that is off — because the band is the first thing the DM's eye meets over the
+ * cards, and a segment that has to be hunted for is not a filter.
+ */
+.card-filters {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  /*
+   * The box the pool's row keeps, so the filter still lines up with the cards: it rides in the same
+   * 70% of the area as the band beneath it (see .card-band), which holds the row and its bars. In
+   * this column-flex section a fixed width on its own would leave the band at the section's left
+   * edge, so the free space either side of it goes to the auto margins.
+   */
+  width: 70%;
+  margin: 0 auto;
+  padding: 0 24px;   // the row's own inset, so the filter's first segment lines up with the first card
+}
+
+/*
+ * The split button itself: one dark wash in a campaign-coloured frame, its segments sharing the
+ * hairlines between them. It is squared off on the app's own control radius rather than drawn as a
+ * pill, and it hugs what the four statuses need — it is a filter, not a banner.
+ */
+.card-filter-split {
+  display: inline-flex;
+  align-items: stretch;
+  /* The track's own corners are what clip the segments inside it (and the focus ring with them). */
+  overflow: hidden;
+  background: color-mix(in srgb, var(--portal-color, #{v.$color-base-purple-primary}) 14%, rgba(8, 4, 20, 0.9));
+  border: 1px solid v.$campaign-portal-border-hover;
+  border-radius: 6px;
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.09) inset, 0 2px 6px rgba(0, 0, 0, 0.35);
+}
+
+/* A segment: one status, as tall as a finger wants and no wider than its word needs. */
+.card-filter {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  min-height: 34px;
+  padding: 0 16px;
+  background: none;
+  border: 0;
+  /* The hairline between two segments is the track's: it is drawn on the second one onwards. */
+  border-left: 1px solid v.$campaign-portal-border-bold;
+  color: v.$campaign-portal-text-lavender;
+  font-family: v.$font-header;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease;
+
+  &:first-child {
+    border-left: 0;
+  }
+
+  &:hover:not(:disabled) {
+    background: color-mix(in srgb, var(--portal-color, #{v.$color-base-purple-primary}) 30%, rgba(8, 4, 20, 0.85));
+    color: v.$campaign-portal-text-bright;
+  }
+
+  /* The status the row is drawing: the segment is alight, and the cards of that status are in the row. */
+  &.is-on {
+    background: color-mix(in srgb, var(--portal-color, #{v.$color-base-purple-primary}) 62%, rgba(8, 4, 20, 0.6));
+    box-shadow: 0 1px 0 rgba(255, 255, 255, 0.16) inset;
+    color: #fff;
+  }
+
+  /* A status the pool holds none of: nothing to reveal, nothing to put away, so the segment waits. */
+  &:disabled {
+    opacity: 0.55;
+    box-shadow: none;
+    cursor: not-allowed;
+  }
+
+  &:focus { outline: none; }
+
+  /* The ring is drawn inside the segment: the track's own clip is what would cut it off otherwise. */
+  &:focus-visible {
+    outline: 2px solid v.$campaign-portal-border-focus;
+    outline-offset: -2px;
+  }
+}
+
+/* The chip's count, read in the body font the way the rest of the app's filter counts are. */
+.card-filter-count {
+  font-family: v.$font-body;
+  font-size: 12px;
+  letter-spacing: 0;
+  text-transform: none;
+  opacity: 0.9;
+}
+
+/* ── Encounter card row (the pool) ─────────────────────────────────────────── */
+/*
+ * The band the pool's row stands in: the 70% of the area the realm's own swipable row keeps (see
+ * cc-card-navigation's .middle-row, which spans the 70%-wide rolodex box), so the pool's cards
+ * stand in the same band of the screen the campaign's card rows do, and this row's own black bars
+ * (see .rolodex-box-frame-*) stand where those rows' do. The band holds the row and nothing else.
+ *
+ * It carries a transform of its own, and that is not decoration: a transformed box is what a
+ * `position: fixed` descendant is fixed to, so the band — not the viewport, and not the shell's
+ * panned board — is what the two bars ride. It is the same move the faction row's root makes with
+ * its own centring transform (see cc-card-faction-navigation), which is what its own pair of
+ * frames hangs off.
+ *
+ * The band is deliberately not clipped: the bars carry on past the row, the way the rolodex
+ * frames carry on past their cards, and it is the area that ends them (see the shell's .grid-area,
+ * whose own overflow keeps them off the neighbouring areas).
+ */
+.card-band {
+  position: relative;
+  width: 70%;
+  margin: 0 auto; // the width is explicit, so the auto margins are what centre it in the flex column
+  transform: translateZ(0); // the containing block for the row's fixed bars (see above)
+}
+
+.card-row {
+  /*
+   * The row fills the band, and says so: Swiper's own stylesheet puts `margin-left/right: auto` on
+   * every `.swiper` (see node_modules/swiper/swiper-bundle.css), and an explicit width leaves those
+   * auto margins no free space to take, so the row is measured by the band rather than by its own
+   * slides (see .ended-row for the long version of why that matters).
+   */
+  width: 100%;
+  height: 244px; // a full card plus room for its ring / shadow
+  padding: 8px 24px 0;
+  box-sizing: border-box;
+  overflow: hidden;
+  overscroll-behavior-x: contain;
+
+  .swiper-wrapper {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    transition-property: transform; // Swiper only sets the duration
+  }
+
+  .swiper-slide {
+    flex: 0 0 auto;
+    width: v.$card-width;
+    height: v.$card-height;
+    box-sizing: border-box;
+  }
+}
+
+/* Fallback while the row has no Swiper instance yet (Swiper adds
+   .swiper-initialized to the container and sets the real 12px margins itself):
+   the cards keep their 12px gap — including before the "New encounter" tile —
+   and the row can still be scrolled instead of being clipped. */
+.card-row:not(.swiper-initialized) {
+  overflow-x: auto;
+
+  .swiper-slide + .swiper-slide { margin-left: 12px; }
+}
+
+/* ── The row's own black bars ──────────────────────────────────────────────── */
+/*
+ * The bars that frame the pool's row, put on it the way the realm's card row and the factions' row
+ * wear theirs (see the shell's .rolodex-box-frame-* and cc-card-faction-navigation): one on the
+ * band's left edge
+ * and one on its right, 62px wide, each masked away toward the middle so the cards come out of the
+ * black rather than off a hard line. They are drawn `fixed`, which over a transformed band means
+ * fixed to the band (see .card-band's transform): they ride the band's edges at every viewport, and
+ * they keep their place on the board while the shell pans it, the way the other two areas' frames
+ * do. They are children of the band but not of its swiper content, so the cards turn beneath them
+ * (the way the dials' caption does — see .rolls-label).
+ *
+ * Their run is the rolodex frames' own figure: the pair the realm and the factions wear start just
+ * above their card row and run 500px down it, ended by the box they hang in rather than by the
+ * cards (see those pairs' own `min-height: 500px`). Here the same 500px is taken from the top
+ * of the row and it is the area that ends it, so the bars carry on past the cards and into the room
+ * beneath them — the row stands in the middle of the area rather than at the top of a rolodex box,
+ * so there is no offset to pay: the 108px those two pay is the clearance of the row above their
+ * cards, and here the filter chips stand outside the band entirely.
+ *
+ * They keep out of the DM's way: a drag that starts on the black still swipes the row, and a card
+ * under the faded end of a bar is still the card.
+ */
+.rolodex-box-frame-left{
+  position: fixed;
+  top: 0;
+  left: 0;
+  min-width: 62px;
+  min-height: 500px;
+  z-index: 1000;
+  pointer-events: none;
+  background: black;
+  mask-image: linear-gradient(to right, black 0%, black 70%, transparent 100%);
+  -webkit-mask-image: linear-gradient(to right, black 0%, black 70%, transparent 100%);
+}
+
+.rolodex-box-frame-right{
+  position: fixed;
+  top: 0;
+  right: 0;
+  min-width: 62px;
+  min-height: 500px;
+  z-index: 1000;
+  pointer-events: none;
+  background: black;
+  mask-image: linear-gradient(to left, black 0%, black 50%, transparent 100%);
+  -webkit-mask-image: linear-gradient(to left, black 0%, black 50%, transparent 100%);
+}
+
+.card-new {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  width: 100%;
+  height: 100%;
+  padding: 4px;
+  background: transparent;
+  border: 1px dashed v.$campaign-portal-border-focus;
+  border-radius: 6px;
+  color: v.$campaign-portal-text-lavender;
+  cursor: pointer;
+
+  &:disabled { opacity: 0.4; cursor: not-allowed; }
+}
+
+.card-new-plus { font-size: 28px; }
+
+.card-new-label {
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+/* ── Header of the build / edit faces ──────────────────────────────────────── */
+/*
+ * The gutter the band's own buttons keep from the pulsing border, in px: the board's 24px inset, and the
+ * same at both ends of the band — the way back to the pool stands this far in from the left border, and
+ * the fight button this far in from the right (see .builder-top for both).
+ */
+$band-inset: 24px;
+
+/*
+ * The encounter's title, hung under the band: the tool and the name it renames, in the order the pair
+ * reads — tool, then name, the shape the shell's own area titles wear (see cc-grid-area-title).
+ *
+ * It is placed against the band's own box — the band is a positioned box, so it is the title's containing
+ * block — 12px below it and on the band's inset, which is the line the way back to the pool stands on. The
+ * gap between the button and the title is therefore the same 12px whatever the area's height, since none
+ * of it is arithmetic on the face's own stack (see `$edit-lift`, which the title has been taken out of).
+ *
+ * The title takes the pointer back for itself: the band takes none (see above), and the title is a control
+ * — the repair tool, or, with the name box open, a field and its close.
+ *
+ * The cap is the room the title has to itself: the face's own 24px inset, the same either side, so a name
+ * long enough to reach it wraps inside its own band rather than running to the face's edge.
+ */
+$title-drop: 12px;
+$rename-tool-size: 24px;
+$title-gap: 8px;
+
+.builder-title {
+  position: absolute;
+  top: calc(100% + $title-drop);
+  left: $band-inset;
+  display: flex;
+  align-items: center;
+  gap: $title-gap;
+  max-width: calc(100% - 48px);
+  pointer-events: auto;
+}
+
+/*
+ * The title's own repair tools, as the button the rename opens from: the wrench the rest of the campaign
+ * puts on an edit, kept bare beside the name rather than framed — the name is what the face is read by,
+ * and the tool stands beside it as its own quiet control. It is shown all the time, so the name reads as
+ * something that can be renamed without going hunting for the control with the pointer, and it comes up
+ * to full strength under it. Inked white because the public SVG is drawn black — the same trick the
+ * delete icons and the rest of the campaign's wrenches use (see .builder-ghost-icon).
+ */
+$title-tool-opacity: 0.6;
+
+/*
+ * How far the tool's own hit area reaches past its art, in px: the tool is small — 24px, the size the
+ * title has always drawn it at — so what a press has to land on is widened invisibly rather than the
+ * tool being drawn larger (see the halo below).
+ */
+$title-tool-reach: 6px;
+
+.builder-rename {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;              // the name gives way, never the tool
+  width: $rename-tool-size;
+  height: $rename-tool-size;
+  padding: 0;
+  background: none;
+  border: none;
+  cursor: pointer;
+
+  /*
+   * The halo: a press is taken anywhere in the 6px around the art as well, so the tool is a
+   * comfortable thing to hit — on a touch screen especially — without the tool itself, or the gutter it
+   * keeps from the name, growing by a pixel. It is transparent, so none of it can be seen.
+   */
+  &::before {
+    content: '';
+    position: absolute;
+    inset: -$title-tool-reach;
+  }
+}
+
+/*
+ * The art takes no pointer of its own, so a press anywhere on the tool is the button's: no native image
+ * drag can start from the art and swallow the click. The component's `draggable="false"` on the image
+ * says the same thing to the browser's own drag machinery.
+ */
+.builder-rename-icon {
+  display: block;
+  width: $rename-tool-size;
+  height: $rename-tool-size;
+  object-fit: contain;
+  filter: invert(1);
+  opacity: $title-tool-opacity;
+  pointer-events: none;
+  transition: opacity 0.15s ease;
+}
+
+.builder-rename:hover .builder-rename-icon,
+.builder-rename:focus-visible .builder-rename-icon {
+  opacity: 1;
+}
+
+/*
+ * The close that takes the tool's slot while the name box is open (see .builder-title): the tool's own box
+ * and halo, carrying the ✕ the rest of the campaign closes with (see cc-content-drawer's own close, and the
+ * ✕ a card being taken out of a group wears). It is the way *out* of the box and not its commit — Enter is
+ * what saves a new name, and a click anywhere else on the face is left to do what it was aimed at, with the
+ * box staying open — so it is inked in the quiet strength the tool is drawn at, and comes up to full with it
+ * under the pointer.
+ */
+.builder-rename--close {
+  color: v.$campaign-portal-text-bright;
+  font-family: v.$font-body;
+  font-size: 15px;
+  line-height: 1;
+}
+
+.builder-rename-glyph {
+  opacity: $title-tool-opacity;
+  transition: opacity 0.15s ease;
+}
+
+.builder-rename--close:hover .builder-rename-glyph,
+.builder-rename--close:focus-visible .builder-rename-glyph {
+  opacity: 1;
+}
+
+/*
+ * The name itself: the face's heading, set in the title's own case, colour and type at 18px — and at the
+ * weight it had as a button, since a heading's own bold is a change of its own.
+ */
+.builder-name {
+  margin: 0;
+  color: v.$campaign-portal-text-bright;
+  font-family: v.$font-header;
+  font-size: 18px;
+  font-weight: 400;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+/*
+ * The name box itself: a flex item of the title's row, set at the name's own 18px so the name does not
+ * change size as the box opens. It opens where the name's first letter stands — the close holds the repair
+ * tool's own slot before it — and is its own width wide rather than sized to the name, so it reaches further
+ * right than the name did.
+ *
+ * `min-width: 0` is what lets it give way on a narrow face: the row is shrink-to-fit against the room left
+ * of it, and without that the field's own intrinsic width would hold the row wider than the face rather than
+ * the field giving way.
+ */
+.builder-name-input {
+  width: 420px;
+  min-width: 0;
+  padding: 6px 8px;
+  background: rgba(0, 0, 0, 0.4);
+  border: 1px solid v.$campaign-portal-border-focus;
+  border-radius: 6px;
+  color: #fff;
+  font-family: v.$font-header;
+  font-size: 18px;
+  letter-spacing: 0.08em;
+}
+
+/*
+ * The band at the top of the face, under the area's title and outside the face's own stack of content,
+ * so nothing else moves with it: the face's two ways about the encounter stand together here — the way
+ * back to the pool of encounters at its left, and the fight's own circle button at its far end, the pair
+ * the circle face keeps in its own top row.
+ *
+ * The way back stands the board's own 24px inset in from the left border, and the fight button is carried
+ * to the far end by its own auto margin, where the band's 24px right inset is what is left between it and
+ * the border — the same gutter at both ends of the band (see $band-inset).
+ *
+ * The band lies the width of the face, and the face's own stack can ride up under it: the stage's 60px
+ * of headroom is what normally keeps them apart, and on a short area the stack is centred high enough to
+ * reach back into it (see `$edit-lift`, which lifts the stack out of the stage's middle). So the band
+ * takes no pointer of its own — it is not a control, and a transparent shield over the title line
+ * beneath it is exactly what it must not be — while its own buttons take the pointer back.
+ */
+.builder-top {
+  position: absolute;
+  top: 18px;
+  left: 0;
+  right: 0;
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  padding: 0 $band-inset;
+  pointer-events: none;
+}
+
+.builder-top .builder-ghost {
+  pointer-events: auto;
+}
+
+/* The fight button, at the band's far end: against the 24px inset that is its gutter to the border. */
+.builder-top .builder-ghost--icon {
+  margin-left: auto;
+}
+
+/*
+ * The face this band is anchored to. Only the editor takes it: the circle's own face
+ * positions its title and buttons against the ring's box, not against the stage. The
+ * padding keeps that band — and the title hung 12px under it — clear of the face's own
+ * content, so neither lands on the ring's arithmetic when the area is short.
+ */
+.stage--edit {
+  position: relative;
+  padding-top: 60px;
+}
+
+/*
+ * How far the face's stack is drawn above the stage's own middle, in px, so that the body — the
+ * ring's arithmetic and the row of groups under it — stands on the middle of the area rather than
+ * below it. One offset of the stage's own is cancelled:
+ *
+ *   33px  the stage sits that far below the area's middle to begin with: the builder's 56px
+ *         headroom against its 24px foot puts what the stage centres 16px down, and the 34px the
+ *         face keeps clear of the band at the top of it puts it 17px further down again.
+ *
+ * There is no second term for what the stack carries above the body, because it carries nothing: the
+ * encounter's title and the face's two buttons all stand in the band, which is anchored to the face
+ * rather than to this stack (see .builder-top and .builder-title), so the body is the whole stack.
+ *
+ * A relative offset rather than a margin, exactly as the wrap-up face lifts its own stack: it moves
+ * these two alone, leaving the band (and the title hung under it) and the 12px gutter between the
+ * sections exactly where they are.
+ */
+$edit-lift: 33px;
+
+.builder-places,
+.combat-row {
+  position: relative;
+  top: -$edit-lift;
+}
+
+/* ── The ring's arithmetic, in the face's own stack of content ─────────────── */
+/*
+ * The face's own 24px inset, and no offset of its own: the readout keeps the row of groups' left edge.
+ * The row opens centred (see CENTRED_SWIPER_OPTIONS), so the room it opens with is black the readout
+ * does not carry — the strip is a caption of the whole row rather than of the group standing first, and
+ * it stays where the face puts it however wide that group is.
+ */
+.builder-places {
+  left: 0;
+  margin: 2px 0 6px;
+  padding: 0 24px;
+}
+
+/* ── The encounter's combatants: one row, grouped by spot ─────────────────── */
+/*
+ * No inset on the row's own box, and that is deliberate: a Swiper measures its viewport as the row's
+ * `clientWidth` — which *counts* the row's padding — while its slides are laid out from the row's
+ * *content* box, one padding in from that. A horizontal padding on the row itself therefore shifts
+ * whatever the row has centred by exactly that padding: with a 24px inset the first group would open
+ * 24px right of the middle of the area. The slides run the face's full width instead, and the group
+ * standing first — or the ＋ tile, where the fight holds no group yet — opens on the middle of the
+ * screen (see CENTRED_SWIPER_OPTIONS). A centred row never leaves a group flush against the face's
+ * edge either: its travel runs from "first group centred" to "last group centred".
+ *
+ * The row is as tall as its groups need: 8px of headroom, then a group's own box — the 30px strip
+ * its controls sit in above its 220px cards (see .combat-spot) — and the 16px of shadow room the
+ * pool's own full-card row keeps under them (see .card-row).
+ */
+.combat-row {
+  width: 100%;
+  height: 274px;
+  padding: 8px 0 0;
+  box-sizing: border-box;
+  /*
+   * `clip` rather than `hidden`: both hide what leaves the row, but `hidden` is still a
+   * scrollport, so the browser can scroll the row (to reveal a focused name box, say) and
+   * drag its padding and cards out of place. `clip` cannot be scrolled at all, which is
+   * what a Swiper row wants — its slides move by transform, never by scroll.
+   */
+  overflow: clip;
+  overscroll-behavior-x: contain;
+
+  .swiper-wrapper {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    transition-property: transform;
+  }
+
+  /* Slides size to their cluster, so the row's own gutter is what separates the spots (see SPOT_SWIPER_OPTIONS) */
+  .swiper-slide {
+    flex: 0 0 auto;
+    width: auto;
+  }
+}
+
+/*
+ * The group standing first opens with its own first card — not the whole cluster — on the middle of the
+ * screen: the slide is padded on its left by everything the group carries beside and after that card (the
+ * rest of its cards, and the add column at the foot of them), so the card and the group's tail balance
+ * each other about the row's centring. The figure is the group's own geometry, measured onto the row as a
+ * custom property (see the component's `measureSpotLeadPad`), and the pad is empty — nothing is drawn in it.
+ *
+ * Only the first slide takes it. The groups after it open on their own clusters, which is what a swipe
+ * through the row is for, and an empty fight's row (the ＋ tile alone) is left out of the arithmetic
+ * altogether by a pad of nought.
+ */
+.combat-row .swiper-slide:first-child {
+  padding-left: var(--spot-lead-pad, 0px);
+}
+
+/* Same fallback while the row has no Swiper instance yet: the row's own gutter, the 24px a group keeps from the next. */
+.combat-row:not(.swiper-initialized) {
+  overflow-x: auto;
+
+  .swiper-slide + .swiper-slide { margin-left: 24px; }
+}
+
+/*
+ * One group: its cards, with the strip above them belonging to the group's own controls.
+ */
+.combat-spot {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+/*
+ * A group's own controls, above its cards. Absolutely positioned, so it never widens the group:
+ * the cards alone decide the slide's width, which is what keeps the 12px gutters exact. Held to
+ * the group's own width, so a long name is trimmed at the group's edge rather than reaching over
+ * its neighbour. `clip` (see .combat-row) keeps the strip from being scrolled behind the DM's
+ * back — revealing a focused box must never move anything.
+ */
+.spot-bar {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 10;
+  display: flex;
+  flex-wrap: wrap;
+  align-content: flex-start;
+  align-items: center;
+  gap: 2px 4px;
+  height: 30px;
+  overflow: clip;
+}
+
+.spot-name {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  max-width: 100%;
+  padding: 1px 7px;
+  overflow: hidden;
+  background: rgba(0, 0, 0, 0.55);
+  border: 1px solid v.$campaign-portal-border-bold;
+  border-radius: 999px;
+  color: v.$campaign-portal-text-bright;
+  font-size: 14px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  cursor: pointer;
+
+  &:hover { border-color: v.$campaign-portal-border-hover; }
+}
+
+.spot-name-pencil { font-size: 14px; opacity: 0.7; }
+
+/*
+ * While a group is being renamed the bar is carrying the name box, so it takes a
+ * gutter of its own: 2px all round. That is the room the box needs — flush against
+ * the bar's edge (and the top of its 30px strip) the box was shaved off by the bar's
+ * own clip, and the text along with it.
+ */
+.spot-bar--renaming {
+  padding: 2px;
+}
+
+/*
+ * Filling the strip inside that gutter: 100% of the bar's content box is the 26px that
+ * leaves, so the box sits 2px in from the top and the left and every side of it shows.
+ * The text is centred in it by the input's own layout.
+ */
+.spot-rename {
+  width: 85%;
+  height: 100%;
+  padding: 0 5px;
+  background: rgba(0, 0, 0, 0.6);
+  border: 1px solid v.$campaign-portal-border-focus;
+  border-radius: 5px;
+  color: #fff;
+  font-size: 14px;
+}
+
+/* The cards of one spot: 2px apart, while whole spots are 12px apart (Swiper).
+   The top margin is the space the group's controls occupy above them. */
+.spot-cards {
+  display: flex;
+  align-items: flex-start;
+  gap: 2px;
+  margin-top: 30px;
+}
+
+.combatant {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+}
+
+/*
+ * How many cards the group holds. It sits in the room the smaller add tile leaves above
+ * it (see .combatant-add-column) rather than over the first card, so nothing covers the
+ * group's own art.
+ */
+.combatant-count {
+  padding: 1px 5px;
+  background: v.$color-base-purple-primary;
+  border-radius: 999px;
+  color: #fff;
+  font-size: 24px;
+  font-weight: 700;
+  line-height: 1.3;
+  white-space: nowrap;
+}
+
+/*
+ * Taking a card out of a group: always on show, rather than appearing on hover. A touch
+ * device has no hover to give, and at 16px it is small enough not to clutter the card.
+ */
+.combatant-remove {
+  position: absolute;
+  top: 3px;
+  right: 3px;
+  z-index: 5;
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  background: rgba(0, 0, 0, 0.55);
+  border: 1px solid v.$campaign-portal-border-bold;
+  border-radius: 4px;
+  color: v.$campaign-portal-text-lavender;
+  font-size: 9px;
+  line-height: 1;
+  cursor: pointer;
+  transition: border-color 0.15s ease, color 0.15s ease;
+
+  &:hover { border-color: #f87171; color: #f87171; }
+}
+
+/*
+ * The count and the add tile, one column at the foot of the group's cards: the tile is a
+ * quarter smaller than a card, so its top edge (and the count above it) sit in the room
+ * that leaves. Bottom-aligned, so the tile's bottom border runs on the same line as the
+ * cards' bottoms.
+ */
+.combatant-add-column {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  flex-shrink: 0;
+  align-self: flex-end;
+}
+
+/*
+ * The dress the row's two add tiles wear: their own ＋ and label are set in this lavender, so their
+ * edge is drawn in it too. The dimmer portal violet they were dashed in before all but vanished
+ * against the row's dark ground.
+ */
+$add-tile-border: 1px dashed v.$campaign-portal-text-lavender;
+
+/*
+ * Adding cards to the group: a column beside the group's cards, drawn a quarter shorter than a card
+ * — which is what leaves the room above it for the group's card count (see .combatant-add-column) —
+ * and dashed in the tile's bright dress, so an empty group's way in is plainly seen.
+ */
+.combatant-add {
+  flex-shrink: 0;
+  width: 32px;    // a column of its own, wide enough for its ＋ at reading size …
+  height: 165px;  // … and a card's 220px less a quarter
+  background: transparent;
+  border: $add-tile-border;
+  border-radius: 6px;
+  color: v.$campaign-portal-text-lavender;
+  font-size: 18px;
+  cursor: pointer;
+
+  &:disabled { opacity: 0.4; cursor: not-allowed; }
+}
+
+.combat-new {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  width: v.$card-width;   // the cast card's own footprint …
+  height: v.$card-height;
+  // … lined up with the cards, which every group keeps 30px below its top edge
+  margin-top: 30px;
+  background: transparent;
+  border: $add-tile-border;
+  border-radius: 8px;
+  color: v.$campaign-portal-text-lavender;
+  cursor: pointer;
+
+  &:disabled { opacity: 0.4; cursor: not-allowed; }
+}
+
+/* The tile stands a card's full size now, so its ＋ and its label are set at the sizes the pool's
+   own card-sized tile wears (see .card-new-plus, .card-new-label) rather than at the smaller ones
+   they were drawn at across a 75px tile. */
+.combat-new-plus { font-size: 28px; }
+
+.combat-new-label {
+  padding: 0 2px;
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  line-height: 1.3;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+/* ── The rolls face: the numbers turned in before the ring ─────────────── */
+
+/*
+ * The ways in and out of the encounter on this face: the pool of encounters at the top left, the
+ * editor at the bottom left — the same two buttons, dressed the same and in the same corners, as the
+ * ring's own rows (see the circle's .circle-actions). 76px down from the top of the area and 83px up
+ * from its bottom is where the ring's sit, so switching between the two faces does not move them.
+ */
+.rolls-actions {
+  position: absolute;
+  left: 12px;
+  right: 12px;
+  z-index: 30;
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+
+.rolls-actions--top { top: 76px; }
+
+.rolls-actions--bottom { bottom: 83px; }
+
+.rolls-action {
+  padding: 8px 14px;
+  background: linear-gradient(135deg, #6e28d0 0%, #4c1d95 100%);
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-radius: 8px;
+  color: #fff;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  cursor: pointer;
+  /* The browser's own button widget and the rectangular tap highlight are suppressed: the button
+     is only what is painted here. */
+  appearance: none;
+  -webkit-tap-highlight-color: transparent;
+  transition: transform 0.2s ease, border-color 0.2s ease;
+
+  &:hover:not(:disabled) { transform: scale(1.03); }
+
+  &:focus { outline: none; }
+
+  &:focus-visible {
+    outline: 2px solid v.$campaign-portal-border-focus;
+    outline-offset: 2px;
+  }
+
+  &:disabled { opacity: 0.4; cursor: not-allowed; }
+}
+
+/*
+ * The editor's control is shared now (see cc-edit-button), so this row only says how big it stands:
+ * the same height the "Encounters" button beside it keeps — 8px of padding around an 18px icon, which
+ * is what the button here used to draw with its art inked white.
+ */
+.rolls-actions cc-edit-button {
+  --cc-edit-size: 38px;
+  --cc-edit-icon-size: 18px;
+}
+
+/* The button that writes the order, above the row */
+.rolls-bar {
+  display: flex;
+  align-items: center;
+  /* The button keeps the right-hand end of the bar it shared with the line that used to sit here */
+  justify-content: flex-end;
+  padding: 0 24px;
+}
+
+/*
+ * Every spot in the encounter in one row — the party first, then the cast, each group's cards
+ * together — with the group's dial under the first of its cards, so one roll covers a group.
+ */
+.rolls-row {
+  /* The caption is positioned against the row itself (see .rolls-label) */
+  position: relative;
+  width: 100%;
+  /* The cards, then the dials beneath them; auto height, so a taller touch dial still fits */
+  min-height: 300px;
+  padding: 8px 24px 0;
+  box-sizing: border-box;
+  overflow: hidden;
+  overscroll-behavior-x: contain;
+
+  .swiper-wrapper {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    transition-property: transform;
+  }
+
+  .swiper-slide {
+    flex: 0 0 auto;
+    width: auto;
+  }
+}
+
+/* Same fallback while the row has no Swiper instance yet. */
+.rolls-row:not(.swiper-initialized) {
+  overflow-x: auto;
+
+  .swiper-slide + .swiper-slide { margin-left: 12px; }
+}
+
+.roll-spot {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/*
+ * The name of a group holding more than one card, over its cards — the same pill the editor's groups
+ * wear, minus the renaming it does there (this face is for the numbers, not the names). Every spot
+ * draws the pill so the cards below all share one line: a lone card's is blank, keeping the pill's
+ * own box and nothing of its paint.
+ */
+.roll-name {
+  align-self: flex-start;
+  max-width: 100%;
+  padding: 1px 7px;
+  overflow: hidden;
+  background: rgba(0, 0, 0, 0.55);
+  border: 1px solid v.$campaign-portal-border-bold;
+  border-radius: 999px;
+  color: v.$campaign-portal-text-bright;
+  font-size: 11px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+
+  &.is-blank {
+    background: none;
+    border-color: transparent;
+
+    /* Nothing to read, but a line box all the same: an empty pill would be padding and border only,
+       which sits the cards below it higher than a named group's does. */
+    &::before {
+      content: '\00a0';
+    }
+  }
+}
+
+/* A group's cards, stacked: every card after the first tucks 25px under the one before it, so a
+   card takes 50px of the row instead of its full 75 and the group reads as one hand. The first
+   card stays whole and on top (its z-index comes from the template), which is also the card the
+   group's dial hangs under. */
+.roll-cards {
+  display: flex;
+  align-items: flex-start;
+  gap: 0;
+}
+
+.roll-card {
+  position: relative;
+  flex-shrink: 0;
+}
+
+.roll-card + .roll-card { margin-left: -25px; }
+
+/* The dial hangs under the group's first card, and 12px lower than the spot's own gap would put
+   it: that is the gutter the row's caption stands in (see .rolls-label), so the cards and the
+   dials are never closer than the words between them need. */
+.roll-counter {
+  align-self: flex-start;
+  margin-top: 12px;
+}
+
+/* ── The dials' caption ────────────────────────────────────────────────────── */
+/*
+ * "Add Initiative Roll Value" stands in the gutter under the cards, over the row: it hangs off
+ * the row's own left edge — where the first card's left border sits — and stays there while the
+ * row is turned through the fight's spots. It is a child of the row but not of its swiper content,
+ * so the wrapper moving beneath it never carries it anywhere.
+ *
+ * Where it sits, measured down the row's border box: the row's top padding, the name line every
+ * spot draws and the gap under it, then the cards themselves. Those are the spot's own
+ * measurements (see .roll-spot, .roll-name and the 110px the simple cards are drawn at), and the
+ * 12px .roll-counter adds below them is the band the words are centred in.
+ */
+$rolls-label-top: 8px + 17px + 8px + 110px;
+$rolls-gutter: 20px;
+
+.rolls-label {
+  position: absolute;
+  top: $rolls-label-top;
+  left: 24px;
+  z-index: 5;              // over the slides: the cards in them carry z-indexes of their own
+  display: flex;
+  align-items: center;
+  height: $rolls-gutter;   // the words sit centred in the gutter
+  pointer-events: none;    // a drag over the label still swipes the row
+  color: v.$campaign-portal-text-muted;
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  white-space: nowrap;
+  text-transform: uppercase;
+}
+
+/* ── Face: the fight as it finished ───────────────────────────────────────── */
+/*
+ * The wrap-up a fight leaves behind: what it cost the party, what it put down, and the way back to
+ * the pool. It is a record rather than a place to act, so the face is a still one — the row of cards
+ * with a tally over it, and nothing to press but Encounters.
+ */
+
+/* How far the face's own stack of content stands above the stage's middle, in px (see below). */
+$ended-lift: 48px;
+
+.stage--ended {
+  position: relative;
+  padding-top: 46px;   // clears the band the way back stands in (see .builder-top)
+}
+
+/*
+ * The stack — the header and the row of cards under it — stands $ended-lift above the middle of the
+ * stage, so the face reads high against the band at the top of it. The lift is a relative offset
+ * rather than a margin: it moves the stack alone, leaving the stage's own centring and the band (which
+ * is anchored to the face, not to this stack) exactly where they are.
+ */
+.ended-head,
+.ended-side {
+  position: relative;
+  top: -$ended-lift;
+}
+
+.ended-head {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  padding: 0 24px;
+}
+
+.ended-name {
+  margin: 0;
+  color: v.$campaign-portal-text-bright;
+  font-family: v.$font-header;
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  overflow-wrap: anywhere;
+  text-align: center;
+}
+
+.ended-when {
+  margin: 0;
+  color: v.$campaign-portal-text-lavender;
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+/* One side of the wrap-up: its name, its cards, and how many of them went down. */
+/*
+ * This section carries the face's 24px inset, and the row inside it carries none: a Swiper's viewport
+ * is the width of its container *including* that container's padding, so an inset written as padding
+ * on the row itself puts the ends of the row outside the travel it can reach — a card whose tail fell
+ * in those 24px could not be brought into view at all, and a row that only just overflowed looked
+ * stuck. With the inset on the section, the row's viewport is exactly the area the DM can see.
+ */
+.ended-side {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 0 24px;
+}
+
+.ended-side-head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom:12px;
+}
+
+.ended-side-label {
+  color: v.$campaign-portal-text-softer;
+  font-family: v.$font-header;
+  font-size: 11px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+/* The rule the side's name runs out along, the way the party panel's own header does it. */
+.ended-side-line {
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(to right, v.$campaign-portal-text-softer, transparent);
+}
+
+.ended-side-tally {
+  color: v.$campaign-portal-text-bright;
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+/* ── The wrap-up's row of cards ────────────────────────────────────────────── */
+/*
+ * One swipeable row, inset like every other row in the area. Its slides are the full-size cards the
+ * ring draws, so their width is measured out here rather than left to Swiper's own `.swiper-slide`
+ * rule (100% of the row, which lays one card per row-width and reads as the cards being flung far
+ * apart), and they are spaced by the row's own gutter: 24px, the wider beat the bigger cards want
+ * between them (see CARD_GUTTER in the component — the editor's row of groups is set up with the same
+ * figure).
+ */
+.ended-row {
+  /*
+   * The row spans the face, and it has to say so. Swiper's own stylesheet puts `margin-left/right:
+   * auto` on every `.swiper` (see node_modules/swiper/swiper-bundle.css), and in this column-flex
+   * section those are cross-axis auto margins — which suppress the section's `align-items: stretch`,
+   * leaving the row sized to its own slides rather than to the face. A Swiper exactly as wide as its
+   * content has no travel in it at all: `virtualSize - size` comes out nought, `snapGrid` collapses
+   * to its single-point fallback, `minTranslate`/`maxTranslate` are both 0, and every drag is
+   * rubber-banded at the edge and springs home on release — the row grows with the cards, so no
+   * number of them can ever overflow it. A width of its own leaves the auto margins no free space to
+   * take, so the row fills the section and Swiper measures the section as its viewport. The other
+   * three rows in this area carry a width of their own for the same reason (see .card-row, which
+   * fills the 70%-wide band the realm's card row keeps — see .card-band — and .combat-row and
+   * .rolls-row, which fill the face): this row was the one without one.
+   */
+  width: 100%;
+  overflow: hidden;
+  padding-top:14px;
+  // No inset here: the section around this row owns it (see .ended-side), so the row's viewport is
+  // exactly the area the cards are seen in.
+
+  .swiper-wrapper {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    transition-property: transform; // Swiper only sets the duration
+  }
+
+  .swiper-slide {
+    flex: 0 0 auto;
+    width: v.$card-width;
+    height: auto;   // the card itself, and the line of numbers under it
+    box-sizing: border-box;
+  }
+}
+
+/* The same spacing while the row has no Swiper instance yet. */
+.ended-row:not(.swiper-initialized) {
+  overflow-x: auto;
+
+  .swiper-slide + .swiper-slide { margin-left: 24px; }
+}
+
+/*
+ * A card and the count under it. The card's own width is the column's, so the counts line up down
+ * the row however many digits they run to.
+ */
+.ended-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  width: v.$card-width;
+}
+
+/* How many copies of this card the fight held — 1 for a card that stood in it alone. */
+.ended-count {
+  color: v.$campaign-portal-text-lavender;
+  font-size: 18px;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+}
+
+.ended-none {
+  margin: 0;
+  color: v.$campaign-portal-text-muted;
+  font-size: 11px;
+}
+
+/*
+ * The pool on smaller screens, in step with the rolodex boxes: the realm's card row fills its area
+ * on tablets (see cc-card-navigation's own 1024px rule), so the band this row stands in and the
+ * chips above it fill it too — and the bars then stand on the area's edges, as they do there.
+ */
+/*
+ * A narrower screen: the band is the whole width (see below), so the split button takes it and its
+ * four segments divide it evenly rather than each taking what its own word needs. That, and the
+ * smaller type, is what keeps the control from running past the cards on a phone — a segmented
+ * control that has to be dragged sideways is no filter at all.
+ */
+@media (max-width: 1024px) {
+  .card-band,
+  .card-filters {
+    width: 100%;
+  }
+
+  .card-filter-split {
+    width: 100%;
+  }
+
+  .card-filter {
+    flex: 1 1 0;
+    min-width: 0;
+    padding: 0 10px;
+    gap: 5px;
+  }
+}
+
+/*
+ * The bars are 62px wide on any screen, which is a bigger share of a phone's, so they are dropped
+ * there — the same call the realm's and factions' rolodexes make about their own frames (see
+ * cc-card-navigation) — and the row keeps its edges to itself.
+ */
+@media (max-width: 768px) {
+  .rolodex-box-frame-left,
+  .rolodex-box-frame-right {
+    display: none;
+  }
+}
+
+/*
+ * The smallest screens: a quarter of the band is not enough for "Ordering" and its count on one line,
+ * so a segment stacks them — the word, then the number under it — and comes down a size. Nothing is
+ * clipped and nothing is dropped: every status still says what it is and how many it holds.
+ */
+@media (max-width: 480px) {
+  .card-filter {
+    flex-direction: column;
+    gap: 0;
+    min-height: 40px;
+    padding: 4px 6px;
+    font-size: 10px;
+    letter-spacing: 0.08em;
+    line-height: 1.15;
+    text-align: center;
+    white-space: normal;
+  }
+}
+

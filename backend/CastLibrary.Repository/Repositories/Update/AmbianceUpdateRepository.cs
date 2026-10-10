@@ -24,12 +24,12 @@ public class AmbianceUpdateRepository(
         var entity = mapper.ToEntity(domain);
 
         const string headerSql =
-            @"UPDATE campaign_ambiances
+            @"UPDATE ambiances
               SET title = @Title,
                   randomize_music = @RandomizeMusic
               WHERE id = @Id
               RETURNING id,
-                        campaign_id AS CampaignId,
+                        gm_user_id AS GmUserId,
                         title,
                         randomize_music AS RandomizeMusic,
                         created_at  AS CreatedAt";
@@ -49,7 +49,7 @@ public class AmbianceUpdateRepository(
                         pause_min_seconds     AS PauseMinSeconds,
                         pause_max_seconds     AS PauseMaxSeconds";
 
-        logging.LogDbOperation(correlation.TraceId, spanId, "UPDATE", "campaign_ambiances", entity);
+        logging.LogDbOperation(correlation.TraceId, spanId, "UPDATE", "ambiances", entity);
 
         using var conn = sqlConnectionFactory.GetConnection();
         await conn.OpenAsync();
@@ -74,12 +74,12 @@ public class AmbianceUpdateRepository(
 
         await tx.CommitAsync();
 
-        logging.LogDbOperation(correlation.TraceId, spanId, "UPDATE", "campaign_ambiances", entity, 1);
+        logging.LogDbOperation(correlation.TraceId, spanId, "UPDATE", "ambiances", entity, 1);
 
         return new AmbianceDomain
         {
             Id = header.Id,
-            CampaignId = header.CampaignId,
+            GmUserId = header.GmUserId,
             Title = header.Title,
             CreatedAt = header.CreatedAt,
             RandomizeMusic = header.RandomizeMusic,

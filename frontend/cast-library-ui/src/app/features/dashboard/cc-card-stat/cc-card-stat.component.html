@@ -1,0 +1,28 @@
+<div [class]="'cc-card-stat cc-card-stat--' + type()">
+  <div class="stat-card-frame">
+    <div class="stat-card-inner">
+      <div class="stat-card-banner">
+        <div class="stat-card-name">{{ label() }}</div>
+      </div>
+
+      <div class="stat-card-count" aria-hidden="true">
+        <span class="stat-card-watermark"><app-icon [name]="type()" variant="inline" /></span>
+        <span class="stat-card-value">{{ count() }}</span>
+      </div>
+
+      <div class="stat-card-strip">
+        <div class="stat-card-pip-row">
+          <div class="stat-card-pip"></div>
+          <div class="stat-card-pip"></div>
+          <div class="stat-card-pip"></div>
+        </div>
+        <span class="stat-card-strip-label">Cards</span>
+        <div class="stat-card-pip-row">
+          <div class="stat-card-pip"></div>
+          <div class="stat-card-pip"></div>
+          <div class="stat-card-pip"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

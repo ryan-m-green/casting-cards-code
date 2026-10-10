@@ -4,7 +4,9 @@
 
 .pc.scroll-body {
   position: relative !important;
-  overflow: auto !important;
+  /* Down only — the page never pans sideways (see the shell's own .pc). */
+  overflow-x: hidden !important;
+  overflow-y: auto !important;
   max-height: 100%;
 }
 
@@ -18,7 +20,6 @@
   pointer-events: none;
 }
 
-// ── GM-only Box ──────────────────────────────────────────────────────────────
 .form-gm-box {
   position: relative;
   border: 1px solid rgba(v.$color-base-brown-14, 0.2);
@@ -102,8 +103,6 @@
 .btn-save-wide {
   min-width: 160px;
 }
-
-// ── Portrait picker (new creation only) ──────────────────────────────────────────
 
 .form-portrait-new-row {
   display: flex;

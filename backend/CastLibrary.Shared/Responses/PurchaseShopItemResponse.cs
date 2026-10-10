@@ -9,4 +9,6 @@ public class PurchaseShopItemResponse
     public string PlayerDisplayName { get; set; } = string.Empty;
     /// <summary>Set when Success is false.</summary>
     public string DenialReason    { get; set; } = string.Empty;
+    /// <summary>The buyer's purse as the purchase left it, in coin order (cp, sp, ep, gp, pp).</summary>
+    public List<CurrencyBalanceResponse> CurrencyBalances { get; set; } = [];
 }

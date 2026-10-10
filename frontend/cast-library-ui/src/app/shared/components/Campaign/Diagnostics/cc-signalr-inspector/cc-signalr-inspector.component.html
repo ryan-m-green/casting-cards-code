@@ -1,0 +1,110 @@
+<div class="sxi">
+
+  <header class="sxi-bar">
+    <div class="sxi-stats">
+      <span class="sxi-stat"><b>{{ visibleConnections().length }}</b> sockets</span>
+      <span class="sxi-stat"><b>{{ playerCount() }}</b> player</span>
+      <span class="sxi-stat"><b>{{ gmCount() }}</b> gm/admin</span>
+      <span class="sxi-stat"><b>{{ rows().length }}</b> sent</span>
+      <span class="sxi-stat" [class.sxi-stat--bad]="unansweredCount() > 0">
+        <b>{{ unansweredCount() }}</b> unanswered
+      </span>
+      @if (failedCount()) {
+        <span class="sxi-stat sxi-stat--bad"><b>{{ failedCount() }}</b> failed</span>
+      }
+      @if (unmatchedAcks().length) {
+        <span class="sxi-stat sxi-stat--warn"><b>{{ unmatchedAcks().length }}</b> unlogged</span>
+      }
+    </div>
+
+    <div class="sxi-tools">
+      <input
+        class="sxi-filter"
+        type="text"
+        placeholder="Filter events…"
+        aria-label="Filter events"
+        [ngModel]="filter()"
+        (ngModelChange)="filter.set($event)"
+      />
+      <button
+        type="button"
+        class="sxi-tool"
+        [class.sxi-tool--on]="campaignOnly()"
+        [title]="campaignOnly() ? 'Showing this campaign\u2019s own traffic' : 'Showing every campaign'"
+        (click)="toggleCampaignOnly()"
+      >
+        {{ campaignOnly() ? 'This campaign' : 'All campaigns' }}
+      </button>
+      <button type="button" class="sxi-tool" [class.sxi-tool--on]="paused()" (click)="togglePaused()">
+        {{ paused() ? 'Paused' : 'Live' }}
+      </button>
+      <button type="button" class="sxi-tool" (click)="clear()">Clear</button>
+    </div>
+  </header>
+
+  @if (error()) {
+    <p class="sxi-error">{{ error() }}</p>
+  }
+
+  <div class="sxi-columns">
+
+    <section class="sxi-pane sxi-pane--people">
+      <h3 class="sxi-pane-title">Connected now <span class="sxi-pane-hint">{{ campaignOnly() ? 'this campaign' : 'all' }}</span></h3>
+
+      @for (connection of visibleConnections(); track connection.connectionId) {
+        <div class="sxi-person" [class.sxi-person--player]="isPlayerSocket(connection)">
+          <div class="sxi-person-row">
+            <span class="sxi-person-role" [title]="'account role: ' + roleLabel(connection.role)">{{ displayRole(connection.userId, connection.role) }}</span>
+            <span class="sxi-person-name">{{ nameOf(connection) }}</span>
+            <span class="sxi-person-age">{{ sinceLabel(connection.connectedAtUtc) }}</span>
+          </div>
+          <div class="sxi-person-id" [title]="connection.connectionId">{{ connection.userId ?? 'unknown id' }}</div>
+        </div>
+      } @empty {
+        <p class="sxi-empty">
+          No sockets in this room — a player window is not connected, so nothing below can reach anyone.
+        </p>
+      }
+    </section>
+
+    <section class="sxi-pane sxi-pane--events">
+      <h3 class="sxi-pane-title">Broadcasts <span class="sxi-pane-hint">newest first</span></h3>
+
+      @for (row of visibleRows(); track row.sequence) {
+        <article
+          class="sxi-row"
+          [class.sxi-row--failed]="row.failed"
+          [class.sxi-row--answered]="verdict(row) === 'answered'"
+          [class.sxi-row--unanswered]="verdict(row) === 'unanswered'"
+          [class.sxi-row--empty]="verdict(row) === 'empty'"
+        >
+          <button
+            type="button"
+            class="sxi-row-head"
+            [title]="'Open the full ' + row.eventName + ' capture'"
+            (click)="openEvent.emit(row)"
+          >
+            <span class="sxi-time">{{ shortTime(row.atUtc) }}</span>
+            <span class="sxi-name">{{ row.eventName }}</span>
+            <span class="sxi-target">
+              {{ row.targetKind }}<span class="sxi-target-id">{{ row.targetId ? ' ' + shortId(row.targetId) : '' }}</span>
+            </span>
+            <span class="sxi-subs">{{ row.subscribers }} listening</span>
+            <span class="sxi-acks">{{ ackLabel(row) }}</span>
+            <span class="sxi-components" [title]="componentsFor(row)">{{ componentsFor(row) }}</span>
+          </button>
+
+        </article>
+      } @empty {
+        <p class="sxi-empty">Nothing broadcast yet. Click a card, work a lock, or move the clock.</p>
+      }
+    </section>
+  </div>
+
+  @if (unmatchedAcks().length) {
+    <footer class="sxi-foot">
+      {{ unmatchedAcks().length }} receipt(s) matched no logged send — something broadcast outside the
+      notification service, or the log was cleared while an event was in flight.
+    </footer>
+  }
+</div>

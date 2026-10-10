@@ -27,6 +27,8 @@ public class QuicknoteQueueReadRepository(
                      campaign_id     AS CampaignId,
                      player_user_id  AS PlayerUserId,
                      content,
+                     linked_entities    AS LinkedEntities,
+                     visible_to_players AS VisibleToPlayers,
                      created_at      AS CreatedAt,
                      updated_at      AS UpdatedAt
               FROM player_quicknote_queue
@@ -53,6 +55,8 @@ public class QuicknoteQueueReadRepository(
                      campaign_id     AS CampaignId,
                      player_user_id  AS PlayerUserId,
                      content,
+                     linked_entities    AS LinkedEntities,
+                     visible_to_players AS VisibleToPlayers,
                      created_at      AS CreatedAt,
                      updated_at      AS UpdatedAt
               FROM player_quicknote_queue

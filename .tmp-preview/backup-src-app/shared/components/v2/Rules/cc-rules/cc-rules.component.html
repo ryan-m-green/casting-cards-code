@@ -1,0 +1,57 @@
+<div class="rules-root" [style.--portal-color]="portalColor()">
+  <div class="rules-toolbar">
+    <span class="rules-count">{{ total() }} entries</span>
+
+    <label class="rules-search">
+      <img class="rules-search-icon" src="/magnifying_glass_landscape_search.svg" alt="" aria-hidden="true" />
+      <input
+        class="rules-search-input"
+        type="search"
+        placeholder="Search the cheat sheet…"
+        [value]="draft()"
+        (input)="onDraft($any($event.target).value)"
+      />
+    </label>
+  </div>
+
+  <div class="rules-shelf">
+    @if (isLoading() && !total()) {
+      <p class="rules-note">Gathering the entries…</p>
+    } @else if (failed()) {
+      <div class="rules-state">
+        <p class="rules-note">Could not reach this campaign's cheat sheet.</p>
+        <button type="button" class="rules-retry" (click)="retry()">Try again</button>
+      </div>
+    } @else {
+      @if (!rules().length && !searched()) {
+        <p class="rules-note">No entries yet — use the ＋ tile at the end of the row to add one.</p>
+      }
+
+      @if (searched() && !rules().length) {
+        <p class="rules-note">No entry answers to that search.</p>
+      } @else {
+        <div class="rules-list swiper" #rulesSwiper>
+          <div class="swiper-wrapper">
+            @for (rule of rules(); track rule.id) {
+              <div class="swiper-slide">
+                <cc-rule-card [rule]="rule" (open)="requestOpen.emit($event)" />
+              </div>
+            }
+
+            <div class="swiper-slide">
+              <button
+                type="button"
+                class="rules-add"
+                title="Add entries to this campaign"
+                (click)="requestAdd.emit()"
+              >
+                <span class="rules-add-plus" aria-hidden="true">＋</span>
+                <span class="rules-add-label">New entry</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      }
+    }
+  </div>
+</div>

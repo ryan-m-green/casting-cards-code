@@ -1,8 +1,3 @@
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Filters;
-using Microsoft.Extensions.Logging;
-using System.Text.Json;
-
 namespace CastLibrary.WebHost.Middleware;
 
 public class ModelBindingErrorMiddleware
@@ -52,13 +47,5 @@ public class ModelBindingErrorMiddleware
             responseBody.Seek(0, SeekOrigin.Begin);
             await responseBody.CopyToAsync(originalBodyStream);
         }
-    }
-}
-
-public static class ModelBindingErrorMiddlewareExtensions
-{
-    public static IApplicationBuilder UseModelBindingErrorMiddleware(this IApplicationBuilder builder)
-    {
-        return builder.UseMiddleware<ModelBindingErrorMiddleware>();
     }
 }

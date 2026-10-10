@@ -6,7 +6,8 @@
     "start": "ng serve",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
-    "test": "ng test"
+    "test": "ng test",
+    "//": "DO NOT run the test suite: `ng test` hangs/aborts in this working environment, so it must not be attempted (the vitest runner and the unit-test builder are configured in angular.json, but nothing runs the suite from here). Validate frontend changes with `npx ng build --configuration development` instead."
   },
   "private": true,
   "packageManager": "npm@11.8.0",

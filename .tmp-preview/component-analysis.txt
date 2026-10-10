@@ -1,0 +1,414 @@
+﻿=== shared\components\badge\badge.component.ts
+SELECTOR: app-badge
+DIRECT_USERS: 
+PAGES: (none resolved)
+PARENTS(all levels): 
+
+=== shared\components\campaign-chronicle-drawer\campaign-chronicle-drawer.component.ts
+SELECTOR: app-campaign-chronicle-drawer
+DIRECT_USERS: 
+PAGES: (none resolved)
+PARENTS(all levels): 
+
+=== shared\components\campaign-dropdown\campaign-dropdown.component.ts
+SELECTOR: app-campaign-dropdown
+DIRECT_USERS: features\campaign\campaign-factions\campaign-factions.component.ts; features\player\player-quicknote-queue\player-quicknote-queue.component.ts; shared\components\chronicles-timeline\chronicles-timeline.component.ts; shared\components\note-destination-picker\note-destination-picker.component.ts; shared\components\soundtrack-selector\soundtrack-selector.component.ts
+PAGES: GLOBAL-app-root; V1-DM-CampaignShell; V1-Player-CampaignShell
+PARENTS(all levels): app.ts; features\campaign\campaign-factions\campaign-factions.component.ts; features\campaign\campaign-shell\campaign-shell.component.ts; features\campaign\gm-events\gm-events.component.ts; features\player\player-campaign-shell\player-campaign-shell.component.ts; features\player\player-quicknote-queue\player-quicknote-queue.component.ts; shared\components\campaign-chronicle-drawer\campaign-chronicle-drawer.component.ts; shared\components\chronicles-timeline\chronicles-timeline.component.ts; shared\components\note-destination-picker\note-destination-picker.component.ts; shared\components\quicknotes\quicknotes.component.ts; shared\components\right-drawer\chronicle-content.component.ts; shared\components\soundtrack-selector\soundtrack-selector.component.ts
+
+=== shared\components\campaign-join-input\campaign-join-input.component.ts
+SELECTOR: app-campaign-join-input
+DIRECT_USERS: features\campaign\campaign-library\campaign-library.component.ts; features\player\player-campaigns\player-campaigns.component.ts
+PAGES: Journal-Shell
+PARENTS(all levels): features\campaign\campaign-library\campaign-library.component.ts; features\player\player-campaigns\player-campaigns.component.ts
+
+=== shared\components\card-flip\card-flip.component.ts
+SELECTOR: app-card-flip
+DIRECT_USERS: features\campaign\relationship-web-modal\relationship-web-modal.component.ts
+PAGES: V1-DM-CampaignShell
+PARENTS(all levels): features\campaign\relationship-web-modal\relationship-web-modal.component.ts
+
+=== shared\components\card-grid-layout\card-grid-layout.component.ts
+SELECTOR: app-card-grid-layout
+DIRECT_USERS: features\campaign\campaign-detail\campaign-detail.component.ts; features\campaign\campaign-factions\campaign-factions.component.ts; features\campaign\campaign-location-detail\campaign-location-detail.component.ts; features\campaign\campaign-sublocation-detail\campaign-sublocation-detail.component.ts; features\player\player-campaign-detail\player-campaign-detail.component.ts; features\player\player-location-detail\player-location-detail.component.ts; features\player\player-sublocation-detail\player-sublocation-detail.component.ts
+PAGES: V1-DM-CampaignShell; V1-Player-CampaignShell
+PARENTS(all levels): features\campaign\campaign-detail\campaign-detail.component.ts; features\campaign\campaign-factions\campaign-factions.component.ts; features\campaign\campaign-location-detail\campaign-location-detail.component.ts; features\campaign\campaign-sublocation-detail\campaign-sublocation-detail.component.ts; features\player\player-campaign-detail\player-campaign-detail.component.ts; features\player\player-location-detail\player-location-detail.component.ts; features\player\player-sublocation-detail\player-sublocation-detail.component.ts
+
+=== shared\components\card-reveal-badge\card-reveal-badge.component.ts
+SELECTOR: app-card-reveal-badge
+DIRECT_USERS: features\player\player-campaign-shell\player-campaign-shell.component.ts
+PAGES: V1-Player-CampaignShell
+PARENTS(all levels): features\player\player-campaign-shell\player-campaign-shell.component.ts
+
+=== shared\components\card-reveal-overlay\card-reveal-overlay.component.ts
+SELECTOR: app-card-reveal-overlay
+DIRECT_USERS: features\player\player-campaign-shell\player-campaign-shell.component.ts
+PAGES: V1-Player-CampaignShell
+PARENTS(all levels): features\player\player-campaign-shell\player-campaign-shell.component.ts
+
+=== shared\components\cast-card\cast-card.component.ts
+SELECTOR: app-cast-card
+DIRECT_USERS: features\campaign\campaign-cast-detail\campaign-cast-detail.component.ts; features\campaign\campaign-faction-detail\campaign-faction-detail.component.ts; features\campaign\campaign-factions\campaign-factions.component.ts; features\campaign\campaign-sublocation-detail\campaign-sublocation-detail.component.ts; features\campaign\cast-relationships-tab\cast-relationships-tab.component.ts; features\campaign\gm-the-party\gm-the-party.component.ts; features\cast\cast-form\cast-form.component.ts; features\cast\cast-library\cast-library.component.ts; features\gm-testarea\gm-testarea.component.ts; features\player\player-cast-detail\player-cast-detail.component.ts; features\player\player-faction-detail\player-faction-detail.component.ts; features\player\player-sublocation-detail\player-sublocation-detail.component.ts; features\player\player-the-party\player-the-party.component.ts; shared\components\card-reveal-overlay\card-reveal-overlay.component.ts; shared\components\portal-import-card\portal-import-card.component.ts
+PAGES: Journal-Shell; Testarea-Page; V1-DM-CampaignShell; V1-Player-CampaignShell
+PARENTS(all levels): features\campaign\campaign-cast-detail\campaign-cast-detail.component.ts; features\campaign\campaign-detail\campaign-detail.component.ts; features\campaign\campaign-faction-detail\campaign-faction-detail.component.ts; features\campaign\campaign-factions\campaign-factions.component.ts; features\campaign\campaign-location-detail\campaign-location-detail.component.ts; features\campaign\campaign-sublocation-detail\campaign-sublocation-detail.component.ts; features\campaign\cast-relationships-tab\cast-relationships-tab.component.ts; features\campaign\gm-the-party\gm-the-party.component.ts; features\cast\cast-form\cast-form.component.ts; features\cast\cast-library\cast-library.component.ts; features\gm-testarea\gm-testarea.component.ts; features\player\player-campaign-detail\player-campaign-detail.component.ts; features\player\player-campaign-shell\player-campaign-shell.component.ts; features\player\player-cast-detail\player-cast-detail.component.ts; features\player\player-faction-detail\player-faction-detail.component.ts; features\player\player-location-detail\player-location-detail.component.ts; features\player\player-sublocation-detail\player-sublocation-detail.component.ts; features\player\player-the-party\player-the-party.component.ts; shared\components\card-grid-layout\card-grid-layout.component.ts; shared\components\card-reveal-overlay\card-reveal-overlay.component.ts; shared\components\portal-import-card\portal-import-card.component.ts
+
+=== shared\components\casting-card-player\casting-card-player.component.ts
+SELECTOR: app-casting-card-player
+DIRECT_USERS: features\campaign\gm-the-party\gm-the-party.component.ts; features\gm-testarea\gm-testarea.component.ts; features\player\player-the-party\player-the-party.component.ts; shared\components\card-reveal-overlay\card-reveal-overlay.component.ts
+PAGES: Testarea-Page; V1-DM-CampaignShell; V1-Player-CampaignShell
+PARENTS(all levels): features\campaign\gm-the-party\gm-the-party.component.ts; features\gm-testarea\gm-testarea.component.ts; features\player\player-campaign-shell\player-campaign-shell.component.ts; features\player\player-the-party\player-the-party.component.ts; shared\components\card-reveal-overlay\card-reveal-overlay.component.ts
+
+=== shared\components\character-editor\character-editor.component.ts
+SELECTOR: app-character-editor
+DIRECT_USERS: 
+PAGES: (none resolved)
+PARENTS(all levels): 
+
+=== shared\components\character-info-editor\character-info-editor.component.ts
+SELECTOR: app-character-info-editor
+DIRECT_USERS: features\player\player-character\player-character.component.ts
+PAGES: V1-Player-CampaignShell
+PARENTS(all levels): features\player\player-character\player-character.component.ts
+
+=== shared\components\chronicles-timeline\chronicles-timeline.component.ts
+SELECTOR: app-chronicles-timeline
+DIRECT_USERS: shared\components\campaign-chronicle-drawer\campaign-chronicle-drawer.component.ts; shared\components\right-drawer\chronicle-content.component.ts
+PAGES: GLOBAL-app-root; V1-DM-CampaignShell; V1-Player-CampaignShell
+PARENTS(all levels): app.ts; features\campaign\campaign-shell\campaign-shell.component.ts; features\player\player-campaign-shell\player-campaign-shell.component.ts; shared\components\campaign-chronicle-drawer\campaign-chronicle-drawer.component.ts; shared\components\right-drawer\chronicle-content.component.ts
+
+=== shared\components\confirm-dialog\confirm-dialog.component.ts
+SELECTOR: app-confirm-dialog
+DIRECT_USERS: shared\components\time-of-day-bar\time-of-day-bar.component.ts
+PAGES: V1-DM-CampaignShell; V1-Player-CampaignShell
+PARENTS(all levels): features\campaign\campaign-shell\campaign-shell.component.ts; features\campaign\time-of-day-editor\time-of-day-editor.component.ts; features\player\player-campaign-shell\player-campaign-shell.component.ts; shared\components\time-of-day-bar\time-of-day-bar.component.ts
+
+=== shared\components\crb-spark-host\crb-spark-host.component.ts
+SELECTOR: app-crb-spark-host
+DIRECT_USERS: shared\components\card-reveal-badge\card-reveal-badge.component.ts
+PAGES: V1-Player-CampaignShell
+PARENTS(all levels): features\player\player-campaign-shell\player-campaign-shell.component.ts; shared\components\card-reveal-badge\card-reveal-badge.component.ts
+
+=== shared\components\currency-card\currency-card.component.ts
+SELECTOR: app-currency-card
+DIRECT_USERS: features\gm-testarea\gm-testarea.component.ts; shared\components\card-reveal-overlay\card-reveal-overlay.component.ts
+PAGES: Testarea-Page; V1-Player-CampaignShell
+PARENTS(all levels): features\gm-testarea\gm-testarea.component.ts; features\player\player-campaign-shell\player-campaign-shell.component.ts; shared\components\card-reveal-overlay\card-reveal-overlay.component.ts
+
+=== shared\components\currency-display\currency-display.component.ts
+SELECTOR: app-currency-display
+DIRECT_USERS: shared\components\player-inventory-drawer\player-inventory-drawer.component.ts; shared\components\right-drawer\player-inventory-content.component.ts
+PAGES: GLOBAL-app-root; V1-Player-CampaignShell
+PARENTS(all levels): app.ts; features\player\player-campaign-shell\player-campaign-shell.component.ts; shared\components\player-inventory-drawer\player-inventory-drawer.component.ts; shared\components\right-drawer\player-inventory-content.component.ts
+
+=== shared\components\detail-panel-actions\detail-panel-actions.component.ts
+SELECTOR: app-detail-panel-actions
+DIRECT_USERS: features\campaign\campaign-cast-detail\campaign-cast-detail.component.ts; features\campaign\campaign-faction-detail\campaign-faction-detail.component.ts; features\campaign\campaign-location-detail\campaign-location-detail.component.ts; features\campaign\campaign-sublocation-detail\campaign-sublocation-detail.component.ts; features\player\player-cast-detail\player-cast-detail.component.ts; features\player\player-faction-detail\player-faction-detail.component.ts; features\player\player-location-detail\player-location-detail.component.ts; features\player\player-sublocation-detail\player-sublocation-detail.component.ts
+PAGES: V1-DM-CampaignShell; V1-Player-CampaignShell
+PARENTS(all levels): features\campaign\campaign-cast-detail\campaign-cast-detail.component.ts; features\campaign\campaign-faction-detail\campaign-faction-detail.component.ts; features\campaign\campaign-location-detail\campaign-location-detail.component.ts; features\campaign\campaign-sublocation-detail\campaign-sublocation-detail.component.ts; features\player\player-cast-detail\player-cast-detail.component.ts; features\player\player-faction-detail\player-faction-detail.component.ts; features\player\player-location-detail\player-location-detail.component.ts; features\player\player-sublocation-detail\player-sublocation-detail.component.ts
+
+=== shared\components\entity-badge\entity-badge.component.ts
+SELECTOR: app-entity-badge
+DIRECT_USERS: shared\components\chronicles-timeline\chronicles-timeline.component.ts
+PAGES: GLOBAL-app-root; V1-DM-CampaignShell; V1-Player-CampaignShell
+PARENTS(all levels): app.ts; features\campaign\campaign-shell\campaign-shell.component.ts; features\player\player-campaign-shell\player-campaign-shell.component.ts; shared\components\campaign-chronicle-drawer\campaign-chronicle-drawer.component.ts; shared\components\chronicles-timeline\chronicles-timeline.component.ts; shared\components\right-drawer\chronicle-content.component.ts
+
+=== shared\components\event-card\event-card.component.ts
+SELECTOR: app-event-card
+DIRECT_USERS: 
+PAGES: (none resolved)
+PARENTS(all levels): 
+
+=== shared\components\faction-card\faction-card.component.ts
+SELECTOR: app-faction-card
+DIRECT_USERS: features\campaign\campaign-faction-detail\campaign-faction-detail.component.ts; features\campaign\campaign-factions\campaign-factions.component.ts; features\faction\faction-form\faction-form.component.ts; features\faction\faction-library\faction-library.component.ts; features\gm-testarea\gm-testarea.component.ts; features\player\player-faction-detail\player-faction-detail.component.ts; shared\components\card-reveal-overlay\card-reveal-overlay.component.ts; shared\components\faction-relationships-section\faction-relationships-section.component.ts; shared\components\portal-import-card\portal-import-card.component.ts
+PAGES: Journal-Shell; Testarea-Page; V1-DM-CampaignShell; V1-Player-CampaignShell
+PARENTS(all levels): features\campaign\campaign-detail\campaign-detail.component.ts; features\campaign\campaign-faction-detail\campaign-faction-detail.component.ts; features\campaign\campaign-factions\campaign-factions.component.ts; features\campaign\campaign-location-detail\campaign-location-detail.component.ts; features\campaign\campaign-sublocation-detail\campaign-sublocation-detail.component.ts; features\faction\faction-form\faction-form.component.ts; features\faction\faction-library\faction-library.component.ts; features\gm-testarea\gm-testarea.component.ts; features\player\player-campaign-detail\player-campaign-detail.component.ts; features\player\player-campaign-shell\player-campaign-shell.component.ts; features\player\player-faction-detail\player-faction-detail.component.ts; features\player\player-location-detail\player-location-detail.component.ts; features\player\player-sublocation-detail\player-sublocation-detail.component.ts; shared\components\card-grid-layout\card-grid-layout.component.ts; shared\components\card-reveal-overlay\card-reveal-overlay.component.ts; shared\components\faction-relationships-section\faction-relationships-section.component.ts; shared\components\portal-import-card\portal-import-card.component.ts
+
+=== shared\components\faction-relationships-section\faction-relationships-section.component.ts
+SELECTOR: app-faction-relationships-section
+DIRECT_USERS: features\campaign\campaign-faction-detail\campaign-faction-detail.component.ts; features\player\player-faction-detail\player-faction-detail.component.ts
+PAGES: V1-DM-CampaignShell; V1-Player-CampaignShell
+PARENTS(all levels): features\campaign\campaign-faction-detail\campaign-faction-detail.component.ts; features\player\player-faction-detail\player-faction-detail.component.ts
+
+=== shared\components\faction-symbol-picker\faction-symbol-picker.component.ts
+SELECTOR: app-faction-symbol-picker
+DIRECT_USERS: features\player\player-cast-detail\player-cast-detail.component.ts; features\player\player-sublocation-detail\player-sublocation-detail.component.ts
+PAGES: V1-Player-CampaignShell
+PARENTS(all levels): features\player\player-cast-detail\player-cast-detail.component.ts; features\player\player-sublocation-detail\player-sublocation-detail.component.ts
+
+=== shared\components\feather-icon\feather-icon.component.ts
+SELECTOR: app-feather-icon
+DIRECT_USERS: features\campaign\campaign-sublocation-detail\campaign-sublocation-detail.component.ts; shared\components\detail-panel-actions\detail-panel-actions.component.ts
+PAGES: V1-DM-CampaignShell; V1-Player-CampaignShell
+PARENTS(all levels): features\campaign\campaign-cast-detail\campaign-cast-detail.component.ts; features\campaign\campaign-faction-detail\campaign-faction-detail.component.ts; features\campaign\campaign-location-detail\campaign-location-detail.component.ts; features\campaign\campaign-sublocation-detail\campaign-sublocation-detail.component.ts; features\player\player-cast-detail\player-cast-detail.component.ts; features\player\player-faction-detail\player-faction-detail.component.ts; features\player\player-location-detail\player-location-detail.component.ts; features\player\player-sublocation-detail\player-sublocation-detail.component.ts; shared\components\detail-panel-actions\detail-panel-actions.component.ts
+
+=== shared\components\free-trial-plan-card\free-trial-plan-card.component.ts
+SELECTOR: app-free-trial-plan-card
+DIRECT_USERS: features\subscription-choice\subscription-choice.component.ts; shared\components\right-drawer\subscription-content.component.ts
+PAGES: GLOBAL-app-root; Journal-Shell; V1-DM-CampaignShell
+PARENTS(all levels): app.ts; features\campaign\campaign-shell\campaign-shell.component.ts; features\subscription-choice\subscription-choice.component.ts; shared\components\right-drawer\subscription-content.component.ts
+
+=== shared\components\icon\icon.component.ts
+SELECTOR: app-icon
+DIRECT_USERS: features\dashboard\dashboard.component.ts; shared\components\detail-panel-actions\detail-panel-actions.component.ts; shared\components\storyline-filter-bar\storyline-filter-bar.component.ts; shared\components\v2\Shared\cc-detail-panel-actions\cc-detail-panel-actions.component.ts
+PAGES: GLOBAL-app-root; Journal-Shell; V1-DM-CampaignShell; V1-Player-CampaignShell
+PARENTS(all levels): app.ts; features\campaign\campaign-cast-detail\campaign-cast-detail.component.ts; features\campaign\campaign-faction-detail\campaign-faction-detail.component.ts; features\campaign\campaign-location-detail\campaign-location-detail.component.ts; features\campaign\campaign-shell\campaign-shell.component.ts; features\campaign\campaign-sublocation-detail\campaign-sublocation-detail.component.ts; features\campaign\gm-events\gm-events.component.ts; features\dashboard\dashboard.component.ts; features\player\player-campaign-shell\player-campaign-shell.component.ts; features\player\player-cast-detail\player-cast-detail.component.ts; features\player\player-events\player-events.component.ts; features\player\player-faction-detail\player-faction-detail.component.ts; features\player\player-location-detail\player-location-detail.component.ts; features\player\player-sublocation-detail\player-sublocation-detail.component.ts; shared\components\campaign-chronicle-drawer\campaign-chronicle-drawer.component.ts; shared\components\detail-panel-actions\detail-panel-actions.component.ts; shared\components\right-drawer\cast-detail-content.component.ts; shared\components\right-drawer\chronicle-content.component.ts; shared\components\right-drawer\faction-detail-content.component.ts; shared\components\right-drawer\location-detail-content.component.ts; shared\components\right-drawer\sublocation-detail-content.component.ts; shared\components\storyline-filter-bar\storyline-filter-bar.component.ts; shared\components\v2\index.ts; shared\components\v2\Shared\cc-detail-panel-actions\cc-detail-panel-actions.component.ts
+
+=== shared\components\icon-picker\icon-picker.component.ts
+SELECTOR: app-icon-picker
+DIRECT_USERS: features\campaign\campaign-faction-detail\faction-detail-panel\faction-detail-panel.component.ts; shared\components\portal-import-card\portal-import-card.component.ts
+PAGES: V1-DM-CampaignShell; V1-Player-CampaignShell
+PARENTS(all levels): features\campaign\campaign-detail\campaign-detail.component.ts; features\campaign\campaign-faction-detail\faction-detail-panel\faction-detail-panel.component.ts; features\campaign\campaign-factions\campaign-factions.component.ts; features\campaign\campaign-location-detail\campaign-location-detail.component.ts; features\campaign\campaign-sublocation-detail\campaign-sublocation-detail.component.ts; features\player\player-campaign-detail\player-campaign-detail.component.ts; features\player\player-location-detail\player-location-detail.component.ts; features\player\player-sublocation-detail\player-sublocation-detail.component.ts; shared\components\card-grid-layout\card-grid-layout.component.ts; shared\components\portal-import-card\portal-import-card.component.ts
+
+=== shared\components\journal-dropdown\journal-dropdown.component.ts
+SELECTOR: app-journal-dropdown
+DIRECT_USERS: features\campaign\campaign-creator\campaign-creator.component.ts; features\cast\cast-form\cast-form.component.ts; features\faction\faction-form\faction-form.component.ts; features\location\location-form\location-form.component.ts; shared\components\portal-import-card\portal-import-card.component.ts
+PAGES: Journal-Shell; V1-DM-CampaignShell; V1-Player-CampaignShell
+PARENTS(all levels): features\campaign\campaign-creator\campaign-creator.component.ts; features\campaign\campaign-detail\campaign-detail.component.ts; features\campaign\campaign-factions\campaign-factions.component.ts; features\campaign\campaign-location-detail\campaign-location-detail.component.ts; features\campaign\campaign-sublocation-detail\campaign-sublocation-detail.component.ts; features\cast\cast-form\cast-form.component.ts; features\faction\faction-form\faction-form.component.ts; features\location\location-form\location-form.component.ts; features\player\player-campaign-detail\player-campaign-detail.component.ts; features\player\player-location-detail\player-location-detail.component.ts; features\player\player-sublocation-detail\player-sublocation-detail.component.ts; shared\components\card-grid-layout\card-grid-layout.component.ts; shared\components\portal-import-card\portal-import-card.component.ts
+
+=== shared\components\journal-nav-drawer\journal-nav-drawer.component.ts
+SELECTOR: app-journal-nav-drawer
+DIRECT_USERS: layout\journal-shell\journal-shell.component.ts
+PAGES: Journal-Shell
+PARENTS(all levels): layout\journal-shell\journal-shell.component.ts
+
+=== shared\components\journal-randomize-button\journal-randomize-button.component.ts
+SELECTOR: app-journal-randomize-button
+DIRECT_USERS: features\cast\cast-form\cast-form.component.ts; features\location\location-form\location-form.component.ts; shared\components\portal-import-card\portal-import-card.component.ts
+PAGES: Journal-Shell; V1-DM-CampaignShell; V1-Player-CampaignShell
+PARENTS(all levels): features\campaign\campaign-detail\campaign-detail.component.ts; features\campaign\campaign-factions\campaign-factions.component.ts; features\campaign\campaign-location-detail\campaign-location-detail.component.ts; features\campaign\campaign-sublocation-detail\campaign-sublocation-detail.component.ts; features\cast\cast-form\cast-form.component.ts; features\location\location-form\location-form.component.ts; features\player\player-campaign-detail\player-campaign-detail.component.ts; features\player\player-location-detail\player-location-detail.component.ts; features\player\player-sublocation-detail\player-sublocation-detail.component.ts; shared\components\card-grid-layout\card-grid-layout.component.ts; shared\components\portal-import-card\portal-import-card.component.ts
+
+=== shared\components\journal-title\journal-title.component.ts
+SELECTOR: app-journal-title
+DIRECT_USERS: features\admin\admin-bug-reports\admin-bug-reports.component.ts; features\admin\configuration-settings\configuration-settings.component.ts; features\admin\user-management\user-management.component.ts; features\bug-report\bug-report.component.ts; features\campaign\campaign-creator\campaign-creator.component.ts; features\campaign\campaign-library\campaign-library.component.ts; features\cast\cast-form\cast-form.component.ts; features\cast\cast-library\cast-library.component.ts; features\change-password\change-password.component.ts; features\dashboard\dashboard.component.ts; features\faction\faction-form\faction-form.component.ts; features\faction\faction-library\faction-library.component.ts; features\forgot-password\forgot-password.component.ts; features\gm-testarea\gm-testarea.component.ts; features\legal\legal.component.ts; features\location\location-form\location-form.component.ts; features\location\location-library\location-library.component.ts; features\player\player-campaigns\player-campaigns.component.ts; features\reset-password\reset-password.component.ts; features\role-selection\role-selection.component.ts; features\sublocations\sublocation-form\sublocation-form.component.ts; features\sublocations\sublocation-library\sublocation-library.component.ts; features\subscription-choice\subscription-choice.component.ts; features\verify-email\verify-email.component.ts
+PAGES: Journal-Shell; Testarea-Page
+PARENTS(all levels): features\admin\admin-bug-reports\admin-bug-reports.component.ts; features\admin\configuration-settings\configuration-settings.component.ts; features\admin\user-management\user-management.component.ts; features\bug-report\bug-report.component.ts; features\campaign\campaign-creator\campaign-creator.component.ts; features\campaign\campaign-library\campaign-library.component.ts; features\cast\cast-form\cast-form.component.ts; features\cast\cast-library\cast-library.component.ts; features\change-password\change-password.component.ts; features\dashboard\dashboard.component.ts; features\faction\faction-form\faction-form.component.ts; features\faction\faction-library\faction-library.component.ts; features\forgot-password\forgot-password.component.ts; features\gm-testarea\gm-testarea.component.ts; features\legal\legal.component.ts; features\location\location-form\location-form.component.ts; features\location\location-library\location-library.component.ts; features\player\player-campaigns\player-campaigns.component.ts; features\reset-password\reset-password.component.ts; features\role-selection\role-selection.component.ts; features\sublocations\sublocation-form\sublocation-form.component.ts; features\sublocations\sublocation-library\sublocation-library.component.ts; features\subscription-choice\subscription-choice.component.ts; features\verify-email\verify-email.component.ts
+
+=== shared\components\journal-watermark\journal-watermark.component.ts
+SELECTOR: app-journal-watermark
+DIRECT_USERS: features\campaign\campaign-library\campaign-library.component.ts; features\cast\cast-library\cast-library.component.ts; features\faction\faction-library\faction-library.component.ts; features\location\location-library\location-library.component.ts; features\sublocations\sublocation-library\sublocation-library.component.ts
+PAGES: Journal-Shell
+PARENTS(all levels): features\campaign\campaign-library\campaign-library.component.ts; features\cast\cast-library\cast-library.component.ts; features\faction\faction-library\faction-library.component.ts; features\location\location-library\location-library.component.ts; features\sublocations\sublocation-library\sublocation-library.component.ts
+
+=== shared\components\location-card\location-card.component.ts
+SELECTOR: app-location-card
+DIRECT_USERS: features\campaign\campaign-detail\campaign-detail.component.ts; features\campaign\campaign-location-detail\campaign-location-detail.component.ts; features\gm-testarea\gm-testarea.component.ts; features\location\location-form\location-form.component.ts; features\location\location-library\location-library.component.ts; features\player\player-campaign-detail\player-campaign-detail.component.ts; features\player\player-location-detail\player-location-detail.component.ts; shared\components\card-reveal-overlay\card-reveal-overlay.component.ts; shared\components\portal-import-card\portal-import-card.component.ts
+PAGES: Journal-Shell; Testarea-Page; V1-DM-CampaignShell; V1-Player-CampaignShell
+PARENTS(all levels): features\campaign\campaign-detail\campaign-detail.component.ts; features\campaign\campaign-factions\campaign-factions.component.ts; features\campaign\campaign-location-detail\campaign-location-detail.component.ts; features\campaign\campaign-sublocation-detail\campaign-sublocation-detail.component.ts; features\gm-testarea\gm-testarea.component.ts; features\location\location-form\location-form.component.ts; features\location\location-library\location-library.component.ts; features\player\player-campaign-detail\player-campaign-detail.component.ts; features\player\player-campaign-shell\player-campaign-shell.component.ts; features\player\player-location-detail\player-location-detail.component.ts; features\player\player-sublocation-detail\player-sublocation-detail.component.ts; shared\components\card-grid-layout\card-grid-layout.component.ts; shared\components\card-reveal-overlay\card-reveal-overlay.component.ts; shared\components\portal-import-card\portal-import-card.component.ts
+
+=== shared\components\lock-icon\lock-icon.component.ts
+SELECTOR: app-lock-icon
+DIRECT_USERS: features\campaign\campaign-cast-detail\campaign-cast-detail.component.ts; features\campaign\campaign-location-detail\campaign-location-detail.component.ts; features\campaign\campaign-location-detail\location-detail-panel\location-detail-panel.component.ts; features\campaign\campaign-sublocation-detail\campaign-sublocation-detail.component.ts; features\campaign\gm-events\gm-events.component.ts; features\player\player-character\player-character.component.ts; shared\components\card-grid-layout\card-grid-layout.component.ts; shared\components\cast-card\cast-card.component.ts; shared\components\faction-card\faction-card.component.ts; shared\components\location-card\location-card.component.ts; shared\components\sublocation-card\sublocation-card.component.ts; shared\components\time-of-day-bar\time-of-day-bar.component.ts
+PAGES: Journal-Shell; Testarea-Page; V1-DM-CampaignShell; V1-Player-CampaignShell
+PARENTS(all levels): features\campaign\campaign-cast-detail\campaign-cast-detail.component.ts; features\campaign\campaign-detail\campaign-detail.component.ts; features\campaign\campaign-faction-detail\campaign-faction-detail.component.ts; features\campaign\campaign-factions\campaign-factions.component.ts; features\campaign\campaign-location-detail\campaign-location-detail.component.ts; features\campaign\campaign-location-detail\location-detail-panel\location-detail-panel.component.ts; features\campaign\campaign-shell\campaign-shell.component.ts; features\campaign\campaign-sublocation-detail\campaign-sublocation-detail.component.ts; features\campaign\cast-relationships-tab\cast-relationships-tab.component.ts; features\campaign\gm-events\gm-events.component.ts; features\campaign\gm-the-party\gm-the-party.component.ts; features\campaign\time-of-day-editor\time-of-day-editor.component.ts; features\cast\cast-form\cast-form.component.ts; features\cast\cast-library\cast-library.component.ts; features\faction\faction-form\faction-form.component.ts; features\faction\faction-library\faction-library.component.ts; features\gm-testarea\gm-testarea.component.ts; features\location\location-form\location-form.component.ts; features\location\location-library\location-library.component.ts; features\player\player-campaign-detail\player-campaign-detail.component.ts; features\player\player-campaign-shell\player-campaign-shell.component.ts; features\player\player-cast-detail\player-cast-detail.component.ts; features\player\player-character\player-character.component.ts; features\player\player-faction-detail\player-faction-detail.component.ts; features\player\player-location-detail\player-location-detail.component.ts; features\player\player-sublocation-detail\player-sublocation-detail.component.ts; features\player\player-the-party\player-the-party.component.ts; features\sublocations\sublocation-form\sublocation-form.component.ts; features\sublocations\sublocation-library\sublocation-library.component.ts; shared\components\card-grid-layout\card-grid-layout.component.ts; shared\components\card-reveal-overlay\card-reveal-overlay.component.ts; shared\components\cast-card\cast-card.component.ts; shared\components\faction-card\faction-card.component.ts; shared\components\faction-relationships-section\faction-relationships-section.component.ts; shared\components\location-card\location-card.component.ts; shared\components\portal-import-card\portal-import-card.component.ts; shared\components\sublocation-card\sublocation-card.component.ts; shared\components\time-of-day-bar\time-of-day-bar.component.ts
+
+=== shared\components\note-destination-picker\note-destination-picker.component.ts
+SELECTOR: app-note-destination-picker
+DIRECT_USERS: features\campaign\gm-events\gm-events.component.ts; features\player\player-quicknote-queue\player-quicknote-queue.component.ts; shared\components\quicknotes\quicknotes.component.ts
+PAGES: V1-DM-CampaignShell; V1-Player-CampaignShell
+PARENTS(all levels): features\campaign\gm-events\gm-events.component.ts; features\player\player-campaign-shell\player-campaign-shell.component.ts; features\player\player-quicknote-queue\player-quicknote-queue.component.ts; shared\components\quicknotes\quicknotes.component.ts
+
+=== shared\components\party-gold-drawer\party-gold-drawer.component.ts
+SELECTOR: app-party-gold-drawer
+DIRECT_USERS: 
+PAGES: (none resolved)
+PARENTS(all levels): 
+
+=== shared\components\player-event-card-item\player-event-card-item.component.ts
+SELECTOR: app-player-event-card-item
+DIRECT_USERS: features\player\player-events\player-events.component.ts
+PAGES: V1-Player-CampaignShell
+PARENTS(all levels): features\player\player-events\player-events.component.ts
+
+=== shared\components\player-inventory-drawer\player-inventory-drawer.component.ts
+SELECTOR: app-player-inventory-drawer
+DIRECT_USERS: 
+PAGES: (none resolved)
+PARENTS(all levels): 
+
+=== shared\components\player-secrets-drawer\player-secrets-drawer.component.ts
+SELECTOR: app-player-secrets-drawer
+DIRECT_USERS: 
+PAGES: (none resolved)
+PARENTS(all levels): 
+
+=== shared\components\portal-card\portal-card.component.ts
+SELECTOR: app-portal-card
+DIRECT_USERS: features\campaign\campaign-library\campaign-library.component.ts; features\gm-testarea\gm-testarea.component.ts; features\player\player-campaigns\player-campaigns.component.ts; shared\components\card-reveal-overlay\card-reveal-overlay.component.ts
+PAGES: Journal-Shell; Testarea-Page; V1-Player-CampaignShell
+PARENTS(all levels): features\campaign\campaign-library\campaign-library.component.ts; features\gm-testarea\gm-testarea.component.ts; features\player\player-campaigns\player-campaigns.component.ts; features\player\player-campaign-shell\player-campaign-shell.component.ts; shared\components\card-reveal-overlay\card-reveal-overlay.component.ts
+
+=== shared\components\portal-import-card\portal-import-card.component.ts
+SELECTOR: app-portal-import-card
+DIRECT_USERS: features\campaign\campaign-factions\campaign-factions.component.ts; shared\components\card-grid-layout\card-grid-layout.component.ts
+PAGES: V1-DM-CampaignShell; V1-Player-CampaignShell
+PARENTS(all levels): features\campaign\campaign-detail\campaign-detail.component.ts; features\campaign\campaign-factions\campaign-factions.component.ts; features\campaign\campaign-location-detail\campaign-location-detail.component.ts; features\campaign\campaign-sublocation-detail\campaign-sublocation-detail.component.ts; features\player\player-campaign-detail\player-campaign-detail.component.ts; features\player\player-location-detail\player-location-detail.component.ts; features\player\player-sublocation-detail\player-sublocation-detail.component.ts; shared\components\card-grid-layout\card-grid-layout.component.ts
+
+=== shared\components\premium-plan-card\premium-plan-card.component.ts
+SELECTOR: app-premium-plan-card
+DIRECT_USERS: features\subscription-choice\subscription-choice.component.ts; shared\components\right-drawer\subscription-content.component.ts
+PAGES: GLOBAL-app-root; Journal-Shell; V1-DM-CampaignShell
+PARENTS(all levels): app.ts; features\campaign\campaign-shell\campaign-shell.component.ts; features\subscription-choice\subscription-choice.component.ts; shared\components\right-drawer\subscription-content.component.ts
+
+=== shared\components\quicknotes\quicknotes.component.ts
+SELECTOR: app-quicknotes
+DIRECT_USERS: features\player\player-campaign-shell\player-campaign-shell.component.ts
+PAGES: V1-Player-CampaignShell
+PARENTS(all levels): features\player\player-campaign-shell\player-campaign-shell.component.ts
+
+=== shared\components\right-drawer\cast-detail-content.component.ts
+SELECTOR: app-cast-detail-content
+DIRECT_USERS: app.ts
+PAGES: GLOBAL-app-root
+PARENTS(all levels): app.ts
+
+=== shared\components\right-drawer\chronicle-content.component.ts
+SELECTOR: app-chronicle-content
+DIRECT_USERS: app.ts; features\campaign\campaign-shell\campaign-shell.component.ts; features\player\player-campaign-shell\player-campaign-shell.component.ts
+PAGES: GLOBAL-app-root; V1-DM-CampaignShell; V1-Player-CampaignShell
+PARENTS(all levels): app.ts; features\campaign\campaign-shell\campaign-shell.component.ts; features\player\player-campaign-shell\player-campaign-shell.component.ts
+
+=== shared\components\right-drawer\faction-detail-content.component.ts
+SELECTOR: app-faction-detail-content
+DIRECT_USERS: app.ts
+PAGES: GLOBAL-app-root
+PARENTS(all levels): app.ts
+
+=== shared\components\right-drawer\location-detail-content.component.ts
+SELECTOR: app-location-detail-content
+DIRECT_USERS: app.ts
+PAGES: GLOBAL-app-root
+PARENTS(all levels): app.ts
+
+=== shared\components\right-drawer\party-gold-content.component.ts
+SELECTOR: app-party-gold-content
+DIRECT_USERS: app.ts; features\campaign\campaign-shell\campaign-shell.component.ts
+PAGES: GLOBAL-app-root; V1-DM-CampaignShell
+PARENTS(all levels): app.ts; features\campaign\campaign-shell\campaign-shell.component.ts
+
+=== shared\components\right-drawer\player-inventory-content.component.ts
+SELECTOR: app-player-inventory-content
+DIRECT_USERS: app.ts; features\player\player-campaign-shell\player-campaign-shell.component.ts
+PAGES: GLOBAL-app-root; V1-Player-CampaignShell
+PARENTS(all levels): app.ts; features\player\player-campaign-shell\player-campaign-shell.component.ts
+
+=== shared\components\right-drawer\player-secrets-content.component.ts
+SELECTOR: app-player-secrets-content
+DIRECT_USERS: app.ts; features\campaign\campaign-shell\campaign-shell.component.ts; features\campaign\gm-the-party\gm-the-party.component.ts
+PAGES: GLOBAL-app-root; V1-DM-CampaignShell
+PARENTS(all levels): app.ts; features\campaign\campaign-shell\campaign-shell.component.ts; features\campaign\gm-the-party\gm-the-party.component.ts
+
+=== shared\components\right-drawer\right-drawer.component.ts
+SELECTOR: app-right-drawer
+DIRECT_USERS: app.ts; features\campaign\campaign-shell\campaign-shell.component.ts; features\player\player-campaign-shell\player-campaign-shell.component.ts
+PAGES: GLOBAL-app-root; V1-DM-CampaignShell; V1-Player-CampaignShell
+PARENTS(all levels): app.ts; features\campaign\campaign-shell\campaign-shell.component.ts; features\player\player-campaign-shell\player-campaign-shell.component.ts
+
+=== shared\components\right-drawer\shop-purchase-content.component.ts
+SELECTOR: app-shop-purchase-content
+DIRECT_USERS: app.ts; features\player\player-campaign-shell\player-campaign-shell.component.ts
+PAGES: GLOBAL-app-root; V1-Player-CampaignShell
+PARENTS(all levels): app.ts; features\player\player-campaign-shell\player-campaign-shell.component.ts
+
+=== shared\components\right-drawer\soundtrack-content.component.ts
+SELECTOR: app-soundtrack-content
+DIRECT_USERS: app.ts; features\campaign\campaign-shell\campaign-shell.component.ts
+PAGES: GLOBAL-app-root; V1-DM-CampaignShell
+PARENTS(all levels): app.ts; features\campaign\campaign-shell\campaign-shell.component.ts
+
+=== shared\components\right-drawer\sublocation-detail-content.component.ts
+SELECTOR: app-sublocation-detail-content
+DIRECT_USERS: app.ts
+PAGES: GLOBAL-app-root
+PARENTS(all levels): app.ts
+
+=== shared\components\right-drawer\subscription-content.component.ts
+SELECTOR: app-subscription-content
+DIRECT_USERS: app.ts; features\campaign\campaign-shell\campaign-shell.component.ts
+PAGES: GLOBAL-app-root; V1-DM-CampaignShell
+PARENTS(all levels): app.ts; features\campaign\campaign-shell\campaign-shell.component.ts
+
+=== shared\components\section-label\section-label.component.ts
+SELECTOR: app-section-label
+DIRECT_USERS: features\campaign\campaign-faction-detail\campaign-faction-detail.component.ts; features\player\player-faction-detail\player-faction-detail.component.ts; shared\components\card-grid-layout\card-grid-layout.component.ts; shared\components\faction-relationships-section\faction-relationships-section.component.ts
+PAGES: V1-DM-CampaignShell; V1-Player-CampaignShell
+PARENTS(all levels): features\campaign\campaign-detail\campaign-detail.component.ts; features\campaign\campaign-faction-detail\campaign-faction-detail.component.ts; features\campaign\campaign-factions\campaign-factions.component.ts; features\campaign\campaign-location-detail\campaign-location-detail.component.ts; features\campaign\campaign-sublocation-detail\campaign-sublocation-detail.component.ts; features\player\player-campaign-detail\player-campaign-detail.component.ts; features\player\player-faction-detail\player-faction-detail.component.ts; features\player\player-location-detail\player-location-detail.component.ts; features\player\player-sublocation-detail\player-sublocation-detail.component.ts; shared\components\card-grid-layout\card-grid-layout.component.ts; shared\components\faction-relationships-section\faction-relationships-section.component.ts
+
+=== shared\components\shop-purchase-drawer\shop-purchase-drawer.component.ts
+SELECTOR: app-shop-purchase-drawer
+DIRECT_USERS: 
+PAGES: (none resolved)
+PARENTS(all levels): 
+
+=== shared\components\soundtrack-control-panel\soundtrack-control-panel.component.ts
+SELECTOR: app-soundtrack-control-panel
+DIRECT_USERS: 
+PAGES: (none resolved)
+PARENTS(all levels): 
+
+=== shared\components\soundtrack-selector\soundtrack-selector.component.ts
+SELECTOR: app-soundtrack-selector
+DIRECT_USERS: features\campaign\gm-events\gm-events.component.ts
+PAGES: V1-DM-CampaignShell
+PARENTS(all levels): features\campaign\gm-events\gm-events.component.ts
+
+=== shared\components\storyline-filter-bar\storyline-filter-bar.component.ts
+SELECTOR: app-storyline-filter-bar
+DIRECT_USERS: features\campaign\gm-events\gm-events.component.ts; features\player\player-events\player-events.component.ts; shared\components\campaign-chronicle-drawer\campaign-chronicle-drawer.component.ts; shared\components\right-drawer\chronicle-content.component.ts
+PAGES: GLOBAL-app-root; V1-DM-CampaignShell; V1-Player-CampaignShell
+PARENTS(all levels): app.ts; features\campaign\campaign-shell\campaign-shell.component.ts; features\campaign\gm-events\gm-events.component.ts; features\player\player-campaign-shell\player-campaign-shell.component.ts; features\player\player-events\player-events.component.ts; shared\components\campaign-chronicle-drawer\campaign-chronicle-drawer.component.ts; shared\components\right-drawer\chronicle-content.component.ts
+
+=== shared\components\sublocation-card\sublocation-card.component.ts
+SELECTOR: app-sublocation-card
+DIRECT_USERS: features\campaign\campaign-faction-detail\campaign-faction-detail.component.ts; features\campaign\campaign-location-detail\campaign-location-detail.component.ts; features\campaign\campaign-sublocation-detail\campaign-sublocation-detail.component.ts; features\gm-testarea\gm-testarea.component.ts; features\player\player-faction-detail\player-faction-detail.component.ts; features\player\player-location-detail\player-location-detail.component.ts; features\player\player-sublocation-detail\player-sublocation-detail.component.ts; features\sublocations\sublocation-form\sublocation-form.component.ts; features\sublocations\sublocation-library\sublocation-library.component.ts; shared\components\card-reveal-overlay\card-reveal-overlay.component.ts; shared\components\portal-import-card\portal-import-card.component.ts
+PAGES: Journal-Shell; Testarea-Page; V1-DM-CampaignShell; V1-Player-CampaignShell
+PARENTS(all levels): features\campaign\campaign-detail\campaign-detail.component.ts; features\campaign\campaign-faction-detail\campaign-faction-detail.component.ts; features\campaign\campaign-factions\campaign-factions.component.ts; features\campaign\campaign-location-detail\campaign-location-detail.component.ts; features\campaign\campaign-sublocation-detail\campaign-sublocation-detail.component.ts; features\gm-testarea\gm-testarea.component.ts; features\player\player-campaign-detail\player-campaign-detail.component.ts; features\player\player-campaign-shell\player-campaign-shell.component.ts; features\player\player-faction-detail\player-faction-detail.component.ts; features\player\player-location-detail\player-location-detail.component.ts; features\player\player-sublocation-detail\player-sublocation-detail.component.ts; features\sublocations\sublocation-form\sublocation-form.component.ts; features\sublocations\sublocation-library\sublocation-library.component.ts; shared\components\card-grid-layout\card-grid-layout.component.ts; shared\components\card-reveal-overlay\card-reveal-overlay.component.ts; shared\components\portal-import-card\portal-import-card.component.ts
+
+=== shared\components\subscription-lock-banner\subscription-lock-banner.component.ts
+SELECTOR: app-subscription-lock-banner
+DIRECT_USERS: layout\journal-shell\journal-shell.component.ts
+PAGES: Journal-Shell
+PARENTS(all levels): layout\journal-shell\journal-shell.component.ts
+
+=== shared\components\time-of-day-bar\time-of-day-bar.component.ts
+SELECTOR: app-time-of-day-bar
+DIRECT_USERS: features\campaign\campaign-shell\campaign-shell.component.ts; features\campaign\time-of-day-editor\time-of-day-editor.component.ts; features\player\player-campaign-shell\player-campaign-shell.component.ts
+PAGES: V1-DM-CampaignShell; V1-Player-CampaignShell
+PARENTS(all levels): features\campaign\campaign-shell\campaign-shell.component.ts; features\campaign\time-of-day-editor\time-of-day-editor.component.ts; features\player\player-campaign-shell\player-campaign-shell.component.ts
+
+=== shared\components\toggle-switch\toggle-switch.component.ts
+SELECTOR: app-toggle-switch
+DIRECT_USERS: shared\components\right-drawer\faction-detail-content.component.ts
+PAGES: GLOBAL-app-root
+PARENTS(all levels): app.ts; shared\components\right-drawer\faction-detail-content.component.ts
+
+=== shared\components\travel-anchor\travel-anchor.component.ts
+SELECTOR: app-travel-anchor
+DIRECT_USERS: features\campaign\campaign-cast-detail\campaign-cast-detail.component.ts; features\campaign\gm-the-party\gm-the-party.component.ts; shared\components\note-destination-picker\note-destination-picker.component.ts
+PAGES: V1-DM-CampaignShell; V1-Player-CampaignShell
+PARENTS(all levels): features\campaign\campaign-cast-detail\campaign-cast-detail.component.ts; features\campaign\gm-events\gm-events.component.ts; features\campaign\gm-the-party\gm-the-party.component.ts; features\player\player-campaign-shell\player-campaign-shell.component.ts; features\player\player-quicknote-queue\player-quicknote-queue.component.ts; shared\components\note-destination-picker\note-destination-picker.component.ts; shared\components\quicknotes\quicknotes.component.ts
+
+=== shared\components\upgrade-badge\upgrade-badge.component.ts
+SELECTOR: app-upgrade-badge
+DIRECT_USERS: features\campaign\campaign-library\campaign-library.component.ts; features\campaign\campaign-shell\campaign-shell.component.ts; features\cast\cast-library\cast-library.component.ts; features\dashboard\dashboard.component.ts; features\faction\faction-library\faction-library.component.ts; features\location\location-library\location-library.component.ts; features\sublocations\sublocation-library\sublocation-library.component.ts
+PAGES: Journal-Shell; V1-DM-CampaignShell
+PARENTS(all levels): features\campaign\campaign-library\campaign-library.component.ts; features\campaign\campaign-shell\campaign-shell.component.ts; features\cast\cast-library\cast-library.component.ts; features\dashboard\dashboard.component.ts; features\faction\faction-library\faction-library.component.ts; features\location\location-library\location-library.component.ts; features\sublocations\sublocation-library\sublocation-library.component.ts
+
+=== shared\components\void-nav-drawer\void-nav-drawer.component.ts
+SELECTOR: app-void-nav-drawer
+DIRECT_USERS: features\campaign\campaign-shell\campaign-shell.component.ts; features\player\player-campaign-shell\player-campaign-shell.component.ts
+PAGES: V1-DM-CampaignShell; V1-Player-CampaignShell
+PARENTS(all levels): features\campaign\campaign-shell\campaign-shell.component.ts; features\player\player-campaign-shell\player-campaign-shell.component.ts
+
+=== shared\components\void-title-segments\void-title-segments.component.ts
+SELECTOR: app-void-title-segments
+DIRECT_USERS: features\campaign\campaign-shell\campaign-shell.component.ts; features\player\player-campaign-shell\player-campaign-shell.component.ts
+PAGES: V1-DM-CampaignShell; V1-Player-CampaignShell
+PARENTS(all levels): features\campaign\campaign-shell\campaign-shell.component.ts; features\player\player-campaign-shell\player-campaign-shell.component.ts
+
+=== shared\components\whisper-card\whisper-card.component.ts
+SELECTOR: app-whisper-card
+DIRECT_USERS: features\gm-testarea\gm-testarea.component.ts; shared\components\card-reveal-overlay\card-reveal-overlay.component.ts
+PAGES: Testarea-Page; V1-Player-CampaignShell
+PARENTS(all levels): features\gm-testarea\gm-testarea.component.ts; features\player\player-campaign-shell\player-campaign-shell.component.ts; shared\components\card-reveal-overlay\card-reveal-overlay.component.ts
+

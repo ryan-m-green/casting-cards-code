@@ -1,4 +1,4 @@
-import { Component, OnInit, signal, computed, inject, ViewChild, ElementRef, DestroyRef } from '@angular/core';
+﻿import { Component, OnInit, signal, computed, inject, ViewChild, ElementRef, DestroyRef } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormsModule, FormBuilder, Validators, FormControl } from '@angular/forms';
@@ -9,11 +9,11 @@ import { EMPTY } from 'rxjs';
 import { environment } from '../../../../environments/environment';
 import { Faction, FactionColors } from '../../../shared/models/faction.model';
 import { SparkleService } from '../../../shared/services/sparkle.service';
-import { FactionCardComponent } from '../../../shared/components/faction-card/faction-card.component';
-import { CcSymbolPickerComponent } from '../../../shared/components/v2/cc-symbol-picker/cc-symbol-picker.component';
-import { JournalTitleComponent } from '../../../shared/components/journal-title/journal-title.component';
-import { JournalDropdownComponent } from '../../../shared/components/journal-dropdown/journal-dropdown.component';
-import { KeywordTagsComponent } from '../../../shared/components/v2/cc-keyword-tags/cc-keyword-tags.component';
+import { CcFactionCardComponent } from '../../../shared/components/Shared/cc-faction-card/cc-faction-card.component';
+import { CcSymbolPickerComponent } from '../../../shared/components/Shared/cc-symbol-picker/cc-symbol-picker.component';
+import { JournalTitleComponent } from '../../../shared/components/Shared/journal-title/journal-title.component';
+import { JournalDropdownComponent } from '../../../shared/components/Shared/journal-dropdown/journal-dropdown.component';
+import { KeywordTagsComponent } from '../../../shared/components/Shared/cc-keyword-tags/cc-keyword-tags.component';
 import { HttpErrorResponse } from '@angular/common/http';
 import { SubscriptionDrawerService } from '../../../core/subscription-drawer.service';
 import { AuthService } from '../../../core/auth/auth.service';
@@ -40,7 +40,7 @@ export const FACTION_TYPE_OPTIONS = [
 @Component({
   selector: 'app-faction-form',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, FormsModule, RouterLink, FactionCardComponent, CcSymbolPickerComponent, JournalTitleComponent, JournalDropdownComponent, KeywordTagsComponent],
+  imports: [CommonModule, ReactiveFormsModule, FormsModule, RouterLink, CcFactionCardComponent, CcSymbolPickerComponent, JournalTitleComponent, JournalDropdownComponent, KeywordTagsComponent],
   templateUrl: './faction-form.component.html',
   styleUrl: './faction-form.component.scss'
 })

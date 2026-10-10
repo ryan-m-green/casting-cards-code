@@ -1,0 +1,36 @@
+<article class="condition-card" [class.condition-card--full]="size() === 'full'" [style.--portal-color]="portalColor()">
+  <button
+    type="button"
+    class="condition-card-body"
+    [attr.aria-label]="'Open ' + name() + ' details'"
+    [title]="'View or edit ' + name()"
+    (click)="open.emit(condition())"
+  >
+    <span class="condition-mini-card">
+      <span class="condition-mini-inner">
+        <cc-card-watermark class="condition-watermark" name="cast" />
+      </span>
+    </span>
+
+    <span class="condition-ring" [style.--ring-color]="ringColor()">
+      <span class="condition-ring-label">{{ name() }}</span>
+    </span>
+  </button>
+
+  @if (showActions()) {
+    <cc-edit-button
+      class="condition-card-edit"
+      label="Edit condition"
+      (clicked)="editClick.emit()" />
+
+    <cc-delete-button
+      class="condition-card-delete"
+      label="Delete condition"
+      confirmLabel="Delete"
+      (confirmed)="deleteClick.emit()" />
+  }
+
+  @if (selected()) {
+    <span class="condition-card-check" aria-hidden="true">✓</span>
+  }
+</article>

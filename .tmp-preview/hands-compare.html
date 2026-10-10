@@ -1,0 +1,55 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <style>
+    body { margin: 0; padding: 12px; background: #f6f2e8; font: 12px sans-serif; color: #444; }
+    .row { display: flex; align-items: flex-start; gap: 28px; }
+    .cell { text-align: center; }
+    img { display: block; }
+    .pair { display: flex; gap: 10px; align-items: flex-end; }
+    .paper {
+      display: inline-flex; align-items: center; justify-content: center; padding: 8px;
+      background: linear-gradient(135deg, #f3e5c8 0%, #e8d4a7 35%, #dfc691 70%, #ceb073 100%);
+      border: 1px solid #8a6d3b;
+    }
+  </style>
+</head>
+<body>
+  <div class="row">
+    <div class="cell">
+      <div class="pair">
+        <div><img src="hands-original.svg" width="357" height="336" alt=""><div>before</div></div>
+        <div><img src="../frontend/cast-library-ui/public/hands_shackles_captivity.svg" width="357" height="336" alt=""><div>after</div></div>
+      </div>
+      <div>1:1</div>
+    </div>
+    <div class="cell">
+      <div class="pair">
+        <div><img src="hands-original.svg" width="714" height="672" alt=""><div>before</div></div>
+        <div><img src="../frontend/cast-library-ui/public/hands_shackles_captivity.svg" width="714" height="672" alt=""><div>after</div></div>
+      </div>
+      <div>2x</div>
+    </div>
+  </div>
+
+  <div class="row" style="margin-top:16px">
+    <div class="cell">
+      <div class="paper"><img src="hands-original.svg" width="32" height="30" alt=""></div>
+      <div>before @32px</div>
+    </div>
+    <div class="cell">
+      <div class="paper"><img src="../frontend/cast-library-ui/public/hands_shackles_captivity.svg" width="32" height="30" alt=""></div>
+      <div>after @32px</div>
+    </div>
+    <div class="cell">
+      <div class="paper"><img src="hands-original.svg" width="48" height="45" alt=""></div>
+      <div>before @48px</div>
+    </div>
+    <div class="cell">
+      <div class="paper"><img src="../frontend/cast-library-ui/public/hands_shackles_captivity.svg" width="48" height="45" alt=""></div>
+      <div>after @48px</div>
+    </div>
+  </div>
+</body>
+</html>

@@ -1,0 +1,44 @@
+  <div class="cc-keyword-editor">
+    <button type="button" class="cc-keyword-editor-trigger" (click)="toggle()" [attr.aria-expanded]="isOpen()">
+    <span class="cc-keyword-editor-trigger-label">Keyword Manager</span>
+    <span class="cc-keyword-editor-count">{{ keywords().length }}</span>
+    <span class="cc-keyword-editor-caret" [class.cc-keyword-editor-caret--open]="isOpen()">▾</span>
+  </button>
+
+  @if (isOpen()) {
+    <div class="cc-keyword-editor-panel">
+      <div class="cc-keyword-editor-add">
+        <app-cc-textbox
+          [placeholder]="'Add keyword…'"
+          [context]="'journal'"
+          [ngModel]="newKeyword()"
+          (ngModelChange)="newKeyword.set($event)"
+          (keydown.enter)="addKeyword()">
+        </app-cc-textbox>
+        <button
+          type="button"
+          class="cc-keyword-editor-add-btn"
+          (click)="addKeyword()"
+          [disabled]="adding()">Add</button>
+      </div>
+      @if (keywords().length) {
+        <ul class="cc-keyword-editor-list">
+          @for (kw of keywords(); track kw) {
+            <li class="cc-keyword-editor-row">
+              @if (confirmingKeyword() === kw) {
+                <span class="cc-keyword-editor-confirm-label">Delete?</span>
+                <button type="button" class="cc-keyword-editor-confirm" (click)="confirmDelete(kw)" [disabled]="deleting()">Confirm</button>
+                <button type="button" class="cc-keyword-editor-cancel" (click)="cancelDelete()">Cancel</button>
+              } @else {
+                <span class="cc-keyword-editor-keyword">{{ kw }}</span>
+                <button type="button" class="cc-keyword-editor-remove" (click)="startDelete(kw)" aria-label="Delete keyword">×</button>
+              }
+            </li>
+          }
+        </ul>
+      } @else {
+        <p class="cc-keyword-editor-empty">No keywords yet.</p>
+      }
+    </div>
+  }
+  </div>

@@ -2,15 +2,36 @@
 
 :host { display: block; height: 100%; }
 
+/* The library's cards are swept as a row rather than laid on a grid (see the component's
+   `initSwiper`): the first card stands in the middle of the page, with the rest of the stack
+   trailing off to its right. That takes a width of its own — Swiper carries `margin: auto` on the
+   row, and an auto-margined row with no width is left fit-content and pushed against the page's
+   right edge — and it clips the stack the row is swept through, so the page never grows a sideways
+   scrollbar. The padding is the room the sweep needs around the cards: the crown over a card's top
+   corner and the lift a card takes on hover would otherwise be cut off. */
+.card-grid {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 20px 0 v.$spacing-md;
+  overflow: hidden;
+  overscroll-behavior-x: contain;
+
+  .swiper-wrapper {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+  }
+
+  .swiper-slide {
+    flex: 0 0 auto;
+    width: v.$card-width;
+    height: v.$card-height;
+    box-sizing: border-box;
+  }
+}
+
 .upgrade-badge-library {
   position: absolute;
   top: 8px;
   right: 20px;
-}
-
-.cc-keyword-editor-wrap {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  gap: 6px;
 }

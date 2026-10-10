@@ -1,0 +1,193 @@
+<div class="travel" [style.--portal-color]="portalColor()">
+
+  <!--
+    Two parts, top to bottom: the head, then the rows.
+
+    The head is laid out at the top of the drawer's body and does not scroll — the layout holds it
+    there (it takes no share of the leftover height), rather than `position: sticky`. The rows below
+    are the only thing that scrolls, inside their own scroller; the picker itself fills the drawer
+    body and never scrolls, so the rows are clipped at the picker's edges and can never be seen in
+    the frame the drawer's padding leaves around it (the strip under the header included).
+  -->
+  <div class="travel-pinned">
+
+    <!--
+      The search box: an ordinary text box over the rows, narrowing them to the places and the rooms
+      whose cards answer to what is typed (see `rows` in the component).
+    -->
+    <div class="travel-search">
+      <app-cc-textbox
+        placeholder="Search locations and rooms…"
+        context="campaign"
+        [ngModel]="search()"
+        (ngModelChange)="onSearchChange($event)"
+        [showClear]="true"
+      />
+    </div>
+
+    <!--
+      Where the cast stands: its location and the room it is in, each named in the colour its own
+      card's frame is built around (see the stylesheet). Read off where the cast is, and moved with
+      it — never by the rows, which hold still.
+    -->
+    @if (currentSublocationName()) {
+      <p class="travel-now">
+        Now standing in
+        <span class="travel-place-location">{{ currentLocationName() }}</span>
+        @if (currentLocationName()) {
+          <span class="travel-place-sep">·</span>
+        }
+        <span class="travel-place-sublocation">{{ currentSublocationName() }}</span>
+      </p>
+    }
+
+    <!--
+      The rule the party's own card is passed over by, where the card being moved is locked: said at
+      the head of the drawer, where the DM is working, rather than left as a dimmed ⚔ card the DM
+      cannot account for (see `castLocked` in the component).
+    -->
+    @if (partyAnchor(); as anchor) {
+      @if (partyLockNote(anchor); as note) {
+        <p class="travel-locked">{{ note }}</p>
+      }
+    }
+
+    <!--
+      The pick, and the button that finalises it. Picking a card in the rows below only picks it:
+      the cast is moved here, and not before, so a card picked by mistake leaves it where it stands.
+      The names wear the same two colours as the line above.
+    -->
+    @if (pending()) {
+      <button
+        type="button"
+        class="campaign-primary-btn travel-commit"
+        [disabled]="traveling()"
+        (click)="travel()"
+      >
+        @if (traveling()) {
+          <span>Traveling…</span>
+        } @else {
+          <span>Travel to</span>
+          <span class="travel-place-location">{{ pendingLocationName() }}</span>
+          <span class="travel-place-sep">·</span>
+          <span class="travel-place-sublocation">{{ pendingSublocationName() }}</span>
+        }
+      </button>
+    }
+
+    <!-- A travel that did not land: said here, where the DM's hand is, rather than swallowed. -->
+    @if (error()) {
+      <p class="travel-error">{{ error() }}</p>
+    }
+  </div>
+
+  <!--
+    The rows: the party's own button first, then one swipable row per location — the location's own
+    card leads it, and the sublocations standing in that location follow it along the same row (see
+    the component, which mounts a Swiper on each row's track). The whole stack scrolls together, in
+    the scroller the head stands over.
+  -->
+  <div class="travel-rows">
+
+    <!--
+      The party's own button, standing before the locations rather than as a ⚔ card somewhere down
+      the stack: it is the size the simple cards are (75 × 110), and it wears the player cards' own
+      border (see ../carddeck/_player-card-frame.scss) with the player icon the deck's own player
+      cards carry (see cc-player-icon) over its name, "The Party" — the caption the deck's other
+      card-sized tiles wear (see cc-card-navigation). So the way back to the party is the first thing
+      the drawer offers, and it reads as the players' own rather than as another place.
+      It is picked exactly as a room's card is — the travel button under the head is what sends the
+      cast (see `onPartyClick` in the component) — and it stands dimmed where that pick is not one
+      the cast may take, its card locked, as the ⚔ card in the party's own row does.
+    -->
+    @if (partyAnchor(); as anchor) {
+      <div class="travel-party-row">
+        <button
+          type="button"
+          class="travel-party"
+          [class.is-picked]="isPending(anchor)"
+          [disabled]="traveling() || !isOffered(anchor)"
+          [attr.aria-pressed]="isPending(anchor)"
+          [attr.aria-label]="partyLockNote(anchor) ?? 'The Party'"
+          [attr.title]="partyLockNote(anchor) ?? 'The Party'"
+          (click)="onPartyClick()"
+        >
+          <span class="travel-party-face">
+            <cc-player-icon class="travel-party-icon" [width]="26" color="white" [opacity]="0.9" />
+            <span class="travel-party-label">The Party</span>
+          </span>
+        </button>
+      </div>
+    }
+
+    @if (rows().length) {
+      @for (row of rows(); track row.location.instanceId) {
+        <div class="travel-row" role="group" [attr.aria-label]="row.location.name">
+          <div class="travel-row-track swiper" #travelRow [attr.data-row-id]="row.location.instanceId">
+            <div class="swiper-wrapper">
+
+              <div class="swiper-slide travel-row-leader">
+                <cc-simple-location-card [location]="row.location" />
+                @if (isCurrentLocation(row.location)) {
+                  <span class="travel-tile-flag">Here</span>
+                }
+                <!--
+                  The row the pick stands in: the campaign's own travel art on the location card that
+                  leads it, the way the cast card's travel button wears that art.
+                -->
+                @if (isPendingLocation(row.location)) {
+                  <span class="travel-tile-art" aria-hidden="true">
+                    <img src="/about/cast_travel_system.svg" alt="" />
+                  </span>
+                }
+              </div>
+
+              @for (sublocation of row.sublocations; track sublocation.instanceId) {
+                <div class="swiper-slide">
+                  <!--
+                    A room's own card, as the pick. A room the card being moved may not be sent to —
+                    the party's own anchor, with the card locked — stands dimmed and does not answer a
+                    click, and wears the rule in its title and in its name to a screen reader, so the
+                    refusal is the card's own words (see `partyLockNote` in the component).
+                  -->
+                  <button
+                    type="button"
+                    class="travel-tile"
+                    [class.is-here]="isCurrent(sublocation)"
+                    [class.is-picked]="isPending(sublocation)"
+                    [disabled]="traveling() || !isOffered(sublocation)"
+                    [attr.aria-pressed]="isPending(sublocation)"
+                    [attr.aria-label]="partyLockNote(sublocation) ?? 'Choose ' + sublocation.name"
+                    [attr.title]="partyLockNote(sublocation) ?? sublocation.name"
+                    (click)="onTileClick(sublocation)"
+                  >
+                    <cc-simple-sublocation-card [sublocation]="sublocation" />
+                    @if (sublocation.isPartyAnchor) {
+                      <span class="travel-tile-party" aria-hidden="true">⚔</span>
+                    }
+                    @if (isCurrent(sublocation)) {
+                      <span class="travel-tile-check" aria-hidden="true">✓</span>
+                    }
+                    <!--
+                      The room the cast is being sent to: the same tick as the one above, in green,
+                      drawn after it. Front-of-house only — nothing has been written yet — so it is
+                      what says which pick the travel button is about to make.
+                    -->
+                    @if (isPending(sublocation)) {
+                      <span class="travel-tile-check travel-tile-check--pending" aria-hidden="true">✓</span>
+                    }
+                  </button>
+                </div>
+              }
+
+            </div>
+          </div>
+        </div>
+      }
+    } @else if (searching()) {
+      <p class="travel-empty">No locations or rooms answer to &quot;{{ search() }}&quot;.</p>
+    } @else {
+      <p class="travel-empty">This campaign has no locations yet.</p>
+    }
+  </div>
+</div>

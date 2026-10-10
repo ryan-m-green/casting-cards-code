@@ -440,8 +440,6 @@
   border-color: v.$color-dm-border;
 }
 
-// ── Add Player form ───────────────────────────────────────────────────────────
-
 .add-player-form {
   max-width: 480px;
   display: flex;
@@ -542,8 +540,6 @@
   border-radius: 4px;
   background: v.$color-base-tan-12;
 }
-
-// ── Modal ─────────────────────────────────────────────────────────────────────
 
 .modal-overlay {
   position: fixed;
@@ -673,5 +669,4 @@
     border-color: v.$color-delete-hover;
   }
 }
-
 

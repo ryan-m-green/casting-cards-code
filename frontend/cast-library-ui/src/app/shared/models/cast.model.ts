@@ -39,8 +39,7 @@ export interface CampaignCastInstance extends Cast {
   locationInstanceId: string | null;
   sublocationInstanceId: string | null;
   isVisibleToPlayers: boolean;
-  lostHitPoints: number;
-  tempHitPoints: number;
+  starsCount: number;
   voicePlacement: string[];
   keywords: string[];
   dmNotes: string;

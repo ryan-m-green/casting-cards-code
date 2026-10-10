@@ -23,7 +23,6 @@ export class AboutComponent implements AfterViewInit, OnDestroy {
   constructor(private router: Router) {}
 
   ngAfterViewInit() {
-    // Wait for videos to be rendered
     setTimeout(() => {
       this.videosInitialized = true;
       this.playCurrentVideo();

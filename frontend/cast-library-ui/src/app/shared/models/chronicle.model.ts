@@ -1,3 +1,9 @@
+export interface ChronicleParticipant {
+  entityType: string;
+  entityId: string;
+  entityName: string;
+}
+
 export interface LinkedEntityTrigger {
   entityType: string;
   entityId: string;

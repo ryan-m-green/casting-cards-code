@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>Motive card body marks — Goal / Flaw / Fear</title>
+<style>
+  body { margin: 0; padding: 24px; font-family: system-ui, sans-serif; background: #f3ece0; color: #2a2018; }
+  h2 { font-size: 13px; letter-spacing: .12em; text-transform: uppercase; opacity: .7; margin: 34px 0 6px; }
+  p.note { font-size: 12px; line-height: 1.5; max-width: 74ch; opacity: .8; margin: 0 0 14px; }
+  code { font-family: ui-monospace, Consolas, monospace; font-size: 11.5px; background: #e7ddcb; padding: 0 3px; }
+  .row { display: flex; align-items: flex-start; gap: 26px; flex-wrap: wrap; }
+  .unit { display: flex; flex-direction: column; gap: 6px; }
+  .cap { font-size: 11px; opacity: .7; max-width: 96px; line-height: 1.35; }
+
+  /* card, at the geometry the drawer draws: 75 x 110 */
+  .card {
+    width: 75px; height: 110px;
+    display: flex; flex-direction: column;
+    background: rgb(14, 24, 32);
+    border: 1px solid rgba(167, 121, 233, 0.4);
+    border-radius: 8px;
+    position: relative;
+  }
+  .banner {
+    display: flex; align-items: center; justify-content: center;
+    padding: 5px 6px;
+    border-bottom: 1px solid rgba(167, 121, 233, 0.2);
+    flex-shrink: 0;
+  }
+  .type {
+    font-family: Cinzel, serif;
+    font-size: 10px; letter-spacing: .06em; text-transform: uppercase;
+    color: rgba(200, 225, 235, 0.95);
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .body {
+    position: relative;
+    flex: 1; min-height: 0;
+    display: flex; align-items: center; justify-content: center;
+    padding: 6px;
+  }
+  .mark {
+    position: absolute; inset: 5%;
+    width: 90%; height: 90%;
+    object-fit: contain;
+    filter: brightness(0) invert(1);
+    opacity: .03;
+    pointer-events: none;
+  }
+
+  /* the geometry that shipped before the 10% pull-back, kept for section 4 */
+  .mark-fill { inset: 0; width: 100%; height: 100%; }
+  .content {
+    position: relative;
+    width: 100%;
+    font-family: "Crimson Text", serif;
+    font-size: 10px; line-height: 1.4;
+    color: rgba(200, 225, 235, 0.88);
+    text-align: center;
+  }
+  .mark-20 { opacity: .2; }
+  .mark-100 { opacity: 1; }
+
+  /* the arithmetic of 1% */
+  .swatches { display: flex; gap: 0; border: 1px solid #b9a98f; }
+  .sw { width: 132px; height: 72px; display: flex; align-items: flex-end; justify-content: center; padding-bottom: 6px;
+        font-size: 11px; font-family: ui-monospace, Consolas, monospace; color: rgba(200, 225, 235, .8); }
+  .sw-ground { background: rgb(14, 24, 32); }
+  .sw-mark { background: rgb(21, 31, 39); }
+  .sw-mark span { outline: 1px dashed rgba(200, 225, 235, .55); outline-offset: 2px; }
+
+  /* section 4: the old geometry beside the new one, at the same opacity */
+  .pairunit { display: flex; flex-direction: column; gap: 6px; }
+  .pairunit .row { gap: 7px; }
+
+  /* section 5: the numbers, as measured in Chrome rather than as calculated */
+  table.meas { border-collapse: collapse; font-family: ui-monospace, Consolas, monospace; font-size: 11px; }
+  table.meas th, table.meas td { border: 1px solid #b9a98f; padding: 3px 8px; text-align: right; }
+  table.meas th:first-child, table.meas td:first-child { text-align: left; }
+  table.meas tr.new td { background: #e7ddcb; }
+  table.meas caption { caption-side: top; text-align: left; font-size: 11px; opacity: .75; padding-bottom: 5px; }
+</style>
+</head>
+<body>
+
+
+<h2>1 · What is shipped — the mark in the card body, 10% under the body box, at opacity .03</h2>
+<p class="note">
+  Each card is the real thing: 75 × 110, banner 5px/6px and a 1px rule, body padded 6px — a 73 × 83 body —
+  with the mark held at <code>inset: 5%; width: 90%; height: 90%</code> and <code>object-fit: contain</code>,
+  repainted white by <code>filter: brightness(0) invert(1)</code> at <code>opacity: .03</code>. That value
+  composites to <code>rgb(21, 31, 39)</code> over the card ground, so the mark reads as a tint rather than a
+  drawing here — sections 2 to 4 lift the same mark and split the geometry apart so the shape is judgeable.
+</p>
+<div class="row">
+  <div class="unit"><div class="card"><div class="banner"><span class="type">Goal</span></div><div class="body"><img class="mark" src="dart_hitting_target_bullseye.svg" alt="" /><div class="content">To buy back the mill my father lost before the spring thaw</div></div></div><div class="cap">Goal · dart @ .03</div></div>
+  <div class="unit"><div class="card"><div class="banner"><span class="type">Flaw</span></div><div class="body"><img class="mark" src="broken_shield_sword.svg" alt="" /><div class="content">I cannot walk past a wager, even one I know is crooked</div></div></div><div class="cap">Flaw · shield @ .03</div></div>
+  <div class="unit"><div class="card"><div class="banner"><span class="type">Fear</span></div><div class="body"><img class="mark" src="person_falling_from_cliff.svg" alt="" /><div class="content">Heights, and the sound of a rope going slack</div></div></div><div class="cap">Fear · fall @ .03</div></div>
+</div>
+
+<h2>2 · The same three marks lifted to .2 — the whisper card's mark strength</h2>
+<p class="note">
+  Nothing else changes; only the opacity on the <code>.mark</code> element. This is the cheapest way to see
+  whether the three shapes read as one family at card size, and whether any of them crowds the five-line
+  clamp the body allows.
+</p>
+<div class="row">
+  <div class="unit"><div class="card"><div class="banner"><span class="type">Goal</span></div><div class="body"><img class="mark mark-20" src="dart_hitting_target_bullseye.svg" alt="" /><div class="content">To buy back the mill my father lost before the spring thaw</div></div></div><div class="cap">Goal · dart @ .2</div></div>
+  <div class="unit"><div class="card"><div class="banner"><span class="type">Flaw</span></div><div class="body"><img class="mark mark-20" src="broken_shield_sword.svg" alt="" /><div class="content">I cannot walk past a wager, even one I know is crooked</div></div></div><div class="cap">Flaw · shield @ .2</div></div>
+  <div class="unit"><div class="card"><div class="banner"><span class="type">Fear</span></div><div class="body"><img class="mark mark-20" src="person_falling_from_cliff.svg" alt="" /><div class="content">Heights, and the sound of a rope going slack</div></div></div><div class="cap">Fear · fall @ .2</div></div>
+</div>
+
+<h2>3 · Lifted to 1 — the mark's extent in the shipped 90% box</h2>
+<p class="note">
+  Aspect ratios are 128:120 (dart), 305:342 (shield) and 338:348 (fall) against a 73 × 83 body, so
+  <code>contain</code> resolves on width for all three and the 10% comes off both sides. Measured against the
+  drawn art rather than the viewBox: the dart paints 53.5 × 49.4 with 9.4px of clearance on the left and
+  16.9px above, the shield 65.5 × 73.5 with 3.6 / 4.7, the fall 56.9 × 47.0 with 7.7 / 17.8. Nothing is
+  cropped, nothing reaches the banner rule, and nothing goes under the completion check — that check lives in
+  the banner.
+</p>
+<div class="row">
+  <div class="unit"><div class="card"><div class="banner"><span class="type">Goal</span></div><div class="body"><img class="mark mark-100" src="dart_hitting_target_bullseye.svg" alt="" /><div class="content">To buy back the mill my father lost before the spring thaw</div></div></div><div class="cap">Goal · dart @ 1</div></div>
+  <div class="unit"><div class="card"><div class="banner"><span class="type">Flaw</span></div><div class="body"><img class="mark mark-100" src="broken_shield_sword.svg" alt="" /><div class="content">I cannot walk past a wager, even one I know is crooked</div></div></div><div class="cap">Flaw · shield @ 1</div></div>
+  <div class="unit"><div class="card"><div class="banner"><span class="type">Fear</span></div><div class="body"><img class="mark mark-100" src="person_falling_from_cliff.svg" alt="" /><div class="content">Heights, and the sound of a rope going slack</div></div></div><div class="cap">Fear · fall @ 1</div></div>
+  <div class="unit"><div class="card"><div class="banner"><span class="type">Goal</span></div><div class="body"><img class="mark" src="dart_hitting_target_bullseye.svg" alt="" /><div class="content">One line, to show the mark is centred rather than tied to the text</div></div></div><div class="cap">Goal · .03, short line</div></div>
+</div>
+
+<h2>4 · The pull-back itself — the old geometry beside the shipped one, both at 1</h2>
+<p class="note">
+  Left of each pair is the geometry that shipped first, the mark filling the body
+  (<code>inset: 0; width: 100%; height: 100%</code>); right is the shipped
+  <code>inset: 5%; width: 90%; height: 90%</code>. Opacity is 1 on all six so the change is visible rather
+  than a matter of belief. The shield is the one that earns the change: at 100% its art sits flush on the
+  body's left edge — 0px of clearance — and clears the top edge by 0.57px, so it read as bleeding into the
+  card border. Every mark is exactly 10% smaller (ratios 0.8998–0.8999) and its centre moves less than
+  0.02px, so the shrink is centred by construction.
+</p>
+<div class="row">
+  <div class="pairunit">
+    <div class="row">
+      <div class="card"><div class="banner"><span class="type">Goal</span></div><div class="body"><img class="mark mark-fill mark-100" src="dart_hitting_target_bullseye.svg" alt="" /><div class="content">To buy back the mill my father lost before the spring thaw</div></div></div>
+      <div class="card"><div class="banner"><span class="type">Goal</span></div><div class="body"><img class="mark mark-100" src="dart_hitting_target_bullseye.svg" alt="" /><div class="content">To buy back the mill my father lost before the spring thaw</div></div></div>
+    </div>
+    <div class="cap">Goal · dart — fill, 59.5 × 54.9 vs 10% under, 53.5 × 49.4</div>
+  </div>
+  <div class="pairunit">
+    <div class="row">
+      <div class="card"><div class="banner"><span class="type">Flaw</span></div><div class="body"><img class="mark mark-fill mark-100" src="broken_shield_sword.svg" alt="" /><div class="content">I cannot walk past a wager, even one I know is crooked</div></div></div>
+      <div class="card"><div class="banner"><span class="type">Flaw</span></div><div class="body"><img class="mark mark-100" src="broken_shield_sword.svg" alt="" /><div class="content">I cannot walk past a wager, even one I know is crooked</div></div></div>
+    </div>
+    <div class="cap">Flaw · shield — fill, 72.8 × 81.7, flush left vs 10% under, 65.5 × 73.5</div>
+  </div>
+  <div class="pairunit">
+    <div class="row">
+      <div class="card"><div class="banner"><span class="type">Fear</span></div><div class="body"><img class="mark mark-fill mark-100" src="person_falling_from_cliff.svg" alt="" /><div class="content">Heights, and the sound of a rope going slack</div></div></div>
+      <div class="card"><div class="banner"><span class="type">Fear</span></div><div class="body"><img class="mark mark-100" src="person_falling_from_cliff.svg" alt="" /><div class="content">Heights, and the sound of a rope going slack</div></div></div>
+    </div>
+    <div class="cap">Fear · fall — fill, 63.2 × 52.3 vs 10% under, 56.9 × 47.0</div>
+  </div>
+</div>
+
+<h2>5 · What .03 amounts to, in numbers</h2>
+<p class="note">
+  The card ground is <code>rgb(14, 24, 32)</code>. A white mark at 3% composites to <code>rgb(21, 31, 39)</code>
+  — about seven steps of 255 on each channel, so the mark is legible as a tint once the eye is told to look but
+  still far under the 10px content's contrast. A black mark (the SVGs' own fill) would land on
+  <code>rgb(14, 24, 32)</code> instead and change nothing at all, which is why the body mark keeps the button
+  mark's white repaint.
+</p>
+<div class="swatches">
+  <div class="sw sw-ground"><span>rgb(14, 24, 32)</span></div>
+  <div class="sw sw-mark"><span>rgb(21, 31, 39)</span></div>
+</div>
+
+<p class="note" style="margin-top:16px">
+  And the geometry, measured in Chrome rather than calculated — the painted art rect, its centre against the
+  body centre (<code>dx</code>, <code>dy</code>), and its clearance to the left, top, right and bottom edges of
+  the body. Tinted rows are the shipped geometry.
+</p>
+<table class="meas">
+  <tr><th>mark</th><th>box</th><th>painted art</th><th>dx</th><th>dy</th><th>L</th><th>T</th><th>R</th><th>B</th></tr>
+  <tr><td>goal · fill</td><td>73 × 83</td><td>59.48 × 54.94</td><td>−0.37</td><td>+0.09</td><td>6.40</td><td>14.13</td><td>7.13</td><td>13.94</td></tr>
+  <tr class="new"><td>goal · 90%</td><td>65.69 × 74.69</td><td>53.52 × 49.43</td><td>−0.35</td><td>+0.07</td><td>9.40</td><td>16.85</td><td>10.09</td><td>16.71</td></tr>
+  <tr><td>flaw · fill</td><td>73 × 83</td><td>72.82 × 81.65</td><td>−0.09</td><td>−0.10</td><td>0.00</td><td>0.57</td><td>0.18</td><td>0.78</td></tr>
+  <tr class="new"><td>flaw · 90%</td><td>65.69 × 74.69</td><td>65.53 × 73.47</td><td>−0.10</td><td>−0.11</td><td>3.64</td><td>4.66</td><td>3.83</td><td>4.87</td></tr>
+  <tr><td>fear · fill</td><td>73 × 83</td><td>63.24 × 52.27</td><td>−0.34</td><td>−0.22</td><td>4.54</td><td>15.15</td><td>5.22</td><td>15.58</td></tr>
+  <tr class="new"><td>fear · 90%</td><td>65.69 × 74.69</td><td>56.91 × 47.03</td><td>−0.32</td><td>−0.21</td><td>7.72</td><td>17.77</td><td>8.37</td><td>18.19</td></tr>
+</table>
+
+</body>
+</html>

@@ -14,16 +14,16 @@ public class AddFactionRelationshipCommandHandler(
 {
     public async Task<CampaignFactionRelationshipDomain> HandleAsync(AddFactionRelationshipCommand command)
     {
-        // Validate that a relationship doesn't already exist with the same dm_user_id state
+        // Validate that a relationship doesn't already exist with the same gm_user_id state
         var exists = await campaignInsertRepository.FactionRelationshipExistsAsync(
             command.CampaignId,
             command.Request.FactionInstanceIdA,
             command.Request.FactionInstanceIdB,
-            command.DmUserId);
+            command.GmUserId);
 
         if (exists)
         {
-            var userType = command.DmUserId.HasValue ? "GM" : "player";
+            var userType = command.GmUserId.HasValue ? "GM" : "player";
             throw new InvalidOperationException($"A relationship already exists between these factions created by a {userType}.");
         }
 
@@ -36,7 +36,7 @@ public class AddFactionRelationshipCommandHandler(
             RelationshipType   = command.Request.RelationshipType,
             Strength           = command.Request.Strength,
             CreatedAt          = DateTime.UtcNow,
-            DmUserId           = command.DmUserId,
+            GmUserId           = command.GmUserId,
         };
         return await campaignInsertRepository.InsertFactionRelationshipAsync(domain);
     }
@@ -44,13 +44,13 @@ public class AddFactionRelationshipCommandHandler(
 
 public class AddFactionRelationshipCommand
 {
-    public AddFactionRelationshipCommand(Guid campaignId, Guid? dmUserId, AddFactionRelationshipRequest request)
+    public AddFactionRelationshipCommand(Guid campaignId, Guid? gmUserId, AddFactionRelationshipRequest request)
     {
         CampaignId = campaignId;
-        DmUserId   = dmUserId;
+        GmUserId   = gmUserId;
         Request    = request;
     }
     public Guid CampaignId { get; }
-    public Guid? DmUserId { get; }
+    public Guid? GmUserId { get; }
     public AddFactionRelationshipRequest Request { get; }
 }

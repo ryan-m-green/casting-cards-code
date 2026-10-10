@@ -1,0 +1,24 @@
+import { Component, input } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { CcSublocationIconComponent } from '../v2/Shared/cc-sublocation-icon/cc-sublocation-icon.component';
+
+export type IconName = 'cast' | 'sublocation' | 'location' | 'faction' | 'campaign' | 'library' | 'player';
+export type IconVariant = 'watermark' | 'inline';
+
+@Component({
+  selector: 'app-icon',
+  standalone: true,
+  imports: [CommonModule, CcSublocationIconComponent],
+  templateUrl: './icon.component.html',
+  host: { '[class.variant-inline]': 'variant() === "inline"' },
+  styles: [`
+    :host { display: flex; align-items: center; justify-content: center; }
+    :host(.variant-inline) { height: 100%; }
+    .icon-svg { width: auto; height: 100%; display: block; flex-shrink: 0; opacity: var(--icon-opacity, 0.7); }
+    cc-sublocation-icon.icon-svg { aspect-ratio: 1 / 1; }
+  `]
+})
+export class IconComponent {
+  readonly name    = input.required<IconName>();
+  readonly variant = input<IconVariant>('watermark');
+}

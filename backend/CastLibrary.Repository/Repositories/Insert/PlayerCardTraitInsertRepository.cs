@@ -24,11 +24,12 @@ public class PlayerCardTraitInsertRepository(
             TraitType = trait.TraitType.ToString(),
             trait.Content,
             trait.IsCompleted,
+            trait.IsShared,
             trait.CreatedAt,
         };
         const string sql =
-            @"INSERT INTO player_card_traits (id, player_card_id, trait_type, content, is_completed, created_at)
-              VALUES (@Id, @PlayerCardId, @TraitType, @Content, @IsCompleted, @CreatedAt)";
+            @"INSERT INTO player_card_traits (id, player_card_id, trait_type, content, is_completed, is_shared, created_at)
+              VALUES (@Id, @PlayerCardId, @TraitType, @Content, @IsCompleted, @IsShared, @CreatedAt)";
 
         logging.LogDbOperation(correlation.TraceId, spanId, "INSERT", "player_card_traits", @params);
 

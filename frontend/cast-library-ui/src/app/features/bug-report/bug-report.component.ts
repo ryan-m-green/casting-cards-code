@@ -4,7 +4,7 @@ import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { BugReportService } from '../../shared/services/bug-report.service';
 import { SubmitBugReportRequest } from '../../shared/models/bug-report.model';
 import { AuthService } from '../../core/auth/auth.service';
-import { JournalTitleComponent } from '../../shared/components/journal-title/journal-title.component';
+import { JournalTitleComponent } from '../../shared/components/Shared/journal-title/journal-title.component';
 
 @Component({
   selector: 'app-bug-report',

@@ -18,13 +18,13 @@ public class SoundtrackDeleteRepository(
         var spanId = correlation.NewSpan();
         var @params = new { SoundtrackId = soundtrackId };
         
-        const string sql = @"DELETE FROM campaign_soundtracks WHERE id = @SoundtrackId";
+        const string sql = @"DELETE FROM soundtracks WHERE id = @SoundtrackId";
 
-        logging.LogDbOperation(correlation.TraceId, spanId, "DELETE", "campaign_soundtracks", @params);
+        logging.LogDbOperation(correlation.TraceId, spanId, "DELETE", "soundtracks", @params);
 
         using var conn = sqlConnectionFactory.GetConnection();
         var rowsAffected = await conn.ExecuteAsync(sql, @params);
 
-        logging.LogDbOperation(correlation.TraceId, spanId, "DELETE", "campaign_soundtracks", @params, rowsAffected);
+        logging.LogDbOperation(correlation.TraceId, spanId, "DELETE", "soundtracks", @params, rowsAffected);
     }
 }

@@ -1,0 +1,200 @@
+@use '../../../../../../styles/variables' as v;
+
+:host {
+  display: block;
+  height: 100%;
+}
+
+.sed {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  min-height: 100%;
+  font-family: 'Consolas', 'Courier New', monospace;
+  font-size: 12px;
+  line-height: 1.45;
+  color: v.$campaign-portal-text-muted;
+}
+
+.sed-head {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid v.$campaign-portal-border-bold;
+}
+
+.sed-event {
+  font-size: 16px;
+  font-weight: 700;
+  color: v.$campaign-portal-text-bright;
+  word-break: break-word;
+}
+
+.sed-meta {
+  font-size: 11px;
+  color: v.$campaign-portal-text-muted;
+  word-break: break-all;
+}
+
+.sed-failed { color: #e08a6a; }
+
+.sed-section {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-height: 0;
+
+  &--grow { flex: 1; }
+}
+
+.sed-title {
+  margin: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  font-family: v.$font-header;
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: v.$campaign-portal-text-softer;
+}
+
+.sed-copy {
+  font-family: 'Consolas', 'Courier New', monospace;
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 3px 10px;
+  background: transparent;
+  border: 1px solid v.$campaign-portal-border-bold;
+  border-radius: 4px;
+  color: v.$campaign-portal-text-bright;
+  cursor: pointer;
+  transition: background 0.15s ease, border-color 0.15s ease;
+
+  &:hover {
+    background: rgba(110, 40, 208, 0.18);
+    border-color: v.$campaign-portal-border-hover;
+  }
+}
+
+.sed-receipts {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+
+  li {
+    display: grid;
+    grid-template-columns: 64px 1fr auto;
+    gap: 2px 8px;
+    align-items: baseline;
+    padding: 5px 8px;
+    background: v.$campaign-portal-bg-medium;
+    border-left: 2px solid v.$campaign-portal-border-bold;
+  }
+}
+
+.sed-conns {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+
+  li {
+    display: grid;
+    grid-template-columns: 64px 1fr auto;
+    gap: 2px 8px;
+    align-items: baseline;
+    padding: 5px 8px;
+    background: v.$campaign-portal-bg-medium;
+    border-left: 2px solid v.$campaign-portal-border-bold;
+  }
+
+  li.sed-conn--player { border-left-color: #7aaa30; }
+}
+
+.sed-age {
+  grid-column: 3;
+  grid-row: 1;
+  align-self: center;
+  opacity: 0.7;
+}
+
+.sed-empty {
+  margin: 0;
+  padding: 8px 10px;
+  border: 1px dashed v.$campaign-portal-border-bold;
+  border-radius: 4px;
+  opacity: 0.75;
+}
+
+.sed-role {
+  grid-column: 1;
+  grid-row: 1;
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: v.$campaign-portal-text-softer;
+}
+
+.sed-name {
+  grid-column: 2;
+  grid-row: 1;
+  color: v.$campaign-portal-text-bright;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.sed-uid {
+  grid-column: 2;
+  grid-row: 2;
+  font-size: 10px;
+  color: v.$campaign-portal-text-muted;
+  word-break: break-all;
+}
+
+.sed-latency {
+  grid-column: 3;
+  grid-row: 1 / span 2;
+  align-self: center;
+  opacity: 0.85;
+}
+
+.sed-components {
+  grid-column: 2 / span 2;
+  grid-row: 3;
+  font-size: 10px;
+  color: v.$campaign-portal-text-softer;
+  word-break: break-word;
+}
+
+.sed-none {
+  margin: 0;
+  padding: 8px 10px;
+  border: 1px solid rgba(232, 201, 106, 0.5);
+  border-radius: 4px;
+  color: #e8c96a;
+  font-size: 11px;
+}
+
+.sed-payload {
+  flex: 1;
+  margin: 0;
+  min-height: 0;
+  overflow: auto;
+  padding: 10px;
+  background: rgba(0, 0, 0, 0.32);
+  border-radius: 4px;
+  font-size: 12px;
+  white-space: pre-wrap;
+  word-break: break-word;
+  color: v.$campaign-portal-text-softer;
+}

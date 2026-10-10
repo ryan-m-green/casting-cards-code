@@ -2,22 +2,19 @@ import { Component, inject, OnInit, OnDestroy, signal, viewChild, TemplateRef } 
 import { Router, RouterOutlet, NavigationCancel, NavigationError } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { filter } from 'rxjs/operators';
-import { PortalTransitionService } from './core/portal-transition.service';
+import { PortalAnimationService } from './core/portal-animation.service';
 import { AuthService } from './core/auth/auth.service';
-import { RightDrawerComponent } from './shared/components/right-drawer/right-drawer.component';
-import { SubscriptionContentComponent } from './shared/components/right-drawer/subscription-content.component';
+import { RightDrawerComponent } from './shared/components/Shared/right-drawer/right-drawer.component';
+import { SubscriptionContentComponent } from './shared/components/Shared/right-drawer/subscription-content.component';
 import { SubscriptionDrawerService } from './core/subscription-drawer.service';
-import { DrawerService, DrawerConfig } from './core/drawer.service';
-import { ShopPurchaseContentComponent } from './shared/components/right-drawer/shop-purchase-content.component';
-import { PlayerSecretsContentComponent } from './shared/components/right-drawer/player-secrets-content.component';
-import { PlayerInventoryContentComponent } from './shared/components/right-drawer/player-inventory-content.component';
-import { PartyGoldContentComponent } from './shared/components/right-drawer/party-gold-content.component';
-import { ChronicleContentComponent } from './shared/components/right-drawer/chronicle-content.component';
-import { SoundtrackContentComponent } from './shared/components/right-drawer/soundtrack-content.component';
-import { LocationDetailContentComponent } from './shared/components/right-drawer/location-detail-content.component';
-import { SublocationDetailContentComponent } from './shared/components/right-drawer/sublocation-detail-content.component';
-import { CastDetailContentComponent } from './shared/components/right-drawer/cast-detail-content.component';
-import { FactionDetailContentComponent } from './shared/components/right-drawer/faction-detail-content.component';
+import { DrawerService, DrawerConfig, DrawerContentType } from './core/drawer.service';
+import { CampaignShellService } from './core/campaign-shell.service';
+import type { PurchaseResult } from './shared/models/shop-purchase.model';
+import { ShopPurchaseContentComponent } from './shared/components/Shared/right-drawer/shop-purchase-content.component';
+import { LocationDetailContentComponent } from './shared/components/Shared/right-drawer/location-detail-content.component';
+import { SublocationDetailContentComponent } from './shared/components/Shared/right-drawer/sublocation-detail-content.component';
+import { CastDetailContentComponent } from './shared/components/Shared/right-drawer/cast-detail-content.component';
+import { FactionDetailContentComponent } from './shared/components/Shared/right-drawer/faction-detail-content.component';
 
 @Component({
   selector: 'app-root',
@@ -26,21 +23,15 @@ import { FactionDetailContentComponent } from './shared/components/right-drawer/
     RightDrawerComponent,
     SubscriptionContentComponent,
     ShopPurchaseContentComponent,
-    PlayerSecretsContentComponent,
-    PlayerInventoryContentComponent,
-    PartyGoldContentComponent,
-    ChronicleContentComponent,
-    SoundtrackContentComponent,
     LocationDetailContentComponent,
     SublocationDetailContentComponent,
     CastDetailContentComponent,
     FactionDetailContentComponent
   ],
   template: `
-    <div class="portal-transition-overlay" [class.active]="transition.active()" [class.instant]="transition.instant()"></div>
+    <div class="portal-transition-overlay" [class.active]="portal.active()" [class.instant]="portal.instant()" [class.no-fade]="portal.noFade()"></div>
     <router-outlet />
     
-    <!-- Templates for drawer content -->
     <ng-template #subscriptionContentTemplate let-context>
       <app-subscription-content
         (closeDrawer)="rightDrawer.close()"
@@ -49,50 +40,11 @@ import { FactionDetailContentComponent } from './shared/components/right-drawer/
 
     <ng-template #shopPurchaseContentTemplate let-context>
       <app-shop-purchase-content
-        (closeDrawer)="rightDrawer.close()"
-      />
-    </ng-template>
-
-    <ng-template #playerSecretsContentTemplate let-context>
-      <app-player-secrets-content
-        [portalColor]="context?.portalColor"
-        [mode]="context?.mode || 'player'"
-        [member]="context?.member"
-        (closeDrawer)="rightDrawer.close()"
-      />
-    </ng-template>
-
-    <ng-template #playerInventoryContentTemplate let-context>
-      <app-player-inventory-content
         [portalColor]="context?.portalColor"
         [campaignId]="context?.campaignId || ''"
-        (closeDrawer)="rightDrawer.close()"
-      />
-    </ng-template>
-
-    <ng-template #partyGoldContentTemplate let-context>
-      <app-party-gold-content
-        [campaignId]="context?.campaignId || ''"
-        [portalColor]="context?.portalColor"
-        (closeDrawer)="rightDrawer.close()"
-      />
-    </ng-template>
-
-    <ng-template #chronicleContentTemplate let-context>
-      <app-chronicle-content
-        [portalColor]="context?.portalColor"
-        [isDmMode]="context?.isDmMode || false"
-        [campaignId]="context?.campaignId || ''"
-        [initialSearchQuery]="context?.initialSearchQuery || ''"
-        (closeDrawer)="rightDrawer.close()"
-      />
-    </ng-template>
-
-    <ng-template #soundtrackContentTemplate let-context>
-      <app-soundtrack-content
-        [campaignId]="context?.campaignId || ''"
-        [portalColor]="context?.portalColor"
-        (closeDrawer)="rightDrawer.close()"
+        [sublocationInstanceId]="context?.sublocationInstanceId || ''"
+        [item]="context?.item"
+        (purchaseComplete)="onShopPurchaseComplete($event)"
       />
     </ng-template>
 
@@ -129,12 +81,13 @@ import { FactionDetailContentComponent } from './shared/components/right-drawer/
       <app-faction-detail-content
         [faction]="context?.faction"
         [campaignId]="context?.campaignId || ''"
+        [isDm]="context?.isDm ?? true"
         (closeDrawer)="rightDrawer.close()"
       />
     </ng-template>
 
-    <!-- RightDrawerComponent at screen level -->
     <app-right-drawer #rightDrawer
+      [portalColor]="drawerPortalColor"
       [title]="drawerTitle()"
       [contentTemplate]="currentContentTemplate()"
       [contentContext]="currentContentContext()"
@@ -164,15 +117,20 @@ import { FactionDetailContentComponent } from './shared/components/right-drawer/
         pointer-events: all;
         transition: none;
       }
+
+      &.no-fade {
+        transition: none;
+      }
     }
   `]
 })
 export class App implements OnInit, OnDestroy {
-  transition = inject(PortalTransitionService);
+  portal = inject(PortalAnimationService);
   private router = inject(Router);
   private authService = inject(AuthService);
   private subscriptionDrawerService = inject(SubscriptionDrawerService);
   private drawerService = inject(DrawerService);
+  private shell = inject(CampaignShellService);
   private _navSub: Subscription | null = null;
   private _drawerSub?: Subscription;
   private _genericDrawerSub?: Subscription;
@@ -180,11 +138,6 @@ export class App implements OnInit, OnDestroy {
   rightDrawer = viewChild<RightDrawerComponent>('rightDrawer');
   subscriptionContentTemplate = viewChild<TemplateRef<any>>('subscriptionContentTemplate');
   shopPurchaseContentTemplate = viewChild<TemplateRef<any>>('shopPurchaseContentTemplate');
-  playerSecretsContentTemplate = viewChild<TemplateRef<any>>('playerSecretsContentTemplate');
-  playerInventoryContentTemplate = viewChild<TemplateRef<any>>('playerInventoryContentTemplate');
-  partyGoldContentTemplate = viewChild<TemplateRef<any>>('partyGoldContentTemplate');
-  chronicleContentTemplate = viewChild<TemplateRef<any>>('chronicleContentTemplate');
-  soundtrackContentTemplate = viewChild<TemplateRef<any>>('soundtrackContentTemplate');
   locationDetailContentTemplate = viewChild<TemplateRef<any>>('locationDetailContentTemplate');
   sublocationDetailContentTemplate = viewChild<TemplateRef<any>>('sublocationDetailContentTemplate');
   castDetailContentTemplate = viewChild<TemplateRef<any>>('castDetailContentTemplate');
@@ -196,45 +149,47 @@ export class App implements OnInit, OnDestroy {
   currentOnOpen = signal<(() => Promise<void> | void) | null>(null);
   currentOnClose = signal<(() => Promise<void> | void) | null>(null);
 
+  get drawerPortalColor(): string {
+    const campaign = this.shell.campaign();
+    const spineColor = campaign?.spineColor;
+
+    return spineColor && /^#[0-9a-fA-F]{6}$/.test(spineColor) ? spineColor : '#6e28d0';
+  }
+
+  private currentDrawer: DrawerConfig | null = null;
+  private shelfBehindPurchase: DrawerConfig | null = null;
+
+  private static readonly RECEIPT_AFTER_SHELF_MS = 420;
+
   ngOnInit() {
-    // Listen for subscription drawer open requests (legacy support)
     this._drawerSub = this.subscriptionDrawerService.open$.subscribe(() => {
       this.openSubscriptionDrawer();
     });
 
-    // Listen for generic drawer open requests
     this._genericDrawerSub = this.drawerService.open$.subscribe((config: DrawerConfig) => {
       this.openDrawer(config);
     });
 
-    // Check if returning from Stripe checkout and start subscription refresh interval
     this.checkForStripeReturn();
 
-    // Check if there's evidence of an existing session (JWT cookie or localStorage token)
     const hasCookie = this.hasJwtCookie();
     const hasLocalStorageToken = this.hasLocalStorageToken();
     
     if (hasCookie || hasLocalStorageToken) {
       
-      // Validate session on app startup to check auth state
       this.authService.refreshCurrentUser().subscribe({
         next: () => {
-          // If user is authenticated, fetch CSRF token
           if (this.authService.isLoggedIn()) {
             this.authService.getCsrfToken().subscribe({
               error: () => {
-                // Silently fail - CSRF token will be fetched on first request
               }
             });
           }
         },
         error: (error) => {
-          // Check if user is still authenticated from localStorage restoration
-          // The refreshCurrentUser method now handles 401s by clearing auth state itself
           if (this.authService.isLoggedIn()) {
             this.authService.getCsrfToken().subscribe({
               error: () => {
-                // Silently fail - CSRF token will be fetched on first request
               }
             });
           } else {
@@ -247,7 +202,7 @@ export class App implements OnInit, OnDestroy {
     this._navSub = this.router.events.pipe(
       filter(e => e instanceof NavigationCancel || e instanceof NavigationError)
     ).subscribe(() => {
-      if (this.transition.active()) this.transition.hide();
+      if (this.portal.active()) this.portal.hide();
     });
   }
 
@@ -266,11 +221,9 @@ export class App implements OnInit, OnDestroy {
     const stripeSuccess = urlParams.get('stripe_success');
     const sessionId = urlParams.get('session_id');
     
-    // Check if returning from Stripe checkout
     if (stripeSuccess === 'true' && sessionId) {
       this.authService.startSubscriptionRefresh();
       
-      // Clean up URL parameters
       const url = new URL(window.location.href);
       url.searchParams.delete('stripe_success');
       url.searchParams.delete('session_id');
@@ -296,63 +249,70 @@ export class App implements OnInit, OnDestroy {
     });
   }
 
+  onShopPurchaseComplete(result: PurchaseResult) {
+    const shelf = this.shelfBehindPurchase;
+    this.shelfBehindPurchase = null;
+
+    if (!shelf || !this.showDrawerContent(shelf)) {
+      this.shell.shopPurchaseComplete.next(result);
+      return;
+    }
+
+    setTimeout(
+      () => this.shell.shopPurchaseComplete.next(result),
+      App.RECEIPT_AFTER_SHELF_MS
+    );
+  }
+
   openDrawer(config: DrawerConfig) {
     const drawer = this.rightDrawer();
     if (!drawer) {
       return;
     }
 
-    // Get the appropriate template based on content type
-    let template: TemplateRef<any> | null = null;
-    switch (config.contentType) {
-      case 'subscription':
-        template = this.subscriptionContentTemplate() ?? null;
-        break;
-      case 'shop-purchase':
-        template = this.shopPurchaseContentTemplate() ?? null;
-        break;
-      case 'player-secrets':
-        template = this.playerSecretsContentTemplate() ?? null;
-        break;
-      case 'player-inventory':
-        template = this.playerInventoryContentTemplate() ?? null;
-        break;
-      case 'party-gold':
-        template = this.partyGoldContentTemplate() ?? null;
-        break;
-      case 'chronicle':
-        template = this.chronicleContentTemplate() ?? null;
-        break;
-      case 'soundtrack':
-        template = this.soundtrackContentTemplate() ?? null;
-        break;
-      case 'location-detail':
-        template = this.locationDetailContentTemplate() ?? null;
-        break;
-      case 'sublocation-detail':
-        template = this.sublocationDetailContentTemplate() ?? null;
-        break;
-      case 'cast-detail':
-        template = this.castDetailContentTemplate() ?? null;
-        break;
-      case 'faction-detail':
-        template = this.factionDetailContentTemplate() ?? null;
-        break;
-    }
-
-    if (!template) {
-      console.error(`Template not found for content type: ${config.contentType}`);
+    const displaced = this.currentDrawer;
+    if (!this.showDrawerContent(config)) {
       return;
     }
 
-    // Set drawer configuration
+    this.shelfBehindPurchase = config.contentType === 'shop-purchase' ? displaced : null;
+
+    drawer.open();
+  }
+
+  private showDrawerContent(config: DrawerConfig): boolean {
+    const template = this.templateFor(config.contentType);
+    if (!template) {
+      console.error(`Template not found for content type: ${config.contentType}`);
+      return false;
+    }
+
+    this.currentDrawer = config;
     this.drawerTitle.set(config.title || '');
     this.currentContentTemplate.set(template);
     this.currentContentContext.set({ $implicit: config.context || {} });
     this.currentOnOpen.set(config.onOpen || null);
     this.currentOnClose.set(config.onClose || null);
 
-    // Open the drawer
-    drawer.open();
+    return true;
+  }
+
+  private templateFor(contentType: DrawerContentType): TemplateRef<any> | null {
+    switch (contentType) {
+      case 'subscription':
+        return this.subscriptionContentTemplate() ?? null;
+      case 'shop-purchase':
+        return this.shopPurchaseContentTemplate() ?? null;
+      case 'location-detail':
+        return this.locationDetailContentTemplate() ?? null;
+      case 'sublocation-detail':
+        return this.sublocationDetailContentTemplate() ?? null;
+      case 'cast-detail':
+        return this.castDetailContentTemplate() ?? null;
+      case 'faction-detail':
+        return this.factionDetailContentTemplate() ?? null;
+    }
+
+    return null;
   }
 }

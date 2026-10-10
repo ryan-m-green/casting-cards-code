@@ -1,0 +1,24 @@
+@if (title().length) {
+  <h2 class="grid-area-title">
+    @if (icon()) {
+      @if (canAct()) {
+        <button
+          type="button"
+          class="grid-area-title-action"
+          [title]="action()"
+          [attr.aria-label]="action()"
+          (click)="onActionClick($event)"
+        >
+          <img class="grid-area-title-icon" [src]="icon()" alt="" aria-hidden="true" />
+        </button>
+      } @else {
+        <img class="grid-area-title-icon" [src]="icon()" alt="" aria-hidden="true" />
+      }
+    }
+    <span class="grid-area-title-text">
+      @for (line of title(); track $index) {
+        <span class="grid-area-title-line">{{ line }}</span>
+      }
+    </span>
+  </h2>
+}

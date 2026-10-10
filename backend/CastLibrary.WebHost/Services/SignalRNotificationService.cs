@@ -1,63 +1,85 @@
 using CastLibrary.Shared.Responses;
 using CastLibrary.WebHost.Hubs;
 using Microsoft.AspNetCore.SignalR;
-using Microsoft.Extensions.Logging;
 
 namespace CastLibrary.WebHost.Services;
 
 public class SignalRNotificationService(
     IHubContext<CampaignHub> hubContext,
-    ILogger<SignalRNotificationService> logger) : ISignalRNotificationService
+    ILogger<SignalRNotificationService> logger,
+    SignalRInspector inspector) : ISignalRNotificationService
 {
     // Generic broadcasting methods
     public async Task BroadcastToCampaignAsync<T>(Guid campaignId, string eventName, T payload)
     {
+        // Who is listening is read before the send, so the inspector's row says what the room held
+        // when the event went out, not what it holds by the time the window is read.
+        var subscribers = inspector.CountSubscribers(SignalRTargets.Campaign, campaignId.ToString());
+
         try
         {
             await hubContext.Clients.Group(campaignId.ToString())
                 .SendAsync(eventName, payload);
+
+            inspector.Broadcast(eventName, SignalRTargets.Campaign, campaignId.ToString(), payload, subscribers);
         }
         catch (Exception ex)
         {
+            inspector.Broadcast(eventName, SignalRTargets.Campaign, campaignId.ToString(), payload, subscribers, failed: true);
             logger.LogError(ex, "SignalR broadcast failed for event {EventName} to campaign {CampaignId}", eventName, campaignId);
         }
     }
 
     public async Task BroadcastToUserAsync<T>(Guid userId, string eventName, T payload)
     {
+        var subscribers = inspector.CountSubscribers(SignalRTargets.User, userId.ToString());
+
         try
         {
             await hubContext.Clients.User(userId.ToString())
                 .SendAsync(eventName, payload);
+
+            inspector.Broadcast(eventName, SignalRTargets.User, userId.ToString(), payload, subscribers);
         }
         catch (Exception ex)
         {
+            inspector.Broadcast(eventName, SignalRTargets.User, userId.ToString(), payload, subscribers, failed: true);
             logger.LogError(ex, "SignalR broadcast failed for event {EventName} to user {UserId}", eventName, userId);
         }
     }
 
     public async Task BroadcastToGroupAsync<T>(string groupName, string eventName, T payload)
     {
+        var subscribers = inspector.CountSubscribers(SignalRTargets.Group, groupName);
+
         try
         {
             await hubContext.Clients.Group(groupName)
                 .SendAsync(eventName, payload);
+
+            inspector.Broadcast(eventName, SignalRTargets.Group, groupName, payload, subscribers);
         }
         catch (Exception ex)
         {
+            inspector.Broadcast(eventName, SignalRTargets.Group, groupName, payload, subscribers, failed: true);
             logger.LogError(ex, "SignalR broadcast failed for event {EventName} to group {GroupName}", eventName, groupName);
         }
     }
 
     public async Task BroadcastToAllAsync<T>(string eventName, T payload)
     {
+        var subscribers = inspector.CountSubscribers(SignalRTargets.All, null);
+
         try
         {
             await hubContext.Clients.All
                 .SendAsync(eventName, payload);
+
+            inspector.Broadcast(eventName, SignalRTargets.All, null, payload, subscribers);
         }
         catch (Exception ex)
         {
+            inspector.Broadcast(eventName, SignalRTargets.All, null, payload, subscribers, failed: true);
             logger.LogError(ex, "SignalR broadcast failed for event {EventName} to all clients", eventName);
         }
     }
@@ -71,6 +93,16 @@ public class SignalRNotificationService(
     public async Task BroadcastSecretCreatedAsync(Guid campaignId, object payload)
     {
         await BroadcastToCampaignAsync(campaignId, ISignalRNotificationService.EventNames.SecretCreated, payload);
+    }
+
+    public async Task BroadcastPlayerSecretCreatedAsync(Guid campaignId, object payload)
+    {
+        await BroadcastToCampaignAsync(campaignId, ISignalRNotificationService.EventNames.PlayerSecretCreated, payload);
+    }
+
+    public async Task BroadcastPlayerSecretChangedAsync(Guid campaignId, object payload)
+    {
+        await BroadcastToCampaignAsync(campaignId, ISignalRNotificationService.EventNames.PlayerSecretChanged, payload);
     }
 
     public async Task BroadcastSecretDeletedAsync(Guid campaignId, object payload)
@@ -145,6 +177,11 @@ public class SignalRNotificationService(
         await BroadcastToCampaignAsync(campaignId, ISignalRNotificationService.EventNames.FactionSymbolAssigned, payload);
     }
 
+    public async Task BroadcastFactionPartyCastChangedAsync(Guid campaignId, object payload)
+    {
+        await BroadcastToCampaignAsync(campaignId, ISignalRNotificationService.EventNames.FactionPartyCastChanged, payload);
+    }
+
     // Typed methods for Player Events
     public async Task BroadcastPlayerJoinedAsync(Guid campaignId, object payload)
     {
@@ -174,6 +211,16 @@ public class SignalRNotificationService(
     public async Task BroadcastCastTraveledAsync(Guid campaignId, object payload)
     {
         await BroadcastToCampaignAsync(campaignId, ISignalRNotificationService.EventNames.CastTraveled, payload);
+    }
+
+    public async Task BroadcastPlayerCardTraitsChangedAsync(Guid campaignId, object payload)
+    {
+        await BroadcastToCampaignAsync(campaignId, ISignalRNotificationService.EventNames.PlayerCardTraitsChanged, payload);
+    }
+
+    public async Task BroadcastPlayerCardUpdatedAsync(Guid campaignId, object payload)
+    {
+        await BroadcastToCampaignAsync(campaignId, ISignalRNotificationService.EventNames.PlayerCardUpdated, payload);
     }
 
     // Typed methods for Time & Session Events
@@ -233,6 +280,11 @@ public class SignalRNotificationService(
         await BroadcastToCampaignAsync(campaignId, ISignalRNotificationService.EventNames.QuickNoteQueued, payload);
     }
 
+    public async Task BroadcastChronicleAddedAsync(Guid campaignId, object payload)
+    {
+        await BroadcastToCampaignAsync(campaignId, ISignalRNotificationService.EventNames.ChronicleAdded, payload);
+    }
+
     // Typed methods for Shop Events
     public async Task BroadcastShopItemAddedAsync(Guid campaignId, object payload)
     {
@@ -260,6 +312,11 @@ public class SignalRNotificationService(
         await BroadcastToCampaignAsync(campaignId, ISignalRNotificationService.EventNames.InventoryItemUsed, payload);
     }
 
+    public async Task BroadcastInventoryItemPurchasedAsync(Guid campaignId, object payload)
+    {
+        await BroadcastToCampaignAsync(campaignId, ISignalRNotificationService.EventNames.InventoryItemPurchased, payload);
+    }
+
     public async Task BroadcastSoundtrackTriggeredAsync(Guid userId, object payload)
     {
         await BroadcastToUserAsync(userId, ISignalRNotificationService.EventNames.SoundtrackTriggered, payload);
@@ -278,6 +335,54 @@ public class SignalRNotificationService(
     public async Task BroadcastStorylineEventUpdatedAsync(Guid campaignId, object payload)
     {
         await BroadcastToCampaignAsync(campaignId, ISignalRNotificationService.EventNames.StorylineEventUpdated, payload);
+    }
+
+    public async Task BroadcastAmbianceChangedAsync(Guid campaignId, object payload)
+    {
+        await BroadcastToCampaignAsync(campaignId, ISignalRNotificationService.EventNames.AmbianceChanged, payload);
+    }
+
+    // Typed methods for World Map Events
+    public async Task BroadcastWorldMapImageChangedAsync(Guid campaignId, object payload)
+    {
+        await BroadcastToCampaignAsync(campaignId, ISignalRNotificationService.EventNames.WorldMapImageChanged, payload);
+    }
+
+    // Typed methods for Grid Area Events
+    public async Task BroadcastGridAreaNoticeAsync(Guid campaignId, object payload)
+    {
+        await BroadcastToCampaignAsync(campaignId, ISignalRNotificationService.EventNames.GridAreaNotice, payload);
+    }
+
+    // Typed methods for Encounter Events
+    public async Task BroadcastEncounterUpdatedAsync(Guid campaignId, object payload)
+    {
+        await BroadcastToCampaignAsync(campaignId, ISignalRNotificationService.EventNames.EncounterUpdated, payload);
+    }
+
+    public async Task BroadcastEncounterCombatantUpdatedAsync(Guid campaignId, object payload)
+    {
+        await BroadcastToCampaignAsync(campaignId, ISignalRNotificationService.EventNames.EncounterCombatantUpdated, payload);
+    }
+
+    public async Task BroadcastEncounterTurnChangedAsync(Guid campaignId, object payload)
+    {
+        await BroadcastToCampaignAsync(campaignId, ISignalRNotificationService.EventNames.EncounterTurnChanged, payload);
+    }
+
+    public async Task BroadcastTrophyAwardedAsync(Guid campaignId, object payload)
+    {
+        await BroadcastToCampaignAsync(campaignId, ISignalRNotificationService.EventNames.TrophyAwarded, payload);
+    }
+
+    public async Task BroadcastFieldJournalUpdatedAsync(Guid campaignId, object payload)
+    {
+        await BroadcastToCampaignAsync(campaignId, ISignalRNotificationService.EventNames.FieldJournalUpdated, payload);
+    }
+
+    public async Task BroadcastEncounterEndedAsync(Guid campaignId, object payload)
+    {
+        await BroadcastToCampaignAsync(campaignId, ISignalRNotificationService.EventNames.EncounterEnded, payload);
     }
 
     // Testing utility methods

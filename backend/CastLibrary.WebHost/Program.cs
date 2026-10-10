@@ -1,10 +1,8 @@
 using System.Net;
 using System.Text;
 using System.Threading.RateLimiting;
-using CastLibrary.WebHost.Validators;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.IdentityModel.Tokens;
 using CastLibrary.WebHost.Authorization;
@@ -12,16 +10,12 @@ using CastLibrary.WebHost.Filters;
 using CastLibrary.WebHost.Hubs;
 using CastLibrary.WebHost.IoC;
 using CastLibrary.WebHost.Middleware;
-using Microsoft.AspNetCore.Authentication;
+using CastLibrary.WebHost.Services;
 using Microsoft.AspNetCore.Authentication.Cookies;
-using CastLibrary.WebHost.Authentication;
 using CastLibrary.Shared.Enums;
-using Microsoft.AspNetCore.Antiforgery;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.HttpOverrides;
 using CastLibrary.Shared.Interfaces;
 using Serilog;
-using Serilog.Events;
 
 // Configure Serilog
 Log.Logger = new LoggerConfiguration()
@@ -43,7 +37,7 @@ builder.Logging.AddFilter("Microsoft.AspNetCore.DataProtection.Repositories.File
 builder.Logging.AddFilter("Microsoft.AspNetCore.DataProtection.KeyManagement.XmlKeyManager", LogLevel.Error);
 builder.Logging.AddFilter("Microsoft.AspNetCore.Hosting.Diagnostics", LogLevel.Error);
 
-var logger = builder.Services.BuildServiceProvider().GetRequiredService<ILogger<Program>>();
+var logger = LoggerFactory.Create(logging => logging.AddSerilog(Log.Logger, dispose: false)).CreateLogger<Program>();
 
 // DO App Platform injects secrets as plain env vars; ${VAR} interpolation in app.yaml
 // doesn't resolve reliably, so read all secrets directly and inject into the config
@@ -170,6 +164,10 @@ builder.Services.AddSignalR(options =>
 #endif
 
 });
+
+// The hub's own window on live traffic: who is connected, what was broadcast, and the acks that
+// came back (see SignalRInspector and the admin-only AdminSignalRController that reads it).
+builder.Services.AddSingleton<SignalRInspector>();
 
 // Configure CORS - support both localhost for development and environment-based URLs
 var allowedOrigins = builder.Configuration["AllowedOrigins"]?.Split(";", StringSplitOptions.RemoveEmptyEntries)

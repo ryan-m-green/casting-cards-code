@@ -1,5 +1,4 @@
-import { Injectable } from '@angular/core';
-import { PortalTransitionService } from './portal-transition.service';
+import { Injectable, signal } from '@angular/core';
 
 export interface PortalAnimationConfig {
   card: HTMLElement;
@@ -12,42 +11,73 @@ export interface PortalAnimationConfig {
 
 @Injectable({ providedIn: 'root' })
 export class PortalAnimationService {
-  constructor(private transition: PortalTransitionService) {}
+  readonly active   = signal(false);
+  readonly instant  = signal(false);
+  readonly noFade   = signal(false);
+  originRect: DOMRect | null = null;
 
-  // Expose overlay management methods
-  get spineColor(): string | undefined {
-    return this.transition.spineColor;
+  private _ghostTemplate: HTMLElement | null = null;
+  get ghostTemplate(): HTMLElement | null {
+    if (this._ghostTemplate) return this._ghostTemplate;
+    const html = sessionStorage.getItem('portalGhostTemplate');
+    if (!html) return null;
+    const wrap = document.createElement('div');
+    wrap.innerHTML = html;
+    return wrap.firstElementChild as HTMLElement | null;
   }
-  set spineColor(color: string | undefined) {
-    if (color !== undefined) {
-      this.transition.spineColor = color;
+  set ghostTemplate(value: HTMLElement | null) {
+    this._ghostTemplate = value;
+    if (value) {
+      sessionStorage.setItem('portalGhostTemplate', value.outerHTML);
+    } else {
+      sessionStorage.removeItem('portalGhostTemplate');
     }
   }
 
+  get spineColor(): string {
+    return sessionStorage.getItem('portalSpineColor') ?? '#6e28d0';
+  }
+  set spineColor(value: string) {
+    sessionStorage.setItem('portalSpineColor', value);
+  }
+
+  private _safetyTimer: ReturnType<typeof setTimeout> | null = null;
+
   show() {
-    this.transition.show();
+    this.noFade.set(false);
+    this.active.set(true);
+    this._resetSafetyTimer();
   }
 
   hide() {
-    this.transition.hide();
+    if (this._safetyTimer) { clearTimeout(this._safetyTimer); this._safetyTimer = null; }
+    this.instant.set(false);
+    this.noFade.set(false);
+    this.active.set(false);
+  }
+
+  hideNow() {
+    if (this._safetyTimer) { clearTimeout(this._safetyTimer); this._safetyTimer = null; }
+    this.instant.set(false);
+    this.noFade.set(true);
+    this.active.set(false);
   }
 
   quickCover() {
-    this.transition.quickCover();
+    this.noFade.set(false);
+    this.instant.set(true);
+    this.active.set(true);
+    this._resetSafetyTimer();
   }
 
-  get originRect(): DOMRect | undefined {
-    return this.transition.originRect || undefined;
-  }
-  set originRect(rect: DOMRect | undefined) {
-    this.transition.originRect = rect || null;
+  private _resetSafetyTimer() {
+    if (this._safetyTimer) clearTimeout(this._safetyTimer);
+    this._safetyTimer = setTimeout(() => this.hide(), 8000);
   }
 
-  get ghostTemplate(): HTMLElement | undefined {
-    return this.transition.ghostTemplate || undefined;
-  }
-  set ghostTemplate(template: HTMLElement | undefined) {
-    this.transition.ghostTemplate = template || null;
+  exitToLibrary(navigate: () => void): void {
+    this.quickCover();
+    navigate();
   }
 
   private safeColor(color: string): string {
@@ -62,7 +92,6 @@ export class PortalAnimationService {
     const cy = window.innerHeight / 2;
     const color = this.safeColor(spineColor);
 
-    // Clone card, measure off-screen, then center at small scale
     const ghost = card.cloneNode(true) as HTMLElement;
     Object.assign(ghost.style, {
       position: 'fixed',
@@ -89,7 +118,6 @@ export class PortalAnimationService {
     ghost.style.transform = 'scale(0.4) rotate(-3deg)';
     ghost.style.visibility = '';
 
-    // Make inner portal area solid black and wider for darker zoom effect
     const innerPortal = ghost.querySelector('.portal-oval-inner') as HTMLElement;
     if (innerPortal) {
       innerPortal.style.background = '#000';
@@ -97,11 +125,10 @@ export class PortalAnimationService {
       innerPortal.style.inset = '0';
     }
 
-    this.transition.ghostTemplate = ghost.cloneNode(true) as HTMLElement;
-    this.transition.originRect = null;
-    this.transition.spineColor = color;
+    this.ghostTemplate = ghost.cloneNode(true) as HTMLElement;
+    this.originRect = null;
+    this.spineColor = color;
 
-    // Spawn converging sparks
     const sparks: HTMLElement[] = [];
     for (let i = 0; i < 30; i++) {
       const angle = (i / 30) * 2 * Math.PI + Math.random() * 0.5;
@@ -130,7 +157,6 @@ export class PortalAnimationService {
 
     void ghost.offsetWidth;
 
-    // Animate sparks converging
     const sparkAnimations = sparks.map(sp => {
       const dx = cx - parseFloat(sp.style.left) - parseFloat(sp.style.width) / 2;
       const dy = cy - parseFloat(sp.style.top) - parseFloat(sp.style.height) / 2;
@@ -144,7 +170,6 @@ export class PortalAnimationService {
       });
     });
 
-    // Phase 1: Card entry animation
     const entryAnimation = ghost.animate([
       { transform: 'scale(0.3) rotate(-3deg)', opacity: 0 },
       { transform: 'scale(1.05) rotate(1deg)', opacity: 1 },
@@ -155,10 +180,9 @@ export class PortalAnimationService {
       fill: 'forwards'
     });
 
-    // Phase 2: Zoom into void (single animation with one-shot trigger)
     entryAnimation.finished.then(() => {
       let hasTriggeredOverlay = false;
-      const triggerTime = 400; // Trigger overlay at 400ms (when scale reaches ~7.0)
+      const triggerTime = 400;
 
       const zoomAnimation = ghost.animate([
         { transform: 'scale(1.0)' },
@@ -169,14 +193,12 @@ export class PortalAnimationService {
         fill: 'forwards'
       });
 
-      // Monitor animation progress to trigger overlay at scale 7.0
       const startTime = performance.now();
-      const transition = this.transition;
 
       const checkProgress = () => {
         const elapsed = performance.now() - startTime;
         if (elapsed >= triggerTime && !hasTriggeredOverlay) {
-          transition.quickCover();
+          this.quickCover();
           hasTriggeredOverlay = true;
         }
 
@@ -187,7 +209,6 @@ export class PortalAnimationService {
 
       requestAnimationFrame(checkProgress);
 
-      // Navigate at ~1200ms
       setTimeout(() => {
         if (enableNavigation) {
           if (onNavigate) {
@@ -204,10 +225,10 @@ export class PortalAnimationService {
   }
 
   exit(navigate: () => void): void {
-    const originRect = this.transition.originRect;
-    const template = this.transition.ghostTemplate;
+    const originRect = this.originRect;
+    const template = this.ghostTemplate;
 
-    this.transition.show();
+    this.show();
 
     setTimeout(() => {
       navigate();
@@ -237,9 +258,8 @@ export class PortalAnimationService {
         document.body.appendChild(ghost);
         void ghost.offsetWidth;
 
-        // Single animation with one-shot trigger
         let hasHiddenOverlay = false;
-        const triggerTime = 1700; // Hide overlay at 1700ms (when scale reaches ~7.0)
+        const triggerTime = 1700;
 
         const zoomAnimation = ghost.animate([
           { transform: 'scale(80) rotate(3deg)' },
@@ -250,14 +270,12 @@ export class PortalAnimationService {
           fill: 'forwards'
         });
 
-        // Monitor animation progress to hide overlay at scale 7.0
         const startTime = performance.now();
-        const transition = this.transition;
 
         const checkProgress = () => {
           const elapsed = performance.now() - startTime;
           if (elapsed >= triggerTime && !hasHiddenOverlay) {
-            transition.hide();
+            this.hide();
             hasHiddenOverlay = true;
           }
 
@@ -273,7 +291,7 @@ export class PortalAnimationService {
           this.spawnExitSparks(vw / 2, vh / 2);
         });
       } else {
-        const color = this.transition.spineColor || '#6e28d0';
+        const color = this.spineColor || '#6e28d0';
         const ghostW = 150;
         const ghostH = 220;
 
@@ -385,7 +403,6 @@ export class PortalAnimationService {
         document.body.appendChild(exitGhost);
         void exitGhost.offsetWidth;
 
-        // Single animation with one-shot trigger
         let hasHiddenOverlay = false;
         const triggerTime = 1700;
 
@@ -399,12 +416,11 @@ export class PortalAnimationService {
         });
 
         const startTime = performance.now();
-        const transition = this.transition;
 
         const checkProgress = () => {
           const elapsed = performance.now() - startTime;
           if (elapsed >= triggerTime && !hasHiddenOverlay) {
-            transition.hide();
+            this.hide();
             hasHiddenOverlay = true;
           }
 
@@ -424,7 +440,7 @@ export class PortalAnimationService {
   }
 
   private spawnExitSparks(cx: number, cy: number) {
-    const color = this.transition.spineColor || '#6e28d0';
+    const color = this.spineColor || '#6e28d0';
     const sparks: HTMLElement[] = [];
     for (let i = 0; i < 30; i++) {
       const angle = (i / 30) * 2 * Math.PI + Math.random() * 0.5;

@@ -1,0 +1,63 @@
+<div class="cc-lang-picker" 
+     [class.cc-lang-picker--journal]="!isCampaignContext()"
+     [class.cc-lang-picker--campaign]="isCampaignContext()">
+  @if (label()) {
+    <label class="cc-lang-picker-label" 
+           [class.cc-lang-picker-label--journal]="!isCampaignContext()"
+           [class.cc-lang-picker-label--campaign]="isCampaignContext()">{{ label() }}</label>
+  }
+
+  <div class="cc-lang-picker-container"
+       [class.cc-lang-picker-container--journal]="!isCampaignContext()"
+       [class.cc-lang-picker-container--campaign]="isCampaignContext()"
+       role="group" 
+       aria-label="Select languages">
+    <div class="cc-lang-picker-col">
+      <div class="cc-lang-picker-col-header"
+           [class.cc-lang-picker-col-header--journal]="!isCampaignContext()"
+           [class.cc-lang-picker-col-header--campaign]="isCampaignContext()">Available</div>
+      <div class="cc-lang-picker-list"
+           [class.cc-lang-picker-list--journal]="!isCampaignContext()"
+           [class.cc-lang-picker-list--campaign]="isCampaignContext()">
+        @for (lang of availableLanguages(); track lang) {
+          <div class="cc-lang-picker-item" 
+               [class.cc-lang-picker-item--journal]="!isCampaignContext()"
+               [class.cc-lang-picker-item--campaign]="isCampaignContext()"
+               role="button" 
+               tabindex="0" 
+               [attr.aria-label]="'Add ' + lang" 
+               [class.cc-lang-picker-item--disabled]="disabled()"
+               (click)="addLanguage(lang)" 
+               (keydown.enter)="addLanguage(lang)" 
+               (keydown.space)="addLanguage(lang)">{{ lang }}</div>
+        }
+      </div>
+    </div>
+    <div class="cc-lang-picker-col">
+      <div class="cc-lang-picker-col-header"
+           [class.cc-lang-picker-col-header--journal]="!isCampaignContext()"
+           [class.cc-lang-picker-col-header--campaign]="isCampaignContext()">Selected</div>
+      <div class="cc-lang-picker-list cc-lang-picker-list--selected"
+           [class.cc-lang-picker-list--journal]="!isCampaignContext()"
+           [class.cc-lang-picker-list--campaign]="isCampaignContext()">
+        @for (lang of selectedLanguages(); track lang) {
+          <div class="cc-lang-picker-item cc-lang-picker-item--selected"
+               [class.cc-lang-picker-item--journal]="!isCampaignContext()"
+               [class.cc-lang-picker-item--campaign]="isCampaignContext()"
+               role="button" 
+               tabindex="0" 
+               [attr.aria-label]="'Remove ' + lang" 
+               [class.cc-lang-picker-item--disabled]="disabled()"
+               (click)="removeLanguage(lang)" 
+               (keydown.enter)="removeLanguage(lang)" 
+               (keydown.space)="removeLanguage(lang)">{{ lang }}</div>
+        }
+        @if (!selectedLanguages().length) {
+          <div class="cc-lang-picker-empty"
+               [class.cc-lang-picker-empty--journal]="!isCampaignContext()"
+               [class.cc-lang-picker-empty--campaign]="isCampaignContext()">None selected</div>
+        }
+      </div>
+    </div>
+  </div>
+</div>

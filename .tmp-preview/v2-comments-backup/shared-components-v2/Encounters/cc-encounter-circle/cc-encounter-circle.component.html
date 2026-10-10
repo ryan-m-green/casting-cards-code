@@ -1,0 +1,209 @@
+<!--
+  The circle carries what the stylesheet needs to measure a place: its radius, the inset the ring and
+  the cards are pulled in by, how much the cards are drawn down (see `cardScale`), the card's own
+  footprint (see `cardWidth` / `cardHeight`) — the simple card's 75×110, or the campaign's own card at
+  150×220 where the face has room for those (see `largeCards` — wide enough and tall enough) — and how
+  far what stands on the ring reaches out from a place (see `ringReachX` / `ringReachY`). The dropzones
+  and the beam take their width off the footprint, so both stay true to the card actually drawn; the
+  reach is what the ring's own size is held to, so the circle and the cards on it always fit the face.
+-->
+<div
+  class="circle"
+  [style.--portal-color]="portalColor()"
+  [style.--circle-radius]="radius() + '%'"
+  [style.--ring-inset]="ringInset + 'px'"
+  [style.--card-scale]="cardScale()"
+  [style.--card-w.px]="cardWidth()"
+  [style.--card-h.px]="cardHeight()"
+  [style.--ring-reach-x.px]="ringReachX()"
+  [style.--ring-reach-y.px]="ringReachY()"
+>
+  <!--
+    The face's heading and its two action rows, one button style between them. Above the
+    ring: the encounter's name, then the ways in and out of it on the left and the
+    fight's own end button on the right. Below the ring: the editor on the left.
+    Starting and advancing the fight live in the middle of the circle.
+  -->
+  <h3 class="circle-title" [title]="encounter().name">{{ encounter().name }}</h3>
+
+  <div class="circle-actions circle-actions--top">
+    <button
+      type="button"
+      class="circle-action"
+      [disabled]="busy()"
+      title="View all the campaign's encounters"
+      (click)="allRequested.emit()"
+    >Encounters</button>
+
+    @if (isActive()) {
+      <button
+        type="button"
+        class="circle-action is-end"
+        [disabled]="busy()"
+        title="End this combat"
+        (click)="endRequested.emit()"
+      >End combat</button>
+    }
+  </div>
+
+  <div class="circle-actions circle-actions--bottom">
+    <!--
+      The editor, drawn the way the encounter card draws it: the shared repair-tools control (see
+      cc-edit-button). The label the words used to carry lives in the control's own title and
+      accessible name, so the row stays as short as the other one and the face reads the same in both
+      places.
+    -->
+    <cc-edit-button
+      label="Edit this encounter"
+      [disabled]="busy()"
+      (clicked)="editRequested.emit()"
+    />
+  </div>
+
+  <!--
+    The circle itself, centred in the space the shell's radial nav leaves free.
+    The cards sit on the ring drawn here: their centres are placed on the very
+    same radius, so the line runs through the middle of each card.
+  -->
+  <div class="circle-fit">
+    <div class="circle-shape" #circleShape>
+      @if (isActive()) {
+        <!-- The ring belongs to the fight: until Start is pressed the face shows only the
+             button. The cards are placed by the component's own maths rather than by this
+             line, so the ring being here or not never moves a card. -->
+        <div class="circle-ring" aria-hidden="true"></div>
+
+        <!-- The turn marker: a spotlight cone out of the middle button, sweeping round as the turn
+             advances -->
+        <div
+          class="circle-spotlight"
+          [style.transform]="'rotate(' + handRotation() + 'deg)'"
+          aria-hidden="true"
+        ></div>
+
+        <button
+          type="button"
+          class="circle-centre circle-centre--next"
+          [disabled]="busy() || !nodes().length"
+          title="Next in the initiative"
+          (click)="nextRequested.emit()"
+        >Next</button>
+
+        <!--
+          The spots, laid clockwise from the top: the first place is the top of the
+          ring. Nothing is placed here until the fight is running — an encounter
+          that has not been started shows only the Start button — and holding a
+          card turns the ring into the dropzones below.
+        -->
+        @for (node of nodes(); track node.spotId) {
+          @let cards = stacked(node);
+          @let held = node.drag === 'dragging';
+          @let rolled = node.initiative === null ? '' : ' · rolled ' + node.initiative;
+
+          <div
+            class="node"
+            [class.node--player]="node.isPlayer"
+            [class.node--hidden]="node.drag === 'hidden'"
+            [class.node--dragging]="held"
+            [class.node--dimmed]="!isDragging() && node.position - 1 !== litPlace()"
+            [style.left.%]="node.drawX"
+            [style.top.%]="node.drawY"
+            [style.transform]="'translate(-50%, -50%) translate(' + node.pullX + 'px, ' + node.pullY + 'px)' + (held ? ' scale(1.05)' : '')"
+            draggable="false"
+            (pointerdown)="onNodePointerDown($event, node)"
+            (dragstart)="onNodeDragStart($event)"
+            (contextmenu)="onNodeContextMenu($event)"
+          >
+            <span
+              class="node-initiative"
+              [style.transform]="'translate(-50%, -50%) translate(' + node.badgeX + 'px, ' + node.badgeY + 'px)'"
+              [title]="'Place ' + node.position + ' in the initiative' + rolled"
+            >{{ node.position }}</span>
+
+            <div class="node-stack">
+              @for (card of cards; track card.id; let i = $index) {
+                <div
+                  class="node-card"
+                  [style.marginLeft.px]="stackOffset(i)"
+                  [style.zIndex]="cards.length - i"
+                  (pointerdown)="onCardPressed(i)"
+                >
+                  @if (card.combatantType === 'player') {
+                    <!--
+                      The party's own card where the face has room for it (see `largeCards`), drawn at
+                      its own size — the ring's measurements follow it (see `cardWidth` / `cardHeight`)
+                      — falling back to the simple card while the member's card is still being read, or
+                      where the campaign no longer holds it.
+                    -->
+                    @if (largeCards()) {
+                      @if (asPlayerCard(card); as member) {
+                        <cc-player-card [member]="member" mode="dm" [flippable]="false" />
+                      } @else {
+                        <cc-simple-player-card [player]="asPlayer(card)" />
+                      }
+                    } @else {
+                      <cc-simple-player-card [player]="asPlayer(card)" />
+                    }
+                  } @else {
+                    <!-- The campaign's own cast card where the face has room for it, at its own size;
+                         the simple card is what a small face holds -->
+                    @if (largeCards()) {
+                      <cc-cast-card
+                        [cast]="asCast(card)"
+                        [flippable]="false"
+                        [editable]="false"
+                        [secrets]="false"
+                        [campaignMode]="false"
+                        [titleSearch]="false"
+                        [readonlyStars]="true"
+                        [dmMode]="true"
+                        [isDefeated]="card.isDefeated"
+                      />
+                    } @else {
+                      <cc-simple-cast-card [cast]="asCast(card)" [isDefeated]="card.isDefeated" />
+                    }
+                  }
+                </div>
+              }
+            </div>
+          </div>
+        }
+
+        <!--
+          The dropzones: one dashed box on every place of the ring, revealed while a
+          group is held. Each carries the order a group dropped there would take, so
+          the new initiative can be read off the ring before the card is let go.
+        -->
+        @if (isDragging()) {
+          @for (zone of dropzones(); track zone.spotId) {
+            <div
+              class="dropzone"
+              [class.is-over]="zone.index === dropTarget()"
+              [style.left.%]="zone.x"
+              [style.top.%]="zone.y"
+              [style.transform]="'translate(-50%, -50%) translate(' + zone.pullX + 'px, ' + zone.pullY + 'px)'"
+            >
+              <span class="dropzone-place">{{ zone.index + 1 }}</span>
+            </div>
+          }
+        }
+
+        @if (!nodes().length) {
+          <p class="circle-empty">This encounter has no cards yet.</p>
+        }
+      } @else {
+        @let ordering = encounter().status === 'ordering';
+
+        <button
+          type="button"
+          class="circle-centre"
+          [disabled]="busy()"
+          [title]="ordering
+            ? 'Turn the numbers rolled in, then finalize the order'
+            : 'Start this encounter\'s initiative'"
+          (click)="startRequested.emit()"
+        >{{ ordering ? 'Order' : 'Start' }}</button>
+      }
+    </div>
+  </div>
+</div>

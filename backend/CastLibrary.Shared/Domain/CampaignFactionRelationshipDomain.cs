@@ -9,5 +9,5 @@ public class CampaignFactionRelationshipDomain
     public string RelationshipType { get; set; } = string.Empty;
     public short Strength { get; set; }
     public DateTime CreatedAt { get; set; }
-    public Guid? DmUserId { get; set; }
+    public Guid? GmUserId { get; set; }
 }

@@ -1,0 +1,18 @@
+<div class="places" [class.places--full]="isFull()">
+  <p class="places-headline">
+    @if (isFull()) {
+      <span class="places-headline-word">No spots left</span>
+    } @else {
+      <span class="places-headline-value">{{ left() }}</span>
+      <span class="places-headline-word">{{ left() === 1 ? 'spot' : 'spots' }} left</span>
+    }
+  </p>
+
+  <p class="places-math">
+    <span>{{ players() }} {{ players() === 1 ? 'player' : 'players' }}</span>
+    <span class="places-op">+</span>
+    <span>{{ groups() }} {{ groups() === 1 ? 'group' : 'groups' }}</span>
+    <span class="places-op">=</span>
+    <span>{{ used() }} of {{ total() }}</span>
+  </p>
+</div>

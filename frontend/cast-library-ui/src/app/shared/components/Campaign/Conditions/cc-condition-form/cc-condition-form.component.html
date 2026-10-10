@@ -1,0 +1,53 @@
+<div class="condition-form">
+  <div class="condition-form-bar">
+    <span class="condition-form-actions">
+      @if (error()) {
+        <span class="condition-form-error">{{ error() }}</span>
+      }
+      <button type="button" class="campaign-secondary-btn" [disabled]="saving()" (click)="cancel.emit()">
+        {{ cancelLabel() }}
+      </button>
+      <button
+        type="button"
+        class="campaign-primary-btn"
+        [disabled]="saving() || !canSave()"
+        (click)="save()"
+      >
+        {{ saving() ? 'Saving…' : 'Save' }}
+      </button>
+    </span>
+  </div>
+
+  <app-cc-textbox
+    label="Condition name"
+    placeholder="What is this condition called?"
+    context="campaign"
+    [ngModel]="name()"
+    (ngModelChange)="onName($event)"
+  />
+
+  <cc-color-dropdown
+    label="Ring color"
+    [ngModel]="color()"
+    (ngModelChange)="onColor($event)"
+  />
+
+  <app-cc-textbox
+    label="Consequences"
+    placeholder="What happens to a card carrying this condition…"
+    context="campaign"
+    type="textarea"
+    [rows]="6"
+    [ngModel]="consequence()"
+    (ngModelChange)="consequence.set($event)"
+  />
+
+  <cc-keyword-tags
+    label="Hashtags / Keywords"
+    placeholder="Add or select hashtags…"
+    context="campaign"
+    [options]="keywordOptions()"
+    [ngModel]="keywords()"
+    (ngModelChange)="keywords.set($event)"
+  />
+</div>

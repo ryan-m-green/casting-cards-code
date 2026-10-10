@@ -1,0 +1,77 @@
+export interface FactionColors {
+  evilColor: string;
+  goodColor: string;
+}
+
+export interface Faction {
+  id: string;
+  dmUserId: string;
+  name: string;
+  type: string;
+  influence: number;
+  perception?: number;
+  hidden: boolean;
+  description?: string;
+  dmNotes?: string;
+  symbolPath?: string;
+  keywords: string[];
+  imageUrl?: string;
+  colors: FactionColors;
+  createdAt: string;
+}
+
+export interface CreateFactionRequest {
+  colors: FactionColors;
+  name: string;
+  type: string;
+  hidden: boolean;
+  description?: string;
+  dmNotes?: string;
+  symbolPath?: string;
+  keywords: string[];
+}
+
+export interface FactionRelationship {
+  id: string;
+  campaignId: string;
+  factionInstanceIdA: string;
+  factionInstanceIdB: string;
+  relationshipType: string;
+  strength: number;
+  createdAt: string;
+  gmUserId: string | null;
+}
+
+export interface FactionPlayerNotes {
+  id: string;
+  campaignId: string;
+  factionInstanceId: string;
+  perception: number | null;
+  influence: number | null;
+  playerNotes: string | null;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface CampaignFactionInstance {
+  factionInstanceId: string;
+  sourceFactionId: string;
+  campaignId: string;
+  dmUserId: string;
+  name: string;
+  type: string;
+  influence: number;
+  perception: number;
+  hidden: boolean;
+  isVisibleToPlayers: boolean;
+  description?: string;
+  dmNotes?: string;
+  symbolPath?: string;
+  colors?: FactionColors;
+  createdAt: string;
+  subLocationInstanceIds: string[];
+  castInstanceIds: string[];
+  primarySublocationInstanceId?: string;
+  primaryCastInstanceId?: string;
+  factionRelationships: FactionRelationship[];
+}

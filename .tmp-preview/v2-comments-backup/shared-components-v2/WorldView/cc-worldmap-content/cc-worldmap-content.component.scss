@@ -1,0 +1,121 @@
+@use '../../../../../../styles/variables' as v;
+
+:host {
+  display: block;
+  width: 100%;
+  /* The drawer's body is the height the map's window is given (see .wm-root). */
+  height: 100%;
+  min-height: 0;
+}
+
+.wm-root {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 100%;
+  /* The drawer's own height, so the map's window is as tall as the panel rather than as tall as the
+     picture: a picture that is magnified needs a window of its own to be magnified inside. */
+  height: 100%;
+  min-height: 0;
+}
+
+/*
+ * The map's window: the frame the picture is read inside, and where the gestures land. The Swiper
+ * inside it is what cuts the picture off at its edges — see the module's own stylesheet, which the app
+ * already loads for its rows (node_modules/swiper/swiper-bundle.css, in angular.json), and which both
+ * sizes the zoom container and gives a magnified map its `touch-action: none`. So this holds the
+ * window's dress and nothing else: the floor that keeps a very short panel from collapsing the map
+ * away, and `contain: paint` so the clip is the window's own business rather than the page's.
+ */
+.wm-stage {
+  position: relative;
+  flex: 1 1 0;
+  min-height: 320px;
+  overflow: hidden;
+  contain: paint;
+  border: 1px solid v.$campaign-portal-border-bold;
+  border-radius: 8px;
+  background: v.$campaign-portal-bg-medium;
+  cursor: zoom-in;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-tap-highlight-color: transparent;
+
+  &:focus-visible {
+    outline: 2px solid v.$campaign-portal-border-focus;
+    outline-offset: 2px;
+  }
+
+  /* Magnified, the map is the thing being moved: the cursor says so, as the module's own slide does. */
+  &--zoomed {
+    cursor: grab;
+
+    &:active {
+      cursor: grabbing;
+    }
+  }
+}
+
+/* The Swiper is the window, and its one slide is too: there is one picture, and it fills the frame. */
+.wm-swiper {
+  width: 100%;
+  height: 100%;
+}
+
+/*
+ * The two boxes the module moves: it scales the picture itself and holds the container around it
+ * (`swiper-zoom-container`, see the module), so both are left on layers of their own — a picture
+ * re-drawn at every step of a pinch is the one thing a gesture cannot afford.
+ */
+.wm-image,
+.swiper-zoom-container {
+  will-change: transform;
+}
+
+.wm-image {
+  -webkit-user-drag: none;
+}
+
+/*
+ * The way back to the fitted map, on the window's own corner: quiet, and drawn only while the map is
+ * magnified (see the template).
+ */
+.wm-reset {
+  position: absolute;
+  right: 10px;
+  bottom: 10px;
+  z-index: 2;
+  padding: 7px 12px;
+  background: rgba(0, 0, 0, 0.6);
+  border: 1px solid v.$campaign-portal-border-focus;
+  border-radius: 6px;
+  color: v.$campaign-portal-text-bright;
+  font-family: v.$font-header;
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background 0.18s ease, border-color 0.18s ease;
+
+  &:hover {
+    background: rgba(0, 0, 0, 0.78);
+    border-color: v.$campaign-portal-border-strong-focus;
+  }
+}
+
+/* What the map answers to, said once under it: the gestures are the whole of the control. */
+.wm-hint {
+  margin: 0;
+  font-family: v.$font-body;
+  font-size: 12px;
+  font-style: italic;
+  text-align: center;
+  color: v.$campaign-portal-text-softer;
+}
+
+.wm-empty {
+  font-family: v.$font-body;
+  font-size: 14px;
+  font-style: italic;
+  color: v.$campaign-portal-text-softer;
+}

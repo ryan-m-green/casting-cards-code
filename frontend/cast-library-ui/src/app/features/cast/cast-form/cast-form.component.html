@@ -1,4 +1,4 @@
-<div class="pc scroll-body">
+﻿<div class="pc scroll-body">
   <img src="/DoodleArt/tiefling_joke.PNG" class="cast-form-doodle-art" alt="Doodle art" />
   <app-journal-title [title]="castId() ? 'Edit Cast Member' : 'Cast Member Creation'" />
   <div class="wr wr-page-header">
@@ -7,7 +7,7 @@
 
   @if (castId()) {
     <div class="form-card-preview">
-      <app-cast-card
+      <cc-cast-card
         [cast]="previewCast()"
         [editable]="false"
         [flippable]="false"
@@ -118,10 +118,11 @@
         (ngModelChange)="keywords.set($event)">
       </cc-keyword-tags>
 
-      <cc-hp-counter
+      <cc-dial-counter
+        [dials]="3"
         [label]="'Max Hit Points'"
         formControlName="maxHitPoints">
-      </cc-hp-counter>
+      </cc-dial-counter>
 
       <label for="cast-voice-notes-textarea" class="fi-label">Additional Voice Notes</label>
       <textarea id="cast-voice-notes-textarea" class="fi" formControlName="voiceNotes" rows="3" placeholder="Speaks with a slight stammer when nervous…" autocomplete="off"></textarea>

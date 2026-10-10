@@ -3,7 +3,7 @@ import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { AbstractControl, ReactiveFormsModule, FormBuilder, ValidationErrors, Validators } from '@angular/forms';
 import { AuthService } from '../../core/auth/auth.service';
-import { JournalTitleComponent } from '../../shared/components/journal-title/journal-title.component';
+import { JournalTitleComponent } from '../../shared/components/Shared/journal-title/journal-title.component';
 
 function passwordsMatch(control: AbstractControl): ValidationErrors | null {
   const password = control.get('newPassword')?.value;

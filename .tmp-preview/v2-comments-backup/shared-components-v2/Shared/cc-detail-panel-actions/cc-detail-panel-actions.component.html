@@ -1,0 +1,55 @@
+<div class="detail-panel-actions">
+  <!-- Action buttons (right-aligned) so Cancel lines up with Edit -->
+  <div class="detail-actions-right">
+    @if (isDm()) {
+      @if (!editing()) {
+        <!--
+          The editor, as every other row in the campaign draws it: the shell's own repair tools (see
+          cc-edit-button), dressed in the campaign's colour, so an edit reads the same everywhere. What
+          the words used to carry — "Edit" — is the control's own name and tooltip now.
+        -->
+        <cc-edit-button
+          label="Edit"
+          (clicked)="startEditingClick.emit()"
+        />
+      } @else {
+        <span class="detail-save-wrap">
+          <button class="campaign-primary-btn detail-save-btn"
+                  type="button"
+                  [class.detail-save-btn--active]="saveMenuOpen()"
+                  [attr.aria-expanded]="saveMenuOpen()"
+                  (click)="toggleSaveMenu()"
+                  title="Save"
+                  aria-label="Save">
+            Save <app-icon name="campaign" variant="inline" />
+          </button>
+
+          @if (saveMenuOpen()) {
+            <div class="detail-save-menu" role="menu">
+              <button type="button" class="detail-save-menu-item" role="menuitem" (click)="chooseSave(false)">
+                Campaign
+              </button>
+              <button type="button" class="detail-save-menu-item" role="menuitem" (click)="chooseSave(true)">
+                Campaign + Library
+              </button>
+            </div>
+          }
+        </span>
+
+        <!--
+          Cancel: the standard ✕, squared off to the Save button's own height (see the stylesheet),
+          so the pair reads as one control rather than a tall button and a short one.
+        -->
+        <button class="campaign-secondary-btn detail-cancel-btn"
+                type="button"
+                (click)="cancelEditingClick.emit()"
+                title="Cancel editing"
+                aria-label="Cancel editing">✕</button>
+      }
+    }
+
+    @if (detailExpanded() && !editing()) {
+      <button class="detail-close-btn" type="button" (click)="closeClick.emit()" title="Close panel">Close</button>
+    }
+  </div>
+</div>

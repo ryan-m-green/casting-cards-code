@@ -1,0 +1,219 @@
+@use '../../../../../../styles/variables' as v;
+
+:host {
+  display: flex;
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
+.picker {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  flex: 1 1 auto;
+  min-height: 0;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.picker-tabs {
+  flex: 0 0 auto;
+  display: flex;
+  gap: 8px;
+  border-bottom: 1px solid v.$campaign-portal-border;
+  padding-bottom: 2px;
+}
+
+.picker-tab {
+  padding: 8px 14px;
+  background: transparent;
+  border: 1px solid transparent;
+  border-bottom: none;
+  border-radius: 8px 8px 0 0;
+  color: v.$campaign-portal-text-muted;
+  font-family: v.$font-header;
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: color 0.15s ease, border-color 0.15s ease, background 0.15s ease;
+
+  &:hover:not(:disabled) { color: v.$campaign-portal-text-bright; }
+
+  &.is-on {
+    background: rgba(46, 26, 94, 0.55);
+    border-color: v.$campaign-portal-border-focus;
+    color: v.$campaign-portal-text-bright;
+  }
+}
+
+cc-condition-form {
+  --condition-form-bar-pull: 0px;
+  flex: 0 0 auto;
+}
+
+.picker-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
+.picker-scroll {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(v.$campaign-portal-border-bold, 0.3) transparent;
+
+  &::-webkit-scrollbar { width: 4px; }
+  &::-webkit-scrollbar-thumb { background: rgba(v.$campaign-portal-border-bold, 0.3); border-radius: 2px; }
+}
+
+.picker-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.picker-chip {
+  padding: 4px 9px;
+  background: transparent;
+  border: 1px solid v.$campaign-portal-border-bold;
+  border-radius: 999px;
+  color: v.$campaign-portal-text-lavender;
+  font-family: v.$font-body;
+  font-size: 11px;
+  cursor: pointer;
+  transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+
+  &:hover { border-color: v.$campaign-portal-border-hover; }
+
+  &.is-on {
+    background: rgba(110, 40, 208, 0.45);
+    border-color: v.$campaign-portal-border-focus;
+    color: #fff;
+  }
+}
+
+.picker-chip-count {
+  margin-left: 5px;
+  opacity: 0.7;
+}
+
+.picker-filter {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  app-cc-textbox {
+    flex: 1;
+    min-width: 0;
+    margin-top: 0;
+    margin-bottom: 0;
+  }
+}
+
+.picker-clear {
+  padding: 8px 10px;
+  background: transparent;
+  border: 1px solid v.$campaign-portal-border-bold;
+  border-radius: 7px;
+  color: v.$campaign-portal-text-muted;
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  cursor: pointer;
+
+  &:hover:not(:disabled) { color: v.$campaign-portal-text-bright; }
+  &:disabled { opacity: 0.4; cursor: not-allowed; }
+}
+
+.picker-note,
+.picker-empty {
+  margin: 0;
+  color: v.$campaign-portal-text-muted;
+  font-size: 13px;
+  line-height: 1.5;
+  text-align: center;
+}
+
+.picker-section {
+  margin: 0;
+  color: v.$campaign-portal-text-lavender;
+  font-family: v.$font-header;
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.picker-row {
+  flex-shrink: 0;
+  width: 100%;
+  height: 132px;
+  padding: 8px 8px 0;
+  box-sizing: border-box;
+  overflow: hidden;
+  overscroll-behavior-x: contain;
+
+  .swiper-wrapper {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    transition-property: transform;
+  }
+
+  .swiper-slide {
+    flex: 0 0 auto;
+    width: 84px;
+    height: 118px;
+    box-sizing: border-box;
+  }
+}
+
+.picker-row:not(.swiper-initialized) {
+  overflow-x: auto;
+
+  .swiper-slide + .swiper-slide { margin-left: 12px; }
+}
+
+.picker-card {
+  position: relative;
+  border-radius: 8px;
+  transition: box-shadow 0.15s ease;
+}
+
+.picker-card.is-picked {
+  box-shadow: 0 0 0 2px rgba(110, 40, 208, 0.45);
+}
+
+.picker-error {
+  flex: 0 0 auto;
+  margin: 0;
+  color: #f87171;
+  font-size: 12px;
+}
+
+.picker-actions {
+  flex: 0 0 auto;
+  margin-top: auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 0 4px;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.55), transparent);
+}
+
+.picker-total {
+  color: v.$campaign-portal-text-muted;
+  font-size: 12px;
+}
+
+/* The library's conditions wear the same cards as the encounters row's conditions swiper. */
+

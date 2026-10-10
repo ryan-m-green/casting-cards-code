@@ -1,0 +1,15 @@
+﻿class|StripeAccount|3|backend\CastLibrary.Shared\Domain\StripeConfiguration.cs
+class|StripeRequest|2|backend\CastLibrary.Shared\Domain\StripeEventPayload.cs
+class|FreeTrialLimits|1|backend\CastLibrary.Shared\Domain\SubscriptionLimitsDomain.cs
+class|PaidLimits|1|backend\CastLibrary.Shared\Domain\SubscriptionLimitsDomain.cs
+class|EntityTypeExtensions|1|backend\CastLibrary.Shared\Enums\EntityType.cs
+enum|TransactionType|1|backend\CastLibrary.Shared\Enums\TransactionType.cs
+class|CastCardsConfigurationKeysExtensions|1|backend\CastLibrary.Shared\Extensions\CastCardsConfigurationKeysExtensions.cs
+class|FactionSymbolEntry|2|backend\CastLibrary.Shared\Requests\AssignFactionToCastRequest.cs
+class|ShopItemRequest|2|backend\CastLibrary.Shared\Requests\CreateSubLocationRequest.cs
+class|CreateSpotCombatantRequest|2|backend\CastLibrary.Shared\Requests\EncounterRequests.cs
+class|SetSpotInitiativeRequest|2|backend\CastLibrary.Shared\Requests\EncounterRequests.cs
+record|CampaignCastCustomItemRequest|2|backend\CastLibrary.Shared\Requests\UpdateCastCustomItemsRequest.cs
+class|FactionColorsRequest|2|backend\CastLibrary.Shared\Requests\UpdateFactionInstanceRequest.cs
+class|UpsertTimeOfDaySliceRequest|2|backend\CastLibrary.Shared\Requests\UpsertTimeOfDayRequest.cs
+class|SubscriptionTier|3|backend\CastLibrary.Shared\Responses\SubscriptionLimits.cs

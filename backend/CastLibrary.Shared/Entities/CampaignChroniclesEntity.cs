@@ -12,6 +12,7 @@ public class CampaignChroniclesEntity
     public string LinkedEntities { get; set; } = "[]";
     public string FilePath { get; set; } = string.Empty;
     public string TodSliceName { get; set; } = string.Empty;
+    public int DayNumber { get; set; }
     public bool IsGmOnly { get; set; }
 
     /// <summary>DB column is DATE, which Npgsql materialises as a DateOnly.</summary>

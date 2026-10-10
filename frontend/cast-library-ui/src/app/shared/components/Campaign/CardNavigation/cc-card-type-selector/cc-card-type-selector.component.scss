@@ -1,0 +1,29 @@
+@use '../../../../../../styles/filter-fieldset' as f;
+
+:host {
+  display: inline-block;
+}
+
+.type-filter {
+  @include f.fieldset-frame;
+}
+
+.type-filter__legend {
+  @include f.fieldset-legend;
+}
+
+.type-filter__buttons {
+  @include f.fieldset-buttons;
+}
+
+.type-filter__btn {
+  @include f.fieldset-button;
+  width: 45px;
+  height: 42px;
+  padding: 0;
+
+  &.is-on {
+    @include f.fieldset-button-on;
+  }
+}
+

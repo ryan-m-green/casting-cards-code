@@ -1,0 +1,25 @@
+<!--
+  What an encounter's ring has room for, read at a glance: how many spots are still
+  free to fill, then the two kinds of spot that make the ring up and the total they
+  add to. The numbers are the encounter's own, so they move as groups come and go.
+-->
+<div class="places" [class.places--full]="isFull()">
+  <!-- The headline: what can still be added -->
+  <p class="places-headline">
+    @if (isFull()) {
+      <span class="places-headline-word">No spots left</span>
+    } @else {
+      <span class="places-headline-value">{{ left() }}</span>
+      <span class="places-headline-word">{{ left() === 1 ? 'spot' : 'spots' }} left</span>
+    }
+  </p>
+
+  <!-- The breakdown: the party's spots, the DM's groups, and the ring's total -->
+  <p class="places-math">
+    <span>{{ players() }} {{ players() === 1 ? 'player' : 'players' }}</span>
+    <span class="places-op">+</span>
+    <span>{{ groups() }} {{ groups() === 1 ? 'group' : 'groups' }}</span>
+    <span class="places-op">=</span>
+    <span>{{ used() }} of {{ total() }}</span>
+  </p>
+</div>

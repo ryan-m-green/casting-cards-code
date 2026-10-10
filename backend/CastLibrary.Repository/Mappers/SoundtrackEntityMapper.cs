@@ -16,7 +16,7 @@ public class SoundtrackEntityMapper : ISoundtrackEntityMapper
         return new SoundtrackDomain
         {
             Id = entity.Id,
-            CampaignId = entity.CampaignId,
+            GmUserId = entity.GmUserId,
             Title = entity.Title,
             FileName = entity.FileName,
             FileUrl = entity.FileUrl,
@@ -33,7 +33,7 @@ public class SoundtrackEntityMapper : ISoundtrackEntityMapper
         return new SoundtrackEntity
         {
             Id = domain.Id,
-            CampaignId = domain.CampaignId,
+            GmUserId = domain.GmUserId,
             Title = domain.Title,
             FileName = domain.FileName,
             FileUrl = domain.FileUrl,

@@ -1,0 +1,430 @@
+﻿ 16  UserDeleteRepository
+      campaign_cast_instances, campaign_cast_player_notes, campaign_cast_relationships, campaign_invite_codes, campaign_location_instances, campaign_players, campaign_secrets, campaign_sublocation_instances, campaign_sublocation_shop_items, campaigns, casts, currency_transactions, locations, password_reset_tokens, sublocations, users
+ 15  CampaignReadRepository
+      campaign_cast_instances, campaign_faction_cast_members, campaign_faction_instance_relationships, campaign_faction_instances, campaign_faction_player_notes, campaign_faction_sublocations, campaign_location_instances, campaign_players, campaign_sublocation_instances, campaign_sublocation_shop_items, campaigns, casts, factions, locations, sublocations
+ 11  CampaignDeleteRepository
+      campaign_cast_instances, campaign_faction_cast_members, campaign_faction_instance_relationships, campaign_faction_instances, campaign_faction_sublocations, campaign_location_instances, campaign_sublocation_instances, campaigns, locations, player_cards, sublocations
+ 10  PlayerNotesReadRepository
+      campaign_cast_instances, campaign_cast_player_notes, campaign_faction_instances, campaign_faction_player_notes, campaign_location_instances, campaign_location_player_notes, campaign_player_notes, campaign_sublocation_instances, campaign_sublocation_player_notes, campaigns
+  9  (none)
+      campaign_chronicles, campaigns, conditions, factions, locations, player_cast_notes, sublocations, subscriptions, users
+  9  CampaignInsertRepository
+      campaign_cast_instances, campaign_faction_cast_members, campaign_faction_instance_relationships, campaign_faction_instances, campaign_faction_sublocations, campaign_location_instances, campaign_sublocation_instances, campaign_sublocation_shop_items, campaigns
+  8  CampaignUpdateRepository
+      campaign_cast_instances, campaign_faction_cast_members, campaign_faction_instances, campaign_faction_sublocations, campaign_location_instances, campaign_sublocation_instances, campaign_sublocation_shop_items, campaigns
+  6  EncounterUpdateRepository
+      campaign_encounters, conditions, encounter_combatant_conditions, encounter_combatants, encounter_spots, player_card_conditions
+  6  SiteConfigurationController
+      campaigns, casts, factions, locations, sublocations, users
+  5  CampaignsController
+      campaigns, casts, factions, locations, sublocations
+  5  DashboardController
+      campaigns, casts, factions, locations, sublocations
+  5  ImageKeyCreator
+      campaigns, casts, factions, locations, sublocations
+  5  PlayerNotesDeleteRepository
+      campaign_cast_player_notes, campaign_faction_player_notes, campaign_location_player_notes, campaign_player_notes, campaign_sublocation_player_notes
+  4  AS
+      campaign_players, campaigns, player_cards, users
+  4  CampaignDetailResponse
+      casts, factions, locations, sublocations
+  4  EncounterInsertRepository
+      campaign_encounters, campaign_trophies, encounter_combatants, encounter_spots
+  4  EntityLimitsResponse
+      campaigns, factions, locations, sublocations
+  4  GetCampaignDetailQueryHandler
+      casts, factions, locations, sublocations
+  4  GetPlayerCampaignDetailQueryHandler
+      casts, factions, locations, sublocations
+  4  GetUserEntityLimitsQueryHandler
+      campaigns, factions, locations, sublocations
+  4  is
+      campaign_trophies, casts, encounter_combatants, encounter_spots
+  4  LocationDeleteRepository
+      campaign_location_instances, campaign_sublocation_instances, locations, sublocations
+  4  LockLevelConfiguration
+      campaigns, factions, locations, sublocations
+  4  SubscriptionLimits
+      campaigns, factions, locations, sublocations
+  4  SubscriptionLimitService
+      campaigns, factions, locations, sublocations
+  4  SubscriptionTier
+      campaigns, factions, locations, sublocations
+  4  ValidateAntiforgeryTokenFilter
+      campaigns, factions, locations, sublocations
+  3  EncounterDeleteRepository
+      campaign_encounters, encounter_combatants, encounter_spots
+  3  EncounterReadRepository
+      campaign_encounters, encounter_combatants, encounter_spots
+  3  FilenameService
+      casts, locations, sublocations
+  3  IFilenameService
+      casts, locations, sublocations
+  3  IGetCampaignDetailQueryHandler
+      casts, factions, locations
+  3  IGetPlayerCampaignDetailQueryHandler
+      casts, factions, locations
+  3  PlayerCardConditionRow
+      conditions, encounter_combatant_conditions, player_card_conditions
+  2  AdminController
+      campaigns, users
+  2  AmbianceInsertRepository
+      campaign_ambiance_items, campaign_ambiances
+  2  AmbianceReadRepository
+      campaign_ambiance_items, campaign_ambiances
+  2  AmbianceUpdateRepository
+      campaign_ambiance_items, campaign_ambiances
+  2  BugReportReadRepository
+      bug_reports, users
+  2  CampaignChroniclesReadRepository
+      campaign_session_archived, campaign_session_chronicles
+  2  CampaignFactionsController
+      factions, sublocations
+  2  CampaignRuleDeleteRepository
+      campaign_rule_links, campaign_rules
+  2  CampaignRuleLinkInsertRepository
+      campaign_rule_links, campaign_rules
+  2  CampaignRuleReadRepository
+      campaign_rule_links, campaign_rules
+  2  CampaignSessionArchivedDeleteRepository
+      campaign_session_archived, campaign_session_chronicles
+  2  CampaignTrophyDomain
+      campaign_trophies, casts
+  2  CastDeleteRepository
+      campaign_cast_instances, casts
+  2  ConditionLinkInsertRepository
+      campaign_condition_links, conditions
+  2  ConditionReadRepository
+      campaign_condition_links, conditions
+  2  FactionReadRepository
+      campaign_faction_instances, factions
+  2  keeps
+      campaigns, casts
+  2  PlayerCardsController
+      campaigns, conditions
+  2  SublocationInsertRepository
+      sublocation_shop_items, sublocations
+  2  SublocationReadRepository
+      sublocation_shop_items, sublocations
+  2  SublocationUpdateRepository
+      sublocation_shop_items, sublocations
+  2  TimeOfDayReadRepository
+      campaign_time_of_day, campaign_tod_slices
+  2  TimeOfDayWriteRepository
+      campaign_time_of_day, campaign_tod_slices
+  2  UserSubscriptionEntity
+      subscriptions, users
+  1  AddFactionRelationshipCommandHandler
+      factions
+  1  AmbianceDeleteRepository
+      campaign_ambiances
+  1  AuditLoggingMiddleware
+      campaigns
+  1  AuditLoggingService
+      audit_logs
+  1  BugReportDeleteRepository
+      bug_reports
+  1  BugReportInsertRepository
+      bug_reports
+  1  BugReportUpdateRepository
+      bug_reports
+  1  CampaignCastInstanceReadRepository
+      campaign_cast_instances
+  1  CampaignCastRelationshipDeleteRepository
+      campaign_cast_relationships
+  1  CampaignCastRelationshipInsertRepository
+      campaign_cast_relationships
+  1  CampaignCastRelationshipReadRepository
+      campaign_cast_relationships
+  1  CampaignCastRelationshipUpdateRepository
+      campaign_cast_relationships
+  1  CampaignCastsController
+      casts
+  1  CampaignChronicleFeedItemResponse
+      campaign_time_of_day
+  1  CampaignChroniclesFeedReadRepository
+      campaign_chronicles
+  1  CampaignChroniclesInsertRepository
+      campaign_chronicles
+  1  CampaignChroniclesUpdateRepository
+      campaign_session_chronicles
+  1  CampaignFactionInstanceReadRepository
+      campaign_faction_instances
+  1  CampaignInviteCodeDeleteRepository
+      campaign_invite_codes
+  1  CampaignInviteCodeReadRepository
+      campaign_invite_codes
+  1  CampaignInviteCodeUpdateRepository
+      campaign_invite_codes
+  1  CampaignKeywordDeleteRepository
+      campaign_keywords
+  1  CampaignKeywordInsertRepository
+      campaign_keywords
+  1  CampaignKeywordReadRepository
+      campaign_keywords
+  1  CampaignLocationInstanceReadRepository
+      campaign_location_instances
+  1  CampaignLocationsController
+      locations
+  1  CampaignPlayerDeleteRepository
+      campaign_players
+  1  CampaignPlayerInsertRepository
+      campaign_players
+  1  CampaignPlayerNotesUpdateRepository
+      campaign_player_notes
+  1  CampaignPlayersController
+      conditions
+  1  CampaignRuleInsertRepository
+      campaign_rules
+  1  CampaignRuleUpdateRepository
+      campaign_rules
+  1  CampaignSessionArchivedInsertRepository
+      campaign_session_archived
+  1  CampaignSessionArchivedReadRepository
+      campaign_session_archived
+  1  CampaignSessionChroniclesInsertRepository
+      campaign_session_chronicles
+  1  CampaignSessionChroniclesReadRepository
+      campaign_session_chronicles
+  1  CampaignSublocationInstanceReadRepository
+      campaign_sublocation_instances
+  1  CampaignSublocationsController
+      sublocations
+  1  CastcardsConfigurationInsertRepository
+      castcards_configuration
+  1  CastcardsConfigurationReadRepository
+      castcards_configuration
+  1  CastcardsConfigurationUpdateRepository
+      castcards_configuration
+  1  CastIndexResponse
+      casts
+  1  CastInsertRepository
+      casts
+  1  CastPlayerNotesUpdateRepository
+      campaign_cast_player_notes
+  1  CastReadRepository
+      casts
+  1  CastUpdateRepository
+      casts
+  1  ConditionDeleteRepository
+      conditions
+  1  ConditionInsertRepository
+      conditions
+  1  ConditionsController
+      conditions
+  1  CurrencyRow
+      currency_transactions
+  1  CurrencyTransactionUpdateRepository
+      currency_transactions
+  1  EncounterCombatantConditionDeleteRepository
+      encounter_combatant_conditions
+  1  EncounterCombatantConditionInsertRepository
+      encounter_combatant_conditions
+  1  EncounterCombatantConditionReadRepository
+      encounter_combatant_conditions
+  1  EncounterCombatantDomain
+      conditions
+  1  FactionDeleteRepository
+      factions
+  1  FactionInsertRepository
+      factions
+  1  FactionLibraryPageResponse
+      factions
+  1  FactionPlayerNotesReadRepository
+      campaign_faction_player_notes
+  1  FactionPlayerNotesUpdateRepository
+      campaign_faction_player_notes
+  1  FactionsController
+      factions
+  1  FactionUpdateRepository
+      factions
+  1  for
+      subscriptions
+  1  GetCampaignCastInstancesQueryHandler
+      casts
+  1  GetCampaignFactionLibraryQueryHandler
+      factions
+  1  GetCampaignLocationInstancesQueryHandler
+      locations
+  1  GetCampaignSublocationInstancesQueryHandler
+      sublocations
+  1  GetConfigurationQueryHandler
+      pricing_model
+  1  GetSublocationLibraryQueryHandler
+      sublocations
+  1  ICampaignChroniclesFeedReadRepository
+      campaign_chronicles
+  1  ICampaignChroniclesInsertRepository
+      campaign_chronicles
+  1  ICampaignInsertRepository
+      campaign_faction_cast_members
+  1  ICampaignReadRepository
+      factions
+  1  IEncounterCombatantConditionDeleteRepository
+      conditions
+  1  IEncounterUpdateRepository
+      conditions
+  1  IEndEncounterCommandHandler
+      conditions
+  1  IFactionReadRepository
+      factions
+  1  IGetCampaignFactionLibraryKeywordCountsQueryHandler
+      factions
+  1  IGetCastKeywordCountsQueryHandler
+      casts
+  1  IGetEncounterCombatantConditionsQueryHandler
+      conditions
+  1  IPlayerCardWebMapper
+      conditions
+  1  IUpdateEncounterCombatantCommandHandler
+      conditions
+  1  LinkConditionsRequestValidator
+      conditions
+  1  LocationInsertRepository
+      locations
+  1  LocationPlayerNotesUpdateRepository
+      campaign_location_player_notes
+  1  LocationReadRepository
+      locations
+  1  LocationsController
+      locations
+  1  LocationUpdateRepository
+      locations
+  1  PasswordResetTokenInsertRepository
+      password_reset_tokens
+  1  PasswordResetTokenReadRepository
+      password_reset_tokens
+  1  PasswordResetTokenUpdateRepository
+      password_reset_tokens
+  1  PlayerCampaignInventoryInsertRepository
+      player_campaign_inventory
+  1  PlayerCampaignInventoryReadRepository
+      player_campaign_inventory
+  1  PlayerCampaignInventoryUpdateRepository
+      player_campaign_inventory
+  1  PlayerCardConditionDeleteRepository
+      player_card_conditions
+  1  PlayerCardConditionInsertRepository
+      player_card_conditions
+  1  PlayerCardConditionReadRepository
+      player_card_conditions
+  1  PlayerCardDeleteRepository
+      player_cards
+  1  PlayerCardInsertRepository
+      player_cards
+  1  PlayerCardMemoryDeleteRepository
+      player_card_memories
+  1  PlayerCardMemoryInsertRepository
+      player_card_memories
+  1  PlayerCardMemoryReadRepository
+      player_card_memories
+  1  PlayerCardReadRepository
+      player_cards
+  1  PlayerCardResponse
+      conditions
+  1  PlayerCardSecretDeleteRepository
+      player_card_secrets
+  1  PlayerCardSecretInsertRepository
+      player_card_secrets
+  1  PlayerCardSecretReadRepository
+      player_card_secrets
+  1  PlayerCardSecretUpdateRepository
+      player_card_secrets
+  1  PlayerCardTraitDeleteRepository
+      player_card_traits
+  1  PlayerCardTraitInsertRepository
+      player_card_traits
+  1  PlayerCardTraitReadRepository
+      player_card_traits
+  1  PlayerCardTraitUpdateRepository
+      player_card_traits
+  1  PlayerCardUpdateRepository
+      player_cards
+  1  PlayerCardWebMapper
+      conditions
+  1  PlayerCastNoteReadRepository
+      player_cast_notes
+  1  PlayerCastNoteUpdateRepository
+      player_cast_notes
+  1  PlayerCastPerceptionInsertRepository
+      player_cast_perceptions
+  1  PlayerCastPerceptionReadRepository
+      player_cast_perceptions
+  1  PlayerCastPerceptionUpdateRepository
+      player_cast_perceptions
+  1  PlayerFieldJournalEntryReadRepository
+      player_field_journal_entries
+  1  PlayerFieldJournalEntryUpdateRepository
+      player_field_journal_entries
+  1  PlayerQuicknoteQueueEntity
+      campaign_chronicles
+  1  PricingModelReadRepository
+      pricing_model
+  1  PricingModelUpdateRepository
+      pricing_model
+  1  QuicknoteQueueDeleteRepository
+      player_quicknote_queue
+  1  QuicknoteQueueInsertRepository
+      player_quicknote_queue
+  1  QuicknoteQueueReadRepository
+      player_quicknote_queue
+  1  QuicknoteQueueUpdateRepository
+      player_quicknote_queue
+  1  RemoveConditionCommandHandler
+      conditions
+  1  RemoveEncounterCombatantConditionCommandHandler
+      conditions
+  1  SecretDeleteRepository
+      campaign_secrets
+  1  SecretInsertRepository
+      campaign_secrets
+  1  SecretReadRepository
+      campaign_secrets
+  1  SecretUpdateRepository
+      campaign_secrets
+  1  SessionDeleteRepository
+      campaign_sessions
+  1  SessionInsertRepository
+      campaign_sessions
+  1  SessionReadRepository
+      campaign_sessions
+  1  SessionUpdateRepository
+      campaign_sessions
+  1  SoundtrackDeleteRepository
+      campaign_soundtracks
+  1  SoundtrackInsertRepository
+      campaign_soundtracks
+  1  SoundtrackReadRepository
+      campaign_soundtracks
+  1  SoundtrackUpdateRepository
+      campaign_soundtracks
+  1  StorylineDeleteRepository
+      campaign_storyline
+  1  StorylineInsertRepository
+      campaign_storyline
+  1  StorylineReadRepository
+      campaign_storyline
+  1  StorylineUpdateRepository
+      campaign_storyline
+  1  SublocationDeleteRepository
+      sublocations
+  1  SublocationPlayerNotesUpdateRepository
+      campaign_sublocation_player_notes
+  1  SublocationsController
+      sublocations
+  1  SubscriptionReadRepository
+      subscriptions
+  1  SubscriptionUpdateRepository
+      subscriptions
+  1  SubscriptionWriteRepository
+      subscriptions
+  1  UpdateConfigurationCommandHandler
+      pricing_model
+  1  UserInsertRepository
+      users
+  1  UserUpdateRepository
+      users
+  1  UserWriteRepository
+      users
+  1  v2CampaignEncountersController
+      conditions

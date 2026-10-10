@@ -1,0 +1,27 @@
+<!--
+  The dagger asks; ✕ and Delete answer. The host places the control — the host element itself
+  is the inline-flex row, so it drops into an action row as it stands and can be positioned
+  when a host wants it in a corner (see the faction card).
+-->
+@if (pending()) {
+  <button type="button"
+          class="cc-delete-action cc-delete-action--cancel"
+          (click)="cancel($event)"
+          title="Cancel"
+          aria-label="Cancel delete">✕</button>
+
+  <button type="button"
+          class="cc-delete-action cc-delete-action--confirm"
+          (click)="confirm($event)"
+          [disabled]="disabled()"
+          [attr.aria-label]="label()">{{ confirmLabel() }}</button>
+} @else {
+  <button type="button"
+          class="cc-delete-action cc-delete-action--danger"
+          (click)="request($event)"
+          [disabled]="disabled()"
+          [title]="label()"
+          [attr.aria-label]="label()">
+    <img src="/icons/weapons/fantasy_dagger.svg" class="cc-delete-icon" alt="" />
+  </button>
+}

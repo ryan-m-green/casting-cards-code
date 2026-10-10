@@ -1,5 +1,4 @@
-﻿using CastLibrary.Repository.Repositories;
-using CastLibrary.Repository.Repositories.Read;
+﻿using CastLibrary.Repository.Repositories.Read;
 
 namespace CastLibrary.Logic.Queries.Campaign;
 

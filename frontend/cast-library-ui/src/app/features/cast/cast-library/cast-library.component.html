@@ -1,6 +1,12 @@
-<div class="pc scroll-body">
+﻿<div class="pc scroll-body">
   <app-journal-watermark pageType="cast" />
   <app-journal-title title="Cast Library" />
+
+  <cc-keyword-filters
+    [cardType]="'cast'"
+    [cards]="cast()"
+    (selectedChange)="activeKeywords.set($event)" />
+
   <div class="wr wr-page-header">
     <app-upgrade-badge
       [visible]="auth.isFreeTrial()"
@@ -8,29 +14,42 @@
       class="upgrade-badge-library" />
     <input class="search-bar search-bar--header" type="text" placeholder="Name · Race · Role…"
            [value]="searchTerm()" (input)="searchTerm.set($any($event.target).value)" />
-    <div class="wr-ml-auto cc-keyword-editor-wrap">
-      <button class="campaign-primary-btn"
-              [class.disabled]="castLimitReached() || isCreateDisabled()"
-              [attr.disabled]="(castLimitReached() || isCreateDisabled()) ? 'true' : null"
-              [routerLink]="(castLimitReached() || isCreateDisabled()) ? null : '/gm/cast/new'"
-              (click)="(castLimitReached() || isCreateDisabled()) ? $event.preventDefault() : null">+ Create</button>
-      <cc-keyword-editor [cardType]="'cast'"></cc-keyword-editor>
+  </div>
+
+  <div class="card-grid swiper" #castRow>
+    <div class="swiper-wrapper">
+      @for (cast of filtered(); track cast.id) {
+        <div class="swiper-slide">
+          <cc-cast-card
+            [cast]="cast"
+            [tilt]="tiltFor(cast.id)"
+            [titleSearch]="false"
+            [dmMode]="true"
+            (editClick)="edit(cast.id)"
+            (deleteClick)="confirmDelete(cast.id)">
+          </cc-cast-card>
+        </div>
+      }
+      @empty {
+        @if (activeKeywords().length) {
+          <p class="wbd-journal empty-state-pad">No cast carry those keywords.</p>
+        } @else {
+          <p class="wbd-journal empty-state-pad">No cast found. Create your first cast member to get started.</p>
+        }
+      }
+      <div class="swiper-slide">
+        <cc-card-add-tile
+          label="New cast"
+          title="Add a cast member to your library"
+          link="/gm/cast/new"
+          [locked]="castLimitReached() || isCreateDisabled()"
+          lockedReason="Adding cast members isn't available on your current plan." />
+      </div>
     </div>
   </div>
 
-  <div class="card-grid">
-    @for (cast of filtered(); track cast.id) {
-      <app-cast-card
-        [cast]="cast"
-        [tilt]="tiltFor(cast.id)"
-        [dmMode]="true"
-        (editClick)="edit(cast.id)"
-        (deleteClick)="confirmDelete(cast.id)">
-      </app-cast-card>
-    }
-    @empty {
-      <p class="wbd-journal empty-state-pad">No cast found. Create your first cast member to get started.</p>
-    }
+  <div class="library-keyword-manager">
+    <cc-keyword-editor [cardType]="'cast'"></cc-keyword-editor>
   </div>
 </div>
 

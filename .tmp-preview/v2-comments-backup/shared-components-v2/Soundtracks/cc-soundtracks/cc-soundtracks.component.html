@@ -1,0 +1,228 @@
+<div class="st-panel" [style.--portal-color]="portalColor()">
+  <div class="st-topbar">
+    <!--
+      ■ All: everything the area is playing stops with it. It stands at the head of the toolbar, and
+      is held while nothing is playing — there is nothing for it to stop (see `hasPlayingAudio`).
+    -->
+    <button
+      type="button"
+      class="st-btn st-btn--danger"
+      [disabled]="!hasPlayingAudio()"
+      (click)="stopAll()"
+      title="Stop all"
+      aria-label="Stop all"
+    >■ All</button>
+
+    <div class="st-volume">
+      <!--
+        The master volume, with its heading drawn here rather than by the slider: what it is on the
+        left, what it is set to on the right. The number is the one thing this control has to say, so
+        it is the panel that says it — the slider's own readout is off (see `.st-volume-value`).
+      -->
+      <div class="st-volume-head">
+        <span class="st-volume-label">Volume</span>
+        <span class="st-volume-value">{{ masterVolume() }}%</span>
+      </div>
+
+      <cc-slider
+        ariaLabel="Volume"
+        [min]="0"
+        [max]="100"
+        [step]="1"
+        [value]="masterVolume()"
+        (valueChange)="onVolumeChange($event)"
+        [showValue]="false"
+      />
+    </div>
+  </div>
+
+  @if (errorMessage()) {
+    <div class="st-error">{{ errorMessage() }}</div>
+  }
+
+  <div class="st-rows">
+    <div class="st-row-head">
+      <h3 class="st-row-title">Library</h3>
+    </div>
+
+    @if (soundtracks().length === 0) {
+      <p class="st-empty">No soundtracks yet. Use the ＋ tile at the end of the row to add music or a sound effect.</p>
+    }
+
+    <!--
+      The library in one row of cards, turned by hand like every other row in the campaign: the row
+      itself is the Swiper and stands on the area's own ground, with no box drawn around it, so a
+      card's tick — which hangs over its corner — is never clipped by one. A card carries only what a
+      track is played and read by: the kind it is (a badge that swaps it over), its delete control,
+      its name, its play button and its volume. Tapping the card ticks it for a playlist — the purple
+      check over its corner says so — and ＋ Playlist takes the ticked ones on. The row ends with the
+      tile that adds a soundtrack, as the realm's own rows end with theirs (see cc-card-navigation).
+    -->
+    <div class="st-row swiper" #trackRow>
+      <div class="swiper-wrapper">
+        @for (track of soundtracks(); track track.id) {
+          <div class="swiper-slide">
+            <div
+              class="st-track-card"
+              [class.playing]="isTrackPlaying(track.id)"
+              [class.selected]="isSelected(track.id)"
+              [title]="track.title"
+              (click)="toggleSelected(track)"
+            >
+              @if (isSelected(track.id)) {
+                <span class="st-card-check" aria-hidden="true">✓</span>
+              }
+
+              <button
+                type="button"
+                class="st-kind-badge"
+                [class.st-kind-badge--sfx]="track.kind === 'sound_effect'"
+                (click)="$event.stopPropagation(); toggleKind(track)"
+                [title]="track.kind === 'music' ? 'Click to mark as sound effect' : 'Click to mark as music'"
+              >
+                {{ track.kind === 'music' ? 'music' : 'sfx' }}
+              </button>
+
+              <!-- The delete control: the dagger asks, ✕ and Delete answer (see cc-delete-button) -->
+              <cc-delete-button
+                class="st-card-delete"
+                label="Delete soundtrack"
+                confirmLabel="Delete"
+                (confirmed)="confirmDeleteTrack(track.id)"
+              />
+
+              <span class="st-card-name">{{ getDisplayName(track.title) }}</span>
+
+              <button
+                type="button"
+                class="st-play-btn st-play-btn--card"
+                (click)="$event.stopPropagation(); isTrackPlaying(track.id) ? stopTrack(track.id) : playTrack(track)"
+                [title]="isTrackPlaying(track.id) ? 'Stop' : 'Play'"
+                [attr.aria-label]="(isTrackPlaying(track.id) ? 'Stop ' : 'Play ') + track.title"
+              >
+                {{ isTrackPlaying(track.id) ? '■' : '▶' }}
+              </button>
+
+              <cc-slider
+                class="st-card-volume swiper-no-swiping"
+                [min]="0"
+                [max]="100"
+                [step]="1"
+                [value]="track.volume"
+                (commit)="onTrackVolumeChange(track, $event)"
+                (click)="$event.stopPropagation()"
+                [showValue]="false"
+                [showTicks]="false"
+                ariaLabel="Volume"
+                title="Volume"
+              />
+            </div>
+          </div>
+        }
+        <!--
+          The way soundtracks join the campaign, standing at the end of the library row as the realm's
+          own "New location" and "New faction" tiles stand at the end of theirs (see
+          cc-card-navigation): a card-sized dashed tile with a ＋ and the name of what it adds. It is
+          cut across the middle — the top half adds music, the bottom half a sound effect — so the
+          kind is said by the half that was pressed, rather than asked for by a panel of its own.
+        -->
+        <div class="swiper-slide">
+          <div class="st-add-track" role="group" aria-label="Add a soundtrack">
+            <button
+              type="button"
+              class="st-add-half"
+              [disabled]="uploading()"
+              (click)="chooseUpload('music')"
+              title="Add music to this campaign"
+            >
+              <span class="st-add-plus" aria-hidden="true">＋</span>
+              <span class="st-add-label">{{ uploading() ? 'Uploading…' : 'Music' }}</span>
+            </button>
+
+            <button
+              type="button"
+              class="st-add-half st-add-half--sfx"
+              [disabled]="uploading()"
+              (click)="chooseUpload('sound_effect')"
+              title="Add a sound effect to this campaign"
+            >
+              <span class="st-add-plus" aria-hidden="true">＋</span>
+              <span class="st-add-label">{{ uploading() ? 'Uploading…' : 'Sound Effect' }}</span>
+            </button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="st-row-head">
+      <!--
+        The row's own heading, worn as the button that builds a card out of the tracks ticked in the
+        library: it stands bare and held until a soundtrack card has been ticked, and wears the count
+        of what it will hold once some have (see `openAmbianceCreator`).
+      -->
+      <button
+        type="button"
+        class="st-btn st-btn--primary"
+        [disabled]="selectedTrackIds().length === 0"
+        (click)="openAmbianceCreator()"
+        title="Build a playlist card from the ticked tracks"
+      >
+        ＋ Playlist @if (selectedTrackIds().length > 0) {<span class="st-add-count">{{ selectedTrackIds().length }}</span>}
+      </button>
+    </div>
+
+    @if (ambiances().length === 0) {
+      <p class="st-empty">No ambiance cards yet. Tick a few tracks and press ＋ Playlist to build one.</p>
+    } @else {
+      <!--
+        The ambiance buttons in a row of their own, under the library and drawn the same way: the row
+        is the Swiper, standing on the area's own ground with no box around it. A card wears its tools
+        in its top corners — the wrench that opens it in the right drawer on the left, its delete
+        control on the right — then its name over the count of tracks it holds, and the one button at
+        its foot that both plays the whole arrangement and stops it again, exactly as a library card's
+        own play control works.
+      -->
+      <div class="st-row st-row--ambiance swiper" #ambianceRow>
+        <div class="swiper-wrapper">
+          @for (ambiance of ambiances(); track ambiance.id) {
+            <div class="swiper-slide">
+              <div class="st-ambiance-card" [class.playing]="isAmbiancePlaying(ambiance.id)">
+                <!--
+                  The editor: the campaign's own repair tools (see cc-edit-button), the same wrench
+                  the encounter cards, their initiative circle and the storyline cards wear, so
+                  editing reads the same in every area.
+                -->
+                <cc-edit-button
+                  label="Edit ambiance"
+                  (clicked)="editAmbiance(ambiance)"
+                />
+
+                <cc-delete-button
+                  label="Delete ambiance"
+                  (confirmed)="confirmDeleteAmbiance(ambiance.id)"
+                />
+
+                <span class="st-card-name" [title]="ambiance.title">{{ ambiance.title }}</span>
+
+                <span class="st-card-meta">
+                  {{ ambiance.items.length }} track{{ ambiance.items.length === 1 ? '' : 's' }}
+                </span>
+
+                <button
+                  type="button"
+                  class="st-play-btn st-play-btn--card"
+                  (click)="toggleAmbiance(ambiance)"
+                  [title]="isAmbiancePlaying(ambiance.id) ? 'Stop' : 'Play'"
+                  [attr.aria-label]="(isAmbiancePlaying(ambiance.id) ? 'Stop ' : 'Play ') + ambiance.title"
+                >
+                  {{ isAmbiancePlaying(ambiance.id) ? '■' : '▶' }}
+                </button>
+              </div>
+            </div>
+          }
+        </div>
+      </div>
+    }
+  </div>
+</div>

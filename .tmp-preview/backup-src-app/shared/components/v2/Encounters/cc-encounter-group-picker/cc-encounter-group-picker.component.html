@@ -1,0 +1,168 @@
+@let pickedCount = pickedCardCount();
+
+<div class="picker" [style.--portal-color]="portalColor()">
+  <div class="picker-filter">
+    <input
+      class="picker-search"
+      type="text"
+      placeholder="Search name, role, race…"
+      aria-label="Search cast cards"
+      [ngModel]="search()"
+      (ngModelChange)="onSearchChange($event)"
+    />
+    @if (activeKeywords().length > 1) {
+      <button type="button" class="picker-mode" [class.is-on]="matchAll()" (click)="toggleMatchAll()">
+        {{ matchAll() ? 'all' : 'any' }}
+      </button>
+    }
+    <button type="button" class="picker-clear" [disabled]="!hasFilter()" (click)="clearFilter()">Clear</button>
+  </div>
+
+  @if (keywordChips().length) {
+    <div class="picker-chips">
+      @for (chip of keywordChips(); track chip.keyword) {
+        <button
+          type="button"
+          class="picker-chip"
+          [class.is-on]="isKeywordOn(chip.keyword)"
+          (click)="toggleKeyword(chip.keyword)"
+        >#{{ chip.keyword }}<span class="picker-chip-count">{{ chip.count }}</span></button>
+      }
+    </div>
+  }
+
+  @if (picked().length) {
+    <div class="picker-picked">
+      @for (card of picked(); track card.key) {
+        <div class="picker-picked-row">
+          <div class="picker-picked-controls">
+            <cc-simple-cast-card [cast]="card.cast" />
+
+            <cc-counter-badge
+              class="picker-picked-badge"
+              context="campaign"
+              [min]="card.seedCount"
+              [max]="99"
+              [count]="card.count"
+              (countChange)="setCount(card.key, $event)"
+            />
+
+            <span class="picker-picked-hp">
+              <span class="picker-picked-hp-label">Max Health</span>
+
+              <span class="picker-picked-hp-dials">
+                <cc-dial-counter
+                  context="campaign"
+                  [dials]="3"
+                  [ariaLabel]="'Max hit points for ' + card.cast.name"
+                  [ngModel]="card.hp"
+                  (ngModelChange)="setHp(card.key, $event)"
+                />
+              </span>
+            </span>
+          </div>
+
+          <app-cc-textbox
+            class="picker-picked-notes"
+            label="Combatant Notes"
+            type="textarea"
+            [rows]="2"
+            context="campaign"
+            [placeholder]="'Notes for ' + card.cast.name"
+            [ngModel]="card.notes"
+            (ngModelChange)="setNotes(card.key, $event)"
+          />
+        </div>
+      }
+    </div>
+  }
+
+  @if (campaignCasts().length) {
+    <p class="picker-section">In this campaign ({{ campaignCasts().length }})</p>
+    <div class="picker-grid">
+      @for (cast of campaignCasts(); track cast.instanceId) {
+        @let instanceCopies = countFor('instance', cast.instanceId);
+        <button
+          type="button"
+          class="picker-tile"
+          [class.is-picked]="instanceCopies > 0"
+          [attr.aria-label]="'Add ' + cast.name"
+          (click)="addFromInstance(cast)"
+        >
+          <cc-simple-cast-card [cast]="cast" />
+          @if (instanceCopies > 0) {
+            <span class="picker-tile-badge">×{{ instanceCopies }}</span>
+          }
+        </button>
+      }
+    </div>
+  }
+
+  <p class="picker-section">Your cast library — {{ setSize }} per set</p>
+  <div class="picker-grid">
+    @for (cast of libraryCasts(); track cast.id) {
+      @let libraryCopies = countFor('cast', cast.id);
+      <button
+        type="button"
+        class="picker-tile"
+        [class.is-picked]="libraryCopies > 0"
+        [attr.aria-label]="'Add ' + cast.name"
+        (click)="addFromLibrary(cast)"
+      >
+        <cc-simple-cast-card [cast]="asCastInstance(cast)" />
+        @if (libraryCopies > 0) {
+          <span class="picker-tile-badge">×{{ libraryCopies }}</span>
+        }
+      </button>
+    }
+
+    @if (canLoadNextSet() || loading()) {
+      <button type="button" class="picker-tile picker-tile--next" [disabled]="loading()" (click)="loadNextSet()">
+        <span class="picker-next-label">{{ loading() ? 'Loading…' : 'Next set' }}</span>
+        @if (!loading()) {
+          <span class="picker-next-meta">set {{ lastSetLoaded() + 1 }} of {{ totalSets() }}</span>
+        }
+      </button>
+    }
+  </div>
+
+  @if (totalCount() > 0) {
+    <p class="picker-status">Showing {{ libraryCasts().length }} of {{ totalCount() }}</p>
+  }
+  @if (error()) {
+    <p class="picker-error">{{ error() }}</p>
+  }
+
+  @if (places(); as places) {
+    <cc-encounter-places
+      [players]="places.players"
+      [groups]="places.groups"
+      [total]="places.total"
+    />
+  }
+
+  <div class="picker-actions">
+    <span class="picker-total">
+      <span>
+        {{ pickedCount }} card{{ pickedCount === 1 ? '' : 's' }} in this group
+        @if (addingToGroup() && pendingCount() > 0) {
+          · {{ pendingCount() }} to add
+        }
+        @if (hitPointChanges().length) {
+          · {{ hitPointChanges().length }} hit point{{ hitPointChanges().length === 1 ? '' : 's' }} to save
+        }
+      </span>
+
+      @if (hpMissing()) {
+        <span class="picker-need-hp">Give every card max hit points to add the group</span>
+      }
+    </span>
+
+    <button
+      type="button"
+      class="picker-add"
+      [disabled]="!canAdd()"
+      (click)="onAddGroup()"
+    >{{ addingToGroup() ? 'Add to group' : 'Add group' }}</button>
+  </div>
+</div>

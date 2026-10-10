@@ -1,0 +1,96 @@
+@use '../../../../../../styles/variables' as v;
+
+/* ─── cc-condition-assigner ────────────────────────────────────────────────── */
+/* Campaign drawer skin: the portal purple the encounter panels are drawn in. */
+
+:host {
+  display: block;
+  width: 100%;
+}
+
+.conditions {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* ─── Labels ──────────────────────────────────────────────────────────────── */
+.cond-label {
+  margin: 0;
+  color: v.$campaign-portal-text-muted;
+  font-size: 11px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+/* ─── The standard set ────────────────────────────────────────────────────── */
+.cond-standard-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.cond-standard-btn {
+  padding: 5px 9px;
+  background: transparent;
+  border: 1px solid v.$campaign-portal-border-bold;
+  border-radius: 999px;
+  color: v.$campaign-portal-text-lavender;
+  font-size: 11px;
+  cursor: pointer;
+  transition: border-color 0.15s ease, color 0.15s ease, background 0.15s ease;
+
+  &:hover:not(:disabled) {
+    color: v.$campaign-portal-text-bright;
+    border-color: var(--ring-color, #{v.$campaign-portal-border-hover});
+  }
+
+  &:disabled { opacity: 0.45; cursor: default; }
+
+  // Already on the card: it reads in the colour of the ring it put there.
+  &--active {
+    background: color-mix(in srgb, var(--ring-color, #{v.$color-base-purple-primary}) 30%, transparent);
+    border-color: var(--ring-color, #{v.$color-base-purple-primary});
+    color: #fff;
+  }
+}
+
+/* ─── Anything else ───────────────────────────────────────────────────────── */
+.cond-custom-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.cond-input {
+  flex: 1;
+  min-width: 0;
+  padding: 8px 10px;
+  background: rgba(0, 0, 0, 0.35);
+  border: 1px solid v.$campaign-portal-border-bold;
+  border-radius: 7px;
+  color: v.$campaign-portal-text-bright;
+  font-family: v.$font-body;
+  font-size: 12px;
+}
+
+.cond-add-btn {
+  padding: 8px 14px;
+  background: linear-gradient(135deg, #6e28d0 0%, #4c1d95 100%);
+  border: 1px solid rgba(255, 255, 255, 0.28);
+  border-radius: 7px;
+  color: #fff;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  cursor: pointer;
+
+  &:disabled { opacity: 0.4; cursor: not-allowed; }
+}
+
+.cond-error {
+  margin: 0;
+  color: #f87171;
+  font-size: 12px;
+}

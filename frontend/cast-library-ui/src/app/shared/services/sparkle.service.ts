@@ -1,17 +1,16 @@
 import { Injectable } from '@angular/core';
 
 const SPARK_COLORS = [
-  '#C8A030', // Ember Gold
-  '#E8A820', // Bright Amber
-  '#FFF0D0', // Warm White
-  '#FFD700', // Gold
-  '#FFEC8B', // Light Goldenrod
+  '#C8A030',
+  '#E8A820',
+  '#FFF0D0',
+  '#FFD700',
+  '#FFEC8B',
 ];
 
 @Injectable({ providedIn: 'root' })
 export class SparkleService {
-  trigger(host: HTMLElement, colors: string[] = SPARK_COLORS): void {
-    const count = 30;
+  trigger(host: HTMLElement, colors: string[] = SPARK_COLORS, count = 30): void {
     for (let i = 0; i < count; i++) {
       const angle = (i / count) * 360 + Math.random() * (360 / count);
       const rad   = angle * (Math.PI / 180);
@@ -34,18 +33,13 @@ export class SparkleService {
   }
 
   triggerSparkler(host: HTMLElement, colors: string[] = SPARK_COLORS): void {
-    // Create a single spark that drips downward
     const spark = document.createElement('div');
     spark.className = 'sparkler-drip';
 
-    // Random movement pattern: 0 = straight, 1 = left, 2 = right
     const pattern = Math.floor(Math.random() * 3);
     
-    // Horizontal distance (0 to 10px)
     const hx = pattern === 0 ? 0 : 5 + Math.random() * 5;
-    // Horizontal direction (-1 for left, 1 for right)
     const hd = pattern === 1 ? -1 : (pattern === 2 ? 1 : 0);
-    // Downward distance (200px to 300px)
     const dy = 200 + Math.random() * 100;
     const color = colors[Math.floor(Math.random() * colors.length)];
 

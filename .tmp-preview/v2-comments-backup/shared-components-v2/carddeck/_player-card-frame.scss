@@ -1,0 +1,37 @@
+@use '../../../../../styles/variables' as v;
+@use 'sass:color';
+
+/*
+ * The player cards' own frame — the border both sizes of the card wear: the full card the deck draws
+ * (see cc-player-card) and the small one drawn wherever there is no room for it (see
+ * cc-simple-player-card). It lives here, beside the two of them, so the two can only ever be the same
+ * frame: each card brings its own thickness and its own shadow, and takes these colours.
+ *
+ * The browns are the card's own red warmed into wood: each one is a mix of the app's brown palette
+ * with the banner's reds (`$color-base-red-5` and `$color-base-red-6` — the pair the title band and
+ * the bottom strip are drawn in, see `.cc-banner` and `.cc-strip`), so the border, the title and the
+ * strip belong to one card rather than standing beside each other as two colours. They run dark
+ * brown to medium dark brown over the stops the cast cards' gold frame is built from (see
+ * cc-cast-card) — darkest in the middle of the sweep, catching the light at either end.
+ */
+$frame-brown:      color.mix(v.$color-base-brown-warm,   v.$color-base-red-6, 55%); // medium dark
+$frame-brown-mid:  color.mix(v.$color-base-saddle-brown, v.$color-base-red-5, 60%); // dark
+$frame-brown-deep: color.mix(v.$color-base-dark-brown,   v.$color-base-red-5, 65%); // darkest
+$frame-brown-lift: color.mix($frame-brown-mid, $frame-brown, 55%);                 // the relief
+$frame-lit:        color.mix(v.$color-base-brown-11,     v.$color-base-red-6, 70%); // the highlight
+
+/* The sweep a frame is painted with, whatever size the card is. */
+$frame-gradient: linear-gradient(
+  145deg,
+  $frame-brown 0%,
+  $frame-brown-mid 20%,
+  $frame-brown-deep 45%,
+  $frame-brown-lift 55%,
+  $frame-brown-mid 70%,
+  $frame-brown-deep 85%,
+  $frame-brown 100%
+);
+
+/* The 1px outline a frame is closed off with, and the hairline of light along its top edge. */
+$frame-outline:   $frame-brown-deep;
+$frame-highlight: rgba($frame-lit,.22);

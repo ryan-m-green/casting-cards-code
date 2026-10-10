@@ -1,0 +1,28 @@
+@use '../../../../../../styles/filter-fieldset' as f;
+
+:host {
+  display: inline-block;
+}
+
+.view-switch {
+  @include f.fieldset-frame;
+}
+
+.view-switch__legend {
+  @include f.fieldset-legend;
+}
+
+.view-switch__buttons {
+  @include f.fieldset-buttons;
+}
+
+.view-switch__btn {
+  @include f.fieldset-button;
+  width: 45px;
+  height: 42px;
+  padding: 0;
+
+  &.is-on {
+    @include f.fieldset-button-on;
+  }
+}

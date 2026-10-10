@@ -1,0 +1,95 @@
+<span class="faction-relationship-label">Faction Relationships</span>
+
+<div class="faction-relationship-btn-row">
+  <button class="campaign-primary-btn" type="button" (click)="toggleDrawer()">
+    Faction Relationships {{ drawerOpen() ? '↑' : '↓' }}
+  </button>
+</div>
+
+@if (associationRows().length) {
+  <ul class="faction-association-list">
+    @for (row of associationRows(); track row.factionInstanceId) {
+      <li class="faction-association-item">
+        <span class="faction-association-type">{{ row.type }}</span>
+        <span class="faction-association-name">{{ row.name }}</span>
+      </li>
+    }
+  </ul>
+}
+
+@if (drawerOpen()) {
+  <div class="faction-relationship-drawer">
+    <div class="faction-wizard-viewport">
+
+      @if (wizardStep() === 1) {
+        <div class="faction-wizard-panel faction-wizard-panel--active">
+          <div class="relationship-list">
+            @for (other of selectableFactions(); track other.factionInstanceId) {
+              <button
+                class="relationship-item"
+                type="button"
+                (click)="relatedFactionIds().has(other.factionInstanceId) ? removeRelationship.emit(relForFaction(other.factionInstanceId)!) : selectTarget(other)"
+              >
+                <span class="relationship-item-name">{{ other.name }}</span>
+                @if (relatedFactionIds().has(other.factionInstanceId)) {
+                  <img class="relationship-checkmark" src="/scroll_check_mark_icon.svg" alt="">
+                } @else {
+                  <span class="relationship-arrow">›</span>
+                }
+              </button>
+            }
+            @if (!selectableFactions().length) {
+              <span class="relationship-empty">
+                {{ isDm() ? 'No other factions in the campaign.' : 'No factions unlocked for players.' }}
+              </span>
+            }
+          </div>
+        </div>
+      }
+
+      @if (wizardStep() === 2) {
+        <div class="faction-wizard-panel faction-wizard-panel--active">
+          <button class="faction-wizard-back" type="button" (click)="wizardStep.set(1)">
+            ‹ {{ wizardTarget()?.name }}
+          </button>
+          <div class="relationship-list">
+            @for (type of relTypeOptions; track type) {
+              <button
+                class="relationship-item"
+                type="button"
+                (click)="confirmRelType(type)"
+              >
+                <span class="relationship-item-name">{{ type }}</span>
+                <span class="relationship-arrow">›</span>
+              </button>
+            }
+          </div>
+        </div>
+      }
+
+      @if (wizardStep() === 3) {
+        <div class="faction-wizard-panel faction-wizard-panel--active faction-wizard-slider-panel">
+          <button class="faction-wizard-back" type="button" (click)="wizardStep.set(2)">
+            ‹ {{ wizardRelType() }}
+          </button>
+          <div class="faction-wizard-slider-body">
+            <input
+              class="faction-wizard-slider"
+              type="range" min="0" max="5"
+              [value]="wizardStrength()"
+              (input)="onStrengthInput($event)"
+            />
+            <div class="faction-wizard-slider-ticks">
+              @for (l of strengthLabels; track $index) {
+                <span>{{ $index }}</span>
+              }
+            </div>
+            <span class="faction-wizard-strength-label">{{ strengthLabel(wizardStrength()) }}</span>
+          </div>
+          <button class="campaign-primary-btn faction-wizard-confirm" type="button" (click)="save()">✔ Save</button>
+        </div>
+      }
+
+    </div>
+  </div>
+}

@@ -1,4 +1,4 @@
-<div class="pc scroll-body">
+﻿<div class="pc scroll-body">
   <app-journal-title [title]="factionId() ? 'Edit Faction' : 'Create Faction'" />
   <div class="wr wr-page-header">
     <a class="btn-ghost" routerLink="/gm/faction">← Library</a>
@@ -6,7 +6,7 @@
 
   @if (factionId() || imageUrl()) {
     <div class="form-card-preview">
-      <app-faction-card
+      <cc-faction-card
         [faction]="previewFaction()"
         [editable]="false"
         [flippable]="false"

@@ -1,0 +1,67 @@
+<div class="encounter-controls">
+  <div class="encounter-controls-row">
+    <button
+      type="button"
+      class="encounter-control"
+      [disabled]="busy()"
+      title="View all the campaign's encounters"
+      (click)="allRequested.emit()"
+    >Encounters</button>
+
+    @if (canStart()) {
+      <button
+        type="button"
+        class="encounter-control encounter-control--start"
+        [disabled]="busy()"
+        title="Start this encounter's initiative"
+        aria-label="Start this encounter"
+        (click)="startRequested.emit()"
+      >
+        <img class="encounter-control-icon" src="/play_triangle_button.svg" alt="" />
+      </button>
+    }
+  </div>
+
+  @if (showEdit() || canEnd()) {
+    <div class="encounter-controls-row">
+      @if (showEdit()) {
+        <cc-edit-button
+          label="Edit this encounter"
+          [disabled]="busy()"
+          (clicked)="editRequested.emit()"
+        />
+      }
+
+      @if (canEnd()) {
+        @if (endPending()) {
+          <span class="encounter-controls-end">
+            <button
+              type="button"
+              class="encounter-control encounter-control--cancel"
+              title="Keep the fight going"
+              aria-label="Cancel ending the fight"
+              (click)="cancelEnd()"
+            >✕</button>
+
+            <button
+              type="button"
+              class="encounter-control is-end"
+              [disabled]="busy()"
+              title="End this combat now"
+              aria-label="End this combat now"
+              (click)="confirmEnd()"
+            >End it?</button>
+          </span>
+        } @else {
+          <button
+            type="button"
+            class="encounter-control is-end"
+            [disabled]="busy()"
+            title="End this combat"
+            (click)="requestEnd()"
+          >End combat</button>
+        }
+      }
+    </div>
+  }
+</div>

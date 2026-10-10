@@ -1,0 +1,391 @@
+<div class="pc scroll-body">
+
+  <app-journal-title title="User Management" />
+
+  <div class="tabs-bar" role="tablist" aria-label="User management views">
+    <button
+      class="tab-btn"
+      [class.tab-btn--active]="activeTab() === 'users'"
+      role="tab"
+      [attr.aria-selected]="activeTab() === 'users'"
+      aria-controls="um-panel-users"
+      id="um-tab-users"
+      (click)="setTab('users')"
+    >Users</button>
+    <button
+      class="tab-btn"
+      [class.tab-btn--active]="activeTab() === 'add-player'"
+      role="tab"
+      [attr.aria-selected]="activeTab() === 'add-player'"
+      aria-controls="um-panel-add-player"
+      id="um-tab-add-player"
+      (click)="setTab('add-player')"
+    >Add Player</button>
+  </div>
+
+  @if (activeTab() === 'users') {
+    <div class="tab-content" id="um-panel-users" role="tabpanel" aria-labelledby="um-tab-users" data-testid="user-management">
+
+      <div class="wb wb-narrow">
+        <input 
+          class="fi search-input" 
+          type="text" 
+          placeholder="Search users..." 
+          [(ngModel)]="searchQuery"
+          (input)="filterUsers()"
+          data-testid="user-search"
+        />
+      </div>
+
+      @if (loading()) {
+        <div class="wb wb-narrow">
+          <p class="wbd-journal">Loading users…</p>
+        </div>
+      } @else if (errorMsg()) {
+        <div class="wb wb-narrow error-box">
+          <p class="wbd-journal text-error">{{ errorMsg() }}</p>
+        </div>
+      } @else {
+        <div class="user-list">
+          @for (user of filteredUsers(); track user.id) {
+            <div class="user-card" [attr.data-testid]="'user-row-' + user.email">
+              <div class="user-info">
+                <div class="user-name">{{ user.displayName }}</div>
+                <div class="user-meta">{{ user.email }} · {{ user.role }}</div>
+                <div class="user-date">Joined {{ formatDate(user.createdAt) }}</div>
+                <div class="user-date">Last Logged In: {{ formatDateNullable(user.lastLoggedInOn) }}</div>
+                @if (demoPlayerAssignments()[user.id]) {
+                  <div class="user-demo-label">In Demo</div>
+                }
+                @if (user.role !== 'Admin') {
+                <div class="user-card-actions">
+                  <div class="role-toggles">
+                    <button
+                      class="btn-role-toggle"
+                      [class.btn-role-toggle--active]="user.role === 'Player'"
+                      [disabled]="changingRole() === user.id"
+                      (click)="confirmRoleChange(user, 'Player')"
+                      data-testid="user-role-select"
+                    >Player</button>
+                    <button
+                      class="btn-role-toggle"
+                      [class.btn-role-toggle--active]="user.role === 'DM'"
+                      [disabled]="changingRole() === user.id"
+                      (click)="confirmRoleChange(user, 'DM')"
+                    >GM</button>
+                    <button
+                      class="btn-role-toggle"
+                      [class.btn-role-toggle--active]="user.role === 'Admin'"
+                      [disabled]="changingRole() === user.id"
+                      (click)="confirmRoleChange(user, 'Admin')"
+                    >Admin</button>
+                  </div>
+                  
+                  <div class="subscription-section">
+                    @if (editingSubscription() === user.id) {
+                      <div class="subscription-edit">
+                        <div class="sub-field">
+                          <label>Status</label>
+                          <select class="fi" [(ngModel)]="subscriptionEditData()[user.id].status">
+                            <option value="Active">Active</option>
+                            <option value="FreeTrial">FreeTrial</option>
+                            <option value="PastDue">PastDue</option>
+                            <option value="Canceled">Canceled</option>
+                          </select>
+                        </div>
+                        <div class="sub-field">
+                          <label>Bypass Payment</label>
+                          <input type="checkbox" [(ngModel)]="subscriptionEditData()[user.id].bypassPayment" data-testid="bypass-payment-toggle" />
+                        </div>
+                        <div class="sub-field">
+                          <label>Current Period End</label>
+                          <input type="datetime-local" class="fi" [(ngModel)]="subscriptionEditData()[user.id].currentPeriodEnd" />
+                        </div>
+                        <div class="sub-field">
+                          <label>Lock Level</label>
+                          <select class="fi" [(ngModel)]="subscriptionEditData()[user.id].lockLevel" data-testid="lock-level-select">
+                            <option value="FullAccess">FullAccess</option>
+                            <option value="SoftLock">SoftLock</option>
+                            <option value="HardLock">HardLock</option>
+                            <option value="Suspended">Suspended</option>
+                          </select>
+                        </div>
+                        <div class="sub-actions">
+                          <button class="btn-save-sub" (click)="saveSubscription(user)" [disabled]="subscriptionUpdateLoading()" data-testid="save-user-role">
+                            {{ subscriptionUpdateLoading() ? '…' : 'Save' }}
+                          </button>
+                          <button class="btn-cancel-sub" (click)="cancelEditSubscription()">Cancel</button>
+                        </div>
+                      </div>
+                    } @else {
+                      <div class="subscription-display">
+                        <div class="sub-read-only" data-testid="user-details">
+                          <span class="sub-label">User ID:</span> <span class="sub-value">{{ user.id }}</span>
+                        </div>
+                        @if (user.stripeCustomerId) {
+                          <div class="sub-read-only">
+                            <span class="sub-label">Stripe Customer:</span> <span class="sub-value">{{ user.stripeCustomerId }}</span>
+                          </div>
+                        }
+                        @if (user.stripeSubscriptionId) {
+                          <div class="sub-read-only">
+                            <span class="sub-label">Stripe Subscription:</span> <span class="sub-value">{{ user.stripeSubscriptionId }}</span>
+                          </div>
+                        }
+                        <div class="sub-editable">
+                          <span class="sub-label">Status:</span> <span class="sub-value">{{ user.status ? user.status : 'N/A' }}</span>
+                        </div>
+                        <div class="sub-editable">
+                          <span class="sub-label">Bypass Payment:</span> <span class="sub-value">{{ user.bypassPayment ? 'Yes' : 'No' }}</span>
+                        </div>
+                        @if (user.currentPeriodEnd) {
+                          <div class="sub-editable">
+                            <span class="sub-label">Period End:</span> <span class="sub-value">{{ formatDate(user.currentPeriodEnd) }}</span>
+                          </div>
+                        }
+                        <div class="sub-editable">
+                          <span class="sub-label">Lock Level:</span> <span class="sub-value">{{ user.lockLevel ? user.lockLevel : 'N/A' }}</span>
+                        </div>
+                        <button class="btn-edit-sub" (click)="startEditSubscription(user)">Edit Subscription</button>
+                      </div>
+                    }
+                  </div>
+
+                  <div class="card-counts-section">
+                    @if (loadingCardCounts()[user.id]) {
+                      <div class="card-counts-loading">Loading card counts...</div>
+                    } @else if (userCardCounts()[user.id]) {
+                      <div class="card-counts">
+                        <div class="card-counts-title">Card Counts</div>
+                        <div class="card-counts-list">
+                          <div class="card-count-item">
+                            <span class="card-count-type">Campaigns</span>
+                            <span class="card-count-value" data-testid="campaign-count">{{ userCardCounts()[user.id].campaigns }}</span>
+                          </div>
+                          <div class="card-count-item">
+                            <span class="card-count-type">Locations</span>
+                            <span class="card-count-value" data-testid="location-count">{{ userCardCounts()[user.id].locations }}</span>
+                          </div>
+                          <div class="card-count-item">
+                            <span class="card-count-type">Sublocations</span>
+                            <span class="card-count-value" data-testid="sublocation-count">{{ userCardCounts()[user.id].sublocations }}</span>
+                          </div>
+                          <div class="card-count-item">
+                            <span class="card-count-type">Casts</span>
+                            <span class="card-count-value" data-testid="cast-count">{{ userCardCounts()[user.id].casts }}</span>
+                          </div>
+                          <div class="card-count-item">
+                            <span class="card-count-type">Factions</span>
+                            <span class="card-count-value" data-testid="faction-count">{{ userCardCounts()[user.id].factions }}</span>
+                          </div>
+                        </div>
+                      </div>
+                    } @else {
+                      <button class="btn-load-card-counts" (click)="loadUserCardCounts(user.id)">
+                        Load Card Counts
+                      </button>
+                    }
+                  </div>
+
+                  <div class="demo-assign">
+                    <select
+                      class="demo-select"
+                      [(ngModel)]="selectedDemoCampaign()[user.id]"
+                      (ngModelChange)="setSelectedCampaign(user.id, $event)"
+                    >
+                      <option value="">— select demo —</option>
+                      @for (option of demoCampaignOptions(); track option.value) {
+                        <option [value]="option.value">{{ option.label }}</option>
+                      }
+                    </select>
+                    @if (assignDemoSuccess()[user.id]) {
+                      <span class="demo-assign-success">{{ assignDemoSuccess()[user.id] }}</span>
+                    } @else {
+                      <button
+                        class="btn-demo-save"
+                        [disabled]="!getSelectedCampaign(user.id) || assigningDemo() === user.id"
+                        (click)="assignToDemo(user.id)"
+                      >{{ assigningDemo() === user.id ? '…' : 'Add' }}</button>
+                    }
+                  </div>
+
+                </div>
+                 <button
+                    class="btn-delete user-btn"
+                    (click)="confirmDelete(user)"
+                    [disabled]="deleting() === user.id"
+                    data-testid="delete-user-button"
+                  >
+                    {{ deleting() === user.id ? '…' : 'Delete User' }}
+                  </button>
+                  <button
+                    class="btn-reset-password user-btn"
+                    (click)="confirmPasswordReset(user)"
+                    [disabled]="resettingPassword() === user.id"
+                  >
+                    {{ resettingPassword() === user.id ? '…' : 'Reset Password' }}
+                  </button>
+              }
+              </div>
+              
+            </div>
+          }
+          @if (filteredUsers().length === 0) {
+            <div class="wb wb-narrow">
+              <p class="wbd-journal">No users found matching "{{ searchQuery }}"</p>
+            </div>
+          }
+        </div>
+      }
+
+    </div>
+  }
+
+  @if (activeTab() === 'add-player') {
+    <div class="tab-content" id="um-panel-add-player" role="tabpanel" aria-labelledby="um-tab-add-player">
+
+      <div class="add-player-form">
+        <div class="form-field">
+          <label class="form-label" for="ap-display-name">Display Name</label>
+          <input
+            id="ap-display-name"
+            class="fi"
+            type="text"
+            placeholder="Player's display name"
+            [(ngModel)]="addPlayerDisplayName"
+            (ngModelChange)="clearFormMessages()"
+          />
+        </div>
+
+        <div class="form-field">
+          <label class="form-label" for="ap-email">Email</label>
+          <input
+            id="ap-email"
+            class="fi"
+            type="email"
+            placeholder="player@example.com"
+            [(ngModel)]="addPlayerEmail"
+            (ngModelChange)="clearFormMessages()"
+          />
+        </div>
+
+        <div class="form-field">
+          <label class="form-label" for="ap-role">Role</label>
+          <select id="ap-role" class="fi" [(ngModel)]="addPlayerRole">
+            <option value="DM">GM</option>
+            <option value="Player">Player</option>
+          </select>
+        </div>
+
+        <div class="form-field">
+          <label class="form-label checkbox-label">
+            <input type="checkbox" [(ngModel)]="addPlayerBypassPayment" (ngModelChange)="clearFormMessages()" />
+            <span>Bypass Payment (Full Access)</span>
+          </label>
+        </div>
+
+        <p class="form-hint">The account will be created with the default password. A verification email will be sent to the user to confirm their email address. The player can change their password after logging in.</p>
+
+        <div class="form-submit-row">
+          <button
+            class="btn-submit"
+            (click)="submitAddPlayer()"
+            [disabled]="addPlayerSubmitting() || !addPlayerEmail || !addPlayerDisplayName || !isValidEmail(addPlayerEmail)"
+          >
+            {{ addPlayerSubmitting() ? 'Creating…' : 'Create Player' }}
+          </button>
+          @if (addPlayerSuccess()) {
+            <div class="add-player-success">{{ addPlayerSuccess() }}</div>
+          }
+          @if (addPlayerError()) {
+            <div class="add-player-error">{{ addPlayerError() }}</div>
+          }
+        </div>
+      </div>
+
+    </div>
+  }
+
+  @if (showConfirmDialog()) {
+    <div class="modal-overlay" (click)="cancelDelete()">
+      <div class="modal-content" (click)="$event.stopPropagation()">
+        <h3 class="modal-title">Confirm Delete</h3>
+        <p class="modal-message">
+          Are you sure you want to delete user <strong>{{ userToDelete()?.displayName }}</strong>?
+          This will permanently remove all data associated with this user, including campaigns, casts, locations, and more.
+        </p>
+        <div class="modal-actions">
+          <button class="btn-cancel" (click)="cancelDelete()">Cancel</button>
+          <button class="btn-confirm-delete" (click)="deleteUser()">Delete User</button>
+        </div>
+      </div>
+    </div>
+  }
+
+  @if (showRoleConfirmDialog()) {
+    <div class="modal-overlay" (click)="cancelRoleChange()">
+      <div class="modal-content" (click)="$event.stopPropagation()">
+        <h3 class="modal-title">Confirm Role Change</h3>
+        <p class="modal-message">
+          Enter your admin password to change <strong>{{ userToChangeRole()?.displayName }}</strong>'s role
+          from <strong>{{ userToChangeRole()?.role }}</strong> to <strong>{{ newRole() }}</strong>.
+        </p>
+        <div class="form-field">
+          <input
+            class="fi"
+            type="password"
+            placeholder="Admin password"
+            [(ngModel)]="adminPassword"
+          />
+        </div>
+        @if (roleChangeError()) {
+          <p class="modal-error">{{ roleChangeError() }}</p>
+        }
+        <div class="modal-actions">
+          <button class="btn-cancel" (click)="cancelRoleChange()">Cancel</button>
+          <button
+            class="btn-confirm-role"
+            [disabled]="!adminPassword || changingRole() === userToChangeRole()?.id"
+            (click)="changeUserRole()"
+          >
+            {{ changingRole() === userToChangeRole()?.id ? 'Changing…' : 'Change Role' }}
+          </button>
+        </div>
+      </div>
+    </div>
+  }
+
+  @if (showPasswordResetDialog()) {
+    <div class="modal-overlay" (click)="cancelPasswordReset()">
+      <div class="modal-content" (click)="$event.stopPropagation()">
+        <h3 class="modal-title">Reset Password</h3>
+        <p class="modal-message">
+          Enter your admin password to reset <strong>{{ userToResetPassword()?.displayName }}</strong>'s password to 'castingcards'.
+        </p>
+        <div class="form-field">
+          <input
+            class="fi"
+            type="password"
+            placeholder="Admin password"
+            [(ngModel)]="adminPassword"
+          />
+        </div>
+        @if (passwordResetError()) {
+          <p class="modal-error">{{ passwordResetError() }}</p>
+        }
+        <div class="modal-actions">
+          <button class="btn-cancel" (click)="cancelPasswordReset()">Cancel</button>
+          <button
+            class="btn-confirm-reset"
+            [disabled]="!adminPassword || resettingPassword() === userToResetPassword()?.id"
+            (click)="resetUserPassword()"
+          >
+            {{ resettingPassword() === userToResetPassword()?.id ? 'Resetting…' : 'Reset Password' }}
+          </button>
+        </div>
+      </div>
+    </div>
+  }
+
+  <div class="orn orn-mt">· · ·</div>
+</div>

@@ -47,7 +47,7 @@ public class CampaignFactionInstanceWebMapper(
                 RelationshipType   = r.RelationshipType,
                 Strength           = r.Strength,
                 CreatedAt          = r.CreatedAt,
-                DmUserId           = r.DmUserId,
+                GmUserId           = r.GmUserId,
             }).ToList(),
         };
 

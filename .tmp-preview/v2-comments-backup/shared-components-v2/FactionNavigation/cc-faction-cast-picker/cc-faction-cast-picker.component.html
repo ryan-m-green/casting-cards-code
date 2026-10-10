@@ -1,0 +1,101 @@
+@let pickedCount = selectedCount();
+
+<div class="picker" [style.--portal-color]="portalColor()">
+
+  <!--
+    Keyword filters over the search bar: one chip per keyword the campaign's own cards carry,
+    each with how many of them it would leave. Read off the cards in this drawer rather than off
+    the cast library's index — the library is not what a faction's members are drawn from — and
+    following the search box, so the words on offer are the words of what is being looked at.
+    Picking one narrows the list; with more than one on, "any" / "all" says how they combine.
+    The GM's own filters, over the DM's campaign: a player's drawer offers no chips (what is
+    offered there is the party's own membership, and the search box is filter enough).
+  -->
+  @if (isDm() && keywordChips().length) {
+    <div class="picker-chips">
+      @for (chip of keywordChips(); track chip.keyword) {
+        <button
+          type="button"
+          class="picker-chip"
+          [class.is-on]="isKeywordOn(chip.keyword)"
+          [class.picker-chip--empty]="!chip.count"
+          [attr.aria-pressed]="isKeywordOn(chip.keyword)"
+          [attr.title]="chip.count
+            ? chip.count + (chip.count === 1 ? ' cast to add carries' : ' casts to add carry') + ' #' + chip.keyword
+            : 'Nothing left to add carries #' + chip.keyword"
+          (click)="toggleKeyword(chip.keyword)"
+        >#{{ chip.keyword }}<span class="picker-chip-count">{{ chip.count }}</span></button>
+      }
+    </div>
+  }
+
+  <!--
+    The filters a membership list needs: the campaign's casts, narrowed by name, role, race or
+    keyword. The Clear button empties the *picks*, not the search, as the faction picker's does.
+  -->
+  <div class="picker-filter">
+    <app-cc-textbox
+      placeholder="Search this campaign's cast…"
+      context="campaign"
+      [ngModel]="search()"
+      (ngModelChange)="onSearchChange($event)"
+      [showClear]="true"
+    />
+    @if (activeKeywords().length > 1) {
+      <button type="button" class="picker-mode" [class.is-on]="matchAll()" (click)="toggleMatchAll()">
+        {{ matchAll() ? 'all' : 'any' }}
+      </button>
+    }
+    <button type="button" class="picker-clear" [disabled]="!pickedCount" (click)="clearSelection()">Clear</button>
+  </div>
+
+  @if (campaignEmpty()) {
+    <p class="picker-empty">This campaign has no cast cards yet.<br>Add cast cards to the campaign first.</p>
+  } @else if (!candidates().length) {
+    @if (search()) {
+      <p class="picker-empty">No results for &quot;{{ search() }}&quot;.</p>
+    } @else if (activeKeywords().length) {
+      <p class="picker-empty">No cast in this campaign carry those keywords.</p>
+    } @else {
+      <p class="picker-empty">Every cast in this campaign is already in this faction.</p>
+    }
+  } @else {
+    <p class="picker-section">{{ factionName() || 'This faction' }} · cast in the campaign ({{ candidates().length }})</p>
+
+    <div class="picker-grid">
+      @for (cast of candidates(); track cast.instanceId) {
+        <button
+          type="button"
+          class="picker-tile"
+          [class.is-picked]="isSelected(cast.instanceId)"
+          [attr.aria-pressed]="isSelected(cast.instanceId)"
+          [attr.aria-label]="'Add ' + cast.name + ' to ' + (factionName() || 'this faction')"
+          (click)="toggleCast(cast)"
+        >
+          <cc-simple-cast-card [cast]="cast" />
+          @if (isSelected(cast.instanceId)) {
+            <span class="picker-tile-check" aria-hidden="true">✓</span>
+          }
+        </button>
+      }
+    </div>
+  }
+
+  @if (error()) {
+    <p class="picker-error">{{ error() }}</p>
+  }
+
+  <div class="picker-actions">
+    <span class="picker-total">
+      {{ pickedCount }} cast card{{ pickedCount === 1 ? '' : 's' }} picked
+    </span>
+
+    <button
+      type="button"
+      class="campaign-primary-btn"
+      [disabled]="!canAdd()"
+      (click)="onAdd()"
+    >@if (busy()) { Adding… } @else if (pickedCount) { Add {{ pickedCount }} to faction } @else { Add to faction }</button>
+  </div>
+
+</div>

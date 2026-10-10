@@ -1,0 +1,382 @@
+@use '../../../styles/variables' as v;
+
+:host { display: block; height: 100%; }
+
+.pc.scroll-body {
+  position: relative !important;
+  overflow: auto !important;
+  max-height: 100%;
+}
+
+.upgrade-badge-dashboard {
+  position: absolute;
+  top: 8px;
+  right: 20px;
+}
+
+.rat-wizard-image {
+  position: absolute;
+  top: 44px;
+  right: 22px;
+  width: 144px;
+  height: auto;
+  z-index: 9;
+}
+
+.dashboard-subtitle {
+  font-family: v.$font-header;
+  font-size: 22px;
+  font-weight: 600;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: v.$color-base-amber-brown;
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.library-icon-wrapper {
+  width: 64px;
+  height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+// ─── Stat tile lift on hover ──────────────────────────────────────────────────
+.sv {
+  position: relative;
+  z-index: 1;
+  transition: background v.$transition-std, transform 0.2s ease;
+
+  &:hover {
+    transform: translateY(-6px) scale(1.03);
+  }
+}
+
+// ─── Quick action buttons ─────────────────────────────────────────────────────
+.qa-btn {
+  border: none;
+  padding: 3px;
+  transition: background v.$transition-std, transform 0.2s ease;
+
+  &:hover {
+    transform: translateY(-6px) scale(1.03);
+  }
+
+  &__inner {
+    padding: 4px 10px;
+    background: v.$color-base-tan-3;
+    border-radius: 1px;
+    height: 100%;
+    display: inline-flex;
+    align-items: center;
+  }
+
+  &--cast {
+    background: linear-gradient(145deg,
+      v.$color-base-gold-2 0%, v.$color-base-gold-mid-hex 20%, v.$color-base-gold-dark-hex 45%,
+      v.$color-base-gold-bright-hex 55%, v.$color-base-gold-mid-hex 70%, v.$color-base-gold-3 85%, v.$color-base-gold-4 100%
+    ) !important;
+  }
+
+  &--sublocation {
+    background: linear-gradient(145deg,
+      v.$color-ext-675 0%, v.$color-ext-676 15%, v.$color-ext-677 40%,
+      v.$color-ext-678 55%, v.$color-ext-679 70%, v.$color-ext-680 85%, v.$color-ext-681 100%
+    ) !important;
+  }
+
+  &--location {
+    background: linear-gradient(145deg,
+      v.$color-base-yellow-green 0%, v.$color-base-mid-yellow-green 15%, v.$color-base-dark-yellow-green 40%,
+      v.$color-base-green-6 55%, v.$color-base-green-7 70%, v.$color-base-green-8 85%, v.$color-base-green-9 100%
+    ) !important;
+  }
+
+  &--faction {
+    background: linear-gradient(145deg,
+      v.$color-faction-neutral-frame-1 0%, v.$color-faction-neutral-frame-2 15%,
+      v.$color-faction-neutral-frame-3 40%, v.$color-faction-neutral-frame-4 55%,
+      v.$color-faction-neutral-frame-5 70%, v.$color-faction-neutral-frame-6 85%,
+      v.$color-faction-neutral-frame-7 100%
+    ) !important;
+  }
+
+  &--campaign {
+    background: linear-gradient(145deg,
+      v.$color-base-blue-4 0%, v.$color-base-blue-5 30%,
+      v.$color-base-black-3 60%, v.$color-base-blue-6 100%
+    ) !important;
+  }
+}
+
+// ─── Stat tile borders matched to card type ───────────────────────────────────
+// Each tile uses a 4px gradient frame via padding + background, matching the
+// card's own frame gradient.
+
+.sv--cast {
+  background: linear-gradient(145deg,
+    v.$color-base-gold-2 0%, v.$color-base-gold-mid-hex 20%, v.$color-base-gold-dark-hex 45%,
+    v.$color-base-gold-bright-hex 55%, v.$color-base-gold-mid-hex 70%, v.$color-base-gold-3 85%, v.$color-base-gold-4 100%
+  );
+  padding: 3px;
+
+  .sv-inner { background: v.$color-base-tan-3; }
+}
+
+.sv--sublocation {
+  background: linear-gradient(145deg,
+    v.$color-ext-675 0%, v.$color-ext-676 15%, v.$color-ext-677 40%,
+    v.$color-ext-678 55%, v.$color-ext-679 70%, v.$color-ext-680 85%, v.$color-ext-681 100%
+  );
+  padding: 3px;
+
+  .sv-inner { background: v.$color-base-tan-3; }
+}
+
+.sv--location {
+  background: linear-gradient(145deg,
+    v.$color-base-yellow-green 0%, v.$color-base-mid-yellow-green 15%, v.$color-base-dark-yellow-green 40%,
+    v.$color-base-green-6 55%, v.$color-base-green-7 70%, v.$color-base-green-8 85%, v.$color-base-green-9 100%
+  );
+  padding: 3px;
+
+  .sv-inner { background: v.$color-base-tan-3; }
+}
+
+.sv--faction {
+  background: linear-gradient(145deg,
+    v.$color-faction-neutral-frame-1 0%, v.$color-faction-neutral-frame-2 15%,
+    v.$color-faction-neutral-frame-3 40%, v.$color-faction-neutral-frame-4 55%,
+    v.$color-faction-neutral-frame-5 70%, v.$color-faction-neutral-frame-6 85%,
+    v.$color-faction-neutral-frame-7 100%
+  );
+  padding: 3px;
+
+  .sv-inner { background: v.$color-base-tan-3; }
+}
+
+.sv--campaign {
+  background: linear-gradient(145deg,
+    v.$color-base-blue-4 0%, v.$color-base-blue-5 30%,
+    v.$color-base-black-3 60%, v.$color-base-blue-6 100%
+  );
+  padding: 3px;
+
+  .sv-inner { background: v.$color-base-tan-3; }
+}
+
+.active-campaign-item {
+  margin-bottom: 16px;
+  transition: transform 0.2s ease;
+  background: linear-gradient(145deg,
+    v.$color-base-blue-4 0%, v.$color-base-blue-5 30%,
+    v.$color-base-black-3 60%, v.$color-base-blue-6 100%
+  ) !important;
+  padding: 3px;
+
+  &:hover {
+    transform: translateY(-6px) scale(1.03);
+  }
+
+  .sv-inner {
+    background: v.$color-base-tan-3;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 16px;
+    padding: 0;
+  }
+
+  .active-campaign-icon .variant-inline{
+    max-height:100px;
+    padding-left:20px;
+    margin-right:-50px;
+    opacity:.30;
+  }
+
+  .active-campaign-icon {
+    align-self: stretch;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    padding: 4px 0 4px 4px;
+    margin: 0 14px 0 18px;
+    color: v.$color-base-brown-14;
+  }
+
+  .active-campaign-content {
+    flex: 1;
+    min-width: 0;
+    margin: 4px 0;
+  }
+}
+
+.dashboard-main {
+  flex: 1;
+}
+
+.quick-actions {
+  margin-top: 44px;
+}
+
+.import-section {
+  margin-bottom: -44px;
+}
+
+.import-fieldset {
+  border: 1px dashed v.$color-border;
+  border-radius: 3px;
+  padding: 12px;
+  margin: 0;
+  display: inline-block;
+
+  .import-section-label {
+    padding: 0 4px;
+    margin: 0;
+  }
+}
+
+// ─── Portal ghost (hidden off-screen; cloned for animation) ───────────────────
+.portal-ghost-tpl {
+  position: fixed;
+  left: -9999px;
+  top: -9999px;
+  opacity: 0;
+  pointer-events: none;
+}
+
+// ─── Ghost button override (hidden in ghost template) ─────────────────────────
+.portal-ghost-tpl {
+  .portal-btn--delete,
+  .portal-btn--edit {
+    visibility: hidden;
+  }
+}
+
+// ─── Import Panel ─────────────────────────────────────────────────────────────
+.import-panel {
+  margin-top: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.import-field-row {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.import-field {
+  flex: 1;
+  min-width: 160px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.import-label {
+  font-family: v.$font-header;
+  font-size: 7px;
+  font-weight: 600;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: v.$color-base-amber-brown;
+}
+
+.import-file-input {
+  font-family: v.$font-body;
+  font-size: 11px;
+  color: v.$color-base-brown-14;
+  width: 100%;
+  cursor: pointer;
+}
+
+.import-image-count {
+  font-family: v.$font-body;
+  font-size: 10px;
+  font-style: italic;
+  color: v.$color-base-brown-14;
+}
+
+.import-error {
+  font-family: v.$font-body;
+  font-size: 11px;
+  color: v.$color-base-brick;
+  font-style: italic;
+}
+
+.import-actions {
+  display: flex;
+  justify-content: flex-end;
+}
+
+// ─── Import Result ────────────────────────────────────────────────────────────
+.import-result {
+  margin-top: 8px;
+}
+
+// ─── Mobile ───────────────────────────────────────────────────────────────────
+@media (max-width: 600px) {
+  .sv {
+    flex: 0 0 98px;
+    width: 98px;
+    height: 98px;
+    min-width: unset;
+    aspect-ratio: unset;
+  }
+
+  .rat-wizard-image {
+    top: 96px;
+    right: 0px;
+    width: 104px;
+  }
+}
+
+.import-summary {
+  font-family: v.$font-header;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  color: v.$color-base-brown-14;
+  margin-bottom: 6px;
+
+  &--skipped {
+    color: v.$color-base-brown-15;
+    font-weight: 400;
+  }
+}
+
+.import-failures-label {
+  font-family: v.$font-header;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: v.$color-base-brick;
+  margin-bottom: 4px;
+}
+
+.import-failure {
+  font-family: v.$font-body;
+  font-size: 12px;
+  font-style: italic;
+  color: v.$color-base-brown-14;
+  padding: 2px 0;
+  border-bottom: 0.5px solid v.$color-ext-296;
+  line-height: 1.4;
+}
+
+.failure-type {
+  font-family: v.$font-header;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: v.$color-base-brick;
+  margin-right: 4px;
+}

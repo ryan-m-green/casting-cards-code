@@ -1,0 +1,47 @@
+@if (editingSeed(); as seed) {
+  <cc-condition-form
+    [campaignId]="campaignId()"
+    [condition]="seed"
+    (saved)="onSaved()"
+    (cancel)="cancelEditing()"
+  />
+} @else {
+  <div class="condition-detail" [style.--portal-color]="portalColor()">
+    <div class="condition-detail-bar">
+      <span class="condition-detail-actions">
+        @if (error()) {
+          <span class="condition-detail-error">{{ error() }}</span>
+        }
+        <cc-delete-button
+          label="Remove this condition from the campaign"
+          confirmLabel="Remove"
+          [disabled]="removing()"
+          (confirmed)="remove()"
+        />
+        <cc-edit-button label="Edit condition" (clicked)="startEditing()" />
+      </span>
+    </div>
+
+    @if (condition(); as entry) {
+      <div class="condition-detail-read">
+        <span class="condition-ring" [style.--ring-color]="ringColor()">
+          <span class="condition-ring-label">{{ entry.name }}</span>
+        </span>
+
+        <p class="condition-detail-consequence">
+          {{ entry.consequence || 'No consequences written yet.' }}
+        </p>
+
+        @if (entry.keywords.length) {
+          <div class="condition-detail-keywords">
+            @for (keyword of entry.keywords; track keyword) {
+              <span class="condition-detail-keyword">{{ keyword }}</span>
+            }
+          </div>
+        }
+      </div>
+    } @else {
+      <p class="condition-detail-note">That condition is no longer on this campaign.</p>
+    }
+  </div>
+}

@@ -1,0 +1,153 @@
+<div class="cast-detail-content">
+  <!-- Card title (above the portrait). While editing, the form itself stands the name. -->
+  @if (!editing()) {
+    <div class="detail-header">
+      <h2 class="detail-title">{{ currentCast().name }}</h2>
+    </div>
+  }
+
+  <!-- Portrait pinned top-left; always visible, only swappable in edit mode -->
+  <div class="detail-portrait-row">
+    <cc-portrait-input
+      context="campaign"
+      [initialImageUrl]="currentCast().imageUrl || ''"
+      [cardType]="'cast'"
+      [borderStyle]="'cast'"
+      [disabled]="!editing()"
+      [ngModel]="imageFile()"
+      (ngModelChange)="imageFile.set($event)"
+    />
+  </div>
+
+  <!-- Detail tabs -->
+  <div class="detail-tabs">
+    <button class="detail-tab" type="button"
+            [class.detail-tab--active]="activeTab() === 'details'"
+            (click)="setTab('details')">Details</button>
+    <button class="detail-tab" type="button"
+            [class.detail-tab--active]="activeTab() === 'secrets'"
+            (click)="setTab('secrets')">Secrets</button>
+  </div>
+
+@if (activeTab() === 'details') {
+  <!-- Panel actions live inside the details tab; the Edit is the GM's own (see `isDm`). -->
+  <cc-detail-panel-actions
+    [isDm]="isDm()"
+    [editing]="editing()"
+    [detailExpanded]="false"
+    (startEditingClick)="startEditing()"
+    (saveDetailsClick)="saveDetails()"
+    (saveToLibraryClick)="saveToLibrary()"
+    (cancelEditingClick)="cancelEditing()"
+    (closeClick)="closePanel()"
+  />
+
+  @if (editing()) {
+    <!--
+      The very form the realm row's ＋ opens to add a cast to a sublocation, standing over this
+      card: the same fields, in the same order, in the same dress. It is told not to draw its own
+      Save row — this panel's Save and Cancel buttons drive it (see `saveDetails`).
+    -->
+    <cc-cast-new-form
+      #castForm
+      [campaignId]="campaignId()"
+      [editCast]="currentCast()"
+      [showSaveRow]="false"
+      (saved)="onCastSaved($event)"
+    />
+  } @else {
+  <div class="detail-content-body">
+    @if (hasField(currentCast().role) || hasField(currentCast().race) || hasField(currentCast().age) || hasField(currentCast().pronouns) || currentCast().maxHitPoints > 0) {
+      <div class="detail-grid">
+        @if (hasField(currentCast().role)) {
+          <div class="detail-item">
+            <span class="detail-label">Role</span>
+            <span class="detail-value">{{ currentCast().role }}</span>
+          </div>
+        }
+        @if (hasField(currentCast().race)) {
+          <div class="detail-item">
+            <span class="detail-label">Race</span>
+            <span class="detail-value">{{ currentCast().race }}</span>
+          </div>
+        }
+        @if (hasField(currentCast().age)) {
+          <div class="detail-item">
+            <span class="detail-label">Age</span>
+            <span class="detail-value">{{ currentCast().age }}</span>
+          </div>
+        }
+        @if (hasField(currentCast().pronouns)) {
+          <div class="detail-item">
+            <span class="detail-label">Pronouns</span>
+            <span class="detail-value">{{ currentCast().pronouns }}</span>
+          </div>
+        }
+        @if (currentCast().maxHitPoints > 0) {
+          <div class="detail-item">
+            <span class="detail-label">Max Hit Points</span>
+            <span class="detail-value">{{ currentCast().maxHitPoints }}</span>
+          </div>
+        }
+      </div>
+    }
+
+    @if (hasField(currentCast().posture) || (currentCast().voicePlacement && currentCast().voicePlacement.length > 0) || hasField(currentCast().voiceNotes)) {
+      <div class="detail-section">
+        <span class="detail-section-label">Voice & Movement</span>
+      </div>
+    }
+
+    @if (hasField(currentCast().posture)) {
+      <div class="detail-block">
+        <span class="detail-block-label">Posture</span>
+        <p class="detail-block-content">{{ currentCast().posture }}</p>
+      </div>
+    }
+    @if (currentCast().voicePlacement && currentCast().voicePlacement.length > 0) {
+      <div class="detail-block">
+        <span class="detail-block-label">Voice Placement</span>
+        <p class="detail-block-content">{{ currentCast().voicePlacement.join(', ') }}</p>
+      </div>
+    }
+    @if (hasField(currentCast().voiceNotes)) {
+      <div class="detail-block">
+        <span class="detail-block-label">Voice Notes</span>
+        <p class="detail-block-content">{{ currentCast().voiceNotes }}</p>
+      </div>
+    }
+
+    @if (hasField(currentCast().publicDescription) || hasField(currentCast().description)) {
+      <div class="detail-section">
+        <span class="detail-section-label">Descriptions</span>
+      </div>
+    }
+
+    @if (hasField(currentCast().publicDescription)) {
+      <div class="detail-block">
+        <span class="detail-block-label">Public Description</span>
+        <p class="detail-block-content">{{ currentCast().publicDescription }}</p>
+      </div>
+    }
+    @if (hasField(currentCast().description)) {
+      <div class="detail-block">
+        <span class="detail-block-label">Private Description</span>
+        <p class="detail-block-content">{{ currentCast().description }}</p>
+      </div>
+    }
+
+  </div>
+  }
+} @else {
+  <div class="detail-content-body">
+    <cc-secrets-manager
+      [secrets]="secrets()"
+      [cardType]="'cast'"
+      [campaignId]="campaignId()"
+      [instanceId]="castInstanceId()"
+      [context]="'campaign'"
+      [isDm]="isDm()"
+    />
+  </div>
+}
+</div>

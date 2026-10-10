@@ -1,10 +1,8 @@
-﻿using CastLibrary.Adapter.Configuration;
-using CastLibrary.Adapter.ImageConversion;
+﻿using CastLibrary.Adapter.ImageConversion;
 using CastLibrary.Adapter.Operators;
 using CastLibrary.Adapter.Services;
 using CastLibrary.Adapter.EmailBuilders;
 using CastLibrary.Logic.Interfaces;
-using CastLibrary.Repository.Configuration;
 using CastLibrary.Shared.Configuration;
 
 namespace CastLibrary.WebHost.IoC

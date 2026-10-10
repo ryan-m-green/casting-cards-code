@@ -1,0 +1,76 @@
+<div class="note" [style.--portal-color]="portalColor()">
+  @if (current(); as card) {
+    <div class="note-card-row">
+      @if (hasArrows()) {
+        <button
+          type="button"
+          class="note-nav"
+          [disabled]="panelIndex() === 0"
+          [attr.aria-label]="'Previous card in this group'"
+          (click)="step(-1)"
+        >‹</button>
+      }
+
+      <div class="note-card">
+        <cc-ring-condition
+          [campaignId]="campaignId()"
+          [subject]="castSubject()"
+          [conditions]="currentConditions()"
+          [readOnly]="true"
+        >
+          <cc-cast-card
+            [cast]="card.cast"
+            [campaignId]="campaignId()"
+            [flippable]="true"
+            [editable]="false"
+            [deletable]="false"
+            [secrets]="false"
+            [campaignMode]="false"
+            [titleSearch]="false"
+            [readonlyStars]="true"
+            [travelable]="false"
+            [dmMode]="true"
+          />
+        </cc-ring-condition>
+      </div>
+
+      @if (hasArrows()) {
+        <button
+          type="button"
+          class="note-nav"
+          [disabled]="panelIndex() >= cards().length - 1"
+          [attr.aria-label]="'Next card in this group'"
+          (click)="step(1)"
+        >›</button>
+      }
+    </div>
+
+    <div class="note-fields">
+      <div class="note-head">
+        <label class="note-label" for="field-journal-area">{{ card.cast.name }}</label>
+        @if (saving()) {
+          <span class="note-state" aria-live="polite">saving…</span>
+        } @else if (saved()) {
+          <span class="note-state" aria-live="polite">saved</span>
+        }
+      </div>
+
+      <textarea
+        id="field-journal-area"
+        class="note-area"
+        rows="8"
+        placeholder="What did you notice about them?"
+        [attr.aria-label]="'Your journal entry on ' + card.cast.name"
+        [ngModel]="draft()"
+        (ngModelChange)="onInput($event)"
+        (blur)="onBlur()"
+      ></textarea>
+
+      <p class="note-prompt">Capture their strengths and weaknesses — what they shrug off, and what brings them down.</p>
+
+      @if (error()) {
+        <p class="note-error">{{ error() }}</p>
+      }
+    </div>
+  }
+</div>

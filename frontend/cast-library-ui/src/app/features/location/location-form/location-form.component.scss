@@ -4,7 +4,9 @@
 
 .pc.scroll-body {
   position: relative !important;
-  overflow: auto !important;
+  /* Down only — the page never pans sideways (see the shell's own .pc). */
+  overflow-x: hidden !important;
+  overflow-y: auto !important;
   max-height: 100%;
 }
 
@@ -37,7 +39,6 @@
   }
 }
 
-// ── GM-only Box ──────────────────────────────────────────────────────────────
 .form-gm-box {
   border: 1px solid rgba(v.$color-base-brown-14, 0.2);
   border-radius: 8px;
@@ -112,8 +113,6 @@
   font-style: italic;
   color: v.$color-ext-451;
 }
-
-// ── Portrait picker (new creation only) ──────────────────────────────────────────
 
 .form-portrait-new-row {
   display: flex;

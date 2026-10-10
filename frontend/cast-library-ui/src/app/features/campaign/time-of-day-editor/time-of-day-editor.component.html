@@ -1,6 +1,5 @@
-<div class="tod-editor">
+﻿<div class="tod-editor">
 
-  <!-- ── Header ── -->
   <div class="tod-section-label">Day / Night Cycle</div>
 
   <div class="tod-day-length-row">
@@ -17,17 +16,15 @@
     <span class="tod-unit">HOURS</span>
   </div>
 
-  <!-- ── Live preview bar ── -->
   @if (previewTod()) {
     <div class="tod-preview-section">
       <div class="tod-section-label tod-section-label--sub">Preview</div>
       <div class="tod-preview-shell" [style.--portal-color]="portalColor || null">
-        <app-time-of-day-bar [campaignId]="campaignId" [isDm]="true" [todInput]="previewTod()" [previewOnly]="true" />
+        <app-cc-day-counter [campaignId]="campaignId" [isDm]="true" [todInput]="previewTod()" [previewOnly]="true" />
       </div>
     </div>
   }
 
-  <!-- ── Slice list ── -->
   <ul class="tod-slices" role="list">
     @for (slice of slices(); track $index; let i = $index) {
       <li class="tod-slice-row" role="listitem">
@@ -142,13 +139,11 @@
     }
   </ul>
 
-  <!-- ── Add slice ── -->
   <button type="button" class="campaign-primary-btn tod-add-btn" (click)="addSlice()">+ Add slice</button>
   @if (addSliceWarning()) {
     <p class="tod-add-warning" role="alert">{{ addSliceWarning() }}</p>
   }
 
-  <!-- ── Totals FAB ── -->
   <div class="tod-totals-fab"
        [class.tod-totals-fab--error]="!isValid() && hasSlices()"
        [class.tod-totals-fab--valid]="isValid()"

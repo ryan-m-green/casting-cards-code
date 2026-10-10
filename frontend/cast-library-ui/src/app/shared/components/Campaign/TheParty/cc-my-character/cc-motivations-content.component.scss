@@ -1,0 +1,215 @@
+@use '../../../../../../styles/variables' as v;
+
+.mc-motive-editor {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Done rides the drawer's top-right corner as a FAB, so it is always to hand while the rows below
+   are worked on — the footer it came from sat past the last section, under everything it signs
+   off. The row keeps its own height so the section below is never left underneath it, and it
+   sticks, so the button floats over the rows as they scroll. */
+.motive-fab {
+  position: sticky;
+  top: 0;
+  z-index: 3;
+  display: flex;
+  justify-content: flex-end;
+  padding-bottom: 14px;
+}
+
+.mc-motive-loading {
+  color: v.$campaign-portal-text-muted;
+  font-style: italic;
+  text-align: center;
+  padding: 32px 16px;
+}
+
+.motive-section {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.motive-section-top {
+  display: flex;
+}
+
+.motive-add-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 14px 6px 10px;
+  background: transparent;
+  border: 1px dashed v.$campaign-portal-border-bold;
+  border-radius: 6px;
+  color: v.$campaign-portal-text-muted;
+  font-family: v.$font-header;
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: color 0.15s ease, border-color 0.15s ease;
+
+  &:hover {
+    color: v.$campaign-portal-text-bright;
+    border-color: var(--portal-color, v.$color-base-purple-primary);
+
+    .motive-add-btn-icon {
+      opacity: 1;
+    }
+  }
+}
+
+.motive-add-btn-icon {
+  display: block;
+  flex-shrink: 0;
+  width: 24px;
+  height: 24px;
+  object-fit: contain;
+  filter: brightness(0) invert(1);
+  opacity: 0.65;
+  transition: opacity 0.15s ease;
+}
+
+.motive-add-row {
+  display: flex;
+  gap: 8px;
+  width: 100%;
+}
+
+.motive-add-input {
+  flex: 1;
+  padding: 10px 12px;
+  background: v.$campaign-portal-bg-medium;
+  border: 1px solid v.$campaign-portal-border-bold;
+  border-radius: 6px;
+  color: v.$campaign-portal-text-bright;
+  font-size: 14px;
+  outline: none;
+
+  &:focus {
+    border-color: var(--portal-color, v.$color-base-purple-primary);
+  }
+}
+
+.motive-confirm,
+.motive-cancel {
+  flex-shrink: 0;
+  width: 38px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.motive-confirm {
+  background: var(--portal-color, v.$color-base-purple-primary);
+  border: 1px solid var(--portal-color, v.$color-base-purple-primary);
+  color: #fff;
+}
+
+.motive-cancel {
+  background: transparent;
+  border: 1px solid v.$campaign-portal-border-bold;
+  color: v.$campaign-portal-text-muted;
+}
+
+.motive-swiper {
+  width: 100%;
+  overflow: hidden;
+  padding: 2px;
+
+  /* The rows are sliders, so each slide must carry a width of its own — `slidesPerView: 'auto'`
+     measures the slide, not the card inside it. Without this every slide collapses to the
+     full-width default and a freshly added motive lands a whole page off screen. */
+  .swiper-wrapper {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+  }
+
+  .swiper-slide {
+    flex: 0 0 auto;
+    width: 75px;
+    height: 110px;
+    box-sizing: border-box;
+  }
+}
+
+.motive-readout {
+  min-height: 0;
+}
+
+.motive-readout-body {
+  padding: 12px 14px;
+  background: v.$campaign-portal-bg-medium;
+  border: 1px solid v.$campaign-portal-border-bold;
+  border-radius: 8px;
+}
+
+.motive-readout-content {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.55;
+  color: v.$campaign-portal-text-bright;
+  white-space: pre-wrap;
+}
+
+.motive-readout-share {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 12px;
+  padding-top: 10px;
+  border-top: 1px solid rgba(167, 121, 233, 0.15);
+}
+
+.motive-readout-share-label {
+  font-family: v.$font-header;
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: v.$campaign-portal-text-muted;
+}
+
+.motive-readout-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.motive-readout-btn {
+  padding: 7px 14px;
+  background: transparent;
+  border: 1px solid var(--portal-color, v.$color-base-purple-primary);
+  border-radius: 6px;
+  color: v.$campaign-portal-text-bright;
+  font-family: v.$font-header;
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background 0.15s ease, opacity 0.15s ease;
+
+  &:hover {
+    background: rgba(110, 40, 208, 0.18);
+  }
+
+  &--danger {
+    border-color: v.$campaign-portal-text-muted;
+    color: v.$campaign-portal-text-muted;
+  }
+}
+
+.motive-gutter {
+  height: 8px;
+}
+
+.motive-done {
+  flex-shrink: 0;
+  box-shadow: 0 5px 16px rgba(0, 0, 0, 0.45);
+  transition: background 0.18s ease, border-color 0.18s ease, color 0.18s ease, box-shadow 0.18s ease;
+
+  &:hover:not(:disabled) { box-shadow: 0 8px 22px rgba(0, 0, 0, 0.55); }
+  &:disabled { box-shadow: none; }
+}

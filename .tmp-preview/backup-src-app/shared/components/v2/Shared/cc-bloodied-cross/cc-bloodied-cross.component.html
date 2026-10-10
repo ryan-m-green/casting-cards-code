@@ -1,0 +1,40 @@
+<svg class="blood-cross" viewBox="0 0 150 220" preserveAspectRatio="none" aria-hidden="true">
+  <defs>
+    <filter [attr.id]="crossId + '-soak'" x="-30%" y="-30%" width="160%" height="160%" color-interpolation-filters="sRGB">
+      <feGaussianBlur stdDeviation="2.8" />
+    </filter>
+    <filter [attr.id]="crossId + '-paint'" x="-25%" y="-25%" width="150%" height="150%" color-interpolation-filters="sRGB">
+      <feTurbulence type="fractalNoise" baseFrequency="0.05 0.03" numOctaves="3" seed="7" result="paint" />
+      <feDisplacementMap in="SourceGraphic" in2="paint" scale="4.5" xChannelSelector="R" yChannelSelector="G" />
+    </filter>
+    <linearGradient [attr.id]="crossId + '-red'" x1="0" y1="0" x2="0.6" y2="1">
+      <stop offset="0%" stop-color="#6d0505" />
+      <stop offset="30%" stop-color="#a31212" />
+      <stop offset="60%" stop-color="#8a0909" />
+      <stop offset="100%" stop-color="#5a0404" />
+    </linearGradient>
+  </defs>
+
+  <g class="blood-x">
+    <g class="blood-x__soak" [attr.filter]="bloodSoakFilter">
+      <line x1="9" y1="9" x2="141" y2="211" />
+      <line x1="141" y1="9" x2="9" y2="211" />
+    </g>
+
+    <g class="blood-x__band" [attr.filter]="bloodPaintFilter" [attr.stroke]="bloodRed">
+      <line x1="9" y1="9" x2="141" y2="211" />
+      <line x1="141" y1="9" x2="9" y2="211" />
+    </g>
+
+    <g class="blood-x__wet" transform="translate(-1.6 -1.6)">
+      <line x1="9" y1="9" x2="141" y2="211" />
+      <line x1="141" y1="9" x2="9" y2="211" />
+    </g>
+
+    <g class="blood-drips" [attr.filter]="bloodPaintFilter" [attr.fill]="bloodRed">
+      @for (drip of bloodDrips; track $index) {
+        <path [attr.d]="dripPath(drip)" />
+      }
+    </g>
+  </g>
+</svg>

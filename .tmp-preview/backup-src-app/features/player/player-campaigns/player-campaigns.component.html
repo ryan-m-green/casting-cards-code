@@ -1,0 +1,31 @@
+<div class="pc scroll-body">
+  <app-journal-title title="Your Campaigns" [username]="auth.currentUser()?.displayName ?? ''" />
+
+  <app-campaign-join-input
+    [loading]="joinLoading()"
+    [error]="joinError()"
+    (joinSubmit)="redeemCode($event)"
+  />
+
+  <div class="section-label">Your Campaigns</div>
+
+  <div class="portal-grid">
+    @for (campaign of campaigns(); track campaign.id) {
+      <div
+           [attr.data-campaign-id]="campaign.id"
+           [class.card-wrap--materializing]="materializingId() === campaign.id"
+           (click)="enter($event, campaign.id, campaign.spineColor)">
+        <app-portal-card
+          [name]="campaign.name"
+          [description]="''"
+          [portalColor]="campaign.spineColor"
+          [showPortal]="true"
+          [showSettings]="false"
+        />
+      </div>
+    }
+    @empty {
+      <p class="wbd-journal empty-state-pad text-center">No campaigns have been shared with you yet.</p>
+    }
+  </div>
+</div>

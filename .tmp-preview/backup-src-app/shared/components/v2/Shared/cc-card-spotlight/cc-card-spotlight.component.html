@@ -1,0 +1,21 @@
+@if (showing()) {
+  @if (beam()) {
+    <span class="spotlight-beam" aria-hidden="true"></span>
+  }
+  <img
+    class="spotlight-source"
+    [class.spotlight-source--pointing]="pointing()"
+    src="/fairy_pointed_ears.svg"
+    alt=""
+    aria-hidden="true"
+  />
+  @if (beam()) {
+    <button
+      type="button"
+      class="spotlight-pool"
+      aria-label="Dismiss the reveal spotlight"
+      title="Dismiss"
+      (click)="onDismiss($event)"
+    ></button>
+  }
+}

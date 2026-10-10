@@ -1,0 +1,476 @@
+<ng-template #playerSecretsContentTemplate let-member="member" let-campaignId="campaignId" let-mode="mode" let-portalColor="portalColor">
+  <app-cc-player-secrets-content
+    [member]="member"
+    [campaignId]="campaignId"
+    [mode]="mode"
+    [portalColor]="portalColor"
+  />
+</ng-template>
+
+<ng-template #partyGoldContentTemplate let-campaignId="campaignId" let-portalColor="portalColor">
+  <app-cc-party-gold-content
+    [campaignId]="campaignId"
+    [portalColor]="portalColor"
+    (goldAwarded)="onPartyGoldAwarded($event)"
+  />
+</ng-template>
+
+<ng-template #playerInventoryContentTemplate let-campaignId="campaignId" let-portalColor="portalColor" let-item="item">
+  <cc-player-inventory-content
+    [campaignId]="campaignId"
+    [portalColor]="portalColor"
+    [item]="item"
+  />
+</ng-template>
+
+<ng-template
+  #fieldJournalEntryContentTemplate
+  let-campaignId="campaignId"
+  let-portalColor="portalColor"
+  let-encounterId="encounterId"
+  let-encounterName="encounterName"
+  let-cards="cards"
+  let-index="index"
+>
+  <cc-field-journal-entry-content
+    [campaignId]="campaignId"
+    [portalColor]="portalColor"
+    [encounterId]="encounterId"
+    [encounterName]="encounterName"
+    [cards]="cards"
+    [index]="index"
+  />
+</ng-template>
+
+<ng-template #myCharacterInfoContentTemplate let-campaignId="campaignId" let-portalColor="portalColor">
+  <cc-my-character-info-content
+    [campaignId]="campaignId"
+    [portalColor]="portalColor"
+    (changed)="onPlayerCharacterChanged()"
+    (closeDrawer)="rightDrawer.close()"
+  />
+</ng-template>
+
+<ng-template #myCharacterMotivationsContentTemplate let-campaignId="campaignId" let-portalColor="portalColor">
+  <cc-motivations-content
+    [campaignId]="campaignId"
+    [portalColor]="portalColor"
+    (changed)="onPlayerCharacterChanged()"
+    (closeDrawer)="rightDrawer.close()"
+  />
+</ng-template>
+
+<ng-template #secretDetailContentTemplate let-secret="secret" let-campaignId="campaignId" let-playerCardId="playerCardId" let-mode="mode" let-portalColor="portalColor">
+  <cc-secret-detail-content
+    [secret]="secret"
+    [campaignId]="campaignId"
+    [playerCardId]="playerCardId"
+    [mode]="mode"
+    [portalColor]="portalColor"
+    (changed)="onSecretsChanged()"
+    (closeDrawer)="rightDrawer.close()"
+  />
+</ng-template>
+
+<ng-template #playerSecretCreateContentTemplate let-campaignId="campaignId" let-playerCardId="playerCardId" let-portalColor="portalColor">
+  <cc-player-secret-create-content
+    [campaignId]="campaignId"
+    [playerCardId]="playerCardId"
+    [portalColor]="portalColor"
+    (changed)="onSecretsChanged()"
+    (closeDrawer)="rightDrawer.close()"
+  />
+</ng-template>
+
+<ng-template #ambianceEditorContentTemplate let-ambiance="ambiance" let-campaignId="campaignId" let-portalColor="portalColor" let-seedTrackIds="seedTrackIds" let-suggestedTitle="suggestedTitle">
+  <cc-soundtrack-content
+    [ambiance]="ambiance"
+    [campaignId]="campaignId"
+    [portalColor]="portalColor"
+    [seedTrackIds]="seedTrackIds || []"
+    [seedTitle]="suggestedTitle || ''"
+    (closeDrawer)="rightDrawer.close()"
+  />
+</ng-template>
+
+<ng-template #storylineCreateContentTemplate>
+  <app-cc-storyline-content
+    [campaignId]="campaignIdValue"
+    [portalColor]="safeColor(campaign()?.spineColor)"
+    (created)="onStorylineCreated()"
+  />
+</ng-template>
+
+<ng-template #storylineEditContentTemplate>
+  <app-cc-storyline-content
+    [campaignId]="campaignIdValue"
+    [portalColor]="safeColor(campaign()?.spineColor)"
+    [editItem]="storylineEditItem()"
+  />
+</ng-template>
+
+<ng-template #storylineViewContentTemplate>
+  @if (storylineViewItem(); as viewItem) {
+    <app-cc-storyline-view
+      [item]="viewItem"
+      [portalColor]="safeColor(campaign()?.spineColor)"
+    />
+  }
+</ng-template>
+
+<ng-template #ruleDetailContentTemplate>
+  @if (selectedRule(); as rule) {
+    <cc-rule-detail-content
+      [ruleId]="rule.id"
+      [campaignId]="campaignIdValue"
+      (closeDrawer)="rightDrawer.close()"
+    />
+  }
+</ng-template>
+
+<ng-template #ruleAddContentTemplate>
+  <cc-rule-add
+    [campaignId]="campaignIdValue"
+    [portalColor]="safeColor(campaign()?.spineColor)"
+    (saved)="rightDrawer.close()"
+    (added)="rightDrawer.close()"
+    (cancel)="rightDrawer.close()"
+  />
+</ng-template>
+
+<ng-template #worldMapContentTemplate>
+  <app-cc-worldmap-content
+    [worldMapImageUrl]="campaign()?.worldMapImageUrl ?? null"
+    [portalColor]="safeColor(campaign()?.spineColor)"
+  />
+</ng-template>
+
+<ng-template #chroniclesContentTemplate let-initialSearchQuery="initialSearchQuery">
+  <app-cc-campaign-chronicle-content
+    [campaignId]="campaignIdValue"
+    [isDmMode]="isDm()"
+    [portalColor]="safeColor(campaign()?.spineColor)"
+    [initialSearchQuery]="initialSearchQuery"
+  />
+</ng-template>
+
+<ng-template #encounterGroupPickerContentTemplate>
+  <cc-encounter-group-picker
+    [campaignId]="campaignIdValue"
+    [portalColor]="safeColor(campaign()?.spineColor)"
+    (addGroup)="onEncounterGroupPicked($event)"
+  />
+</ng-template>
+
+<ng-template #conditionLibraryContentTemplate>
+  <cc-condition-add
+    [campaignId]="campaignIdValue"
+    [portalColor]="safeColor(campaign()?.spineColor)"
+    (added)="rightDrawer.close()"
+    (cancel)="rightDrawer.close()"
+  />
+</ng-template>
+
+<ng-template #conditionDetailContentTemplate>
+  @if (shellSvc.conditionDetailTarget(); as target) {
+    <cc-condition-detail
+      [campaignId]="target.campaignId"
+      [conditionId]="target.conditionId"
+      [portalColor]="safeColor(campaign()?.spineColor)"
+      (closeDrawer)="rightDrawer.close()"
+    />
+  }
+</ng-template>
+
+<ng-template #factionPickerContentTemplate>
+  <cc-faction-picker
+    [campaignId]="campaignIdValue"
+    [portalColor]="safeColor(campaign()?.spineColor)"
+    (closeDrawer)="rightDrawer.close()"
+  />
+</ng-template>
+
+<ng-template #factionCastPickerContentTemplate>
+  @if (shellSvc.factionCastPickerTarget(); as target) {
+    <cc-faction-cast-picker
+      [campaignId]="target.campaignId"
+      [factionInstanceId]="target.factionInstanceId"
+      [factionName]="target.factionName"
+      [portalColor]="safeColor(campaign()?.spineColor)"
+      (closeDrawer)="rightDrawer.close()"
+    />
+  }
+</ng-template>
+
+<ng-template #locationPickerContentTemplate>
+  @if (shellSvc.locationPickerTarget(); as target) {
+    <cc-location-picker
+      [campaignId]="target.campaignId"
+      [portalColor]="safeColor(campaign()?.spineColor)"
+      (closeDrawer)="rightDrawer.close()"
+    />
+  }
+</ng-template>
+
+<ng-template #sublocationPickerContentTemplate>
+  @if (shellSvc.sublocationPickerTarget(); as target) {
+    <cc-sublocation-picker
+      [campaignId]="target.campaignId"
+      [locationInstanceId]="target.locationInstanceId"
+      [locationName]="target.locationName"
+      [portalColor]="safeColor(campaign()?.spineColor)"
+      (closeDrawer)="rightDrawer.close()"
+    />
+  }
+</ng-template>
+
+<ng-template #castPickerContentTemplate>
+  @if (shellSvc.castPickerTarget(); as target) {
+    <cc-cast-picker
+      [campaignId]="target.campaignId"
+      [locationInstanceId]="target.locationInstanceId"
+      [sublocationInstanceId]="target.sublocationInstanceId"
+      [sublocationName]="target.sublocationName"
+      [portalColor]="safeColor(campaign()?.spineColor)"
+      (closeDrawer)="rightDrawer.close()"
+    />
+  }
+</ng-template>
+
+<ng-template #castTravelPickerContentTemplate>
+  @if (shellSvc.castTravelTarget(); as target) {
+    <cc-cast-travel-picker
+      [campaignId]="target.campaignId"
+      [castInstanceId]="target.castInstanceId"
+      [castName]="target.castName"
+      [sublocationInstanceId]="target.sublocationInstanceId"
+      [portalColor]="safeColor(campaign()?.spineColor)"
+    />
+  }
+</ng-template>
+
+<ng-template #combatantDetailsContentTemplate>
+  @if (shellSvc.combatantDetailsTarget(); as target) {
+    <cc-combatant-details
+      [campaignId]="target.campaignId"
+      [encounterId]="target.encounterId"
+      [portalColor]="target.portalColor"
+      [spotName]="target.spotName"
+      [combatants]="target.combatants"
+      [index]="target.index"
+      [readOnly]="target.readOnly ?? false"
+    />
+  }
+</ng-template>
+
+<ng-template #cardLinkContentTemplate>
+  <cc-card-link-picker
+    [portalColor]="safeColor(campaign()?.spineColor)"
+    (closeDrawer)="rightDrawer.close()"
+  />
+</ng-template>
+
+<cc-content-drawer #rightDrawer
+  [portalColor]="safeColor(shellSvc.campaign()?.spineColor)"
+  [title]="drawerTitle()"
+  [contentTemplate]="currentContentTemplate()"
+  [contentContext]="currentContentContext()"
+  (closed)="onDrawerClosed()"
+/>
+
+<ng-template #inspectorContentTemplate let-campaignId="campaignId" let-dmUserId="dmUserId">
+  <cc-signalr-inspector [campaignId]="campaignId" [dmUserId]="dmUserId"
+    (openEvent)="openEventDetail($event)" (connectionsChanged)="onConnections($event)" />
+</ng-template>
+
+<cc-content-drawer #inspectorDrawer
+  side="left"
+  width="52vw"
+  ariaLabel="SignalR Inspector"
+  title="SignalR Inspector"
+  [portalColor]="safeColor(campaign()?.spineColor)"
+  [contentTemplate]="inspectorContentTemplate"
+  [contentContext]="{ campaignId: campaignIdValue, dmUserId: campaign()?.dmUserId ?? '' }"
+  (closed)="closeEventDetail()"
+/>
+
+<ng-template #eventDetailContentTemplate let-row="row" let-dmUserId="dmUserId" let-connections="connections">
+  <cc-signalr-event-detail [row]="row" [dmUserId]="dmUserId" [connections]="connections" />
+</ng-template>
+
+<cc-content-drawer #eventDrawer
+  side="left"
+  width="70vw"
+  [wide]="true"
+  ariaLabel="Event detail"
+  [title]="selectedEvent()?.eventName ?? 'Event detail'"
+  [portalColor]="safeColor(campaign()?.spineColor)"
+  [contentTemplate]="eventDetailContentTemplate"
+  [contentContext]="{ row: selectedEvent(), dmUserId: campaign()?.dmUserId ?? '', connections: liveConnections() }"
+/>
+
+<div class="void-canvas" [style.--portal-color]="safeColor(shellSvc.campaign()?.spineColor)">
+
+  <app-cc-radial-nav
+    [activeArea]="currentArea()"
+    [portalColor]="safeColor(campaign()?.spineColor)"
+    (navigate)="onRadialNav($event)"
+    (chronicles)="openChroniclesDrawer()"
+    (leave)="onLeave()"
+  />
+  
+  <div class="grid-container" [style.transform]="'translate(' + viewportPosition().x + 'vw, ' + viewportPosition().y + 'vh)'">
+    
+    <div class="grid-area top-left">
+      <cc-grid-area-title class="area-title" [gridArea]="'top-left'" />
+      <cc-quicknotes
+        [campaignId]="campaignIdValue"
+        [portalColor]="safeColor(campaign()?.spineColor)"
+      />
+    </div>
+    <div class="grid-area top-middle">
+      <cc-grid-area-title class="area-title" [gridArea]="'top-middle'" />
+      <div class="top-middle-center">
+        <app-cc-day-counter
+          class="top-middle-day-counter"
+          [campaignId]="campaignIdValue"
+          [isDm]="isDm()"
+          [allowInteraction]="!isDm()"
+          [panelTheme]="'dark'"
+          [todInput]="campaign()?.timeOfDay ?? null"
+          [portalColor]="safeColor(campaign()?.spineColor)"
+        />
+        <app-cc-world-map
+          class="top-middle-world-map"
+          [campaignId]="campaignIdValue"
+          [worldMapImageUrl]="campaign()?.worldMapImageUrl ?? null"
+          [isDm]="isDm()"
+          [portalColor]="safeColor(campaign()?.spineColor)"
+          (imageUploaded)="onWorldMapUploaded($event)"
+          (requestView)="openWorldMapDrawer()"
+        />
+      </div>
+    </div>
+    <div class="grid-area top-right">
+      <cc-grid-area-title class="area-title" [gridArea]="'top-right'" />
+      <app-cc-party-panel
+        [campaignId]="campaignIdValue"
+        [portalColor]="safeColor(campaign()?.spineColor)"
+      />
+    </div>
+    
+    <div class="grid-area middle-left">
+      <cc-grid-area-title class="area-title" [gridArea]="'middle-left'" />
+      <cc-rolodex-frame side="left" />
+      <app-cc-card-faction-navigation [campaignId]="campaignIdValue" />
+      <cc-rolodex-frame side="right" />
+    </div>
+    <div class="grid-area middle-middle">
+      <cc-grid-area-title
+        class="area-title"
+        [gridArea]="'middle-middle'"
+        action="Open the SignalR inspector"
+        (actionClick)="openSignalrInspector()"
+      />
+      <cc-rolodex-frame side="left" />
+      <app-cc-card-navigation [campaignId]="campaignIdValue" />
+      <cc-rolodex-frame side="right" />
+    </div>
+    <div class="grid-area middle-right">
+      <cc-grid-area-title class="area-title" [gridArea]="'middle-right'" />
+      @if (isDm()) {
+        <app-cc-soundtracks
+          [campaignId]="campaignIdValue"
+          [portalColor]="safeColor(campaign()?.spineColor)"
+        />
+      } @else {
+        <cc-my-character
+          [campaignId]="campaignIdValue"
+          [portalColor]="safeColor(campaign()?.spineColor)"
+        />
+      }
+    </div>
+    
+    <div class="grid-area bottom-left">
+      <cc-grid-area-title class="area-title" [gridArea]="'bottom-left'" />
+      @if (isDm()) {
+        <cc-encounter-builder
+          [campaignId]="campaignIdValue"
+          [portalColor]="safeColor(campaign()?.spineColor)"
+        />
+      } @else {
+        <cc-player-encounters
+          [campaignId]="campaignIdValue"
+          [portalColor]="safeColor(campaign()?.spineColor)"
+        />
+      }
+    </div>
+    <div class="grid-area bottom-middle">
+      <cc-grid-area-title class="area-title" [gridArea]="'bottom-middle'" />
+      @if (isDm()) {
+        <cc-rolodex-frame side="left" />
+        <app-cc-storyline
+          [campaignId]="campaignIdValue"
+          [portalColor]="safeColor(campaign()?.spineColor)"
+          [refreshTick]="storylineRefreshTick()"
+          (requestCreate)="openStorylineCreate()"
+          (requestEdit)="openStorylineEdit($event)"
+          (requestView)="openStorylineView($event)"
+        />
+        <cc-rolodex-frame side="right" />
+      } @else {
+        <cc-player-field-journal
+          [campaignId]="campaignIdValue"
+          [portalColor]="safeColor(campaign()?.spineColor)"
+        />
+      }
+    </div>
+    <div class="grid-area bottom-right">
+      <cc-grid-area-title class="area-title" [gridArea]="'bottom-right'" />
+      @if (isDm()) {
+        <cc-rolodex-frame side="left" />
+        <cc-rules
+          [campaignId]="campaignIdValue"
+          [portalColor]="safeColor(campaign()?.spineColor)"
+          (requestOpen)="openRuleDrawer($event)"
+          (requestAdd)="openRuleAddDrawer()"
+        />
+        <cc-rolodex-frame side="right" />
+      } @else {
+        <cc-player-inventory
+          [campaignId]="campaignIdValue"
+          [portalColor]="safeColor(campaign()?.spineColor)"
+        />
+      }
+    </div>
+    
+  </div>
+  
+  <cc-grid-load-overlay />
+
+  <cc-encounter-celebration />
+
+  @if (campaign()) {
+    <div class="portal-breathing-border"></div>
+  }
+  
+</div>
+
+<div class="void-letterbox-top"></div>
+<div class="void-letterbox-bottom"></div>
+
+@if (purchaseReceipt(); as receipt) {
+  <cc-purchase-receipt
+    [result]="receipt"
+    [portalColor]="safeColor(campaign()?.spineColor)"
+    (dismissed)="dismissPurchaseReceipt()"
+  />
+}
+
+@if (grantReceipt(); as notice) {
+  <cc-grant-receipt
+    [notice]="notice"
+    [portalColor]="safeColor(campaign()?.spineColor)"
+    (dismissed)="dismissGrantReceipt()"
+  />
+}

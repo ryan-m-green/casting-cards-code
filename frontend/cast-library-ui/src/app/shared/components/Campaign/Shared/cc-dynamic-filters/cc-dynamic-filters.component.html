@@ -1,0 +1,11 @@
+@for (filter of filters(); track filter.key) {
+  <button
+    type="button"
+    class="dynamic-filter"
+    [class.is-on]="filter.on"
+    [attr.aria-pressed]="filter.on"
+    [disabled]="isDisabled(filter)"
+    [attr.title]="titleFor(filter)"
+    (click)="select.emit(filter.key)"
+  >{{ filter.label }} <span class="dynamic-filter-count">{{ filter.count }}</span></button>
+}

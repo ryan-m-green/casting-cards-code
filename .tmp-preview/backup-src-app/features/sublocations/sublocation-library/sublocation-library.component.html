@@ -1,0 +1,50 @@
+﻿<div class="pc scroll-body">
+  <app-journal-watermark pageType="sublocation" />
+  <app-journal-title title="Sublocation Library" />
+  <div class="wr wr-page-header">
+    <app-upgrade-badge
+      [visible]="auth.isFreeTrial()"
+      (badgeClick)="openUpgradeDrawer()"
+      class="upgrade-badge-library" />
+    <input class="search-bar search-bar--header" type="text" placeholder="Name · Description…"
+           [value]="searchTerm()" (input)="searchTerm.set($any($event.target).value)" />
+    <div class="wr-ml-auto cc-keyword-editor-wrap">
+      <button class="campaign-primary-btn"
+              [class.disabled]="sublocationLimitReached() || isCreateDisabled()"
+              [attr.disabled]="(sublocationLimitReached() || isCreateDisabled()) ? 'true' : null"
+              [routerLink]="(sublocationLimitReached() || isCreateDisabled()) ? null : '/gm/sublocations/new'"
+              (click)="(sublocationLimitReached() || isCreateDisabled()) ? $event.preventDefault() : null">+ Create</button>
+      <cc-keyword-editor [cardType]="'sublocation'"></cc-keyword-editor>
+    </div>
+  </div>
+
+  <div class="card-grid">
+    @for (subloc of filtered(); track subloc.id) {
+      <cc-sublocation-card
+        [sublocation]="subloc"
+        [tilt]="tiltFor(subloc.id)"
+        [titleSearch]="false"
+        (editClick)="edit(subloc.id)"
+        (deleteClick)="confirmDelete(subloc.id)">
+      </cc-sublocation-card>
+    }
+    @empty {
+      <p class="wbd-journal empty-state-pad">No sublocations found.</p>
+    }
+  </div>
+</div>
+
+@if (pendingDeleteId()) {
+  <div class="delete-overlay" (click)="cancelDelete()">
+    <div class="delete-panel" (click)="$event.stopPropagation()">
+      <div class="delete-panel-title">Delete Sublocation?</div>
+      <p class="delete-panel-message">
+        This will permanently delete this sublocation and its portrait, and remove it from any campaigns. This cannot be undone.
+      </p>
+      <div class="delete-btn-row">
+        <button class="btn-modal-cancel" (click)="cancelDelete()">Cancel</button>
+        <button class="btn-modal-delete" (click)="executeDelete()">Delete</button>
+      </div>
+    </div>
+  </div>
+}

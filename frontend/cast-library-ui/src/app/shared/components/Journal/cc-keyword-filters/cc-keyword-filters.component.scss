@@ -1,0 +1,56 @@
+@use '../../../../../styles/variables' as v;
+
+/* The bar seats itself between the title's rule and the page's own header row — directly under the
+   divider the title draws, above the search bar it belongs with. Its size, margin and all, is the
+   bar's own, so a page whose cards carry no keywords yet is left exactly as it was: the template
+   draws nothing there at all (see the `@if`), and there is no empty band left behind. */
+:host {
+  display: block;
+}
+
+/*
+ * The chips wrap: a collection's keywords are read as a whole at a glance, so the bar grows a line
+ * rather than sweeping sideways.
+ */
+.cc-keyword-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 0 0 10px;
+}
+
+.cc-keyword-filters-chip {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 9px;
+  background: transparent;
+  border: 1px dashed v.$color-border-accent;
+  border-radius: 11px;
+  font-family: v.$font-body;
+  font-size: 11px;
+  font-style: italic;
+  letter-spacing: 0.04em;
+  color: v.$color-base-brown-14;
+  cursor: pointer;
+  transition: background v.$transition-std, border-color v.$transition-std, color v.$transition-std;
+
+  &:hover {
+    background: rgba(v.$color-base-brown-warm, 0.08);
+    border-color: v.$color-arcane-border;
+  }
+
+  &:focus-visible {
+    outline: 2px solid v.$color-base-gold-1;
+    outline-offset: 2px;
+  }
+
+  /* A chip that is on is a filter, not just a word: it closes its outline and takes the page's
+     gold, so the pressed ones are told apart from the rest without reading them again. */
+  &--on {
+    background: rgba(v.$color-base-brown-warm, 0.16);
+    border-style: solid;
+    border-color: v.$color-base-gold-1;
+    color: v.$color-base-gold-1;
+    font-weight: 600;
+  }
+}

@@ -2,8 +2,6 @@ using CastLibrary.Logic.Interfaces;
 using CastLibrary.Repository.Repositories.Delete;
 using CastLibrary.Repository.Repositories.Read;
 using CastLibrary.Repository.Repositories.Update;
-using CastLibrary.Shared.Domain;
-using Dapper;
 
 namespace CastLibrary.Logic.Commands.Soundtrack;
 

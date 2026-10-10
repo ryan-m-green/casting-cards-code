@@ -1,0 +1,101 @@
+@use '../../../../styles/variables' as v;
+
+:host { display: block; height: 100%; }
+
+.section-label {
+  font-family: v.$font-header;
+  font-size: 12px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: v.$color-ext-129;
+  border-bottom: 0.5px solid v.$color-ext-50;
+  padding-bottom: 4px;
+  margin: 8px 0 16px;
+}
+
+.grid-section-title {
+  font-family: v.$font-header;
+  font-size: 13px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: v.$color-ext-129;
+  margin-bottom: 14px;
+}
+
+.portal-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  padding: 4px 0 20px;
+}
+
+.tab-bar {
+  display: flex;
+  gap: 0;
+  border-bottom: 1px solid v.$color-ext-436;
+  margin-bottom: 24px;
+}
+
+.tab-btn {
+  font-family: v.$font-header;
+  font-size: 12px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: v.$color-ext-437;
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  padding: 14px 18px 12px;
+  cursor: pointer;
+  transition: color 0.18s ease, border-color 0.18s ease;
+
+  &:hover {
+    color: v.$color-ext-438;
+  }
+
+  &--active {
+    color: v.$color-ext-439;
+    border-bottom-color: v.$color-ext-440;
+  }
+}
+
+.tab-panel {
+  padding-top: 4px;
+}
+
+.upgrade-badge-library {
+  position: absolute;
+  top: 8px;
+  right: 20px;
+}
+
+.header-buttons {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  margin-left: auto;
+}
+
+.campaign-secondary-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 16px;
+  background: none;
+  border: 1px solid v.$campaign-btn-secondary-border;
+  border-radius: 4px;
+  font-family: v.$font-header;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: black;
+  text-decoration: none;
+  cursor: pointer;
+  transition: border-color 0.18s ease, color 0.18s ease;
+
+  &:hover {
+    border-color: v.$campaign-btn-secondary-hover-border;
+    color: black;
+  }
+}

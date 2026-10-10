@@ -1,6 +1,12 @@
-<div class="pc scroll-body">
+﻿<div class="pc scroll-body">
   <app-journal-watermark pageType="location" />
   <app-journal-title title="Location Library" />
+
+  <cc-keyword-filters
+    [cardType]="'location'"
+    [cards]="locations()"
+    (selectedChange)="activeKeywords.set($event)" />
+
   <div class="wr wr-page-header">
     <app-upgrade-badge
       [visible]="auth.isFreeTrial()"
@@ -8,28 +14,41 @@
       class="upgrade-badge-library" />
     <input class="search-bar search-bar--header" type="text" placeholder="Location name · Type…"
            [value]="searchTerm()" (input)="searchTerm.set($any($event.target).value)" />
-    <div class="wr-ml-auto cc-keyword-editor-wrap">
-      <button class="campaign-primary-btn"
-              [class.disabled]="locationLimitReached() || isCreateDisabled()"
-              [attr.disabled]="(locationLimitReached() || isCreateDisabled()) ? 'true' : null"
-              [routerLink]="(locationLimitReached() || isCreateDisabled()) ? null : '/gm/locations/new'"
-              (click)="(locationLimitReached() || isCreateDisabled()) ? $event.preventDefault() : null">+ Create</button>
-      <cc-keyword-editor [cardType]="'location'"></cc-keyword-editor>
+  </div>
+
+  <div class="card-grid swiper" #locationRow>
+    <div class="swiper-wrapper">
+      @for (location of filtered(); track location.id) {
+        <div class="swiper-slide">
+          <cc-location-card
+            [location]="location"
+            [tilt]="tiltFor(location.id)"
+            [titleSearch]="false"
+            (editClick)="edit(location.id)"
+            (deleteClick)="confirmDelete(location.id)">
+          </cc-location-card>
+        </div>
+      }
+      @empty {
+        @if (activeKeywords().length) {
+          <p class="wbd-journal empty-state-pad">No locations carry those keywords.</p>
+        } @else {
+          <p class="wbd-journal empty-state-pad">No locations found. Create your first location.</p>
+        }
+      }
+      <div class="swiper-slide">
+        <cc-card-add-tile
+          label="New location"
+          title="Add a location to your library"
+          link="/gm/locations/new"
+          [locked]="locationLimitReached() || isCreateDisabled()"
+          lockedReason="Adding locations isn't available on your current plan." />
+      </div>
     </div>
   </div>
 
-  <div class="card-grid">
-    @for (location of filtered(); track location.id) {
-      <app-location-card
-        [location]="location"
-        [tilt]="tiltFor(location.id)"
-        (editClick)="edit(location.id)"
-        (deleteClick)="confirmDelete(location.id)">
-      </app-location-card>
-    }
-    @empty {
-      <p class="wbd-journal empty-state-pad">No locations found. Create your first location.</p>
-    }
+  <div class="library-keyword-manager">
+    <cc-keyword-editor [cardType]="'location'"></cc-keyword-editor>
   </div>
 </div>
 

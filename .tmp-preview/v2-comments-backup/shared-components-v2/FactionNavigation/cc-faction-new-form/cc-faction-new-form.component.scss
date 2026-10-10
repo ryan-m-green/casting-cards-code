@@ -1,0 +1,169 @@
+@use '../../../../../../styles/variables' as v;
+
+/*
+ * The faction form's own styles, copied from `portal-import-card.component.scss` (the
+ * "New form" section and everything the faction fields use below it). The global
+ * stylesheets already carry `.wr`, `.form-field`, `.form-row-gap` and
+ * `.campaign-primary-btn`, so only what the portal card adds locally is repeated here — and
+ * the fields themselves are the v2 campaign components, which bring their own styles.
+ */
+
+:host {
+  display: block;
+}
+
+.pic-new-form-wrap { max-width: 960px; }
+
+.form-gm-box {
+  /* The GM box and the heading that sits in its border are both drawn in the portal's purple:
+     the parchment brown they were copied in with all but vanished on the drawer's dark ground. */
+  border: 2px solid v.$color-base-purple-primary;
+  border-radius: 8px;
+  padding: 16px;
+  margin: 12px 0 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+
+  /*
+   * The box's rows: one form-row-gap div holding a form-field per component. They stand one
+   * under the other — this is a column form, so the row helper's classes are not worn on the
+   * wrapper — and every pair of them is spaced on the same 12px floor the box is drawn to. No
+   * field carries a margin of its own to change that.
+   */
+  .form-row-gap {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  /*
+   * form-field is a row helper: it grows across a row and keeps a row's min-width. In this
+   * column it holds its own height instead, so each field sizes to what it contains.
+   */
+  .form-field {
+    flex: 0 0 auto;
+    margin-bottom:12px;
+  }
+
+  &__legend {
+    font-family: v.$font-header;
+    font-size: 14px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: v.$color-base-purple-primary;
+    padding: 0 8px;
+  }
+}
+
+// Consistent spacing between form rows
+.form-row-gap {
+  gap: 16px;
+}
+
+// Consistent vertical spacing for all form sections
+.pic-new-form > * {
+  margin-bottom: 16px;
+}
+
+.pic-new-form > *:last-child {
+  margin-bottom: 0;
+}
+
+// Ensure form fields have adequate width
+.form-field {
+  min-width: 180px;
+  flex: 1;
+}
+
+/*
+ * The campaign fields (textbox, dropdown, faction colours, political influence, symbol
+ * picker) each carry 8px of their own above and below, and this form is a flex column (and
+ * the GM box a flex column too), where margins add rather than collapse. The form's own
+ * rhythm already spaces its rows — 16px between them, 12px inside the GM box — so those are
+ * taken off here and the v2 fields sit in that rhythm like any other.
+ *
+ * The width is the other way round: the form is a flex column with `align-items: flex-start`,
+ * so a field standing on its own (the description textbox, the symbol picker) would size to
+ * its content instead of the form's width. Those take the full width, like the rows they sit
+ * between.
+ */
+app-cc-textbox,
+cc-symbol-picker {
+  width: 100%;
+}
+
+app-cc-textbox,
+cc-campaign-dropdown,
+cc-faction-colors,
+cc-political-influence,
+cc-symbol-picker,
+cc-keyword-tags {
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+@media (max-width: 500px) {
+  .pic-new-form-wrap {
+    max-width: 100%;
+  }
+
+  .form-field {
+    min-width: 120px;
+    flex: 1 1 auto;
+  }
+
+  .form-row-gap {
+    flex-wrap: wrap;
+  }
+}
+
+.pic-new-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  align-items: flex-start;
+  padding-left: 12px;
+  padding-right: 12px;
+}
+
+// Allow dropdown rows to extend to left edge
+.pic-new-form > .wr.form-row-gap {
+  margin-left: -12px;
+  padding-left: 12px;
+}
+
+.pic-save-row {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 16px;
+  margin-top: 20px;
+  padding-bottom: 8px;
+}
+
+/* The Save button is the shell-wide campaign primary button (`.campaign-primary-btn` in the
+   global stylesheet): green, and read the same as every other primary action in the campaign.
+   There is no separate saved/saving message beside it — the button holds itself while the write
+   lands, and the drawer closes on success. */
+
+/* ── Sliders ──────────────────────────────────────────────────────────────── */
+/* Political influence and perception are drawn by `cc-political-influence` and
+   `cc-faction-colors` in campaign context, which carry their own styles — nothing to
+   repeat here. */
+
+/* The "an icon is required" note lives in `cc-symbol-picker` now (its `required` input),
+   drawn in that component's own text rather than as a validation line here. */
+
+/* ── Faction visibility ───────────────────────────────────────────────────── */
+/* The switch, its heading and its hint are drawn by `cc-faction-visibility`, which carries
+   both the journal and the campaign looks — nothing to repeat here. */
+
+/* ── Color Pickers ────────────────────────────────────────────────────────── */
+/* Faction colours (and the perception bar that comes with them) are drawn by
+   `cc-faction-colors`, which carries its own styles — nothing to repeat here. */
+
+/* ── Form layout ──────────────────────────────────────────────────────────── */
+.pic-new-form--wrap {
+  display: block;
+}

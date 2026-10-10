@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>Cracked compass - motive mark preview</title>
+<style>
+  body { margin: 0; padding: 22px 26px; background: rgb(14, 24, 32); font-family: system-ui, sans-serif; }
+  h2 { color: #c8e1eb; font: 11px/1 monospace; letter-spacing: .12em; text-transform: uppercase; margin: 26px 0 14px; }
+  .row { display: flex; align-items: center; gap: 26px; }
+
+  /* transcribed from cc-motivations-content.component.scss + its computed hover */
+  .motive-add-btn {
+    display: inline-flex; align-items: center; gap: 8px; padding: 6px 14px 6px 10px;
+    background: transparent; border: 1px dashed rgba(167, 121, 233, 0.4); border-radius: 6px;
+    color: rgba(200, 225, 235, 0.88); font-family: Cinzel, Georgia, serif; font-size: 11px;
+    letter-spacing: 0.12em; text-transform: uppercase; cursor: pointer;
+  }
+  .motive-add-btn:hover { color: rgba(200, 225, 235, 0.95); border-color: rgb(110, 40, 208); }
+  .motive-add-btn:hover .motive-add-btn-icon { opacity: 1; }
+  .motive-add-btn-icon {
+    display: block; flex-shrink: 0; width: 24px; height: 24px; object-fit: contain;
+    filter: brightness(0) invert(1); opacity: 0.65;
+  }
+  .as-hover .motive-add-btn { color: rgba(200, 225, 235, 0.95); border-color: rgb(110, 40, 208); }
+  .as-hover .motive-add-btn-icon { opacity: 1; }
+
+  /* the mark alone, held on so it can be photographed */
+  .mark { display: block; object-fit: contain; filter: brightness(0) invert(1); opacity: 1; }
+  .mark-24 { width: 24px; height: 24px; }
+  .mark-72 { width: 72px; height: 72px; }
+  .mark-192 { width: 192px; height: 192px; }
+  .light { background: #f3ece0; border-radius: 8px; padding: 14px; }
+  .light .mark { filter: brightness(0); }
+
+  /* the motive card, at its real 75 x 110 and magnified 3x */
+  .card { zoom: 3; width: 75px; height: 110px; display: flex; flex-direction: column;
+          background: rgb(14, 24, 32); border: 1px solid rgba(167, 121, 233, 0.4);
+          border-radius: 8px; }
+  .banner { display: flex; align-items: center; justify-content: center; padding: 5px 6px;
+            border-bottom: 1px solid rgba(167, 121, 233, 0.2); }
+  .type { font-family: Cinzel, Georgia, serif; font-size: 10px; letter-spacing: .06em;
+          text-transform: uppercase; color: rgba(200, 225, 235, 0.95); }
+  .body { position: relative; flex: 1; min-height: 0; display: flex; align-items: center;
+          justify-content: center; padding: 6px; }
+  .content { position: relative; width: 100%; font-family: Georgia, serif; font-size: 10px;
+             line-height: 1.4; color: rgba(200, 225, 235, 0.88); text-align: center; }
+  .card .mark { position: absolute; inset: 5%; width: 90%; height: 90%; }
+  .pair { display: flex; align-items: flex-start; gap: 26px; }
+
+  /* exact 24px raster, blown up without smoothing, and the break magnified 4x */
+  .zoom-wrap { width: 264px; height: 264px; overflow: hidden; }
+  .zoom-wrap img { width: 24px; height: 24px; display: block; transform: scale(11); transform-origin: 0 0;
+                   image-rendering: pixelated; filter: brightness(0) invert(1); }
+  .detail-wrap { width: 200px; height: 200px; overflow: hidden; }
+  .detail-wrap img { width: 340px; height: 340px; display: block; transform: scale(4); transform-origin: 0 0;
+                     filter: brightness(0) invert(1); }
+</style>
+</head>
+<body>
+
+<h2>add button at 24px - as offered, then hover</h2>
+<div class="row">
+  <button class="motive-add-btn" type="button"><img class="motive-add-btn-icon" src="compass-cracked-motivation.svg" alt="" /><span>+ Motivation</span></button>
+  <div class="as-hover"><button class="motive-add-btn" type="button"><img class="motive-add-btn-icon" src="compass-cracked-motivation.svg" alt="" /><span>+ Motivation</span></button></div>
+</div>
+
+<h2>the mark alone - 24px, 72px, 192px</h2>
+<div class="row">
+  <img class="mark mark-24" src="compass-cracked-motivation.svg" alt="" />
+  <img class="mark mark-72" src="compass-cracked-motivation.svg" alt="" />
+  <img class="mark mark-192" src="compass-cracked-motivation.svg" alt="" />
+</div>
+
+<h2>at 192px beside the three marks that ship today</h2>
+<div class="row">
+  <img class="mark mark-192" src="compass-cracked-motivation.svg" alt="" />
+  <img class="mark mark-192" src="../frontend/cast-library-ui/public/dart_hitting_target_bullseye.svg" alt="" />
+  <img class="mark mark-192" src="../frontend/cast-library-ui/public/broken_shield_sword.svg" alt="" />
+  <img class="mark mark-192" src="../frontend/cast-library-ui/public/person_falling_from_cliff.svg" alt="" />
+</div>
+
+<h2>the four marks at 24px, side by side in button dress</h2>
+<div class="row">
+  <button class="motive-add-btn" type="button"><img class="motive-add-btn-icon" src="../frontend/cast-library-ui/public/dart_hitting_target_bullseye.svg" alt="" /><span>+ Goal</span></button>
+  <button class="motive-add-btn" type="button"><img class="motive-add-btn-icon" src="../frontend/cast-library-ui/public/broken_shield_sword.svg" alt="" /><span>+ Flaw</span></button>
+  <button class="motive-add-btn" type="button"><img class="motive-add-btn-icon" src="../frontend/cast-library-ui/public/person_falling_from_cliff.svg" alt="" /><span>+ Fear</span></button>
+  <button class="motive-add-btn" type="button"><img class="motive-add-btn-icon" src="compass-cracked-motivation.svg" alt="" /><span>+ Motivation</span></button>
+</div>
+
+<h2>inked dark on the app's light surface</h2>
+<div class="row">
+  <div class="light"><img class="mark mark-72" src="compass-cracked-motivation.svg" alt="" /></div>
+  <div class="light"><img class="mark" style="width:24px;height:24px" src="compass-cracked-motivation.svg" alt="" /></div>
+</div>
+
+<h2>in the motive card, 3x</h2>
+<div class="pair">
+  <div class="card"><div class="banner"><span class="type">Motivation</span></div><div class="body"><img class="mark" src="compass-cracked-motivation.svg" alt="" /><div class="content">To be the one who comes back</div></div></div>
+</div>
+
+<h2>the 24px raster, blown up 11x - no smoothing</h2>
+<div class="row">
+  <div class="zoom-wrap"><img src="compass-cracked-motivation.svg" alt="" /></div>
+  <div class="zoom-wrap"><img src="../frontend/cast-library-ui/public/broken_shield_sword.svg" alt="" /></div>
+</div>
+
+<h2>the break and the crack, magnified 4x</h2>
+<div class="row">
+  <div class="detail-wrap"><img src="compass-cracked-motivation.svg" alt="" /></div>
+  <div class="detail-wrap"><img src="compass-cracked-motivation.svg" alt="" /></div>
+</div>
+
+</body>
+</html>

@@ -1,4 +1,3 @@
-using CastLibrary.Logic.Interfaces;
 using CastLibrary.Repository.Repositories.Read;
 using CastLibrary.Shared.Domain;
 

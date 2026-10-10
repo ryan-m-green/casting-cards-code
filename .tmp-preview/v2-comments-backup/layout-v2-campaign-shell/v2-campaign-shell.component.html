@@ -1,0 +1,388 @@
+<!-- Templates for right drawer content -->
+<ng-template #playerSecretsContentTemplate let-member="member" let-campaignId="campaignId" let-mode="mode" let-portalColor="portalColor">
+  <app-cc-player-secrets-content
+    [member]="member"
+    [campaignId]="campaignId"
+    [mode]="mode"
+    [portalColor]="portalColor"
+  />
+</ng-template>
+
+<ng-template #partyGoldContentTemplate let-campaignId="campaignId" let-portalColor="portalColor">
+  <app-cc-party-gold-content
+    [campaignId]="campaignId"
+    [portalColor]="portalColor"
+    (goldAwarded)="onPartyGoldAwarded($event)"
+    (closeDrawer)="rightDrawer.close()"
+  />
+</ng-template>
+
+<ng-template #ambianceEditorContentTemplate let-ambiance="ambiance" let-campaignId="campaignId" let-portalColor="portalColor" let-seedTrackIds="seedTrackIds" let-suggestedTitle="suggestedTitle">
+  <!--
+    One drawer for both jobs: handed an ambiance it edits that card, handed none it builds a new one
+    out of the tracks the library panel ticked (see CcSoundtrackContentComponent).
+  -->
+  <cc-soundtrack-content
+    [ambiance]="ambiance"
+    [campaignId]="campaignId"
+    [portalColor]="portalColor"
+    [seedTrackIds]="seedTrackIds || []"
+    [seedTitle]="suggestedTitle || ''"
+    (closeDrawer)="rightDrawer.close()"
+  />
+</ng-template>
+
+<ng-template #storylineCreateContentTemplate>
+  <app-cc-storyline-content
+    [campaignId]="campaignIdValue"
+    [portalColor]="safeColor(campaign()?.spineColor)"
+    (created)="onStorylineCreated()"
+  />
+</ng-template>
+
+<ng-template #storylineEditContentTemplate>
+  <app-cc-storyline-content
+    [campaignId]="campaignIdValue"
+    [portalColor]="safeColor(campaign()?.spineColor)"
+    [editItem]="storylineEditItem()"
+  />
+</ng-template>
+
+<ng-template #storylineViewContentTemplate>
+  @if (storylineViewItem(); as viewItem) {
+    <app-cc-storyline-view
+      [item]="viewItem"
+      [portalColor]="safeColor(campaign()?.spineColor)"
+    />
+  }
+</ng-template>
+
+<ng-template #worldMapContentTemplate>
+  <app-cc-worldmap-content
+    [worldMapImageUrl]="campaign()?.worldMapImageUrl ?? null"
+    [portalColor]="safeColor(campaign()?.spineColor)"
+  />
+</ng-template>
+
+<ng-template #chroniclesContentTemplate>
+  <app-cc-campaign-chronicle-content
+    [campaignId]="campaignIdValue"
+    [isDmMode]="isDm()"
+    [portalColor]="safeColor(campaign()?.spineColor)"
+  />
+</ng-template>
+
+<ng-template #encounterGroupPickerContentTemplate>
+  <cc-encounter-group-picker
+    [campaignId]="campaignIdValue"
+    [portalColor]="safeColor(campaign()?.spineColor)"
+    [places]="shellSvc.encounterPlaces()"
+    (addGroup)="onEncounterGroupPicked($event)"
+  />
+</ng-template>
+
+<ng-template #factionPickerContentTemplate>
+  <cc-faction-picker
+    [campaignId]="campaignIdValue"
+    [portalColor]="safeColor(campaign()?.spineColor)"
+    (closeDrawer)="rightDrawer.close()"
+  />
+</ng-template>
+
+<ng-template #factionCastPickerContentTemplate>
+  @if (shellSvc.factionCastPickerTarget(); as target) {
+    <cc-faction-cast-picker
+      [campaignId]="target.campaignId"
+      [factionInstanceId]="target.factionInstanceId"
+      [factionName]="target.factionName"
+      [portalColor]="safeColor(campaign()?.spineColor)"
+      (closeDrawer)="rightDrawer.close()"
+    />
+  }
+</ng-template>
+
+<ng-template #locationPickerContentTemplate>
+  @if (shellSvc.locationPickerTarget(); as target) {
+    <cc-location-picker
+      [campaignId]="target.campaignId"
+      [portalColor]="safeColor(campaign()?.spineColor)"
+      (closeDrawer)="rightDrawer.close()"
+    />
+  }
+</ng-template>
+
+<ng-template #sublocationPickerContentTemplate>
+  @if (shellSvc.sublocationPickerTarget(); as target) {
+    <cc-sublocation-picker
+      [campaignId]="target.campaignId"
+      [locationInstanceId]="target.locationInstanceId"
+      [locationName]="target.locationName"
+      [portalColor]="safeColor(campaign()?.spineColor)"
+      (closeDrawer)="rightDrawer.close()"
+    />
+  }
+</ng-template>
+
+<ng-template #castPickerContentTemplate>
+  @if (shellSvc.castPickerTarget(); as target) {
+    <cc-cast-picker
+      [campaignId]="target.campaignId"
+      [locationInstanceId]="target.locationInstanceId"
+      [sublocationInstanceId]="target.sublocationInstanceId"
+      [sublocationName]="target.sublocationName"
+      [portalColor]="safeColor(campaign()?.spineColor)"
+      (closeDrawer)="rightDrawer.close()"
+    />
+  }
+</ng-template>
+
+<!--
+  The travel drawer: the campaign's locations as simple cards, then the sublocations of the one
+  that is picked. Raised by a cast card's own travel button (see cc-cast-travel), which names the
+  card it is moving in the target the shell reads here.
+-->
+<ng-template #castTravelPickerContentTemplate>
+  @if (shellSvc.castTravelTarget(); as target) {
+    <cc-cast-travel-picker
+      [campaignId]="target.campaignId"
+      [castInstanceId]="target.castInstanceId"
+      [castName]="target.castName"
+      [sublocationInstanceId]="target.sublocationInstanceId"
+      [portalColor]="safeColor(campaign()?.spineColor)"
+    />
+  }
+</ng-template>
+
+<ng-template #combatantDetailsContentTemplate>
+  @if (shellSvc.combatantDetailsTarget(); as target) {
+    <cc-combatant-details
+      [campaignId]="target.campaignId"
+      [encounterId]="target.encounterId"
+      [portalColor]="target.portalColor"
+      [spotName]="target.spotName"
+      [combatants]="target.combatants"
+      [index]="target.index"
+    />
+  }
+</ng-template>
+
+<ng-template #quicknoteAssociationsContentTemplate>
+  <cc-note-association-picker
+    [campaignId]="campaignIdValue"
+    [portalColor]="safeColor(campaign()?.spineColor)"
+    (closeDrawer)="rightDrawer.close()"
+  />
+</ng-template>
+
+<!-- Single CcContentDrawerComponent at shell level, outside the transformed grid -->
+<cc-content-drawer #rightDrawer
+  [portalColor]="safeColor(shellSvc.campaign()?.spineColor)"
+  [title]="drawerTitle()"
+  [contentTemplate]="currentContentTemplate()"
+  [contentContext]="currentContentContext()"
+  (closed)="onDrawerClosed()"
+/>
+
+<!--
+  The Admin's window on the campaign hub, on the left: who is connected, what was broadcast, and
+  what the receiving clients said came back (see cc-signalr-inspector). It is opened from the
+  board's own title — the icon over "The Realm of" is its button (see cc-grid-area-title), and
+  only an Admin is handed that button. The left edge is the Admin's own: any other viewer asking
+  for it is given the right-hand drawer instead (see the drawer's `side` input).
+-->
+<ng-template #inspectorContentTemplate let-campaignId="campaignId">
+  <cc-signalr-inspector [campaignId]="campaignId" />
+</ng-template>
+
+<cc-content-drawer #inspectorDrawer
+  side="left"
+  width="52vw"
+  ariaLabel="SignalR Inspector"
+  title="SignalR Inspector"
+  [portalColor]="safeColor(campaign()?.spineColor)"
+  [contentTemplate]="inspectorContentTemplate"
+  [contentContext]="{ campaignId: campaignIdValue }"
+/>
+
+<!-- Main Canvas with Black Background (3x3 viewport size) -->
+<div class="void-canvas" [style.--portal-color]="safeColor(shellSvc.campaign()?.spineColor)">
+
+  <!-- ── Radial grid navigator (top-left FAB) ── -->
+  <app-cc-radial-nav
+    [activeArea]="currentArea()"
+    [portalColor]="safeColor(campaign()?.spineColor)"
+    (navigate)="onRadialNav($event)"
+    (chronicles)="openChroniclesDrawer()"
+  />
+  
+  <!-- ── 3x3 Grid Container ── -->
+  <div class="grid-container" [style.transform]="'translate(' + viewportPosition().x + 'vw, ' + viewportPosition().y + 'vh)'">
+    
+    <!-- ── Top Row ── -->
+    <div class="grid-area top-left">
+      <!--
+        The heading takes only its area: what it says and what it is drawn by are the area's own,
+        published by whatever stands in it (see cc-grid-area-title, and V2GridAreaMarkService behind
+        it). The same is true of every heading below.
+      -->
+      <cc-grid-area-title class="area-title" [gridArea]="'top-left'" />
+      <cc-quicknotes
+        [campaignId]="campaignIdValue"
+        [portalColor]="safeColor(campaign()?.spineColor)"
+      />
+    </div>
+    <div class="grid-area top-middle">
+      <cc-grid-area-title class="area-title" [gridArea]="'top-middle'" />
+      @if (campaign(); as camp) {
+        <div class="top-middle-center">
+          <app-cc-day-counter
+            class="top-middle-day-counter"
+            [campaignId]="campaignIdValue"
+            [isDm]="isDm()"
+            [allowInteraction]="!isDm()"
+            [panelTheme]="'dark'"
+            [todInput]="camp.timeOfDay ?? null"
+            [portalColor]="safeColor(camp.spineColor)"
+          />
+          <app-cc-world-map
+            class="top-middle-world-map"
+            [campaignId]="campaignIdValue"
+            [worldMapImageUrl]="camp.worldMapImageUrl"
+            [isDm]="isDm()"
+            [portalColor]="safeColor(camp.spineColor)"
+            (imageUploaded)="onWorldMapUploaded($event)"
+            (requestView)="openWorldMapDrawer()"
+          />
+        </div>
+      }
+    </div>
+    <div class="grid-area top-right">
+      <cc-grid-area-title class="area-title" [gridArea]="'top-right'" />
+      @if (campaign(); as camp) {
+        <app-cc-party-panel
+          [campaignId]="campaignIdValue"
+          [portalColor]="safeColor(camp.spineColor)"
+        />
+      }
+    </div>
+    
+    <!-- ── Middle Row ── -->
+    <div class="grid-area middle-left">
+      <cc-grid-area-title class="area-title" [gridArea]="'middle-left'" />
+      @if (showRolodexBlockers()) {
+        <div class="rolodex-box-blocker-left">&nbsp;</div>
+        <div class="rolodex-box-blocker-right">&nbsp;</div>
+      }
+      <app-cc-card-faction-navigation [campaignId]="campaignIdValue" />
+    </div>
+    <div class="grid-area middle-middle">
+      <!-- The heading's icon is a button for the Admin alone: the way into the SignalR inspector. -->
+      <cc-grid-area-title
+        class="area-title"
+        [gridArea]="'middle-middle'"
+        action="Open the SignalR inspector"
+        (actionClick)="openSignalrInspector()"
+      />
+      @if (showRolodexBlockers()) {
+        <div class="rolodex-box-blocker-left">&nbsp;</div>
+        <div class="rolodex-box-blocker-right">&nbsp;</div>
+      }
+      <!--
+        Hierarchical Card Navigation, with the pair of black bars that frame the box it stands in
+        (see .rolodex-box-frame-*): the bars belong to the realm's area, so they are drawn here,
+        either side of the component, rather than inside it.
+      -->
+      <div class="rolodex-box-frame-left"></div>
+      <app-cc-card-navigation [campaignId]="campaignIdValue" />
+      <div class="rolodex-box-frame-right"></div>
+    </div>
+    <div class="grid-area middle-right">
+      <cc-grid-area-title class="area-title" [gridArea]="'middle-right'" />
+      @if (campaign(); as camp) {
+        @if (isDm()) {
+          <app-cc-soundtracks
+            [campaignId]="campaignIdValue"
+            [portalColor]="safeColor(camp.spineColor)"
+          />
+        }
+      }
+    </div>
+    
+    <!-- ── Bottom Row ── -->
+    <div class="grid-area bottom-left">
+      <cc-grid-area-title class="area-title" [gridArea]="'bottom-left'" />
+      <cc-encounter-builder
+        [campaignId]="campaignIdValue"
+        [portalColor]="safeColor(campaign()?.spineColor)"
+      />
+    </div>
+    <div class="grid-area bottom-middle">
+      <cc-grid-area-title class="area-title" [gridArea]="'bottom-middle'" />
+      @if (isDm()) {
+        <app-cc-storyline
+          [campaignId]="campaignIdValue"
+          [portalColor]="safeColor(campaign()?.spineColor)"
+          [refreshTick]="storylineRefreshTick()"
+          (requestCreate)="openStorylineCreate()"
+          (requestEdit)="openStorylineEdit($event)"
+          (requestView)="openStorylineView($event)"
+        />
+      } @else {
+        <!--
+          A player's bottom middle: the storyline is the DM's own, so what stands here is the
+          placeholder. It publishes the area's heading and no mark of its own, which leaves the
+          heading and the radial button bare of an icon — nothing stands behind them to be pointed
+          at (see cc-v2-placeholder).
+        -->
+        <cc-v2-placeholder areaName="Bottom Middle" gridArea="bottom-middle" [title]="['Storyline']" />
+      }
+    </div>
+    <div class="grid-area bottom-right">
+      <cc-grid-area-title class="area-title" [gridArea]="'bottom-right'" />
+      <!--
+        The area holds nothing yet, so its heading is the placeholder's own words and it wears no
+        mark at all — neither the heading nor the radial button draws an icon until something is
+        put here that publishes one of its own.
+      -->
+      <cc-v2-placeholder areaName="Bottom Right" gridArea="bottom-right" [title]="['More To Come']" />
+    </div>
+    
+  </div>
+  
+  <!--
+    The curtain over the grid while its nine areas fill in: black, over everything but
+    the portal's breathing border below, and lifted once every area has reported that its
+    content is loaded (see cc-grid-load-overlay, and V2GridLoadService behind it).
+  -->
+  <cc-grid-load-overlay />
+
+  <!--
+    The shop's own answer, handed over: a Bill of Sale under its wax seal, or a Notice of Denial
+    under the INSUFFICIENT FUNDS stamp (see cc-purchase-receipt). It stands over the board — outside
+    the grid, so its panning and its cells' own clipping never touch it — and is raised only once the
+    purchase panel has shut behind it (see the App's own drawer).
+  -->
+  @if (purchaseReceipt(); as receipt) {
+    <cc-purchase-receipt
+      [result]="receipt"
+      [portalColor]="safeColor(campaign()?.spineColor)"
+      (dismissed)="dismissPurchaseReceipt()"
+    />
+  }
+
+  <!-- ── Portal breathing border (highest z-index) ── -->
+  <!--
+    Drawn only once the campaign is in hand, because the border wears the campaign's own
+    colour: before that it would wear the fallback portal purple — and being the one thing
+    that paints over the curtain, that purple would flash on the way in. It lights up as
+    the colour arrives (see its animation), then breathes in that colour for good.
+  -->
+  @if (campaign()) {
+    <div class="portal-breathing-border"></div>
+  }
+  
+</div>
+
+<!-- ── Letterbox bars for safe area ── -->
+<div class="void-letterbox-top"></div>
+<div class="void-letterbox-bottom"></div>

@@ -1,4 +1,4 @@
-﻿using CastLibrary.Logic.Interfaces;
+using CastLibrary.Logic.Interfaces;
 using CastLibrary.Shared.Domain;
 using CastLibrary.Shared.Responses;
 
@@ -7,7 +7,6 @@ namespace CastLibrary.WebHost.Mappers;
 public interface IPlayerCardWebMapper
 {
     PlayerCardResponse ToResponse(PlayerCardDomain domain, List<PlayerCardConditionDomain> conditions = null, List<PlayerCardTraitDomain> traits = null);
-    PlayerCardMemoryResponse ToResponse(PlayerCardMemoryDomain domain);
     PlayerCardTraitResponse ToResponse(PlayerCardTraitDomain domain);
     PlayerCardSecretResponse ToResponse(PlayerCardSecretDomain domain);
     PlayerCastPerceptionResponse ToResponse(PlayerCastPerceptionDomain domain);
@@ -48,31 +47,14 @@ public class PlayerCardWebMapper(
                 TraitType = t.TraitType,
                 Content = t.Content,
                 IsCompleted = t.IsCompleted,
+                IsShared = t.IsShared,
                 CreatedAt = t.CreatedAt,
             }).ToList(),
             CreatedAt = domain.CreatedAt,
             UpdatedAt = domain.UpdatedAt,
         };
 
-        logging.LogMapping(correlation.TraceId, correlation.SpanId, Ns, "PlayerCardWebMapper.ToResponse", "domainâ†’response", domain, response);
-        return response;
-    }
-
-    public PlayerCardMemoryResponse ToResponse(PlayerCardMemoryDomain domain)
-    {
-        var response = new PlayerCardMemoryResponse
-        {
-            Id = domain.Id,
-            PlayerCardId = domain.PlayerCardId,
-            MemoryType = domain.MemoryType,
-            SessionNumber = domain.SessionNumber,
-            Title = domain.Title,
-            Detail = domain.Detail,
-            MemoryDate = domain.MemoryDate,
-            CreatedAt = domain.CreatedAt,
-        };
-
-        logging.LogMapping(correlation.TraceId, correlation.SpanId, Ns, "PlayerCardWebMapper.ToResponse(Memory)", "domainâ†’response", domain, response);
+        logging.LogMapping(correlation.TraceId, correlation.SpanId, Ns, "PlayerCardWebMapper.ToResponse", "domain->response", domain, response);
         return response;
     }
 
@@ -85,10 +67,11 @@ public class PlayerCardWebMapper(
             TraitType = domain.TraitType,
             Content = domain.Content,
             IsCompleted = domain.IsCompleted,
+            IsShared = domain.IsShared,
             CreatedAt = domain.CreatedAt,
         };
 
-        logging.LogMapping(correlation.TraceId, correlation.SpanId, Ns, "PlayerCardWebMapper.ToResponse(Trait)", "domainâ†’response", domain, response);
+        logging.LogMapping(correlation.TraceId, correlation.SpanId, Ns, "PlayerCardWebMapper.ToResponse(Trait)", "domain->response", domain, response);
         return response;
     }
 
@@ -105,7 +88,7 @@ public class PlayerCardWebMapper(
             CreatedAt = domain.CreatedAt,
         };
 
-        logging.LogMapping(correlation.TraceId, correlation.SpanId, Ns, "PlayerCardWebMapper.ToResponse(Secret)", "domainâ†’response", domain, response);
+        logging.LogMapping(correlation.TraceId, correlation.SpanId, Ns, "PlayerCardWebMapper.ToResponse(Secret)", "domain->response", domain, response);
         return response;
     }
 
@@ -123,7 +106,7 @@ public class PlayerCardWebMapper(
             UpdatedAt = domain.UpdatedAt,
         };
 
-        logging.LogMapping(correlation.TraceId, correlation.SpanId, Ns, "PlayerCardWebMapper.ToResponse(Perception)", "domainâ†’response", domain, response);
+        logging.LogMapping(correlation.TraceId, correlation.SpanId, Ns, "PlayerCardWebMapper.ToResponse(Perception)", "domain->response", domain, response);
         return response;
     }
 }

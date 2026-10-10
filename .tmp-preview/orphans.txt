@@ -1,0 +1,830 @@
+SCOPE: c:\Repository\CastingCards\Code\backend  (724 .cs files, obj/bin excluded)
+IoC files: IOCAdapter.cs, IOCLogic.cs, IOCRepository.cs, IOCRootContainer.cs, IOCWebhost.cs
+registrations parsed: 454
+
+===== A. Registered types whose ONLY reference (besides their own file) is the IoC container =====
+AccountVerificationEmailTemplateBuilder  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Adapter\EmailBuilders\AccountVerificationEmailTemplateBuilder.cs)  [reg: IOCAdapter.cs]
+PasswordResetEmailTemplateBuilder  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Adapter\EmailBuilders\PasswordResetEmailTemplateBuilder.cs)  [reg: IOCAdapter.cs]
+BugReportEmailTemplateBuilder  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Adapter\EmailBuilders\BugReportEmailTemplateBuilder.cs)  [reg: IOCAdapter.cs]
+WelcomeEmailTemplateBuilder  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Adapter\EmailBuilders\WelcomeEmailTemplateBuilder.cs)  [reg: IOCAdapter.cs]
+CampaignInvitationEmailTemplateBuilder  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Adapter\EmailBuilders\CampaignInvitationEmailTemplateBuilder.cs)  [reg: IOCAdapter.cs]
+InactivityReminderEmailTemplateBuilder  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Adapter\EmailBuilders\InactivityReminderEmailTemplateBuilder.cs)  [reg: IOCAdapter.cs]
+EmailChangeSecurityAlertEmailTemplateBuilder  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Adapter\EmailBuilders\EmailChangeSecurityAlertEmailTemplateBuilder.cs)  [reg: IOCAdapter.cs]
+EmailChangeConfirmationEmailTemplateBuilder  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Adapter\EmailBuilders\EmailChangeConfirmationEmailTemplateBuilder.cs)  [reg: IOCAdapter.cs]
+LocalFileImageStorageOperator  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Adapter\Operators\LocalFileImageStorageOperator.cs)  [reg: IOCAdapter.cs]
+LocalAudioFileStorageOperator  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Adapter\Operators\LocalAudioFileStorageOperator.cs)  [reg: IOCAdapter.cs]
+AudioFileStorageOperator  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Adapter\Operators\AudioFileStorageOperator.cs)  [reg: IOCAdapter.cs]
+LoginCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\Auth\LoginCommandHandler.cs)  [reg: IOCLogic.cs]
+RegisterUserCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\Auth\RegisterUserCommandHandler.cs)  [reg: IOCLogic.cs]
+VerifyEmailCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\Auth\VerifyEmailCommandHandler.cs)  [reg: IOCLogic.cs]
+ForgotPasswordCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\Auth\ForgotPasswordCommandHandler.cs)  [reg: IOCLogic.cs]
+ResetPasswordCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\Auth\ResetPasswordCommandHandler.cs)  [reg: IOCLogic.cs]
+ChangePasswordCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\Auth\ChangePasswordCommandHandler.cs)  [reg: IOCLogic.cs]
+UpdateDisplayNameCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\Auth\UpdateDisplayNameCommandHandler.cs)  [reg: IOCLogic.cs]
+UpdateEmailCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\Auth\UpdateEmailCommandHandler.cs)  [reg: IOCLogic.cs]
+SendEmailChangeNotificationsCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\Auth\SendEmailChangeNotificationsCommandHandler.cs)  [reg: IOCLogic.cs]
+CreateCastCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\Cast\CreateCastCommandHandler.cs)  [reg: IOCLogic.cs]
+CreateEncounterCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\Encounter\EncounterCommandHandlers.cs)  [reg: IOCLogic.cs]
+AddCombatantToEncounterCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\Encounter\EncounterCommandHandlers.cs)  [reg: IOCLogic.cs]
+CreateEncounterGroupCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\Encounter\EncounterCommandHandlers.cs)  [reg: IOCLogic.cs]
+CreateEncounterSpotCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\Encounter\EncounterCommandHandlers.cs)  [reg: IOCLogic.cs]
+RenameEncounterSpotCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\Encounter\EncounterCommandHandlers.cs)  [reg: IOCLogic.cs]
+DeleteEncounterSpotCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\Encounter\EncounterCommandHandlers.cs)  [reg: IOCLogic.cs]
+UpdateEncounterCombatantCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\Encounter\EncounterCommandHandlers.cs)  [reg: IOCLogic.cs]
+RemoveEncounterCombatantCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\Encounter\EncounterCommandHandlers.cs)  [reg: IOCLogic.cs]
+AssignEncounterCombatantConditionCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\Encounter\EncounterCombatantConditionCommandHandlers.cs)  [reg: IOCLogic.cs]
+RemoveEncounterCombatantConditionCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\Encounter\EncounterCombatantConditionCommandHandlers.cs)  [reg: IOCLogic.cs]
+ReorderEncounterSpotsCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\Encounter\EncounterCommandHandlers.cs)  [reg: IOCLogic.cs]
+SetEncounterInitiativeCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\Encounter\EncounterCommandHandlers.cs)  [reg: IOCLogic.cs]
+RenameEncounterCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\Encounter\EncounterCommandHandlers.cs)  [reg: IOCLogic.cs]
+StartEncounterCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\Encounter\EncounterCommandHandlers.cs)  [reg: IOCLogic.cs]
+AdvanceEncounterTurnCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\Encounter\EncounterCommandHandlers.cs)  [reg: IOCLogic.cs]
+GetCampaignEncountersQueryHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Queries\Encounter\EncounterQueryHandlers.cs)  [reg: IOCLogic.cs]
+GetEncounterDetailQueryHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Queries\Encounter\EncounterQueryHandlers.cs)  [reg: IOCLogic.cs]
+GetEncounterCombatantConditionsQueryHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Queries\Encounter\GetEncounterCombatantConditionsQueryHandler.cs)  [reg: IOCLogic.cs]
+EncounterCombatantBuilder  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Services\EncounterCombatantBuilder.cs)  [reg: IOCLogic.cs]
+GetCastIndexQueryHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Queries\Cast\GetCastIndexQueryHandler.cs)  [reg: IOCLogic.cs]
+GetCastKeywordCountsQueryHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Queries\Cast\GetCastIndexQueryHandler.cs)  [reg: IOCLogic.cs]
+GetCampaignFactionLibraryQueryHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Queries\Campaign\GetCampaignFactionLibraryQueryHandler.cs)  [reg: IOCLogic.cs]
+GetCampaignFactionLibraryKeywordCountsQueryHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Queries\Campaign\GetCampaignFactionLibraryQueryHandler.cs)  [reg: IOCLogic.cs]
+UpdateCastCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\Cast\UpdateCastCommandHandler.cs)  [reg: IOCLogic.cs]
+DeleteCastCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\Cast\DeleteCastCommandHandler.cs)  [reg: IOCLogic.cs]
+CreateLocationCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\Location\CreateLocationCommandHandler.cs)  [reg: IOCLogic.cs]
+UpdateLocationCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\Location\UpdateLocationCommandHandler.cs)  [reg: IOCLogic.cs]
+DeleteLocationCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\Location\DeleteLocationCommandHandler.cs)  [reg: IOCLogic.cs]
+CreateSublocationCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\SubLocation\CreateSubLocationCommandHandler.cs)  [reg: IOCLogic.cs]
+UpdateSublocationCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\SubLocation\UpdateSubLocationCommandHandler.cs)  [reg: IOCLogic.cs]
+DeleteSublocationCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\SubLocation\DeleteSubLocationCommandHandler.cs)  [reg: IOCLogic.cs]
+CreateCampaignCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\Campaign\CreateCampaignCommandHandler.cs)  [reg: IOCLogic.cs]
+UpdateCampaignCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\Campaign\UpdateCampaignCommandHandler.cs)  [reg: IOCLogic.cs]
+DeleteCampaignCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\Campaign\DeleteCampaignCommandHandler.cs)  [reg: IOCLogic.cs]
+AddCastToCampaignCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\Campaign\AddCastToCampaignCommandHandler.cs)  [reg: IOCLogic.cs]
+AddLocationToCampaignCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\Campaign\AddLocationToCampaignCommandHandler.cs)  [reg: IOCLogic.cs]
+UpdateLocationInstanceCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\Campaign\UpdateLocationInstanceCommandHandler.cs)  [reg: IOCLogic.cs]
+UpdateLocationInstanceVisibilityCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\Campaign\UpdateLocationInstanceVisibilityCommandHandler.cs)  [reg: IOCLogic.cs]
+UpdateCastInstanceCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\Campaign\UpdateCastInstanceCommandHandler.cs)  [reg: IOCLogic.cs]
+TravelCastInstanceCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\Campaign\TravelCastInstanceCommandHandler.cs)  [reg: IOCLogic.cs]
+DeleteLocationInstanceCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\Campaign\DeleteLocationInstanceCommandHandler.cs)  [reg: IOCLogic.cs]
+DeleteCastInstanceCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\Campaign\DeleteCastInstanceCommandHandler.cs)  [reg: IOCLogic.cs]
+AddCampaignSecretCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\Campaign\AddCampaignSecretCommandHandler.cs)  [reg: IOCLogic.cs]
+DeleteCampaignSecretCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\Campaign\DeleteCampaignSecretCommandHandler.cs)  [reg: IOCLogic.cs]
+RevealSecretCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\Campaign\RevealSecretCommandHandler.cs)  [reg: IOCLogic.cs]
+ResealSecretCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\Campaign\ResealSecretCommandHandler.cs)  [reg: IOCLogic.cs]
+IUpdateCastCustomItemsCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\Campaign\UpdateCastCustomItemsCommandHandler.cs)  [reg: IOCLogic.cs]
+UpdateCastCustomItemsCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\Campaign\UpdateCastCustomItemsCommandHandler.cs)  [reg: IOCLogic.cs]
+IUpdateSublocationCustomItemsCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\Campaign\UpdateSubLocationCustomItemsCommandHandler.cs)  [reg: IOCLogic.cs]
+UpdateSublocationCustomItemsCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\Campaign\UpdateSubLocationCustomItemsCommandHandler.cs)  [reg: IOCLogic.cs]
+UpdateSecretCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\Campaign\UpdateSecretCommandHandler.cs)  [reg: IOCLogic.cs]
+AddSublocationToCampaignCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\Campaign\AddSubLocationToCampaignCommandHandler.cs)  [reg: IOCLogic.cs]
+DeleteSublocationInstanceCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\Campaign\DeleteSubLocationInstanceCommandHandler.cs)  [reg: IOCLogic.cs]
+UpdateSublocationInstanceVisibilityCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\Campaign\UpdateSubLocationInstanceVisibilityCommandHandler.cs)  [reg: IOCLogic.cs]
+IUpdateLocationSublocationsVisibilityCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\Campaign\UpdateLocationSubLocationsVisibilityCommandHandler.cs)  [reg: IOCLogic.cs]
+UpdateLocationSubLocationsVisibilityCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\Campaign\UpdateLocationSubLocationsVisibilityCommandHandler.cs)  [reg: IOCLogic.cs]
+UpdateCastInstanceVisibilityCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\Campaign\UpdateCastInstanceVisibilityCommandHandler.cs)  [reg: IOCLogic.cs]
+IUpdateSublocationCastsVisibilityCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\Campaign\UpdateSubLocationCastsVisibilityCommandHandler.cs)  [reg: IOCLogic.cs]
+UpdateSublocationCastsVisibilityCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\Campaign\UpdateSubLocationCastsVisibilityCommandHandler.cs)  [reg: IOCLogic.cs]
+UpdateLocationInstanceKeywordsCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\Campaign\UpdateLocationInstanceKeywordsCommandHandler.cs)  [reg: IOCLogic.cs]
+IUpdateCastInstanceKeywordsCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\Campaign\UpdateCastInstanceKeywordsCommandHandler.cs)  [reg: IOCLogic.cs]
+UpdateCastInstanceKeywordsCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\Campaign\UpdateCastInstanceKeywordsCommandHandler.cs)  [reg: IOCLogic.cs]
+IUpdateSublocationInstanceKeywordsCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\Campaign\UpdateSubLocationInstanceKeywordsCommandHandler.cs)  [reg: IOCLogic.cs]
+UpdateSublocationInstanceKeywordsCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\Campaign\UpdateSubLocationInstanceKeywordsCommandHandler.cs)  [reg: IOCLogic.cs]
+UpdateSublocationInstanceCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\Campaign\UpdateSubLocationInstanceCommandHandler.cs)  [reg: IOCLogic.cs]
+AddSublocationShopItemCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\Campaign\AddSubLocationShopItemCommandHandler.cs)  [reg: IOCLogic.cs]
+ToggleShopItemScratchCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\Campaign\ToggleShopItemScratchCommandHandler.cs)  [reg: IOCLogic.cs]
+UpdateShopItemCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\Campaign\UpdateShopItemCommandHandler.cs)  [reg: IOCLogic.cs]
+DeleteShopItemCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\Campaign\DeleteShopItemCommandHandler.cs)  [reg: IOCLogic.cs]
+DeleteUserCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\Admin\DeleteUserCommandHandler.cs)  [reg: IOCLogic.cs]
+CreatePlayerCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\Admin\CreatePlayerCommandHandler.cs)  [reg: IOCLogic.cs]
+SetCampaignIsDemoCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\Admin\SetCampaignIsDemoCommandHandler.cs)  [reg: IOCLogic.cs]
+AddUserToDemoCampaignCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\Admin\AddUserToDemoCampaignCommandHandler.cs)  [reg: IOCLogic.cs]
+ChangeUserRoleCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\Admin\ChangeUserRoleCommandHandler.cs)  [reg: IOCLogic.cs]
+ResetUserPasswordCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\Admin\ResetUserPasswordCommandHandler.cs)  [reg: IOCLogic.cs]
+UpdateUserSubscriptionCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\Admin\UpdateUserSubscriptionCommandHandler.cs)  [reg: IOCLogic.cs]
+GenerateCampaignInviteCodeCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\Campaign\GenerateCampaignInviteCodeCommandHandler.cs)  [reg: IOCLogic.cs]
+RedeemCampaignInviteCodeCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\Campaign\RedeemCampaignInviteCodeCommandHandler.cs)  [reg: IOCLogic.cs]
+RemoveCampaignPlayerCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\Campaign\RemoveCampaignPlayerCommandHandler.cs)  [reg: IOCLogic.cs]
+UpsertTimeOfDayCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\Campaign\UpsertTimeOfDayCommandHandler.cs)  [reg: IOCLogic.cs]
+UpdateCursorPositionCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\Campaign\UpdateCursorPositionCommandHandler.cs)  [reg: IOCLogic.cs]
+AdvanceDayCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\Campaign\AdvanceDayCommandHandler.cs)  [reg: IOCLogic.cs]
+UpdateSlicePlayerNotesCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\Campaign\UpdateSlicePlayerNotesCommandHandler.cs)  [reg: IOCLogic.cs]
+UpdateSliceDmNotesCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\Campaign\UpdateSliceGmNotesCommandHandler.cs)  [reg: IOCLogic.cs]
+CreatePlayerCardCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\PlayerCard\CreatePlayerCardCommandHandler.cs)  [reg: IOCLogic.cs]
+UpdatePlayerCardCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\PlayerCard\UpdatePlayerCardCommandHandler.cs)  [reg: IOCLogic.cs]
+UploadPlayerCardImageCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\PlayerCard\UploadPlayerCardImageCommandHandler.cs)  [reg: IOCLogic.cs]
+AssignConditionCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\PlayerCard\AssignConditionCommandHandler.cs)  [reg: IOCLogic.cs]
+RemoveConditionCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\PlayerCard\RemoveConditionCommandHandler.cs)  [reg: IOCLogic.cs]
+UpsertTraitCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\PlayerCard\UpsertTraitCommandHandler.cs)  [reg: IOCLogic.cs]
+DeleteTraitCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\PlayerCard\DeleteTraitCommandHandler.cs)  [reg: IOCLogic.cs]
+ToggleGoalCompleteCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\PlayerCard\ToggleGoalCompleteCommandHandler.cs)  [reg: IOCLogic.cs]
+ToggleTraitSharedCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\PlayerCard\ToggleTraitSharedCommandHandler.cs)  [reg: IOCLogic.cs]
+DeliverSecretCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\PlayerCard\DeliverSecretCommandHandler.cs)  [reg: IOCLogic.cs]
+ShareSecretCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\PlayerCard\ShareSecretCommandHandler.cs)  [reg: IOCLogic.cs]
+DeletePlayerCardSecretCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\PlayerCard\DeletePlayerCardSecretCommandHandler.cs)  [reg: IOCLogic.cs]
+UpdatePlayerCardSecretCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\PlayerCard\UpdatePlayerCardSecretCommandHandler.cs)  [reg: IOCLogic.cs]
+UpsertPlayerCastPerceptionCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\PlayerCard\UpsertPlayerCastPerceptionCommandHandler.cs)  [reg: IOCLogic.cs]
+AwardCurrencyCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\PlayerCard\AwardCurrencyCommandHandler.cs)  [reg: IOCLogic.cs]
+PurchaseShopItemCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\Campaign\PurchaseShopItemCommandHandler.cs)  [reg: IOCLogic.cs]
+UseInventoryItemCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\Campaign\UseInventoryItemCommandHandler.cs)  [reg: IOCLogic.cs]
+SubmitBugReportCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\BugReport\SubmitBugReportCommandHandler.cs)  [reg: IOCLogic.cs]
+MarkBugFixedCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\BugReport\MarkBugFixedCommandHandler.cs)  [reg: IOCLogic.cs]
+CleanupBugReportsCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\BugReport\CleanupBugReportsCommandHandler.cs)  [reg: IOCLogic.cs]
+DeleteBugReportCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\BugReport\DeleteBugReportCommandHandler.cs)  [reg: IOCLogic.cs]
+UpdateBugSeverityCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\BugReport\UpdateBugSeverityCommandHandler.cs)  [reg: IOCLogic.cs]
+CreateFactionCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\Faction\CreateFactionCommandHandler.cs)  [reg: IOCLogic.cs]
+UpdateFactionCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\Faction\UpdateFactionCommandHandler.cs)  [reg: IOCLogic.cs]
+DeleteFactionCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\Faction\DeleteFactionCommandHandler.cs)  [reg: IOCLogic.cs]
+UploadFactionImageCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\Faction\UploadFactionImageCommandHandler.cs)  [reg: IOCLogic.cs]
+AddFactionToCampaignCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\Campaign\AddFactionToCampaignCommandHandler.cs)  [reg: IOCLogic.cs]
+DeleteFactionInstanceCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\Campaign\DeleteFactionInstanceCommandHandler.cs)  [reg: IOCLogic.cs]
+UpdateFactionInstanceCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\Campaign\UpdateFactionInstanceCommandHandler.cs)  [reg: IOCLogic.cs]
+AddFactionCastMemberCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\Campaign\AddFactionCastMemberCommandHandler.cs)  [reg: IOCLogic.cs]
+RemoveFactionCastMemberCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\Campaign\RemoveFactionCastMemberCommandHandler.cs)  [reg: IOCLogic.cs]
+SetFactionCastMemberPrimaryCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\Campaign\SetFactionCastMemberPrimaryCommandHandler.cs)  [reg: IOCLogic.cs]
+ClearFactionCastMemberPrimaryCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\Campaign\ClearFactionCastMemberPrimaryCommandHandler.cs)  [reg: IOCLogic.cs]
+AddFactionRelationshipCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\Campaign\AddFactionRelationshipCommandHandler.cs)  [reg: IOCLogic.cs]
+RemoveFactionRelationshipCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\Campaign\RemoveFactionRelationshipCommandHandler.cs)  [reg: IOCLogic.cs]
+UpdateFactionInstanceVisibilityCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\Campaign\UpdateFactionInstanceVisibilityCommandHandler.cs)  [reg: IOCLogic.cs]
+UpsertFieldJournalEntryCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\Cast\UpsertFieldJournalEntryCommandHandler.cs)  [reg: IOCLogic.cs]
+AddChronicleCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\CampaignChronicles\AddChronicleCommandHandler.cs)  [reg: IOCLogic.cs]
+CreateQuicknoteQueueItemCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\QuicknoteQueue\CreateQuicknoteQueueItemCommandHandler.cs)  [reg: IOCLogic.cs]
+UpdateQuicknoteQueueItemCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\QuicknoteQueue\UpdateQuicknoteQueueItemCommandHandler.cs)  [reg: IOCLogic.cs]
+DeleteQuicknoteQueueItemCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\QuicknoteQueue\DeleteQuicknoteQueueItemCommandHandler.cs)  [reg: IOCLogic.cs]
+CreateCampaignRuleCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\CampaignRules\CreateCampaignRuleCommandHandler.cs)  [reg: IOCLogic.cs]
+UpdateCampaignRuleCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\CampaignRules\UpdateCampaignRuleCommandHandler.cs)  [reg: IOCLogic.cs]
+DeleteCampaignRuleCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\CampaignRules\DeleteCampaignRuleCommandHandler.cs)  [reg: IOCLogic.cs]
+LinkCampaignRulesCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\CampaignRules\LinkCampaignRulesCommandHandler.cs)  [reg: IOCLogic.cs]
+CreateConditionCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\Conditions\ConditionCommandHandlers.cs)  [reg: IOCLogic.cs]
+LinkConditionsCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\Conditions\ConditionCommandHandlers.cs)  [reg: IOCLogic.cs]
+DeleteConditionCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\Conditions\ConditionCommandHandlers.cs)  [reg: IOCLogic.cs]
+AssignFactionToSublocationCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\Campaign\AssignFactionToSublocationCommandHandler.cs)  [reg: IOCLogic.cs]
+AssignFactionToCastCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\Campaign\AssignFactionToCastCommandHandler.cs)  [reg: IOCLogic.cs]
+UpdateCampaignLastAccessedCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\Campaign\UpdateCampaignLastAccessedCommandHandler.cs)  [reg: IOCLogic.cs]
+CreateCampaignStorylineCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\Campaign\CreateCampaignStorylineCommandHandler.cs)  [reg: IOCLogic.cs]
+UpdateCampaignEventVisibilityCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\Campaign\UpdateCampaignEventVisibilityCommandHandler.cs)  [reg: IOCLogic.cs]
+UpdateStorylineArchiveMarkCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\Campaign\UpdateStorylineArchiveMarkCommandHandler.cs)  [reg: IOCLogic.cs]
+UpdateCampaignEventBodyCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\Campaign\UpdateCampaignEventBodyCommandHandler.cs)  [reg: IOCLogic.cs]
+UploadCampaignStorylineHandoutCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\Campaign\UploadCampaignStorylineHandoutCommandHandler.cs)  [reg: IOCLogic.cs]
+UploadCampaignEventHandoutImageCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\Campaign\UploadCampaignEventHandoutImageCommandHandler.cs)  [reg: IOCLogic.cs]
+UploadCampaignWorldMapImageCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\Campaign\UploadCampaignWorldMapImageCommandHandler.cs)  [reg: IOCLogic.cs]
+UpdateCampaignEventDetailsCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\Campaign\UpdateCampaignEventDetailsCommandHandler.cs)  [reg: IOCLogic.cs]
+DeleteCampaignEventCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\Campaign\DeleteCampaignEventCommandHandler.cs)  [reg: IOCLogic.cs]
+ReorderCampaignEventsCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\Campaign\ReorderCampaignEventsCommandHandler.cs)  [reg: IOCLogic.cs]
+UploadSoundtrackCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\Soundtrack\UploadSoundtrackCommandHandler.cs)  [reg: IOCLogic.cs]
+DeleteSoundtrackCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\Soundtrack\DeleteSoundtrackCommandHandler.cs)  [reg: IOCLogic.cs]
+UpdateSoundtrackCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\Soundtrack\UpdateSoundtrackCommandHandler.cs)  [reg: IOCLogic.cs]
+CreateAmbianceCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\Ambiance\CreateAmbianceCommandHandler.cs)  [reg: IOCLogic.cs]
+UpdateAmbianceCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\Ambiance\UpdateAmbianceCommandHandler.cs)  [reg: IOCLogic.cs]
+DeleteAmbianceCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\Ambiance\DeleteAmbianceCommandHandler.cs)  [reg: IOCLogic.cs]
+CreateFreeTrialSubscriptionCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\Subscription\CreateFreeTrialSubscriptionCommandHandler.cs)  [reg: IOCLogic.cs]
+CreateCheckoutSessionCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\Stripe\CreateCheckoutSessionCommandHandler.cs)  [reg: IOCLogic.cs]
+CreateCustomerPortalSessionCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\Stripe\CreateCustomerPortalSessionCommandHandler.cs)  [reg: IOCLogic.cs]
+ProcessStripeWebhookCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\Stripe\ProcessStripeWebhookCommandHandler.cs)  [reg: IOCLogic.cs]
+GetCastLibraryQueryHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Queries\Cast\GetCastLibraryQueryHandler.cs)  [reg: IOCLogic.cs]
+GetCastDetailQueryHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Queries\Cast\GetCastDetailQueryHandler.cs)  [reg: IOCLogic.cs]
+GetLocationLibraryQueryHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Queries\Location\GetLocationLibraryQueryHandler.cs)  [reg: IOCLogic.cs]
+GetSublocationLibraryQueryHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Queries\SubLocation\GetSubLocationLibraryQueryHandler.cs)  [reg: IOCLogic.cs]
+GetCampaignLibraryQueryHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Queries\Campaign\GetCampaignLibraryQueryHandler.cs)  [reg: IOCLogic.cs]
+GetPlayerCampaignLibraryQueryHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Queries\Campaign\GetPlayerCampaignLibraryQueryHandler.cs)  [reg: IOCLogic.cs]
+GetCampaignDetailQueryHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Queries\Campaign\GetCampaignDetailQueryHandler.cs)  [reg: IOCLogic.cs]
+GetPlayerCampaignDetailQueryHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Queries\Campaign\GetPlayerCampaignDetailQueryHandler.cs)  [reg: IOCLogic.cs]
+GetCampaignInviteCodeQueryHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Queries\Campaign\GetCampaignInviteCodeQueryHandler.cs)  [reg: IOCLogic.cs]
+GetPlayerInventoryQueryHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Queries\Campaign\GetPlayerInventoryQuery.cs)  [reg: IOCLogic.cs]
+GetCampaignLocationInstancesQueryHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Queries\Campaign\GetCampaignLocationInstancesQueryHandler.cs)  [reg: IOCLogic.cs]
+GetCampaignSublocationInstancesQueryHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Queries\Campaign\GetCampaignSublocationInstancesQueryHandler.cs)  [reg: IOCLogic.cs]
+GetCampaignCastInstancesQueryHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Queries\Campaign\GetCampaignCastInstancesQueryHandler.cs)  [reg: IOCLogic.cs]
+GetCampaignSoundtracksQueryHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Queries\Soundtrack\GetCampaignSoundtracksQueryHandler.cs)  [reg: IOCLogic.cs]
+GetCampaignAmbiancesQueryHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Queries\Ambiance\GetCampaignAmbiancesQueryHandler.cs)  [reg: IOCLogic.cs]
+GetUserKeywordsQueryHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Queries\Campaign\GetUserKeywordsQueryHandler.cs)  [reg: IOCLogic.cs]
+GetCampaignKeywordsQueryHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Queries\Campaign\GetCampaignKeywordsQueryHandler.cs)  [reg: IOCLogic.cs]
+AddCampaignKeywordCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\Campaign\AddCampaignKeywordCommandHandler.cs)  [reg: IOCLogic.cs]
+DeleteCampaignKeywordCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\Campaign\DeleteCampaignKeywordCommandHandler.cs)  [reg: IOCLogic.cs]
+GetAllUsersQueryHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Queries\Admin\GetAllUsersQueryHandler.cs)  [reg: IOCLogic.cs]
+GetCampaignPlayersQueryHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Queries\Campaign\GetCampaignPlayersQueryHandler.cs)  [reg: IOCLogic.cs]
+GetDemoCampaignsQueryHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Queries\Admin\GetDemoCampaignsQueryHandler.cs)  [reg: IOCLogic.cs]
+GetDemoPlayersQueryHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Queries\Admin\GetDemoPlayersQueryHandler.cs)  [reg: IOCLogic.cs]
+GetTimeOfDayQueryHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Queries\Campaign\GetTimeOfDayQueryHandler.cs)  [reg: IOCLogic.cs]
+GetPlayerCardQueryHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Queries\PlayerCard\GetPlayerCardQueryHandler.cs)  [reg: IOCLogic.cs]
+GetAllPlayerCardsQueryHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Queries\PlayerCard\GetAllPlayerCardsQueryHandler.cs)  [reg: IOCLogic.cs]
+GetPlayerTraitsQueryHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Queries\PlayerCard\GetPlayerTraitsQueryHandler.cs)  [reg: IOCLogic.cs]
+GetPlayerSecretsQueryHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Queries\PlayerCard\GetPlayerSecretsQueryHandler.cs)  [reg: IOCLogic.cs]
+GetSharedPlayerSecretsQueryHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Queries\PlayerCard\GetSharedPlayerSecretsQueryHandler.cs)  [reg: IOCLogic.cs]
+GetCampaignSecretsQueryHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Queries\Campaign\GetCampaignSecretsQueryHandler.cs)  [reg: IOCLogic.cs]
+GetPlayerConditionsQueryHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Queries\PlayerCard\GetPlayerConditionsQueryHandler.cs)  [reg: IOCLogic.cs]
+GetDiscoveredCastQueryHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Queries\PlayerCard\GetDiscoveredCastQueryHandler.cs)  [reg: IOCLogic.cs]
+GetPlayerCastPerceptionsQueryHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Queries\PlayerCard\GetPlayerCastPerceptionsQueryHandler.cs)  [reg: IOCLogic.cs]
+GetCastInstancePerceptionsQueryHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Queries\PlayerCard\GetCastInstancePerceptionsQueryHandler.cs)  [reg: IOCLogic.cs]
+GetBugReportsQueryHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Queries\BugReport\GetBugReportsQueryHandler.cs)  [reg: IOCLogic.cs]
+GetFactionLibraryQueryHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Queries\Faction\GetFactionLibraryQueryHandler.cs)  [reg: IOCLogic.cs]
+GetFactionDetailQueryHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Queries\Faction\GetFactionDetailQueryHandler.cs)  [reg: IOCLogic.cs]
+GetCampaignFactionInstancesQueryHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Queries\Campaign\GetCampaignFactionInstancesQueryHandler.cs)  [reg: IOCLogic.cs]
+GetPlayerCampaignFactionInstancesQueryHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Queries\Campaign\GetPlayerCampaignFactionInstancesQueryHandler.cs)  [reg: IOCLogic.cs]
+GetPartyCampaignFactionInstancesQueryHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Queries\Campaign\GetPartyCampaignFactionInstancesQueryHandler.cs)  [reg: IOCLogic.cs]
+GetFieldJournalEntriesQueryHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Queries\Cast\GetFieldJournalEntriesQueryHandler.cs)  [reg: IOCLogic.cs]
+GetChronicleFeedQueryHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Queries\CampaignChronicles\GetChronicleFeedQuery.cs)  [reg: IOCLogic.cs]
+GetQuicknoteQueueQueryHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Queries\QuicknoteQueue\GetQuicknoteQueueQueryHandler.cs)  [reg: IOCLogic.cs]
+GetCampaignRulesQueryHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Queries\CampaignRules\GetCampaignRulesQueryHandler.cs)  [reg: IOCLogic.cs]
+GetAvailableCampaignRulesQueryHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Queries\CampaignRules\GetCampaignRulesQueryHandler.cs)  [reg: IOCLogic.cs]
+GetConditionsQueryHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Queries\Conditions\GetConditionsQueryHandler.cs)  [reg: IOCLogic.cs]
+GetAvailableConditionsQueryHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Queries\Conditions\GetConditionsQueryHandler.cs)  [reg: IOCLogic.cs]
+GetCampaignStorylineItemsQueryHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Queries\Campaign\GetCampaignStorylineItemsQueryHandler.cs)  [reg: IOCLogic.cs]
+GetVisibleCampaignEventsQueryHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Queries\Campaign\GetVisibleCampaignEventsQueryHandler.cs)  [reg: IOCLogic.cs]
+GetUserSubscriptionQueryHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Queries\Subscription\GetUserSubscriptionQueryHandler.cs)  [reg: IOCLogic.cs]
+GetUserEntityLimitsQueryHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Queries\Subscription\GetUserEntityLimitsQueryHandler.cs)  [reg: IOCLogic.cs]
+CampaignAccessService  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Services\CampaignAccessService.cs)  [reg: IOCLogic.cs]
+EmailService  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Services\EmailService.cs)  [reg: IOCLogic.cs]
+AuditLoggingService  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Services\AuditLoggingService.cs)  [reg: IOCLogic.cs]
+CampaignChronicleFeedFactory  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Factories\CampaignChronicleFeedFactory.cs)  [reg: IOCLogic.cs]
+CampaignEntityVisibilityUpdater  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Strategies\IEntityVisibilityUpdater.cs)  [reg: IOCLogic.cs]
+SublocationEntityVisibilityUpdater  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Strategies\IEntityVisibilityUpdater.cs)  [reg: IOCLogic.cs]
+LocationEntityVisibilityUpdater  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Strategies\IEntityVisibilityUpdater.cs)  [reg: IOCLogic.cs]
+CastEntityVisibilityUpdater  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Strategies\IEntityVisibilityUpdater.cs)  [reg: IOCLogic.cs]
+FactionEntityVisibilityUpdater  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Strategies\IEntityVisibilityUpdater.cs)  [reg: IOCLogic.cs]
+TimeOfDayEntityVisibilityUpdater  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Strategies\IEntityVisibilityUpdater.cs)  [reg: IOCLogic.cs]
+PlayerEntityVisibilityUpdater  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Strategies\IEntityVisibilityUpdater.cs)  [reg: IOCLogic.cs]
+SecretEntityVisibilityUpdater  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Strategies\IEntityVisibilityUpdater.cs)  [reg: IOCLogic.cs]
+CastTraveledEntityVisibilityUpdater  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Strategies\IEntityVisibilityUpdater.cs)  [reg: IOCLogic.cs]
+SubscriptionCreatedStrategy  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Strategies\SubscriptionEvent\SubscriptionCreatedStrategy.cs)  [reg: IOCLogic.cs]
+SubscriptionUpdatedStrategy  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Strategies\SubscriptionEvent\SubscriptionUpdatedStrategy.cs)  [reg: IOCLogic.cs]
+SubscriptionDeletedStrategy  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Strategies\SubscriptionEvent\SubscriptionDeletedStrategy.cs)  [reg: IOCLogic.cs]
+SubscriptionPausedStrategy  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Strategies\SubscriptionEvent\SubscriptionPausedStrategy.cs)  [reg: IOCLogic.cs]
+SubscriptionResumedStrategy  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Strategies\SubscriptionEvent\SubscriptionResumedStrategy.cs)  [reg: IOCLogic.cs]
+ChargeDisputeClosedStrategy  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Strategies\WebhookEvent\ChargeDisputeClosedStrategy.cs)  [reg: IOCLogic.cs]
+ChargeDisputeCreatedStrategy  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Strategies\WebhookEvent\ChargeDisputeCreatedStrategy.cs)  [reg: IOCLogic.cs]
+CheckoutSessionCompletedStrategy  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Strategies\WebhookEvent\CheckoutSessionCompletedStrategy.cs)  [reg: IOCLogic.cs]
+CustomerSubscriptionDeletedStrategy  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Strategies\WebhookEvent\CustomerSubscriptionDeletedStrategy.cs)  [reg: IOCLogic.cs]
+CustomerSubscriptionPausedStrategy  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Strategies\WebhookEvent\CustomerSubscriptionPausedStrategy.cs)  [reg: IOCLogic.cs]
+CustomerSubscriptionResumedStrategy  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Strategies\WebhookEvent\CustomerSubscriptionResumedStrategy.cs)  [reg: IOCLogic.cs]
+PaymentIntentPaymentFailedStrategy  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Strategies\WebhookEvent\PaymentIntentPaymentFailedStrategy.cs)  [reg: IOCLogic.cs]
+PaymentIntentSucceededStrategy  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Strategies\WebhookEvent\PaymentIntentSucceededStrategy.cs)  [reg: IOCLogic.cs]
+StorylineChronicleArchiveStrategy  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\CampaignChronicles\StorylineChronicleArchiveStrategy.cs)  [reg: IOCLogic.cs]
+PlayerNoteChronicleArchiveStrategy  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\CampaignChronicles\ChronicleSnapshotStrategies.cs)  [reg: IOCLogic.cs]
+SecretChronicleArchiveStrategy  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\CampaignChronicles\ChronicleSnapshotStrategies.cs)  [reg: IOCLogic.cs]
+CoinRewardChronicleArchiveStrategy  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\CampaignChronicles\ChronicleSnapshotStrategiesExtra.cs)  [reg: IOCLogic.cs]
+ShopPurchaseChronicleArchiveStrategy  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\CampaignChronicles\ChronicleSnapshotStrategiesExtra.cs)  [reg: IOCLogic.cs]
+EncounterChronicleArchiveStrategy  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\CampaignChronicles\EncounterChronicleArchiveStrategy.cs)  [reg: IOCLogic.cs]
+CastInsertRepository  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Repository\Repositories\Insert\CastInsertRepository.cs)  [reg: IOCRepository.cs]
+PasswordResetTokenReadRepository  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Repository\Repositories\Read\PasswordResetTokenReadRepository.cs)  [reg: IOCRepository.cs]
+PasswordResetTokenInsertRepository  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Repository\Repositories\Insert\PasswordResetTokenInsertRepository.cs)  [reg: IOCRepository.cs]
+PasswordResetTokenUpdateRepository  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Repository\Repositories\Update\PasswordResetTokenUpdateRepository.cs)  [reg: IOCRepository.cs]
+CampaignInviteCodeReadRepository  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Repository\Repositories\Read\CampaignInviteCodeReadRepository.cs)  [reg: IOCRepository.cs]
+CampaignInviteCodeUpdateRepository  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Repository\Repositories\Update\CampaignInviteCodeUpdateRepository.cs)  [reg: IOCRepository.cs]
+CampaignInviteCodeDeleteRepository  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Repository\Repositories\Delete\CampaignInviteCodeDeleteRepository.cs)  [reg: IOCRepository.cs]
+CampaignPlayerInsertRepository  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Repository\Repositories\Insert\CampaignPlayerInsertRepository.cs)  [reg: IOCRepository.cs]
+CampaignPlayerDeleteRepository  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Repository\Repositories\Delete\CampaignPlayerDeleteRepository.cs)  [reg: IOCRepository.cs]
+TimeOfDayWriteRepository  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Repository\Repositories\Update\TimeOfDayWriteRepository.cs)  [reg: IOCRepository.cs]
+PlayerCardConditionReadRepository  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Repository\Repositories\Read\PlayerCardConditionReadRepository.cs)  [reg: IOCRepository.cs]
+PlayerCardConditionInsertRepository  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Repository\Repositories\Insert\PlayerCardConditionInsertRepository.cs)  [reg: IOCRepository.cs]
+PlayerCardConditionDeleteRepository  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Repository\Repositories\Delete\PlayerCardConditionDeleteRepository.cs)  [reg: IOCRepository.cs]
+PlayerCardTraitReadRepository  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Repository\Repositories\Read\PlayerCardTraitReadRepository.cs)  [reg: IOCRepository.cs]
+PlayerCardTraitInsertRepository  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Repository\Repositories\Insert\PlayerCardTraitInsertRepository.cs)  [reg: IOCRepository.cs]
+PlayerCardTraitUpdateRepository  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Repository\Repositories\Update\PlayerCardTraitUpdateRepository.cs)  [reg: IOCRepository.cs]
+PlayerCardTraitDeleteRepository  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Repository\Repositories\Delete\PlayerCardTraitDeleteRepository.cs)  [reg: IOCRepository.cs]
+PlayerCardSecretReadRepository  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Repository\Repositories\Read\PlayerCardSecretReadRepository.cs)  [reg: IOCRepository.cs]
+PlayerCardSecretInsertRepository  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Repository\Repositories\Insert\PlayerCardSecretInsertRepository.cs)  [reg: IOCRepository.cs]
+PlayerCardSecretUpdateRepository  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Repository\Repositories\Update\PlayerCardSecretUpdateRepository.cs)  [reg: IOCRepository.cs]
+PlayerCardSecretDeleteRepository  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Repository\Repositories\Delete\PlayerCardSecretDeleteRepository.cs)  [reg: IOCRepository.cs]
+PlayerCastPerceptionReadRepository  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Repository\Repositories\Read\PlayerCastPerceptionReadRepository.cs)  [reg: IOCRepository.cs]
+PlayerCastPerceptionInsertRepository  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Repository\Repositories\Insert\PlayerCastPerceptionInsertRepository.cs)  [reg: IOCRepository.cs]
+PlayerCastPerceptionUpdateRepository  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Repository\Repositories\Update\PlayerCastPerceptionUpdateRepository.cs)  [reg: IOCRepository.cs]
+BugReportInsertRepository  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Repository\Repositories\Insert\BugReportInsertRepository.cs)  [reg: IOCRepository.cs]
+BugReportReadRepository  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Repository\Repositories\Read\BugReportReadRepository.cs)  [reg: IOCRepository.cs]
+BugReportUpdateRepository  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Repository\Repositories\Update\BugReportUpdateRepository.cs)  [reg: IOCRepository.cs]
+BugReportDeleteRepository  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Repository\Repositories\Delete\BugReportDeleteRepository.cs)  [reg: IOCRepository.cs]
+FactionInsertRepository  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Repository\Repositories\Insert\FactionInsertRepository.cs)  [reg: IOCRepository.cs]
+PlayerFieldJournalEntryReadRepository  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Repository\Repositories\Read\PlayerFieldJournalEntryReadRepository.cs)  [reg: IOCRepository.cs]
+PlayerFieldJournalEntryUpdateRepository  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Repository\Repositories\Update\PlayerFieldJournalEntryUpdateRepository.cs)  [reg: IOCRepository.cs]
+StorylineInsertRepository  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Repository\Repositories\Insert\StorylineInsertRepository.cs)  [reg: IOCRepository.cs]
+StorylineDeleteRepository  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Repository\Repositories\Delete\StorylineDeleteRepository.cs)  [reg: IOCRepository.cs]
+CampaignChroniclesInsertRepository  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Repository\Repositories\Insert\CampaignChroniclesInsertRepository.cs)  [reg: IOCRepository.cs]
+CampaignChroniclesFeedReadRepository  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Repository\Repositories\Read\CampaignChroniclesFeedReadRepository.cs)  [reg: IOCRepository.cs]
+EncounterReadRepository  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Repository\Repositories\Read\EncounterReadRepository.cs)  [reg: IOCRepository.cs]
+EncounterInsertRepository  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Repository\Repositories\Insert\EncounterInsertRepository.cs)  [reg: IOCRepository.cs]
+EncounterDeleteRepository  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Repository\Repositories\Delete\EncounterDeleteRepository.cs)  [reg: IOCRepository.cs]
+EncounterCombatantConditionReadRepository  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Repository\Repositories\Read\EncounterCombatantConditionReadRepository.cs)  [reg: IOCRepository.cs]
+EncounterCombatantConditionInsertRepository  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Repository\Repositories\Insert\EncounterCombatantConditionInsertRepository.cs)  [reg: IOCRepository.cs]
+EncounterCombatantConditionDeleteRepository  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Repository\Repositories\Delete\EncounterCombatantConditionDeleteRepository.cs)  [reg: IOCRepository.cs]
+CampaignInviteCodeEntityMapper  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Repository\Mappers\CampaignInviteCodeEntityMapper.cs)  [reg: IOCRepository.cs]
+CampaignEntityMapper  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Repository\Mappers\CampaignEntityMapper.cs)  [reg: IOCRepository.cs]
+CastEntityMapper  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Repository\Mappers\CastEntityMapper.cs)  [reg: IOCRepository.cs]
+LocationEntityMapper  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Repository\Mappers\LocationEntityMapper.cs)  [reg: IOCRepository.cs]
+PasswordResetTokenEntityMapper  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Repository\Mappers\PasswordResetTokenEntityMapper.cs)  [reg: IOCRepository.cs]
+UserEntityMapper  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Repository\Mappers\UserEntityMapper.cs)  [reg: IOCRepository.cs]
+CampaignSecretEntityMapper  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Repository\Mappers\CampaignSecretEntityMapper.cs)  [reg: IOCRepository.cs]
+CampaignPlayerEntityMapper  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Repository\Mappers\CampaignPlayerEntityMapper.cs)  [reg: IOCRepository.cs]
+PlayerCardEntityMapper  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Repository\Mappers\PlayerCardEntityMapper.cs)  [reg: IOCRepository.cs]
+PlayerCardConditionEntityMapper  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Repository\Mappers\PlayerCardConditionEntityMapper.cs)  [reg: IOCRepository.cs]
+EncounterCombatantConditionEntityMapper  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Repository\Mappers\EncounterCombatantConditionEntityMapper.cs)  [reg: IOCRepository.cs]
+PlayerCardTraitEntityMapper  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Repository\Mappers\PlayerCardTraitEntityMapper.cs)  [reg: IOCRepository.cs]
+PlayerCardSecretEntityMapper  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Repository\Mappers\PlayerCardSecretEntityMapper.cs)  [reg: IOCRepository.cs]
+PlayerCastPerceptionEntityMapper  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Repository\Mappers\PlayerCastPerceptionEntityMapper.cs)  [reg: IOCRepository.cs]
+BugReportEntityMapper  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Repository\Mappers\BugReportEntityMapper.cs)  [reg: IOCRepository.cs]
+FactionEntityMapper  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Repository\Mappers\FactionEntityMapper.cs)  [reg: IOCRepository.cs]
+PlayerFieldJournalEntryEntityMapper  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Repository\Mappers\PlayerFieldJournalEntryEntityMapper.cs)  [reg: IOCRepository.cs]
+PlayerQuicknoteQueueEntityMapper  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Repository\Mappers\PlayerQuicknoteQueueEntityMapper.cs)  [reg: IOCRepository.cs]
+SubscriptionEntityMapper  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Repository\Mappers\SubscriptionEntityMapper.cs)  [reg: IOCRepository.cs]
+PricingModelEntityMapper  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Repository\Mappers\PricingModelEntityMapper.cs)  [reg: IOCRepository.cs]
+SoundtrackEntityMapper  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Repository\Mappers\SoundtrackEntityMapper.cs)  [reg: IOCRepository.cs]
+AmbianceEntityMapper  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Repository\Mappers\AmbianceEntityMapper.cs)  [reg: IOCRepository.cs]
+AmbianceItemEntityMapper  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Repository\Mappers\AmbianceItemEntityMapper.cs)  [reg: IOCRepository.cs]
+QuicknoteQueueReadRepository  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Repository\Repositories\Read\QuicknoteQueueReadRepository.cs)  [reg: IOCRepository.cs]
+QuicknoteQueueInsertRepository  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Repository\Repositories\Insert\QuicknoteQueueInsertRepository.cs)  [reg: IOCRepository.cs]
+QuicknoteQueueUpdateRepository  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Repository\Repositories\Update\QuicknoteQueueUpdateRepository.cs)  [reg: IOCRepository.cs]
+QuicknoteQueueDeleteRepository  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Repository\Repositories\Delete\QuicknoteQueueDeleteRepository.cs)  [reg: IOCRepository.cs]
+CampaignRuleReadRepository  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Repository\Repositories\Read\CampaignRuleReadRepository.cs)  [reg: IOCRepository.cs]
+CampaignRuleInsertRepository  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Repository\Repositories\Insert\CampaignRuleInsertRepository.cs)  [reg: IOCRepository.cs]
+CampaignRuleLinkInsertRepository  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Repository\Repositories\Insert\CampaignRuleLinkInsertRepository.cs)  [reg: IOCRepository.cs]
+CampaignRuleUpdateRepository  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Repository\Repositories\Update\CampaignRuleUpdateRepository.cs)  [reg: IOCRepository.cs]
+CampaignRuleDeleteRepository  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Repository\Repositories\Delete\CampaignRuleDeleteRepository.cs)  [reg: IOCRepository.cs]
+ConditionEntityMapper  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Repository\Mappers\ConditionEntityMapper.cs)  [reg: IOCRepository.cs]
+ConditionLinkInsertRepository  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Repository\Repositories\Insert\ConditionLinkInsertRepository.cs)  [reg: IOCRepository.cs]
+CastcardsConfigurationReadRepository  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Repository\Repositories\Read\CastcardsConfigurationReadRepository.cs)  [reg: IOCRepository.cs]
+CastcardsConfigurationInsertRepository  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Repository\Repositories\Insert\CastcardsConfigurationInsertRepository.cs)  [reg: IOCRepository.cs]
+CastcardsConfigurationUpdateRepository  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Repository\Repositories\Update\CastcardsConfigurationUpdateRepository.cs)  [reg: IOCRepository.cs]
+CampaignLocationInstanceReadRepository  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Repository\Repositories\Read\CampaignLocationInstanceReadRepository.cs)  [reg: IOCRepository.cs]
+CampaignSublocationInstanceReadRepository  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Repository\Repositories\Read\CampaignSublocationInstanceReadRepository.cs)  [reg: IOCRepository.cs]
+CampaignCastInstanceReadRepository  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Repository\Repositories\Read\CampaignCastInstanceReadRepository.cs)  [reg: IOCRepository.cs]
+CampaignFactionInstanceReadRepository  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Repository\Repositories\Read\CampaignFactionInstanceReadRepository.cs)  [reg: IOCRepository.cs]
+SoundtrackReadRepository  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Repository\Repositories\Read\SoundtrackReadRepository.cs)  [reg: IOCRepository.cs]
+SoundtrackInsertRepository  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Repository\Repositories\Insert\SoundtrackInsertRepository.cs)  [reg: IOCRepository.cs]
+SoundtrackUpdateRepository  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Repository\Repositories\Update\SoundtrackUpdateRepository.cs)  [reg: IOCRepository.cs]
+SoundtrackDeleteRepository  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Repository\Repositories\Delete\SoundtrackDeleteRepository.cs)  [reg: IOCRepository.cs]
+AmbianceReadRepository  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Repository\Repositories\Read\AmbianceReadRepository.cs)  [reg: IOCRepository.cs]
+AmbianceInsertRepository  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Repository\Repositories\Insert\AmbianceInsertRepository.cs)  [reg: IOCRepository.cs]
+AmbianceUpdateRepository  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Repository\Repositories\Update\AmbianceUpdateRepository.cs)  [reg: IOCRepository.cs]
+AmbianceDeleteRepository  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Repository\Repositories\Delete\AmbianceDeleteRepository.cs)  [reg: IOCRepository.cs]
+CampaignRuleMapper  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.WebHost\Mappers\CampaignRuleMapper.cs)  [reg: IOCWebhost.cs]
+ConditionMapper  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.WebHost\Mappers\ConditionMapper.cs)  [reg: IOCWebhost.cs]
+CastWebMapper  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.WebHost\Mappers\CastWebMapper.cs)  [reg: IOCWebhost.cs]
+SublocationWebMapper  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.WebHost\Mappers\SubLocationWebMapper.cs)  [reg: IOCWebhost.cs]
+CampaignWebMapper  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.WebHost\Mappers\CampaignWebMapper.cs)  [reg: IOCWebhost.cs]
+PlayerCardWebMapper  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.WebHost\Mappers\PlayerCardWebMapper.cs)  [reg: IOCWebhost.cs]
+FactionWebMapper  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.WebHost\Mappers\FactionWebMapper.cs)  [reg: IOCWebhost.cs]
+CampaignFactionInstanceWebMapper  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.WebHost\Mappers\CampaignFactionInstanceWebMapper.cs)  [reg: IOCWebhost.cs]
+PlayerQuicknoteQueueMapper  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.WebHost\Mappers\PlayerQuicknoteQueueMapper.cs)  [reg: IOCWebhost.cs]
+CampaignEventWebMapper  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.WebHost\Mappers\CampaignEventWebMapper.cs)  [reg: IOCWebhost.cs]
+PlayerFieldJournalEntryMapper  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.WebHost\Mappers\PlayerFieldJournalEntryMapper.cs)  [reg: IOCWebhost.cs]
+
+===== B. Registered types referenced by NOTHING outside their own file =====
+Shared.Configuration.IConfigurationCache  (decl: (none))  [reg: IOCAdapter.cs]
+Repository.Configuration.ConfigurationCache  (decl: (none))  [reg: IOCAdapter.cs]
+Adapter.Configuration.StripeConfiguration  (decl: (none))  [reg: IOCAdapter.cs]
+CastLibrary.Logic.Strategies.InvoiceEvent.InvoicePaymentSucceededStrategy  (decl: (none))  [reg: IOCLogic.cs]
+CastLibrary.Logic.Strategies.InvoiceEvent.InvoicePaymentFailedStrategy  (decl: (none))  [reg: IOCLogic.cs]
+CastLibrary.Logic.Strategies.InvoiceEvent.InvoicePaymentActionRequiredStrategy  (decl: (none))  [reg: IOCLogic.cs]
+CastLibrary.Logic.Strategies.WebhookEvent.InvoicePaymentFailedStrategy  (decl: (none))  [reg: IOCLogic.cs]
+CastLibrary.Logic.Strategies.WebhookEvent.InvoicePaymentSucceededStrategy  (decl: (none))  [reg: IOCLogic.cs]
+
+===== C. ALL declared types referenced by nothing outside their own file (whole backend) =====
+AckEntry  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.WebHost\Services\SignalRInspector.cs)
+AdminController  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.WebHost\Controllers\AdminController.cs)
+AmbiancesController  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.WebHost\Controllers\AmbiancesController.cs)
+AuthController  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.WebHost\Controllers\AuthController.cs)
+AwardCurrencyResult  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\PlayerCard\AwardCurrencyCommandHandler.cs)
+BroadcastEntry  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.WebHost\Services\SignalRInspector.cs)
+BugReportsController  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.WebHost\Controllers\BugReportsController.cs)
+CampaignCastCustomItemRequest  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Shared\Requests\UpdateCastCustomItemsRequest.cs)
+CampaignCastsController  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.WebHost\Controllers\v2CampaignCastsController.cs)
+CampaignCastTravelController  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.WebHost\Controllers\v2CampaignCastTravelController.cs)
+CampaignChroniclesController  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.WebHost\Controllers\CampaignChroniclesController.cs)
+CampaignDayCycleController  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.WebHost\Controllers\v2CampaignDayCycleController.cs)
+CampaignEventsController  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.WebHost\Controllers\CampaignEventsController.cs)
+CampaignFactionsController  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.WebHost\Controllers\v2CampaignFactionsController.cs)
+CampaignKeywordsController  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.WebHost\Controllers\CampaignKeywordsController.cs)
+CampaignLocationsController  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.WebHost\Controllers\v2CampaignLocationsController.cs)
+CampaignRuleRules  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Validators\CampaignRuleRequestValidators.cs)
+CampaignRulesController  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.WebHost\Controllers\CampaignRulesController.cs)
+CampaignSettingsController  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.WebHost\Controllers\v2CampaignSettingsController.cs)
+CampaignSublocationsController  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.WebHost\Controllers\v2CampaignSublocationsController.cs)
+CastCardsConfigurationKeysExtensions  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Shared\Extensions\CastCardsConfigurationKeysExtensions.cs)
+CastKeywordCountRow  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Repository\Repositories\Read\CastReadRepository.cs)
+ChronicleItemResponse  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Shared\Responses\ChronicleItemResponse.cs)
+CombatantConditionRow  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Repository\Repositories\Read\EncounterReadRepository.cs)
+ComponentAckEntry  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.WebHost\Services\SignalRInspector.cs)
+ConditionKeywords  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\Conditions\ConditionCommandHandlers.cs)
+ConditionRules  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Validators\ConditionRequestValidators.cs)
+ConditionsController  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.WebHost\Controllers\ConditionsController.cs)
+ConnectionEntry  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.WebHost\Services\SignalRInspector.cs)
+CreateSpotCombatantRequest  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Shared\Requests\EncounterRequests.cs)
+CurrencyRow  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Repository\Repositories\Read\CurrencyBalanceReadRepository.cs)
+DashboardController  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.WebHost\Controllers\DashboardController.cs)
+DeliverSecretResult  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\PlayerCard\DeliverSecretCommandHandler.cs)
+EncounterConditions  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\Encounter\EncounterCombatantConditionCommandHandlers.cs)
+EntityTypeExtensions  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Shared\Enums\EntityType.cs)
+envelope  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Services\LoggingService.cs)
+FactionColorsRequest  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Shared\Requests\UpdateFactionInstanceRequest.cs)
+FactionKeywordCount  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Queries\Campaign\GetCampaignFactionLibraryQueryHandler.cs)
+FactionKeywordCountRow  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Repository\Repositories\Read\FactionReadRepository.cs)
+FactionLibraryPage  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Queries\Campaign\GetCampaignFactionLibraryQueryHandler.cs)
+FactionsController  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.WebHost\Controllers\FactionsController.cs)
+FactionSymbolEntry  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Shared\Requests\AssignFactionToCastRequest.cs)
+FieldJournalController  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.WebHost\Controllers\FieldJournalController.cs)
+FileValidationResult  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Services\FileValidationService.cs)
+GetOrCreateStripeCustomerCommand  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\Stripe\GetOrCreateStripeCustomerCommand.cs)
+InspectorAckReceipt  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.WebHost\Services\SignalRInspector.cs)
+InspectorConnection  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.WebHost\Services\SignalRInspector.cs)
+InspectorReport  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.WebHost\Services\SignalRInspector.cs)
+InspectorRow  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.WebHost\Services\SignalRInspector.cs)
+IOCAdapter  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.WebHost\IoC\IOCAdapter.cs)
+IOCLogic  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.WebHost\IoC\IOCLogic.cs)
+IOCRepository  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.WebHost\IoC\IOCRepository.cs)
+IOCRootContainer  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.WebHost\IoC\IOCRootContainer.cs)
+IOCWebhost  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.WebHost\IoC\IOCWebhost.cs)
+KeywordsHeap  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Repository\Services\KeywordExtractionService.cs)
+LocationsController  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.WebHost\Controllers\LocationsController.cs)
+MigrateStorylineToChroniclesCommand  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\CampaignChronicles\MigrateStorylineToChroniclesCommand.cs)
+NoOpAuthenticationHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.WebHost\Authentication\NoOpAuthenticationHandler.cs)
+PartyData  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Queries\PlayerCard\GetDiscoveredCastQueryHandler.cs)
+PlayerAwardSplit  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\PlayerCard\AwardCurrencyCommandHandler.cs)
+PlayerCardConditionRow  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Repository\Repositories\Read\EncounterReadRepository.cs)
+PlayerCardsController  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.WebHost\Controllers\PlayerCardsController.cs)
+QuicknoteQueueController  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.WebHost\Controllers\QuicknoteQueueController.cs)
+ReceivedComponentAck  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.WebHost\Hubs\CampaignHub.cs)
+ReceivedEventAck  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.WebHost\Hubs\CampaignHub.cs)
+RedeemCampaignInviteCodeResult  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\Campaign\RedeemCampaignInviteCodeCommandHandler.cs)
+SetSpotInitiativeRequest  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Shared\Requests\EncounterRequests.cs)
+ShopItemRequest  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Shared\Requests\CreateSubLocationRequest.cs)
+SiteConfigurationController  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.WebHost\Controllers\SiteConfigurationController.cs)
+SoundtracksController  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.WebHost\Controllers\SoundtracksController.cs)
+StripeAccount  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Shared\Domain\StripeConfiguration.cs)
+StripeController  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.WebHost\Controllers\StripeController.cs)
+StripeExtensions  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Strategies\SubscriptionEvent\StripeExtensions.cs)
+StripeRequest  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Shared\Domain\StripeEventPayload.cs)
+SublocationsController  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.WebHost\Controllers\SubLocationsController.cs)
+SubscriptionController  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.WebHost\Controllers\SubscriptionController.cs)
+SubscriptionTier  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Shared\Responses\SubscriptionLimits.cs)
+UpdateCastCustomItemsCommand  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\Campaign\UpdateCastCustomItemsCommandHandler.cs)
+UpdateCastInstanceKeywordsCommand  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\Campaign\UpdateCastInstanceKeywordsCommandHandler.cs)
+UpdateLocationSublocationsVisibilityCommand  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\Campaign\UpdateLocationSubLocationsVisibilityCommandHandler.cs)
+UpdateStorylineArchiveMarkResult  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\Campaign\UpdateStorylineArchiveMarkCommandHandler.cs)
+UpdateSublocationCastsVisibilityCommand  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\Campaign\UpdateSubLocationCastsVisibilityCommandHandler.cs)
+UpdateSublocationCustomItemsCommand  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\Campaign\UpdateSubLocationCustomItemsCommandHandler.cs)
+UpdateSublocationInstanceKeywordsCommand  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\Campaign\UpdateSubLocationInstanceKeywordsCommandHandler.cs)
+UpsertTimeOfDaySliceRequest  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Shared\Requests\UpsertTimeOfDayRequest.cs)
+UsersController  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.WebHost\Controllers\UsersController.cs)
+UserSubscriptionEntity  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Repository\Repositories\Read\UserReadRepository.cs)
+v2CampaignEncountersController  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.WebHost\Controllers\v2CampaignEncountersController.cs)
+v2CastsController  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.WebHost\Controllers\v2CastsController.cs)
+
+===== D. Declared types referenced ONLY by the IoC container (not self) =====
+AccountVerificationEmailTemplateBuilder  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Adapter\EmailBuilders\AccountVerificationEmailTemplateBuilder.cs)
+AddCampaignKeywordCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\Campaign\AddCampaignKeywordCommandHandler.cs)
+AddCampaignSecretCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\Campaign\AddCampaignSecretCommandHandler.cs)
+AddCastToCampaignCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\Campaign\AddCastToCampaignCommandHandler.cs)
+AddChronicleCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\CampaignChronicles\AddChronicleCommandHandler.cs)
+AddCombatantToEncounterCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\Encounter\EncounterCommandHandlers.cs)
+AddFactionCastMemberCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\Campaign\AddFactionCastMemberCommandHandler.cs)
+AddFactionRelationshipCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\Campaign\AddFactionRelationshipCommandHandler.cs)
+AddFactionToCampaignCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\Campaign\AddFactionToCampaignCommandHandler.cs)
+AddLocationToCampaignCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\Campaign\AddLocationToCampaignCommandHandler.cs)
+AddSublocationShopItemCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\Campaign\AddSubLocationShopItemCommandHandler.cs)
+AddSublocationToCampaignCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\Campaign\AddSubLocationToCampaignCommandHandler.cs)
+AddUserToDemoCampaignCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\Admin\AddUserToDemoCampaignCommandHandler.cs)
+AdvanceDayCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\Campaign\AdvanceDayCommandHandler.cs)
+AdvanceEncounterTurnCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\Encounter\EncounterCommandHandlers.cs)
+AmbianceDeleteRepository  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Repository\Repositories\Delete\AmbianceDeleteRepository.cs)
+AmbianceEntityMapper  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Repository\Mappers\AmbianceEntityMapper.cs)
+AmbianceInsertRepository  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Repository\Repositories\Insert\AmbianceInsertRepository.cs)
+AmbianceItemEntityMapper  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Repository\Mappers\AmbianceItemEntityMapper.cs)
+AmbianceReadRepository  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Repository\Repositories\Read\AmbianceReadRepository.cs)
+AmbianceUpdateRepository  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Repository\Repositories\Update\AmbianceUpdateRepository.cs)
+AssignConditionCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\PlayerCard\AssignConditionCommandHandler.cs)
+AssignEncounterCombatantConditionCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\Encounter\EncounterCombatantConditionCommandHandlers.cs)
+AssignFactionToCastCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\Campaign\AssignFactionToCastCommandHandler.cs)
+AssignFactionToSublocationCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\Campaign\AssignFactionToSublocationCommandHandler.cs)
+AudioFileStorageOperator  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Adapter\Operators\AudioFileStorageOperator.cs)
+AuditLoggingService  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Services\AuditLoggingService.cs)
+AwardCurrencyCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\PlayerCard\AwardCurrencyCommandHandler.cs)
+BugReportDeleteRepository  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Repository\Repositories\Delete\BugReportDeleteRepository.cs)
+BugReportEmailTemplateBuilder  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Adapter\EmailBuilders\BugReportEmailTemplateBuilder.cs)
+BugReportEntityMapper  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Repository\Mappers\BugReportEntityMapper.cs)
+BugReportInsertRepository  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Repository\Repositories\Insert\BugReportInsertRepository.cs)
+BugReportReadRepository  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Repository\Repositories\Read\BugReportReadRepository.cs)
+BugReportUpdateRepository  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Repository\Repositories\Update\BugReportUpdateRepository.cs)
+CampaignAccessService  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Services\CampaignAccessService.cs)
+CampaignCastInstanceReadRepository  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Repository\Repositories\Read\CampaignCastInstanceReadRepository.cs)
+CampaignChronicleFeedFactory  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Factories\CampaignChronicleFeedFactory.cs)
+CampaignChroniclesFeedReadRepository  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Repository\Repositories\Read\CampaignChroniclesFeedReadRepository.cs)
+CampaignChroniclesInsertRepository  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Repository\Repositories\Insert\CampaignChroniclesInsertRepository.cs)
+CampaignEntityMapper  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Repository\Mappers\CampaignEntityMapper.cs)
+CampaignEntityVisibilityUpdater  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Strategies\IEntityVisibilityUpdater.cs)
+CampaignEventWebMapper  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.WebHost\Mappers\CampaignEventWebMapper.cs)
+CampaignFactionInstanceReadRepository  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Repository\Repositories\Read\CampaignFactionInstanceReadRepository.cs)
+CampaignFactionInstanceWebMapper  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.WebHost\Mappers\CampaignFactionInstanceWebMapper.cs)
+CampaignInvitationEmailTemplateBuilder  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Adapter\EmailBuilders\CampaignInvitationEmailTemplateBuilder.cs)
+CampaignInviteCodeDeleteRepository  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Repository\Repositories\Delete\CampaignInviteCodeDeleteRepository.cs)
+CampaignInviteCodeEntityMapper  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Repository\Mappers\CampaignInviteCodeEntityMapper.cs)
+CampaignInviteCodeReadRepository  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Repository\Repositories\Read\CampaignInviteCodeReadRepository.cs)
+CampaignInviteCodeUpdateRepository  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Repository\Repositories\Update\CampaignInviteCodeUpdateRepository.cs)
+CampaignLocationInstanceReadRepository  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Repository\Repositories\Read\CampaignLocationInstanceReadRepository.cs)
+CampaignPlayerDeleteRepository  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Repository\Repositories\Delete\CampaignPlayerDeleteRepository.cs)
+CampaignPlayerEntityMapper  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Repository\Mappers\CampaignPlayerEntityMapper.cs)
+CampaignPlayerInsertRepository  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Repository\Repositories\Insert\CampaignPlayerInsertRepository.cs)
+CampaignRuleDeleteRepository  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Repository\Repositories\Delete\CampaignRuleDeleteRepository.cs)
+CampaignRuleInsertRepository  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Repository\Repositories\Insert\CampaignRuleInsertRepository.cs)
+CampaignRuleLinkInsertRepository  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Repository\Repositories\Insert\CampaignRuleLinkInsertRepository.cs)
+CampaignRuleMapper  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.WebHost\Mappers\CampaignRuleMapper.cs)
+CampaignRuleReadRepository  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Repository\Repositories\Read\CampaignRuleReadRepository.cs)
+CampaignRuleUpdateRepository  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Repository\Repositories\Update\CampaignRuleUpdateRepository.cs)
+CampaignSecretEntityMapper  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Repository\Mappers\CampaignSecretEntityMapper.cs)
+CampaignSublocationInstanceReadRepository  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Repository\Repositories\Read\CampaignSublocationInstanceReadRepository.cs)
+CampaignWebMapper  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.WebHost\Mappers\CampaignWebMapper.cs)
+CastcardsConfigurationInsertRepository  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Repository\Repositories\Insert\CastcardsConfigurationInsertRepository.cs)
+CastcardsConfigurationReadRepository  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Repository\Repositories\Read\CastcardsConfigurationReadRepository.cs)
+CastcardsConfigurationUpdateRepository  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Repository\Repositories\Update\CastcardsConfigurationUpdateRepository.cs)
+CastEntityMapper  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Repository\Mappers\CastEntityMapper.cs)
+CastEntityVisibilityUpdater  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Strategies\IEntityVisibilityUpdater.cs)
+CastInsertRepository  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Repository\Repositories\Insert\CastInsertRepository.cs)
+CastTraveledEntityVisibilityUpdater  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Strategies\IEntityVisibilityUpdater.cs)
+CastWebMapper  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.WebHost\Mappers\CastWebMapper.cs)
+ChangePasswordCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\Auth\ChangePasswordCommandHandler.cs)
+ChangeUserRoleCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\Admin\ChangeUserRoleCommandHandler.cs)
+ChargeDisputeClosedStrategy  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Strategies\WebhookEvent\ChargeDisputeClosedStrategy.cs)
+ChargeDisputeCreatedStrategy  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Strategies\WebhookEvent\ChargeDisputeCreatedStrategy.cs)
+CheckoutSessionCompletedStrategy  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Strategies\WebhookEvent\CheckoutSessionCompletedStrategy.cs)
+CleanupBugReportsCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\BugReport\CleanupBugReportsCommandHandler.cs)
+ClearFactionCastMemberPrimaryCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\Campaign\ClearFactionCastMemberPrimaryCommandHandler.cs)
+CoinRewardChronicleArchiveStrategy  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\CampaignChronicles\ChronicleSnapshotStrategiesExtra.cs)
+ConditionEntityMapper  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Repository\Mappers\ConditionEntityMapper.cs)
+ConditionLinkInsertRepository  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Repository\Repositories\Insert\ConditionLinkInsertRepository.cs)
+ConditionMapper  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.WebHost\Mappers\ConditionMapper.cs)
+CreateAmbianceCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\Ambiance\CreateAmbianceCommandHandler.cs)
+CreateCampaignCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\Campaign\CreateCampaignCommandHandler.cs)
+CreateCampaignRuleCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\CampaignRules\CreateCampaignRuleCommandHandler.cs)
+CreateCampaignStorylineCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\Campaign\CreateCampaignStorylineCommandHandler.cs)
+CreateCastCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\Cast\CreateCastCommandHandler.cs)
+CreateCheckoutSessionCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\Stripe\CreateCheckoutSessionCommandHandler.cs)
+CreateConditionCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\Conditions\ConditionCommandHandlers.cs)
+CreateCustomerPortalSessionCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\Stripe\CreateCustomerPortalSessionCommandHandler.cs)
+CreateEncounterCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\Encounter\EncounterCommandHandlers.cs)
+CreateEncounterGroupCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\Encounter\EncounterCommandHandlers.cs)
+CreateEncounterSpotCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\Encounter\EncounterCommandHandlers.cs)
+CreateFactionCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\Faction\CreateFactionCommandHandler.cs)
+CreateFreeTrialSubscriptionCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\Subscription\CreateFreeTrialSubscriptionCommandHandler.cs)
+CreateLocationCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\Location\CreateLocationCommandHandler.cs)
+CreatePlayerCardCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\PlayerCard\CreatePlayerCardCommandHandler.cs)
+CreatePlayerCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\Admin\CreatePlayerCommandHandler.cs)
+CreateQuicknoteQueueItemCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\QuicknoteQueue\CreateQuicknoteQueueItemCommandHandler.cs)
+CreateSublocationCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\SubLocation\CreateSubLocationCommandHandler.cs)
+CustomerSubscriptionDeletedStrategy  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Strategies\WebhookEvent\CustomerSubscriptionDeletedStrategy.cs)
+CustomerSubscriptionPausedStrategy  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Strategies\WebhookEvent\CustomerSubscriptionPausedStrategy.cs)
+CustomerSubscriptionResumedStrategy  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Strategies\WebhookEvent\CustomerSubscriptionResumedStrategy.cs)
+DatabaseHealthCheck  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Repository\DatabaseHealthCheck.cs)
+DeleteAmbianceCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\Ambiance\DeleteAmbianceCommandHandler.cs)
+DeleteBugReportCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\BugReport\DeleteBugReportCommandHandler.cs)
+DeleteCampaignCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\Campaign\DeleteCampaignCommandHandler.cs)
+DeleteCampaignEventCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\Campaign\DeleteCampaignEventCommandHandler.cs)
+DeleteCampaignKeywordCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\Campaign\DeleteCampaignKeywordCommandHandler.cs)
+DeleteCampaignRuleCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\CampaignRules\DeleteCampaignRuleCommandHandler.cs)
+DeleteCampaignSecretCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\Campaign\DeleteCampaignSecretCommandHandler.cs)
+DeleteCastCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\Cast\DeleteCastCommandHandler.cs)
+DeleteCastInstanceCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\Campaign\DeleteCastInstanceCommandHandler.cs)
+DeleteConditionCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\Conditions\ConditionCommandHandlers.cs)
+DeleteEncounterSpotCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\Encounter\EncounterCommandHandlers.cs)
+DeleteFactionCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\Faction\DeleteFactionCommandHandler.cs)
+DeleteFactionInstanceCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\Campaign\DeleteFactionInstanceCommandHandler.cs)
+DeleteLocationCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\Location\DeleteLocationCommandHandler.cs)
+DeleteLocationInstanceCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\Campaign\DeleteLocationInstanceCommandHandler.cs)
+DeletePlayerCardSecretCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\PlayerCard\DeletePlayerCardSecretCommandHandler.cs)
+DeleteQuicknoteQueueItemCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\QuicknoteQueue\DeleteQuicknoteQueueItemCommandHandler.cs)
+DeleteShopItemCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\Campaign\DeleteShopItemCommandHandler.cs)
+DeleteSoundtrackCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\Soundtrack\DeleteSoundtrackCommandHandler.cs)
+DeleteSublocationCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\SubLocation\DeleteSubLocationCommandHandler.cs)
+DeleteSublocationInstanceCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\Campaign\DeleteSubLocationInstanceCommandHandler.cs)
+DeleteTraitCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\PlayerCard\DeleteTraitCommandHandler.cs)
+DeleteUserCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\Admin\DeleteUserCommandHandler.cs)
+DeliverSecretCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\PlayerCard\DeliverSecretCommandHandler.cs)
+EmailChangeConfirmationEmailTemplateBuilder  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Adapter\EmailBuilders\EmailChangeConfirmationEmailTemplateBuilder.cs)
+EmailChangeSecurityAlertEmailTemplateBuilder  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Adapter\EmailBuilders\EmailChangeSecurityAlertEmailTemplateBuilder.cs)
+EmailService  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Services\EmailService.cs)
+EncounterChronicleArchiveStrategy  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\CampaignChronicles\EncounterChronicleArchiveStrategy.cs)
+EncounterCombatantBuilder  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Services\EncounterCombatantBuilder.cs)
+EncounterCombatantConditionDeleteRepository  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Repository\Repositories\Delete\EncounterCombatantConditionDeleteRepository.cs)
+EncounterCombatantConditionEntityMapper  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Repository\Mappers\EncounterCombatantConditionEntityMapper.cs)
+EncounterCombatantConditionInsertRepository  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Repository\Repositories\Insert\EncounterCombatantConditionInsertRepository.cs)
+EncounterCombatantConditionReadRepository  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Repository\Repositories\Read\EncounterCombatantConditionReadRepository.cs)
+EncounterDeleteRepository  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Repository\Repositories\Delete\EncounterDeleteRepository.cs)
+EncounterInsertRepository  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Repository\Repositories\Insert\EncounterInsertRepository.cs)
+EncounterReadRepository  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Repository\Repositories\Read\EncounterReadRepository.cs)
+FactionEntityMapper  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Repository\Mappers\FactionEntityMapper.cs)
+FactionEntityVisibilityUpdater  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Strategies\IEntityVisibilityUpdater.cs)
+FactionInsertRepository  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Repository\Repositories\Insert\FactionInsertRepository.cs)
+FactionWebMapper  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.WebHost\Mappers\FactionWebMapper.cs)
+ForgotPasswordCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\Auth\ForgotPasswordCommandHandler.cs)
+GenerateCampaignInviteCodeCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\Campaign\GenerateCampaignInviteCodeCommandHandler.cs)
+GetAllPlayerCardsQueryHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Queries\PlayerCard\GetAllPlayerCardsQueryHandler.cs)
+GetAllUsersQueryHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Queries\Admin\GetAllUsersQueryHandler.cs)
+GetAvailableCampaignRulesQueryHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Queries\CampaignRules\GetCampaignRulesQueryHandler.cs)
+GetAvailableConditionsQueryHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Queries\Conditions\GetConditionsQueryHandler.cs)
+GetBugReportsQueryHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Queries\BugReport\GetBugReportsQueryHandler.cs)
+GetCampaignAmbiancesQueryHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Queries\Ambiance\GetCampaignAmbiancesQueryHandler.cs)
+GetCampaignCastInstancesQueryHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Queries\Campaign\GetCampaignCastInstancesQueryHandler.cs)
+GetCampaignDetailQueryHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Queries\Campaign\GetCampaignDetailQueryHandler.cs)
+GetCampaignEncountersQueryHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Queries\Encounter\EncounterQueryHandlers.cs)
+GetCampaignFactionInstancesQueryHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Queries\Campaign\GetCampaignFactionInstancesQueryHandler.cs)
+GetCampaignFactionLibraryKeywordCountsQueryHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Queries\Campaign\GetCampaignFactionLibraryQueryHandler.cs)
+GetCampaignFactionLibraryQueryHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Queries\Campaign\GetCampaignFactionLibraryQueryHandler.cs)
+GetCampaignInviteCodeQueryHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Queries\Campaign\GetCampaignInviteCodeQueryHandler.cs)
+GetCampaignKeywordsQueryHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Queries\Campaign\GetCampaignKeywordsQueryHandler.cs)
+GetCampaignLibraryQueryHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Queries\Campaign\GetCampaignLibraryQueryHandler.cs)
+GetCampaignLocationInstancesQueryHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Queries\Campaign\GetCampaignLocationInstancesQueryHandler.cs)
+GetCampaignPlayersQueryHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Queries\Campaign\GetCampaignPlayersQueryHandler.cs)
+GetCampaignRulesQueryHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Queries\CampaignRules\GetCampaignRulesQueryHandler.cs)
+GetCampaignSecretsQueryHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Queries\Campaign\GetCampaignSecretsQueryHandler.cs)
+GetCampaignSoundtracksQueryHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Queries\Soundtrack\GetCampaignSoundtracksQueryHandler.cs)
+GetCampaignStorylineItemsQueryHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Queries\Campaign\GetCampaignStorylineItemsQueryHandler.cs)
+GetCampaignSublocationInstancesQueryHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Queries\Campaign\GetCampaignSublocationInstancesQueryHandler.cs)
+GetCastDetailQueryHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Queries\Cast\GetCastDetailQueryHandler.cs)
+GetCastIndexQueryHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Queries\Cast\GetCastIndexQueryHandler.cs)
+GetCastInstancePerceptionsQueryHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Queries\PlayerCard\GetCastInstancePerceptionsQueryHandler.cs)
+GetCastKeywordCountsQueryHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Queries\Cast\GetCastIndexQueryHandler.cs)
+GetCastLibraryQueryHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Queries\Cast\GetCastLibraryQueryHandler.cs)
+GetChronicleFeedQueryHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Queries\CampaignChronicles\GetChronicleFeedQuery.cs)
+GetConditionsQueryHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Queries\Conditions\GetConditionsQueryHandler.cs)
+GetDemoCampaignsQueryHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Queries\Admin\GetDemoCampaignsQueryHandler.cs)
+GetDemoPlayersQueryHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Queries\Admin\GetDemoPlayersQueryHandler.cs)
+GetDiscoveredCastQueryHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Queries\PlayerCard\GetDiscoveredCastQueryHandler.cs)
+GetEncounterCombatantConditionsQueryHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Queries\Encounter\GetEncounterCombatantConditionsQueryHandler.cs)
+GetEncounterDetailQueryHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Queries\Encounter\EncounterQueryHandlers.cs)
+GetFactionDetailQueryHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Queries\Faction\GetFactionDetailQueryHandler.cs)
+GetFactionLibraryQueryHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Queries\Faction\GetFactionLibraryQueryHandler.cs)
+GetFieldJournalEntriesQueryHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Queries\Cast\GetFieldJournalEntriesQueryHandler.cs)
+GetLocationLibraryQueryHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Queries\Location\GetLocationLibraryQueryHandler.cs)
+GetPartyCampaignFactionInstancesQueryHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Queries\Campaign\GetPartyCampaignFactionInstancesQueryHandler.cs)
+GetPlayerCampaignDetailQueryHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Queries\Campaign\GetPlayerCampaignDetailQueryHandler.cs)
+GetPlayerCampaignFactionInstancesQueryHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Queries\Campaign\GetPlayerCampaignFactionInstancesQueryHandler.cs)
+GetPlayerCampaignLibraryQueryHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Queries\Campaign\GetPlayerCampaignLibraryQueryHandler.cs)
+GetPlayerCardQueryHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Queries\PlayerCard\GetPlayerCardQueryHandler.cs)
+GetPlayerCastPerceptionsQueryHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Queries\PlayerCard\GetPlayerCastPerceptionsQueryHandler.cs)
+GetPlayerConditionsQueryHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Queries\PlayerCard\GetPlayerConditionsQueryHandler.cs)
+GetPlayerInventoryQueryHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Queries\Campaign\GetPlayerInventoryQuery.cs)
+GetPlayerSecretsQueryHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Queries\PlayerCard\GetPlayerSecretsQueryHandler.cs)
+GetPlayerTraitsQueryHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Queries\PlayerCard\GetPlayerTraitsQueryHandler.cs)
+GetQuicknoteQueueQueryHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Queries\QuicknoteQueue\GetQuicknoteQueueQueryHandler.cs)
+GetSharedPlayerSecretsQueryHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Queries\PlayerCard\GetSharedPlayerSecretsQueryHandler.cs)
+GetSublocationLibraryQueryHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Queries\SubLocation\GetSubLocationLibraryQueryHandler.cs)
+GetTimeOfDayQueryHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Queries\Campaign\GetTimeOfDayQueryHandler.cs)
+GetUserEntityLimitsQueryHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Queries\Subscription\GetUserEntityLimitsQueryHandler.cs)
+GetUserKeywordsQueryHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Queries\Campaign\GetUserKeywordsQueryHandler.cs)
+GetUserSubscriptionQueryHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Queries\Subscription\GetUserSubscriptionQueryHandler.cs)
+GetVisibleCampaignEventsQueryHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Queries\Campaign\GetVisibleCampaignEventsQueryHandler.cs)
+InactivityReminderEmailTemplateBuilder  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Adapter\EmailBuilders\InactivityReminderEmailTemplateBuilder.cs)
+InvoicePaymentActionRequiredStrategy  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Strategies\InvoiceEvent\InvoicePaymentActionRequiredStrategy.cs)
+IUpdateCastCustomItemsCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\Campaign\UpdateCastCustomItemsCommandHandler.cs)
+IUpdateCastInstanceKeywordsCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\Campaign\UpdateCastInstanceKeywordsCommandHandler.cs)
+IUpdateLocationSublocationsVisibilityCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\Campaign\UpdateLocationSubLocationsVisibilityCommandHandler.cs)
+IUpdateSublocationCastsVisibilityCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\Campaign\UpdateSubLocationCastsVisibilityCommandHandler.cs)
+IUpdateSublocationCustomItemsCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\Campaign\UpdateSubLocationCustomItemsCommandHandler.cs)
+IUpdateSublocationInstanceKeywordsCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\Campaign\UpdateSubLocationInstanceKeywordsCommandHandler.cs)
+LinkCampaignRulesCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\CampaignRules\LinkCampaignRulesCommandHandler.cs)
+LinkConditionsCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\Conditions\ConditionCommandHandlers.cs)
+LocalAudioFileStorageOperator  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Adapter\Operators\LocalAudioFileStorageOperator.cs)
+LocalFileImageStorageOperator  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Adapter\Operators\LocalFileImageStorageOperator.cs)
+LocationEntityMapper  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Repository\Mappers\LocationEntityMapper.cs)
+LocationEntityVisibilityUpdater  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Strategies\IEntityVisibilityUpdater.cs)
+LoginCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\Auth\LoginCommandHandler.cs)
+MarkBugFixedCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\BugReport\MarkBugFixedCommandHandler.cs)
+PasswordResetEmailTemplateBuilder  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Adapter\EmailBuilders\PasswordResetEmailTemplateBuilder.cs)
+PasswordResetTokenEntityMapper  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Repository\Mappers\PasswordResetTokenEntityMapper.cs)
+PasswordResetTokenInsertRepository  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Repository\Repositories\Insert\PasswordResetTokenInsertRepository.cs)
+PasswordResetTokenReadRepository  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Repository\Repositories\Read\PasswordResetTokenReadRepository.cs)
+PasswordResetTokenUpdateRepository  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Repository\Repositories\Update\PasswordResetTokenUpdateRepository.cs)
+PaymentIntentPaymentFailedStrategy  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Strategies\WebhookEvent\PaymentIntentPaymentFailedStrategy.cs)
+PaymentIntentSucceededStrategy  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Strategies\WebhookEvent\PaymentIntentSucceededStrategy.cs)
+PlayerCardConditionDeleteRepository  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Repository\Repositories\Delete\PlayerCardConditionDeleteRepository.cs)
+PlayerCardConditionEntityMapper  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Repository\Mappers\PlayerCardConditionEntityMapper.cs)
+PlayerCardConditionInsertRepository  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Repository\Repositories\Insert\PlayerCardConditionInsertRepository.cs)
+PlayerCardConditionReadRepository  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Repository\Repositories\Read\PlayerCardConditionReadRepository.cs)
+PlayerCardEntityMapper  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Repository\Mappers\PlayerCardEntityMapper.cs)
+PlayerCardSecretDeleteRepository  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Repository\Repositories\Delete\PlayerCardSecretDeleteRepository.cs)
+PlayerCardSecretEntityMapper  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Repository\Mappers\PlayerCardSecretEntityMapper.cs)
+PlayerCardSecretInsertRepository  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Repository\Repositories\Insert\PlayerCardSecretInsertRepository.cs)
+PlayerCardSecretReadRepository  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Repository\Repositories\Read\PlayerCardSecretReadRepository.cs)
+PlayerCardSecretUpdateRepository  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Repository\Repositories\Update\PlayerCardSecretUpdateRepository.cs)
+PlayerCardTraitDeleteRepository  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Repository\Repositories\Delete\PlayerCardTraitDeleteRepository.cs)
+PlayerCardTraitEntityMapper  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Repository\Mappers\PlayerCardTraitEntityMapper.cs)
+PlayerCardTraitInsertRepository  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Repository\Repositories\Insert\PlayerCardTraitInsertRepository.cs)
+PlayerCardTraitReadRepository  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Repository\Repositories\Read\PlayerCardTraitReadRepository.cs)
+PlayerCardTraitUpdateRepository  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Repository\Repositories\Update\PlayerCardTraitUpdateRepository.cs)
+PlayerCardWebMapper  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.WebHost\Mappers\PlayerCardWebMapper.cs)
+PlayerCastPerceptionEntityMapper  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Repository\Mappers\PlayerCastPerceptionEntityMapper.cs)
+PlayerCastPerceptionInsertRepository  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Repository\Repositories\Insert\PlayerCastPerceptionInsertRepository.cs)
+PlayerCastPerceptionReadRepository  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Repository\Repositories\Read\PlayerCastPerceptionReadRepository.cs)
+PlayerCastPerceptionUpdateRepository  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Repository\Repositories\Update\PlayerCastPerceptionUpdateRepository.cs)
+PlayerEntityVisibilityUpdater  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Strategies\IEntityVisibilityUpdater.cs)
+PlayerFieldJournalEntryEntityMapper  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Repository\Mappers\PlayerFieldJournalEntryEntityMapper.cs)
+PlayerFieldJournalEntryMapper  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.WebHost\Mappers\PlayerFieldJournalEntryMapper.cs)
+PlayerFieldJournalEntryReadRepository  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Repository\Repositories\Read\PlayerFieldJournalEntryReadRepository.cs)
+PlayerFieldJournalEntryUpdateRepository  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Repository\Repositories\Update\PlayerFieldJournalEntryUpdateRepository.cs)
+PlayerNoteChronicleArchiveStrategy  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\CampaignChronicles\ChronicleSnapshotStrategies.cs)
+PlayerQuicknoteQueueEntityMapper  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Repository\Mappers\PlayerQuicknoteQueueEntityMapper.cs)
+PlayerQuicknoteQueueMapper  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.WebHost\Mappers\PlayerQuicknoteQueueMapper.cs)
+PricingModelEntityMapper  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Repository\Mappers\PricingModelEntityMapper.cs)
+ProcessStripeWebhookCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\Stripe\ProcessStripeWebhookCommandHandler.cs)
+PurchaseShopItemCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\Campaign\PurchaseShopItemCommandHandler.cs)
+QuicknoteQueueDeleteRepository  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Repository\Repositories\Delete\QuicknoteQueueDeleteRepository.cs)
+QuicknoteQueueInsertRepository  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Repository\Repositories\Insert\QuicknoteQueueInsertRepository.cs)
+QuicknoteQueueReadRepository  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Repository\Repositories\Read\QuicknoteQueueReadRepository.cs)
+QuicknoteQueueUpdateRepository  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Repository\Repositories\Update\QuicknoteQueueUpdateRepository.cs)
+RedeemCampaignInviteCodeCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\Campaign\RedeemCampaignInviteCodeCommandHandler.cs)
+RegisterUserCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\Auth\RegisterUserCommandHandler.cs)
+RemoveCampaignPlayerCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\Campaign\RemoveCampaignPlayerCommandHandler.cs)
+RemoveConditionCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\PlayerCard\RemoveConditionCommandHandler.cs)
+RemoveEncounterCombatantCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\Encounter\EncounterCommandHandlers.cs)
+RemoveEncounterCombatantConditionCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\Encounter\EncounterCombatantConditionCommandHandlers.cs)
+RemoveFactionCastMemberCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\Campaign\RemoveFactionCastMemberCommandHandler.cs)
+RemoveFactionRelationshipCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\Campaign\RemoveFactionRelationshipCommandHandler.cs)
+RenameEncounterCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\Encounter\EncounterCommandHandlers.cs)
+RenameEncounterSpotCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\Encounter\EncounterCommandHandlers.cs)
+ReorderCampaignEventsCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\Campaign\ReorderCampaignEventsCommandHandler.cs)
+ReorderEncounterSpotsCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\Encounter\EncounterCommandHandlers.cs)
+ResealSecretCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\Campaign\ResealSecretCommandHandler.cs)
+ResetPasswordCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\Auth\ResetPasswordCommandHandler.cs)
+ResetUserPasswordCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\Admin\ResetUserPasswordCommandHandler.cs)
+RevealSecretCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\Campaign\RevealSecretCommandHandler.cs)
+SecretChronicleArchiveStrategy  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\CampaignChronicles\ChronicleSnapshotStrategies.cs)
+SecretEntityVisibilityUpdater  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Strategies\IEntityVisibilityUpdater.cs)
+SendEmailChangeNotificationsCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\Auth\SendEmailChangeNotificationsCommandHandler.cs)
+SetCampaignIsDemoCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\Admin\SetCampaignIsDemoCommandHandler.cs)
+SetEncounterInitiativeCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\Encounter\EncounterCommandHandlers.cs)
+SetFactionCastMemberPrimaryCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\Campaign\SetFactionCastMemberPrimaryCommandHandler.cs)
+ShareSecretCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\PlayerCard\ShareSecretCommandHandler.cs)
+ShopPurchaseChronicleArchiveStrategy  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\CampaignChronicles\ChronicleSnapshotStrategiesExtra.cs)
+SoundtrackDeleteRepository  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Repository\Repositories\Delete\SoundtrackDeleteRepository.cs)
+SoundtrackEntityMapper  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Repository\Mappers\SoundtrackEntityMapper.cs)
+SoundtrackInsertRepository  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Repository\Repositories\Insert\SoundtrackInsertRepository.cs)
+SoundtrackReadRepository  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Repository\Repositories\Read\SoundtrackReadRepository.cs)
+SoundtrackUpdateRepository  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Repository\Repositories\Update\SoundtrackUpdateRepository.cs)
+StartEncounterCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\Encounter\EncounterCommandHandlers.cs)
+StorylineChronicleArchiveStrategy  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\CampaignChronicles\StorylineChronicleArchiveStrategy.cs)
+StorylineDeleteRepository  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Repository\Repositories\Delete\StorylineDeleteRepository.cs)
+StorylineInsertRepository  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Repository\Repositories\Insert\StorylineInsertRepository.cs)
+SublocationEntityVisibilityUpdater  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Strategies\IEntityVisibilityUpdater.cs)
+SublocationWebMapper  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.WebHost\Mappers\SubLocationWebMapper.cs)
+SubmitBugReportCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\BugReport\SubmitBugReportCommandHandler.cs)
+SubscriptionCreatedStrategy  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Strategies\SubscriptionEvent\SubscriptionCreatedStrategy.cs)
+SubscriptionDeletedStrategy  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Strategies\SubscriptionEvent\SubscriptionDeletedStrategy.cs)
+SubscriptionEntityMapper  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Repository\Mappers\SubscriptionEntityMapper.cs)
+SubscriptionPausedStrategy  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Strategies\SubscriptionEvent\SubscriptionPausedStrategy.cs)
+SubscriptionResumedStrategy  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Strategies\SubscriptionEvent\SubscriptionResumedStrategy.cs)
+SubscriptionUpdatedStrategy  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Strategies\SubscriptionEvent\SubscriptionUpdatedStrategy.cs)
+TimeOfDayEntityVisibilityUpdater  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Strategies\IEntityVisibilityUpdater.cs)
+TimeOfDayWriteRepository  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Repository\Repositories\Update\TimeOfDayWriteRepository.cs)
+ToggleGoalCompleteCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\PlayerCard\ToggleGoalCompleteCommandHandler.cs)
+ToggleShopItemScratchCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\Campaign\ToggleShopItemScratchCommandHandler.cs)
+ToggleTraitSharedCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\PlayerCard\ToggleTraitSharedCommandHandler.cs)
+TravelCastInstanceCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\Campaign\TravelCastInstanceCommandHandler.cs)
+UpdateAmbianceCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\Ambiance\UpdateAmbianceCommandHandler.cs)
+UpdateBugSeverityCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\BugReport\UpdateBugSeverityCommandHandler.cs)
+UpdateCampaignCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\Campaign\UpdateCampaignCommandHandler.cs)
+UpdateCampaignEventBodyCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\Campaign\UpdateCampaignEventBodyCommandHandler.cs)
+UpdateCampaignEventDetailsCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\Campaign\UpdateCampaignEventDetailsCommandHandler.cs)
+UpdateCampaignEventVisibilityCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\Campaign\UpdateCampaignEventVisibilityCommandHandler.cs)
+UpdateCampaignLastAccessedCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\Campaign\UpdateCampaignLastAccessedCommandHandler.cs)
+UpdateCampaignRuleCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\CampaignRules\UpdateCampaignRuleCommandHandler.cs)
+UpdateCastCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\Cast\UpdateCastCommandHandler.cs)
+UpdateCastCustomItemsCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\Campaign\UpdateCastCustomItemsCommandHandler.cs)
+UpdateCastInstanceCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\Campaign\UpdateCastInstanceCommandHandler.cs)
+UpdateCastInstanceKeywordsCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\Campaign\UpdateCastInstanceKeywordsCommandHandler.cs)
+UpdateCastInstanceVisibilityCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\Campaign\UpdateCastInstanceVisibilityCommandHandler.cs)
+UpdateCursorPositionCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\Campaign\UpdateCursorPositionCommandHandler.cs)
+UpdateDisplayNameCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\Auth\UpdateDisplayNameCommandHandler.cs)
+UpdateEmailCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\Auth\UpdateEmailCommandHandler.cs)
+UpdateEncounterCombatantCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\Encounter\EncounterCommandHandlers.cs)
+UpdateFactionCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\Faction\UpdateFactionCommandHandler.cs)
+UpdateFactionInstanceCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\Campaign\UpdateFactionInstanceCommandHandler.cs)
+UpdateFactionInstanceVisibilityCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\Campaign\UpdateFactionInstanceVisibilityCommandHandler.cs)
+UpdateLocationCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\Location\UpdateLocationCommandHandler.cs)
+UpdateLocationInstanceCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\Campaign\UpdateLocationInstanceCommandHandler.cs)
+UpdateLocationInstanceKeywordsCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\Campaign\UpdateLocationInstanceKeywordsCommandHandler.cs)
+UpdateLocationInstanceVisibilityCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\Campaign\UpdateLocationInstanceVisibilityCommandHandler.cs)
+UpdateLocationSubLocationsVisibilityCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\Campaign\UpdateLocationSubLocationsVisibilityCommandHandler.cs)
+UpdatePlayerCardCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\PlayerCard\UpdatePlayerCardCommandHandler.cs)
+UpdatePlayerCardSecretCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\PlayerCard\UpdatePlayerCardSecretCommandHandler.cs)
+UpdateQuicknoteQueueItemCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\QuicknoteQueue\UpdateQuicknoteQueueItemCommandHandler.cs)
+UpdateSecretCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\Campaign\UpdateSecretCommandHandler.cs)
+UpdateShopItemCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\Campaign\UpdateShopItemCommandHandler.cs)
+UpdateSliceDmNotesCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\Campaign\UpdateSliceGmNotesCommandHandler.cs)
+UpdateSlicePlayerNotesCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\Campaign\UpdateSlicePlayerNotesCommandHandler.cs)
+UpdateSoundtrackCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\Soundtrack\UpdateSoundtrackCommandHandler.cs)
+UpdateStorylineArchiveMarkCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\Campaign\UpdateStorylineArchiveMarkCommandHandler.cs)
+UpdateSublocationCastsVisibilityCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\Campaign\UpdateSubLocationCastsVisibilityCommandHandler.cs)
+UpdateSublocationCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\SubLocation\UpdateSubLocationCommandHandler.cs)
+UpdateSublocationCustomItemsCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\Campaign\UpdateSubLocationCustomItemsCommandHandler.cs)
+UpdateSublocationInstanceCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\Campaign\UpdateSubLocationInstanceCommandHandler.cs)
+UpdateSublocationInstanceKeywordsCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\Campaign\UpdateSubLocationInstanceKeywordsCommandHandler.cs)
+UpdateSublocationInstanceVisibilityCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\Campaign\UpdateSubLocationInstanceVisibilityCommandHandler.cs)
+UpdateUserSubscriptionCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\Admin\UpdateUserSubscriptionCommandHandler.cs)
+UploadCampaignEventHandoutImageCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\Campaign\UploadCampaignEventHandoutImageCommandHandler.cs)
+UploadCampaignStorylineHandoutCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\Campaign\UploadCampaignStorylineHandoutCommandHandler.cs)
+UploadCampaignWorldMapImageCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\Campaign\UploadCampaignWorldMapImageCommandHandler.cs)
+UploadFactionImageCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\Faction\UploadFactionImageCommandHandler.cs)
+UploadPlayerCardImageCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\PlayerCard\UploadPlayerCardImageCommandHandler.cs)
+UploadSoundtrackCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\Soundtrack\UploadSoundtrackCommandHandler.cs)
+UpsertFieldJournalEntryCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\Cast\UpsertFieldJournalEntryCommandHandler.cs)
+UpsertPlayerCastPerceptionCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\PlayerCard\UpsertPlayerCastPerceptionCommandHandler.cs)
+UpsertTimeOfDayCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\Campaign\UpsertTimeOfDayCommandHandler.cs)
+UpsertTraitCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\PlayerCard\UpsertTraitCommandHandler.cs)
+UseInventoryItemCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\Campaign\UseInventoryItemCommandHandler.cs)
+UserEntityMapper  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Repository\Mappers\UserEntityMapper.cs)
+VerifyEmailCommandHandler  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Logic\Commands\Auth\VerifyEmailCommandHandler.cs)
+WelcomeEmailTemplateBuilder  (decl: C:\Repository\CastingCards\Code\backend\CastLibrary.Adapter\EmailBuilders\WelcomeEmailTemplateBuilder.cs)

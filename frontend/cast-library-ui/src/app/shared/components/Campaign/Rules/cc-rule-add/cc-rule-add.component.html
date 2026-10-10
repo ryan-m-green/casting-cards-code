@@ -1,0 +1,115 @@
+<div class="picker" [style.--portal-color]="portalColor()">
+  <div class="picker-tabs" role="tablist" aria-label="How to add an entry">
+    <button
+      type="button"
+      class="picker-tab"
+      role="tab"
+      [class.is-on]="activeTab() === 'library'"
+      [attr.aria-selected]="activeTab() === 'library'"
+      (click)="setTab('library')"
+    >Entry Library</button>
+
+    <button
+      type="button"
+      class="picker-tab"
+      role="tab"
+      [class.is-on]="activeTab() === 'new'"
+      [attr.aria-selected]="activeTab() === 'new'"
+      (click)="setTab('new')"
+    >New Entry</button>
+  </div>
+
+  @if (activeTab() === 'library') {
+    <div class="picker-panel">
+
+      @if (keywordChips().length) {
+        <div class="picker-chips">
+          @for (chip of keywordChips(); track chip.keyword) {
+            <button
+              type="button"
+              class="picker-chip"
+              [class.is-on]="chip.all"
+              [attr.aria-pressed]="chip.all"
+              [attr.title]="chip.all
+                ? 'Release all ' + chip.count + ' ' + (chip.count === 1 ? 'entry' : 'entries') + ' tagged ' + chip.keyword
+                : 'Take all ' + chip.count + ' ' + (chip.count === 1 ? 'entry' : 'entries') + ' tagged ' + chip.keyword"
+              (click)="toggleKeyword(chip.keyword)"
+            >#{{ chip.keyword }}<span class="picker-chip-count">{{ chip.count }}</span></button>
+          }
+        </div>
+      }
+
+      <div class="picker-filter">
+        <app-cc-textbox
+          placeholder="Search your entries…"
+          context="campaign"
+          [ngModel]="search()"
+          (ngModelChange)="onSearchChange($event)"
+          [showClear]="true"
+        />
+
+        <button type="button" class="picker-clear" [disabled]="!pickedCount()" (click)="clearPicked()">
+          Clear
+        </button>
+      </div>
+
+      <div class="picker-scroll">
+        @if (loading()) {
+          <p class="picker-note">Looking through your entries…</p>
+        } @else if (libraryEmpty()) {
+          <p class="picker-empty">
+            You have no entries off this cheat sheet. Use the <strong>New Entry</strong> tab to write one.
+          </p>
+        } @else if (!candidates().length) {
+          <p class="picker-empty">No entries answer to that search.</p>
+        } @else {
+          <p class="picker-section">Your entries · not on this cheat sheet ({{ candidates().length }})</p>
+
+          <div class="picker-grid">
+            @for (entry of candidates(); track entry.id) {
+              <cc-rule-card
+                [rule]="entry"
+                [selectable]="true"
+                [selected]="isPicked(entry.id)"
+                (open)="toggleRule($event)"
+              />
+            }
+          </div>
+        }
+      </div>
+
+      @if (error()) {
+        <p class="picker-error">{{ error() }}</p>
+      }
+
+      <div class="picker-actions">
+        <span class="picker-total">
+          @if (pickedCount()) {
+            {{ pickedCount() }} {{ pickedCount() === 1 ? 'entry' : 'entries' }} picked
+          } @else {
+            Tap an entry to pick it
+          }
+        </span>
+
+        <button
+          type="button"
+          class="campaign-primary-btn"
+          [disabled]="!canAdd()"
+          (click)="addPicked()"
+        >@if (linking()) { Adding… } @else if (pickedCount()) { Add {{ pickedCount() }} to campaign } @else { Add to campaign }</button>
+      </div>
+    </div>
+  }
+
+  @if (activeTab() === 'new') {
+    <div class="picker-panel">
+      <div class="picker-scroll">
+        <cc-rule-editor
+          [campaignId]="campaignId()"
+          (saved)="onSaved($event)"
+          (cancel)="cancel.emit()"
+        />
+      </div>
+    </div>
+  }
+</div>

@@ -1,4 +1,4 @@
-<div class="pc scroll-body">
+﻿<div class="pc scroll-body">
   <app-journal-title [title]="sublocationId() ? 'Edit Sublocation' : 'Sublocation Creation'" />
   <img src="/spilled_wine.PNG" alt="Spilled wine" class="spilled-wine-image" />
   <div class="wr wr-page-header">
@@ -7,7 +7,7 @@
 
   @if (sublocationId()) {
     <div class="form-card-preview">
-      <app-sublocation-card
+      <cc-sublocation-card
         [sublocation]="previewSublocation()"
         [editable]="false"
         [flippable]="false"

@@ -2,7 +2,7 @@ import { Component, inject, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { ReactiveFormsModule, FormBuilder, Validators, AbstractControl, ValidationErrors } from '@angular/forms';
 import { AuthService } from '../../core/auth/auth.service';
-import { JournalTitleComponent } from '../../shared/components/journal-title/journal-title.component';
+import { JournalTitleComponent } from '../../shared/components/Shared/journal-title/journal-title.component';
 
 function passwordsMatch(group: AbstractControl): ValidationErrors | null {
   const password        = group.get('password')?.value;

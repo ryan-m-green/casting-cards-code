@@ -8,7 +8,7 @@
         public string EventName { get; set; }
         public bool IsVisible { get; set; }
         public string CardType { get; set; } = string.Empty;
-        public long TickCount { get; set; }
+        public long TickCount { get; set; } = DateTime.UtcNow.Ticks;
         public string Title { get; set; }
         public string Body { get; set; }
         public string PlayerCardName { get; set; }

@@ -3,7 +3,6 @@ using CastLibrary.Repository.Repositories.Read;
 using CastLibrary.Repository.Repositories.Update;
 using CastLibrary.Shared.Domain;
 using CastLibrary.Shared.Entities;
-using CastLibrary.Shared.Requests;
 using CastLibrary.Shared.Responses;
 
 namespace CastLibrary.Logic.Commands.Campaign;
@@ -158,10 +157,11 @@ public class PurchaseShopItemCommandHandler(
             await playerCampaignInventoryInsertRepository.InsertAsync(newInventory);
         }
 
-        return Success(item, player);
+        return Success(item, player, newBalances);
     }
 
-    private static PurchaseShopItemResponse Success(ShopItemDomain item, CampaignPlayerDomain player) =>
+    private static PurchaseShopItemResponse Success(
+        ShopItemDomain item, CampaignPlayerDomain player, Dictionary<string, int> balances) =>
         new()
         {
             Success           = true,
@@ -169,6 +169,9 @@ public class PurchaseShopItemCommandHandler(
             PriceAmount       = item.PriceAmount,
             PriceCurrencyType = item.PriceCurrencyType,
             PlayerDisplayName = player.DisplayName,
+            CurrencyBalances  = CoinOrder
+                .Select(coin => new CurrencyBalanceResponse(coin, balances[coin]))
+                .ToList(),
         };
 
 

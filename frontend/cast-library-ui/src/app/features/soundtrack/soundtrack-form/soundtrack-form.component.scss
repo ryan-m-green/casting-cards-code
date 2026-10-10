@@ -1,0 +1,132 @@
+@use '../../../../styles/variables' as v;
+
+:host { display: block; height: 100%; }
+
+/* The journal's own form footer: the save sits at the bottom-left of the page. */
+.form-save-footer {
+  justify-content: flex-start;
+}
+
+.form-field--toggle {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+/* The journal's two-button Kind toggle. */
+.kind-toggle {
+  display: flex;
+  gap: 8px;
+}
+
+.kind-btn {
+  padding: 6px 16px;
+  background: transparent;
+  border: 1px dashed v.$color-border-accent;
+  border-radius: 3px;
+  font-family: v.$font-header;
+  font-size: 12px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: v.$color-base-brown-14;
+  cursor: pointer;
+  transition: border-color 0.18s ease, color 0.18s ease, background 0.18s ease;
+
+  &:hover {
+    border-color: v.$color-arcane-border;
+    color: v.$color-base-gold-1;
+  }
+
+  &.is-on {
+    background: v.$color-base-gold-1;
+    border-style: solid;
+    border-color: v.$color-base-gold-1;
+    color: v.$color-base-parchment-pale;
+  }
+}
+
+.toggle-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  .fi-label {
+    margin-bottom: 0;
+    flex-shrink: 0;
+  }
+}
+
+/* The journal's toggle, the same one the faction form wears. */
+.toggle-switch {
+  position: relative;
+  display: inline-block;
+  width: 42px;
+  height: 24px;
+  flex-shrink: 0;
+
+  input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+    position: absolute;
+  }
+}
+
+.toggle-slider {
+  position: absolute;
+  inset: 0;
+  background: rgba(v.$color-base-brown-warm, 0.25);
+  border: 1px solid rgba(v.$color-base-brown-warm, 0.6);
+  border-radius: 24px;
+  cursor: pointer;
+  transition: background 0.2s, border-color 0.2s;
+
+  &::before {
+    content: '';
+    position: absolute;
+    width: 18px;
+    height: 18px;
+    left: 2px;
+    top: 2px;
+    border-radius: 50%;
+    background: v.$color-base-gold-1;
+    transition: transform 0.2s;
+  }
+
+  input:checked + & {
+    background: rgba(v.$color-base-brown-warm, 0.55);
+    border-color: v.$color-base-brown-warm;
+
+    &::before {
+      transform: translateX(18px);
+      background: v.$color-base-gold-1;
+    }
+  }
+}
+
+/* The journal's slider, the same one the faction form wears. */
+.fi-slider {
+  width: 100%;
+  display: block;
+  cursor: pointer;
+  accent-color: v.$color-base-gold-1;
+  margin-top: 4px;
+}
+
+.limit-error-message {
+  background: rgba(220, 38, 38, 0.1);
+  border: 1px solid rgba(220, 38, 38, 0.3);
+  border-radius: 8px;
+  padding: 12px 16px;
+  margin: 16px 0;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: #dc2626;
+  font-family: v.$font-body;
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+.limit-error-text { flex: 1; }

@@ -1,0 +1,35 @@
+/**
+ * A rolodex row's end bar. The left one is the shape; the right one mirrors it: same
+ * size and same marks, its gradient running the other way and a shorter ramp, which
+ * is how the deck's two ends have always been drawn.
+ */
+:host {
+  position: absolute;
+  top: calc(50% - 144px);
+  left: 14.7%;
+  min-width: 62px;
+  min-height: 400px;
+  z-index: 1003;
+  pointer-events: none;
+  background: black;
+  mask-image: linear-gradient(to right, black 0%, black 70%, transparent 100%);
+  -webkit-mask-image: linear-gradient(to right, black 0%, black 70%, transparent 100%);
+}
+
+:host(.rolodex-frame--right) {
+  left: auto;
+  right: 14.7%;
+  mask-image: linear-gradient(to left, black 0%, black 50%, transparent 100%);
+  -webkit-mask-image: linear-gradient(to left, black 0%, black 50%, transparent 100%);
+}
+
+/* Narrow rooms have no 15% to spare, so the bars take the screen's own edges. */
+@media (max-width: 1024px) {
+  :host { left: 0px; }
+
+  :host(.rolodex-frame--right) { right: 0; }
+}
+
+@media (max-width: 768px) {
+  :host { display: none; }
+}

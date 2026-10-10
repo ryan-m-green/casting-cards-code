@@ -1,0 +1,106 @@
+@use '../../../../../../styles/variables' as v;
+
+$tree-line: rgba(v.$color-base-mist-blue, 0.9);
+
+$tree-line-bright: color-mix(in srgb, v.$color-base-mist-blue, white 45%);
+
+:host {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: -24px;
+  height: 24px;
+  z-index: 20;
+  color: $tree-line;
+  pointer-events: none;
+}
+
+:host(.tree-joint--box) {
+  top: 0;
+  height: 100%;
+}
+
+:host(.tree-joint--corner-left),
+:host(.tree-joint--corner-right) {
+  top: 0;
+  height: 100%;
+  width: 0;
+  transform-origin: 0 0;
+}
+
+:host(.tree-joint--corner-left) {
+  left: 0;
+  right: auto;
+  transform: rotate(45deg);
+}
+
+:host(.tree-joint--corner-right) {
+  left: auto;
+  right: 0;
+  transform: rotate(-45deg);
+}
+
+.tree-joint-stem {
+  position: absolute;
+  left: 50%;
+  top: 0;
+  width: 1px;
+  height: 14px;
+  margin-left: -0.5px;
+  background: currentColor;
+}
+
+.tree-joint-bead {
+  position: absolute;
+  left: 50%;
+  top: -2px;
+  width: 5px;
+  height: 5px;
+  margin-left: -2.5px;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+.tree-joint-chevron {
+  position: absolute;
+  left: 50%;
+  top: 10px;
+  width: 8px;
+  height: 8px;
+  margin-left: -4px;
+  border-right: 2px solid $tree-line-bright;
+  border-bottom: 2px solid $tree-line-bright;
+  transform: rotate(45deg);
+}
+
+:host(.tree-joint--side) {
+  top: 50%;
+  left: 75px;
+  right: auto;
+  width: 24px;
+  height: 12px;
+  margin-top: -6px;
+
+  .tree-joint-stem {
+    left: 0;
+    top: 50%;
+    width: 16px;
+    height: 1px;
+    margin-left: 0;
+    margin-top: -0.5px;
+  }
+
+  .tree-joint-bead {
+    left: 0;
+    top: 50%;
+    margin-top: -2.5px;
+  }
+
+  .tree-joint-chevron {
+    left: 12px;
+    top: 50%;
+    margin-left: 0;
+    margin-top: -4px;
+    transform: rotate(-45deg);
+  }
+}

@@ -1,0 +1,51 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 338 348" width="338" height="348"
+     fill="none" stroke="#000000" stroke-width="14" stroke-linecap="round" stroke-linejoin="round"
+     role="img" aria-labelledby="fearTitle fearDesc">
+
+  <title id="fearTitle">Person falling from a cliff</title>
+  <desc id="fearDesc">A figure tumbling in mid-air clear of a cliff edge, with two streaks of wind in its wake, used to represent fear.</desc>
+
+  <!-- ── the mark is a single frozen frame, not a loop ──────────────────────
+       It is drawn through an <img> at button size, where motion reads as
+       noise rather than as falling and cannot be paused by the page that
+       shows it. The pose is therefore stated outright: the body is tumbled
+       about its own centre and carried out past the ledge, so the fall is
+       legible at a glance and at 24px.
+  ────────────────────────────────────────────────────────────────────────── -->
+
+  <!-- ── cliff (static) ─────────────────────────────────────────────────── -->
+  <path d="M28 70 L56 56 L70 84 L98 63 L126 84" />
+  <path d="M126 84 V294" />
+  <path d="M21 294 H126" />
+
+  <!-- ── the figure, caught falling ───────────────────────────────────────
+       outer <g>  → fall arc   (translate): carries the whole scene out past
+                    the ledge and down, so the body centre comes to rest at
+                    x = 241.
+       inner <g>  → tumble     (rotate 45° about the body centre 203,143),
+                    which reads as falling rather than standing.
+       trail <g>  → wind in the figure's wake, held out of the rotation so
+                    the streaks stay upright, and drawn at full strength so
+                    both are visible without any timing to catch.
+       The limb sweep reaches ~79 units from the body centre, so the
+       rotated foot lands at x = 164 — its ink stopping ~24 units short of
+       the cliff face, whose ink ends at x = 133 (cliff at 126, stroke
+       half-width 7). Nothing overlaps, which is what keeps the two shapes
+       readable as separate at 24px.
+  ────────────────────────────────────────────────────────────────────────── -->
+  <g transform="translate(38 46)">
+    <g transform="rotate(45 203 143)">
+      <circle cx="217" cy="98" r="22" />
+      <path d="M210 133 L189 175" />
+      <path d="M203 140 L154 112" />
+      <path d="M203 140 L252 112" />
+      <path d="M189 175 L161 210" />
+      <path d="M189 175 L224 203" />
+    </g>
+
+    <g stroke-width="12">
+      <path d="M212 24 V56" />
+      <path d="M248 6 V34" />
+    </g>
+  </g>
+</svg>

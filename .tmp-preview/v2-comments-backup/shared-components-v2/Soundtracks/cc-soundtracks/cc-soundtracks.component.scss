@@ -1,0 +1,604 @@
+@use '../../../../../../styles/variables' as v;
+
+/*
+ * The Soundtracks area (middle-right): one toolbar over two swipeable rows of small cards — the
+ * library above, the ambiance buttons below. Every control a card carries is sized for a thumb on a
+ * phone, and the cards are kept as small as they will go so the rows stay rows.
+ */
+
+:host {
+  display: block;
+  width: 100%;
+  height: 100%;
+  position: relative;
+  overscroll-behavior: contain;
+}
+
+.st-panel {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  /*
+   * Everything the area holds — the toolbar, any error, and both rows with their headings — stands
+   * centred down it, and rides 34px above that middle: 44px at the head clears the area's heading
+   * (see `.area-title`), and the room at the foot is 68px deeper than it, which is what carries the
+   * block the 34px up ((112 - 44) ÷ 2). `safe` keeps the block top-aligned, and scrollable, on a
+   * screen too short to hold it.
+   */
+  justify-content: safe center;
+  box-sizing: border-box;
+  padding: 44px 16px 112px;
+  gap: 12px;
+  overflow-y: auto;
+}
+
+/* ── Top bar ─────────────────────────────────────────────── */
+.st-topbar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  flex-shrink: 0;
+}
+
+/*
+ * The Add Track tile, standing at the end of the library row as the realm's own "New location" and
+ * "New faction" tiles stand at the end of theirs (see cc-card-navigation): a card-sized dashed tile,
+ * open in the middle, with a ＋ and the name of what it adds. It is cut across the middle — the top
+ * half adds music, the bottom half a sound effect — so the kind is said by the half that was pressed
+ * rather than asked for by a panel of its own.
+ */
+.st-add-track {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  box-sizing: border-box;
+  border: 1px dashed v.$campaign-portal-border-focus;
+  border-radius: 6px;
+  overflow: hidden;
+  transition: border-color 0.15s ease;
+
+  &:hover {
+    border-color: v.$campaign-portal-border-hover;
+  }
+}
+
+/* A half of the tile: as tall as the other, and as wide as the card it stands in. */
+.st-add-half {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 8px;
+  background: transparent;
+  border: none;
+  color: v.$campaign-portal-text-lavender;
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease;
+
+  &:hover:not(:disabled) {
+    background: v.$campaign-portal-bg-hover;
+    color: v.$campaign-portal-text-bright;
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
+
+/* The two halves are told apart by the tile's own dashed hairline, not by a border each. */
+.st-add-half--sfx {
+  border-top: 1px dashed v.$campaign-portal-border-focus;
+}
+
+.st-add-plus {
+  font-size: 26px;
+  line-height: 1;
+}
+
+.st-add-label {
+  font-family: v.$font-header;
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  text-align: center;
+}
+
+/*
+ * The master volume: its heading over its track — what the control is on the left, what it is set to
+ * on the right — and the one number the toolbar carries, so it is read at a glance and does not
+ * shuffle as the thumb is dragged (`tabular-nums`).
+ */
+.st-volume {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  flex: 1 1 180px;
+  min-width: 140px;
+}
+
+.st-volume-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.st-volume-label {
+  font-family: v.$font-header;
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: v.$campaign-portal-text-muted;
+}
+
+.st-volume-value {
+  font-family: v.$font-header;
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  color: v.$campaign-portal-text-bright;
+  font-variant-numeric: tabular-nums;
+}
+
+.st-volume cc-slider {
+  width: 100%;
+  min-width: 0;
+}
+
+/* How many tracks the ambient card being built will hold. */
+.st-add-count {
+  margin-left: 6px;
+  padding: 0 5px;
+  border-radius: 9px;
+  background: rgba(0, 0, 0, 0.35);
+}
+
+/* ── Buttons ─────────────────────────────────────────────── */
+.st-btn {
+  font-family: v.$font-header;
+  font-size: 12px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 8px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.18s ease;
+  white-space: nowrap;
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
+
+.st-btn--primary {
+  background: color-mix(in srgb, v.$color-base-indigo-dark 60%, v.$color-base-arcane-purple 40%);
+  border: 1px solid var(--portal-color, v.$color-base-purple-primary);
+  color: v.$color-base-white-2;
+
+  &:hover:not(:disabled) {
+    background: color-mix(in srgb, v.$color-base-arcane-purple 60%, v.$color-base-indigo-dark 40%);
+  }
+}
+
+/* A button standing in a row's heading — the ＋ Playlist the ambiance row wears — at heading scale. */
+.st-row-head .st-btn {
+  padding: 4px 10px;
+}
+
+.st-btn--danger {
+  background: v.$color-base-red-2;
+  border: 1px solid v.$campaign-btn-primary-border;
+  color: v.$color-base-white-2;
+
+  &:hover:not(:disabled) {
+    background: v.$color-base-red-4;
+  }
+}
+
+/* ── Rows ────────────────────────────────────────────────── */
+/*
+ * The two rows and their headings, one under the other on the area's own ground: no box is drawn
+ * around a row (every other card row in the campaign stands this way), so a card's tick — which
+ * hangs over its corner — is never clipped, and each row is the Swiper itself.
+ */
+.st-rows {
+  /* Sized by what it holds — the two rows and their headings — so the panel can centre it. */
+  flex: 0 1 auto;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  /*
+   * A screen too short for both rows at their own size scrolls them, rather than letting anything
+   * shrink under the cards and clip the controls at the bottom of one.
+   */
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+/* What a row is: the library, or the ambiance buttons. */
+.st-row-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 6px;
+  flex-shrink: 0;
+}
+
+/*
+ * A heading that follows a row opens the next group, so it stands a little further from the cards
+ * above it than its own row stands from it.
+ */
+.st-row + .st-row-head {
+  margin-top: 6px;
+}
+
+.st-row-title {
+  margin: 0;
+  font-family: v.$font-header;
+  font-size: 13px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: v.$campaign-portal-text-bright;
+}
+
+/*
+ * One row of cards, dragged sideways like every other card row in the campaign. The 8px of padding
+ * is what the cards' corner checks need: a tick stands 7px proud of the card it belongs to, and the
+ * row's own clip is at the edge of its padding, so the tick is drawn in that margin and not cut off.
+ *
+ * Both ends of the row are fuzzy, as the card navigation's rows are (see cc-card-navigation, whose
+ * `.rolodex-container` wears the same mask): a card is thinned out into the edge it runs under
+ * rather than being cut off square by it. The fade is written in one declaration for both properties
+ * so the two edges read the same in every browser, and in pixels so it comes out the same width on a
+ * phone as it does on a wide screen.
+ */
+.st-row {
+  flex: 0 0 auto;
+  width: 100%;
+  overflow: hidden;
+  box-sizing: border-box;
+  padding: 8px 8px 2px;
+  overscroll-behavior-x: contain;
+  mask-image: linear-gradient(to right, transparent 0, black 16px, black calc(100% - 16px), transparent 100%);
+  -webkit-mask-image: linear-gradient(to right, transparent 0, black 16px, black calc(100% - 16px), transparent 100%);
+
+  .swiper-wrapper {
+    display: flex;
+    flex-direction: row;
+    align-items: stretch;
+  }
+
+  .swiper-slide {
+    flex: 0 0 auto;
+    width: 132px;
+    height: 164px;
+    box-sizing: border-box;
+  }
+}
+
+/* The ambiance cards carry less than a soundtrack card: the tools, a name, a count, and one player. */
+.st-row--ambiance .swiper-slide {
+  width: 118px;
+  height: 122px;
+}
+
+/* ── Soundtrack card ─────────────────────────────────────── */
+/*
+ * A card is a small column: the kind it is in one top corner and its delete control in the other,
+ * then its name, its play button, and its volume at the foot. The border is part of the card now
+ * (there is no box around the row any more) — worn in the portal's own violet, and lit by the
+ * campaign's colour when the track is playing or ticked.
+ */
+.st-track-card {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  /* One gutter for the whole column: the play button's 4px over the volume is this, and nothing else. */
+  gap: 4px;
+  /* The kind badge and the delete control stand 5px in from the top: the column starts under both. */
+  padding: 36px 8px 8px;
+  box-sizing: border-box;
+  background: v.$campaign-portal-bg-dark;
+  border: 1px solid v.$campaign-portal-border-bold;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.18s ease;
+
+  &:hover {
+    border-color: v.$campaign-portal-border-hover;
+  }
+
+  &.playing {
+    border-color: var(--portal-color, v.$color-base-purple-primary);
+    background: color-mix(in srgb, v.$color-base-indigo-dark 60%, v.$color-base-arcane-purple 40%);
+  }
+
+  /* Ticked for the ambiance card being built: lit in the campaign's colour, as a picked cast is. */
+  &.selected {
+    border-color: var(--portal-color, v.$color-base-purple-primary);
+    box-shadow: 0 0 0 2px rgba(110, 40, 208, 0.45);
+  }
+}
+
+/*
+ * The tick: the campaign's own check, drawn exactly as the card pickers draw it when a cast is picked
+ * for a faction — a 20px disc of the portal violet with a white check in it, set over the top-right
+ * corner (see cc-faction-cast-picker's `.picker-tile-check`). It hangs 7px proud of the card, which
+ * is why the row around the cards carries its own padding. It is the card's own mark and answers no
+ * click of its own: the delete control underneath its corner keeps every one of its 26px.
+ */
+.st-card-check {
+  position: absolute;
+  top: -7px;
+  right: -7px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  background: v.$color-base-purple-primary;
+  border-radius: 50%;
+  color: #fff;
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1;
+  z-index: 3;
+  pointer-events: none;
+}
+
+/*
+ * The card's own delete control, in the top-right corner — sitting in the same 5px gutter the kind
+ * badge wears in the other corner, so the two read as one row across the top of the card.
+ */
+.st-card-delete {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  z-index: 2;
+}
+
+/* What the track is, in the other top corner: the badge swaps it over when it is pressed. */
+.st-kind-badge {
+  position: absolute;
+  top: 5px;
+  left: 5px;
+  z-index: 2;
+  font-family: v.$font-header;
+  font-size: 9px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 3px 7px;
+  border-radius: 10px;
+  background: color-mix(in srgb, v.$color-base-blue-8 30%, transparent);
+  border: 1px solid v.$color-base-blue-8;
+  color: v.$color-base-blue-9;
+  cursor: pointer;
+  line-height: 1;
+  transition: all 0.18s ease;
+
+  &:hover {
+    border-color: var(--portal-color, v.$color-base-purple-primary);
+  }
+
+  &--sfx {
+    background: color-mix(in srgb, v.$color-base-gold-1 30%, transparent);
+    border-color: v.$color-base-gold-1;
+    color: v.$color-base-gold-11;
+  }
+}
+
+/* ── Play buttons ────────────────────────────────────────── */
+.st-play-btn {
+  width: 30px;
+  height: 30px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: color-mix(in srgb, v.$color-base-indigo-dark 60%, v.$color-base-arcane-purple 40%);
+  border: 1px solid v.$campaign-portal-border-bold;
+  border-radius: 50%;
+  color: v.$color-base-white-2;
+  font-size: 12px;
+  line-height: 1;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: all 0.18s ease;
+
+  &:hover:not(:disabled) {
+    border-color: var(--portal-color, v.$color-base-purple-primary);
+  }
+
+  &:disabled {
+    opacity: 0.4;
+    cursor: default;
+  }
+}
+
+/*
+ * The card's own play: big enough to hit with a thumb, and always sitting the column's own 4px above
+ * the volume under it. The slack the card has left over is taken above the button, so the two stand
+ * as one block at the foot of the card however long the name above them runs.
+ */
+.st-play-btn--card {
+  width: 42px;
+  height: 42px;
+  margin-top: auto;
+  font-size: 15px;
+}
+
+/* ── Card text ───────────────────────────────────────────── */
+.st-card-name {
+  width: 100%;
+  font-family: v.$font-body;
+  font-size: 11px;
+  line-height: 1.25;
+  text-align: center;
+  color: v.$campaign-portal-text-bright;
+  /* Two lines at most, then an ellipsis: the cards are kept as small as they will go. */
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+  overflow-wrap: anywhere;
+}
+
+.st-card-meta {
+  font-family: v.$font-body;
+  font-size: 10px;
+  color: v.$campaign-portal-text-muted;
+}
+
+/* The track's own volume, at the foot of the card — its 4px over it is the column's own gutter. */
+.st-card-volume {
+  width: 100%;
+}
+
+/* The card's controls, brought down to the size the small cards are drawn at. */
+.st-track-card cc-delete-button {
+  --cc-delete-size: 26px;
+  --cc-delete-icon-size: 16px;
+  --cc-delete-font-size: 11px;
+}
+
+/*
+ * The card's tools: the wrench in the top-left corner and the delete control in the top-right, each
+ * in the same 5px gutter the library card's own corner controls wear, so a row of cards reads the
+ * same whichever kind stands in it.
+ */
+.st-ambiance-card cc-edit-button {
+  position: absolute;
+  top: 5px;
+  left: 5px;
+  z-index: 2;
+  --cc-edit-size: 28px;
+  --cc-edit-icon-size: 16px;
+}
+
+.st-ambiance-card cc-delete-button {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  z-index: 2;
+  --cc-delete-size: 28px;
+  --cc-delete-icon-size: 16px;
+  --cc-delete-font-size: 11px;
+}
+
+/* ── Ambiance card ───────────────────────────────────────── */
+/*
+ * A card of its own kind, drawn like the library's: a bordered column with the campaign's tools in
+ * its top corners, then the card's name, the count of tracks it holds, and the one button that plays
+ * it and stops it, at the foot. The border stays on, as it does on a soundtrack card.
+ */
+.st-ambiance-card {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  /* The same gutter the library card's column runs on. */
+  gap: 4px;
+  /* The two tools stand 5px in from the top: the column starts under both. */
+  padding: 36px 8px 8px;
+  box-sizing: border-box;
+  background: v.$campaign-portal-bg-dark;
+  border: 1px solid v.$campaign-portal-border-bold;
+  border-radius: 10px;
+  transition: all 0.18s ease;
+
+  &:hover {
+    border-color: v.$campaign-portal-border-hover;
+  }
+
+  &.playing {
+    border-color: var(--portal-color, v.$color-base-purple-primary);
+    background: color-mix(in srgb, v.$color-base-indigo-dark 60%, v.$color-base-arcane-purple 40%);
+  }
+}
+
+/*
+ * The card's own name, over the count of tracks under it. It takes the one line it can hold: the
+ * walls of the card are the corners' tools, so there is no room to run on.
+ */
+.st-ambiance-card .st-card-name {
+  -webkit-line-clamp: 1;
+}
+
+/* ── Notices ─────────────────────────────────────────────── */
+.st-error {
+  font-family: v.$font-body;
+  font-size: 13px;
+  color: v.$color-base-red-2;
+  background: color-mix(in srgb, v.$color-base-red-5 40%, transparent);
+  border: 1px solid v.$color-base-red-4;
+  border-radius: 6px;
+  padding: 8px 12px;
+  flex-shrink: 0;
+}
+
+/* A row with nothing in it: the heading stands, the row says why it is bare. */
+.st-empty {
+  margin: 0;
+  font-family: v.$font-body;
+  font-size: 13px;
+  color: v.$campaign-portal-text-muted;
+  padding: 4px 6px 8px;
+}
+
+/*
+ * A phone held upright: the toolbar and the cards each come down a size, so both rows stay rows and
+ * every control on a card is still a thumb's width.
+ */
+@media (max-width: 720px) {
+  .st-panel {
+    /* The same 34px lift on a phone: 40px at the head, and 68px more than that at the foot. */
+    padding: 40px 10px 108px;
+    gap: 10px;
+  }
+
+  .st-rows {
+    gap: 6px;
+  }
+
+  .st-row {
+    padding: 8px 6px 2px;
+  }
+
+  .st-row .swiper-slide {
+    width: 118px;
+    height: 156px;
+  }
+
+  .st-row--ambiance .swiper-slide {
+    width: 112px;
+    height: 116px;
+  }
+
+  .st-track-card {
+    /* The kind badge and the delete control are a size smaller, so the column starts higher. */
+    padding: 36px 6px 6px;
+  }
+
+  .st-play-btn--card {
+    width: 38px;
+    height: 38px;
+    font-size: 13px;
+  }
+
+  .st-ambiance-card {
+    /* The tools are a size smaller too, and the column starts under them just the same. */
+    padding: 36px 6px 6px;
+  }
+}
+

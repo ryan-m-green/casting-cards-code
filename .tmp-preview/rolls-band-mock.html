@@ -1,0 +1,57 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <style>
+    /* Geometry check for the rolls band: does a frame that resolves against the room line up on a
+       70% centred band's edges? Plain divs stand in for cc-rolodex-frame and .rolls-band. */
+    body { margin: 0; padding: 14px; background: #fff; font: 12px sans-serif; color: #444; }
+
+    .room {                                   /* .builder — position: relative, full size */
+      position: relative; width: 900px; height: 460px; overflow: hidden;
+      background: linear-gradient(160deg, #2a2036, #17121f);
+      outline: 1px dashed #888;
+    }
+
+    .stage {                                  /* .stage — NOT positioned, so frames skip it */
+      display: flex; flex-direction: column; justify-content: center;
+      height: 100%; gap: 12px;
+    }
+
+    .frame {                                  /* cc-rolodex-frame :host */
+      position: absolute; top: calc(50% - 144px); left: 14.7%;
+      min-width: 62px; min-height: 400px; z-index: 1003; pointer-events: none;
+      background: black;
+      mask-image: linear-gradient(to right, black 0%, black 70%, transparent 100%);
+      -webkit-mask-image: linear-gradient(to right, black 0%, black 70%, transparent 100%);
+    }
+    .frame--right {
+      left: auto; right: 14.7%;
+      mask-image: linear-gradient(to left, black 0%, black 50%, transparent 100%);
+      -webkit-mask-image: linear-gradient(to left, black 0%, black 50%, transparent 100%);
+    }
+
+    .band {                                   /* .rolls-band */
+      position: relative; width: 70%; margin: 0 auto;
+      outline: 1px solid #6cf;                  /* so the band's edges are visible */
+    }
+    .row {
+      min-height: 300px; display: flex; align-items: center; justify-content: center;
+      color: #cbb8ff; background: rgba(255,255,255,0.06);
+    }
+  </style>
+</head>
+<body>
+  <div class="room">
+    <div class="stage">
+      <div class="frame"></div>
+      <div class="frame frame--right"></div>
+
+      <div class="band">
+        <div class="row">the rolls row — 70% band, centred</div>
+      </div>
+    </div>
+  </div>
+  <p style="padding-top:8px">blue outline = the band's edges · black bars = the rolodex frames</p>
+</body>
+</html>

@@ -53,7 +53,6 @@ export class AudioPlayerService {
     const audio = new Audio(soundtrack.fileUrl);
     audio.volume = (soundtrack.volume / 100) * (this.masterVolume.value / 100);
     
-    // Don't use native loop property - use custom loop for seamless playback
     audio.loop = false;
 
     const activeTrack: ActiveTrack = {
@@ -68,7 +67,6 @@ export class AudioPlayerService {
     this.activeTracks.set(soundtrack.id, activeTrack);
     this.activeTrackIdsSubject.next(Array.from(this.activeTracks.keys()));
     
-    // If delay is set (without loop), wait before first play, then stop when done
     if (soundtrack.loopDelaySeconds && !soundtrack.isLoop) {
       setTimeout(() => {
         if (this.activeTracks.has(soundtrack.id)) {
@@ -81,7 +79,6 @@ export class AudioPlayerService {
         }
       }, soundtrack.loopDelaySeconds * 1000);
     } else {
-      // Play immediately (either looping or non-looping without delay)
       audio.play().catch(error => {
         console.error('Failed to play audio:', error);
         this.activeTracks.delete(soundtrack.id);
@@ -92,7 +89,6 @@ export class AudioPlayerService {
 
     audio.onended = () => {
       if (activeTrack.isLoop) {
-        // Seamless loop without fade - restart immediately
         if (this.activeTracks.has(soundtrack.id)) {
           audio.currentTime = 0;
           audio.play().catch(error => {
@@ -101,7 +97,6 @@ export class AudioPlayerService {
           });
         }
       } else {
-        // Non-looping track - stop when done
         this.stopTrack(soundtrack.id);
       }
     };
@@ -132,7 +127,6 @@ export class AudioPlayerService {
       }
     }
 
-    // Music: play sequentially in server order, looping the list.
     if (music.length > 0) {
       const playMusic = (index: number) => {
         if (!this.activeAmbiances.has(ambiance.id)) return;
@@ -163,7 +157,6 @@ export class AudioPlayerService {
       playMusic(0);
     }
 
-    // Sound effects: play all simultaneously, each on its own schedule.
     for (const { item, soundtrack } of resolved.filter(x => x.soundtrack.kind === 'sound_effect')) {
       const volume = soundtrack.volume;
       const playSfx = () => {
@@ -209,7 +202,7 @@ export class AudioPlayerService {
         item.pauseMinSeconds + Math.random() * (item.pauseMaxSeconds - item.pauseMinSeconds);
     }
 
-    if (delaySeconds == null) return; // 'none' -> play once, no repeat
+    if (delaySeconds == null) return;
 
     const timer = window.setTimeout(playSfx, delaySeconds * 1000);
     state.timers.push(timer);
@@ -287,7 +280,6 @@ export class AudioPlayerService {
       track.isLoop = isLoop;
       track.loopDelaySeconds = loopDelaySeconds;
       
-      // Update native loop property
       if (isLoop && !loopDelaySeconds) {
         track.audioElement.loop = true;
       } else {

@@ -1,0 +1,132 @@
+<div class="travel" [style.--portal-color]="portalColor()">
+
+  <div class="travel-pinned">
+
+    <div class="travel-search">
+      <app-cc-textbox
+        placeholder="Search locations and rooms…"
+        context="campaign"
+        [ngModel]="search()"
+        (ngModelChange)="onSearchChange($event)"
+        [showClear]="true"
+      />
+    </div>
+
+    @if (currentSublocationName()) {
+      <p class="travel-now">
+        Now standing in
+        <span class="travel-place-location">{{ currentLocationName() }}</span>
+        @if (currentLocationName()) {
+          <span class="travel-place-sep">·</span>
+        }
+        <span class="travel-place-sublocation">{{ currentSublocationName() }}</span>
+      </p>
+    }
+
+    @if (partyAnchor(); as anchor) {
+      @if (partyLockNote(anchor); as note) {
+        <p class="travel-locked">{{ note }}</p>
+      }
+    }
+
+    @if (pending()) {
+      <button
+        type="button"
+        class="campaign-primary-btn travel-commit"
+        [disabled]="traveling()"
+        (click)="travel()"
+      >
+        @if (traveling()) {
+          <span>Traveling…</span>
+        } @else {
+          <span>Travel to</span>
+          <span class="travel-place-location">{{ pendingLocationName() }}</span>
+          <span class="travel-place-sep">·</span>
+          <span class="travel-place-sublocation">{{ pendingSublocationName() }}</span>
+        }
+      </button>
+    }
+
+    @if (error()) {
+      <p class="travel-error">{{ error() }}</p>
+    }
+  </div>
+
+  <div class="travel-rows">
+
+    @if (partyAnchor(); as anchor) {
+      <div class="travel-party-row">
+        <button
+          type="button"
+          class="travel-party"
+          [class.is-picked]="isPending(anchor)"
+          [disabled]="traveling() || !isOffered(anchor)"
+          [attr.aria-pressed]="isPending(anchor)"
+          [attr.aria-label]="partyLockNote(anchor) ?? 'The Party'"
+          [attr.title]="partyLockNote(anchor) ?? 'The Party'"
+          (click)="onPartyClick()"
+        >
+          <span class="travel-party-face">
+            <cc-player-icon class="travel-party-icon" [width]="26" color="white" [opacity]="0.9" />
+            <span class="travel-party-label">The Party</span>
+          </span>
+        </button>
+      </div>
+    }
+
+    @if (rows().length) {
+      @for (row of rows(); track row.location.instanceId) {
+        <div class="travel-row" role="group" [attr.aria-label]="row.location.name">
+          <div class="travel-row-track swiper" #travelRow [attr.data-row-id]="row.location.instanceId">
+            <div class="swiper-wrapper">
+
+              <div class="swiper-slide travel-row-leader">
+                <cc-simple-location-card [location]="row.location" />
+                @if (isCurrentLocation(row.location)) {
+                  <span class="travel-tile-flag">Here</span>
+                }
+                @if (isPendingLocation(row.location)) {
+                  <span class="travel-tile-art" aria-hidden="true">
+                    <img src="/about/cast_travel_system.svg" alt="" />
+                  </span>
+                }
+              </div>
+
+              @for (sublocation of row.sublocations; track sublocation.instanceId) {
+                <div class="swiper-slide">
+                  <button
+                    type="button"
+                    class="travel-tile"
+                    [class.is-here]="isCurrent(sublocation)"
+                    [class.is-picked]="isPending(sublocation)"
+                    [disabled]="traveling() || !isOffered(sublocation)"
+                    [attr.aria-pressed]="isPending(sublocation)"
+                    [attr.aria-label]="partyLockNote(sublocation) ?? 'Choose ' + sublocation.name"
+                    [attr.title]="partyLockNote(sublocation) ?? sublocation.name"
+                    (click)="onTileClick(sublocation)"
+                  >
+                    <cc-simple-sublocation-card [sublocation]="sublocation" />
+                    @if (sublocation.isPartyAnchor) {
+                      <span class="travel-tile-party" aria-hidden="true">⚔</span>
+                    }
+                    @if (isCurrent(sublocation)) {
+                      <span class="travel-tile-check" aria-hidden="true">✓</span>
+                    }
+                    @if (isPending(sublocation)) {
+                      <span class="travel-tile-check travel-tile-check--pending" aria-hidden="true">✓</span>
+                    }
+                  </button>
+                </div>
+              }
+
+            </div>
+          </div>
+        </div>
+      }
+    } @else if (searching()) {
+      <p class="travel-empty">No locations or rooms answer to &quot;{{ search() }}&quot;.</p>
+    } @else {
+      <p class="travel-empty">This campaign has no locations yet.</p>
+    }
+  </div>
+</div>

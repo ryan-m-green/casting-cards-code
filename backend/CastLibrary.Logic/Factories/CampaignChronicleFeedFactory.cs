@@ -31,6 +31,7 @@ public class CampaignChronicleFeedFactory(IImageStorageOperator imageStorageOper
         FilePath = entry.FilePath,
         ImageUrl = string.IsNullOrWhiteSpace(entry.FilePath) ? null : imageStorageOperator.GetPublicUrl(entry.FilePath),
         TodSliceName = entry.TodSliceName,
+        DayNumber = entry.DayNumber,
         IsGmOnly = entry.IsGmOnly,
         PlayedOn = entry.PlayedOn,
         SessionNumber = entry.SessionNumber,

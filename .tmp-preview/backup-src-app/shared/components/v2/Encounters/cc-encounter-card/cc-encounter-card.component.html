@@ -1,0 +1,53 @@
+<article
+  class="encounter-card"
+  [class.is-active]="encounter().status === 'active'"
+  [class.is-ended]="encounter().status === 'ended'"
+  [style.--portal-color]="portalColor()"
+>
+  <header class="card-head">
+    <span class="card-sequence">#{{ encounter().sequenceNumber }}</span>
+    <span class="card-status">{{ statusLabel() }}</span>
+  </header>
+
+  <h3 class="card-name" [title]="title()">{{ title() }}</h3>
+
+  <p class="card-meta">
+    <span>{{ spotCount() }} spot{{ spotCount() === 1 ? '' : 's' }}</span>
+    <span class="card-meta-dot">·</span>
+    <span>{{ cardCount() }} card{{ cardCount() === 1 ? '' : 's' }}</span>
+  </p>
+
+  @if (editable() || showFight()) {
+    <div class="card-actions" [class.card-actions--start]="showFight() && isPlanned()">
+      @if (editable()) {
+        <cc-edit-button
+          label="Edit this encounter"
+          [disabled]="busy()"
+          (clicked)="editRequested.emit()"
+        />
+      }
+
+      @if (showFight()) {
+        @if (isPlanned()) {
+          <button
+            type="button"
+            class="card-start"
+            [disabled]="busy()"
+            title="Start this encounter's initiative"
+            aria-label="Start this encounter"
+            (click)="startRequested.emit()"
+          ><img class="card-action-icon" src="/play_triangle_button.svg" alt="" /></button>
+        } @else {
+          <button
+            type="button"
+            class="card-action"
+            [disabled]="busy()"
+            title="Initiative circle"
+            aria-label="Initiative circle"
+            (click)="circleRequested.emit()"
+          ><img class="card-action-icon" src="/spear_shield_weaponry.svg" alt="" /></button>
+        }
+      }
+    </div>
+  }
+</article>

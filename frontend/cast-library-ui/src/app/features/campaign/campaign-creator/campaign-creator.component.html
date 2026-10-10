@@ -8,7 +8,6 @@
 
   <div class="title-divider"></div>
 
-  <!-- ── Tab navigation ──────────────────────────────────────────────────────── -->
   <div class="campaign-tabs">
     <button
       class="tab-btn"
@@ -37,7 +36,6 @@
     </button>
   </div>
 
-  <!-- ── Tab 4: Players ────────────────────────────────────────────────────────── -->
   @if (activeTab() === 'players') {
     <div class="players-tab">
 
@@ -97,12 +95,10 @@
     </div>
   }
 
-  <!-- ── Tab 3: Day Cycle ─────────────────────────────────────────────────────── -->
   @if (activeTab() === 'day-cycle') {
     <app-time-of-day-editor [campaignId]="campaignId()!" [portalColor]="form.controls.spineColor.value ?? ''" />
   }
 
-  <!-- ── Tab 1: World Setup (existing content) ─────────────────────────────────── -->
   @if (activeTab() === 'world-setup') {
 
   <form [formGroup]="form">
@@ -193,7 +189,7 @@
     </div>
   }
 
-  } <!-- end @if world-setup -->
+  }
 
 </div>
 
@@ -227,6 +223,4 @@
     </div>
   </div>
 }
-
-
 

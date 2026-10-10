@@ -1,6 +1,4 @@
 using Microsoft.AspNetCore.Http;
-using CastLibrary.Shared.Domain;
-using System.Linq;
 
 namespace CastLibrary.Logic.Services
 {

@@ -1,0 +1,149 @@
+@use '../../../../../styles/variables' as v;
+@use '../../Campaign/variables-v2' as v2;
+
+$font-cc-color-dropdown: v2.$font-v2-components;
+
+:host {
+  display: block;
+  margin-top: 8px;
+  margin-bottom: 8px;
+}
+
+.cc-color-dropdown {
+  position: relative;
+}
+
+.cc-color-dropdown-label {
+  display: block;
+  font-family: $font-cc-color-dropdown;
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: v.$color-lib-location-1;
+  margin-bottom: 4px;
+}
+
+.cc-color-dropdown-trigger {
+  all: unset;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  box-sizing: border-box;
+  background: v.$color-ext-346;
+  border: 1px solid v.$campaign-portal-border-medium;
+  border-radius: 5px;
+  color: v.$campaign-portal-text-bright;
+  font-family: $font-cc-color-dropdown;
+  font-size: 14px;
+  padding: 8px 32px 8px 10px;
+  position: relative;
+  cursor: pointer;
+  transition: border-color 0.15s ease;
+
+  &:focus {
+    border-color: v.$campaign-portal-border-active;
+    outline: none;
+  }
+
+  &:disabled,
+  .is-disabled & {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
+
+.cc-color-dropdown-value {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  text-align: left;
+}
+
+.cc-color-swatch {
+  flex-shrink: 0;
+  width: 18px;
+  height: 18px;
+  border: 1px solid v.$campaign-portal-border-bold;
+  border-radius: 4px;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.25);
+
+  &.is-blank {
+    background:
+      linear-gradient(45deg, transparent 45%, v.$campaign-portal-text-secondary 45%, v.$campaign-portal-text-secondary 55%, transparent 55%);
+  }
+}
+
+.cc-color-dropdown-caret {
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: v.$campaign-portal-text-secondary;
+  font-size: 12px;
+  transition: transform 0.15s ease;
+
+  &.is-open { transform: translateY(-50%) rotate(180deg); }
+}
+
+.cc-color-dropdown-panel {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  max-height: 264px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  background: v.$color-ext-633;
+  border: 1px solid v.$campaign-portal-border-bold;
+  border-radius: 5px;
+  box-shadow: 0 6px 20px v.$journal-spine-band-shadow;
+  list-style: none;
+  margin: 0;
+  padding: 4px 0;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(v.$campaign-portal-border-bold, 0.3) transparent;
+
+  &::-webkit-scrollbar { width: 4px; }
+  &::-webkit-scrollbar-thumb { background: rgba(v.$campaign-portal-border-bold, 0.3); border-radius: 2px; }
+}
+
+.cc-color-dropdown-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 7px 10px;
+  font-family: $font-cc-color-dropdown;
+  font-size: 13px;
+  color: v.$campaign-portal-text-bright;
+  cursor: pointer;
+  transition: background 0.12s ease;
+
+  &.is-active,
+  &:hover {
+    background: v.$campaign-portal-bg-placeholder;
+  }
+
+  &.is-selected .cc-color-dropdown-name {
+    color: v.$campaign-portal-text-primary;
+    font-weight: 700;
+  }
+}
+
+.cc-color-dropdown-name {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.cc-color-dropdown-check {
+  flex-shrink: 0;
+  color: v.$campaign-portal-text-primary;
+  font-weight: bold;
+  font-size: 14px;
+}

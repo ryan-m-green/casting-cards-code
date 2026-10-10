@@ -3,7 +3,7 @@ namespace CastLibrary.Shared.Entities;
 public class AmbianceEntity
 {
     public Guid Id { get; set; }
-    public Guid CampaignId { get; set; }
+    public Guid GmUserId { get; set; }
     public string Title { get; set; } = string.Empty;
     public DateTime CreatedAt { get; set; }
     public bool RandomizeMusic { get; set; }

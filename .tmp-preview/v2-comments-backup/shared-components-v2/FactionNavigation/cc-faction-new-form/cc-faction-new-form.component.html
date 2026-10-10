@@ -1,0 +1,117 @@
+<!--
+  The faction form, copied from the portal import card's "New Faction" section, with its
+  fields brought over to the v2 campaign components the rest of the shell uses:
+  the free-text fields (name, description, GM notes) are `cc-textbox` in campaign context,
+  the type is `cc-campaign-dropdown`, the colours (with the perception bar that comes with
+  them) are `cc-faction-colors`, the political influence is `cc-political-influence`,
+  the visibility switch is `cc-faction-visibility`, and the symbol is `cc-symbol-picker`.
+  Those components draw their own labels, inputs and notes, so the form itself carries only
+  the portal card's layout markup.
+-->
+<div class="pic-new-form-wrap">
+  <form [formGroup]="factionForm" class="pic-new-form pic-new-form--wrap">
+
+    <div class="wr form-row-gap">
+      <div class="form-field">
+        <app-cc-textbox
+          label="Faction Name"
+          context="campaign"
+          formControlName="name"
+        />
+      </div>
+    </div>
+
+    <app-cc-textbox
+      label="Description"
+      type="textarea"
+      [rows]="4"
+      context="campaign"
+      formControlName="description"
+    />
+
+    <fieldset class="form-gm-box">
+      <legend class="form-gm-box__legend">FOR GM EYES ONLY</legend>
+
+      <!-- One field per component, each in its own form-field, sharing this one form-row-gap
+           wrapper. The box's styles stand them in a column, on the same 12px floor. -->
+      <div class="form-row-gap">
+        <div class="form-field">
+          <cc-keyword-tags
+            label="Hashtags / Keywords"
+            placeholder="Add or select hashtags…"
+            context="campaign"
+            [options]="keywordOptions()"
+            formControlName="keywords"
+          />
+        </div>
+
+        <div class="form-field">
+          <cc-campaign-dropdown
+            label="Type"
+            placeholder="Start typing…"
+            [options]="factionTypeOptions"
+            [matchOnly]="true"
+            formControlName="type"
+          />
+        </div>
+
+        <div class="form-field">
+          <cc-faction-colors
+            label="Faction Colors"
+            context="campaign"
+            [evilColor]="evilColorControl.value ?? '#004d1a'"
+            (evilColorChange)="evilColorControl.setValue($event)"
+            [goodColor]="goodColorControl.value ?? '#ff99bb'"
+            (goodColorChange)="goodColorControl.setValue($event)"
+            [perception]="perceptionControl.value ?? 0"
+            (perceptionChange)="perceptionControl.setValue($event)"
+          />
+        </div>
+
+        <div class="form-field">
+          <cc-faction-visibility
+            label="Faction Visibility"
+            context="campaign"
+            [hidden]="hiddenControl.value ?? false"
+            (hiddenChange)="hiddenControl.setValue($event)"
+          />
+        </div>
+
+        <div class="form-field">
+          <cc-political-influence
+            label="Political Influence"
+            context="campaign"
+            [influence]="influenceControl.value ?? 0"
+            (influenceChange)="influenceControl.setValue($event)"
+          />
+        </div>
+
+        <!-- Last in the box: the notes the DM writes about everything above them. -->
+        <div class="form-field">
+          <app-cc-textbox
+            label="GM Notes"
+            type="textarea"
+            [rows]="4"
+            context="campaign"
+            formControlName="dmNotes"
+          />
+        </div>
+      </div>
+
+    </fieldset>
+
+    <cc-symbol-picker
+      context="campaign"
+      [required]="true"
+      [selectedIcon]="selectedFactionIcon()"
+      (iconSelected)="onIconSelected($event)"
+    />
+
+    <div class="pic-save-row">
+      <button class="campaign-primary-btn" type="button"
+              [disabled]="factionForm.invalid || !selectedFactionIcon() || saveStatus() === 'saving'"
+              (click)="onSave()">Save</button>
+    </div>
+
+  </form>
+</div>

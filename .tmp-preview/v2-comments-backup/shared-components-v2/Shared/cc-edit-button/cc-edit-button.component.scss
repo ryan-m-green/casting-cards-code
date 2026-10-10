@@ -1,0 +1,52 @@
+/*
+ * The control, dressed as the world map's own image control wears it: a dark wash in the corner of a
+ * campaign-coloured frame, one hairline of the campaign's own colour, and that colour poured in when
+ * the control is hovered. Every row's edit therefore reads the same — and wears the campaign the row
+ * stands in: `--portal-color`, which the shell, the drawer, the card panels and the map's own frame
+ * each set (the fallback is the shell's own violet).
+ *
+ * The size comes in as a custom property, so a host can scale the control to the row it stands in —
+ * the same knob the delete control offers (see cc-delete-button).
+ */
+:host {
+  display: inline-flex;
+}
+
+.cc-edit-btn {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--cc-edit-size, 32px);
+  height: var(--cc-edit-size, 32px);
+  padding: 0;
+  background: rgba(0, 0, 0, 0.55);
+  border: 1px solid color-mix(in srgb, var(--portal-color, #6e28d0) 70%, white 30%);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.18s ease, border-color 0.18s ease;
+
+  &:hover:not(:disabled) {
+    background: var(--portal-color, #6e28d0);
+  }
+
+  &:focus-visible {
+    outline: 2px solid color-mix(in srgb, var(--portal-color, #6e28d0) 80%, white 20%);
+    outline-offset: 2px;
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
+
+/* The art: a black SVG from public/, inked white and set bright on the wash. */
+.cc-edit-icon {
+  display: block;
+  width: var(--cc-edit-icon-size, 22px);
+  height: var(--cc-edit-icon-size, 22px);
+  object-fit: contain;
+  filter: brightness(0) invert(1);
+  opacity: 0.9;
+}

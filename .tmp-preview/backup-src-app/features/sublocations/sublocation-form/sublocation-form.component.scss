@@ -1,0 +1,266 @@
+@use '../../../../styles/variables' as v;
+
+:host { display: block; height: 100%; }
+
+.pc.scroll-body {
+  position: relative !important;
+  overflow: auto !important;
+  max-height: 100%;
+}
+
+.spilled-wine-image {
+  position: absolute;
+  top: -67px;
+  right: -64px;
+  width: 236px;
+  height: auto;
+  z-index: 10;
+  pointer-events: none;
+}
+
+// ── GM-only Box ──────────────────────────────────────────────────────────────
+.form-gm-box {
+  position: relative;
+  border: 1px solid rgba(v.$color-base-brown-14, 0.2);
+  border-radius: 8px;
+  padding: 16px;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+
+  &__legend {
+    font-family: v.$font-header;
+    font-size: 0.7rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: rgba(v.$color-base-brown-14, 0.5);
+    padding: 0 8px;
+  }
+}
+
+.shop-header-row {
+  align-items: center;
+  margin: 12px 0 8px;
+
+  &--spaced { margin-top: 20px; }
+}
+
+.shop-item-card {
+  margin-bottom: 8px;
+}
+
+.shop-item-top-row {
+  gap: 8px;
+  align-items: flex-end;
+}
+
+.btn-item-confirm {
+  flex-shrink: 0;
+  background: #3b8c3b;
+  border: 1px solid #3b8c3b;
+  border-radius: 4px;
+  padding: 6px 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 13px;
+  cursor: pointer;
+  transition: background 0.18s ease, border-color 0.18s ease, color 0.18s ease;
+  margin-bottom: 2px;
+
+  &:hover {
+    background: #4ca64c;
+    border-color: #4ca64c;
+  }
+}
+
+.btn-item-remove {
+  margin-bottom: 2px;
+}
+
+.price-input-group {
+  display: flex;
+  gap: 4px;
+}
+
+.price-amount {
+  flex: 1;
+  min-width: 0;
+}
+
+.price-currency {
+  width: 60px;
+  flex-shrink: 0;
+}
+
+.fi-label-mt {
+  margin-top: 6px;
+}
+
+.btn-save-wide {
+  min-width: 160px;
+}
+
+// ── Portrait picker (new creation only) ──────────────────────────────────────────
+
+.form-portrait-new-row {
+  display: flex;
+  gap: 16px;
+  align-items: flex-start;
+  margin-bottom: 12px;
+}
+
+.form-portrait-fields {
+  flex: 1;
+  min-width: 0;
+}
+
+.form-portrait-label {
+  flex-shrink: 0;
+  display: inline-flex;
+  position: relative;
+  width: 84px;
+  height: 117px;
+  border-radius: 4px;
+  border: 1px dashed rgba(v.$color-base-brown-14, 0.25);
+  cursor: pointer;
+  overflow: hidden;
+  background: rgba(v.$color-input-bg, 0.5);
+  transition: border-color 0.18s ease;
+
+  &:hover {
+    border-color: rgba(v.$color-base-brown-14, 0.5);
+    .form-portrait-overlay { opacity: 1; }
+    .form-portrait-empty   { opacity: 0.85; }
+  }
+
+  &--filled {
+    border-style: solid;
+    border-color: rgba(v.$color-base-brown-14, 0.3);
+  }
+}
+
+.form-portrait-file-input {
+  position: absolute;
+  width: 0;
+  height: 0;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.form-portrait-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.form-portrait-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.45);
+  color: v.$color-base-brown-14;
+  opacity: 0;
+  transition: opacity 0.18s ease;
+}
+
+.form-portrait-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  width: 100%;
+  height: 100%;
+  color: rgba(v.$color-base-brown-14, 0.35);
+  transition: opacity 0.18s ease;
+}
+
+.form-portrait-hint {
+  font-size: 12px;
+  text-align: center;
+  line-height: 1.4;
+  font-family: v.$font-header;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+
+  em {
+    font-style: italic;
+    font-size: 7px;
+    opacity: 0.75;
+    text-transform: none;
+  }
+}
+
+.limit-error-message {
+  background: rgba(220, 38, 38, 0.1);
+  border: 1px solid rgba(220, 38, 38, 0.3);
+  border-radius: 8px;
+  padding: 12px 16px;
+  margin: 16px 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  color: #dc2626;
+  font-family: v.$font-body;
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+.limit-error-text {
+  flex: 1;
+}
+
+.limit-error-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.limit-error-upgrade {
+  padding: 6px 16px;
+  background: #4a90d9;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-family: v.$font-header;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background 0.2s ease;
+
+  &:hover {
+    background: #5a9fe9;
+  }
+}
+
+.limit-error-close {
+  background: none;
+  border: none;
+  color: #dc2626;
+  font-size: 20px;
+  cursor: pointer;
+  padding: 0;
+  line-height: 1;
+  opacity: 0.7;
+  transition: opacity 0.18s ease;
+
+  &:hover {
+    opacity: 1;
+  }
+}
+
+.save-spark-host {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}

@@ -1,0 +1,154 @@
+@if (isLoggedIn() && !isOnCover()) {
+  <button
+    class="jnd-bookmark"
+    (click)="isOpen() ? close() : open()"
+    [class.is-open]="isOpen()"
+    [attr.aria-label]="isOpen() ? 'Close navigation' : 'Open navigation'"
+  >
+    <span class="jnd-hamburger" [class.is-open]="isOpen()">
+      <span></span>
+      <span></span>
+      <span></span>
+    </span>
+  </button>
+}
+
+@if (isOpen()) {
+  <div class="jnd-backdrop" [class.is-closing]="isClosing()" (click)="close()"></div>
+
+  <div class="jnd-drawer" [class.is-closing]="isClosing()" role="dialog" aria-label="Site navigation">
+    <div class="jnd-page-inner">
+
+      <div class="jnd-header">
+        <div class="jnd-header-rule"></div>
+        <span class="jnd-header-title">✦ Contents ✦</span>
+        <div class="jnd-header-rule"></div>
+      </div>
+
+      <div class="jnd-body">
+
+        @if (isDm()) {
+          <div class="jnd-section jnd-section--standalone">
+            <button class="jnd-item jnd-item--dashboard" [class.is-active]="isActive('/gm/dashboard')" (click)="navigate('/gm/dashboard')">
+              <span class="jnd-item-marker">◈</span>
+              <span class="jnd-item-label">Dashboard</span>
+            </button>
+          </div>
+
+          <div class="jnd-section">
+            <span class="jnd-section-label">Library</span>
+            <button class="jnd-item" [class.is-active]="isActive('/gm/campaigns')" [class.disabled]="isLibraryDisabled()" [attr.disabled]="isLibraryDisabled() ? 'true' : null" (click)="isLibraryDisabled() ? null : navigate('/gm/campaigns')">
+              <span class="jnd-item-marker">◈</span>
+              <span class="jnd-item-label">Campaign Library</span>
+            </button>
+            <button class="jnd-item" [class.is-active]="isActive('/gm/cast')" [class.disabled]="isLibraryDisabled()" [attr.disabled]="isLibraryDisabled() ? 'true' : null" (click)="isLibraryDisabled() ? null : navigate('/gm/cast')">
+              <span class="jnd-item-marker">◈</span>
+              <span class="jnd-item-label">Cast Library</span>
+            </button>
+            <button class="jnd-item" [class.is-active]="isActive('/gm/sublocations')" [class.disabled]="isLibraryDisabled()" [attr.disabled]="isLibraryDisabled() ? 'true' : null" (click)="isLibraryDisabled() ? null : navigate('/gm/sublocations')">
+              <span class="jnd-item-marker">◈</span>
+              <span class="jnd-item-label">Sublocation Library</span>
+            </button>
+            <button class="jnd-item" [class.is-active]="isActive('/gm/locations')" [class.disabled]="isLibraryDisabled()" [attr.disabled]="isLibraryDisabled() ? 'true' : null" (click)="isLibraryDisabled() ? null : navigate('/gm/locations')">
+              <span class="jnd-item-marker">◈</span>
+              <span class="jnd-item-label">Location Library</span>
+            </button>
+            <button class="jnd-item" [class.is-active]="isActive('/gm/faction')" [class.disabled]="isLibraryDisabled()" [attr.disabled]="isLibraryDisabled() ? 'true' : null" (click)="isLibraryDisabled() ? null : navigate('/gm/faction')">
+              <span class="jnd-item-marker">◈</span>
+              <span class="jnd-item-label">Faction Library</span>
+            </button>
+            <button class="jnd-item" [class.is-active]="isActive('/gm/conditions')" [class.disabled]="isLibraryDisabled()" [attr.disabled]="isLibraryDisabled() ? 'true' : null" (click)="isLibraryDisabled() ? null : navigate('/gm/conditions')">
+              <span class="jnd-item-marker">◈</span>
+              <span class="jnd-item-label">Conditions Library</span>
+            </button>
+            <button class="jnd-item" [class.is-active]="isActive('/gm/soundtracks')" [class.disabled]="isLibraryDisabled()" [attr.disabled]="isLibraryDisabled() ? 'true' : null" (click)="isLibraryDisabled() ? null : navigate('/gm/soundtracks')">
+              <span class="jnd-item-marker">◈</span>
+              <span class="jnd-item-label">Soundtracks Library</span>
+            </button>
+          </div>
+        }
+
+        @if (!isDm()) {
+          <div class="jnd-section">
+            <span class="jnd-section-label">Library</span>
+            <button class="jnd-item" [class.is-active]="isActive('/player/campaigns')" [class.disabled]="isLibraryDisabled()" [attr.disabled]="isLibraryDisabled() ? 'true' : null" (click)="isLibraryDisabled() ? null : navigate('/player/campaigns')">
+              <span class="jnd-item-marker">◈</span>
+              <span class="jnd-item-label">Campaign Library</span>
+            </button>
+          </div>
+        }
+
+        @if (isAdmin()) {
+          <div class="jnd-section">
+            <span class="jnd-section-label">Admin</span>
+            <button class="jnd-item" [class.is-active]="isActive('/admin/user-management')" (click)="navigate('/admin/user-management')">
+              <span class="jnd-item-marker">◈</span>
+              <span class="jnd-item-label">User Management</span>
+            </button>
+            <button class="jnd-item" [class.is-active]="isActive('/admin/bug-reports')" (click)="navigate('/admin/bug-reports')">
+              <span class="jnd-item-marker">◈</span>
+              <span class="jnd-item-label">Bug Reports</span>
+            </button>
+            <button class="jnd-item" [class.is-active]="isActive('/admin/configuration-settings')" (click)="navigate('/admin/configuration-settings')">
+              <span class="jnd-item-marker">◈</span>
+              <span class="jnd-item-label">Configuration Settings</span>
+            </button>
+          </div>
+        }
+
+        <div class="jnd-section">
+          <span class="jnd-section-label">Info</span>
+          <button class="jnd-item" [class.is-active]="isActiveExact('/about')" (click)="navigate('/about')">
+            <span class="jnd-item-marker">◈</span>
+            <span class="jnd-item-label">About</span>
+          </button>
+          <button class="jnd-item" [class.is-active]="isActiveExact('/legal')" (click)="navigate('/legal')">
+            <span class="jnd-item-marker">◈</span>
+            <span class="jnd-item-label">Legal</span>
+          </button>
+        </div>
+
+        @if (isDm()) {
+          <div class="jnd-section">
+            <span class="jnd-section-label">Account</span>
+            <button class="jnd-item" [class.is-active]="isActive('/gm/account-settings')" (click)="navigate('/gm/account-settings')">
+              <span class="jnd-item-marker">◈</span>
+              <span class="jnd-item-label">Account Settings</span>
+            </button>
+            <button class="jnd-item" [class.is-active]="isActive('/gm/bug-report')" (click)="navigate('/gm/bug-report')">
+              <span class="jnd-item-marker">◈</span>
+              <span class="jnd-item-label">Report A Bug</span>
+            </button>
+          </div>
+        }
+
+        @if (!isDm()) {
+          <div class="jnd-section">
+            <span class="jnd-section-label">Account</span>
+            <button class="jnd-item" [class.is-active]="isActive('/player/account-settings')" (click)="navigate('/player/account-settings')">
+              <span class="jnd-item-marker">◈</span>
+              <span class="jnd-item-label">Account Settings</span>
+            </button>
+            <button class="jnd-item" [class.is-active]="isActive('/player/bug-report')" (click)="navigate('/player/bug-report')">
+              <span class="jnd-item-marker">◈</span>
+              <span class="jnd-item-label">Report a Glitch</span>
+            </button>
+            <button class="jnd-item" [class.is-active]="isActiveExact('/forgot-password')" (click)="navigate('/forgot-password')">
+              <span class="jnd-item-marker">◈</span>
+              <span class="jnd-item-label">Forgot Password</span>
+            </button>
+          </div>
+        }
+
+      </div>
+
+      <div class="jnd-footer">
+        <button class="jnd-signout-btn" (click)="logout()">
+          <span class="jnd-signout-icon">↩</span>
+          <span>Sign Out</span>
+        </button>
+      </div>
+
+    </div>
+  </div>
+}

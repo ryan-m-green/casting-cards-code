@@ -1,16 +1,18 @@
-import { Component, OnInit, signal, inject, ViewChild, ElementRef, computed } from '@angular/core';
+import { Component, OnInit, signal, inject, computed } from '@angular/core';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../environments/environment';
 import { AuthService } from '../../core/auth/auth.service';
 import { Campaign } from '../../shared/models/campaign.model';
-import { PortalTransitionService } from '../../core/portal-transition.service';
-import { JournalTitleComponent } from '../../shared/components/journal-title/journal-title.component';
-import { IconComponent } from '../../shared/components/icon/icon.component';
-import { UpgradeBadgeComponent } from '../../shared/components/upgrade-badge/upgrade-badge.component';
+import { PortalAnimationService } from '../../core/portal-animation.service';
+import { JournalTitleComponent } from '../../shared/components/Shared/journal-title/journal-title.component';
+import { UpgradeBadgeComponent } from '../../shared/components/Journal/upgrade-badge/upgrade-badge.component';
 import { CampaignHubService } from '../../core/hub/campaign-hub.service';
 import { SubscriptionDrawerService } from '../../core/subscription-drawer.service';
+import { PortalCardComponent } from '../../shared/components/Journal/portal-card/portal-card.component';
+import { CcCardStatComponent } from './cc-card-stat/cc-card-stat.component';
+import { CcSoundtrackCardComponent } from '../../shared/components/Campaign/Soundtracks/cc-soundtrack-card/cc-soundtrack-card.component';
 
 interface DashboardStats {
   campaignCount: number;
@@ -18,7 +20,9 @@ interface DashboardStats {
   sublocationCount: number;
   castCount: number;
   factionCount: number;
+  soundtrackCount: number;
   activeCampaign: Campaign | null;
+  lastPlayedCampaign: Campaign | null;
 }
 
 interface ImportResult {
@@ -42,23 +46,23 @@ interface ImportFailure {
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [CommonModule, JournalTitleComponent, IconComponent, UpgradeBadgeComponent],
+  imports: [CommonModule, JournalTitleComponent, UpgradeBadgeComponent, CcCardStatComponent, CcSoundtrackCardComponent, PortalCardComponent],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.scss'
 })
 export class DashboardComponent implements OnInit {
   private http           = inject(HttpClient);
   private router         = inject(Router);
-  private transition     = inject(PortalTransitionService);
+  private animationService = inject(PortalAnimationService);
   auth                   = inject(AuthService);
   private hub            = inject(CampaignHubService);
   private subscriptionDrawerService = inject(SubscriptionDrawerService);
 
-  @ViewChild('portalGhostTpl') private portalGhostTpl!: ElementRef<HTMLElement>;
   private isEntering = false;
 
   stats = signal<DashboardStats>({
-    campaignCount: 0, locationCount: 0, sublocationCount: 0, castCount: 0, factionCount: 0, activeCampaign: null
+    campaignCount: 0, locationCount: 0, sublocationCount: 0, castCount: 0, factionCount: 0, soundtrackCount: 0,
+    activeCampaign: null, lastPlayedCampaign: null
   });
 
   showImportPanel = signal(false);
@@ -75,7 +79,6 @@ export class DashboardComponent implements OnInit {
   });
 
   ngOnInit() {
-    // Only connect to SignalR if user is authenticated to prevent 401 errors
     if (this.auth.isLoggedIn()) {
       this.hub.connect().catch((err: Error) => {});
     }
@@ -84,121 +87,35 @@ export class DashboardComponent implements OnInit {
       .subscribe(s => this.stats.set(s));
   }
 
-  safeColor(color: string): string {
-    return color && /^#[0-9a-fA-F]{6}$/.test(color) ? color : '#6e28d0';
-  }
-
   goto(path: string) { this.router.navigate([path]); }
 
-  portalEnter(id: string, spineColor: string) {
-    if (this.isEntering) return;
+  enterActiveCampaign(event: Event) {
+    this.enterCampaign(this.stats().activeCampaign, event.currentTarget as HTMLElement);
+  }
+
+  enterPlayedCampaign(event: Event) {
+    this.enterCampaign(this.stats().lastPlayedCampaign, event.currentTarget as HTMLElement);
+  }
+
+  editCampaign(id: string) {
+    this.router.navigate(['/gm/campaigns', id]);
+  }
+
+  private enterCampaign(campaign: Campaign | null, card: HTMLElement) {
+    if (!campaign || !card || this.isEntering) return;
     this.isEntering = true;
 
-    const template = this.portalGhostTpl.nativeElement;
-    const ghostW   = template.offsetWidth  || 170;
-    const ghostH   = template.offsetHeight || 240;
-    const cx       = window.innerWidth  / 2;
-    const cy       = window.innerHeight / 2;
-    const color    = this.safeColor(spineColor);
-
-    // ── Build ghost card — append off-screen to measure true size ─
-    const ghost = template.cloneNode(true) as HTMLElement;
-    ghost.classList.remove('portal-ghost-tpl');
-    Object.assign(ghost.style, {
-      position:      'fixed',
-      top:           '-9999px',
-      left:          '-9999px',
-      width:         ghostW + 'px',
-      margin:        '0',
-      overflow:      'visible',
-      zIndex:        '1001',
-      pointerEvents: 'none',
-      opacity:       '0',
-      transition:    'none',
-      willChange:    'transform, opacity',
-      visibility:    'hidden',
+    this.animationService.enter({
+      card,
+      id: campaign.id,
+      spineColor: campaign.spineColor,
+      routePrefix: '/campaign',
+      onNavigate: (routePrefix, id) => {
+        this.router.navigate([routePrefix, id], { state: { noFlip: true, portalEntry: true } });
+        this.isEntering = false;
+      },
+      enableNavigation: true
     });
-    document.body.appendChild(ghost);
-    void ghost.offsetWidth;
-
-    // Measure natural (untransformed) size so centering is accurate
-    const actualW = ghost.offsetWidth  || ghostW;
-    const actualH = ghost.offsetHeight || ghostH;
-
-    // Center first, then apply initial scale so transform-origin stays at (cx, cy)
-    ghost.style.top        = (cy - actualH / 2) + 'px';
-    ghost.style.left       = (cx - actualW / 2) + 'px';
-    ghost.style.transform  = 'scale(0.4)';
-    ghost.style.visibility = '';
-
-    this.transition.ghostTemplate = ghost.cloneNode(true) as HTMLElement;
-    this.transition.originRect    = null;
-    this.transition.spineColor    = color;
-
-    // ── Spawn inward-converging sparks ────────────────────────────
-    const sparks: HTMLElement[] = [];
-    for (let i = 0; i < 30; i++) {
-      const angle  = (i / 30) * 2 * Math.PI + Math.random() * 0.5;
-      const dist   = 80 + Math.random() * 80;
-      const size   = 5 + Math.random() * 6;
-      const startX = cx + Math.cos(angle) * dist;
-      const startY = cy + Math.sin(angle) * dist;
-      const sp     = document.createElement('div');
-      Object.assign(sp.style, {
-        position:      'fixed',
-        width:         size + 'px',
-        height:        size + 'px',
-        borderRadius:  '50%',
-        background:    color,
-        boxShadow:     `0 0 ${size * 3}px ${color}, 0 0 ${size * 7}px ${color}, 0 0 ${size * 12}px ${color}`,
-        left:          (startX - size / 2) + 'px',
-        top:           (startY - size / 2) + 'px',
-        zIndex:        '1002',
-        pointerEvents: 'none',
-        opacity:       '1',
-        transition:    'transform 600ms cubic-bezier(0.4,0,0.6,1), opacity 600ms ease-in',
-      });
-      document.body.appendChild(sp);
-      sparks.push(sp);
-      void sp.offsetWidth;
-      // Translate each spark inward to the card center
-      sp.style.transform = `translate(${cx - startX}px, ${cy - startY}px)`;
-      sp.style.opacity   = '0';
-    }
-
-    void ghost.offsetWidth;
-
-    // Phase 0 — assemble: sparks converge as card grows from tiny (600ms)
-    ghost.style.transition = 'opacity 550ms ease-out, transform 600ms cubic-bezier(0.34,1.2,0.64,1)';
-    ghost.style.opacity    = '1';
-    ghost.style.transform  = 'scale(1.04)';
-
-    setTimeout(() => {
-      // Settle
-      ghost.style.transition = 'transform 150ms ease-out';
-      ghost.style.transform  = 'scale(1.0)';
-
-      setTimeout(() => {
-        // Phase 1 — breathe pulse
-        ghost.style.transition = 'transform 0.26s ease-in-out';
-        ghost.style.transform  = 'scale(1.06)';
-
-        setTimeout(() => {
-          // Phase 2 — zoom into void
-          ghost.style.transition = 'transform 1.5s cubic-bezier(0.4,0,0.8,1)';
-          ghost.style.transform  = 'scale(30)';
-
-          this.transition.show();
-
-          setTimeout(() => {
-            ghost.remove();
-            sparks.forEach(s => s.remove());
-            this.isEntering = false;
-            this.router.navigate(['/campaign', id], { state: { noFlip: true, portalEntry: true } });
-          }, 2000);
-        }, 260);
-      }, 150);
-    }, 600);
   }
 
   toggleImport() {

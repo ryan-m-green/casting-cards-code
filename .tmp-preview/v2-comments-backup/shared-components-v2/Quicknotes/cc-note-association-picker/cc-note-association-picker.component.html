@@ -1,0 +1,104 @@
+<div class="assoc" [style.--portal-color]="portalColor()">
+
+  <!--
+    What went wrong, standing at the very top of the drawer and stuck there: a pick that the queue
+    would not take must not read as a card that was never clicked, so the word on it stays in sight
+    however far down the cards the drawer has been scrolled.
+  -->
+  @if (error()) {
+    <p class="assoc-error" role="alert">{{ error() }}</p>
+  }
+
+  <!--
+    The search stands at the top of the drawer, where the note's own words were typed. A term with
+    no type chosen gathers matches from every card type at once; once a type is picked, the same term
+    narrows that type's cards. Pick a card and it hangs off the note as a hashtag.
+  -->
+  <app-cc-textbox
+    placeholder="Search this campaign's cards…"
+    context="campaign"
+    [ngModel]="search()"
+    (ngModelChange)="search.set($event)"
+    [showClear]="true"
+  />
+
+  <div class="assoc-types" role="group" aria-label="Card types">
+    @for (type of cardTypes; track type.key) {
+      <button
+        type="button"
+        class="assoc-type"
+        [class.is-on]="activeType() === type.key"
+        [attr.aria-pressed]="activeType() === type.key"
+        [attr.title]="'Show the campaign\'s ' + type.label"
+        (click)="toggleType(type.key)"
+      >
+        {{ type.label }}<span class="assoc-type-count">{{ countFor(type.key) }}</span>
+      </button>
+    }
+  </div>
+
+  <!-- What the note is wearing now, as the hashtags the area shows it under. -->
+  @if (links().length) {
+    <div class="assoc-picked">
+      @for (link of links(); track link.entityType + ':' + link.entityId) {
+        <span class="assoc-chip">
+          #{{ link.entityName }}
+          <button
+            type="button"
+            class="assoc-chip-remove"
+            [attr.aria-label]="'Take ' + link.entityName + ' off the note'"
+            (click)="unpick(link)"
+          >✕</button>
+        </span>
+      }
+    </div>
+  }
+
+  @if (!groups().length) {
+    <p class="assoc-empty">{{ emptyMessage() }}</p>
+  } @else {
+    @for (group of groups(); track group.key) {
+      <p class="assoc-section">{{ group.label }} ({{ group.cards.length }})</p>
+
+      <div class="assoc-grid">
+        @for (card of group.cards; track card.entityType + ':' + card.id) {
+          <button
+            type="button"
+            class="assoc-tile"
+            [class.is-picked]="isPicked(card)"
+            [attr.aria-pressed]="isPicked(card)"
+            [attr.aria-label]="(isPicked(card) ? 'Take ' : 'Link ') + card.name"
+            (click)="togglePick(card)"
+          >
+            @switch (card.entityType) {
+              @case ('location') {
+                <cc-simple-location-card [location]="$any(card.card)" />
+              }
+              @case ('sublocation') {
+                <cc-simple-sublocation-card [sublocation]="$any(card.card)" />
+              }
+              @case ('cast') {
+                <cc-simple-cast-card [cast]="$any(card.card)" />
+              }
+              @case ('faction') {
+                <cc-simple-faction-card [faction]="$any(card.card)" />
+              }
+            }
+
+            @if (isPicked(card)) {
+              <span class="assoc-tile-check" aria-hidden="true">✓</span>
+            }
+          </button>
+        }
+      </div>
+    }
+  }
+
+  <div class="assoc-actions">
+    <span class="assoc-total">
+      {{ links().length }} linked@if (saving()) { · saving… }
+    </span>
+
+    <button type="button" class="campaign-primary-btn" (click)="done()">Done</button>
+  </div>
+</div>

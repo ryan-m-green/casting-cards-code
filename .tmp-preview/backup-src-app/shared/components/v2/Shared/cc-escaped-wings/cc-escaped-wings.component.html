@@ -1,0 +1,27 @@
+<svg class="escaped-wings-defs" aria-hidden="true" focusable="false">
+  <defs>
+    <filter
+      id="escaped-wings-border"
+      x="-25%"
+      y="-25%"
+      width="150%"
+      height="150%"
+      color-interpolation-filters="sRGB"
+    >
+      <feMorphology in="SourceAlpha" operator="dilate" radius="2" result="escaped-wings-halo" />
+      <feFlood flood-color="#000000" result="escaped-wings-ink" />
+      <feComposite
+        in="escaped-wings-ink"
+        in2="escaped-wings-halo"
+        operator="in"
+        result="escaped-wings-black"
+      />
+      <feMerge>
+        <feMergeNode in="escaped-wings-black" />
+        <feMergeNode in="SourceGraphic" />
+      </feMerge>
+    </filter>
+  </defs>
+</svg>
+
+<img class="escaped-wings-img" src="/escaped_wings.svg" alt="" aria-hidden="true" />

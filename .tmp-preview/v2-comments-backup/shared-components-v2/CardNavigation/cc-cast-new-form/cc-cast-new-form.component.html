@@ -1,0 +1,141 @@
+<!--
+  The cast form, the library's own fields brought over to the v2 campaign components the rest
+  of the drawer uses: the free-text fields are `cc-textbox` in campaign context, the six
+  suggestion fields are `cc-campaign-dropdown`, the hit points are `cc-dial-counter`, and the
+  hashtags are `cc-keyword-tags`. Those components draw their own labels, inputs and notes, so
+  the form itself carries only the layout markup.
+-->
+<div class="pic-new-form-wrap">
+  <form [formGroup]="castForm" class="pic-new-form pic-new-form--wrap">
+
+    <div class="wr form-row-gap">
+      <div class="form-field">
+        <app-cc-textbox
+          label="Cast Name"
+          context="campaign"
+          formControlName="name"
+        />
+      </div>
+    </div>
+
+    <div class="wr form-row-gap">
+      <div class="form-field">
+        <cc-campaign-dropdown
+          label="Pronouns"
+          placeholder="Start typing…"
+          [options]="pronounOptions"
+          formControlName="pronouns"
+        />
+      </div>
+      <div class="form-field">
+        <cc-campaign-dropdown
+          label="Age"
+          placeholder="Start typing…"
+          [options]="ageOptions"
+          formControlName="age"
+        />
+      </div>
+    </div>
+
+    <div class="wr form-row-gap">
+      <div class="form-field">
+        <cc-campaign-dropdown
+          label="Role"
+          placeholder="Start typing…"
+          [options]="roleOptions"
+          formControlName="role"
+        />
+      </div>
+      <div class="form-field">
+        <cc-campaign-dropdown
+          label="Race"
+          placeholder="Start typing…"
+          [options]="raceOptions"
+          formControlName="race"
+        />
+      </div>
+    </div>
+
+    <div class="wr form-row-gap">
+      <div class="form-field">
+        <cc-campaign-dropdown
+          label="Posture"
+          placeholder="Start typing…"
+          [options]="postureOptions"
+          formControlName="posture"
+        />
+      </div>
+      <div class="form-field">
+        <cc-campaign-dropdown
+          label="Speed"
+          placeholder="Start typing…"
+          [options]="speedOptions"
+          formControlName="speed"
+        />
+      </div>
+    </div>
+
+    <app-cc-textbox
+      label="Public Description (visible to players)"
+      type="textarea"
+      [rows]="3"
+      context="campaign"
+      formControlName="publicDescription"
+    />
+
+    <fieldset class="form-gm-box">
+      <legend class="form-gm-box__legend">FOR GM EYES ONLY</legend>
+
+      <div class="form-row-gap">
+        <div class="form-field">
+          <cc-dial-counter
+            label="Max Hit Points"
+            context="campaign"
+            [dials]="3"
+            formControlName="maxHitPoints"
+          />
+        </div>
+
+        <div class="form-field">
+          <cc-keyword-tags
+            label="Hashtags / Keywords"
+            placeholder="Add or select hashtags…"
+            context="campaign"
+            [options]="keywordOptions()"
+            formControlName="keywords"
+          />
+        </div>
+
+        <div class="form-field">
+          <app-cc-textbox
+            label="Additional Voice Notes"
+            type="textarea"
+            [rows]="3"
+            context="campaign"
+            formControlName="voiceNotes"
+          />
+        </div>
+
+        <div class="form-field">
+          <app-cc-textbox
+            label="GM Description (private notes)"
+            type="textarea"
+            [rows]="4"
+            context="campaign"
+            formControlName="description"
+          />
+        </div>
+      </div>
+
+    </fieldset>
+
+    @if (showSaveRow()) {
+      <div class="pic-save-row">
+        <button class="campaign-primary-btn" type="button"
+                [disabled]="castForm.invalid || saveStatus() === 'saving'"
+                (click)="onSave()">@if (saveStatus() === 'saving') { Saving… } @else if (isEditing()) { Save changes } @else { Save }</button>
+      </div>
+    }
+
+  </form>
+</div>

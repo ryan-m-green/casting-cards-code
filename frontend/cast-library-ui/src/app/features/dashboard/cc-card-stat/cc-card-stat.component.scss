@@ -1,0 +1,198 @@
+@use 'sass:map';
+@use '../../../../styles/variables' as v;
+
+:host {
+  display: block;
+  width: 100%;
+  min-width: 84px;
+  max-width: 120px;
+  aspect-ratio: 75 / 110;
+}
+
+.cc-card-stat {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  cursor: pointer;
+}
+
+/* Each card type wears the same frame, banner and strip dressing as its simple
+   card in the deck, so a stat tile reads as that card. */
+$types: (
+  cast: (
+    frame: linear-gradient(145deg,
+      v.$color-base-gold-2 0%, v.$color-base-gold-mid-hex 20%, v.$color-base-gold-dark-hex 45%,
+      v.$color-base-gold-bright-hex 55%, v.$color-base-gold-mid-hex 70%, v.$color-base-gold-3 85%, v.$color-base-gold-4 100%),
+    banner: linear-gradient(180deg, v.$color-base-red-5 0%, v.$color-base-red-6 100%),
+    border: v.$color-base-gold-dark-hex,
+    accent: v.$color-base-gold-bright-hex,
+    pip: v.$color-base-gold-mid-hex,
+  ),
+  sublocation: (
+    frame: linear-gradient(145deg,
+      v.$color-ext-675 0%, v.$color-ext-676 15%, v.$color-ext-677 40%,
+      v.$color-ext-678 55%, v.$color-ext-679 70%, v.$color-ext-680 85%, v.$color-ext-681 100%),
+    banner: linear-gradient(180deg, v.$color-ext-686 0%, v.$color-ext-687 100%),
+    border: v.$color-ext-677,
+    accent: v.$color-ext-675,
+    pip: v.$color-ext-675,
+  ),
+  location: (
+    frame: linear-gradient(145deg,
+      v.$color-base-yellow-green 0%, v.$color-base-mid-yellow-green 15%, v.$color-base-dark-yellow-green 40%,
+      v.$color-base-green-6 55%, v.$color-base-green-7 70%, v.$color-base-green-8 85%, v.$color-base-green-9 100%),
+    banner: linear-gradient(180deg, v.$color-base-green-11 0%, v.$color-base-green-12 100%),
+    border: v.$color-base-dark-yellow-green,
+    accent: v.$color-base-yellow-green,
+    pip: v.$color-base-yellow-green,
+  ),
+  faction: (
+    frame: linear-gradient(145deg,
+      v.$color-faction-neutral-frame-1 0%, v.$color-faction-neutral-frame-2 15%, v.$color-faction-neutral-frame-3 40%,
+      v.$color-faction-neutral-frame-4 55%, v.$color-faction-neutral-frame-5 70%, v.$color-faction-neutral-frame-6 85%, v.$color-faction-neutral-frame-7 100%),
+    banner: linear-gradient(180deg, v.$color-faction-neutral-banner-1 0%, v.$color-faction-neutral-banner-2 100%),
+    border: v.$color-faction-neutral-border,
+    accent: v.$color-faction-neutral-accent,
+    pip: v.$color-faction-neutral-corner,
+  ),
+  campaign: (
+    frame: linear-gradient(145deg,
+      v.$color-base-blue-4 0%, v.$color-base-blue-5 30%, v.$color-base-black-3 60%, v.$color-base-blue-6 100%),
+    banner: linear-gradient(180deg, v.$color-base-blue-5 0%, v.$color-base-blue-6 100%),
+    border: v.$color-base-black-3,
+    accent: v.$color-base-gold-bright-hex,
+    pip: v.$color-base-blue-5,
+  ),
+);
+
+.stat-card-frame {
+  position: absolute;
+  inset: 0;
+  border-radius: 4px;
+  padding: 3px;
+  box-shadow:
+    0 0 0 1px v.$color-base-black-7,
+    0 3px 11px v.$color-shadow-dark;
+  overflow: hidden;
+}
+
+.stat-card-inner {
+  width: 100%;
+  height: 100%;
+  border-radius: 2.5px;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  background: v.$color-base-tan-3;
+}
+
+.stat-card-banner {
+  flex-shrink: 0;
+  padding: 4px 5px 3px;
+  text-align: center;
+  position: relative;
+  z-index: 2;
+  border-bottom: 1px solid v.$color-base-black-7;
+}
+
+.stat-card-name {
+  font-family: v.$font-header;
+  font-weight: 700;
+  font-size: 9px;
+  letter-spacing: 0.08em;
+  line-height: 1.1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.stat-card-count {
+  position: relative;
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  font-family: v.$font-header;
+  font-weight: 700;
+  font-size: 30px;
+  line-height: 1;
+  color: v.$color-base-brown-14;
+}
+
+/* The card type's own icon, worn large and faint behind the count. */
+.stat-card-watermark {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 82%;
+  height: 82%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: v.$color-base-brown-14;
+  --icon-opacity: 0.15;
+  pointer-events: none;
+  z-index: 0;
+
+  app-icon { height: 100%; }
+}
+
+.stat-card-value {
+  position: relative;
+  z-index: 1;
+}
+
+.stat-card-strip {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 3px 5px;
+  position: relative;
+  z-index: 2;
+  border-top: 1px solid v.$color-base-black-7;
+}
+
+.stat-card-pip-row {
+  display: flex;
+  gap: 2px;
+}
+
+.stat-card-pip {
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  opacity: 0.7;
+}
+
+.stat-card-strip-label {
+  font-family: v.$font-header;
+  font-size: 7px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  opacity: 0.85;
+}
+
+@each $name, $c in $types {
+  .cc-card-stat--#{$name} .stat-card-frame {
+    background: map.get($c, frame);
+  }
+
+  .cc-card-stat--#{$name} .stat-card-banner,
+  .cc-card-stat--#{$name} .stat-card-strip {
+    background: map.get($c, banner);
+    border-color: map.get($c, border);
+  }
+
+  .cc-card-stat--#{$name} .stat-card-name,
+  .cc-card-stat--#{$name} .stat-card-strip-label {
+    color: map.get($c, accent);
+  }
+
+  .cc-card-stat--#{$name} .stat-card-pip {
+    background-color: map.get($c, pip);
+  }
+}

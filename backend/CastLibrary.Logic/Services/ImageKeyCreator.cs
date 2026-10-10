@@ -25,7 +25,7 @@ namespace CastLibrary.Logic.Services
                 case EntityType.CampaignHandout:
                     return $"{dmUserId}/campaigns/{campaignId}/handouts/{entityId}.png";
                 case EntityType.Soundtrack:
-                    return $"{dmUserId}/campaigns/{campaignId}/{entityId}";
+                    return $"{dmUserId}/soundtracks/{entityId}";
                 case EntityType.WorldMap:
                     return $"{dmUserId}/campaigns/{campaignId}/worldmap/worldmap.png";
                 default: return string.Empty;

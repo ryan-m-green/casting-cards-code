@@ -1,0 +1,398 @@
+@use '../../../styles/variables' as v;
+
+:host {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+}
+
+.journal-wrap {
+  display: flex;
+  align-items: stretch;
+  width: min(96vw, 820px);
+  height: min(88vh, 780px);
+  position: relative; // anchor for absolutely-positioned strap
+  filter: drop-shadow(0 40px 70px v.$color-shadow-dark) drop-shadow(0 8px 20px v.$color-shadow-medium);
+
+  @media (max-width: 600px) {
+    width: 100vw;
+    height: 100dvh;
+  }
+}
+
+// ─── Spine ────────────────────────────────────────────────────────────────────
+.spine {
+  width: 96px;
+  flex-shrink: 0;
+  background: radial-gradient(ellipse 200% 60% at 60% 40%, v.$color-base-spine-1 0%, v.$color-base-spine-2 100%);
+  border-radius: 6px 0 0 6px;
+  position: relative;
+  overflow: hidden;
+  box-shadow: inset -4px 0 10px v.$journal-spine-shadow;
+  z-index: 10;
+
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='400'%3E%3Cfilter id='lg'%3E%3CfeTurbulence type='turbulence' baseFrequency='0.04 0.8' numOctaves='5' seed='7' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='0 0 0 0 0.3  0 0 0 0 0.12  0 0 0 0 0.04  0 0 0 0.5 0'/%3E%3C/filter%3E%3Crect width='200' height='400' filter='url(%23lg)'/%3E%3C/svg%3E");
+    background-size: 200px 400px;
+    mix-blend-mode: overlay;
+    pointer-events: none;
+  }
+
+  @media (max-width: 600px) {
+    width: 56px;
+    border-radius: 0;
+  }
+  @media (min-width: 601px) and (max-width: 900px) {
+    width: 40px;
+  }
+}
+
+.spine-cap {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 14px;
+  background: linear-gradient(to bottom, v.$color-base-spine-3, v.$color-base-spine-4, v.$color-base-spine-5);
+  opacity: 0.8;
+  z-index: 2;
+
+  &.top    { top: 0;    border-radius: 6px 0 0 0; }
+  &.bottom { bottom: 0; border-radius: 0 0 0 6px; }
+}
+
+.spine-band {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 18px;
+  background: linear-gradient(to bottom, v.$color-base-spine-6 0%, v.$color-base-spine-7 25%, v.$color-base-spine-8 55%, v.$color-base-spine-9 100%);
+  box-shadow: 0 2px 4px v.$journal-spine-band-shadow, 0 -1px 2px v.$journal-spine-band-highlight,
+              inset 0 1px 1px v.$journal-spine-band-highlight-2;
+  z-index: 1;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(to right, transparent, v.$journal-spine-band-accent, transparent);
+  }
+}
+
+.spine-links {
+  position: absolute;
+  bottom: 56px;
+  left: 0;
+  right: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  z-index: 3;
+}
+
+.spine-link--top {
+  position: absolute;
+  top: 28px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 3;
+  white-space: nowrap;
+}
+
+.spine-link {
+  font-family: v.$font-header;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  text-decoration: none;
+  text-align: center;
+  padding: 8px 8px;
+  border: 1px solid v.$color-base-spine-4;
+  border-radius: 6px;
+  background: linear-gradient(to bottom, v.$color-base-spine-3 0%, v.$color-base-spine-4 40%, v.$color-base-spine-5 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  filter: drop-shadow(0 1px 2px v.$journal-spine-shadow);
+  transition: filter 0.15s, border-color 0.15s, font-size 0.15s, padding 0.15s;
+
+  &:hover {
+    border-color: v.$color-base-spine-3;
+    filter: drop-shadow(0 1px 4px v.$journal-spine-shadow) brightness(1.3);
+  }
+
+  @media (max-width: 900px) {
+    font-size: 12px;
+    letter-spacing: 0.06em;
+    padding: 2px 4px;
+  }
+
+  @media (max-width: 600px) {
+    font-size: 12px;
+    letter-spacing: 0.03em;
+    padding: 8px 2px;
+  }
+}
+
+// ─── Page Area ────────────────────────────────────────────────────────────────
+.page-area {
+  flex: 1;
+  min-width: 0;
+  position: relative;
+  overflow: auto;
+  border-radius: 0 6px 6px 0;
+  perspective: 2000px;
+}
+
+// ─── Page layers ──────────────────────────────────────────────────────────────
+// Aged parchment — ruled lines, edge staining, scattered foxing marks,
+// a ghost-compass in the top-left, and decorative corner washes.
+// Static frame effects — edge staining, corner foxing, watermark, toning, base.
+// Applied to the fixed-size .page element (viewport-bounded).
+@mixin parchment-bg {
+  background:
+    // ── Edge staining — binding shadow on the left ──
+    linear-gradient(to right,  v.$journal-parchment-stain-binding 0%, v.$journal-parchment-stain-binding-fade 7%, transparent 18%),
+    // ── Edge staining — slight darkening on all four sides ──
+    linear-gradient(to left,   v.$journal-parchment-stain-edge 0%, transparent 10%),
+    linear-gradient(to bottom, v.$journal-parchment-stain-top-bottom 0%, v.$journal-parchment-stain-fade-2 6%, transparent 14%),
+    linear-gradient(to top,    v.$journal-parchment-stain-top-bottom 0%, v.$journal-parchment-stain-fade-2 6%, transparent 14%),
+    // ── Corner foxing / water staining ──
+    radial-gradient(ellipse 110px 85px  at  2%  3%, v.$journal-parchment-foxing-1 0%, transparent 60%),
+    radial-gradient(ellipse  80px 68px  at 98%  2%, v.$journal-parchment-foxing-2 0%, transparent 60%),
+    radial-gradient(ellipse 115px 90px  at 98% 98%, v.$journal-parchment-foxing-3 0%, transparent 60%),
+    radial-gradient(ellipse  90px 105px at  2% 98%, v.$journal-parchment-foxing-4 0%, transparent 60%),
+    // ── Ghost compass / seal watermark (top-left) ──
+    radial-gradient(circle 38px at 7% 7%, v.$journal-parchment-watermark-1 0%, v.$journal-parchment-watermark-2 45%, transparent 70%),
+    radial-gradient(circle 22px at 7% 7%, v.$journal-parchment-watermark-3 0%, transparent 60%),
+    // ── Warm uneven toning across the surface ──
+    radial-gradient(ellipse 65% 52% at 32% 28%, v.$journal-parchment-toning-1 0%, transparent 70%),
+    radial-gradient(ellipse 48% 62% at 72% 72%, v.$journal-parchment-toning-2 0%, transparent 70%),
+    // ── Base parchment — amber-toned aged paper ──
+    linear-gradient(112deg, v.$color-base-tan-1 0%, v.$color-base-tan-2 28%, v.$color-base-tan-3 52%, v.$color-base-tan-4 78%, v.$color-base-tan-5 100%);
+}
+
+// Scattered age spots — applied to the scrollable .pc container so they
+// travel with the content rather than sitting at fixed viewport positions.
+@mixin parchment-spots {
+  background:
+    radial-gradient(ellipse 28px 22px at 70% 14%, v.$journal-parchment-spot-1 0%, transparent 70%),
+    radial-gradient(ellipse 18px 26px at 38% 70%, v.$journal-parchment-spot-2 0%, transparent 70%),
+    radial-gradient(ellipse 22px 16px at 56% 44%, v.$journal-parchment-spot-3 0%, transparent 70%),
+    radial-gradient(ellipse 32px 20px at 14% 52%, v.$journal-parchment-spot-4 0%, transparent 70%),
+    radial-gradient(ellipse 20px 28px at 84% 58%, v.$journal-parchment-spot-5 0%, transparent 70%),
+    radial-gradient(ellipse 14px 10px at 62% 82%, v.$journal-parchment-spot-6 0%, transparent 70%),
+    radial-gradient(ellipse 24px 18px at 25% 25%, v.$journal-parchment-spot-7 0%, transparent 70%);
+}
+
+.page {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  @include parchment-bg;
+}
+
+.page-back  { z-index: 1; }
+.page-front {
+  z-index: 2;
+  box-shadow: inset 8px 0 20px v.$journal-parchment-shadow-front, inset -4px 0 10px v.$journal-parchment-shadow-front-light;
+
+}
+
+// ─── Flip element (3D overlay) ────────────────────────────────────────────────
+.page-flip {
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  transform-style: preserve-3d;
+  transform-origin: left center;
+  transform: rotateY(0deg);
+  opacity: 0;
+  pointer-events: none;
+}
+
+.flip-face,
+.flip-back-face {
+  position: absolute;
+  inset: 0;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  overflow: hidden;
+}
+
+.flip-face {
+  background: linear-gradient(108deg, v.$color-base-tan-1 0%, v.$color-base-tan-6 30%, v.$color-base-tan-3 55%, v.$color-base-tan-4 80%, v.$color-base-tan-5 100%);
+  box-shadow: inset 8px 0 20px v.$journal-parchment-shadow-front, inset -4px 0 10px v.$journal-parchment-shadow-front-light;
+}
+
+// NOTE: NO filter/opacity/will-change here — any of those properties on a child
+// of a preserve-3d container flatten the 3D context and break backface-visibility.
+.flip-back-face {
+  background: linear-gradient(252deg, v.$color-base-tan-7 0%, v.$color-base-tan-4 30%, v.$color-base-tan-8 55%, v.$color-base-tan-9 80%, v.$color-base-tan-10 100%);
+  transform: rotateY(180deg);
+  box-shadow: inset -8px 0 20px v.$journal-parchment-shadow-flip-back;
+}
+
+// ─── Cover-flip: leather front face when flipping away from the cover page ────
+.page-flip.cover-flip {
+  .flip-face {
+    background: linear-gradient(142deg, v.$color-base-leather-1 0%, v.$color-base-leather-2 18%, v.$color-base-leather-3 40%, v.$color-base-leather-4 62%, v.$color-base-leather-5 82%, v.$color-base-leather-6 100%);
+  }
+
+  .flip-back-face {
+    background: linear-gradient(108deg, v.$color-base-tan-1 0%, v.$color-base-tan-6 30%, v.$color-base-tan-3 55%, v.$color-base-tan-4 80%, v.$color-base-tan-5 100%);
+    box-shadow: inset -8px 0 20px v.$journal-parchment-shadow-flip-back;
+  }
+}
+
+// ─── Journal-opens overlay — fades in behind the cover flip, holds, then fades out ─
+.journal-open-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: radial-gradient(ellipse 70% 60% at 50% 45%, v.$color-base-spine-6 0%, v.$color-ext-430 60%, v.$color-ext-431 100%);
+  opacity: 0;
+  pointer-events: none;
+
+  // Appear instantly — flip is covering it anyway
+  &.show {
+    opacity: 1;
+  }
+
+  // Fade out smoothly
+  &.fading {
+    opacity: 0;
+    transition: opacity 1.5s ease;
+  }
+}
+
+.journal-open-crest {
+  margin-bottom: 0;
+}
+
+.journal-open-text {
+  font-family: v.$font-header;
+  font-size: clamp(14px, 2.5vw, 22px);
+  color: v.$color-base-spine-4;
+  text-shadow: 0 0 20px v.$color-ext-432;
+  margin-top: 16px;
+  animation: journal-open-flicker 2s infinite;
+}
+
+@keyframes journal-open-flicker {
+  0%, 100% { opacity: 1; }
+  92%       { opacity: 1; }
+  93%       { opacity: 0.85; }
+  94%       { opacity: 1; }
+  96%       { opacity: 0.9; }
+  97%       { opacity: 1; }
+}
+
+// ─── Close-flip: leather sweeps in from the left edge to cover the page ─────
+.page-flip.close-flip {
+  .flip-face {
+    background: linear-gradient(142deg, v.$color-base-leather-1 0%, v.$color-base-leather-2 18%, v.$color-base-leather-3 40%, v.$color-base-leather-4 62%, v.$color-base-leather-5 82%, v.$color-base-leather-6 100%);
+    box-shadow: inset 8px 0 24px v.$journal-leather-cover-shadow, inset -2px 0 8px v.$journal-leather-cover-shadow-light;
+  }
+
+  .flip-back-face {
+    background: linear-gradient(108deg, v.$color-base-tan-1 0%, v.$color-base-tan-6 30%, v.$color-base-tan-3 55%, v.$color-base-tan-4 80%, v.$color-base-tan-5 100%);
+    box-shadow: inset -8px 0 20px v.$journal-parchment-shadow-flip-back;
+  }
+}
+
+// ─── Corner fold ──────────────────────────────────────────────────────────────
+.page-fold {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 0;
+  height: 0;
+  border-style: solid;
+  border-width: 0 0 20px 20px;
+  border-color: transparent transparent v.$journal-parchment-fold transparent;
+  z-index: 6;
+  pointer-events: none;
+}
+
+// ─── Scrollable page content ──────────────────────────────────────────────────
+:host ::ng-deep .pc {
+  position: relative;
+  padding: 20px 22px;
+  height: 100%;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  scrollbar-width: none;
+  @include parchment-spots;
+  background-attachment: local;
+
+  &::-webkit-scrollbar { display: none; }
+}
+
+// ─── Arcane accent — card & row hover on parchment pages ─────────────────────
+:host ::ng-deep .role-card:hover,
+:host ::ng-deep .wb.accent:hover {
+  border-color: v.$color-arcane-border;
+  box-shadow: 0 0 10px v.$color-arcane-glow-card;
+}
+
+:host ::ng-deep .role-card.active {
+  border-color: v.$color-arcane-border-hover;
+  background: v.$color-arcane-bg-focus;
+}
+
+// ─── Cover mode — leather front cover ────────────────────────────────────────
+// Applied when the root (cover) route is active.
+// The page area transforms from parchment into worn leather.
+.journal-wrap.is-cover {
+  .page-area {
+    // Subtle leather ridge shadow along the spine edge
+    box-shadow: inset 8px 0 24px v.$journal-leather-cover-shadow, inset -2px 0 8px v.$journal-leather-cover-shadow-light;
+  }
+
+  .page {
+    background:
+    // ── Fine leather grain — two-axis micro-weave ──
+    repeating-linear-gradient( 71deg, transparent 0px, transparent 3px, v.$journal-leather-grain-dark 3px, v.$journal-leather-grain-dark 4px ), repeating-linear-gradient( 161deg, transparent 0px, transparent 5px, v.$journal-leather-grain-light 5px, v.$journal-leather-grain-light 6px ),
+    // ── Long scratch marks — use scars from years of use ──
+    repeating-linear-gradient( 24deg, transparent 0px, transparent 42px, v.$journal-leather-scratch-1 42px, v.$journal-leather-scratch-1 43px, transparent 43px, transparent 86px ), repeating-linear-gradient( 148deg, transparent 0px, transparent 30px, v.$journal-leather-scratch-2 30px, v.$journal-leather-scratch-2 31px, transparent 31px, transparent 62px ),
+    // ── Worn bright zones — fingers have rubbed these areas ──
+    radial-gradient(ellipse 28% 18% at 50% 48%, v.$journal-leather-worn-1 0%, transparent 70%), radial-gradient(ellipse 14% 10% at 50% 88%, v.$journal-leather-worn-2 0%, transparent 60%), radial-gradient(ellipse 10% 12% at 50% 8%, v.$journal-leather-worn-3 0%, transparent 60%),
+    // ── Worn corner highlights ──
+    radial-gradient(ellipse 22% 16% at 3% 3%, v.$journal-leather-worn-corner-1 0%, transparent 62%), radial-gradient(ellipse 22% 16% at 97% 3%, v.$journal-leather-worn-corner-2 0%, transparent 62%), radial-gradient(ellipse 22% 16% at 3% 97%, v.$journal-leather-worn-corner-3 0%, transparent 62%), radial-gradient(ellipse 22% 16% at 97% 97%, v.$journal-leather-worn-corner-4 0%, transparent 62%),
+    // ── Heavy dark pockets — deep compression stains ──
+    radial-gradient(ellipse 28% 24% at 12% 52%, v.$journal-leather-stain-1 0%, transparent 70%), radial-gradient(ellipse 22% 28% at 88% 28%, v.$journal-leather-stain-2 0%, transparent 70%), radial-gradient(ellipse 24% 20% at 65% 78%, v.$journal-leather-stain-3 0%, transparent 70%), radial-gradient(ellipse 18% 22% at 32% 15%, v.$journal-leather-stain-4 0%, transparent 70%),
+    // ── Subtle center lustre — leather sheen ──
+    radial-gradient(ellipse 55% 45% at 50% 45%, v.$journal-leather-lustre 0%, transparent 70%),
+    // ── Base leather — dark tobacco-brown hide ──
+    linear-gradient(142deg, v.$color-base-leather-1 0%, v.$color-base-leather-2 18%, v.$color-base-leather-3 40%, v.$color-base-leather-4 62%, v.$color-base-leather-5 82%, v.$color-base-leather-6 100%);
+  }
+  // The page-front gets an additional inner border — like a cover frame
+  .page-front {
+    box-shadow: inset 8px 0 24px v.$journal-leather-cover-shadow, inset -2px 0 8px v.$journal-leather-cover-shadow-light, inset 12px 12px 0 -10px v.$journal-leather-frame, inset -12px -12px 0 -10px v.$journal-leather-frame;
+  }
+  // Flip faces — keep simple gradients (no filter/opacity — breaks preserve-3d)
+  .flip-face {
+    background: linear-gradient(142deg, v.$color-base-leather-1 0%, v.$color-base-leather-2 18%, v.$color-base-leather-3 40%, v.$color-base-leather-4 62%, v.$color-base-leather-5 82%, v.$color-base-leather-6 100%);
+  }
+
+  .flip-back-face {
+    background: linear-gradient(108deg, v.$color-base-tan-1 0%, v.$color-base-tan-6 30%, v.$color-base-tan-3 55%, v.$color-base-tan-4 80%, v.$color-base-tan-5 100%);
+    transform: rotateY(180deg);
+    box-shadow: inset -8px 0 20px v.$journal-parchment-shadow-flip-back;
+  }
+}
+
+

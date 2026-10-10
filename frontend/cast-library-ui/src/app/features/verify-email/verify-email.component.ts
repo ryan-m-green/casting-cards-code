@@ -2,7 +2,7 @@ import { Component, OnInit, inject, signal } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { AuthService } from '../../core/auth/auth.service';
-import { JournalTitleComponent } from '../../shared/components/journal-title/journal-title.component';
+import { JournalTitleComponent } from '../../shared/components/Shared/journal-title/journal-title.component';
 
 @Component({
   selector: 'app-verify-email',

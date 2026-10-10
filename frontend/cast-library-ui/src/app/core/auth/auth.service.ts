@@ -22,6 +22,7 @@ export class AuthService implements OnDestroy {
   readonly isTokenReady = this._isTokenReady.asReadonly();
   readonly isDm        = computed(() => this._currentUser()?.role === 'DM' || this._currentUser()?.role === 'Admin');
   readonly isAdmin     = computed(() => this._currentUser()?.role === 'Admin');
+  readonly isPlayer    = computed(() => this._currentUser()?.role === 'Player');
   readonly isLoggedIn  = computed(() => this._currentUser() !== null);
 
   private _lockLevel = signal<LockLevel>(this.loadLockLevelFromToken());
@@ -33,7 +34,6 @@ export class AuthService implements OnDestroy {
   readonly isSuspended = computed(() => this._lockLevel() === 'Suspended');
   readonly isExempt = computed(() => this.isAdmin() || this._bypassPayment());
 
-  // Subscription state management
   private _subscription = signal<Subscription | null>(this.loadSubscriptionFromToken());
   readonly subscription = this._subscription.asReadonly();
   readonly isFreeTrial = computed(() => this._subscription()?.status === 'FreeTrial');
@@ -48,13 +48,11 @@ export class AuthService implements OnDestroy {
   private subscriptionRefreshInterval: any = null;
 
   constructor(private http: HttpClient, private router: Router) {
-    // Initialize CSRF token from localStorage if available
     const storedXsrfToken = localStorage.getItem(this.XSRF_TOKEN_KEY);
     if (storedXsrfToken) {
       this._xsrfToken.set(storedXsrfToken);
       this._isTokenReady.set(true);
     } else {
-      // Mark as ready to allow app to function, will initialize via APP_INITIALIZER
       this._isTokenReady.set(true);
     }
   }
@@ -116,17 +114,14 @@ export class AuthService implements OnDestroy {
         error: (error: HttpErrorResponse) => {
           this.tokenRefreshAttempts++;
 
-          // Clear existing token on error to force refresh
           this._xsrfToken.set(null);
           localStorage.removeItem(this.XSRF_TOKEN_KEY);
 
-          // Implement exponential backoff for retry
           if (this.tokenRefreshAttempts < this.MAX_REFRESH_ATTEMPTS) {
-            const delay = Math.pow(2, this.tokenRefreshAttempts) * 1000; // 1s, 2s, 4s
+            const delay = Math.pow(2, this.tokenRefreshAttempts) * 1000;
             setTimeout(() => {
               this.getCsrfToken().subscribe({
                 error: () => {
-                  // Recursive retry handled by the error handler
                 }
               });
             }, delay);
@@ -139,11 +134,9 @@ export class AuthService implements OnDestroy {
   }
 
   private initializeXsrfToken(): Observable<{ token: string }> {
-    // Call the XSRF token endpoint to set the cookie
     return this.getCsrfToken();
   }
 
-  /** Signals the shell to animate the cover closed first, then navigates. */
   requestLogout(): void {
     this.closeCoverRequest$.next();
   }
@@ -160,7 +153,6 @@ export class AuthService implements OnDestroy {
     return this.router.navigate(['/'], { state: { noFlip: true } });
   }
 
-  // Safe logout method that doesn't make HTTP calls - used by interceptor
   safeLogout(): void {
     this.stopSubscriptionRefresh();
     localStorage.removeItem(this.TOKEN_KEY);
@@ -179,18 +171,17 @@ export class AuthService implements OnDestroy {
 
   startSubscriptionRefresh(): void {
     if (this.subscriptionRefreshInterval) {
-      return; // Already running
+      return;
     }
 
-    this.refreshCurrentUser(); // Initial refresh
+    this.refreshCurrentUser();
 
     this.subscriptionRefreshInterval = setInterval(() => {
       this.refreshCurrentUser().subscribe({
         error: (error: HttpErrorResponse) => {
-          // Continue interval even on error, will recover when connection is restored
         }
       });
-    }, 30000); // 30 seconds
+    }, 30000);
   }
 
   stopSubscriptionRefresh(): void {
@@ -205,13 +196,11 @@ export class AuthService implements OnDestroy {
   }
 
   private storeSession(response: AuthResponse): void {
-    // Store CSRF token if present
     if ((response as any).xsrfToken) {
       this._xsrfToken.set((response as any).xsrfToken);
       localStorage.setItem(this.XSRF_TOKEN_KEY, (response as any).xsrfToken);
     }
 
-    // Store JWT token in localStorage for API calls
     localStorage.setItem(this.TOKEN_KEY, response.token);
     localStorage.setItem(this.USER_KEY, JSON.stringify(response.user));
     this._currentUser.set(response.user);
@@ -219,7 +208,6 @@ export class AuthService implements OnDestroy {
     this._bypassPayment.set(this.parseBypassPaymentFromToken(response.token));
     this._subscription.set(this.loadSubscriptionFromToken());
 
-    // After successful login/verify, refresh XSRF token to ensure cookie is set
     this.getCsrfToken().subscribe({
       next: () => {
         this._isTokenReady.set(true);

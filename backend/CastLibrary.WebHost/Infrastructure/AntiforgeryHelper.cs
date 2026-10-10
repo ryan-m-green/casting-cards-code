@@ -1,5 +1,4 @@
 using Microsoft.AspNetCore.Antiforgery;
-using Microsoft.AspNetCore.Http;
 
 namespace CastLibrary.WebHost.Infrastructure;
 

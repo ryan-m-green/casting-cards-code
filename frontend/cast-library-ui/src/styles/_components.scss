@@ -1,6 +1,5 @@
 @use 'variables' as v;
 
-// ─── Wireframe Blocks ────────────────────────────────────────────────────────
 .wb {
   border: 1px dashed v.$color-border;
   border-radius: 3px;
@@ -32,7 +31,6 @@
   }
 }
 
-// ─── Form Inputs ─────────────────────────────────────────────────────────────
 .fi {
   width: 100%;
   background: v.$color-input-bg;
@@ -68,7 +66,6 @@ textarea.fi {
   line-height: 1.55;
 }
 
-// ─── Badges ──────────────────────────────────────────────────────────────────
 .badge {
   display: inline-flex;
   align-items: center;
@@ -106,7 +103,6 @@ textarea.fi {
   }
 }
 
-// ─── Lock Pill ───────────────────────────────────────────────────────────────
 .lock-pill {
   display: inline-flex;
   align-items: center;
@@ -135,7 +131,6 @@ textarea.fi {
   }
 }
 
-// ─── Library Cards ───────────────────────────────────────────────────────────
 .pc-card {
   width: v.$card-width;
   height: v.$card-height;
@@ -215,7 +210,6 @@ textarea.fi {
   overflow: hidden;
 }
 
-// ─── Stat Cells ──────────────────────────────────────────────────────────────
 .sc {
   display: flex;
   gap: v.$spacing-sm;
@@ -285,7 +279,6 @@ textarea.fi {
   }
 }
 
-// ─── Cast Row ─────────────────────────────────────────────────────────────────
 .cast-row {
   display: flex;
   align-items: center;
@@ -346,7 +339,6 @@ textarea.fi {
   }
 }
 
-// ─── Dividers ────────────────────────────────────────────────────────────────
 .dv {
   height: 1px;
   background: v.$color-border-light;
@@ -362,7 +354,6 @@ textarea.fi {
   letter-spacing: 0.3em;
 }
 
-// ─── Row Helper ──────────────────────────────────────────────────────────────
 .wr {
   display: flex;
   gap: 7px;
@@ -370,8 +361,10 @@ textarea.fi {
   align-items: center;
 }
 
-// ─── Scroll Body ─────────────────────────────────────────────────────────────
 .scroll-body {
+  /* A page reads down and never across — see the journal shell's own .pc, which the pages it
+     holds wear. What a page sweeps sideways lives inside the page, in its own frame. */
+  overflow-x: hidden;
   overflow-y: auto;
   scrollbar-width: thin;
 
@@ -382,7 +375,6 @@ textarea.fi {
   }
 }
 
-// ─── Save Status ─────────────────────────────────────────────────────────────
 .save-status {
   font-family: v.$font-header;
   font-size: 7px;
@@ -394,7 +386,6 @@ textarea.fi {
   &.error   { color: v.$color-dm-text; }
 }
 
-// ─── Campaign Buttons (dark-theme primary / secondary) ───────────────────────
 .campaign-primary-btn {
   display: inline-flex;
   align-items: center;
@@ -453,7 +444,6 @@ textarea.fi {
   }
 }
 
-// ─── Buttons ─────────────────────────────────────────────────────────────────
 .btn-primary {
   display: inline-flex;
   align-items: center;
@@ -500,7 +490,6 @@ textarea.fi {
   }
 }
 
-// ─── Role Card ───────────────────────────────────────────────────────────────
 .role-card {
   flex: 1;
   border: 1px dashed v.$color-border;
@@ -515,7 +504,6 @@ textarea.fi {
   }
 }
 
-// ─── Search Bar ──────────────────────────────────────────────────────────────
 .search-bar {
   width: 100%;
   background: v.$color-search-bar-bg;
@@ -542,7 +530,6 @@ textarea.fi {
   }
 }
 
-// ─── Card Grid ───────────────────────────────────────────────────────────────
 .card-grid {
   display: flex;
   flex-wrap: wrap;
@@ -550,9 +537,16 @@ textarea.fi {
   padding: v.$spacing-sm 0;
 }
 
-// ─── Page Layout Helpers ──────────────────────────────────────────────────────
 .wr-page-header { margin-bottom: 12px; }
 .wr-ml-auto { margin-left: auto; }
+
+/* The keyword manager a library page seats under its card row: against the page's right edge, 24px
+   under the cards themselves. The row keeps 14px of padding below its cards (the room their shadows
+   need), so the 24px asked for below the row leaves only this much for the gap. */
+.library-keyword-manager {
+  align-self: flex-end;
+  margin-top: 10px;
+}
 
 .page-title-row {
   margin: 0 0 0 8px;
@@ -561,11 +555,9 @@ textarea.fi {
 
 .page-title-sm { margin: 0 0 4px; }
 
-// ─── Flex Utilities ───────────────────────────────────────────────────────────
 .flex-1 { flex: 1; }
 .flex-2 { flex: 2; }
 
-// ─── Form Layout Helpers ──────────────────────────────────────────────────────
 .form-field      { flex: 1; }
 .form-field-wide { flex: 2; }
 .form-field-min  { flex: 1; min-width: 120px; }
@@ -595,13 +587,11 @@ textarea.fi {
 .wb-narrow       { max-width: 100%; }
 .btn-full        { width: 100%; }
 
-// ─── Form input size modifier ─────────────────────────────────────────────────
 .fi-sm {
   font-size: 11px;
   padding: 4px 8px;
 }
 
-// ─── Campaign secrets (shared: location + Cast detail panels) ──────────────────────
 .detail-secrets-header {
   font-family: v.$font-header;
   font-size: 12px;
@@ -675,7 +665,6 @@ textarea.fi {
   color: v.$color-base-warm-cream;
 }
 
-// ─── Card Slot Layout ─────────────────────────────────────────────────────────
 .card-slot-front {
   height: 100%;
   display: flex;
@@ -801,8 +790,6 @@ textarea.fi {
 
 .card-field-value { margin: 0 0 8px 0; }
 
-// ─── Card Form Preview Inner ──────────────────────────────────────────────────
-// Applied alongside .lib-card-front to override padding for form previews
 .card-form-inner {
   height: 100%;
   display: flex;
@@ -851,7 +838,6 @@ textarea.fi {
 
 .pointer-none { pointer-events: none; }
 
-// ─── Delete Confirmation Modal ────────────────────────────────────────────────
 .delete-overlay {
   position: fixed;
   inset: 0;
@@ -923,7 +909,6 @@ textarea.fi {
   cursor: pointer;
 }
 
-// ─── Image Upload Modal ───────────────────────────────────────────────────────
 .upload-overlay {
   position: fixed;
   inset: 0;
@@ -968,7 +953,6 @@ textarea.fi {
 
 .hidden-input { display: none; }
 
-// ─── Character Editor Portrait Uploader ───────────────────────────────────────
 .ce-portrait-label {
   flex-shrink: 0;
   display: inline-flex;
@@ -1055,7 +1039,6 @@ textarea.fi {
   }
 }
 
-// ─── Save Label ───────────────────────────────────────────────────────────────
 .save-label {
   font-family: v.$font-body;
   font-size: 11px;
@@ -1068,13 +1051,11 @@ textarea.fi {
   &.save-label--error  { color: v.$color-ui-error-text; }
 }
 
-// ─── Spark host wrapper (Save / Knock buttons) ─────────────────────────────────
 .save-spark-host {
   position: relative;
   display: inline-flex;
 }
 
-// ─── Form save footer (save label + button floated right below form) ──────────
 .form-save-footer {
   display: flex;
   justify-content: flex-end;
@@ -1083,7 +1064,6 @@ textarea.fi {
   margin-top: 20px;
 }
 
-// ─── Currency Display ─────────────────────────────────────────────────────────
 .currency-display {
   display: flex;
   flex-direction: column;
@@ -1136,7 +1116,6 @@ textarea.fi {
   .currency-row-amount      { font-size: 9px; }
 }
 
-// ─── Global Utilities ─────────────────────────────────────────────────────────
 .ml-auto            { margin-left: auto; }
 .text-center        { text-align: center; }
 .text-error         { color: v.$color-dm-text; }

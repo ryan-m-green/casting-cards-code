@@ -2,18 +2,15 @@ using CastLibrary.Logic.Commands.Campaign;
 using CastLibrary.Logic.Commands.Sublocation;
 using CastLibrary.Logic.Queries.Campaign;
 using CastLibrary.Logic.Services;
-using CastLibrary.Logic.Validators;
-using CastLibrary.Shared.Exceptions;
 using CastLibrary.Shared.Requests;
 using CastLibrary.Shared.Responses;
-using CastLibrary.WebHost.Hubs;
 using CastLibrary.WebHost.Mappers;
 using CastLibrary.WebHost.MetadataHelpers;
 using CastLibrary.WebHost.Requests;
+using CastLibrary.WebHost.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
-using Microsoft.AspNetCore.SignalR;
 
 namespace CastLibrary.WebHost.Controllers;
 
@@ -38,7 +35,7 @@ public class CampaignSublocationsController(
     ICampaignAccessService campaignAccess,
     IUploadSublocationImageCommandHandler uploadSublocationImageCommandHandler,
     IFileValidationService fileValidationService,
-    IHubContext<CampaignHub> hubContext) : ControllerBase
+    ISignalRNotificationService notifications) : ControllerBase
 {
     private Task<bool> CallerCanView(Guid campaignId) =>
         campaignAccess.IsMemberOrOwnerAsync(campaignId, userRetriever.GetUserId(User));
@@ -81,10 +78,17 @@ public class CampaignSublocationsController(
         var dmUserId = userRetriever.GetDmUserId(User);
         await updateSublocationInstanceCommand.HandleAsync(new UpdateSublocationInstanceCommand(instanceId, request, dmUserId));
 
-        await hubContext.Clients.Group(campaignId.ToString()).SendAsync("SublocationInstanceUpdated", new
+        // The card as the campaign now holds it goes out with the event, so a watcher takes the
+        // change on from what it is handed rather than reading the card back over the API: read
+        // once here, where the write has just landed, instead of once per watching client. The id
+        // stays on the payload for watchers that only want to know which card moved.
+        var updated = (await getSublocationsQuery.HandleAsync(campaignId, instanceId)).FirstOrDefault();
+
+        await notifications.BroadcastSublocationInstanceUpdatedAsync(campaignId, new
         {
-            campaignId             = campaignId,
-            sublocationInstanceId  = instanceId,
+            campaignId,
+            sublocationInstanceId = instanceId,
+            sublocation = updated is null ? null : mapper.ToSublocationInstanceResponse(updated),
         });
 
         return NoContent();
@@ -98,7 +102,10 @@ public class CampaignSublocationsController(
         if (!await CallerOwns(campaignId)) return Forbid();
         await updateSublocationInstanceVisibilityCommand.HandleAsync(new UpdateSublocationInstanceVisibilityCommand(instanceId, request));
 
-        await hubContext.Clients.Group(campaignId.ToString()).SendAsync("CardVisibilityChanged", new CardVisibilityChangedEvent
+        // Broadcast through the notification service rather than the hub context directly: it is
+        // the one place that records every send, which is what the Admin's SignalR inspector reads
+        // (see AdminSignalRController). The event the clients receive is unchanged.
+        await notifications.BroadcastCardVisibilityChangedAsync(campaignId, new CardVisibilityChangedEvent
         {
             CampaignId = campaignId,
             InstanceId = instanceId,
@@ -116,7 +123,7 @@ public class CampaignSublocationsController(
         if (!await CallerOwns(campaignId)) return Forbid();
         await deleteSublocationInstanceCommand.HandleAsync(new DeleteSublocationInstanceCommand(instanceId));
 
-        await hubContext.Clients.Group(campaignId.ToString()).SendAsync("CampaignNavChanged", new { campaignId = campaignId });
+        await notifications.BroadcastCampaignNavChangedAsync(campaignId, new { campaignId = campaignId });
 
         return NoContent();
     }
@@ -135,7 +142,7 @@ public class CampaignSublocationsController(
 
         var response = mapper.ToSublocationInstanceResponse(instance);
 
-        await hubContext.Clients.Group(campaignId.ToString()).SendAsync("CampaignNavChanged", new { campaignId = campaignId });
+        await notifications.BroadcastCampaignNavChangedAsync(campaignId, new { campaignId = campaignId });
 
         return Ok(response);
     }
@@ -151,7 +158,7 @@ public class CampaignSublocationsController(
         var item = await addSublocationShopItemCommand.HandleAsync(
             new AddSublocationShopItemCommand(instanceId, request));
 
-        await hubContext.Clients.Group(campaignId.ToString()).SendAsync("ShopItemAdded", new
+        await notifications.BroadcastShopItemAddedAsync(campaignId, new
         {
             campaignId = campaignId,
             sublocationInstanceId = instanceId,
@@ -186,7 +193,7 @@ public class CampaignSublocationsController(
         await updateShopItemCommand.HandleAsync(new UpdateShopItemCommand(
             shopItemId, request.Name, request.PriceAmount, request.PriceCurrencyType, request.Description));
 
-        await hubContext.Clients.Group(campaignId.ToString()).SendAsync("ShopItemUpdated", new
+        await notifications.BroadcastShopItemUpdatedAsync(campaignId, new
         {
             campaignId = campaignId,
             sublocationInstanceId = instanceId,
@@ -203,7 +210,7 @@ public class CampaignSublocationsController(
         if (!await CallerOwns(campaignId)) return Forbid();
         var isScratchedOff = await toggleShopItemScratchCommand.HandleAsync(new ToggleShopItemScratchCommand(campaignId, shopItemId));
 
-        await hubContext.Clients.Group(campaignId.ToString()).SendAsync("ShopItemScratchToggled", new
+        await notifications.BroadcastShopItemScratchToggledAsync(campaignId, new
         {
             campaignId = campaignId,
             sublocationInstanceId = instanceId,
@@ -221,7 +228,7 @@ public class CampaignSublocationsController(
         if (!await CallerOwns(campaignId)) return Forbid();
         await deleteShopItemCommand.HandleAsync(new DeleteShopItemCommand(campaignId, shopItemId));
 
-        await hubContext.Clients.Group(campaignId.ToString()).SendAsync("ShopItemDeleted", new
+        await notifications.BroadcastShopItemDeletedAsync(campaignId, new
         {
             campaignId = campaignId,
             sublocationInstanceId = instanceId,
@@ -238,6 +245,19 @@ public class CampaignSublocationsController(
         var playerUserId = userRetriever.GetUserId(User);
         var result = await purchaseShopItemCommand.HandleAsync(
             new PurchaseShopItemCommand(campaignId, instanceId, shopItemId, playerUserId));
+
+        // Only once the write is persisted: a denial moved nothing, so there is no bag to hand back.
+        if (result.Success)
+        {
+            await notifications.BroadcastInventoryItemPurchasedAsync(campaignId, new
+            {
+                campaignId,
+                playerUserId,
+                itemName = result.ItemName,
+                currencyBalances = result.CurrencyBalances,
+            });
+        }
+
         return Ok(result);
     }
 
@@ -267,7 +287,7 @@ public class CampaignSublocationsController(
             new AssignFactionToSublocationCommand(campaignId, instanceId, request));
 
         var factionInstanceId = request.FactionInstanceId?.ToString() ?? string.Empty;
-        await hubContext.Clients.Group(campaignId.ToString()).SendAsync("FactionSymbolAssigned", new
+        await notifications.BroadcastFactionSymbolAssignedAsync(campaignId, new
         {
             campaignId = campaignId.ToString(),
             instanceId = instanceId.ToString(),
@@ -297,7 +317,7 @@ public class CampaignSublocationsController(
             return NotFound();
         }
 
-        await hubContext.Clients.Group(campaignId.ToString()).SendAsync("SublocationInstanceUpdated", new
+        await notifications.BroadcastSublocationInstanceUpdatedAsync(campaignId, new
         {
             campaignId = campaignId,
             sublocationInstanceId = id,

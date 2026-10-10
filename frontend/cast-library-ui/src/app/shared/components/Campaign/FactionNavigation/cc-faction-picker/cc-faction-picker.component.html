@@ -1,0 +1,134 @@
+@let pickedCount = selectedCount();
+
+<div class="picker" [style.--portal-color]="portalColor()">
+
+  <div class="picker-tabs" role="tablist">
+    <button
+      type="button"
+      class="picker-tab"
+      role="tab"
+      [class.is-on]="activeTab() === 'library'"
+      [attr.aria-selected]="activeTab() === 'library'"
+      (click)="setTab('library')"
+    >Faction Library</button>
+
+    <button
+      type="button"
+      class="picker-tab"
+      role="tab"
+      [class.is-on]="activeTab() === 'new'"
+      [class.is-disabled]="limitReached()"
+      [attr.aria-selected]="activeTab() === 'new'"
+      [disabled]="limitReached()"
+      (click)="setTab('new')"
+    >New Faction</button>
+  </div>
+
+  @if (activeTab() === 'library') {
+
+    @if (keywordChips().length) {
+      <div class="picker-chips">
+        @for (chip of keywordChips(); track chip.keyword) {
+          <button
+            type="button"
+            class="picker-chip"
+            [class.is-on]="isKeywordOn(chip.keyword)"
+            [class.picker-chip--empty]="!chip.count"
+            [attr.aria-pressed]="isKeywordOn(chip.keyword)"
+            [attr.title]="chip.count
+              ? chip.count + (chip.count === 1 ? ' faction to add carries' : ' factions to add carry') + ' #' + chip.keyword
+              : 'Nothing left to add carries #' + chip.keyword"
+            (click)="toggleKeyword(chip.keyword)"
+          >#{{ chip.keyword }}<span class="picker-chip-count">{{ chip.count }}</span></button>
+        }
+      </div>
+    }
+
+    <div class="picker-filter">
+      <app-cc-textbox
+        placeholder="Search by name or type…"
+        context="campaign"
+        [ngModel]="searchTerm()"
+        (ngModelChange)="onSearchChange($event)"
+        [showClear]="true"
+      />
+      @if (activeKeywords().length > 1) {
+        <button type="button" class="picker-mode" [class.is-on]="matchAll()" (click)="toggleMatchAll()">
+          {{ matchAll() ? 'all' : 'any' }}
+        </button>
+      }
+      <button type="button" class="picker-clear" [disabled]="!pickedCount" (click)="clearSelection()">Clear</button>
+    </div>
+
+    @if (loading()) {
+      <p class="picker-note">Loading your faction library…</p>
+    } @else if (!libraryCount()) {
+      <p class="picker-empty">Your faction library is empty. Use the <strong>New Faction</strong> tab to make one.</p>
+    } @else if (!totalCount()) {
+      @if (searchTerm()) {
+        <p class="picker-empty">No results for &quot;{{ searchTerm() }}&quot;.</p>
+      } @else if (activeKeywords().length) {
+        <p class="picker-empty">No factions carry those keywords.</p>
+      } @else {
+        <p class="picker-empty">All library factions are already in this campaign.</p>
+      }
+    } @else {
+      @if (totalPages() > 1) {
+        <div class="picker-pagination">
+          <button type="button" class="picker-pagination-btn" [disabled]="!hasPrevPage()" (click)="prevPage()">← Previous</button>
+          <span class="picker-pagination-info">Page {{ currentPage() }} of {{ totalPages() }}</span>
+          <button type="button" class="picker-pagination-btn" [disabled]="!hasNextPage()" (click)="nextPage()">Next →</button>
+        </div>
+      }
+
+      <div class="picker-grid">
+        @for (faction of factions(); track faction.id) {
+          <button
+            type="button"
+            class="picker-tile"
+            [class.is-picked]="isSelected(faction.id)"
+            [attr.aria-pressed]="isSelected(faction.id)"
+            [attr.aria-label]="'Pick ' + faction.name"
+            (click)="toggleFaction(faction)"
+          >
+            <cc-simple-faction-card [faction]="faction" />
+            @if (isSelected(faction.id)) {
+              <span class="picker-tile-check" aria-hidden="true">✓</span>
+            }
+          </button>
+        }
+      </div>
+
+      <p class="picker-status">Showing {{ factions().length }} of {{ totalCount() }}</p>
+    }
+
+    @if (error()) {
+      <p class="picker-error">{{ error() }}</p>
+    }
+
+    <div class="picker-actions">
+      <span class="picker-total">
+        {{ pickedCount }} faction{{ pickedCount === 1 ? '' : 's' }} picked
+      </span>
+
+      <button
+        type="button"
+        class="campaign-primary-btn"
+        [disabled]="!canAdd()"
+        (click)="onAdd()"
+      >@if (busy()) { Adding… } @else if (pickedCount) { Add {{ pickedCount }} to campaign } @else { Add to campaign }</button>
+    </div>
+  }
+
+  @if (activeTab() === 'new') {
+    @if (limitReached()) {
+      <p class="picker-empty">All library factions are already in this campaign.<br>Upgrade your account to add more.</p>
+    } @else {
+      <cc-faction-new-form
+        [campaignId]="campaignId()"
+        (saved)="onFactionCreated()"
+      />
+    }
+  }
+
+</div>

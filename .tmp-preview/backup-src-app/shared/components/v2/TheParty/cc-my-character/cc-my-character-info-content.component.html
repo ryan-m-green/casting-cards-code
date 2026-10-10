@@ -1,0 +1,49 @@
+<div class="mci" [style.--portal-color]="portalColor()">
+  @if (loading()) {
+    <div class="mci-loading">Loading…</div>
+  } @else {
+    <!-- The shared portrait picker; the file it hands over rides the drawer's Save (see the class). -->
+    <div class="mci-portrait-row">
+      <cc-portrait-input
+        context="campaign"
+        [initialImageUrl]="imageUrl() || ''"
+        [cardType]="'cast'"
+        [borderStyle]="'player'"
+        [disabled]="saving()"
+        [ngModel]="imageFile()"
+        (ngModelChange)="imageFile.set($event)"
+      />
+    </div>
+
+    <div class="mci-field">
+      <label class="mci-label">Name</label>
+      <input class="mci-input" type="text" [ngModel]="name()" (ngModelChange)="name.set($event)" placeholder="Character name" autocomplete="off" />
+    </div>
+
+    <div class="mci-field">
+      <label class="mci-label">Race</label>
+      <input class="mci-input" type="text" [ngModel]="race()" (ngModelChange)="race.set($event)" placeholder="Race" autocomplete="off" />
+    </div>
+
+    <div class="mci-field">
+      <label class="mci-label">Class</label>
+      <input class="mci-input" type="text" [ngModel]="classValue()" (ngModelChange)="classValue.set($event)" placeholder="Class" autocomplete="off" />
+    </div>
+
+    <div class="mci-field">
+      <label class="mci-label">Description</label>
+      <textarea class="mci-input mci-textarea" rows="4" [ngModel]="description()" (ngModelChange)="description.set($event)" placeholder="A brief description of your character…"></textarea>
+    </div>
+
+    @if (error()) {
+      <div class="mci-error">{{ error() }}</div>
+    }
+
+    <div class="mci-actions">
+      <button class="mci-btn mci-btn--ghost" type="button" (click)="closeDrawer.emit()" [disabled]="saving()">Cancel</button>
+      <button class="mci-btn mci-btn--primary" type="button" (click)="save()" [disabled]="saving()">
+        {{ saving() ? 'Saving…' : 'Save' }}
+      </button>
+    </div>
+  }
+</div>

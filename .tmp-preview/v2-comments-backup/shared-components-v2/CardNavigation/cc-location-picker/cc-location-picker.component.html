@@ -1,0 +1,131 @@
+@let pickedCount = selectedCount();
+
+<div class="picker" [style.--portal-color]="portalColor()">
+
+  <!-- ── Tabs ────────────────────────────────────────────────────────────── -->
+  <div class="picker-tabs" role="tablist">
+    <button
+      type="button"
+      class="picker-tab"
+      role="tab"
+      [class.is-on]="activeTab() === 'library'"
+      [attr.aria-selected]="activeTab() === 'library'"
+      (click)="setTab('library')"
+    >Location Library</button>
+
+    <button
+      type="button"
+      class="picker-tab"
+      role="tab"
+      [class.is-on]="activeTab() === 'new'"
+      [attr.aria-selected]="activeTab() === 'new'"
+      (click)="setTab('new')"
+    >New Location</button>
+  </div>
+
+  <!-- ── Tab: the library, as simple location cards ──────────────────────── -->
+  @if (activeTab() === 'library') {
+
+    <!--
+      Keyword filters over the search bar: one chip per hashtag the DM has for location cards,
+      each with how many of the cards on offer it would leave — a word nothing on offer carries
+      stands dimmed. Picking one narrows the list; with more than one on, "any" / "all" says how
+      they combine.
+    -->
+    @if (keywordChips().length) {
+      <div class="picker-chips">
+        @for (chip of keywordChips(); track chip.keyword) {
+          <button
+            type="button"
+            class="picker-chip"
+            [class.is-on]="isKeywordOn(chip.keyword)"
+            [class.picker-chip--empty]="!chip.count"
+            [attr.aria-pressed]="isKeywordOn(chip.keyword)"
+            [attr.title]="chip.count
+              ? chip.count + (chip.count === 1 ? ' location to add carries' : ' locations to add carry') + ' #' + chip.keyword
+              : 'Nothing left to add carries #' + chip.keyword"
+            (click)="toggleKeyword(chip.keyword)"
+          >#{{ chip.keyword }}<span class="picker-chip-count">{{ chip.count }}</span></button>
+        }
+      </div>
+    }
+
+    <div class="picker-filter">
+      <app-cc-textbox
+        placeholder="Search your location library…"
+        context="campaign"
+        [ngModel]="search()"
+        (ngModelChange)="onSearchChange($event)"
+        [showClear]="true"
+      />
+      @if (activeKeywords().length > 1) {
+        <button type="button" class="picker-mode" [class.is-on]="matchAll()" (click)="toggleMatchAll()">
+          {{ matchAll() ? 'all' : 'any' }}
+        </button>
+      }
+      <button type="button" class="picker-clear" [disabled]="!pickedCount" (click)="clearSelection()">Clear</button>
+    </div>
+
+    @if (loading()) {
+      <p class="picker-note">Loading your location library…</p>
+    } @else if (libraryEmpty()) {
+      <p class="picker-empty">Your location library is empty. Use the <strong>New Location</strong> tab to make one.</p>
+    } @else if (!candidates().length) {
+      @if (search()) {
+        <p class="picker-empty">No results for &quot;{{ search() }}&quot;.</p>
+      } @else if (activeKeywords().length) {
+        <p class="picker-empty">No locations carry those keywords.</p>
+      } @else {
+        <p class="picker-empty">All library locations are already in this campaign.</p>
+      }
+    } @else {
+      <p class="picker-section">
+        The realm · location library ({{ candidates().length }})
+      </p>
+
+      <div class="picker-grid">
+        @for (location of candidates(); track location.id) {
+          <button
+            type="button"
+            class="picker-tile"
+            [class.is-picked]="isSelected(location.id)"
+            [attr.aria-pressed]="isSelected(location.id)"
+            [attr.aria-label]="'Add ' + location.name + ' to this campaign'"
+            (click)="toggleLocation(location)"
+          >
+            <cc-simple-location-card [location]="location" />
+            @if (isSelected(location.id)) {
+              <span class="picker-tile-check" aria-hidden="true">✓</span>
+            }
+          </button>
+        }
+      </div>
+    }
+
+    @if (error()) {
+      <p class="picker-error">{{ error() }}</p>
+    }
+
+    <div class="picker-actions">
+      <span class="picker-total">
+        {{ pickedCount }} location{{ pickedCount === 1 ? '' : 's' }} picked
+      </span>
+
+      <button
+        type="button"
+        class="campaign-primary-btn"
+        [disabled]="!canAdd()"
+        (click)="onAdd()"
+      >@if (busy()) { Adding… } @else if (pickedCount) { Add {{ pickedCount }} to campaign } @else { Add to campaign }</button>
+    </div>
+  }
+
+  <!-- ── Tab: build a new location (added to the library and the campaign) ── -->
+  @if (activeTab() === 'new') {
+    <cc-location-new-form
+      [campaignId]="campaignId()"
+      (saved)="onLocationCreated()"
+    />
+  }
+
+</div>

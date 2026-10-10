@@ -1,12 +1,20 @@
 using CastLibrary.Logic.Commands.Ambiance;
 using CastLibrary.Logic.Queries.Ambiance;
 using CastLibrary.Logic.Services;
+using CastLibrary.Repository.Repositories.Read;
+using CastLibrary.Shared.Requests;
 using CastLibrary.WebHost.MetadataHelpers;
+using CastLibrary.WebHost.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CastLibrary.WebHost.Controllers;
 
+/// <summary>
+/// The ambiance panel as a campaign sees it. Ambiances are the GM's own library, global
+/// to every campaign the GM runs, so this panel shows the GM's whole library and records a
+/// campaign link for anything built from here.
+/// </summary>
 [ApiController]
 [Route("api/campaigns/{campaignId}/ambiances")]
 [Authorize(Roles = "DM,Admin")]
@@ -14,19 +22,30 @@ public class AmbiancesController(
     ICreateAmbianceCommandHandler createCommand,
     IUpdateAmbianceCommandHandler updateCommand,
     IDeleteAmbianceCommandHandler deleteCommand,
-    IGetCampaignAmbiancesQueryHandler getAmbiancesQuery,
+    IGetAmbiancesQueryHandler getAmbiancesQuery,
+    ICampaignReadRepository campaignReadRepository,
     ICampaignAccessService campaignAccess,
-    IUserRetriever userRetriever) : ControllerBase
+    IUserRetriever userRetriever,
+    ISignalRNotificationService notifications) : ControllerBase
 {
     private Task<bool> CallerOwns(Guid campaignId) =>
         campaignAccess.IsOwnerAsync(campaignId, userRetriever.GetUserId(User));
+
+    private async Task<Guid?> OwnerOfAsync(Guid campaignId)
+    {
+        var campaign = await campaignReadRepository.GetByIdAsync(campaignId);
+        return campaign?.DmUserId;
+    }
 
     [HttpGet]
     public async Task<IActionResult> GetAll(Guid campaignId)
     {
         if (!await CallerOwns(campaignId)) return Forbid();
 
-        var domains = await getAmbiancesQuery.HandleAsync(new GetCampaignAmbiancesQuery(campaignId));
+        var owner = await OwnerOfAsync(campaignId);
+        if (owner is null) return NotFound("Campaign not found");
+
+        var domains = await getAmbiancesQuery.HandleAsync(new GetAmbiancesQuery(owner.Value));
         return Ok(domains);
     }
 
@@ -35,12 +54,25 @@ public class AmbiancesController(
     {
         if (!await CallerOwns(campaignId)) return Forbid();
 
+        var owner = await OwnerOfAsync(campaignId);
+        if (owner is null) return NotFound("Campaign not found");
+
         request.Items ??= [];
         var validationError = Validate(request.Title, request.Items);
         if (validationError is not null) return BadRequest(validationError);
 
         var domain = await createCommand.HandleAsync(
-            new CreateAmbianceCommand(campaignId, request.Title, ToInputs(request.Items), request.RandomizeMusic));
+            new CreateAmbianceCommand(owner.Value, campaignId, request.Title, ToInputs(request.Items), request.RandomizeMusic));
+
+        // An ambiance is the campaign's own arrangement of its soundtracks, so a second client's
+        // panel has to hear about it: the ambiance goes out as the campaign now holds it, and that
+        // panel takes the change on from what it is handed rather than reading the list back.
+        await notifications.BroadcastAmbianceChangedAsync(campaignId, new
+        {
+            campaignId,
+            ambianceId = domain.Id,
+            ambiance = domain,
+        });
 
         return CreatedAtAction(nameof(GetAll), new { campaignId }, domain);
     }
@@ -57,6 +89,13 @@ public class AmbiancesController(
         var domain = await updateCommand.HandleAsync(
             new UpdateAmbianceCommand(ambianceId, request.Title, ToInputs(request.Items), request.RandomizeMusic));
 
+        await notifications.BroadcastAmbianceChangedAsync(campaignId, new
+        {
+            campaignId,
+            ambianceId = domain.Id,
+            ambiance = domain,
+        });
+
         return Ok(domain);
     }
 
@@ -66,6 +105,14 @@ public class AmbiancesController(
         if (!await CallerOwns(campaignId)) return Forbid();
 
         await deleteCommand.HandleAsync(new DeleteAmbianceCommand(ambianceId));
+
+        // The ambiance is gone: the event carries the id alone, which is how a watcher is told to
+        // drop it (see cc-soundtracks).
+        await notifications.BroadcastAmbianceChangedAsync(campaignId, new
+        {
+            campaignId,
+            ambianceId,
+        });
 
         return NoContent();
     }
@@ -112,28 +159,4 @@ public class AmbiancesController(
 
         return null;
     }
-}
-
-public class AmbianceItemRequest
-{
-    public Guid SoundtrackId { get; set; }
-    public int Volume { get; set; } = 80;
-    public string PauseMode { get; set; } = "none";
-    public int? PauseDelaySeconds { get; set; }
-    public int? PauseMinSeconds { get; set; }
-    public int? PauseMaxSeconds { get; set; }
-}
-
-public class CreateAmbianceRequest
-{
-    public string Title { get; set; } = string.Empty;
-    public bool RandomizeMusic { get; set; }
-    public List<AmbianceItemRequest> Items { get; set; } = [];
-}
-
-public class UpdateAmbianceRequest
-{
-    public string Title { get; set; } = string.Empty;
-    public bool RandomizeMusic { get; set; }
-    public List<AmbianceItemRequest> Items { get; set; } = [];
 }

@@ -1,5 +1,3 @@
-using Microsoft.Extensions.Hosting;
-
 namespace CastLibrary.WebHost.Middleware;
 
 /// <summary>

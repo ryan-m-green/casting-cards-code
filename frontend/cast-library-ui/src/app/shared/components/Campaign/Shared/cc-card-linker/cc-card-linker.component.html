@@ -1,0 +1,14 @@
+<button
+  type="button"
+  class="cl-btn"
+  [style.--portal-color]="portalColor()"
+  [disabled]="disabled()"
+  [attr.title]="label()"
+  [attr.aria-label]="ariaLabel()"
+  (click)="openPicker()"
+>
+  <img class="cl-btn-icon" src="/tarot_cards_star.svg" alt="" aria-hidden="true" />
+  @if (count()) {
+    <span class="cl-btn-count" aria-hidden="true">{{ count() }}</span>
+  }
+</button>

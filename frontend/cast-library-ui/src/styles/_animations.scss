@@ -1,6 +1,5 @@
 @use 'variables' as v;
 
-// ─── Page Flip ────────────────────────────────────────────────────────────────
 @keyframes pageFlipOut {
   0%   { transform: rotateY(0deg); }
   100% { transform: rotateY(-90deg); }
@@ -27,7 +26,6 @@
   transform-origin: left center;
 }
 
-// ─── Card Flip ───────────────────────────────────────────────────────────────
 .lib-card-inner {
   position: relative;
   width: 100%;
@@ -55,13 +53,11 @@
   transform: rotateY(180deg);
   overflow-y: auto;
 
-  // Hide scrollbar during flip
   .lib-card-inner:not(.flipped) & {
     overflow-y: hidden;
   }
 }
 
-// ─── Secret Reveal ───────────────────────────────────────────────────────────
 .secret-content {
   transition: filter 600ms ease, color 600ms ease;
 
@@ -77,7 +73,6 @@
   }
 }
 
-// ─── Button States ───────────────────────────────────────────────────────────
 .ctrl-btn {
   transition: background v.$transition-std, transform v.$transition-fast;
 
@@ -95,7 +90,6 @@
   }
 }
 
-// ─── Knock Button Sparkle Burst ──────────────────────────────────────────────
 .knock-spark {
   position: absolute;
   top: 50%;
@@ -123,7 +117,6 @@
   }
 }
 
-// ─── Sparkler Drip Animation ───────────────────────────────────────────────────
 .sparkler-drip {
   position: absolute;
   top: 0;
@@ -144,18 +137,15 @@
     opacity: 1;
   }
   30% {
-    // Phase 1: Horizontal movement (left or right) with slight upward arc
     transform: translate(calc(var(--hx) * var(--hd)), -5px) scale(0.95);
     opacity: 0.9;
   }
   100% {
-    // Phase 2: Vertical fall from horizontal position
     transform: translate(calc(var(--hx) * var(--hd)), var(--dy)) scale(0.3);
     opacity: 0;
   }
 }
 
-// ─── Stack Pulse ─────────────────────────────────────────────────────────────
 @keyframes stackPulse {
   0%   { transform: scale(1); }
   40%  { transform: scale(1.04) translateX(4px); }

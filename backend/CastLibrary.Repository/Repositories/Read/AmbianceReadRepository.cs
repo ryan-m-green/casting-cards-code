@@ -8,7 +8,7 @@ namespace CastLibrary.Repository.Repositories.Read;
 
 public interface IAmbianceReadRepository
 {
-    Task<List<AmbianceDomain>> GetByCampaignIdAsync(Guid campaignId);
+    Task<List<AmbianceDomain>> GetByGmUserIdAsync(Guid gmUserId);
     Task<AmbianceDomain> GetByIdAsync(Guid ambianceId);
 }
 
@@ -20,7 +20,7 @@ public class AmbianceReadRepository(
 {
     private const string HeaderColumns =
         @"id,
-          campaign_id AS CampaignId,
+          gm_user_id AS GmUserId,
           title,
           randomize_music AS RandomizeMusic,
           created_at  AS CreatedAt";
@@ -36,15 +36,15 @@ public class AmbianceReadRepository(
           pause_min_seconds     AS PauseMinSeconds,
           pause_max_seconds     AS PauseMaxSeconds";
 
-    public async Task<List<AmbianceDomain>> GetByCampaignIdAsync(Guid campaignId)
+    public async Task<List<AmbianceDomain>> GetByGmUserIdAsync(Guid gmUserId)
     {
         var spanId = correlation.NewSpan();
-        var @params = new { CampaignId = campaignId };
+        var @params = new { GmUserId = gmUserId };
 
-        const string headerSql =
+        var headerSql =
             $@"SELECT {HeaderColumns}
-               FROM campaign_ambiances
-               WHERE campaign_id = @CampaignId
+               FROM ambiances
+               WHERE gm_user_id = @GmUserId
                ORDER BY created_at ASC";
 
         const string itemSql =
@@ -53,26 +53,26 @@ public class AmbianceReadRepository(
                WHERE ambiance_id = ANY(@AmbianceIds)
                ORDER BY sort_order ASC";
 
-        logging.LogDbOperation(correlation.TraceId, spanId, "SELECT", "campaign_ambiances", @params);
+        logging.LogDbOperation(correlation.TraceId, spanId, "SELECT", "ambiances", @params);
 
         using var conn = sqlConnectionFactory.GetConnection();
         var headers = (await conn.QueryAsync<AmbianceEntity>(headerSql, @params)).ToList();
 
         if (headers.Count == 0)
         {
-            logging.LogDbOperation(correlation.TraceId, spanId, "SELECT", "campaign_ambiances", @params, 0);
+            logging.LogDbOperation(correlation.TraceId, spanId, "SELECT", "ambiances", @params, 0);
             return [];
         }
 
         var ambianceIds = headers.Select(h => h.Id).ToArray();
         var items = (await conn.QueryAsync<AmbianceItemEntity>(itemSql, new { AmbianceIds = ambianceIds })).ToList();
 
-        logging.LogDbOperation(correlation.TraceId, spanId, "SELECT", "campaign_ambiances", @params, headers.Count);
+        logging.LogDbOperation(correlation.TraceId, spanId, "SELECT", "ambiances", @params, headers.Count);
 
         return headers.Select(h => new AmbianceDomain
         {
             Id = h.Id,
-            CampaignId = h.CampaignId,
+            GmUserId = h.GmUserId,
             Title = h.Title,
             CreatedAt = h.CreatedAt,
             RandomizeMusic = h.RandomizeMusic,
@@ -85,9 +85,9 @@ public class AmbianceReadRepository(
         var spanId = correlation.NewSpan();
         var @params = new { AmbianceId = ambianceId };
 
-        const string headerSql =
+        var headerSql =
             $@"SELECT {HeaderColumns}
-               FROM campaign_ambiances
+               FROM ambiances
                WHERE id = @AmbianceId";
 
         const string itemSql =
@@ -96,25 +96,25 @@ public class AmbianceReadRepository(
                WHERE ambiance_id = @AmbianceId
                ORDER BY sort_order ASC";
 
-        logging.LogDbOperation(correlation.TraceId, spanId, "SELECT", "campaign_ambiances", @params);
+        logging.LogDbOperation(correlation.TraceId, spanId, "SELECT", "ambiances", @params);
 
         using var conn = sqlConnectionFactory.GetConnection();
         var header = await conn.QueryFirstOrDefaultAsync<AmbianceEntity>(headerSql, @params);
 
         if (header is null)
         {
-            logging.LogDbOperation(correlation.TraceId, spanId, "SELECT", "campaign_ambiances", @params, 0);
+            logging.LogDbOperation(correlation.TraceId, spanId, "SELECT", "ambiances", @params, 0);
             return null;
         }
 
         var items = (await conn.QueryAsync<AmbianceItemEntity>(itemSql, @params)).ToList();
 
-        logging.LogDbOperation(correlation.TraceId, spanId, "SELECT", "campaign_ambiances", @params, 1);
+        logging.LogDbOperation(correlation.TraceId, spanId, "SELECT", "ambiances", @params, 1);
 
         return new AmbianceDomain
         {
             Id = header.Id,
-            CampaignId = header.CampaignId,
+            GmUserId = header.GmUserId,
             Title = header.Title,
             CreatedAt = header.CreatedAt,
             RandomizeMusic = header.RandomizeMusic,

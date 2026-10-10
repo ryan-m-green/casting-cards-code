@@ -1,0 +1,145 @@
+@use '../../../../../../styles/variables' as v;
+
+:host {
+  /* The frame is centred in whatever the area leaves for it, so a frame that is measured by
+     its picture (see .world-map--fitted) sits in the middle of the same box either way. */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+}
+
+.world-map {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  padding: 12px; /* 12px gutter between the border and the image */
+  border-radius: 12px;
+  overflow: hidden;
+  background: rgba(0, 0, 0, 0.25);
+  border: 1px solid color-mix(in srgb, var(--portal-color, #6e28d0) 45%, transparent);
+}
+
+/*
+ * Once the uploaded picture has loaded, the frame is measured by the image rather than by the
+ * area: `--wm-aspect` carries the picture's own proportions (set by the component), so the
+ * frame becomes the largest box of that shape which still fits the area, and the picture
+ * fills it exactly. The 12px padding above is then a true 12px gutter on all four sides.
+ * Filling the area instead (and letting `object-fit: contain` letterbox the picture) always
+ * widened the gutter on whichever axis the picture could not fill.
+ *
+ * box-sizing: content-box is deliberate: aspect-ratio then describes the box the picture
+ * itself fills, so the padding and border cannot skew it. With border-box the ratio applied
+ * to the frame's outer box instead, which left the picture sitting off-centre in the frame
+ * by roughly the slack the mismatched ratio produced. The max-* values subtract the frame's
+ * own chrome (26px = 2 x (12px gutter + 1px border)) because they are measured against the
+ * area box rather than against the picture's box.
+ */
+.world-map--fitted {
+  box-sizing: content-box;
+  width: auto;
+  height: auto;
+  aspect-ratio: var(--wm-aspect);
+  max-width: calc(100% - 26px);
+  max-height: calc(100% - 26px);
+}
+
+.world-map__image {
+  display: block;
+  /* Fill the frame's content box; object-fit keeps the image inside it, so the
+     gutter on the constrained axis is always the 12px padding above. */
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+/* View button pinned to the top-right corner of the image */
+app-cc-view-btn {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  z-index: 2;
+}
+
+.world-map--empty {
+  min-height: 0;
+}
+
+.world-map__upload {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  display: flex;
+  cursor: pointer;
+  z-index: 2;
+}
+
+.world-map__input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  pointer-events: none;
+}
+
+/*
+ * The empty frame's way in, and the only place the world map still says a whole sentence
+ * ("Upload world map"): the first upload is worth saying in words, where the swap that replaces an
+ * existing map wears the shared edit control instead (see cc-edit-button).
+ */
+.world-map__upload-btn {
+  font-family: v.$font-header;
+  font-size: 12px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  padding: 9px 14px;
+  background: rgba(0, 0, 0, 0.55);
+  border: 1px solid color-mix(in srgb, var(--portal-color, #6e28d0) 70%, white 30%);
+  border-radius: 8px;
+  color: v.$campaign-portal-text-bright;
+  transition: all 0.18s ease;
+
+  &:hover {
+    background: var(--portal-color, #6e28d0);
+  }
+}
+
+/*
+ * The way to another map: the campaign's shared edit control (see cc-edit-button), dressed in the
+ * campaign's colour, in the corner the view button opposite it keeps — one to look at the map, one to
+ * change it. The frame's own `--portal-color` is what both the control's hairline and its hover wear,
+ * so the corner reads in the campaign the map belongs to; the file input it opens stands beside it,
+ * unseen (see .world-map__input).
+ */
+cc-edit-button {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  z-index: 2;
+  --cc-edit-size: 44px;
+  --cc-edit-icon-size: 24px;
+}
+
+.world-map__placeholder {
+  font-family: v.$font-header;
+  font-size: 14px;
+  letter-spacing: 0.08em;
+  color: rgba(255, 255, 255, 0.55);
+}
+
+.world-map__error {
+  position: absolute;
+  bottom: 8px;
+  left: 0;
+  right: 0;
+  margin: 0;
+  text-align: center;
+  font-size: 12px;
+  color: #fca5a5;
+}

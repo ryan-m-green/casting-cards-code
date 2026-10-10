@@ -1,12 +1,7 @@
-using System;
 using System.Diagnostics;
-using System.IO;
 using System.Security.Claims;
 using System.Text.Json;
-using System.Threading.Tasks;
 using CastLibrary.Shared.Interfaces;
-using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Logging;
 
 namespace CastLibrary.WebHost.Middleware;
 

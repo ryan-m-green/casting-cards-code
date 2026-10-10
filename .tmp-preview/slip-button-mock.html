@@ -1,0 +1,74 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    /* A static mock of the slip's rows, mirroring cc-encounter-fate's own rules, so the new
+       first-row button can be judged on the parchment. Not the live component. */
+    body { margin: 0; padding: 14px; background: #fff; font: 12px sans-serif; color: #444; }
+    .slip {
+      position: relative; display: flex; flex-direction: column; width: 150px; height: 132px;
+      box-sizing: border-box; padding: 8px;
+      background: linear-gradient(135deg, #f3e5c8 0%, #e8d4a7 35%, #dfc691 70%, #ceb073 100%);
+      border: 1px solid #8a6d3b;
+    }
+    .body { position: relative; flex: 1 1 auto; display: flex; flex-direction: column; align-items: center; gap: 4px; }
+    .where {
+      height: 22px; max-width: 100%; padding: 0; border: 0; background: none;
+      color: #5a451f; font-family: 'Caveat', cursive; font-size: 15px; line-height: 22px;
+      letter-spacing: 0.04em;   /* unchanged from the rule, though a hand wants it looser */
+      text-align: center; white-space: nowrap; text-decoration: underline;
+      text-decoration-color: rgba(90, 69, 31, 0.45); text-underline-offset: 2px; cursor: pointer;
+    }
+    .where:hover { color: #3b2c11; text-decoration-color: #3b2c11; }
+    .stamps {
+      position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
+      gap: 7px; pointer-events: none;
+    }
+    .stamps img { object-fit: contain; }
+    .defeated { width: 38px; height: 38px; }
+    .captured { width: 32px; height: 32px; }
+    .fled { width: 44px; height: 54px; }
+    .note {
+      height: 24px; line-height: 16px; box-sizing: border-box; margin-top: auto; margin-bottom: 8px;
+      align-self: flex-end; padding: 3px 12px; border: 1px solid rgba(26, 18, 6, 0.5);
+      border-radius: 999px; background: rgba(255, 252, 240, 0.3); color: #3b2c11;
+      font-family: inherit; font-size: 11px; letter-spacing: 0.06em; white-space: nowrap; cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <div style="display:flex; gap:26px; align-items:flex-start">
+    <div>
+      <div class="slip">
+        <div class="body">
+          <button class="where">Previous encounters</button>
+          <div class="stamps">
+            <img class="defeated" src="../frontend/cast-library-ui/public/encounter_death.svg" alt="">
+            <img class="captured" src="../frontend/cast-library-ui/public/hands_shackles_captivity.svg" alt="">
+            <img class="fled" src="../frontend/cast-library-ui/public/escaped_wings_ink.svg" alt="">
+          </div>
+          <button class="note">Write note</button>
+        </div>
+      </div>
+      <div>the strip, 1:1</div>
+    </div>
+    <div style="zoom:2.4">
+      <div class="slip">
+        <div class="body">
+          <button class="where">Previous encounters</button>
+          <div class="stamps">
+            <img class="defeated" src="../frontend/cast-library-ui/public/encounter_death.svg" alt="">
+            <img class="captured" src="../frontend/cast-library-ui/public/hands_shackles_captivity.svg" alt="">
+            <img class="fled" src="../frontend/cast-library-ui/public/escaped_wings_ink.svg" alt="">
+          </div>
+          <button class="note">Write note</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

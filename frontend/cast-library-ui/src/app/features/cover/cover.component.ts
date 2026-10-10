@@ -23,7 +23,6 @@ export class CoverComponent implements OnInit {
   private destroyRef = inject(DestroyRef);
 
   ngOnInit() {
-    // Check if user is already authenticated and redirect
     if (this.auth.isDm() || this.auth.isAdmin()) {
       this.router.navigate(['/gm/dashboard']);
       return;
@@ -34,7 +33,6 @@ export class CoverComponent implements OnInit {
       return;
     }
     
-    // If not immediately authenticated, check for token and wait a moment for state restoration
     const token = localStorage.getItem('cast_library_token');
     if (token) {
       setTimeout(() => {
@@ -161,16 +159,13 @@ export class CoverComponent implements OnInit {
         setTimeout(() => {
           this.loading.set(false);
           
-          // Check for returnUrl parameter
           this.route.queryParams
             .pipe(takeUntilDestroyed(this.destroyRef))
             .subscribe(params => {
               const returnUrl = params['returnUrl'];
               if (returnUrl) {
-                // Navigate to the return URL
                 this.router.navigateByUrl(returnUrl);
               } else {
-                // Default navigation based on user role from auth service
                 if (this.auth.isDm()) {
                   this.router.navigate(['/gm/dashboard']);
                 } else {

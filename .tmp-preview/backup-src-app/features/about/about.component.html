@@ -1,0 +1,255 @@
+<div class="about-page">
+  <!-- Hero Section -->
+  <section class="hero">
+    <div class="hero-content">
+      <h1 class="hero-title">Get the most out of your storytelling</h1>
+      <p class="hero-subtitle">A calm, structured space for casts, factions, relationships, secrets, and worldbuilding. 
+        Run richer sessions with less worldbuilding prep.</p>
+      <div class="hero-video">
+        <div class="video-carousel">
+          <button class="carousel-nav carousel-prev" (click)="prevSlide()" aria-label="Previous video">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="15 18 9 12 15 6"></polyline>
+            </svg>
+          </button>
+          
+          <div class="carousel-container">
+            <div class="carousel-track" [style.transform]="'translateX(-' + currentSlide * 100 + '%)'">
+              <div class="carousel-slide" *ngFor="let video of videos; let i = index">
+                <video #videoPlayer [id]="'video-' + i" controls muted loop playsinline>
+                  <source [src]="video" type="video/mp4">
+                  Your browser does not support the video tag.
+                </video>
+              </div>
+            </div>
+          </div>
+          
+          <button class="carousel-nav carousel-next" (click)="nextSlide()" aria-label="Next video">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+          </button>
+        </div>
+        
+        <div class="carousel-dots">
+          <button 
+            *ngFor="let video of videos; let i = index" 
+            class="carousel-dot" 
+            [class.active]="i === currentSlide"
+            (click)="goToSlide(i)"
+            [attr.aria-label]="'Go to video ' + (i + 1)">
+          </button>
+        </div>
+      </div>
+      <button class="cta-button" (click)="navigateToJoin()">Get Started</button>
+    </div>
+  </section>
+
+  <!-- Features Section -->
+  <section class="features">
+    <div class="section-container">
+      <h2 class="section-title">Everything you need to build your world</h2>
+      <div class="features-grid">
+        <div class="feature-card">
+          <div class="feature-card-header">
+            <div class="feature-icon">
+              <img src="/about/digital_card_system.svg" alt="Digital Card System">
+            </div>
+            <h3 class="feature-title">Digital Card System</h3>
+          </div>
+          <p class="feature-description">Reusable asset management for NPCs, locations, factions, and more. Create once, use everywhere.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-card-header">
+            <div class="feature-icon">
+              <img src="/about/storyline_session_management.svg" alt="Storyline & Session Management">
+            </div>
+            <h3 class="feature-title">Storyline & Session Management</h3>
+          </div>
+          <p class="feature-description">Run your entire session from a single page. Track events, manage scenes, and keep your campaign chronicle organized in one place.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-card-header">
+            <div class="feature-icon">
+              <img src="/about/quicknotes.svg" alt="Quicknotes">
+            </div>
+            <h3 class="feature-title">Quicknotes</h3>
+          </div>
+          <p class="feature-description">Capture ideas instantly without interrupting the flow. Take notes now and file them to the correct asset later, perfect for players who get note-taking anxiety.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-card-header">
+            <div class="feature-icon">
+              <img src="/about/time_of_day_counter.svg" alt="Time of Day & Day Counter">
+            </div>
+            <h3 class="feature-title">Time of Day & Day Counter</h3>
+          </div>
+          <p class="feature-description">Track in-game time and days to make your world more immersive. Watch your campaign unfold across days, weeks, and months.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-card-header">
+            <div class="feature-icon">
+              <img src="/about/faction_system.svg" alt="Faction Affiliation System">
+            </div>
+            <h3 class="feature-title">Faction Affiliation System</h3>
+          </div>
+          <p class="feature-description">Help players understand who belongs to which faction and where those factions operate throughout the land. Build complex political landscapes.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-card-header">
+            <div class="feature-icon">
+              <img src="/about/cast_travel_system.svg" alt="Cast Travel System">
+            </div>
+            <h3 class="feature-title">Cast Travel System</h3>
+          </div>
+          <p class="feature-description">Move cast members to any sublocation or attach them directly to the party. Track who's where and who's traveling with you.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-card-header">
+            <div class="feature-icon">
+              <img src="/about/currency_inventory_purchasing.svg" alt="Currency & Inventory Management">
+            </div>
+            <h3 class="feature-title">Currency & Inventory Management</h3>
+          </div>
+          <p class="feature-description">Build stores in any sublocation. Players can browse inventory and make purchases, tracking gold and items automatically.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-card-header">
+            <div class="feature-icon">
+              <img src="/about/realtime_collaboration.svg" alt="Real-Time Collaboration">
+            </div>
+            <h3 class="feature-title">Real-Time Collaboration</h3>
+          </div>
+          <p class="feature-description">Share updates instantly with your party. Everyone stays on the same page, automatically.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-card-header">
+            <div class="feature-icon">
+              <img src="/about/secrets_reveal_system.svg" alt="Secrets & Reveal System">
+            </div>
+            <h3 class="feature-title">Secrets & Reveal System</h3>
+          </div>
+          <p class="feature-description">Control information flow. Reveal secrets to specific players when the story demands it.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- How It Works Section -->
+  <section class="how-it-works">
+    <div class="section-container">
+      <h2 class="section-title">Here's how Casting Cards works</h2>
+      <div class="steps">
+        <div class="step">
+          <div class="step-number">1</div>
+          <h3 class="step-title">Create your library</h3>
+          <p class="step-description">Build out your cards for cast members, locations, factions, and other story elements. Add images, notes, and relationships to bring your world to life.</p>
+        </div>
+        <div class="step">
+          <div class="step-number">2</div>
+          <h3 class="step-title">Create your campaign</h3>
+          <p class="step-description">Start your campaign from your library cards or add new cards directly within the campaign. Your library becomes the foundation for your shared world.</p>
+        </div>
+        <div class="step">
+          <div class="step-number">3</div>
+          <h3 class="step-title">Bring players in</h3>
+          <p class="step-description">Invite your players to join the campaign. No subscriptions required for players so everyone can access and participate.</p>
+        </div>
+        <div class="step">
+          <div class="step-number">4</div>
+          <h3 class="step-title">Play together</h3>
+          <p class="step-description">Collaborate in real-time, connect with each other through storytelling, and focus on what matters most, the story itself.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Pricing Section -->
+  <section class="pricing">
+    <div class="section-container">
+      <h2 class="section-title">Simple pricing</h2>
+      <div class="pricing-cards">
+        <div class="pricing-card">
+          <div class="pricing-header">
+            <h3 class="pricing-title">Free Trial</h3>
+            <div class="pricing-price">
+              <span class="price-current">$0</span>
+            </div>
+            <p class="pricing-note">Try it as long as you like. Inactive accounts auto-delete after 30 days.</p>
+          </div>
+          <ul class="pricing-features">
+            <li class="pricing-feature">1 Campaign Card</li>
+            <li class="pricing-feature">1 Location Card</li>
+            <li class="pricing-feature">2 Sublocation Cards</li>
+            <li class="pricing-feature">1 Faction Card</li>
+            <li class="pricing-feature">3 Cast Cards</li>
+          </ul>
+          <button class="cta-button pricing-button" (click)="navigateToJoin()">Start Free Trial</button>
+        </div>
+        <div class="pricing-card">
+          <div class="pricing-header">
+            <h3 class="pricing-title">Alpha Access</h3>
+            <div class="pricing-price">
+              <span class="price-strikethrough">$14.99/month</span>
+              <span class="price-current">$4.99/month</span>
+            </div>
+            <p class="pricing-note">Limited time alpha pricing</p>
+          </div>
+          <ul class="pricing-features">
+            <li class="pricing-feature">Unlimited Card Libraries</li>
+            <li class="pricing-feature">Join the Guild Hall</li>
+            <li class="pricing-feature">Influence Feature Requests</li>
+            <li class="pricing-feature">Direct Developer Feedback</li>
+          </ul>
+          <button class="cta-button pricing-button" (click)="navigateToJoin()">Get Started</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Mission & Philosophy Section -->
+  <section class="mission-philosophy">
+    <div class="section-container">
+      <h2 class="section-title">Mission & Philosophy</h2>
+      <p class="mission-text">This exists because storytelling shouldn't be a memory test. Whether you're building worlds or just trying to keep up with the plot, you deserve tools that make it easier. GMs get organization without the headache. Players get clarity without the stress. The table gets a shared understanding of the world you're creating together.</p>
+      <div class="philosophy-grid">
+        <div class="philosophy-item">
+          <h3 class="philosophy-title">Collaboration at the table</h3>
+          <p class="philosophy-description">Tools that help storytellers and players stay aligned, share context, and build a world together.</p>
+        </div>
+        <div class="philosophy-item">
+          <h3 class="philosophy-title">Clarity that supports everyone</h3>
+          <p class="philosophy-description">A simple, intuitive structure that reduces confusion and keeps the story moving.</p>
+        </div>
+        <div class="philosophy-item">
+          <h3 class="philosophy-title">Shared understanding</h3>
+          <p class="philosophy-description">Features that help each person see the same world, even when their perspectives differ.</p>
+        </div>
+        <div class="philosophy-item">
+          <h3 class="philosophy-title">Respect for the story</h3>
+          <p class="philosophy-description">Systems that highlight motivations, relationships, and consequences without overwhelming the table.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Creator Section -->
+  <section class="creator">
+    <div class="section-container">
+      <h2 class="section-title">From the Creator</h2>
+      <div class="creator-content">
+        <p class="creator-text">I'm awful at taking notes, and my dyslexia makes it even harder to keep track of story details. When I'm playing, I can focus on the moment or try to write things down, but I can't do both. My notes were scattered and incomplete, and I kept losing track of how everything fit together. I built this app to fix that for myself, and it grew into a tool meant to help storytellers and players stay organized and understand the world they're creating.</p>
+        <p class="creator-signature">~ Ryan Green</p>
+        <div class="creator-social">
+          <a href="https://www.tiktok.com/@castingcardsdemo" target="_blank" rel="noopener noreferrer" class="social-link tiktok-link">
+            <svg class="tiktok-icon" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64 2.93 2.93 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 5 20.1a6.34 6.34 0 0 0 10.86-4.43v-7a8.16 8.16 0 0 0 4.77 1.52v-3.4a4.85 4.85 0 0 1-1-.1z"/>
+            </svg>
+            <span>Follow on TikTok</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</div>

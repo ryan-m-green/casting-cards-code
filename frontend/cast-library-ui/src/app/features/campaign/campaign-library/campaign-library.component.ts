@@ -1,33 +1,38 @@
-import { Component, OnInit, OnDestroy, signal, inject, ElementRef } from '@angular/core';
+import { Component, OnInit, OnDestroy, signal, inject, ElementRef, ViewChild, afterNextRender, effect, Injector } from '@angular/core';
 import { Subscription } from 'rxjs';
-import { Router, RouterLink } from '@angular/router';
+import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
-import { JournalTitleComponent } from '../../../shared/components/journal-title/journal-title.component';
-import { JournalWatermarkComponent } from '../../../shared/components/journal-watermark/journal-watermark.component';
-import { CampaignJoinInputComponent } from '../../../shared/components/campaign-join-input/campaign-join-input.component';
-import { PortalCardComponent } from '../../../shared/components/portal-card/portal-card.component';
-import { UpgradeBadgeComponent } from '../../../shared/components/upgrade-badge/upgrade-badge.component';
+import Swiper from 'swiper';
+import { FreeMode, Mousewheel } from 'swiper/modules';
+import { JournalTitleComponent } from '../../../shared/components/Shared/journal-title/journal-title.component';
+import { CcCardAddTileComponent } from '../../../shared/components/Shared/cc-card-add-tile/cc-card-add-tile.component';
+import { JournalWatermarkComponent } from '../../../shared/components/Journal/journal-watermark/journal-watermark.component';
+import { PortalCardComponent } from '../../../shared/components/Journal/portal-card/portal-card.component';
+import { UpgradeBadgeComponent } from '../../../shared/components/Journal/upgrade-badge/upgrade-badge.component';
 import { environment } from '../../../../environments/environment';
 import { Campaign } from '../../../shared/models/campaign.model';
-import { PortalTransitionService } from '../../../core/portal-transition.service';
 import { PortalAnimationService } from '../../../core/portal-animation.service';
 import { AuthService } from '../../../core/auth/auth.service';
 import { CampaignHubService } from '../../../core/hub/campaign-hub.service';
 import { StripeService } from '../../../core/stripe.service';
 import { SubscriptionDrawerService } from '../../../core/subscription-drawer.service';
 
+/** The two rows the campaign library sweeps: the DM's own campaigns and the ones they joined. */
+type CampaignRow = 'mine' | 'joined';
+
+const CAMPAIGN_ROWS: CampaignRow[] = ['mine', 'joined'];
+
 @Component({
   selector: 'app-campaign-library',
   standalone: true,
-  imports: [CommonModule, RouterLink, JournalTitleComponent, JournalWatermarkComponent, CampaignJoinInputComponent, PortalCardComponent, UpgradeBadgeComponent],
+  imports: [CommonModule, CcCardAddTileComponent, JournalTitleComponent, JournalWatermarkComponent, PortalCardComponent, UpgradeBadgeComponent],
   templateUrl: './campaign-library.component.html',
   styleUrl: './campaign-library.component.scss'
 })
 export class CampaignLibraryComponent implements OnInit, OnDestroy {
   private http           = inject(HttpClient);
   private router         = inject(Router);
-  private transition     = inject(PortalTransitionService);
   private el             = inject(ElementRef);
   private hub            = inject(CampaignHubService);
   private animationService = inject(PortalAnimationService);
@@ -35,6 +40,7 @@ export class CampaignLibraryComponent implements OnInit, OnDestroy {
   private stripe         = inject(StripeService);
   auth = inject(AuthService);
   private subscriptionDrawerService = inject(SubscriptionDrawerService);
+  private injector       = inject(Injector);
 
   activeTab             = signal<'mine' | 'joined'>('mine');
   campaigns             = signal<Campaign[]>([]);
@@ -46,6 +52,12 @@ export class CampaignLibraryComponent implements OnInit, OnDestroy {
   joinError             = signal('');
   private isEntering   = false;
 
+  /** The two rows of campaign cards, one per tab — see `initSwiper`. */
+  @ViewChild('mineRow', { static: false }) private mineRowRef?: ElementRef<HTMLElement>;
+  @ViewChild('joinedRow', { static: false }) private joinedRowRef?: ElementRef<HTMLElement>;
+
+  private swipers: Record<CampaignRow, Swiper | null> = { mine: null, joined: null };
+
   constructor() {
     this.hubSubscriptions.push(
       this.hub.playerRemoved$.subscribe(event => {
@@ -53,6 +65,26 @@ export class CampaignLibraryComponent implements OnInit, OnDestroy {
         this.joinedCampaigns.update(list => list.filter(c => c.id !== event.campaignId));
       })
     );
+
+    /*
+     * Both tabs sweep their campaigns as a row (see `initSwiper`), and only one of the two rows is
+     * on the page at a time, so each is opened and closed to follow the tab and the cards that tab
+     * holds: the page is drawn empty, the fetch fills it, a redemption can add to it, and leaving a
+     * tab takes its row away. A row with nothing in it stays un-swept, which keeps the empty-state
+     * line legible beside it.
+     */
+    effect(() => {
+      const tab = this.activeTab();
+      const counts: Record<CampaignRow, number> = {
+        mine: this.campaigns().length,
+        joined: this.joinedCampaigns().length,
+      };
+
+      for (const row of CAMPAIGN_ROWS) {
+        if (row === tab && counts[row] > 0) this.mountRow(row);
+        else this.destroyRow(row);
+      }
+    });
   }
 
   cardStyle(campaign: Campaign): string {
@@ -61,6 +93,72 @@ export class CampaignLibraryComponent implements OnInit, OnDestroy {
 
   private safeColor(color: string): string {
     return color && /^#[0-9a-fA-F]{6}$/.test(color) ? color : '#6e28d0';
+  }
+
+  private mountRow(row: CampaignRow) {
+    const host = (row === 'mine' ? this.mineRowRef : this.joinedRowRef)?.nativeElement;
+    const existing = this.swipers[row];
+
+    /*
+     * Only a sweep sitting on the row this tab is showing now can be measured again — a tab the
+     * page has left behind takes its element with it, and whatever is left of that row is rebuilt
+     * against the element the next render puts up (see `initSwiper`, which reads the row itself).
+     */
+    if (existing && host && existing.el === host) {
+      existing.update();
+      return;
+    }
+
+    if (existing) this.destroyRow(row);
+    afterNextRender(() => this.initSwiper(row), { injector: this.injector });
+  }
+
+  private destroyRow(row: CampaignRow) {
+    const swiper = this.swipers[row];
+    if (!swiper) return;
+    swiper.destroy(true, true);
+    this.swipers[row] = null;
+  }
+
+  /**
+   * Opens one of the library's rows: the campaigns are swept sideways, and the first of them stands
+   * in the middle of the page with the rest of the stack trailing off to its right
+   * (`centeredSlides`) — the same sweep the campaign's own card rows keep. The row is as wide as
+   * the page, so the middle of the row is the middle of the page.
+   */
+  private initSwiper(row: CampaignRow) {
+    const host = (row === 'mine' ? this.mineRowRef : this.joinedRowRef)?.nativeElement;
+    if (!host) return;
+
+    this.destroyRow(row);
+
+    this.swipers[row] = new Swiper(host, {
+      modules: [FreeMode, Mousewheel],
+      slidesPerView: 'auto',
+      spaceBetween: 20,
+      centeredSlides: true,
+      observeParents: true,
+      freeMode: {
+        enabled: true,
+        momentum: true,
+        momentumRatio: 1,
+        momentumBounceRatio: 1,
+        sticky: false,
+      },
+      mousewheel: {
+        enabled: true,
+        forceToAxis: true,
+        sensitivity: 1,
+        releaseOnEdges: false,
+      },
+      grabCursor: true,
+      resistance: true,
+      resistanceRatio: 0.85,
+      speed: 300,
+      observer: true,
+      watchOverflow: true,
+      watchSlidesProgress: true,
+    });
   }
 
   ngOnInit() {
@@ -75,6 +173,8 @@ export class CampaignLibraryComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
     this.hub.disconnect().catch(() => {});
     this.hubSubscriptions.forEach(sub => sub.unsubscribe());
+    this.destroyRow('mine');
+    this.destroyRow('joined');
   }
 
   private loadEntityLimits() {
@@ -217,7 +317,7 @@ export class CampaignLibraryComponent implements OnInit, OnDestroy {
         this.router.navigate([routePrefix, id], { state: { noFlip: true, portalEntry: true } });
         this.isEntering = false;
       },
-      enableNavigation: true // Set to true to enable navigation
+      enableNavigation: true
     });
   }
 

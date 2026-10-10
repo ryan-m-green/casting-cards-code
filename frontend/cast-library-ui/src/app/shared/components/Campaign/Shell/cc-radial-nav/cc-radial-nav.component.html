@@ -1,0 +1,75 @@
+<nav class="grid-navigation" [style.--portal-color]="portalColor() || null" aria-label="Grid navigation">
+  <svg class="main-svg">
+    <g class="radial-scale-group" transform="translate(133.5, 133.5) scale(0.534) translate(-250, -250)">
+      <path
+        class="sector-path arch-slice"
+        d="M 61.31 287.53 A 192.39 192.39 0 0 0 90.03 356.88 L 142.55 321.79 A 129.22 129.22 0 0 1 123.26 275.21 Z"
+        role="button"
+        aria-label="Campaign Chronicles"
+        (click)="onChronicles()"
+        style="cursor: pointer;"
+      />
+
+      <g transform="translate(101.44, 311.54)">
+        <image
+          [attr.href]="'/bookshelf_full_books.svg'"
+          x="-20"
+          y="-20"
+          width="40"
+          height="40"
+          class="sector-icon-svg arch-icon"
+          (click)="onChronicles()"
+        />
+      </g>
+
+      <path
+        *ngFor="let cell of cells; trackBy: trackCell"
+        [attr.d]="cell.path"
+        class="sector-path"
+        [class.is-active]="activeArea() === cell.key"
+        [class.is-changed]="changedKeys().has(cell.key)"
+        [attr.aria-label]="cell.ariaLabel"
+        (click)="cell.isCenter ? onCenter() : onSelect(cell.key)"
+        style="cursor: pointer;"
+      />
+
+      <image
+        *ngIf="areaIcon(centerKey) as icon"
+        [attr.href]="icon.path"
+        [attr.x]="centerX - icon.width / 2"
+        [attr.y]="centerY - icon.height / 2"
+        [attr.width]="icon.width"
+        [attr.height]="icon.height"
+        class="center-card-image"
+        [class.is-active]="activeArea() === centerKey"
+        [class.is-changed]="changedKeys().has(centerKey)"
+      />
+
+      <g id="sector-icons">
+        <ng-container *ngFor="let item of items">
+          <g
+            *ngIf="areaIcon(item.key) as icon"
+            [attr.transform]="'translate(' + getSectorIconTransform(item.angle).x + ',' + getSectorIconTransform(item.angle).y + ')'"
+          >
+            <image
+              [attr.href]="icon.path"
+              [attr.x]="-icon.width / 2"
+              [attr.y]="-icon.height / 2"
+              [attr.width]="icon.width"
+              [attr.height]="icon.height"
+              preserveAspectRatio="xMidYMid meet"
+              class="sector-icon-svg"
+              [class.is-active]="activeArea() === item.key"
+              [class.is-changed]="changedKeys().has(item.key)"
+              (click)="onSelect(item.key)"
+            />
+          </g>
+        </ng-container>
+      </g>
+    </g>
+  </svg>
+</nav>
+
+<button class="leave-btn" type="button" (click)="onLeave()" aria-label="Leave campaign">
+  <span class="leave-label">leave</span>
+</button>

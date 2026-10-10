@@ -1,0 +1,109 @@
+@use '../../../../../styles/variables' as v;
+
+.detail-panel-actions {
+  display: flex;
+  padding: 10px 16px 0;
+  margin-bottom: 12px;
+}
+
+.detail-actions-right {
+  margin-left: auto;
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: flex-start;
+  justify-content: flex-end;
+  gap: 8px;
+
+  --detail-action-size: 34px;
+}
+
+.campaign-secondary-btn {
+  margin-left: 4px;
+}
+
+.detail-save-btn {
+  min-height: var(--detail-action-size);
+}
+
+.detail-cancel-btn {
+  height: var(--detail-action-size);
+  aspect-ratio: 1 / 1;
+  padding: 0;
+  justify-content: center;
+  font-size: 14px;
+  line-height: 1;
+  letter-spacing: 0;
+}
+
+.detail-save-wrap {
+  position: relative;
+  display: inline-flex;
+}
+
+.detail-save-btn {
+  &--active {
+    border-color: v.$color-border-accent;
+  }
+}
+
+.detail-save-menu {
+  position: absolute;
+  top: calc(100% + 6px);
+  right: 0;
+  z-index: 9990;
+  min-width: 150px;
+  display: flex;
+  flex-direction: column;
+  padding: 6px;
+  background: v.$campaign-portal-bg-dark;
+  border: 1px solid v.$campaign-portal-border-bold;
+  border-radius: 8px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45);
+}
+
+.detail-save-menu-item {
+  text-align: left;
+  font-family: v.$font-body;
+  font-size: 11px;
+  color: v.$campaign-portal-text-bright;
+  background: transparent;
+  border: none;
+  border-radius: 5px;
+  padding: 6px 7px;
+  cursor: pointer;
+
+  &:hover {
+    background: v.$campaign-portal-bg-hover;
+  }
+}
+
+.detail-actions-right cc-edit-button {
+  --cc-edit-size: 42px;
+  --cc-edit-icon-size: 34px;
+}
+
+.detail-close-btn {
+  background: none;
+  border: 1px solid v.$campaign-portal-border-strong;
+  border-radius: 4px;
+  padding: 4px 12px;
+  font-family: v.$font-header;
+  font-size: 12px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: v.$campaign-portal-text-bright;
+  cursor: pointer;
+  transition: background 0.18s ease, border-color 0.18s ease;
+
+  &:hover {
+    background: v.$campaign-portal-bg-hover;
+    border-color: v.$campaign-portal-border-active;
+  }
+}
+
+.campaign-primary-btn {
+  app-icon {
+    width: 24px;
+    height: 24px;
+  }
+}

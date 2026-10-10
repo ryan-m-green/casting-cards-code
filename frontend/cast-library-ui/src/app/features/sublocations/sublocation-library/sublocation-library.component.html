@@ -1,6 +1,12 @@
-<div class="pc scroll-body">
+﻿<div class="pc scroll-body">
   <app-journal-watermark pageType="sublocation" />
   <app-journal-title title="Sublocation Library" />
+
+  <cc-keyword-filters
+    [cardType]="'sublocation'"
+    [cards]="sublocations()"
+    (selectedChange)="activeKeywords.set($event)" />
+
   <div class="wr wr-page-header">
     <app-upgrade-badge
       [visible]="auth.isFreeTrial()"
@@ -8,28 +14,41 @@
       class="upgrade-badge-library" />
     <input class="search-bar search-bar--header" type="text" placeholder="Name · Description…"
            [value]="searchTerm()" (input)="searchTerm.set($any($event.target).value)" />
-    <div class="wr-ml-auto cc-keyword-editor-wrap">
-      <button class="campaign-primary-btn"
-              [class.disabled]="sublocationLimitReached() || isCreateDisabled()"
-              [attr.disabled]="(sublocationLimitReached() || isCreateDisabled()) ? 'true' : null"
-              [routerLink]="(sublocationLimitReached() || isCreateDisabled()) ? null : '/gm/sublocations/new'"
-              (click)="(sublocationLimitReached() || isCreateDisabled()) ? $event.preventDefault() : null">+ Create</button>
-      <cc-keyword-editor [cardType]="'sublocation'"></cc-keyword-editor>
+  </div>
+
+  <div class="card-grid swiper" #sublocationRow>
+    <div class="swiper-wrapper">
+      @for (subloc of filtered(); track subloc.id) {
+        <div class="swiper-slide">
+          <cc-sublocation-card
+            [sublocation]="subloc"
+            [tilt]="tiltFor(subloc.id)"
+            [titleSearch]="false"
+            (editClick)="edit(subloc.id)"
+            (deleteClick)="confirmDelete(subloc.id)">
+          </cc-sublocation-card>
+        </div>
+      }
+      @empty {
+        @if (activeKeywords().length) {
+          <p class="wbd-journal empty-state-pad">No sublocations carry those keywords.</p>
+        } @else {
+          <p class="wbd-journal empty-state-pad">No sublocations found.</p>
+        }
+      }
+      <div class="swiper-slide">
+        <cc-card-add-tile
+          label="New sublocation"
+          title="Add a sublocation to your library"
+          link="/gm/sublocations/new"
+          [locked]="sublocationLimitReached() || isCreateDisabled()"
+          lockedReason="Adding sublocations isn't available on your current plan." />
+      </div>
     </div>
   </div>
 
-  <div class="card-grid">
-    @for (subloc of filtered(); track subloc.id) {
-      <app-sublocation-card
-        [sublocation]="subloc"
-        [tilt]="tiltFor(subloc.id)"
-        (editClick)="edit(subloc.id)"
-        (deleteClick)="confirmDelete(subloc.id)">
-      </app-sublocation-card>
-    }
-    @empty {
-      <p class="wbd-journal empty-state-pad">No sublocations found.</p>
-    }
+  <div class="library-keyword-manager">
+    <cc-keyword-editor [cardType]="'sublocation'"></cc-keyword-editor>
   </div>
 </div>
 

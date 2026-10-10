@@ -1,0 +1,30 @@
+<div class="cond-card-holder">
+  <ng-content />
+
+  @if (rings().length) {
+    <div class="cond-rings" [class.cond-rings--simple]="size() === 'simple'">
+      @for (ring of rings(); track ring.id) {
+        <div class="cond-ring-row">
+          <span class="cond-ring" [style.--ring-color]="ring.color">
+            <span class="cond-ring-label">{{ ring.name }}</span>
+          </span>
+
+          @if (!readOnly()) {
+            <button
+              type="button"
+              class="cond-ring-remove"
+              [disabled]="removing()"
+              [title]="'Remove ' + ring.name"
+              [attr.aria-label]="'Remove ' + ring.name + ' condition'"
+              (click)="remove(ring.id)"
+            >✕</button>
+          }
+        </div>
+      }
+    </div>
+  }
+</div>
+
+@if (error()) {
+  <p class="cond-error">{{ error() }}</p>
+}

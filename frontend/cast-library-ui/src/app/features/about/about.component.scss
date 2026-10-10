@@ -29,8 +29,6 @@
   }
 }
 
-// ── Hero Section ─────────────────────────────────────────────────────────────
-
 .hero {
   padding: 5rem 1.5rem;
   text-align: center;
@@ -77,7 +75,7 @@
 
 .carousel-container {
   position: relative;
-  width: 225px; // 400px height * 9/16 = 225px width for 9:16 aspect ratio
+  width: 225px;
   height: 400px;
   margin: 0 auto;
   overflow: hidden;
@@ -197,8 +195,6 @@
   }
 }
 
-// ── Section Container ─────────────────────────────────────────────────────────
-
 .section-container {
   max-width: 1000px;
   margin: 0 auto;
@@ -214,8 +210,6 @@
   margin: 0 0 3rem;
   letter-spacing: -0.02em;
 }
-
-// ── Features Section ─────────────────────────────────────────────────────────
 
 .features {
   background: white;
@@ -270,8 +264,6 @@
   margin: 0;
 }
 
-// ── How It Works Section ─────────────────────────────────────────────────────
-
 .how-it-works {
   background: v.$color-base-tan-12;
 }
@@ -317,8 +309,6 @@
   line-height: 1.6;
   margin: 0;
 }
-
-// ── Pricing Section ───────────────────────────────────────────────────────────
 
 .pricing {
   background: white;
@@ -417,8 +407,6 @@
   margin-top: auto;
 }
 
-// ── Testimonials Section ──────────────────────────────────────────────────────
-
 .testimonials {
   background: v.$color-base-tan-12;
 }
@@ -453,8 +441,6 @@
   margin: 0;
   text-align: right;
 }
-
-// ── Mission & Philosophy Section ───────────────────────────────────────────────
 
 .mission-philosophy {
   background: v.$color-base-tan-12;
@@ -497,8 +483,6 @@
   line-height: 1.6;
   margin: 0;
 }
-
-// ── Creator Section ───────────────────────────────────────────────────────────
 
 .creator {
   background: white;
@@ -565,8 +549,6 @@
   fill: currentColor;
 }
 
-// ── Vision Section ───────────────────────────────────────────────────────────
-
 .vision {
   background: v.$color-base-tan-12;
 }
@@ -579,8 +561,6 @@
   text-align: center;
   margin: 0;
 }
-
-// ── Responsive Design ─────────────────────────────────────────────────────────
 
 @media (max-width: 940px) {
   .pricing-cards {

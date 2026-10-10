@@ -1,0 +1,104 @@
+<div class="pic-new-form-wrap">
+  <form [formGroup]="factionForm" class="pic-new-form pic-new-form--wrap">
+
+    <div class="wr form-row-gap">
+      <div class="form-field">
+        <app-cc-textbox
+          label="Faction Name"
+          context="campaign"
+          formControlName="name"
+        />
+      </div>
+    </div>
+
+    <app-cc-textbox
+      label="Description"
+      type="textarea"
+      [rows]="4"
+      context="campaign"
+      formControlName="description"
+    />
+
+    <fieldset class="form-gm-box">
+      <legend class="form-gm-box__legend">FOR GM EYES ONLY</legend>
+
+      <div class="form-row-gap">
+        <div class="form-field">
+          <cc-keyword-tags
+            label="Hashtags / Keywords"
+            placeholder="Add or select hashtags…"
+            context="campaign"
+            [options]="keywordOptions()"
+            formControlName="keywords"
+          />
+        </div>
+
+        <div class="form-field">
+          <cc-campaign-dropdown
+            label="Type"
+            placeholder="Start typing…"
+            [options]="factionTypeOptions"
+            [matchOnly]="true"
+            formControlName="type"
+          />
+        </div>
+
+        <div class="form-field">
+          <cc-faction-colors
+            label="Faction Colors"
+            context="campaign"
+            [evilColor]="evilColorControl.value ?? '#004d1a'"
+            (evilColorChange)="evilColorControl.setValue($event)"
+            [goodColor]="goodColorControl.value ?? '#ff99bb'"
+            (goodColorChange)="goodColorControl.setValue($event)"
+            [perception]="perceptionControl.value ?? 0"
+            (perceptionChange)="perceptionControl.setValue($event)"
+          />
+        </div>
+
+        <div class="form-field">
+          <cc-faction-visibility
+            label="Faction Visibility"
+            context="campaign"
+            [hidden]="hiddenControl.value ?? false"
+            (hiddenChange)="hiddenControl.setValue($event)"
+          />
+        </div>
+
+        <div class="form-field">
+          <cc-political-influence
+            label="Political Influence"
+            context="campaign"
+            [influence]="influenceControl.value ?? 0"
+            (influenceChange)="influenceControl.setValue($event)"
+          />
+        </div>
+
+        <div class="form-field">
+          <app-cc-textbox
+            label="GM Notes"
+            type="textarea"
+            [rows]="4"
+            context="campaign"
+            formControlName="dmNotes"
+          />
+        </div>
+      </div>
+
+    </fieldset>
+
+    <cc-symbol-picker
+      context="campaign"
+      [required]="true"
+      [selectedIcon]="selectedFactionIcon()"
+      (iconSelected)="onIconSelected($event)"
+    />
+
+    <div class="pic-save-row">
+      <button class="campaign-primary-btn" type="button"
+              [disabled]="factionForm.invalid || !selectedFactionIcon() || saveStatus() === 'saving'"
+              (click)="onSave()">Save</button>
+    </div>
+
+  </form>
+</div>

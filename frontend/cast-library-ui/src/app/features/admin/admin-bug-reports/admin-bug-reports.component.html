@@ -23,7 +23,6 @@
     </div>
   } @else {
 
-    <!-- Open bugs -->
     <h3 class="section-heading">Open ({{ openBugs.length }})</h3>
     @if (openBugs.length === 0) {
       <div class="wb wb-narrow">
@@ -71,7 +70,6 @@
       </div>
     }
 
-    <!-- Fixed bugs -->
     @if (fixedBugs.length > 0) {
       <h3 class="section-heading section-heading-fixed">Fixed ({{ fixedBugs.length }})</h3>
       <div class="bug-list">

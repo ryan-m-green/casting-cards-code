@@ -23,7 +23,7 @@ public class SoundtrackUpdateRepository(
         var entity = mapper.ToEntity(domain);
 
         const string sql =
-            @"UPDATE campaign_soundtracks
+            @"UPDATE soundtracks
               SET title = @Title,
                   volume = @Volume,
                   is_loop = @IsLoop,
@@ -31,7 +31,7 @@ public class SoundtrackUpdateRepository(
                   kind = @Kind
               WHERE id = @Id
               RETURNING id,
-                        campaign_id     AS CampaignId,
+                        gm_user_id      AS GmUserId,
                         title,
                         file_name       AS FileName,
                         file_url        AS FileUrl,
@@ -41,12 +41,12 @@ public class SoundtrackUpdateRepository(
                         kind,
                         created_at      AS CreatedAt";
 
-        logging.LogDbOperation(correlation.TraceId, spanId, "UPDATE", "campaign_soundtracks", entity);
+        logging.LogDbOperation(correlation.TraceId, spanId, "UPDATE", "soundtracks", entity);
 
         using var conn = sqlConnectionFactory.GetConnection();
         var result = await conn.QuerySingleAsync<SoundtrackEntity>(sql, entity);
 
-        logging.LogDbOperation(correlation.TraceId, spanId, "UPDATE", "campaign_soundtracks", entity, 1);
+        logging.LogDbOperation(correlation.TraceId, spanId, "UPDATE", "soundtracks", entity, 1);
 
         return mapper.ToDomain(result);
     }

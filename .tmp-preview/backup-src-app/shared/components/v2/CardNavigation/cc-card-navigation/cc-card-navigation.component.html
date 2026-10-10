@@ -1,0 +1,299 @@
+<div class="cc-card-navigation" [class.loading]="loading()" [class.error]="error() !== null" [class.is-filtering]="isFiltering()">
+  @if (loading()) {
+  <div class="loading-state">
+    <div class="spinner"></div>
+    <p>Loading location data...</p>
+  </div>
+  }
+
+  @if (error()) {
+  <div class="error-state">
+    <p>{{ error() }}</p>
+    <button (click)="loadCardData()">Retry</button>
+  </div>
+  }
+
+  @if (!loading() && !error()) {
+
+  <fieldset class="card-filters">
+    <legend class="card-filters-legend">Filter By</legend>
+
+    <div class="card-filters-buttons">
+      <button
+        type="button"
+        class="card-filter"
+        aria-label="Locations"
+        [class.is-on]="isFilterOn('locations')"
+        [attr.aria-pressed]="isFilterOn('locations')"
+        [title]="isFilterOn('locations') ? 'Back to the tree' : 'Show only the locations'"
+        (click)="toggleFilter('locations')"
+      >
+        <cc-location-icon class="card-filter-icon" [width]="14" color="white" />
+      </button>
+
+      <button
+        type="button"
+        class="card-filter"
+        aria-label="Sublocations"
+        [class.is-on]="isFilterOn('sublocations')"
+        [attr.aria-pressed]="isFilterOn('sublocations')"
+        [title]="isFilterOn('sublocations') ? 'Back to the tree' : 'Show only the sublocations'"
+        (click)="toggleFilter('sublocations')"
+      >
+        <cc-sublocation-icon class="card-filter-icon" [width]="14" color="white" />
+      </button>
+
+      <button
+        type="button"
+        class="card-filter"
+        aria-label="Casts"
+        [class.is-on]="isFilterOn('casts')"
+        [attr.aria-pressed]="isFilterOn('casts')"
+        [title]="isFilterOn('casts') ? 'Back to the tree' : 'Show only the casts'"
+        (click)="toggleFilter('casts')"
+      >
+        <cc-cast-icon class="card-filter-icon" [width]="14" color="white" />
+      </button>
+    </div>
+  </fieldset>
+
+  @if (parentLocation() && !isFiltering()) {
+  <div class="tree-foot" [class.tree-foot--deepest]="parentSublocation()" aria-hidden="true">
+    <cc-tree-joint stand="box" [transitioning]="transitioning()" />
+  </div>
+  }
+  <div class="rolodex-container" #rolodexContainer>
+
+    <div class="row top-row">
+      <div class="cards-row">
+        <div class="drop-zone-container">
+          <div class="drop-spot location-dropzone" #locationDropzone>
+            <div class="card-wrapper top-row-card" #topRowCard [class.is-nudging]="nudgingCardId() === parentLocation()?.instanceId" (click)="navigateToLocations()">
+              @if (parentLocation()) {
+              <cc-simple-location-card ccCardFade [ccCardFadeOut]="transitioning()" [location]="parentLocation()!"></cc-simple-location-card>
+              }
+            </div>
+          </div>
+          @if (parentSublocation()) {
+          <cc-tree-joint orientation="side" [transitioning]="transitioning()" />
+          }
+          <div class="drop-spot sublocation-dropzone" #sublocationDropzone>
+            @if (parentSublocation()) {
+            <div class="card-wrapper top-row-card" #topRowSublocationCard [class.is-nudging]="nudgingCardId() === parentSublocation()?.instanceId" (click)="navigateToSublocationsFromCasts()">
+              <cc-simple-sublocation-card ccCardFade [ccCardFadeOut]="transitioning()" [sublocation]="parentSublocation()!"></cc-simple-sublocation-card>
+            </div>
+            }
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="rows-wrapper" #rowsWrapper>
+
+      <div class="row middle-row swiper" #middleRow>
+        <div class="swiper-wrapper" #swiperWrapper>
+          <div class="dropzones-layer" #dropzonesLayer></div>
+
+          @if (activeView() === 'locations') {
+          @for (card of visibleMiddleLocations(); track card.instanceId) {
+          <div class="swiper-slide">
+            <div class="slide-content">
+              <div class="card-wrapper middle-row-card">
+                <cc-location-card ccCardFade [ccCardFadeOut]="transitioning()" [location]="card" [flippable]="true" [editable]="false" [campaignMode]="true"
+                  [campaignId]="campaignId" [secrets]="true" [secretsRevealed]="card.isVisibleToPlayers" [isDm]="isDm()"
+                  [deletable]="isDm() && !getSublocationsForLocation(card.instanceId).length"
+                  [deleting]="deletingLocationId() === card.instanceId"
+                  [tilt]="locationTilt(card.instanceId)" (secretsClick)="toggleLocationVisibility(card)"
+                  (deleteClick)="deleteLocation(card)">
+                </cc-location-card>
+                <cc-card-spotlight [cardId]="card.instanceId" [pointsDown]="hasRevealUnderLocation(card.instanceId)" />
+              </div>
+              @if (isDm() || card.isVisibleToPlayers) {
+              @if (getSublocationsForLocation(card.instanceId).length > 0) {
+              <div class="bottom-row-content">
+                <cc-tree-joint [transitioning]="transitioning()" />
+                <div class="sublocation-stack-wrapper">
+                  <div class="sublocation-stack"
+                    [title]="'Open the ' + getSublocationsForLocation(card.instanceId).length + ' sublocations in ' + card.name"
+                    (click)="navigateToSublocations(card); $event.stopPropagation()">
+                    @for (sublocation of getSublocationsForLocation(card.instanceId); track sublocation.instanceId; let
+                    i = $index) {
+                    @let sublocations = getSublocationsForLocation(card.instanceId);
+                    @let totalCards = sublocations.length;
+                    @let centerIndex = (totalCards - 1) / 2;
+                    @let fromCenter = i - centerIndex;
+                    @let spreadAngle = totalCards > 1 ? fromCenter * 12 : 0;
+                    @let translateY = totalCards > 1 ? abs(fromCenter) * 2 + i * 2 : i * 3;
+                    @let translateX = totalCards > 1 ? fromCenter * 8 : 0;
+                    <div class="sublocation-card-wrapper"
+                      [style.transform]="'translateY(' + translateY + 'px) translateX(' + translateX + 'px) rotate(' + spreadAngle + 'deg)'"
+                      [style.opacity]="totalCards > 1 ? 1 - (abs(fromCenter) * 0.15) - (i * 0.1) : 1 - (i * 0.25)"
+                      [style.z-index]="totalCards > 1 ? 10 - abs(fromCenter) - i : 10 - i">
+                      <cc-simple-sublocation-card ccCardFade [ccCardFadeOut]="transitioning()" [sublocation]="sublocation"></cc-simple-sublocation-card>
+                    </div>
+                    }
+                  </div>
+                </div>
+              </div>
+              } @else if (isDm()) {
+              <div class="bottom-row-content">
+                <div class="sublocation-stack-wrapper">
+                  <button
+                    type="button"
+                    class="sublocation-new"
+                    [title]="'Add a sublocation to ' + card.name"
+                    (click)="openSublocationPicker(card); $event.stopPropagation()"
+                  >
+                    <span class="sublocation-new-plus" aria-hidden="true">＋</span>
+                    <span class="sublocation-new-label">Add sublocation</span>
+                  </button>
+                </div>
+              </div>
+              }
+              }
+            </div>
+          </div>
+          }
+
+          @if (isDm() && !isFiltering()) {
+          <div class="swiper-slide">
+            <div class="slide-content">
+              <button
+                type="button"
+                class="location-add"
+                title="Add locations to this campaign"
+                (click)="openLocationPicker()"
+              >
+                <span class="location-add-plus" aria-hidden="true">＋</span>
+                <span class="location-add-label">New location</span>
+              </button>
+            </div>
+          </div>
+          }
+          } @else if (activeView() === 'sublocations') {
+          @for (card of visibleMiddleSublocations(); track card.instanceId) {
+          <div class="swiper-slide">
+            <div class="slide-content">
+              <div class="card-wrapper middle-row-card">
+                <cc-sublocation-card ccCardFade [ccCardFadeOut]="transitioning()" [sublocation]="card" [flippable]="true" [editable]="false" [campaignMode]="true"
+                  [campaignId]="campaignId" [sublocationInstanceId]="card.instanceId" [secrets]="true" [secretsDisabled]="!sublocationRevealAvailable(card)"
+                  [secretsRevealed]="card.isVisibleToPlayers" [isDm]="isDm()" [tilt]="sublocationTilt(card.instanceId)"
+                  [deletable]="isDm() && !getCastsForSublocation(card.instanceId).length"
+                  [deleting]="deletingSublocationId() === card.instanceId"
+                  (deleteClick)="deleteSublocation(card)"
+                  (secretsClick)="toggleSublocationVisibility(card)">
+                </cc-sublocation-card>
+                <cc-card-spotlight [cardId]="card.instanceId" [pointsDown]="hasRevealUnderSublocation(card.instanceId)" />
+              </div>
+              @if (isDm() || card.isVisibleToPlayers) {
+              @if (getCastsForSublocation(card.instanceId).length > 0) {
+              <div class="bottom-row-content">
+                <cc-tree-joint [transitioning]="transitioning()" />
+                <div class="cast-stack-wrapper">
+                  <div class="cast-stack"
+                    [title]="'Open the ' + getCastsForSublocation(card.instanceId).length + ' casts in ' + card.name"
+                    (click)="navigateToCasts(card); $event.stopPropagation()">
+                    @for (cast of getCastsForSublocation(card.instanceId); track cast.instanceId; let i = $index) {
+                    @let casts = getCastsForSublocation(card.instanceId);
+                    @let totalCards = casts.length;
+                    @let centerIndex = (totalCards - 1) / 2;
+                    @let fromCenter = i - centerIndex;
+                    @let spreadAngle = totalCards > 1 ? fromCenter * 12 : 0;
+                    @let translateY = totalCards > 1 ? abs(fromCenter) * 2 + i * 2 : i * 3;
+                    @let translateX = totalCards > 1 ? fromCenter * 8 : 0;
+                    <div class="cast-card-wrapper"
+                      [style.transform]="'translateY(' + translateY + 'px) translateX(' + translateX + 'px) rotate(' + spreadAngle + 'deg)'"
+                      [style.opacity]="totalCards > 1 ? 1 - (abs(fromCenter) * 0.15) - (i * 0.1) : 1 - (i * 0.25)"
+                      [style.z-index]="totalCards > 1 ? 10 - abs(fromCenter) - i : 10 - i">
+                      <cc-simple-cast-card ccCardFade [ccCardFadeOut]="transitioning()" [cast]="cast"></cc-simple-cast-card>
+                    </div>
+                    }
+                  </div>
+                </div>
+              </div>
+              } @else if (isDm()) {
+              <div class="bottom-row-content">
+                <div class="cast-stack-wrapper">
+                  <button
+                    type="button"
+                    class="cast-new"
+                    [title]="'Add a cast card to ' + card.name"
+                    (click)="openCastPicker(card); $event.stopPropagation()"
+                  >
+                    <span class="cast-new-plus" aria-hidden="true">＋</span>
+                    <span class="cast-new-label">Add cast</span>
+                  </button>
+                </div>
+              </div>
+              }
+              }
+            </div>
+          </div>
+          }
+
+          @if (parentLocation(); as location) {
+          @if (isDm() && !isFiltering()) {
+          <div class="swiper-slide">
+            <div class="slide-content">
+              <button
+                type="button"
+                class="sublocation-add"
+                [title]="'Add sublocations to ' + location.name"
+                (click)="openSublocationPicker(location)"
+              >
+                <span class="sublocation-add-plus" aria-hidden="true">＋</span>
+                <span class="sublocation-add-label">New sublocation</span>
+              </button>
+            </div>
+          </div>
+          }
+          }
+          } @else if (activeView() === 'casts') {
+          @for (card of visibleMiddleCasts(); track card.instanceId) {
+          <div class="swiper-slide">
+            <div class="slide-content">
+              <div class="card-wrapper middle-row-card">
+                <cc-cast-card ccCardFade [ccCardFadeOut]="transitioning()" [cast]="card" [campaignId]="internalCampaignId()" [flippable]="true" [editable]="false"
+                  [campaignMode]="true" [secrets]="true" [secretsDisabled]="!castRevealAvailable(card)" [secretsRevealed]="card.isVisibleToPlayers" [dmMode]="true" [isDm]="isDm()"
+                  [deletable]="isDm()" [deleting]="deletingCastId() === card.instanceId"
+                  [tilt]="castTilt(card.instanceId)" (secretsClick)="toggleCastVisibility(card)"
+                  (deleteClick)="deleteCast(card)">
+                </cc-cast-card>
+                <cc-card-spotlight [cardId]="card.instanceId" />
+              </div>
+            </div>
+          </div>
+          }
+
+          @if (parentSublocation(); as sublocation) {
+          @if (isDm() && !isFiltering()) {
+          <div class="swiper-slide">
+            <div class="slide-content">
+              <button
+                type="button"
+                class="cast-add"
+                [title]="'Add cast cards to ' + sublocation.name"
+                (click)="openCastPicker(sublocation)"
+              >
+                <span class="cast-add-plus" aria-hidden="true">＋</span>
+                <span class="cast-add-label">Add cast</span>
+              </button>
+            </div>
+          </div>
+          }
+          }
+          }
+        </div>
+      </div>
+    </div>
+
+    @if (deleteError()) {
+      <p class="nav-delete-error">{{ deleteError() }}</p>
+    }
+
+    @if (isFiltering() && visibleMiddleCount() === 0) {
+      <p class="filter-empty">No {{ activeView() }} in this campaign yet.</p>
+    }
+  </div>
+  }
+</div>

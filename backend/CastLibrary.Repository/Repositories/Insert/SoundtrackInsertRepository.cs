@@ -9,6 +9,9 @@ namespace CastLibrary.Repository.Repositories.Insert;
 public interface ISoundtrackInsertRepository
 {
     Task<SoundtrackDomain> AddAsync(SoundtrackDomain domain);
+
+    /// <summary>Records that a campaign holds this library soundtrack. Idempotent.</summary>
+    Task LinkAsync(Guid campaignId, Guid soundtrackId);
 }
 
 public class SoundtrackInsertRepository(
@@ -23,10 +26,10 @@ public class SoundtrackInsertRepository(
         var entity = mapper.ToEntity(domain);
         
         const string sql =
-            @"INSERT INTO campaign_soundtracks (id, campaign_id, title, file_name, file_url, volume, is_loop, kind, created_at)
-              VALUES (@Id, @CampaignId, @Title, @FileName, @FileUrl, @Volume, @IsLoop, @Kind, @CreatedAt)
+            @"INSERT INTO soundtracks (id, gm_user_id, title, file_name, file_url, volume, is_loop, kind, created_at)
+              VALUES (@Id, @GmUserId, @Title, @FileName, @FileUrl, @Volume, @IsLoop, @Kind, @CreatedAt)
               RETURNING id,
-                        campaign_id     AS CampaignId,
+                        gm_user_id      AS GmUserId,
                         title,
                         file_name       AS FileName,
                         file_url        AS FileUrl,
@@ -35,13 +38,31 @@ public class SoundtrackInsertRepository(
                         kind,
                         created_at      AS CreatedAt";
 
-        logging.LogDbOperation(correlation.TraceId, spanId, "INSERT", "campaign_soundtracks", entity);
+        logging.LogDbOperation(correlation.TraceId, spanId, "INSERT", "soundtracks", entity);
 
         using var conn = sqlConnectionFactory.GetConnection();
         var result = await conn.QuerySingleAsync<SoundtrackEntity>(sql, entity);
 
-        logging.LogDbOperation(correlation.TraceId, spanId, "INSERT", "campaign_soundtracks", entity, 1);
+        logging.LogDbOperation(correlation.TraceId, spanId, "INSERT", "soundtracks", entity, 1);
 
         return mapper.ToDomain(result);
+    }
+
+    public async Task LinkAsync(Guid campaignId, Guid soundtrackId)
+    {
+        var spanId = correlation.NewSpan();
+        var @params = new { CampaignId = campaignId, SoundtrackId = soundtrackId };
+
+        const string sql =
+            @"INSERT INTO campaign_soundtracks_links (campaign_id, soundtrack_id)
+              VALUES (@CampaignId, @SoundtrackId)
+              ON CONFLICT DO NOTHING";
+
+        logging.LogDbOperation(correlation.TraceId, spanId, "INSERT", "campaign_soundtracks_links", @params);
+
+        using var conn = sqlConnectionFactory.GetConnection();
+        await conn.ExecuteAsync(sql, @params);
+
+        logging.LogDbOperation(correlation.TraceId, spanId, "INSERT", "campaign_soundtracks_links", @params, 1);
     }
 }

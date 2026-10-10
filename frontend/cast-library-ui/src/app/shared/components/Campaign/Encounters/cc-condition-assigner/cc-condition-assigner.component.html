@@ -1,0 +1,29 @@
+<div class="assigner">
+  @if (!choices().length) {
+    <p class="assigner-empty">
+      This campaign has no conditions yet. Add conditions to the campaign from the Encounters area first.
+    </p>
+  } @else {
+    <p class="assigner-label">Conditions</p>
+
+    <div class="assigner-row swiper" #conditionRow>
+      <div class="swiper-wrapper">
+        @for (condition of choices(); track condition.id) {
+          <div class="swiper-slide">
+            <cc-condition-card
+              class="assigner-card"
+              [class.is-on]="isOn(condition)"
+              [condition]="condition"
+              [selected]="isOn(condition)"
+              (open)="toggle(condition)"
+            />
+          </div>
+        }
+      </div>
+    </div>
+  }
+
+  @if (error()) {
+    <p class="assigner-error">{{ error() }}</p>
+  }
+</div>

@@ -1,4 +1,4 @@
-import { Component, OnInit, signal, computed, inject, ViewChild, ElementRef } from '@angular/core';
+﻿import { Component, OnInit, signal, computed, inject, ViewChild, ElementRef } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormsModule, FormBuilder, Validators, FormControl } from '@angular/forms';
@@ -8,30 +8,30 @@ import { EMPTY } from 'rxjs';
 import { environment } from '../../../../environments/environment';
 import { Location } from '../../../shared/models/location.model';
 import { SparkleService } from '../../../shared/services/sparkle.service';
-import { LocationCardComponent } from '../../../shared/components/location-card/location-card.component';
-import { JournalTitleComponent } from '../../../shared/components/journal-title/journal-title.component';
-import { JournalDropdownComponent } from '../../../shared/components/journal-dropdown/journal-dropdown.component';
-import { JournalRandomizeButtonComponent } from '../../../shared/components/journal-randomize-button/journal-randomize-button.component';
-import { KeywordTagsComponent } from '../../../shared/components/v2/cc-keyword-tags/cc-keyword-tags.component';
+import { CcLocationCardComponent } from '../../../shared/components/Shared/cc-location-card/cc-location-card.component';
+import { JournalTitleComponent } from '../../../shared/components/Shared/journal-title/journal-title.component';
+import { JournalDropdownComponent } from '../../../shared/components/Shared/journal-dropdown/journal-dropdown.component';
+import { JournalRandomizeButtonComponent } from '../../../shared/components/Shared/journal-randomize-button/journal-randomize-button.component';
+import { KeywordTagsComponent } from '../../../shared/components/Shared/cc-keyword-tags/cc-keyword-tags.component';
 import { HttpErrorResponse } from '@angular/common/http';
 import { SubscriptionDrawerService } from '../../../core/subscription-drawer.service';
 import { AuthService } from '../../../core/auth/auth.service';
 
-const SIZE_OPTIONS = ['Hamlet', 'Village', 'Town', 'Large Town', 'Location', 'Large Location', 'Metropolis'];
+export const SIZE_OPTIONS = ['Hamlet', 'Village', 'Town', 'Large Town', 'Location', 'Large Location', 'Metropolis'];
 
-const CLASSIFICATION_OPTIONS = [
+export const CLASSIFICATION_OPTIONS = [
   'city', 'town', 'village', 'region', 'province', 'territory', 'country', 'kingdom', 'empire', 'capital', 'district', 'wilderness', 'forest', 'jungle', 'desert', 'tundra', 'mountain range', 'valley', 'canyon', 'plains', 'grasslands', 'highlands', 'lowlands', 'coastline', 'shoreline', 'island', 'archipelago', 'peninsula', 'riverlands', 'wetlands', 'badlands', 'frontier', 'heartland', 'plateau', 'crater', 'volcanic region', 'glacier', 'steppe', 'savanna', 'moorland', 'ocean', 'sea', 'reef', 'cavern system', 'cave network', 'mine system', 'farmland', 'countryside', 'trade hub', 'port city', 'harbor district', 'crossroads region', 'caravan route', 'sacred grounds', 'ruins', 'ancient site', 'archaeological zone'
 ];
 
-const CONDITION_OPTIONS = [
+export const CONDITION_OPTIONS = [
   'calm', 'peaceful', 'bustling', 'crowded', 'quiet', 'deserted', 'lively', 'festive', 'tense', 'volatile', 'dangerous', 'unstable', 'war‑torn', 'recovering', 'thriving', 'prosperous', 'struggling', 'impoverished', 'neglected', 'fortified', 'guarded', 'patrolled', 'abandoned', 'ruined', 'decaying', 'overgrown', 'pristine', 'untouched', 'polluted', 'toxic', 'hazardous', 'stormy', 'windy', 'rainy', 'flooded', 'drought‑stricken', 'frozen', 'snow‑covered', 'foggy', 'smoky', 'dusty', 'scorching', 'humid', 'temperate', 'frigid', 'eerie', 'cursed', 'blessed', 'sacred', 'corrupted', 'chaotic', 'orderly', 'lawless', 'controlled', 'contested', 'occupied', 'besieged', 'isolated', 'remote', 'connected', 'central', 'strategic', 'forgotten', 'hidden', 'exposed'
 ];
 
-const GEOGRAPHY_OPTIONS = [
+export const GEOGRAPHY_OPTIONS = [
   'mountain', 'mountain range', 'hill', 'valley', 'canyon', 'plateau', 'mesa', 'plain', 'grassland', 'prairie', 'savanna', 'desert', 'dune field', 'tundra', 'glacier', 'ice field', 'forest', 'jungle', 'rainforest', 'swamp', 'marsh', 'wetland', 'bog', 'moor', 'heath', 'coastline', 'beach', 'shoreline', 'cliff', 'reef', 'island', 'archipelago', 'peninsula', 'bay', 'gulf', 'fjord', 'river', 'river delta', 'riverlands', 'lake', 'lagoon', 'pond', 'waterfall', 'spring', 'cave', 'cavern system', 'cave network', 'volcano', 'crater', 'badlands', 'steppe'
 ];
 
-const ARCHITECTURE_OPTIONS = [
+export const ARCHITECTURE_OPTIONS = [
   'ancient stonework', 'classical', 'gothic', 'baroque', 'renaissance', 'medieval', 'rustic', 'rural', 'frontier‑built', 'industrial', 'modern', 'futuristic', 'brutalist', 'minimalist', 'ornate', 'imperial', 'colonial', 'fortified', 'militaristic', 'monastic', 'temple‑focused', 'sacred', 'ceremonial', 'nomadic', 'tribal', 'desert‑carved', 'mountain‑carved', 'forest‑integrated', 'coastal', 'maritime', 'subterranean', 'cavern‑built', 'cliffside‑built', 'sprawling', 'compact', 'labyrinthine', 'orderly', 'chaotic', 'high‑rise', 'low‑rise', 'timber‑framed', 'masonry', 'marble‑heavy', 'metal‑worked', 'glass‑heavy', 'mixed‑material', 'overgrown', 'reclaimed', 'ruined', 'reconstructed', 'pristine'
 ];
 
@@ -45,22 +45,22 @@ const ALL_LANGUAGES = [
   'Drow Sign Language', 'Ixitxachitl',
 ];
 
-const CLIMATE_OPTIONS = [
+export const CLIMATE_OPTIONS = [
   'tropical', 'subtropical', 'temperate', 'arid', 'semi‑arid', 'mediterranean', 'continental', 'oceanic', 'alpine', 'polar'
 ];
 
-const RELIGION_OPTIONS = [
+export const RELIGION_OPTIONS = [
   'sun cult', 'moon cult', 'star cult', 'storm faith', 'earth mother', 'sea father', 'fire worship', 'nature druidism', 'beast totemism', 'ancestor worship', 'spirit veneration', 'elemental pantheon', 'celestial pantheon', 'infernal cult', 'abyssal cult', 'death cult', 'life cult', 'harvest faith', 'forge faith', 'knowledge order', 'trickster cult', 'war brotherhood', 'peace fellowship', 'justice order', 'shadow cult', 'light church', 'balance sect', 'time order', 'fate weavers', 'prophecy circle', 'arcane order', 'wild magic cult', 'blood rite cult', 'stone guardians', 'river spirits', 'mountain spirits', 'forest spirits', 'sky spirits', 'seasonal faith', 'spring renewal cult', 'winter vigil', 'autumn rites', 'summer flame cult'
 ];
 
-const VIBE_OPTIONS = [
+export const VIBE_OPTIONS = [
   'cozy', 'warm', 'welcoming', 'peaceful', 'serene', 'tranquil', 'lively', 'bustling', 'vibrant', 'festive', 'cheerful', 'whimsical', 'quirky', 'mysterious', 'eerie', 'haunting', 'somber', 'gloomy', 'oppressive', 'tense', 'foreboding', 'dangerous', 'chaotic', 'wild', 'primal', 'sacred', 'reverent', 'solemn', 'majestic', 'awe‑inspiring', 'ancient', 'timeless', 'rustic', 'homely', 'refined', 'elegant', 'gritty', 'rough', 'harsh', 'bleak', 'desolate', 'lonely', 'isolated', 'remote', 'hidden', 'secretive', 'enchanted', 'magical', 'arcane', 'otherworldly', 'surreal', 'dreamlike'
 ];
 
 @Component({
   selector: 'app-location-form',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, FormsModule, RouterLink, LocationCardComponent, JournalTitleComponent, JournalDropdownComponent, JournalRandomizeButtonComponent, KeywordTagsComponent],
+  imports: [CommonModule, ReactiveFormsModule, FormsModule, RouterLink, CcLocationCardComponent, JournalTitleComponent, JournalDropdownComponent, JournalRandomizeButtonComponent, KeywordTagsComponent],
   templateUrl: './location-form.component.html',
   styleUrl: './location-form.component.scss'
 })

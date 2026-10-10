@@ -4,11 +4,6 @@ import { Subject } from 'rxjs';
 export type DrawerContentType = 
   | 'subscription'
   | 'shop-purchase'
-  | 'player-secrets'
-  | 'player-inventory'
-  | 'party-gold'
-  | 'chronicle'
-  | 'soundtrack'
   | 'location-detail'
   | 'sublocation-detail'
   | 'cast-detail'
@@ -44,46 +39,6 @@ export class DrawerService {
     this.open({
       contentType: 'shop-purchase',
       title: 'Shop Purchase',
-      context
-    });
-  }
-
-  openPlayerSecrets(context?: any): void {
-    this.open({
-      contentType: 'player-secrets',
-      title: 'Player Secrets',
-      context
-    });
-  }
-
-  openPlayerInventory(context?: any): void {
-    this.open({
-      contentType: 'player-inventory',
-      title: 'Player Inventory',
-      context
-    });
-  }
-
-  openPartyGold(context?: any): void {
-    this.open({
-      contentType: 'party-gold',
-      title: 'Party Gold',
-      context
-    });
-  }
-
-  openChronicle(context?: any): void {
-    this.open({
-      contentType: 'chronicle',
-      title: 'Campaign Chronicle',
-      context
-    });
-  }
-
-  openSoundtrack(context?: any): void {
-    this.open({
-      contentType: 'soundtrack',
-      title: 'Soundtrack',
       context
     });
   }

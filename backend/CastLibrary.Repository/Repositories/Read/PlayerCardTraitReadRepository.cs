@@ -24,7 +24,7 @@ public class PlayerCardTraitReadRepository(
         var @params = new { Id = id };
         const string sql =
             @"SELECT id, player_card_id as PlayerCardId, trait_type as TraitType,
-                     content, is_completed as IsCompleted, created_at as CreatedAt
+                     content, is_completed as IsCompleted, is_shared as IsShared, created_at as CreatedAt
               FROM player_card_traits WHERE id = @Id";
 
         logging.LogDbOperation(correlation.TraceId, spanId, "SELECT", "player_card_traits", @params);
@@ -43,7 +43,7 @@ public class PlayerCardTraitReadRepository(
         var @params = new { PlayerCardId = playerCardId };
         const string sql =
             @"SELECT id, player_card_id as PlayerCardId, trait_type as TraitType,
-                     content, is_completed as IsCompleted, created_at as CreatedAt
+                     content, is_completed as IsCompleted, is_shared as IsShared, created_at as CreatedAt
               FROM player_card_traits
               WHERE player_card_id = @PlayerCardId
               ORDER BY created_at";

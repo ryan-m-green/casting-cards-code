@@ -1,0 +1,50 @@
+@if (capture() && open()) {
+  <form class="cc-card-add cc-card-add--capture swiper-no-swiping" (submit)="onSubmit($event)">
+    <button
+      type="button"
+      class="cc-card-add-close"
+      title="Cancel"
+      aria-label="Cancel"
+      (click)="closeCapture()"
+    >✕</button>
+
+    <span class="cc-card-add-label">{{ label() }}</span>
+
+    <label class="cc-card-add-field">
+      <span class="cc-card-add-field-label">{{ captureLabel() }}</span>
+      <input
+        #codeInput
+        class="cc-card-add-input"
+        type="text"
+        autocomplete="off"
+        spellcheck="false"
+        [value]="code()"
+        (input)="code.set($any($event.target).value.toUpperCase())"
+      />
+    </label>
+
+    <button
+      type="submit"
+      class="campaign-primary-btn cc-card-add-submit"
+      [disabled]="!code().trim() || busy()"
+    >{{ busy() ? '…' : submitLabel() }}</button>
+
+    @if (error()) {
+      <p class="cc-card-add-error" [title]="error()">{{ error() }}</p>
+    }
+  </form>
+} @else {
+  <button
+    type="button"
+    class="cc-card-add"
+    [class.cc-card-add--locked]="locked()"
+    [attr.disabled]="locked() ? 'true' : null"
+    [title]="locked() ? lockedReason() : title()"
+    [attr.aria-label]="title() || label()"
+    [routerLink]="locked() || capture() ? null : link()"
+    (click)="onTileClick($event)"
+  >
+    <span class="cc-card-add-plus" aria-hidden="true">＋</span>
+    <span class="cc-card-add-label">{{ label() }}</span>
+  </button>
+}

@@ -27,6 +27,8 @@ public class ChronicleMapper : IChronicleMapper
     private const string Secret = "secret";
     private const string CoinReward = "coin-reward";
     private const string ShopPurchase = "shop-purchase";
+    private const string Encounter = "encounter";
+    private const string TimePassed = "time-passed";
 
     public string ToStorageValue(ChronicleContentType type) => type switch
     {
@@ -36,6 +38,8 @@ public class ChronicleMapper : IChronicleMapper
         ChronicleContentType.Secret => Secret,
         ChronicleContentType.CoinReward => CoinReward,
         ChronicleContentType.ShopPurchase => ShopPurchase,
+        ChronicleContentType.Encounter => Encounter,
+        ChronicleContentType.TimePassed => TimePassed,
         _ => throw new ArgumentOutOfRangeException(nameof(type))
     };
 
@@ -47,6 +51,8 @@ public class ChronicleMapper : IChronicleMapper
         ChronicleContentType.Secret => "Secret",
         ChronicleContentType.CoinReward => "Treasure",
         ChronicleContentType.ShopPurchase => "Purchase",
+        ChronicleContentType.Encounter => "Encounter",
+        ChronicleContentType.TimePassed => "Time",
         _ => type.ToString()
     };
 
@@ -58,6 +64,8 @@ public class ChronicleMapper : IChronicleMapper
         Secret => ChronicleContentType.Secret,
         CoinReward => ChronicleContentType.CoinReward,
         ShopPurchase => ChronicleContentType.ShopPurchase,
+        Encounter => ChronicleContentType.Encounter,
+        TimePassed => ChronicleContentType.TimePassed,
         _ => throw new ArgumentOutOfRangeException(nameof(value))
     };
 
@@ -68,7 +76,12 @@ public class ChronicleMapper : IChronicleMapper
             {
                 EntityType = p.EntityType,
                 EntityId = p.EntityId,
-                EntityName = p.EntityName
+                EntityName = p.EntityName,
+                EntityRole = p.EntityRole,
+                EntityRace = p.EntityRace,
+                EntityImageUrl = p.EntityImageUrl,
+                EntityState = p.EntityState,
+                EntityCount = p.EntityCount
             })
             .ToList();
     }

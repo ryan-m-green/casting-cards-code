@@ -34,6 +34,7 @@ public class CampaignChroniclesInsertRepository(
             LinkedEntities = linkedEntitiesJson,
             domain.FilePath,
             domain.TodSliceName,
+            domain.DayNumber,
             domain.IsGmOnly,
             domain.PlayedOn,
             domain.SessionNumber,
@@ -45,9 +46,9 @@ public class CampaignChroniclesInsertRepository(
 
         const string sql =
             @"INSERT INTO campaign_chronicles
-                (id, campaign_id, content_type, source_id, title, body, sort_order, linked_entities, file_path, tod_slice_name, is_gm_only, played_on, session_number, archived_at, created_at, updated_at, keywords)
+                (id, campaign_id, content_type, source_id, title, body, sort_order, linked_entities, file_path, tod_slice_name, day_number, is_gm_only, played_on, session_number, archived_at, created_at, updated_at, keywords)
               VALUES
-                (@Id, @CampaignId, @ContentType, @SourceId, @Title, @Body, @SortOrder, @LinkedEntities::jsonb, @FilePath, @TodSliceName, @IsGmOnly, @PlayedOn, @SessionNumber, @ArchivedAt, @CreatedAt, @UpdatedAt, @Keywords)";
+                (@Id, @CampaignId, @ContentType, @SourceId, @Title, @Body, @SortOrder, @LinkedEntities::jsonb, @FilePath, @TodSliceName, @DayNumber, @IsGmOnly, @PlayedOn, @SessionNumber, @ArchivedAt, @CreatedAt, @UpdatedAt, @Keywords)";
 
         logging.LogDbOperation(correlation.TraceId, spanId, "INSERT", "campaign_chronicles", @params);
 

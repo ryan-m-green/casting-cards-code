@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 340 340" width="340" height="340"
+     fill="none" stroke="#000000" stroke-width="14" stroke-linecap="round" stroke-linejoin="round"
+     role="img" aria-labelledby="motiveTitle motiveDesc">
+
+  <title id="motiveTitle">Cracked compass</title>
+  <desc id="motiveDesc">A compass whose rim is broken in two places, used to represent motivation.</desc>
+
+  <!-- ── rim r 130 about 170,170, split into two chains of minor arcs so each arc stays under
+       180°; the two breaks are a wide one at 206°→233° (upper-left, where the jagged crack
+       sits) and a hairline at 294°→310° (upper-right). Every endpoint lies on the r 130 circle
+       so the arcs never rescale off the ring; ink band 123–137, box 274×274. ────────────── -->
+  <path d="M 91.76 66.18 A 130 130 0 0 1 272.44 250.04 A 130 130 0 0 1 43.86 201.45 A 130 130 0 0 1 222.88 51.24 M 253.56 70.41 A 130 130 0 0 1 197.03 297.16 A 130 130 0 0 1 53.16 113.01" />
+
+  <!-- ── the jagged crack, a filled zigzag rooted in the wide break; its outer corners land at
+       r ~128, inside the ink band, so at 24px it reads as the rim torn open rather than as an
+       extra tick. ───────────────────────────────────────────────────────────────────────── -->
+  <path d="M 65 96 L 100 110 L 95 140 L 135 156 L 120 149.27 L 96 135 L 110 110 L 80 78 Z" fill="#000000" />
+
+  <!-- ── direction ticks at N/E/S/W, r 123→100, so their outer ink meets the rim's inner ink
+       edge and they read as spokes of the rim, not floating dashes. ─────────────────────── -->
+  <path d="M 170 47 L 170 70 M 293 170 L 270 170 M 170 293 L 170 270 M 47 170 L 70 170" />
+
+  <!-- ── needle r 62, half-width 20; the solid north half is what separates a compass from a
+       clock at 24px. ────────────────────────────────────────────────────────────────────── -->
+  <path d="M 170 108 L 190 170 L 150 170 Z" fill="#000000" />
+  <path d="M 170 232 L 190 170 L 150 170 Z" />
+</svg>

@@ -1,0 +1,170 @@
+<!--
+  One place on the ring, its cards as panels: the arrows either side walk them (a
+  place holding a single card has none). The panel in the middle is the card on
+  screen — its face with the conditions it carries clipped onto it, and, for a cast
+  card, a tabset under it for the fight's numbers and the conditions to give it.
+-->
+<div class="details" [style.--portal-color]="portalColor()">
+  @if (hasArrows()) {
+    <button
+      type="button"
+      class="details-nav"
+      [disabled]="panelIndex() === 0"
+      [attr.aria-label]="'Previous card in ' + spotName()"
+      (click)="step(-1)"
+    >‹</button>
+  }
+
+  <div class="details-panel">
+    @if (current(); as card) {
+      @if (isPlayer()) {
+        @if (playerMember(); as member) {
+          <!--
+            The card carries the conditions the DM hands out as rings clipped onto it,
+            and the set to give it more from sits under it.
+          -->
+          <cc-ring-condition
+            [campaignId]="campaignId()"
+            [subject]="playerSubject()!"
+            [conditions]="currentConditions()"
+            (conditionsChanged)="onConditionsChanged($event)"
+          >
+            <cc-player-card [member]="member" mode="dm" />
+          </cc-ring-condition>
+
+          <cc-condition-assigner
+            [campaignId]="campaignId()"
+            [subject]="playerSubject()!"
+            [conditions]="currentConditions()"
+            (conditionsChanged)="onConditionsChanged($event)"
+          />
+        } @else {
+          <p class="details-note">Loading the player's card…</p>
+        }
+      } @else {
+        <!--
+          Which card of the place's group this panel is showing: the arrows either side
+          walk the group's cards, and the number follows the card that is up.
+        -->
+        <p class="details-card-title">Combatant {{ panelIndex() + 1 }}</p>
+
+        <!--
+          The card face: flipped like a card, but with nothing that leads out of here —
+          no title search, and no Details button on the back (see campaignMode). The
+          conditions the card carries are clipped onto it, so they stay on the card
+          whichever tab is up below.
+        -->
+        <cc-ring-condition
+          [campaignId]="campaignId()"
+          [subject]="castSubject()"
+          [conditions]="currentConditions()"
+          (conditionsChanged)="onConditionsChanged($event)"
+        >
+          <cc-cast-card
+            [cast]="asCast(card)"
+            [flippable]="true"
+            [editable]="false"
+            [secrets]="false"
+            [campaignMode]="false"
+            [titleSearch]="false"
+            [readonlyStars]="true"
+            [dmMode]="true"
+            [isDefeated]="isDefeated()"
+          />
+        </cc-ring-condition>
+
+        <!--
+          The two things the DM reaches for while the fight runs, under the card's face:
+          what it is carrying (its conditions) and what the fight is doing to it (its hit
+          points). They share the space as tabs.
+        -->
+        <div class="details-tabs" role="tablist" [attr.aria-label]="'Card details for ' + card.displayName">
+          <button
+            type="button"
+            class="tab-btn"
+            [class.tab-btn--active]="tab() === 'hp'"
+            role="tab"
+            [attr.aria-selected]="tab() === 'hp'"
+            aria-controls="details-panel-hp"
+            id="details-tab-hp"
+            (click)="setTab('hp')"
+          >Hit Points</button>
+          <button
+            type="button"
+            class="tab-btn"
+            [class.tab-btn--active]="tab() === 'conditions'"
+            role="tab"
+            [attr.aria-selected]="tab() === 'conditions'"
+            aria-controls="details-panel-conditions"
+            id="details-tab-conditions"
+            (click)="setTab('conditions')"
+          >Conditions</button>
+        </div>
+
+        @if (tab() === 'hp') {
+          <!--
+            What the fight has left, and what it can take on top: the hit points dial is
+            the card's current hit points, capped at the maximum the label names, and the
+            dial beside it is its temporary hit points. The two hold each other in step
+            with the fight — a card carrying temporary hit points has those taken off
+            first, so its hit points dial is held until the temporary dial is back at
+            zero; a card at zero hit points has nothing for a shield to guard, so its
+            temporary dial waits until there are hit points again.
+          -->
+          <div class="details-tab-panel" id="details-panel-hp" role="tabpanel" aria-labelledby="details-tab-hp">
+            <div class="details-hp">
+              <cc-dial-counter
+                context="campaign"
+                [dials]="hpDials"
+                [label]="'Max HP ' + card.maxHitPoints"
+                [ariaLabel]="'Current hit points for ' + card.displayName"
+                [min]="0"
+                [max]="card.maxHitPoints"
+                [disabled]="hpDialHeld()"
+                [ngModel]="currentHp()"
+                (ngModelChange)="setCurrentHp($event)"
+              />
+
+              <cc-dial-counter
+                context="campaign"
+                [dials]="tempDials"
+                label="Temp health"
+                [ariaLabel]="'Temporary hit points for ' + card.displayName"
+                [disabled]="tempDialHeld()"
+                [ngModel]="card.tempHitPoints"
+                (ngModelChange)="setTempHp($event)"
+              />
+            </div>
+          </div>
+        } @else {
+          <!--
+            The conditions this card can be given. What it already carries is on the card
+            above the tabs, and taking one off again is clicking its ring there.
+          -->
+          <div class="details-tab-panel" id="details-panel-conditions" role="tabpanel" aria-labelledby="details-tab-conditions">
+            <cc-condition-assigner
+              [campaignId]="campaignId()"
+              [subject]="castSubject()"
+              [conditions]="currentConditions()"
+              (conditionsChanged)="onConditionsChanged($event)"
+            />
+          </div>
+        }
+      }
+    }
+
+    @if (error()) {
+      <p class="details-error">{{ error() }}</p>
+    }
+  </div>
+
+  @if (hasArrows()) {
+    <button
+      type="button"
+      class="details-nav"
+      [disabled]="panelIndex() >= panelCount() - 1"
+      [attr.aria-label]="'Next card in ' + spotName()"
+      (click)="step(1)"
+    >›</button>
+  }
+</div>

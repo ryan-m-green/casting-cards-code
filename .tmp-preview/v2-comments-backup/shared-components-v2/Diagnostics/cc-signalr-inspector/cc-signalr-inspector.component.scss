@@ -1,0 +1,280 @@
+@use '../../../../../../styles/variables' as v;
+
+:host {
+  display: block;
+  height: 100%;
+}
+
+.sxi {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  min-height: 100%;
+  font-family: 'Consolas', 'Courier New', monospace;
+  font-size: 12px;
+  line-height: 1.45;
+  color: v.$campaign-portal-text-muted;
+}
+
+// ── The count line and the tools ───────────────────────────────────────────────
+
+.sxi-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: center;
+  justify-content: space-between;
+  padding-bottom: 12px;
+  border-bottom: 1px solid v.$campaign-portal-border-bold;
+}
+
+.sxi-stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+}
+
+.sxi-stat {
+  white-space: nowrap;
+
+  b {
+    color: v.$campaign-portal-text-bright;
+    font-weight: 700;
+  }
+
+  &--warn b { color: #e8c96a; }
+  &--bad b  { color: #e08a6a; }
+}
+
+.sxi-tools {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+}
+
+.sxi-filter {
+  min-width: 180px;
+  padding: 5px 8px;
+  background: v.$campaign-portal-bg-medium;
+  border: 1px solid v.$campaign-portal-border-bold;
+  border-radius: 4px;
+  color: v.$campaign-portal-text-bright;
+  font-family: inherit;
+  font-size: 12px;
+
+  &:focus-visible {
+    outline: 1px solid v.$color-base-portal-violet;
+    outline-offset: 1px;
+  }
+}
+
+.sxi-tool {
+  padding: 5px 10px;
+  background: none;
+  border: 1px solid v.$campaign-portal-border-bold;
+  border-radius: 4px;
+  color: v.$campaign-portal-text-muted;
+  font-family: inherit;
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease;
+
+  &:hover { background: v.$campaign-portal-bg-medium; color: v.$campaign-portal-text-bright; }
+
+  &--on {
+    background: rgba(v.$color-base-portal-violet, 0.25);
+    color: v.$campaign-portal-text-bright;
+  }
+}
+
+.sxi-error {
+  margin: 0;
+  padding: 8px 10px;
+  background: rgba(140, 48, 28, 0.18);
+  border: 1px solid rgba(180, 80, 50, 0.5);
+  border-radius: 4px;
+  color: #e8a88a;
+}
+
+// ── The two panes ──────────────────────────────────────────────────────────────
+
+.sxi-columns {
+  display: grid;
+  grid-template-columns: minmax(150px, 200px) 1fr;
+  gap: 16px;
+  flex: 1;
+  min-height: 0;
+
+  @media (max-width: 900px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.sxi-pane {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-height: 0;
+}
+
+.sxi-pane-title {
+  margin: 0 0 2px;
+  font-family: v.$font-header;
+  font-size: 11px;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: v.$campaign-portal-text-softer;
+}
+
+.sxi-pane-hint {
+  margin-left: 6px;
+  font-family: inherit;
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: none;
+  color: v.$campaign-portal-text-muted;
+  opacity: 0.7;
+}
+
+// ── Who is connected ───────────────────────────────────────────────────────────
+
+.sxi-person {
+  display: flex;
+  gap: 8px;
+  align-items: baseline;
+  padding: 4px 8px;
+  border-left: 2px solid v.$campaign-portal-border-bold;
+  background: v.$campaign-portal-bg-medium;
+
+  &--player { border-left-color: #7aaa30; }
+}
+
+.sxi-person-role {
+  flex-shrink: 0;
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: v.$campaign-portal-text-softer;
+}
+
+.sxi-person-id {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: v.$campaign-portal-text-bright;
+}
+
+.sxi-person-age {
+  flex-shrink: 0;
+  opacity: 0.7;
+}
+
+// ── The feed ───────────────────────────────────────────────────────────────────
+
+.sxi-pane--events {
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(v.$campaign-portal-border-bold, 0.4) transparent;
+
+  &::-webkit-scrollbar { width: 4px; }
+  &::-webkit-scrollbar-thumb { background: rgba(v.$campaign-portal-border-bold, 0.4); border-radius: 2px; }
+}
+
+.sxi-row {
+  border-left: 3px solid v.$campaign-portal-border-bold;
+  background: v.$campaign-portal-bg-medium;
+
+  /*
+    The verdict, at a glance: green came back, amber left and was not answered, grey went to an
+    empty room, red never left at all (see `verdict` in the component).
+  */
+  &--answered   { border-left-color: #7aaa30; }
+  &--unanswered { border-left-color: #e8c96a; }
+  &--empty      { border-left-color: rgba(154, 176, 184, 0.45); opacity: 0.75; }
+  &--failed     { border-left-color: #d4553a; background: rgba(140, 48, 28, 0.18); }
+}
+
+.sxi-row-head {
+  display: grid;
+  grid-template-columns: 92px 1fr 120px 96px 130px;
+  gap: 8px;
+  width: 100%;
+  padding: 5px 8px;
+  background: none;
+  border: 0;
+  color: inherit;
+  font-family: inherit;
+  font-size: 12px;
+  text-align: left;
+  cursor: pointer;
+
+  &:hover { background: rgba(255, 255, 255, 0.04); }
+
+  @media (max-width: 900px) {
+    grid-template-columns: 84px 1fr;
+  }
+}
+
+.sxi-time   { opacity: 0.75; }
+.sxi-name   { color: v.$campaign-portal-text-bright; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.sxi-target { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; opacity: 0.85; }
+.sxi-target-id { opacity: 0.6; }
+.sxi-subs   { opacity: 0.75; }
+.sxi-acks   { opacity: 0.9; }
+
+.sxi-detail {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 8px 10px 10px;
+  border-top: 1px solid v.$campaign-portal-border-bold;
+}
+
+.sxi-receipts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.sxi-receipt {
+  padding: 2px 6px;
+  border: 1px solid v.$campaign-portal-border-bold;
+  border-radius: 3px;
+  font-size: 11px;
+
+  b { color: v.$campaign-portal-text-bright; text-transform: uppercase; letter-spacing: 0.08em; }
+
+  &--none { margin: 0; border-color: rgba(232, 201, 106, 0.5); color: #e8c96a; }
+}
+
+.sxi-payload {
+  margin: 0;
+  max-height: 180px;
+  overflow: auto;
+  padding: 8px;
+  background: rgba(0, 0, 0, 0.28);
+  border-radius: 4px;
+  font-size: 11px;
+  white-space: pre-wrap;
+  word-break: break-word;
+  color: v.$campaign-portal-text-softer;
+}
+
+.sxi-empty {
+  margin: 0;
+  padding: 10px;
+  border: 1px dashed v.$campaign-portal-border-bold;
+  border-radius: 4px;
+  opacity: 0.75;
+}
+
+.sxi-foot {
+  padding-top: 10px;
+  border-top: 1px solid v.$campaign-portal-border-bold;
+  color: #e8c96a;
+  font-size: 11px;
+}

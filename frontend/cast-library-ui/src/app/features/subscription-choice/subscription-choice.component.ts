@@ -3,9 +3,9 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { StripeService, PricingDisplayResponse, SubscriptionTier } from '../../core/stripe.service';
 import { AuthService } from '../../core/auth/auth.service';
-import { JournalTitleComponent } from '../../shared/components/journal-title/journal-title.component';
-import { PremiumPlanCardComponent } from '../../shared/components/premium-plan-card/premium-plan-card.component';
-import { FreeTrialPlanCardComponent } from '../../shared/components/free-trial-plan-card/free-trial-plan-card.component';
+import { JournalTitleComponent } from '../../shared/components/Shared/journal-title/journal-title.component';
+import { PremiumPlanCardComponent } from '../../shared/components/Shared/premium-plan-card/premium-plan-card.component';
+import { FreeTrialPlanCardComponent } from '../../shared/components/Shared/free-trial-plan-card/free-trial-plan-card.component';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { signal } from '@angular/core';
 
@@ -35,7 +35,6 @@ export class SubscriptionChoiceComponent implements OnInit {
   ngOnInit() {
     this.route.queryParams.subscribe(params => {
       if (params['checkout'] === 'success') {
-        // Cookies handle authentication automatically, no token check needed
         this.isCheckoutSuccessSignal.set(true);
         this.startSubscriptionRefresh();
       }

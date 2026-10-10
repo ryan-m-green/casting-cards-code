@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 import { forkJoin } from 'rxjs';
 import { environment } from '../../../../environments/environment';
-import { JournalTitleComponent } from '../../../shared/components/journal-title/journal-title.component';
+import { JournalTitleComponent } from '../../../shared/components/Shared/journal-title/journal-title.component';
 
 interface UserManagementResponse {
   id: string;
@@ -342,7 +342,7 @@ export class UserManagementComponent implements OnInit {
 
   loadUserCardCounts(userId: string) {
     if (this.userCardCounts()[userId] || this.loadingCardCounts()[userId]) {
-      return; // Already loaded or loading
+      return;
     }
 
     this.loadingCardCounts.update(m => ({ ...m, [userId]: true }));
@@ -398,5 +398,4 @@ export class UserManagementComponent implements OnInit {
     });
   }
 }
-
 

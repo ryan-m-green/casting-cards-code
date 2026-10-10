@@ -1,0 +1,204 @@
+<div class="pc scroll-body">
+  <app-upgrade-badge
+    [visible]="auth.isFreeTrial()"
+    (badgeClick)="openUpgradeDrawer()"
+    class="upgrade-badge-dashboard" />
+
+  <div class="dashboard-main">
+    <img src="/rat_wizard.PNG" alt="Rat wizard" class="rat-wizard-image" />
+    <app-journal-title [title]="'Welcome back, ' + (auth.currentUser()?.displayName ?? '')" />
+
+  <div class="dashboard-subtitle">
+  <div class="library-icon-wrapper">
+    <app-icon name="library" variant="inline" />
+  </div>
+  Card Deck Library
+</div>
+
+  <!-- Stats -->
+  <div class="sc section-label-mb">
+    <div class="sv sv--cast" (click)="goto('/gm/cast')" (keydown.enter)="goto('/gm/cast')" (keydown.space)="goto('/gm/cast')" role="button" tabindex="0" aria-label="Go to Cast page. You have {{ stats().castCount }} cast members.">
+      <div class="sv-inner">
+        <app-icon name="cast" />
+        <div class="sv-value" aria-hidden="true">{{ stats().castCount }}</div>
+        <div class="sv-label" aria-hidden="true">Cast</div>
+      </div>
+    </div>
+    <div class="sv sv--sublocation" (click)="goto('/gm/sublocations')" (keydown.enter)="goto('/gm/sublocations')" (keydown.space)="goto('/gm/sublocations')" role="button" tabindex="0" aria-label="Go to Sublocations page. You have {{ stats().sublocationCount }} sublocations.">
+      <div class="sv-inner">
+        <app-icon name="sublocation" />
+        <div class="sv-value" aria-hidden="true">{{ stats().sublocationCount }}</div>
+        <div class="sv-label" aria-hidden="true">Sublocations</div>
+      </div>
+    </div>
+    <div class="sv sv--location" (click)="goto('/gm/locations')" (keydown.enter)="goto('/gm/locations')" (keydown.space)="goto('/gm/locations')" role="button" tabindex="0" aria-label="Go to Locations page. You have {{ stats().locationCount }} locations.">
+      <div class="sv-inner">
+        <app-icon name="location" />
+        <div class="sv-value" aria-hidden="true">{{ stats().locationCount }}</div>
+        <div class="sv-label" aria-hidden="true">Locations</div>
+      </div>
+    </div>
+    <div class="sv sv--faction" (click)="goto('/gm/faction')" (keydown.enter)="goto('/gm/faction')" (keydown.space)="goto('/gm/faction')" role="button" tabindex="0" aria-label="Go to Factions page. You have {{ stats().factionCount }} factions.">
+      <div class="sv-inner">
+        <app-icon name="faction" />
+        <div class="sv-value" aria-hidden="true">{{ stats().factionCount }}</div>
+        <div class="sv-label" aria-hidden="true">Factions</div>
+      </div>
+    </div>
+    <div class="sv sv--campaign" (click)="goto('/gm/campaigns')" (keydown.enter)="goto('/gm/campaigns')" (keydown.space)="goto('/gm/campaigns')" role="button" tabindex="0" aria-label="Go to Campaigns page. You have {{ stats().campaignCount }} campaigns.">
+      <div class="sv-inner">
+        <app-icon name="campaign" />
+        <div class="sv-value" aria-hidden="true">{{ stats().campaignCount }}</div>
+        <div class="sv-label" aria-hidden="true">Campaigns</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="quick-actions">
+    <div class="dashboard-subtitle">Quick Actions</div>
+
+  <!-- Active Campaign -->
+  @if (stats().activeCampaign) {
+    <div class="wb accent active-campaign-item" (click)="portalEnter(stats().activeCampaign!.id, stats().activeCampaign!.spineColor)" (keydown.enter)="portalEnter(stats().activeCampaign!.id, stats().activeCampaign!.spineColor)" (keydown.space)="portalEnter(stats().activeCampaign!.id, stats().activeCampaign!.spineColor)" role="button" tabindex="0" [attr.aria-label]="'Enter campaign: ' + stats().activeCampaign!.name + '. ' + stats().activeCampaign!.playerCount + ' players, ' + stats().activeCampaign!.locationCount + ' locations'">
+      <div class="sv-inner">
+        <div class="active-campaign-icon">&nbsp;
+          <app-icon name="campaign" variant="inline" />
+        </div>
+        <div class="active-campaign-content">
+          <div class="wbd-journal active-campaign-prompt">Get back in to your latest campaign</div>
+          <div class="wr">
+            <div class="flex-1">
+              <div class="wbl">{{ stats().activeCampaign!.name }}</div>
+              <div class="wbd-journal">{{ stats().activeCampaign!.playerCount }} players · {{ stats().activeCampaign!.locationCount }} locations</div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Hidden portal card; cloned as animation ghost -->
+    <div #portalGhostTpl class="card-wrap portal-ghost-tpl"
+         [attr.style]="'--portal-color:' + safeColor(stats().activeCampaign!.spineColor)">
+      <div class="card-inner">
+        <div class="card-face">
+          <div class="c-frame frame-portal">
+            <svg class="runic-border" viewBox="0 0 150 220" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <text x="20"  y="8">ᚠ</text><text x="53"  y="8">ᚢ</text>
+              <text x="86"  y="8">ᚦ</text><text x="119" y="8">ᚨ</text>
+              <text x="143" y="22">ᚱ</text><text x="143" y="55">ᚲ</text><text x="143" y="88">ᚷ</text>
+              <text x="143" y="121">ᚹ</text><text x="143" y="154">ᚺ</text><text x="143" y="187">ᚾ</text>
+              <text x="130" y="213">ᛁ</text><text x="97"  y="213">ᛃ</text>
+              <text x="64"  y="213">ᛇ</text><text x="31"  y="213">ᛈ</text>
+              <text x="7" y="198">ᛉ</text><text x="7" y="165">ᛊ</text><text x="7" y="132">ᛏ</text>
+              <text x="7"  y="99">ᛒ</text><text x="7"  y="66">ᛖ</text><text x="7"  y="33">ᛗ</text>
+            </svg>
+            <div class="c-inner inner-portal">
+              <div class="portal-name">{{ stats().activeCampaign!.name }}</div>
+              <div class="portal-oval-area">
+                <div class="portal-oval-outer">
+                  <div class="portal-oval-glow"></div>
+                  <div class="portal-oval-ring"></div>
+                  <div class="portal-oval-inner"></div>
+                  <div class="portal-oval-sparkle" style="width:6px;height:6px;top:18%;left:22%;animation-delay:.4s"></div>
+                  <div class="portal-oval-sparkle" style="width:4px;height:4px;top:12%;left:58%;animation-delay:1.1s"></div>
+                  <div class="portal-oval-sparkle" style="width:3px;height:3px;top:72%;right:20%;animation-delay:1.8s"></div>
+                </div>
+              </div>
+              @if (stats().activeCampaign!.description) {
+                <div class="portal-description">{{ stats().activeCampaign!.description }}</div>
+              }
+              <div class="portal-btns">
+                <button class="portal-btn portal-btn--edit" aria-label="Edit campaign">Settings →</button>
+              </div>
+              <div class="portal-footer-strip">Portal</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  }
+
+  <div class="wr section-label-mb">
+    <button class="btn-ghost qa-btn qa-btn--cast" [class.disabled]="isCreateDisabled()" [attr.disabled]="isCreateDisabled() ? 'true' : null" (click)="isCreateDisabled() ? null : goto('/gm/cast/new')"><span class="qa-btn__inner">+ New Cast</span></button>
+    <button class="btn-ghost qa-btn qa-btn--sublocation" [class.disabled]="isCreateDisabled()" [attr.disabled]="isCreateDisabled() ? 'true' : null" (click)="isCreateDisabled() ? null : goto('/gm/sublocations/new')"><span class="qa-btn__inner">+ New Sublocation</span></button>
+    <button class="btn-ghost qa-btn qa-btn--location" [class.disabled]="isCreateDisabled()" [attr.disabled]="isCreateDisabled() ? 'true' : null" (click)="isCreateDisabled() ? null : goto('/gm/locations/new')"><span class="qa-btn__inner">+ New Location</span></button>
+    <button class="btn-ghost qa-btn qa-btn--faction" [class.disabled]="isCreateDisabled()" [attr.disabled]="isCreateDisabled() ? 'true' : null" (click)="isCreateDisabled() ? null : goto('/gm/faction/new')"><span class="qa-btn__inner">+ New Faction</span></button>
+    <button class="btn-ghost qa-btn qa-btn--campaign" [class.disabled]="isCreateDisabled()" [attr.disabled]="isCreateDisabled() ? 'true' : null" (click)="isCreateDisabled() ? null : goto('/gm/campaigns/new')"><span class="qa-btn__inner">+ New Campaign</span></button>
+  </div>
+
+  </div><!-- /.quick-actions -->
+
+  </div><!-- /.dashboard-main -->
+
+  <!-- Library Import / Export -->
+  <!-- <div class="import-section">
+    <fieldset class="import-fieldset">
+      <legend class="section-label import-section-label">Library</legend>
+    <div class="wr">
+      <button class="btn-ghost" (click)="downloadTemplate()" aria-label="Download template">↓ Template</button>
+      <button class="btn-ghost" (click)="exportLibrary()" aria-label="Export library">↓ Export</button>
+      <button class="btn-ghost" (click)="toggleImport()" aria-label="Toggle import panel">
+        {{ showImportPanel() ? '✕ Cancel' : '↑ Import' }}
+      </button>
+    </div> -->
+
+  <!-- Import Panel -->
+  <!-- @if (showImportPanel()) {
+    <div class="wb import-panel">
+      <div class="import-field">
+        <label for="library-zip-input" class="import-label">Library ZIP</label>
+        <input id="library-zip-input" class="import-file-input" type="file" accept=".zip" aria-describedby="import-instructions"
+               (change)="onZipFileSelected($event)" />
+        <span id="import-instructions" class="visually-hidden">Select a ZIP file containing your library export to import cast members, locations, and sublocations</span>
+      </div>
+
+      @if (importError()) {
+        <div class="import-error">{{ importError() }}</div>
+      }
+
+      <div class="import-actions">
+        <button class="btn-primary" (click)="submitImport()" aria-label="Submit import"
+                [disabled]="!selectedZipFile() || importing()">
+          {{ importing() ? 'Importing...' : 'Import' }}
+        </button>
+      </div>
+    </div>
+  } -->
+
+  <!-- Import Result -->
+  <!-- @if (importResult()) {
+    <div class="wb import-result">
+      <div class="import-summary">
+        {{ importResult()!.castsImported }} cast member{{ importResult()!.castsImported !== 1 ? 's' : '' }} ·
+        {{ importResult()!.sublocationsImported }} sublocation{{ importResult()!.sublocationsImported !== 1 ? 's' : '' }} ·
+        {{ importResult()!.locationsImported }} {{ importResult()!.locationsImported === 1 ? 'location' : 'locations' }} ·
+        {{ importResult()!.factionsImported }} faction{{ importResult()!.factionsImported !== 1 ? 's' : '' }} imported
+      </div>
+      @if ((importResult()!.castsSkipped + importResult()!.locationsSkipped + importResult()!.sublocationsSkipped) > 0) {
+        <div class="import-summary import-summary--skipped">
+          {{ importResult()!.castsSkipped }} cast member{{ importResult()!.castsSkipped !== 1 ? 's' : '' }} ·
+          {{ importResult()!.sublocationsSkipped }} sublocation{{ importResult()!.sublocationsSkipped !== 1 ? 's' : '' }} ·
+          {{ importResult()!.locationsSkipped }} {{ importResult()!.locationsSkipped === 1 ? 'location' : 'locations' }} ·
+          {{ importResult()!.factionsSkipped }} faction{{ importResult()!.factionsSkipped !== 1 ? 's' : '' }} ·
+           skipped (name already exists)
+        </div>
+      }
+
+      @if (importResult()!.failures.length > 0) {
+        <div class="import-failures-label">Failed to import:</div>
+        @for (failure of importResult()!.failures; track failure.name + failure.cardType) {
+          <div class="import-failure">
+            <span class="failure-type">{{ failure.cardType }}</span>
+            "{{ failure.name }}" — {{ failure.reason }}
+          </div>
+        }
+      }
+    </div>
+  }
+
+    </fieldset> 
+  </div>-->
+
+  <div class="orn orn-mt">· · ·</div>
+</div>

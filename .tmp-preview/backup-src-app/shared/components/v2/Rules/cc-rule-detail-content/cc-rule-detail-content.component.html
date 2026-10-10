@@ -1,0 +1,56 @@
+@if (editing()) {
+  <cc-rule-editor
+    [campaignId]="campaignId()"
+    [rule]="rule()"
+    (saved)="onSaved()"
+    (cancel)="cancelEditing()"
+  />
+} @else {
+  <div class="rule-detail">
+    <div class="rule-detail-bar">
+      <span class="rule-detail-actions">
+        @if (error()) {
+          <span class="rule-detail-error">{{ error() }}</span>
+        }
+        <cc-delete-button
+          label="Delete entry"
+          [disabled]="removing()"
+          (confirmed)="remove()"
+        />
+        <cc-edit-button label="Edit entry" (clicked)="startEditing()" />
+      </span>
+    </div>
+
+    <div class="rule-detail-read">
+      <p class="rule-detail-definition">{{ rule()?.definition || 'No definition recorded yet.' }}</p>
+
+      @if (keywords().length) {
+        <div class="rule-detail-keywords">
+          @for (keyword of keywords(); track keyword) {
+            <span class="rule-detail-keyword">{{ keyword }}</span>
+          }
+        </div>
+      }
+
+      @if (nested().length) {
+        <ul class="rule-detail-nested">
+          @for (child of nested(); track child.id) {
+            <li class="rule-detail-child">
+              <span class="rule-detail-child-name">{{ child.name }}</span>
+              <span class="rule-detail-child-definition">
+                {{ child.definition || 'No definition recorded yet.' }}
+              </span>
+            </li>
+          }
+        </ul>
+      } @else {
+        <div class="rule-detail-standalone">
+          <p class="rule-detail-note">No sub-entries.</p>
+          <button type="button" class="rule-detail-grow" (click)="startEditing()">
+            ＋ Add sub-entries
+          </button>
+        </div>
+      }
+    </div>
+  </div>
+}

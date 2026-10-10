@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>crack check</title>
+<style>
+  body { margin: 0; padding: 16px 18px; background: rgb(14, 24, 32); font-family: system-ui, sans-serif; }
+  h2 { color: #c8e1eb; font: 11px/1 monospace; letter-spacing: .12em; text-transform: uppercase; margin: 18px 0 10px; }
+  .row { display: flex; align-items: flex-start; gap: 18px; }
+  .cell { text-align: center; }
+  .cell b { display: block; color: #7f9aa8; font: 10px/1.6 monospace; font-weight: 400; }
+  .z { width: 24px; height: 24px; display: block; transform: scale(10); transform-origin: 0 0;
+       image-rendering: pixelated; filter: brightness(0) invert(1); }
+  .zw { width: 260px; height: 260px; overflow: hidden; }
+  .d { width: 340px; height: 340px; display: block; transform: scale(3); transform-origin: 0 0;
+       filter: brightness(0) invert(1); }
+  .dw { width: 300px; height: 300px; overflow: hidden; }
+  .m { display: block; object-fit: contain; filter: brightness(0) invert(1); }
+</style>
+</head>
+<body>
+
+<h2>24px raster at 10x - goal, flaw, fear, motivation</h2>
+<div class="row">
+  <div class="cell"><div class="zw"><img class="z" src="../frontend/cast-library-ui/public/dart_hitting_target_bullseye.svg" alt="" /></div><b>goal</b></div>
+  <div class="cell"><div class="zw"><img class="z" src="../frontend/cast-library-ui/public/broken_shield_sword.svg" alt="" /></div><b>flaw</b></div>
+  <div class="cell"><div class="zw"><img class="z" src="../frontend/cast-library-ui/public/person_falling_from_cliff.svg" alt="" /></div><b>fear</b></div>
+  <div class="cell"><div class="zw"><img class="z" src="compass-cracked-motivation.svg" alt="" /></div><b>motivation</b></div>
+</div>
+
+<h2>upper-left quadrant at 3x - the break</h2>
+<div class="row">
+  <div class="dw"><img class="d" src="compass-cracked-motivation.svg" alt="" /></div>
+  <div class="cell">
+    <img class="m" style="width:72px;height:72px" src="compass-cracked-motivation.svg" alt="" />
+    <b>72px</b>
+  </div>
+  <div class="cell">
+    <img class="m" style="width:192px;height:192px" src="compass-cracked-motivation.svg" alt="" />
+    <b>192px</b>
+  </div>
+</div>
+
+</body>
+</html>

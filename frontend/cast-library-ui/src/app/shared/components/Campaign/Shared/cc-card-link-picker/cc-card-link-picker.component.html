@@ -1,0 +1,111 @@
+<div class="clp" [style.--portal-color]="portalColor()">
+
+  <!-- The corner controls ride the panel's top right. The count sits on the page itself and the
+       Done button keeps its own panel, so the two stand beside each other rather than in one box. -->
+  <div class="clp-corner">
+    <span class="clp-total">
+      {{ links().length }} linked@if (saving()) { · saving… }
+    </span>
+
+    <button type="button" class="campaign-primary-btn" (click)="done()">Done</button>
+  </div>
+
+  @if (error()) {
+    <p class="clp-error" role="alert">{{ error() }}</p>
+  }
+
+  <app-cc-textbox
+    placeholder="Search this campaign's cards…"
+    context="campaign"
+    [ngModel]="search()"
+    (ngModelChange)="search.set($event)"
+    [showClear]="true"
+  />
+
+  <div class="clp-types" role="group" aria-label="Card types">
+    @for (type of cardTypes; track type.key) {
+      <button
+        type="button"
+        class="clp-type"
+        [class.is-on]="activeType() === type.key"
+        [attr.aria-pressed]="activeType() === type.key"
+        [attr.title]="'Show the campaign\'s ' + type.label"
+        (click)="toggleType(type.key)"
+      >
+        {{ type.label }}<span class="clp-type-count">{{ countFor(type.key) }}</span>
+      </button>
+    }
+  </div>
+
+  @if (pickedCards().length) {
+    <div class="clp-picked swiper" #pickedRow>
+      <div class="swiper-wrapper">
+        @for (card of pickedCards(); track card.entityType + ':' + card.id) {
+          <div class="swiper-slide">
+            @switch (card.entityType) {
+              @case ('location') {
+                <cc-simple-location-card [location]="$any(card.card)" />
+              }
+              @case ('sublocation') {
+                <cc-simple-sublocation-card [sublocation]="$any(card.card)" />
+              }
+              @case ('cast') {
+                <cc-simple-cast-card [cast]="$any(card.card)" />
+              }
+              @case ('faction') {
+                <cc-simple-faction-card [faction]="$any(card.card)" />
+              }
+            }
+
+            <button
+              type="button"
+              class="clp-picked-remove"
+              [attr.aria-label]="'Take ' + card.name + ' off'"
+              (click)="removePicked(card)"
+            >✕</button>
+          </div>
+        }
+      </div>
+    </div>
+  }
+
+  @if (!groups().length) {
+    <p class="clp-empty">{{ emptyMessage() }}</p>
+  } @else {
+    @for (group of groups(); track group.key) {
+      <p class="clp-section">{{ group.label }} ({{ group.cards.length }})</p>
+
+      <div class="clp-grid">
+        @for (card of group.cards; track card.entityType + ':' + card.id) {
+          <button
+            type="button"
+            class="clp-tile"
+            [class.is-picked]="isPicked(card)"
+            [attr.aria-pressed]="isPicked(card)"
+            [attr.aria-label]="(isPicked(card) ? 'Take ' : 'Link ') + card.name"
+            (click)="togglePick(card)"
+          >
+            @switch (card.entityType) {
+              @case ('location') {
+                <cc-simple-location-card [location]="$any(card.card)" />
+              }
+              @case ('sublocation') {
+                <cc-simple-sublocation-card [sublocation]="$any(card.card)" />
+              }
+              @case ('cast') {
+                <cc-simple-cast-card [cast]="$any(card.card)" />
+              }
+              @case ('faction') {
+                <cc-simple-faction-card [faction]="$any(card.card)" />
+              }
+            }
+
+            @if (isPicked(card)) {
+              <span class="clp-tile-check" aria-hidden="true">✓</span>
+            }
+          </button>
+        }
+      </div>
+    }
+  }
+</div>

@@ -2,9 +2,8 @@ using CastLibrary.Logic.Commands.Soundtrack;
 using CastLibrary.Logic.Queries.Soundtrack;
 using CastLibrary.Logic.Services;
 using CastLibrary.Repository.Repositories.Read;
-using CastLibrary.Shared.Domain;
+using CastLibrary.Shared.Requests;
 using CastLibrary.WebHost.Hubs;
-using CastLibrary.WebHost.Mappers;
 using CastLibrary.WebHost.MetadataHelpers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -12,6 +11,11 @@ using Microsoft.AspNetCore.SignalR;
 
 namespace CastLibrary.WebHost.Controllers;
 
+/// <summary>
+/// The soundtrack panel as a campaign sees it. Soundtracks are the GM's own library,
+/// global to every campaign the GM runs, so this panel shows the GM's whole library and
+/// records a campaign link for anything uploaded from here.
+/// </summary>
 [ApiController]
 [Route("api/campaigns/{campaignId}/soundtracks")]
 [Authorize(Roles = "DM,Admin")]
@@ -19,7 +23,7 @@ public class SoundtracksController(
     IUploadSoundtrackCommandHandler uploadCommand,
     IDeleteSoundtrackCommandHandler deleteCommand,
     IUpdateSoundtrackCommandHandler updateCommand,
-    IGetCampaignSoundtracksQueryHandler getSoundtracksQuery,
+    IGetSoundtracksQueryHandler getSoundtracksQuery,
     ICampaignReadRepository campaignReadRepository,
     IHubContext<CampaignHub> hubContext,
     IFileValidationService fileValidationService,
@@ -29,12 +33,21 @@ public class SoundtracksController(
     private Task<bool> CallerOwns(Guid campaignId) =>
         campaignAccess.IsOwnerAsync(campaignId, userRetriever.GetUserId(User));
 
+    private async Task<Guid?> OwnerOfAsync(Guid campaignId)
+    {
+        var campaign = await campaignReadRepository.GetByIdAsync(campaignId);
+        return campaign?.DmUserId;
+    }
+
     [HttpGet]
     public async Task<IActionResult> GetAll(Guid campaignId)
     {
         if (!await CallerOwns(campaignId)) return Forbid();
 
-        var domains = await getSoundtracksQuery.HandleAsync(new GetCampaignSoundtracksQuery(campaignId));
+        var owner = await OwnerOfAsync(campaignId);
+        if (owner is null) return NotFound("Campaign not found");
+
+        var domains = await getSoundtracksQuery.HandleAsync(new GetSoundtracksQuery(owner.Value));
         return Ok(domains);
     }
 
@@ -43,6 +56,9 @@ public class SoundtracksController(
     public async Task<IActionResult> Upload(Guid campaignId, IFormFile file, [FromForm] string title, [FromForm] int volume = 80, [FromForm] bool isLoop = false, [FromForm] string kind = "music")
     {
         if (!await CallerOwns(campaignId)) return Forbid();
+
+        var owner = await OwnerOfAsync(campaignId);
+        if (owner is null) return NotFound("Campaign not found");
 
         if (string.IsNullOrWhiteSpace(title) || title.Length > 200)
             return BadRequest("Title is required and must not exceed 200 characters.");
@@ -66,7 +82,7 @@ public class SoundtracksController(
         var resolvedContentType = validationResult.DetectedContentType;
 
         var domain = await uploadCommand.HandleAsync(
-            new UploadSoundtrackCommand(campaignId, title, file.FileName, file.OpenReadStream(), resolvedContentType, volume, isLoop, kind));
+            new UploadSoundtrackCommand(owner.Value, campaignId, title, file.FileName, file.OpenReadStream(), resolvedContentType, volume, isLoop, kind));
 
         return CreatedAtAction(nameof(GetAll), new { campaignId }, domain);
     }
@@ -123,13 +139,4 @@ public class SoundtracksController(
 
         return NoContent();
     }
-}
-
-public class UpdateSoundtrackRequest
-{
-    public string Title { get; set; } = string.Empty;
-    public int Volume { get; set; } = 80;
-    public bool IsLoop { get; set; }
-    public int? LoopDelaySeconds { get; set; }
-    public string Kind { get; set; } = "music";
 }

@@ -1,5 +1,3 @@
-using CastLibrary.Shared.Enums;
-
 namespace CastLibrary.Shared.Requests;
 
 public class UpsertPlayerCastPerceptionRequest

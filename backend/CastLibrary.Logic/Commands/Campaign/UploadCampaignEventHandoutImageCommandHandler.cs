@@ -2,7 +2,6 @@ using CastLibrary.Logic.Interfaces;
 using CastLibrary.Logic.Services;
 using CastLibrary.Repository.Repositories.Read;
 using CastLibrary.Repository.Repositories.Update;
-using CastLibrary.Shared.Domain;
 using CastLibrary.Shared.Enums;
 
 namespace CastLibrary.Logic.Commands.Campaign;

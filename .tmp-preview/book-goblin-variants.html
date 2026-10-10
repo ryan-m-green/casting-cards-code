@@ -1,0 +1,28 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><style>
+  body { margin: 0; background: #f2ede4; padding: 20px; font-family: sans-serif; color: #444; }
+  .row { display: flex; gap: 24px; align-items: flex-start; }
+  .cell { display: flex; flex-direction: column; align-items: center; gap: 6px; }
+  .wrap { position: relative; width: 512px; height: 336px; transform: scale(0.62); transform-origin: top left; }
+  .wrap img.book { position: absolute; inset: 0; width: 512px; height: 336px; display: block; }
+  .wrap img.goblin { position: absolute; display: block; }
+  .cap { font-size: 12px; }
+  .holder { width: 318px; height: 208px; }
+</style></head><body>
+  <div class="row">
+    <div class="cell"><div class="holder"><div class="wrap">
+      <img class="book" src="../frontend/cast-library-ui/public/book_quill_writing.svg">
+      <img class="goblin" style="left:62px;top:126px;width:134px" src="../frontend/cast-library-ui/public/goblin_creature_holding_jagged_sword.svg">
+    </div></div><span class="cap">A: left62 top126 w134</span></div>
+
+    <div class="cell"><div class="holder"><div class="wrap">
+      <img class="book" src="../frontend/cast-library-ui/public/book_quill_writing.svg">
+      <img class="goblin" style="left:72px;top:138px;width:124px" src="../frontend/cast-library-ui/public/goblin_creature_holding_jagged_sword.svg">
+    </div></div><span class="cap">B: left72 top138 w124</span></div>
+
+    <div class="cell"><div class="holder"><div class="wrap">
+      <img class="book" src="../frontend/cast-library-ui/public/book_quill_writing.svg">
+      <img class="goblin" style="left:56px;top:132px;width:142px" src="../frontend/cast-library-ui/public/goblin_creature_holding_jagged_sword.svg">
+    </div></div><span class="cap">C: left56 top132 w142</span></div>
+  </div>
+</body></html>

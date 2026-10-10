@@ -1,0 +1,249 @@
+﻿##### ORPHANED non-v2 shared components (0 remaining references) #####
+app-badge   (shared\components\badge\badge.component.ts)
+app-campaign-chronicle-drawer   (shared\components\campaign-chronicle-drawer\campaign-chronicle-drawer.component.ts)
+app-card-flip   (shared\components\card-flip\card-flip.component.ts)
+app-card-grid-layout   (shared\components\card-grid-layout\card-grid-layout.component.ts)
+app-card-reveal-badge   (shared\components\card-reveal-badge\card-reveal-badge.component.ts)
+app-card-reveal-overlay   (shared\components\card-reveal-overlay\card-reveal-overlay.component.ts)
+app-character-editor   (shared\components\character-editor\character-editor.component.ts)
+app-character-info-editor   (shared\components\character-info-editor\character-info-editor.component.ts)
+app-detail-panel-actions   (shared\components\detail-panel-actions\detail-panel-actions.component.ts)
+app-event-card   (shared\components\event-card\event-card.component.ts)
+app-faction-relationships-section   (shared\components\faction-relationships-section\faction-relationships-section.component.ts)
+app-faction-symbol-picker   (shared\components\faction-symbol-picker\faction-symbol-picker.component.ts)
+app-party-gold-drawer   (shared\components\party-gold-drawer\party-gold-drawer.component.ts)
+app-player-event-card-item   (shared\components\player-event-card-item\player-event-card-item.component.ts)
+app-player-inventory-drawer   (shared\components\player-inventory-drawer\player-inventory-drawer.component.ts)
+app-player-secrets-drawer   (shared\components\player-secrets-drawer\player-secrets-drawer.component.ts)
+app-quicknotes   (shared\components\quicknotes\quicknotes.component.ts)
+app-shop-purchase-drawer   (shared\components\shop-purchase-drawer\shop-purchase-drawer.component.ts)
+app-soundtrack-control-panel   (shared\components\soundtrack-control-panel\soundtrack-control-panel.component.ts)
+app-soundtrack-selector   (shared\components\soundtrack-selector\soundtrack-selector.component.ts)
+app-void-nav-drawer   (shared\components\void-nav-drawer\void-nav-drawer.component.ts)
+app-void-title-segments   (shared\components\void-title-segments\void-title-segments.component.ts)
+
+##### STILL REFERENCED non-v2 shared components #####
+=== app-campaign-dropdown   (shared\components\campaign-dropdown\campaign-dropdown.component.ts)
+     used by: shared\components\chronicles-timeline\chronicles-timeline.component.html
+     used by: shared\components\note-destination-picker\note-destination-picker.component.html
+     used by: shared\components\soundtrack-selector\soundtrack-selector.component.html
+
+=== app-campaign-join-input   (shared\components\campaign-join-input\campaign-join-input.component.ts)
+     used by: features\campaign\campaign-library\campaign-library.component.html
+     used by: features\player\player-campaigns\player-campaigns.component.html
+
+=== app-cast-card   (shared\components\cast-card\cast-card.component.ts)
+     used by: features\cast\cast-form\cast-form.component.html
+     used by: features\cast\cast-library\cast-library.component.html
+     used by: features\gm-testarea\gm-testarea.component.html
+     used by: shared\components\card-reveal-overlay\card-reveal-overlay.component.html
+     used by: shared\components\portal-import-card\portal-import-card.component.html
+     used by: shared\components\portal-import-card\portal-import-card.component.ts
+
+=== app-casting-card-player   (shared\components\casting-card-player\casting-card-player.component.ts)
+     used by: features\gm-testarea\gm-testarea.component.html
+     used by: shared\components\card-reveal-overlay\card-reveal-overlay.component.html
+
+=== app-chronicles-timeline   (shared\components\chronicles-timeline\chronicles-timeline.component.ts)
+     used by: shared\components\campaign-chronicle-drawer\campaign-chronicle-drawer.component.html
+     used by: shared\components\right-drawer\chronicle-content.component.html
+
+=== app-confirm-dialog   (shared\components\confirm-dialog\confirm-dialog.component.ts)
+     used by: shared\components\time-of-day-bar\time-of-day-bar.component.html
+
+=== app-crb-spark-host   (shared\components\crb-spark-host\crb-spark-host.component.ts)
+     used by: shared\components\card-reveal-badge\card-reveal-badge.component.html
+
+=== app-currency-card   (shared\components\currency-card\currency-card.component.ts)
+     used by: features\gm-testarea\gm-testarea.component.html
+     used by: shared\components\card-reveal-overlay\card-reveal-overlay.component.html
+
+=== app-currency-display   (shared\components\currency-display\currency-display.component.ts)
+     used by: shared\components\player-inventory-drawer\player-inventory-drawer.component.html
+     used by: shared\components\right-drawer\player-inventory-content.component.html
+
+=== app-entity-badge   (shared\components\entity-badge\entity-badge.component.ts)
+     used by: shared\components\chronicles-timeline\chronicles-timeline.component.html
+
+=== app-faction-card   (shared\components\faction-card\faction-card.component.ts)
+     used by: features\faction\faction-form\faction-form.component.html
+     used by: features\faction\faction-library\faction-library.component.html
+     used by: features\gm-testarea\gm-testarea.component.html
+     used by: shared\components\card-reveal-overlay\card-reveal-overlay.component.html
+     used by: shared\components\faction-relationships-section\faction-relationships-section.component.html
+     used by: shared\components\portal-import-card\portal-import-card.component.html
+     used by: shared\components\portal-import-card\portal-import-card.component.ts
+
+=== app-feather-icon   (shared\components\feather-icon\feather-icon.component.ts)
+     used by: shared\components\detail-panel-actions\detail-panel-actions.component.html
+
+=== app-free-trial-plan-card   (shared\components\free-trial-plan-card\free-trial-plan-card.component.ts)
+     used by: features\subscription-choice\subscription-choice.component.html
+     used by: shared\components\right-drawer\subscription-content.component.html
+
+=== app-icon   (shared\components\icon\icon.component.ts)
+     used by: features\dashboard\dashboard.component.html
+     used by: shared\components\detail-panel-actions\detail-panel-actions.component.html
+     used by: shared\components\storyline-filter-bar\storyline-filter-bar.component.html
+     used by: shared\components\v2\Shared\cc-detail-panel-actions\cc-detail-panel-actions.component.html
+
+=== app-icon-picker   (shared\components\icon-picker\icon-picker.component.ts)
+     used by: shared\components\portal-import-card\portal-import-card.component.html
+
+=== app-journal-dropdown   (shared\components\journal-dropdown\journal-dropdown.component.ts)
+     used by: features\campaign\campaign-creator\campaign-creator.component.html
+     used by: features\cast\cast-form\cast-form.component.html
+     used by: features\faction\faction-form\faction-form.component.html
+     used by: features\location\location-form\location-form.component.html
+     used by: shared\components\portal-import-card\portal-import-card.component.html
+
+=== app-journal-nav-drawer   (shared\components\journal-nav-drawer\journal-nav-drawer.component.ts)
+     used by: layout\journal-shell\journal-shell.component.html
+
+=== app-journal-randomize-button   (shared\components\journal-randomize-button\journal-randomize-button.component.ts)
+     used by: features\cast\cast-form\cast-form.component.html
+     used by: features\location\location-form\location-form.component.html
+     used by: shared\components\portal-import-card\portal-import-card.component.html
+
+=== app-journal-title   (shared\components\journal-title\journal-title.component.ts)
+     used by: features\admin\admin-bug-reports\admin-bug-reports.component.html
+     used by: features\admin\configuration-settings\configuration-settings.component.html
+     used by: features\admin\user-management\user-management.component.html
+     used by: features\bug-report\bug-report.component.html
+     used by: features\campaign\campaign-creator\campaign-creator.component.html
+     used by: features\campaign\campaign-library\campaign-library.component.html
+     used by: features\cast\cast-form\cast-form.component.html
+     used by: features\cast\cast-library\cast-library.component.html
+     used by: features\change-password\change-password.component.html
+     used by: features\dashboard\dashboard.component.html
+     used by: features\faction\faction-form\faction-form.component.html
+     used by: features\faction\faction-library\faction-library.component.html
+     used by: features\forgot-password\forgot-password.component.html
+     used by: features\gm-testarea\gm-testarea.component.html
+     used by: features\legal\legal.component.html
+     used by: features\location\location-form\location-form.component.html
+     used by: features\location\location-library\location-library.component.html
+     used by: features\player\player-campaigns\player-campaigns.component.html
+     used by: features\reset-password\reset-password.component.html
+     used by: features\role-selection\role-selection.component.html
+     used by: features\sublocations\sublocation-form\sublocation-form.component.html
+     used by: features\sublocations\sublocation-library\sublocation-library.component.html
+     used by: features\subscription-choice\subscription-choice.component.html
+     used by: features\verify-email\verify-email.component.html
+
+=== app-journal-watermark   (shared\components\journal-watermark\journal-watermark.component.ts)
+     used by: features\campaign\campaign-library\campaign-library.component.html
+     used by: features\cast\cast-library\cast-library.component.html
+     used by: features\faction\faction-library\faction-library.component.html
+     used by: features\location\location-library\location-library.component.html
+     used by: features\sublocations\sublocation-library\sublocation-library.component.html
+
+=== app-location-card   (shared\components\location-card\location-card.component.ts)
+     used by: features\gm-testarea\gm-testarea.component.html
+     used by: features\location\location-form\location-form.component.html
+     used by: features\location\location-library\location-library.component.html
+     used by: shared\components\card-reveal-overlay\card-reveal-overlay.component.html
+     used by: shared\components\portal-import-card\portal-import-card.component.html
+     used by: shared\components\portal-import-card\portal-import-card.component.ts
+
+=== app-lock-icon   (shared\components\lock-icon\lock-icon.component.ts)
+     used by: shared\components\card-grid-layout\card-grid-layout.component.html
+     used by: shared\components\cast-card\cast-card.component.html
+     used by: shared\components\faction-card\faction-card.component.html
+     used by: shared\components\location-card\location-card.component.html
+     used by: shared\components\sublocation-card\sublocation-card.component.html
+     used by: shared\components\time-of-day-bar\time-of-day-bar.component.html
+
+=== app-note-destination-picker   (shared\components\note-destination-picker\note-destination-picker.component.ts)
+     used by: shared\components\quicknotes\quicknotes.component.html
+
+=== app-portal-card   (shared\components\portal-card\portal-card.component.ts)
+     used by: features\campaign\campaign-library\campaign-library.component.html
+     used by: features\gm-testarea\gm-testarea.component.html
+     used by: features\player\player-campaigns\player-campaigns.component.html
+     used by: shared\components\card-reveal-overlay\card-reveal-overlay.component.html
+
+=== app-portal-import-card   (shared\components\portal-import-card\portal-import-card.component.ts)
+     used by: shared\components\card-grid-layout\card-grid-layout.component.html
+
+=== app-premium-plan-card   (shared\components\premium-plan-card\premium-plan-card.component.ts)
+     used by: features\subscription-choice\subscription-choice.component.html
+     used by: shared\components\right-drawer\subscription-content.component.html
+
+=== app-cast-detail-content   (shared\components\right-drawer\cast-detail-content.component.ts)
+     used by: app.ts
+
+=== app-chronicle-content   (shared\components\right-drawer\chronicle-content.component.ts)
+     used by: app.ts
+
+=== app-faction-detail-content   (shared\components\right-drawer\faction-detail-content.component.ts)
+     used by: app.ts
+
+=== app-location-detail-content   (shared\components\right-drawer\location-detail-content.component.ts)
+     used by: app.ts
+
+=== app-party-gold-content   (shared\components\right-drawer\party-gold-content.component.ts)
+     used by: app.ts
+
+=== app-player-inventory-content   (shared\components\right-drawer\player-inventory-content.component.ts)
+     used by: app.ts
+
+=== app-player-secrets-content   (shared\components\right-drawer\player-secrets-content.component.ts)
+     used by: app.ts
+
+=== app-right-drawer   (shared\components\right-drawer\right-drawer.component.ts)
+     used by: app.ts
+
+=== app-shop-purchase-content   (shared\components\right-drawer\shop-purchase-content.component.ts)
+     used by: app.ts
+
+=== app-soundtrack-content   (shared\components\right-drawer\soundtrack-content.component.ts)
+     used by: app.ts
+
+=== app-sublocation-detail-content   (shared\components\right-drawer\sublocation-detail-content.component.ts)
+     used by: app.ts
+
+=== app-subscription-content   (shared\components\right-drawer\subscription-content.component.ts)
+     used by: app.ts
+
+=== app-section-label   (shared\components\section-label\section-label.component.ts)
+     used by: shared\components\card-grid-layout\card-grid-layout.component.html
+     used by: shared\components\faction-relationships-section\faction-relationships-section.component.html
+
+=== app-storyline-filter-bar   (shared\components\storyline-filter-bar\storyline-filter-bar.component.ts)
+     used by: shared\components\campaign-chronicle-drawer\campaign-chronicle-drawer.component.html
+     used by: shared\components\right-drawer\chronicle-content.component.html
+
+=== app-sublocation-card   (shared\components\sublocation-card\sublocation-card.component.ts)
+     used by: features\gm-testarea\gm-testarea.component.html
+     used by: features\sublocations\sublocation-form\sublocation-form.component.html
+     used by: features\sublocations\sublocation-library\sublocation-library.component.html
+     used by: shared\components\card-reveal-overlay\card-reveal-overlay.component.html
+     used by: shared\components\portal-import-card\portal-import-card.component.html
+     used by: shared\components\portal-import-card\portal-import-card.component.ts
+
+=== app-subscription-lock-banner   (shared\components\subscription-lock-banner\subscription-lock-banner.component.ts)
+     used by: layout\journal-shell\journal-shell.component.html
+
+=== app-time-of-day-bar   (shared\components\time-of-day-bar\time-of-day-bar.component.ts)
+     used by: features\campaign\time-of-day-editor\time-of-day-editor.component.html
+
+=== app-toggle-switch   (shared\components\toggle-switch\toggle-switch.component.ts)
+     used by: shared\components\right-drawer\faction-detail-content.component.html
+     used by: shared\components\right-drawer\faction-detail-content.component.ts
+
+=== app-travel-anchor   (shared\components\travel-anchor\travel-anchor.component.ts)
+     used by: shared\components\note-destination-picker\note-destination-picker.component.html
+
+=== app-upgrade-badge   (shared\components\upgrade-badge\upgrade-badge.component.ts)
+     used by: features\campaign\campaign-library\campaign-library.component.html
+     used by: features\cast\cast-library\cast-library.component.html
+     used by: features\dashboard\dashboard.component.html
+     used by: features\faction\faction-library\faction-library.component.html
+     used by: features\location\location-library\location-library.component.html
+     used by: features\sublocations\sublocation-library\sublocation-library.component.html
+
+=== app-whisper-card   (shared\components\whisper-card\whisper-card.component.ts)
+     used by: features\gm-testarea\gm-testarea.component.html
+     used by: shared\components\card-reveal-overlay\card-reveal-overlay.component.html
+

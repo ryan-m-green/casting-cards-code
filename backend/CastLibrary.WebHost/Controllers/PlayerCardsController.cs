@@ -1,12 +1,16 @@
 ﻿using CastLibrary.Logic.Commands.PlayerCard;
 using CastLibrary.Logic.Commands.Campaign;
+using CastLibrary.Logic.Commands.CampaignChronicles;
 using CastLibrary.Logic.Queries.PlayerCard;
 using CastLibrary.Logic.Queries.Campaign;
 using CastLibrary.Logic.Services;
+using CastLibrary.Shared.Domain;
+using CastLibrary.Shared.Enums;
 using CastLibrary.Shared.Requests;
 using CastLibrary.WebHost.Hubs;
 using CastLibrary.WebHost.Mappers;
 using CastLibrary.WebHost.MetadataHelpers;
+using CastLibrary.WebHost.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
@@ -21,7 +25,6 @@ namespace CastLibrary.WebHost.Controllers;
 public class PlayerCardsController(
     IGetPlayerCardQueryHandler getPlayerCard,
     IGetAllPlayerCardsQueryHandler getAllPlayerCards,
-    IGetPlayerMemoriesQueryHandler getPlayerMemories,
     IGetPlayerTraitsQueryHandler getPlayerTraits,
     IGetPlayerSecretsQueryHandler getPlayerSecrets,
     IGetSharedPlayerSecretsQueryHandler getSharedPlayerSecrets,
@@ -32,23 +35,23 @@ public class PlayerCardsController(
     ICreatePlayerCardCommandHandler createPlayerCard,
     IUpdatePlayerCardCommandHandler updatePlayerCard,
     IUploadPlayerCardImageCommandHandler uploadPlayerCardImage,
-    IAssignConditionCommandHandler assignCondition,
-    IRemoveConditionCommandHandler removeCondition,
-    IAddMemoryCommandHandler addMemory,
-    IDeleteMemoryCommandHandler deleteMemory,
     IUpsertTraitCommandHandler upsertTrait,
     IDeleteTraitCommandHandler deleteTrait,
     IToggleGoalCompleteCommandHandler toggleGoalComplete,
+    IToggleTraitSharedCommandHandler toggleTraitShared,
     IDeliverSecretCommandHandler deliverSecret,
     IShareSecretCommandHandler shareSecret,
     IDeletePlayerCardSecretCommandHandler deletePlayerCardSecret,
+    IUpdatePlayerCardSecretCommandHandler updatePlayerCardSecret,
     IUpsertPlayerCastPerceptionCommandHandler upsertPerception,
     IAwardCurrencyCommandHandler awardGold,
+    IAddChronicleCommandHandler addChronicleCommand,
     IGetPlayerInventoryQueryHandler getPlayerInventoryQuery,
     IUseInventoryItemCommandHandler useInventoryItemCommand,
     IPlayerCardWebMapper mapper,
     ICampaignWebMapper campaignMapper,
     IHubContext<CampaignHub> hub,
+    ISignalRNotificationService notifications,
     IUserRetriever userRetriever,
     ICampaignAccessService campaignAccess,
     IFileValidationService fileValidationService) : ControllerBase
@@ -105,14 +108,6 @@ public class PlayerCardsController(
         var companions = data.QuestingCompanions.Select(c => campaignMapper.ToCastInstanceResponse(c)).ToList();
 
         return Ok(new { partyCards, questingCompanions = companions, partyAnchorSublocationInstanceId = data.PartyAnchorSublocationInstanceId });
-    }
-
-    [HttpGet("{playerCardId}/memories")]
-    public async Task<IActionResult> GetMemories(Guid campaignId, Guid playerCardId)
-    {
-        if (!await CallerCanAccess(campaignId)) return Forbid();
-        var memories = await getPlayerMemories.HandleAsync(playerCardId);
-        return Ok(memories.Select(mapper.ToResponse));
     }
 
     [HttpGet("{playerCardId}/traits")]
@@ -172,6 +167,12 @@ public class PlayerCardsController(
         var card = await updatePlayerCard.HandleAsync(new UpdatePlayerCardCommand(playerCardId, userId, request));
         if (card is null) return NotFound();
 
+        // The card is read back for the broadcast: the write hands the card back as it now stands but
+        // without the portrait's public url, and the read is keyed on the card's own player (see
+        // BroadcastPlayerCardUpdatedAsync).
+        var written = await getPlayerCard.HandleAsync(campaignId, card.PlayerUserId);
+        await BroadcastPlayerCardUpdatedAsync(campaignId, written ?? card);
+
         return Ok(mapper.ToResponse(card));
     }
 
@@ -194,56 +195,61 @@ public class PlayerCardsController(
         if (!success) return NotFound();
 
         var card = await getPlayerCard.HandleAsync(campaignId, userId);
+
+        // The party is watching this card through the GM's grid and the drawer it opens from; the new
+        // portrait is on the card the read just handed back, so the watchers take it on from there.
+        await BroadcastPlayerCardUpdatedAsync(campaignId, card);
+
         return Ok(new { imageUrl = card?.ImageUrl });
     }
 
-    [HttpPost("{playerCardId}/conditions")]
-    public async Task<IActionResult> AssignCondition(Guid campaignId, Guid playerCardId, [FromBody] AssignConditionRequest request)
+    /// <summary>
+    /// A player wrote their card's own details â€” the write the GM's party grid and the player drawer
+    /// it opens from are watching. The card's fields are sent as the write left them, the portrait's
+    /// public url among them, so a watcher takes the change on from what it is handed rather than
+    /// reading the card back (see ISignalRNotificationService.BroadcastPlayerCardUpdatedAsync). Sent
+    /// through the notification service so the send is recorded for the Admin's SignalR inspector.
+    /// </summary>
+    private async Task BroadcastPlayerCardUpdatedAsync(Guid campaignId, PlayerCardDomain card)
     {
-        if (!await CallerOwns(campaignId)) return Forbid();
-        var condition = await assignCondition.HandleAsync(new AssignConditionCommand(playerCardId, campaignId, request));
-        if (condition is null) return NotFound();
+        if (card is null) return;
 
-        await hub.Clients.Group(campaignId.ToString())
-            .SendAsync("ConditionAssigned", new { playerCardId, conditionId = condition.Id, condition.ConditionName, condition.AssignedAt, tickCount = DateTime.UtcNow.Ticks });
-
-        return Created(string.Empty, condition);
+        await notifications.BroadcastPlayerCardUpdatedAsync(campaignId, new
+        {
+            campaignId = campaignId.ToString(),
+            playerCardId = card.Id.ToString(),
+            playerUserId = card.PlayerUserId.ToString(),
+            name = card.Name,
+            race = card.Race,
+            @class = card.Class,
+            description = card.Description,
+            imageUrl = card.ImageUrl,
+        });
     }
 
-    [HttpDelete("{playerCardId}/conditions/{conditionId}")]
-    public async Task<IActionResult> RemoveCondition(Guid campaignId, Guid playerCardId, Guid conditionId)
+    private async Task BroadcastTraitsChangedAsync(Guid campaignId, Guid playerCardId)
     {
-        if (!await CallerOwns(campaignId)) return Forbid();
-        var success = await removeCondition.HandleAsync(new RemoveConditionCommand(playerCardId, conditionId, campaignId));
-        if (!success) return NotFound();
+        var traits = (await getPlayerTraits.HandleAsync(playerCardId))
+            .Select(mapper.ToResponse)
+            .Select(t => new
+            {
+                id = t.Id.ToString(),
+                playerCardId = t.PlayerCardId.ToString(),
+                traitType = t.TraitType.ToString(),
+                content = t.Content,
+                isCompleted = t.IsCompleted,
+                isShared = t.IsShared,
+                createdAt = t.CreatedAt,
+            })
+            .ToList();
 
-        await hub.Clients.Group(campaignId.ToString())
-            .SendAsync("ConditionRemoved", new { playerCardId, conditionId, tickCount = DateTime.UtcNow.Ticks });
-
-        return NoContent();
+        await notifications.BroadcastPlayerCardTraitsChangedAsync(campaignId, new
+        {
+            campaignId = campaignId.ToString(),
+            playerCardId = playerCardId.ToString(),
+            traits,
+        });
     }
-
-
-    [HttpPost("{playerCardId}/memories")]
-    public async Task<IActionResult> AddMemory(Guid campaignId, Guid playerCardId, [FromBody] AddMemoryRequest request)
-    {
-        if (!await CallerCanAccess(campaignId)) return Forbid();
-        var userId = userRetriever.GetUserId(User);
-        var memory = await addMemory.HandleAsync(new AddMemoryCommand(playerCardId, userId, request));
-        if (memory is null) return NotFound();
-
-        return Created(string.Empty, mapper.ToResponse(memory));
-    }
-
-    [HttpDelete("{playerCardId}/memories/{memoryId}")]
-    public async Task<IActionResult> DeleteMemory(Guid campaignId, Guid playerCardId, Guid memoryId)
-    {
-        if (!await CallerCanAccess(campaignId)) return Forbid();
-        var userId = userRetriever.GetUserId(User);
-        var success = await deleteMemory.HandleAsync(new DeleteMemoryCommand(playerCardId, memoryId, userId));
-        return success ? NoContent() : NotFound();
-    }
-
 
     [HttpPost("{playerCardId}/traits")]
     public async Task<IActionResult> UpsertTrait(Guid campaignId, Guid playerCardId, [FromBody] UpsertTraitRequest request)
@@ -253,6 +259,7 @@ public class PlayerCardsController(
         var trait = await upsertTrait.HandleAsync(new UpsertTraitCommand(playerCardId, userId, request));
         if (trait is null) return NotFound();
 
+        await BroadcastTraitsChangedAsync(campaignId, playerCardId);
         return Ok(mapper.ToResponse(trait));
     }
 
@@ -262,7 +269,10 @@ public class PlayerCardsController(
         if (!await CallerCanAccess(campaignId)) return Forbid();
         var userId = userRetriever.GetUserId(User);
         var success = await deleteTrait.HandleAsync(new DeleteTraitCommand(playerCardId, traitId, userId));
-        return success ? NoContent() : NotFound();
+        if (!success) return NotFound();
+
+        await BroadcastTraitsChangedAsync(campaignId, playerCardId);
+        return NoContent();
     }
 
     [HttpPost("{playerCardId}/traits/{traitId}/toggle")]
@@ -273,6 +283,19 @@ public class PlayerCardsController(
         var trait = await toggleGoalComplete.HandleAsync(new ToggleGoalCompleteCommand(playerCardId, traitId, userId));
         if (trait is null) return NotFound();
 
+        await BroadcastTraitsChangedAsync(campaignId, playerCardId);
+        return Ok(mapper.ToResponse(trait));
+    }
+
+    [HttpPost("{playerCardId}/traits/{traitId}/toggle-shared")]
+    public async Task<IActionResult> ToggleTraitShared(Guid campaignId, Guid playerCardId, Guid traitId)
+    {
+        if (!await CallerCanAccess(campaignId)) return Forbid();
+        var userId = userRetriever.GetUserId(User);
+        var trait = await toggleTraitShared.HandleAsync(new ToggleTraitSharedCommand(playerCardId, traitId, userId));
+        if (trait is null) return NotFound();
+
+        await BroadcastTraitsChangedAsync(campaignId, playerCardId);
         return Ok(mapper.ToResponse(trait));
     }
 
@@ -280,17 +303,46 @@ public class PlayerCardsController(
     [HttpPost("{playerCardId}/secrets")]
     public async Task<IActionResult> DeliverSecret(Guid campaignId, Guid playerCardId, [FromBody] DeliverSecretRequest request)
     {
-        if (!await CallerOwns(campaignId)) return Forbid();
+        if (!await CallerCanAccess(campaignId)) return Forbid();
+        var userId = userRetriever.GetUserId(User);
+        var isDm = await CallerOwns(campaignId);
+        if (!isDm)
+        {
+            var callerCard = await getPlayerCard.HandleAsync(campaignId, userId);
+            if (callerCard is null || callerCard.Id != playerCardId) return Forbid();
+        }
+
         var result = await deliverSecret.HandleAsync(new DeliverSecretCommand(playerCardId, campaignId, request));
         if (result is null) return NotFound();
 
-        await hub.Clients.Group(campaignId.ToString())
-            .SendAsync("SecretDelivered", new
+        if (isDm)
+        {
+            await notifications.BroadcastSecretDeliveredAsync(campaignId, new
             {
                 campaignId = campaignId.ToString(),
                 playerUserId = result.PlayerUserId.ToString(),
                 content = result.Secret.Content,
             });
+
+            // A delivered secret lands in the player's own character area (middle-right): the notice
+            // that lights that area's button is aimed at them alone.
+            await notifications.BroadcastGridAreaNoticeAsync(campaignId, new
+            {
+                campaignId = campaignId.ToString(),
+                gridArea = "middle-right",
+                userId = result.PlayerUserId.ToString(),
+            });
+        }
+        else
+        {
+            await notifications.BroadcastPlayerSecretCreatedAsync(campaignId, new
+            {
+                campaignId = campaignId.ToString(),
+                playerCardId = playerCardId.ToString(),
+                secretId = result.Secret.Id.ToString(),
+                content = result.Secret.Content,
+            });
+        }
 
         return Created(string.Empty, mapper.ToResponse(result.Secret));
     }
@@ -305,17 +357,16 @@ public class PlayerCardsController(
         var cards = await getAllPlayerCards.HandleAsync(campaignId);
         var card = cards.FirstOrDefault(c => c.Id == playerCardId);
 
-        await hub.Clients.Group(campaignId.ToString())
-            .SendAsync("SecretShared", new
-            {
-                playerCardId,
-                secretId,
-                sharedBy,
-                secretContent = secret.Content,
-                playerName = card?.Name ?? string.Empty,
-                playerImageUrl = card?.ImageUrl ?? string.Empty,
-                playerRaceClass = card is not null ? $"{card.Race} Â· {card.Class}" : string.Empty,
-            });
+        await notifications.BroadcastSecretSharedAsync(campaignId, new
+        {
+            playerCardId,
+            secretId,
+            sharedBy,
+            secretContent = secret.Content,
+            playerName = card?.Name ?? string.Empty,
+            playerImageUrl = card?.ImageUrl ?? string.Empty,
+            playerRaceClass = card is not null ? $"{card.Race} · {card.Class}" : string.Empty,
+        });
 
         return Ok(mapper.ToResponse(secret));
     }
@@ -329,10 +380,29 @@ public class PlayerCardsController(
 
         if (!success) return NotFound();
 
-        await hub.Clients.Group(campaignId.ToString())
-            .SendAsync("PlayerSecretDeleted", new { campaignId, playerCardId, secretId });
+        await notifications.BroadcastPlayerSecretDeletedAsync(campaignId, new { campaignId, playerCardId, secretId });
 
         return NoContent();
+    }
+
+    [HttpPut("{playerCardId}/secrets/{secretId}")]
+    public async Task<IActionResult> UpdateSecret(Guid campaignId, Guid playerCardId, Guid secretId, [FromBody] UpdatePlayerCardSecretRequest request)
+    {
+        if (!await CallerOwns(campaignId)) return Forbid();
+        var secret = await updatePlayerCardSecret.HandleAsync(
+            new UpdatePlayerCardSecretCommand(playerCardId, secretId, request));
+
+        if (secret is null) return NotFound();
+
+        await notifications.BroadcastPlayerSecretChangedAsync(campaignId, new
+        {
+            campaignId = campaignId.ToString(),
+            playerCardId = playerCardId.ToString(),
+            secretId = secretId.ToString(),
+            content = secret.Content,
+        });
+
+        return Ok(mapper.ToResponse(secret));
     }
 
 
@@ -420,6 +490,8 @@ public class PlayerCardsController(
                 });
         }
 
+        await RecordTreasureChronicleAsync(campaignId, result);
+
         return Ok(new
         {
             currency = result.Currency,
@@ -430,4 +502,55 @@ public class PlayerCardsController(
             }),
         });
     }
+
+    /// <summary>
+    /// The award as one campaign chronicle entry: every player it reached is a linked entity, and the
+    /// body says what each of them received. The amount and any note the award carried ride in the
+    /// body too, and the in-game day/time-of-day stamp is taken from the campaign clock when the entry
+    /// is stored (see AddChronicleCommandHandler).
+    /// </summary>
+    private async Task RecordTreasureChronicleAsync(Guid campaignId, AwardCurrencyResult result)
+    {
+        var recipients = new List<(Guid PlayerUserId, string PlayerName, int Amount)>();
+
+        if (result.PlayerAwards.Count > 0)
+        {
+            foreach (var award in result.PlayerAwards)
+                if (award.PlayerUserId != Guid.Empty)
+                    recipients.Add((award.PlayerUserId, award.PlayerName, award.Amount));
+        }
+        else if (result.TargetPlayerUserId is { } targetId && targetId != Guid.Empty)
+        {
+            recipients.Add((targetId, result.TargetPlayerName, result.Amount));
+        }
+
+        if (recipients.Count == 0) return;
+
+        var lines = recipients
+            .Select(r => $"{DisplayNameOf(r.PlayerName)} received {r.Amount} {result.Currency}")
+            .ToList();
+        if (!string.IsNullOrWhiteSpace(result.Note)) lines.Add(result.Note.Trim());
+
+        var request = new CreateChronicleRequest
+        {
+            ContentType = ChronicleContentType.CoinReward,
+            Title = "Treasure Awarded",
+            Body = string.Join("\n", lines),
+            IsGmOnly = false,
+            Participants = recipients
+                .Select(r => new ChronicleParticipant
+                {
+                    EntityType = "player",
+                    EntityId = r.PlayerUserId.ToString(),
+                    EntityName = r.PlayerName ?? string.Empty,
+                })
+                .ToList(),
+        };
+
+        var chronicleId = await addChronicleCommand.HandleAsync(new AddChronicleCommand(campaignId, request));
+        await notifications.BroadcastChronicleAddedAsync(campaignId, new { campaignId, chronicleId });
+    }
+
+    private static string DisplayNameOf(string name) =>
+        string.IsNullOrWhiteSpace(name) ? "a player" : name.Trim();
 }

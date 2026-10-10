@@ -1,0 +1,118 @@
+<div class="sl-root" [style.--portal-color]="portalColor()">
+  <div class="sl-toolbar">
+    <span class="sl-count">{{ readyCount() }} ready</span>
+    @if (errorMessage()) {
+      <span class="sl-error">{{ errorMessage() }}</span>
+    }
+  </div>
+
+  <div class="sl-scroll">
+    @if (loading()) {
+      <div class="sl-empty">Loading…</div>
+    } @else {
+      @if (items().length === 0) {
+        <div class="sl-empty">No storyline content yet. Use the ＋ tile at the end of the row to add scenes &amp; handouts for your sessions.</div>
+      }
+      <div class="sl-list swiper" #storylineSwiper>
+        <div class="swiper-wrapper">
+          @for (item of items(); track item.id) {
+            <div class="swiper-slide">
+              <div class="sl-card">
+            <div class="sl-card-banner">
+              <span class="sl-card-title" [title]="item.title">{{ item.title }}</span>
+            </div>
+
+            <div class="sl-card-body">
+              <div class="sl-card-body-content">
+                @if (item.imageUrl) {
+                  <img class="sl-card-img" [src]="item.imageUrl" [alt]="item.title" />
+                }
+                @if (item.sceneType !== 'campaign-handout' && item.body) {
+                  <div class="sl-card-text">{{ item.body }}</div>
+                }
+                @if (!item.imageUrl && (item.sceneType === 'campaign-handout' || !item.body)) {
+                  <div class="sl-card-empty-body">No content yet</div>
+                }
+              </div>
+
+              <app-cc-view-btn
+                label="View storyline content"
+                (clicked)="requestView.emit(item)"
+              />
+            </div>
+
+            <div class="sl-card-actions">
+              <!-- The delete control: the dagger asks, ✕ and Delete answer (see cc-delete-button) -->
+              <cc-delete-button
+                label="Delete storyline item"
+                [disabled]="workingId() === item.id"
+                (requested)="closeMenu()"
+                (confirmed)="confirmDelete(item)"
+              />
+
+              <!--
+                The editor: the campaign's own repair tools, the same wrench the encounter cards and
+                their initiative circle wear, so editing a card reads the same wherever it is done —
+                the control is shared (see cc-edit-button), and only this card's own name for it and
+                the hold while a write is in flight are said here.
+              -->
+              <cc-edit-button
+                label="Edit storyline item"
+                [disabled]="workingId() === item.id"
+                (clicked)="requestEdit.emit(item)"
+              />
+
+                <span class="sl-chronicle-wrap">
+                  <button
+                    type="button"
+                    class="campaign-primary-btn sl-chronicle-btn"
+                    [class.sl-chronicle-btn--active]="openMenuId() === item.id"
+                    [disabled]="workingId() === item.id"
+                    (click)="openMenu(item)"
+                    title="Send to campaign chronicles"
+                    aria-label="Send to campaign chronicles"
+                  >
+                    <img src="/magic_book_shining_diamond.svg" class="sl-action-icon" alt="Send to chronicles" />
+                    @if (workingId() === item.id) {
+                      <span class="sl-working-dot"></span>
+                    }
+                  </button>
+
+                  @if (openMenuId() === item.id) {
+                    <div class="sl-chronicle-menu">
+                      <button type="button" class="sl-chronicle-menu-item" (click)="sendToChronicle(item, true)">
+                        Chronicle (GM only)
+                      </button>
+                      <button type="button" class="sl-chronicle-menu-item" (click)="sendToChronicle(item, false)">
+                        Chronicle (everyone)
+                      </button>
+                    </div>
+                  }
+                </span>
+              </div>
+            </div>
+            </div>
+          }
+          <!--
+            The way content joins the storyline: a card-sized ＋ at the end of the row, standing beside
+            the scenes the way the realm's own "New location" and "New faction" tiles stand beside
+            their cards (see cc-card-navigation). It opens the drawer's create form — the same one the
+            row's own edit control opens for a scene that is already there (see `requestCreate`).
+          -->
+          <div class="swiper-slide">
+            <button
+              type="button"
+              class="sl-new"
+              title="Add storyline content"
+              (click)="requestCreate.emit()"
+            >
+              <span class="sl-new-plus" aria-hidden="true">＋</span>
+              <span class="sl-new-label">New Content</span>
+            </button>
+          </div>
+
+        </div>
+      </div>
+    }
+  </div>
+</div>

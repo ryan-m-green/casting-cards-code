@@ -14,12 +14,16 @@ public interface ICampaignInsertRepository
     Task<CampaignSublocationInstanceDomain> InsertSublocationInstanceAsync(CampaignSublocationInstanceDomain instance);
     Task<ShopItemDomain> InsertSublocationShopItemAsync(Guid sublocationInstanceId, ShopItemDomain item);
     Task<CampaignFactionInstanceDomain> InsertFactionInstanceAsync(CampaignFactionInstanceDomain instance);
-    Task AddFactionSublocationAsync(Guid factionInstanceId, Guid sublocationInstanceId, Guid? dmUserId);
     Task AddFactionCastMemberAsync(Guid factionInstanceId, Guid castInstanceId, Guid? dmUserId);
-    Task SetFactionSublocationPrimaryAsync(Guid factionInstanceId, Guid sublocationInstanceId);
-    Task SetFactionCastMemberPrimaryAsync(Guid factionInstanceId, Guid castInstanceId);
-    Task ClearFactionSublocationPrimaryAsync(Guid factionInstanceId);
-    Task ClearFactionCastMemberPrimaryAsync(Guid factionInstanceId);
+    /// <summary>
+    /// Sets (or clears, with a null <paramref name="castInstanceId"/>) a faction's leader.
+    /// <paramref name="party"/> says whose membership it is: the party writes with it, the GM
+    /// without it. The two are separate rows of `campaign_faction_cast_members` — the party's are
+    /// the ones written with no `dm_user_id` — so each crown is only ever worked on its own side.
+    /// </summary>
+    Task SetFactionCastMemberPrimaryAsync(Guid factionInstanceId, Guid castInstanceId, bool party);
+    /// <summary>Takes the crown off whichever card holds it, on the side <paramref name="party"/> names.</summary>
+    Task ClearFactionCastMemberPrimaryAsync(Guid factionInstanceId, bool party);
     Task<CampaignFactionRelationshipDomain> InsertFactionRelationshipAsync(CampaignFactionRelationshipDomain domain);
     Task<bool> FactionRelationshipExistsAsync(Guid campaignId, Guid factionInstanceIdA, Guid factionInstanceIdB, Guid? dmUserId);
 }
@@ -120,11 +124,10 @@ public class CampaignInsertRepository(
             instance.Role,
             instance.Age,
             instance.MaxHitPoints,
-            instance.LostHitPoints,
-            instance.TempHitPoints,
             instance.Posture,
             instance.Speed,
             instance.VoicePlacement,
+            instance.Keywords,
             instance.Description,
             instance.PublicDescription,
             instance.IsVisibleToPlayers,
@@ -132,12 +135,12 @@ public class CampaignInsertRepository(
         const string sql =
             @"INSERT INTO campaign_cast_instances
                 (instance_id, campaign_id, source_cast_id, location_instance_id, sublocation_instance_id,
-                 name, pronouns, race, role, age, max_hit_points, lost_hit_points, temp_hit_points, posture, speed, voice_placement,
+                 name, pronouns, race, role, age, max_hit_points, posture, speed, voice_placement, keywords,
                  description, public_description, is_visible_to_players, created_at)
               VALUES
                 (@InstanceId, @CampaignId, @SourceCastId, @LocationInstanceId, @SublocationInstanceId,
-                 @Name, @Pronouns, @Race, @Role, @Age, @MaxHitPoints, @LostHitPoints, @TempHitPoints, @Posture, @Speed,
-                 @VoicePlacement::text[], @Description, @PublicDescription, @IsVisibleToPlayers, NOW())";
+                 @Name, @Pronouns, @Race, @Role, @Age, @MaxHitPoints, @Posture, @Speed,
+                 @VoicePlacement::text[], @Keywords::text[], @Description, @PublicDescription, @IsVisibleToPlayers, NOW())";
 
         logging.LogDbOperation(correlation.TraceId, spanId, "INSERT", "campaign_cast_instances", @params);
 
@@ -270,42 +273,6 @@ public class CampaignInsertRepository(
         return instance;
     }
 
-    public async Task AddFactionSublocationAsync(Guid factionInstanceId, Guid sublocationInstanceId, Guid? dmUserId)
-    {
-        var spanId = correlation.NewSpan();
-        using var conn = CreateConnection();
-
-        if (dmUserId.HasValue)
-        {
-            var @params = new { Id = Guid.NewGuid(), FactionInstanceId = factionInstanceId, SublocationInstanceId = sublocationInstanceId, DmUserId = dmUserId.Value };
-            const string sql =
-                @"INSERT INTO campaign_faction_sublocations (id, faction_instance_id, sublocation_instance_id, dm_user_id)
-                  VALUES (@Id, @FactionInstanceId, @SublocationInstanceId, @DmUserId)
-                  ON CONFLICT DO NOTHING";
-
-            logging.LogDbOperation(correlation.TraceId, spanId, "INSERT", "campaign_faction_sublocations", @params);
-            var rows = await conn.ExecuteAsync(sql, @params);
-            logging.LogDbOperation(correlation.TraceId, spanId, "INSERT", "campaign_faction_sublocations", @params, rows);
-        }
-        else
-        {
-            var @params = new { Id = Guid.NewGuid(), FactionInstanceId = factionInstanceId, SublocationInstanceId = sublocationInstanceId };
-            const string sql =
-                @"INSERT INTO campaign_faction_sublocations (id, faction_instance_id, sublocation_instance_id, dm_user_id)
-                  SELECT @Id, @FactionInstanceId, @SublocationInstanceId, NULL
-                  WHERE NOT EXISTS (
-                      SELECT 1 FROM campaign_faction_sublocations
-                      WHERE faction_instance_id = @FactionInstanceId
-                        AND sublocation_instance_id = @SublocationInstanceId
-                        AND dm_user_id IS NULL
-                  )";
-
-            logging.LogDbOperation(correlation.TraceId, spanId, "INSERT", "campaign_faction_sublocations", @params);
-            var rows = await conn.ExecuteAsync(sql, @params);
-            logging.LogDbOperation(correlation.TraceId, spanId, "INSERT", "campaign_faction_sublocations", @params, rows);
-        }
-    }
-
     public async Task AddFactionCastMemberAsync(Guid factionInstanceId, Guid castInstanceId, Guid? dmUserId)
     {
         var spanId = correlation.NewSpan();
@@ -342,31 +309,18 @@ public class CampaignInsertRepository(
         }
     }
 
-    public async Task SetFactionSublocationPrimaryAsync(Guid factionInstanceId, Guid sublocationInstanceId)
-    {
-        var spanId = correlation.NewSpan();
-        var @params = new { FactionInstanceId = factionInstanceId, SublocationInstanceId = sublocationInstanceId };
-        const string sql =
-            @"UPDATE campaign_faction_sublocations
-                 SET is_primary = (sublocation_instance_id = @SublocationInstanceId)
-               WHERE faction_instance_id = @FactionInstanceId";
-
-        logging.LogDbOperation(correlation.TraceId, spanId, "UPDATE", "campaign_faction_sublocations", @params);
-
-        using var conn = CreateConnection();
-        var rows = await conn.ExecuteAsync(sql, @params);
-
-        logging.LogDbOperation(correlation.TraceId, spanId, "UPDATE", "campaign_faction_sublocations", @params, rows);
-    }
-
-    public async Task SetFactionCastMemberPrimaryAsync(Guid factionInstanceId, Guid castInstanceId)
+    public async Task SetFactionCastMemberPrimaryAsync(Guid factionInstanceId, Guid castInstanceId, bool party)
     {
         var spanId = correlation.NewSpan();
         var @params = new { FactionInstanceId = factionInstanceId, CastInstanceId = castInstanceId };
-        const string sql =
-            @"UPDATE campaign_faction_cast_members
+        // Whose membership the crown is set on: the party's rows are the ones written with no
+        // dm_user_id, and the GM's are every other row of the faction (see AddFactionCastMemberAsync).
+        var owner = party ? "dm_user_id IS NULL" : "dm_user_id IS NOT NULL";
+        var sql =
+            $@"UPDATE campaign_faction_cast_members
                  SET is_primary = (cast_instance_id = @CastInstanceId)
-               WHERE faction_instance_id = @FactionInstanceId";
+               WHERE faction_instance_id = @FactionInstanceId
+                 AND {owner}";
 
         logging.LogDbOperation(correlation.TraceId, spanId, "UPDATE", "campaign_faction_cast_members", @params);
 
@@ -376,31 +330,18 @@ public class CampaignInsertRepository(
         logging.LogDbOperation(correlation.TraceId, spanId, "UPDATE", "campaign_faction_cast_members", @params, rows);
     }
 
-    public async Task ClearFactionSublocationPrimaryAsync(Guid factionInstanceId)
+    public async Task ClearFactionCastMemberPrimaryAsync(Guid factionInstanceId, bool party)
     {
         var spanId = correlation.NewSpan();
         var @params = new { FactionInstanceId = factionInstanceId };
-        const string sql =
-            @"UPDATE campaign_faction_sublocations
+        // Only the side the caller owns is cleared, as in SetFactionCastMemberPrimaryAsync: a
+        // leader's own crown is not the other side's to take off.
+        var owner = party ? "dm_user_id IS NULL" : "dm_user_id IS NOT NULL";
+        var sql =
+            $@"UPDATE campaign_faction_cast_members
                  SET is_primary = FALSE
-               WHERE faction_instance_id = @FactionInstanceId";
-
-        logging.LogDbOperation(correlation.TraceId, spanId, "UPDATE", "campaign_faction_sublocations", @params);
-
-        using var conn = CreateConnection();
-        var rows = await conn.ExecuteAsync(sql, @params);
-
-        logging.LogDbOperation(correlation.TraceId, spanId, "UPDATE", "campaign_faction_sublocations", @params, rows);
-    }
-
-    public async Task ClearFactionCastMemberPrimaryAsync(Guid factionInstanceId)
-    {
-        var spanId = correlation.NewSpan();
-        var @params = new { FactionInstanceId = factionInstanceId };
-        const string sql =
-            @"UPDATE campaign_faction_cast_members
-                 SET is_primary = FALSE
-               WHERE faction_instance_id = @FactionInstanceId";
+               WHERE faction_instance_id = @FactionInstanceId
+                 AND {owner}";
 
         logging.LogDbOperation(correlation.TraceId, spanId, "UPDATE", "campaign_faction_cast_members", @params);
 
@@ -422,13 +363,13 @@ public class CampaignInsertRepository(
             domain.RelationshipType,
             domain.Strength,
             domain.CreatedAt,
-            domain.DmUserId,
+            domain.GmUserId,
         };
         const string sql =
             @"INSERT INTO campaign_faction_instance_relationships
-                (id, campaign_id, faction_instance_id_a, faction_instance_id_b, relationship_type, strength, created_at, dm_user_id)
+                (id, campaign_id, faction_instance_id_a, faction_instance_id_b, relationship_type, strength, created_at, gm_user_id)
               VALUES
-                (@Id, @CampaignId, @FactionInstanceIdA, @FactionInstanceIdB, @RelationshipType, @Strength, @CreatedAt, @DmUserId)";
+                (@Id, @CampaignId, @FactionInstanceIdA, @FactionInstanceIdB, @RelationshipType, @Strength, @CreatedAt, @GmUserId)";
 
         logging.LogDbOperation(correlation.TraceId, spanId, "INSERT", "campaign_faction_instance_relationships", @params);
 
@@ -439,26 +380,26 @@ public class CampaignInsertRepository(
         return domain;
     }
 
-    public async Task<bool> FactionRelationshipExistsAsync(Guid campaignId, Guid factionInstanceIdA, Guid factionInstanceIdB, Guid? dmUserId)
+    public async Task<bool> FactionRelationshipExistsAsync(Guid campaignId, Guid factionInstanceIdA, Guid factionInstanceIdB, Guid? gmUserId)
     {
         var spanId = correlation.NewSpan();
         string sql;
         object @params;
 
-        if (dmUserId.HasValue)
+        if (gmUserId.HasValue)
         {
             sql = @"SELECT COUNT(*) 
                     FROM campaign_faction_instance_relationships
                     WHERE campaign_id = @CampaignId
                       AND faction_instance_id_a = @FactionInstanceIdA
                       AND faction_instance_id_b = @FactionInstanceIdB
-                      AND dm_user_id = @DmUserId";
+                      AND gm_user_id = @GmUserId";
             @params = new
             {
                 CampaignId = campaignId,
                 FactionInstanceIdA = factionInstanceIdA,
                 FactionInstanceIdB = factionInstanceIdB,
-                DmUserId = dmUserId.Value
+                GmUserId = gmUserId.Value
             };
         }
         else
@@ -468,7 +409,7 @@ public class CampaignInsertRepository(
                     WHERE campaign_id = @CampaignId
                       AND faction_instance_id_a = @FactionInstanceIdA
                       AND faction_instance_id_b = @FactionInstanceIdB
-                      AND dm_user_id IS NULL";
+                      AND gm_user_id IS NULL";
             @params = new
             {
                 CampaignId = campaignId,

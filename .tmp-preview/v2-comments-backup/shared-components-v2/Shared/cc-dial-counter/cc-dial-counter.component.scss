@@ -1,0 +1,309 @@
+@use '../../../../../../styles/variables' as v;
+@use '../../../../../../styles/campaign-shell-vars' as shell;
+
+// ─── cc-dial-counter ──────────────────────────────────────────────────────────
+// A configurable odometer-style number picker: one spin dial per decimal place,
+// so 1-4 dials can be rendered (ones → thousands) depending on the `dials`
+// attribute (2 dials, tens + ones, is the default).
+//
+// Per dial:
+//   • the top and bottom arrow areas are the ONLY clickable regions
+//     (click = increase / decrease that digit) and show a `pointer` cursor
+//   • the number reel is not clickable, but can still be dragged to spin
+//   • mouse wheel and arrow keys also work
+// The arrow areas flex to fill the space above/below the reel so the clickable
+// targets stay generous (and grow further on coarse pointers).
+//
+// Styling: the journal palette (brown / gold) by default, or the v2 campaign
+// portal palette via [context]="'campaign'".
+
+:host {
+  display: block;
+  margin-bottom: 10px;
+}
+
+.cc-dial-counter {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: flex-start; // label + dials each hug their own width (so the dials box never stretches to the label)
+  gap: 2px;
+}
+
+.cc-dial-counter-label {
+  display: block;
+  font-family: v.$font-header;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  margin-bottom: 2px;
+  color: v.$color-base-brown-14;
+}
+
+.cc-dial-counter-dials {
+  display: inline-flex;
+  align-items: stretch;
+  gap: 0; // dials sit flush against each other (no space between them)
+  padding: 4px; // 4px gutter between the border and the dials
+  background: v.$color-input-bg;
+  border: 1px solid v.$color-border-solid;
+  border-radius: 3px;
+  transition: border-color v.$transition-std, background v.$transition-std;
+
+  &:focus-within {
+    border-color: v.$color-input-focus-border;
+    background: v.$color-input-focus-bg;
+  }
+}
+
+// ─── Dial ─────────────────────────────────────────────────────────────────────
+.cc-dial-counter-dial {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  /*
+   * 32.5px a dial, so the usual two-dial counter measures 75px across with its 4px gutter and
+   * 1px border — the same width as the simple card it sits under. The height is 24px down from
+   * the 120px it was.
+   */
+  width: 32.5px;
+  height: 96px;
+  padding: 6px 0;
+  border-radius: 2px;
+  outline: none;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  transition: background v.$transition-fast, box-shadow v.$transition-fast;
+
+  &:focus-visible {
+    box-shadow: 0 0 0 2px rgba(v.$color-base-brown-warm, 0.35);
+  }
+
+  &--dragging {
+    background: rgba(v.$color-base-brown-warm, 0.10);
+
+    .cc-dial-counter-reel {
+      border-color: v.$color-input-focus-border;
+      cursor: grabbing;
+    }
+
+    .cc-dial-counter-digit--current {
+      transform: scale(1.08);
+    }
+  }
+
+  &--disabled {
+    opacity: 0.5;
+    pointer-events: none;
+  }
+}
+
+// ─── Arrow areas (the only clickable regions) ─────────────────────────────────
+.cc-dial-counter-arrow {
+  display: flex;
+  flex: 1 1 auto;
+  align-items: center;
+  justify-content: center;
+  /* As wide as the dial it belongs to, whatever that dial was sized to */
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  border: 1px solid v.$color-border-solid;
+  border-radius: 0;
+  background: none;
+  appearance: none;
+  -webkit-appearance: none;
+  box-sizing: border-box;
+  color: v.$color-base-brown-17;
+  cursor: pointer;
+  transition: color v.$transition-fast, transform v.$transition-fast;
+
+  svg {
+    display: block;
+    width: 13px;
+    height: 8px;
+    fill: currentColor;
+  }
+
+  &:hover:not(:disabled) {
+    color: v.$color-base-brown-14;
+    transform: scale(1.15);
+  }
+
+  &:active:not(:disabled) {
+    transform: scale(0.95);
+  }
+
+  &:disabled {
+    cursor: default;
+  }
+}
+
+// Round only the outward-facing ends of the arrow rows so the top row of arrow
+// areas (and the bottom row) reads like a pill.
+.cc-dial-counter-arrow--first {
+  border-top-left-radius: 3px;
+  border-bottom-left-radius: 3px;
+}
+
+.cc-dial-counter-arrow--last {
+  border-top-right-radius: 3px;
+  border-bottom-right-radius: 3px;
+}
+
+// ─── Reel (drag to spin; not clickable) ───────────────────────────────────────
+.cc-dial-counter-reel {
+  display: flex;
+  flex: 0 0 auto;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-width: 24px; // floor only: it must never outgrow the dial it sits in
+  padding: 3px 2px;
+  background: rgba(v.$color-base-brown-warm, 0.06);
+  border: 1px solid v.$color-border-light;
+  border-radius: 2px;
+  overflow: hidden;
+  cursor: grab;
+  touch-action: none; // a vertical drag spins the reel instead of scrolling the page
+  transition: border-color v.$transition-fast;
+}
+
+.cc-dial-counter-digit {
+  font-family: v.$font-header;
+  line-height: 1;
+  text-align: center;
+  user-select: none;
+
+  &--current {
+    font-size: 24px;
+    font-weight: 700;
+    color: v.$color-base-brown-14;
+    text-shadow: 0 1px 0 rgba(255, 255, 255, 0.4);
+    transition: transform v.$transition-fast;
+  }
+
+  &--ghost {
+    font-size: 12px;
+    font-weight: 500;
+    color: v.$color-base-brown-17;
+    opacity: 0.55;
+  }
+}
+
+// ─── Larger targets on coarse pointers (phones / tablets) ─────────────────────
+@media (pointer: coarse) {
+  .cc-dial-counter-dial {
+    width: 32.5px;  // as wide as the fine-pointer dial, so the counter is 75px either way
+    height: 124px; // 24px down from the 148px it was
+    padding: 8px 0;
+  }
+
+  .cc-dial-counter-reel {
+    min-width: 24px;
+    padding: 5px 2px;
+  }
+
+  .cc-dial-counter-arrow svg {
+    width: 15px;
+    height: 9px;
+  }
+
+  .cc-dial-counter-digit--current {
+    font-size: 30px;
+  }
+
+  .cc-dial-counter-digit--ghost {
+    font-size: 14px;
+  }
+}
+
+// ─── Campaign skin (v2 campaign portal theme — colour-only) ───────────────────
+// Mirrors the journal declarations so element positions/sizes/spacing stay
+// identical, and swaps the brown/gold journal palette for the v2 campaign
+// portal palette: deep portal-purple panel, lavender text and the per-campaign
+// `--portal-color` accent used across the v2 campaign pages (cf. the campaign
+// shell glow and cc-slider, which both use var(--portal-color) + color-mix).
+// On top of that each dial carries its own accent — one colour per decimal
+// place — so the places read apart at a glance. The accent is exposed as
+// `--dial-accent` on the dial itself and consumed by everything inside it
+// (reel, digits, arrow glyphs, hover / drag / focus states); the shared panel
+// grid stays portal-purple so the dials still read as one control.
+$dial-campaign-portal:   var(--portal-color, #{shell.$shell-purple-primary});
+$dial-campaign-hairline: color-mix(in srgb, #{$dial-campaign-portal} 32%, transparent); // ≈ journal border weight
+$dial-campaign-accent:   var(--dial-accent, #{$dial-campaign-portal}); // per-dial accent, falls back to the portal colour
+$dial-wash:              color-mix(in srgb, #{$dial-campaign-accent} 12%, transparent); // dial hover wash
+$dial-fill:              color-mix(in srgb, #{$dial-campaign-accent} 18%, transparent); // reel background / drag wash
+$dial-ring:              color-mix(in srgb, #{$dial-campaign-accent} 45%, transparent); // focus ring
+$dial-line:              color-mix(in srgb, #{$dial-campaign-accent} 50%, transparent); // reel border
+$dial-ink:               color-mix(in srgb, #{$dial-campaign-accent} 75%, transparent); // arrow glyphs / drag outline
+$dial-ink-hover:         color-mix(in srgb, #{$dial-campaign-accent}, white 25%);        // arrow glyphs on hover
+$dial-glow:              color-mix(in srgb, #{$dial-campaign-accent} 60%, transparent); // digit glow
+
+.cc-dial-counter--campaign {
+  // Per-dial accents, by decimal place: gold for the thousands, then the warm
+  // red, blue and portal green of the hundreds / tens / ones. A 2-dial counter
+  // therefore draws its tens and ones in that blue + green pair.
+  .cc-dial-counter-dial--thousands { --dial-accent: #{v.$color-base-gold-2}; }             // rgb(240, 208, 96)
+  .cc-dial-counter-dial--hundreds  { --dial-accent: #{v.$color-base-red-2}; }              // rgb(255, 120, 104)
+  .cc-dial-counter-dial--tens      { --dial-accent: #{v.$color-base-blue-11}; }            // rgb(120, 160, 255)
+  .cc-dial-counter-dial--ones      { --dial-accent: #{shell.$shell-portal-glow-bright}; }  // rgb(0, 255, 150)
+
+  .cc-dial-counter-label {
+    color: shell.$shell-portal-text-lavender;
+  }
+
+  .cc-dial-counter-dials {
+    background: shell.$shell-portal-bg-medium; // deep portal purple
+    border-color: $dial-campaign-hairline;
+
+    &:focus-within {
+      background: shell.$shell-portal-bg-dark;
+      border-color: shell.$shell-portal-border-strong-focus;
+    }
+  }
+
+  .cc-dial-counter-dial {
+    &:hover {
+      background: $dial-wash;
+    }
+
+    &:focus-visible {
+      box-shadow: 0 0 0 2px $dial-ring;
+    }
+
+    &--dragging {
+      background: $dial-fill;
+
+      .cc-dial-counter-reel {
+        border-color: $dial-ink;
+      }
+    }
+  }
+
+  .cc-dial-counter-arrow {
+    border-color: $dial-campaign-hairline; // shared purple grid keeps the dials reading as one panel
+    color: $dial-ink;
+
+    &:hover:not(:disabled) {
+      color: $dial-ink-hover;
+    }
+  }
+
+  .cc-dial-counter-reel {
+    background: $dial-fill;
+    border-color: $dial-line;
+  }
+
+  .cc-dial-counter-digit--current {
+    color: $dial-campaign-accent;
+    text-shadow: 0 0 6px $dial-glow; // replaces the journal's white emboss with a coloured glow
+  }
+
+  .cc-dial-counter-digit--ghost {
+    color: $dial-campaign-accent;
+  }
+}

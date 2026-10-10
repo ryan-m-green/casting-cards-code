@@ -1,0 +1,59 @@
+<div class="journal" [style.--portal-color]="portalColor()">
+  <div class="journal-head">
+    <button type="button" class="chip" [class.is-on]="filter() === 'all'" (click)="setFilter('all')">All</button>
+    <button type="button" class="chip" [class.is-on]="filter() === 'down'" (click)="setFilter('down')">Put down</button>
+    <button type="button" class="chip" [class.is-on]="filter() === 'up'" (click)="setFilter('up')">Standing</button>
+    <button type="button" class="chip" [class.is-on]="filter() === 'noted'" (click)="setFilter('noted')">Noted</button>
+    <span class="journal-tally">{{ cards().length }} cards · {{ notedCount() }} noted</span>
+  </div>
+
+  @if (loading() && !cards().length) {
+    <p class="journal-note">Reading your field journal…</p>
+  } @else if (!cards().length) {
+    <div class="journal-empty">
+      <p class="journal-note">Your field journal is empty.</p>
+      <p class="journal-hint">
+        The cards the party meets gather here, with your own note on each.
+      </p>
+    </div>
+  } @else if (!visibleCards().length) {
+    <p class="journal-note">Nothing matches that filter.</p>
+  } @else {
+    <div class="journal-grid">
+      @for (card of visibleCards(); track card.key) {
+        <button
+          type="button"
+          class="journal-card"
+          [class.is-down]="card.downCount > 0"
+          [class.is-noted]="card.hasNote"
+          [title]="cardTitle(card)"
+          (click)="openCard(card)"
+        >
+          <span class="journal-face">
+            <cc-simple-cast-card
+              [cast]="asCast(card.combatant)"
+              [isDefeated]="card.downCount === card.count"
+            />
+          </span>
+
+          <span class="journal-count">×{{ card.count }}</span>
+
+          @if (card.hasNote) {
+            <span class="journal-quill" aria-hidden="true">✎</span>
+          }
+
+          <span class="journal-where">{{ metInLabel(card) }}</span>
+        </button>
+      }
+    </div>
+  }
+
+  <div class="journal-foot">
+    <span>The party's shared field journal — written as you fight.</span>
+    <b>{{ visibleCards().length }} of {{ cards().length }}</b>
+  </div>
+
+  @if (error()) {
+    <p class="journal-error">{{ error() }}</p>
+  }
+</div>

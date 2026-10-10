@@ -1,4 +1,4 @@
-<div class="pc scroll-body">
+﻿<div class="pc scroll-body">
   <app-journal-title [title]="locationId() ? 'Edit Location' : 'Location Creation'" />
   <div class="wr wr-page-header">
     <a class="btn-ghost" routerLink="/gm/locations">← Library</a>
@@ -6,7 +6,7 @@
 
   @if (locationId()) {
     <div class="form-card-preview">
-      <app-location-card
+      <cc-location-card
         [location]="previewLocation()"
         [editable]="false"
         [flippable]="false"

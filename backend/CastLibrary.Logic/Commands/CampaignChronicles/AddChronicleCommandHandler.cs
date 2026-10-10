@@ -1,4 +1,5 @@
 using CastLibrary.Repository.Repositories.Insert;
+using CastLibrary.Repository.Repositories.Read;
 using CastLibrary.Repository.Services;
 using CastLibrary.Shared.Domain;
 
@@ -18,7 +19,8 @@ public class AddChronicleCommandHandler(
     IEnumerable<IChronicleArchiveStrategy> strategies,
     ICampaignChroniclesInsertRepository chroniclesInsertRepository,
     IKeywordExtractionService keywordExtractionService,
-    IChronicleMapper chronicleMapper) : IAddChronicleCommandHandler
+    IChronicleMapper chronicleMapper,
+    ITimeOfDayReadRepository timeOfDayReadRepository) : IAddChronicleCommandHandler
 {
     public async Task<Guid> HandleAsync(AddChronicleCommand command)
     {
@@ -48,6 +50,14 @@ public class AddChronicleCommandHandler(
 
         domain.Id = Guid.NewGuid();
         domain.CampaignId = command.CampaignId;
+
+        // Stamp the campaign clock (the cc-day-counter's own day and the time-of-day slice its cursor
+        // sits in) at the moment of storage, so the entry keeps the in-game when it was recorded at
+        // rather than whatever the caller happened to send.
+        var timeOfDay = await timeOfDayReadRepository.GetByCampaignIdAsync(command.CampaignId);
+        domain.DayNumber = timeOfDay?.DaysPassed ?? 0;
+        domain.TodSliceName = ResolveCurrentSliceLabel(timeOfDay);
+
         domain.PlayedOn = domain.PlayedOn == default ? now.Date : domain.PlayedOn.Date;
         domain.SortOrder = 0;
         domain.ArchivedAt = now;
@@ -62,5 +72,29 @@ public class AddChronicleCommandHandler(
 
         var inserted = await chroniclesInsertRepository.InsertAsync(domain);
         return inserted.Id;
+    }
+
+    /// <summary>
+    /// The label of the slice the campaign clock's cursor currently sits in, mirroring the
+    /// percentages the API publishes (see TimeOfDayController's ToResponse). Empty when the
+    /// campaign has no day/night cycle configured.
+    /// </summary>
+    private static string ResolveCurrentSliceLabel(TimeOfDayDomain timeOfDay)
+    {
+        if (timeOfDay is null || timeOfDay.Slices.Count == 0) return string.Empty;
+
+        var total = timeOfDay.Slices.Sum(s => s.DurationHours);
+        if (total <= 0) return timeOfDay.Slices[0].Label;
+
+        var percent = timeOfDay.CursorPositionPercent;
+        decimal running = 0;
+
+        foreach (var slice in timeOfDay.Slices)
+        {
+            running += slice.DurationHours;
+            if (percent < running / total * 100) return slice.Label;
+        }
+
+        return timeOfDay.Slices[^1].Label;
     }
 }

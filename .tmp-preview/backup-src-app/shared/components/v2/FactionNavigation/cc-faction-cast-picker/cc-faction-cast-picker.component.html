@@ -1,0 +1,88 @@
+@let pickedCount = selectedCount();
+
+<div class="picker" [style.--portal-color]="portalColor()">
+
+  @if (isDm() && keywordChips().length) {
+    <div class="picker-chips">
+      @for (chip of keywordChips(); track chip.keyword) {
+        <button
+          type="button"
+          class="picker-chip"
+          [class.is-on]="isKeywordOn(chip.keyword)"
+          [class.picker-chip--empty]="!chip.count"
+          [attr.aria-pressed]="isKeywordOn(chip.keyword)"
+          [attr.title]="chip.count
+            ? chip.count + (chip.count === 1 ? ' cast to add carries' : ' casts to add carry') + ' #' + chip.keyword
+            : 'Nothing left to add carries #' + chip.keyword"
+          (click)="toggleKeyword(chip.keyword)"
+        >#{{ chip.keyword }}<span class="picker-chip-count">{{ chip.count }}</span></button>
+      }
+    </div>
+  }
+
+  <div class="picker-filter">
+    <app-cc-textbox
+      placeholder="Search this campaign's cast…"
+      context="campaign"
+      [ngModel]="search()"
+      (ngModelChange)="onSearchChange($event)"
+      [showClear]="true"
+    />
+    @if (activeKeywords().length > 1) {
+      <button type="button" class="picker-mode" [class.is-on]="matchAll()" (click)="toggleMatchAll()">
+        {{ matchAll() ? 'all' : 'any' }}
+      </button>
+    }
+    <button type="button" class="picker-clear" [disabled]="!pickedCount" (click)="clearSelection()">Clear</button>
+  </div>
+
+  @if (campaignEmpty()) {
+    <p class="picker-empty">This campaign has no cast cards yet.<br>Add cast cards to the campaign first.</p>
+  } @else if (!candidates().length) {
+    @if (search()) {
+      <p class="picker-empty">No results for &quot;{{ search() }}&quot;.</p>
+    } @else if (activeKeywords().length) {
+      <p class="picker-empty">No cast in this campaign carry those keywords.</p>
+    } @else {
+      <p class="picker-empty">Every cast in this campaign is already in this faction.</p>
+    }
+  } @else {
+    <p class="picker-section">{{ factionName() || 'This faction' }} · cast in the campaign ({{ candidates().length }})</p>
+
+    <div class="picker-grid">
+      @for (cast of candidates(); track cast.instanceId) {
+        <button
+          type="button"
+          class="picker-tile"
+          [class.is-picked]="isSelected(cast.instanceId)"
+          [attr.aria-pressed]="isSelected(cast.instanceId)"
+          [attr.aria-label]="'Add ' + cast.name + ' to ' + (factionName() || 'this faction')"
+          (click)="toggleCast(cast)"
+        >
+          <cc-simple-cast-card [cast]="cast" />
+          @if (isSelected(cast.instanceId)) {
+            <span class="picker-tile-check" aria-hidden="true">✓</span>
+          }
+        </button>
+      }
+    </div>
+  }
+
+  @if (error()) {
+    <p class="picker-error">{{ error() }}</p>
+  }
+
+  <div class="picker-actions">
+    <span class="picker-total">
+      {{ pickedCount }} cast card{{ pickedCount === 1 ? '' : 's' }} picked
+    </span>
+
+    <button
+      type="button"
+      class="campaign-primary-btn"
+      [disabled]="!canAdd()"
+      (click)="onAdd()"
+    >@if (busy()) { Adding… } @else if (pickedCount) { Add {{ pickedCount }} to faction } @else { Add to faction }</button>
+  </div>
+
+</div>

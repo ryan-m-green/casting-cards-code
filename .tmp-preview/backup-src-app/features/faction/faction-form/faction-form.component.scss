@@ -1,0 +1,410 @@
+@use '../../../../styles/variables' as v;
+
+:host { display: block; height: 100%; }
+
+.pc.scroll-body {
+  position: relative !important;
+  overflow: auto !important;
+  max-height: 100%;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+// ── GM-only Box ──────────────────────────────────────────────────────────────
+.form-gm-box {
+  position: relative;
+  border: 1px solid rgba(v.$color-base-brown-14, 0.2);
+  border-radius: 8px;
+  padding: 16px;
+  margin: 0;
+  display: flex;
+
+  .death-awaits-image {
+    position: absolute;
+    top: -54px;
+    right: -32px;
+    width: 144px;
+    height: auto;
+    z-index: 10;
+    transform: scaleX(-1);
+    opacity: 0;
+    animation: fadeIn 4s ease-in forwards 6s;
+  }
+  flex-direction: column;
+  gap: 16px;
+
+  &__legend {
+    font-family: v.$font-header;
+    font-size: 0.7rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: rgba(v.$color-base-brown-14, 0.5);
+    padding: 0 8px;
+  }
+}
+
+// ── Symbol Section ────────────────────────────────────────────────────────────
+.symbol-section {
+  margin-top: 32px;
+  margin-bottom: 300px;
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+  padding: 0 16px;
+}
+
+.symbol-section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+
+  .section-label {
+    margin: 0;
+  }
+}
+
+// ── Section Label ──────────────────────────────────────────────────────────────
+.section-label {
+  font-family: 'Cinzel', serif;
+  font-size: 0.85rem;
+  letter-spacing: 0.08em;
+  color: v.$color-base-brown-14;
+  margin-bottom: 12px;
+  margin-top: 0;
+}
+
+// ── Influence Slider ───────────────────────────────────────────────────────────
+.fi-slider {
+  width: 100%;
+  display: block;
+  cursor: pointer;
+  accent-color: v.$color-base-gold-1;
+  margin-top: 4px;
+}
+
+.fi--color {
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  margin-top:10px;
+  border: none;
+  border-radius: 2px;
+  background: transparent;
+  cursor: pointer;
+  transition: opacity 0.2s ease;
+
+  &:hover {
+    opacity: 0.9;
+  }
+
+  &::-webkit-color-swatch-wrapper {
+    padding: 0;
+  }
+
+  &::-webkit-color-swatch {
+    border: none;
+    border-radius: 2px;
+  }
+}
+
+.color-picker-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 4px 0px;
+  border: 1px solid rgba(v.$color-base-brown-14, 0.3);
+  border-radius: 4px;
+  background: rgba(v.$color-base-brown-warm, 0.05);
+  transition: border-color 0.2s ease;
+  height: 40px;
+  width: 116px;
+
+  &:hover {
+    border-color: rgba(v.$color-base-gold-1, 0.5);
+  }
+}
+
+.color-pickers-container {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+
+.form-field-min {
+  margin-bottom: 16px;
+}
+
+.color-picker-label {
+  font-family: v.$font-header;
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  color: v.$color-base-brown-14;
+  white-space: nowrap;
+}
+
+// ── Slider row (influence + ticks) ────────────────────────────────────────────
+.detail-slider-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  .fi-slider-wrap {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+  }
+
+  .fi-slider {
+    flex: 1;
+    width: 100%;
+    margin-top: 0;
+    min-width: 0;
+  }
+}
+
+.fi-slider-ticks {
+  display: flex;
+  justify-content: space-between;
+  padding: 0 7px;
+
+  span {
+    width: 1px;
+    height: 4px;
+    background: rgba(v.$color-base-gold-1, 0.40);
+    border-radius: 1px;
+  }
+}
+
+.detail-slider-value {
+  font-family: v.$font-header;
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  color: v.$color-base-brown-14;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+// ── Perception card ────────────────────────────────────────────────────────────
+.perception-card {
+  border: 1px solid rgba(v.$color-base-gold-1, 0.30);
+  border-radius: 4px;
+  padding: 10px 12px 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  transition: border-color 0.25s;
+
+  &--hostile  { border-color: #b03030; }
+  &--friendly { border-color: #3a7a3a; }
+}
+
+.perception-slider {
+  width: 100%;
+  accent-color: v.$color-base-gold-1;
+  cursor: pointer;
+
+  &.slider-friendly { accent-color: var(--faction-good-color, #FFC0DC); }
+  &.slider-hostile  { accent-color: var(--faction-evil-color, #B8D820); }
+}
+
+.perception-ticks {
+  display: flex;
+  justify-content: space-between;
+  padding: 0 7px;
+  margin-top: -2px;
+
+  span {
+    width: 1px;
+    height: 4px;
+    background: rgba(v.$color-base-gold-1, 0.30);
+    border-radius: 1px;
+  }
+}
+
+.perception-labels {
+  display: flex;
+  justify-content: space-between;
+  font-family: v.$font-header;
+  font-size: 10px;
+  letter-spacing: 0.10em;
+  color: rgba(v.$color-base-brown-14, 0.60);
+}
+
+.perception-label-center {
+  font-weight: 600;
+  color: rgba(v.$color-base-brown-14, 0.85);
+  text-align: center;
+}
+
+.perception-label-end {
+  color: rgba(v.$color-base-brown-14, 0.55);
+}
+
+// ── Toggle Switch ──────────────────────────────────────────────────────────────
+.form-field--toggle {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 16px;
+
+  .toggle-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .fi-label {
+    margin-bottom: 0;
+    flex-shrink: 0;
+  }
+}
+
+.form-field--colors {
+  margin-bottom: 16px;
+}
+
+// ── Form Fields Column Layout ──────────────────────────────────────────────────
+.faction-form-fields {
+  flex-direction: column;
+  align-items: stretch;
+}
+
+.faction-name-row {
+  flex-wrap: nowrap;
+  align-items: flex-start;
+}
+
+.toggle-switch {
+  position: relative;
+  display: inline-block;
+  width: 42px;
+  height: 24px;
+  flex-shrink: 0;
+
+  input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+    position: absolute;
+  }
+}
+
+.toggle-slider {
+  position: absolute;
+  inset: 0;
+  background: rgba(v.$color-base-brown-warm, 0.25);
+  border: 1px solid rgba(v.$color-base-brown-warm, 0.6);
+  border-radius: 24px;
+  cursor: pointer;
+  transition: background 0.2s, border-color 0.2s;
+
+  &::before {
+    content: '';
+    position: absolute;
+    width: 18px;
+    height: 18px;
+    left: 2px;
+    top: 2px;
+    border-radius: 50%;
+    background: v.$color-base-gold-1;
+    transition: transform 0.2s;
+  }
+
+  input:checked + & {
+    background: rgba(v.$color-base-brown-warm, 0.55);
+    border-color: v.$color-base-brown-warm;
+
+    &::before {
+      transform: translateX(18px);
+      background: v.$color-base-gold-1;
+    }
+  }
+}
+
+.toggle-hint {
+  font-family: 'IM Fell English', serif;
+  font-style: italic;
+  font-size: 0.75rem;
+  color: v.$color-base-brown-15;
+  flex-shrink: 0;
+}
+
+.limit-error-message {
+  background: rgba(220, 38, 38, 0.1);
+  border: 1px solid rgba(220, 38, 38, 0.3);
+  border-radius: 8px;
+  padding: 12px 16px;
+  margin: 16px 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  color: #dc2626;
+  font-family: v.$font-body;
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+.limit-error-text {
+  flex: 1;
+}
+
+.limit-error-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.limit-error-upgrade {
+  padding: 6px 16px;
+  background: #4a90d9;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-family: v.$font-header;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background 0.2s ease;
+
+  &:hover {
+    background: #5a9fe9;
+  }
+}
+
+.limit-error-close {
+  background: none;
+  border: none;
+  color: #dc2626;
+  font-size: 20px;
+  cursor: pointer;
+  padding: 0;
+  line-height: 1;
+  opacity: 0.7;
+  transition: opacity 0.18s ease;
+
+  &:hover {
+    opacity: 1;
+  }
+}
+
+.save-spark-host {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}

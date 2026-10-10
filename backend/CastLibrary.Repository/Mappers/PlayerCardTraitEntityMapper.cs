@@ -18,6 +18,7 @@ public class PlayerCardTraitEntityMapper : IPlayerCardTraitEntityMapper
         TraitType = Enum.Parse<TraitType>(entity.TraitType),
         Content = entity.Content,
         IsCompleted = entity.IsCompleted,
+        IsShared = entity.IsShared,
         CreatedAt = entity.CreatedAt,
     };
 }

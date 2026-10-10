@@ -1,0 +1,8 @@
+﻿### DEAD components (no live user) : 0
+
+### code (non-v2) / v2 split of DEAD
+  non-v2 shared: 0
+  v2 components: 0
+  other (feature/layout): 0
+
+### v2 DEAD components

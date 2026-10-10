@@ -1,0 +1,59 @@
+@use 'variables' as v;
+
+$filter-frame: color-mix(in srgb, var(--portal-color, #{v.$color-base-purple-primary}) 55%, rgba(255, 255, 255, 0.6));
+$filter-frame-bright: color-mix(in srgb, var(--portal-color, #{v.$color-base-purple-primary}) 40%, rgba(255, 255, 255, 0.9));
+
+@mixin fieldset-frame {
+  margin: 0;
+  padding: 0 8px 6px;
+  background: rgba(0, 0, 0, 0.42);
+  border: 1px solid $filter-frame;
+  border-radius: 8px;
+}
+
+@mixin fieldset-legend {
+  padding: 0 4px;
+  font-family: v.$font-header;
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: v.$campaign-portal-text-muted;
+  white-space: nowrap;
+}
+
+@mixin fieldset-buttons {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 8px;
+}
+
+@mixin fieldset-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 42px;
+  min-width: 32px;
+  box-sizing: border-box;
+  padding: 0 8px;
+  background: rgba(0, 0, 0, 0.45);
+  border: 1px solid $filter-frame;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
+
+  &:hover {
+    border-color: $filter-frame-bright;
+  }
+
+  &:focus-visible {
+    outline: 2px solid v.$campaign-portal-border-focus;
+    outline-offset: 2px;
+  }
+}
+
+@mixin fieldset-button-on {
+  background: color-mix(in srgb, var(--portal-color, #{v.$color-base-purple-primary}) 55%, black 45%);
+  border-color: var(--portal-color, #{v.$color-base-purple-primary});
+  box-shadow: 0 0 10px color-mix(in srgb, var(--portal-color, #{v.$color-base-purple-primary}) 70%, transparent);
+}

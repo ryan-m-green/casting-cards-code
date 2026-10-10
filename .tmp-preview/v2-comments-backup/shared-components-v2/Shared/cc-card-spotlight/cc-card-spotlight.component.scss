@@ -1,0 +1,171 @@
+/*
+ * cc-card-spotlight
+ *
+ * The light laid over a revealed card the way a real one lies on a floor: the little light (the
+ * fairy) stands over the card's top edge, a cone of light falls from her — brightest where she
+ * stands, thinning to nothing as it reaches the floor — and what is left on the card is a soft
+ * pool, brightest towards the top of its own face, gone by its rim. Only the pool takes the
+ * pointer; clicking it puts the light away.
+ */
+:host {
+  position: absolute;
+  inset: 0;
+  display: block;
+  /* Above the card it stands over; the host itself never takes the pointer, only its pool does. */
+  z-index: 500;
+  pointer-events: none;
+
+  /*
+   * ── The light, in one place ────────────────────────────────────────────────
+   * The beam's box is what the cone is cut out of, lifted `--spot-lift` over the card's top edge
+   * so the source can stand in the air over it:
+   *
+   *   --spot-over-left / --spot-over-right  where the box's sides sit against the card's, as a
+   *                                         share of the card's width. A PLAIN NUMBER, so `-27.5`
+   *                                         puts the box's left edge 27.5% in from the card's left
+   *                                         — while `7.5` would reach 7.5% past it. Keep them
+   *                                         plain: `--spot-box-w` below is worked out from them,
+   *                                         and the source's place across the card is read back
+   *                                         through it, so the beam's top and the fairy can never
+   *                                         drift apart (a stray `%` here would break that sum and
+   *                                         leave the beam an unclipped rectangle).
+   *   --spot-foot                           the box's bottom edge, up from the card's bottom
+   *   --spot-pool-top                       the cone's base, at the box's left edge, read down the
+   *                                         box (its y)
+   */
+  --spot-lift: 24px;         /* how far above the card's top edge the light stands  */
+  --spot-apex: 80%;          /* where the light stands, across the card             */
+  --spot-over-left: -27.5;   /* the box's left edge, as a share of the card's width */
+  --spot-over-right: -11.5;  /* the box's right edge, as a share of the card's width*/
+  --spot-foot: 34.36%;       /* the box's bottom edge, up from the card's bottom    */
+  --spot-pool-top: 48.17%;   /* the cone's base at the box's left edge, down the box*/
+  --spot-box-w: calc(1 + (var(--spot-over-left) + var(--spot-over-right)) / 100);
+  --spot-source-size: 34px;  /* the little light that stands at the source          */
+  --spot-blur: 5px;          /* how far the light bleeds past its own edges         */
+}
+
+/*
+ * The beam: the light falling from the fairy to the floor. This is the cone's own box —
+ * `--spot-lift` over the card's top edge, down to the box's bottom, and out to the sides the
+ * over-left / over-right values give — and the blur lives HERE, on the box, with the cone cut out
+ * of a layer inside it (see below). That order matters: blurring and clipping on one element would
+ * trim the blur back to the cone's hard edge, where blurring the cut-out lets the light bleed past
+ * it the way light does.
+ */
+.spotlight-beam {
+  position: absolute;
+  left: calc(-1 * var(--spot-over-left) * 1%);
+  top: calc(-1 * var(--spot-lift));
+  right: calc(-1 * var(--spot-over-right) * 1%);
+  bottom: var(--spot-foot);
+  display: block;
+  filter: blur(var(--spot-blur));
+  pointer-events: none;
+  /* It rises as the reveal lands, rather than snapping on. */
+  animation: spotlight-rise 0.45s ease-out both;
+}
+
+/*
+ * The cone itself: a slice of light brightest where the fairy stands — the top of this box — and
+ * faded to nothing by the floor, so what is left on the card is the pool's own light and not a
+ * second wash of it. Its base runs from the box's left edge at `--spot-pool-top` down to the box's
+ * own bottom-right corner (`100% 100%`), the tilt a lamp has standing off to one side; the source
+ * stands `--spot-apex` across the *card*, which read in this box's own space is
+ * `(apex + over-left × 1%) / box-w` — the sum that keeps the top of the beam over the fairy.
+ */
+.spotlight-beam::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  display: block;
+  clip-path: polygon(
+    calc((var(--spot-apex) + var(--spot-over-left) * 1%) / var(--spot-box-w)) 0,
+    0 var(--spot-pool-top),
+    100% 100%
+  );
+  background: linear-gradient(
+    to bottom,
+    rgba(255, 251, 0, 0.45) 0%,
+    rgba(255, 250, 224, 0.25) 30%,
+    rgba(255, 250, 224, 0) 100%
+  );
+}
+
+/*
+ * The light itself: the fairy, standing at the beam's source — `--spot-apex` across the card and
+ * `--spot-lift` above its top edge — so the beam reads as coming out of her, off to one side of
+ * the pool below. The dark mark is turned to light and wears the source's own blaze: a tight white
+ * core inside a wider warm halo, the little lamp the cone falls from.
+ */
+.spotlight-source {
+  position: absolute;
+  left: var(--spot-apex);
+  top: calc(-1 * var(--spot-lift));
+  width: var(--spot-source-size);
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  filter:
+    brightness(0) invert(1)
+    drop-shadow(0 0 4px rgba(255, 255, 255, 0.95))
+    drop-shadow(0 0 15px rgba(255, 251, 128, 0.85));
+  animation: spotlight-source-breathe 2.4s ease-in-out infinite;
+}
+
+/*
+ * A fairy that is only pointing the way down pulses harder, so the way in stands out from a card
+ * that is wearing the light itself. It sits after the rule above on purpose: both set the same
+ * animation on the same element, so the later one is the one that counts.
+ */
+.spotlight-source--pointing {
+  animation: spotlight-point 1.2s ease-in-out infinite;
+}
+
+/*
+ * The pool: what the light leaves on the floor. An ellipse — its own width and 1.1 : 1 below — lit
+ * from a point a quarter of the way down its own face, so it is brightest at the top, where the
+ * light is falling from, and faded to nothing by its rim: no edge is ever drawn, which is what
+ * makes it read as light on a surface rather than a disc laid on the card. It is the one thing you
+ * can click, which puts the light away.
+ */
+.spotlight-pool {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 115%;
+  aspect-ratio: 1.1 / 1;
+  transform: translate(-50%, -50%);
+  padding: 0;
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  pointer-events: auto;
+  background: radial-gradient(
+    ellipse 50% 50% at 50% 25%,
+    rgba(255, 251, 128, 0.9) 0%,
+    rgba(255, 250, 224, 0.7) 20%,
+    rgba(255, 250, 224, 0.3) 60%,
+    rgba(255, 250, 224, 0) 100%
+  );
+  filter: blur(var(--spot-blur));
+  animation: spotlight-breathe 2.4s ease-in-out infinite;
+}
+
+@keyframes spotlight-rise {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes spotlight-breathe {
+  0%, 100% { opacity: 0.9; }
+  50%      { opacity: 1; }
+}
+
+@keyframes spotlight-source-breathe {
+  0%, 100% { opacity: 0.88; transform: translate(-50%, -50%) scale(0.96); }
+  50%      { opacity: 1;    transform: translate(-50%, -50%) scale(1.04); }
+}
+
+@keyframes spotlight-point {
+  0%, 100% { opacity: 0.7; transform: translate(-50%, -50%) scale(0.88); }
+  50%      { opacity: 1;   transform: translate(-50%, -50%) scale(1.14); }
+}

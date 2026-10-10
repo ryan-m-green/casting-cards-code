@@ -16,6 +16,7 @@ public class CampaignChroniclesDomain
     public List<LinkedEntityTrigger> LinkedEntities { get; set; } = [];
     public string FilePath { get; set; } = string.Empty;
     public string TodSliceName { get; set; } = string.Empty;
+    public int DayNumber { get; set; }
     public bool IsGmOnly { get; set; }
     public DateTime PlayedOn { get; set; }
     public int? SessionNumber { get; set; }

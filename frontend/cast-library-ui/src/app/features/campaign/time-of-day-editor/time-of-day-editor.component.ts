@@ -1,4 +1,4 @@
-import {
+﻿import {
   Component,
   Input,
   OnInit,
@@ -12,7 +12,7 @@ import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../../environments/environment';
 import { TimeOfDay, TimeOfDaySlice } from '../../../shared/models/time-of-day.model';
-import { TimeOfDayBarComponent } from '../../../shared/components/time-of-day-bar/time-of-day-bar.component';
+import { CcDayCounterComponent } from '../../../shared/components/Shared/cc-day-counter/cc-day-counter.component';
 
 interface SliceDraft {
   id?: string;
@@ -27,7 +27,7 @@ interface SliceDraft {
 @Component({
   selector: 'app-time-of-day-editor',
   standalone: true,
-  imports: [CommonModule, FormsModule, TimeOfDayBarComponent],
+  imports: [CommonModule, FormsModule, CcDayCounterComponent],
   templateUrl: './time-of-day-editor.component.html',
   styleUrl: './time-of-day-editor.component.scss',
 })
@@ -56,7 +56,6 @@ export class TimeOfDayEditorComponent implements OnInit, OnDestroy {
       && diff < 0.01;
   });
 
-  /** Guard for showing the preview bar */
   previewTod = computed<TimeOfDay | null>(() => {
     const drafts = this.slices();
     const day    = this.dayLengthHours();
@@ -171,8 +170,6 @@ export class TimeOfDayEditorComponent implements OnInit, OnDestroy {
       this.updateSliceField(index, 'durationHours', max);
     }
   }
-
-  // ── Private ──────────────────────────────────────────────────────────────────
 
   private scheduleAutosave() {
     clearTimeout(this.saveTimer);

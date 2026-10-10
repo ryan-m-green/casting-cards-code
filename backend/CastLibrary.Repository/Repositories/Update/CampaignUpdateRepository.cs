@@ -11,6 +11,7 @@ public interface ICampaignUpdateRepository
     Task UpdateAsync(CampaignDomain campaign);
     Task UpdateLocationInstanceAsync(CampaignLocationInstanceDomain instance);
     Task UpdateCastInstanceAsync(CampaignCastInstanceDomain instance);
+    Task UpdateCastInstanceStarsAsync(Guid instanceId, int starsCount);
     Task UpdateSublocationInstanceAsync(CampaignSublocationInstanceDomain instance);
     Task UpdateLocationInstanceVisibilityAsync(Guid instanceId, bool isVisibleToPlayers);
     Task UpdateSublocationInstanceVisibilityAsync(Guid instanceId, bool isVisibleToPlayers);
@@ -31,7 +32,6 @@ public interface ICampaignUpdateRepository
     Task UpdateFactionInstanceVisibilityAsync(Guid instanceId, bool isVisibleToPlayers);
     Task UpdateSublocationFactionSymbolAsync(Guid instanceId, Guid? factionInstanceId, string symbolPath);
     Task UpdateSublocationPlayerFactionSymbolAsync(Guid instanceId, Guid? factionInstanceId, string symbolPath);
-    Task SyncPlayerFactionSublocationMembershipAsync(Guid sublocationInstanceId, Guid? factionInstanceId);
     Task UpdateCastFactionSymbolsAsync(Guid instanceId, string factionSymbolsJson);
     Task UpdateCastPlayerFactionSymbolsAsync(Guid instanceId, string factionSymbolsJson);
     Task SyncPlayerFactionCastMembershipsAsync(Guid castInstanceId, List<Guid> factionInstanceIds);
@@ -123,8 +123,6 @@ public class CampaignUpdateRepository(
             instance.Role,
             instance.Age,
             instance.MaxHitPoints,
-            instance.LostHitPoints,
-            instance.TempHitPoints,
             instance.Posture,
             instance.Speed,
             instance.VoicePlacement,
@@ -146,14 +144,29 @@ public class CampaignUpdateRepository(
                   role=@Role,
                   age=@Age,
                   max_hit_points=@MaxHitPoints,
-                  lost_hit_points=@LostHitPoints,
-                  temp_hit_points=@TempHitPoints,
                   posture=@Posture,
                   speed=@Speed,
                   voice_placement=@VoicePlacement,
                   voice_notes=@VoiceNotes,
                   dm_notes=@DmNotes,
                   keywords=@Keywords
+              WHERE instance_id=@InstanceId",
+            @params);
+
+        logging.LogDbOperation(correlation.TraceId, spanId, "UPDATE", "campaign_cast_instances", @params, rows);
+    }
+
+    public async Task UpdateCastInstanceStarsAsync(Guid instanceId, int starsCount)
+    {
+        var spanId = correlation.NewSpan();
+        var @params = new { InstanceId = instanceId, StarsCount = starsCount };
+
+        logging.LogDbOperation(correlation.TraceId, spanId, "UPDATE", "campaign_cast_instances", @params);
+
+        using var conn = CreateConnection();
+        var rows = await conn.ExecuteAsync(
+            @"UPDATE campaign_cast_instances
+              SET stars_count=@StarsCount
               WHERE instance_id=@InstanceId",
             @params);
 
@@ -494,42 +507,6 @@ public class CampaignUpdateRepository(
             @params);
 
         logging.LogDbOperation(correlation.TraceId, spanId, "UPDATE", "campaign_sublocation_instances (player)", @params, rows);
-    }
-
-    public async Task SyncPlayerFactionSublocationMembershipAsync(Guid sublocationInstanceId, Guid? factionInstanceId)
-    {
-        var spanId = correlation.NewSpan();
-        var deleteParams = new { SublocationInstanceId = sublocationInstanceId };
-
-        logging.LogDbOperation(correlation.TraceId, spanId, "SYNC", "campaign_faction_sublocations (player)", deleteParams);
-
-        using var conn = CreateConnection();
-        await conn.OpenAsync();
-        using var tx = await conn.BeginTransactionAsync();
-
-        await conn.ExecuteAsync(
-            "DELETE FROM campaign_faction_sublocations WHERE sublocation_instance_id = @SublocationInstanceId AND dm_user_id IS NULL",
-            deleteParams, tx);
-
-        if (factionInstanceId.HasValue)
-        {
-            var insertParams = new
-            {
-                Id = Guid.NewGuid(),
-                FactionInstanceId = factionInstanceId.Value,
-                SublocationInstanceId = sublocationInstanceId
-            };
-
-            await conn.ExecuteAsync(
-                @"INSERT INTO campaign_faction_sublocations (id, faction_instance_id, sublocation_instance_id, dm_user_id)
-                  VALUES (@Id, @FactionInstanceId, @SublocationInstanceId, NULL)
-                  ON CONFLICT DO NOTHING",
-                insertParams, tx);
-        }
-
-        await tx.CommitAsync();
-
-        logging.LogDbOperation(correlation.TraceId, spanId, "SYNC", "campaign_faction_sublocations (player)", deleteParams, factionInstanceId.HasValue ? 1 : 0);
     }
 
     public async Task UpdateCastFactionSymbolsAsync(Guid instanceId, string factionSymbolsJson)

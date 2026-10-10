@@ -1,0 +1,144 @@
+<div class="qn-area" [style.--portal-color]="portalColor()">
+
+  <div class="qn-compose">
+    <textarea
+      #noteArea
+      id="quicknotes-note"
+      class="qn-textarea"
+      rows="3"
+      placeholder="Type a quicknote…"
+      aria-label="Add a quicknote"
+      [value]="draft()"
+      [disabled]="saving()"
+      (input)="draft.set($any($event.target).value)"
+      (keydown.control.enter)="addNote()"
+      (keydown.meta.enter)="addNote()"
+    ></textarea>
+
+    <div class="qn-compose-row">
+      <button
+        type="button"
+        class="campaign-primary-btn"
+        [disabled]="!draft().trim() || saving()"
+        (click)="addNote()"
+      >@if (saving()) { Adding… } @else { Add note }</button>
+    </div>
+  </div>
+
+  @if (notice()) { <p class="qn-notice">{{ notice() }}</p> }
+  @if (error()) { <p class="qn-error">{{ error() }}</p> }
+
+  <div class="qn-queue-head">
+    <span class="qn-section">Waiting ({{ count() }})</span>
+  </div>
+
+  <div class="qn-queue">
+    @if (loading()) {
+      <p class="qn-empty">Reading your quicknotes…</p>
+    } @else if (!count()) {
+      <p class="qn-empty">Nothing waiting. Type a note above.</p>
+    } @else {
+      @for (item of items(); track item.id) {
+        <article class="qn-item" [class.qn-item--busy]="busy(item)">
+
+          <div class="qn-head">
+            <p class="qn-created">Created on {{ item.createdAt | date:'MMM d, y, h:mm a' }}</p>
+
+            @if (editingId() !== item.id) {
+              <label
+                class="qn-switch"
+                [attr.title]="isDm()
+                  ? 'This note reaches the chronicles in the open'
+                  : 'A player\'s note always reaches the chronicles in the open'"
+              >
+                <cc-toggle-switch
+                  [checked]="isShared(item)"
+                  [disabled]="!isDm() || busy(item)"
+                  [label]="'Visible to players'"
+                  (checkedChange)="onVisibilityChange(item, $event)"
+                />
+                <span class="qn-switch-text">Share note</span>
+              </label>
+            }
+          </div>
+
+          @if (editingId() === item.id) {
+            <textarea
+              class="qn-textarea"
+              rows="3"
+              aria-label="Edit this quicknote"
+              [value]="editDraft()"
+              (input)="editDraft.set($any($event.target).value)"
+            ></textarea>
+
+            <div class="qn-actions">
+              <button type="button" class="qn-btn" (click)="cancelEdit()">Cancel</button>
+              <span class="qn-actions-spacer"></span>
+              <button
+                type="button"
+                class="qn-btn qn-btn--primary"
+                [disabled]="!editDraft().trim() || busy(item)"
+                (click)="saveEdit(item)"
+              >Save</button>
+            </div>
+          } @else {
+            <p class="qn-text">{{ item.content }}</p>
+
+            @if (item.linkedEntities.length) {
+              <fieldset class="qn-linked">
+                <legend class="qn-linked-legend">Linked Cards</legend>
+                <div class="qn-chips">
+                  @for (link of item.linkedEntities; track link.entityType + ':' + link.entityId) {
+                    <span class="qn-chip">#{{ link.entityName }}</span>
+                  }
+                </div>
+              </fieldset>
+            }
+
+            <div class="qn-actions">
+              <cc-delete-button
+                label="Delete this quicknote"
+                [disabled]="busy(item)"
+                (confirmed)="deleteNote(item)"
+              />
+
+              <cc-edit-button
+                label="Edit this quicknote"
+                [disabled]="busy(item)"
+                (clicked)="startEdit(item)"
+              />
+
+              <span class="qn-actions-spacer"></span>
+
+              <cc-card-linker
+                label="Link cards to this note"
+                [campaignId]="campaignId()"
+                [subjectId]="item.id"
+                [linkedCards]="item.linkedEntities"
+                [save]="saveLinkedCards"
+                [portalColor]="portalColor()"
+                [disabled]="busy(item)"
+                (linkedCardsChange)="onLinkedCardsChange(item.id, $event)"
+              />
+
+              <button
+                type="button"
+                class="qn-btn qn-btn--icon qn-btn--primary"
+                [class.qn-btn--busy]="sendingId() === item.id"
+                [disabled]="busy(item)"
+                [attr.aria-busy]="sendingId() === item.id"
+                [attr.title]="sendingId() === item.id ? 'Sending to the chronicles…' : 'Send to the chronicles'"
+                [attr.aria-label]="sendingId() === item.id ? 'Sending to the chronicles' : 'Send to the chronicles'"
+                (click)="sendToChronicle(item)"
+              >
+                <img class="qn-btn-icon" src="/bookshelf_full_books.svg" alt="" aria-hidden="true" />
+              </button>
+            </div>
+          }
+        </article>
+      }
+
+      <div class="qn-queue-tail" aria-hidden="true"></div>
+    }
+  </div>
+</div>

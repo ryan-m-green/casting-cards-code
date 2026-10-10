@@ -1,0 +1,157 @@
+<div class="qn-area" [style.--portal-color]="portalColor()">
+
+  <!--
+    The note as it is written. It goes into the queue below as it is added; its links and its
+    visibility are set on its own line there, from where it is sent on to the chronicles.
+  -->
+  <div class="qn-compose">
+    <textarea
+      #noteArea
+      id="quicknotes-note"
+      class="qn-textarea"
+      rows="3"
+      placeholder="Type a quicknote…"
+      aria-label="Add a quicknote"
+      [value]="draft()"
+      [disabled]="saving()"
+      (input)="draft.set($any($event.target).value)"
+      (keydown.control.enter)="addNote()"
+      (keydown.meta.enter)="addNote()"
+    ></textarea>
+
+    <div class="qn-compose-row">
+      <span class="qn-hint">Ctrl + Enter adds it</span>
+      <button
+        type="button"
+        class="campaign-primary-btn"
+        [disabled]="!draft().trim() || saving()"
+        (click)="addNote()"
+      >@if (saving()) { Adding… } @else { Add note }</button>
+    </div>
+  </div>
+
+  @if (notice()) { <p class="qn-notice">{{ notice() }}</p> }
+  @if (error()) { <p class="qn-error">{{ error() }}</p> }
+
+  <div class="qn-queue-head">
+    <span class="qn-section">Waiting ({{ count() }})</span>
+  </div>
+
+  <!-- What is still waiting: each line is linked to the campaign's cards and sent on from here. -->
+  <div class="qn-queue">
+    @if (loading()) {
+      <p class="qn-empty">Reading your quicknotes…</p>
+    } @else if (!count()) {
+      <p class="qn-empty">Nothing waiting. Type a note above.</p>
+    } @else {
+      @for (item of items(); track item.id) {
+        <article class="qn-item" [class.qn-item--busy]="busy(item)">
+
+          @if (editingId() === item.id) {
+            <textarea
+              class="qn-textarea"
+              rows="3"
+              aria-label="Edit this quicknote"
+              [value]="editDraft()"
+              (input)="editDraft.set($any($event.target).value)"
+            ></textarea>
+
+            <div class="qn-actions">
+              <button type="button" class="qn-btn" (click)="cancelEdit()">Cancel</button>
+              <span class="qn-actions-spacer"></span>
+              <button
+                type="button"
+                class="qn-btn qn-btn--primary"
+                [disabled]="!editDraft().trim() || busy(item)"
+                (click)="saveEdit(item)"
+              >Save</button>
+            </div>
+          } @else {
+            <p class="qn-text">{{ item.content }}</p>
+
+            <!-- The cards the note is linked to, worn as the hashtags they will travel as. -->
+            @if (item.linkedEntities.length) {
+              <div class="qn-chips">
+                @for (link of item.linkedEntities; track link.entityType + ':' + link.entityId) {
+                  <span class="qn-chip">#{{ link.entityName }}</span>
+                }
+              </div>
+            }
+
+            <div class="qn-meta">
+              <span class="qn-time">{{ item.createdAt | date:'MMM d, y, h:mm a' }}</span>
+
+              <label
+                class="qn-switch"
+                [attr.title]="isDm()
+                  ? 'This note reaches the chronicles in the open'
+                  : 'A player\'s note always reaches the chronicles in the open'"
+              >
+                <cc-toggle-switch
+                  [checked]="isShared(item)"
+                  [disabled]="!isDm() || busy(item)"
+                  [label]="'Visible to players'"
+                  (checkedChange)="onVisibilityChange(item, $event)"
+                />
+                <span class="qn-switch-text">Visible</span>
+              </label>
+            </div>
+
+            <div class="qn-actions">
+              <!--
+                The line's own controls, as the shell's icons rather than words: the wheel's own
+                card icon for linking the campaign's cards to the note (the count of them riding on
+                the corner), the repair tools for changing the note's words, the dagger for taking
+                the note out of the queue, and the wheel's chronicles book for sending it on.
+              -->
+              <button
+                type="button"
+                class="qn-btn qn-btn--icon"
+                [disabled]="busy(item)"
+                title="Link cards to this note"
+                [attr.aria-label]="item.linkedEntities.length
+                  ? 'Link cards to this note (' + item.linkedEntities.length + ' linked)'
+                  : 'Link cards to this note'"
+                (click)="openAssociations(item)"
+              >
+                <img class="qn-btn-icon" src="/tarot_cards_star.svg" alt="" aria-hidden="true" />
+                @if (item.linkedEntities.length) {
+                  <span class="qn-btn-count" aria-hidden="true">{{ item.linkedEntities.length }}</span>
+                }
+              </button>
+
+              <!-- The editor: the shell's own repair tools, shared so an edit reads the same everywhere. -->
+              <cc-edit-button
+                label="Edit this quicknote"
+                [disabled]="busy(item)"
+                (clicked)="startEdit(item)"
+              />
+
+              <!-- The dagger asks, ✕ and Delete answer (see cc-delete-button). -->
+              <cc-delete-button
+                label="Delete this quicknote"
+                [disabled]="busy(item)"
+                (confirmed)="deleteNote(item)"
+              />
+
+              <span class="qn-actions-spacer"></span>
+
+              <button
+                type="button"
+                class="qn-btn qn-btn--icon qn-btn--primary"
+                [class.qn-btn--busy]="sendingId() === item.id"
+                [disabled]="busy(item)"
+                [attr.aria-busy]="sendingId() === item.id"
+                [attr.title]="sendingId() === item.id ? 'Sending to the chronicles…' : 'Send to the chronicles'"
+                [attr.aria-label]="sendingId() === item.id ? 'Sending to the chronicles' : 'Send to the chronicles'"
+                (click)="sendToChronicle(item)"
+              >
+                <img class="qn-btn-icon" src="/open_book_star_moon_storytelling.svg" alt="" aria-hidden="true" />
+              </button>
+            </div>
+          }
+        </article>
+      }
+    }
+  </div>
+</div>

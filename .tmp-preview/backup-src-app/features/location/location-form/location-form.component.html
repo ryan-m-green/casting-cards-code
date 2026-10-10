@@ -1,0 +1,187 @@
+﻿<div class="pc scroll-body">
+  <app-journal-title [title]="locationId() ? 'Edit Location' : 'Location Creation'" />
+  <div class="wr wr-page-header">
+    <a class="btn-ghost" routerLink="/gm/locations">← Library</a>
+  </div>
+
+  @if (locationId()) {
+    <div class="form-card-preview">
+      <cc-location-card
+        [location]="previewLocation()"
+        [editable]="false"
+        [flippable]="false"
+        [imageUpload]="true"
+        (fileSelected)="onFileSelected($event)" />
+    </div>
+  }
+
+  @if (!locationId()) {
+    <div class="randomize-button-container">
+      <app-journal-randomize-button [randomizeGroupId]="'location-form'"></app-journal-randomize-button>
+    </div>
+  }
+
+  <form [formGroup]="form">
+    <div class="form-portrait-new-row">
+      <img src="/snail.PNG" alt="Snail" class="snail-image" />
+      @if (!locationId()) {
+        <label class="form-portrait-label" [class.form-portrait-label--filled]="imagePreviewUrl()">
+          <input type="file" accept="image/jpeg,image/png,image/webp" class="form-portrait-file-input" (change)="onPortraitFileSelected($event)" />
+          @if (imagePreviewUrl()) {
+            <img [src]="imagePreviewUrl()!" class="form-portrait-img" alt="Portrait preview" />
+            <div class="form-portrait-overlay">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+            </div>
+          } @else {
+            <div class="form-portrait-empty">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+              <span class="form-portrait-hint">Portrait<br><em>optional</em></span>
+            </div>
+          }
+        </label>
+      }
+      <div class="form-portrait-fields">
+        <div class="wr form-row-gap">
+          <div class="form-field-wide">
+            <label for="location-name-input" class="fi-label">Location Name</label>
+            <input id="location-name-input" class="fi" formControlName="name" autocomplete="off" />
+          </div>
+          <div class="form-field">
+            <app-journal-dropdown 
+              [options]="classificationOptions"
+              [label]="'Classification'"
+              [control]="classificationControl"
+              [randomizeGroupId]="'location-form'">
+            </app-journal-dropdown>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="wr form-row-gap">
+      <div class="form-field">
+            <app-journal-dropdown 
+              [options]="sizeOptions"
+              [label]="'Size'"
+              [control]="sizeControl"
+              [randomizeGroupId]="'location-form'">
+            </app-journal-dropdown>
+          </div>
+          <div class="form-field">
+            <app-journal-dropdown 
+              [options]="conditionOptions"
+              [label]="'Condition'"
+              [control]="conditionControl"
+              [randomizeGroupId]="'location-form'">
+            </app-journal-dropdown>
+          </div>
+      <div class="form-field">
+            <app-journal-dropdown 
+              [options]="geographyOptions"
+              [label]="'Geography'"
+              [control]="geographyControl"
+              [randomizeGroupId]="'location-form'">
+            </app-journal-dropdown>
+          </div>
+      <div class="form-field">
+            <app-journal-dropdown 
+              [options]="architectureOptions"
+              [label]="'Architecture'"
+              [control]="architectureControl"
+              [randomizeGroupId]="'location-form'">
+            </app-journal-dropdown>
+          </div>
+    </div>
+    <div class="wr form-row-gap">
+      <div class="form-field">
+            <app-journal-dropdown
+              [options]="climateOptions"
+              [label]="'Climate'"
+              [control]="climateControl"
+              [randomizeGroupId]="'location-form'">
+            </app-journal-dropdown>
+          </div>
+      <div class="form-field">
+            <app-journal-dropdown
+              [options]="religionOptions"
+              [label]="'Religion'"
+              [control]="religionControl"
+              [randomizeGroupId]="'location-form'">
+            </app-journal-dropdown>
+          </div>
+             <div class="form-field">
+        <app-journal-dropdown
+          [options]="vibeOptions"
+          [label]="'Ambiance'"
+          [control]="vibeControl"
+          [randomizeGroupId]="'location-form'">
+        </app-journal-dropdown>
+      </div>
+    </div>
+    <label class="fi-label">Languages</label>
+    <div class="lang-picker" role="group" aria-label="Select languages spoken in this location">
+      <div class="lang-col">
+        <div class="lang-col-header">Available</div>
+        <div class="lang-list">
+          @for (lang of availableLanguages(); track lang) {
+            <div class="lang-item" role="button" tabindex="0" [attr.aria-label]="'Add ' + lang" (click)="addLanguage(lang)" (keydown.enter)="addLanguage(lang)" (keydown.space)="addLanguage(lang)">{{ lang }}</div>
+          }
+        </div>
+      </div>
+      <div class="lang-col">
+        <div class="lang-col-header">Selected</div>
+        <div class="lang-list lang-list--selected">
+          @for (lang of selectedLanguages(); track lang) {
+            <div class="lang-item lang-item--selected" role="button" tabindex="0" [attr.aria-label]="'Remove ' + lang" (click)="removeLanguage(lang)" (keydown.enter)="removeLanguage(lang)" (keydown.space)="removeLanguage(lang)">{{ lang }}</div>
+          }
+          @if (!selectedLanguages().length) {
+            <div class="lang-empty">None selected</div>
+          }
+        </div>
+      </div>
+    </div>
+    <label for="location-description-textarea" class="fi-label">Description</label>
+    <textarea id="location-description-textarea" class="fi" formControlName="description" rows="4" placeholder="Full description…" autocomplete="off"></textarea>
+    <fieldset class="form-gm-box">
+      <legend class="form-gm-box__legend">FOR GM EYES ONLY</legend>
+
+      <cc-keyword-tags
+        [options]="keywordOptions()"
+        [label]="'Hashtags / Keywords'"
+        [placeholder]="'Add or select hashtags…'"
+        [ngModel]="keywords()"
+        [ngModelOptions]="{ standalone: true }"
+        (ngModelChange)="keywords.set($event)">
+      </cc-keyword-tags>
+
+      <label for="location-dmnotes-textarea" class="fi-label">GM Notes</label>
+      <textarea id="location-dmnotes-textarea" class="fi" formControlName="dmNotes" rows="3" placeholder="Private notes…" autocomplete="off"></textarea>
+    </fieldset>
+  </form>
+
+  @if (limitError()) {
+    <div class="limit-error-message">
+      <span class="limit-error-text">{{ limitError() }}</span>
+      <div class="limit-error-actions">
+        @if (auth.isFreeTrial()) {
+          <button class="limit-error-upgrade" (click)="openUpgradeDrawer()">Upgrade</button>
+        }
+        <button class="limit-error-close" (click)="limitError.set(null)">×</button>
+      </div>
+    </div>
+  }
+
+  <div class="form-save-footer">
+    <div class="save-spark-host" #sparkHost>
+      @if (locationId()) {
+        <span class="save-label"
+              [class.save-label--saving]="labelText() === 'Saving…'"
+              [class.save-label--error]="labelText() === 'Error'">{{ labelText() }}</span>
+      }
+      <button class="campaign-primary-btn"
+              [disabled]="form.invalid || saveStatus() === 'saving'"
+              (click)="onSave($event)">Save</button>
+    </div>
+  </div>
+
+</div>
+

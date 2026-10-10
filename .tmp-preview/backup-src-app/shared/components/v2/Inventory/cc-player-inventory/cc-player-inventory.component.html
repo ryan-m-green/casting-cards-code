@@ -1,0 +1,72 @@
+<div class="bag" [style.--portal-color]="portalColor()">
+  <cc-coin-strip [coins]="purse()" />
+
+  <div class="bag-toolbar">
+    <span class="bag-count">
+      {{ items().length }} kind{{ items().length === 1 ? '' : 's' }} ·
+      {{ total() }} item{{ total() === 1 ? '' : 's' }}
+    </span>
+    @if (error()) {
+      <span class="bag-error">{{ error() }}</span>
+    }
+  </div>
+
+  @if (loading() && !items().length) {
+    <div class="bag-scroll">
+      <div class="bag-empty">Opening the bag…</div>
+    </div>
+  } @else if (!items().length) {
+    <div class="bag-scroll">
+      <div class="bag-empty">
+        Nothing in your bag yet. What the campaign's shops sell ends up here, and every item can be
+        read or spent from its own card.
+      </div>
+    </div>
+  } @else {
+    <cc-rolodex-frame side="left" />
+    <cc-rolodex-frame side="right" />
+
+    <div class="card-band">
+      <div class="bag-list swiper" #inventoryRow>
+        <div class="swiper-wrapper">
+          @for (item of items(); track item.id) {
+            <div class="swiper-slide">
+              <div class="inv-card">
+                <div class="inv-card-banner">
+                  <span class="inv-card-title" [title]="item.name">{{ item.name }}</span>
+                  <span class="inv-card-count" [title]="item.count + ' in the bag'">×{{ item.count }}</span>
+                </div>
+
+                <div class="inv-card-body">
+                  <div class="inv-card-body-content">
+                    @if (item.description) {
+                      <div class="inv-card-text">{{ item.description }}</div>
+                    } @else {
+                      <div class="inv-card-empty-body">Nothing written on it</div>
+                    }
+                  </div>
+
+                  <app-cc-view-btn
+                    [label]="'Read ' + item.name"
+                    (clicked)="openItem(item)"
+                  />
+                </div>
+
+                <div class="inv-card-actions">
+                  <button
+                    type="button"
+                    class="campaign-primary-btn inv-use-btn"
+                    [disabled]="usingId() !== ''"
+                    [title]="'Use one ' + item.name"
+                    [attr.aria-label]="'Use one ' + item.name"
+                    (click)="useItem(item)"
+                  >{{ usingId() === item.id ? 'Using…' : 'Use' }}</button>
+                </div>
+              </div>
+            </div>
+          }
+        </div>
+      </div>
+    </div>
+  }
+</div>

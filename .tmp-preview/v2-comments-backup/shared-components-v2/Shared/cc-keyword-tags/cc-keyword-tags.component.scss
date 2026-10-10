@@ -1,0 +1,251 @@
+@use '../../../../../../styles/variables' as v;
+@use '../../variables-v2' as v2;
+
+:host {
+  display: block;
+  margin-bottom: 10px;
+}
+
+.cc-keyword-tags {
+  position: relative;
+  max-width:366px;
+}
+
+.cc-keyword-tags-label {
+  display: block;
+  font-family: v.$font-header;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  margin-bottom: 2px;
+}
+
+.cc-keyword-tags-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  background: v.$color-input-bg;
+  border: 1px solid v.$color-border-solid;
+  border-radius: 2px;
+  padding: 4px 32px 4px 6px;
+  min-height: 34px;
+  cursor: text;
+  transition: border-color v.$transition-std, background v.$transition-std;
+
+  &:focus-within {
+    border-color: v.$color-input-focus-border;
+    background: v.$color-input-focus-bg;
+  }
+
+  &.disabled {
+    opacity: 0.5;
+    pointer-events: none;
+  }
+}
+
+.cc-keyword-tags-chips {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px;
+  flex: 1;
+}
+
+.cc-keyword-tags-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: rgba(v.$color-base-brown-warm, 0.1);
+  border: 1px solid v.$color-border-light;
+  border-radius: 2px;
+  padding: 1px 5px 1px 7px;
+  font-family: v.$font-body;
+  font-size: 13px;
+  font-style: italic;
+  color: v.$color-base-brown-14;
+}
+
+.cc-keyword-tags-chip-remove {
+  all: unset;
+  cursor: pointer;
+  color: v.$color-base-brown-17;
+  font-size: 11px;
+  padding: 2px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0.7;
+  transition: opacity v.$transition-fast;
+
+  &:hover {
+    opacity: 1;
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+    opacity: 0.3;
+  }
+}
+
+.cc-keyword-tags-input {
+  all: unset;
+  flex: 1;
+  min-width: 90px;
+  font-family: v.$font-body;
+  font-size: 14px;
+  font-style: italic;
+  color: v.$color-base-brown-14;
+  padding: 4px 4px;
+  cursor: text;
+
+  &::placeholder {
+    color: v.$color-base-brown-17;
+    font-style: italic;
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+  }
+}
+
+.cc-keyword-tags-caret {
+  all: unset;
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  color: v.$color-base-brown-17;
+  font-size: 12px;
+  cursor: pointer;
+  transition: transform v.$transition-fast;
+  padding: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  &:disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+  }
+
+  &--open {
+    transform: translateY(-50%) rotate(180deg);
+  }
+}
+
+.cc-keyword-tags-panel {
+  position: absolute;
+  top: calc(100% + 2px);
+  left: 0;
+  right: 0;
+  background: v.$color-base-parchment-pale;
+  border: 1px solid v.$color-border-solid;
+  border-radius: 2px;
+  list-style: none;
+  margin: 0;
+  padding: 4px 0;
+  z-index: 100;
+  box-shadow: 0 6px 20px rgba(v.$color-base-black, 0.15);
+  max-height: 220px;
+  overflow-y: auto;
+}
+
+.cc-keyword-tags-item {
+  all: unset;
+  font-family: v.$font-body;
+  font-size: 14px;
+  font-style: italic;
+  color: v.$color-base-brown-14;
+  padding: 7px 12px;
+  cursor: pointer;
+  transition: background v.$transition-fast;
+  display: block;
+  appearance: none;
+  -webkit-appearance: none;
+
+  &:hover {
+    background: rgba(v.$color-base-brown-warm, 0.08);
+  }
+
+  &--active {
+    background: rgba(v.$color-base-brown-warm, 0.12);
+    outline: none;
+  }
+
+  &--no-results {
+    color: v.$color-base-brown-17;
+    cursor: default;
+  }
+}
+
+/* ── Campaign: the dark shell's look, the one the right drawer's forms wear ─────────────
+ * Everything above is the parchment form; the block below repaints the same parts in the
+ * campaign palette — the colours the campaign dropdown and the drawer's other fields use, so a
+ * keyword input sits level with them.
+ */
+.cc-keyword-tags--campaign {
+  .cc-keyword-tags-label {
+    font-family: v2.$font-v2-components;
+    font-size: 11px;
+    color: v.$color-lib-location-1;
+    margin-bottom: 4px;
+  }
+
+  .cc-keyword-tags-wrapper {
+    background: v.$color-ext-346;
+    border: 1px solid v.$campaign-portal-border-medium;
+    border-radius: 5px;
+
+    &:focus-within {
+      border-color: v.$campaign-portal-border-focus;
+      background: v.$color-ext-346;
+    }
+  }
+
+  .cc-keyword-tags-chip {
+    background: rgba(v.$color-base-purple-primary, 0.3);
+    border: 1px solid v.$campaign-portal-border-bold;
+    border-radius: 4px;
+    color: v.$campaign-portal-text-bright;
+    font-family: v2.$font-v2-components;
+    font-style: normal;
+  }
+
+  .cc-keyword-tags-chip-remove {
+    color: rgba(v.$color-base-mist-blue, 0.7);
+
+    &:hover { color: v.$color-base-mist-blue; }
+  }
+
+  .cc-keyword-tags-input {
+    font-family: v2.$font-v2-components;
+    font-style: normal;
+    color: v.$campaign-portal-text-bright;
+
+    &::placeholder { color: v.$campaign-portal-text-secondary; }
+  }
+
+  .cc-keyword-tags-caret {
+    color: rgba(v.$color-base-mist-blue, 0.7);
+  }
+
+  .cc-keyword-tags-panel {
+    background: v.$color-ext-633;
+    border: 1px solid v.$campaign-portal-border-bold;
+    border-radius: 5px;
+    box-shadow: 0 6px 20px v.$journal-spine-band-shadow;
+  }
+
+  .cc-keyword-tags-item {
+    font-family: v2.$font-v2-components;
+    font-style: normal;
+    color: v.$campaign-portal-text-bright;
+
+    &:hover { background: v.$campaign-portal-bg-placeholder; }
+    &--active { background: v.$campaign-portal-bg-placeholder; }
+    &--no-results { color: v.$campaign-portal-text-secondary; }
+  }
+}

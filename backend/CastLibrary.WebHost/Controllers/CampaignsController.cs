@@ -8,6 +8,7 @@ using CastLibrary.Shared.Responses;
 using CastLibrary.WebHost.Hubs;
 using CastLibrary.WebHost.Mappers;
 using CastLibrary.WebHost.MetadataHelpers;
+using CastLibrary.WebHost.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
@@ -28,62 +29,27 @@ public class CampaignsController(
     IAddCastToCampaignCommandHandler addCastCommand,
     IAddLocationToCampaignCommandHandler addLocationCommand,
     IUpdateLocationInstanceCommandHandler UpdateLocationInstanceCommand,
-    IUpdateLocationInstanceVisibilityCommandHandler UpdateLocationInstanceVisibilityCommand,
     IDeleteLocationInstanceCommandHandler DeleteLocationInstanceCommand,
-    IDeleteCastInstanceCommandHandler deleteCastInstanceCommand,
-    IUpdateCastInstanceCommandHandler updateCastInstanceCommand,
-    IUpdateCastCustomItemsCommandHandler updateCastCustomItemsCommand,
-    IUpdateSublocationCustomItemsCommandHandler updateSublocationCustomItemsCommand,
     IAddSublocationToCampaignCommandHandler addSublocationCommand,
-    IDeleteSublocationInstanceCommandHandler deleteSublocationInstanceCommand,
-    IUpdateSublocationInstanceVisibilityCommandHandler updateSublocationInstanceVisibilityCommand,
-    IUpdateLocationSublocationsVisibilityCommandHandler UpdateLocationSublocationsVisibilityCommand,
-    IUpdateCastInstanceVisibilityCommandHandler updateCastInstanceVisibilityCommand,
-    IUpdateSublocationCastsVisibilityCommandHandler updateSublocationCastsVisibilityCommand,
     IAddCampaignSecretCommandHandler addSecretCommand,
     IDeleteCampaignSecretCommandHandler deleteCampaignSecretCommand,
-    IRevealSecretCommandHandler revealSecretCommand,
-    IResealSecretCommandHandler resealSecretCommand,
     IUpdateLocationInstanceKeywordsCommandHandler updateLocationKeywordsCommand,
-    IUpdateCastInstanceKeywordsCommandHandler updateCastKeywordsCommand,
-    IUpdateSublocationInstanceKeywordsCommandHandler updateSublocationKeywordsCommand,
     IGenerateCampaignInviteCodeCommandHandler generateInviteCodeCommand,
     IRedeemCampaignInviteCodeCommandHandler redeemInviteCodeCommand,
     IGetPlayerCampaignLibraryQueryHandler getPlayerLibraryQuery,
     IGetPlayerCampaignDetailQueryHandler getPlayerDetailQuery,
     IRemoveCampaignPlayerCommandHandler removePlayerCommand,
-    IUpdateSecretCommandHandler updateSecretCommandHandler,
     IUpdateSublocationInstanceCommandHandler updateSublocationInstanceCommand,
     IAddSublocationShopItemCommandHandler addSublocationShopItemCommand,
-    IToggleShopItemScratchCommandHandler toggleShopItemScratchCommand,
     IUpdateShopItemCommandHandler updateShopItemCommand,
     IDeleteShopItemCommandHandler deleteShopItemCommand,
     IPurchaseShopItemCommandHandler purchaseShopItemCommand,
     ICampaignWebMapper campaignMapper,
     IUserRetriever userRetriever,
     IHubContext<CampaignHub> hubContext,
-    IAddFactionToCampaignCommandHandler addFactionCommand,
-    IDeleteFactionInstanceCommandHandler deleteFactionInstanceCommand,
-    IUpdateFactionInstanceCommandHandler updateFactionInstanceCommand,
-    IGetCampaignFactionInstancesQueryHandler getFactionInstancesQuery,
+    ISignalRNotificationService notifications,
     ICampaignFactionInstanceWebMapper factionMapper,
-    IAddFactionSublocationCommandHandler addFactionSublocationCommand,
-    IRemoveFactionSublocationCommandHandler removeFactionSublocationCommand,
-    ISetFactionSublocationPrimaryCommandHandler setFactionSublocationPrimaryCommand,
-    IClearFactionSublocationPrimaryCommandHandler clearFactionSublocationPrimaryCommand,
-    IAddFactionCastMemberCommandHandler addFactionCastMemberCommand,
-    IRemoveFactionCastMemberCommandHandler removeFactionCastMemberCommand,
-    ISetFactionCastMemberPrimaryCommandHandler setFactionCastMemberPrimaryCommand,
-    IClearFactionCastMemberPrimaryCommandHandler clearFactionCastMemberPrimaryCommand,
-    IAddFactionRelationshipCommandHandler addFactionRelationshipCommand,
-    IRemoveFactionRelationshipCommandHandler removeFactionRelationshipCommand,
-    IUpdateFactionInstanceVisibilityCommandHandler updateFactionInstanceVisibilityCommand,
-    IGetPlayerCampaignFactionInstancesQueryHandler getPlayerFactionInstancesQuery,
-    IAssignFactionToSublocationCommandHandler assignFactionToSublocationCommand,
-    IAssignFactionToCastCommandHandler assignFactionToCastCommand,
     IUpdateCampaignLastAccessedCommandHandler updateLastAccessedCommand,
-    IUploadCampaignWorldMapImageCommandHandler uploadWorldMapImageCommand,
-    IFileValidationService fileValidationService,
     ICampaignAccessService campaignAccess) : ControllerBase
 {
     private Task<bool> CallerOwns(Guid campaignId) =>
@@ -175,7 +141,7 @@ public class CampaignsController(
         // Update LastAccessedAt when campaign is opened
         await updateLastAccessedCommand.HandleAsync(new UpdateCampaignLastAccessedCommand(id));
         
-        var (campaign, locations, casts, sublocations, secrets, relationships, 
+        var (campaign, locations, casts, sublocations, secrets, 
             players, inviteCode, timeOfDay, factions) = await getDetailQuery.HandleAsync(id);
         if (campaign is null)
         {
@@ -197,7 +163,6 @@ public class CampaignsController(
             Casts = casts.Select(campaignMapper.ToCastInstanceResponse).ToList(),
             Sublocations = sublocations.Select(campaignMapper.ToSublocationInstanceResponse).ToList(),
             Secrets = secrets.Select(campaignMapper.ToSecretResponse).ToList(),
-            Relationships = relationships.Select(campaignMapper.ToRelationshipResponse).ToList(),
             Players = players.Select(campaignMapper.ToPlayerResponse).ToList(),
             InviteCode = inviteCode is not null ? campaignMapper.ToInviteCodeResponse(inviteCode) : null,
             TimeOfDay = timeOfDay is not null ? campaignMapper.ToTimeOfDayResponse(timeOfDay) : null,
@@ -239,25 +204,6 @@ public class CampaignsController(
         return Ok(response);
     }
 
-    [HttpPost("{id}/worldmap-image")]
-    [Authorize(Roles = "DM,Admin")]
-    [Consumes("multipart/form-data")]
-    public async Task<IActionResult> UploadWorldMapImage(Guid id, IFormFile file)
-    {
-        if (!await CallerOwns(id)) return Forbid();
-
-        var validationResult = await fileValidationService.ValidateFileAsync(file, 20 * 1024 * 1024,
-            new[] { "image/jpeg", "image/png", "image/webp" });
-
-        if (!validationResult.IsValid)
-            return BadRequest(validationResult.ErrorMessage);
-
-        var imageUrl = await uploadWorldMapImageCommand.HandleAsync(
-            new UploadCampaignWorldMapImageCommand(id, file.OpenReadStream(), validationResult.DetectedContentType));
-
-        return Ok(new { imageUrl });
-    }
-
     [HttpPost("{id}/locations")]
     [Authorize(Roles = "DM,Admin")]
     public async Task<IActionResult> AddLocation(Guid id, [FromBody] AddLocationToCampaignRequest request)
@@ -294,25 +240,6 @@ public class CampaignsController(
         return NoContent();
     }
     //TODO: Remove
-    [HttpPatch("{id}/locations/{instanceId}/visibility")]
-    [Authorize(Roles = "DM,Admin")]
-    public async Task<IActionResult> UpdateLocationInstanceVisibility(Guid id, Guid instanceId,
-        [FromBody] UpdateLocationInstanceVisibilityRequest request)
-    {
-        if (!await CallerOwns(id)) return Forbid();
-        await UpdateLocationInstanceVisibilityCommand.HandleAsync(new UpdateLocationInstanceVisibilityCommand(instanceId, request));
-
-        await hubContext.Clients.Group(id.ToString()).SendAsync("CardVisibilityChanged", new CardVisibilityChangedEvent
-        {
-            CampaignId = id,
-            InstanceId = instanceId,
-            CardType   = "location",
-            IsVisible  = request.IsVisibleToPlayers,
-        });
-
-        return NoContent();
-    }
-    //TODO: Remove
     [HttpDelete("{id}/locations/{instanceId}")]
     [Authorize(Roles = "DM,Admin")]
     public async Task<IActionResult> DeleteLocationInstance(Guid id, Guid instanceId)
@@ -341,58 +268,6 @@ public class CampaignsController(
         await hubContext.Clients.Group(id.ToString()).SendAsync("CampaignNavChanged", new { campaignId = id });
 
         return Ok(response);
-    }
-    //TODO: Remove
-    [HttpPatch("{id}/casts/{instanceId}")]
-    [Authorize(Roles = "DM,Admin")]
-    public async Task<IActionResult> UpdateCast(Guid id, Guid instanceId,
-        [FromBody] UpdateCastInstanceRequest request)
-    {
-        if (!await CallerOwns(id)) return Forbid();
-        var dmUserId = userRetriever.GetDmUserId(User);
-        await updateCastInstanceCommand.HandleAsync(new UpdateCastInstanceCommand(instanceId, request, dmUserId));
-
-        await hubContext.Clients.Group(id.ToString()).SendAsync("CastInstanceUpdated", new
-        {
-            campaignId     = id,
-            castInstanceId = instanceId,
-        });
-
-        return NoContent();
-    }
-    //TODO: Remove
-    [HttpPatch("{id}/casts/{instanceId}/custom-items")]
-    [Authorize(Roles = "DM,Admin")]
-    public async Task<IActionResult> UpdateCastCustomItems(Guid id, Guid instanceId,
-        [FromBody] UpdateCastCustomItemsRequest request)
-    {
-        if (!await CallerOwns(id)) return Forbid();
-        await updateCastCustomItemsCommand.HandleAsync(new UpdateCastCustomItemsCommand(instanceId, request));
-
-        return NoContent();
-    }
-    //TODO: Does this already exist in v2 controller?
-    [HttpPatch("{id}/sublocations/{instanceId}/custom-items")]
-    [Authorize(Roles = "DM,Admin")]
-    public async Task<IActionResult> UpdateSublocationCustomItems(Guid id, Guid instanceId,
-        [FromBody] UpdateCastCustomItemsRequest request)
-    {
-        if (!await CallerOwns(id)) return Forbid();
-        await updateSublocationCustomItemsCommand.HandleAsync(new UpdateSublocationCustomItemsCommand(instanceId, request));
-
-        return NoContent();
-    }
-    //TODO: Remove
-    [HttpDelete("{id}/casts/{instanceId}")]
-    [Authorize(Roles = "DM,Admin")]
-    public async Task<IActionResult> DeleteCast(Guid id, Guid instanceId)
-    {
-        if (!await CallerOwns(id)) return Forbid();
-        await deleteCastInstanceCommand.HandleAsync(new DeleteCastInstanceCommand(instanceId));
-
-        await hubContext.Clients.Group(id.ToString()).SendAsync("CampaignNavChanged", new { campaignId = id });
-
-        return NoContent();
     }
     //TODO: Remove
     [HttpPost("{id}/sublocations")]
@@ -486,24 +361,6 @@ public class CampaignsController(
         return NoContent();
     }
 
-    [HttpPatch("{id}/sublocations/{instanceId}/shop-items/{shopItemId}/scratch")]
-    [Authorize(Roles = "DM,Admin")]
-    public async Task<IActionResult> ToggleShopItemScratch(Guid id, Guid instanceId, Guid shopItemId)
-    {
-        if (!await CallerOwns(id)) return Forbid();
-        var isScratchedOff = await toggleShopItemScratchCommand.HandleAsync(new ToggleShopItemScratchCommand(id, shopItemId));
-
-        await hubContext.Clients.Group(id.ToString()).SendAsync("ShopItemScratchToggled", new
-        {
-            campaignId            = id,
-            sublocationInstanceId = instanceId,
-            shopItemId,
-            isScratchedOff,
-        });
-
-        return NoContent();
-    }
-
     [HttpDelete("{id}/sublocations/{instanceId}/shop-items/{shopItemId}")]
     [Authorize(Roles = "DM,Admin")]
     public async Task<IActionResult> DeleteShopItem(Guid id, Guid instanceId, Guid shopItemId)
@@ -528,125 +385,27 @@ public class CampaignsController(
         var playerUserId = userRetriever.GetUserId(User);
         var result = await purchaseShopItemCommand.HandleAsync(
             new PurchaseShopItemCommand(id, instanceId, shopItemId, playerUserId));
-        return Ok(result);
-    }
 
-    [HttpDelete("{id}/sublocations/{instanceId}")]
-    [Authorize(Roles = "DM,Admin")]
-    public async Task<IActionResult> DeleteSublocation(Guid id, Guid instanceId)
-    {
-        if (!await CallerOwns(id)) return Forbid();
-        await deleteSublocationInstanceCommand.HandleAsync(new DeleteSublocationInstanceCommand(instanceId));
-
-        await hubContext.Clients.Group(id.ToString()).SendAsync("CampaignNavChanged", new { campaignId = id });
-
-        return NoContent();
-    }
-
-    [HttpPatch("{id}/sublocations/{instanceId}/visibility")]
-    [Authorize(Roles = "DM,Admin")]
-    public async Task<IActionResult> UpdateSublocationInstanceVisibility(Guid id, Guid instanceId,
-        [FromBody] UpdateSublocationInstanceVisibilityRequest request)
-    {
-        if (!await CallerOwns(id)) return Forbid();
-        await updateSublocationInstanceVisibilityCommand.HandleAsync(new UpdateSublocationInstanceVisibilityCommand(instanceId, request));
-
-        await hubContext.Clients.Group(id.ToString()).SendAsync("CardVisibilityChanged", new CardVisibilityChangedEvent
+        // Only once the write is persisted: a denial moved nothing, so there is no bag to hand back.
+        if (result.Success)
         {
-            CampaignId = id,
-            InstanceId = instanceId,
-            CardType   = "sublocation",
-            IsVisible  = request.IsVisibleToPlayers,
-        });
-
-        return NoContent();
-    }
-
-    [HttpPatch("{id}/locations/{instanceId}/sublocations/visibility")]
-    [Authorize(Roles = "DM,Admin")]
-    public async Task<IActionResult> UpdateLocationSublocationsVisibility(Guid id, Guid instanceId,
-        [FromBody] UpdateLocationSublocationsVisibilityRequest request)
-    {
-        if (!await CallerOwns(id)) return Forbid();
-        await UpdateLocationSublocationsVisibilityCommand.HandleAsync(new UpdateLocationSublocationsVisibilityCommand(instanceId, request));
-
-        await hubContext.Clients.Group(id.ToString()).SendAsync("BulkCardVisibilityChanged", new BulkCardVisibilityChangedEvent
-        {
-            CampaignId       = id,
-            ParentInstanceId = instanceId,
-            CardType         = "sublocation",
-            IsVisible        = request.IsVisibleToPlayers,
-        });
-
-        return NoContent();
-    }
-
-    [HttpPatch("{id}/casts/{instanceId}/visibility")]
-    [Authorize(Roles = "DM,Admin")]
-    public async Task<IActionResult> UpdateCastInstanceVisibility(Guid id, Guid instanceId,
-        [FromBody] UpdateCastInstanceVisibilityRequest request)
-    {
-        if (!await CallerOwns(id)) return Forbid();
-        await updateCastInstanceVisibilityCommand.HandleAsync(new UpdateCastInstanceVisibilityCommand(instanceId, request));
-
-        await hubContext.Clients.Group(id.ToString()).SendAsync("CardVisibilityChanged", new CardVisibilityChangedEvent
-        {
-            CampaignId = id,
-            InstanceId = instanceId,
-            CardType   = "cast",
-            IsVisible  = request.IsVisibleToPlayers,
-        });
-
-        return NoContent();
-    }
-
-    [HttpPatch("{id}/factions/{instanceId}/visibility")]
-    [Authorize(Roles = "DM,Admin")]
-    public async Task<IActionResult> UpdateFactionInstanceVisibility(Guid id, Guid instanceId,
-        [FromBody] UpdateFactionInstanceVisibilityRequest request)
-    {
-        if (!await CallerOwns(id)) return Forbid();
-        await updateFactionInstanceVisibilityCommand.HandleAsync(new UpdateFactionInstanceVisibilityCommand(instanceId, request));
-
-        await hubContext.Clients.Group(id.ToString()).SendAsync("CardVisibilityChanged", new CardVisibilityChangedEvent
-        {
-            CampaignId = id,
-            InstanceId = instanceId,
-            CardType   = "faction",
-            IsVisible  = request.IsVisibleToPlayers,
-        });
-
-        if (!request.IsVisibleToPlayers)
-        {
-            await hubContext.Clients.Group(id.ToString()).SendAsync("FactionLocked", new
+            await notifications.BroadcastInventoryItemPurchasedAsync(id, new
             {
-                campaignId        = id,
-                factionInstanceId = instanceId,
+                campaignId = id,
+                playerUserId,
+                itemName = result.ItemName,
+                currencyBalances = result.CurrencyBalances,
             });
         }
 
-        return NoContent();
+        return Ok(result);
     }
 
-    [HttpPatch("{id}/sublocations/{instanceId}/casts/visibility")]
-    [Authorize(Roles = "DM,Admin")]
-    public async Task<IActionResult> UpdateSublocationCastsVisibility(Guid id, Guid instanceId,
-        [FromBody] UpdateLocationSublocationsVisibilityRequest request)
-    {
-        if (!await CallerOwns(id)) return Forbid();
-        await updateSublocationCastsVisibilityCommand.HandleAsync(new UpdateSublocationCastsVisibilityCommand(instanceId, request));
-
-        await hubContext.Clients.Group(id.ToString()).SendAsync("BulkCardVisibilityChanged", new BulkCardVisibilityChangedEvent
-        {
-            CampaignId       = id,
-            ParentInstanceId = instanceId,
-            CardType         = "cast",
-            IsVisible        = request.IsVisibleToPlayers,
-        });
-
-        return NoContent();
-    }
-
+    // The secret writes below go through the notification service rather than the hub context
+    // directly: it is the one place that records every send, which is what the Admin's SignalR
+    // inspector reads — and what lets it pair a send with the receipts the receiving clients report
+    // back (see AdminSignalRController and SignalRInspector). The events the clients receive are
+    // unchanged.
     [HttpPost("{id}/secrets")]
     [Authorize(Roles = "DM,Admin")]
     public async Task<IActionResult> AddSecret(Guid id, [FromBody] AddCampaignSecretRequest request)
@@ -655,7 +414,7 @@ public class CampaignsController(
         var secret = await addSecretCommand.HandleAsync(new AddCampaignSecretCommand(id, request));
         var response = campaignMapper.ToSecretResponse(secret);
 
-        await hubContext.Clients.Group(id.ToString()).SendAsync("SecretCreated", new
+        await notifications.BroadcastSecretCreatedAsync(id, new
         {
             secretId = secret.Id,
             campaignId = secret.CampaignId,
@@ -678,7 +437,7 @@ public class CampaignsController(
         var status = deleted ? 204 : 404;
 
         if (deleted) {
-            await hubContext.Clients.Group(id.ToString()).SendAsync("SecretDeleted", new
+            await notifications.BroadcastSecretDeletedAsync(id, new
             {
                 secretId = secretId,
                 campaignId = id
@@ -686,55 +445,6 @@ public class CampaignsController(
         }
 
         return deleted ? NoContent() : NotFound();
-    }
-
-    [HttpPost("{id}/secrets/{secretId}/reveal")]
-    [Authorize(Roles = "DM,Admin")]
-    public async Task<IActionResult> RevealSecret(Guid id, Guid secretId)
-    {
-        if (!await CallerOwns(id)) return Forbid();
-        var secret = await revealSecretCommand.HandleAsync(new RevealSecretCommand(secretId, id));
-        if (secret is null)
-        {
-            return NotFound();
-        }
-
-        await hubContext.Clients.Group(id.ToString()).SendAsync("PlayerSecretRevealed", new SecretRevealedEvent
-        {
-            SecretId           = secretId,
-            CampaignId         = id,
-            CastInstanceId        = secret.CastInstanceId,
-            LocationInstanceId        = secret.LocationInstanceId,
-            SublocationInstanceId = secret.SublocationInstanceId,
-            SecretContent         = secret.Content,
-        });
-
-        var response = campaignMapper.ToSecretResponse(secret);
-        return Ok(response);
-    }
-
-    [HttpPatch("{id}/secrets/{secretId}/reseal")]
-    [Authorize(Roles = "DM,Admin")]
-    public async Task<IActionResult> ResealSecret(Guid id, Guid secretId)
-    {
-        if (!await CallerOwns(id)) return Forbid();
-        var secret = await resealSecretCommand.HandleAsync(new ResealSecretCommand(secretId, id));
-        if (secret is null)
-        {
-            return NotFound();
-        }
-
-        await hubContext.Clients.Group(id.ToString()).SendAsync("SecretResealed", new SecretResealedEvent
-        {
-            SecretId           = secretId,
-            CampaignId         = id,
-            CastInstanceId        = secret.CastInstanceId,
-            LocationInstanceId        = secret.LocationInstanceId,
-            SublocationInstanceId = secret.SublocationInstanceId,
-        });
-
-        var response = campaignMapper.ToSecretResponse(secret);
-        return Ok(response);
     }
 
     [HttpPatch("{id}/locations/{instanceId}/keywords")]
@@ -745,30 +455,6 @@ public class CampaignsController(
         if (!await CallerOwns(id)) return Forbid();
         await updateLocationKeywordsCommand.HandleAsync(
             new UpdateLocationInstanceKeywordsCommand(instanceId, userRetriever.GetUserId(User), request));
-
-        return NoContent();
-    }
-
-    [HttpPatch("{id}/casts/{instanceId}/keywords")]
-    [Authorize(Roles = "DM,Admin")]
-    public async Task<IActionResult> UpdateCastKeywords(Guid id, Guid instanceId,
-        [FromBody] UpdateInstanceKeywordsRequest request)
-    {
-        if (!await CallerOwns(id)) return Forbid();
-        await updateCastKeywordsCommand.HandleAsync(
-            new UpdateCastInstanceKeywordsCommand(instanceId, userRetriever.GetUserId(User), request));
-
-        return NoContent();
-    }
-
-    [HttpPatch("{id}/sublocations/{instanceId}/keywords")]
-    [Authorize(Roles = "DM,Admin")]
-    public async Task<IActionResult> UpdateSublocationKeywords(Guid id, Guid instanceId,
-        [FromBody] UpdateInstanceKeywordsRequest request)
-    {
-        if (!await CallerOwns(id)) return Forbid();
-        await updateSublocationKeywordsCommand.HandleAsync(
-            new UpdateSublocationInstanceKeywordsCommand(instanceId, userRetriever.GetUserId(User), request));
 
         return NoContent();
     }
@@ -818,273 +504,6 @@ public class CampaignsController(
         return NoContent();
     }
 
-    [HttpPut("{id}/secrets/{secretId}")]
-    [Authorize(Roles = "DM,Admin")]
-    public async Task<IActionResult> UpdateSecret(Guid id, Guid secretId,
-                                                                [FromBody] UpdateSecretRequest request)
-    {
-        if (!await CallerOwns(id)) return Forbid();
-        var secret = await updateSecretCommandHandler
-            .HandleAsync(new UpdateSecretCommand(id, secretId, request));
-
-        if (secret is null || secret.CampaignId != id)
-        {
-            return NotFound();
-        }
-
-        var response = campaignMapper.ToSecretResponse(secret);
-        return Ok(response);
-    }
-
-    // ── Factions ──────────────────────────────────────────────────────────────
-
-    [HttpGet("{id}/factions")]
-    [Authorize(Roles = "DM,Admin")]
-    public async Task<IActionResult> GetFactions(Guid id)
-    {
-        if (!await CallerOwns(id)) return Forbid();
-        var dmUserId = userRetriever.GetDmUserId(User);
-        var instances = await getFactionInstancesQuery.HandleAsync(id, dmUserId);
-        return Ok(instances.Select(factionMapper.ToResponse).ToList());
-    }
-
-    [HttpGet("{id}/factions/player")]
-    public async Task<IActionResult> GetPlayerFactions(Guid id)
-    {
-        if (!await CallerCanView(id)) return Forbid();
-        var instances = await getPlayerFactionInstancesQuery.HandleAsync(id);
-        return Ok(instances.Select(factionMapper.ToResponse).ToList());
-    }
-
-    [HttpPost("{id}/factions")]
-    [Authorize(Roles = "DM,Admin")]
-    public async Task<IActionResult> AddFaction(Guid id, [FromBody] AddFactionToCampaignRequest request)
-    {
-        if (!await CallerOwns(id)) return Forbid();
-        var dmUserId = userRetriever.GetDmUserId(User);
-        var instance = await addFactionCommand.HandleAsync(new AddFactionToCampaignCommand(id, dmUserId, request));
-        if (instance is null) return NotFound();
-
-        await hubContext.Clients.Group(id.ToString()).SendAsync("CampaignNavChanged", new { campaignId = id });
-
-        return Ok(factionMapper.ToResponse(instance));
-    }
-
-    [HttpDelete("{id}/factions/{factionInstanceId}")]
-    [Authorize(Roles = "DM,Admin")]
-    public async Task<IActionResult> DeleteFaction(Guid id, Guid factionInstanceId)
-    {
-        if (!await CallerOwns(id)) return Forbid();
-        await deleteFactionInstanceCommand.HandleAsync(new DeleteFactionInstanceCommand(id, factionInstanceId));
-
-        await hubContext.Clients.Group(id.ToString()).SendAsync("FactionRemoved", new
-        {
-            campaignId        = id,
-            factionInstanceId = factionInstanceId,
-        });
-
-        await hubContext.Clients.Group(id.ToString()).SendAsync("CampaignNavChanged", new { campaignId = id });
-
-        return NoContent();
-    }
-
-    [HttpPatch("{id}/factions/{factionInstanceId}")]
-    [Authorize(Roles = "DM,Admin")]
-    public async Task<IActionResult> UpdateFaction(Guid id, Guid factionInstanceId,
-        [FromBody] UpdateFactionInstanceRequest request)
-    {
-        if (!await CallerOwns(id)) return Forbid();
-        var dmUserId = userRetriever.GetDmUserId(User);
-        await updateFactionInstanceCommand.HandleAsync(new UpdateFactionInstanceCommand(factionInstanceId, dmUserId, request));
-
-        await hubContext.Clients.Group(id.ToString()).SendAsync("FactionInstanceUpdated", new
-        {
-            campaignId          = id,
-            factionInstanceId,
-        });
-
-        return NoContent();
-    }
-
-    // ── Faction ↔ Sublocation membership ─────────────────────────────────────
-
-    [HttpPost("{id}/factions/{factionInstanceId}/sublocations/{sublocationInstanceId}")]
-    [Authorize(Roles = "DM,Admin")]
-    public async Task<IActionResult> AddFactionSublocation(Guid id, Guid factionInstanceId, Guid sublocationInstanceId)
-    {
-        if (!await CallerOwns(id)) return Forbid();
-        var dmUserId = userRetriever.GetDmUserId(User);
-        await addFactionSublocationCommand.HandleAsync(factionInstanceId, sublocationInstanceId, dmUserId);
-        return NoContent();
-    }
-
-    [HttpDelete("{id}/factions/{factionInstanceId}/sublocations/{sublocationInstanceId}")]
-    [Authorize(Roles = "DM,Admin")]
-    public async Task<IActionResult> RemoveFactionSublocation(Guid id, Guid factionInstanceId, Guid sublocationInstanceId)
-    {
-        if (!await CallerOwns(id)) return Forbid();
-        await removeFactionSublocationCommand.HandleAsync(factionInstanceId, sublocationInstanceId);
-        return NoContent();
-    }
-
-    [HttpPatch("{id}/factions/{factionInstanceId}/sublocations/{sublocationInstanceId}/primary")]
-    public async Task<IActionResult> SetFactionSublocationPrimary(Guid id, Guid factionInstanceId, Guid sublocationInstanceId)
-    {
-        if (!await CallerCanView(id)) return Forbid();
-        await setFactionSublocationPrimaryCommand.HandleAsync(factionInstanceId, sublocationInstanceId);
-        return NoContent();
-    }
-
-    [HttpDelete("{id}/factions/{factionInstanceId}/sublocations/primary")]
-    public async Task<IActionResult> ClearFactionSublocationPrimary(Guid id, Guid factionInstanceId)
-    {
-        if (!await CallerCanView(id)) return Forbid();
-        await clearFactionSublocationPrimaryCommand.HandleAsync(factionInstanceId);
-        return NoContent();
-    }
-
-    // ── Faction ↔ Cast membership ─────────────────────────────────────────────
-
-    [HttpPost("{id}/factions/{factionInstanceId}/cast/{castInstanceId}")]
-    [Authorize(Roles = "DM,Admin")]
-    public async Task<IActionResult> AddFactionCastMember(Guid id, Guid factionInstanceId, Guid castInstanceId)
-    {
-        if (!await CallerOwns(id)) return Forbid();
-        var dmUserId = userRetriever.GetDmUserId(User);
-        await addFactionCastMemberCommand.HandleAsync(factionInstanceId, castInstanceId, dmUserId);
-        return NoContent();
-    }
-
-    [HttpDelete("{id}/factions/{factionInstanceId}/cast/{castInstanceId}")]
-    [Authorize(Roles = "DM,Admin")]
-    public async Task<IActionResult> RemoveFactionCastMember(Guid id, Guid factionInstanceId, Guid castInstanceId)
-    {
-        if (!await CallerOwns(id)) return Forbid();
-        await removeFactionCastMemberCommand.HandleAsync(factionInstanceId, castInstanceId);
-        return NoContent();
-    }
-
-    [HttpPatch("{id}/factions/{factionInstanceId}/cast/{castInstanceId}/primary")]
-    public async Task<IActionResult> SetFactionCastMemberPrimary(Guid id, Guid factionInstanceId, Guid castInstanceId)
-    {
-        if (!await CallerCanView(id)) return Forbid();
-        await setFactionCastMemberPrimaryCommand.HandleAsync(factionInstanceId, castInstanceId);
-        return NoContent();
-    }
-
-    [HttpDelete("{id}/factions/{factionInstanceId}/cast/primary")]
-    public async Task<IActionResult> ClearFactionCastMemberPrimary(Guid id, Guid factionInstanceId)
-    {
-        if (!await CallerCanView(id)) return Forbid();
-        await clearFactionCastMemberPrimaryCommand.HandleAsync(factionInstanceId);
-        return NoContent();
-    }
-
-    // ── Faction Relationships ─────────────────────────────────────────────────
-
-    [HttpPost("{id}/factions/{factionInstanceId}/relationships")]
-    public async Task<IActionResult> AddFactionRelationship(Guid id, Guid factionInstanceId,
-        [FromBody] AddFactionRelationshipRequest request)
-    {
-        if (!await CallerCanView(id)) return Forbid();
-        var dmUserId = userRetriever.IsPlayer(User) ? (Guid?)null : userRetriever.GetDmUserId(User);
-        var relationship = await addFactionRelationshipCommand.HandleAsync(
-            new AddFactionRelationshipCommand(id, dmUserId, request));
-        return Ok(new CampaignFactionRelationshipResponse
-        {
-            Id                 = relationship.Id,
-            CampaignId         = relationship.CampaignId,
-            FactionInstanceIdA = relationship.FactionInstanceIdA,
-            FactionInstanceIdB = relationship.FactionInstanceIdB,
-            RelationshipType   = relationship.RelationshipType,
-            Strength           = relationship.Strength,
-            CreatedAt          = relationship.CreatedAt,
-            DmUserId           = relationship.DmUserId,
-        });
-    }
-
-    [HttpDelete("{id}/factions/{factionInstanceId}/relationships/{relationshipId}")]
-    public async Task<IActionResult> RemoveFactionRelationship(Guid id, Guid factionInstanceId, Guid relationshipId)
-    {
-        if (!await CallerCanView(id)) return Forbid();
-        await removeFactionRelationshipCommand.HandleAsync(relationshipId);
-        return NoContent();
-    }
-
-    // ── DM: faction symbol assignment ──────────────────────────────────────────
-
-    [HttpPatch("{id}/sublocations/{instanceId}/faction-symbol")]
-    [Authorize(Roles = "DM,Admin")]
-    public async Task<IActionResult> AssignFactionToSublocation(Guid id, Guid instanceId,
-        [FromBody] AssignFactionToSublocationRequest request)
-    {
-        if (!await CallerOwns(id)) return Forbid();
-        request.DmUserId = userRetriever.GetUserId(User);
-        await assignFactionToSublocationCommand.HandleAsync(
-            new AssignFactionToSublocationCommand(id, instanceId, request));
-
-        return NoContent();
-    }
-
-    [HttpPatch("{id}/casts/{instanceId}/faction-symbols")]
-    [Authorize(Roles = "DM,Admin")]
-    public async Task<IActionResult> AssignFactionsToCast(Guid id, Guid instanceId,
-        [FromBody] AssignFactionToCastRequest request)
-    {
-        if (!await CallerOwns(id)) return Forbid();
-        request.DmUserId = userRetriever.GetUserId(User);
-        await assignFactionToCastCommand.HandleAsync(
-            new AssignFactionToCastCommand(id, instanceId, request));
-
-        return NoContent();
-    }
-
-    // ── Player: faction symbol assignment ──────────────────────────────────────
-
-    [HttpPatch("{id}/sublocations/{instanceId}/player-faction-symbol")]
-    [Authorize]
-    public async Task<IActionResult> AssignPlayerFactionToSublocation(Guid id, Guid instanceId,
-        [FromBody] AssignFactionToSublocationRequest request)
-    {
-        if (!await CallerCanView(id)) return Forbid();
-        request.DmUserId = null;
-        await assignFactionToSublocationCommand.HandleAsync(
-            new AssignFactionToSublocationCommand(id, instanceId, request));
-
-        var factionInstanceId = request.FactionInstanceId?.ToString() ?? string.Empty;
-        await hubContext.Clients.Group(id.ToString()).SendAsync("FactionSymbolAssigned", new
-        {
-            campaignId = id.ToString(),
-            instanceId = instanceId.ToString(),
-            entityType = "sublocation",
-            factionInstanceIds = string.IsNullOrEmpty(factionInstanceId) ? new List<string>() : new List<string> { factionInstanceId },
-            tickCount = DateTime.UtcNow.Ticks
-        });
-
-        return NoContent();
-    }
-
-    [HttpPatch("{id}/casts/{instanceId}/player-faction-symbols")]
-    [Authorize]
-    public async Task<IActionResult> AssignPlayerFactionsToCast(Guid id, Guid instanceId,
-        [FromBody] AssignFactionToCastRequest request)
-    {
-        if (!await CallerCanView(id)) return Forbid();
-        request.DmUserId = null;
-        await assignFactionToCastCommand.HandleAsync(
-            new AssignFactionToCastCommand(id, instanceId, request));
-
-        await hubContext.Clients.Group(id.ToString()).SendAsync("FactionSymbolAssigned", new
-        {
-            campaignId = id.ToString(),
-            instanceId = instanceId.ToString(),
-            entityType = "cast",
-            factionInstanceIds = request.FactionSymbols.Select(s => s.FactionInstanceId).ToList(),
-            tickCount = DateTime.UtcNow.Ticks
-        });
-
-        return NoContent();
-    }
 }
 
 

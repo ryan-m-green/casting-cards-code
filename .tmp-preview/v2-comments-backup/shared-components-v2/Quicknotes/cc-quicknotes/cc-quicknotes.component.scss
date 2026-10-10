@@ -1,0 +1,339 @@
+@use '../../../../../../styles/variables' as v;
+@use '../../variables-v2' as v2;
+
+/*
+ * The quicknotes area's own styles. The area is a whole grid cell — a viewport of its own, with the
+ * shell's title over it — so it lays itself out: the note's box at the top, the queue under it, and
+ * the queue alone scrolls. The grid's canvas never scrolls (its own 3x3 is moved about), so the
+ * queue has to take the height that is left and scroll inside it.
+ */
+
+:host {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.qn-area {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  /*
+   * The shell's own title stands over the top of the area in the flow, so the top padding clears it
+   * (as the encounter builder's does). The area's box is a full viewport tall while its last ~30px
+   * fall past the grid cell's own edge, which is clipped (see `.grid-area`'s overflow), so the
+   * bottom padding is generous: what shows below the last line is what is left of it once clipped.
+   */
+  padding: 56px clamp(12px, 4vw, 48px) 48px;
+  box-sizing: border-box;
+}
+
+/* ── The note as it is written ────────────────────────────────────────────── */
+.qn-compose {
+  flex: 0 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.qn-textarea {
+  width: 100%;
+  padding: 8px 10px;
+  background: v.$color-base-black;
+  border: 1px solid v.$color-lib-location-1;
+  border-radius: 3px;
+  color: v.$color-base-mist-blue;
+  font-family: v2.$font-v2-components;
+  font-size: 14px;
+  line-height: 1.5;
+  resize: none;
+  box-sizing: border-box;
+  outline: none;
+
+  &::placeholder { color: v.$color-lib-location-1; }
+
+  &:disabled { opacity: 0.6; }
+}
+
+.qn-compose-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.qn-hint {
+  color: v.$campaign-portal-text-muted;
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+/* ── Notices ──────────────────────────────────────────────────────────────── */
+.qn-notice {
+  margin: 0;
+  color: v.$campaign-portal-text-lavender;
+  font-size: 12px;
+}
+
+.qn-error {
+  margin: 0;
+  color: #f87171;
+  font-size: 12px;
+}
+
+/* ── The queue ────────────────────────────────────────────────────────────── */
+.qn-queue-head {
+  flex: 0 0 auto;
+}
+
+.qn-section {
+  color: v.$campaign-portal-text-lavender;
+  font-family: v.$font-header;
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+/* What is left of the area once the box and its own head are laid out: it is this that scrolls. */
+.qn-queue {
+  flex: 1 1 0;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+  padding-right: 4px; // the scrollbar's own gutter, so lines do not sit under it
+  scrollbar-width: thin;
+  scrollbar-color: rgba(167, 121, 233, 0.4) transparent;
+}
+
+.qn-empty {
+  margin: 0;
+  padding: 12px 0;
+  color: v.$campaign-portal-text-muted;
+  font-size: 13px;
+  text-align: center;
+}
+
+.qn-item {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 10px 12px;
+  background: v.$campaign-portal-bg-dark;
+  border: 1px solid v.$campaign-portal-border-bold;
+  border-radius: 6px;
+
+  &--busy { opacity: 0.7; }
+}
+
+.qn-text {
+  margin: 0;
+  color: v.$campaign-portal-text-bright;
+  font-family: v2.$font-v2-components;
+  font-size: 14px;
+  line-height: 1.5;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere; // a long word keeps to its own line rather than widening the area
+}
+
+/* The cards the note is linked to: the hashtags it will travel under. */
+.qn-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.qn-chip {
+  padding: 2px 8px;
+  border: 1px solid v.$campaign-portal-border-bold;
+  border-radius: 999px;
+  color: v.$campaign-portal-text-lavender;
+  font-family: v.$font-body;
+  font-size: 11px;
+}
+
+.qn-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.qn-time {
+  color: v.$campaign-portal-text-muted;
+  font-size: 11px;
+}
+
+.qn-switch {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+}
+
+.qn-switch-text {
+  color: v.$campaign-portal-text-muted;
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+/* ── A line's own buttons ─────────────────────────────────────────────────── */
+.qn-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.qn-actions-spacer {
+  flex: 1 1 auto;
+}
+
+.qn-btn {
+  min-height: 32px;
+  padding: 6px 12px;
+  background: v.$color-ext-22;
+  border: 1px solid v.$campaign-portal-border-bold;
+  border-radius: 6px;
+  color: v.$campaign-portal-text-bright;
+  font-family: v.$font-header;
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+
+  &:hover:not(:disabled) { background: v.$campaign-portal-border-accent; }
+
+  &:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+  }
+
+  /*
+   * The square control the line's icons wear: one icon and no words, its width matching its
+   * height, so a row of them reads as a row of controls rather than a row of text.
+   *
+   * It is a flex box so that its art sits dead centre of it: the art is a block box of its own
+   * (see .qn-btn-icon), and a plain button's own text-align cannot centre a block. It is also
+   * what makes the control the same height whether the art is a square, a card or a book.
+   */
+  &--icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    position: relative; // the linked-count badge sits on the corner
+    width: 32px;
+    min-width: 32px;
+    padding: 0;
+  }
+
+  /* The one that sends the note on: the campaign's own colour, so the go stands apart. */
+  &--primary {
+    border-color: color-mix(in srgb, var(--portal-color, #{v.$color-base-purple-primary}) 65%, transparent);
+
+    &:hover:not(:disabled) {
+      background: color-mix(in srgb, var(--portal-color, #{v.$color-base-purple-primary}) 28%, transparent);
+    }
+  }
+
+  /* On its way to the chronicles: the control is held, and says so in its own label. */
+  &--busy { opacity: 0.6; }
+}
+
+/* The icon buttons' art: flattened to pure white, as the shell's own icons are. */
+.qn-btn-icon {
+  display: block;
+  width: 18px;
+  height: 18px;
+  filter: brightness(0) invert(1);
+  opacity: 0.85;
+}
+
+/* How many cards the note wears, riding on the link button's corner. */
+.qn-btn-count {
+  position: absolute;
+  top: -6px;
+  right: -6px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 16px;
+  height: 16px;
+  padding: 0 3px;
+  background: var(--portal-color, #{v.$color-base-purple-primary});
+  border: 1px solid rgba(0, 0, 0, 0.45);
+  border-radius: 8px;
+  color: #fff;
+  font-family: v.$font-body;
+  font-size: 10px;
+  font-weight: 700;
+  line-height: 1;
+}
+
+/*
+ * The queue's own controls, shared: the delete control (cc-delete-button) raises its dagger with ✕ and
+ * Delete as its answer, and the edit control (cc-edit-button) is the shell's repair tools. Both take
+ * their sizes in as custom properties, so each is set to this row's own button size.
+ */
+.qn-actions cc-delete-button {
+  --cc-delete-size: 32px;
+  --cc-delete-icon-size: 18px;
+  --cc-delete-font-size: 12px;
+}
+
+.qn-actions cc-edit-button {
+  --cc-edit-size: 32px;
+  --cc-edit-icon-size: 18px;
+}
+
+/* ── Phones ───────────────────────────────────────────────────────────────── */
+/*
+ * The area is the whole viewport on a phone, so every control has to be reachable by thumb: the
+ * buttons take a full touch target, and the note's box is set at 16px so the phone does not zoom in
+ * on it when it is focused. The bottom padding also clears the phone's own safe area.
+ */
+@media (max-width: 767px) {
+  .qn-area {
+    padding: 52px 12px calc(44px + env(safe-area-inset-bottom, 0px));
+    gap: 8px;
+  }
+
+  .qn-textarea { font-size: 16px; }
+
+  .qn-btn { min-height: 44px; }
+
+  /* A thumb needs the square controls as wide as they are tall, and their art a size bigger. */
+  .qn-btn--icon {
+    width: 44px;
+    min-width: 44px;
+  }
+
+  .qn-btn-icon {
+    width: 22px;
+    height: 22px;
+  }
+
+  .qn-actions cc-delete-button {
+    --cc-delete-size: 44px;
+    --cc-delete-icon-size: 22px;
+    --cc-delete-font-size: 13px;
+  }
+
+  .qn-actions cc-edit-button {
+    --cc-edit-size: 44px;
+    --cc-edit-icon-size: 22px;
+  }
+
+  .qn-item { padding: 10px; }
+}

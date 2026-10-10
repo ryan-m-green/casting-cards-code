@@ -1,0 +1,167 @@
+<div class="faction-detail-content">
+  <!-- Card title (above the edit button) -->
+  @if (editing()) {
+    <div class="detail-block">
+      <app-cc-textbox
+        label="Faction Name"
+        placeholder="Faction name…"
+        context="campaign"
+        [(ngModel)]="editName"
+      />
+    </div>
+  } @else {
+    <div class="detail-header">
+      <h2 class="detail-title">{{ currentFaction().name }}</h2>
+      <span class="detail-subtitle">{{ alignment() }}</span>
+    </div>
+  }
+
+  <!--
+    Panel actions. The editor is the GM's own: a player is handed the panel to read, so they are
+    offered only the way out of it.
+  -->
+  <cc-detail-panel-actions
+    [isDm]="isDm()"
+    [editing]="editing()"
+    [detailExpanded]="false"
+    (startEditingClick)="startEditing()"
+    (saveDetailsClick)="saveDetails()"
+    (saveToLibraryClick)="saveToLibrary()"
+    (cancelEditingClick)="cancelEditing()"
+    (closeClick)="closePanel()"
+  />
+
+  <!-- Detail tabs -->
+  <div class="detail-tabs">
+    <button class="detail-tab" type="button"
+            [class.detail-tab--active]="activeTab() === 'details'"
+            (click)="setTab('details')">Details</button>
+    <button class="detail-tab" type="button"
+            [class.detail-tab--active]="activeTab() === 'secrets'"
+            (click)="setTab('secrets')">Secrets</button>
+  </div>
+
+  @if (activeTab() === 'details') {
+  <div class="detail-content-body">
+    <!-- Type -->
+    <div class="detail-block">
+      @if (editing()) {
+        <app-cc-textbox
+          label="Type"
+          placeholder="Type…"
+          context="campaign"
+          [(ngModel)]="editType"
+        />
+      } @else {
+        <span class="detail-block-label">Type</span>
+        <p class="detail-block-content">{{ currentFaction().type || '—' }}</p>
+      }
+    </div>
+
+    <!-- Description -->
+    @if (editing() || hasField(currentFaction().description)) {
+      <div class="detail-block">
+        @if (editing()) {
+          <app-cc-textbox
+            label="Description"
+            type="textarea"
+            [rows]="4"
+            placeholder="Description…"
+            context="campaign"
+            [(ngModel)]="editDescription"
+          />
+        } @else {
+          <span class="detail-block-label">Description</span>
+          <p class="detail-block-content">{{ currentFaction().description }}</p>
+        }
+      </div>
+    }
+
+    <!-- Faction Colors + Perception -->
+    <div class="detail-block">
+      <cc-faction-colors
+        label="Faction Colors"
+        context="campaign"
+        [disabled]="!isDm()"
+        [hideColorPickers]="!editing()"
+        [goodColor]="goodColor()"
+        (goodColorChange)="goodColor.set($event)"
+        [evilColor]="evilColor()"
+        (evilColorChange)="evilColor.set($event)"
+        [perception]="perception()"
+        (perceptionChange)="onPerception($event)"
+      />
+    </div>
+
+    <!-- Political Influence -->
+    <div class="detail-block">
+      <cc-political-influence
+        label="Political Influence"
+        context="campaign"
+        [disabled]="!isDm()"
+        [influence]="influence()"
+        (influenceChange)="onInfluence($event)"
+      />
+    </div>
+
+    <!-- In Hiding: the DM's to set in the editor; a player reads it. -->
+    <div class="detail-block detail-block--toggle">
+      <span class="detail-block-label">In Hiding</span>
+      <app-toggle-switch
+        [checked]="hidden()"
+        (checkedChange)="onHidden($event)"
+        [disabled]="!isDm() || !editing()"
+        label="In Hiding"
+      />
+    </div>
+
+    <!-- Faction Relationships: the viewer's web of alliances and enmities. -->
+    @if (campaignId()) {
+      <div class="detail-block">
+        <cc-faction-associations
+          [relationships]="factionRelationships()"
+          [otherFactions]="otherFactions()"
+          [currentFactionInstanceId]="factionInstanceId"
+          [isDm]="isDm()"
+          (removeRelationship)="removeRelationship($event)"
+          (saveRelationship)="saveRelationship($event)"
+        />
+      </div>
+    }
+
+    <!-- GM Notes: the GM's own, drawn for them alone. -->
+    @if (isDm() && (editing() || hasField(currentFaction().dmNotes))) {
+      <div class="detail-block">
+        @if (editing()) {
+          <app-cc-textbox
+            label="GM Notes"
+            type="textarea"
+            [rows]="4"
+            placeholder="Jot down whatever is on your mind…"
+            context="campaign"
+            [(ngModel)]="editDmNotes"
+          />
+        } @else {
+          <span class="detail-block-label">GM Notes</span>
+          <p class="detail-block-content">{{ currentFaction().dmNotes || '—' }}</p>
+        }
+      </div>
+    }
+  </div>
+  } @else {
+  <div class="detail-content-body">
+    <!--
+      The card's secrets. The GM works the lock here; a player sees the ones that have been
+      revealed to them and nothing else (see cc-secrets-manager, which reads the ones a player may
+      see when it is not handed the GM's own).
+    -->
+    <cc-secrets-manager
+      [cardType]="'faction'"
+      [campaignId]="campaignId()"
+      [instanceId]="factionInstanceId"
+      [context]="'campaign'"
+      [isDm]="isDm()"
+    />
+  </div>
+  }
+</div>

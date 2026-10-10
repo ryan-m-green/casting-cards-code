@@ -1,0 +1,689 @@
+@use '../../../../../../styles/variables' as v;
+
+/**
+ * The soft glow the three marks at the foot of the breadcrumb's card wear: the same silver the tree is
+ * drawn in, read as light laid on the board. The line itself, its measure and the stands it is drawn
+ * in all belong to cc-tree-joint now — the glow is the one thing about the foot's marks that is the
+ * foot's own business rather than the marker's (see the filter below).
+ */
+$tree-line-glow: rgba(v.$color-base-mist-blue, 0.45);
+
+.cc-card-navigation {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 70%; // 80% of screen width in desktop
+  overflow: hidden;
+  /*
+   * Above the shell's own black blockers (.rolodex-box-blocker-left/right — 1001, and shown from
+   * 1024px up), which stand in this same grid area and, at laptop widths, reach a few pixels past
+   * this box's ends. The box's own ends come to rest exactly there, so the rows it holds have to be
+   * drawn over them: and because the `transform` above makes this component a stacking context of
+   * its own, no z-index inside it can rise above anything outside it — the lift has to be made here,
+   * at the root. It carries the whole box up together (its rows and its foot), which is what stops the
+   * shell's blockers shaving the row's own ends as well. The shell's own pair of black bars is
+   * drawn above this box (see .rolodex-box-frame-* in v2-campaign-shell), and the shell's radial
+   * nav (100001) and the portal's border (100000) still stand over everything.
+   */
+  z-index: 1002;
+  display: flex;
+  flex-direction: column;
+  
+  @media (max-width: 1024px) {
+    width: 100%; // Full width on tablet/mobile
+  }
+  
+  &.loading {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  &.error {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #ff6b6b;
+  }
+}
+
+.loading-state,
+.error-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  text-align: center;
+  
+  button {
+    margin-top: 1rem;
+    padding: 0.5rem 1rem;
+    background: #6e28d0;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    
+    &:hover {
+      background: #5a23b0;
+    }
+  }
+}
+
+.spinner {
+  width: 40px;
+  height: 40px;
+  border: 4px solid rgba(110, 40, 208, 0.3);
+  border-top-color: #6e28d0;
+  border-radius: 50%;
+}
+
+/* Rolodex Container */
+.rolodex-container {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 0; // Remove gap to let row heights control spacing
+  z-index: 1;
+  // Hide content that overflows the 80% width with fade effect on both sides
+  mask-image: linear-gradient(to right, transparent 1%, black 50%, black 99%, transparent 100%);
+  -webkit-mask-image: linear-gradient(to right, transparent 1%, black 1%, black 99%, transparent 100%);
+}
+
+/* Rows Wrapper - Contains middle row for Swiper */
+.rows-wrapper {
+  width: 100%;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+/* A delete that did not land, under the row it was aimed at. */
+.nav-delete-error {
+  margin: 8px 0 0;
+  color: #f87171;
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  text-align: center;
+}
+
+/* Dropzones Layer */
+.dropzones-layer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 5;
+}
+
+/* Dropzones */
+.dropzone {
+  position: absolute;
+  border: 2px solid red;
+  background-color: rgba(255, 0, 0, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  color: red;
+  font-weight: bold;
+}
+
+/* Middle Row Dropzones - Same size as full cards (150x220px) */
+.middle-row-dropzone {
+  width: 150px;
+  height: 220px;
+  top: 0; /* Aligned to top of slide content */
+}
+
+/* Bottom Row Dropzones - Same size as simple cards (75x110px) */
+.bottom-row-dropzone {
+  width: 75px;
+  height: 110px;
+  top: 244px; /* 220px card + 24px gap */
+}
+
+/* Row Styles */
+.row {
+  width: 100%;
+  box-sizing: border-box;
+  position: relative;
+}
+
+/* Top Row - Previously Viewed Cards */
+.top-row {
+  flex: 0 0 auto;
+  min-height: 120px;
+
+  .cards-row {
+    column-gap: 24px; // Match middle row gap
+    align-items: center; // Center vertically
+    justify-content: center; // Center cards horizontally
+  }
+}
+
+/*
+ * The three marks at the foot of the location card the realm has been walked into: one cc-tree-joint
+ * (see that component, and the stands it takes) stood on that card's base three times over — one on
+ * its bottom-left corner with its run turned out down and left (`stand="corner-left"`), one on the
+ * middle of its bottom border running straight down (`stand="box"`), one on its bottom-right corner
+ * turned out down and right (`stand="corner-right"`) — so the row under the breadcrumb is drawn as
+ * the tree of cards hanging off that one location, and the card itself as the node every one of those
+ * cards is reached through.
+ *
+ * They are drawn outside the row itself (see the template) on purpose. The row fades its own edges
+ * away with the mask on .rolodex-container, and a mark crossing that fade would be thinned to
+ * nothing long before it reached the row's own ends; out here they stand on the card's own base, in
+ * the gap between the rows, where no fade reaches them. The shell's black bars are drawn over this
+ * whole component (see .rolodex-box-frame-* in v2-campaign-shell), and the card stands well in from
+ * the box's ends, so it is those bars' own fade and not their cut that an outward run comes up
+ * against.
+ *
+ * They have to stand on the deepest card of the breadcrumb row, and that card's centre is not the
+ * row's own: each of the row's two cards stands half a card plus half the drop-zone gap (37.5px +
+ * 12px = 49.5px) clear of the component's centre — the location card to its left, the sublocation card
+ * to its right, the pair being centred together. This box is therefore the card's own 75px, hung 87px
+ * left of the component's centre: that 49.5px to the card's middle, less its own half. The marks are
+ * held inside that one card's width, so no rule for them has to know which of the row's two slots the
+ * card stands in.
+ *
+ * The box's top is the card's bottom border: the row's 120px less the 5px it leaves under its 110px
+ * card, plus that card — 115px down the component. Each mark is given this box as its own stand
+ * (`stand="box"` for the one under the middle, and the two corner stands beside it), and the marks
+ * are 24px deep, the measure the joints under the middle row's cards take (`.slide-content`'s own
+ * gap), falling in that same gap between the rows: the cards below start 138px down.
+ */
+.tree-foot {
+  position: absolute;
+  top: 115px;
+  /*
+   * The card's own box, and the marks are held inside it: the two that stand on its corners measure
+   * off its own edges rather than off the component's, so the row's other slot needs no rule here.
+   * Its left edge is 87px left of the component's middle — the card's own centre 49.5px in from it,
+   * less the card's half — and below 1024px, where the component is the whole screen, that is the
+   * same 87px inside the portal's border.
+   */
+  left: calc(50% - 87px);
+  width: 75px;
+  height: 24px;
+  /*
+   * Over the row (z-index 1): the card's own shadow reaches down into that gap and the row's first
+   * pixels are drawn above it, so the marks' feet have to hold over both.
+   */
+  z-index: 1001;
+  /* A line drawn over the board: never a thing to click. */
+  pointer-events: none;
+  /* The same soft glow the line has always been drawn with: the marks read as light on the board.
+     Their own colour is cc-tree-joint's; this filter reaches them as their container. */
+  filter: drop-shadow(0 0 5px $tree-line-glow);
+
+  /*
+   * With a sublocation standing on the breadcrumb, the deepest card of the row is that sublocation,
+   * one walk further in — so the row under these marks is the casts hanging off *it* rather than the
+   * cards beside the location. All three therefore move right onto the sublocation's own base: half
+   * a card plus half the gap, the other way, less the card's own half, which is 12px right of the
+   * component's own middle. The two cards themselves are tied to one another by the sideways marker
+   * in the row (see cc-tree-joint's side stand).
+   */
+  &.tree-foot--deepest { left: calc(50% + 12px); }
+}
+
+/* Middle Row - Active Cards */
+.middle-row {
+  flex: 0 0 auto;
+  height: auto;
+  min-height: calc(380px + 2rem); // card 220 + gap 24 + stack 110 + buffer 26, and the headroom below
+  /*
+   * The row's headroom: the reveal spotlight's light stands over the card (see cc-card-spotlight),
+   * and a swiper clips its own slides — so this row's clip has to reach up over that light, or the
+   * fairy at the beam's source is cut off at the top. The padding lifts the row's own top edge by
+   * 2rem, the margin takes the same back off the layout so every card stays exactly where it was,
+   * and the min-height carries the 2rem too, so the rows under this one are handed the same space
+   * they always were.
+   */
+  margin-top: -2rem;
+  padding: 2rem 2rem 0;
+
+  .cards-row {
+    gap: 24px;
+    align-items: center; // Cards centered vertically
+  }
+}
+
+/* Bottom Row - Next Level Cards */
+.bottom-row {
+  flex: 0 0 auto;
+  height: 160px; // same vertical space as top-row for balance
+  padding: 0 2rem; // Only left and right padding
+  opacity: 0.7;
+
+  .cards-row {
+    gap: 24px; // Match middle row gap
+    align-items: flex-start; // Cards at top to reduce visual gap with middle row
+  }
+}
+
+/* Swiper Container on individual rows */
+.swiper {
+  width: 100%;
+  height: auto; // height comes from slide content, not fixed
+  overflow: hidden;
+}
+
+/* Swiper Wrapper */
+.swiper-wrapper {
+  display: flex;
+  height: 100%;
+  flex-direction: row;
+  position: relative;
+  padding-top:6px;
+}
+
+/* Swiper Slide */
+.swiper-slide {
+  box-sizing: border-box;
+  flex: 0 0 auto;
+  width: 174px; /* outer width: 12px padding + 150px card + 12px padding */
+  height: auto;
+  display: flex;
+  align-items: flex-start; // keep card at top of slide so active card stays centered
+  justify-content: center; // center slide content horizontally
+  flex-shrink: 0;
+  padding: 0 12px;
+  margin-top:12px;
+}
+
+/* Slide content container */
+.slide-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 24px;
+}
+
+/*
+ * Bottom row content within slide: the row's own cards, and the cc-tree-joint the card above them
+ * hangs from (see that component). The marker hangs in this element's own 24px gap, measured off its
+ * own top edge, and its box is this element's whole width — so it falls on the card's own middle
+ * wherever the two are drawn.
+ */
+.bottom-row-content {
+  position: relative;
+}
+
+/* Cards Row */
+.cards-row {
+  display: flex;
+  height: 100%;
+  min-width: max-content;
+}
+
+/* Card Wrappers */
+.card-wrapper {
+  flex: 0 0 auto;
+  /* A card's own overlays are placed against the card itself — the reveal spotlight, say, which
+     is exactly the card's box (see cc-card-spotlight). */
+  position: relative;
+}
+
+/* Top Row Cards - Simple card size */
+.top-row-card {
+  margin: 0 37.5px; // Center 75px simple card within 150px location card width: (150-75)/2 = 37.5px
+}
+
+/* Middle Row Cards - Normal size, full opacity */
+
+/* Drop zone container for centered positioning */
+.drop-zone-container {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  gap: 24px;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Drop spots for card positioning - match cc-simple-location-card size and center over 2nd row location cards */
+.drop-spot {
+  width: 75px; // Match cc-simple-location-card width
+  height: 110px; // Match cc-simple-location-card height
+  margin: 0; // Remove margins to let container gap control spacing
+  flex: 0 0 auto;
+  pointer-events: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+/* Cards within dropzones */
+.drop-spot .top-row-card {
+  opacity: 1;
+  pointer-events: auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  cursor: pointer;
+}
+
+/* Sublocation Stack Wrapper */
+.sublocation-stack-wrapper {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex: 0 0 auto;
+  width: 75px; // Match simple card width
+  height: 110px; // Match simple card height
+  margin: 0 37.5px; // Center 75px simple card within 150px location card width: (150-75)/2 = 37.5px
+}
+
+/* Empty placeholder for alignment */
+.empty-placeholder {
+  visibility: hidden;
+  pointer-events: none;
+}
+
+/* Sublocation Stack */
+.sublocation-stack {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  cursor: pointer;
+  pointer-events: auto;
+}
+
+/* Sublocation Card Wrapper */
+.sublocation-card-wrapper {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 75px; // Match simple card width
+  height: 110px; // Match simple card height
+  opacity: 0.6;
+  filter: grayscale(0.5);
+  pointer-events: none;
+}
+
+/* Cast Stack Wrapper */
+.cast-stack-wrapper {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex: 0 0 auto;
+  width: 75px; // Match simple card width
+  height: 110px; // Match simple card height
+  margin: 0 37.5px; // Center 75px simple card within 150px location card width: (150-75)/2 = 37.5px
+}
+
+/* Cast Stack */
+.cast-stack {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  cursor: pointer;
+  pointer-events: auto;
+}
+
+/* Cast Card Wrapper */
+.cast-card-wrapper {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 75px; // Match simple card width
+  height: 110px; // Match simple card height
+  opacity: 0.6;
+  filter: grayscale(0.5);
+  pointer-events: none;
+}
+
+/*
+ * The ＋ that gives a location its first sublocation: it stands in the third-row slot where that
+ * location's sublocation stack would stand — between the middle row's card and the row the stack
+ * belongs to — and fills the stack wrapper's own 75 × 110, so the slot keeps the shape the stack
+ * takes once a card is in it. Same dashed dress, plus sign and label as the faction row's
+ * "New faction" tile.
+ */
+.sublocation-new {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  width: 100%;
+  height: 100%;
+  padding: 6px;
+  box-sizing: border-box;
+  background: transparent;
+  border: 1px dashed v.$campaign-portal-border-focus;
+  border-radius: 6px;
+  color: v.$campaign-portal-text-lavender;
+  cursor: pointer;
+  transition: border-color 0.15s ease, color 0.15s ease;
+
+  &:hover {
+    border-color: v.$campaign-portal-border-hover;
+    color: v.$campaign-portal-text-bright;
+  }
+}
+
+.sublocation-new-plus { font-size: 20px; line-height: 1; }
+
+.sublocation-new-label {
+  font-size: 8px;
+  letter-spacing: 0.08em;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+/*
+ * The ＋ that gives a sublocation its first cast: the same tile one level down, standing where
+ * that sublocation's cast stack would stand and filling the stack wrapper's 75 × 110.
+ */
+.cast-new {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  width: 100%;
+  height: 100%;
+  padding: 6px;
+  box-sizing: border-box;
+  background: transparent;
+  border: 1px dashed v.$campaign-portal-border-focus;
+  border-radius: 6px;
+  color: v.$campaign-portal-text-lavender;
+  cursor: pointer;
+  transition: border-color 0.15s ease, color 0.15s ease;
+
+  &:hover {
+    border-color: v.$campaign-portal-border-hover;
+    color: v.$campaign-portal-text-bright;
+  }
+}
+
+.cast-new-plus { font-size: 20px; line-height: 1; }
+
+.cast-new-label {
+  font-size: 8px;
+  letter-spacing: 0.08em;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+/*
+ * The tiles at the end of a row: a card-sized ＋ that opens the picker for the row it stands in,
+ * in the same dashed dress as the empty third-row slots' own tiles. They are given the full
+ * card's measurements (the same `$card-width` × `$card-height` the card's host takes) rather than
+ * a percentage: `.slide-content` is a shrink-to-fit flex item, so a percentage would resolve
+ * against its own content and leave the tile narrower than the card beside it.
+ *
+ * The first of them, at the end of the locations row, is the realm's own "New faction" tile, one
+ * row over: the way another location joins the campaign.
+ */
+.location-add,
+.sublocation-add,
+.cast-add {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: v.$card-width;
+  height: v.$card-height;
+  flex: 0 0 auto;
+  padding: 8px;
+  box-sizing: border-box;
+  background: transparent;
+  border: 1px dashed v.$campaign-portal-border-focus;
+  border-radius: 6px;
+  color: v.$campaign-portal-text-lavender;
+  cursor: pointer;
+  transition: border-color 0.15s ease, color 0.15s ease, transform 0.2s ease;
+
+  &:hover {
+    border-color: v.$campaign-portal-border-hover;
+    color: v.$campaign-portal-text-bright;
+    transform: translateY(-6px);
+  }
+}
+
+.location-add-plus,
+.sublocation-add-plus,
+.cast-add-plus { font-size: 28px; line-height: 1; }
+
+.location-add-label,
+.sublocation-add-label,
+.cast-add-label {
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+// Mobile Responsive Design
+@media (max-width: 768px) {
+  .cc-card-navigation {
+    border-radius: 8px;
+    margin-top: 0; // No vertical shift on mobile
+  }
+  
+  .top-row,
+  .bottom-row {
+    padding: 0 1rem; // Only left and right padding on mobile
+
+    .cards-row {
+      gap: 16px; // Match mobile middle row gap
+    }
+  }
+
+  .top-row-card {
+    margin: 0 30px; // Mobile: center 60px simple card within 120px location card: (120-60)/2 = 30px
+  }
+
+  .sublocation-stack-wrapper {
+    margin: 0 30px; // Mobile: center 60px simple card within 120px location card: (120-60)/2 = 30px
+  }
+
+  .cast-stack-wrapper {
+    margin: 0 30px; // Mobile: center 60px simple card within 120px location card: (120-60)/2 = 30px
+  }
+  
+  .middle-row {
+    padding: 2rem 1rem 0; // sides, plus the headroom the spotlight's light needs over the cards
+    
+    .cards-row {
+      gap: 16px;
+    }
+  }
+
+  .sublocation-card-wrapper {
+    width: 60px; // Scaled down for mobile (80% of simple card)
+    height: 88px; // Scaled down for mobile (80% of simple card)
+  }
+
+  .sublocation-stack-wrapper {
+    width: 60px; // Scaled down for mobile (80% of simple card)
+    height: 88px; // Scaled down for mobile (80% of simple card)
+  }
+
+  .cast-card-wrapper {
+    width: 60px; // Scaled down for mobile (80% of simple card)
+    height: 88px; // Scaled down for mobile (80% of simple card)
+  }
+
+  .cast-stack-wrapper {
+    width: 60px; // Scaled down for mobile (80% of simple card)
+    height: 88px; // Scaled down for mobile (80% of simple card)
+  }
+}
+
+@media (max-width: 480px) {
+  .top-row,
+  .bottom-row {
+    padding: 0 0.75rem; // Only left and right padding on small mobile
+
+    .cards-row {
+      gap: 12px; // Match small mobile middle row gap
+    }
+  }
+
+  .top-row-card {
+    margin: 0 26.5px; // Small mobile: center 52px simple card within 105px location card: (105-52)/2 = 26.5px
+  }
+
+  .sublocation-stack-wrapper {
+    margin: 0 26.5px; // Small mobile: center 52px simple card within 105px location card: (105-52)/2 = 26.5px
+  }
+
+  .cast-stack-wrapper {
+    margin: 0 26.5px; // Small mobile: center 52px simple card within 105px location card: (105-52)/2 = 26.5px
+  }
+  
+  .middle-row {
+    padding: 2rem 0.75rem 0; // sides, plus the headroom the spotlight's light needs over the cards
+    
+    .cards-row {
+      gap: 12px;
+    }
+  }
+
+  .sublocation-card-wrapper {
+    width: 52px; // Further scaled down for small mobile (70% of simple card)
+    height: 77px; // Further scaled down for small mobile (70% of simple card)
+  }
+
+  .sublocation-stack-wrapper {
+    width: 52px; // Further scaled down for small mobile (70% of simple card)
+    height: 77px; // Further scaled down for small mobile (70% of simple card)
+  }
+
+  .cast-card-wrapper {
+    width: 52px; // Further scaled down for small mobile (70% of simple card)
+    height: 77px; // Further scaled down for small mobile (70% of simple card)
+  }
+
+  .cast-stack-wrapper {
+    width: 52px; // Further scaled down for small mobile (70% of simple card)
+    height: 77px; // Further scaled down for small mobile (70% of simple card)
+  }
+}

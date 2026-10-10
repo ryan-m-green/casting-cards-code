@@ -1,0 +1,62 @@
+@use '../../../../../../styles/variables' as v;
+
+.fights {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  padding: 56px 0 24px;
+  box-sizing: border-box;
+  overflow: hidden;
+  font-family: v.$font-body;
+}
+
+.stage {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 12px;
+  flex: 1;
+  min-height: 0;
+}
+
+.stage--circle {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  transition: opacity 0.7s ease;
+
+  &.is-entering { transition: opacity 1.4s ease; }
+
+  cc-encounter-circle {
+    flex: 1;
+    min-height: 0;
+  }
+}
+
+.encounter-banner {
+  position: absolute;
+  top: 12px;
+  left: 16px;
+  right: 16px;
+  z-index: 4;
+  pointer-events: none;
+  text-align: center;
+}
+
+.encounter-banner-turn {
+  color: v.$campaign-portal-text-bright;
+  font-size: 13px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.fights-error {
+  margin: 8px 0 0;
+  color: #ff9d9d;
+  font-size: 14px;
+  text-align: center;
+}

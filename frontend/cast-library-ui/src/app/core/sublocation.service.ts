@@ -33,7 +33,6 @@ export class SublocationService {
   }
 
   saveShopItems(campaignId: string, instanceId: string, currentShopItems: any[], editedShopItems: ShopItemData[]): Observable<CampaignSublocationInstance> {
-    // Map existing items by their properties to identify updates vs creates
     const existingItemMap = new Map<string, any>();
     console.log('SublocationService.saveShopItems - currentShopItems:', currentShopItems);
     console.log('SublocationService.saveShopItems - editedShopItems:', editedShopItems);
@@ -47,13 +46,11 @@ export class SublocationService {
 
     const operations: Observable<any>[] = [];
 
-    // Process edited items
     editedShopItems.forEach(editedItem => {
       const key = this.getItemKey(editedItem);
       const existingItem = existingItemMap.get(key);
 
       if (existingItem) {
-        // Update existing item, preserving isScratchedOff state
         operations.push(
           this.http.patch(
             `${environment.apiUrl}/api/campaigns/${campaignId}/sublocations/${instanceId}/shop-items/${existingItem.id}`,
@@ -65,9 +62,8 @@ export class SublocationService {
             }
           )
         );
-        existingItemMap.delete(key); // Mark as processed
+        existingItemMap.delete(key);
       } else {
-        // Create new item
         operations.push(
           this.http.post(
             `${environment.apiUrl}/api/campaigns/${campaignId}/sublocations/${instanceId}/shop-items`,
@@ -82,7 +78,6 @@ export class SublocationService {
       }
     });
 
-    // Delete items that were removed (those still in the map)
     const itemsToDelete = Array.from(existingItemMap.values());
     console.log('SublocationService.saveShopItems - itemsToDelete:', itemsToDelete);
     itemsToDelete.forEach(item => {
@@ -95,14 +90,11 @@ export class SublocationService {
 
     console.log('SublocationService.saveShopItems - total operations:', operations.length);
 
-    // Execute all operations and then fetch updated sublocation
     return new Observable(observer => {
       forkJoin(operations).subscribe({
         next: () => {
-          // Fetch updated sublocation data from server
           this.getSublocation(campaignId, instanceId).subscribe({
             next: (updatedSublocation) => {
-              // Update campaign state through shell service
               this.shellSvc.updateCampaign(campaign => {
                 if (!campaign) return campaign;
                 return {
@@ -134,10 +126,8 @@ export class SublocationService {
         {}
       ).subscribe({
         next: () => {
-          // Fetch updated sublocation data from server
           this.getSublocation(campaignId, instanceId).subscribe({
             next: (updatedSublocation) => {
-              // Update campaign state through shell service
               this.shellSvc.updateCampaign(campaign => {
                 if (!campaign) return campaign;
                 return {
@@ -169,10 +159,8 @@ export class SublocationService {
         details
       ).subscribe({
         next: () => {
-          // Fetch updated sublocation data from server
           this.getSublocation(campaignId, instanceId).subscribe({
             next: (updatedSublocation) => {
-              // Update campaign state through shell service
               this.shellSvc.updateCampaign(campaign => {
                 if (!campaign) return campaign;
                 return {

@@ -1,0 +1,638 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Bottom row layout preview - Encounters (bottom-left) + Field Notes (bottom-middle)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Crimson+Text:ital,wght@0,400;0,600;1,400&family=IM+Fell+English:ital@0;1&display=swap" rel="stylesheet">
+<style>
+  :root {
+    /* mirrors styles/_campaign-shell-vars.scss + styles/_variables.scss */
+    --portal: rgb(110, 40, 208);
+    --violet: rgb(167, 121, 233);
+    --border-light: rgba(167, 121, 233, 0.15);
+    --border: rgba(167, 121, 233, 0.2);
+    --border-strong: rgba(167, 121, 233, 0.4);
+    --text-aqua: rgba(0, 200, 255, 0.9);
+    --text-muted: rgba(180, 200, 220, 0.88);
+    --text-lavender: rgba(220, 200, 255, 0.95);
+    --font-header: 'Cinzel', serif;
+    --font-body: 'Crimson Text', serif;
+    --font-aside: 'IM Fell English', serif;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    padding: 34px 30px 60px;
+    background:
+      radial-gradient(1100px 620px at 50% -8%, rgba(110, 40, 208, 0.24), transparent 62%),
+      radial-gradient(760px 520px at 8% 108%, rgba(46, 26, 94, 0.55), transparent 60%),
+      #000;
+    color: var(--text-lavender);
+    font-family: var(--font-body);
+    font-size: 16px;
+    line-height: 1.5;
+    min-width: 1180px;
+  }
+
+  h1, h2, h3, h4 { font-family: var(--font-header); font-weight: 600; margin: 0; letter-spacing: 0.06em; }
+
+  .page-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 24px; margin-bottom: 22px; }
+  .page-head h1 { font-size: 26px; color: #fff; }
+  .page-head h1 span { color: var(--violet); }
+  .page-sub { margin: 6px 0 0; color: var(--text-muted); font-size: 15px; font-style: italic; font-family: var(--font-aside); }
+  .role-switch { display: flex; border: 1px solid var(--border-strong); border-radius: 999px; overflow: hidden; background: rgba(10, 5, 22, 0.7); }
+  .role-switch button {
+    appearance: none; border: 0; cursor: pointer;
+    padding: 9px 22px; background: transparent; color: var(--text-muted);
+    font-family: var(--font-header); font-size: 12px; letter-spacing: 0.14em; text-transform: uppercase;
+  }
+  .role-switch button.is-on { background: color-mix(in srgb, var(--portal) 60%, #000); color: #fff; }
+
+  /* ---------- the 9-area map ---------- */
+  .map { display: grid; grid-template-columns: repeat(3, 118px); gap: 8px; margin-bottom: 24px; }
+  .map-cell {
+    height: 62px; border: 1px solid var(--border-light); border-radius: 4px;
+    background: rgba(14, 8, 28, 0.75);
+    display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center;
+    font-size: 9.5px; letter-spacing: 0.08em; text-transform: uppercase; color: rgba(180, 200, 220, 0.55);
+    padding: 4px;
+  }
+  .map-cell b { font-family: var(--font-header); font-size: 10.5px; color: inherit; }
+  .map-cell.is-focus {
+    border-color: var(--border-strong);
+    background: color-mix(in srgb, var(--portal) 34%, rgba(14, 8, 28, 0.9));
+    color: #fff;
+    box-shadow: 0 0 18px rgba(110, 40, 208, 0.5), inset 0 0 20px rgba(167, 121, 233, 0.16);
+  }
+  .legend { display: flex; gap: 18px; margin: -12px 0 24px; font-size: 12px; color: var(--text-muted); }
+  .legend i { font-style: normal; color: var(--violet); }
+
+  /* ---------- the two screens ---------- */
+  .screens { display: grid; grid-template-columns: 1fr 1fr; gap: 26px; align-items: start; }
+
+  .screen {
+    position: relative;
+    aspect-ratio: 16 / 10;
+    border: 1px solid var(--border-strong);
+    border-radius: 6px;
+    background: #000;
+    overflow: hidden;
+    box-shadow: 0 24px 60px rgba(0, 0, 0, 0.75), inset 0 0 0 1px rgba(167, 121, 233, 0.08);
+  }
+  .screen::after {
+    content: ''; position: absolute; inset: 0; pointer-events: none;
+    box-shadow: inset 0 0 34px 6px color-mix(in srgb, var(--portal) 34%, transparent);
+  }
+  .screen-tag { position: absolute; top: 10px; left: 12px; z-index: 6; display: flex; align-items: baseline; gap: 8px; }
+  .screen-tag img { width: 24px; height: 24px; align-self: center; filter: drop-shadow(0 0 6px rgba(110, 40, 208, 0.8)); }
+  .screen-tag b { font-family: var(--font-header); font-size: 12.5px; letter-spacing: 0.12em; color: #fff; text-transform: uppercase; }
+  .screen-tag i { font-style: normal; font-size: 10.5px; color: var(--text-muted); letter-spacing: 0.06em; }
+
+  /* ---------- encounters: the live circle ---------- */
+  .turn-strip {
+    position: absolute; top: 40px; left: 0; right: 0; z-index: 5;
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+    font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--text-muted);
+  }
+  .turn-strip .dot { width: 7px; height: 7px; border-radius: 50%; background: rgba(0, 255, 150, 0.9); box-shadow: 0 0 10px rgba(0, 255, 150, 0.8); }
+  .turn-strip b { color: var(--text-aqua); font-weight: 600; }
+
+  .ring { position: absolute; inset: 66px 0 76px; display: flex; align-items: center; justify-content: center; }
+  .ring-band {
+    position: relative; height: 100%; aspect-ratio: 1 / 1; max-width: 100%;
+    border-radius: 50%;
+    border: 1px dashed rgba(167, 121, 233, 0.22);
+    background: radial-gradient(circle at 50% 50%, rgba(46, 26, 94, 0.42), transparent 68%);
+  }
+  .ring-core {
+    position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+    width: 88px; height: 88px; border-radius: 50%;
+    border: 1px solid var(--border-strong);
+    background: radial-gradient(circle at 50% 35%, rgba(110, 40, 208, 0.55), rgba(8, 4, 18, 0.92) 72%);
+    display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1px; text-align: center;
+  }
+  .ring-core small { font-size: 8.5px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--text-muted); }
+  .ring-core b { font-family: var(--font-header); font-size: 11.5px; color: #fff; letter-spacing: 0.06em; }
+
+  .node { position: absolute; transform: translate(-50%, -50%); display: flex; flex-direction: column; align-items: center; gap: 3px; }
+  .node-badge {
+    position: absolute; top: -11px; left: 50%; transform: translateX(-50%);
+    min-width: 20px; padding: 0 5px; border-radius: 999px;
+    border: 1px solid var(--border-strong);
+    background: rgba(8, 4, 18, 0.92);
+    font-family: var(--font-header); font-size: 9.5px; color: var(--text-lavender);
+  }
+  .mini-card {
+    width: 42px; height: 62px; border-radius: 3px; position: relative;
+    border: 1px solid rgba(167, 121, 233, 0.32);
+    background: linear-gradient(160deg, rgb(84, 56, 30), rgb(126, 92, 46), rgb(70, 46, 22));
+    box-shadow: 0 6px 14px rgba(0, 0, 0, 0.6);
+  }
+  .mini-card.is-player { background: linear-gradient(160deg, rgb(44, 26, 96), rgb(74, 52, 140), rgb(26, 14, 64)); }
+  .mini-card.is-down { filter: grayscale(1) brightness(0.55); }
+  .mini-card .flagnote, .mini-card .hp {
+    position: absolute; width: 14px; height: 14px; border-radius: 50%;
+    background: rgba(8, 4, 18, 0.95); border: 1px solid var(--border-strong);
+    font-size: 9px; line-height: 12px; text-align: center;
+  }
+  .mini-card .flagnote { left: -5px; bottom: -5px; border-color: rgba(0, 255, 150, 0.65); color: rgba(0, 255, 150, 0.95); }
+  .mini-card .hp { right: -5px; top: -5px; color: var(--text-aqua); }
+  .node.is-lit .mini-card { border-color: rgba(0, 200, 255, 0.85); box-shadow: 0 0 16px rgba(0, 200, 255, 0.45); }
+  .node.is-dim { opacity: 0.4; }
+  .node-label { font-size: 8.5px; letter-spacing: 0.05em; color: var(--text-muted); white-space: nowrap; max-width: 74px; overflow: hidden; text-overflow: ellipsis; }
+
+  .verbs {
+    position: absolute; left: 0; right: 0; bottom: 0; z-index: 6;
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+    padding: 10px 12px 12px;
+    background: linear-gradient(to top, rgba(4, 2, 10, 0.96), rgba(4, 2, 10, 0.5) 62%, transparent);
+  }
+  .verb {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 5px 13px; border-radius: 999px;
+    border: 1px solid color-mix(in srgb, var(--portal) 60%, rgba(255, 255, 255, 0.22));
+    background: color-mix(in srgb, var(--portal) 34%, rgba(10, 5, 20, 0.7));
+    color: #fff; font-size: 13px; letter-spacing: 0.04em;
+  }
+  .verb small { font-size: 9.5px; color: rgba(220, 200, 255, 0.75); letter-spacing: 0.08em; text-transform: uppercase; }
+  .verb.is-new { border-color: rgba(0, 200, 255, 0.5); background: rgba(0, 58, 88, 0.5); }
+  /* ---------- field notes: the collection ---------- */
+  .notes-head { position: absolute; top: 42px; left: 14px; right: 14px; z-index: 5; display: flex; align-items: center; gap: 8px; }
+  .chip {
+    padding: 3px 11px; border-radius: 999px; border: 1px solid var(--border);
+    background: rgba(10, 5, 20, 0.75); color: var(--text-muted);
+    font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase;
+  }
+  .chip.is-on { border-color: rgba(0, 200, 255, 0.5); color: #fff; background: rgba(0, 58, 88, 0.45); }
+  .tally { margin-left: auto; font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-muted); }
+
+  .trophies {
+    position: absolute; inset: 74px 14px 78px; z-index: 4;
+    display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px;
+    align-content: start;
+    overflow: hidden;
+  }
+  .trophy { position: relative; }
+  .trophy .face {
+    width: 100%; aspect-ratio: 150 / 220; border-radius: 3px;
+    border: 1px solid rgba(167, 121, 233, 0.3);
+    background: linear-gradient(160deg, rgb(84, 56, 30), rgb(126, 92, 46), rgb(70, 46, 22));
+    box-shadow: 0 8px 18px rgba(0, 0, 0, 0.6);
+  }
+  .trophy .face.is-player { background: linear-gradient(160deg, rgb(44, 26, 96), rgb(74, 52, 140), rgb(26, 14, 64)); }
+  .trophy.is-noted .face { border-color: rgba(0, 255, 150, 0.6); box-shadow: 0 0 14px rgba(0, 255, 150, 0.28); }
+  .trophy .count {
+    position: absolute; top: 3px; left: 3px;
+    padding: 1px 5px; border-radius: 999px; background: rgba(8, 4, 18, 0.8);
+    font-size: 9.5px; color: var(--text-lavender);
+  }
+  .trophy .where {
+    position: absolute; bottom: 3px; left: 2px; right: 2px;
+    font-size: 8.5px; text-align: center; color: rgba(150, 200, 255, 0.9);
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .notes-foot {
+    position: absolute; left: 0; right: 0; bottom: 0; z-index: 6;
+    display: flex; align-items: center; justify-content: space-between; gap: 10px;
+    padding: 10px 16px 12px;
+    background: linear-gradient(to top, rgba(4, 2, 10, 0.96), rgba(4, 2, 10, 0.35) 70%, transparent);
+    font-size: 11px; color: var(--text-muted);
+  }
+  .notes-foot b { font-family: var(--font-header); font-size: 11px; color: #fff; letter-spacing: 0.1em; text-transform: uppercase; }
+
+  /* ---------- workflow matrix ---------- */
+  .band { margin-top: 34px; }
+  .band h2 { font-size: 18px; color: #fff; margin-bottom: 4px; }
+  .band p.lede { margin: 0 0 14px; color: var(--text-muted); font-size: 14px; font-style: italic; font-family: var(--font-aside); }
+
+  table { width: 100%; border-collapse: collapse; font-size: 14px; }
+  th, td { text-align: left; vertical-align: top; padding: 9px 12px; border-bottom: 1px solid var(--border-light); }
+  th { font-family: var(--font-header); font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--violet); }
+  td.area { font-family: var(--font-header); font-size: 12px; color: #fff; white-space: nowrap; }
+  td.gm { color: rgba(220, 200, 255, 0.95); }
+  td.pl { color: rgba(0, 200, 255, 0.92); }
+  tr:hover td { background: rgba(110, 40, 208, 0.09); }
+
+  .cols { display: grid; grid-template-columns: 1fr 1fr; gap: 26px; margin-top: 30px; }
+  .card-panel {
+    border: 1px solid var(--border); border-radius: 6px; padding: 16px 18px;
+    background: rgba(14, 8, 28, 0.7);
+  }
+  .card-panel h3 { font-size: 14px; color: #fff; margin-bottom: 8px; }
+  .card-panel ul { margin: 0; padding-left: 18px; color: var(--text-muted); font-size: 14px; }
+  .card-panel li { margin-bottom: 7px; }
+  .card-panel li b { color: var(--text-lavender); font-weight: 600; }
+  .tag-new, .tag-have, .tag-want {
+    display: inline-block; margin-left: 6px; padding: 1px 7px; border-radius: 999px;
+    font-family: var(--font-header); font-size: 9.5px; letter-spacing: 0.1em; text-transform: uppercase;
+  }
+  .tag-have { border: 1px solid rgba(0, 255, 150, 0.5); color: rgba(0, 255, 150, 0.95); }
+  .tag-new  { border: 1px solid rgba(0, 200, 255, 0.5); color: rgba(0, 200, 255, 0.95); }
+  /* ---------- the four states of the player's Encounters room ---------- */
+  .states { display: grid; grid-template-columns: repeat(3, 1fr); gap: 22px; margin-top: 26px; }
+  .state {
+    position: relative; height: 320px; overflow: hidden;
+    border: 1px solid var(--border); border-radius: 6px; background: #000;
+    box-shadow: inset 0 0 26px 4px color-mix(in srgb, var(--portal) 24%, transparent);
+  }
+  .state h4 {
+    position: absolute; top: 9px; left: 11px; z-index: 5;
+    font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--violet);
+  }
+  .state-why {
+    position: absolute; bottom: 9px; left: 11px; right: 11px; z-index: 5;
+    font-size: 11px; line-height: 1.35; color: var(--text-muted);
+    font-style: italic; font-family: var(--font-aside);
+  }
+
+  .ledger { position: absolute; inset: 30px 11px 52px; display: flex; flex-direction: column; gap: 6px; overflow: hidden; }
+  .ledger-row {
+    display: grid; grid-template-columns: 9px 1fr auto; align-items: center; gap: 8px;
+    padding: 7px 9px; border: 1px solid var(--border-light); border-radius: 4px;
+    background: rgba(14, 8, 28, 0.62);
+  }
+  .ledger-row.is-live { border-color: rgba(0, 255, 150, 0.45); background: rgba(0, 48, 34, 0.32); }
+  .ledger-row.is-pick { border-color: rgba(0, 200, 255, 0.5); background: rgba(0, 52, 78, 0.3); }
+  .ledger-pip { width: 8px; height: 8px; border-radius: 50%; background: var(--violet); }
+  .ledger-row.is-live .ledger-pip { background: rgba(0, 255, 150, 0.95); box-shadow: 0 0 8px rgba(0, 255, 150, 0.8); }
+  .ledger-name { font-family: var(--font-header); font-size: 11.5px; color: #fff; }
+  .ledger-meta { font-size: 10.5px; color: var(--text-muted); }
+  .ledger-stats { font-size: 10.5px; text-align: right; color: rgba(150, 200, 255, 0.9); }
+  .ledger-view { font-size: 9.5px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-aqua); }
+
+  .mini-ring {
+    position: absolute; left: 50%; top: 52%; transform: translate(-50%, -50%);
+    width: 158px; height: 158px; border-radius: 50%;
+    border: 1px dashed rgba(167, 121, 233, 0.25);
+    background: radial-gradient(circle at 50% 50%, rgba(46, 26, 94, 0.4), transparent 68%);
+  }
+  .mini-ring > .mini-card {
+    position: absolute; width: 30px; height: 44px; border-radius: 2px;
+    transform: translate(-50%, -50%);
+  }
+  .state-flag {
+    position: absolute; top: 44%; left: 50%; transform: translate(-50%, -50%);
+    text-align: center; font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--text-aqua); z-index: 4;
+  }
+  .state-caption {
+    position: absolute; left: 11px; right: 11px; bottom: 44px; z-index: 5;
+    text-align: center; font-size: 11px; color: var(--text-lavender);
+  }
+</style>
+</head>
+<body>
+
+<header class="page-head">
+  <div>
+    <h1>Casting Cards <span>&middot; V2 shell, bottom row</span></h1>
+    <p class="page-sub">Two rooms, two jobs. The circle is the fight you are in; the collection is what you remember from it.</p>
+  </div>
+  <div class="role-switch">
+    <button type="button" class="is-on" data-role="player">Player</button>
+    <button type="button" data-role="dm">GM</button>
+  </div>
+</header>
+
+<div class="map">
+  <div class="map-cell">top-left<br><b>Quicknotes</b></div>
+  <div class="map-cell">top-middle<br><b>Day &amp; World</b></div>
+  <div class="map-cell">top-right<br><b>The Party</b></div>
+  <div class="map-cell">middle-left<br><b>Factions</b></div>
+  <div class="map-cell">middle-middle<br><b>Deck</b></div>
+  <div class="map-cell">middle-right<br><b>My Character</b></div>
+  <div class="map-cell is-focus">bottom-left<br><b>Encounters</b></div>
+  <div class="map-cell is-focus">bottom-middle<br><b>Field Notes</b></div>
+  <div class="map-cell">bottom-right<br><b>Inventory</b></div>
+</div>
+
+<p class="legend">
+  <span><i>&#9679;</i> bottom-left keeps one job: the fight that is running now.</span>
+  <span><i>&#9679;</i> bottom-middle keeps one job: every card the party met, and your notes on it.</span>
+</p>
+
+<div class="screens">
+
+  <!-- BOTTOM LEFT - ENCOUNTERS -->
+  <div class="screen" data-screen="encounters">
+    <div class="screen-tag">
+      <img src="../frontend/cast-library-ui/public/crossed_battle_axe_weapon.svg" alt="">
+      <b>Encounters</b><i>bottom-left</i>
+    </div>
+
+    <div class="turn-strip">
+      <span class="dot"></span> Round 3 &middot; turn 2 of 6 &middot; <b>Mirelle Vane</b>
+    </div>
+
+    <div class="ring">
+      <div class="ring-band">
+        <div class="ring-core">
+          <small>Held by the DM</small>
+          <b>Next</b>
+          <small>Goblin Skirmishers</small>
+        </div>
+
+        <div class="node is-lit" style="left:50%; top:6%">
+          <span class="node-badge">1</span>
+          <div class="mini-card is-player"><span class="hp">21</span></div>
+          <div class="node-label">Mirelle Vane</div>
+        </div>
+
+        <div class="node is-dim" style="left:88%; top:28%">
+          <span class="node-badge">2</span>
+          <div class="mini-card"><span class="hp">7</span><span class="flagnote">&#9998;</span></div>
+          <div class="node-label">Goblin Skirmishers</div>
+        </div>
+
+        <div class="node is-dim" style="left:88%; top:72%">
+          <span class="node-badge">3</span>
+          <div class="mini-card is-down"><span class="hp">0</span></div>
+          <div class="node-label">Sable Company</div>
+        </div>
+
+        <div class="node is-dim" style="left:50%; top:94%">
+          <span class="node-badge">4</span>
+          <div class="mini-card is-player is-down"><span class="hp">0</span></div>
+          <div class="node-label">Bran Tallow</div>
+        </div>
+
+        <div class="node is-dim" style="left:12%; top:72%">
+          <span class="node-badge">5</span>
+          <div class="mini-card"><span class="hp">12</span><span class="flagnote">&#9998;</span></div>
+          <div class="node-label">Rook &amp; Kestrel</div>
+        </div>
+
+        <div class="node is-dim" style="left:12%; top:28%">
+          <span class="node-badge">6</span>
+          <div class="mini-card"><span class="hp">9</span></div>
+          <div class="node-label">The Pale Choir</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="verbs">
+      <span class="verb">Note this card <small>tap a spot</small></span>
+      <span class="verb is-new">Jot it down <small>quicknote</small></span>
+      <span class="verb is-ghost">My card</span>
+      <span class="verb is-ghost">Ask the DM</span>
+    </div>
+  </div>
+
+  <!-- BOTTOM MIDDLE - FIELD NOTES -->
+  <div class="screen" data-screen="notes">
+    <div class="screen-tag">
+      <img src="../frontend/cast-library-ui/public/feather_quill_writing_tool.svg" alt="">
+      <b>Field Notes</b><i>bottom-middle</i>
+    </div>
+
+    <div class="notes-head">
+      <span class="chip is-on">All</span>
+      <span class="chip">Fought</span>
+      <span class="chip">Put down</span>
+      <span class="chip">Noted</span>
+      <span class="chip">Party</span>
+      <span class="tally">18 cards &middot; 7 with notes</span>
+    </div>
+
+    <div class="trophies">
+      <div class="trophy is-noted"><div class="face"><span class="count">&times;3</span><span class="where">Met in Goblin Road</span></div></div>
+      <div class="trophy is-noted"><div class="face"><span class="count">&times;1</span><span class="where">Met in The Toll Bridge</span></div></div>
+      <div class="trophy"><div class="face"><span class="count">&times;2</span><span class="where">Met in Goblin Road</span></div></div>
+      <div class="trophy is-noted"><div class="face"><span class="count">&times;1</span><span class="where">Met in Sable Manor</span></div></div>
+      <div class="trophy"><div class="face"><span class="count">&times;4</span><span class="where">Met in The Pale Choir</span></div></div>
+      <div class="trophy is-noted"><div class="face is-player"><span class="count">&times;1</span><span class="where">Met in The Toll Bridge</span></div></div>
+      <div class="trophy"><div class="face"><span class="count">&times;1</span><span class="where">Met in Sable Manor</span></div></div>
+      <div class="trophy is-noted"><div class="face"><span class="count">&times;2</span><span class="where">Met in Goblin Road</span></div></div>
+      <div class="trophy"><div class="face"><span class="count">&times;1</span><span class="where">Met in Beneath the Weir</span></div></div>
+      <div class="trophy is-noted"><div class="face"><span class="count">&times;1</span><span class="where">Met in Beneath the Weir</span></div></div>
+    </div>
+
+    <div class="notes-foot">
+      <span>Your notes stay yours &mdash; the DM cannot read them.</span>
+      <b>10 of 18</b>
+    </div>
+  </div>
+</div>
+
+<section class="band">
+  <h2>Who does what, and where</h2>
+  <p class="lede">Every workflow below already has a room. Read the table as the whole shell, not just the bottom row, so nothing is asked to hold two jobs.</p>
+
+  <table>
+    <thead>
+      <tr><th>Area</th><th>Workflow</th><th>GM does</th><th>Player does</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="area">bottom-left<br>Encounters</td>
+        <td>Plan, build and run a fight</td>
+        <td class="gm">Sees the collection of encounters. Creates, edits and deletes them. Builds groups from the card picker, rolls and commits initiative for every place at once, drags the ring into order, advances the turn, hands out conditions and hit points, ends the combat. One running fight at a time.</td>
+        <td class="pl">Watches the live ring: the order, the lit place, who is down. Taps a spot to open a private note on that distinct cast card. Three verbs that fit the room: jot the moment down, open their own card, ask the DM a question.</td>
+      </tr>
+      <tr>
+        <td class="area">bottom-middle<br>Field Notes</td>
+        <td>Remember, study, write up</td>
+        <td class="gm">Storyline today. The DM's own trophy tally (campaign_trophies, one row per distinct card put down) belongs on the same wall in bottom-right, so both roles meet the same shape of screen.</td>
+        <td class="pl">Every distinct cast card the party has met: how many, the fight it was met in, which are down, and this player's own note on each. Reference while a fight runs, writing material afterwards.</td>
+      </tr>
+      <tr>
+        <td class="area">middle-middle</td>
+        <td>Look a card up</td>
+        <td class="gm">The deck and its rolodex navigation.</td>
+        <td class="pl">The same deck, whittled to what the party knows.</td>
+      </tr>
+      <tr>
+        <td class="area">middle-right</td>
+        <td>Be someone</td>
+        <td class="gm">Soundtracks and ambiances.</td>
+        <td class="pl">My character: the card, motivations, secrets. A player's own conditions and hit points live here, not in the fight room.</td>
+      </tr>
+      <tr>
+        <td class="area">top-left / top-right</td>
+        <td>Capture and the party</td>
+        <td class="gm">Quicknotes are the DM's scratch pad.</td>
+        <td class="pl">The quicknote queue and the party roster.</td>
+      </tr>
+    </tbody>
+  </table>
+</section>
+
+<section class="band">
+  <h2>The player's Encounters room in all four states</h2>
+  <p class="lede">The circle is one state of this room, not the room itself. The spine that is always there is the party's ledger of fights.</p>
+</section>
+
+<div class="states">
+
+  <!-- STATE 1: IDLE LEDGER -->
+  <div class="state">
+    <h4>1 &middot; Idle &mdash; the ledger</h4>
+    <div class="ledger">
+      <div class="ledger-row is-live">
+        <span class="ledger-pip"></span>
+        <span><span class="ledger-name">Goblin Road</span><br><span class="ledger-meta">running now &middot; 6 places &middot; round 3</span></span>
+        <span class="ledger-stats">2 noted<br><span class="ledger-view">Watch</span></span>
+      </div>
+      <div class="ledger-row is-pick">
+        <span class="ledger-pip"></span>
+        <span><span class="ledger-name">The Toll Bridge</span><br><span class="ledger-meta">ended 12 Mireth &middot; 5 places &middot; 3 put down</span></span>
+        <span class="ledger-stats">3 met<br>1 noted</span>
+      </div>
+      <div class="ledger-row">
+        <span class="ledger-pip"></span>
+        <span><span class="ledger-name">Sable Manor</span><br><span class="ledger-meta">ended 9 Mireth &middot; 4 places &middot; none put down</span></span>
+        <span class="ledger-stats">4 met<br>2 noted</span>
+      </div>
+      <div class="ledger-row">
+        <span class="ledger-pip"></span>
+        <span><span class="ledger-name">Beneath the Weir</span><br><span class="ledger-meta">ended 3 Mireth &middot; 7 places &middot; 5 put down</span></span>
+        <span class="ledger-stats">5 met<br>1 noted</span>
+      </div>
+    </div>
+    <p class="state-why">Always populated once the first fight is over. Rows are per fight, not per card &mdash; the cards keep their own room in bottom-middle.</p>
+  </div>
+
+  <!-- STATE 2: STAGING -->
+  <div class="state">
+    <h4>2 &middot; Staging &mdash; the DM is taking the order</h4>
+    <div class="mini-ring">
+      <div class="mini-card is-player" style="left:50%; top:6%"></div>
+      <div class="mini-card is-player" style="left:88%; top:28%"></div>
+      <div class="mini-card is-player" style="left:88%; top:72%"></div>
+      <div class="mini-card" style="left:50%; top:94%"></div>
+      <div class="mini-card" style="left:12%; top:72%"></div>
+      <div class="mini-card" style="left:12%; top:28%"></div>
+    </div>
+    <div class="state-flag">The DM is taking the order</div>
+    <p class="state-caption">Your place is already drawn &mdash; 3 party places, 2 groups</p>
+    <p class="state-why">Today this window is invisible to players: an ordering encounter draws nothing at all. Fill it with the places, your own card, and no commands.</p>
+  </div>
+
+  <!-- STATE 3: FROZEN REVIEW -->
+  <div class="state">
+    <h4>3 &middot; Review &mdash; a finished fight</h4>
+    <div class="mini-ring">
+      <div class="mini-card" style="left:50%; top:6%"></div>
+      <div class="mini-card is-down" style="left:88%; top:28%"></div>
+      <div class="mini-card is-down" style="left:88%; top:72%"></div>
+      <div class="mini-card is-player" style="left:50%; top:94%"></div>
+      <div class="mini-card" style="left:12%; top:72%"></div>
+      <div class="mini-card is-down" style="left:12%; top:28%"></div>
+    </div>
+    <p class="state-caption">Finished &middot; ended 12 Mireth &middot; 4 cards put down</p>
+    <p class="state-why">The same ring, still drawn, with no spotlight, no Next, no turn &mdash; places, stacks and who fell. Tap a spot to read or write your note on that card.</p>
+  </div>
+
+</div>
+
+<p class="lede" style="margin-top:14px">State four is the live fight already shown above: identical ring, plus the spotlight, the Next button, the turn banner and the verb row.</p>
+
+<section class="cols">
+  <div class="card-panel">
+    <h3>What the player can already do in Encounters</h3>
+    <ul>
+      <li><b>See the live ring</b> read only, with initiative places, the lit turn, stacked groups and defeated cards greyed. <span class="tag-have">built</span></li>
+      <li><b>Tap a spot to write a private note</b> on a distinct cast card. Party cards are skipped by design. <span class="tag-have">built</span></li>
+      <li><b>See their own note flags</b> on the ring and a tally of how many notes they hold. <span class="tag-have">built</span></li>
+    </ul>
+  </div>
+
+  <div class="card-panel">
+    <h3>What else belongs on that screen</h3>
+    <ul>
+      <li><b>The turn banner.</b> Round and turn, plus whose place is lit. Costs nothing: currentSpotId and the spots are already in the payload. <span class="tag-new">add</span></li>
+      <li><b>Jot it down.</b> A quicknote opened with this encounter pre-linked, so the moment lands in the queue and can go to the chronicles later. The queue, the card linker and the chronicle mapper all exist. <span class="tag-new">add</span></li>
+      <li><b>My card.</b> A door to middle-right, so checking your own hit points or conditions mid-fight never becomes a hunt. <span class="tag-new">add</span></li>
+      <li><b>Ask the DM.</b> A line to the DM about the fight, reusing the whisper row the secrets drawer already draws. <span class="tag-new">add</span></li>
+      <li><b>Ready / done.</b> A ping the DM's ring can show. Needs a SignalR event and a column; only worth it if the table plays that way. <span class="tag-want">later</span></li>
+      <li><b>Round history.</b> Who moved when. Needs an event log the backend does not keep yet. <span class="tag-want">later</span></li>
+    </ul>
+  </div>
+</section>
+
+<script>
+  function byId(root, selector) { return root.querySelector(selector); }
+
+  var encountersEl = document.querySelector('[data-screen="encounters"]');
+  var notesEl = document.querySelector('[data-screen="notes"]');
+
+  var ENCOUNTERS = {
+    player: {
+      title: 'Encounters',
+      core: '<small>Held by the DM</small><b>Next</b><small>Goblin Skirmishers</small>',
+      verbs: '<span class="verb">Note this card <small>tap a spot</small></span>' +
+             '<span class="verb is-new">Jot it down <small>quicknote</small></span>' +
+             '<span class="verb is-ghost">My card</span>' +
+             '<span class="verb is-ghost">Ask the DM</span>'
+    },
+    dm: {
+      title: 'Encounter Builder',
+      core: '<small>Running</small><b>Next</b><small>Goblin Skirmishers</small>',
+      verbs: '<span class="verb">Start / Order</span>' +
+             '<span class="verb">Advance turn</span>' +
+             '<span class="verb is-ghost">Edit this encounter</span>' +
+             '<span class="verb is-ghost">End combat</span>'
+    }
+  };
+
+  var NOTES = {
+    player: {
+      title: 'Field Notes',
+      head: '<span class="chip is-on">All</span><span class="chip">Fought</span>' +
+            '<span class="chip">Put down</span><span class="chip">Noted</span>' +
+            '<span class="chip">Party</span><span class="tally">18 cards &middot; 7 with notes</span>',
+      foot: '<span>Your notes stay yours &mdash; the DM cannot read them.</span><b>10 of 18</b>'
+    },
+    dm: {
+      title: 'Storyline',
+      head: '<span class="chip is-on">All</span><span class="chip">Open</span>' +
+            '<span class="chip">Hidden</span><span class="tally">6 threads</span>',
+      foot: '<span>A thread reaches the players only once it is marked visible.</span><b>Storyline</b>'
+    }
+  };
+
+  function applyRole(role) {
+    document.querySelectorAll('.role-switch button').forEach(function (b) {
+      b.classList.toggle('is-on', b.dataset.role === role);
+    });
+
+    var e = ENCOUNTERS[role];
+    byId(encountersEl, '.screen-tag b').textContent = e.title;
+    byId(encountersEl, '.ring-core').innerHTML = e.core;
+    byId(encountersEl, '.verbs').innerHTML = e.verbs;
+
+    var n = NOTES[role];
+    byId(notesEl, '.screen-tag b').textContent = n.title;
+    byId(notesEl, '.notes-head').innerHTML = n.head;
+    byId(notesEl, '.notes-foot').innerHTML = n.foot;
+    byId(notesEl, '.trophies').style.display = role === 'dm' ? 'none' : 'grid';
+
+    if (role === 'dm') {
+      var board = document.createElement('p');
+      board.className = 'dm-board';
+      board.style.cssText = 'position:absolute;inset:78px 22px 90px;color:var(--text-muted);' +
+        'font-size:14px;font-style:italic;font-family:var(--font-aside);';
+      board.textContent = 'The GM keeps the storyline here: the threads the party is following, ' +
+        'what they have learned, and what is still hidden behind a visible flag.';
+      var stale = byId(notesEl, '.dm-board');
+      if (stale) stale.remove();
+      notesEl.appendChild(board);
+    } else {
+      var old = byId(notesEl, '.dm-board');
+      if (old) old.remove();
+    }
+  }
+
+  document.querySelectorAll('.role-switch button').forEach(function (b) {
+    b.addEventListener('click', function () { applyRole(b.dataset.role); });
+  });
+
+  applyRole('player');
+</script>
+
+</body>
+</html>

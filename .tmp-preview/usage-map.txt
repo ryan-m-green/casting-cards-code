@@ -1,0 +1,497 @@
+﻿### shared\components\badge\badge.component.ts
+SELECTOR: app-badge
+  USED_IN: shared\components\badge\badge.component.ts
+
+### shared\components\campaign-chronicle-drawer\campaign-chronicle-drawer.component.ts
+SELECTOR: app-campaign-chronicle-drawer
+  USED_IN: shared\components\campaign-chronicle-drawer\campaign-chronicle-drawer.component.ts
+
+### shared\components\campaign-dropdown\campaign-dropdown.component.ts
+SELECTOR: app-campaign-dropdown
+  USED_IN: features\campaign\campaign-factions\campaign-factions.component.html
+  USED_IN: features\player\player-quicknote-queue\player-quicknote-queue.component.html
+  USED_IN: shared\components\campaign-dropdown\campaign-dropdown.component.ts
+  USED_IN: shared\components\chronicles-timeline\chronicles-timeline.component.html
+  USED_IN: shared\components\note-destination-picker\note-destination-picker.component.html
+  USED_IN: shared\components\soundtrack-selector\soundtrack-selector.component.html
+
+### shared\components\campaign-join-input\campaign-join-input.component.ts
+SELECTOR: app-campaign-join-input
+  USED_IN: features\campaign\campaign-library\campaign-library.component.html
+  USED_IN: features\player\player-campaigns\player-campaigns.component.html
+  USED_IN: shared\components\campaign-join-input\campaign-join-input.component.ts
+
+### shared\components\card-flip\card-flip.component.ts
+SELECTOR: app-card-flip
+  USED_IN: features\campaign\relationship-web-modal\relationship-web-modal.component.html
+  USED_IN: shared\components\card-flip\card-flip.component.ts
+
+### shared\components\card-grid-layout\card-grid-layout.component.ts
+SELECTOR: app-card-grid-layout
+  USED_IN: features\campaign\campaign-detail\campaign-detail.component.html
+  USED_IN: features\campaign\campaign-factions\campaign-factions.component.html
+  USED_IN: features\campaign\campaign-location-detail\campaign-location-detail.component.html
+  USED_IN: features\campaign\campaign-sublocation-detail\campaign-sublocation-detail.component.html
+  USED_IN: features\player\player-campaign-detail\player-campaign-detail.component.html
+  USED_IN: features\player\player-location-detail\player-location-detail.component.html
+  USED_IN: features\player\player-sublocation-detail\player-sublocation-detail.component.html
+  USED_IN: shared\components\card-grid-layout\card-grid-layout.component.ts
+
+### shared\components\card-reveal-badge\card-reveal-badge.component.ts
+SELECTOR: app-card-reveal-badge
+  USED_IN: features\player\player-campaign-shell\player-campaign-shell.component.html
+  USED_IN: shared\components\card-reveal-badge\card-reveal-badge.component.ts
+
+### shared\components\card-reveal-overlay\card-reveal-overlay.component.ts
+SELECTOR: app-card-reveal-overlay
+  USED_IN: features\player\player-campaign-shell\player-campaign-shell.component.html
+  USED_IN: shared\components\card-reveal-overlay\card-reveal-overlay.component.ts
+
+### shared\components\cast-card\cast-card.component.ts
+SELECTOR: app-cast-card
+  USED_IN: features\campaign\campaign-cast-detail\campaign-cast-detail.component.html
+  USED_IN: features\campaign\campaign-faction-detail\campaign-faction-detail.component.html
+  USED_IN: features\campaign\campaign-factions\campaign-factions.component.html
+  USED_IN: features\campaign\campaign-sublocation-detail\campaign-sublocation-detail.component.html
+  USED_IN: features\campaign\cast-relationships-tab\cast-relationships-tab.component.html
+  USED_IN: features\campaign\gm-the-party\gm-the-party.component.html
+  USED_IN: features\cast\cast-form\cast-form.component.html
+  USED_IN: features\cast\cast-library\cast-library.component.html
+  USED_IN: features\gm-testarea\gm-testarea.component.html
+  USED_IN: features\player\player-cast-detail\player-cast-detail.component.html
+  USED_IN: features\player\player-faction-detail\player-faction-detail.component.html
+  USED_IN: features\player\player-sublocation-detail\player-sublocation-detail.component.html
+  USED_IN: features\player\player-the-party\player-the-party.component.html
+  USED_IN: shared\components\card-reveal-overlay\card-reveal-overlay.component.html
+  USED_IN: shared\components\cast-card\cast-card.component.ts
+  USED_IN: shared\components\portal-import-card\portal-import-card.component.html
+  USED_IN: shared\components\portal-import-card\portal-import-card.component.ts
+
+### shared\components\right-drawer\cast-detail-content.component.ts
+SELECTOR: app-cast-detail-content
+  USED_IN: app.ts
+  USED_IN: shared\components\right-drawer\cast-detail-content.component.ts
+
+### shared\components\casting-card-player\casting-card-player.component.ts
+SELECTOR: app-casting-card-player
+  USED_IN: features\campaign\gm-the-party\gm-the-party.component.html
+  USED_IN: features\gm-testarea\gm-testarea.component.html
+  USED_IN: features\player\player-the-party\player-the-party.component.html
+  USED_IN: shared\components\card-reveal-overlay\card-reveal-overlay.component.html
+  USED_IN: shared\components\casting-card-player\casting-card-player.component.ts
+
+### shared\components\character-editor\character-editor.component.ts
+SELECTOR: app-character-editor
+  USED_IN: shared\components\character-editor\character-editor.component.ts
+
+### shared\components\character-info-editor\character-info-editor.component.ts
+SELECTOR: app-character-info-editor
+  USED_IN: features\player\player-character\player-character.component.html
+  USED_IN: shared\components\character-info-editor\character-info-editor.component.ts
+
+### shared\components\right-drawer\chronicle-content.component.ts
+SELECTOR: app-chronicle-content
+  USED_IN: app.ts
+  USED_IN: features\campaign\campaign-shell\campaign-shell.component.html
+  USED_IN: features\player\player-campaign-shell\player-campaign-shell.component.html
+  USED_IN: shared\components\right-drawer\chronicle-content.component.ts
+
+### shared\components\chronicles-timeline\chronicles-timeline.component.ts
+SELECTOR: app-chronicles-timeline
+  USED_IN: shared\components\campaign-chronicle-drawer\campaign-chronicle-drawer.component.html
+  USED_IN: shared\components\chronicles-timeline\chronicles-timeline.component.ts
+  USED_IN: shared\components\right-drawer\chronicle-content.component.html
+
+### shared\components\confirm-dialog\confirm-dialog.component.ts
+SELECTOR: app-confirm-dialog
+  USED_IN: shared\components\confirm-dialog\confirm-dialog.component.ts
+  USED_IN: shared\components\time-of-day-bar\time-of-day-bar.component.html
+
+### shared\components\crb-spark-host\crb-spark-host.component.ts
+SELECTOR: app-crb-spark-host
+  USED_IN: shared\components\card-reveal-badge\card-reveal-badge.component.html
+  USED_IN: shared\components\crb-spark-host\crb-spark-host.component.ts
+
+### shared\components\currency-card\currency-card.component.ts
+SELECTOR: app-currency-card
+  USED_IN: features\gm-testarea\gm-testarea.component.html
+  USED_IN: shared\components\card-reveal-overlay\card-reveal-overlay.component.html
+  USED_IN: shared\components\currency-card\currency-card.component.ts
+
+### shared\components\currency-display\currency-display.component.ts
+SELECTOR: app-currency-display
+  USED_IN: shared\components\currency-display\currency-display.component.ts
+  USED_IN: shared\components\player-inventory-drawer\player-inventory-drawer.component.html
+  USED_IN: shared\components\right-drawer\player-inventory-content.component.html
+
+### shared\components\detail-panel-actions\detail-panel-actions.component.ts
+SELECTOR: app-detail-panel-actions
+  USED_IN: features\campaign\campaign-cast-detail\campaign-cast-detail.component.html
+  USED_IN: features\campaign\campaign-faction-detail\campaign-faction-detail.component.html
+  USED_IN: features\campaign\campaign-location-detail\campaign-location-detail.component.html
+  USED_IN: features\campaign\campaign-sublocation-detail\campaign-sublocation-detail.component.html
+  USED_IN: features\player\player-cast-detail\player-cast-detail.component.html
+  USED_IN: features\player\player-faction-detail\player-faction-detail.component.html
+  USED_IN: features\player\player-location-detail\player-location-detail.component.html
+  USED_IN: features\player\player-sublocation-detail\player-sublocation-detail.component.html
+  USED_IN: shared\components\detail-panel-actions\detail-panel-actions.component.ts
+
+### shared\components\entity-badge\entity-badge.component.ts
+SELECTOR: app-entity-badge
+  USED_IN: shared\components\chronicles-timeline\chronicles-timeline.component.html
+  USED_IN: shared\components\entity-badge\entity-badge.component.ts
+
+### shared\components\event-card\event-card.component.ts
+SELECTOR: app-event-card
+  USED_IN: shared\components\event-card\event-card.component.ts
+
+### shared\components\faction-card\faction-card.component.ts
+SELECTOR: app-faction-card
+  USED_IN: features\campaign\campaign-faction-detail\campaign-faction-detail.component.html
+  USED_IN: features\campaign\campaign-factions\campaign-factions.component.html
+  USED_IN: features\faction\faction-form\faction-form.component.html
+  USED_IN: features\faction\faction-library\faction-library.component.html
+  USED_IN: features\gm-testarea\gm-testarea.component.html
+  USED_IN: features\player\player-faction-detail\player-faction-detail.component.html
+  USED_IN: shared\components\card-reveal-overlay\card-reveal-overlay.component.html
+  USED_IN: shared\components\faction-card\faction-card.component.ts
+  USED_IN: shared\components\faction-relationships-section\faction-relationships-section.component.html
+  USED_IN: shared\components\portal-import-card\portal-import-card.component.html
+  USED_IN: shared\components\portal-import-card\portal-import-card.component.ts
+
+### shared\components\right-drawer\faction-detail-content.component.ts
+SELECTOR: app-faction-detail-content
+  USED_IN: app.ts
+  USED_IN: shared\components\right-drawer\faction-detail-content.component.ts
+
+### shared\components\faction-relationships-section\faction-relationships-section.component.ts
+SELECTOR: app-faction-relationships-section
+  USED_IN: features\campaign\campaign-faction-detail\campaign-faction-detail.component.html
+  USED_IN: features\player\player-faction-detail\player-faction-detail.component.html
+  USED_IN: shared\components\faction-relationships-section\faction-relationships-section.component.ts
+
+### shared\components\faction-symbol-picker\faction-symbol-picker.component.ts
+SELECTOR: app-faction-symbol-picker
+  USED_IN: features\player\player-cast-detail\player-cast-detail.component.html
+  USED_IN: features\player\player-sublocation-detail\player-sublocation-detail.component.html
+  USED_IN: shared\components\faction-symbol-picker\faction-symbol-picker.component.ts
+
+### shared\components\feather-icon\feather-icon.component.ts
+SELECTOR: app-feather-icon
+  USED_IN: features\campaign\campaign-sublocation-detail\campaign-sublocation-detail.component.html
+  USED_IN: shared\components\detail-panel-actions\detail-panel-actions.component.html
+  USED_IN: shared\components\feather-icon\feather-icon.component.ts
+
+### shared\components\free-trial-plan-card\free-trial-plan-card.component.ts
+SELECTOR: app-free-trial-plan-card
+  USED_IN: features\subscription-choice\subscription-choice.component.html
+  USED_IN: shared\components\free-trial-plan-card\free-trial-plan-card.component.ts
+  USED_IN: shared\components\right-drawer\subscription-content.component.html
+
+### shared\components\icon\icon.component.ts
+SELECTOR: app-icon
+  USED_IN: features\campaign\campaign-faction-detail\faction-detail-panel\faction-detail-panel.component.html
+  USED_IN: features\dashboard\dashboard.component.html
+  USED_IN: shared\components\detail-panel-actions\detail-panel-actions.component.html
+  USED_IN: shared\components\icon\icon.component.ts
+  USED_IN: shared\components\icon-picker\icon-picker.component.ts
+  USED_IN: shared\components\portal-import-card\portal-import-card.component.html
+  USED_IN: shared\components\storyline-filter-bar\storyline-filter-bar.component.html
+  USED_IN: shared\components\v2\Shared\cc-detail-panel-actions\cc-detail-panel-actions.component.html
+
+### shared\components\icon-picker\icon-picker.component.ts
+SELECTOR: app-icon-picker
+  USED_IN: features\campaign\campaign-faction-detail\faction-detail-panel\faction-detail-panel.component.html
+  USED_IN: shared\components\icon-picker\icon-picker.component.ts
+  USED_IN: shared\components\portal-import-card\portal-import-card.component.html
+
+### shared\components\journal-dropdown\journal-dropdown.component.ts
+SELECTOR: app-journal-dropdown
+  USED_IN: features\campaign\campaign-creator\campaign-creator.component.html
+  USED_IN: features\cast\cast-form\cast-form.component.html
+  USED_IN: features\faction\faction-form\faction-form.component.html
+  USED_IN: features\location\location-form\location-form.component.html
+  USED_IN: shared\components\journal-dropdown\journal-dropdown.component.ts
+  USED_IN: shared\components\portal-import-card\portal-import-card.component.html
+
+### shared\components\journal-nav-drawer\journal-nav-drawer.component.ts
+SELECTOR: app-journal-nav-drawer
+  USED_IN: layout\journal-shell\journal-shell.component.html
+  USED_IN: shared\components\journal-nav-drawer\journal-nav-drawer.component.ts
+
+### shared\components\journal-randomize-button\journal-randomize-button.component.ts
+SELECTOR: app-journal-randomize-button
+  USED_IN: features\cast\cast-form\cast-form.component.html
+  USED_IN: features\location\location-form\location-form.component.html
+  USED_IN: shared\components\journal-randomize-button\journal-randomize-button.component.ts
+  USED_IN: shared\components\portal-import-card\portal-import-card.component.html
+
+### shared\components\journal-title\journal-title.component.ts
+SELECTOR: app-journal-title
+  USED_IN: features\admin\admin-bug-reports\admin-bug-reports.component.html
+  USED_IN: features\admin\configuration-settings\configuration-settings.component.html
+  USED_IN: features\admin\user-management\user-management.component.html
+  USED_IN: features\bug-report\bug-report.component.html
+  USED_IN: features\campaign\campaign-creator\campaign-creator.component.html
+  USED_IN: features\campaign\campaign-library\campaign-library.component.html
+  USED_IN: features\cast\cast-form\cast-form.component.html
+  USED_IN: features\cast\cast-library\cast-library.component.html
+  USED_IN: features\change-password\change-password.component.html
+  USED_IN: features\dashboard\dashboard.component.html
+  USED_IN: features\faction\faction-form\faction-form.component.html
+  USED_IN: features\faction\faction-library\faction-library.component.html
+  USED_IN: features\forgot-password\forgot-password.component.html
+  USED_IN: features\gm-testarea\gm-testarea.component.html
+  USED_IN: features\legal\legal.component.html
+  USED_IN: features\location\location-form\location-form.component.html
+  USED_IN: features\location\location-library\location-library.component.html
+  USED_IN: features\player\player-campaigns\player-campaigns.component.html
+  USED_IN: features\reset-password\reset-password.component.html
+  USED_IN: features\role-selection\role-selection.component.html
+  USED_IN: features\sublocations\sublocation-form\sublocation-form.component.html
+  USED_IN: features\sublocations\sublocation-library\sublocation-library.component.html
+  USED_IN: features\subscription-choice\subscription-choice.component.html
+  USED_IN: features\verify-email\verify-email.component.html
+  USED_IN: shared\components\journal-title\journal-title.component.ts
+
+### shared\components\journal-watermark\journal-watermark.component.ts
+SELECTOR: app-journal-watermark
+  USED_IN: features\campaign\campaign-library\campaign-library.component.html
+  USED_IN: features\cast\cast-library\cast-library.component.html
+  USED_IN: features\faction\faction-library\faction-library.component.html
+  USED_IN: features\location\location-library\location-library.component.html
+  USED_IN: features\sublocations\sublocation-library\sublocation-library.component.html
+  USED_IN: shared\components\journal-watermark\journal-watermark.component.ts
+
+### shared\components\location-card\location-card.component.ts
+SELECTOR: app-location-card
+  USED_IN: features\campaign\campaign-detail\campaign-detail.component.html
+  USED_IN: features\campaign\campaign-location-detail\campaign-location-detail.component.html
+  USED_IN: features\gm-testarea\gm-testarea.component.html
+  USED_IN: features\location\location-form\location-form.component.html
+  USED_IN: features\location\location-library\location-library.component.html
+  USED_IN: features\player\player-campaign-detail\player-campaign-detail.component.html
+  USED_IN: features\player\player-location-detail\player-location-detail.component.html
+  USED_IN: shared\components\card-reveal-overlay\card-reveal-overlay.component.html
+  USED_IN: shared\components\location-card\location-card.component.ts
+  USED_IN: shared\components\portal-import-card\portal-import-card.component.html
+  USED_IN: shared\components\portal-import-card\portal-import-card.component.ts
+
+### shared\components\right-drawer\location-detail-content.component.ts
+SELECTOR: app-location-detail-content
+  USED_IN: app.ts
+  USED_IN: shared\components\right-drawer\location-detail-content.component.ts
+
+### shared\components\lock-icon\lock-icon.component.ts
+SELECTOR: app-lock-icon
+  USED_IN: features\campaign\campaign-cast-detail\campaign-cast-detail.component.html
+  USED_IN: features\campaign\campaign-location-detail\campaign-location-detail.component.html
+  USED_IN: features\campaign\campaign-location-detail\location-detail-panel\location-detail-panel.component.html
+  USED_IN: features\campaign\campaign-sublocation-detail\campaign-sublocation-detail.component.html
+  USED_IN: features\campaign\gm-events\gm-events.component.html
+  USED_IN: features\player\player-character\player-character.component.html
+  USED_IN: shared\components\card-grid-layout\card-grid-layout.component.html
+  USED_IN: shared\components\cast-card\cast-card.component.html
+  USED_IN: shared\components\faction-card\faction-card.component.html
+  USED_IN: shared\components\location-card\location-card.component.html
+  USED_IN: shared\components\lock-icon\lock-icon.component.ts
+  USED_IN: shared\components\sublocation-card\sublocation-card.component.html
+  USED_IN: shared\components\time-of-day-bar\time-of-day-bar.component.html
+
+### shared\components\note-destination-picker\note-destination-picker.component.ts
+SELECTOR: app-note-destination-picker
+  USED_IN: features\campaign\gm-events\gm-events.component.html
+  USED_IN: features\player\player-quicknote-queue\player-quicknote-queue.component.html
+  USED_IN: shared\components\note-destination-picker\note-destination-picker.component.ts
+  USED_IN: shared\components\quicknotes\quicknotes.component.html
+
+### shared\components\right-drawer\party-gold-content.component.ts
+SELECTOR: app-party-gold-content
+  USED_IN: app.ts
+  USED_IN: features\campaign\campaign-shell\campaign-shell.component.html
+  USED_IN: shared\components\right-drawer\party-gold-content.component.ts
+
+### shared\components\party-gold-drawer\party-gold-drawer.component.ts
+SELECTOR: app-party-gold-drawer
+  USED_IN: shared\components\party-gold-drawer\party-gold-drawer.component.ts
+
+### shared\components\player-event-card-item\player-event-card-item.component.ts
+SELECTOR: app-player-event-card-item
+  USED_IN: features\player\player-events\player-events.component.html
+  USED_IN: shared\components\player-event-card-item\player-event-card-item.component.ts
+
+### shared\components\right-drawer\player-inventory-content.component.ts
+SELECTOR: app-player-inventory-content
+  USED_IN: app.ts
+  USED_IN: features\player\player-campaign-shell\player-campaign-shell.component.html
+  USED_IN: shared\components\right-drawer\player-inventory-content.component.ts
+
+### shared\components\player-inventory-drawer\player-inventory-drawer.component.ts
+SELECTOR: app-player-inventory-drawer
+  USED_IN: shared\components\player-inventory-drawer\player-inventory-drawer.component.ts
+
+### shared\components\right-drawer\player-secrets-content.component.ts
+SELECTOR: app-player-secrets-content
+  USED_IN: app.ts
+  USED_IN: features\campaign\campaign-shell\campaign-shell.component.html
+  USED_IN: features\campaign\gm-the-party\gm-the-party.component.html
+  USED_IN: shared\components\right-drawer\player-secrets-content.component.ts
+
+### shared\components\player-secrets-drawer\player-secrets-drawer.component.ts
+SELECTOR: app-player-secrets-drawer
+  USED_IN: shared\components\player-secrets-drawer\player-secrets-drawer.component.ts
+
+### shared\components\portal-card\portal-card.component.ts
+SELECTOR: app-portal-card
+  USED_IN: features\campaign\campaign-library\campaign-library.component.html
+  USED_IN: features\gm-testarea\gm-testarea.component.html
+  USED_IN: features\player\player-campaigns\player-campaigns.component.html
+  USED_IN: shared\components\card-reveal-overlay\card-reveal-overlay.component.html
+  USED_IN: shared\components\portal-card\portal-card.component.ts
+
+### shared\components\portal-import-card\portal-import-card.component.ts
+SELECTOR: app-portal-import-card
+  USED_IN: features\campaign\campaign-factions\campaign-factions.component.html
+  USED_IN: shared\components\card-grid-layout\card-grid-layout.component.html
+  USED_IN: shared\components\portal-import-card\portal-import-card.component.ts
+
+### shared\components\premium-plan-card\premium-plan-card.component.ts
+SELECTOR: app-premium-plan-card
+  USED_IN: features\subscription-choice\subscription-choice.component.html
+  USED_IN: shared\components\premium-plan-card\premium-plan-card.component.ts
+  USED_IN: shared\components\right-drawer\subscription-content.component.html
+
+### shared\components\quicknotes\quicknotes.component.ts
+SELECTOR: app-quicknotes
+  USED_IN: features\player\player-campaign-shell\player-campaign-shell.component.html
+  USED_IN: shared\components\quicknotes\quicknotes.component.ts
+
+### shared\components\right-drawer\right-drawer.component.ts
+SELECTOR: app-right-drawer
+  USED_IN: app.ts
+  USED_IN: features\campaign\campaign-shell\campaign-shell.component.html
+  USED_IN: features\player\player-campaign-shell\player-campaign-shell.component.html
+  USED_IN: shared\components\right-drawer\right-drawer.component.ts
+
+### shared\components\section-label\section-label.component.ts
+SELECTOR: app-section-label
+  USED_IN: features\campaign\campaign-faction-detail\campaign-faction-detail.component.html
+  USED_IN: features\player\player-faction-detail\player-faction-detail.component.html
+  USED_IN: shared\components\card-grid-layout\card-grid-layout.component.html
+  USED_IN: shared\components\faction-relationships-section\faction-relationships-section.component.html
+  USED_IN: shared\components\section-label\section-label.component.ts
+
+### shared\components\right-drawer\shop-purchase-content.component.ts
+SELECTOR: app-shop-purchase-content
+  USED_IN: app.ts
+  USED_IN: features\player\player-campaign-shell\player-campaign-shell.component.html
+  USED_IN: shared\components\right-drawer\shop-purchase-content.component.ts
+
+### shared\components\shop-purchase-drawer\shop-purchase-drawer.component.ts
+SELECTOR: app-shop-purchase-drawer
+  USED_IN: shared\components\shop-purchase-drawer\shop-purchase-drawer.component.ts
+
+### shared\components\right-drawer\soundtrack-content.component.ts
+SELECTOR: app-soundtrack-content
+  USED_IN: app.ts
+  USED_IN: features\campaign\campaign-shell\campaign-shell.component.html
+  USED_IN: shared\components\right-drawer\soundtrack-content.component.ts
+
+### shared\components\soundtrack-control-panel\soundtrack-control-panel.component.ts
+SELECTOR: app-soundtrack-control-panel
+  USED_IN: shared\components\soundtrack-control-panel\soundtrack-control-panel.component.ts
+
+### shared\components\soundtrack-selector\soundtrack-selector.component.ts
+SELECTOR: app-soundtrack-selector
+  USED_IN: features\campaign\gm-events\gm-events.component.html
+  USED_IN: shared\components\soundtrack-selector\soundtrack-selector.component.ts
+
+### shared\components\storyline-filter-bar\storyline-filter-bar.component.ts
+SELECTOR: app-storyline-filter-bar
+  USED_IN: features\campaign\gm-events\gm-events.component.html
+  USED_IN: features\player\player-events\player-events.component.html
+  USED_IN: shared\components\campaign-chronicle-drawer\campaign-chronicle-drawer.component.html
+  USED_IN: shared\components\right-drawer\chronicle-content.component.html
+  USED_IN: shared\components\storyline-filter-bar\storyline-filter-bar.component.ts
+
+### shared\components\sublocation-card\sublocation-card.component.ts
+SELECTOR: app-sublocation-card
+  USED_IN: features\campaign\campaign-faction-detail\campaign-faction-detail.component.html
+  USED_IN: features\campaign\campaign-location-detail\campaign-location-detail.component.html
+  USED_IN: features\campaign\campaign-sublocation-detail\campaign-sublocation-detail.component.html
+  USED_IN: features\gm-testarea\gm-testarea.component.html
+  USED_IN: features\player\player-faction-detail\player-faction-detail.component.html
+  USED_IN: features\player\player-location-detail\player-location-detail.component.html
+  USED_IN: features\player\player-sublocation-detail\player-sublocation-detail.component.html
+  USED_IN: features\sublocations\sublocation-form\sublocation-form.component.html
+  USED_IN: features\sublocations\sublocation-library\sublocation-library.component.html
+  USED_IN: shared\components\card-reveal-overlay\card-reveal-overlay.component.html
+  USED_IN: shared\components\portal-import-card\portal-import-card.component.html
+  USED_IN: shared\components\portal-import-card\portal-import-card.component.ts
+  USED_IN: shared\components\sublocation-card\sublocation-card.component.ts
+
+### shared\components\right-drawer\sublocation-detail-content.component.ts
+SELECTOR: app-sublocation-detail-content
+  USED_IN: app.ts
+  USED_IN: shared\components\right-drawer\sublocation-detail-content.component.ts
+
+### shared\components\right-drawer\subscription-content.component.ts
+SELECTOR: app-subscription-content
+  USED_IN: app.ts
+  USED_IN: features\campaign\campaign-shell\campaign-shell.component.html
+  USED_IN: shared\components\right-drawer\subscription-content.component.ts
+
+### shared\components\subscription-lock-banner\subscription-lock-banner.component.ts
+SELECTOR: app-subscription-lock-banner
+  USED_IN: layout\journal-shell\journal-shell.component.html
+  USED_IN: shared\components\subscription-lock-banner\subscription-lock-banner.component.ts
+
+### shared\components\time-of-day-bar\time-of-day-bar.component.ts
+SELECTOR: app-time-of-day-bar
+  USED_IN: features\campaign\campaign-shell\campaign-shell.component.html
+  USED_IN: features\campaign\time-of-day-editor\time-of-day-editor.component.html
+  USED_IN: features\player\player-campaign-shell\player-campaign-shell.component.html
+  USED_IN: shared\components\time-of-day-bar\time-of-day-bar.component.ts
+
+### shared\components\toggle-switch\toggle-switch.component.ts
+SELECTOR: app-toggle-switch
+  USED_IN: shared\components\right-drawer\faction-detail-content.component.html
+  USED_IN: shared\components\right-drawer\faction-detail-content.component.ts
+  USED_IN: shared\components\toggle-switch\toggle-switch.component.ts
+
+### shared\components\travel-anchor\travel-anchor.component.ts
+SELECTOR: app-travel-anchor
+  USED_IN: features\campaign\campaign-cast-detail\campaign-cast-detail.component.html
+  USED_IN: features\campaign\gm-the-party\gm-the-party.component.html
+  USED_IN: shared\components\note-destination-picker\note-destination-picker.component.html
+  USED_IN: shared\components\travel-anchor\travel-anchor.component.ts
+
+### shared\components\upgrade-badge\upgrade-badge.component.ts
+SELECTOR: app-upgrade-badge
+  USED_IN: features\campaign\campaign-library\campaign-library.component.html
+  USED_IN: features\campaign\campaign-shell\campaign-shell.component.html
+  USED_IN: features\cast\cast-library\cast-library.component.html
+  USED_IN: features\dashboard\dashboard.component.html
+  USED_IN: features\faction\faction-library\faction-library.component.html
+  USED_IN: features\location\location-library\location-library.component.html
+  USED_IN: features\sublocations\sublocation-library\sublocation-library.component.html
+  USED_IN: shared\components\upgrade-badge\upgrade-badge.component.ts
+
+### shared\components\void-nav-drawer\void-nav-drawer.component.ts
+SELECTOR: app-void-nav-drawer
+  USED_IN: features\campaign\campaign-shell\campaign-shell.component.html
+  USED_IN: features\player\player-campaign-shell\player-campaign-shell.component.html
+  USED_IN: shared\components\void-nav-drawer\void-nav-drawer.component.ts
+
+### shared\components\void-title-segments\void-title-segments.component.ts
+SELECTOR: app-void-title-segments
+  USED_IN: features\campaign\campaign-shell\campaign-shell.component.html
+  USED_IN: features\player\player-campaign-shell\player-campaign-shell.component.html
+  USED_IN: shared\components\void-title-segments\void-title-segments.component.ts
+
+### shared\components\whisper-card\whisper-card.component.ts
+SELECTOR: app-whisper-card
+  USED_IN: features\gm-testarea\gm-testarea.component.html
+  USED_IN: shared\components\card-reveal-overlay\card-reveal-overlay.component.html
+  USED_IN: shared\components\whisper-card\whisper-card.component.ts
+

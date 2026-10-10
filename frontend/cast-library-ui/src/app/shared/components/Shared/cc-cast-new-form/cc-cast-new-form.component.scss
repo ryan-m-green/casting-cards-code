@@ -1,0 +1,111 @@
+@use '../../../../../styles/variables' as v;
+
+:host {
+  display: block;
+}
+
+.pic-new-form-wrap { max-width: 960px; }
+
+.form-gm-box {
+  border: 2px solid v.$color-base-purple-primary;
+  border-radius: 8px;
+  padding: 16px;
+  margin: 12px 0 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+
+  .form-row-gap {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .form-field {
+    flex: 0 0 auto;
+    margin-bottom: 12px;
+  }
+
+  &__legend {
+    font-family: v.$font-header;
+    font-size: 14px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: v.$color-base-purple-primary;
+    padding: 0 8px;
+  }
+}
+
+.form-row-gap {
+  gap: 16px;
+}
+
+.pic-new-form > * {
+  margin-bottom: 16px;
+}
+
+.pic-new-form > *:last-child {
+  margin-bottom: 0;
+}
+
+.form-field {
+  min-width: 180px;
+  flex: 1;
+}
+
+.pic-new-form > .wr.form-row-gap {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  margin-left: -12px;
+  padding-left: 12px;
+}
+
+app-cc-textbox {
+  width: 100%;
+}
+
+app-cc-textbox,
+cc-campaign-dropdown,
+cc-dial-counter,
+cc-keyword-tags {
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+@media (max-width: 500px) {
+  .pic-new-form-wrap {
+    max-width: 100%;
+  }
+
+  .form-field {
+    min-width: 120px;
+    flex: 1 1 auto;
+  }
+
+  .form-row-gap {
+    flex-wrap: wrap;
+  }
+}
+
+.pic-new-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  align-items: flex-start;
+  padding-left: 12px;
+  padding-right: 12px;
+}
+
+.pic-save-row {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 16px;
+  margin-top: 20px;
+  padding-bottom: 8px;
+}
+
+.pic-new-form--wrap {
+  display: block;
+}

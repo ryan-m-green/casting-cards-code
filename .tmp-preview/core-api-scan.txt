@@ -1,0 +1,50 @@
+﻿core\card-condition.service.ts: const base = `${environment.apiUrl}/api/campaign/${campaignId}`;
+core\cast-index.service.ts: this.http.get<CastIndexPage>(`${environment.apiUrl}/api/cast/index`, { params: this.params(pageNumber) })
+core\cast-index.service.ts: this.http.get<CastKeywordCount[]>(`${environment.apiUrl}/api/cast/keywords`, { params: this.params(1) })
+core\condition-library.service.ts: return `${environment.apiUrl}/api/campaigns/${campaignId}/conditions`;
+core\encounter.service.ts: return `${environment.apiUrl}/api/campaign/${campaignId}/encounters${suffix}`;
+core\player-cast-note.service.ts: return `${environment.apiUrl}/api/campaigns/${campaignId}/player-cast-notes${suffix}`;
+core\player-field-journal.service.ts: return `${environment.apiUrl}/api/campaigns/${campaignId}/field-journal`;
+core\rule-library.service.ts: return `${environment.apiUrl}/api/campaigns/${campaignId}/rules`;
+core\session.service.ts: `${environment.apiUrl}/api/campaigns/${campaignId}/sessions`,
+core\session.service.ts: `${environment.apiUrl}/api/campaigns/${campaignId}/sessions/active`
+core\session.service.ts: `${environment.apiUrl}/api/campaigns/${campaignId}/sessions/count`
+core\session.service.ts: `${environment.apiUrl}/api/campaigns/${campaignId}/sessions/end`,
+core\session.service.ts: `${environment.apiUrl}/api/campaigns/${campaignId}/sessions/${sessionId}`,
+core\session.service.ts: `${environment.apiUrl}/api/campaigns/${campaignId}/sessions/cancel`
+core\session.service.ts: `${environment.apiUrl}/api/campaigns/${campaignId}/sessions/archived`
+core\stripe.service.ts: return this.http.post<Subscription>(`${environment.apiUrl}/api/subscription/free-trial`, {});
+core\stripe.service.ts: return this.http.get<Subscription>(`${environment.apiUrl}/api/subscription/user`);
+core\stripe.service.ts: return this.http.get<PricingDisplayResponse>(`${environment.apiUrl}/api/site-configuration/pricing`);
+core\stripe.service.ts: return this.http.post<{ checkoutUrl: string }>(`${environment.apiUrl}/api/stripe/create-checkout-session`, {});
+core\stripe.service.ts: return this.http.get<EntityLimitsResponse>(`${environment.apiUrl}/api/subscription/entity-limits`);
+core\stripe.service.ts: return this.http.post<{ portalUrl: string }>(`${environment.apiUrl}/api/stripe/create-customer-portal-session`, {});
+core\sublocation.service.ts: `${environment.apiUrl}/api/campaign/${campaignId}/sublocationinstances/${instanceId}`
+core\sublocation.service.ts: `${environment.apiUrl}/api/campaigns/${campaignId}/sublocations/${instanceId}/shop-items/${existingItem.id}`,
+core\sublocation.service.ts: `${environment.apiUrl}/api/campaigns/${campaignId}/sublocations/${instanceId}/shop-items`,
+core\sublocation.service.ts: `${environment.apiUrl}/api/campaigns/${campaignId}/sublocations/${instanceId}/shop-items/${item.id}`
+core\sublocation.service.ts: `${environment.apiUrl}/api/campaign/${campaignId}/sublocationinstances/${instanceId}/shop-items/${itemId}/scratch`,
+core\sublocation.service.ts: `${environment.apiUrl}/api/campaigns/${campaignId}/sublocations/${instanceId}`,
+core\auth\auth.interceptor.ts: if (req.url.includes('/api/') &&
+core\auth\auth.interceptor.ts: !req.url.includes('/api/auth/login') &&
+core\auth\auth.interceptor.ts: !req.url.includes('/api/auth/register') &&
+core\auth\auth.interceptor.ts: !req.url.includes('/api/auth/forgot-password') &&
+core\auth\auth.interceptor.ts: !req.url.includes('/api/auth/reset-password') &&
+core\auth\auth.interceptor.ts: !req.url.includes('/api/auth/verify-email') &&
+core\auth\auth.interceptor.ts: !req.url.includes('/api/stripe/webhook')) {
+core\auth\auth.interceptor.ts: !req.url.includes('/api/auth/login') &&
+core\auth\auth.interceptor.ts: !req.url.includes('/api/auth/register') &&
+core\auth\auth.interceptor.ts: !req.url.includes('/api/auth/forgot-password') &&
+core\auth\auth.interceptor.ts: !req.url.includes('/api/auth/reset-password') &&
+core\auth\auth.interceptor.ts: !req.url.includes('/api/auth/verify-email') &&
+core\auth\auth.interceptor.ts: !req.url.includes('/api/stripe/webhook')) {
+core\auth\auth.service.ts: return this.http.post<AuthResponse>(`${environment.apiUrl}/api/auth/login`, request).pipe(
+core\auth\auth.service.ts: return this.http.post<{ message: string }>(`${environment.apiUrl}/api/auth/register`, request);
+core\auth\auth.service.ts: return this.http.post<void>(`${environment.apiUrl}/api/auth/forgot-password`, { email });
+core\auth\auth.service.ts: return this.http.post<void>(`${environment.apiUrl}/api/auth/reset-password`, { token, newPassword });
+core\auth\auth.service.ts: return this.http.post<void>(`${environment.apiUrl}/api/auth/change-password`, { currentPassword, newPassword });
+core\auth\auth.service.ts: return this.http.post<AuthResponse>(`${environment.apiUrl}/api/auth/update-display-name`, { displayName }).pipe(
+core\auth\auth.service.ts: return this.http.post<AuthResponse>(`${environment.apiUrl}/api/auth/update-email`, { email }).pipe(
+core\auth\auth.service.ts: return this.http.get<AuthResponse>(`${environment.apiUrl}/api/auth/me`).pipe(
+core\auth\auth.service.ts: return this.http.post<AuthResponse>(`${environment.apiUrl}/api/auth/verify-email`, { token }).pipe(
+core\auth\auth.service.ts: return this.http.get<{ token: string }>(`${environment.apiUrl}/api/auth/xsrf-token`).pipe(

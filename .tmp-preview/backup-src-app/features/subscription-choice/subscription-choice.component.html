@@ -1,0 +1,34 @@
+<div class="subscription-choice-wrapper">
+  @if (!isCheckoutSuccess()) {
+    <app-journal-title title="Choose Your Plan"></app-journal-title>
+
+    <p>Start a subscription for unlimited access or try it out before committing.</p>
+    @if (pricingData() !== undefined) {
+    <div class="pc">
+      <div class="wb">
+        <div class="plan-cards">
+          <app-premium-plan-card
+            [pricingData]="pricingData() ?? null"
+            [loading]="loading"
+            [subscribe]="subscribeNow.bind(this)"
+          ></app-premium-plan-card>
+
+          <app-free-trial-plan-card
+            [freeTrialLimits]="freeTrialLimits"
+            [loading]="loading"
+            [startFreeTrial]="startFreeTrial.bind(this)"
+          ></app-free-trial-plan-card>
+        </div>
+      </div>
+    </div>
+    }
+  } @else {
+    <div class="verification-drawer">
+      <div class="drawer-content">
+        <h3>Payment Confirmation</h3>
+        <p>Hang tight while we wait for confirmation from Stripe that your payment was successful.</p>
+        <img src="/DoodleArt/Deer.PNG" alt="Doodle art" class="join-form-doodle-art">
+      </div>
+    </div>
+  }
+</div>

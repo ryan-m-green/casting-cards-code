@@ -1,0 +1,61 @@
+@if (row(); as r) {
+  <div class="sed">
+
+    <header class="sed-head">
+      <div class="sed-event">{{ r.eventName }}</div>
+      <div class="sed-meta">
+        {{ shortTime(r.atUtc) }} · {{ r.targetKind }}{{ r.targetId ? ' ' + r.targetId : '' }} · {{ r.subscribers }} listening
+        @if (r.failed) { <span class="sed-failed">· failed to send</span> }
+      </div>
+    </header>
+
+    <section class="sed-section">
+      <h4 class="sed-title">Connected now ({{ connections().length }})</h4>
+
+      @if (connections().length) {
+        <ul class="sed-conns">
+          @for (c of connections(); track c.connectionId) {
+            <li [class.sed-conn--player]="isPlayerSocket(c)">
+              <span class="sed-role">{{ displayRole(c.userId, c.role) }}</span>
+              <span class="sed-name" [title]="c.connectionId">{{ nameOf(c) }}</span>
+              <span class="sed-age">{{ sinceLabel(c.connectedAtUtc) }}</span>
+              <span class="sed-uid">{{ c.userId ?? 'unknown id' }}</span>
+            </li>
+          }
+        </ul>
+      } @else {
+        <p class="sed-empty">No sockets in this room — nothing below can reach anyone.</p>
+      }
+    </section>
+
+    <section class="sed-section">
+      <h4 class="sed-title">Receipts ({{ acks().length }})</h4>
+
+      @if (acks().length) {
+        <ul class="sed-receipts">
+          @for (ack of acks(); track ack.connectionId + ':' + ack.latencyMs) {
+            <li>
+              <span class="sed-role">{{ displayRole(ack.userId, ack.role) }}</span>
+              <span class="sed-name" [title]="'account role: ' + roleLabel(ack.role)">{{ nameOf(ack) }}</span>
+              <span class="sed-latency">{{ ack.latencyMs }} ms</span>
+              <span class="sed-uid">{{ ack.userId ?? ack.connectionId }}</span>
+              <span class="sed-components">components: {{ componentsOf(ack) }}</span>
+            </li>
+          }
+        </ul>
+      } @else {
+        <p class="sed-none">
+          No receipt — {{ r.subscribers }} connection(s) were in the target when this went out.
+        </p>
+      }
+    </section>
+
+    <section class="sed-section sed-section--grow">
+      <h4 class="sed-title">
+        <span>Payload</span>
+        <button type="button" class="sed-copy" (click)="copyPayload()">{{ copied() ? 'Copied' : 'Copy JSON' }}</button>
+      </h4>
+      <pre class="sed-payload">{{ pretty(r.payloadJson) }}</pre>
+    </section>
+  </div>
+}

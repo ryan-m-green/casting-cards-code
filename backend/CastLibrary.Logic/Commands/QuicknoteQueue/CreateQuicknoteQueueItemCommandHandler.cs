@@ -16,12 +16,14 @@ public class CreateQuicknoteQueueItemCommandHandler(
     {
         var domain = new PlayerQuicknoteQueueDomain
         {
-            Id           = Guid.NewGuid(),
-            CampaignId   = command.CampaignId,
-            PlayerUserId = command.PlayerUserId,
-            Content      = command.Request.Content,
-            CreatedAt    = DateTime.UtcNow,
-            UpdatedAt    = DateTime.UtcNow,
+            Id               = Guid.NewGuid(),
+            CampaignId       = command.CampaignId,
+            PlayerUserId     = command.PlayerUserId,
+            Content          = command.Request.Content,
+            LinkedEntities   = command.Request.LinkedEntities,
+            VisibleToPlayers = command.Request.VisibleToPlayers,
+            CreatedAt        = DateTime.UtcNow,
+            UpdatedAt        = DateTime.UtcNow,
         };
         return insertRepository.InsertAsync(domain);
     }

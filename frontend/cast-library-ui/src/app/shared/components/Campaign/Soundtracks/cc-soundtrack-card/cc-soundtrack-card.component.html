@@ -1,0 +1,85 @@
+<div class="st-stat" [class.playing]="playing()" [attr.title]="track()?.title">
+  <div class="st-stat-frame">
+    <div class="st-stat-inner">
+      <div class="st-stat-banner">
+        <div class="st-stat-name">{{ heading() }}</div>
+      </div>
+
+      @if (count() !== null) {
+        <div class="st-stat-count" aria-hidden="true">
+          <span class="st-stat-watermark"></span>
+          <span class="st-stat-value">{{ count() }}</span>
+        </div>
+      } @else {
+        <div class="st-stat-body">
+          <span class="st-card-watermark" aria-hidden="true"></span>
+
+          @if (track(); as track) {
+            <button
+              type="button"
+              class="st-kind-badge"
+              [class.st-kind-badge--sfx]="isSoundEffect()"
+              (click)="kindToggle.emit()"
+              [title]="isSoundEffect() ? 'Click to mark as music' : 'Click to mark as sound effect'">
+              {{ isSoundEffect() ? 'sfx' : 'music' }}
+            </button>
+
+            @if (showEdit()) {
+              <cc-edit-button
+                class="st-card-edit"
+                label="Edit track"
+                (clicked)="edit.emit()" />
+            }
+
+            @if (showDelete()) {
+              <cc-delete-button
+                class="st-card-delete"
+                label="Delete soundtrack"
+                confirmLabel="Delete"
+                (confirmed)="remove.emit()" />
+            }
+
+            @if (showPlay()) {
+              <button
+                type="button"
+                class="st-play-btn"
+                (click)="$event.stopPropagation(); playToggle.emit()"
+                [title]="playing() ? 'Stop' : 'Play'"
+                [attr.aria-label]="(playing() ? 'Stop ' : 'Play ') + track.title">
+                {{ playing() ? '■' : '▶' }}
+              </button>
+
+              <cc-slider
+                class="st-card-volume swiper-no-swiping"
+                [min]="0"
+                [max]="100"
+                [step]="1"
+                [value]="track.volume"
+                (commit)="volumeChange.emit($event)"
+                (click)="$event.stopPropagation()"
+                [showValue]="false"
+                [showTicks]="false"
+                ariaLabel="Volume"
+                title="Volume" />
+            }
+          }
+        </div>
+      }
+
+      <div class="st-stat-strip">
+        <div class="st-stat-pip-row">
+          <div class="st-stat-pip"></div>
+          <div class="st-stat-pip"></div>
+          <div class="st-stat-pip"></div>
+        </div>
+        <span class="st-stat-strip-label">{{ stripLabel() }}</span>
+        <div class="st-stat-pip-row">
+          <div class="st-stat-pip"></div>
+          <div class="st-stat-pip"></div>
+          <div class="st-stat-pip"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+

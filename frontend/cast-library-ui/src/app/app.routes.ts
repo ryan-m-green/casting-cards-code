@@ -1,5 +1,5 @@
-import { Routes } from '@angular/router';
-import { adminGuard, authGuard, coverGuard, dmGuard, playerGuard, subscriptionLockGuard, libraryAccessGuard, playerLibraryAccessGuard, subscriptionChoiceGuard } from './core/auth/auth.guard';
+﻿import { Routes } from '@angular/router';
+import { adminGuard, authGuard, coverGuard, dmGuard, playerGuard, subscriptionLockGuard, libraryAccessGuard, playerLibraryAccessGuard, campaignShellAccessGuard, subscriptionChoiceGuard } from './core/auth/auth.guard';
 import { JournalShellComponent } from './layout/journal-shell/journal-shell.component';
 import { ProductShellComponent } from './layout/product-shell/product-shell.component';
 
@@ -16,124 +16,8 @@ export const routes: Routes = [
   },
   {
     path: 'campaign/:id',
-    canActivate: [dmGuard, libraryAccessGuard],
-    loadComponent: () => import('./features/campaign/campaign-shell/campaign-shell.component').then(m => m.CampaignShellComponent),
-    children: [
-      {
-        path: '',
-        pathMatch: 'full',
-        loadComponent: () => import('./features/campaign/campaign-detail/campaign-detail.component').then(m => m.CampaignDetailComponent),
-      },
-      {
-        path: 'the-party',
-        canActivate: [dmGuard],
-        loadComponent: () => import('./features/campaign/gm-the-party/gm-the-party.component').then(m => m.GmThePartyComponent),
-      },
-      {
-        path: 'locations/:locationInstanceId',
-        loadComponent: () => import('./features/campaign/campaign-location-detail/campaign-location-detail.component').then(m => m.CampaignLocationDetailComponent),
-      },
-      {
-        path: 'sublocations/:sublocationInstanceId',
-        loadComponent: () => import('./features/campaign/campaign-sublocation-detail/campaign-sublocation-detail.component').then(m => m.CampaignSublocationDetailComponent),
-      },
-      {
-        path: 'sublocations/:sublocationInstanceId/cast/:castInstanceId',
-        loadComponent: () => import('./features/campaign/campaign-cast-detail/campaign-cast-detail.component').then(m => m.CampaignCastDetailComponent),
-      },
-      {
-        path: 'factions',
-        canActivate: [dmGuard],
-        loadComponent: () => import('./features/campaign/campaign-factions/campaign-factions.component').then(m => m.CampaignFactionsComponent),
-      },
-      {
-        path: 'factions/:factionInstanceId',
-        canActivate: [dmGuard],
-        loadComponent: () => import('./features/campaign/campaign-faction-detail/campaign-faction-detail.component').then(m => m.CampaignFactionDetailComponent),
-      },
-      {
-        path: 'plot',
-        canActivate: [dmGuard],
-        loadComponent: () => import('./features/campaign/gm-events/gm-events.component').then(m => m.GmEventsComponent),
-      },
-    ],
-  },
-  {
-    path: 'v2/campaign-library',
-    canActivate: [authGuard, dmGuard],
-    loadComponent: () => import('./features/campaign/campaign-library/campaign-library.component').then(m => m.CampaignLibraryComponent),
-  },
-  {
-    path: 'v2/campaign/:id',
-    canActivate: [authGuard, libraryAccessGuard],
-    loadComponent: () => import('./layout/v2-campaign-shell/v2-campaign-shell.component').then(m => m.V2CampaignShellComponent),
-    children: [
-      {
-        path: '',
-        pathMatch: 'full',
-        loadComponent: () => import('./features/campaign/v2-campaign-placeholder/v2-campaign-placeholder.component').then(m => m.V2CampaignPlaceholderComponent),
-      },
-      {
-        path: 'the-party',
-        loadComponent: () => import('./features/campaign/v2-campaign-placeholder/v2-campaign-placeholder.component').then(m => m.V2CampaignPlaceholderComponent),
-      },
-      {
-        path: 'plot',
-        loadComponent: () => import('./features/campaign/v2-campaign-placeholder/v2-campaign-placeholder.component').then(m => m.V2CampaignPlaceholderComponent),
-      },
-    ],
-  },
-  {
-    path: 'player/campaign/:id',
-    canActivate: [authGuard, playerLibraryAccessGuard],
-    loadComponent: () => import('./features/player/player-campaign-shell/player-campaign-shell.component').then(m => m.PlayerCampaignShellComponent),
-    children: [
-      {
-        path: '',
-        pathMatch: 'full',
-        loadComponent: () => import('./features/player/player-campaign-detail/player-campaign-detail.component').then(m => m.PlayerCampaignDetailComponent),
-      },
-      {
-        path: 'locations/:locationInstanceId',
-        loadComponent: () => import('./features/player/player-location-detail/player-location-detail.component').then(m => m.PlayerLocationDetailComponent),
-      },
-      {
-        path: 'sublocations/:sublocationInstanceId',
-        loadComponent: () => import('./features/player/player-sublocation-detail/player-sublocation-detail.component').then(m => m.PlayerSublocationDetailComponent),
-      },
-      {
-        path: 'sublocations/:sublocationInstanceId/cast/:castInstanceId',
-        loadComponent: () => import('./features/player/player-cast-detail/player-cast-detail.component').then(m => m.PlayerCastDetailComponent),
-      },
-      {
-        path: 'factions/:factionInstanceId',
-        loadComponent: () => import('./features/player/player-faction-detail/player-faction-detail.component').then(m => m.PlayerFactionDetailComponent),
-      },
-      {
-        path: 'the-party',
-        loadComponent: () => import('./features/player/player-the-party/player-the-party.component').then(m => m.PlayerThePartyComponent),
-      },
-      {
-        path: 'my-character',
-        loadComponent: () => import('./features/player/player-character/player-character.component').then(m => m.PlayerCharacterComponent),
-      },
-      {
-        path: 'player-card/new',
-        loadComponent: () => import('./features/player/player-card-form/player-card-form.component').then(m => m.PlayerCardFormComponent),
-      },
-      {
-        path: 'campaign-insight',
-        loadComponent: () => import('./features/player/player-campaign-insight/player-campaign-insight.component').then(m => m.PlayerCampaignInsightComponent),
-      },
-      {
-        path: 'quicknote-queue',
-        loadComponent: () => import('./features/player/player-quicknote-queue/player-quicknote-queue.component').then(m => m.PlayerQuicknoteQueueComponent),
-      },
-      {
-        path: 'plot',
-        loadComponent: () => import('./features/player/player-plot/player-plot.component').then(m => m.PlayerPlotComponent),
-      },
-    ],
+    canActivate: [authGuard, campaignShellAccessGuard],
+    loadComponent: () => import('./layout/campaign-shell/campaign-shell.component').then(m => m.CampaignShellComponent),
   },
   {
     path: '',
@@ -276,6 +160,41 @@ export const routes: Routes = [
             loadComponent: () => import('./features/faction/faction-form/faction-form.component').then(m => m.FactionFormComponent),
           },
           {
+            path: 'conditions',
+            canActivate: [libraryAccessGuard],
+            loadComponent: () => import('./features/condition/condition-library/condition-library.component').then(m => m.ConditionLibraryComponent),
+          },
+          {
+            path: 'conditions/new',
+            canActivate: [subscriptionLockGuard],
+            loadComponent: () => import('./features/condition/condition-form/condition-form.component').then(m => m.ConditionFormComponent),
+          },
+          {
+            path: 'conditions/:id',
+            canActivate: [subscriptionLockGuard],
+            loadComponent: () => import('./features/condition/condition-form/condition-form.component').then(m => m.ConditionFormComponent),
+          },
+          {
+            path: 'soundtracks',
+            canActivate: [libraryAccessGuard],
+            loadComponent: () => import('./features/soundtrack/soundtrack-library/soundtrack-library.component').then(m => m.SoundtrackLibraryComponent),
+          },
+          {
+            path: 'soundtracks/track/:id',
+            canActivate: [subscriptionLockGuard],
+            loadComponent: () => import('./features/soundtrack/soundtrack-form/soundtrack-form.component').then(m => m.SoundtrackFormComponent),
+          },
+          {
+            path: 'soundtracks/ambiance/new',
+            canActivate: [subscriptionLockGuard],
+            loadComponent: () => import('./features/soundtrack/ambiance-form/ambiance-form.component').then(m => m.AmbianceFormComponent),
+          },
+          {
+            path: 'soundtracks/ambiance/:id',
+            canActivate: [subscriptionLockGuard],
+            loadComponent: () => import('./features/soundtrack/ambiance-form/ambiance-form.component').then(m => m.AmbianceFormComponent),
+          },
+          {
             path: 'account-settings',
             canActivate: [libraryAccessGuard],
             loadComponent: () => import('./features/change-password/change-password.component').then(m => m.ChangePasswordComponent),
@@ -284,11 +203,6 @@ export const routes: Routes = [
             path: 'bug-report',
             canActivate: [libraryAccessGuard],
             loadComponent: () => import('./features/bug-report/bug-report.component').then(m => m.BugReportComponent),
-          },
-          {
-            path: 'testarea',
-            canActivate: [adminGuard],
-            loadComponent: () => import('./features/gm-testarea/gm-testarea.component').then(m => m.GmTestareaComponent),
           },
           { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
         ],

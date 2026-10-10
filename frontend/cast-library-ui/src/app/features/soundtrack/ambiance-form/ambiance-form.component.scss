@@ -1,0 +1,288 @@
+@use '../../../../styles/variables' as v;
+
+:host { display: block; height: 100%; }
+
+/*
+ * The journal shell lays every page out as a fixed-height flex column (`.pc`), so the page's own
+ * rows must not be squeezed when the content grows: without this a row that clips would be
+ * compressed to nothing instead of the page scrolling. Both swipable rows have a height of their
+ * own, so the page only ever scrolls when the whole form is taller than the frame.
+ */
+.pc > * {
+  flex-shrink: 0;
+}
+
+/* The journal's own form footer: the save sits at the bottom-left, with Delete beside it. */
+.form-save-footer {
+  justify-content: flex-start;
+}
+
+.playlist-delete {
+  margin-right: 8px;
+  color: #a33;
+  border-color: rgba(163, 51, 51, 0.45);
+
+  &:hover { background: rgba(163, 51, 51, 0.08); }
+}
+
+.form-field--toggle {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.toggle-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  .fi-label {
+    margin-bottom: 0;
+    flex-shrink: 0;
+  }
+}
+
+/* The journal's toggle, the same one the faction form wears. */
+.toggle-switch {
+  position: relative;
+  display: inline-block;
+  width: 42px;
+  height: 24px;
+  flex-shrink: 0;
+
+  input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+    position: absolute;
+  }
+}
+
+.toggle-slider {
+  position: absolute;
+  inset: 0;
+  background: rgba(v.$color-base-brown-warm, 0.25);
+  border: 1px solid rgba(v.$color-base-brown-warm, 0.6);
+  border-radius: 24px;
+  cursor: pointer;
+  transition: background 0.2s, border-color 0.2s;
+
+  &::before {
+    content: '';
+    position: absolute;
+    width: 18px;
+    height: 18px;
+    left: 2px;
+    top: 2px;
+    border-radius: 50%;
+    background: v.$color-base-gold-1;
+    transition: transform 0.2s;
+  }
+
+  input:checked + & {
+    background: rgba(v.$color-base-brown-warm, 0.55);
+    border-color: v.$color-base-brown-warm;
+
+    &::before {
+      transform: translateX(18px);
+      background: v.$color-base-gold-1;
+    }
+  }
+}
+
+/* ── The soundtrack row a playlist is picked from ─────────────────────────────
+   Shallow cards on the journal's own parchment, swept sideways, so the row reads as a picker rather
+   than a shelf. The padding at the top leaves room for the picked check that hangs off a card's
+   corner. */
+.pick-row {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 11px 0 12px;
+  overflow: hidden;
+  overscroll-behavior-x: contain;
+
+  .swiper-wrapper {
+    display: flex;
+    flex-direction: row;
+    align-items: stretch;
+  }
+
+  .swiper-slide {
+    flex: 0 0 auto;
+    width: 132px;
+    height: 68px;
+    box-sizing: border-box;
+  }
+}
+
+.pick-card {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 4px;
+  padding: 5px 6px;
+  box-sizing: border-box;
+  background: rgba(v.$color-base-parchment-pale, 0.72);
+  border: 1px solid rgba(v.$color-base-brown-14, 0.25);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: border-color 0.18s ease, box-shadow 0.18s ease;
+
+  &:hover { border-color: v.$color-arcane-border; }
+
+  &:focus-visible {
+    outline: 2px solid v.$color-arcane-border;
+    outline-offset: 2px;
+  }
+
+  &.is-picked {
+    border-color: v.$color-base-purple-primary;
+    box-shadow: 0 0 0 2px rgba(110, 40, 208, 0.35);
+  }
+}
+
+.pick-name {
+  width: 100%;
+  color: v.$color-base-brown-14;
+  font-family: v.$font-body;
+  font-size: 11px;
+  line-height: 1.15;
+  text-align: center;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+  overflow-wrap: anywhere;
+}
+
+/* The kind and the preview share the card's foot, so the name above them gets the whole width. */
+.pick-foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+}
+
+.pick-kind {
+  padding: 2px 6px;
+  background: rgba(v.$color-base-brown-14, 0.1);
+  border: 1px solid rgba(v.$color-base-brown-14, 0.3);
+  border-radius: 8px;
+  color: v.$color-base-brown-14;
+  font-family: v.$font-header;
+  font-size: 8px;
+  letter-spacing: 0.1em;
+  line-height: 1;
+  text-transform: uppercase;
+
+  &--sfx {
+    background: rgba(v.$color-base-gold-1, 0.28);
+    border-color: rgba(v.$color-base-brown-14, 0.45);
+  }
+}
+
+.pick-play {
+  position: relative;
+  z-index: 3;
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: 1px solid rgba(v.$color-base-brown-14, 0.35);
+  border-radius: 50%;
+  color: v.$color-base-brown-14;
+  font-size: 9px;
+  line-height: 1;
+  cursor: pointer;
+  transition: border-color 0.18s ease, color 0.18s ease;
+
+  &:hover {
+    border-color: v.$color-arcane-border;
+    color: v.$color-base-gold-1;
+  }
+}
+
+.pick-check {
+  position: absolute;
+  top: -7px;
+  right: -7px;
+  z-index: 3;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  background: v.$color-base-purple-primary;
+  border-radius: 50%;
+  color: #fff;
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1;
+}
+
+/* ── The running order ───────────────────────────────────────────────────────
+   A frame holding a swipable row of track cards. Each card is wide and short, so the whole of a
+   track's options fits inside one and the row never grows taller than the space it is given. */
+.track-box {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 12px 14px;
+  margin: 0 0 16px;
+  border: 1px solid rgba(v.$color-base-brown-14, 0.2);
+  border-radius: 8px;
+}
+
+.track-box__legend {
+  margin: 0;
+  font-family: v.$font-header;
+  font-size: 0.7rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(v.$color-base-brown-14, 0.5);
+}
+
+/* The row of track cards, swept sideways like the picker above it. */
+.track-row {
+  width: 100%;
+  box-sizing: border-box;
+  overflow: hidden;
+  overscroll-behavior-x: contain;
+
+  .swiper-wrapper {
+    display: flex;
+    flex-direction: row;
+    align-items: stretch;
+  }
+
+  .swiper-slide {
+    flex: 0 0 auto;
+    width: 224px;
+    height: 76px;
+    box-sizing: border-box;
+  }
+}
+
+.limit-error-message {
+  background: rgba(220, 38, 38, 0.1);
+  border: 1px solid rgba(220, 38, 38, 0.3);
+  border-radius: 8px;
+  padding: 12px 16px;
+  margin: 16px 0;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: #dc2626;
+  font-family: v.$font-body;
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+.limit-error-text { flex: 1; }

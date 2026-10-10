@@ -1,0 +1,124 @@
+@use '../../../../../../styles/variables' as v;
+
+:host {
+  display: block;
+  height: 100%;
+}
+
+/* The card fills its slide: two short rows holding the whole of a track's options. It is drawn on the
+   journal's own parchment, like the picker cards above it, and its sides keep a 4px gutter. */
+.ptc {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 4px;
+  padding: 6px 4px;
+  box-sizing: border-box;
+  background: rgba(v.$color-base-parchment-pale, 0.72);
+  border: 1px solid rgba(v.$color-base-brown-14, 0.25);
+  border-radius: 8px;
+
+  /* The journal's slider ink, so a track's volume matches the rest of the page. */
+  --cc-slider-accent: #{v.$color-base-gold-1};
+}
+
+.ptc-head {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.ptc-order {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 14px;
+  height: 14px;
+  background: rgba(v.$color-base-brown-14, 0.12);
+  border: 1px solid rgba(v.$color-base-brown-14, 0.3);
+  border-radius: 50%;
+  color: v.$color-base-brown-14;
+  font-family: v.$font-header;
+  font-size: 8px;
+  line-height: 1;
+}
+
+.ptc-name {
+  flex: 1;
+  min-width: 0;
+  color: v.$color-base-brown-14;
+  font-family: v.$font-body;
+  font-size: 11px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.ptc-badge {
+  flex-shrink: 0;
+  padding: 1px 5px;
+  background: rgba(v.$color-base-gold-1, 0.25);
+  border: 1px solid rgba(v.$color-base-brown-14, 0.35);
+  border-radius: 7px;
+  color: v.$color-base-brown-14;
+  font-family: v.$font-header;
+  font-size: 7px;
+  letter-spacing: 0.1em;
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+/* The volume's lane and the play-mode row share a line; the values the chosen mode needs wrap onto
+   the line under them. */
+.ptc-controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 6px;
+}
+
+.ptc-volume {
+  flex: 0 1 52px;
+  min-width: 40px;
+}
+
+/* The order and removal sit at the head's right-hand end. */
+.ptc-actions {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  margin-left: auto;
+}
+
+.ptc-icon {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+  background: transparent;
+  border: 1px dashed v.$color-border-accent;
+  border-radius: 4px;
+  color: v.$color-base-brown-14;
+  font-size: 8px;
+  line-height: 1;
+  cursor: pointer;
+  transition: border-color 0.15s ease, color 0.15s ease;
+
+  &:hover:not(:disabled) {
+    border-color: v.$color-arcane-border;
+    color: v.$color-base-gold-1;
+  }
+
+  &:disabled {
+    opacity: 0.4;
+    cursor: default;
+  }
+
+  &--danger:hover {
+    color: #a33;
+    border-color: rgba(163, 51, 51, 0.5);
+  }
+}

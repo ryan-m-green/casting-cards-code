@@ -1,0 +1,31 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <style>
+    body { margin: 0; padding: 10px; background: #fff; font: 12px monospace; color: #333; }
+    .stage { position: relative; width: 846px; height: 852px; }   /* 3x the 282x284 viewBox */
+    .stage img { position: absolute; inset: 0; width: 846px; height: 852px; }
+    .l { position: absolute; left: 0; right: 0; height: 0; border-top: 1px solid; }
+    .v { position: absolute; top: 0; bottom: 0; width: 0; border-left: 1px solid; }
+    .foot { border-color: #d00; }        /* the goblin's foot line, y 171.44 */
+    .cracktop { border-color: #06c; }    /* the lower-right crack's top, y 173 */
+    .crackx { border-color: #06c; border-left-style: dashed; }
+    .box { position: absolute; border: 1px dashed #090; }  /* the goblin's bounds */
+  </style>
+</head>
+<body>
+  <div class="stage">
+    <img src="../frontend/cast-library-ui/public/encounter_death.svg" alt="">
+    <div class="l foot" style="top: 555px"></div>
+    <div class="l cracktop" style="top: 522px"></div>
+    <div class="v crackx" style="left: 537px"></div>
+    <div class="v crackx" style="left: 660px"></div>
+    <div class="box" style="left: 224px; top: 198px; width: 396px; height: 357px"></div>
+  </div>
+  <p>
+    red = foot line y 185 &nbsp;|&nbsp; blue = lower-right crack x 179..220, top y 174 &nbsp;|&nbsp;
+    green dashed = the figure's bounds x 74.7..206.5, y 66.1..185
+  </p>
+</body>
+</html>

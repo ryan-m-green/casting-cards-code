@@ -1,0 +1,119 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Flaw add button — preview</title>
+<style>
+  :root { --portal-color: #6e28d0; }
+  body { margin: 0; padding: 24px; background: rgb(14, 24, 32); font-family: Georgia, serif; }
+  h2 { color: #c8e1eb; font: 11px/1 monospace; letter-spacing: .12em; text-transform: uppercase; margin: 24px 0 10px; }
+  .drawer { width: 330px; padding: 18px; background: rgba(14, 24, 32, 0.8); }
+  .motive-section { display: flex; flex-direction: column; gap: 12px; }
+  .motive-section-top { display: flex; }
+  .motive-gutter { height: 8px; }
+
+  /* transcribed verbatim from the compiled component stylesheet */
+  .motive-add-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 14px 6px 10px;
+    background: transparent;
+    border: 1px dashed rgba(167, 121, 233, 0.4);
+    border-radius: 6px;
+    color: rgba(200, 225, 235, 0.88);
+    font-family: "Cinzel", serif;
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: color 0.15s ease, border-color 0.15s ease;
+  }
+  .motive-add-btn:hover {
+    color: rgba(200, 225, 235, 0.95);
+    border-color: var(--portal-color, rgb(110, 40, 208));
+  }
+  .motive-add-btn:hover .motive-add-btn-icon { opacity: 1; }
+  .motive-add-btn-icon {
+    display: block;
+    flex-shrink: 0;
+    width: 24px;
+    height: 24px;
+    object-fit: contain;
+    filter: brightness(0) invert(1);
+    opacity: 0.65;
+    transition: opacity 0.15s ease;
+  }
+  .as-hover .motive-add-btn { color: rgba(200, 225, 235, 0.95); border-color: var(--portal-color); }
+  .as-hover .motive-add-btn-icon { opacity: 1; }
+
+  .zoom { transform: scale(4); transform-origin: top left; margin: 8px 0 110px 8px; width: max-content; }
+  .zoom8 { margin: 4px 0 40px 4px; }
+  .zoom8 .motive-add-btn-icon { width: 192px; height: 192px; }
+</style>
+</head>
+<body>
+  <h2>the two marked buttons, at the drawer's own measure</h2>
+  <div class="drawer">
+    <section class="motive-section">
+      <div class="motive-section-top">
+        <button class="motive-add-btn" type="button">
+          <img class="motive-add-btn-icon" src="../frontend/cast-library-ui/public/person_falling_from_cliff.svg" alt="" aria-hidden="true" draggable="false" />
+          Fear
+        </button>
+      </div>
+    </section>
+    <div class="motive-gutter"></div>
+    <section class="motive-section">
+      <div class="motive-section-top">
+        <button class="motive-add-btn" type="button">
+          <img class="motive-add-btn-icon" src="../frontend/cast-library-ui/public/broken_shield_sword.svg" alt="" aria-hidden="true" draggable="false" />
+          Flaw
+        </button>
+      </div>
+    </section>
+  </div>
+
+  <h2>as offered (hover)</h2>
+  <div class="drawer as-hover">
+    <section class="motive-section">
+      <div class="motive-section-top">
+        <button class="motive-add-btn" type="button">
+          <img class="motive-add-btn-icon" src="../frontend/cast-library-ui/public/person_falling_from_cliff.svg" alt="" aria-hidden="true" draggable="false" />
+          Fear
+        </button>
+        <span style="width:12px"></span>
+        <button class="motive-add-btn" type="button">
+          <img class="motive-add-btn-icon" src="../frontend/cast-library-ui/public/broken_shield_sword.svg" alt="" aria-hidden="true" draggable="false" />
+          Flaw
+        </button>
+      </div>
+    </section>
+  </div>
+
+  <h2>its sibling, now marked the same way</h2>
+  <div class="drawer">
+    <section class="motive-section">
+      <div class="motive-section-top">
+        <button class="motive-add-btn" type="button">
+          <img class="motive-add-btn-icon" src="../frontend/cast-library-ui/public/dart_hitting_target_bullseye.svg" alt="" aria-hidden="true" draggable="false" />
+          Goal
+        </button>
+      </div>
+    </section>
+  </div>
+
+  <h2>the flaw mark alone, at 8&times;</h2>
+  <div class="zoom8">
+    <img class="motive-add-btn-icon" src="../frontend/cast-library-ui/public/broken_shield_sword.svg" alt="" aria-hidden="true" draggable="false" />
+  </div>
+
+  <h2>at 4&times;</h2>
+  <div class="drawer"><div class="zoom">
+    <button class="motive-add-btn" type="button">
+      <img class="motive-add-btn-icon" src="../frontend/cast-library-ui/public/broken_shield_sword.svg" alt="" aria-hidden="true" draggable="false" />
+      Flaw
+    </button>
+  </div></div>
+</body>
+</html>

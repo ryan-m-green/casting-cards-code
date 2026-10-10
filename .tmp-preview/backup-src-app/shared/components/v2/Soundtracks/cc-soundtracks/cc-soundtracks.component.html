@@ -1,0 +1,184 @@
+<div class="st-panel" [style.--portal-color]="portalColor()">
+  <div class="st-topbar">
+    <button
+      type="button"
+      class="st-btn st-btn--danger"
+      [disabled]="!hasPlayingAudio()"
+      (click)="stopAll()"
+      title="Stop all"
+      aria-label="Stop all"
+    >■ All</button>
+
+    <div class="st-volume">
+      <div class="st-volume-head">
+        <span class="st-volume-label">Volume</span>
+        <span class="st-volume-value">{{ masterVolume() }}%</span>
+      </div>
+
+      <cc-slider
+        ariaLabel="Volume"
+        [min]="0"
+        [max]="100"
+        [step]="1"
+        [value]="masterVolume()"
+        (valueChange)="onVolumeChange($event)"
+        [showValue]="false"
+      />
+    </div>
+  </div>
+
+  @if (errorMessage()) {
+    <div class="st-error">{{ errorMessage() }}</div>
+  }
+
+  <div class="st-rows">
+    <div class="st-row-head">
+      <h3 class="st-row-title">Library</h3>
+    </div>
+
+    @if (soundtracks().length === 0) {
+      <p class="st-empty">No soundtracks yet. Use the ＋ tile at the end of the row to add music or a sound effect.</p>
+    }
+
+    <div class="st-row swiper" #trackRow>
+      <div class="swiper-wrapper">
+        @for (track of soundtracks(); track track.id) {
+          <div class="swiper-slide">
+            <div
+              class="st-track-card"
+              [class.playing]="isTrackPlaying(track.id)"
+              [class.selected]="isSelected(track.id)"
+              [title]="track.title"
+              (click)="toggleSelected(track)"
+            >
+              @if (isSelected(track.id)) {
+                <span class="st-card-check" aria-hidden="true">✓</span>
+              }
+
+              <button
+                type="button"
+                class="st-kind-badge"
+                [class.st-kind-badge--sfx]="track.kind === 'sound_effect'"
+                (click)="$event.stopPropagation(); toggleKind(track)"
+                [title]="track.kind === 'music' ? 'Click to mark as sound effect' : 'Click to mark as music'"
+              >
+                {{ track.kind === 'music' ? 'music' : 'sfx' }}
+              </button>
+
+              <cc-delete-button
+                class="st-card-delete"
+                label="Delete soundtrack"
+                confirmLabel="Delete"
+                (confirmed)="confirmDeleteTrack(track.id)"
+              />
+
+              <span class="st-card-name">{{ getDisplayName(track.title) }}</span>
+
+              <button
+                type="button"
+                class="st-play-btn st-play-btn--card"
+                (click)="$event.stopPropagation(); isTrackPlaying(track.id) ? stopTrack(track.id) : playTrack(track)"
+                [title]="isTrackPlaying(track.id) ? 'Stop' : 'Play'"
+                [attr.aria-label]="(isTrackPlaying(track.id) ? 'Stop ' : 'Play ') + track.title"
+              >
+                {{ isTrackPlaying(track.id) ? '■' : '▶' }}
+              </button>
+
+              <cc-slider
+                class="st-card-volume swiper-no-swiping"
+                [min]="0"
+                [max]="100"
+                [step]="1"
+                [value]="track.volume"
+                (commit)="onTrackVolumeChange(track, $event)"
+                (click)="$event.stopPropagation()"
+                [showValue]="false"
+                [showTicks]="false"
+                ariaLabel="Volume"
+                title="Volume"
+              />
+            </div>
+          </div>
+        }
+        <div class="swiper-slide">
+          <div class="st-add-track" role="group" aria-label="Add a soundtrack">
+            <button
+              type="button"
+              class="st-add-half"
+              [disabled]="uploading()"
+              (click)="chooseUpload('music')"
+              title="Add music to this campaign"
+            >
+              <span class="st-add-plus" aria-hidden="true">＋</span>
+              <span class="st-add-label">{{ uploading() ? 'Uploading…' : 'Music' }}</span>
+            </button>
+
+            <button
+              type="button"
+              class="st-add-half st-add-half--sfx"
+              [disabled]="uploading()"
+              (click)="chooseUpload('sound_effect')"
+              title="Add a sound effect to this campaign"
+            >
+              <span class="st-add-plus" aria-hidden="true">＋</span>
+              <span class="st-add-label">{{ uploading() ? 'Uploading…' : 'Sound Effect' }}</span>
+            </button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="st-row-head">
+      <button
+        type="button"
+        class="st-btn st-btn--primary"
+        [disabled]="selectedTrackIds().length === 0"
+        (click)="openAmbianceCreator()"
+        title="Build a playlist card from the ticked tracks"
+      >
+        ＋ Playlist @if (selectedTrackIds().length > 0) {<span class="st-add-count">{{ selectedTrackIds().length }}</span>}
+      </button>
+    </div>
+
+    @if (ambiances().length === 0) {
+      <p class="st-empty">No ambiance cards yet. Tick a few tracks and press ＋ Playlist to build one.</p>
+    } @else {
+      <div class="st-row st-row--ambiance swiper" #ambianceRow>
+        <div class="swiper-wrapper">
+          @for (ambiance of ambiances(); track ambiance.id) {
+            <div class="swiper-slide">
+              <div class="st-ambiance-card" [class.playing]="isAmbiancePlaying(ambiance.id)">
+                <cc-edit-button
+                  label="Edit ambiance"
+                  (clicked)="editAmbiance(ambiance)"
+                />
+
+                <cc-delete-button
+                  label="Delete ambiance"
+                  (confirmed)="confirmDeleteAmbiance(ambiance.id)"
+                />
+
+                <span class="st-card-name" [title]="ambiance.title">{{ ambiance.title }}</span>
+
+                <span class="st-card-meta">
+                  {{ ambiance.items.length }} track{{ ambiance.items.length === 1 ? '' : 's' }}
+                </span>
+
+                <button
+                  type="button"
+                  class="st-play-btn st-play-btn--card"
+                  (click)="toggleAmbiance(ambiance)"
+                  [title]="isAmbiancePlaying(ambiance.id) ? 'Stop' : 'Play'"
+                  [attr.aria-label]="(isAmbiancePlaying(ambiance.id) ? 'Stop ' : 'Play ') + ambiance.title"
+                >
+                  {{ isAmbiancePlaying(ambiance.id) ? '■' : '▶' }}
+                </button>
+              </div>
+            </div>
+          }
+        </div>
+      </div>
+    }
+  </div>
+</div>

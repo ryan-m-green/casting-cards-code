@@ -30,6 +30,12 @@ public interface ICampaignReadRepository
     Task<List<CampaignFactionInstanceDomain>> GetFactionInstancesByCampaignAsync(Guid campaignId, Guid dmUserId);
     Task<CampaignFactionInstanceDomain> GetFactionInstanceByIdAsync(Guid instanceId);
     Task<List<CampaignFactionInstanceDomain>> GetFactionInstancesForPlayerAsync(Guid campaignId);
+    /// <summary>
+    /// The campaign's factions as the party's own row reads them — the factions the DM has unlocked
+    /// to them, each wearing the party's own cast membership (the rows written with no `dm_user_id`).
+    /// See GetFactionInstancesWithPartyMembershipsAsync.
+    /// </summary>
+    Task<List<CampaignFactionInstanceDomain>> GetFactionInstancesForPartyAsync(Guid campaignId);
     Task<int> GetCampaignCountByDmAsync(Guid dmUserId);
 }
 
@@ -223,8 +229,7 @@ public class CampaignReadRepository(
             Role = r.role ?? string.Empty,
             Age = r.age ?? string.Empty,
             MaxHitPoints = r.max_hit_points,
-            LostHitPoints = r.lost_hit_points,
-            TempHitPoints = r.temp_hit_points,
+            StarsCount = r.stars_count,
             Posture = r.posture ?? string.Empty,
             Speed = r.speed ?? string.Empty,
             VoicePlacement = r.voice_placement ?? Array.Empty<string>(),
@@ -277,8 +282,7 @@ public class CampaignReadRepository(
             Role = r.role ?? string.Empty,
             Age = r.age ?? string.Empty,
             MaxHitPoints = r.max_hit_points,
-            LostHitPoints = r.lost_hit_points,
-            TempHitPoints = r.temp_hit_points,
+            StarsCount = r.stars_count,
             Posture = r.posture ?? string.Empty,
             Speed = r.speed ?? string.Empty,
             VoicePlacement = r.voice_placement ?? Array.Empty<string>(),
@@ -321,8 +325,7 @@ public class CampaignReadRepository(
             Role = r.role ?? string.Empty,
             Age = r.age ?? string.Empty,
             MaxHitPoints = r.max_hit_points,
-            LostHitPoints = r.lost_hit_points,
-            TempHitPoints = r.temp_hit_points,
+            StarsCount = r.stars_count,
             Posture = r.posture ?? string.Empty,
             Speed = r.speed ?? string.Empty,
             VoicePlacement = r.voice_placement ?? Array.Empty<string>(),
@@ -365,8 +368,7 @@ public class CampaignReadRepository(
             Role = r.role ?? string.Empty,
             Age = r.age ?? string.Empty,
             MaxHitPoints = r.max_hit_points,
-            LostHitPoints = r.lost_hit_points,
-            TempHitPoints = r.temp_hit_points,
+            StarsCount = r.stars_count,
             Posture = r.posture ?? string.Empty,
             Speed = r.speed ?? string.Empty,
             VoicePlacement = r.voice_placement ?? Array.Empty<string>(),
@@ -735,8 +737,7 @@ public class CampaignReadRepository(
             Role = r.role ?? string.Empty,
             Age = r.age ?? string.Empty,
             MaxHitPoints = r.max_hit_points,
-            LostHitPoints = r.lost_hit_points,
-            TempHitPoints = r.temp_hit_points,
+            StarsCount = r.stars_count,
             Posture = r.posture ?? string.Empty,
             Speed = r.speed ?? string.Empty,
             VoicePlacement = r.voice_placement ?? Array.Empty<string>(),
@@ -760,22 +761,16 @@ public class CampaignReadRepository(
             @"SELECT cfi.faction_instance_id, cfi.source_faction_id, cfi.campaign_id, cfi.dm_user_id,
                      cfi.name, cfi.type, cfi.hidden, cfi.is_visible_to_players, cfi.description, cfi.dm_notes, cfi.symbol_path, cfi.created_at,
                      cfi.colors,
-                     COALESCE(pn.influence, cfi.influence) AS influence,
+                     -- The campaign's own influence, and only the campaign's own: the party's
+                     -- reading of it belongs to the party's row (see
+                     -- GetFactionInstancesWithPartyMembershipsAsync). Taking the party's here would
+                     -- hide the DM's own edits behind whatever the party had set — the slider would
+                     -- move and the card would not.
+                     cfi.influence,
                      cfi.perception
               FROM campaign_faction_instances cfi
-              LEFT JOIN campaign_faction_player_notes pn
-                     ON pn.faction_instance_id = cfi.faction_instance_id
-                    AND pn.campaign_id = cfi.campaign_id
               WHERE cfi.campaign_id = @CampaignId
               ORDER BY cfi.created_at";
-
-        const string sublocationSql =
-            @"SELECT faction_instance_id, sublocation_instance_id, is_primary
-              FROM campaign_faction_sublocations
-              WHERE dm_user_id = @DmUserId
-                AND faction_instance_id IN (
-                  SELECT faction_instance_id FROM campaign_faction_instances WHERE campaign_id = @CampaignId
-              )";
 
         const string castSql =
             @"SELECT faction_instance_id, cast_instance_id, is_primary
@@ -786,30 +781,20 @@ public class CampaignReadRepository(
               )";
 
         const string relSql =
-            @"SELECT id, campaign_id, faction_instance_id_a, faction_instance_id_b, relationship_type, strength, created_at, dm_user_id
+            @"SELECT id, campaign_id, faction_instance_id_a, faction_instance_id_b, relationship_type, strength, created_at, gm_user_id
               FROM campaign_faction_instance_relationships
               WHERE campaign_id = @CampaignId
-                AND dm_user_id = @DmUserId";
+                AND gm_user_id = @DmUserId";
 
         logging.LogDbOperation(correlation.TraceId, spanId, "SELECT", "campaign_faction_instances", @params);
 
         using var conn = CreateConnection();
         var rows = (await conn.QueryAsync<dynamic>(sql, @params)).ToList();
 
-        var sublocationRows = (await conn.QueryAsync<dynamic>(sublocationSql, @params)).ToList();
         var castRows = (await conn.QueryAsync<dynamic>(castSql, @params)).ToList();
         var relRows = (await conn.QueryAsync<dynamic>(relSql, @params)).ToList();
 
         logging.LogDbOperation(correlation.TraceId, spanId, "SELECT", "campaign_faction_instances", @params, rows.Count);
-
-        var sublocationMap = sublocationRows
-            .GroupBy((dynamic r) => (Guid)r.faction_instance_id)
-            .ToDictionary(g => g.Key, g => g.Select((dynamic r) => (Guid)r.sublocation_instance_id).ToList());
-
-        var primarySublocationMap = sublocationRows
-            .Where((dynamic r) => (bool)r.is_primary)
-            .GroupBy((dynamic r) => (Guid)r.faction_instance_id)
-            .ToDictionary(g => g.Key, g => (Guid?)((dynamic)g.First()).sublocation_instance_id);
 
         var castMap = castRows
             .GroupBy((dynamic r) => (Guid)r.faction_instance_id)
@@ -831,7 +816,7 @@ public class CampaignReadRepository(
                 RelationshipType = (string)(r.relationship_type ?? string.Empty),
                 Strength = (short)r.strength,
                 CreatedAt = (DateTime)r.created_at,
-                DmUserId = r.dm_user_id is DBNull || r.dm_user_id is null ? (Guid?)null : (Guid)r.dm_user_id,
+                GmUserId = r.gm_user_id is DBNull || r.gm_user_id is null ? (Guid?)null : (Guid)r.gm_user_id,
             }).ToList());
 
         return rows.Select(r =>
@@ -859,9 +844,7 @@ public class CampaignReadRepository(
                 SymbolPath = r.symbol_path,
                 CreatedAt = r.created_at,
                 Colors = colors,
-                SubLocationInstanceIds = sublocationMap.TryGetValue(fid, out var subs) ? subs : [],
                 CastInstanceIds = castMap.TryGetValue(fid, out var casts) ? casts : [],
-                PrimarySublocationInstanceId = primarySublocationMap.TryGetValue(fid, out var ps) ? ps : null,
                 PrimaryCastInstanceId = primaryCastMap.TryGetValue(fid, out var pc) ? pc : null,
                 FactionRelationships = relsByFactionA.TryGetValue(fid, out var rels) ? rels : [],
             };
@@ -876,12 +859,9 @@ public class CampaignReadRepository(
             @"SELECT cfi.faction_instance_id, cfi.source_faction_id, cfi.campaign_id, cfi.dm_user_id,
                      cfi.name, cfi.type, cfi.hidden, cfi.is_visible_to_players, cfi.description, cfi.dm_notes, cfi.symbol_path, cfi.created_at,
                      cfi.colors,
-                     COALESCE(pn.influence, cfi.influence) AS influence,
+                     cfi.influence,
                      cfi.perception
               FROM campaign_faction_instances cfi
-              LEFT JOIN campaign_faction_player_notes pn
-                     ON pn.faction_instance_id = cfi.faction_instance_id
-                    AND pn.campaign_id = cfi.campaign_id
               WHERE cfi.faction_instance_id = @InstanceId";
 
         logging.LogDbOperation(correlation.TraceId, spanId, "SELECT", "campaign_faction_instances", @params);
@@ -939,43 +919,46 @@ public class CampaignReadRepository(
         catch { return []; }
     }
 
-    public async Task<List<CampaignFactionInstanceDomain>> GetFactionInstancesForPlayerAsync(Guid campaignId)
+    public Task<List<CampaignFactionInstanceDomain>> GetFactionInstancesForPlayerAsync(Guid campaignId) =>
+        GetFactionInstancesWithPartyMembershipsAsync(campaignId);
+
+    /// <summary>
+    /// The campaign's factions as the party's own row reads them: the ones the DM has unlocked to
+    /// them, each wearing the party's own cast membership. It is the read a player's faction row is
+    /// drawn from — and the one the GM's look at that row is drawn from too (see
+    /// cc-card-faction-navigation) — so a faction the DM has not unlocked is not on the party's row
+    /// at all: the lock shows and hides the card itself, which is the rule the v1 campaign's faction
+    /// pages keep. The party's memberships and the party's crowns are the party's own, and come back
+    /// with the factions (the GM's rows for the same factions are the GM's).
+    /// </summary>
+    public Task<List<CampaignFactionInstanceDomain>> GetFactionInstancesForPartyAsync(Guid campaignId) =>
+        GetFactionInstancesWithPartyMembershipsAsync(campaignId);
+
+    private async Task<List<CampaignFactionInstanceDomain>> GetFactionInstancesWithPartyMembershipsAsync(
+        Guid campaignId)
     {
         var spanId = correlation.NewSpan();
         var @params = new { CampaignId = campaignId };
 
-        // Only factions the DM has made visible
         const string sql =
             @"SELECT cfi.faction_instance_id,
                                 cfi.source_faction_id,
                                 cfi.campaign_id,
                                 cfi.dm_user_id,
                                 cfi.name,
-                                pn.type,
+                                cfi.type,
                                 cfi.hidden,
                                 cfi.is_visible_to_players,
                                 cfi.description,
                                 cfi.symbol_path,
                                 cfi.created_at,
                                 cfi.colors,
-                                pn.influence AS influence,
-                                pn.perception AS perception
+                                cfi.influence,
+                                cfi.perception
               FROM campaign_faction_instances cfi
-              LEFT JOIN campaign_faction_player_notes pn
-                     ON pn.faction_instance_id = cfi.faction_instance_id
-                    AND pn.campaign_id = cfi.campaign_id
               WHERE cfi.campaign_id = @CampaignId
                 AND cfi.is_visible_to_players = TRUE
               ORDER BY cfi.created_at";
-
-        const string sublocationSql =
-            @"SELECT faction_instance_id, sublocation_instance_id, is_primary
-              FROM campaign_faction_sublocations
-              WHERE dm_user_id IS NULL
-                AND faction_instance_id IN (
-                  SELECT faction_instance_id FROM campaign_faction_instances
-                  WHERE campaign_id = @CampaignId AND is_visible_to_players = TRUE
-              )";
 
         const string castSql =
             @"SELECT faction_instance_id, cast_instance_id, is_primary
@@ -986,31 +969,22 @@ public class CampaignReadRepository(
                   WHERE campaign_id = @CampaignId AND is_visible_to_players = TRUE
               )";
 
-        // All relationships (player-created only) for visible factions
+        // All relationships (the party's own, read off the rows they wrote) for the factions on
+        // the row
         const string relSql =
-            @"SELECT id, campaign_id, faction_instance_id_a, faction_instance_id_b, relationship_type, strength, created_at, dm_user_id
+            @"SELECT id, campaign_id, faction_instance_id_a, faction_instance_id_b, relationship_type, strength, created_at, gm_user_id
               FROM campaign_faction_instance_relationships
               WHERE campaign_id = @CampaignId
-                AND dm_user_id IS NULL";
+                AND gm_user_id IS NULL";
 
         logging.LogDbOperation(correlation.TraceId, spanId, "SELECT", "campaign_faction_instances (player)", @params);
 
         using var conn = CreateConnection();
         var rows = (await conn.QueryAsync<dynamic>(sql, @params)).ToList();
-        var sublocationRows = (await conn.QueryAsync<dynamic>(sublocationSql, @params)).ToList();
         var castRows = (await conn.QueryAsync<dynamic>(castSql, @params)).ToList();
         var relRows = (await conn.QueryAsync<dynamic>(relSql, @params)).ToList();
 
         logging.LogDbOperation(correlation.TraceId, spanId, "SELECT", "campaign_faction_instances (player)", @params, rows.Count);
-
-        var sublocationMap = sublocationRows
-            .GroupBy((dynamic r) => (Guid)r.faction_instance_id)
-            .ToDictionary(g => g.Key, g => g.Select((dynamic r) => (Guid)r.sublocation_instance_id).ToList());
-
-        var primarySublocationMap = sublocationRows
-            .Where((dynamic r) => (bool)r.is_primary)
-            .GroupBy((dynamic r) => (Guid)r.faction_instance_id)
-            .ToDictionary(g => g.Key, g => (Guid?)((dynamic)g.First()).sublocation_instance_id);
 
         var castMap = castRows
             .GroupBy((dynamic r) => (Guid)r.faction_instance_id)
@@ -1032,7 +1006,7 @@ public class CampaignReadRepository(
                 RelationshipType = (string)(r.relationship_type ?? string.Empty),
                 Strength = (short)r.strength,
                 CreatedAt = (DateTime)r.created_at,
-                DmUserId = null,
+                GmUserId = null,
             }).ToList());
 
         return rows.Select(r =>
@@ -1060,9 +1034,7 @@ public class CampaignReadRepository(
                 SymbolPath = r.symbol_path,
                 CreatedAt = r.created_at,
                 Colors = colors,
-                SubLocationInstanceIds = sublocationMap.TryGetValue(fid, out var subs) ? subs : [],
                 CastInstanceIds = castMap.TryGetValue(fid, out var casts) ? casts : [],
-                PrimarySublocationInstanceId = primarySublocationMap.TryGetValue(fid, out var ps) ? ps : null,
                 PrimaryCastInstanceId = primaryCastMap.TryGetValue(fid, out var pc) ? pc : null,
                 FactionRelationships = relsByFactionA.TryGetValue(fid, out var rels) ? rels : [],
             };

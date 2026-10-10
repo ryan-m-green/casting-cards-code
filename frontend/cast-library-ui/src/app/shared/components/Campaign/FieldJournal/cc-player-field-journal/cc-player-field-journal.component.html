@@ -1,0 +1,70 @@
+<div class="journal" [style.--portal-color]="portalColor()">
+  <cc-rolodex-frame side="left" />
+  <cc-rolodex-frame side="right" />
+
+  @if (loading() && !cards().length) {
+    <p class="journal-note">Reading your field journal…</p>
+  } @else if (!cards().length) {
+    <div class="journal-empty">
+      <p class="journal-note">Your field journal is empty.</p>
+      <p class="journal-hint">
+        The cards the party meets gather here, with your own note on each.
+      </p>
+    </div>
+  } @else {
+    <div class="journal-band">
+      <cc-dynamic-filters
+        [filters]="filters()"
+        [ariaLabel]="'Filter your field notes'"
+        (select)="setFilter($event)"
+      />
+
+      @if (!visibleCards().length) {
+        <p class="journal-note">Nothing matches that filter.</p>
+      } @else {
+        <div class="journal-row swiper" #journalRow>
+          <div class="swiper-wrapper">
+            @for (card of visibleCards(); track card.key) {
+              <div class="swiper-slide">
+                <div class="slide-content">
+                  <div class="card-wrapper journal-entry">
+                    <cc-cast-card
+                      [cast]="asCast(card.combatant)"
+                      [campaignId]="campaignId()"
+                      [flippable]="true"
+                      [editable]="false"
+                      [deletable]="false"
+                      [secrets]="false"
+                      [campaignMode]="false"
+                      [isDm]="false"
+                      [dmMode]="false"
+                      [titleSearch]="false"
+                      [readonlyStars]="true"
+                      [travelable]="false"
+                    />
+
+                    <span class="journal-count">×{{ card.count }}</span>
+                  </div>
+
+                  <cc-encounter-fate
+                    [fates]="card.fates"
+                    [where]="whereLabel"
+                    [whereTitle]="metInLabel(card)"
+                    [hasNote]="card.hasNote"
+                    [noteTitle]="cardTitle(card)"
+                    (whereClick)="openChronicleFor(card)"
+                    (openNote)="openCard(card)"
+                  />
+                </div>
+              </div>
+            }
+          </div>
+        </div>
+      }
+    </div>
+  }
+
+  @if (error()) {
+    <p class="journal-error">{{ error() }}</p>
+  }
+</div>

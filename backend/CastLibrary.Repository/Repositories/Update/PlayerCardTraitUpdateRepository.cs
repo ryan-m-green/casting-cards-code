@@ -7,6 +7,7 @@ public interface IPlayerCardTraitUpdateRepository
 {
     Task UpdateContentAsync(Guid id, string content);
     Task UpdateCompletedAsync(Guid id, bool isCompleted);
+    Task UpdateSharedAsync(Guid id, bool isShared);
 }
 
 public class PlayerCardTraitUpdateRepository(
@@ -33,6 +34,20 @@ public class PlayerCardTraitUpdateRepository(
         var spanId = correlation.NewSpan();
         var @params = new { Id = id, IsCompleted = isCompleted };
         const string sql = "UPDATE player_card_traits SET is_completed = @IsCompleted WHERE id = @Id";
+
+        logging.LogDbOperation(correlation.TraceId, spanId, "UPDATE", "player_card_traits", @params);
+
+        using var conn = sqlConnectionFactory.GetConnection();
+        var rows = await conn.ExecuteAsync(sql, @params);
+
+        logging.LogDbOperation(correlation.TraceId, spanId, "UPDATE", "player_card_traits", @params, rows);
+    }
+
+    public async Task UpdateSharedAsync(Guid id, bool isShared)
+    {
+        var spanId = correlation.NewSpan();
+        var @params = new { Id = id, IsShared = isShared };
+        const string sql = "UPDATE player_card_traits SET is_shared = @IsShared WHERE id = @Id";
 
         logging.LogDbOperation(correlation.TraceId, spanId, "UPDATE", "player_card_traits", @params);
 

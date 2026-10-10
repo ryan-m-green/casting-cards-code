@@ -1,0 +1,43 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><style>
+  body { margin: 0; padding: 14px; background: #fff; font: 11px sans-serif; color: #444; }
+  .paper {
+    display: inline-flex; align-items: center; justify-content: center; gap: 7px;
+    width: 174px; height: 132px; box-sizing: border-box;
+    background: linear-gradient(135deg, #f3e5c8 0%, #e8d4a7 35%, #dfc691 70%, #ceb073 100%);
+    border: 1px solid #8a6d3b;
+  }
+  .paper--zoom { zoom: 3; }
+  .stamp { display: flex; align-items: center; justify-content: center; }
+  .stamp img { object-fit: contain; display: block; }
+  .fate-stamp--defeated img { width: 38px; height: 38px; }
+  .fate-stamp--captured img { width: 30px; height: 54px; }
+  .fate-stamp--fled     img { width: 50px; height: 42px; }
+  .row { display: flex; gap: 34px; align-items: center; }
+  .cell { text-align: center; }
+</style></head><body>
+  <div class="row">
+    <div class="cell">
+      <div class="paper">
+        <span class="stamp fate-stamp--defeated"><img src="../frontend/cast-library-ui/public/encounter_death.svg"></span>
+        <span class="stamp fate-stamp--captured"><img src="../frontend/cast-library-ui/public/caged_goblin_captivity.svg"></span>
+        <span class="stamp fate-stamp--fled"><img src="../frontend/cast-library-ui/public/running_goblin.svg"></span>
+      </div>
+      <div>real size on a 174px card</div>
+    </div>
+    <div class="cell">
+      <div class="paper paper--zoom">
+        <span class="stamp fate-stamp--defeated"><img src="../frontend/cast-library-ui/public/encounter_death.svg"></span>
+        <span class="stamp fate-stamp--captured"><img src="../frontend/cast-library-ui/public/caged_goblin_captivity.svg"></span>
+        <span class="stamp fate-stamp--fled"><img src="../frontend/cast-library-ui/public/running_goblin.svg"></span>
+      </div>
+      <div>3x</div>
+    </div>
+    <div class="cell">
+      <div class="paper paper--zoom">
+        <span class="stamp fate-stamp--fled"><img src="../frontend/cast-library-ui/public/running_goblin.svg"></span>
+      </div>
+      <div>fleeing alone, 3x</div>
+    </div>
+  </div>
+</body></html>

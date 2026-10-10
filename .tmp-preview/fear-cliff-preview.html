@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>Fear icon – falling person preview</title>
+<style>
+  body { margin: 0; padding: 24px; font-family: system-ui, sans-serif; background: #f3ece0; color: #2a2018; }
+  h2 { font-size: 13px; letter-spacing: .12em; text-transform: uppercase; opacity: .7; margin: 30px 0 10px; }
+  .row { display: flex; align-items: flex-start; gap: 28px; flex-wrap: wrap; }
+  .box { border: 1px dashed #b9a98f; padding: 10px; background: #fbf7ef; display: flex; align-items: center; justify-content: center; }
+  .unit { display: flex; flex-direction: column; }
+  .cap { font-size: 11px; opacity: .65; margin-top: 6px; }
+  .native img { width: 338px; height: 348px; }
+  .mid    img { width: 160px; height: 165px; }
+  .small  img { width: 48px;  height: 49px; }
+  .faint  img { width: 48px;  height: 49px; opacity: .2; }
+</style>
+</head>
+<body>
+
+<h2>1 · Standalone file loaded via &lt;img&gt; — how the app consumes icons</h2>
+<div class="row">
+  <div class="unit native"><div class="box"><img src="fear-cliff-falling.svg" alt="Person falling from a cliff" /></div><div class="cap">338 × 348 · native</div></div>
+  <div class="unit mid"><div class="box"><img src="fear-cliff-falling.svg" alt="Person falling from a cliff" /></div><div class="cap">160px</div></div>
+  <div class="unit small"><div class="box"><img src="fear-cliff-falling.svg" alt="Person falling from a cliff" /></div><div class="cap">48px</div></div>
+  <div class="unit faint"><div class="box"><img src="fear-cliff-falling.svg" alt="Person falling from a cliff" /></div><div class="cap">48px @ opacity .2<br />(whisper-card watermark)</div></div>
+</div>
+
+<h2>2 · Inlined &lt;svg&gt; markup — identical behaviour</h2>
+<div class="row">
+  <div class="unit native"><div class="box">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 338 348" width="338" height="348"
+         fill="none" stroke="#000000" stroke-width="14" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M28 70 L56 56 L70 84 L98 63 L126 84" />
+      <path d="M126 84 V294" />
+      <path d="M21 294 H126" />
+      <g>
+        <animateTransform attributeName="transform" type="translate" values="22 -3; 22 -3; 28 26; 42 255"
+          keyTimes="0; 0.10; 0.26; 1" dur="3.2s" repeatCount="indefinite" calcMode="spline"
+          keySplines="0.4 0 0.6 1; 0.35 0 0.9 1; 0.45 0 0.9 0.6" />
+        <g>
+          <animateTransform attributeName="transform" type="rotate" values="0 203 143; 0 203 143; 18 203 143; 320 203 143"
+            keyTimes="0; 0.10; 0.26; 1" dur="3.2s" repeatCount="indefinite" calcMode="spline"
+            keySplines="0.4 0 0.6 1; 0.35 0 0.9 1; 0.45 0 0.9 0.6" />
+          <circle cx="217" cy="98" r="22" />
+          <path d="M210 133 L189 175" />
+          <path d="M203 140 L154 112" />
+          <path d="M203 140 L252 112" />
+          <path d="M189 175 L161 210" />
+          <path d="M189 175 L224 203" />
+        </g>
+        <g stroke-width="12">
+          <path d="M212 24 V56">
+            <animate attributeName="opacity" values="0; 0; 0.5; 0" keyTimes="0; 0.28; 0.62; 1" dur="3.2s" repeatCount="indefinite" />
+          </path>
+          <path d="M248 6 V34">
+            <animate attributeName="opacity" values="0; 0; 0.4; 0" keyTimes="0; 0.34; 0.68; 1" dur="3.2s" repeatCount="indefinite" />
+          </path>
+        </g>
+        <animate attributeName="opacity" values="0; 1; 1; 0" keyTimes="0; 0.05; 0.90; 1" dur="3.2s" repeatCount="indefinite" />
+      </g>
+    </svg>
+  </div><div class="cap">inline &lt;svg&gt;</div></div>
+</div>
+
+<h2>3 · Static frame at t = 0 (before the loop starts)</h2>
+<div class="row">
+  <div class="unit native"><div class="box">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 338 348" width="338" height="348"
+         fill="none" stroke="#000000" stroke-width="14" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M28 70 L56 56 L70 84 L98 63 L126 84" />
+      <path d="M126 84 V294" />
+      <path d="M21 294 H126" />
+      <g transform="translate(22,-3)">
+        <circle cx="217" cy="98" r="22" />
+        <path d="M210 133 L189 175" />
+        <path d="M203 140 L154 112" />
+        <path d="M203 140 L252 112" />
+        <path d="M189 175 L161 210" />
+        <path d="M189 175 L224 203" />
+      </g>
+    </svg>
+  </div><div class="cap">rest pose</div></div>
+</div>
+
+</body>
+</html>

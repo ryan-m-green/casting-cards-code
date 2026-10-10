@@ -18,6 +18,13 @@ public class CampaignChronicleFeedItemResponse
     public string FilePath { get; set; } = string.Empty;
     public string ImageUrl { get; set; }
     public string TodSliceName { get; set; } = string.Empty;
+
+    /// <summary>
+    /// In-game day (campaign_time_of_day.days_passed) the entry was recorded on, captured
+    /// server-side from the campaign clock when the entry was added.
+    /// </summary>
+    public int DayNumber { get; set; }
+
     public bool IsGmOnly { get; set; }
     public DateTime PlayedOn { get; set; }
     public int? SessionNumber { get; set; }

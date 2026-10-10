@@ -26,9 +26,6 @@ public class AssignFactionToSublocationCommandHandler(
                 command.InstanceId,
                 command.Request.FactionInstanceId,
                 command.Request.SymbolPath);
-            await campaignUpdateRepository.SyncPlayerFactionSublocationMembershipAsync(
-                command.InstanceId,
-                command.Request.FactionInstanceId);
         }
     }
 }

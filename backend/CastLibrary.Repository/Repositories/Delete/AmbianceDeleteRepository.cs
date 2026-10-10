@@ -18,13 +18,13 @@ public class AmbianceDeleteRepository(
         var spanId = correlation.NewSpan();
         var @params = new { AmbianceId = ambianceId };
 
-        const string sql = @"DELETE FROM campaign_ambiances WHERE id = @AmbianceId";
+        const string sql = @"DELETE FROM ambiances WHERE id = @AmbianceId";
 
-        logging.LogDbOperation(correlation.TraceId, spanId, "DELETE", "campaign_ambiances", @params);
+        logging.LogDbOperation(correlation.TraceId, spanId, "DELETE", "ambiances", @params);
 
         using var conn = sqlConnectionFactory.GetConnection();
         var rowsAffected = await conn.ExecuteAsync(sql, @params);
 
-        logging.LogDbOperation(correlation.TraceId, spanId, "DELETE", "campaign_ambiances", @params, rowsAffected);
+        logging.LogDbOperation(correlation.TraceId, spanId, "DELETE", "ambiances", @params, rowsAffected);
     }
 }

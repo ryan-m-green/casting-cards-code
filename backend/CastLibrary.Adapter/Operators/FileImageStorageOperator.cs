@@ -1,5 +1,4 @@
-﻿using Amazon;
-using Amazon.S3;
+﻿using Amazon.S3;
 using Amazon.S3.Model;
 using CastLibrary.Adapter.ImageConversion;
 using CastLibrary.Logic.Interfaces;

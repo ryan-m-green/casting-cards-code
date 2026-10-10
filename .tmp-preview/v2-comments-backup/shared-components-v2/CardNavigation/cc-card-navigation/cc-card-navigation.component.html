@@ -1,0 +1,373 @@
+<div class="cc-card-navigation" [class.loading]="loading()" [class.error]="error() !== null">
+  <!-- Loading State -->
+  @if (loading()) {
+  <div class="loading-state">
+    <div class="spinner"></div>
+    <p>Loading location data...</p>
+  </div>
+  }
+
+  <!-- Error State -->
+  @if (error()) {
+  <div class="error-state">
+    <p>{{ error() }}</p>
+    <button (click)="loadCardData()">Retry</button>
+  </div>
+  }
+
+  <!-- 3-Row Navigation System -->
+  @if (!loading() && !error()) {
+  <!--
+    The three marks at the foot of the location card the realm has been walked into: one cc-tree-joint
+    (see that component, and the stands it takes) stood on that card's base three times over — one on
+    each of its bottom corners with its run turned out at 45deg (`stand="corner-left"` on the one and
+    `stand="corner-right"` on the other), and one on the middle of its bottom border running straight
+    down (`stand="box"`, the mark filling the 75px the foot lays out for it). The card's base is
+    drawn as a node of the tree in its own right: the mark under its middle is the way down into the
+    row below, and the two on its corners point out along the row it is the walk into — so the middle
+    row is drawn as the tree of cards hanging off that one location. They stand outside
+    `.rolodex-container` on purpose: that row fades its own edges away with a mask, and a mark
+    crossing that fade would be thinned to nothing long before it reached the row's own ends (see the
+    rule below).
+    All three are drawn and taken down at once, on the row's own `transitioning`, like every other
+    joint (see cc-tree-joint): the foot goes down before the cards of the row do, and stands again
+    once the new cards have landed.
+
+  -->
+  @if (parentLocation()) {
+  <div class="tree-foot" [class.tree-foot--deepest]="parentSublocation()" aria-hidden="true">
+    <cc-tree-joint stand="corner-left" [transitioning]="transitioning()" />
+    <cc-tree-joint stand="box" [transitioning]="transitioning()" />
+    <cc-tree-joint stand="corner-right" [transitioning]="transitioning()" />
+  </div>
+  }
+  <div class="rolodex-container" #rolodexContainer>
+
+    <!-- Row 1: Top Row (Previously Viewed Cards) -->
+    <div class="row top-row">
+      <div class="cards-row">
+        <!-- Dedicated dropzones centered on screen -->
+        <div class="drop-zone-container">
+          <div class="drop-spot location-dropzone" #locationDropzone>
+            <div class="card-wrapper top-row-card" #topRowCard (click)="navigateToLocations()">
+              @if (parentLocation()) {
+              <cc-simple-location-card ccCardFade [ccCardFadeOut]="transitioning()" [location]="parentLocation()!"></cc-simple-location-card>
+              }
+            </div>
+          </div>
+          <!--
+            The breadcrumb's own joint, laid on its side (`orientation="side"` on cc-tree-joint): the
+            same marker the middle row's cards wear under them, turned to point from the location card
+            into the sublocation card beside it — the way the realm was walked in. It stands in the
+            24px the row's two drop spots leave between them, at the cards' own middle, and takes no
+            pointer.
+            It is drawn and taken down with the row's own `transitioning`, like every other joint:
+            the mark goes before the breadcrumb's cards do, and comes back once the new ones have
+            landed (see cc-tree-joint).
+
+          -->
+          @if (parentSublocation()) {
+          <cc-tree-joint orientation="side" [transitioning]="transitioning()" />
+          }
+          <div class="drop-spot sublocation-dropzone" #sublocationDropzone>
+            @if (parentSublocation()) {
+            <div class="card-wrapper top-row-card" #topRowSublocationCard (click)="navigateToSublocationsFromCasts()">
+              <cc-simple-sublocation-card ccCardFade [ccCardFadeOut]="transitioning()" [sublocation]="parentSublocation()!"></cc-simple-sublocation-card>
+            </div>
+            }
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Row 2 & 3 Wrapper for Synchronized Dragging -->
+    <div class="rows-wrapper" #rowsWrapper>
+
+      <!-- Row 2: Middle Row (Active Cards) -->
+      <div class="row middle-row swiper" #middleRow>
+        <div class="swiper-wrapper" #swiperWrapper>
+          <!-- Dropzones Layer (for debugging) - dynamically populated by JavaScript -->
+          <div class="dropzones-layer" #dropzonesLayer></div>
+
+          <!-- Cards -->
+          @if (currentView() === 'locations') {
+          @for (card of middleRowLocations(); track card.instanceId) {
+          <div class="swiper-slide">
+            <div class="slide-content">
+              <div class="card-wrapper middle-row-card">
+                <!--
+                  The card's own way out of the campaign, drawn for the GM alone and only where it is
+                  safe to take: a location with sublocations standing under it is left alone, since
+                  those cards hang off it and have to be moved out first — the same rule the faction
+                  row keeps for a faction holding casts (see cc-card-faction-navigation). The delete
+                  control itself is the card's (see cc-location-card), which asks before it writes.
+                -->
+                <cc-location-card ccCardFade [ccCardFadeOut]="transitioning()" [location]="card" [flippable]="true" [editable]="false" [campaignMode]="true"
+                  [campaignId]="campaignId" [secrets]="true" [secretsRevealed]="card.isVisibleToPlayers" [isDm]="isDm()"
+                  [deletable]="isDm() && !getSublocationsForLocation(card.instanceId).length"
+                  [deleting]="deletingLocationId() === card.instanceId"
+                  [tilt]="locationTilt(card.instanceId)" (secretsClick)="toggleLocationVisibility(card)"
+                  (deleteClick)="deleteLocation(card)">
+                </cc-location-card>
+                <!--
+                  The light a reveal throws on this card, for the players alone (see cc-card-spotlight).
+                  It stands in for anything buried under this location that was revealed too: the
+                  fairy alone points the way down, and going in turns up the same light on that card.
+                -->
+                <cc-card-spotlight [cardId]="card.instanceId" [pointsDown]="hasRevealUnderLocation(card.instanceId)" />
+              </div>
+              <!--
+                What stands under a card follows that card's own lock: this panel is the GM's, so
+                the GM/Admin sees the whole realm whether a card is locked or not, and any other
+                viewer sees a locked card's children only once the card is unlocked. The ＋ that
+                fills an empty slot is the GM's own way in — see cc-sublocation-card and the
+                role note on the cards' `isDm`.
+              -->
+              @if (isDm() || card.isVisibleToPlayers) {
+              @if (getSublocationsForLocation(card.instanceId).length > 0) {
+              <div class="bottom-row-content">
+                <!--
+                  The joint between this card and the stack under it (see cc-tree-joint): drawn in the
+                  row's own 24px gap, and taking no pointer — the whole stack stays the target.
+                  It is drawn down on the row's own `transitioning`, like every other joint: the
+                  mark goes before the row's cards do, and comes back once the new ones have landed.
+
+                -->
+                <cc-tree-joint [transitioning]="transitioning()" />
+                <div class="sublocation-stack-wrapper">
+                  <div class="sublocation-stack"
+                    [title]="'Open the ' + getSublocationsForLocation(card.instanceId).length + ' sublocations in ' + card.name"
+                    (click)="navigateToSublocations(card); $event.stopPropagation()">
+                    @for (sublocation of getSublocationsForLocation(card.instanceId); track sublocation.instanceId; let
+                    i = $index) {
+                    @let sublocations = getSublocationsForLocation(card.instanceId);
+                    @let totalCards = sublocations.length;
+                    @let centerIndex = (totalCards - 1) / 2;
+                    @let fromCenter = i - centerIndex;
+                    @let spreadAngle = totalCards > 1 ? fromCenter * 12 : 0;
+                    @let translateY = totalCards > 1 ? abs(fromCenter) * 2 + i * 2 : i * 3;
+                    @let translateX = totalCards > 1 ? fromCenter * 8 : 0;
+                    <div class="sublocation-card-wrapper"
+                      [style.transform]="'translateY(' + translateY + 'px) translateX(' + translateX + 'px) rotate(' + spreadAngle + 'deg)'"
+                      [style.opacity]="totalCards > 1 ? 1 - (abs(fromCenter) * 0.15) - (i * 0.1) : 1 - (i * 0.25)"
+                      [style.z-index]="totalCards > 1 ? 10 - abs(fromCenter) - i : 10 - i">
+                      <cc-simple-sublocation-card ccCardFade [ccCardFadeOut]="transitioning()" [sublocation]="sublocation"></cc-simple-sublocation-card>
+                    </div>
+                    }
+                  </div>
+                </div>
+              </div>
+              } @else if (isDm()) {
+              <!--
+                No sublocation under this location yet: where the stack would stand, the way to
+                give it one — a cc-simple-sublocation-card-sized ＋ in the same dashed dress as the
+                faction row's "New faction" tile, which takes the stack's own measurements so the
+                slot keeps the shape the stack fills once a card is in it. It opens the
+                sublocation picker for this location (see the shell): the DM's library to pick
+                from, or a brand new sublocation to build.
+              -->
+              <div class="bottom-row-content">
+                <div class="sublocation-stack-wrapper">
+                  <button
+                    type="button"
+                    class="sublocation-new"
+                    [title]="'Add a sublocation to ' + card.name"
+                    (click)="openSublocationPicker(card); $event.stopPropagation()"
+                  >
+                    <span class="sublocation-new-plus" aria-hidden="true">＋</span>
+                    <span class="sublocation-new-label">Add sublocation</span>
+                  </button>
+                </div>
+              </div>
+              }
+              }
+            </div>
+          </div>
+          }
+
+          <!--
+            The way to add more locations to the realm: a card-sized ＋ at the end of the row,
+            standing beside the location cards the way the faction row's "New faction" tile stands
+            beside the faction cards. It opens the location picker (see the shell) — the DM's
+            library to pick from, or a brand new location to build. It only stands in the locations
+            view: a location's own children are added from its card, and the tile itself is the
+            GM's own — see the role note on the cards' `isDm`.
+          -->
+          @if (isDm()) {
+          <div class="swiper-slide">
+            <div class="slide-content">
+              <button
+                type="button"
+                class="location-add"
+                title="Add locations to this campaign"
+                (click)="openLocationPicker()"
+              >
+                <span class="location-add-plus" aria-hidden="true">＋</span>
+                <span class="location-add-label">New location</span>
+              </button>
+            </div>
+          </div>
+          }
+          } @else if (currentView() === 'sublocations') {
+          @for (card of middleRowSublocations(); track card.instanceId) {
+          <div class="swiper-slide">
+            <div class="slide-content">
+              <div class="card-wrapper middle-row-card">
+                <!--
+                  The same way out as the location cards above, on the same rule: a sublocation with
+                  cast cards in it is left alone — those cards hang off it and have to be moved out
+                  first (see cc-sublocation-card, and the faction row's own rule).
+                -->
+                <cc-sublocation-card ccCardFade [ccCardFadeOut]="transitioning()" [sublocation]="card" [flippable]="true" [editable]="false" [campaignMode]="true"
+                  [campaignId]="campaignId" [sublocationInstanceId]="card.instanceId" [secrets]="true"
+                  [secretsRevealed]="card.isVisibleToPlayers" [isDm]="isDm()" [tilt]="sublocationTilt(card.instanceId)"
+                  [deletable]="isDm() && !getCastsForSublocation(card.instanceId).length"
+                  [deleting]="deletingSublocationId() === card.instanceId"
+                  (deleteClick)="deleteSublocation(card)"
+                  (secretsClick)="toggleSublocationVisibility(card)">
+                </cc-sublocation-card>
+                <!--
+                  The light a reveal throws on this card, for the players alone (see cc-card-spotlight).
+                  A cast revealed under this sublocation has the fairy point the way down from here.
+                -->
+                <cc-card-spotlight [cardId]="card.instanceId" [pointsDown]="hasRevealUnderSublocation(card.instanceId)" />
+              </div>
+              @if (isDm() || card.isVisibleToPlayers) {
+              @if (getCastsForSublocation(card.instanceId).length > 0) {
+              <div class="bottom-row-content">
+                <!--
+                  The same joint one level down: the sublocation card over the cast cards it holds (see
+                  cc-tree-joint).
+                  The same order here as everywhere else: down on the row's own `transitioning`
+                  before the cards go, and drawn again once the row's new cards have landed.
+
+                -->
+                <cc-tree-joint [transitioning]="transitioning()" />
+                <div class="cast-stack-wrapper">
+                  <div class="cast-stack"
+                    [title]="'Open the ' + getCastsForSublocation(card.instanceId).length + ' casts in ' + card.name"
+                    (click)="navigateToCasts(card); $event.stopPropagation()">
+                    @for (cast of getCastsForSublocation(card.instanceId); track cast.instanceId; let i = $index) {
+                    @let casts = getCastsForSublocation(card.instanceId);
+                    @let totalCards = casts.length;
+                    @let centerIndex = (totalCards - 1) / 2;
+                    @let fromCenter = i - centerIndex;
+                    @let spreadAngle = totalCards > 1 ? fromCenter * 12 : 0;
+                    @let translateY = totalCards > 1 ? abs(fromCenter) * 2 + i * 2 : i * 3;
+                    @let translateX = totalCards > 1 ? fromCenter * 8 : 0;
+                    <div class="cast-card-wrapper"
+                      [style.transform]="'translateY(' + translateY + 'px) translateX(' + translateX + 'px) rotate(' + spreadAngle + 'deg)'"
+                      [style.opacity]="totalCards > 1 ? 1 - (abs(fromCenter) * 0.15) - (i * 0.1) : 1 - (i * 0.25)"
+                      [style.z-index]="totalCards > 1 ? 10 - abs(fromCenter) - i : 10 - i">
+                      <cc-simple-cast-card ccCardFade [ccCardFadeOut]="transitioning()" [cast]="cast"></cc-simple-cast-card>
+                    </div>
+                    }
+                  </div>
+                </div>
+              </div>
+              } @else if (isDm()) {
+              <!--
+                No cast in this sublocation yet: where its cast stack would stand, the way to give
+                it one — a cc-simple-cast-card-sized ＋ in the same dashed dress as the faction row's
+                "New faction" tile, which takes the stack's own measurements so the slot keeps the
+                shape the stack fills once a card is in it. It opens the cast picker for this
+                sublocation (see the shell): the DM's library to pick from, or a brand new cast to
+                build.
+              -->
+              <div class="bottom-row-content">
+                <div class="cast-stack-wrapper">
+                  <button
+                    type="button"
+                    class="cast-new"
+                    [title]="'Add a cast card to ' + card.name"
+                    (click)="openCastPicker(card); $event.stopPropagation()"
+                  >
+                    <span class="cast-new-plus" aria-hidden="true">＋</span>
+                    <span class="cast-new-label">Add cast</span>
+                  </button>
+                </div>
+              </div>
+              }
+              }
+            </div>
+          </div>
+          }
+
+          <!--
+            More sublocations for the location being browsed: a card-sized ＋ at the end of the
+            row, standing beside the sublocation cards the way the faction row's "New faction"
+            tile stands beside the faction cards. It opens the same sublocation picker the empty
+            third-row slot's ＋ opens (see the shell), for the location this row belongs to. The
+            tile is the GM's own, the way it is in the third-row slot.
+          -->
+          @if (parentLocation(); as location) {
+          @if (isDm()) {
+          <div class="swiper-slide">
+            <div class="slide-content">
+              <button
+                type="button"
+                class="sublocation-add"
+                [title]="'Add sublocations to ' + location.name"
+                (click)="openSublocationPicker(location)"
+              >
+                <span class="sublocation-add-plus" aria-hidden="true">＋</span>
+                <span class="sublocation-add-label">New sublocation</span>
+              </button>
+            </div>
+          </div>
+          }
+          }
+          } @else if (currentView() === 'casts') {
+          @for (card of middleRowCasts(); track card.instanceId) {
+          <div class="swiper-slide">
+            <div class="slide-content">
+              <div class="card-wrapper middle-row-card">
+                <cc-cast-card ccCardFade [ccCardFadeOut]="transitioning()" [cast]="card" [campaignId]="internalCampaignId()" [flippable]="true" [editable]="false"
+                  [campaignMode]="true" [secrets]="true" [secretsRevealed]="card.isVisibleToPlayers" [dmMode]="true" [isDm]="isDm()"
+                  [deletable]="isDm()" [deleting]="deletingCastId() === card.instanceId"
+                  [tilt]="castTilt(card.instanceId)" (secretsClick)="toggleCastVisibility(card)"
+                  (deleteClick)="deleteCast(card)">
+                </cc-cast-card>
+                <!-- The light a reveal throws on this card, for the players alone (see cc-card-spotlight). -->
+                <cc-card-spotlight [cardId]="card.instanceId" />
+              </div>
+            </div>
+          </div>
+          }
+
+          <!--
+            More cast cards for the sublocation being browsed: a card-sized ＋ at the end of the
+            row, standing beside the cast cards the way the faction row's "Add cast" tile stands
+            beside the faction's own. It opens the same cast picker the empty third-row slot's ＋
+            opens (see the shell), for the sublocation this row belongs to. The tile is the GM's
+            own, the way it is in the third-row slot.
+          -->
+          @if (parentSublocation(); as sublocation) {
+          @if (isDm()) {
+          <div class="swiper-slide">
+            <div class="slide-content">
+              <button
+                type="button"
+                class="cast-add"
+                [title]="'Add cast cards to ' + sublocation.name"
+                (click)="openCastPicker(sublocation)"
+              >
+                <span class="cast-add-plus" aria-hidden="true">＋</span>
+                <span class="cast-add-label">Add cast</span>
+              </button>
+            </div>
+          </div>
+          }
+          }
+          }
+        </div>
+      </div>
+    </div>
+
+    <!-- A delete that did not land, where the row it was aimed at is. -->
+    @if (deleteError()) {
+      <p class="nav-delete-error">{{ deleteError() }}</p>
+    }
+  </div>
+  }
+</div>

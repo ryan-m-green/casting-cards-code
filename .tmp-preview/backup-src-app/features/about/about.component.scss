@@ -1,0 +1,651 @@
+@use '../../../styles/variables' as v;
+
+:host {
+  display: block;
+  background: v.$color-base-tan-11;
+}
+
+.about-page {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.about-nav {
+  padding: 1rem 1.5rem;
+  text-align: right;
+}
+
+.nav-link {
+  font-family: v.$font-body;
+  font-size: 1rem;
+  font-weight: 600;
+  color: v.$color-base-brown-warm;
+  text-decoration: none;
+  cursor: pointer;
+  transition: color 0.2s ease;
+
+  &:hover {
+    color: v.$color-base-green-3;
+  }
+}
+
+// ── Hero Section ─────────────────────────────────────────────────────────────
+
+.hero {
+  padding: 5rem 1.5rem;
+  text-align: center;
+  background: linear-gradient(135deg, v.$color-base-tan-11 0%, v.$color-base-tan-12 100%);
+}
+
+.hero-content {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.hero-title {
+  font-family: v.$font-header;
+  font-size: 3rem;
+  font-weight: 700;
+  color: v.$color-base-brown-warm;
+  margin: 0 0 1.5rem;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+}
+
+.hero-subtitle {
+  font-family: v.$font-body;
+  font-size: 1.25rem;
+  color: v.$color-base-text-brown;
+  margin: 0 0 2rem;
+  line-height: 1.6;
+}
+
+.hero-video {
+  width: 100%;
+  max-width: 386px;
+  margin: 0 auto 2rem;
+  position: relative;
+}
+
+.video-carousel {
+  position: relative;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+  background: v.$color-base-tan-13;
+}
+
+.carousel-container {
+  position: relative;
+  width: 225px; // 400px height * 9/16 = 225px width for 9:16 aspect ratio
+  height: 400px;
+  margin: 0 auto;
+  overflow: hidden;
+}
+
+.carousel-track {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  transition: transform 0.5s ease-in-out;
+}
+
+.carousel-slide {
+  min-width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.carousel-slide video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  background: #000;
+}
+
+.carousel-nav {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.95);
+  border: 2px solid v.$color-border;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  z-index: 10;
+  color: v.$color-base-brown-warm;
+
+  svg {
+    width: 24px;
+    height: 24px;
+  }
+
+  &:hover {
+    background: white;
+    border-color: v.$color-base-gold-1;
+    transform: translateY(-50%) scale(1.1);
+  }
+
+  &:active {
+    transform: translateY(-50%) scale(0.95);
+  }
+}
+
+.carousel-prev {
+  left: 1rem;
+}
+
+.carousel-next {
+  right: 1rem;
+}
+
+.carousel-dots {
+  display: flex;
+  justify-content: center;
+  gap: 0.75rem;
+  margin-top: 1rem;
+}
+
+.carousel-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: v.$color-border;
+  border: 2px solid v.$color-border;
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  &:hover {
+    background: v.$color-base-gold-1;
+    border-color: v.$color-base-gold-1;
+  }
+
+  &.active {
+    background: v.$color-base-green-3;
+    border-color: v.$color-base-green-3;
+  }
+}
+
+.cta-button {
+  font-family: v.$font-body;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: white;
+  background: v.$color-base-green-3;
+  border: none;
+  padding: 1rem 2.5rem;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.2s ease, transform 0.1s ease;
+
+  &:hover {
+    transform: translateY(-2px);
+  }
+
+  &:active {
+    transform: translateY(0);
+  }
+}
+
+// ── Section Container ─────────────────────────────────────────────────────────
+
+.section-container {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 4rem 1.5rem;
+}
+
+.section-title {
+  font-family: v.$font-header;
+  font-size: 2.25rem;
+  font-weight: 700;
+  color: v.$color-base-brown-warm;
+  text-align: center;
+  margin: 0 0 3rem;
+  letter-spacing: -0.02em;
+}
+
+// ── Features Section ─────────────────────────────────────────────────────────
+
+.features {
+  background: white;
+}
+
+.features-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 2rem;
+}
+
+.feature-card {
+  padding: 24px;
+  border-radius: 12px;
+  background: v.$color-base-tan-11;
+  border: 1px solid v.$color-border;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  display: flex;
+  flex-direction: column;
+
+  &:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.1);
+  }
+}
+
+.feature-card-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 0.75rem;
+}
+
+.feature-icon img {
+  width: 60px;
+  height: 60px;
+}
+
+.feature-title {
+  font-family: v.$font-header;
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: v.$color-base-brown-warm;
+  margin: 0;
+}
+
+.feature-description {
+  font-family: v.$font-body;
+  font-size: 1rem;
+  color: v.$color-base-text-brown;
+  line-height: 1.6;
+  margin: 0;
+}
+
+// ── How It Works Section ─────────────────────────────────────────────────────
+
+.how-it-works {
+  background: v.$color-base-tan-12;
+}
+
+.steps {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.step {
+  display: flex;
+  gap: 1.5rem;
+  align-items: flex-start;
+}
+
+.step-number {
+  font-family: v.$font-header;
+  font-size: 2rem;
+  font-weight: 700;
+  color: v.$color-base-tan-1;
+  min-width: 3rem;
+  height: 3rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: v.$color-base-brown-warm;
+}
+
+.step-title {
+  font-family: v.$font-header;
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: v.$color-base-brown-warm;
+  margin: 0 0 0.5rem;
+}
+
+.step-description {
+  font-family: v.$font-body;
+  font-size: 1.1rem;
+  color: v.$color-base-text-brown;
+  line-height: 1.6;
+  margin: 0;
+}
+
+// ── Pricing Section ───────────────────────────────────────────────────────────
+
+.pricing {
+  background: white;
+}
+
+.pricing-cards {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 2rem;
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.pricing-card {
+  padding: 3rem;
+  border-radius: 16px;
+  background: v.$color-base-tan-11;
+  border: 2px solid v.$color-base-gold-1;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+}
+
+.pricing-header {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.pricing-title {
+  font-family: v.$font-header;
+  font-size: 1.75rem;
+  font-weight: 600;
+  color: v.$color-base-brown-warm;
+  margin: 0 0 1rem;
+}
+
+.pricing-price {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.price-strikethrough {
+  font-family: v.$font-body;
+  font-size: 1.25rem;
+  color: v.$color-base-text-brown;
+  text-decoration: line-through;
+  opacity: 0.7;
+}
+
+.price-current {
+  font-family: v.$font-header;
+  font-size: 3rem;
+  font-weight: 700;
+  color: v.$color-base-green-3;
+}
+
+.pricing-note {
+  font-family: v.$font-body;
+  font-size: 0.9rem;
+  color: v.$color-base-text-brown;
+  margin: 0;
+  opacity: 0.8;
+}
+
+.pricing-features {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 2rem;
+  flex: 1;
+}
+
+.pricing-feature {
+  font-family: v.$font-body;
+  font-size: 1.1rem;
+  color: v.$color-base-text-brown;
+  padding: 0.75rem 0;
+  border-bottom: 1px solid v.$color-border;
+
+  &:last-child {
+    border-bottom: none;
+  }
+
+  &::before {
+    content: '✓';
+    color: v.$color-base-green-3;
+    font-weight: bold;
+    margin-right: 0.75rem;
+  }
+}
+
+.pricing-button {
+  width: 100%;
+  margin-top: auto;
+}
+
+// ── Testimonials Section ──────────────────────────────────────────────────────
+
+.testimonials {
+  background: v.$color-base-tan-12;
+}
+
+.testimonials-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2rem;
+}
+
+.testimonial-card {
+  padding: 2rem;
+  border-radius: 12px;
+  background: white;
+  border: 1px solid v.$color-border;
+}
+
+.testimonial-text {
+  font-family: v.$font-body;
+  font-size: 1.1rem;
+  color: v.$color-base-text-brown;
+  line-height: 1.6;
+  font-style: italic;
+  margin: 0 0 1rem;
+}
+
+.testimonial-author {
+  font-family: v.$font-header;
+  font-size: 1rem;
+  font-weight: 600;
+  color: v.$color-base-brown-warm;
+  margin: 0;
+  text-align: right;
+}
+
+// ── Mission & Philosophy Section ───────────────────────────────────────────────
+
+.mission-philosophy {
+  background: v.$color-base-tan-12;
+}
+
+.mission-text {
+  font-family: v.$font-body;
+  font-size: 1.25rem;
+  color: v.$color-base-text-brown;
+  line-height: 1.8;
+  text-align: center;
+  margin: 0 0 3rem;
+}
+
+.philosophy-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 2rem;
+}
+
+.philosophy-item {
+  padding: 1.5rem;
+  border-radius: 8px;
+  background: white;
+  border: 1px solid v.$color-border;
+}
+
+.philosophy-title {
+  font-family: v.$font-header;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: v.$color-base-brown-warm;
+  margin: 0 0 0.75rem;
+}
+
+.philosophy-description {
+  font-family: v.$font-body;
+  font-size: 1rem;
+  color: v.$color-base-text-brown;
+  line-height: 1.6;
+  margin: 0;
+}
+
+// ── Creator Section ───────────────────────────────────────────────────────────
+
+.creator {
+  background: white;
+}
+
+.creator-content {
+  max-width: 700px;
+  margin: 0 auto;
+  padding: 2rem;
+  border-radius: 12px;
+  background: v.$color-base-tan-11;
+  border-left: 4px solid v.$color-base-gold-1;
+}
+
+.creator-text {
+  font-family: v.$font-body;
+  font-size: 1.1rem;
+  color: v.$color-base-text-brown;
+  line-height: 1.8;
+  margin: 0 0 1rem;
+}
+
+.creator-signature {
+  font-family: v.$font-header;
+  font-size: 1.1rem;
+  font-style: italic;
+  font-weight: 600;
+  color: v.$color-base-brown-warm;
+  text-align: right;
+  margin: 0;
+}
+
+.creator-social {
+  margin-top: 1.5rem;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.social-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: v.$font-body;
+  font-size: 1rem;
+  font-weight: 600;
+  color: v.$color-base-brown-warm;
+  text-decoration: none;
+  padding: 0.75rem 1.25rem;
+  border-radius: 8px;
+  background: white;
+  border: 2px solid v.$color-border;
+  transition: all 0.2s ease;
+
+  &:hover {
+    background: v.$color-base-tan-11;
+    border-color: v.$color-base-gold-1;
+    transform: translateY(-2px);
+  }
+}
+
+.tiktok-icon {
+  width: 24px;
+  height: 24px;
+  fill: currentColor;
+}
+
+// ── Vision Section ───────────────────────────────────────────────────────────
+
+.vision {
+  background: v.$color-base-tan-12;
+}
+
+.vision-text {
+  font-family: v.$font-body;
+  font-size: 1.25rem;
+  color: v.$color-base-text-brown;
+  line-height: 1.8;
+  text-align: center;
+  margin: 0;
+}
+
+// ── Responsive Design ─────────────────────────────────────────────────────────
+
+@media (max-width: 940px) {
+  .pricing-cards {
+    grid-template-columns: 1fr;
+  }
+
+  .pricing-card {
+    margin: 0 auto;
+    max-width: 426px;
+  }
+}
+
+@media (max-width: 768px) {
+  .hero-title {
+    font-size: 2rem;
+  }
+
+  .hero-subtitle {
+    font-size: 1rem;
+  }
+
+  .section-title {
+    font-size: 1.75rem;
+  }
+
+  .section-container {
+    padding: 3rem 1rem;
+  }
+
+  .hero {
+    padding: 3rem 1rem;
+  }
+
+  .pricing-card {
+    padding: 2rem;
+  }
+
+  .step {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .features-grid,
+  .testimonials-grid,
+  .philosophy-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 480px) {
+  .hero-title {
+    font-size: 1.75rem;
+  }
+
+  .hero-subtitle {
+    font-size: 0.95rem;
+  }
+
+  .cta-button {
+    padding: 0.875rem 2rem;
+    font-size: 1rem;
+  }
+
+  .section-title {
+    font-size: 1.5rem;
+  }
+}

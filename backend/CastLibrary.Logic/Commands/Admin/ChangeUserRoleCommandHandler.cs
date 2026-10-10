@@ -1,7 +1,6 @@
 using CastLibrary.Logic.Services;
 using CastLibrary.Repository.Repositories.Read;
 using CastLibrary.Repository.Repositories.Update;
-using CastLibrary.Shared.Domain;
 using CastLibrary.Shared.Enums;
 using CastLibrary.Shared.Requests;
 

@@ -1,0 +1,29 @@
+<div class="bag-item" [style.--portal-color]="portalColor">
+  @if (item; as read) {
+    <header class="bag-item-head">
+      <h3 class="bag-item-name">{{ read.name }}</h3>
+      <span class="bag-item-count" [title]="count() + ' in the bag'">×{{ count() }}</span>
+    </header>
+
+    @if (read.description) {
+      <p class="bag-item-text">{{ read.description }}</p>
+    } @else {
+      <p class="bag-item-text bag-item-text--empty">Nothing written on it.</p>
+    }
+
+    <div class="drawer-actions bag-item-actions">
+      <button
+        type="button"
+        class="campaign-primary-btn"
+        [disabled]="using() || count() <= 0"
+        (click)="useItem()"
+      >{{ using() ? 'Using…' : 'Use one' }}</button>
+    </div>
+
+    @if (error()) {
+      <p class="bag-item-error">{{ error() }}</p>
+    }
+  } @else {
+    <p class="bag-item-text bag-item-text--empty">No item was picked.</p>
+  }
+</div>

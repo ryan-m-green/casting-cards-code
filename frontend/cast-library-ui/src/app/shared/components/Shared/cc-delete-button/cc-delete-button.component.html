@@ -1,0 +1,22 @@
+@if (pending()) {
+  <button type="button"
+          class="cc-delete-action cc-delete-action--cancel"
+          (click)="cancel($event)"
+          title="Cancel"
+          aria-label="Cancel delete">✕</button>
+
+  <button type="button"
+          class="cc-delete-action cc-delete-action--confirm"
+          (click)="confirm($event)"
+          [disabled]="disabled()"
+          [attr.aria-label]="label()">{{ confirmLabel() }}</button>
+} @else {
+  <button type="button"
+          class="cc-delete-action cc-delete-action--danger"
+          (click)="request($event)"
+          [disabled]="disabled()"
+          [title]="label()"
+          [attr.aria-label]="label()">
+    <img src="/icons/weapons/fantasy_dagger.svg" class="cc-delete-icon" alt="" />
+  </button>
+}

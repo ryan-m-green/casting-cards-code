@@ -1,5 +1,3 @@
-using CastLibrary.Shared.Domain;
-
 namespace CastLibrary.Shared.Requests;
 
 public class LinkedEntityTrigger

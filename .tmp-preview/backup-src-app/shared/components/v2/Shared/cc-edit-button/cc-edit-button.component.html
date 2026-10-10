@@ -1,0 +1,14 @@
+<button
+  type="button"
+  class="cc-edit-btn"
+  [class.cc-edit-btn--text]="!!text()"
+  [title]="label()"
+  [attr.aria-label]="label()"
+  [disabled]="disabled()"
+  (click)="clicked.emit()"
+>
+  <img class="cc-edit-icon" src="/hammer_wrench_repair_tool.svg" alt="" aria-hidden="true" />
+  @if (text()) {
+    <span class="cc-edit-text">{{ text() }}</span>
+  }
+</button>

@@ -1,0 +1,1 @@
+﻿A|CastLibrary.Repository|class|AdminInviteCodeEntityMapper|IAdminInviteCodeEntityMapper|backend\CastLibrary.Repository\Mappers\AdminInviteCodeEntityMapper.cs

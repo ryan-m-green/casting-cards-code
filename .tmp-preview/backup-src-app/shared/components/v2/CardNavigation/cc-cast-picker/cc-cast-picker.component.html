@@ -1,0 +1,124 @@
+@let pickedCount = selectedCount();
+
+<div class="picker" [style.--portal-color]="portalColor()">
+
+  <div class="picker-tabs" role="tablist">
+    <button
+      type="button"
+      class="picker-tab"
+      role="tab"
+      [class.is-on]="activeTab() === 'library'"
+      [attr.aria-selected]="activeTab() === 'library'"
+      (click)="setTab('library')"
+    >Cast Library</button>
+
+    <button
+      type="button"
+      class="picker-tab"
+      role="tab"
+      [class.is-on]="activeTab() === 'new'"
+      [attr.aria-selected]="activeTab() === 'new'"
+      (click)="setTab('new')"
+    >New Cast</button>
+  </div>
+
+  @if (activeTab() === 'library') {
+
+    @if (keywordChips().length) {
+      <div class="picker-chips">
+        @for (chip of keywordChips(); track chip.keyword) {
+          <button
+            type="button"
+            class="picker-chip"
+            [class.is-on]="isKeywordOn(chip.keyword)"
+            [class.picker-chip--empty]="!chip.count"
+            [attr.aria-pressed]="isKeywordOn(chip.keyword)"
+            [attr.title]="chip.count
+              ? chip.count + (chip.count === 1 ? ' cast to add carries' : ' cast to add carry') + ' #' + chip.keyword
+              : 'Nothing left to add carries #' + chip.keyword"
+            (click)="toggleKeyword(chip.keyword)"
+          >#{{ chip.keyword }}<span class="picker-chip-count">{{ chip.count }}</span></button>
+        }
+      </div>
+    }
+
+    <div class="picker-filter">
+      <app-cc-textbox
+        placeholder="Search your cast library…"
+        context="campaign"
+        [ngModel]="search()"
+        (ngModelChange)="onSearchChange($event)"
+        [showClear]="true"
+      />
+      @if (activeKeywords().length > 1) {
+        <button type="button" class="picker-mode" [class.is-on]="matchAll()" (click)="toggleMatchAll()">
+          {{ matchAll() ? 'all' : 'any' }}
+        </button>
+      }
+      <button type="button" class="picker-clear" [disabled]="!pickedCount" (click)="clearSelection()">Clear</button>
+    </div>
+
+    @if (loading()) {
+      <p class="picker-note">Loading your cast library…</p>
+    } @else if (libraryEmpty()) {
+      <p class="picker-empty">Your cast library is empty. Use the <strong>New Cast</strong> tab to make one.</p>
+    } @else if (!candidates().length) {
+      @if (search()) {
+        <p class="picker-empty">No results for &quot;{{ search() }}&quot;.</p>
+      } @else if (activeKeywords().length) {
+        <p class="picker-empty">No cast carry those keywords.</p>
+      } @else {
+        <p class="picker-empty">Every cast in your library is already in this campaign.</p>
+      }
+    } @else {
+      <p class="picker-section">
+        {{ sublocationName() || 'This sublocation' }} · cast library ({{ candidates().length }})
+      </p>
+
+      <div class="picker-grid">
+        @for (cast of candidates(); track cast.id) {
+          <button
+            type="button"
+            class="picker-tile"
+            [class.is-picked]="isSelected(cast.id)"
+            [attr.aria-pressed]="isSelected(cast.id)"
+            [attr.aria-label]="'Add ' + cast.name + ' to ' + (sublocationName() || 'this sublocation')"
+            (click)="toggleCast(cast)"
+          >
+            <cc-simple-cast-card [cast]="cast" />
+            @if (isSelected(cast.id)) {
+              <span class="picker-tile-check" aria-hidden="true">✓</span>
+            }
+          </button>
+        }
+      </div>
+    }
+
+    @if (error()) {
+      <p class="picker-error">{{ error() }}</p>
+    }
+
+    <div class="picker-actions">
+      <span class="picker-total">
+        {{ pickedCount }} cast card{{ pickedCount === 1 ? '' : 's' }} picked
+      </span>
+
+      <button
+        type="button"
+        class="campaign-primary-btn"
+        [disabled]="!canAdd()"
+        (click)="onAdd()"
+      >@if (busy()) { Adding… } @else if (pickedCount) { Add {{ pickedCount }} to sublocation } @else { Add to sublocation }</button>
+    </div>
+  }
+
+  @if (activeTab() === 'new') {
+    <cc-cast-new-form
+      [campaignId]="campaignId()"
+      [locationInstanceId]="locationInstanceId()"
+      [sublocationInstanceId]="sublocationInstanceId()"
+      (saved)="onCastCreated()"
+    />
+  }
+
+</div>

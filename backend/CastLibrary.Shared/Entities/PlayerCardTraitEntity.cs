@@ -7,5 +7,6 @@ public class PlayerCardTraitEntity
     public string TraitType { get; set; } = string.Empty;
     public string Content { get; set; } = string.Empty;
     public bool IsCompleted { get; set; }
+    public bool IsShared { get; set; }
     public DateTime CreatedAt { get; set; }
 }

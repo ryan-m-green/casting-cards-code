@@ -2,7 +2,7 @@ import { Component, inject, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { AbstractControl, ReactiveFormsModule, FormBuilder, ValidationErrors, Validators } from '@angular/forms';
 import { AuthService } from '../../core/auth/auth.service';
-import { JournalTitleComponent } from '../../shared/components/journal-title/journal-title.component';
+import { JournalTitleComponent } from '../../shared/components/Shared/journal-title/journal-title.component';
 
 function passwordsMatch(control: AbstractControl): ValidationErrors | null {
   const newPassword     = control.get('newPassword')?.value;
@@ -22,31 +22,26 @@ export class ChangePasswordComponent {
   private fb     = inject(FormBuilder);
   private auth   = inject(AuthService);
 
-  // Account form
   accountForm = this.fb.group({
     displayName: ['', [Validators.required, Validators.minLength(2)]],
     email: ['', [Validators.required, Validators.email]],
   });
 
-  // Password form
   form = this.fb.group({
     currentPassword: ['', Validators.required],
     newPassword:     ['', [Validators.required, Validators.minLength(6)]],
     confirmPassword: ['', Validators.required],
   }, { validators: passwordsMatch });
 
-  // Account form signals
   accountLoading  = signal(false);
   accountSuccess  = signal(false);
   accountErrorMsg = signal('');
 
-  // Password form signals
   loading  = signal(false);
   success  = signal(false);
   errorMsg = signal('');
 
   constructor() {
-    // Populate account form with current user data
     const currentUser = this.auth.currentUser();
     if (currentUser) {
       this.accountForm.patchValue({
@@ -63,10 +58,8 @@ export class ChangePasswordComponent {
     const { displayName, email } = this.accountForm.value;
     const currentUser = this.auth.currentUser();
 
-    // Update both display name and email
     this.auth.updateDisplayName(displayName!).subscribe({
       next: () => {
-        // Only update email if it has changed
         if (email && email !== currentUser?.email) {
           this.auth.updateEmail(email).subscribe({
             next: () => {

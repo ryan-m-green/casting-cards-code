@@ -1,0 +1,59 @@
+<div class="pc scroll-body">
+  <app-journal-title [title]="editing() ? 'Edit Condition' : 'Condition Creation'" />
+
+  <div class="wr wr-page-header">
+    <a class="btn-ghost" routerLink="/gm/conditions">← Library</a>
+  </div>
+
+  @if (notFound()) {
+    <p class="wbd-journal">That condition is no longer in your library.</p>
+  } @else {
+    <form [formGroup]="form">
+      <label for="condition-name-input" class="fi-label">Condition Name</label>
+      <input
+        id="condition-name-input"
+        class="fi"
+        formControlName="name"
+        autocomplete="off"
+        placeholder="What is this condition called?" />
+
+      <div class="wr form-row-gap">
+        <div class="form-field">
+          <cc-color-dropdown label="Ring Color" formControlName="color" />
+        </div>
+      </div>
+
+      <label for="condition-consequence-input" class="fi-label">Consequences</label>
+      <textarea
+        id="condition-consequence-input"
+        class="fi"
+        formControlName="consequence"
+        rows="6"
+        placeholder="What happens to a card carrying this condition…"
+        autocomplete="off"></textarea>
+
+      <cc-keyword-tags
+        label="Hashtags / Keywords"
+        placeholder="Add or select hashtags…"
+        [options]="keywordOptions()"
+        [ngModel]="keywords()"
+        [ngModelOptions]="{ standalone: true }"
+        (ngModelChange)="keywords.set($event)">
+      </cc-keyword-tags>
+    </form>
+
+    @if (error()) {
+      <div class="condition-form-error">{{ error() }}</div>
+    }
+
+    <div class="form-save-footer">
+      <button
+        class="campaign-primary-btn"
+        type="button"
+        [disabled]="form.invalid || saving()"
+        (click)="save()">
+        {{ saving() ? 'Saving…' : 'Save' }}
+      </button>
+    </div>
+  }
+</div>

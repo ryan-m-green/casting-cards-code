@@ -4,7 +4,9 @@
 
 .pc.scroll-body {
   position: relative !important;
-  overflow: auto !important;
+  /* Down only — the page never pans sideways (see the shell's own .pc). */
+  overflow-x: hidden !important;
+  overflow-y: auto !important;
   max-height: 100%;
 }
 
@@ -17,7 +19,6 @@
   }
 }
 
-// ── GM-only Box ──────────────────────────────────────────────────────────────
 .form-gm-box {
   position: relative;
   border: 1px solid rgba(v.$color-base-brown-14, 0.2);
@@ -50,7 +51,6 @@
   }
 }
 
-// ── Symbol Section ────────────────────────────────────────────────────────────
 .symbol-section {
   margin-top: 32px;
   margin-bottom: 300px;
@@ -72,7 +72,6 @@
   }
 }
 
-// ── Section Label ──────────────────────────────────────────────────────────────
 .section-label {
   font-family: 'Cinzel', serif;
   font-size: 0.85rem;
@@ -82,7 +81,6 @@
   margin-top: 0;
 }
 
-// ── Influence Slider ───────────────────────────────────────────────────────────
 .fi-slider {
   width: 100%;
   display: block;
@@ -152,7 +150,6 @@
   white-space: nowrap;
 }
 
-// ── Slider row (influence + ticks) ────────────────────────────────────────────
 .detail-slider-row {
   display: flex;
   align-items: center;
@@ -196,7 +193,6 @@
   flex-shrink: 0;
 }
 
-// ── Perception card ────────────────────────────────────────────────────────────
 .perception-card {
   border: 1px solid rgba(v.$color-base-gold-1, 0.30);
   border-radius: 4px;
@@ -252,7 +248,6 @@
   color: rgba(v.$color-base-brown-14, 0.55);
 }
 
-// ── Toggle Switch ──────────────────────────────────────────────────────────────
 .form-field--toggle {
   display: flex;
   flex-direction: column;
@@ -275,7 +270,6 @@
   margin-bottom: 16px;
 }
 
-// ── Form Fields Column Layout ──────────────────────────────────────────────────
 .faction-form-fields {
   flex-direction: column;
   align-items: stretch;

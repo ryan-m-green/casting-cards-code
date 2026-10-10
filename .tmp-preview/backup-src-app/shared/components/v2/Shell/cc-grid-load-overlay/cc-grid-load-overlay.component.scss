@@ -1,0 +1,17 @@
+:host {
+  position: fixed;
+  inset: 0;
+  z-index: 99999;
+  background: #000;
+  opacity: 1;
+  pointer-events: auto;
+  transition: opacity 600ms ease, visibility 0s;
+  will-change: opacity;
+}
+
+:host(.is-lifting) {
+  opacity: 0;
+  pointer-events: none;
+  visibility: hidden;
+  transition: opacity 600ms ease, visibility 0s 600ms;
+}

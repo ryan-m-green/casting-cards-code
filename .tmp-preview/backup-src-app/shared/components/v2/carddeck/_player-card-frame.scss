@@ -1,0 +1,22 @@
+@use '../../../../../styles/variables' as v;
+@use 'sass:color';
+
+$frame-brown:      color.mix(v.$color-base-brown-warm,   v.$color-base-red-6, 55%);
+$frame-brown-mid:  color.mix(v.$color-base-saddle-brown, v.$color-base-red-5, 60%);
+$frame-brown-deep: color.mix(v.$color-base-dark-brown,   v.$color-base-red-5, 65%);
+$frame-brown-lift: color.mix($frame-brown-mid, $frame-brown, 55%);
+$frame-lit:        color.mix(v.$color-base-brown-11,     v.$color-base-red-6, 70%);
+
+$frame-gradient: linear-gradient(
+  145deg,
+  $frame-brown 0%,
+  $frame-brown-mid 20%,
+  $frame-brown-deep 45%,
+  $frame-brown-lift 55%,
+  $frame-brown-mid 70%,
+  $frame-brown-deep 85%,
+  $frame-brown 100%
+);
+
+$frame-outline:   $frame-brown-deep;
+$frame-highlight: rgba($frame-lit,.22);

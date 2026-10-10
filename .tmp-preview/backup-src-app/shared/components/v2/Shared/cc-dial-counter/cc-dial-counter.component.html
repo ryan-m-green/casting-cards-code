@@ -1,0 +1,61 @@
+<div class="cc-dial-counter"
+     [class.cc-dial-counter--journal]="!isCampaignContext()"
+     [class.cc-dial-counter--campaign]="isCampaignContext()">
+  @if (label()) {
+    <span class="cc-dial-counter-label">{{ label() }}</span>
+  }
+
+  <div class="cc-dial-counter-dials" role="group" [attr.aria-label]="ariaLabel() ?? label()">
+    @for (place of placeValues(); track place) {
+      <div class="cc-dial-counter-dial"
+           [class.cc-dial-counter-dial--thousands]="place === 1000"
+           [class.cc-dial-counter-dial--hundreds]="place === 100"
+           [class.cc-dial-counter-dial--tens]="place === 10"
+           [class.cc-dial-counter-dial--ones]="place === 1"
+           [class.cc-dial-counter-dial--disabled]="disabled()"
+           [class.cc-dial-counter-dial--dragging]="draggingPlace() === place"
+           role="spinbutton"
+           [attr.tabindex]="disabled() ? -1 : 0"
+           [attr.aria-label]="placeLabel(place)"
+           [attr.aria-valuenow]="digitFor(place)"
+           aria-valuemin="0"
+           aria-valuemax="9"
+           (wheel)="onWheel($event, place)"
+           (keydown)="onKeydown($event, place)">
+
+        <button type="button"
+                class="cc-dial-counter-arrow cc-dial-counter-arrow--up"
+                [class.cc-dial-counter-arrow--first]="$first"
+                [class.cc-dial-counter-arrow--last]="$last"
+                [disabled]="disabled()"
+                [attr.aria-label]="'Increase ' + placeLabel(place)"
+                tabindex="-1"
+                (click)="increment(place)">
+          <svg viewBox="0 0 10 6"><path d="M5 0 10 6 0 6Z" /></svg>
+        </button>
+
+        <div class="cc-dial-counter-reel"
+             aria-hidden="true"
+             (pointerdown)="onReelPointerDown($event, place)"
+             (pointermove)="onReelPointerMove($event, place)"
+             (pointerup)="onReelPointerUp($event, place)"
+             (pointercancel)="onReelPointerCancel($event, place)">
+          <span class="cc-dial-counter-digit cc-dial-counter-digit--ghost">{{ prevDigit(place) }}</span>
+          <span class="cc-dial-counter-digit cc-dial-counter-digit--current">{{ digitFor(place) }}</span>
+          <span class="cc-dial-counter-digit cc-dial-counter-digit--ghost">{{ nextDigit(place) }}</span>
+        </div>
+
+        <button type="button"
+                class="cc-dial-counter-arrow cc-dial-counter-arrow--down"
+                [class.cc-dial-counter-arrow--first]="$first"
+                [class.cc-dial-counter-arrow--last]="$last"
+                [disabled]="disabled()"
+                [attr.aria-label]="'Decrease ' + placeLabel(place)"
+                tabindex="-1"
+                (click)="decrement(place)">
+          <svg viewBox="0 0 10 6"><path d="M0 0 10 0 5 6Z" /></svg>
+        </button>
+      </div>
+    }
+  </div>
+</div>

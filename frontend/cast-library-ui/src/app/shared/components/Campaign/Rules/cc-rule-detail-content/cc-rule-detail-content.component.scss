@@ -1,0 +1,162 @@
+@use '../../../../../../styles/variables' as v;
+
+:host {
+  display: block;
+  width: 100%;
+}
+
+.rule-detail {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.rule-detail-bar {
+  position: sticky;
+  top: -24px;
+  z-index: 3;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 12px;
+  margin: -24px -24px 0;
+  padding: 12px 16px;
+  background: v.$campaign-portal-bg-dark;
+  border-bottom: 1px solid v.$campaign-portal-border-light;
+
+  @media (max-width: 480px) {
+    top: -16px;
+    margin: -16px -16px 0;
+    padding: 10px 12px;
+  }
+}
+
+.rule-detail-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.rule-detail-error {
+  font-family: v.$font-body;
+  font-size: 12px;
+  color: v.$color-ui-error-text;
+}
+
+.rule-detail-read {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.rule-detail-definition {
+  margin: 0;
+  padding: 16px 18px;
+  border: 1px solid v.$campaign-portal-border;
+  border-left: 3px solid var(--portal-color, v.$color-base-purple-primary);
+  border-radius: 6px;
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.05));
+  font-family: v.$font-body;
+  font-size: 15px;
+  line-height: 1.55;
+  white-space: pre-wrap;
+  color: v.$campaign-portal-text-lavender;
+
+  @media (max-width: 480px) {
+    padding: 14px;
+    font-size: 14px;
+  }
+}
+
+.rule-detail-keywords {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.rule-detail-keyword {
+  padding: 3px 9px;
+  border: 1px solid v.$campaign-portal-border;
+  border-radius: 12px;
+  font-family: v.$font-body;
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  color: v.$campaign-portal-text-lavender;
+}
+
+.rule-detail-nested {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.rule-detail-child {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 12px 14px;
+  border: 1px solid v.$campaign-portal-border-light;
+  border-left: 2px solid color-mix(in srgb, var(--portal-color, v.$color-base-purple-primary) 45%, transparent);
+  border-radius: 6px;
+  background: v.$campaign-portal-bg-medium;
+}
+
+.rule-detail-child-name {
+  font-family: v.$font-header;
+  font-size: 12px;
+  font-weight: bolder;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: v.$campaign-portal-text-bright;
+}
+
+.rule-detail-child-definition {
+  font-family: v.$font-body;
+  font-size: 14px;
+  line-height: 1.5;
+  white-space: pre-wrap;
+  color: v.$campaign-portal-text-muted;
+}
+
+.rule-detail-standalone {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.rule-detail-note {
+  margin: 0;
+  font-family: v.$font-body;
+  font-size: 13px;
+  font-style: italic;
+  color: v.$campaign-portal-text-muted;
+}
+
+.rule-detail-grow {
+  padding: 8px 14px;
+  background: none;
+  border: 1px dashed v.$campaign-portal-border-focus;
+  border-radius: 8px;
+  font-family: v.$font-header;
+  font-size: 11px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: v.$campaign-portal-text-lavender;
+  cursor: pointer;
+  transition: border-color 0.15s ease, color 0.15s ease;
+
+  &:hover {
+    border-color: v.$campaign-portal-border-hover;
+    color: v.$campaign-portal-text-bright;
+  }
+
+  &:focus-visible {
+    outline: 2px solid color-mix(in srgb, var(--portal-color, v.$color-base-purple-primary) 80%, white 20%);
+    outline-offset: 2px;
+  }
+}

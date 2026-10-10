@@ -12,7 +12,6 @@ public interface ICampaignWebMapper
     CampaignCastInstanceResponse ToCastInstanceResponse(CampaignCastInstanceDomain d);
     CampaignSublocationInstanceResponse ToSublocationInstanceResponse(CampaignSublocationInstanceDomain d);
     CampaignSecretResponse ToSecretResponse(CampaignSecretDomain d);
-    CampaignCastRelationshipResponse ToRelationshipResponse(CampaignCastRelationshipDomain d);
     CampaignPlayerResponse ToPlayerResponse(CampaignPlayerDomain d);
     CampaignInviteCodeResponse ToInviteCodeResponse(CampaignInviteCodeDomain d);
     TimeOfDayResponse ToTimeOfDayResponse(TimeOfDayDomain d);
@@ -105,8 +104,7 @@ public class CampaignWebMapper(
             Role = d.Role,
             Age = d.Age,
             MaxHitPoints = d.MaxHitPoints,
-            LostHitPoints = d.LostHitPoints,
-            TempHitPoints = d.TempHitPoints,
+            StarsCount = d.StarsCount,
             Posture = d.Posture,
             Speed = d.Speed,
             VoicePlacement = d.VoicePlacement,
@@ -192,29 +190,6 @@ public class CampaignWebMapper(
         logging.LogMapping(
             correlation.TraceId, correlation.SpanId,
             Ns, "CampaignWebMapper.ToSecretResponse",
-            "domain?response",
-            d, response);
-
-        return response;
-    }
-
-    public CampaignCastRelationshipResponse ToRelationshipResponse(CampaignCastRelationshipDomain d)
-    {
-        var response = new CampaignCastRelationshipResponse
-        {
-            Id = d.Id,
-            CampaignId = d.CampaignId,
-            SourceCastInstanceId = d.SourceCastInstanceId,
-            TargetCastInstanceId = d.TargetCastInstanceId,
-            Value = d.Value,
-            Explanation = d.Explanation,
-            CreatedAt = d.CreatedAt,
-            UpdatedAt = d.UpdatedAt,
-        };
-
-        logging.LogMapping(
-            correlation.TraceId, correlation.SpanId,
-            Ns, "CampaignWebMapper.ToRelationshipResponse",
             "domain?response",
             d, response);
 

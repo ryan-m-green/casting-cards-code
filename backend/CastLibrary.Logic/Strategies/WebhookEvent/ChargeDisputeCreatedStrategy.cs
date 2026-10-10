@@ -5,7 +5,6 @@ using CastLibrary.Repository.Repositories.Read;
 using CastLibrary.Repository.Repositories.Update;
 using CastLibrary.Shared.Domain;
 using CastLibrary.Shared.Enums;
-using Newtonsoft.Json.Linq;
 
 namespace CastLibrary.Logic.Strategies.WebhookEvent;
 

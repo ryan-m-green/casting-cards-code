@@ -16,21 +16,17 @@
     <div class="spine-cap bottom"></div>
   </div>
   <div class="page-area">
-    <!-- Layer 1: back page (z-index 1) — parchment base -->
     <div class="page page-back"></div>
-    <!-- Layer 2: front page (z-index 2) — live router content -->
     <div class="page page-front">
       <app-subscription-lock-banner />
       <router-outlet />
     </div>
-    <!-- Layer 3: flip element (z-index 5) — 3D overlay, hidden at rest -->
     <div class="page-flip" #pageFlip>
       <div class="flip-face"></div>
       <div class="flip-back-face"></div>
     </div>
     <div class="page-fold"></div>
 
-    <!-- Journal-opens overlay — shown after the cover flip completes -->
     <div class="journal-open-overlay" [class.show]="showOpenMessage()" [class.fading]="openMessageFading()">
       <svg class="journal-open-crest" width="64" height="64" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
         <circle cx="50" cy="50" r="44" stroke="rgba(180,120,40,0.4)" stroke-width="0.8"/>

@@ -1,0 +1,114 @@
+@use '../../../../../../styles/variables' as v;
+
+:host {
+  position: absolute;
+  inset: 0;
+  display: block;
+  z-index: 500;
+  pointer-events: none;
+
+  --spot-lift: #{v.$spotlight-lift};
+  --spot-apex: 80%;
+  --spot-over-left: -27.5;
+  --spot-over-right: -11.5;
+  --spot-foot: 34.36%;
+  --spot-pool-top: 48.17%;
+  --spot-box-w: calc(1 + (var(--spot-over-left) + var(--spot-over-right)) / 100);
+  --spot-source-size: #{v.$spotlight-source-size};
+  --spot-blur: 5px;
+}
+
+.spotlight-beam {
+  position: absolute;
+  left: calc(-1 * var(--spot-over-left) * 1%);
+  top: calc(-1 * var(--spot-lift));
+  right: calc(-1 * var(--spot-over-right) * 1%);
+  bottom: var(--spot-foot);
+  display: block;
+  filter: blur(var(--spot-blur));
+  pointer-events: none;
+  animation: spotlight-rise 0.45s ease-out both;
+}
+
+.spotlight-beam::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  display: block;
+  clip-path: polygon(
+    calc((var(--spot-apex) + var(--spot-over-left) * 1%) / var(--spot-box-w)) 0,
+    0 var(--spot-pool-top),
+    100% 100%
+  );
+  background: linear-gradient(
+    to bottom,
+    rgba(255, 251, 0, 0.45) 0%,
+    rgba(255, 250, 224, 0.25) 30%,
+    rgba(255, 250, 224, 0) 100%
+  );
+}
+
+.spotlight-source {
+  position: absolute;
+  left: var(--spot-apex);
+  top: calc(-1 * var(--spot-lift));
+  width: var(--spot-source-size);
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  filter:
+    brightness(0) invert(1)
+    drop-shadow(0 0 4px rgba(255, 255, 255, 0.95))
+    drop-shadow(0 0 15px rgba(255, 251, 128, 0.85));
+  animation: spotlight-source-breathe 2.4s ease-in-out infinite;
+}
+
+.spotlight-source--pointing {
+  animation: spotlight-point 1.2s ease-in-out infinite;
+}
+
+.spotlight-pool {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 115%;
+  aspect-ratio: 1.1 / 1;
+  transform: translate(-50%, -50%);
+  padding: 0;
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  pointer-events: auto;
+  background: radial-gradient(
+    ellipse 50% 50% at 50% 25%,
+    rgba(255, 251, 128, 0.9) 0%,
+    rgba(255, 250, 224, 0.7) 20%,
+    rgba(255, 250, 224, 0.3) 60%,
+    rgba(255, 250, 224, 0) 100%
+  );
+  filter: blur(var(--spot-blur));
+  animation: spotlight-breathe 2.4s ease-in-out infinite;
+}
+
+.spotlight-pool--small {
+  width: 76.67%;
+}
+
+@keyframes spotlight-rise {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes spotlight-breathe {
+  0%, 100% { opacity: 0.9; }
+  50%      { opacity: 1; }
+}
+
+@keyframes spotlight-source-breathe {
+  0%, 100% { opacity: 0.88; transform: translate(-50%, -50%) scale(0.96); }
+  50%      { opacity: 1;    transform: translate(-50%, -50%) scale(1.04); }
+}
+
+@keyframes spotlight-point {
+  0%, 100% { opacity: 0.7; transform: translate(-50%, -50%) scale(0.88); }
+  50%      { opacity: 1;   transform: translate(-50%, -50%) scale(1.14); }
+}

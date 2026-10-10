@@ -1,0 +1,132 @@
+@use '../../../../../../styles/variables' as v;
+
+:host {
+  display: block;
+  width: 100%;
+}
+
+.condition-detail {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.condition-detail-bar {
+  position: sticky;
+  top: -24px;
+  z-index: 3;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 12px;
+  margin: -24px -24px 0;
+  padding: 12px 16px;
+  background: v.$campaign-portal-bg-dark;
+  border-bottom: 1px solid v.$campaign-portal-border-light;
+
+  @media (max-width: 480px) {
+    top: -16px;
+    margin: -16px -16px 0;
+    padding: 10px 12px;
+  }
+}
+
+.condition-detail-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.condition-detail-error {
+  font-family: v.$font-body;
+  font-size: 12px;
+  color: v.$color-ui-error-text;
+}
+
+.condition-detail-read {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 16px;
+}
+
+.condition-ring {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  max-width: 100%;
+  height: 28px;
+  padding: 0 12px;
+  border-radius: 50% / 100%;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.5) 0%, rgba(255, 255, 255, 0.12) 38%, rgba(0, 0, 0, 0.34) 100%),
+    linear-gradient(90deg, rgba(0, 0, 0, 0.7) 0%, var(--ring-color, #{v.$color-base-purple-primary}) 22%, var(--ring-color, #{v.$color-base-purple-primary}) 78%, rgba(0, 0, 0, 0.7) 100%);
+  box-shadow:
+    0 2px 3px rgba(0, 0, 0, 0.45),
+    inset 0 1px 0 rgba(255, 255, 255, 0.4);
+  color: #fff;
+  font-family: v.$font-body;
+  font-size: 15px;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  line-height: 1;
+  text-transform: uppercase;
+  white-space: nowrap;
+  text-shadow: 0 1px 1px rgba(0, 0, 0, 0.75), 0 0 2px rgba(0, 0, 0, 0.55);
+}
+
+.condition-ring-label {
+  max-width: 100%;
+  overflow: hidden;
+  padding: 1.5px calc(4px - 0.14em) 1.5px 4px;
+  background: rgba(0, 0, 0, 0.78);
+  border-radius: 999px;
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.4);
+  text-overflow: ellipsis;
+}
+
+.condition-detail-consequence {
+  margin: 0;
+  width: 100%;
+  padding: 16px 18px;
+  border: 1px solid v.$campaign-portal-border;
+  border-left: 3px solid var(--portal-color, v.$color-base-purple-primary);
+  border-radius: 6px;
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.05));
+  font-family: v.$font-body;
+  font-size: 15px;
+  line-height: 1.55;
+  white-space: pre-wrap;
+  word-break: break-word;
+  color: v.$campaign-portal-text-lavender;
+
+  @media (max-width: 480px) {
+    padding: 14px;
+    font-size: 14px;
+  }
+}
+
+.condition-detail-keywords {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.condition-detail-keyword {
+  padding: 3px 9px;
+  border: 1px solid v.$campaign-portal-border;
+  border-radius: 12px;
+  font-family: v.$font-body;
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  color: v.$campaign-portal-text-lavender;
+}
+
+.condition-detail-note {
+  margin: 0;
+  font-family: v.$font-body;
+  font-size: 13px;
+  font-style: italic;
+  color: v.$campaign-portal-text-muted;
+}

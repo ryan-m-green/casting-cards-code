@@ -9,5 +9,6 @@ public class PlayerCardTraitResponse
     public TraitType TraitType { get; set; }
     public string Content { get; set; } = string.Empty;
     public bool IsCompleted { get; set; }
+    public bool IsShared { get; set; }
     public DateTime CreatedAt { get; set; }
 }

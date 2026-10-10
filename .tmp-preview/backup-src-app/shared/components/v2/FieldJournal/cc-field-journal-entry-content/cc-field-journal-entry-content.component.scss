@@ -1,0 +1,120 @@
+@use '../../../../../../styles/variables' as v;
+
+.note {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 18px;
+  padding: 8px 4px;
+  font-family: v.$font-body;
+  color: v.$campaign-portal-text-bright;
+}
+
+.note-card-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  width: 100%;
+}
+
+.note-nav {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 72px;
+  padding: 0;
+  background: rgba(46, 26, 94, 0.55);
+  border: 1px solid v.$campaign-portal-border-bold;
+  border-radius: 8px;
+  color: v.$campaign-portal-text-lavender;
+  font-size: 22px;
+  line-height: 1;
+  cursor: pointer;
+  transition: border-color 0.15s ease, color 0.15s ease, transform 0.15s ease;
+
+  &:hover:not(:disabled) {
+    color: #fff;
+    border-color: var(--portal-color, #{v.$color-base-purple-primary});
+    transform: scale(1.04);
+  }
+
+  &:disabled { opacity: 0.35; cursor: default; }
+
+  &:focus { outline: none; }
+
+  &:focus-visible {
+    outline: 2px solid v.$campaign-portal-border-focus;
+    outline-offset: 1px;
+  }
+}
+
+.note-card {
+  flex: 0 0 auto;
+  width: v.$card-width;
+  height: v.$card-height;
+}
+
+.note-fields {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 100%;
+  min-width: 0;
+}
+
+.note-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.note-label {
+  font-size: 18px;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.note-state {
+  font-size: 13px;
+  opacity: 0.7;
+}
+
+.note-area {
+  width: 100%;
+  min-height: 180px;
+  box-sizing: border-box;
+  padding: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 6px;
+  background: rgba(8, 4, 18, 0.72);
+  color: inherit;
+  font-family: v.$font-body;
+  font-size: 16px;
+  line-height: 1.45;
+  resize: vertical;
+
+  &::placeholder { color: rgba(255, 255, 255, 0.4); }
+
+  &:focus { outline: none; }
+
+  &:focus-visible {
+    outline: 2px solid v.$campaign-portal-border-focus;
+    outline-offset: 1px;
+  }
+}
+
+.note-prompt {
+  margin: 0;
+  font-size: 13px;
+  opacity: 0.66;
+}
+
+.note-error {
+  margin: 0;
+  font-size: 14px;
+  color: #ff9d9d;
+}

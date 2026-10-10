@@ -1,0 +1,13 @@
+﻿TOTAL_DTOS=178
+
+=== BY PROJECT ===
+175	CastLibrary.Shared
+3	CastLibrary.WebHost
+
+=== BY HOME ===
+176	Requests/Responses
+2	co-located
+
+=== CO-LOCATED (not in a Requests/Responses folder) ===
+StripeEventPayload|CastLibrary.Shared|CastLibrary.Shared\Domain\StripeEventPayload.cs
+StripeRequest|CastLibrary.Shared|CastLibrary.Shared\Domain\StripeEventPayload.cs

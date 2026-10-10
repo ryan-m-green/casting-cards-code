@@ -1,0 +1,27 @@
+<fieldset class="view-switch">
+  <legend class="view-switch__legend">Switch View</legend>
+
+  <div class="view-switch__buttons">
+    <button
+      type="button"
+      class="view-switch__btn"
+      [class.is-on]="isOn('gm')"
+      [attr.aria-pressed]="isOn('gm')"
+      title="Show the GM's view"
+      (click)="select('gm')"
+    >
+      <cc-gm-icon [width]="28" color="white" />
+    </button>
+
+    <button
+      type="button"
+      class="view-switch__btn"
+      [class.is-on]="isOn('party')"
+      [attr.aria-pressed]="isOn('party')"
+      title="Show the party's view"
+      (click)="select('party')"
+    >
+      <cc-player-icon [width]="22" color="white" />
+    </button>
+  </div>
+</fieldset>

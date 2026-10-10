@@ -1,0 +1,139 @@
+<div class="picker" [style.--portal-color]="portalColor()">
+  <div class="picker-tabs" role="tablist" aria-label="How to add a condition">
+    <button
+      type="button"
+      class="picker-tab"
+      role="tab"
+      [class.is-on]="activeTab() === 'library'"
+      [attr.aria-selected]="activeTab() === 'library'"
+      (click)="setTab('library')"
+    >Conditions Library</button>
+
+    <button
+      type="button"
+      class="picker-tab"
+      role="tab"
+      [class.is-on]="activeTab() === 'new'"
+      [attr.aria-selected]="activeTab() === 'new'"
+      (click)="setTab('new')"
+    >New Condition</button>
+  </div>
+
+  @if (activeTab() === 'library') {
+    <div class="picker-panel">
+      @if (keywordChips().length) {
+        <div class="picker-chips">
+          @for (chip of keywordChips(); track chip.keyword) {
+            <button
+              type="button"
+              class="picker-chip"
+              [class.is-on]="chip.all"
+              [attr.aria-pressed]="chip.all"
+              [attr.title]="chip.all
+                ? 'Release all ' + chip.count + ' ' + (chip.count === 1 ? 'condition' : 'conditions') + ' tagged ' + chip.keyword
+                : 'Take all ' + chip.count + ' ' + (chip.count === 1 ? 'condition' : 'conditions') + ' tagged ' + chip.keyword"
+              (click)="toggleKeyword(chip.keyword)"
+            >#{{ chip.keyword }}<span class="picker-chip-count">{{ chip.count }}</span></button>
+          }
+        </div>
+      }
+
+      <div class="picker-filter">
+        <app-cc-textbox
+          placeholder="Search your conditions…"
+          context="campaign"
+          [ngModel]="search()"
+          (ngModelChange)="onSearchChange($event)"
+          [showClear]="true"
+        />
+
+        <button type="button" class="picker-clear" [disabled]="!pickedCount()" (click)="clearPicked()">
+          Clear
+        </button>
+      </div>
+
+      <div class="picker-scroll">
+        @if (loading()) {
+          <p class="picker-note">Looking through your conditions…</p>
+        } @else if (failed()) {
+          <p class="picker-empty">Could not load your conditions. Close the drawer and try again.</p>
+        } @else if (libraryEmpty()) {
+          <p class="picker-empty">
+            You have no conditions yet. Use the <strong>New Condition</strong> tab to write one.
+          </p>
+        } @else if (!candidates().length) {
+          <p class="picker-empty">No conditions answer to that search.</p>
+        } @else {
+          <p class="picker-section">Your conditions ({{ candidates().length }})</p>
+
+          <div class="picker-grid">
+            @for (entry of candidates(); track entry.id) {
+              <div class="cond-entry" [class.is-picked]="isPicked(entry.id)" [class.is-linked]="isLinked(entry.id)">
+                <div class="cond-entry-head">
+                  <cc-delete-button
+                    [label]="'Delete ' + entry.name"
+                    confirmLabel="Delete"
+                    [disabled]="removingId() === entry.id"
+                    (confirmed)="removeEntry(entry)"
+                  />
+
+                  @if (isLinked(entry.id)) {
+                    <span class="cond-entry-check" aria-hidden="true">✓</span>
+                  }
+                </div>
+
+                <button
+                  type="button"
+                  class="cond-entry-pick"
+                  [disabled]="isLinked(entry.id)"
+                  [attr.aria-pressed]="isPicked(entry.id)"
+                  [attr.aria-label]="isLinked(entry.id) ? entry.name + ' is on this campaign' : 'Select ' + entry.name"
+                  (click)="toggleEntry(entry)"
+                >
+                  <span class="cond-entry-ring" [style.--ring-color]="ringColor(entry.name)">
+                    <span class="cond-entry-ring-label">{{ entry.name }}</span>
+                  </span>
+                </button>
+
+                <div class="cond-entry-consequence">{{ entry.consequence || 'No consequences written.' }}</div>
+              </div>
+            }
+          </div>
+        }
+      </div>
+
+      @if (error()) {
+        <p class="picker-error">{{ error() }}</p>
+      }
+
+      <div class="picker-actions">
+        <span class="picker-total">
+          @if (pickedCount()) {
+            {{ pickedCount() }} {{ pickedCount() === 1 ? 'condition' : 'conditions' }} picked
+          } @else {
+            Tap a condition to pick it
+          }
+        </span>
+
+        <button
+          type="button"
+          class="campaign-primary-btn"
+          [disabled]="!canAdd()"
+          (click)="addPicked()"
+        >@if (linking()) { Adding… } @else if (pickedCount()) { Add {{ pickedCount() }} to campaign } @else { Add to campaign }</button>
+      </div>
+    </div>
+  }
+
+  @if (activeTab() === 'new') {
+    <div class="picker-panel">
+      <div class="picker-scroll">
+        <cc-condition-form
+          [campaignId]="campaignId()"
+          (saved)="onSaved($event)"
+          (cancel)="cancel.emit()"
+        />
+      </div>
+    </div>
+  }
+</div>

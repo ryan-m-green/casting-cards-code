@@ -3,7 +3,7 @@ import { RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { AuthService } from '../../core/auth/auth.service';
-import { JournalTitleComponent } from '../../shared/components/journal-title/journal-title.component';
+import { JournalTitleComponent } from '../../shared/components/Shared/journal-title/journal-title.component';
 
 @Component({
   selector: 'app-forgot-password',
@@ -29,7 +29,7 @@ export class ForgotPasswordComponent {
     const { email } = this.form.value;
     this.auth.forgotPassword(email!).subscribe({
       next:  () => { this.submitted.set(true); this.loading.set(false); },
-      error: () => { this.submitted.set(true); this.loading.set(false); }, // always show same message
+      error: () => { this.submitted.set(true); this.loading.set(false); },
     });
   }
 }

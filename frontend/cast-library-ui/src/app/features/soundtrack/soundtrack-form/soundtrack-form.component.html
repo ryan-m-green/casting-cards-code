@@ -1,0 +1,95 @@
+<div class="pc scroll-body">
+  <app-journal-title title="Edit Track" />
+
+  <div class="wr wr-page-header">
+    <a class="btn-ghost" routerLink="/gm/soundtracks">← Library</a>
+  </div>
+
+  @if (notFound()) {
+    <p class="wbd-journal">That track is no longer in your library.</p>
+  } @else {
+    <form [formGroup]="form">
+      <label for="track-title-input" class="fi-label">Title</label>
+      <input
+        id="track-title-input"
+        class="fi"
+        formControlName="title"
+        autocomplete="off"
+        placeholder="Track title" />
+
+      <div class="wr form-row-gap">
+        <div class="form-field--toggle">
+          <span class="fi-label">Kind</span>
+          <div class="kind-toggle">
+            <button
+              type="button"
+              class="kind-btn"
+              [class.is-on]="kind() === 'music'"
+              (click)="setKind('music')">Music</button>
+            <button
+              type="button"
+              class="kind-btn"
+              [class.is-on]="kind() === 'sound_effect'"
+              (click)="setKind('sound_effect')">Sound Effect</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-field--toggle">
+        <label for="track-volume-input" class="fi-label">Volume — {{ volume() }}%</label>
+        <input
+          id="track-volume-input"
+          class="fi-slider"
+          type="range"
+          min="0"
+          max="100"
+          step="1"
+          [value]="volume()"
+          (input)="onVolume($any($event.target).value)" />
+      </div>
+
+      @if (showsLoop()) {
+        <div class="form-field--toggle">
+          <div class="toggle-row">
+            <label class="toggle-switch">
+              <input
+                type="checkbox"
+                [checked]="isLoop()"
+                (change)="onLoopToggle($any($event.target).checked)" />
+              <span class="toggle-slider"></span>
+            </label>
+            <span class="fi-label">Loop</span>
+          </div>
+
+          @if (isLoop()) {
+            <label for="track-loop-delay-input" class="fi-label">Loop delay (seconds)</label>
+            <input
+              id="track-loop-delay-input"
+              class="fi fi-no-mb"
+              type="number"
+              min="1"
+              max="60"
+              [value]="loopDelaySeconds() ?? ''"
+              (input)="onLoopDelay($any($event.target).value)" />
+          }
+        </div>
+      }
+    </form>
+
+    @if (error()) {
+      <div class="limit-error-message">
+        <span class="limit-error-text">{{ error() }}</span>
+      </div>
+    }
+
+    <div class="form-save-footer">
+      <button
+        class="campaign-primary-btn"
+        type="button"
+        [disabled]="form.invalid || saving()"
+        (click)="save()">
+        {{ saving() ? 'Saving…' : 'Save' }}
+      </button>
+    </div>
+  }
+</div>

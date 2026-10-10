@@ -12,7 +12,7 @@ namespace CastLibrary.Adapter.ImageConversion
         {
             if (!stream.CanSeek || stream.Length < 4) return false;
             var header = new byte[4];
-            stream.Read(header, 0, 4);
+            stream.ReadExactly(header, 0, 4);
             stream.Position = 0;
             return header[0] == 0x25 && header[1] == 0x50 && header[2] == 0x44 && header[3] == 0x46; // %PDF
         }

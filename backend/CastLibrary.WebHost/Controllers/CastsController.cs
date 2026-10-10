@@ -2,7 +2,6 @@
 using CastLibrary.Logic.Queries.Cast;
 using CastLibrary.Logic.Services;
 using CastLibrary.Logic.Validators;
-using CastLibrary.Repository.Repositories.Read;
 using CastLibrary.Shared.Exceptions;
 using CastLibrary.Shared.Requests;
 using CastLibrary.WebHost.Mappers;
@@ -10,7 +9,6 @@ using CastLibrary.WebHost.MetadataHelpers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
-using Microsoft.Extensions.Logging;
 using System.Security.Claims;
 
 namespace CastLibrary.WebHost.Controllers;

@@ -2,13 +2,12 @@ import { Component, OnInit, OnDestroy, signal, inject, ElementRef } from '@angul
 import { Subscription } from 'rxjs';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { JournalTitleComponent } from '../../../shared/components/journal-title/journal-title.component';
-import { CampaignJoinInputComponent } from '../../../shared/components/campaign-join-input/campaign-join-input.component';
-import { PortalCardComponent } from '../../../shared/components/portal-card/portal-card.component';
+import { JournalTitleComponent } from '../../../shared/components/Shared/journal-title/journal-title.component';
+import { CampaignJoinInputComponent } from '../../../shared/components/Journal/campaign-join-input/campaign-join-input.component';
+import { PortalCardComponent } from '../../../shared/components/Journal/portal-card/portal-card.component';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../../environments/environment';
 import { Campaign } from '../../../shared/models/campaign.model';
-import { PortalTransitionService } from '../../../core/portal-transition.service';
 import { PortalAnimationService } from '../../../core/portal-animation.service';
 import { AuthService } from '../../../core/auth/auth.service';
 import { CampaignHubService } from '../../../core/hub/campaign-hub.service';
@@ -23,7 +22,6 @@ import { CampaignHubService } from '../../../core/hub/campaign-hub.service';
 export class PlayerCampaignsComponent implements OnInit, OnDestroy {
   private http       = inject(HttpClient);
   private router     = inject(Router);
-  private transition = inject(PortalTransitionService);
   private el         = inject(ElementRef);
   private hub        = inject(CampaignHubService);
   private animationService = inject(PortalAnimationService);
@@ -37,12 +35,10 @@ export class PlayerCampaignsComponent implements OnInit, OnDestroy {
   private isEntering = false;
 
   constructor() {
-    // Listen for PlayerRemoved event from SignalR
     this.hubSubscriptions.push(
       this.hub.playerRemoved$.subscribe(event => {
         if (!event) return;
 
-        // Remove the campaign from the list
         this.campaigns.update(list => list.filter(c => c.id !== event.campaignId));
       })
     );
@@ -57,7 +53,6 @@ export class PlayerCampaignsComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    // Connect to SignalR hub to receive real-time events
     if (!this.hub.isConnected()) {
       this.hub.connect().catch(() => {});
     }
@@ -66,7 +61,6 @@ export class PlayerCampaignsComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    // Disconnect from SignalR hub when leaving the page
     this.hub.disconnect().catch(() => {});
     this.hubSubscriptions.forEach(sub => sub.unsubscribe());
   }
@@ -81,19 +75,15 @@ export class PlayerCampaignsComponent implements OnInit, OnDestroy {
         this.joinLoading.set(false);
         const alreadyPresent = this.campaigns().some(c => c.id === campaign.id);
         if (!alreadyPresent) {
-          // Snapshot existing card positions before the grid reflows
           const existingCards = Array.from(
             this.el.nativeElement.querySelectorAll('[data-campaign-id]')
           ) as HTMLElement[];
           const oldRects = existingCards.map(el => el.getBoundingClientRect());
 
-          // Mark as materializing to prevent visibility before we're ready
           this.materializingId.set(campaign.id);
           this.campaigns.update(list => [campaign, ...list]);
 
-          // Use requestAnimationFrame to ensure DOM is updated before we manipulate styles
           requestAnimationFrame(() => {
-            // FLIP: slide existing cards from their old positions into their new ones
             existingCards.forEach((el, i) => {
               const newRect = el.getBoundingClientRect();
               const dx = oldRects[i].left - newRect.left;
@@ -107,19 +97,15 @@ export class PlayerCampaignsComponent implements OnInit, OnDestroy {
               el.addEventListener('transitionend', () => { el.style.transition = ''; }, { once: true });
             });
 
-            // Get the new card element
             const cardEl = this.el.nativeElement.querySelector(
               `[data-campaign-id="${campaign.id}"]`
             ) as HTMLElement | null;
             if (!cardEl) return;
 
-            // Remove materializing class so we can control the card with inline styles
             this.materializingId.set(null);
 
-            // Force a layout to ensure class removal is applied
             void cardEl.offsetWidth;
 
-            // Set invisible starting state for animation
             cardEl.style.opacity    = '0';
             cardEl.style.transform  = 'scale(0.3)';
             cardEl.style.transition = 'none';
@@ -168,14 +154,12 @@ export class PlayerCampaignsComponent implements OnInit, OnDestroy {
       sp.style.transform = `translate(${Math.cos(angle) * dist}px, ${Math.sin(angle) * dist}px)`;
     }
 
-    // Card fades in after sparks have had a moment — starts at t=600ms while sparks still mid-burst
     setTimeout(() => {
       cardEl.style.transition = 'opacity 1400ms ease-out, transform 1600ms cubic-bezier(0.34,1.3,0.64,1)';
       cardEl.style.opacity    = '1';
       cardEl.style.transform  = 'scale(1.08)';
     }, 600);
 
-    // Sparks converge back + card settles
     setTimeout(() => {
       sparks.forEach(sp => {
         sp.style.transition = 'transform 1000ms cubic-bezier(0.4,0,0.6,1), opacity 1000ms ease-in';
@@ -186,7 +170,6 @@ export class PlayerCampaignsComponent implements OnInit, OnDestroy {
       cardEl.style.transform  = 'scale(1.0)';
     }, 2200);
 
-    // Cleanup
     setTimeout(() => {
       sparks.forEach(s => s.remove());
       cardEl.style.transition = '';
@@ -205,12 +188,12 @@ export class PlayerCampaignsComponent implements OnInit, OnDestroy {
       card,
       id,
       spineColor,
-      routePrefix: '/player/campaign',
+      routePrefix: '/campaign',
       onNavigate: (routePrefix, id) => {
         this.router.navigate([routePrefix, id], { state: { noFlip: true, portalEntry: true } });
         this.isEntering = false;
       },
-      enableNavigation: true // Set to true to enable navigation
+      enableNavigation: true
     });
   }
 }

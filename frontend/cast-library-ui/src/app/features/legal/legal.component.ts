@@ -1,6 +1,6 @@
 import { Component, inject, signal } from '@angular/core';
 import { AuthService } from '../../core/auth/auth.service';
-import { JournalTitleComponent } from '../../shared/components/journal-title/journal-title.component';
+import { JournalTitleComponent } from '../../shared/components/Shared/journal-title/journal-title.component';
 
 type LegalTab = 'privacy' | 'terms' | 'cookies' | 'accessibility';
 

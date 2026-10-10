@@ -1,5 +1,3 @@
-using Microsoft.AspNetCore.Http;
-
 namespace CastLibrary.WebHost.Requests;
 
 public class UploadCastImageRequest

@@ -1,0 +1,167 @@
+<div class="stripe-config-editor">
+  <div class="active-account-selector">
+    <label class="form-label">Active Account</label>
+    <div class="radio-group">
+      <label class="radio-label">
+        <input
+          type="radio"
+          name="active-account"
+          [checked]="config().activeAccount === 'test'"
+          (change)="setActiveAccount('test')"
+        />
+        <span>Test</span>
+      </label>
+      <label class="radio-label">
+        <input
+          type="radio"
+          name="active-account"
+          [checked]="config().activeAccount === 'live'"
+          (change)="setActiveAccount('live')"
+        />
+        <span>Live</span>
+      </label>
+    </div>
+  </div>
+
+  <div class="account-section">
+    <div class="section-header">Test Account</div>
+    <div class="account-fields">
+      <div class="field-group">
+        <label class="form-label" for="test-secret-key">Secret Key</label>
+        <div class="password-field">
+          <input
+            id="test-secret-key"
+            class="fi"
+            [type]="showSecretKey.test ? 'text' : 'password'"
+            [ngModel]="config().testAccount.secretKey"
+            (ngModelChange)="updateTestAccountField('secretKey', $event)"
+          />
+          <button class="btn-toggle-visibility" (click)="toggleSecretKeyVisibility('test')" type="button">
+            {{ showSecretKey.test ? 'Hide' : 'Show' }}
+          </button>
+        </div>
+      </div>
+      <div class="field-group">
+        <label class="form-label" for="test-publishable-key">Publishable Key</label>
+        <input
+          id="test-publishable-key"
+          class="fi"
+          type="text"
+          [ngModel]="config().testAccount.publishableKey"
+          (ngModelChange)="updateTestAccountField('publishableKey', $event)"
+        />
+      </div>
+      <div class="field-group">
+        <label class="form-label" for="test-webhook-secret">Webhook Secret</label>
+        <input
+          id="test-webhook-secret"
+          class="fi"
+          type="text"
+          [ngModel]="config().testAccount.webhookSecret"
+          (ngModelChange)="updateTestAccountField('webhookSecret', $event)"
+        />
+      </div>
+      <div class="field-group">
+        <label class="form-label" for="test-success-url">Success URL</label>
+        <input
+          id="test-success-url"
+          class="fi"
+          type="text"
+          [ngModel]="config().testAccount.successUrl"
+          (ngModelChange)="updateTestAccountField('successUrl', $event)"
+        />
+      </div>
+      <div class="field-group">
+        <label class="form-label" for="test-cancel-url">Cancel URL</label>
+        <input
+          id="test-cancel-url"
+          class="fi"
+          type="text"
+          [ngModel]="config().testAccount.cancelUrl"
+          (ngModelChange)="updateTestAccountField('cancelUrl', $event)"
+        />
+      </div>
+      <div class="field-group">
+        <label class="form-label" for="test-return-url">Return URL</label>
+        <input
+          id="test-return-url"
+          class="fi"
+          type="text"
+          [ngModel]="config().testAccount.returnUrl"
+          (ngModelChange)="updateTestAccountField('returnUrl', $event)"
+        />
+      </div>
+    </div>
+  </div>
+
+  <div class="account-section">
+    <div class="section-header">Live Account</div>
+    <div class="account-fields">
+      <div class="field-group">
+        <label class="form-label" for="live-secret-key">Secret Key</label>
+        <div class="password-field">
+          <input
+            id="live-secret-key"
+            class="fi"
+            [type]="showSecretKey.live ? 'text' : 'password'"
+            [ngModel]="config().liveAccount.secretKey"
+            (ngModelChange)="updateLiveAccountField('secretKey', $event)"
+          />
+          <button class="btn-toggle-visibility" (click)="toggleSecretKeyVisibility('live')" type="button">
+            {{ showSecretKey.live ? 'Hide' : 'Show' }}
+          </button>
+        </div>
+      </div>
+      <div class="field-group">
+        <label class="form-label" for="live-publishable-key">Publishable Key</label>
+        <input
+          id="live-publishable-key"
+          class="fi"
+          type="text"
+          [ngModel]="config().liveAccount.publishableKey"
+          (ngModelChange)="updateLiveAccountField('publishableKey', $event)"
+        />
+      </div>
+      <div class="field-group">
+        <label class="form-label" for="live-webhook-secret">Webhook Secret</label>
+        <input
+          id="live-webhook-secret"
+          class="fi"
+          type="text"
+          [ngModel]="config().liveAccount.webhookSecret"
+          (ngModelChange)="updateLiveAccountField('webhookSecret', $event)"
+        />
+      </div>
+      <div class="field-group">
+        <label class="form-label" for="live-success-url">Success URL</label>
+        <input
+          id="live-success-url"
+          class="fi"
+          type="text"
+          [ngModel]="config().liveAccount.successUrl"
+          (ngModelChange)="updateLiveAccountField('successUrl', $event)"
+        />
+      </div>
+      <div class="field-group">
+        <label class="form-label" for="live-cancel-url">Cancel URL</label>
+        <input
+          id="live-cancel-url"
+          class="fi"
+          type="text"
+          [ngModel]="config().liveAccount.cancelUrl"
+          (ngModelChange)="updateLiveAccountField('cancelUrl', $event)"
+        />
+      </div>
+      <div class="field-group">
+        <label class="form-label" for="live-return-url">Return URL</label>
+        <input
+          id="live-return-url"
+          class="fi"
+          type="text"
+          [ngModel]="config().liveAccount.returnUrl"
+          (ngModelChange)="updateLiveAccountField('returnUrl', $event)"
+        />
+      </div>
+    </div>
+  </div>
+</div>

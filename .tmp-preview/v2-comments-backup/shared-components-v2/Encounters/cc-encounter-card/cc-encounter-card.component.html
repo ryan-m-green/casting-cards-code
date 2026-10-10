@@ -1,0 +1,39 @@
+<article
+  class="encounter-card"
+  [class.is-active]="encounter().status === 'active'"
+  [class.is-ended]="encounter().status === 'ended'"
+  [style.--portal-color]="portalColor()"
+>
+  <header class="card-head">
+    <span class="card-sequence">#{{ encounter().sequenceNumber }}</span>
+    <span class="card-status">{{ statusLabel() }}</span>
+  </header>
+
+  <h3 class="card-name" [title]="title()">{{ title() }}</h3>
+
+  <p class="card-meta">
+    <span>{{ spotCount() }} spot{{ spotCount() === 1 ? '' : 's' }}</span>
+    <span class="card-meta-dot">·</span>
+    <span>{{ cardCount() }} card{{ cardCount() === 1 ? '' : 's' }}</span>
+  </p>
+
+  <div class="card-actions">
+    <!--
+      The editor: the campaign's own repair tools, as the storyline card and the ring's own row draw
+      them — the control is shared (see cc-edit-button), so the art and its inking are said once.
+    -->
+    <cc-edit-button
+      label="Edit this encounter"
+      [disabled]="busy()"
+      (clicked)="editRequested.emit()"
+    />
+    <button
+      type="button"
+      class="card-action"
+      [disabled]="busy()"
+      title="Initiative circle"
+      aria-label="Initiative circle"
+      (click)="circleRequested.emit()"
+    ><img class="card-action-icon" src="/crossed_battle_axe_weapon.svg" alt="" /></button>
+  </div>
+</article>

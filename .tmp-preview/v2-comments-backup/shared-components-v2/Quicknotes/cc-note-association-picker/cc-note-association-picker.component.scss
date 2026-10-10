@@ -1,0 +1,185 @@
+@use '../../../../../../styles/variables' as v;
+
+/*
+ * The association drawer's own styles, as the other v2 pickers carry theirs: the type buttons, the
+ * hashtags the note wears, the grid of simple cards, and the sticky footer. The drawer's own chrome
+ * (its width, its own scrolling) belongs to the shell's right drawer, and the primary button comes
+ * from the global stylesheet (`.campaign-primary-btn`).
+ */
+
+:host {
+  display: block;
+}
+
+.assoc {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  min-height: 100%;
+  box-sizing: border-box;
+}
+
+/* ── Card type buttons ────────────────────────────────────────────────────── */
+.assoc-types {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.assoc-type {
+  /* A touch target on a phone: the buttons wrap rather than squeeze. */
+  min-height: 36px;
+  padding: 8px 12px;
+  background: transparent;
+  border: 1px solid v.$campaign-portal-border-bold;
+  border-radius: 8px;
+  color: v.$campaign-portal-text-muted;
+  font-family: v.$font-header;
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+
+  &:hover { color: v.$campaign-portal-text-bright; border-color: v.$campaign-portal-border-hover; }
+
+  &.is-on {
+    background: rgba(46, 26, 94, 0.55);
+    border-color: v.$campaign-portal-border-focus;
+    color: v.$campaign-portal-text-bright;
+  }
+}
+
+.assoc-type-count {
+  margin-left: 6px;
+  opacity: 0.7;
+}
+
+/* ── The hashtags the note wears ──────────────────────────────────────────── */
+.assoc-picked {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.assoc-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 9px;
+  border: 1px solid v.$campaign-portal-border-bold;
+  border-radius: 999px;
+  color: v.$campaign-portal-text-lavender;
+  font-family: v.$font-body;
+  font-size: 12px;
+}
+
+.assoc-chip-remove {
+  padding: 0 2px;
+  background: none;
+  border: none;
+  color: inherit;
+  font-size: 11px;
+  line-height: 1;
+  cursor: pointer;
+  opacity: 0.75;
+
+  &:hover { opacity: 1; color: v.$campaign-portal-text-bright; }
+}
+
+/* ── Sections, empty states, errors ───────────────────────────────────────── */
+.assoc-section {
+  margin: 0;
+  color: v.$campaign-portal-text-lavender;
+  font-family: v.$font-header;
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.assoc-empty {
+  margin: 0;
+  color: v.$campaign-portal-text-muted;
+  font-size: 13px;
+  line-height: 1.5;
+  text-align: center;
+}
+
+.assoc-error {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  margin: 0;
+  padding: 8px 10px;
+  background: rgba(40, 12, 12, 0.92);
+  border: 1px solid rgba(248, 113, 113, 0.5);
+  border-radius: 6px;
+  color: #f87171;
+  font-size: 12px;
+  line-height: 1.4;
+}
+
+/* ── The campaign's cards ─────────────────────────────────────────────────── */
+.assoc-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.assoc-tile {
+  position: relative;
+  padding: 0;
+  background: none;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  cursor: pointer;
+  line-height: 0;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+
+  &:hover { border-color: v.$campaign-portal-border-hover; }
+
+  &.is-picked {
+    border-color: var(--portal-color, #{v.$color-base-purple-primary});
+    box-shadow: 0 0 0 2px rgba(110, 40, 208, 0.45);
+  }
+}
+
+.assoc-tile-check {
+  position: absolute;
+  top: -7px;
+  right: -7px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  background: v.$color-base-purple-primary;
+  border-radius: 50%;
+  color: #fff;
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1;
+}
+
+/* ── Footer ───────────────────────────────────────────────────────────────── */
+.assoc-actions {
+  position: sticky;
+  bottom: 0;
+  margin-top: auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 0 4px;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.55), transparent);
+}
+
+.assoc-total {
+  color: v.$campaign-portal-text-lavender;
+  font-size: 14px;
+}
+
+/* ── Phones ───────────────────────────────────────────────────────────────── */
+@media (max-width: 767px) {
+  .assoc-type { min-height: 42px; }
+}

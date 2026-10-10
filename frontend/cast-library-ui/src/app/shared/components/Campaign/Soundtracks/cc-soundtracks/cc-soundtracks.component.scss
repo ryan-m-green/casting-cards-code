@@ -1,0 +1,487 @@
+@use '../../../../../../styles/variables' as v;
+
+:host {
+  display: block;
+  width: 100%;
+  height: 100%;
+  position: relative;
+  overscroll-behavior: contain;
+}
+
+.st-panel {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: safe center;
+  box-sizing: border-box;
+  padding: 44px 16px 40px;
+  gap: 12px;
+  overflow-y: auto;
+}
+
+.st-topbar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  flex-shrink: 0;
+}
+
+.st-add-track {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  box-sizing: border-box;
+  border: 1px dashed v.$campaign-portal-border-focus;
+  border-radius: 6px;
+  overflow: hidden;
+  transition: border-color 0.15s ease;
+
+  &:hover {
+    border-color: v.$campaign-portal-border-hover;
+  }
+}
+
+.st-add-half {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 8px;
+  background: transparent;
+  border: none;
+  color: v.$campaign-portal-text-lavender;
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease;
+
+  &:hover:not(:disabled) {
+    background: v.$campaign-portal-bg-hover;
+    color: v.$campaign-portal-text-bright;
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
+
+.st-add-half--sfx {
+  border-top: 1px dashed v.$campaign-portal-border-focus;
+}
+
+.st-add-plus {
+  font-size: 26px;
+  line-height: 1;
+}
+
+.st-add-label {
+  font-family: v.$font-header;
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  text-align: center;
+}
+
+.st-volume {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  flex: 1 1 180px;
+  min-width: 140px;
+}
+
+.st-volume-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.st-volume-label {
+  font-family: v.$font-header;
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: v.$campaign-portal-text-muted;
+}
+
+.st-volume-value {
+  font-family: v.$font-header;
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  color: v.$campaign-portal-text-bright;
+  font-variant-numeric: tabular-nums;
+}
+
+.st-volume cc-slider {
+  width: 100%;
+  min-width: 0;
+}
+
+.st-add-count {
+  margin-left: 6px;
+  padding: 0 5px;
+  border-radius: 9px;
+  background: rgba(0, 0, 0, 0.35);
+}
+
+.st-btn {
+  font-family: v.$font-header;
+  font-size: 12px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 8px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.18s ease;
+  white-space: nowrap;
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
+
+.st-btn--primary {
+  background: color-mix(in srgb, v.$color-base-indigo-dark 60%, v.$color-base-arcane-purple 40%);
+  border: 1px solid var(--portal-color, v.$color-base-purple-primary);
+  color: v.$color-base-white-2;
+
+  &:hover:not(:disabled) {
+    background: color-mix(in srgb, v.$color-base-arcane-purple 60%, v.$color-base-indigo-dark 40%);
+  }
+}
+
+.st-row-head .st-btn {
+  padding: 4px 10px;
+}
+
+.st-btn--danger {
+  background: v.$color-base-red-2;
+  border: 1px solid v.$campaign-btn-primary-border;
+  color: v.$color-base-white-2;
+
+  &:hover:not(:disabled) {
+    background: v.$color-base-red-4;
+  }
+}
+
+.st-rows {
+  flex: 1 1 auto;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+.st-row-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 6px;
+  flex-shrink: 0;
+}
+
+.st-row + .st-row-head {
+  margin-top: 6px;
+}
+
+.st-row-title {
+  margin: 0;
+  font-family: v.$font-header;
+  font-size: 13px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: v.$campaign-portal-text-bright;
+}
+
+.st-row {
+  flex: 0 0 auto;
+  width: 100%;
+  overflow: hidden;
+  box-sizing: border-box;
+  padding: 8px 8px 2px;
+  overscroll-behavior-x: contain;
+  mask-image: linear-gradient(to right, transparent 0, black 16px, black calc(100% - 16px), transparent 100%);
+  -webkit-mask-image: linear-gradient(to right, transparent 0, black 16px, black calc(100% - 16px), transparent 100%);
+
+  .swiper-wrapper {
+    display: flex;
+    flex-direction: row;
+    align-items: stretch;
+  }
+
+  .swiper-slide {
+    flex: 0 0 auto;
+    width: 132px;
+    height: 164px;
+    box-sizing: border-box;
+  }
+}
+
+.st-row--ambiance .swiper-slide {
+  width: 118px;
+  height: 122px;
+}
+
+.st-track-card {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 36px 8px 8px;
+  box-sizing: border-box;
+  background: v.$campaign-portal-bg-dark;
+  border: 1px solid v.$campaign-portal-border-bold;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.18s ease;
+
+  &:hover {
+    border-color: v.$campaign-portal-border-hover;
+  }
+
+  &.playing {
+    border-color: var(--portal-color, v.$color-base-purple-primary);
+    background: color-mix(in srgb, v.$color-base-indigo-dark 60%, v.$color-base-arcane-purple 40%);
+  }
+
+  &.selected {
+    border-color: var(--portal-color, v.$color-base-purple-primary);
+    box-shadow: 0 0 0 2px rgba(110, 40, 208, 0.45);
+  }
+}
+
+.st-card-check {
+  position: absolute;
+  top: -7px;
+  right: -7px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  background: v.$color-base-purple-primary;
+  border-radius: 50%;
+  color: #fff;
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1;
+  z-index: 3;
+  pointer-events: none;
+}
+
+.st-card-delete {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  z-index: 2;
+}
+
+.st-kind-badge {
+  position: absolute;
+  top: 5px;
+  left: 5px;
+  z-index: 2;
+  font-family: v.$font-header;
+  font-size: 9px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 3px 7px;
+  border-radius: 10px;
+  background: color-mix(in srgb, v.$color-base-blue-8 30%, transparent);
+  border: 1px solid v.$color-base-blue-8;
+  color: v.$color-base-blue-9;
+  cursor: pointer;
+  line-height: 1;
+  transition: all 0.18s ease;
+
+  &:hover {
+    border-color: var(--portal-color, v.$color-base-purple-primary);
+  }
+
+  &--sfx {
+    background: color-mix(in srgb, v.$color-base-gold-1 30%, transparent);
+    border-color: v.$color-base-gold-1;
+    color: v.$color-base-gold-11;
+  }
+}
+
+.st-play-btn {
+  width: 30px;
+  height: 30px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: color-mix(in srgb, v.$color-base-indigo-dark 60%, v.$color-base-arcane-purple 40%);
+  border: 1px solid v.$campaign-portal-border-bold;
+  border-radius: 50%;
+  color: v.$color-base-white-2;
+  font-size: 12px;
+  line-height: 1;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: all 0.18s ease;
+
+  &:hover:not(:disabled) {
+    border-color: var(--portal-color, v.$color-base-purple-primary);
+  }
+
+  &:disabled {
+    opacity: 0.4;
+    cursor: default;
+  }
+}
+
+.st-play-btn--card {
+  width: 42px;
+  height: 42px;
+  margin-top: auto;
+  font-size: 15px;
+}
+
+.st-card-name {
+  width: 100%;
+  font-family: v.$font-body;
+  font-size: 11px;
+  line-height: 1.25;
+  text-align: center;
+  color: v.$campaign-portal-text-bright;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+  overflow-wrap: anywhere;
+}
+
+.st-card-meta {
+  font-family: v.$font-body;
+  font-size: 10px;
+  color: v.$campaign-portal-text-muted;
+}
+
+.st-card-volume {
+  width: 100%;
+}
+
+.st-track-card cc-delete-button {
+  --cc-delete-size: 26px;
+  --cc-delete-icon-size: 16px;
+  --cc-delete-font-size: 11px;
+}
+
+.st-ambiance-card cc-edit-button {
+  position: absolute;
+  top: 5px;
+  left: 5px;
+  z-index: 2;
+  --cc-edit-size: 28px;
+  --cc-edit-icon-size: 16px;
+}
+
+.st-ambiance-card cc-delete-button {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  z-index: 2;
+  --cc-delete-size: 28px;
+  --cc-delete-icon-size: 16px;
+  --cc-delete-font-size: 11px;
+}
+
+.st-ambiance-card {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 36px 8px 8px;
+  box-sizing: border-box;
+  background: v.$campaign-portal-bg-dark;
+  border: 1px solid v.$campaign-portal-border-bold;
+  border-radius: 10px;
+  transition: all 0.18s ease;
+
+  &:hover {
+    border-color: v.$campaign-portal-border-hover;
+  }
+
+  &.playing {
+    border-color: var(--portal-color, v.$color-base-purple-primary);
+    background: color-mix(in srgb, v.$color-base-indigo-dark 60%, v.$color-base-arcane-purple 40%);
+  }
+}
+
+.st-ambiance-card .st-card-name {
+  -webkit-line-clamp: 1;
+}
+
+.st-error {
+  font-family: v.$font-body;
+  font-size: 13px;
+  color: v.$color-base-red-2;
+  background: color-mix(in srgb, v.$color-base-red-5 40%, transparent);
+  border: 1px solid v.$color-base-red-4;
+  border-radius: 6px;
+  padding: 8px 12px;
+  flex-shrink: 0;
+}
+
+.st-empty {
+  margin: 0;
+  font-family: v.$font-body;
+  font-size: 13px;
+  color: v.$campaign-portal-text-muted;
+  padding: 4px 6px 8px;
+}
+
+@media (max-width: 720px) {
+  .st-panel {
+    padding: 40px 10px 108px;
+    gap: 10px;
+  }
+
+  .st-rows {
+    gap: 6px;
+  }
+
+  .st-row {
+    padding: 8px 6px 2px;
+  }
+
+  .st-row .swiper-slide {
+    width: 118px;
+    height: 156px;
+  }
+
+  .st-row--ambiance .swiper-slide {
+    width: 112px;
+    height: 116px;
+  }
+
+  .st-track-card {
+    padding: 36px 6px 6px;
+  }
+
+  .st-play-btn--card {
+    width: 38px;
+    height: 38px;
+    font-size: 13px;
+  }
+
+  .st-ambiance-card {
+    padding: 36px 6px 6px;
+  }
+}
+

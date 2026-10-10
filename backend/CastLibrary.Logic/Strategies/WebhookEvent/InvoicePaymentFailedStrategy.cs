@@ -1,4 +1,3 @@
-using Stripe;
 using CastLibrary.Adapter.Services;
 using CastLibrary.Logic.Interfaces;
 using CastLibrary.Repository.Repositories.Read;

@@ -1,4 +1,4 @@
-import { Component, OnInit, signal, computed, inject, ViewChild, ElementRef } from '@angular/core';
+﻿import { Component, OnInit, signal, computed, inject, ViewChild, ElementRef } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormsModule, FormBuilder, FormArray, Validators, FormGroup } from '@angular/forms';
@@ -8,9 +8,9 @@ import { EMPTY } from 'rxjs';
 import { environment } from '../../../../environments/environment';
 import { Sublocation } from '../../../shared/models/sublocation.model';
 import { SparkleService } from '../../../shared/services/sparkle.service';
-import { SublocationCardComponent } from '../../../shared/components/sublocation-card/sublocation-card.component';
-import { JournalTitleComponent } from '../../../shared/components/journal-title/journal-title.component';
-import { KeywordTagsComponent } from '../../../shared/components/v2/cc-keyword-tags/cc-keyword-tags.component';
+import { CcSublocationCardComponent } from '../../../shared/components/Shared/cc-sublocation-card/cc-sublocation-card.component';
+import { JournalTitleComponent } from '../../../shared/components/Shared/journal-title/journal-title.component';
+import { KeywordTagsComponent } from '../../../shared/components/Shared/cc-keyword-tags/cc-keyword-tags.component';
 import { HttpErrorResponse } from '@angular/common/http';
 import { SubscriptionDrawerService } from '../../../core/subscription-drawer.service';
 import { AuthService } from '../../../core/auth/auth.service';
@@ -18,7 +18,7 @@ import { AuthService } from '../../../core/auth/auth.service';
 @Component({
   selector: 'app-sublocation-form',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, FormsModule, RouterLink, SublocationCardComponent, JournalTitleComponent, KeywordTagsComponent],
+  imports: [CommonModule, ReactiveFormsModule, FormsModule, RouterLink, CcSublocationCardComponent, JournalTitleComponent, KeywordTagsComponent],
   templateUrl: './sublocation-form.component.html',
   styleUrl: './sublocation-form.component.scss'
 })
@@ -137,7 +137,7 @@ export class SublocationFormComponent implements OnInit {
 
   addItem()             { this.shopItems.push(this.newItem()); }
   removeItem(i: number) { this.shopItems.removeAt(i); }
-  confirmItem(i: number) { /* Item is already in the array, no action needed */ }
+  confirmItem(i: number) { }
 
   onSave(e: MouseEvent): void {
     if (this.form.invalid || this.saveStatus() === 'saving') return;

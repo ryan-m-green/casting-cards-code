@@ -1,0 +1,14 @@
+@if (keywords().length) {
+  <div class="cc-keyword-filters" role="group" [attr.aria-label]="label()">
+    @for (keyword of keywords(); track keyword) {
+      <button
+        type="button"
+        class="cc-keyword-filters-chip"
+        [class.cc-keyword-filters-chip--on]="isSelected(keyword)"
+        [attr.aria-pressed]="isSelected(keyword)"
+        [title]="label() + ': ' + keyword"
+        (click)="toggle(keyword)"
+      >#{{ keyword }}</button>
+    }
+  </div>
+}

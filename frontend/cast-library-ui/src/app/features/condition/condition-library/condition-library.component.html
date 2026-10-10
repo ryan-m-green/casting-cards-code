@@ -1,0 +1,59 @@
+<div class="pc scroll-body">
+  <app-journal-watermark pageType="condition" />
+  <app-journal-title title="Conditions Library" />
+
+  <cc-keyword-filters
+    [cardType]="''"
+    [cards]="conditions()"
+    label="Filter by hashtag"
+    (selectedChange)="activeKeywords.set($event)" />
+
+  <div class="wr wr-page-header">
+    <input class="search-bar search-bar--header" type="text" placeholder="Name · Consequence…"
+           [value]="searchTerm()" (input)="searchTerm.set($any($event.target).value)" />
+  </div>
+
+  <div class="card-grid swiper" #conditionRow>
+    <div class="swiper-wrapper">
+      @for (entry of filtered(); track entry.id) {
+        <div class="swiper-slide">
+          <cc-condition-card
+            [condition]="entry"
+            [size]="'full'"
+            [showActions]="true"
+            (editClick)="edit(entry.id)"
+            (deleteClick)="confirmDelete(entry.id)">
+          </cc-condition-card>
+        </div>
+      }
+      @empty {
+        @if (activeKeywords().length) {
+          <p class="wbd-journal empty-state-pad">No conditions carry those hashtags.</p>
+        } @else {
+          <p class="wbd-journal empty-state-pad">No conditions found. Create your first condition to get started.</p>
+        }
+      }
+      <div class="swiper-slide">
+        <cc-card-add-tile
+          label="New condition"
+          title="Add a condition to your library"
+          link="/gm/conditions/new" />
+      </div>
+    </div>
+  </div>
+</div>
+
+@if (pendingDeleteId()) {
+  <div class="delete-overlay" (click)="cancelDelete()">
+    <div class="delete-panel" (click)="$event.stopPropagation()">
+      <div class="delete-panel-title">Delete Condition?</div>
+      <p class="delete-panel-message">
+        This will permanently delete this condition and remove it from every campaign that uses it. This cannot be undone.
+      </p>
+      <div class="delete-btn-row">
+        <button class="btn-modal-cancel" (click)="cancelDelete()">Cancel</button>
+        <button class="btn-modal-delete" (click)="executeDelete()">Delete</button>
+      </div>
+    </div>
+  </div>
+}

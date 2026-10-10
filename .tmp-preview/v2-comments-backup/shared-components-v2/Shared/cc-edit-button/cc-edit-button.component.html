@@ -1,0 +1,15 @@
+<!--
+  The edit control: the wrench, and the question of what it edits left to the host (see the component).
+  The art is decorative — the button's own name and tooltip carry `label` — so it is hidden from the
+  reading of the button rather than named twice.
+-->
+<button
+  type="button"
+  class="cc-edit-btn"
+  [title]="label()"
+  [attr.aria-label]="label()"
+  [disabled]="disabled()"
+  (click)="clicked.emit()"
+>
+  <img class="cc-edit-icon" src="/hammer_wrench_repair_tool.svg" alt="" aria-hidden="true" />
+</button>

@@ -1,0 +1,28 @@
+/* ─── cc-grid-load-overlay ─────────────────────────────────────────────────── */
+/*
+  The curtain, which is this component's own host: over the whole page and just under
+  the portal's breathing border (which sits at 100000, the highest thing on the campaign
+  page), so nothing of the grid's arrival shows through while its areas fill in.
+
+  Lifting it is the fade — the middle of the grid coming up, rather than its panels
+  popping in one at a time. Once it is faded it is hidden outright, so it cannot take a
+  click or paint over anything again.
+*/
+:host {
+  position: fixed;
+  inset: 0;
+  z-index: 99999;
+  background: #000;
+  opacity: 1;
+  // The grid is not there to be clicked yet: the curtain holds the pointer until it lifts.
+  pointer-events: auto;
+  transition: opacity 600ms ease, visibility 0s;
+  will-change: opacity;
+}
+
+:host(.is-lifting) {
+  opacity: 0;
+  pointer-events: none;
+  visibility: hidden;
+  transition: opacity 600ms ease, visibility 0s 600ms;
+}

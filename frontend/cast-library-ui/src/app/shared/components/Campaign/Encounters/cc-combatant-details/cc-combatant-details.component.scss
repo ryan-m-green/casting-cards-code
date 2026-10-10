@@ -1,0 +1,255 @@
+@use '../../../../../../styles/variables' as v;
+
+:host {
+  display: block;
+}
+
+.details {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.details-panel {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 18px;
+}
+
+.details-card-title {
+  margin: 0;
+  font-family: v.$font-header;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: v.$campaign-portal-text-bright;
+}
+
+.details-status {
+  display: flex;
+  gap: 8px;
+  width: 100%;
+}
+
+.status-btn {
+  flex: 1;
+  padding: 7px 10px;
+  background: rgba(46, 26, 94, 0.55);
+  border: 1px solid v.$campaign-portal-border-bold;
+  border-radius: 8px;
+  color: v.$campaign-portal-text-lavender;
+  font-family: v.$font-body;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: border-color 0.15s ease, color 0.15s ease, background 0.15s ease;
+
+  &:hover {
+    color: #fff;
+    border-color: var(--portal-color, #{v.$color-base-purple-primary});
+  }
+
+  &.is-on {
+    background: color-mix(in srgb, var(--portal-color, #{v.$color-base-purple-primary}) 55%, rgba(10, 5, 20, 0.7));
+    border-color: var(--portal-color, #{v.$color-base-purple-primary});
+    color: #fff;
+  }
+
+  &:focus { outline: none; }
+
+  &:focus-visible {
+    outline: 2px solid v.$campaign-portal-border-focus;
+    outline-offset: 1px;
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+    opacity: 0.4;
+  }
+}
+
+.details-tabs {
+  display: flex;
+  gap: 6px;
+  width: 100%;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.tab-btn {
+  flex: 1;
+  padding: 7px 10px;
+  background: transparent;
+  border: none;
+  border-bottom: 2px solid transparent;
+  color: v.$campaign-portal-text-muted;
+  font-family: v.$font-body;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: color 0.15s ease, border-color 0.15s ease;
+
+  &:hover { color: v.$campaign-portal-text-lavender; }
+
+  &--active {
+    color: v.$campaign-portal-text-bright;
+    border-bottom-color: var(--portal-color, #{v.$color-base-purple-primary});
+  }
+}
+
+.details-tab-panel {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+}
+
+.details-nav {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 72px;
+  padding: 0;
+  background: rgba(46, 26, 94, 0.55);
+  border: 1px solid v.$campaign-portal-border-bold;
+  border-radius: 8px;
+  color: v.$campaign-portal-text-lavender;
+  font-size: 22px;
+  line-height: 1;
+  cursor: pointer;
+  transition: border-color 0.15s ease, color 0.15s ease, transform 0.15s ease;
+
+  &:hover:not(:disabled) {
+    color: #fff;
+    border-color: var(--portal-color, #{v.$color-base-purple-primary});
+    transform: scale(1.04);
+  }
+
+  &:disabled { opacity: 0.35; cursor: default; }
+}
+
+.details-hp {
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  gap: 12px;
+}
+
+.details-note,
+.details-error {
+  margin: 0;
+  font-size: 12px;
+}
+
+.details-note { color: v.$campaign-portal-text-muted; }
+.details-error { color: #f87171; }
+
+.details-notes {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 10px;
+  background: rgba(46, 26, 94, 0.45);
+  border: 1px solid v.$campaign-portal-border;
+  border-radius: 8px;
+}
+
+.notes-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  min-height: 30px;
+}
+
+.notes-title {
+  font-family: v.$font-header;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: v.$campaign-portal-text-lavender;
+}
+
+.notes-body {
+  min-height: 84px;
+}
+
+.notes-readout {
+  margin: 0;
+  white-space: pre-wrap;
+  word-break: break-word;
+  font-family: v.$font-body;
+  font-size: 13px;
+  line-height: 1.5;
+  color: v.$campaign-portal-text-bright;
+
+  &.is-empty {
+    color: v.$campaign-portal-text-muted;
+    font-style: italic;
+  }
+}
+
+.notes-field {
+  display: block;
+  width: 100%;
+  margin: 0;
+
+  ::ng-deep .cc-textbox-campaign-textarea {
+    height: 84px;
+    min-height: 84px;
+    max-height: 84px;
+    resize: none;
+  }
+}
+
+.notes-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.notes-btn {
+  padding: 7px 16px;
+  background: transparent;
+  border: 1px solid v.$campaign-portal-border-bold;
+  border-radius: 6px;
+  color: v.$campaign-portal-text-lavender;
+  font-family: v.$font-body;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: border-color 0.15s ease, color 0.15s ease;
+
+  &:hover:not(:disabled) {
+    color: #fff;
+    border-color: var(--portal-color, #{v.$color-base-purple-primary});
+  }
+
+  &:disabled { opacity: 0.4; cursor: not-allowed; }
+
+  &:focus { outline: none; }
+
+  &:focus-visible {
+    outline: 2px solid v.$campaign-portal-border-focus;
+    outline-offset: 1px;
+  }
+
+  &--save {
+    background: linear-gradient(135deg, var(--portal-color, #{v.$color-base-purple-primary}) 0%, #4c1d95 100%);
+    border-color: rgba(255, 255, 255, 0.3);
+    color: #fff;
+  }
+}

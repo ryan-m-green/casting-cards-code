@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 340 340" width="340" height="340"
+     fill="none" stroke="#000000" stroke-width="14" stroke-linecap="round" stroke-linejoin="round"
+     role="img" aria-labelledby="motiveTitle motiveDesc">
+
+  <title id="motiveTitle">Cracked compass</title>
+  <desc id="motiveDesc">A compass whose rim is broken open at the upper left, with a jagged crack
+  running through the break and in toward the needle, used to represent motivations.</desc>
+
+  <!-- ── the rim, opened where the crack crosses it ───────────────────────────────────────────────
+       It is drawn as two arcs of 165 degrees, split at 38 degrees so each stays a minor arc, and
+       stopped short of 203 and 233 degrees. That missing 30-degree wedge is the break, and its
+       width (chord 67.3) is what keeps the rim reading as broken when the mark is 24px.
+  ─────────────────────────────────────────────────────────────────────────────────────────────── -->
+  <path d="M 91.76 66.18 A 130 130 0 0 1 268.11 255.29 A 130 130 0 0 1 56.3 106.98" />
+
+  <!-- ── the crack ────────────────────────────────────────────────────────────────────────────────
+       One stroke, three jags of 33 units each, so the zigzag still resolves once it is 2.3 units
+       wide at 24px. It starts 27 units outside the rim's ink, cuts in across the break at 229
+       degrees - level with the rim's upper end, so all the white of the break stays below it and
+       the break stays open - then turns down and in, and stops 32 units short of the needle's left
+       edge, pointing at it rather than touching it.
+  ─────────────────────────────────────────────────────────────────────────────────────────────── -->
+  <path d="M 61.8 46.5 L 84.8 70.2 L 87.7 104.9 L 120.1 112.5" />
+
+  <!-- ── the needle ──────────────────────────────────────────────────────────────────────────────
+       North half solid, south half open: the one cue that separates a compass from a clock at 24px,
+       and both halves share the pivot bar, so the needle still reads as a single mark. The tips sit
+       92 from the centre, which leaves 24 units of white between them and the rim's inner ink.
+  ─────────────────────────────────────────────────────────────────────────────────────────────── -->
+  <path d="M 170 78 L 200 170 L 140 170 Z" fill="#000000" />
+  <path d="M 170 262 L 200 170 L 140 170 Z" />
+</svg>

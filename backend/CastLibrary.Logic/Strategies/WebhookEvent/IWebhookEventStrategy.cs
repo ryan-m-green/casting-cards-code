@@ -1,5 +1,4 @@
 using CastLibrary.Shared.Domain;
-using Stripe;
 
 namespace CastLibrary.Logic.Strategies.WebhookEvent;
 

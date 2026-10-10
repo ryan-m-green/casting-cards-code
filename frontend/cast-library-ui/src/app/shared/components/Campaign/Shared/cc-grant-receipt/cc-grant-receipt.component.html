@@ -1,0 +1,86 @@
+<div
+  class="grant-overlay"
+  [style.--portal-color]="portalColor()"
+  role="dialog"
+  aria-modal="true"
+  aria-label="Grant of Coin"
+  (click)="dismiss()"
+>
+  <div class="grant-parchment" (click)="$event.stopPropagation()">
+    <svg class="grant-corner grant-corner--tl" viewBox="0 0 60 60" fill="none" aria-hidden="true">
+      <path d="M8 52 C8 8 8 8 52 8" stroke="currentColor" stroke-width="1.5"/>
+      <circle cx="8" cy="52" r="3.5" fill="currentColor"/>
+      <circle cx="52" cy="8" r="3.5" fill="currentColor"/>
+      <line x1="14" y1="52" x2="8" y2="46" stroke="currentColor" stroke-width="1"/>
+      <line x1="52" y1="14" x2="46" y2="8" stroke="currentColor" stroke-width="1"/>
+    </svg>
+    <svg class="grant-corner grant-corner--tr" viewBox="0 0 60 60" fill="none" aria-hidden="true">
+      <path d="M52 52 C52 8 52 8 8 8" stroke="currentColor" stroke-width="1.5"/>
+      <circle cx="52" cy="52" r="3.5" fill="currentColor"/>
+      <circle cx="8" cy="8" r="3.5" fill="currentColor"/>
+      <line x1="46" y1="52" x2="52" y2="46" stroke="currentColor" stroke-width="1"/>
+      <line x1="8" y1="14" x2="14" y2="8" stroke="currentColor" stroke-width="1"/>
+    </svg>
+    <svg class="grant-corner grant-corner--bl" viewBox="0 0 60 60" fill="none" aria-hidden="true">
+      <path d="M8 8 C8 52 8 52 52 52" stroke="currentColor" stroke-width="1.5"/>
+      <circle cx="8" cy="8" r="3.5" fill="currentColor"/>
+      <circle cx="52" cy="52" r="3.5" fill="currentColor"/>
+      <line x1="14" y1="8" x2="8" y2="14" stroke="currentColor" stroke-width="1"/>
+      <line x1="52" y1="46" x2="46" y2="52" stroke="currentColor" stroke-width="1"/>
+    </svg>
+    <svg class="grant-corner grant-corner--br" viewBox="0 0 60 60" fill="none" aria-hidden="true">
+      <path d="M52 8 C52 52 52 52 8 52" stroke="currentColor" stroke-width="1.5"/>
+      <circle cx="52" cy="8" r="3.5" fill="currentColor"/>
+      <circle cx="8" cy="52" r="3.5" fill="currentColor"/>
+      <line x1="46" y1="8" x2="52" y2="14" stroke="currentColor" stroke-width="1"/>
+      <line x1="8" y1="46" x2="14" y2="52" stroke="currentColor" stroke-width="1"/>
+    </svg>
+
+    <p class="grant-title">Grant of Coin</p>
+    <svg class="grant-divider-svg" viewBox="0 0 240 12" preserveAspectRatio="none" aria-hidden="true">
+      <path d="M0 6 Q60 1 120 6 Q180 11 240 6" stroke="currentColor" fill="none" stroke-width="1"/>
+      <circle cx="0" cy="6" r="2" fill="currentColor"/>
+      <circle cx="240" cy="6" r="2" fill="currentColor"/>
+    </svg>
+    <p class="grant-subtitle">~ By the Hand of the Game Master ~</p>
+
+    <div class="grant-body">
+      @for (recipient of notice().recipients; track $index) {
+        <div class="grant-row">
+          <span class="grant-label">{{ recipient.name }}</span>
+          <span class="grant-value">{{ recipient.amount }}&nbsp;{{ notice().currency }}</span>
+        </div>
+      }
+      @if (notice().note) {
+        <div class="grant-row grant-row--note">
+          <span class="grant-label">Note</span>
+          <span class="grant-value">{{ notice().note }}</span>
+        </div>
+      }
+    </div>
+
+    <div class="grant-seal-row">
+      <svg class="grant-seal-svg" viewBox="0 0 100 100" aria-hidden="true">
+        <circle cx="50" cy="50" r="42" fill="url(#grant-coin)" />
+        <circle cx="50" cy="50" r="37" fill="none" stroke="#7a5a12" stroke-width="1.5" opacity="0.65"/>
+        <circle cx="50" cy="50" r="28" fill="none" stroke="#fff0b8" stroke-width="1" opacity="0.55"/>
+        <text x="50" y="59" text-anchor="middle" fill="#3a2a04" font-family="serif" font-weight="bold" font-size="24">{{ notice().currency.toUpperCase() }}</text>
+        <defs>
+          <radialGradient id="grant-coin" cx="38%" cy="32%" r="72%">
+            <stop offset="0%" stop-color="#ffe9a0"/>
+            <stop offset="55%" stop-color="#e0b84a"/>
+            <stop offset="100%" stop-color="#a8791c"/>
+          </radialGradient>
+        </defs>
+      </svg>
+      <p class="grant-sent-text">Amount Sent</p>
+    </div>
+
+    <p class="grant-recorded">Recorded in the chronicles.</p>
+
+    <button #closeButton class="grant-dismiss-btn" type="button" (click)="dismiss()">
+      <span class="grant-dismiss-measure" aria-hidden="true">Amount Sent</span>
+      <span class="grant-dismiss-label">Close</span>
+    </button>
+  </div>
+</div>

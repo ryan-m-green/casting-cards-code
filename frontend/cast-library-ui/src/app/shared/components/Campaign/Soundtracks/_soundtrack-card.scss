@@ -1,0 +1,221 @@
+@use '../../../../../styles/variables' as v;
+
+$st-stat-border: rgb(140, 140, 140);
+$st-stat-frame: linear-gradient(145deg,
+  v.$color-base-purple-5 0%, v.$color-base-purple-3 30%, v.$color-base-purple-1 60%, v.$color-base-purple-6 100%);
+$st-stat-banner: linear-gradient(180deg, v.$color-base-purple-8 0%, v.$color-base-purple-6 100%);
+
+.st-stat {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.st-stat-frame {
+  position: absolute;
+  inset: 0;
+  border-radius: 4px;
+  padding: 3px;
+  box-shadow:
+    0 0 0 1px $st-stat-border,
+    0 3px 11px v.$color-shadow-dark;
+  overflow: hidden;
+  background: $st-stat-frame;
+}
+
+.st-stat:hover .st-stat-frame {
+  box-shadow:
+    0 0 0 1px v.$color-arcane-border,
+    0 3px 11px v.$color-shadow-dark;
+}
+
+.st-stat.playing .st-stat-frame {
+  box-shadow:
+    0 0 0 1px v.$color-base-gold-1,
+    0 3px 11px v.$color-shadow-dark;
+}
+
+.st-stat-inner {
+  width: 100%;
+  height: 100%;
+  border-radius: 2.5px;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  background: v.$color-base-tan-3;
+  isolation: isolate;
+}
+
+.st-stat.playing .st-stat-inner {
+  background: rgba(v.$color-base-gold-1, 0.18);
+}
+
+.st-stat-banner {
+  flex-shrink: 0;
+  padding: 4px 5px 3px;
+  text-align: center;
+  position: relative;
+  z-index: 2;
+  border-bottom: 1px solid $st-stat-border;
+  background: $st-stat-banner;
+}
+
+.st-stat-name {
+  color: v.$color-base-gold-bright-hex;
+  font-family: v.$font-header;
+  font-weight: 700;
+  font-size: 9px;
+  letter-spacing: 0.08em;
+  line-height: 1.1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.st-stat-body {
+  position: relative;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 14px 6px 36px;
+  box-sizing: border-box;
+  isolation: isolate;
+
+  cc-slider { --cc-slider-accent: #{v.$color-base-gold-1}; }
+}
+
+.st-stat-strip {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 3px 5px;
+  position: relative;
+  z-index: 2;
+  border-top: 1px solid $st-stat-border;
+  background: $st-stat-banner;
+}
+
+.st-stat-pip-row {
+  display: flex;
+  gap: 2px;
+}
+
+.st-stat-pip {
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  opacity: 0.7;
+  background-color: v.$color-base-purple-5;
+}
+
+.st-stat-strip-label {
+  color: v.$color-base-gold-bright-hex;
+  font-family: v.$font-header;
+  font-size: 7px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  opacity: 0.85;
+}
+
+/*
+ * The instruments sigil, worn behind the card's own words the way the dashboard's stat cards wear
+ * their type's icon behind the count: centred, large, and barely there. It is masked rather than
+ * drawn, so the greyscale asset can be taken in the journal's brown.
+ */
+.st-card-watermark {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 82%;
+  height: 82%;
+  z-index: -1;
+  background-color: v.$color-base-brown-14;
+  opacity: 0.12;
+  -webkit-mask: url('/musical_instruments_grey.svg') center / contain no-repeat;
+  mask: url('/musical_instruments_grey.svg') center / contain no-repeat;
+  pointer-events: none;
+}
+
+.st-kind-badge {
+  position: absolute;
+  top: 6px;
+  left: 6px;
+  z-index: 2;
+  padding: 3px 8px;
+  background: rgba(v.$color-base-brown-14, 0.1);
+  border: 1px solid rgba(v.$color-base-brown-14, 0.3);
+  border-radius: 10px;
+  color: v.$color-base-brown-14;
+  font-family: v.$font-header;
+  font-size: 9px;
+  letter-spacing: 0.1em;
+  line-height: 1;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: border-color 0.18s ease;
+
+  &:hover {
+    border-color: v.$color-arcane-border;
+  }
+
+  &--sfx {
+    background: rgba(v.$color-base-gold-1, 0.28);
+    border-color: rgba(v.$color-base-brown-14, 0.45);
+  }
+}
+
+/* The library's edit (bottom-left) and delete (bottom-right) buttons. */
+.st-card-edit {
+  position: absolute;
+  left: 6px;
+  bottom: 6px;
+  z-index: 2;
+  --cc-edit-size: 30px;
+  --cc-edit-icon-size: 17px;
+}
+
+.st-card-delete {
+  position: absolute;
+  right: 6px;
+  bottom: 6px;
+  z-index: 2;
+  --cc-delete-size: 30px;
+  --cc-delete-icon-size: 17px;
+  --cc-delete-font-size: 11px;
+}
+
+.st-play-btn {
+  position: relative;
+  z-index: 3;
+  width: 42px;
+  height: 42px;
+  margin-top: auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  /* The journal's own green button, worn heavy so the play button reads at a glance. */
+  background: v.$color-base-green-2;
+  border: 2px solid v.$campaign-btn-primary-border;
+  border-radius: 50%;
+  color: v.$color-base-white-2;
+  font-size: 15px;
+  line-height: 1;
+  cursor: pointer;
+  transition: background 0.18s ease, border-color 0.18s ease, color 0.18s ease;
+
+  &:hover {
+    background: v.$color-base-green-4;
+    border-color: v.$color-base-green-5;
+    color: v.$color-base-white-3;
+  }
+}
+
+.st-card-volume {
+  width: 100%;
+}

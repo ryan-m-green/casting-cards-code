@@ -2,9 +2,8 @@ import { Component, OnInit, OnDestroy, ViewChild, ElementRef, inject, signal } f
 import { RouterOutlet, RouterLink, Router, NavigationStart, NavigationEnd } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { Subscription } from 'rxjs';
-import { PortalTransitionService } from '../../core/portal-transition.service';
-import { JournalNavDrawerComponent } from '../../shared/components/journal-nav-drawer/journal-nav-drawer.component';
-import { SubscriptionLockBannerComponent } from '../../shared/components/subscription-lock-banner/subscription-lock-banner.component';
+import { JournalNavDrawerComponent } from '../../shared/components/Journal/journal-nav-drawer/journal-nav-drawer.component';
+import { SubscriptionLockBannerComponent } from '../../shared/components/Journal/subscription-lock-banner/subscription-lock-banner.component';
 import { AuthService } from '../../core/auth/auth.service';
 import { FlipAnimationService } from '../../core/flip-animation.service';
 
@@ -18,7 +17,6 @@ import { FlipAnimationService } from '../../core/flip-animation.service';
 export class JournalShellComponent implements OnInit, OnDestroy {
   private router = inject(Router);
   private auth   = inject(AuthService);
-  protected transition = inject(PortalTransitionService);
   private flipAnimationService = inject(FlipAnimationService);
 
   readonly spineBands = [18, 30, 45, 60, 72];
@@ -84,8 +82,6 @@ export class JournalShellComponent implements OnInit, OnDestroy {
       }
       if (event instanceof NavigationEnd) {
         const url = event.urlAfterRedirects;
-        // Don't switch isCover during a close flip — the leather CSS would
-        // appear behind the flip element. isCover is set after the flip ends.
         if (!this.closingFlip) {
           this.isCover.set(url === '/' || url === '');
         }
@@ -111,11 +107,8 @@ export class JournalShellComponent implements OnInit, OnDestroy {
     el.style.transition = 'transform 520ms cubic-bezier(0.55,0.06,0.45,0.94)';
     el.style.transform  = 'rotateY(0deg)';
 
-    // Navigate AFTER the flip has fully closed — content swaps invisibly under the leather
     this.resetTimer = setTimeout(() => {
       this.auth.logout().then(() => {
-        // Navigation complete: cover component loaded but hidden under flip
-        // Apply is-cover CSS, then reveal by hiding the flip
         this.closingFlip = false;
         this.isCover.set(true);
         this.showSpineLinks.set(this.computeShowSpineLinks('/'));
@@ -141,21 +134,18 @@ export class JournalShellComponent implements OnInit, OnDestroy {
 
     if (fromCover) {
       el.classList.add('cover-flip');
-      // Show instantly behind the flip — no fade-in needed, flip covers it
       this.showOpenMessage.set(true);
       this.openMessageFading.set(false);
     }
 
-    // Snap to start (no transition), make visible
     el.style.transition = 'none';
     el.style.transform  = 'rotateY(0deg)';
     el.style.opacity    = '1';
-    void el.offsetWidth; // force reflow
+    void el.offsetWidth;
 
     el.style.transition = 'transform 720ms cubic-bezier(0.55,0.06,0.45,0.94)';
     el.style.transform  = 'rotateY(-180deg)';
 
-    // After animation: snap back to hidden start position
     this.resetTimer = setTimeout(() => {
       el.style.transition = 'none';
       el.style.transform  = 'rotateY(0deg)';
@@ -164,7 +154,6 @@ export class JournalShellComponent implements OnInit, OnDestroy {
       this.flipAnimationService.endFlip();
 
       if (fromCover) {
-        // Flip is done — start fading out immediately
         this.openMessageFading.set(true);
         this.openMessageTimer = setTimeout(() => {
           this.showOpenMessage.set(false);

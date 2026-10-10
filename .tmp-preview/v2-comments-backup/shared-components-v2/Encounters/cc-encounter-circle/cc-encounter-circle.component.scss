@@ -1,0 +1,493 @@
+@use '../../../../../../styles/variables' as v;
+
+:host {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+/* The grid area the face fills. The circle itself is the square inside (see .circle-shape): the
+   component places the cards on that square's radius, and the dashed ring is drawn on the same one,
+   so the line and the cards always line up. */
+.circle {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+/*
+ * Centres the circle in the space the builder leaves it — the builder reserves the band the shell's
+ * radial nav occupies with symmetric padding, so the circle's middle stays on the middle of the
+ * screen. The circle is sized against the face, not against this box (see .circle-shape): it is
+ * allowed to stand taller than the box it is centred in, out into the bands the builder keeps clear
+ * at the top and the foot of the face, where the cards live.
+ */
+.circle-fit {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+}
+
+/*
+ * The circle itself: a square, so the ring is round, and the ring with it — both axes take the same
+ * size (see --circle-side), so the shape is a circle on every face and can never be drawn as an oval.
+ * Everything on the ring is measured as a percentage of this square: the ring's radius (the
+ * component's --circle-radius), the places the cards sit on, their badges, the dropzones and the
+ * beam. So this one number sizes the whole face.
+ *
+ * It is worked out from what the face can actually hold, never from the face alone:
+ *
+ *  - The ring is drawn across --ring-factor of the square: 0.84 of it on a phone, where the component
+ *    keeps its radius at 42%, and 1.68 on a wider face, where the radius is doubled. The cards stand
+ *    on that ring and reach a further --ring-reach-x / --ring-reach-y out from it (the component
+ *    measures the widest group it draws), so the face has to hold the ring *and* them: sizing the
+ *    square to the face alone is what used to push the right-hand cards off the screen.
+ *  - --circle-fit is that room: the largest square whose ring and cards fit across and down. A face
+ *    can be wide but short, so the smaller of the two wins.
+ *  - --circle-max holds the ring to the widest the design draws — 800px across, whichever face it is
+ *    on — and --circle-hold keeps the small faces at the ring a 375px face draws until the face is
+ *    past 500px, so the ring steps up with the face, holds at the size it reads best at, then grows
+ *    with the face again until the ceiling catches it.
+ *
+ * The square takes the smallest of the three, so the circle can never leave the face it is drawn on,
+ * can never grow past the widest ring, and is always round.
+ */
+.circle-shape {
+  /*
+   * The ring's own diameter as a factor of the square it is drawn in: twice the radius the component
+   * draws at. The stylesheet asks for the phone's own view with the component's own bound (see its
+   * PHONE_VIEW), so the ring the cards sit on and the square they are measured in always agree.
+   */
+  --ring-factor: 1.68;
+
+  /* The phone's face: the radius is the component's own 42% there, so the ring draws 0.84 of the square */
+  @media (max-width: 767px) { --ring-factor: 0.84; }
+
+  /* The widest ring the design draws, and the square that diameter is measured in on this face. */
+  --circle-diameter-max: 800px;
+  --circle-max: calc(var(--circle-diameter-max) / var(--ring-factor));
+
+  /*
+   * The largest square the face can hold, once a card's own reach is taken off each way. 100vw and
+   * 100vh are the face the area is — the shell gives every area the whole viewport — and the 112px is
+   * the frame the builder keeps around the circle: it starts 56px down the face, and since the ring's
+   * own middle sits on the middle of the screen, that 56px is 56px above and below it (the foot's own
+   * 24px is the looser of the two). The fallbacks are half a simple card, for the case the
+   * component's own readings are ever missing.
+   */
+  --circle-fit: min(
+    calc((100vw - 2 * var(--ring-reach-x, 37.5px)) / var(--ring-factor)),
+    calc((100vh - 112px - 2 * var(--ring-reach-y, 55px)) / var(--ring-factor))
+  );
+
+  /* The face the small faces hold their ring at, and the face that hold runs to. */
+  --circle-hold-face: 375px;
+  --circle-hold-until: 500px;
+
+  /*
+   * The square the small faces are held at: the 375px face's own square, growing again with the face
+   * once it is past 500px — the two faces differ by 125px, which is what the hold takes off the
+   * face's width. Narrower than 375px there is nothing to hold: --circle-fit is smaller than this
+   * floor by then, so the ring shrinks to fit the face rather than running off it. The clamp's own
+   * ceiling is the square's, so the hold never lifts the ring past the widest it draws.
+   */
+  --circle-hold: clamp(
+    var(--circle-hold-face),
+    calc(100vw - (var(--circle-hold-until) - var(--circle-hold-face))),
+    var(--circle-max)
+  );
+
+  /* The square itself: what the face can hold, inside the hold and the ceiling. */
+  --circle-side: min(var(--circle-fit), var(--circle-hold), var(--circle-max));
+
+  position: relative;
+  width: var(--circle-side);
+  height: var(--circle-side);
+  /*
+   * A net under the two axes above: if either of them is ever left unset, the ratio still holds the
+   * drawn shape square rather than letting it stretch to the face.
+   */
+  aspect-ratio: 1;
+}
+
+.circle-ring {
+  position: absolute;
+  /* The same inset the cards are pulled in by (see the component's ringInset),
+     so the line still runs through the middle of every card */
+  inset: calc(50% - var(--circle-radius, 42%) + var(--ring-inset, 0px));
+  border: 1px dashed v.$campaign-portal-border-focus;
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+/*
+ * The face's two action rows, one button style between them: above the ring, the ways
+ * in and out of the encounter on the left and the fight's own end button on the right;
+ * below the ring, the editor on the left. Both are inset 12px from the edges of the
+ * area, and each sits in a band the face already keeps clear — so the ring never moves
+ * for them.
+ */
+.circle-actions {
+  position: absolute;
+  left: 12px;
+  /* Spanning to the right edge too, so a button can sit against it */
+  right: 12px;
+  z-index: 30;
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+
+/* Above the ring, in the band the builder leaves clear at the top of the face */
+.circle-actions--top { top: -90px; }
+
+/* Below the ring, hanging 85px under it: clear of the names that sit under the bottom
+   cards, and still inside the space the builder keeps clear at the foot of the face */
+.circle-actions--bottom { bottom: -85px; }
+
+.circle-action {
+  padding: 8px 14px;
+  background: linear-gradient(135deg, #6e28d0 0%, #4c1d95 100%);
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-radius: 8px;
+  color: #fff;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  cursor: pointer;
+  /* The browser's own button widget (a square) and the rectangular tap highlight
+     are suppressed: the button is only what is painted here. */
+  appearance: none;
+  -webkit-tap-highlight-color: transparent;
+  transition: transform 0.2s ease, border-color 0.2s ease;
+
+  &:hover:not(:disabled) { transform: scale(1.03); }
+
+  &:focus { outline: none; }
+
+  /* Keyboard focus keeps a ring — drawn as a rounded shape, because outlines follow
+     the border radius — while a mouse press paints nothing extra. */
+  &:focus-visible {
+    outline: 2px solid v.$campaign-portal-border-focus;
+    outline-offset: 2px;
+  }
+
+  &:disabled { opacity: 0.4; cursor: not-allowed; }
+
+  /*
+   * The fight's end button (only there while the fight runs): red, and pushed to the
+   * right edge of the area — 12px in from the pulsing border — leaving the ways in
+   * and out of the encounter on the left.
+   */
+  &.is-end {
+    margin-left: auto;
+    background: linear-gradient(135deg, #7f1d1d 0%, #450a0a 100%);
+    border-color: rgba(248, 113, 113, 0.5);
+  }
+
+  /*
+   * The editor's control used to be the one action with no words on it, squared off here by a padding
+   * of its own. It is shared now (see cc-edit-button) and the row sets its size below.
+   */
+}
+
+/*
+ * The shared edit control (see cc-edit-button): the bottom row is the 34px the builder holds it to,
+ * with the 18px art the ring's own icon-only action used to draw (see --circle-actions-row).
+ */
+.circle-actions cc-edit-button {
+  --cc-edit-size: 34px;
+  --cc-edit-icon-size: 18px;
+}
+
+/*
+ * The encounter's name: the face's own heading, above the top row of buttons, in the
+ * band left between the area title and them.
+ */
+.circle-title {
+  position: absolute;
+  top: -112px;
+  left: 12px;
+  right: 12px;
+  z-index: 30;
+  margin: 0;
+  color: v.$campaign-portal-text-bright;
+  font-family: v.$font-header;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/*
+ * The button in the middle of the circle: it starts the fight, then becomes the
+ * "Next" that advances the turn. The turn marker — a spotlight cone — comes out of it.
+ */
+.circle-centre {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /*
+   * The circle is twice the size it was drawn at (a 48px radius, 24px before), and the
+   * words are set at twice their old size with it, so START and NEXT read the same
+   * against the ring — just bigger.
+   */
+  width: 96px;
+  height: 96px;
+  padding: 0;
+  transform: translate(-50%, -50%);
+  background: linear-gradient(135deg, #6e28d0 0%, #4c1d95 100%);
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  color: #fff;
+  font-size: 24px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  line-height: 1.2;
+  /* One word, on one line, however tight the circle gets */
+  white-space: nowrap;
+  text-align: center;
+  text-transform: uppercase;
+  cursor: pointer;
+  /*
+   * The circle is a 48px square rounded by border-radius, so the browser's own
+   * (square) button widget is suppressed: a press paints only what is drawn here.
+   * Deliberately no compositing hints (will-change / backface-visibility) - promoting
+   * the button to its own layer makes Chrome re-raster the page around it, which
+   * flickers far more than the rounded clip it is meant to protect.
+   */
+  appearance: none;
+  -webkit-tap-highlight-color: transparent;
+  transition: transform 0.2s ease, border-color 0.2s ease, opacity 0.2s ease;
+
+  &:hover:not(:disabled) { transform: translate(-50%, -50%) scale(1.04); }
+
+  /*
+   * The turn's own button, and half the Start button's size. The two are the same control at
+   * different moments — Start/Order before the fight is running, Next while it is — but the
+   * running middle of the ring belongs to the cards, so this one only has to say "Next": it is
+   * drawn at the size the middle button was at before the Start button was doubled.
+   */
+  &--next {
+    width: 48px;
+    height: 48px;
+    font-size: 12px;
+  }
+
+  &:focus { outline: none; }
+
+  /* Keyboard focus keeps a ring around the circle; a mouse press paints nothing extra. */
+  &:focus-visible {
+    outline: 2px solid v.$campaign-portal-border-focus;
+    outline-offset: 2px;
+  }
+
+  &:disabled { opacity: 0.4; cursor: not-allowed; }
+}
+
+/*
+ * The turn marker: a spotlight cone out of the middle button. Its apex sits on the button (it is
+ * painted behind the button, so it reads as coming out of it) and it reaches just past three quarters
+ * of the way out to the ring — where the centre of every card sits. Its wide end is the card's own
+ * drawn width (see --card-w), so it squares up with the card it lights whatever card the ring is
+ * holding and whatever size the crowding step draws them at: measured the same way the dropzones
+ * measure a place. It rotates 0deg = 12:00 and sweeps clockwise, keeping the sweep the hand had.
+ */
+.circle-spotlight {
+  position: absolute;
+  left: 50%;
+  bottom: 50%;
+  /* Behind the cards (which paint in DOM order after it) and over the ring, so the beam stays clear
+     of the card it points at rather than covering it. The middle button paints above it in turn. */
+  z-index: 0;
+  /* The card's own footprint at the size the face draws it, the way a dropzone takes it: the wide
+     end of the cone is the card it points at, at a full 1 or down at the smallest step */
+  width: calc(var(--card-w, 75px) * var(--card-scale, 1));
+  /* Three quarters of the way out to the card centres — the same radius the ring is drawn on, in by
+     the same inset — and then a further 12px, which brings the cone's wide end up close to the card. */
+  height: max(24px, calc(0.75 * (var(--circle-radius, 42%) - var(--ring-inset, 0px)) + 12px));
+  /* Half the cone, so it pivots on the middle of the circle */
+  margin-left: calc(-0.5 * var(--card-w, 75px) * var(--card-scale, 1));
+  transform-origin: 50% 100%;
+  /* Apex at the bottom centre, full width along the top edge */
+  clip-path: polygon(50% 100%, 0 0, 100% 0);
+  background: linear-gradient(
+    to top,
+    rgba(255, 244, 205, 0.95) 0%,
+    rgba(250, 231, 170, 0.62) 42%,
+    rgba(247, 226, 161, 0.34) 78%,
+    rgba(247, 226, 161, 0.2) 100%
+  );
+  /* A little bloom around the beam, so it reads as light rather than a wedge of paint */
+  filter: drop-shadow(0 0 10px rgba(247, 226, 161, 0.45));
+  transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+  pointer-events: none;
+}
+
+/*
+ * One spot of the encounter, placed by its percentage offsets. The box is exactly
+ * the group's cards, so centring it on the ring point puts the line through the
+ * middle of the card.
+ *
+ * A card is picked up with a hold (see the component's drag handlers), so while
+ * one is held the browser must not scroll, select, or raise its own long-press
+ * menu under the finger.
+ */
+.node {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+  /* The browser's own card/image drag would take the gesture over */
+  -webkit-user-drag: none;
+  cursor: grab;
+  transition: opacity 0.15s ease;
+}
+
+/*
+ * Spots the turn is not on read as out of the fight: dimmed, and drained of colour, while the one the
+ * beam points at stays whole. Dragging takes the whole ring over, so the dimming steps aside then.
+ */
+.node--dimmed {
+  opacity: 0.35;
+  filter: grayscale(0.6);
+  transition: opacity 0.2s ease, filter 0.2s ease;
+}
+
+/* The rest of the ring steps aside while one group is held (declared after the dimming, so it wins) */
+.node--hidden {
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* The held card: above the dropzones, following the pointer, and quite still */
+.node--dragging {
+  z-index: 40;
+  cursor: grabbing;
+
+  .node-card {
+    transition: none;
+
+    &:hover { transform: none; }
+  }
+}
+
+.node-stack {
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  /*
+   * The group is drawn at the size the face wants without a card's own width and height
+   * ever being touched: a transform changes the drawing only, so the cards, the ring they
+   * sit on and the area that answers a press all keep the card's own footprint (see
+   * --card-w / --card-h). Scaling the whole stack (rather than each card) keeps a group's
+   * own spacing in proportion.
+   */
+  transform: scale(var(--card-scale, 1));
+}
+
+.node-card {
+  position: relative;
+  transition: transform 0.15s ease;
+
+  /*
+   * The campaign's own card, where the face is wide enough for it, is drawn at its own 150×220 — with
+   * no smaller frame around it and no half-scale on it — and it takes no pointer events of its own:
+   * the press that holds a group to reorder it, and the click that opens its details, are the ring's
+   * own gestures (see the node's and the card's own pointerdown), so nothing inside the card may take
+   * them first.
+   */
+  > cc-cast-card,
+  > cc-player-card {
+    display: block;
+    pointer-events: none;
+  }
+
+  &:hover { transform: translateY(-3px); }
+}
+
+/*
+ * The place a spot takes on the ring. It hangs off the middle of its card, the same
+ * distance in for every card (the component works that offset out: the node's badgeX /
+ * badgeY), so the numbers ring the middle button at an even distance instead of each
+ * one hugging its own card's edge.
+ */
+.node-initiative {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  z-index: 20;
+  min-width: 32px;
+  min-height:32px;
+  line-height: 28px;
+  padding: 1px 4px;
+  background: rgba(0, 0, 0, 0.72);
+  border: 1px solid var(--portal-color, #{v.$color-base-purple-primary});
+  border-radius: 5px;
+  color: v.$campaign-portal-text-bright;
+  font-size: 24px;
+  font-weight: 700;
+  text-align: center;
+}
+
+/*
+ * A dropzone: one place on the ring a held group can be dropped on, drawn while
+ * the hold lasts (see the template). It is the card's own footprint on the card's
+ * own slot, so what is dropped lines up with where the card then appears, and it
+ * carries the place the group would take — 1 being the top of the ring. The
+ * pointer never reaches a zone (the held card has it), so hovering is all a zone
+ * ever does.
+ */
+.dropzone {
+  position: absolute;
+  z-index: 25;
+  display: grid;
+  place-items: center;
+  width: calc(var(--card-w, 75px) * var(--card-scale, 1));    // the card's own footprint,
+  height: calc(var(--card-h, 110px) * var(--card-scale, 1));  // at the size the face draws it, so a
+                                                              // zone sits exactly where the card will
+  border: 2px dashed v.$campaign-portal-border-focus;
+  border-radius: 6px;
+  background: rgba(0, 0, 0, 0.3);
+  color: v.$campaign-portal-text-lavender;
+  font-size: 13px;
+  font-weight: 700;
+  pointer-events: none;
+  transition: border-color 0.15s ease, background 0.15s ease, box-shadow 0.15s ease;
+
+  /* The zone the held card is over: this is the order it would take */
+  &.is-over {
+    border-color: v.$campaign-portal-border-hover;
+    background: rgba(110, 40, 208, 0.4);
+    color: v.$campaign-portal-text-bright;
+    box-shadow: 0 0 14px rgba(110, 40, 208, 0.75);
+  }
+}
+
+.dropzone-place {
+  line-height: 1;
+  letter-spacing: 0.04em;
+}
+
+.circle-empty {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  margin: 0;
+  color: v.$campaign-portal-text-muted;
+  font-size: 12px;
+  letter-spacing: 0.08em;
+}

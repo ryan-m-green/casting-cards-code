@@ -1,0 +1,30 @@
+.subscription-limits-editor {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.limits-section {
+  border: 1px solid var(--border-color);
+  border-radius: 0.5rem;
+  padding: 1rem;
+}
+
+.section-header {
+  font-size: 1.125rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+  color: var(--text-primary);
+}
+
+.limits-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 1rem;
+}
+
+.limit-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}

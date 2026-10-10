@@ -2,9 +2,6 @@
 using CastLibrary.Repository.Repositories.Update;
 using CastLibrary.Shared.Domain;
 using CastLibrary.Shared.Requests;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace CastLibrary.Logic.Commands.Campaign
 {

@@ -1,0 +1,45 @@
+<div class="cc-color-dropdown" [class.is-disabled]="disabled()">
+  @if (label()) {
+    <label class="cc-color-dropdown-label">{{ label() }}</label>
+  }
+
+  <button
+    type="button"
+    class="cc-color-dropdown-trigger"
+    [attr.aria-expanded]="isOpen()"
+    [attr.aria-label]="(label() || 'Color') + ': ' + (selected()?.name ?? placeholder())"
+    [disabled]="disabled()"
+    (click)="toggle($event)"
+    (keydown)="onKeydown($event)"
+  >
+    <span
+      class="cc-color-swatch"
+      [class.is-blank]="!selected()"
+      [style.background]="selected()?.hex"
+    ></span>
+    <span class="cc-color-dropdown-value">{{ selected()?.name ?? placeholder() }}</span>
+    <span class="cc-color-dropdown-caret" [class.is-open]="isOpen()" aria-hidden="true">▾</span>
+  </button>
+
+  @if (isOpen()) {
+    <ul class="cc-color-dropdown-panel" role="listbox" [attr.aria-label]="label() || 'Color'">
+      @for (choice of options(); track choice.hex; let i = $index) {
+        <li
+          class="cc-color-dropdown-item"
+          [class.is-selected]="selected()?.hex === choice.hex"
+          [class.is-active]="activeIndex() === i"
+          role="option"
+          [attr.aria-selected]="selected()?.hex === choice.hex"
+          (mousedown)="select(choice)"
+          (mouseenter)="activeIndex.set(i)"
+        >
+          <span class="cc-color-swatch" [style.background]="choice.hex"></span>
+          <span class="cc-color-dropdown-name">{{ choice.name }}</span>
+          @if (selected()?.hex === choice.hex) {
+            <span class="cc-color-dropdown-check" aria-hidden="true">✓</span>
+          }
+        </li>
+      }
+    </ul>
+  }
+</div>

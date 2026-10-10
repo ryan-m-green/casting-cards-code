@@ -1,0 +1,147 @@
+<div class="sublocation-detail-content">
+  @if (editing()) {
+    <div class="detail-desc">
+      <app-cc-textbox
+        label="Sublocation Name"
+        placeholder="Sublocation name…"
+        context="campaign"
+        [(ngModel)]="editName"
+      />
+    </div>
+  } @else {
+    <div class="detail-header">
+      <h2 class="detail-title">{{ currentSublocation().name }}</h2>
+    </div>
+  }
+
+  <div class="detail-portrait-row">
+    <cc-portrait-input
+      context="campaign"
+      [initialImageUrl]="sublocation().imageUrl || ''"
+      [cardType]="'sublocation'"
+      [borderStyle]="'sublocation'"
+      [disabled]="!editing()"
+      [ngModel]="imageFile()"
+      (ngModelChange)="imageFile.set($event)"
+    />
+  </div>
+
+  <div class="detail-tabs">
+    <button class="detail-tab" type="button"
+            [class.detail-tab--active]="activeTab() === 'details'"
+            (click)="setTab('details')">Details</button>
+    <button class="detail-tab" type="button"
+            [class.detail-tab--active]="activeTab() === 'secrets'"
+            (click)="setTab('secrets')">Secrets</button>
+  </div>
+
+@if (activeTab() === 'details') {
+  <cc-detail-panel-actions
+    [isDm]="isDm()"
+    [editing]="editing()"
+    [detailExpanded]="false"
+    (startEditingClick)="startEditing()"
+    (saveDetailsClick)="saveDetails()"
+    (saveToLibraryClick)="saveToLibrary()"
+    (cancelEditingClick)="cancelEditing()"
+    (closeClick)="closePanel()"
+  />
+
+  <div class="detail-content-body">
+    @if (editing() || hasField(currentSublocation().description)) {
+      <div class="detail-block">
+        @if (editing()) {
+          <app-cc-textbox
+            label="Description"
+            type="textarea"
+            [rows]="4"
+            placeholder="Description…"
+            context="campaign"
+            [(ngModel)]="editDescription"
+          />
+        } @else {
+          <span class="detail-block-label">Description</span>
+          <p class="detail-block-content">{{ currentSublocation().description }}</p>
+        }
+      </div>
+    }
+
+    @if (isDm() && (editing() || hasField(currentSublocation().dmNotes))) {
+      <div class="detail-block">
+        @if (editing()) {
+          <app-cc-textbox
+            label="GM Notes"
+            type="textarea"
+            [rows]="4"
+            placeholder="Jot down whatever is on your mind…"
+            context="campaign"
+            [(ngModel)]="editDmNotes"
+          />
+        } @else {
+          <span class="detail-block-label">GM Notes</span>
+          <p class="detail-block-content">{{ currentSublocation().dmNotes }}</p>
+        }
+      </div>
+    }
+
+    @if (shopItemCount() > 0 || editing()) {
+      <div class="detail-shop-section">
+        <div class="detail-section-header">
+          <span class="detail-section-title">Shop Items</span>
+        </div>
+
+        @if (editing()) {
+          <cc-shop-inventory
+            [context]="'campaign'"
+            [ngModel]="editShopInventory()"
+            (ngModelChange)="editShopInventory.set($event)"
+          />
+        }
+
+        @for (item of currentSublocation().shopItems; track item.id || $index) {
+          <div class="shop-item" [class.shop-item--scratched]="item.isScratchedOff">
+            <div class="shop-item-header">
+              <span class="shop-item-name">{{ item.name }}</span>
+              <div class="shop-item-actions">
+                <span class="shop-item-price">{{ item.priceAmount }} {{ item.priceCurrencyType }}</span>
+                @if (isDm()) {
+                  <button class="shop-scratch-btn" 
+                          [class.shop-scratch-btn--sold]="item.isScratchedOff"
+                          (click)="toggleScratch(item)"
+                          [title]="item.isScratchedOff ? 'Mark as available' : 'Mark as sold'">
+                    {{ item.isScratchedOff ? 'SOLD' : 'OUT' }}
+                  </button>
+                } @else if (item.priceAmount > 0 && !item.isScratchedOff) {
+                  <button class="shop-buy-btn"
+                          [class.shop-buy-btn--loading]="purchasingItemId() === item.id"
+                          [disabled]="purchasingItemId() !== null"
+                          (click)="openPurchaseDrawer(item)"
+                          [title]="'Buy ' + item.name"
+                          [attr.aria-label]="'Buy ' + item.name">
+                    <img class="shop-buy-btn-icon" src="/eye_vision_sight_seeing_surveillance.svg" alt="" />
+                  </button>
+                }
+              </div>
+            </div>
+            @if (item.description) {
+              <p class="shop-item-description">{{ item.description }}</p>
+            }
+          </div>
+        }
+      </div>
+    }
+
+  </div>
+} @else {
+  <div class="detail-content-body">
+    <cc-secrets-manager
+      [secrets]="secrets()"
+      [cardType]="'sublocation'"
+      [campaignId]="campaignId()"
+      [instanceId]="sublocationInstanceId()"
+      [context]="'campaign'"
+      [isDm]="isDm()"
+    />
+  </div>
+}
+</div>

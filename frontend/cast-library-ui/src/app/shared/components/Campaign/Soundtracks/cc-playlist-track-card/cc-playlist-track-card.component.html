@@ -1,0 +1,57 @@
+<article class="ptc">
+  <header class="ptc-head">
+    <span class="ptc-order">{{ index() + 1 }}</span>
+    <span class="ptc-name" [title]="name()">{{ name() }}</span>
+
+    @if (isSoundEffect()) {
+      <span class="ptc-badge">sfx</span>
+    }
+    <span class="ptc-actions">
+      <button
+        type="button"
+        class="ptc-icon"
+        (click)="moveEarlier.emit()"
+        [disabled]="index() === 0"
+        title="Move earlier">&#9664;</button>
+
+      <button
+        type="button"
+        class="ptc-icon"
+        (click)="moveLater.emit()"
+        [disabled]="index() === total() - 1"
+        title="Move later">&#9654;</button>
+
+      <button
+        type="button"
+        class="ptc-icon ptc-icon--danger"
+        (click)="remove.emit()"
+        title="Remove from the playlist">&#10005;</button>
+    </span>
+  </header>
+
+  <div class="ptc-controls">
+    <cc-slider
+      class="ptc-volume"
+      [min]="0"
+      [max]="100"
+      [step]="1"
+      [value]="item().volume"
+      (commit)="volumeChange.emit($event)"
+      [showValue]="false"
+      [showTicks]="false"
+      ariaLabel="Volume"
+      title="Volume" />
+
+    <cc-soundtrack-controls
+      [bare]="true"
+      context="journal"
+      [pauseMode]="item().pauseMode"
+      (pauseModeChange)="setPauseMode($event)"
+      [pauseDelaySeconds]="item().pauseDelaySeconds"
+      (pauseDelaySecondsChange)="setPauseDelay($event)"
+      [pauseMinSeconds]="item().pauseMinSeconds"
+      (pauseMinSecondsChange)="setPauseMin($event)"
+      [pauseMaxSeconds]="item().pauseMaxSeconds"
+      (pauseMaxSecondsChange)="setPauseMax($event)" />
+  </div>
+</article>

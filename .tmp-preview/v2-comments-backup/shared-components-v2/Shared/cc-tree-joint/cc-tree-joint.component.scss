@@ -1,0 +1,191 @@
+@use '../../../../../../styles/variables' as v;
+
+/**
+ * cc-tree-joint
+ *
+ * The marker itself, and every stand it is stood in: silver boxes — a line and two borders — laid
+ * over the board, holding their measure at any width. What a host has to say is only where the
+ * marker is to be drawn and which of the stands below it is to be drawn in; the parts' own names,
+ * measures and colours all live here, so the tree reads as one tree wherever it is drawn.
+ */
+
+/**
+ * The line the tree is drawn in: silver, so the tree reads as metal laid over the board rather than
+ * as another card edge. The stem and the bead it hangs on are drawn in this.
+ */
+$tree-line: rgba(v.$color-base-mist-blue, 0.9);
+
+/**
+ * The way-in marks themselves — the chevron at the foot of every joint, in the row and on the
+ * breadcrumb alike: the same silver taken a little towards white, so the mark a viewer is meant to
+ * follow stands out from the stem and bead it hangs on (see .tree-joint-chevron).
+ */
+$tree-line-bright: color-mix(in srgb, v.$color-base-mist-blue, white 45%);
+
+/*
+ * The marker's own stand, with nothing said about where it is to be drawn: the 24px the row leaves
+ * between the card it hangs from and the stack under it (`.slide-content`'s own gap), measured up
+ * from the box the joint is laid in — the positioned ancestor the host, being out of flow, is
+ * absolutely placed against. That box is the ancestor's whole width (`left: 0; right: 0`), so the
+ * stem leaves the card's own middle wherever the marker is stood.
+ *
+ * `top: -24px` rather than `0`: what the joint hangs off is the card's bottom border just above that
+ * box, and the chevron's foot lands on the stack just below it.
+ *
+ * `pointer-events: none` all the way down: the marker is a line drawn over the board and never the
+ * thing you tap — the card or the stack it points at is. `z-index: 20` holds it over the stack's own
+ * cards, whose z-indexes run 10 and down: they fan out with their own rotations and reach a few
+ * pixels up into the gap this marker is drawn in.
+ */
+:host {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: -24px; // the row's own gap: the card's bottom border above, the stack's top edge below
+  height: 24px;
+  z-index: 20;
+  color: $tree-line;
+  pointer-events: none;
+}
+
+/*
+ * `stand="box"`: the marker fills the box its container lays out for it — that box's own top edge
+ * (`top: 0`) and its own height (`height: 100%`) — rather than hanging 24px up over the box it is
+ * laid in. It is the stand for a container that is itself the marker's own area: the 75 x 24 the
+ * foot lays out for the three marks at the breadcrumb's card, in which the mark under the card's
+ * middle has to reach from the card's own border down to the row under it.
+ */
+:host(.tree-joint--box) {
+  top: 0;
+  height: 100%;
+}
+
+/*
+ * `stand="corner-left"` / `stand="corner-right"`: the box above taken out to nothing and then
+ * turned, so the run leaves the container's own bottom corner rather than the middle of its border.
+ *
+ * A corner mark's box is that corner: with no width to it, every part the marker measures from its
+ * middle hangs off that one point, and there is nothing between the two for a turn to swing across.
+ * It is the box's own top-left corner in both cases — `right: 0` with no width puts the box's left
+ * edge on the container's right edge — and the turn carries the whole marker, not just the box: the
+ * stem leaves the corner at 45deg, and the chevron, whose own quarter-turn already aims it down, is
+ * swung a further quarter, so it ends up pointing between the container's bottom border and the side
+ * edge beside it — down and left on the left corner, down and right on the right.
+ *
+ * Plain boxes and a turn, not a drawing: a turn is not a stretch, so the stem's 1px, the bead's 5px
+ * and the chevron's 8 x 8 all come through it unchanged. That is why neither of the marker's two
+ * axes needed a second drawing of its own, and why only the box and the turn are written out here:
+ * the parts keep the names and measures the rules below give them.
+ */
+:host(.tree-joint--corner-left),
+:host(.tree-joint--corner-right) {
+  top: 0;
+  height: 100%;
+  width: 0;
+  transform-origin: 0 0;
+}
+
+/* The container's bottom-left corner: the run turned out down and left. */
+:host(.tree-joint--corner-left) {
+  left: 0;
+  right: auto;
+  transform: rotate(45deg);
+}
+
+/* The container's bottom-right corner: the run turned out down and right. */
+:host(.tree-joint--corner-right) {
+  left: auto;
+  right: 0;
+  transform: rotate(-45deg);
+}
+
+/* The stem: the edge from the card's own border down to the chevron. */
+.tree-joint-stem {
+  position: absolute;
+  left: 50%;
+  top: 0;
+  width: 1px;
+  height: 14px;
+  margin-left: -0.5px;
+  background: currentColor;
+}
+
+/* The bead: the card's bottom border marked as a node, where the stem leaves it. */
+.tree-joint-bead {
+  position: absolute;
+  left: 50%;
+  top: -2px;
+  width: 5px;
+  height: 5px;
+  margin-left: -2.5px;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+/*
+ * The chevron: the stem's foot turned down into the stack — the way in. Two pixels of the brighter
+ * silver, where the stem and the bead it hangs on are drawn in one: the mark a viewer is meant to
+ * follow is the heaviest and the lightest thing in the marker, so it reads before the lines leading
+ * to it do.
+ */
+.tree-joint-chevron {
+  position: absolute;
+  left: 50%;
+  top: 10px;
+  width: 8px;
+  height: 8px;
+  margin-left: -4px;
+  border-right: 2px solid $tree-line-bright;
+  border-bottom: 2px solid $tree-line-bright;
+  transform: rotate(45deg);
+}
+
+/*
+ * `orientation="side"`: the same marker, laid on its side for the breadcrumb's own pair of cards —
+ * the stem runs flat out of the location card's right border, the bead sits on that border, and the
+ * chevron at its far end turns to point right, into the sublocation card standing beside it. It is
+ * what ties the two cards of the top row to one another, where the upright marker ties a middle-row
+ * card down to its stack, and it is drawn in the 24px the row's two drop spots leave between them:
+ * the location spot's own 75px puts the marker's box on that gap, and the cards' own middle puts its
+ * line at half of their 110px.
+ *
+ * Its parts keep the upright marker's own names and measures — the same stem, the same bead, the same
+ * 8 x 8 chevron — so only their axis is written out again here, and the chevron's turn: -45deg brings
+ * the same two borders to bear on the right where 45deg brings them to bear below.
+ */
+:host(.tree-joint--side) {
+  top: 50%;
+  left: 75px; // the location drop spot's own width: the blank after it is the marker's box
+  right: auto;
+  width: 24px; // the drop-zone gap between the row's two spots
+  height: 12px;
+  margin-top: -6px; // centred on the cards' own middle (both spots are 110px tall)
+
+  /* The stem: from the location card's own border out to the chevron's mouth — the same 14px run
+     the upright marker gives it, measured from the border rather than from the card's bottom. */
+  .tree-joint-stem {
+    left: 0;
+    top: 50%;
+    width: 16px;
+    height: 1px;
+    margin-left: 0;
+    margin-top: -0.5px;
+  }
+
+  /* The bead: on the location card's right border, as the upright one sits on a card's bottom. */
+  .tree-joint-bead {
+    left: 0;
+    top: 50%;
+    margin-top: -2.5px; // its width, height and left margin are the upright marker's own
+  }
+
+  /* The chevron: the stem's end turned right into the sublocation card — the way in, in the same two
+     pixels of the brighter silver the upright marker's own chevron wears. */
+  .tree-joint-chevron {
+    left: 12px;
+    top: 50%;
+    margin-left: 0;
+    margin-top: -4px;
+    transform: rotate(-45deg);
+  }
+}

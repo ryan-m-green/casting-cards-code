@@ -10,6 +10,8 @@ public enum ChronicleContentType
     PlayerNote,
     Secret,
     CoinReward,
-    ShopPurchase
+    ShopPurchase,
+    Encounter,
+    TimePassed
 }
 

@@ -1,0 +1,50 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <style>
+    body { margin: 0; padding: 12px; background: #fff; font: 12px sans-serif; color: #444; }
+    figure { margin: 0 0 14px; }
+    figcaption { padding-top: 6px; }
+    /* the slip's own paper gradient, at the stamps' real size */
+    .paper {
+      display: flex; align-items: center; justify-content: center; gap: 7px;
+      width: 150px; height: 132px; box-sizing: border-box; padding: 8px;
+      background: linear-gradient(135deg, #f3e5c8 0%, #e8d4a7 35%, #dfc691 70%, #ceb073 100%);
+      border: 1px solid #8a6d3b;
+    }
+    .paper.loose { justify-content: space-evenly; }
+
+    /* real sizes and tilts, as the component draws them */
+    .defeated { width: 38px; height: 38px; object-fit: contain; transform: rotate(-2deg); }
+    .captured { width: 32px; height: 32px; object-fit: contain; transform: rotate(1.5deg); }
+    .fled     { width: 44px; height: 54px; object-fit: contain; transform: rotate(3deg); }
+
+    /* 3x, to read the detail */
+    .zoom { display: flex; align-items: flex-end; gap: 24px; }
+    .zoom img { object-fit: contain; }
+    .zoom .defeated { width: 114px; height: 114px; transform: none; }
+    .zoom .captured { width: 96px; height: 96px; transform: none; }
+    .zoom .fled     { width: 132px; height: 162px; transform: none; }
+  </style>
+</head>
+<body>
+  <figure>
+    <div class="paper loose">
+      <img class="defeated" src="../frontend/cast-library-ui/public/encounter_death.svg" alt="">
+      <img class="captured" src="../frontend/cast-library-ui/public/hands_shackles_captivity.svg" alt="">
+      <img class="fled" src="../frontend/cast-library-ui/public/escaped_wings_ink.svg" alt="">
+    </div>
+    <figcaption>all three, true size, on the slip's paper</figcaption>
+  </figure>
+
+  <figure>
+    <div class="zoom">
+      <img class="defeated" src="../frontend/cast-library-ui/public/encounter_death.svg" alt="">
+      <img class="captured" src="../frontend/cast-library-ui/public/hands_shackles_captivity.svg" alt="">
+      <img class="fled" src="../frontend/cast-library-ui/public/escaped_wings_ink.svg" alt="">
+    </div>
+    <figcaption>defeated / captured / fled at 3x</figcaption>
+  </figure>
+</body>
+</html>

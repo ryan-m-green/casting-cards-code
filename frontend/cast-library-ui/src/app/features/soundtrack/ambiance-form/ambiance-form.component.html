@@ -1,0 +1,113 @@
+<div class="pc scroll-body">
+  <app-journal-title [title]="isCreating() ? 'New Playlist' : 'Edit Playlist'" />
+
+  <div class="wr wr-page-header">
+    <a class="btn-ghost" routerLink="/gm/soundtracks">← Library</a>
+  </div>
+
+  @if (notFound()) {
+    <p class="wbd-journal">That playlist is no longer in your library.</p>
+  } @else {
+    <label for="playlist-title-input" class="fi-label">Title</label>
+    <input
+      id="playlist-title-input"
+      class="fi"
+      [ngModel]="title()"
+      (ngModelChange)="title.set($event)"
+      autocomplete="off"
+      placeholder="Playlist name" />
+
+    <div class="form-field--toggle">
+      <div class="toggle-row">
+        <label class="toggle-switch">
+          <input
+            type="checkbox"
+            [checked]="randomizeMusic()"
+            (change)="randomizeMusic.set($any($event.target).checked)" />
+          <span class="toggle-slider"></span>
+        </label>
+        <span class="fi-label">Randomize music</span>
+      </div>
+    </div>
+
+    <div class="pick-row swiper" #trackRow>
+      <div class="swiper-wrapper">
+        @for (track of soundtracks(); track track.id) {
+          <div class="swiper-slide">
+            <div
+              class="pick-card"
+              role="button"
+              tabindex="0"
+              [class.is-picked]="isPicked(track.id)"
+              [attr.aria-pressed]="isPicked(track.id)"
+              [title]="isPicked(track.id)
+                ? 'Take ' + displayName(track.title) + ' out of the playlist'
+                : 'Add ' + displayName(track.title) + ' to the playlist'"
+              (click)="togglePick(track)"
+              (keydown.enter)="togglePick(track)"
+              (keydown.space)="togglePick(track); $event.preventDefault()">
+              @if (isPicked(track.id)) {
+                <span class="pick-check" aria-hidden="true">✓</span>
+              }
+
+              <span class="pick-name">{{ displayName(track.title) }}</span>
+
+              <div class="pick-foot">
+                <span class="pick-kind" [class.pick-kind--sfx]="track.kind === 'sound_effect'">
+                  {{ track.kind === 'music' ? 'music' : 'sfx' }}
+                </span>
+
+                <button
+                  type="button"
+                  class="pick-play"
+                  (click)="$event.stopPropagation(); isTrackPlaying(track.id) ? stopTrack(track.id) : playTrack(track)"
+                  [title]="isTrackPlaying(track.id) ? 'Stop' : 'Play'"
+                  [attr.aria-label]="(isTrackPlaying(track.id) ? 'Stop ' : 'Play ') + track.title">
+                  {{ isTrackPlaying(track.id) ? '■' : '▶' }}
+                </button>
+              </div>
+            </div>
+          </div>
+        }
+      </div>
+    </div>
+
+    <section class="track-box">
+      <h3 class="track-box__legend">Tracks ({{ items().length }})</h3>
+
+      <div class="track-row swiper" #trackCardRow>
+        <div class="swiper-wrapper">
+          @for (item of items(); track $index) {
+            <div class="swiper-slide">
+              <cc-playlist-track-card
+                [item]="item"
+                [name]="soundtrackTitle(item.soundtrackId)"
+                [index]="$index"
+                [total]="items().length"
+                [isSoundEffect]="isSoundEffect(item.soundtrackId)"
+                (volumeChange)="onItemVolumeChange($index, $event)"
+                (moveEarlier)="moveItem($index, -1)"
+                (moveLater)="moveItem($index, 1)"
+                (remove)="removeItem($index)" />
+            </div>
+          }
+        </div>
+      </div>
+    </section>
+
+    @if (error()) {
+      <div class="limit-error-message">
+        <span class="limit-error-text">{{ error() }}</span>
+      </div>
+    }
+
+    <div class="form-save-footer">
+      @if (!isCreating()) {
+        <button type="button" class="btn-ghost playlist-delete" (click)="remove()">Delete</button>
+      }
+      <button type="button" class="campaign-primary-btn" [disabled]="saving()" (click)="save()">
+        {{ saving() ? 'Saving…' : (isCreating() ? 'Create' : 'Save') }}
+      </button>
+    </div>
+  }
+</div>

@@ -16,7 +16,7 @@ public class AmbianceEntityMapper : IAmbianceEntityMapper
         return new AmbianceDomain
         {
             Id = entity.Id,
-            CampaignId = entity.CampaignId,
+            GmUserId = entity.GmUserId,
             Title = entity.Title,
             CreatedAt = entity.CreatedAt,
             RandomizeMusic = entity.RandomizeMusic
@@ -28,7 +28,7 @@ public class AmbianceEntityMapper : IAmbianceEntityMapper
         return new AmbianceEntity
         {
             Id = domain.Id,
-            CampaignId = domain.CampaignId,
+            GmUserId = domain.GmUserId,
             Title = domain.Title,
             CreatedAt = domain.CreatedAt,
             RandomizeMusic = domain.RandomizeMusic

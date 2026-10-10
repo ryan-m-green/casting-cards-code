@@ -1,0 +1,129 @@
+<div class="pc scroll-body">
+  <app-journal-watermark pageType="soundtrack" />
+  <app-journal-title title="Soundtracks Library" />
+
+  @if (actionError() || error()) {
+    <div class="st-error">{{ actionError() || error() }}</div>
+  }
+
+  @if (loading()) {
+    <p class="wbd-journal st-note">Looking through your soundtracks…</p>
+  } @else {
+    <div class="st-row-head">
+      <h3 class="st-row-title">Soundtracks</h3>
+    </div>
+
+    @if (soundtracks().length === 0) {
+      <p class="wbd-journal st-note">
+        No soundtracks yet. Use the ＋ tile at the end of the row to add music or a sound effect.
+      </p>
+    }
+
+    <div class="st-row swiper" #trackRow>
+      <div class="swiper-wrapper">
+        @for (track of soundtracks(); track track.id) {
+          <div class="swiper-slide">
+            <cc-soundtrack-card
+              [track]="track"
+              [playing]="isTrackPlaying(track.id)"
+              (playToggle)="isTrackPlaying(track.id) ? stopTrack(track.id) : playTrack(track)"
+              (edit)="editTrack(track.id)"
+              (remove)="deleteTrack(track)"
+              (kindToggle)="toggleKind(track)"
+              (volumeChange)="onTrackVolumeChange(track, $event)" />
+          </div>
+        }
+
+        <div class="swiper-slide">
+          <div class="st-add-track" role="group" aria-label="Add a soundtrack">
+            <button
+              type="button"
+              class="st-add-half"
+              [disabled]="uploading()"
+              (click)="chooseUpload('music')"
+              title="Add music to your library">
+              <span class="st-add-plus" aria-hidden="true">＋</span>
+              <span class="st-add-label">{{ uploading() ? 'Uploading…' : 'Music' }}</span>
+            </button>
+
+            <button
+              type="button"
+              class="st-add-half st-add-half--sfx"
+              [disabled]="uploading()"
+              (click)="chooseUpload('sound_effect')"
+              title="Add a sound effect to your library">
+              <span class="st-add-plus" aria-hidden="true">＋</span>
+              <span class="st-add-label">{{ uploading() ? 'Uploading…' : 'Sound Effect' }}</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="st-row-head">
+      <h3 class="st-row-title">Playlists</h3>
+    </div>
+
+    <div class="st-row swiper" #ambianceRow>
+      <div class="swiper-wrapper">
+        @for (ambiance of ambiances(); track ambiance.id) {
+          <div class="swiper-slide">
+            <div class="st-stat" [class.playing]="isAmbiancePlaying(ambiance.id)" [attr.title]="ambiance.title">
+              <div class="st-stat-frame">
+                <div class="st-stat-inner">
+                  <div class="st-stat-banner">
+                    <div class="st-stat-name">{{ ambiance.title }}</div>
+                  </div>
+
+                  <div class="st-stat-body st-stat-body--playlist">
+                    <span class="st-card-watermark" aria-hidden="true"></span>
+
+                    <cc-edit-button
+                      class="st-card-edit"
+                      label="Edit playlist"
+                      (clicked)="editAmbiance(ambiance.id)" />
+
+                    <cc-delete-button
+                      class="st-card-delete"
+                      label="Delete playlist"
+                      confirmLabel="Delete"
+                      (confirmed)="deleteAmbiance(ambiance.id)" />
+
+                    <ul class="st-card-tracks">
+                      @for (title of ambianceTrackTitles(ambiance); track $index) {
+                        <li class="st-card-track" [title]="title">{{ title }}</li>
+                      }
+                    </ul>
+                  </div>
+
+                  <div class="st-stat-strip">
+                    <div class="st-stat-pip-row">
+                      <div class="st-stat-pip"></div>
+                      <div class="st-stat-pip"></div>
+                      <div class="st-stat-pip"></div>
+                    </div>
+                    <span class="st-stat-strip-label">
+                      {{ ambiance.items.length }} track{{ ambiance.items.length === 1 ? '' : 's' }}
+                    </span>
+                    <div class="st-stat-pip-row">
+                      <div class="st-stat-pip"></div>
+                      <div class="st-stat-pip"></div>
+                      <div class="st-stat-pip"></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        }
+
+        <div class="swiper-slide">
+          <cc-card-add-tile
+            label="New playlist"
+            title="Build a playlist from your soundtracks"
+            link="/gm/soundtracks/ambiance/new" />
+        </div>
+      </div>
+    </div>
+  }
+</div>

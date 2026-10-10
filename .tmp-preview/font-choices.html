@@ -1,0 +1,82 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IM+Fell+English:ital@0;1&family=Special+Elite&family=Caveat:wght@400;600&family=Patrick+Hand&family=Kalam:wght@400;700&family=Shadows+Into+Light&family=Reenie+Beanie&family=Homemade+Apple&display=swap" rel="stylesheet">
+  <style>
+    body { margin: 0; padding: 14px; background: #fff; font: 12px sans-serif; color: #444; }
+    .grid { display: flex; flex-wrap: wrap; gap: 20px; align-items: flex-start; }
+    .cell { text-align: center; }
+
+    /* the slip, at 1:1: 150px wide, 8px gutters — a true test of whether the words fit */
+    .slip {
+      display: flex; flex-direction: column; width: 150px; height: 60px; box-sizing: border-box;
+      padding: 8px; align-items: center; justify-content: center;
+      background: linear-gradient(135deg, #f3e5c8 0%, #e8d4a7 35%, #dfc691 70%, #ceb073 100%);
+      border: 1px solid #8a6d3b; overflow: hidden;
+    }
+    .where {
+      color: #5a451f; white-space: nowrap; text-align: center;
+      text-decoration: underline; text-decoration-color: rgba(90, 69, 31, 0.45);
+      text-underline-offset: 2px;
+    }
+    .ruler { width: 134px; margin: 3px auto 0; border-top: 1px dashed #bbb; font-size: 9px; color: #999; }
+    .name { padding-top: 4px; font-size: 11px; }
+    .name b { font-weight: 600; }
+    .fell    { font-family: 'IM Fell English', serif; }
+    .elite   { font-family: 'Special Elite', serif; }
+    .caveat  { font-family: 'Caveat', cursive; }
+    .patrick { font-family: 'Patrick Hand', cursive; }
+    .kalam   { font-family: 'Kalam', cursive; }
+    .shadows { font-family: 'Shadows Into Light', cursive; }
+    .reenie  { font-family: 'Reenie Beanie', cursive; }
+    .apple   { font-family: 'Homemade Apple', cursive; }
+    .small { font-size: 12px; }
+    .big   { font-size: 14px; }
+  </style>
+</head>
+<body>
+  <div class="grid" id="grid"></div>
+
+  <script>
+    const FACES = [
+      ['IM Fell English', 'fell',    'already loaded'],
+      ['Special Elite',   'elite',   'already loaded'],
+      ['Caveat',          'caveat',  'new'],
+      ['Patrick Hand',    'patrick', 'new'],
+      ['Kalam',           'kalam',   'new'],
+      ['Shadows Into Light', 'shadows', 'new'],
+      ['Reenie Beanie',   'reenie',  'new'],
+      ['Homemade Apple',  'apple',   'new'],
+    ];
+    const grid = document.getElementById('grid');
+    for (const [label, cls, tag] of FACES) {
+      for (const [sizeCls, size] of [['small', 12], ['big', 14]]) {
+        const cell = document.createElement('div');
+        cell.className = 'cell';
+        cell.innerHTML =
+          `<div class="slip"><span class="where ${cls} ${sizeCls}">Previous encounters</span></div>` +
+          `<div class="ruler">the row's 134px</div>` +
+          `<div class="name">${label} <b>${size}px</b> · ${tag}</div>`;
+        cell.dataset.font = label;
+        grid.appendChild(cell);
+      }
+    }
+    // Report which faces actually fit the row, once the webfonts have settled.
+    window.addEventListener('load', () => document.fonts.ready.then(() => {
+      const report = [];
+      for (const cell of grid.children) {
+        const span = cell.querySelector('.where');
+        const fits = span.scrollWidth <= span.clientWidth;
+        report.push(`${cell.dataset.font} ${span.classList.contains('small') ? 12 : 14}: ${fits ? 'fits' : 'OVERFLOWS'} (${span.scrollWidth}px)`);
+      }
+      const el = document.createElement('pre');
+      el.style.cssText = 'padding-top:14px;font:11px monospace;color:#666';
+      el.textContent = report.join('\n');
+      document.body.appendChild(el);
+    }));
+  </script>
+</body>
+</html>

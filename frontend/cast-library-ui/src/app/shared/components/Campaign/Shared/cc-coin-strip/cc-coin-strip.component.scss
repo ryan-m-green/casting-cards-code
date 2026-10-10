@@ -1,0 +1,147 @@
+@use '../../../../../../styles/variables' as v;
+
+:host {
+  display: block;
+}
+
+.coin-strip {
+  width: 100%;
+  max-width: 1000px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.coin {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  --coin-light: #f2f6fa;
+  --coin-mid: #c2cbd4;
+  --coin-dark: #7f8b96;
+  --coin-ink: #24292e;
+}
+
+.coin--cp {
+  --coin-light: #f0b183;
+  --coin-mid: #c87a3c;
+  --coin-dark: #8a4c1d;
+  --coin-ink: #2c1607;
+}
+
+.coin--sp {
+  --coin-light: #f2f6fa;
+  --coin-mid: #c2cbd4;
+  --coin-dark: #7f8b96;
+  --coin-ink: #24292e;
+}
+
+.coin--ep {
+  --coin-light: #e6f0c2;
+  --coin-mid: #b9cf7c;
+  --coin-dark: #7d964a;
+  --coin-ink: #232b14;
+}
+
+.coin--gp {
+  --coin-light: #ffe08a;
+  --coin-mid: #e8b93f;
+  --coin-dark: #a8791c;
+  --coin-ink: #2e2104;
+}
+
+.coin--pp {
+  --coin-light: #f0f6ff;
+  --coin-mid: #c8d8ee;
+  --coin-dark: #8296b4;
+  --coin-ink: #1d2733;
+}
+
+/* The coin itself: a round metallic face with a rim struck just inside its edge. The face keeps
+   the bevel and the metal tones the badge already had; the rim is the ring the ::after draws, sat
+   off the edge so it reads as the coin's struck border rather than a border on a pill. */
+.coin-name {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  font-family: v.$font-header;
+  font-size: 8px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  line-height: 1;
+  text-transform: uppercase;
+  text-align: center;
+  color: var(--coin-ink);
+  background: radial-gradient(circle at 34% 28%, var(--coin-light) 0%, var(--coin-mid) 52%, var(--coin-dark) 100%);
+  box-shadow:
+    inset 0 2px 2px rgba(255, 255, 255, 0.55),
+    inset 0 -3px 5px rgba(0, 0, 0, 0.4),
+    0 2px 5px rgba(0, 0, 0, 0.55);
+
+  &::after {
+    content: '';
+    position: absolute;
+    inset: 4px;
+    border-radius: 50%;
+    border: 1px solid color-mix(in srgb, var(--coin-dark) 75%, transparent);
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.45),
+      0 1px 0 rgba(255, 255, 255, 0.2);
+  }
+}
+
+.coin-amount {
+  font-family: v.$font-body;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  color: var(--coin-light);
+  text-shadow:
+    0 1px 0 rgba(0, 0, 0, 0.55),
+    0 0 8px color-mix(in srgb, var(--coin-mid) 55%, transparent);
+}
+
+.coin-strip--compact {
+  gap: 4px 8px;
+
+  .coin {
+    gap: 4px;
+  }
+
+  .coin-name {
+    width: 44px;
+    height: 44px;
+    font-size: 6.5px;
+  }
+
+  .coin-amount {
+    font-size: 10px;
+  }
+}
+
+@media (max-width: 480px) {
+  .coin-strip {
+    gap: 8px 10px;
+  }
+
+  .coin {
+    gap: 5px;
+  }
+
+  .coin-name {
+    width: 50px;
+    height: 50px;
+    font-size: 7px;
+  }
+
+  .coin-amount {
+    font-size: 12px;
+  }
+}

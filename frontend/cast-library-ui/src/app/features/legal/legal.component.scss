@@ -2,8 +2,6 @@
 
 :host { display: block; height: 100%; }
 
-// ── Page title ────────────────────────────────────────────────────────────────
-
 .legal-title {
   font-family: v.$font-header;
   font-size: 17px;
@@ -14,13 +12,9 @@
   margin: 10px 0 10px;
 }
 
-// ── Content area ──────────────────────────────────────────────────────────────
-
 .legal-content {
   padding-bottom: 8px;
 }
-
-// ── Tabs bar ──────────────────────────────────────────────────────────────────
 
 .tabs-bar {
   display: flex;
@@ -53,8 +47,6 @@
   }
 }
 
-// ── Tab content ───────────────────────────────────────────────────────────────
-
 .tab-content {
   padding: 24px 32px 48px;
   max-width: 900px;
@@ -63,8 +55,6 @@
 .legal-section {
   margin-bottom: 24px;
 }
-
-// ── Section label spacing ─────────────────────────────────────────────────────
 
 .legal-section-label {
   font-family: v.$font-header;
@@ -100,8 +90,6 @@
   margin-bottom: 20px;
 }
 
-// ── Body text ─────────────────────────────────────────────────────────────────
-
 .legal-body {
   font-family: v.$font-body;
   font-size: 13px;
@@ -133,8 +121,6 @@
     }
   }
 }
-
-// ── Player nav (mirrors player-campaigns nav styles) ──────────────────────────
 
 .player-nav {
   display: flex;

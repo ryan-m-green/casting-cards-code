@@ -1,0 +1,25 @@
+<div class="stop-words-editor">
+  <div class="words-list">
+    @for (word of config().words; track word; let index = $index) {
+      <div class="word-pill">
+        <span class="word-text">{{ word }}</span>
+      </div>
+    }
+    @if (config().words.length === 0) {
+      <div class="empty-state">No stop words configured</div>
+    }
+  </div>
+
+  <div class="add-word-form" autocomplete="off">
+    <input
+      class="fi"
+      type="text"
+      autocomplete="off"
+      name="stop-word-input"
+      [(ngModel)]="newWord"
+      placeholder="Enter a stop word"
+      (keydown.enter)="addWord()"
+    />
+    <button class="btn-add" (click)="addWord()" [disabled]="!newWord.trim()">Add</button>
+  </div>
+</div>

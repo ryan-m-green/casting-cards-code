@@ -3,10 +3,9 @@
 :host {
   display: block;
   height: 100%;
-  position: relative; // anchor for success-overlay
+  position: relative;
 }
 
-// ── Leather cover overlays ────────────────────────────────────────────────────
 .cover-grain {
   position: absolute;
   inset: 0;
@@ -63,7 +62,6 @@
   z-index: 3;
 }
 
-// ── Worn corners ──────────────────────────────────────────────────────────────
 .corner {
   position: absolute;
   pointer-events: none;
@@ -94,7 +92,6 @@
   background: radial-gradient(circle at 100% 100%, v.$journal-spine-shadow 0%, transparent 70%);
 }
 
-// ── Page edge ─────────────────────────────────────────────────────────────────
 .page-edge {
   position: absolute;
   right: 0;
@@ -110,8 +107,6 @@
   pointer-events: none;
   z-index: 6;
 }
-
-// ─────────────────────────────────────────────────────────────────────────────
 
 .cover-center {
   display: flex;
@@ -144,21 +139,17 @@
   max-width: calc(100% - 80px);
   flex-shrink: 0;
 
-  // tablet portrait narrow (e.g. iPad Air)
   @media (min-width: 601px) and (max-width: 900px) and (orientation: portrait) {
     margin-top: 100px;
   }
 
-  // tablet portrait wide (e.g. iPad Pro 12.9" portrait: 1024×1366)
   @media (min-width: 901px) and (orientation: portrait) and (max-width: 1400px) {
   }
 
-  // tablet landscape — covers all tablets including iPad Pro 12.9" (1024px viewport height)
   @media (orientation: landscape) and (max-height: 1100px) and (min-width: 601px) and (max-width: 1199px) {
   }
 }
 
-// ── Arcane crest ──────────────────────────────────────────────────────────────
 .crest {
   width: 52px;
   height: 52px;
@@ -168,7 +159,6 @@
   filter: drop-shadow(0 2px 4px v.$color-ext-155);
 }
 
-// ── Main title — embossed gold stamp ─────────────────────────────────────────
 .cover-title-svg {
   display: block;
   margin: 0 auto;
@@ -211,7 +201,6 @@
   filter: drop-shadow(0 1px 3px v.$color-shadow-dark);
 }
 
-// ── Subtitle ──────────────────────────────────────────────────────────────────
 .cover-subtitle {
   font-family: v.$font-body;
   font-size: 16px;
@@ -223,7 +212,6 @@
   text-shadow: 0 1px 3px v.$color-ext-155;
 }
 
-// ── Login form ────────────────────────────────────────────────────────────────
 .cover-login-form {
   width: 100%;
   display: flex;
@@ -296,7 +284,6 @@
   }
 }
 
-// ── Error box ─────────────────────────────────────────────────────────────────
 .cover-error-box-wrap {
   width: 100%;
   min-height: 28px;
@@ -324,7 +311,6 @@
   }
 }
 
-// ── Knock button ──────────────────────────────────────────────────────────────
 .knock-group {
   width: 100%;
   margin-top: -22px;
@@ -373,7 +359,6 @@
   }
 }
 
-// ── Forgot + Create row ───────────────────────────────────────────────────────
 .btn-row {
   display: flex;
   flex-direction: row;
@@ -382,7 +367,6 @@
   margin-top: 24px;
 }
 
-// ── Forgot passphrase link ────────────────────────────────────────────────────
 .link-subtle {
   display: block;
   text-align: center;
@@ -408,7 +392,6 @@
   }
 }
 
-// ── Create account button ─────────────────────────────────────────────────────
 .btn-create {
   flex: 1;
   max-width: 300px;

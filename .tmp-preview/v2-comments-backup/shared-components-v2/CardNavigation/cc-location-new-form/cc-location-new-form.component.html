@@ -1,0 +1,145 @@
+<!--
+  The location form, the library's own fields brought over to the v2 campaign components the
+  rest of the drawer uses: the free-text fields are `cc-textbox` in campaign context, the eight
+  suggestion fields are `cc-campaign-dropdown`, the languages are `cc-lang-picker` and the
+  hashtags are `cc-keyword-tags`. Those components draw their own labels, inputs and notes, so
+  the form itself carries only the layout markup.
+-->
+<div class="pic-new-form-wrap">
+  <form [formGroup]="locationForm" class="pic-new-form pic-new-form--wrap">
+
+    <div class="wr form-row-gap">
+      <div class="form-field">
+        <app-cc-textbox
+          label="Location Name"
+          context="campaign"
+          formControlName="name"
+        />
+      </div>
+    </div>
+
+    <app-cc-textbox
+      label="Description"
+      type="textarea"
+      [rows]="4"
+      context="campaign"
+      formControlName="description"
+    />
+
+    <div class="wr form-row-gap">
+      <div class="form-field">
+        <cc-campaign-dropdown
+          label="Classification"
+          placeholder="Start typing…"
+          [options]="classificationOptions"
+          formControlName="classification"
+        />
+      </div>
+      <div class="form-field">
+        <cc-campaign-dropdown
+          label="Size"
+          placeholder="Select or type…"
+          [options]="sizeOptions"
+          formControlName="size"
+        />
+      </div>
+    </div>
+
+    <div class="wr form-row-gap">
+      <div class="form-field">
+        <cc-campaign-dropdown
+          label="Condition"
+          placeholder="Start typing…"
+          [options]="conditionOptions"
+          formControlName="condition"
+        />
+      </div>
+      <div class="form-field">
+        <cc-campaign-dropdown
+          label="Geography"
+          placeholder="Start typing…"
+          [options]="geographyOptions"
+          formControlName="geography"
+        />
+      </div>
+    </div>
+
+    <div class="wr form-row-gap">
+      <div class="form-field">
+        <cc-campaign-dropdown
+          label="Architecture"
+          placeholder="Start typing…"
+          [options]="architectureOptions"
+          formControlName="architecture"
+        />
+      </div>
+      <div class="form-field">
+        <cc-campaign-dropdown
+          label="Climate"
+          placeholder="Start typing…"
+          [options]="climateOptions"
+          formControlName="climate"
+        />
+      </div>
+    </div>
+
+    <div class="wr form-row-gap">
+      <div class="form-field">
+        <cc-campaign-dropdown
+          label="Religion"
+          placeholder="Start typing…"
+          [options]="religionOptions"
+          formControlName="religion"
+        />
+      </div>
+      <div class="form-field">
+        <cc-campaign-dropdown
+          label="Vibe"
+          placeholder="Start typing…"
+          [options]="vibeOptions"
+          formControlName="vibe"
+        />
+      </div>
+    </div>
+
+    <cc-lang-picker
+      label="Languages"
+      context="campaign"
+      formControlName="languages"
+    />
+
+    <fieldset class="form-gm-box">
+      <legend class="form-gm-box__legend">FOR GM EYES ONLY</legend>
+
+      <div class="form-row-gap">
+        <div class="form-field">
+          <cc-keyword-tags
+            label="Hashtags / Keywords"
+            placeholder="Add or select hashtags…"
+            context="campaign"
+            [options]="keywordOptions()"
+            formControlName="keywords"
+          />
+        </div>
+
+        <div class="form-field">
+          <app-cc-textbox
+            label="GM Notes"
+            type="textarea"
+            [rows]="4"
+            context="campaign"
+            formControlName="dmNotes"
+          />
+        </div>
+      </div>
+
+    </fieldset>
+
+    <div class="pic-save-row">
+      <button class="campaign-primary-btn" type="button"
+              [disabled]="locationForm.invalid || saveStatus() === 'saving'"
+              (click)="onSave()">@if (saveStatus() === 'saving') { Saving… } @else { Save }</button>
+    </div>
+
+  </form>
+</div>

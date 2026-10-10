@@ -1,0 +1,29 @@
+:host {
+  position: absolute;
+  top: calc(50% - 144px);
+  left: 14.7%;
+  min-width: 62px;
+  min-height: 400px;
+  z-index: 1003;
+  pointer-events: none;
+  background: black;
+  mask-image: linear-gradient(to right, black 0%, black 70%, transparent 100%);
+  -webkit-mask-image: linear-gradient(to right, black 0%, black 70%, transparent 100%);
+}
+
+:host(.rolodex-frame--right) {
+  left: auto;
+  right: 14.7%;
+  mask-image: linear-gradient(to left, black 0%, black 50%, transparent 100%);
+  -webkit-mask-image: linear-gradient(to left, black 0%, black 50%, transparent 100%);
+}
+
+@media (max-width: 1024px) {
+  :host { left: 0px; }
+
+  :host(.rolodex-frame--right) { right: 0; }
+}
+
+@media (max-width: 768px) {
+  :host { display: none; }
+}

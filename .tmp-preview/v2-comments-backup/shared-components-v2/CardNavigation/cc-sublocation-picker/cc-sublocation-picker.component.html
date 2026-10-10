@@ -1,0 +1,132 @@
+@let pickedCount = selectedCount();
+
+<div class="picker" [style.--portal-color]="portalColor()">
+
+  <!-- ── Tabs ────────────────────────────────────────────────────────────── -->
+  <div class="picker-tabs" role="tablist">
+    <button
+      type="button"
+      class="picker-tab"
+      role="tab"
+      [class.is-on]="activeTab() === 'library'"
+      [attr.aria-selected]="activeTab() === 'library'"
+      (click)="setTab('library')"
+    >Sublocation Library</button>
+
+    <button
+      type="button"
+      class="picker-tab"
+      role="tab"
+      [class.is-on]="activeTab() === 'new'"
+      [attr.aria-selected]="activeTab() === 'new'"
+      (click)="setTab('new')"
+    >New Sublocation</button>
+  </div>
+
+  <!-- ── Tab: the library, as simple sublocation cards ───────────────────── -->
+  @if (activeTab() === 'library') {
+
+    <!--
+      Keyword filters over the search bar: one chip per hashtag the DM has for sublocation
+      cards, each with how many of the cards on offer it would leave — a word nothing on offer
+      carries stands dimmed. Picking one narrows the list; with more than one on, "any" / "all"
+      says how they combine.
+    -->
+    @if (keywordChips().length) {
+      <div class="picker-chips">
+        @for (chip of keywordChips(); track chip.keyword) {
+          <button
+            type="button"
+            class="picker-chip"
+            [class.is-on]="isKeywordOn(chip.keyword)"
+            [class.picker-chip--empty]="!chip.count"
+            [attr.aria-pressed]="isKeywordOn(chip.keyword)"
+            [attr.title]="chip.count
+              ? chip.count + (chip.count === 1 ? ' sublocation to add carries' : ' sublocations to add carry') + ' #' + chip.keyword
+              : 'Nothing left to add carries #' + chip.keyword"
+            (click)="toggleKeyword(chip.keyword)"
+          >#{{ chip.keyword }}<span class="picker-chip-count">{{ chip.count }}</span></button>
+        }
+      </div>
+    }
+
+    <div class="picker-filter">
+      <app-cc-textbox
+        placeholder="Search your sublocation library…"
+        context="campaign"
+        [ngModel]="search()"
+        (ngModelChange)="onSearchChange($event)"
+        [showClear]="true"
+      />
+      @if (activeKeywords().length > 1) {
+        <button type="button" class="picker-mode" [class.is-on]="matchAll()" (click)="toggleMatchAll()">
+          {{ matchAll() ? 'all' : 'any' }}
+        </button>
+      }
+      <button type="button" class="picker-clear" [disabled]="!pickedCount" (click)="clearSelection()">Clear</button>
+    </div>
+
+    @if (loading()) {
+      <p class="picker-note">Loading your sublocation library…</p>
+    } @else if (libraryEmpty()) {
+      <p class="picker-empty">Your sublocation library is empty. Use the <strong>New Sublocation</strong> tab to make one.</p>
+    } @else if (!candidates().length) {
+      @if (search()) {
+        <p class="picker-empty">No results for &quot;{{ search() }}&quot;.</p>
+      } @else if (activeKeywords().length) {
+        <p class="picker-empty">No sublocations carry those keywords.</p>
+      } @else {
+        <p class="picker-empty">All library sublocations are already in this campaign.</p>
+      }
+    } @else {
+      <p class="picker-section">
+        {{ locationName() || 'This location' }} · sublocation library ({{ candidates().length }})
+      </p>
+
+      <div class="picker-grid">
+        @for (sublocation of candidates(); track sublocation.id) {
+          <button
+            type="button"
+            class="picker-tile"
+            [class.is-picked]="isSelected(sublocation.id)"
+            [attr.aria-pressed]="isSelected(sublocation.id)"
+            [attr.aria-label]="'Add ' + sublocation.name + ' to ' + (locationName() || 'this location')"
+            (click)="toggleSublocation(sublocation)"
+          >
+            <cc-simple-sublocation-card [sublocation]="sublocation" />
+            @if (isSelected(sublocation.id)) {
+              <span class="picker-tile-check" aria-hidden="true">✓</span>
+            }
+          </button>
+        }
+      </div>
+    }
+
+    @if (error()) {
+      <p class="picker-error">{{ error() }}</p>
+    }
+
+    <div class="picker-actions">
+      <span class="picker-total">
+        {{ pickedCount }} sublocation{{ pickedCount === 1 ? '' : 's' }} picked
+      </span>
+
+      <button
+        type="button"
+        class="campaign-primary-btn"
+        [disabled]="!canAdd()"
+        (click)="onAdd()"
+      >@if (busy()) { Adding… } @else if (pickedCount) { Add {{ pickedCount }} to location } @else { Add to location }</button>
+    </div>
+  }
+
+  <!-- ── Tab: build a new sublocation (added to the library and the campaign) ── -->
+  @if (activeTab() === 'new') {
+    <cc-sublocation-new-form
+      [campaignId]="campaignId()"
+      [locationInstanceId]="locationInstanceId()"
+      (saved)="onSublocationCreated()"
+    />
+  }
+
+</div>

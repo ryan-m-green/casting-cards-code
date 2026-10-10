@@ -1,0 +1,100 @@
+﻿app-campaign-join-input   (shared\components\campaign-join-input\campaign-join-input.component.ts)
+      -> ROUTE features/campaign/campaign-library/campaign-library.component.ts
+      -> ROUTE features/player/player-campaigns/player-campaigns.component.ts
+
+app-free-trial-plan-card   (shared\components\free-trial-plan-card\free-trial-plan-card.component.ts)
+      -> GLOBAL app-root drawer
+      -> ROUTE features/subscription-choice/subscription-choice.component.ts
+
+app-icon   (shared\components\icon\icon.component.ts)
+      -> GLOBAL app-root drawer
+      -> ROUTE features/dashboard/dashboard.component.ts
+
+app-journal-dropdown   (shared\components\journal-dropdown\journal-dropdown.component.ts)
+      -> ROUTE features/campaign/campaign-creator/campaign-creator.component.ts
+      -> ROUTE features/cast/cast-form/cast-form.component.ts
+      -> ROUTE features/faction/faction-form/faction-form.component.ts
+      -> ROUTE features/location/location-form/location-form.component.ts
+
+app-journal-nav-drawer   (shared\components\journal-nav-drawer\journal-nav-drawer.component.ts)
+      -> Journal shell (chrome)
+
+app-journal-randomize-button   (shared\components\journal-randomize-button\journal-randomize-button.component.ts)
+      -> ROUTE features/cast/cast-form/cast-form.component.ts
+      -> ROUTE features/location/location-form/location-form.component.ts
+
+app-journal-title   (shared\components\journal-title\journal-title.component.ts)
+      -> ROUTE features/admin/admin-bug-reports/admin-bug-reports.component.ts
+      -> ROUTE features/admin/configuration-settings/configuration-settings.component.ts
+      -> ROUTE features/admin/user-management/user-management.component.ts
+      -> ROUTE features/bug-report/bug-report.component.ts
+      -> ROUTE features/campaign/campaign-creator/campaign-creator.component.ts
+      -> ROUTE features/campaign/campaign-library/campaign-library.component.ts
+      -> ROUTE features/cast/cast-form/cast-form.component.ts
+      -> ROUTE features/cast/cast-library/cast-library.component.ts
+      -> ROUTE features/change-password/change-password.component.ts
+      -> ROUTE features/dashboard/dashboard.component.ts
+      -> ROUTE features/faction/faction-form/faction-form.component.ts
+      -> ROUTE features/faction/faction-library/faction-library.component.ts
+      -> ROUTE features/forgot-password/forgot-password.component.ts
+      -> ROUTE features/legal/legal.component.ts
+      -> ROUTE features/location/location-form/location-form.component.ts
+      -> ROUTE features/location/location-library/location-library.component.ts
+      -> ROUTE features/player/player-campaigns/player-campaigns.component.ts
+      -> ROUTE features/reset-password/reset-password.component.ts
+      -> ROUTE features/role-selection/role-selection.component.ts
+      -> ROUTE features/sublocations/sublocation-form/sublocation-form.component.ts
+      -> ROUTE features/sublocations/sublocation-library/sublocation-library.component.ts
+      -> ROUTE features/subscription-choice/subscription-choice.component.ts
+      -> ROUTE features/verify-email/verify-email.component.ts
+
+app-journal-watermark   (shared\components\journal-watermark\journal-watermark.component.ts)
+      -> ROUTE features/campaign/campaign-library/campaign-library.component.ts
+      -> ROUTE features/cast/cast-library/cast-library.component.ts
+      -> ROUTE features/faction/faction-library/faction-library.component.ts
+      -> ROUTE features/location/location-library/location-library.component.ts
+      -> ROUTE features/sublocations/sublocation-library/sublocation-library.component.ts
+
+app-portal-card   (shared\components\portal-card\portal-card.component.ts)
+      -> ROUTE features/campaign/campaign-library/campaign-library.component.ts
+      -> ROUTE features/player/player-campaigns/player-campaigns.component.ts
+
+app-premium-plan-card   (shared\components\premium-plan-card\premium-plan-card.component.ts)
+      -> GLOBAL app-root drawer
+      -> ROUTE features/subscription-choice/subscription-choice.component.ts
+
+app-cast-detail-content   (shared\components\right-drawer\cast-detail-content.component.ts)
+      -> GLOBAL app-root drawer
+
+app-faction-detail-content   (shared\components\right-drawer\faction-detail-content.component.ts)
+      -> GLOBAL app-root drawer
+
+app-location-detail-content   (shared\components\right-drawer\location-detail-content.component.ts)
+      -> GLOBAL app-root drawer
+
+app-right-drawer   (shared\components\right-drawer\right-drawer.component.ts)
+      -> GLOBAL app-root drawer
+
+app-shop-purchase-content   (shared\components\right-drawer\shop-purchase-content.component.ts)
+      -> GLOBAL app-root drawer
+
+app-sublocation-detail-content   (shared\components\right-drawer\sublocation-detail-content.component.ts)
+      -> GLOBAL app-root drawer
+
+app-subscription-content   (shared\components\right-drawer\subscription-content.component.ts)
+      -> GLOBAL app-root drawer
+
+app-subscription-lock-banner   (shared\components\subscription-lock-banner\subscription-lock-banner.component.ts)
+      -> Journal shell (chrome)
+
+app-toggle-switch   (shared\components\toggle-switch\toggle-switch.component.ts)
+      -> GLOBAL app-root drawer
+
+app-upgrade-badge   (shared\components\upgrade-badge\upgrade-badge.component.ts)
+      -> ROUTE features/campaign/campaign-library/campaign-library.component.ts
+      -> ROUTE features/cast/cast-library/cast-library.component.ts
+      -> ROUTE features/dashboard/dashboard.component.ts
+      -> ROUTE features/faction/faction-library/faction-library.component.ts
+      -> ROUTE features/location/location-library/location-library.component.ts
+      -> ROUTE features/sublocations/sublocation-library/sublocation-library.component.ts
+

@@ -7,7 +7,9 @@
 
 .pc.scroll-body {
   position: relative !important;
-  overflow: auto !important;
+  /* Down only — the page never pans sideways (see the shell's own .pc). */
+  overflow-x: hidden !important;
+  overflow-y: auto !important;
   max-height: 100%;
 }
 
@@ -45,7 +47,6 @@
   flex: 1;
 }
 
-// ── Tab navigation ─────────────────────────────────────────────────────────────
 .campaign-tabs {
   display: flex;
   gap: 4px;
@@ -80,7 +81,6 @@
   }
 }
 
-// ── Campaign name row ───────────────────────────────────────────────────────────
 .campaign-name-row {
   display: flex;
   gap: 8px;
@@ -99,7 +99,6 @@
   }
 }
 
-// ── Demo campaign control (admin-only) ────────────────────────────────────────
 .demo-control {
   margin-top: 20px;
   padding: 10px 14px;
@@ -241,13 +240,11 @@
   margin: 14px 0 10px;
 }
 
-// ── Title divider ─────────────────────────────────────────────────────────────
 .title-divider {
   border-top: 1px solid v.$color-ext-97;
   margin: 12px 0 20px;
 }
 
-// ── Color picker ─────────────────────────────────────────────────────────────
 .color-picker-row {
   display: flex;
   align-items: center;
@@ -293,7 +290,6 @@ textarea.fi:disabled {
   letter-spacing: 0.05em;
 }
 
-// ── Location search ───────────────────────────────────────────────────────────────
 .location-search-row {
   display: flex;
   justify-content: center;
@@ -305,7 +301,6 @@ textarea.fi:disabled {
   max-width: 100%;
 }
 
-// ── Card picker layout ────────────────────────────────────────────────────────
 .location-picker-row {
   display: flex;
   gap: 40px;
@@ -314,7 +309,6 @@ textarea.fi:disabled {
   margin-bottom: 10px;
 }
 
-// ── Deck stack ────────────────────────────────────────────────────────────────
 .deck-stack {
   position: relative;
   width: 150px;
@@ -379,7 +373,6 @@ textarea.fi:disabled {
   line-height: 1.8;
 }
 
-// ── Empty / placeholder states ────────────────────────────────────────────────
 .deck-stack-empty {
   border: 1.5px dashed v.$color-ext-50;
   border-radius: 12px;
@@ -400,7 +393,6 @@ textarea.fi:disabled {
   background: v.$color-ext-111;
 }
 
-// ── Add to Campaign button ────────────────────────────────────────────────────
 .add-btn-row {
   display: flex;
   gap: 40px;
@@ -449,7 +441,6 @@ textarea.fi:disabled {
   padding: 16px 0;
 }
 
-// ── Selected locations stack ─────────────────────────────────────────────────────
 .sel-header {
   font-family: v.$font-header;
   font-size: 12px;
@@ -518,7 +509,6 @@ textarea.fi:disabled {
   }
 }
 
-
 .sel-stack-placeholder {
   width: 150px;
   height: 220px;
@@ -535,7 +525,6 @@ textarea.fi:disabled {
   margin: 2px 0 6px;
 }
 
-// ── Empty location state ──────────────────────────────────────────────────────────
 .no-locations-state {
   display: flex;
   flex-direction: column;
@@ -603,7 +592,6 @@ textarea.fi:disabled {
   margin-top: 8px;
 }
 
-// ── Location detail panel ─────────────────────────────────────────────────────────
 .detail-panel {
   flex: 1;
   min-width: 0;
@@ -673,7 +661,6 @@ textarea.fi:disabled {
   &:hover { background: v.$color-ext-125; }
 }
 
-// ── Sublocation cast summary outline ─────────────────────────────────────────────
 .subLoc-cast-section-label {
   font-family: v.$font-header;
   font-size: 12px;
@@ -755,7 +742,6 @@ textarea.fi:disabled {
   letter-spacing: 0.04em;
 }
 
-// ── Read-only keyword chips ────────────────────────────────────────────────────
 .detail-keywords {
   margin-bottom: 10px;
 }
@@ -777,7 +763,6 @@ textarea.fi:disabled {
   padding: 2px 8px;
 }
 
-// ── Players tab ───────────────────────────────────────────────────────────────
 .players-tab {
   padding-bottom: 32px;
 }
@@ -964,7 +949,6 @@ textarea.fi:disabled {
   margin: 0;
 }
 
-// ── Confirm modal ──────────────────────────────────────────────────────────────
 .modal-backdrop {
   position: fixed;
   inset: 0;
@@ -1021,7 +1005,6 @@ textarea.fi:disabled {
   &:hover { background: v.$color-ext-153; }
 }
 
-// ─── Campaign danger zone (edit mode only) ────────────────────────────────────
 .campaign-danger-zone {
   display: flex;
   justify-content: flex-end;

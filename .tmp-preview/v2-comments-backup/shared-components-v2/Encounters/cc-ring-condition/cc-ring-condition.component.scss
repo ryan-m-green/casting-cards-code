@@ -1,0 +1,151 @@
+@use '../../../../../../styles/variables' as v;
+
+/* ─── cc-ring-condition ────────────────────────────────────────────────────── */
+/* Campaign drawer skin: the portal purple the encounter panels are drawn in. */
+
+:host {
+  display: block;
+  width: fit-content;
+  max-width: 100%;
+}
+
+/* ─── The card and the rings clipped onto it ──────────────────────────────── */
+/* The holder hugs the card, so a ring spans the card's width and not the drawer's. */
+.cond-card-holder {
+  position: relative;
+  width: fit-content;
+  margin: 0 auto;
+}
+
+/*
+  The rings sit on the card, not in the flow below it: the lowest clips on 24px up
+  from the card's base and each one after it stacks above, drawn bottom-up so the
+  first condition is the lowest ring.
+
+  They are wider than the card and centred on it, so the band overhangs the card on
+  both sides — the way a ring clipped round a mini stands out past the figure — and
+  the tapered ends read as the ring curving away out of sight.
+*/
+$ring-width: 190px;
+$ring-bottom: 24px;
+
+// The delete cross's disc: a medium dark grey with a violet cast, so it sits between the
+// near-black plaques on the bands and the portal purples of the drawer around it.
+$remove-disc: rgb(76, 74, 85);
+$remove-disc-hover: rgb(93, 91, 102);
+
+.cond-rings {
+  position: absolute;
+  left: 50%;
+  bottom: $ring-bottom;
+  width: $ring-width;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column-reverse;
+  gap: 2px;
+  // The card is whole to the pointer; only the bands themselves answer a click.
+  pointer-events: none;
+}
+
+/* ─── One condition ring ──────────────────────────────────────────────────── */
+/*
+  Drawn as the band of a ring clipped around a mini: a lens, so it comes to nothing
+  where it turns away at the sides and shows its full width across the front, lit
+  along the top edge, dark where it wraps out of sight at the ends, with the
+  condition's name printed on it the way a table's rings are marked.
+
+  The band is not a control: it is what the card is wearing, and the pointer passes
+  through it. The cross beside it is what takes a click (see .cond-ring-remove).
+*/
+.cond-ring {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 24px;
+  padding: 0 10px;
+  border-radius: 50% / 100%;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.5) 0%, rgba(255, 255, 255, 0.12) 38%, rgba(0, 0, 0, 0.34) 100%),
+    linear-gradient(90deg, rgba(0, 0, 0, 0.7) 0%, var(--ring-color, #{v.$color-base-purple-primary}) 22%, var(--ring-color, #{v.$color-base-purple-primary}) 78%, rgba(0, 0, 0, 0.7) 100%);
+  box-shadow:
+    0 2px 3px rgba(0, 0, 0, 0.45),
+    inset 0 1px 0 rgba(255, 255, 255, 0.4);
+  color: #fff;
+  font-family: v.$font-body;
+  font-size: 14px;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  line-height: 1;
+  text-transform: uppercase;
+  white-space: nowrap;
+  text-shadow: 0 1px 1px rgba(0, 0, 0, 0.75), 0 0 2px rgba(0, 0, 0, 0.55);
+}
+
+/* ─── A ring's row, and the way off it ────────────────────────────────────── */
+/*
+  A row per ring, so the delete cross can sit on the ring's own line and hang clear of
+  the band: the band's own height (24px), centred on it and 7px off its right edge,
+  which not even the band's widest part reaches. With the band no longer a control, the
+  cross is the only thing here that answers the pointer — everything else falls through
+  to the card.
+*/
+.cond-ring-row {
+  position: relative;
+}
+
+.cond-ring-remove {
+  pointer-events: auto;
+  position: absolute;
+  top: 50%;
+  left: 100%;
+  transform: translateY(-50%);
+  margin-left: 7px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  // A plain grey disc, with the shadow under it carrying the circle over a pale card face.
+  background: $remove-disc;
+  border: none;
+  border-radius: 50%;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.42);
+  color: #ff4b4b;
+  font-family: v.$font-body;
+  font-size: 13px;
+  font-weight: 800;
+  line-height: 1;
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease, transform 0.15s ease;
+
+  &:hover:not(:disabled) {
+    background: $remove-disc-hover;
+    color: #ff6b6b;
+    transform: translateY(-50%) scale(1.1);
+  }
+
+  &:disabled { cursor: default; opacity: 0.5; }
+}
+
+/*
+  The name carries its own dark backdrop, so the letters read against whatever colour
+  the band behind them happens to be. It is kept to the name itself — a couple of pixels
+  of padding round the glyphs, no wider — so the band still reads as the ring's shape.
+*/
+.cond-ring-label {
+  // The band prints with tracking, which leaves a space after the last letter: the
+  // backdrop is pulled back in on that side so it sits as tight as the left does.
+  padding: 1.5px calc(4px - 0.14em) 1.5px 4px;
+  background: rgba(0, 0, 0, 0.78);
+  border-radius: 999px;
+  // A hairline, so the backdrop sits on the band rather than looking cut out of it.
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.4);
+}
+
+.cond-error {
+  margin: 6px 0 0;
+  color: #f87171;
+  font-size: 12px;
+  text-align: center;
+}

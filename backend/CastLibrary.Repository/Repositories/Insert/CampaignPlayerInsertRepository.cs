@@ -1,8 +1,5 @@
 ﻿using CastLibrary.Logic.Interfaces;
 using Dapper;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace CastLibrary.Repository.Repositories.Insert
 {

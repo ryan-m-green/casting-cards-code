@@ -1,0 +1,5 @@
+@if (name() === 'faction') {
+<img class="card-watermark card-watermark--asset" src="/factions.svg" alt="" aria-hidden="true" />
+} @else {
+<app-icon class="card-watermark" [name]="name()" variant="inline" />
+}

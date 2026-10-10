@@ -1,0 +1,22 @@
+<div class="cc-motive-card"
+     [class.is-selected]="selected()"
+     [class.is-done]="trait().isCompleted"
+     (pointerdown)="onPointerDown($event)"
+     (click)="onCardClick($event)">
+  <div class="motive-banner">
+    <span class="motive-type">{{ typeLabel() }}</span>
+  </div>
+
+  <div class="motive-body">
+    <img class="motive-body-mark" [src]="mark()" alt="" aria-hidden="true" draggable="false" />
+    <div class="motive-content">{{ trait().content }}</div>
+  </div>
+
+  @if (trait().isCompleted) {
+    <span class="motive-check" aria-hidden="true">✔</span>
+  }
+
+  @if (trait().isShared) {
+    <span class="motive-shared" title="Shared with party" aria-label="Shared with party">✦</span>
+  }
+</div>

@@ -1,6 +1,12 @@
-<div class="pc scroll-body">
+﻿<div class="pc scroll-body">
   <app-journal-watermark pageType="faction" />
   <app-journal-title title="Factions Library" />
+
+  <cc-keyword-filters
+    [cardType]="'faction'"
+    [cards]="factions()"
+    (selectedChange)="activeKeywords.set($event)" />
+
   <div class="wr wr-page-header">
     <app-upgrade-badge
       [visible]="auth.isFreeTrial()"
@@ -8,28 +14,41 @@
       class="upgrade-badge-library" />
     <input class="search-bar search-bar--header" type="text" placeholder="Name · Type…"
            [value]="searchTerm()" (input)="searchTerm.set($any($event.target).value)" />
-    <div class="wr-ml-auto cc-keyword-editor-wrap">
-      <button class="campaign-primary-btn"
-              [class.disabled]="factionLimitReached() || isCreateDisabled()"
-              [attr.disabled]="(factionLimitReached() || isCreateDisabled()) ? 'true' : null"
-              [routerLink]="(factionLimitReached() || isCreateDisabled()) ? null : '/gm/faction/new'"
-              (click)="(factionLimitReached() || isCreateDisabled()) ? $event.preventDefault() : null">+ Create</button>
-      <cc-keyword-editor [cardType]="'faction'"></cc-keyword-editor>
+  </div>
+
+  <div class="card-grid swiper" #factionRow>
+    <div class="swiper-wrapper">
+      @for (faction of filtered(); track faction.id) {
+        <div class="swiper-slide">
+          <cc-faction-card
+            [faction]="faction"
+            [tilt]="tiltFor(faction.id)"
+            [titleSearch]="false"
+            (editClick)="edit(faction.id)"
+            (deleteClick)="confirmDelete(faction.id)">
+          </cc-faction-card>
+        </div>
+      }
+      @empty {
+        @if (activeKeywords().length) {
+          <p class="wbd-journal empty-state-pad">No factions carry those keywords.</p>
+        } @else {
+          <p class="wbd-journal empty-state-pad">No factions found. Create your first faction to get started.</p>
+        }
+      }
+      <div class="swiper-slide">
+        <cc-card-add-tile
+          label="New faction"
+          title="Add a faction to your library"
+          link="/gm/faction/new"
+          [locked]="factionLimitReached() || isCreateDisabled()"
+          lockedReason="Adding factions isn't available on your current plan." />
+      </div>
     </div>
   </div>
 
-  <div class="card-grid">
-    @for (faction of filtered(); track faction.id) {
-      <app-faction-card
-        [faction]="faction"
-        [tilt]="tiltFor(faction.id)"
-        (editClick)="edit(faction.id)"
-        (deleteClick)="confirmDelete(faction.id)">
-      </app-faction-card>
-    }
-    @empty {
-      <p class="wbd-journal empty-state-pad">No factions found. Create your first faction to get started.</p>
-    }
+  <div class="library-keyword-manager">
+    <cc-keyword-editor [cardType]="'faction'"></cc-keyword-editor>
   </div>
 </div>
 

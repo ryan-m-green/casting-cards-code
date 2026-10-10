@@ -39,6 +39,7 @@ public class UpsertTraitCommandHandler(
             TraitType = command.Request.TraitType,
             Content = command.Request.Content,
             IsCompleted = false,
+            IsShared = command.Request.IsShared,
             CreatedAt = DateTime.UtcNow,
         };
         return await traitInsertRepository.InsertAsync(trait);

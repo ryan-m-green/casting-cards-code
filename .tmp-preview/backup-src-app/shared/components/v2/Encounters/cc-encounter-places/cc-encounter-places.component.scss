@@ -1,0 +1,51 @@
+@use '../../../../../../styles/variables' as v;
+
+:host {
+  display: block;
+}
+
+.places {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  font-size: 14px;
+}
+
+.places-headline {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  margin: 0;
+  color: v.$campaign-portal-text-bright;
+  font-family: v.$font-body;
+  font-weight: 600;
+}
+
+.places-headline-value {
+  color: v.$campaign-portal-text-bright;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+}
+
+.places-headline-word {
+  color: v.$campaign-portal-text-lavender;
+}
+
+.places--full .places-headline,
+.places--full .places-headline-word {
+  color: #f0cf4a;
+}
+
+.places-math {
+  margin: 0;
+  color: v.$campaign-portal-text-muted;
+  font-family: v.$font-body;
+  font-variant-numeric: tabular-nums;
+}
+
+.places-op {
+  margin: 0 4px;
+  color: v.$campaign-portal-text-lavender;
+  opacity: 0.75;
+}

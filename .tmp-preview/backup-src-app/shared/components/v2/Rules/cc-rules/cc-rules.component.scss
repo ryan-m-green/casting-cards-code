@@ -1,0 +1,223 @@
+@use '../../../../../../styles/variables' as v;
+
+:host {
+  display: block;
+  width: 100%;
+  height: 100%;
+  position: relative;
+  overscroll-behavior: contain;
+}
+
+.rules-root {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 56px 0;
+  box-sizing: border-box;
+  overscroll-behavior: contain;
+
+  @media (max-width: 1024px) {
+    padding: 56px 16px;
+  }
+}
+
+.rules-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  width: 70%;
+
+  @media (max-width: 1024px) {
+    width: 100%;
+  }
+}
+
+.rules-count {
+  margin-left: 49px;
+  font-family: v.$font-body;
+  font-size: 12px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: v.$campaign-portal-text-softer;
+  white-space: nowrap;
+}
+
+.rules-search {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 1 1 180px;
+  max-width: 320px;
+  min-width: 0;
+  padding: 0 10px;
+  border: 1px solid v.$campaign-portal-border;
+  border-radius: 8px;
+  background: v.$campaign-portal-bg-medium;
+  transition: border-color 0.15s ease;
+
+  &:focus-within {
+    border-color: v.$campaign-portal-border-hover;
+  }
+}
+
+.rules-search-icon {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+  opacity: 0.6;
+  filter: brightness(0) invert(1);
+  pointer-events: none;
+}
+
+.rules-search-input {
+  flex: 1;
+  min-width: 0;
+  padding: 8px 0;
+  background: none;
+  border: 0;
+  outline: none;
+  font-family: v.$font-body;
+  font-size: 13px;
+  color: v.$campaign-portal-text-bright;
+
+  &::placeholder {
+    color: v.$campaign-portal-text-muted;
+  }
+
+  &::-webkit-search-cancel-button {
+    -webkit-appearance: none;
+  }
+}
+
+.rules-shelf {
+  width: 70%;
+  min-height: 0;
+
+  @media (max-width: 1024px) {
+    width: 100%;
+  }
+}
+
+.rules-list {
+  width: 100%;
+  overflow: hidden;
+  padding: 8px 24px 12px;
+  box-sizing: border-box;
+  overscroll-behavior-x: contain;
+  scrollbar-width: none;
+
+  .swiper-wrapper {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+  }
+
+  .swiper-slide {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: 0 0 auto;
+    width: 150px;
+    height: 232px;
+    box-sizing: border-box;
+  }
+
+  @media (max-width: 768px) {
+    .swiper-slide {
+      width: 138px;
+      height: 214px;
+    }
+  }
+}
+
+.rules-note {
+  margin: 0;
+  padding: 32px 8px;
+  font-family: v.$font-body;
+  font-size: 14px;
+  text-align: center;
+  color: v.$campaign-portal-text-softer;
+}
+
+.rules-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+
+  .rules-note {
+    padding: 8px 8px 0;
+  }
+}
+
+.rules-retry {
+  padding: 8px 16px;
+  background: none;
+  border: 1px dashed v.$campaign-portal-border-focus;
+  border-radius: 8px;
+  font-family: v.$font-header;
+  font-size: 11px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: v.$campaign-portal-text-lavender;
+  cursor: pointer;
+  transition: border-color 0.15s ease, color 0.15s ease;
+
+  &:hover {
+    border-color: v.$campaign-portal-border-hover;
+    color: v.$campaign-portal-text-bright;
+  }
+}
+
+.rules-add {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 150px;
+  height: 220px;
+  flex: 0 0 auto;
+  padding: 8px;
+  box-sizing: border-box;
+  background: transparent;
+  border: 1px dashed v.$campaign-portal-border-focus;
+  border-radius: 6px;
+  color: v.$campaign-portal-text-lavender;
+  cursor: pointer;
+  transition: border-color 0.15s ease, color 0.15s ease, transform 0.2s ease;
+
+  &:hover {
+    border-color: v.$campaign-portal-border-hover;
+    color: v.$campaign-portal-text-bright;
+    transform: translateY(-6px);
+  }
+
+  &:focus-visible {
+    outline: 2px solid color-mix(in srgb, var(--portal-color, v.$color-base-purple-primary) 80%, white 20%);
+    outline-offset: 3px;
+  }
+
+  @media (max-width: 768px) {
+    width: 138px;
+    height: 202px;
+  }
+}
+
+.rules-add-plus {
+  font-size: 28px;
+  line-height: 1;
+}
+
+.rules-add-label {
+  font-family: v.$font-header;
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-align: center;
+  text-transform: uppercase;
+}

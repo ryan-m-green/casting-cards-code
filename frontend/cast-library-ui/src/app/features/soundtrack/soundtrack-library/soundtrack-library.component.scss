@@ -1,0 +1,172 @@
+@use '../../../../styles/variables' as v;
+@use '../../../shared/components/Campaign/Soundtracks/soundtrack-card';
+
+:host {
+  display: block;
+  height: 100%;
+}
+
+/* ── Rows ──────────────────────────────────────────────────────────────────────
+   The library lays the tracks and the playlists as two swept rows, each of full-sized cards, the
+   way the cast library sweeps its own row. */
+.st-row-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 6px;
+  flex-shrink: 0;
+}
+
+.st-row + .st-row-head {
+  margin-top: 16px;
+}
+
+.st-row-title {
+  margin: 0;
+  font-family: v.$font-header;
+  font-size: 13px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  /* The journal's own heading ink, so the row titles sit with the parchment like the page title. */
+  color: v.$color-base-brown-14;
+}
+
+.st-row {
+  width: 100%;
+  overflow: hidden;
+  box-sizing: border-box;
+  padding: 16px 0 v.$spacing-md;
+  overscroll-behavior-x: contain;
+
+  .swiper-wrapper {
+    display: flex;
+    flex-direction: row;
+    align-items: stretch;
+  }
+
+  .swiper-slide {
+    flex: 0 0 auto;
+    width: v.$stat-tile-width;
+    height: v.$stat-tile-height;
+    box-sizing: border-box;
+  }
+}
+
+.st-note {
+  margin: 0;
+  padding: 4px 6px 8px;
+  color: v.$color-base-brown-14;
+}
+
+.st-error {
+  margin: 8px 0;
+  padding: 8px 12px;
+  background: color-mix(in srgb, v.$color-base-red-5 40%, transparent);
+  border: 1px solid v.$color-base-red-4;
+  border-radius: 6px;
+  color: v.$color-base-red-2;
+  font-family: v.$font-body;
+  font-size: 13px;
+}
+
+.st-stat-body--playlist {
+  padding-top: 6px;
+  padding-bottom: 38px;
+}
+
+/* The playlist's songs, listed one to a line down the card. The list is capped at six rows and
+   clips, so it can never grow past the card's edge however long the playlist is. */
+.st-card-tracks {
+  flex: 0 0 auto;
+  width: 100%;
+  max-height: 84px;
+  margin: 0;
+  padding: 0 2px 0 0;
+  box-sizing: border-box;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  overflow: hidden;
+  text-align: left;
+}
+
+.st-card-track {
+  color: rgba(v.$color-base-brown-14, 0.85);
+  font-family: v.$font-body;
+  font-size: 11px;
+  line-height: 1.2;
+  /* A title too long for the card is cut off rather than folded onto another line. */
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* A small gold pip leads each song, in the journal's own ink. */
+.st-card-track::before {
+  content: '· ';
+  color: v.$color-base-gold-1;
+}
+
+/* ── The ＋ tile that ends the tracks row ────────────────────────────────────
+   The journal's colours, the same ones the Cast Library's "New cast" tile wears: a dashed
+   parchment-brown card that lights gold on hover. */
+.st-add-track {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  box-sizing: border-box;
+  border: 1px dashed v.$color-border-accent;
+  border-radius: 8px;
+  color: v.$color-base-brown-14;
+  overflow: hidden;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+
+  &:hover {
+    border-color: v.$color-arcane-border;
+    box-shadow: 0 0 10px v.$color-arcane-glow-card;
+  }
+}
+
+.st-add-half {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 8px;
+  background: transparent;
+  border: none;
+  color: v.$color-base-brown-14;
+  font-family: v.$font-header;
+  cursor: pointer;
+  transition: color 0.15s ease;
+
+  &:hover:not(:disabled) {
+    color: v.$color-base-gold-1;
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
+
+.st-add-half--sfx {
+  border-top: 1px dashed v.$color-border-accent;
+}
+
+.st-add-plus {
+  font-size: 28px;
+  line-height: 1;
+}
+
+.st-add-label {
+  font-family: v.$font-header;
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  text-align: center;
+}

@@ -1,0 +1,73 @@
+@use '../../../../../styles/variables' as v;
+
+:host {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--cc-delete-gap, 4px);
+}
+
+.cc-delete-action {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--cc-delete-size, 32px);
+  height: var(--cc-delete-size, 32px);
+  padding: 0;
+  background: transparent;
+  border: 1px solid v.$campaign-portal-border-bold;
+  border-radius: 5px;
+  color: v.$campaign-portal-text-muted;
+  font-family: v.$font-body;
+  cursor: pointer;
+  transition: background 0.18s ease, border-color 0.18s ease, color 0.18s ease;
+
+  &:hover:not(:disabled) {
+    color: v.$campaign-portal-text-bright;
+    border-color: v.$color-border-accent;
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  &--danger,
+  &--cancel {
+    background: rgba(56, 56, 62, 1);
+    border-color: v.$campaign-portal-border-focus;
+
+    &:hover:not(:disabled) {
+      background: rgba(74, 74, 82, 1);
+      border-color: v.$campaign-portal-border-strong-focus;
+    }
+  }
+
+  &--danger:hover:not(:disabled) {
+    color: #f87171;
+    border-color: rgba(248, 113, 113, 0.7);
+  }
+
+  &--confirm {
+    width: auto;
+    padding: 0 5px;
+    font-size: var(--cc-delete-font-size, 14px);
+    background: rgba(220, 38, 38, 0.85);
+    border-color: rgba(248, 113, 113, 0.75);
+    color: #fff;
+
+    &:hover:not(:disabled) {
+      background: rgba(185, 28, 28, 0.92);
+      border-color: rgba(248, 113, 113, 0.95);
+      color: #fff;
+    }
+  }
+}
+
+.cc-delete-icon {
+  width: var(--cc-delete-icon-size, 20px);
+  height: var(--cc-delete-icon-size, 20px);
+  filter: invert(1);
+  opacity: 0.85;
+  transform: rotate(90deg) scaleY(-1);
+}

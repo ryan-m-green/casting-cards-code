@@ -1,0 +1,134 @@
+@use '../../../../../../styles/variables' as v;
+
+/*
+ * The sublocation form's own styles, the same ones `cc-faction-new-form` carries: the global
+ * stylesheets already hold `.wr`, `.form-field`, `.form-row-gap` and `.campaign-primary-btn`,
+ * so only what the drawer's forms add locally is repeated here — and the fields themselves are
+ * the v2 campaign components, which bring their own styles.
+ */
+
+:host {
+  display: block;
+}
+
+.pic-new-form-wrap { max-width: 960px; }
+
+.form-gm-box {
+  /* The GM box and the heading that sits in its border are both drawn in the portal's purple,
+     which is what reads on the drawer's dark ground. */
+  border: 2px solid v.$color-base-purple-primary;
+  border-radius: 8px;
+  padding: 16px;
+  margin: 12px 0 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+
+  /* The box's rows: one form-row-gap div holding a form-field per component, one under the
+     other — this is a column form, so the row helper's classes are not worn on the wrapper. */
+  .form-row-gap {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .form-field {
+    flex: 0 0 auto;
+    margin-bottom: 12px;
+  }
+
+  &__legend {
+    font-family: v.$font-header;
+    font-size: 14px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: v.$color-base-purple-primary;
+    padding: 0 8px;
+  }
+}
+
+// Consistent spacing between form rows
+.form-row-gap {
+  gap: 16px;
+}
+
+// Consistent vertical spacing for all form sections
+.pic-new-form > * {
+  margin-bottom: 16px;
+}
+
+.pic-new-form > *:last-child {
+  margin-bottom: 0;
+}
+
+// Ensure form fields have adequate width
+.form-field {
+  min-width: 180px;
+  flex: 1;
+}
+
+/*
+ * The v2 fields each carry 8px of their own above and below, and this form is a flex column
+ * (and the GM box a flex column too), where margins add rather than collapse. The form's own
+ * rhythm already spaces its rows — 16px between them, 12px inside the GM box — so those are
+ * taken off here. The width is the other way round: a field standing on its own would size to
+ * its content, so it takes the form's full width like the rows it sits between.
+ */
+app-cc-textbox,
+cc-shop-inventory {
+  width: 100%;
+}
+
+app-cc-textbox,
+cc-shop-inventory,
+cc-keyword-tags {
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+@media (max-width: 500px) {
+  .pic-new-form-wrap {
+    max-width: 100%;
+  }
+
+  .form-field {
+    min-width: 120px;
+    flex: 1 1 auto;
+  }
+
+  .form-row-gap {
+    flex-wrap: wrap;
+  }
+}
+
+.pic-new-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  align-items: flex-start;
+  padding-left: 12px;
+  padding-right: 12px;
+}
+
+// Allow dropdown rows to extend to left edge
+.pic-new-form > .wr.form-row-gap {
+  margin-left: -12px;
+  padding-left: 12px;
+}
+
+.pic-save-row {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 16px;
+  margin-top: 20px;
+  padding-bottom: 8px;
+}
+
+/* The Save button is the shell-wide campaign primary button (`.campaign-primary-btn` in the
+   global stylesheet): it reads like every other primary action in the campaign, holds itself
+   while the write lands, and the drawer closes on success. */
+
+.pic-new-form--wrap {
+  display: block;
+}

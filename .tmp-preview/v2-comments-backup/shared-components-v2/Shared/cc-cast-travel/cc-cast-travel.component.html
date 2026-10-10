@@ -1,0 +1,19 @@
+<!--
+  The travel button: the card's own way off, standing in the back face's action row beside ✦
+  Details (see the card). It opens the right drawer with the travel picker — the campaign's
+  locations as simple cards, then the sublocations of the one that is picked — rather than a panel
+  of its own (see cc-cast-travel-picker).
+
+  The click is stopped from bubbling: the control stands inside the card, and the card flips on any
+  click that reaches it.
+-->
+<div class="cast-travel" (click)="$event.stopPropagation()">
+  <button
+    type="button"
+    class="cast-travel-btn"
+    title="Travel"
+    aria-label="Move this cast to another location"
+    (click)="openTravelDrawer()">
+    <img class="cast-travel-btn-icon" src="/about/cast_travel_system.svg" alt="" />
+  </button>
+</div>

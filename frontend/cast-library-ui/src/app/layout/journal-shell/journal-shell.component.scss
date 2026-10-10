@@ -13,7 +13,7 @@
   align-items: stretch;
   width: min(96vw, 820px);
   height: min(88vh, 780px);
-  position: relative; // anchor for absolutely-positioned strap
+  position: relative;
   filter: drop-shadow(0 40px 70px v.$color-shadow-dark) drop-shadow(0 8px 20px v.$color-shadow-medium);
 
   @media (max-width: 600px) {
@@ -22,7 +22,6 @@
   }
 }
 
-// ─── Spine ────────────────────────────────────────────────────────────────────
 .spine {
   width: 96px;
   flex-shrink: 0;
@@ -141,46 +140,38 @@
   }
 }
 
-// ─── Page Area ────────────────────────────────────────────────────────────────
 .page-area {
   flex: 1;
   min-width: 0;
   position: relative;
-  overflow: auto;
+  /*
+   * The frame clips and never scrolls: the page it holds is inset to it exactly, so the only thing
+   * that ever reaches past it is the flipping page's own 3D sweep — which is folded away at the
+   * edge rather than carried out over the spine — and a sideways drag across a page finds nothing
+   * here to pan. What a page is allowed to scroll is settled by .pc below.
+   */
+  overflow: hidden;
   border-radius: 0 6px 6px 0;
   perspective: 2000px;
 }
 
-// ─── Page layers ──────────────────────────────────────────────────────────────
-// Aged parchment — ruled lines, edge staining, scattered foxing marks,
-// a ghost-compass in the top-left, and decorative corner washes.
-// Static frame effects — edge staining, corner foxing, watermark, toning, base.
-// Applied to the fixed-size .page element (viewport-bounded).
 @mixin parchment-bg {
   background:
-    // ── Edge staining — binding shadow on the left ──
     linear-gradient(to right,  v.$journal-parchment-stain-binding 0%, v.$journal-parchment-stain-binding-fade 7%, transparent 18%),
-    // ── Edge staining — slight darkening on all four sides ──
     linear-gradient(to left,   v.$journal-parchment-stain-edge 0%, transparent 10%),
     linear-gradient(to bottom, v.$journal-parchment-stain-top-bottom 0%, v.$journal-parchment-stain-fade-2 6%, transparent 14%),
     linear-gradient(to top,    v.$journal-parchment-stain-top-bottom 0%, v.$journal-parchment-stain-fade-2 6%, transparent 14%),
-    // ── Corner foxing / water staining ──
     radial-gradient(ellipse 110px 85px  at  2%  3%, v.$journal-parchment-foxing-1 0%, transparent 60%),
     radial-gradient(ellipse  80px 68px  at 98%  2%, v.$journal-parchment-foxing-2 0%, transparent 60%),
     radial-gradient(ellipse 115px 90px  at 98% 98%, v.$journal-parchment-foxing-3 0%, transparent 60%),
     radial-gradient(ellipse  90px 105px at  2% 98%, v.$journal-parchment-foxing-4 0%, transparent 60%),
-    // ── Ghost compass / seal watermark (top-left) ──
     radial-gradient(circle 38px at 7% 7%, v.$journal-parchment-watermark-1 0%, v.$journal-parchment-watermark-2 45%, transparent 70%),
     radial-gradient(circle 22px at 7% 7%, v.$journal-parchment-watermark-3 0%, transparent 60%),
-    // ── Warm uneven toning across the surface ──
     radial-gradient(ellipse 65% 52% at 32% 28%, v.$journal-parchment-toning-1 0%, transparent 70%),
     radial-gradient(ellipse 48% 62% at 72% 72%, v.$journal-parchment-toning-2 0%, transparent 70%),
-    // ── Base parchment — amber-toned aged paper ──
     linear-gradient(112deg, v.$color-base-tan-1 0%, v.$color-base-tan-2 28%, v.$color-base-tan-3 52%, v.$color-base-tan-4 78%, v.$color-base-tan-5 100%);
 }
 
-// Scattered age spots — applied to the scrollable .pc container so they
-// travel with the content rather than sitting at fixed viewport positions.
 @mixin parchment-spots {
   background:
     radial-gradient(ellipse 28px 22px at 70% 14%, v.$journal-parchment-spot-1 0%, transparent 70%),
@@ -206,7 +197,6 @@
 
 }
 
-// ─── Flip element (3D overlay) ────────────────────────────────────────────────
 .page-flip {
   position: absolute;
   inset: 0;
@@ -232,15 +222,12 @@
   box-shadow: inset 8px 0 20px v.$journal-parchment-shadow-front, inset -4px 0 10px v.$journal-parchment-shadow-front-light;
 }
 
-// NOTE: NO filter/opacity/will-change here — any of those properties on a child
-// of a preserve-3d container flatten the 3D context and break backface-visibility.
 .flip-back-face {
   background: linear-gradient(252deg, v.$color-base-tan-7 0%, v.$color-base-tan-4 30%, v.$color-base-tan-8 55%, v.$color-base-tan-9 80%, v.$color-base-tan-10 100%);
   transform: rotateY(180deg);
   box-shadow: inset -8px 0 20px v.$journal-parchment-shadow-flip-back;
 }
 
-// ─── Cover-flip: leather front face when flipping away from the cover page ────
 .page-flip.cover-flip {
   .flip-face {
     background: linear-gradient(142deg, v.$color-base-leather-1 0%, v.$color-base-leather-2 18%, v.$color-base-leather-3 40%, v.$color-base-leather-4 62%, v.$color-base-leather-5 82%, v.$color-base-leather-6 100%);
@@ -252,7 +239,6 @@
   }
 }
 
-// ─── Journal-opens overlay — fades in behind the cover flip, holds, then fades out ─
 .journal-open-overlay {
   position: absolute;
   inset: 0;
@@ -265,12 +251,10 @@
   opacity: 0;
   pointer-events: none;
 
-  // Appear instantly — flip is covering it anyway
   &.show {
     opacity: 1;
   }
 
-  // Fade out smoothly
   &.fading {
     opacity: 0;
     transition: opacity 1.5s ease;
@@ -299,7 +283,6 @@
   97%       { opacity: 1; }
 }
 
-// ─── Close-flip: leather sweeps in from the left edge to cover the page ─────
 .page-flip.close-flip {
   .flip-face {
     background: linear-gradient(142deg, v.$color-base-leather-1 0%, v.$color-base-leather-2 18%, v.$color-base-leather-3 40%, v.$color-base-leather-4 62%, v.$color-base-leather-5 82%, v.$color-base-leather-6 100%);
@@ -312,7 +295,6 @@
   }
 }
 
-// ─── Corner fold ──────────────────────────────────────────────────────────────
 .page-fold {
   position: absolute;
   bottom: 0;
@@ -326,11 +308,17 @@
   pointer-events: none;
 }
 
-// ─── Scrollable page content ──────────────────────────────────────────────────
 :host ::ng-deep .pc {
   position: relative;
   padding: 20px 22px;
   height: 100%;
+  /*
+   * A journal page is read down and never across. Anything a page sweeps sideways — the library
+   * rows, the dashboard's strip of tiles — does that inside its own frame, so the page itself only
+   * moves up and down: a trackpad flick, a touch drag or a child that reaches past the page edge
+   * cannot carry the whole page (and its decorations) off to one side.
+   */
+  overflow-x: hidden;
   overflow-y: auto;
   display: flex;
   flex-direction: column;
@@ -341,7 +329,6 @@
   &::-webkit-scrollbar { display: none; }
 }
 
-// ─── Arcane accent — card & row hover on parchment pages ─────────────────────
 :host ::ng-deep .role-card:hover,
 :host ::ng-deep .wb.accent:hover {
   border-color: v.$color-arcane-border;
@@ -353,37 +340,24 @@
   background: v.$color-arcane-bg-focus;
 }
 
-// ─── Cover mode — leather front cover ────────────────────────────────────────
-// Applied when the root (cover) route is active.
-// The page area transforms from parchment into worn leather.
 .journal-wrap.is-cover {
   .page-area {
-    // Subtle leather ridge shadow along the spine edge
     box-shadow: inset 8px 0 24px v.$journal-leather-cover-shadow, inset -2px 0 8px v.$journal-leather-cover-shadow-light;
   }
 
   .page {
     background:
-    // ── Fine leather grain — two-axis micro-weave ──
     repeating-linear-gradient( 71deg, transparent 0px, transparent 3px, v.$journal-leather-grain-dark 3px, v.$journal-leather-grain-dark 4px ), repeating-linear-gradient( 161deg, transparent 0px, transparent 5px, v.$journal-leather-grain-light 5px, v.$journal-leather-grain-light 6px ),
-    // ── Long scratch marks — use scars from years of use ──
     repeating-linear-gradient( 24deg, transparent 0px, transparent 42px, v.$journal-leather-scratch-1 42px, v.$journal-leather-scratch-1 43px, transparent 43px, transparent 86px ), repeating-linear-gradient( 148deg, transparent 0px, transparent 30px, v.$journal-leather-scratch-2 30px, v.$journal-leather-scratch-2 31px, transparent 31px, transparent 62px ),
-    // ── Worn bright zones — fingers have rubbed these areas ──
     radial-gradient(ellipse 28% 18% at 50% 48%, v.$journal-leather-worn-1 0%, transparent 70%), radial-gradient(ellipse 14% 10% at 50% 88%, v.$journal-leather-worn-2 0%, transparent 60%), radial-gradient(ellipse 10% 12% at 50% 8%, v.$journal-leather-worn-3 0%, transparent 60%),
-    // ── Worn corner highlights ──
     radial-gradient(ellipse 22% 16% at 3% 3%, v.$journal-leather-worn-corner-1 0%, transparent 62%), radial-gradient(ellipse 22% 16% at 97% 3%, v.$journal-leather-worn-corner-2 0%, transparent 62%), radial-gradient(ellipse 22% 16% at 3% 97%, v.$journal-leather-worn-corner-3 0%, transparent 62%), radial-gradient(ellipse 22% 16% at 97% 97%, v.$journal-leather-worn-corner-4 0%, transparent 62%),
-    // ── Heavy dark pockets — deep compression stains ──
     radial-gradient(ellipse 28% 24% at 12% 52%, v.$journal-leather-stain-1 0%, transparent 70%), radial-gradient(ellipse 22% 28% at 88% 28%, v.$journal-leather-stain-2 0%, transparent 70%), radial-gradient(ellipse 24% 20% at 65% 78%, v.$journal-leather-stain-3 0%, transparent 70%), radial-gradient(ellipse 18% 22% at 32% 15%, v.$journal-leather-stain-4 0%, transparent 70%),
-    // ── Subtle center lustre — leather sheen ──
     radial-gradient(ellipse 55% 45% at 50% 45%, v.$journal-leather-lustre 0%, transparent 70%),
-    // ── Base leather — dark tobacco-brown hide ──
     linear-gradient(142deg, v.$color-base-leather-1 0%, v.$color-base-leather-2 18%, v.$color-base-leather-3 40%, v.$color-base-leather-4 62%, v.$color-base-leather-5 82%, v.$color-base-leather-6 100%);
   }
-  // The page-front gets an additional inner border — like a cover frame
   .page-front {
     box-shadow: inset 8px 0 24px v.$journal-leather-cover-shadow, inset -2px 0 8px v.$journal-leather-cover-shadow-light, inset 12px 12px 0 -10px v.$journal-leather-frame, inset -12px -12px 0 -10px v.$journal-leather-frame;
   }
-  // Flip faces — keep simple gradients (no filter/opacity — breaks preserve-3d)
   .flip-face {
     background: linear-gradient(142deg, v.$color-base-leather-1 0%, v.$color-base-leather-2 18%, v.$color-base-leather-3 40%, v.$color-base-leather-4 62%, v.$color-base-leather-5 82%, v.$color-base-leather-6 100%);
   }
@@ -394,5 +368,4 @@
     box-shadow: inset -8px 0 20px v.$journal-parchment-shadow-flip-back;
   }
 }
-
 

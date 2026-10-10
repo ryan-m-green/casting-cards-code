@@ -1,0 +1,62 @@
+<div class="pic-new-form-wrap">
+  <form [formGroup]="sublocationForm" class="pic-new-form pic-new-form--wrap">
+
+    <div class="wr form-row-gap">
+      <div class="form-field">
+        <app-cc-textbox
+          label="Sublocation Name"
+          context="campaign"
+          formControlName="name"
+        />
+      </div>
+    </div>
+
+    <app-cc-textbox
+      label="Description"
+      type="textarea"
+      [rows]="3"
+      context="campaign"
+      formControlName="description"
+    />
+
+    <fieldset class="form-gm-box">
+      <legend class="form-gm-box__legend">FOR GM EYES ONLY</legend>
+
+      <div class="form-row-gap">
+        <div class="form-field">
+          <cc-keyword-tags
+            label="Hashtags / Keywords"
+            placeholder="Add or select hashtags…"
+            context="campaign"
+            [options]="keywordOptions()"
+            formControlName="keywords"
+          />
+        </div>
+
+        <div class="form-field">
+          <app-cc-textbox
+            label="GM Notes"
+            type="textarea"
+            [rows]="3"
+            context="campaign"
+            formControlName="dmNotes"
+          />
+        </div>
+      </div>
+
+    </fieldset>
+
+    <cc-shop-inventory
+      label="Shop Inventory"
+      context="campaign"
+      formControlName="shopItems"
+    />
+
+    <div class="pic-save-row">
+      <button class="campaign-primary-btn" type="button"
+              [disabled]="sublocationForm.invalid || saveStatus() === 'saving'"
+              (click)="onSave()">@if (saveStatus() === 'saving') { Saving… } @else { Save }</button>
+    </div>
+
+  </form>
+</div>

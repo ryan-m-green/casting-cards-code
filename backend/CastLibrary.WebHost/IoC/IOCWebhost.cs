@@ -1,5 +1,4 @@
-﻿using CastLibrary.Logic.Interfaces;
-using CastLibrary.WebHost.Filters;
+using CastLibrary.Logic.Interfaces;
 using CastLibrary.WebHost.Infrastructure;
 using CastLibrary.WebHost.Mappers;
 using CastLibrary.WebHost.MetadataHelpers;
@@ -11,22 +10,18 @@ namespace CastLibrary.WebHost.IoC
     {
         public static IServiceCollection AddWebhost(this IServiceCollection services)
         {
+            services.AddScoped<ICampaignRuleMapper, CampaignRuleMapper>();
+            services.AddScoped<IConditionMapper, ConditionMapper>();
             services.AddScoped<ICastWebMapper, CastWebMapper>();
             services.AddScoped<ILocationWebMapper, LocationWebMapper>();
             services.AddScoped<ISublocationWebMapper, SublocationWebMapper>();
             services.AddScoped<ICampaignWebMapper, CampaignWebMapper>();
-            services.AddScoped<ILocationNpcRolesMapper, LocationNpcRolesMapper>();
-            services.AddScoped<ICampaignCastPlayerNotesMapper, CampaignCastPlayerNotesMapper>();
-            services.AddScoped<ICampaignLocationPlayerNotesMapper, CampaignLocationPlayerNotesMapper>();
             services.AddScoped<IPlayerCardWebMapper, PlayerCardWebMapper>();
             services.AddScoped<IFactionWebMapper, FactionWebMapper>();
             services.AddScoped<ICampaignFactionInstanceWebMapper, CampaignFactionInstanceWebMapper>();
-            services.AddScoped<ICampaignFactionPlayerNotesMapper, CampaignFactionPlayerNotesMapper>();
-            services.AddScoped<ICampaignSublocationPlayerNotesMapper, CampaignSublocationPlayerNotesMapper>();
-            services.AddScoped<ICampaignPlayerNotesMapper, CampaignPlayerNotesMapper>();
             services.AddScoped<IPlayerQuicknoteQueueMapper, PlayerQuicknoteQueueMapper>();
-            services.AddScoped<IZipArchiveMapper, ZipArchiveMapper>();
             services.AddScoped<ICampaignEventWebMapper, CampaignEventWebMapper>();
+            services.AddScoped<IPlayerFieldJournalEntryMapper, PlayerFieldJournalEntryMapper>();
 
             services.AddScoped<IUserRetriever, UserRetriever>();
             // Scoped: one CorrelationContext per HTTP request.

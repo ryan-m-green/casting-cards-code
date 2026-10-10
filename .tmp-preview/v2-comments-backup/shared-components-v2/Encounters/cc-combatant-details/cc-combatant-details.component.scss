@@ -1,0 +1,129 @@
+@use '../../../../../../styles/variables' as v;
+
+/* ─── cc-combatant-details ─────────────────────────────────────────────────── */
+/* The encounter drawer's panels: the card, its hit points, and the carousel's
+   arrows, drawn in the campaign portal's colours. */
+
+:host {
+  display: block;
+}
+
+.details {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.details-panel {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 18px;
+}
+
+/* ─── Which card of the place's group is up ────────────────────────────────── */
+/* The carousel's own title: the arrows walk the group, this says which card it is. */
+.details-card-title {
+  margin: 0;
+  font-family: v.$font-header;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: v.$campaign-portal-text-bright;
+}
+
+/* ─── Tabs: the card's numbers and its conditions, under the card's face ───── */
+.details-tabs {
+  display: flex;
+  gap: 6px;
+  width: 100%;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.tab-btn {
+  flex: 1;
+  padding: 7px 10px;
+  background: transparent;
+  border: none;
+  border-bottom: 2px solid transparent;
+  color: v.$campaign-portal-text-muted;
+  font-family: v.$font-body;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: color 0.15s ease, border-color 0.15s ease;
+
+  &:hover { color: v.$campaign-portal-text-lavender; }
+
+  // The tab that is up reads in the campaign's own colour, the way the ring does.
+  &--active {
+    color: v.$campaign-portal-text-bright;
+    border-bottom-color: var(--portal-color, #{v.$color-base-purple-primary});
+  }
+}
+
+/* ─── A tab's panel ───────────────────────────────────────────────────────── */
+.details-tab-panel {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+}
+
+/* ─── Carousel: one arrow per side ────────────────────────────────────────── */
+.details-nav {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 72px;
+  padding: 0;
+  background: rgba(46, 26, 94, 0.55);
+  border: 1px solid v.$campaign-portal-border-bold;
+  border-radius: 8px;
+  color: v.$campaign-portal-text-lavender;
+  font-size: 22px;
+  line-height: 1;
+  cursor: pointer;
+  transition: border-color 0.15s ease, color 0.15s ease, transform 0.15s ease;
+
+  &:hover:not(:disabled) {
+    color: #fff;
+    border-color: var(--portal-color, #{v.$color-base-purple-primary});
+    transform: scale(1.04);
+  }
+
+  &:disabled { opacity: 0.35; cursor: default; }
+}
+
+/* ─── Hit points: the fight's toll, and what it can take on top ───────────── */
+/*
+   One row: the two counters stand side by side, each with its label above its
+   dials, and the two dial groups share a baseline — so the card's maximum hit
+   points and its temporary hit points always read across from one another. The
+   row does not wrap: the labels are short enough to fit under any drawer width,
+   and stacking the pair is worse than the space it saves.
+*/
+.details-hp {
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  gap: 12px;
+}
+
+/* ─── Notes ───────────────────────────────────────────────────────────────── */
+.details-note,
+.details-error {
+  margin: 0;
+  font-size: 12px;
+}
+
+.details-note { color: v.$campaign-portal-text-muted; }
+.details-error { color: #f87171; }

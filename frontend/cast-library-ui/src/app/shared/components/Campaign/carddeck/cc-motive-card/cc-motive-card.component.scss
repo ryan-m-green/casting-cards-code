@@ -1,0 +1,121 @@
+@use '../../../../../../styles/variables' as v;
+
+:host {
+  display: block;
+  width: 75px;
+  height: 110px;
+  flex-shrink: 0;
+}
+
+.cc-motive-card {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  background: v.$campaign-portal-bg-dark;
+  border: 1px solid v.$campaign-portal-border-bold;
+  border-radius: 8px;
+  cursor: pointer;
+  position: relative;
+  transition: transform 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
+
+  &:hover {
+    transform: translateY(-2px);
+  }
+
+  &.is-selected {
+    border-color: var(--portal-color, v.$color-base-purple-primary);
+    box-shadow: 0 0 0 1px var(--portal-color, v.$color-base-purple-primary);
+  }
+}
+
+.motive-banner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 5px 6px;
+  border-bottom: 1px solid v.$campaign-portal-border;
+  flex-shrink: 0;
+}
+
+.motive-type {
+  font-family: v.$font-body;
+  font-size: 10px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: v.$campaign-portal-text-bright;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.motive-body {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6px;
+}
+
+.motive-body-mark {
+  position: absolute;
+  inset: 5%;
+  width: 90%;
+  height: 90%;
+  object-fit: contain;
+  filter: brightness(0) invert(1);
+  opacity: 0.03;
+  pointer-events: none;
+}
+
+.motive-content {
+  position: relative;
+  width: 100%;
+  font-family: v.$font-body;
+  font-size: 10px;
+  line-height: 1.4;
+  color: v.$campaign-portal-text-muted;
+  text-align: center;
+  white-space: pre-wrap;
+  display: -webkit-box;
+  -webkit-line-clamp: 5;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.motive-check {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: var(--portal-color, v.$color-base-purple-primary);
+  color: #fff;
+  font-size: 9px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.motive-shared {
+  position: absolute;
+  bottom: 4px;
+  right: 4px;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: v.$color-base-gold-bright-hex;
+  color: #1a0f00;
+  font-size: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.is-done .motive-content {
+  text-decoration: line-through;
+  opacity: 0.65;
+}

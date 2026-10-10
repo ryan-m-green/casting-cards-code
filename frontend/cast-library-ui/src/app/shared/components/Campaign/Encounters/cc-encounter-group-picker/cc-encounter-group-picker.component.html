@@ -1,0 +1,213 @@
+@let pickedCount = pickedCardCount();
+
+<div class="picker" [style.--portal-color]="portalColor()">
+  <div class="picker-fab">
+    <button
+      type="button"
+      class="campaign-primary-btn picker-add"
+      [disabled]="!canAdd()"
+      (click)="onAddGroup()"
+    >{{ addingToGroup() ? 'Add to group' : 'Add group' }}</button>
+  </div>
+
+  <p class="picker-title">
+    {{ pickedCount }} card{{ pickedCount === 1 ? '' : 's' }} in this group
+    @if (addingToGroup() && pendingCount() > 0) {
+      · {{ pendingCount() }} to add
+    }
+    @if (hitPointChanges().length) {
+      · {{ hitPointChanges().length }} hit point{{ hitPointChanges().length === 1 ? '' : 's' }} to save
+    }
+  </p>
+
+  <div
+    class="picker-picked-reveal"
+    [class.is-open]="pickerOpen()"
+    [class.is-closing]="pickerClosing()"
+  >
+    @if (blockActive(); as active) {
+      <div class="picker-picked-block">
+        <div
+          class="picker-row swiper"
+          #pickerRow
+          #pickedRow
+          data-row-id="picked"
+          role="group"
+          aria-label="Picked cards"
+        >
+          <div class="swiper-wrapper">
+            @for (card of blockCards(); track card.key) {
+              @let isActive = card.key === active.key;
+              <div class="swiper-slide" [attr.data-card-key]="card.key">
+                <button
+                  type="button"
+                  class="picker-card"
+                  [class.is-active]="isActive"
+                  [attr.aria-pressed]="isActive"
+                  [attr.aria-label]="'Edit ' + card.cast.name + (card.hp > 0 ? ', max hit points set' : ', no max hit points yet')"
+                  (click)="selectPicked(card.key)"
+                >
+                  <cc-simple-cast-card [cast]="card.cast" />
+                  @if (card.count > 1) {
+                    <span class="picker-card-badge">×{{ card.count }}</span>
+                  }
+                  <span class="picker-card-hp" [class.is-set]="card.hp > 0" aria-hidden="true">✓</span>
+                </button>
+              </div>
+            }
+          </div>
+        </div>
+
+        <div class="picker-picked" #pickedPanel [style.--picker-tail-x.px]="tailX()">
+          @if (tailPlaced()) {
+            <span class="picker-picked-tail" aria-hidden="true"></span>
+          }
+
+          <div class="picker-picked-details">
+            <cc-counter-badge
+              class="picker-picked-badge"
+              context="campaign"
+              [min]="active.seedCount"
+              [max]="99"
+              [count]="active.count"
+              (countChange)="setCount(active.key, $event)"
+            />
+
+            <span class="picker-picked-hp-dials">
+              <cc-dial-counter
+                context="campaign"
+                [dials]="3"
+                [ariaLabel]="'Max hit points for ' + active.cast.name"
+                [ngModel]="active.hp"
+                (ngModelChange)="setHp(active.key, $event)"
+              />
+            </span>
+
+            <app-cc-textbox
+              class="picker-picked-notes"
+              label="Combatant Notes/Stats"
+              type="textarea"
+              [rows]="4"
+              context="campaign"
+              [placeholder]="'Notes for ' + active.cast.name"
+              [ngModel]="active.notes"
+              (ngModelChange)="setNotes(active.key, $event)"
+            />
+          </div>
+        </div>
+      </div>
+    }
+  </div>
+
+  <div class="picker-filter">
+    <input
+      class="picker-search"
+      type="text"
+      placeholder="Search name, role, race…"
+      aria-label="Search cast cards"
+      [ngModel]="search()"
+      (ngModelChange)="onSearchChange($event)"
+    />
+    <button type="button" class="picker-clear" [disabled]="!hasFilter()" (click)="clearFilter()">Clear</button>
+  </div>
+
+  @if (keywordChips().length) {
+    <div class="picker-chips" role="group" aria-label="Keywords across this campaign and your library">
+      @for (chip of keywordChips(); track chip.keyword) {
+        <button
+          type="button"
+          class="picker-chip"
+          [class.is-on]="activeKeywords().includes(chip.keyword)"
+          (click)="toggleKeyword(chip.keyword)"
+        >#{{ chip.keyword }}<span class="picker-chip-count">{{ chip.count }}</span></button>
+      }
+
+      @if (activeKeywords().length > 1) {
+        <button
+          type="button"
+          class="picker-mode"
+          [class.is-on]="matchAll()"
+          (click)="toggleMatchAll()"
+        >{{ matchAll() ? 'all' : 'any' }}</button>
+      }
+    </div>
+  }
+
+  @if (campaignCasts().length) {
+    <p class="picker-section">
+      In this campaign ({{ visibleCampaignCasts().length }} of {{ campaignCasts().length }})
+    </p>
+
+    <div
+      class="picker-row swiper"
+      #pickerRow
+      data-row-id="campaign"
+      role="group"
+      aria-label="Cast in this campaign"
+    >
+      <div class="swiper-wrapper">
+        @for (cast of visibleCampaignCasts(); track cast.instanceId) {
+          @let instanceCopies = countFor('instance', cast.instanceId);
+          <div class="swiper-slide">
+            <button
+              type="button"
+              class="picker-card"
+              [class.is-picked]="instanceCopies > 0"
+              [attr.aria-label]="'Add ' + cast.name"
+              (click)="addFromInstance(cast)"
+            >
+              <cc-simple-cast-card [cast]="cast" />
+              @if (instanceCopies > 0) {
+                <span class="picker-card-badge">×{{ instanceCopies }}</span>
+              }
+            </button>
+          </div>
+        }
+      </div>
+
+      @if (!visibleCampaignCasts().length) {
+        <p class="picker-row-empty">No card of this campaign answers the filter.</p>
+      }
+    </div>
+  }
+
+  <p class="picker-section">
+    Your cast library ({{ visibleLibraryCasts().length }} of {{ libraryCasts().length }})
+  </p>
+
+  <div
+    class="picker-row swiper"
+    #pickerRow
+    data-row-id="library"
+    role="group"
+    aria-label="Your cast library"
+  >
+    <div class="swiper-wrapper">
+      @for (cast of visibleLibraryCasts(); track cast.id) {
+        @let libraryCopies = countFor('cast', cast.id);
+        <div class="swiper-slide">
+          <button
+            type="button"
+            class="picker-card"
+            [class.is-picked]="libraryCopies > 0"
+            [attr.aria-label]="'Add ' + cast.name"
+            (click)="addFromLibrary(cast)"
+          >
+            <cc-simple-cast-card [cast]="asCastInstance(cast)" />
+            @if (libraryCopies > 0) {
+              <span class="picker-card-badge">×{{ libraryCopies }}</span>
+            }
+          </button>
+        </div>
+      }
+    </div>
+
+    @if (!visibleLibraryCasts().length) {
+      <p class="picker-row-empty">{{ libraryNote() }}</p>
+    }
+  </div>
+
+  @if (error()) {
+    <p class="picker-error">{{ error() }}</p>
+  }
+</div>

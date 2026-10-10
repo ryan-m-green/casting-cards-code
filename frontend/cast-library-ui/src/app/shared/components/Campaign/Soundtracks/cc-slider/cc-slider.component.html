@@ -1,0 +1,33 @@
+<div class="cc-slider" [style.--cc-slider-accent]="accentColor()">
+  @if (label()) {
+    <div class="cc-slider-label">{{ label() }}</div>
+  }
+  <div class="cc-slider-row">
+    <div class="cc-slider-track">
+      <input
+        type="range"
+        class="cc-slider-input"
+        [attr.aria-label]="ariaLabel() || label() || undefined"
+        [min]="min()"
+        [max]="max()"
+        [step]="step()"
+        [value]="value()"
+        [disabled]="disabled()"
+        (input)="onInput($event)"
+        (change)="onCommit($event)"
+      />
+      @if (showTicks()) {
+        <div class="cc-slider-ticks">
+          @for (tick of tickMarks(); track tick) {
+            <span></span>
+          }
+        </div>
+      }
+    </div>
+    @if (showValue()) {
+      <div class="cc-slider-value">
+        <span class="cc-slider-value-text">{{ displayText() }}</span>
+      </div>
+    }
+  </div>
+</div>

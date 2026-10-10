@@ -12,10 +12,12 @@ public class PlayerQuicknoteQueueMapper : IPlayerQuicknoteQueueMapper
 {
     public PlayerQuicknoteQueueItemResponse ToResponse(PlayerQuicknoteQueueDomain domain) => new()
     {
-        Id         = domain.Id,
-        CampaignId = domain.CampaignId,
-        Content    = domain.Content,
-        CreatedAt  = domain.CreatedAt,
-        UpdatedAt  = domain.UpdatedAt,
+        Id               = domain.Id,
+        CampaignId       = domain.CampaignId,
+        Content          = domain.Content,
+        LinkedEntities   = domain.LinkedEntities,
+        VisibleToPlayers = domain.VisibleToPlayers,
+        CreatedAt        = domain.CreatedAt,
+        UpdatedAt        = domain.UpdatedAt,
     };
 }

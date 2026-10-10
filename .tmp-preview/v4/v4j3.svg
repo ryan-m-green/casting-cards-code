@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 340 340" width="340" height="340"
+     fill="none" stroke="#000000" stroke-width="14" stroke-linecap="round" stroke-linejoin="round"
+     role="img" aria-labelledby="t d">
+  <title id="t">v4j3.svg</title>
+  <desc id="d">Variant board scratch file.</desc>
+  <path d="M 97.11 69.68 L 83.01 73.39 A 130 130 0 0 1 272.44 250.04 A 130 130 0 0 1 55.22 108.97 L 55.03 123.55" />
+  <path d="M 87.66 77.32 L 109 102.3 L 100.24 124.62 L 127.66 146.37 L 128.34 145.63 L 107.76 123.38 L 123 101.7 L 104.34 66.28 Z" fill="#000000" />
+  <path d="M 103.15 120.6 L 88.37 125.85 L 76.28 119.58 L 75.72 120.42 L 87.63 130.15 L 104.85 127.4 Z" fill="#000000" />
+  <path d="M 170 47 L 170 70 M 293 170 L 270 170 M 170 293 L 170 270 M 47 170 L 70 170" />
+  <path d="M 170 108 L 190 170 L 150 170 Z" fill="#000000" />
+  <path d="M 170 232 L 190 170 L 150 170 Z" />
+</svg>

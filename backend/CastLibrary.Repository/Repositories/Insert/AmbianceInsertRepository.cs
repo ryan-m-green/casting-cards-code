@@ -9,6 +9,9 @@ namespace CastLibrary.Repository.Repositories.Insert;
 public interface IAmbianceInsertRepository
 {
     Task<AmbianceDomain> AddAsync(AmbianceDomain domain);
+
+    /// <summary>Records that a campaign holds this library ambiance. Idempotent.</summary>
+    Task LinkAsync(Guid campaignId, Guid ambianceId);
 }
 
 public class AmbianceInsertRepository(
@@ -24,10 +27,10 @@ public class AmbianceInsertRepository(
         var entity = mapper.ToEntity(domain);
 
         const string headerSql =
-            @"INSERT INTO campaign_ambiances (id, campaign_id, title, randomize_music, created_at)
-              VALUES (@Id, @CampaignId, @Title, @RandomizeMusic, @CreatedAt)
+            @"INSERT INTO ambiances (id, gm_user_id, title, randomize_music, created_at)
+              VALUES (@Id, @GmUserId, @Title, @RandomizeMusic, @CreatedAt)
               RETURNING id,
-                        campaign_id AS CampaignId,
+                        gm_user_id AS GmUserId,
                         title,
                         randomize_music AS RandomizeMusic,
                         created_at  AS CreatedAt";
@@ -67,16 +70,34 @@ public class AmbianceInsertRepository(
 
         await tx.CommitAsync();
 
-        logging.LogDbOperation(correlation.TraceId, spanId, "INSERT", "campaign_ambiances", entity, 1);
+        logging.LogDbOperation(correlation.TraceId, spanId, "INSERT", "ambiances", entity, 1);
 
         return new AmbianceDomain
         {
             Id = header.Id,
-            CampaignId = header.CampaignId,
+            GmUserId = header.GmUserId,
             Title = header.Title,
             CreatedAt = header.CreatedAt,
             RandomizeMusic = header.RandomizeMusic,
             Items = items
         };
+    }
+
+    public async Task LinkAsync(Guid campaignId, Guid ambianceId)
+    {
+        var spanId = correlation.NewSpan();
+        var @params = new { CampaignId = campaignId, AmbianceId = ambianceId };
+
+        const string sql =
+            @"INSERT INTO campaign_ambiance_links (campaign_id, ambiance_id)
+              VALUES (@CampaignId, @AmbianceId)
+              ON CONFLICT DO NOTHING";
+
+        logging.LogDbOperation(correlation.TraceId, spanId, "INSERT", "campaign_ambiance_links", @params);
+
+        using var conn = sqlConnectionFactory.GetConnection();
+        await conn.ExecuteAsync(sql, @params);
+
+        logging.LogDbOperation(correlation.TraceId, spanId, "INSERT", "campaign_ambiance_links", @params, 1);
     }
 }

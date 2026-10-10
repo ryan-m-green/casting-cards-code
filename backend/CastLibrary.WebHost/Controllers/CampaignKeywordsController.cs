@@ -1,7 +1,7 @@
 using CastLibrary.Logic.Commands.Campaign;
 using CastLibrary.Logic.Queries.Campaign;
+using CastLibrary.Shared.Requests;
 using CastLibrary.WebHost.MetadataHelpers;
-using CastLibrary.WebHost.Requests;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 

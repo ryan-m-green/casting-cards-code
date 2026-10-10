@@ -1,0 +1,66 @@
+@use '../../../../../../styles/variables' as v;
+
+/* ─── cc-encounter-places ──────────────────────────────────────────────────── */
+/*
+  A capacity readout, read the way one usually is: the number that matters — what is
+  still free — leads, and the working that produced it sits under it in quieter type.
+  Sentence case and normal letter spacing on purpose: it is read, not deciphered.
+
+  The whole strip is set at one size, 14px, and the headline leads by weight and
+  brightness rather than by type size: the working under it is the same size in the
+  muted colour, so the two lines read as one readout rather than as two.
+*/
+
+:host {
+  display: block;
+}
+
+.places {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  font-size: 14px;
+}
+
+/* ─── The headline: how many spots are left ───────────────────────────────── */
+.places-headline {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  margin: 0;
+  color: v.$campaign-portal-text-bright;
+  font-family: v.$font-body;
+  font-weight: 600;
+}
+
+.places-headline-value {
+  color: v.$campaign-portal-text-bright;
+  font-weight: 700;
+  // Tabular figures, so stepping from 9 to 10 does not shift the words beside it.
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+}
+
+.places-headline-word {
+  color: v.$campaign-portal-text-lavender;
+}
+
+/* Nothing left to fill: the headline says so instead of showing a zero. */
+.places--full .places-headline,
+.places--full .places-headline-word {
+  color: #f0cf4a;
+}
+
+/* ─── The breakdown: the two kinds of spot, and the ring's total ──────────── */
+.places-math {
+  margin: 0;
+  color: v.$campaign-portal-text-muted;
+  font-family: v.$font-body;
+  font-variant-numeric: tabular-nums;
+}
+
+.places-op {
+  margin: 0 4px;
+  color: v.$campaign-portal-text-lavender;
+  opacity: 0.75;
+}

@@ -1,0 +1,41 @@
+:host {
+  display: inline-flex;
+}
+
+.cc-motive-btn {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--cc-motive-size, 32px);
+  height: var(--cc-motive-size, 32px);
+  padding: 0;
+  background: rgba(0, 0, 0, 0.55);
+  border: 1px solid color-mix(in srgb, var(--portal-color, #6e28d0) 70%, white 30%);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.18s ease, border-color 0.18s ease;
+
+  &:hover:not(:disabled) {
+    background: var(--portal-color, #6e28d0);
+  }
+
+  &:focus-visible {
+    outline: 2px solid color-mix(in srgb, var(--portal-color, #6e28d0) 80%, white 20%);
+    outline-offset: 2px;
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
+
+.cc-motive-icon {
+  display: block;
+  width: var(--cc-motive-icon-size, 22px);
+  height: var(--cc-motive-icon-size, 22px);
+  object-fit: contain;
+  filter: brightness(0) invert(1);
+  opacity: 0.9;
+}

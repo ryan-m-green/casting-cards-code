@@ -1,0 +1,108 @@
+<div class="my-character" [style.--portal-color]="portalColor()">
+  @if (playerCard(); as card) {
+    <div class="mc-tabs">
+      <button
+        class="mc-tab"
+        [class.is-active]="activeTab() === 'character'"
+        (click)="activeTab.set('character')">
+        {{ card.name }}
+      </button>
+      <button
+        class="mc-tab"
+        [class.is-active]="activeTab() === 'secrets'"
+        (click)="activeTab.set('secrets')">
+        Secrets
+      </button>
+    </div>
+
+    @if (activeTab() === 'character') {
+      <div class="my-character-header">
+        <div class="mc-name-row">
+          <div class="mc-name">{{ card.name }}</div>
+          <div class="mc-header-actions">
+            <cc-edit-button label="Edit character" (clicked)="openInfoEditor()" />
+          </div>
+        </div>
+
+        <div class="mc-header-body">
+          <div class="mc-portrait">
+            <cc-portrait-input
+              context="campaign"
+              [initialImageUrl]="card.imageUrl || ''"
+              [borderStyle]="'player'"
+              [readOnly]="true"
+            />
+          </div>
+
+          <div class="mc-heading">
+            <div class="mc-subtitle">{{ raceClass(card) }}</div>
+            @if (card.description) {
+              <p class="mc-description">{{ card.description }}</p>
+            }
+          </div>
+        </div>
+      </div>
+
+      <div class="mc-section">
+        <div class="mc-section-head">
+          <span class="mc-section-title">Motivations</span>
+          <cc-edit-button label="Edit motivations" (clicked)="openMotivationsEditor()" />
+        </div>
+
+        <div class="mc-motives">
+          @if (goals().length) {
+            <div class="mc-motive-group">
+              <span class="mc-motive-label">Goals</span>
+              <ul class="mc-motive-list">
+                @for (t of goals(); track t.id) {
+                  <li class="mc-motive-item" [class.is-done]="t.isCompleted">{{ t.content }}</li>
+                }
+              </ul>
+            </div>
+          }
+          @if (fears().length) {
+            <div class="mc-motive-group">
+              <span class="mc-motive-label">Known Fears</span>
+              <ul class="mc-motive-list">
+                @for (t of fears(); track t.id) {
+                  <li class="mc-motive-item">{{ t.content }}</li>
+                }
+              </ul>
+            </div>
+          }
+          @if (flaws().length) {
+            <div class="mc-motive-group">
+              <span class="mc-motive-label">Flaws</span>
+              <ul class="mc-motive-list">
+                @for (t of flaws(); track t.id) {
+                  <li class="mc-motive-item">{{ t.content }}</li>
+                }
+              </ul>
+            </div>
+          }
+          @if (!traits().length) {
+            <p class="mc-motive-empty">No motivations yet.</p>
+          }
+        </div>
+      </div>
+    } @else {
+      <div class="mc-section">
+        <div class="mc-section-head">
+          <span class="mc-section-title">Secrets</span>
+        </div>
+        <cc-secrets-whisper-row
+          [secrets]="secrets()"
+          [campaignId]="campaignId()"
+          [playerCardId]="card.id"
+          [portalColor]="portalColor()"
+          mode="player"
+          [recipientLabel]="card.name"
+          [canAdd]="true"
+          (secretsChange)="onSecretsChange($event)"
+        />
+      </div>
+    }
+  } @else {
+    <div class="mc-loading">Loading your character…</div>
+  }
+</div>

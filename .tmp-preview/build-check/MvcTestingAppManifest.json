@@ -1,0 +1,7 @@
+{
+  "CastLibrary.Adapter, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null": "C:\\Repository\\CastingCards\\Code\\backend\\CastLibrary.Adapter",
+  "CastLibrary.Logic, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null": "C:\\Repository\\CastingCards\\Code\\backend\\CastLibrary.Logic",
+  "CastLibrary.Repository, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null": "C:\\Repository\\CastingCards\\Code\\backend\\CastLibrary.Repository",
+  "CastLibrary.Shared, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null": "C:\\Repository\\CastingCards\\Code\\backend\\CastLibrary.Shared",
+  "CastLibrary.WebHost, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null": "C:\\Repository\\CastingCards\\Code\\backend\\CastLibrary.WebHost"
+}

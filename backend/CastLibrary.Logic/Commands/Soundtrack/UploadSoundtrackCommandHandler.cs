@@ -2,7 +2,6 @@ using CastLibrary.Logic.Interfaces;
 using CastLibrary.Logic.Services;
 using CastLibrary.Repository.Repositories.Insert;
 using CastLibrary.Repository.Repositories.Read;
-using CastLibrary.Repository.Repositories.Update;
 using CastLibrary.Shared.Domain;
 using CastLibrary.Shared.Enums;
 
@@ -15,19 +14,14 @@ public interface IUploadSoundtrackCommandHandler
 
 public class UploadSoundtrackCommandHandler(
     ISoundtrackInsertRepository insertRepository,
-    ICampaignReadRepository campaignReadRepository,
     IAudioFileStorageOperator audioStorage,
     IImageKeyCreator imageKeyCreator) : IUploadSoundtrackCommandHandler
 {
     public async Task<SoundtrackDomain> HandleAsync(UploadSoundtrackCommand command)
     {
-        var campaign = await campaignReadRepository.GetByIdAsync(command.CampaignId);
-        if (campaign is null)
-            throw new ArgumentException($"Campaign {command.CampaignId} not found");
-
         var soundtrackId = Guid.NewGuid();
         var fileExtension = Path.GetExtension(command.FileName).ToLowerInvariant();
-        var key = imageKeyCreator.Create(campaign.DmUserId, command.CampaignId, soundtrackId, EntityType.Soundtrack) + fileExtension;
+        var key = imageKeyCreator.Create(command.GmUserId, command.CampaignId ?? Guid.Empty, soundtrackId, EntityType.Soundtrack) + fileExtension;
         var fileNameWithExtension = $"{soundtrackId}{fileExtension}";
         
         await audioStorage.SaveAsync(key, command.Stream, command.ContentType);
@@ -36,7 +30,7 @@ public class UploadSoundtrackCommandHandler(
         var domain = new SoundtrackDomain
         {
             Id = soundtrackId,
-            CampaignId = command.CampaignId,
+            GmUserId = command.GmUserId,
             Title = command.Title.Trim(),
             FileName = fileNameWithExtension,
             FileUrl = fileUrl,
@@ -46,14 +40,22 @@ public class UploadSoundtrackCommandHandler(
             CreatedAt = DateTime.UtcNow
         };
 
-        return await insertRepository.AddAsync(domain);
+        var saved = await insertRepository.AddAsync(domain);
+
+        // A track uploaded from a campaign's own panel is adopted by that campaign as
+        // well as landing in the GM's library.
+        if (command.CampaignId is Guid campaignId && campaignId != Guid.Empty)
+            await insertRepository.LinkAsync(campaignId, saved.Id);
+
+        return saved;
     }
 }
 
 public class UploadSoundtrackCommand
 {
-    public UploadSoundtrackCommand(Guid campaignId, string title, string fileName, Stream stream, string contentType, int volume, bool isLoop, string kind = "music")
+    public UploadSoundtrackCommand(Guid gmUserId, Guid? campaignId, string title, string fileName, Stream stream, string contentType, int volume, bool isLoop, string kind = "music")
     {
+        GmUserId = gmUserId;
         CampaignId = campaignId;
         Title = title;
         FileName = fileName;
@@ -64,7 +66,8 @@ public class UploadSoundtrackCommand
         Kind = kind;
     }
 
-    public Guid CampaignId { get; }
+    public Guid GmUserId { get; }
+    public Guid? CampaignId { get; }
     public string Title { get; }
     public string FileName { get; }
     public Stream Stream { get; }

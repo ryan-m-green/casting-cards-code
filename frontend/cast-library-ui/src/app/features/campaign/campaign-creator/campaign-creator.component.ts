@@ -11,8 +11,8 @@ import { CampaignDetail, CampaignInviteCode, CampaignPlayer } from '../../../sha
 import { CampaignCastInstance } from '../../../shared/models/cast.model';
 import { CampaignSublocationInstance } from '../../../shared/models/sublocation.model';
 import { TimeOfDayEditorComponent } from '../time-of-day-editor/time-of-day-editor.component';
-import { JournalTitleComponent } from '../../../shared/components/journal-title/journal-title.component';
-import { JournalDropdownComponent } from '../../../shared/components/journal-dropdown/journal-dropdown.component';
+import { JournalTitleComponent } from '../../../shared/components/Shared/journal-title/journal-title.component';
+import { JournalDropdownComponent } from '../../../shared/components/Shared/journal-dropdown/journal-dropdown.component';
 import { AuthService } from '../../../core/auth/auth.service';
 import { CampaignHubService } from '../../../core/hub/campaign-hub.service';
 
@@ -97,7 +97,6 @@ export class CampaignCreatorComponent implements OnInit, OnDestroy {
   allDmKeywords      = signal<string[]>([]);
 
   private keywordSaveTimer?: ReturnType<typeof setTimeout>;
-  // Local fields for location text inputs — never pushed to selectedDrafts() signal during typing
   liveLocationFields: Record<string, string> = {
     geography: '', climate: '', religion: '', vibe: '', languages: '',
   };

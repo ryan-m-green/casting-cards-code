@@ -1,0 +1,20 @@
+@use '../../../../styles/variables' as v;
+
+:host { display: block; height: 100%; }
+
+/* The journal's own form footer: the save sits at the bottom-left of the page. */
+.form-save-footer {
+  justify-content: flex-start;
+}
+
+.condition-form-error {
+  margin: 12px 0;
+  padding: 10px 14px;
+  background: rgba(220, 38, 38, 0.1);
+  border: 1px solid rgba(220, 38, 38, 0.3);
+  border-radius: 6px;
+  color: #dc2626;
+  font-family: v.$font-body;
+  font-size: 14px;
+  line-height: 1.4;
+}

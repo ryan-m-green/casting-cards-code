@@ -2,7 +2,7 @@ import { Component, inject, OnInit, signal, computed } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 import { environment } from '../../../../environments/environment';
-import { JournalTitleComponent } from '../../../shared/components/journal-title/journal-title.component';
+import { JournalTitleComponent } from '../../../shared/components/Shared/journal-title/journal-title.component';
 import { SubscriptionLimitsEditorComponent } from './subscription-limits-editor.component';
 import { StopWordsEditorComponent } from './stop-words-editor.component';
 import { StripeConfigEditorComponent } from './stripe-config-editor.component';
@@ -53,13 +53,11 @@ export class ConfigurationSettingsComponent implements OnInit {
   errorMsg = signal('');
   successMsg = signal('');
 
-  // Store entity IDs for each configuration type
   pricingModelId = signal<string | null>(null);
   subscriptionLimitsId = signal<string | null>(null);
   stopWordsId = signal<string | null>(null);
   stripeConfigId = signal<string | null>(null);
 
-  // Computed properties for sorted pricing models
   livePricingModels = computed(() => 
     this.pricingModels().filter(model => model.accountType === 'live')
   );

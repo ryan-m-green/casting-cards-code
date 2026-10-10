@@ -11,55 +11,8 @@ ALTER TABLE users ADD COLUMN IF NOT EXISTS last_logged_in_on TIMESTAMP;
 -- Create index on last_logged_in_on for inactive user queries
 CREATE INDEX IF NOT EXISTS idx_users_last_logged_in_on ON users(last_logged_in_on);
 
--- Drop title and alternate_title columns from campaign_sessions table (derived from session_number)
-DO $$
-BEGIN
-    IF EXISTS (SELECT 1 FROM information_schema.tables WHERE table_name = 'campaign_sessions') THEN
-        ALTER TABLE campaign_sessions DROP COLUMN IF EXISTS title;
-        ALTER TABLE campaign_sessions DROP COLUMN IF EXISTS alternate_title;
-    END IF;
-END $$;
-
 -- Add pg_trgm extension for trigram search
 CREATE EXTENSION IF NOT EXISTS "pg_trgm";
-
--- Migrate keywords from TEXT[] to TEXT for trigram search compatibility
--- Drop old TEXT[] columns if they exist
-DO $$
-BEGIN
-    IF EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'campaign_session_archived' AND column_name = 'keywords' AND data_type = 'ARRAY') THEN
-        ALTER TABLE campaign_session_archived DROP COLUMN keywords;
-    END IF;
-END $$;
-
--- Add TEXT keywords column to campaign_session_archived
-ALTER TABLE campaign_session_archived ADD COLUMN IF NOT EXISTS keywords TEXT NOT NULL DEFAULT '';
-
--- Drop old TEXT[] column from campaign_session_chronicles if it exists
-DO $$
-BEGIN
-    IF EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'campaign_session_chronicles' AND column_name = 'keywords' AND data_type = 'ARRAY') THEN
-        ALTER TABLE campaign_session_chronicles DROP COLUMN keywords;
-    END IF;
-END $$;
-
--- Add TEXT keywords column to campaign_session_chronicles
-ALTER TABLE campaign_session_chronicles ADD COLUMN IF NOT EXISTS keywords TEXT NOT NULL DEFAULT '';
-
--- Create indexes for campaign_session_chronicles if they don't exist
-CREATE INDEX IF NOT EXISTS idx_campaign_session_chronicles_campaign ON campaign_session_chronicles(campaign_id);
-CREATE INDEX IF NOT EXISTS idx_campaign_session_chronicles_archived_session ON campaign_session_chronicles(archived_session_id);
-
--- Drop old GIN indexes if they exist (safe to run)
-DROP INDEX IF EXISTS idx_campaign_session_archived_keywords;
-DROP INDEX IF EXISTS idx_campaign_session_chronicles_keywords;
-
--- Create trigram indexes for chronicles substring search
-CREATE INDEX IF NOT EXISTS idx_campaign_session_archived_keywords_trgm
-    ON campaign_session_archived USING gin (keywords gin_trgm_ops);
-
-CREATE INDEX IF NOT EXISTS idx_campaign_session_chronicles_keywords_trgm
-    ON campaign_session_chronicles USING gin (keywords gin_trgm_ops);
 
 -- Allow null values for dm_notes in sublocations table
 ALTER TABLE sublocations ALTER COLUMN dm_notes DROP NOT NULL;
@@ -207,7 +160,7 @@ ALTER TABLE campaign_faction_instances ADD COLUMN IF NOT EXISTS perception SMALL
 -- ============================================================
 -- Drop unique constraint on campaign_faction_instance_relationships
 -- ============================================================
--- Allow both GM-created (dm_user_id has value) and player-created (dm_user_id is null)
+-- Allow both GM-created (gm_user_id has value) and player-created (gm_user_id is null)
 -- relationships for the same faction pair within a campaign
 -- Validation is now handled in code via AddFactionRelationshipCommandHandler
 DO $$
@@ -222,50 +175,122 @@ BEGIN
 END $$;
 
 -- ============================================================
+-- Rename dm_user_id to gm_user_id on campaign_faction_instance_relationships
+-- ============================================================
+-- The column holds the id of the GM who wove the relationship, and is left NULL for one the
+-- players wove. Renamed so the column says whose id it holds: the GM's own row and the
+-- players' own row are told apart on it (see CampaignReadRepository's faction reads).
+DO $$
+BEGIN
+    IF EXISTS (
+        SELECT 1 FROM information_schema.columns
+        WHERE table_name = 'campaign_faction_instance_relationships'
+          AND column_name = 'dm_user_id'
+    ) AND NOT EXISTS (
+        SELECT 1 FROM information_schema.columns
+        WHERE table_name = 'campaign_faction_instance_relationships'
+          AND column_name = 'gm_user_id'
+    ) THEN
+        ALTER TABLE campaign_faction_instance_relationships
+        RENAME COLUMN dm_user_id TO gm_user_id;
+    END IF;
+END $$;
+
+-- ============================================================
 -- Soundtrack Feature Implementation
 -- ============================================================
 
 -- Add soundtrack_id column to campaign_storyline table (for existing databases)
 ALTER TABLE campaign_storyline ADD COLUMN IF NOT EXISTS soundtrack_id UUID;
 
--- Create foreign key constraint for soundtrack_id
-DO $$
-BEGIN
-    IF NOT EXISTS (
-        SELECT 1 FROM pg_constraint
-        WHERE conname = 'fk_campaign_storyline_soundtrack'
-    ) THEN
-        ALTER TABLE campaign_storyline
-        ADD CONSTRAINT fk_campaign_storyline_soundtrack
-        FOREIGN KEY (soundtrack_id) REFERENCES campaign_soundtracks(id) ON DELETE SET NULL;
-    END IF;
-END $$;
-
 -- ============================================================
--- Ambiance Feature Implementation
+-- Soundtracks & Ambiances become GM-global libraries
 -- ============================================================
+-- Soundtracks and ambiances used to hang off a single campaign. They are now the
+-- GM's own library, shared across every campaign the GM runs, and each campaign
+-- keeps links to the rows it has adopted. This block creates the library tables,
+-- carries every existing per-campaign row across, repoints the foreign keys and
+-- then retires the old tables. It is written to run safely on a fresh database as
+-- well as one that predates the change.
 
--- Add kind column to campaign_soundtracks (music | sound_effect)
-ALTER TABLE campaign_soundtracks ADD COLUMN IF NOT EXISTS kind VARCHAR(20) NOT NULL DEFAULT 'music';
+-- Library tables (also created by init.sql on fresh installs)
+CREATE TABLE IF NOT EXISTS soundtracks (
+    id           UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    gm_user_id   UUID         NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    title        VARCHAR(200) NOT NULL,
+    file_name    VARCHAR(255) NOT NULL,
+    file_url     TEXT         NOT NULL,
+    volume       INTEGER      NOT NULL DEFAULT 80,
+    is_loop      BOOLEAN      NOT NULL DEFAULT false,
+    loop_delay_seconds INTEGER,
+    kind         VARCHAR(20)  NOT NULL DEFAULT 'music',
+    created_at   TIMESTAMPTZ  NOT NULL DEFAULT NOW()
+);
 
--- Create campaign_ambiances table (persisted "ambiance button" playlists)
-CREATE TABLE IF NOT EXISTS campaign_ambiances (
+CREATE INDEX IF NOT EXISTS idx_soundtracks_gm_user_id ON soundtracks(gm_user_id);
+
+CREATE TABLE IF NOT EXISTS ambiances (
     id              UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    campaign_id     UUID         NOT NULL REFERENCES campaigns(id) ON DELETE CASCADE,
+    gm_user_id      UUID         NOT NULL REFERENCES users(id) ON DELETE CASCADE,
     title           VARCHAR(200) NOT NULL,
     randomize_music BOOLEAN      NOT NULL DEFAULT false,
     created_at      TIMESTAMPTZ  NOT NULL DEFAULT NOW()
 );
 
-ALTER TABLE campaign_ambiances ADD COLUMN IF NOT EXISTS randomize_music BOOLEAN NOT NULL DEFAULT false;
+CREATE INDEX IF NOT EXISTS idx_ambiances_gm_user_id ON ambiances(gm_user_id);
 
-CREATE INDEX IF NOT EXISTS idx_campaign_ambiances_campaign_id ON campaign_ambiances(campaign_id);
+-- Link tables: which library rows each campaign has adopted.
+CREATE TABLE IF NOT EXISTS campaign_soundtracks_links (
+    campaign_id   UUID NOT NULL REFERENCES campaigns(id) ON DELETE CASCADE,
+    soundtrack_id UUID NOT NULL REFERENCES soundtracks(id) ON DELETE CASCADE,
+    created_at    TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    PRIMARY KEY (campaign_id, soundtrack_id)
+);
 
--- Create campaign_ambiance_items table (ordered playlist entries)
+CREATE INDEX IF NOT EXISTS idx_campaign_soundtracks_links_soundtrack ON campaign_soundtracks_links(soundtrack_id);
+
+CREATE TABLE IF NOT EXISTS campaign_ambiance_links (
+    campaign_id UUID NOT NULL REFERENCES campaigns(id) ON DELETE CASCADE,
+    ambiance_id UUID NOT NULL REFERENCES ambiances(id) ON DELETE CASCADE,
+    created_at  TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    PRIMARY KEY (campaign_id, ambiance_id)
+);
+
+CREATE INDEX IF NOT EXISTS idx_campaign_ambiance_links_ambiance ON campaign_ambiance_links(ambiance_id);
+
+-- Carry the old per-campaign rows into the libraries and record the campaign links.
+DO $$
+BEGIN
+    IF to_regclass('campaign_soundtracks') IS NOT NULL THEN
+        INSERT INTO soundtracks (id, gm_user_id, title, file_name, file_url, volume, is_loop, loop_delay_seconds, kind, created_at)
+        SELECT s.id, c.dm_user_id, s.title, s.file_name, s.file_url, s.volume, s.is_loop, s.loop_delay_seconds, s.kind, s.created_at
+        FROM campaign_soundtracks s
+        JOIN campaigns c ON c.id = s.campaign_id
+        WHERE NOT EXISTS (SELECT 1 FROM soundtracks x WHERE x.id = s.id);
+
+        INSERT INTO campaign_soundtracks_links (campaign_id, soundtrack_id)
+        SELECT campaign_id, id FROM campaign_soundtracks
+        ON CONFLICT DO NOTHING;
+    END IF;
+
+    IF to_regclass('campaign_ambiances') IS NOT NULL THEN
+        INSERT INTO ambiances (id, gm_user_id, title, randomize_music, created_at)
+        SELECT a.id, c.dm_user_id, a.title, a.randomize_music, a.created_at
+        FROM campaign_ambiances a
+        JOIN campaigns c ON c.id = a.campaign_id
+        WHERE NOT EXISTS (SELECT 1 FROM ambiances x WHERE x.id = a.id);
+
+        INSERT INTO campaign_ambiance_links (campaign_id, ambiance_id)
+        SELECT campaign_id, id FROM campaign_ambiances
+        ON CONFLICT DO NOTHING;
+    END IF;
+END $$;
+
+-- Ordered playlist entries (kept in place; its foreign keys are repointed below).
 CREATE TABLE IF NOT EXISTS campaign_ambiance_items (
     id                  UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    ambiance_id         UUID NOT NULL REFERENCES campaign_ambiances(id) ON DELETE CASCADE,
-    soundtrack_id       UUID NOT NULL REFERENCES campaign_soundtracks(id) ON DELETE CASCADE,
+    ambiance_id         UUID NOT NULL REFERENCES ambiances(id) ON DELETE CASCADE,
+    soundtrack_id       UUID NOT NULL REFERENCES soundtracks(id) ON DELETE CASCADE,
     sort_order          INTEGER NOT NULL DEFAULT 0,
     volume              INTEGER NOT NULL DEFAULT 80,
     pause_mode          VARCHAR(20) NOT NULL DEFAULT 'none',
@@ -278,6 +303,23 @@ ALTER TABLE campaign_ambiance_items ADD COLUMN IF NOT EXISTS volume INTEGER NOT 
 
 CREATE INDEX IF NOT EXISTS idx_campaign_ambiance_items_ambiance_id ON campaign_ambiance_items(ambiance_id);
 CREATE INDEX IF NOT EXISTS idx_campaign_ambiance_items_soundtrack_id ON campaign_ambiance_items(soundtrack_id);
+
+-- Point every foreign key at the library tables.
+ALTER TABLE campaign_ambiance_items DROP CONSTRAINT IF EXISTS campaign_ambiance_items_ambiance_id_fkey;
+ALTER TABLE campaign_ambiance_items ADD CONSTRAINT campaign_ambiance_items_ambiance_id_fkey
+    FOREIGN KEY (ambiance_id) REFERENCES ambiances(id) ON DELETE CASCADE;
+
+ALTER TABLE campaign_ambiance_items DROP CONSTRAINT IF EXISTS campaign_ambiance_items_soundtrack_id_fkey;
+ALTER TABLE campaign_ambiance_items ADD CONSTRAINT campaign_ambiance_items_soundtrack_id_fkey
+    FOREIGN KEY (soundtrack_id) REFERENCES soundtracks(id) ON DELETE CASCADE;
+
+ALTER TABLE campaign_storyline DROP CONSTRAINT IF EXISTS fk_campaign_storyline_soundtrack;
+ALTER TABLE campaign_storyline ADD CONSTRAINT fk_campaign_storyline_soundtrack
+    FOREIGN KEY (soundtrack_id) REFERENCES soundtracks(id) ON DELETE SET NULL;
+
+-- Retire the old campaign-scoped tables now that nothing points at them.
+DROP TABLE IF EXISTS campaign_soundtracks;
+DROP TABLE IF EXISTS campaign_ambiances;
 
 -- ============================================================
 -- Cast Keywords: rename casts.voice_placement -> casts.keywords
@@ -331,5 +373,47 @@ BEGIN
 END $$;
 
 ALTER TABLE campaign_cast_instances ADD COLUMN IF NOT EXISTS max_hit_points  INT NOT NULL DEFAULT 0;
-ALTER TABLE campaign_cast_instances ADD COLUMN IF NOT EXISTS lost_hit_points INT NOT NULL DEFAULT 0;
-ALTER TABLE campaign_cast_instances ADD COLUMN IF NOT EXISTS temp_hit_points INT NOT NULL DEFAULT 0;
+
+-- V2 - the cast card's importance to the party, 0 (unrated) to 3, set by the players from the
+-- card's details (see CampaignCastsController.UpdateCastInstanceStars).
+ALTER TABLE campaign_cast_instances ADD COLUMN IF NOT EXISTS stars_count INT NOT NULL DEFAULT 0;
+
+DO $$
+BEGIN
+    IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conname = 'chk_cast_instance_stars_count') THEN
+        ALTER TABLE campaign_cast_instances
+            ADD CONSTRAINT chk_cast_instance_stars_count CHECK (stars_count BETWEEN 0 AND 3);
+    END IF;
+END $$;
+
+-- The transient hit points a fight burns through belong to the encounter's own row per combatant
+-- (encounter_combatants.lost_hit_points / temp_hit_points); the campaign's copy of the card keeps
+-- only max_hit_points.
+ALTER TABLE campaign_cast_instances DROP COLUMN IF EXISTS lost_hit_points;
+ALTER TABLE campaign_cast_instances DROP COLUMN IF EXISTS temp_hit_points;
+
+-- ============================================================
+-- Drop tables removed from the schema (see init.sql)
+-- ============================================================
+DROP TABLE IF EXISTS campaign_cast_player_notes;
+DROP TABLE IF EXISTS campaign_cast_relationships;
+DROP TABLE IF EXISTS campaign_faction_player_notes;
+DROP TABLE IF EXISTS campaign_faction_sublocations;
+DROP TABLE IF EXISTS campaign_location_player_notes;
+DROP TABLE IF EXISTS campaign_sublocation_player_notes;
+
+-- ============================================================
+-- Retired tables
+-- Definitions removed from init.sql / v2Alter.sql; dropped here so
+-- existing databases shed them too. No code reads or writes them.
+-- ============================================================
+DROP TABLE IF EXISTS player_cast_notes CASCADE;
+DROP TABLE IF EXISTS campaign_player_notes CASCADE;
+DROP TABLE IF EXISTS player_card_memories CASCADE;
+DROP TABLE IF EXISTS campaign_sessions CASCADE;
+DROP TABLE IF EXISTS admin_invite_codes CASCADE;
+DROP TABLE IF EXISTS faction_participants CASCADE;
+DROP TABLE IF EXISTS campaign_player_faction_relationships CASCADE;
+DROP TABLE IF EXISTS faction_relationships CASCADE;
+DROP TABLE IF EXISTS campaign_session_chronicles CASCADE;
+DROP TABLE IF EXISTS campaign_session_archived CASCADE;

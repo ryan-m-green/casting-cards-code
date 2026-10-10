@@ -1,0 +1,54 @@
+<div class="stage--ended" [style.--portal-color]="portalColor()">
+  <div class="builder-top">
+    <button
+      type="button"
+      class="builder-ghost builder-ghost--primary"
+      title="View all the campaign's encounters"
+      (click)="backRequested.emit()"
+    >Encounters</button>
+  </div>
+
+  <header class="ended-head">
+    <h2 class="ended-name">{{ endedTitle() }}</h2>
+    @if (endedAtLabel()) {
+      <p class="ended-when">Ended {{ endedAtLabel() }}</p>
+    }
+  </header>
+
+  <section class="ended-side">
+    <div class="ended-side-head">
+      <span class="ended-side-label">Your cards</span>
+      <span class="ended-side-line"></span>
+      @if (endedFoeCount()) {
+        <span class="ended-side-tally">{{ foesDown() }} of {{ endedFoeCount() }} down</span>
+      }
+    </div>
+
+    @if (endedFoes().length) {
+      <div class="ended-row swiper" #foesRow>
+        <div class="swiper-wrapper">
+          @for (card of endedFoes(); track card.key) {
+            <div class="swiper-slide">
+              <article class="ended-card">
+                <cc-cast-card
+                  [cast]="asCast(card.combatant)"
+                  [flippable]="true"
+                  [editable]="false"
+                  [secrets]="false"
+                  [campaignMode]="false"
+                  [titleSearch]="false"
+                  [readonlyStars]="true"
+                  [dmMode]="true"
+                  [isDefeated]="card.downCount === card.count"
+                />
+                <span class="ended-count" [title]="endedCountTitle(card)">×{{ card.count }}</span>
+              </article>
+            </div>
+          }
+        </div>
+      </div>
+    } @else {
+      <p class="ended-none">Nothing of the DM's was in this fight.</p>
+    }
+  </section>
+</div>

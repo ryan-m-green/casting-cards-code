@@ -1,0 +1,50 @@
+﻿<div class="pc scroll-body">
+  <app-journal-watermark pageType="location" />
+  <app-journal-title title="Location Library" />
+  <div class="wr wr-page-header">
+    <app-upgrade-badge
+      [visible]="auth.isFreeTrial()"
+      (badgeClick)="openUpgradeDrawer()"
+      class="upgrade-badge-library" />
+    <input class="search-bar search-bar--header" type="text" placeholder="Location name · Type…"
+           [value]="searchTerm()" (input)="searchTerm.set($any($event.target).value)" />
+    <div class="wr-ml-auto cc-keyword-editor-wrap">
+      <button class="campaign-primary-btn"
+              [class.disabled]="locationLimitReached() || isCreateDisabled()"
+              [attr.disabled]="(locationLimitReached() || isCreateDisabled()) ? 'true' : null"
+              [routerLink]="(locationLimitReached() || isCreateDisabled()) ? null : '/gm/locations/new'"
+              (click)="(locationLimitReached() || isCreateDisabled()) ? $event.preventDefault() : null">+ Create</button>
+      <cc-keyword-editor [cardType]="'location'"></cc-keyword-editor>
+    </div>
+  </div>
+
+  <div class="card-grid">
+    @for (location of filtered(); track location.id) {
+      <cc-location-card
+        [location]="location"
+        [tilt]="tiltFor(location.id)"
+        [titleSearch]="false"
+        (editClick)="edit(location.id)"
+        (deleteClick)="confirmDelete(location.id)">
+      </cc-location-card>
+    }
+    @empty {
+      <p class="wbd-journal empty-state-pad">No locations found. Create your first location.</p>
+    }
+  </div>
+</div>
+
+@if (pendingDeleteId()) {
+  <div class="delete-overlay" (click)="cancelDelete()">
+    <div class="delete-panel" (click)="$event.stopPropagation()">
+      <div class="delete-panel-title">Delete Location?</div>
+      <p class="delete-panel-message">
+        This will permanently delete this location and its portrait, and remove it from any campaigns. This cannot be undone.
+      </p>
+      <div class="delete-btn-row">
+        <button class="btn-modal-cancel" (click)="cancelDelete()">Cancel</button>
+        <button class="btn-modal-delete" (click)="executeDelete()">Delete</button>
+      </div>
+    </div>
+  </div>
+}

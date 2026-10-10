@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { BugReportService } from '../../../shared/services/bug-report.service';
 import { BugReport } from '../../../shared/models/bug-report.model';
-import { JournalTitleComponent } from '../../../shared/components/journal-title/journal-title.component';
+import { JournalTitleComponent } from '../../../shared/components/Shared/journal-title/journal-title.component';
 
 @Component({
   selector: 'app-admin-bug-reports',

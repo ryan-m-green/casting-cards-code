@@ -1,0 +1,37 @@
+<div class="conditions">
+  <p class="cond-label">Assign condition</p>
+  <div class="cond-standard-grid">
+    @for (name of standard; track name) {
+      <button
+        type="button"
+        class="cond-standard-btn"
+        [class.cond-standard-btn--active]="isActive(name)"
+        [disabled]="isActive(name) || saving()"
+        [style.--ring-color]="ringColor(name)"
+        (click)="assign(name)"
+      >{{ name }}</button>
+    }
+  </div>
+
+  <label class="cond-label" for="cc-custom-condition">Custom condition</label>
+  <div class="cond-custom-row">
+    <input
+      id="cc-custom-condition"
+      class="cond-input"
+      type="text"
+      placeholder="Custom condition…"
+      [ngModel]="custom()"
+      (ngModelChange)="custom.set($event)"
+    />
+    <button
+      type="button"
+      class="cond-add-btn"
+      [disabled]="!custom().trim() || saving()"
+      (click)="assign(custom())"
+    >Add</button>
+  </div>
+
+  @if (error()) {
+    <p class="cond-error">{{ error() }}</p>
+  }
+</div>

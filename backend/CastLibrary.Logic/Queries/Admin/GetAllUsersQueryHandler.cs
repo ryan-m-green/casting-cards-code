@@ -1,5 +1,4 @@
 using CastLibrary.Repository.Repositories.Read;
-using CastLibrary.Shared.Domain;
 using CastLibrary.Shared.Responses;
 
 namespace CastLibrary.Logic.Queries.Admin;

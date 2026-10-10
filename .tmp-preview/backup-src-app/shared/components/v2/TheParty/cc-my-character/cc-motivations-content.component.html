@@ -1,0 +1,154 @@
+<div class="mc-motive-editor" [style.--portal-color]="portalColor()">
+  @if (loading()) {
+    <div class="mc-motive-loading">Loading…</div>
+  } @else {
+    <section class="motive-section">
+      <div class="motive-section-top">
+        @if (addingType() === 'GOAL') {
+          <div class="motive-add-row">
+            <input class="motive-add-input" type="text"
+                   [ngModel]="newContent()" (ngModelChange)="newContent.set($event)"
+                   placeholder="Add Goal…" autocomplete="off" />
+            <button class="motive-confirm" type="button" (click)="confirmAdd()">✔</button>
+            <button class="motive-cancel" type="button" (click)="cancelAdd()">✕</button>
+          </div>
+        } @else {
+          <button class="motive-add-btn" type="button" (click)="startAdd('GOAL')">
+            <img class="motive-add-btn-icon" src="/dart_hitting_target_bullseye.svg" alt="" aria-hidden="true" draggable="false" />
+            + Goal
+          </button>
+        }
+      </div>
+
+      <div class="motive-swiper swiper" #goalsSwiper>
+        <div class="swiper-wrapper">
+          @for (t of goals(); track t.id) {
+            <div class="swiper-slide">
+              <cc-motive-card [trait]="t" [typeLabel]="'Goal'" [selected]="selectedId() === t.id" (cardClick)="select(t.id)" />
+            </div>
+          }
+        </div>
+      </div>
+
+      <div class="motive-readout">
+        @if (selectedTrait(); as st) {
+          @if (st.traitType === 'GOAL') {
+            <div class="motive-readout-body">
+              <p class="motive-readout-content">{{ st.content }}</p>
+              <div class="motive-readout-share">
+                <span class="motive-readout-share-label">Share with party</span>
+                <cc-toggle-switch [checked]="st.isShared" (checkedChange)="toggleShared(st)" />
+              </div>
+              <div class="motive-readout-actions">
+                <button class="motive-readout-btn" type="button" (click)="toggleGoal(st)">
+                  {{ st.isCompleted ? 'Mark Incomplete' : 'Mark Complete' }}
+                </button>
+                <button class="motive-readout-btn motive-readout-btn--danger" type="button" (click)="deleteTrait(st.id)">Delete</button>
+              </div>
+            </div>
+          }
+        }
+      </div>
+    </section>
+
+    <div class="motive-gutter"></div>
+
+    <section class="motive-section">
+      <div class="motive-section-top">
+        @if (addingType() === 'FLAW') {
+          <div class="motive-add-row">
+            <input class="motive-add-input" type="text"
+                   [ngModel]="newContent()" (ngModelChange)="newContent.set($event)"
+                   placeholder="Add Flaw…" autocomplete="off" />
+            <button class="motive-confirm" type="button" (click)="confirmAdd()">✔</button>
+            <button class="motive-cancel" type="button" (click)="cancelAdd()">✕</button>
+          </div>
+        } @else {
+          <button class="motive-add-btn" type="button" (click)="startAdd('FLAW')">
+            <img class="motive-add-btn-icon" src="/broken_shield_sword.svg" alt="" aria-hidden="true" draggable="false" />
+            + Flaw
+          </button>
+        }
+      </div>
+
+      <div class="motive-swiper swiper" #flawsSwiper>
+        <div class="swiper-wrapper">
+          @for (t of flaws(); track t.id) {
+            <div class="swiper-slide">
+              <cc-motive-card [trait]="t" [typeLabel]="'Flaw'" [selected]="selectedId() === t.id" (cardClick)="select(t.id)" />
+            </div>
+          }
+        </div>
+      </div>
+
+      <div class="motive-readout">
+        @if (selectedTrait(); as st) {
+          @if (st.traitType === 'FLAW') {
+            <div class="motive-readout-body">
+              <p class="motive-readout-content">{{ st.content }}</p>
+              <div class="motive-readout-share">
+                <span class="motive-readout-share-label">Share with party</span>
+                <cc-toggle-switch [checked]="st.isShared" (checkedChange)="toggleShared(st)" />
+              </div>
+              <div class="motive-readout-actions">
+                <button class="motive-readout-btn motive-readout-btn--danger" type="button" (click)="deleteTrait(st.id)">Delete</button>
+              </div>
+            </div>
+          }
+        }
+      </div>
+    </section>
+
+    <div class="motive-gutter"></div>
+
+    <section class="motive-section">
+      <div class="motive-section-top">
+        @if (addingType() === 'FEAR') {
+          <div class="motive-add-row">
+            <input class="motive-add-input" type="text"
+                   [ngModel]="newContent()" (ngModelChange)="newContent.set($event)"
+                   placeholder="Add Fear…" autocomplete="off" />
+            <button class="motive-confirm" type="button" (click)="confirmAdd()">✔</button>
+            <button class="motive-cancel" type="button" (click)="cancelAdd()">✕</button>
+          </div>
+        } @else {
+          <button class="motive-add-btn" type="button" (click)="startAdd('FEAR')">
+            <img class="motive-add-btn-icon" src="/person_falling_from_cliff.svg" alt="" aria-hidden="true" draggable="false" />
+            + Fear
+          </button>
+        }
+      </div>
+
+      <div class="motive-swiper swiper" #fearsSwiper>
+        <div class="swiper-wrapper">
+          @for (t of fears(); track t.id) {
+            <div class="swiper-slide">
+              <cc-motive-card [trait]="t" [typeLabel]="'Fear'" [selected]="selectedId() === t.id" (cardClick)="select(t.id)" />
+            </div>
+          }
+        </div>
+      </div>
+
+      <div class="motive-readout">
+        @if (selectedTrait(); as st) {
+          @if (st.traitType === 'FEAR') {
+            <div class="motive-readout-body">
+              <p class="motive-readout-content">{{ st.content }}</p>
+              <div class="motive-readout-share">
+                <span class="motive-readout-share-label">Share with party</span>
+                <cc-toggle-switch [checked]="st.isShared" (checkedChange)="toggleShared(st)" />
+              </div>
+              <div class="motive-readout-actions">
+                <button class="motive-readout-btn motive-readout-btn--danger" type="button" (click)="deleteTrait(st.id)">Delete</button>
+              </div>
+            </div>
+          }
+        }
+      </div>
+    </section>
+
+    <div class="motive-actions">
+      <button class="motive-done" type="button" (click)="done()">Done</button>
+    </div>
+  }
+</div>

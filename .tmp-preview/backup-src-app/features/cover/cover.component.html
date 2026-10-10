@@ -1,0 +1,132 @@
+<!-- Leather cover overlays -->
+<div class="cover-grain" aria-hidden="true"></div>
+<div class="cover-grain-fine" aria-hidden="true"></div>
+<div class="cover-border" aria-hidden="true"></div>
+<div class="cover-vignette" aria-hidden="true"></div>
+
+<svg class="cover-scratches" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
+  <defs>
+    @for (s of scratches; track $index; let i = $index) {
+      <linearGradient [attr.id]="'csg' + i" gradientUnits="userSpaceOnUse"
+        [attr.x1]="s.x1" [attr.y1]="s.y1"
+        [attr.x2]="s.x2" [attr.y2]="s.y2">
+        <stop offset="0%"   stop-color="rgba(255,200,140,0)"/>
+        <stop offset="20%"  [attr.stop-color]="s.stopMid1"/>
+        <stop offset="80%"  [attr.stop-color]="s.stopMid2"/>
+        <stop offset="100%" stop-color="rgba(255,200,140,0)"/>
+      </linearGradient>
+    }
+  </defs>
+  @for (s of scratches; track $index; let i = $index) {
+    <line [attr.x1]="s.x1" [attr.y1]="s.y1"
+          [attr.x2]="s.x2" [attr.y2]="s.y2"
+          [attr.stroke]="'url(#csg' + i + ')'"
+          stroke-width="0.7"/>
+  }
+</svg>
+
+<div class="corner corner-tl" aria-hidden="true"></div>
+<div class="corner corner-tr" aria-hidden="true"></div>
+<div class="corner corner-bl" aria-hidden="true"></div>
+<div class="corner corner-br" aria-hidden="true"></div>
+<div class="page-edge"        aria-hidden="true"></div>
+
+<div class="pc cover-center">
+
+  <!-- Decorative header: title, crest, subtitle — layout-isolated -->
+  <div class="cover-header">
+
+    <!-- Main title -->
+    <svg class="cover-title-svg" viewBox="0 0 700 120" xmlns="http://www.w3.org/2000/svg" aria-label="Casting Cards">
+      <defs>
+        <linearGradient id="titleGold" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="#e8c96a" />
+          <stop offset="40%" stop-color="#c9963a" />
+          <stop offset="70%" stop-color="#a8702a" />
+          <stop offset="100%" stop-color="#c9963a" />
+        </linearGradient>
+        <path id="titleArc" d="M 0,108 Q 350,15 700,108" />
+      </defs>
+      <filter id="titleShadow">
+        <feDropShadow dx="0" dy="1" stdDeviation="2" flood-color="rgba(0,0,0,0.7)" />
+      </filter>
+      <text class="title-text">
+        <textPath href="#titleArc" startOffset="50%" text-anchor="middle">Casting Cards</textPath>
+      </text>
+    </svg>
+
+    <!-- Arcane crest -->
+    <svg class="crest" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <circle cx="50" cy="50" r="44" stroke="rgba(180,120,40,0.4)" stroke-width="0.8" />
+      <circle cx="50" cy="50" r="40" stroke="rgba(180,120,40,0.2)" stroke-width="0.5" />
+      <circle cx="50" cy="50" r="22" stroke="rgba(180,120,40,0.35)" stroke-width="0.8" />
+      @for (line of crestStarLines; track $index) {
+      <line [attr.x1]="line.x1" [attr.y1]="line.y1"
+            [attr.x2]="line.x2" [attr.y2]="line.y2"
+            [attr.stroke]="line.stroke"
+            [attr.stroke-width]="line.strokeWidth" />
+      }
+      <polygon points="50,34 56,50 50,66 44,50"
+               stroke="rgba(200,140,50,0.55)" stroke-width="0.8" fill="rgba(180,120,40,0.12)" />
+      @for (tick of crestTicks; track $index) {
+      <line [attr.x1]="tick.x1" [attr.y1]="tick.y1"
+            [attr.x2]="tick.x2" [attr.y2]="tick.y2"
+            stroke="rgba(180,120,40,0.3)" stroke-width="0.6" />
+      }
+      <circle cx="50" cy="50" r="2.5" fill="rgba(200,150,50,0.6)" />
+    </svg>
+
+    <p class="cover-subtitle">Cards. Connections. Campaign Clarity.</p>
+  </div>
+
+  <!-- Form area + buttons: flow together as one unit -->
+  <div class="cover-form-area">
+    <form id="loginForm" class="cover-login-form" [formGroup]="loginForm" (ngSubmit)="knock()" autocomplete="off">
+      <div class="field">
+        <div class="field-label-row">
+          <label for="email-input" class="cover-fi-label">Arcane Seal (Email)</label>
+          @if (hasEmailError()) {
+            <span class="field-error">{{ emailErrorMsg() }}</span>
+          }
+        </div>
+        <input id="email-input" class="cover-fi" [class.input-error]="hasEmailError()"
+               type="email" formControlName="email"
+               placeholder="dm@example.com" autocomplete="email" />
+      </div>
+
+      <div class="field field-passphrase">
+        <div class="field-label-row">
+          <label for="password-input" class="cover-fi-label">Passphrase</label>
+          @if (hasPasswordError()) {
+            <span class="field-error">Passphrase required</span>
+          }
+        </div>
+        <input id="password-input" class="cover-fi" [class.input-error]="hasPasswordError()"
+               type="password" formControlName="password"
+               placeholder="••••••••" autocomplete="off" />
+      </div>
+
+    </form>
+
+    <div class="knock-group">
+      <div class="knock-spark-host" #sparkHost>
+        <button class="btn-knock" type="submit" [disabled]="loading()"
+                form="loginForm">
+          {{ loading() ? 'Opening…' : 'Knock' }}
+        </button>
+      </div>
+      <div class="cover-error-box-wrap">
+        @if (errorMsg()) {
+        <div class="cover-error-box">
+          <p>{{ errorMsg() }}</p>
+        </div>
+        }
+      </div>
+      <div class="btn-row">
+        <a class="link-subtle" routerLink="/forgot-password">Forgot your passphrase?</a>
+        <button class="btn-create" (click)="createAccount()">Create a new Account</button>
+      </div>
+    </div>
+  </div>
+</div>
+

@@ -1,5 +1,4 @@
 using CastLibrary.Repository.Repositories.Insert;
-using CastLibrary.Repository.Repositories.Read;
 using CastLibrary.Shared.Domain;
 using CastLibrary.Shared.Requests;
 

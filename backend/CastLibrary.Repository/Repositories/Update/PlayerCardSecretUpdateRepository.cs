@@ -6,6 +6,7 @@ namespace CastLibrary.Repository.Repositories.Update;
 public interface IPlayerCardSecretUpdateRepository
 {
     Task ShareAsync(Guid id, string sharedBy, DateTime sharedAt);
+    Task UpdateContentAsync(Guid id, string content);
 }
 
 public class PlayerCardSecretUpdateRepository(
@@ -19,6 +20,21 @@ public class PlayerCardSecretUpdateRepository(
         var @params = new { Id = id, SharedBy = sharedBy, SharedAt = sharedAt };
         const string sql =
             "UPDATE player_card_secrets SET is_shared = TRUE, shared_by = @SharedBy, shared_at = @SharedAt WHERE id = @Id";
+
+        logging.LogDbOperation(correlation.TraceId, spanId, "UPDATE", "player_card_secrets", @params);
+
+        using var conn = sqlConnectionFactory.GetConnection();
+        var rows = await conn.ExecuteAsync(sql, @params);
+
+        logging.LogDbOperation(correlation.TraceId, spanId, "UPDATE", "player_card_secrets", @params, rows);
+    }
+
+    public async Task UpdateContentAsync(Guid id, string content)
+    {
+        var spanId = correlation.NewSpan();
+        var @params = new { Id = id, Content = content };
+        const string sql =
+            "UPDATE player_card_secrets SET content = @Content WHERE id = @Id";
 
         logging.LogDbOperation(correlation.TraceId, spanId, "UPDATE", "player_card_secrets", @params);
 

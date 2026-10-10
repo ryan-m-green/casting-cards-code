@@ -1,0 +1,677 @@
+@use '../../../../styles/variables' as v;
+
+.tabs-bar {
+  display: flex;
+  gap: 0;
+  border-bottom: 1px solid v.$color-border-accent;
+  padding: 0 8px;
+  margin-bottom: 0;
+  margin-left:-12px;
+}
+
+.user-btn {
+  margin-top: 8px;
+  gap: 4px;
+  padding: 6px 14px;
+}
+
+.tab-btn {
+  font-family: v.$font-header;
+  font-size: 12px;
+  font-weight: bolder;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: v.$color-base-brown-14;
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  padding: 6px 16px 8px;
+  cursor: pointer;
+  transition: color 0.18s ease, border-color 0.18s ease;
+  margin-bottom: -1px;
+
+  &:hover {
+    color: v.$color-base-brown-14;
+  }
+
+  &--active {
+    color: v.$color-base-brown-14;
+    border-bottom-color: v.$color-border-accent;
+  }
+}
+
+.tab-content {
+  padding: 24px 0;
+}
+
+.search-input {
+  margin-bottom: 16px;
+}
+
+.user-list {
+  max-width: 800px;
+  margin: 24px auto;
+}
+
+.user-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 20px;
+  margin-bottom: 12px;
+  background: v.$color-base-tan-12;
+  border: 1px solid v.$color-border;
+  border-radius: 4px;
+  transition: border-color 0.2s;
+
+  &:hover {
+    border-color: v.$color-border-accent;
+  }
+}
+
+.user-info {
+  flex: 1;
+}
+
+.user-name {
+  font-size: 16px;
+  font-weight: 500;
+  color: v.$color-base-brown-14;
+  margin-bottom: 4px;
+}
+
+.user-meta {
+  font-size: 13px;
+  color: v.$color-base-brown-14;
+  margin-bottom: 2px;
+}
+
+.user-date {
+  font-size: 12px;
+  color: v.$color-base-brown-15;
+}
+
+.user-demo-label {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: v.$color-base-mint-green;
+  margin-top: 4px;
+}
+
+.btn-delete {
+  margin-top:8px;
+  margin-right:4px;
+  background: transparent;
+  color: v.$color-dm-text;
+  border: 2px solid v.$color-dm-border;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 13px;
+  transition: all 0.2s;
+
+  &:hover:not(:disabled) {
+    background: v.$color-dm-bg;
+    border-color: v.$color-dm-text;
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
+
+.btn-reset-password {
+  margin-top: 8px;
+  background: transparent;
+  color: v.$color-base-brown-14;
+  border: 2px solid v.$color-border;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 13px;
+  transition: all 0.2s;
+
+  &:hover:not(:disabled) {
+    background: v.$color-border-accent;
+    border-color: v.$color-border-accent;
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
+
+.user-card-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  flex-shrink: 0;
+  margin-top:12px;
+}
+
+.role-toggles {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 8px;
+}
+
+.subscription-section {
+  margin-bottom: 12px;
+  padding: 12px;
+  background: v.$color-base-tan-11;
+  border: 1px solid v.$color-border;
+  border-radius: 4px;
+}
+
+.subscription-edit {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.sub-field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+
+  label {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: v.$color-base-brown-14;
+  }
+
+  input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    cursor: pointer;
+  }
+}
+
+.sub-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 4px;
+}
+
+.btn-save-sub {
+  padding: 6px 12px;
+  background: transparent;
+  color: v.$color-base-brown-14;
+  border: 1px solid v.$color-border-accent;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 12px;
+  transition: all 0.2s;
+
+  &:hover:not(:disabled) {
+    background: v.$color-border-accent;
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
+
+.btn-cancel-sub {
+  padding: 6px 12px;
+  background: transparent;
+  color: v.$color-base-brown-14;
+  border: 1px solid v.$color-border;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 12px;
+  transition: all 0.2s;
+
+  &:hover {
+    border-color: v.$color-base-brown-14;
+    color: v.$color-base-brown-14;
+  }
+}
+
+.subscription-display {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.sub-read-only,
+.sub-editable {
+  font-size: 12px;
+  color: v.$color-base-brown-14;
+  display: flex;
+  gap: 8px;
+}
+
+.sub-label {
+  font-weight: 600;
+  color: v.$color-base-brown-15;
+  min-width: 140px;
+}
+
+.sub-value {
+  color: v.$color-base-brown-14;
+  font-family: monospace;
+  font-size: 11px;
+  word-break: break-all;
+}
+
+.btn-edit-sub {
+  margin-top: 8px;
+  padding: 6px 12px;
+  background: transparent;
+  color: v.$color-base-brown-14;
+  border: 1px solid v.$color-border;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 12px;
+  transition: all 0.2s;
+  align-self: flex-start;
+
+  &:hover {
+    border-color: v.$color-border-accent;
+    color: v.$color-base-brown-14;
+  }
+}
+
+.card-counts-section {
+  margin-bottom: 12px;
+  padding: 12px;
+  background: v.$color-base-tan-11;
+  border: 1px solid v.$color-border;
+  border-radius: 4px;
+}
+
+.card-counts-loading {
+  font-size: 12px;
+  color: v.$color-base-brown-15;
+  font-style: italic;
+}
+
+.card-counts {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.card-counts-title {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: v.$color-base-brown-14;
+  margin-bottom: 4px;
+}
+
+.card-counts-list {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.card-count-item {
+  display: flex;
+  align-items: center;
+  font-size: 12px;
+  padding: 2px 0;
+  gap: 8px;
+}
+
+.card-count-type {
+  color: v.$color-base-brown-15;
+  font-weight: 500;
+}
+
+.card-count-value {
+  color: v.$color-base-brown-14;
+  font-weight: 600;
+  font-family: monospace;
+}
+
+.btn-load-card-counts {
+  padding: 6px 12px;
+  background: transparent;
+  color: v.$color-base-brown-14;
+  border: 1px solid v.$color-border;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 12px;
+  transition: all 0.2s;
+  align-self: flex-start;
+
+  &:hover {
+    border-color: v.$color-border-accent;
+    color: v.$color-base-brown-14;
+  }
+}
+
+.btn-role-toggle {
+  padding: 6px 12px;
+  background: transparent;
+  color: v.$color-base-brown-14;
+  border: 1px solid v.$color-border;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 12px;
+  transition: all 0.2s;
+  white-space: nowrap;
+
+  &:hover:not(:disabled) {
+    border-color: v.$color-border-accent;
+    color: v.$color-base-brown-14;
+  }
+
+  &:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+  }
+
+  &--active {
+    background: v.$color-border-accent;
+    border-color: v.$color-border-accent;
+    color: v.$color-base-brown-14;
+  }
+}
+
+.demo-assign {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.demo-select {
+  min-width: 200px;
+  background: v.$color-base-tan-12;
+  border: 1px solid v.$campaign-portal-border-medium;
+  border-radius: 5px;
+  color: v.$color-base-brown-14;
+  font-family: v.$font-body;
+  font-size: 14px;
+  padding: 8px 10px;
+  cursor: pointer;
+  transition: border-color 0.15s ease;
+
+  &:hover,
+  &:focus {
+    border-color: v.$campaign-portal-border-active;
+    outline: none;
+  }
+
+  option {
+    background: v.$color-base-tan-12;
+    color: v.$color-base-brown-14;
+  }
+}
+
+.btn-demo-save {
+  padding: 6px 12px;
+  background: transparent;
+  color: v.$color-base-brown-14;
+  border: 1px solid v.$color-border;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 12px;
+  transition: all 0.2s;
+  white-space: nowrap;
+
+  &:hover:not(:disabled) {
+    border-color: v.$color-border-accent;
+    color: v.$color-base-brown-14;
+  }
+
+  &:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+  }
+}
+
+.demo-assign-success {
+  font-size: 12px;
+  color: v.$color-base-mint-green;
+  white-space: nowrap;
+}
+
+.error-box {
+  margin-top: 12px;
+  border-color: v.$color-dm-border;
+}
+
+// ── Add Player form ───────────────────────────────────────────────────────────
+
+.add-player-form {
+  max-width: 480px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.form-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.form-label {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: v.$color-base-brown-14;
+
+  &.checkbox-label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    text-transform: none;
+    letter-spacing: normal;
+
+    input[type="checkbox"] {
+      width: 18px;
+      height: 18px;
+      cursor: pointer;
+    }
+
+    span {
+      font-size: 13px;
+      font-weight: 400;
+      color: v.$color-base-brown-14;
+    }
+  }
+}
+
+.form-hint {
+  font-size: 12px;
+  color: v.$color-base-brown-15;
+  margin: 0;
+}
+
+.form-submit-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.btn-submit {
+  flex-shrink: 0;
+  padding: 8px 20px;
+  background: transparent;
+  color: v.$color-base-brown-14;
+  border: 1px solid v.$color-border-accent;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 13px;
+  transition: all 0.2s;
+
+  &:hover:not(:disabled) {
+    background: v.$color-border-accent;
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
+
+@keyframes fade-out {
+  0%   { opacity: 1; }
+  66%  { opacity: 1; }
+  100% { opacity: 0; }
+}
+
+.add-player-success {
+  animation: fade-out 3s forwards;
+  font-size: 13px;
+  color: v.$color-base-brown-14;
+  padding: 10px 14px;
+  border: 1px solid v.$color-border;
+  border-radius: 4px;
+  background: v.$color-base-tan-12;
+}
+
+.add-player-error {
+  animation: fade-out 3s forwards;
+  font-size: 13px;
+  color: v.$color-dm-text;
+  padding: 10px 14px;
+  border: 1px solid v.$color-dm-border;
+  border-radius: 4px;
+  background: v.$color-base-tan-12;
+}
+
+// ── Modal ─────────────────────────────────────────────────────────────────────
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background: v.$color-base-tan-12;
+  border: 1px solid v.$color-border;
+  border-radius: 8px;
+  padding: 24px;
+  max-width: 500px;
+  width: 90%;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+
+.modal-title {
+  font-size: 20px;
+  font-weight: 500;
+  color: v.$color-base-brown-14;
+  margin: 0 0 16px 0;
+}
+
+.modal-message {
+  font-size: 14px;
+  color: v.$color-base-brown-14;
+  line-height: 1.5;
+  margin: 0 0 24px 0;
+
+  strong {
+    color: v.$color-base-brown-14;
+  }
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+.btn-confirm-role {
+  padding: 8px 16px;
+  background: transparent;
+  color: v.$color-base-brown-14;
+  border: 1px solid v.$color-border-accent;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 13px;
+  transition: all 0.2s;
+
+  &:hover:not(:disabled) {
+    background: v.$color-border-accent;
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
+
+.btn-confirm-reset {
+  padding: 8px 16px;
+  background: transparent;
+  color: v.$color-base-brown-14;
+  border: 1px solid v.$color-border-accent;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 13px;
+  transition: all 0.2s;
+
+  &:hover:not(:disabled) {
+    background: v.$color-border-accent;
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
+
+.modal-error {
+  font-size: 13px;
+  color: v.$color-dm-text;
+  padding: 10px 14px;
+  border: 1px solid v.$color-dm-border;
+  border-radius: 4px;
+  background: v.$color-base-tan-12;
+  margin-bottom: 16px;
+}
+
+  gap: 12px;
+}
+
+.btn-cancel {
+  padding: 8px 16px;
+  background: transparent;
+  color: v.$color-base-brown-14;
+  border: 1px solid v.$color-border;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 13px;
+  transition: all 0.2s;
+
+  &:hover {
+    border-color: v.$color-base-brown-14;
+    color: v.$color-base-brown-14;
+  }
+}
+
+.btn-confirm-delete {
+  padding: 8px 16px;
+  background: v.$color-delete-bg;
+  color: v.$color-base-warm-cream;
+  border: 1px solid v.$color-delete-modal-panel-border;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 13px;
+  transition: all 0.2s;
+
+  &:hover {
+    background: v.$color-delete-hover;
+    border-color: v.$color-delete-hover;
+  }
+}
+
+

@@ -2,7 +2,6 @@ using CastLibrary.Logic.Interfaces;
 using CastLibrary.Repository.Mappers;
 using CastLibrary.Repository.Repositories.Update;
 using CastLibrary.Repository.Repositories.Read;
-using CastLibrary.Shared.Domain;
 using CastLibrary.Shared.Requests;
 
 namespace CastLibrary.Logic.Commands.Campaign;

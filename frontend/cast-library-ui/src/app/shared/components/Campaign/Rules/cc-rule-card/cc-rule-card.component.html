@@ -1,0 +1,43 @@
+<button
+  type="button"
+  class="rule-card"
+  [class.rule-card--pickable]="selectable()"
+  [class.rule-card--selected]="selectable() && selected()"
+  [attr.aria-pressed]="selectable() ? selected() : null"
+  [attr.aria-label]="ariaLabel()"
+  (click)="onOpen()"
+>
+  <span class="rule-frame">
+    @if (selectable()) {
+      <span class="rule-check" [class.is-on]="selected()" aria-hidden="true">✓</span>
+    }
+
+    <span class="rule-inner">
+      <span class="rule-banner">
+        <span class="rule-name" [title]="name()">{{ name() }}</span>
+        <span class="rule-chapter">{{ chapter() }}</span>
+      </span>
+
+      <span class="rule-body">
+        <span class="rule-definition" [class.rule-definition--group]="visibleRules().length > 0">
+          {{ definition() || 'No definition recorded yet.' }}
+        </span>
+
+        @if (visibleRules().length) {
+          <span class="rule-rules">
+            @for (rule of visibleRules(); track rule.id) {
+              <span class="rule-rule">
+                <span class="rule-rule-name" [title]="rule.name">{{ rule.name || 'Untitled entry' }}</span>
+                <span class="rule-rule-definition">{{ rule.definition || '—' }}</span>
+              </span>
+            }
+
+            @if (hiddenRuleCount()) {
+              <span class="rule-rules-more">+{{ moreLabel() }}</span>
+            }
+          </span>
+        }
+      </span>
+    </span>
+  </span>
+</button>

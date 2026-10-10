@@ -1,4 +1,4 @@
-import { Component, OnInit, signal, computed, inject, ViewChild, ElementRef } from '@angular/core';
+﻿import { Component, OnInit, signal, computed, inject, ViewChild, ElementRef } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormsModule, FormBuilder, Validators, FormControl } from '@angular/forms';
@@ -8,37 +8,37 @@ import { EMPTY } from 'rxjs';
 import { environment } from '../../../../environments/environment';
 import { Cast } from '../../../shared/models/cast.model';
 import { SparkleService } from '../../../shared/services/sparkle.service';
-import { CastCardComponent } from '../../../shared/components/cast-card/cast-card.component';
-import { JournalTitleComponent } from '../../../shared/components/journal-title/journal-title.component';
-import { JournalDropdownComponent } from '../../../shared/components/journal-dropdown/journal-dropdown.component';
-import { JournalRandomizeButtonComponent } from '../../../shared/components/journal-randomize-button/journal-randomize-button.component';
-import { KeywordTagsComponent } from '../../../shared/components/v2/cc-keyword-tags/cc-keyword-tags.component';
-import { CcHpCounterComponent } from '../../../shared/components/v2/cc-hp-counter/cc-hp-counter.component';
+import { CcCastCardComponent } from '../../../shared/components/Shared/cc-cast-card/cc-cast-card.component';
+import { JournalTitleComponent } from '../../../shared/components/Shared/journal-title/journal-title.component';
+import { JournalDropdownComponent } from '../../../shared/components/Shared/journal-dropdown/journal-dropdown.component';
+import { JournalRandomizeButtonComponent } from '../../../shared/components/Shared/journal-randomize-button/journal-randomize-button.component';
+import { KeywordTagsComponent } from '../../../shared/components/Shared/cc-keyword-tags/cc-keyword-tags.component';
+import { CcDialCounterComponent } from '../../../shared/components/Shared/cc-dial-counter/cc-dial-counter.component';
 import { HttpErrorResponse } from '@angular/common/http';
 import { SubscriptionDrawerService } from '../../../core/subscription-drawer.service';
 import { AuthService } from '../../../core/auth/auth.service';
 
-const POSTURE_OPTIONS = [
+export const POSTURE_OPTIONS = [
   'upright', 'slouched', 'hunched', 'rigid', 'relaxed', 'open', 'closed‑off', 'confident', 'defensive', 'aggressive', 'passive', 'dominant', 'submissive', 'balanced', 'unsteady', 'leaning forward', 'leaning back', 'leaning to the side', 'arms crossed', 'hands on hips', 'hands behind back', 'military‑straight', 'casual', 'tense', 'loose', 'curved spine', 'straight spine', 'reclined', 'perched', 'crouched', 'kneeling', 'squatting', 'wide‑stance', 'narrow‑stance', 'asymmetrical', 'symmetrical', 'tall', 'compressed'
 ];
 
-const SPEED_OPTIONS = [
+export const SPEED_OPTIONS = [
   'slow & deliberate', 'steady drumbeat', 'brisk', 'quick & hurried', 'nervous & rushed', 'measured', 'lumbering', 'graceful', 'sluggish', 'easygoing', 'calm & steady', 'smooth‑moving', 'relaxed pace', 'casual stride', 'purposeful stride', 'energetic', 'lively', 'darting', 'jittery', 'frantic', 'rapid‑fire', 'snappy', 'hurried', 'urgent', 'plodding', 'creeping', 'tentative', 'cautious', 'bold & decisive', 'fluid', 'sprightly', 'swift', 'nimble', 'light‑footed', 'heavy‑footed', 'stomping', 'drifting', 'wandering', 'methodical', 'stop‑and‑go', 'erratic', 'unpredictable'
 ];
 
-const PRONOUN_OPTIONS = [
+export const PRONOUN_OPTIONS = [
   'he/him', 'she/her', 'they/them', 'he/they', 'she/they', 'it/its', 'any pronouns',
 ];
 
-const AGE_OPTIONS = [
+export const AGE_OPTIONS = [
   'infant', 'toddler', 'child', 'youth', 'teen', 'youngadult', 'adult', 'midlife', 'elder', 'ancient'
 ];
 
-const ROLE_OPTIONS = [
+export const ROLE_OPTIONS = [
   'innkeeper', 'blacksmith', 'guildmaster', 'archivist', 'captain of the guard', 'merchant', 'healer', 'stablemaster', 'hunter', 'court advisor', 'high priest', 'ship captain', 'artificer', 'scout', 'mayor', 'quest scribe', 'wizard', 'bard', 'smuggler', 'naturalist', 'cartographer', 'diplomat', 'herbalist', 'monster hunter', 'librarian', 'alchemist', 'fence', 'noble', 'scribe', 'ranger', 'cook', 'quartermaster', 'engineer', 'spy', 'gladiator trainer', 'caravan leader', 'historian', 'sailor', 'miner', 'architect', 'tailor', 'brewer', 'butcher', 'farmer', 'shepherd', 'fisher', 'mason', 'jeweler', 'banker', 'tax collector', 'magistrate', 'lawyer', 'doctor', 'undertaker', 'gravekeeper', 'fortune teller', 'oracle', 'prophet', 'druid', 'shaman', 'beast tamer', 'falconer', 'weaponsmith', 'armorer', 'leatherworker', 'bowyer', 'fletcher', 'potion maker', 'scroll scribe', 'map seller', 'street performer', 'pickpocket', 'beggar', 'bounty hunter', 'mercenary', 'bodyguard', 'assassin', 'scout captain', 'guard recruiter', 'prison warden', 'jailor', 'courier', 'messenger', 'stablehand', 'dockworker', 'harbor master', 'lighthouse keeper', 'weather watcher', 'explorer', 'archaeologist', 'relic hunter', 'sage', 'tutor', 'professor', 'student', 'ritualist', 'cult leader', 'acolyte', 'temple attendant', 'festival organizer', 'town crier', 'auctioneer', 'market overseer'
 ];
 
-const RACE_OPTIONS = [
+export const RACE_OPTIONS = [
   'human', 'elf', 'high elf', 'wood elf', 'dark elf', 'drow', 'half‑elf', 'dwarf', 'hill dwarf', 'mountain dwarf', 'halfling', 'lightfoot halfling', 'stout halfling', 'gnome', 'forest gnome', 'rock gnome', 'orc', 'half‑orc', 'goblin', 'hobgoblin', 'bugbear', 'kobold', 'dragonborn', 'tiefling', 'aasimar', 'genasi', 'fire genasi', 'water genasi', 'air genasi', 'earth genasi', 'tabaxi', 'kenku', 'tortle', 'lizardfolk', 'triton', 'firbolg', 'goliath', 'minotaur', 'centaur', 'satyr', 'leonin', 'merfolk', 'changeling', 'shifter', 'warforged', 'kalashtar', 'vedalken', 'simic hybrid', 'aarakocra', 'yuan‑ti pureblood', 'fairy', 'harengon', 'githyanki', 'githzerai', 'duergar', 'svirfneblin', 'eladrin', 'sea elf', 'shadar‑kai', 'reborn', 'dhampir', 'hexblood', 'vampire', 'werewolf', 'catfolk', 'ratfolk', 'tengu', 'kitsune', 'ifrit', 'undine', 'sylph', 'oread', 'fetchling', 'grippli', 'vanara', 'nagaji', 'samsaran', 'skinwalker', 'gillman', 'android', 'lashunta', 'vesk', 'ysoki', 'kasatha', 'half‑giant', 'thri‑kreen', 'mul', 'elan', 'maenad', 'blue', 'loxodon', 'owlin', 'plasmoid', 'autognome', 'hadozee', 'giff', 'locathah', 'khenra', 'naga', 'serpentfolk', 'birdfolk', 'foxfolk', 'wolffolk', 'bearfolk', 'rabbitfolk', 'turtlefolk', 'insectfolk', 'construct', 'living construct', 'elemental‑touched', 'celestial‑touched', 'infernal‑touched', 'fey‑touched', 'shadow‑touched', 'giant‑kin'
 ];
 
@@ -46,7 +46,7 @@ const RACE_OPTIONS = [
 @Component({
   selector: 'app-cast-form',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, FormsModule, RouterLink, CastCardComponent, JournalTitleComponent, JournalDropdownComponent, JournalRandomizeButtonComponent, KeywordTagsComponent, CcHpCounterComponent],
+  imports: [CommonModule, ReactiveFormsModule, FormsModule, RouterLink, CcCastCardComponent, JournalTitleComponent, JournalDropdownComponent, JournalRandomizeButtonComponent, KeywordTagsComponent, CcDialCounterComponent],
   templateUrl: './cast-form.component.html',
   styleUrl: './cast-form.component.scss'
 })

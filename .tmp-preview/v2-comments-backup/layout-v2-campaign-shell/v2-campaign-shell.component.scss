@@ -1,0 +1,491 @@
+@use '../../../styles/variables' as v;
+@use '../../../styles/_campaign-shell-vars' as shell;
+
+:host {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+/* ── Void canvas ─────────────────────────────────────────────── */
+.void-canvas {
+  position: fixed;
+  inset: 0;
+  background: shell.$shell-base-black;
+  overflow: hidden; /* Changed from auto to hidden to prevent scrolling */
+  overscroll-behavior: none;
+  scrollbar-width: none;
+
+  &::-webkit-scrollbar { display: none; }
+}
+
+/* ── Portal breathing border (highest z-index) ─────────────────────────────────── */
+.portal-breathing-border {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 100000;
+  transform: translateZ(0);
+  // Two animations: the portal lights up as the campaign's colour arrives (rather than
+  // appearing in a single frame), and from then on it breathes in that colour.
+  animation:
+    portal-inward-breathe 8.4s ease-in-out infinite,
+    portal-border-in 700ms ease-out both;
+}
+
+@keyframes portal-border-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes portal-inward-breathe {
+  0%, 100% {
+    box-shadow:
+      inset 0 0 0    1px color-mix(in srgb, var(--portal-color, shell.$shell-purple-primary) 40%, white 60%),
+      inset 0 0  6px  2px color-mix(in srgb, var(--portal-color, shell.$shell-purple-primary), transparent 28%),
+      inset 0 0 14px  4px color-mix(in srgb, var(--portal-color, shell.$shell-purple-primary), transparent 52%),
+      inset 0 0 25px  8px color-mix(in srgb, var(--portal-color, shell.$shell-purple-primary), transparent 76%);
+  }
+  50% {
+    box-shadow:
+      inset 0 0 0    1px color-mix(in srgb, var(--portal-color, shell.$shell-purple-primary) 25%, white 75%),
+      inset 0 0  9px  3px color-mix(in srgb, var(--portal-color, shell.$shell-purple-primary), transparent 12%),
+      inset 0 0 19px  6px color-mix(in srgb, var(--portal-color, shell.$shell-purple-primary), transparent 36%),
+      inset 0 0 35px 12px color-mix(in srgb, var(--portal-color, shell.$shell-purple-primary), transparent 64%);
+  }
+}
+
+/* ── Safe-area letterbox bars ───────────────────────────────── */
+.void-letterbox-top,
+.void-letterbox-bottom {
+  position: fixed;
+  left: 0;
+  right: 0;
+  background: #000;
+  pointer-events: none;
+  z-index: 99999;
+}
+
+.void-letterbox-top    { top: 0;    height: env(safe-area-inset-top, 0px);    }
+.void-letterbox-bottom { bottom: 0; height: env(safe-area-inset-bottom, 0px); }
+
+/* ── 3x3 Grid Container ───────────────────────────────────────── */
+.grid-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 300vw; /* 3x viewport width */
+  height: 300vh; /* 3x viewport height */
+  display: grid;
+  grid-template-columns: repeat(3, 100vw);
+  grid-template-rows: repeat(3, 100vh);
+  transition: transform 1.5s cubic-bezier(0.4, 0, 0.2, 1); /* Smooth animation */
+  will-change: transform;
+}
+
+/* ── Grid Areas ───────────────────────────────────────────────── */
+.grid-area {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Position each area in the grid */
+.top-left     { grid-column: 1; grid-row: 1; }
+.top-middle   { grid-column: 2; grid-row: 1; }
+.top-right    { grid-column: 3; grid-row: 1; }
+.middle-left  { grid-column: 1; grid-row: 2; }
+.middle-middle {
+  grid-column: 2;
+  grid-row: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.middle-right { grid-column: 3; grid-row: 2; }
+
+/* ── Grid area titles ─────────────────────────────────────────── */
+.area-title {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  z-index: 10;
+}
+
+.bottom-left   { grid-column: 1; grid-row: 3; }
+.bottom-middle { grid-column: 2; grid-row: 3; }
+.bottom-right  { grid-column: 3; grid-row: 3; }
+
+/* ── Day counter (1/4) + world map (3/4) in top-middle ─────────── */
+.top-middle-center {
+  position: absolute;
+  inset: 0;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0 12px 12px; /* 12px gutter for the world-map frame (sides + bottom) */
+  box-sizing: border-box;
+  /*
+   * The bar and the map sit 24px lower than the area's own top, as one pure translation of
+   * the column they share: their sizes and the gap between them are untouched. A padding
+   * here would have shortened the map instead (it fills whatever is left), and nudging the
+   * two children separately would have changed the bar-to-map gap, which is measured from
+   * the counter's own box — see .top-middle-world-map's margin-top.
+   */
+  transform: translateY(24px);
+}
+
+.top-middle-day-counter {
+  position: relative;
+  top: 25px; /* nudges down ~20px on screen (zoom: 0.8 scales this offset) */
+  flex: 0 0 25%;
+  width: 100%;
+  max-width: 960px;
+  zoom: 0.8;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 0 20px 34px;
+  margin-bottom: 12px;
+}
+
+.top-middle-world-map {
+  /* Frame top: 24px below the visible bottom of the day counter, plus the
+     counter's own 12px margin-bottom (so the on-screen gap is ~36px).
+     The counter is nudged down 25px (renders as 20px because of zoom: 0.8) and
+     keeps 34px of bottom padding inside that zoomed box, so it carries
+     (34px - 25px) * 0.8 = 7.2px of invisible space below the bar - subtract it
+     so the gap is measured from the bar, not from the counter's box. */
+  margin-top: calc(24px - (34px - 25px) * 0.8);
+  /* Frame's bottom border sits 200px above the bottom of the screen:
+     100px here + the container's 12px bottom gutter. */
+  margin-bottom: 100px;
+  /* Fill whatever is left between the counter and those gutters */
+  flex: 1 1 0;
+  width: 100%;
+  min-height: 0;
+}
+
+/* ── Area Return Button (positioned within grid areas) ─────────── */
+.area-return-button {
+  position: absolute;
+  padding: 12px 24px;
+  background: linear-gradient(135deg, #dc2626 0%, #991b1b 100%);
+  color: white;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  z-index: 100000;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(220, 38, 38, 0.4);
+  
+  &:hover {
+    background: linear-gradient(135deg, #ef4444 0%, #b91c1c 100%);
+    border-color: rgba(255, 255, 255, 0.5);
+    box-shadow: 0 6px 20px rgba(220, 38, 38, 0.6);
+  }
+}
+
+/* ── Area Navigation Button (positioned within grid areas) ─────── */
+.area-nav-button {
+  position: absolute;
+  padding: 10px 20px;
+  background: linear-gradient(135deg, #6e28d0 0%, #4c1d95 100%);
+  color: white;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  z-index: 99999;
+  transition: all 0.3s ease;
+  box-shadow: 0 3px 10px rgba(110, 40, 208, 0.3);
+  white-space: nowrap;
+  
+  &:hover {
+    background: linear-gradient(135deg, #7c3aed 0%, #5b21b6 100%);
+    border-color: rgba(255, 255, 255, 0.5);
+    box-shadow: 0 4px 15px rgba(110, 40, 208, 0.5);
+  }
+}
+
+/* ── Button Positioning Classes (shared by return and nav buttons) ─── */
+.area-return-button.bottom-right,
+.area-nav-button.bottom-right {
+  bottom: 20px;
+  right: 20px;
+  
+  &:hover {
+    transform: translateY(-2px);
+  }
+}
+
+.area-return-button.bottom-middle,
+.area-nav-button.bottom-middle {
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  
+  &:hover {
+    transform: translateX(-50%) translateY(-2px);
+  }
+}
+
+.area-return-button.bottom-left,
+.area-nav-button.bottom-left {
+  bottom: 20px;
+  left: 20px;
+  
+  &:hover {
+    transform: translateY(-2px);
+  }
+}
+
+.area-return-button.right-middle,
+.area-nav-button.right-middle {
+  top: 50%;
+  right: 20px;
+  transform: translateY(-50%);
+  
+  &:hover {
+    transform: translateY(-50%) translateY(-2px);
+  }
+}
+
+.area-return-button.left-middle,
+.area-nav-button.left-middle {
+  top: 50%;
+  left: 20px;
+  transform: translateY(-50%);
+  
+  &:hover {
+    transform: translateY(-50%) translateY(-2px);
+  }
+}
+
+.area-return-button.top-right,
+.area-nav-button.top-right {
+  top: 20px;
+  right: 20px;
+  
+  &:hover {
+    transform: translateY(-2px);
+  }
+}
+
+.area-return-button.top-middle,
+.area-nav-button.top-middle {
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  
+  &:hover {
+    transform: translateX(-50%) translateY(-2px);
+  }
+}
+
+.area-return-button.top-left,
+.area-nav-button.top-left {
+  top: 20px;
+  left: 20px;
+  
+  &:hover {
+    transform: translateY(-2px);
+  }
+}
+
+/* ── Navigation Buttons Container ───────────────────────────────── */
+.nav-buttons {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 100000;
+}
+
+/* ── Navigation Button Base Styles ─────────────────────────────────── */
+.nav-button {
+  position: absolute;
+  padding: 10px 16px;
+  background: linear-gradient(135deg, #6e28d0 0%, #4c1d95 100%);
+  color: white;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  pointer-events: auto;
+  transition: all 0.3s ease;
+  box-shadow: 0 3px 10px rgba(110, 40, 208, 0.3);
+  white-space: nowrap;
+  
+  &:hover {
+    background: linear-gradient(135deg, #7c3aed 0%, #5b21b6 100%);
+    border-color: rgba(255, 255, 255, 0.5);
+    transform: scale(1.05);
+    box-shadow: 0 4px 15px rgba(110, 40, 208, 0.5);
+  }
+  
+  &:active {
+    transform: scale(0.98);
+  }
+}
+
+/* ── Navigation Button Positions ────────────────────────────────── */
+.nav-button.top-left {
+  top: 20px;
+  left: 20px;
+}
+
+.nav-button.top-middle {
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  
+  &:hover {
+    transform: translateX(-50%) scale(1.05);
+  }
+}
+
+.nav-button.top-right {
+  top: 20px;
+  right: 20px;
+}
+
+.nav-button.middle-left {
+  top: 50%;
+  left: 20px;
+  transform: translateY(-50%);
+  
+  &:hover {
+    transform: translateY(-50%) scale(1.05);
+  }
+}
+
+.nav-button.middle-right {
+  top: 50%;
+  right: 20px;
+  transform: translateY(-50%);
+  
+  &:hover {
+    transform: translateY(-50%) scale(1.05);
+  }
+}
+
+.nav-button.bottom-left {
+  bottom: 20px;
+  left: 20px;
+}
+
+.nav-button.bottom-middle {
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  
+  &:hover {
+    transform: translateX(-50%) scale(1.05);
+  }
+}
+
+.nav-button.bottom-right {
+  bottom: 20px;
+  right: 20px;
+}
+
+/* ── Rolodex Box Blockers ─────────────────────────────────────────── */
+.rolodex-box-blocker-left{
+  min-height: 500px;
+  min-width: 14%;
+  position: absolute;
+  top: 108px;
+  left: 22px;
+  z-index: 1001;
+  background: black;
+
+  @media (max-width: 1024px) {
+    display: none;
+  }
+}
+
+.rolodex-box-blocker-right{
+  min-height: 500px;
+  min-width: 14%;
+  position: absolute;
+  top: 108px;
+  right: 22px;
+  z-index: 1001;
+  background: black;
+
+  @media (max-width: 1024px) {
+    display: none;
+  }
+}
+
+/* ── Rolodex Box Frames ───────────────────────────────────────────── */
+/*
+ * The black bars that frame the realm's card box (see cc-card-navigation): one on the left end of
+ * the 70%-wide box the realm's rows stand in and one on its right, from just under the breadcrumb
+ * row down the length of the card row, each masked away toward the middle so the cards come out of
+ * the black rather than off a hard line. They are the area's own furniture — the same pair, in the
+ * same dress, that frames the factions' row and the encounter pool (see cc-card-faction-navigation
+ * and cc-encounter-builder) — so they are drawn here, either side of <app-cc-card-navigation>,
+ * rather than inside that component.
+ *
+ * They are drawn `absolute`, so this area (`.grid-area`, its `position: relative`) is what they hang
+ * off: they ride the area's own box while the shell pans the board, and the area's own clip ends
+ * them, the way it ends the blockers. Both bars are given a z-index above the blockers (1001) and
+ * above the nav box (1002), because the blockers' own inner edge reaches a few px past the box's
+ * ends and the cards have to come out of the black bars rather than off the blockers' cut.
+ *
+ * The run they take is the pair's own figure: 144px above the middle of the area and 388px long, so
+ * they end 244px below it. The box is 660px tall — the realm's breadcrumb row 120, its card row 380,
+ * its bottom row 160 (see the row rules in cc-card-navigation) — and it stands centred in this area,
+ * so its own top is 330px above that middle: the bars therefore run 186px to 574px down the box —
+ * from 66px into the card row to 74px into the bottom row below it. Its own width is 70% of the
+ * area, so its ends are 15% in from the area's own; below 1024px the component is the area's whole
+ * width, so the bars come in to the area's ends to stay on it.
+ */
+.rolodex-box-frame-left{
+  min-height: 388px;
+  min-width: 62px;
+  position: absolute;
+  top: calc(50% - 144px);
+  left: 15%;
+  z-index: 1003;
+  background: black;
+  mask-image: linear-gradient(to right, black 0%, black 70%, transparent 100%);
+  -webkit-mask-image: linear-gradient(to right, black 0%, black 70%, transparent 100%);
+
+  @media (max-width: 1024px) {
+    left: 0;
+  }
+}
+
+.rolodex-box-frame-right{
+  min-height: 388px;
+  min-width: 62px;
+  position: absolute;
+  top: calc(50% - 144px);
+  right: 15%;
+  z-index: 1003;
+  background: black;
+  mask-image: linear-gradient(to left, black 0%, black 50%, transparent 100%);
+  -webkit-mask-image: linear-gradient(to left, black 0%, black 50%, transparent 100%);
+
+  @media (max-width: 1024px) {
+    right: 0;
+  }
+}
+
+@media (max-width: 768px) {
+  // Hide the fixed rolodex frames on mobile, the way the other two rows' pairs are hidden
+  .rolodex-box-frame-left,
+  .rolodex-box-frame-right {
+    display: none;
+  }
+}

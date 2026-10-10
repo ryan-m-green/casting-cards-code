@@ -1,0 +1,264 @@
+@use '../../../../../../styles/variables' as v;
+@use 'sass:color';
+
+$rule-frame-orange:      color.mix(v.$color-base-copper,       v.$color-base-burnt-sienna, 55%);
+$rule-frame-orange-mid:  color.mix(v.$color-base-burnt-sienna, v.$color-base-rust, 62%);
+$rule-frame-orange-deep: color.mix(v.$color-base-rust,         v.$color-base-dark-brown, 62%);
+$rule-frame-orange-lift: color.mix(v.$color-base-orange-warm,  v.$color-base-copper, 45%);
+
+$rule-plum-deep:        color.mix(v.$color-base-purple-6, v.$color-base-arcane-dark, 55%);
+$rule-plum-mid:         color.mix(v.$color-base-purple-5, v.$color-base-purple-6, 60%);
+$rule-plum-lift:        color.mix(v.$color-base-purple-4, v.$color-base-purple-5, 45%);
+
+:host {
+  display: block;
+  width: 150px;
+  height: 220px;
+  flex-shrink: 0;
+}
+
+.rule-card {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  background: none;
+  border: 0;
+  border-radius: 8px;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+
+  &:hover {
+    transform: translateY(-6px);
+  }
+
+  &:focus-visible {
+    outline: 2px solid color-mix(in srgb, var(--portal-color, v.$color-base-purple-primary) 80%, white 20%);
+    outline-offset: 3px;
+  }
+}
+
+.rule-frame {
+  position: absolute;
+  inset: 0;
+  display: block;
+  border-radius: 8px;
+  padding: 4px;
+  background: linear-gradient(
+    145deg,
+    $rule-frame-orange 0%, $rule-frame-orange-mid 20%, $rule-frame-orange-deep 45%,
+    $rule-frame-orange-lift 55%, $rule-frame-orange-mid 70%, $rule-frame-orange-deep 85%, $rule-frame-orange 100%
+  );
+  box-shadow:
+    0 0 0 1px v.$color-base-black-7,
+    0 6px 22px v.$color-shadow-dark,
+    inset 0 1px 0 v.$color-cast-gold-10;
+}
+
+.rule-inner {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  border-radius: 5px;
+  overflow: hidden;
+  background: linear-gradient(160deg, v.$color-base-tan-14 0%, v.$color-base-tan-15 50%, v.$color-base-tan-16 100%);
+
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 10;
+    pointer-events: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='250' height='250'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='250' height='250' filter='url(%23n)' opacity='.1'/%3E%3C/svg%3E");
+    mix-blend-mode: multiply;
+  }
+}
+
+.rule-banner {
+  position: relative;
+  flex-shrink: 0;
+  padding: 6px 8px 5px;
+  background: linear-gradient(180deg, $rule-plum-deep 0%, $rule-plum-mid 55%, $rule-plum-lift 100%);
+  border-bottom: 1.5px solid $rule-frame-orange-deep;
+
+  &::after {
+    content: '';
+    position: absolute;
+    bottom: -3px;
+    left: 0;
+    right: 0;
+    height: 1.5px;
+    background: linear-gradient(90deg, transparent, v.$color-cast-gold-11, transparent);
+  }
+}
+
+.rule-name {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  font-family: 'Cinzel', serif;
+  font-weight: 700;
+  font-size: 12px;
+  line-height: 1.2;
+  letter-spacing: 0.03em;
+  color: v.$color-base-gold-bright-hex;
+  text-shadow: 0 1px 4px v.$color-shadow-dark;
+}
+
+.rule-chapter {
+  display: block;
+  margin-top: 2px;
+  font-family: 'Cinzel', serif;
+  font-size: 6px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: v.$color-base-gold-bright-hex;
+  opacity: 0.8;
+}
+
+.rule-body {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  flex: 1;
+  min-height: 0;
+  margin: 4px 5px 5px;
+  padding: 5px 6px;
+  border: 1.5px solid v.$color-border-black-strong;
+  border-radius: 3px;
+  overflow: hidden;
+  background: linear-gradient(160deg, v.$color-base-cast-tan, v.$color-base-cast-gold-pale, v.$color-base-cast-amber);
+}
+
+.rule-definition {
+  display: -webkit-box;
+  -webkit-line-clamp: 11;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  font-family: 'IM Fell English', serif;
+  font-size: 11px;
+  line-height: 1.2;
+  color: v.$color-base-brown-16;
+
+  &--group {
+    flex: 0 0 auto;
+    -webkit-line-clamp: 2;
+  }
+}
+
+.rule-rules {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.rule-rule {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  padding-bottom: 3px;
+  border-bottom: 1px solid v.$color-border-light;
+
+  &:last-child {
+    padding-bottom: 0;
+    border-bottom: 0;
+  }
+}
+
+.rule-rule-name {
+  font-family: 'Cinzel', serif;
+  font-weight: 700;
+  font-size: 10px;
+  line-height: 1.2;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  color: v.$color-base-brown-16;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.rule-rules-more {
+  font-family: 'IM Fell English', serif;
+  font-size: 11px;
+  font-style: italic;
+  line-height: 1.2;
+  color: v.$color-base-brown-16;
+  opacity: 0.7;
+}
+
+.rule-rule-definition {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  font-family: 'IM Fell English', serif;
+  font-size: 11px;
+  line-height: 1.2;
+  color: v.$color-base-brown-16;
+  opacity: 0.85;
+}
+
+@media (max-width: 768px) {
+  :host {
+    width: 138px;
+    height: 202px;
+  }
+}
+@media (max-width: 768px) {
+  :host {
+    width: 138px;
+    height: 202px;
+  }
+}
+
+/* Picking rules out of the library: tapping a card toggles it onto the campaign. */
+.rule-card--pickable {
+  cursor: pointer;
+
+  .rule-frame {
+    position: relative;
+  }
+}
+
+.rule-card--selected .rule-frame {
+  box-shadow:
+    0 0 0 2px var(--portal-color, v.$color-base-purple-primary),
+    0 6px 14px rgba(0, 0, 0, 0.22);
+}
+
+.rule-check {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  border: 1px solid v.$color-border-light;
+  border-radius: 50%;
+  background: v.$campaign-portal-bg-dark;
+  font-family: v.$font-header;
+  font-size: 12px;
+  line-height: 1;
+  color: transparent;
+
+  &.is-on {
+    border-color: var(--portal-color, v.$color-base-purple-primary);
+    background: var(--portal-color, v.$color-base-purple-primary);
+    color: #fff;
+  }
+}
+

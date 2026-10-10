@@ -1,0 +1,30 @@
+<div class="fights" [style.--portal-color]="portalColor()">
+  @if (displayedEncounter(); as active) {
+    <div class="stage stage--circle" [class.is-entering]="ringEntering()" [style.opacity]="ringOpacity()">
+      <div class="encounter-banner">
+        <span class="encounter-banner-turn">{{ turnBanner() }}</span>
+      </div>
+
+      <cc-encounter-circle
+        [encounter]="active"
+        [portalColor]="portalColor()"
+        [readOnly]="true"
+        (combatantSelected)="onFightCardSelected($event)"
+      />
+    </div>
+  } @else {
+    <div class="stage stage--circle">
+      <cc-encounter-circle
+        [encounter]="standbyEncounter()"
+        [portalColor]="portalColor()"
+        [readOnly]="true"
+        [standby]="true"
+        standbyMessage="All are welcomed, none are shamed... unless you lose, then you're renamed!"
+      />
+    </div>
+  }
+
+  @if (error()) {
+    <p class="fights-error">{{ error() }}</p>
+  }
+</div>

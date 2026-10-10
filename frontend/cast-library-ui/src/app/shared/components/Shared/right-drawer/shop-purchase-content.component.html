@@ -1,0 +1,20 @@
+<div class="purchase-body">
+  @if (item; as item) {
+    <div class="purchase-item-card">
+      <h2 class="purchase-item-name">{{ item.name }}</h2>
+      <div class="purchase-item-price">{{ item.priceAmount }} {{ item.priceCurrencyType }}</div>
+      @if (item.description) {
+        <p class="purchase-item-description">{{ item.description }}</p>
+      }
+    </div>
+
+    <div class="purchase-actions">
+      <button class="purchase-buy-btn"
+        [class.purchase-buy-btn--loading]="purchasing()"
+        [disabled]="purchasing()"
+        (click)="buyItem()">
+        {{ purchasing() ? '…' : 'Buy' }}
+      </button>
+    </div>
+  }
+</div>

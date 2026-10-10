@@ -1,0 +1,232 @@
+<div class="pc scroll-body">
+  <app-journal-title [title]="(form.controls.name.value || '') || (isEditMode() ? 'Edit Campaign' : 'New Campaign')" [subtitle]="isEditMode() ? 'Campaign Settings' : ''" />
+  <div class="wr wr-page-header">
+    <a class="btn-ghost" routerLink="/gm/campaigns">← Library</a>
+  </div>
+
+  <img src="/goblin.PNG" alt="Goblin" class="goblin-image" />
+
+  <div class="title-divider"></div>
+
+  <!-- ── Tab navigation ──────────────────────────────────────────────────────── -->
+  <div class="campaign-tabs">
+    <button
+      class="tab-btn"
+      [class.tab-btn-active]="activeTab() === 'world-setup'"
+      (click)="activeTab.set('world-setup')"
+    >
+      World Setup
+    </button>
+    <button
+      class="tab-btn"
+      [class.tab-btn-active]="activeTab() === 'day-cycle'"
+      [disabled]="!campaignId()"
+      (click)="activeTab.set('day-cycle')"
+      [title]="!campaignId() ? 'Save a campaign name first' : ''"
+    >
+      Day Cycle
+    </button>
+    <button
+      class="tab-btn"
+      [class.tab-btn-active]="activeTab() === 'players'"
+      [disabled]="!campaignId()"
+      (click)="activeTab.set('players')"
+      [title]="!campaignId() ? 'Save a campaign name first' : ''"
+    >
+      Players
+    </button>
+  </div>
+
+  <!-- ── Tab 4: Players ────────────────────────────────────────────────────────── -->
+  @if (activeTab() === 'players') {
+    <div class="players-tab">
+
+      <div class="players-section-label">Invite Code</div>
+      <p class="players-hint">Generate a 24-hour code and share it with your players. Anyone with the code can join this campaign.</p>
+
+      @if (inviteCode()) {
+        <div class="invite-code-row">
+          <div class="invite-code-display" (click)="copyCode()" title="Click to copy" style="cursor:pointer">{{ inviteCode()!.code }}</div>
+        </div>
+        <div class="invite-code-feedback">
+          @if (codeCopied()) {
+            <span class="code-copied-label">Copied!</span>
+          } @else {
+            <span class="invite-expires">{{ timeRemaining() }}</span>
+          }
+        </div>
+        <button class="invite-generate-btn" (click)="generateInviteCode()" [disabled]="codeLoading()">
+          {{ codeLoading() ? '…' : '↻ Regenerate' }}
+        </button>
+      } @else {
+        <div class="invite-empty">No active code.</div>
+        <button class="invite-generate-btn" (click)="generateInviteCode()" [disabled]="codeLoading()">
+          {{ codeLoading() ? '…' : '↻ Generate Code' }}
+        </button>
+      }
+
+      <div class="dv dv-mb"></div>
+
+      <div class="players-section-label">
+        Players — <span>{{ players().length }} joined</span>
+      </div>
+
+      @if (players().length) {
+        <div class="players-list">
+          @for (player of players(); track player.userId) {
+            <div class="player-row">
+              <div class="player-info">
+                <span class="player-name">{{ player.displayName }}</span>
+                <span class="player-email">{{ player.email }}</span>
+              </div>
+              <button
+                class="player-remove-btn"
+                (click)="removePlayer(player.userId)"
+                [disabled]="removingPlayer() === player.userId"
+                title="Remove player"
+              >
+                {{ removingPlayer() === player.userId ? '…' : '✕' }}
+              </button>
+            </div>
+          }
+        </div>
+      } @else {
+        <p class="players-empty">No players have joined yet.</p>
+      }
+
+    </div>
+  }
+
+  <!-- ── Tab 3: Day Cycle ─────────────────────────────────────────────────────── -->
+  @if (activeTab() === 'day-cycle') {
+    <app-time-of-day-editor [campaignId]="campaignId()!" [portalColor]="form.controls.spineColor.value ?? ''" />
+  }
+
+  <!-- ── Tab 1: World Setup (existing content) ─────────────────────────────────── -->
+  @if (activeTab() === 'world-setup') {
+
+  <form [formGroup]="form">
+    <label class="fi-label">Campaign Name</label>
+    <div class="campaign-name-row">
+      <input class="fi" formControlName="name" />
+      @if (!campaignId()) {
+        <button
+          type="button"
+          class="campaign-primary-btn"
+          [disabled]="!form.controls.name.valid"
+          (click)="startCampaign()"
+          title="Start Campaign"
+        >
+          Start
+        </button>
+      }
+    </div>
+    @if (form.controls.name.touched && form.controls.name.invalid) {
+      <div class="fi-error">Campaign name is required before adding locations.</div>
+    }
+    <div class="campaign-fields-container" [class.disabled]="fieldsDisabled()">
+    <label class="fi-label">Campaign Color</label>
+    <div class="color-picker-row">
+      <input type="color" class="color-swatch-input" formControlName="spineColor" />
+      <span class="color-swatch-preview" [style.background]="form.controls.spineColor.value"></span>
+      <span class="color-swatch-hex">{{ form.controls.spineColor.value }}</span>
+    </div>
+    <app-journal-dropdown
+      [options]="fantasyTypeOptions"
+      [label]="'Fantasy Type'"
+      [control]="fantasyTypeControl"
+      [disabled]="fieldsDisabled()">
+    </app-journal-dropdown>
+    <label class="fi-label">Description</label>
+    <textarea class="fi" formControlName="description" rows="3" placeholder="A brief synopsis…"></textarea>
+  </div>
+  </form>
+
+  @if (isAdmin()) {
+    <fieldset class="form-gm-box">
+      <legend class="form-gm-box__legend">FOR ADMINS ONLY</legend>
+      <button
+        class="demo-lock-btn"
+        [class.demo-lock-btn--unlocked]="!isDemoLocked()"
+        (click)="unlockDemo()"
+        [title]="isDemoLocked() ? 'Click to enable editing' : 'Click to lock'"
+        type="button"
+      >
+        {{ isDemoLocked() ? '🔒' : '🔓' }}
+      </button>
+      <span class="demo-label" [class.demo-label--locked]="isDemoLocked()">Demo Campaign</span>
+      <input
+        type="checkbox"
+        class="demo-checkbox"
+        [class.demo-checkbox--unlocked]="!isDemoLocked()"
+        [checked]="isDemoChecked()"
+        [disabled]="isDemoLocked()"
+        (change)="toggleDemo()"
+      />
+      @if (isDemoChecked()) {
+        <span class="demo-checked-indicator">✓</span>
+      }
+    </fieldset>
+  }
+
+  @if (saving()) {
+    <div class="autosave-indicator">Saving…</div>
+  }
+  @if (formSaveStatus() === 'saving') {
+    <div class="autosave-indicator saving">Saving…</div>
+  } @else if (formSaveStatus() === 'saved') {
+    <div class="autosave-indicator saved">Saved</div>
+  }
+
+  @if (limitError()) {
+    <div class="limit-error-message">
+      {{ limitError() }}
+      <button class="limit-error-close" (click)="limitError.set(null)">×</button>
+    </div>
+  }
+
+  @if (isEditMode()) {
+    <div class="campaign-danger-zone">
+      <button class="campaign-primary-btn campaign-primary-btn--delete" (click)="requestDelete()" type="button">
+        × Delete Campaign
+      </button>
+    </div>
+  }
+
+  } <!-- end @if world-setup -->
+
+</div>
+
+@if (pendingRemoveIdx() !== null) {
+  <div class="modal-backdrop" (click)="cancelRemove()">
+    <div class="modal-box" (click)="$event.stopPropagation()">
+      <div class="modal-title">Remove Location?</div>
+      <p class="modal-body">
+        This location has <strong>{{ pendingCastCount() }} sublocations{{ pendingCastCount() === 1 ? '' : 's' }}</strong> assigned to it.
+        Removing it will also remove {{ pendingCastCount() === 1 ? 'that sublocation and its cast' : 'those sublocations and their cast' }}.
+      </p>
+      <div class="modal-actions">
+        <button class="btn-ghost" (click)="cancelRemove()" type="button">Cancel</button>
+        <button class="btn-danger" (click)="confirmRemove()" type="button">Remove</button>
+      </div>
+    </div>
+  </div>
+}
+
+@if (confirmingDelete()) {
+  <div class="modal-backdrop" (click)="cancelDelete()">
+    <div class="modal-box" (click)="$event.stopPropagation()">
+      <div class="modal-title">Delete Campaign?</div>
+      <p class="modal-body">This will permanently delete the campaign, including all location, cast, faction, and sublocation instances within it. Your library cards will not be affected — only the campaign and its session data will be removed. This cannot be undone.</p>
+      <div class="modal-actions">
+        <button class="btn-ghost" (click)="cancelDelete()" type="button">Cancel</button>
+        <button class="btn-danger" (click)="confirmDelete()" [disabled]="deleting()" type="button">
+          {{ deleting() ? 'Deleting…' : 'Delete' }}
+        </button>
+      </div>
+    </div>
+  </div>
+}
+
+
+

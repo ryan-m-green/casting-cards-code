@@ -1,0 +1,183 @@
+<div
+  class="circle"
+  [style.--portal-color]="portalColor()"
+  [style.--circle-radius]="radius() + '%'"
+  [style.--ring-inset]="ringInset + 'px'"
+  [style.--card-scale]="cardScale()"
+  [style.--card-w.px]="cardWidth()"
+  [style.--card-h.px]="cardHeight()"
+  [style.--ring-reach-x.px]="ringReachX()"
+  [style.--ring-reach-y.px]="ringReachY()"
+>
+  <h3 class="circle-title" [title]="encounter().name">{{ encounter().name }}</h3>
+
+  <div class="circle-frame">
+    <div class="circle-shape" #circleShape>
+      @if (ringVisible()) {
+        <div class="circle-ring" aria-hidden="true"></div>
+      }
+
+      @if (isActive()) {
+        <div
+          class="circle-spotlight"
+          [class.is-fading]="celebration.active()"
+          [style.transform]="'rotate(' + handRotation() + 'deg)'"
+          aria-hidden="true"
+        ></div>
+
+        <button
+          type="button"
+          class="circle-centre circle-centre--next"
+          [disabled]="busy() || !nodes().length || readOnly()"
+          [title]="readOnly() ? 'The DM advances the initiative' : 'Next in the initiative'"
+          [attr.aria-label]="'Next in the initiative'"
+          (click)="nextRequested.emit()"
+        >@if (readOnly()) {
+          <img class="circle-centre-icon" src="/spear_shield_weaponry.svg" alt="" aria-hidden="true" />
+        } @else { Next }</button>
+
+        @for (node of nodes(); track node.spotId) {
+          @let cards = stacked(node);
+          @let held = node.drag === 'dragging';
+          @let rolled = node.initiative === null ? '' : ' · rolled ' + node.initiative;
+
+          <div
+            class="node"
+            [class.node--player]="node.isPlayer"
+            [class.node--hidden]="node.drag === 'hidden'"
+            [class.node--dragging]="held"
+            [class.node--dimmed]="!isDragging() && node.position - 1 !== litPlace()"
+            [class.node--arriving]="node.arriving"
+            [style.left.%]="node.drawX"
+            [style.top.%]="node.drawY"
+            [style.--deal-delay]="node.dealDelay + 'ms'"
+            [style.transform]="'translate(-50%, -50%) translate(' + node.pullX + 'px, ' + node.pullY + 'px)' + (held ? ' scale(1.05)' : '')"
+            draggable="false"
+            (pointerdown)="onNodePointerDown($event, node)"
+            (dragstart)="onNodeDragStart($event)"
+            (contextmenu)="onNodeContextMenu($event)"
+          >
+            <span
+              class="node-initiative"
+              [style.transform]="'translate(-50%, -50%) translate(' + node.badgeX + 'px, ' + node.badgeY + 'px)'"
+              [title]="'Place ' + node.position + ' in the initiative' + rolled"
+            >{{ node.position }}</span>
+
+            <div class="node-stack">
+              @for (card of cards; track card.id; let i = $index) {
+                <div
+                  class="node-card"
+                  [style.marginLeft.px]="stackOffset(i)"
+                  [style.zIndex]="cards.length - i"
+                  (pointerdown)="onCardPressed(node, card)"
+                >
+                  <cc-ring-condition
+                    [campaignId]="encounter().campaignId"
+                    [subject]="subjectFor(card)"
+                    [conditions]="conditionsFor(card)"
+                    [readOnly]="true"
+                    [size]="largeCards() ? 'large' : 'simple'"
+                  >
+                    @if (card.combatantType === 'player') {
+                      @if (largeCards()) {
+                        @if (asPlayerCard(card); as member) {
+                          <cc-player-card [member]="member" mode="dm" [flippable]="false" [actions]="false" />
+                        } @else {
+                          <cc-simple-player-card [player]="asPlayer(card)" />
+                        }
+                      } @else {
+                        <cc-simple-player-card [player]="asPlayer(card)" />
+                      }
+                    } @else {
+                      @if (largeCards()) {
+                        <cc-cast-card
+                          [cast]="asCast(card)"
+                          [flippable]="false"
+                          [editable]="false"
+                          [secrets]="false"
+                          [campaignMode]="false"
+                          [titleSearch]="false"
+                          [readonlyStars]="true"
+                          [dmMode]="true"
+                          [isDefeated]="card.isDefeated"
+                          [isCaptured]="card.isCaptured"
+                          [isEscaped]="card.isEscaped"
+                        />
+                      } @else {
+                        <cc-simple-cast-card
+                          [cast]="asCast(card)"
+                          [isDefeated]="card.isDefeated"
+                          [isCaptured]="card.isCaptured"
+                          [isEscaped]="card.isEscaped"
+                        />
+                      }
+                    }
+                  </cc-ring-condition>
+                </div>
+              }
+            </div>
+          </div>
+        }
+
+        @if (isDragging()) {
+          @for (zone of dropzones(); track zone.spotId) {
+            <div
+              class="dropzone"
+              [class.is-over]="zone.index === dropTarget()"
+              [style.left.%]="zone.x"
+              [style.top.%]="zone.y"
+              [style.transform]="'translate(-50%, -50%) translate(' + zone.pullX + 'px, ' + zone.pullY + 'px)'"
+            >
+              <span class="dropzone-place">{{ zone.index + 1 }}</span>
+            </div>
+          }
+        }
+
+        @if (!nodes().length) {
+          <p class="circle-empty">This encounter has no cards yet.</p>
+        }
+      } @else if (standby()) {
+        <button
+          type="button"
+          class="circle-centre circle-centre--next"
+          disabled
+          tabindex="-1"
+          aria-hidden="true"
+          title="The ring waits for the next fight"
+        >
+          @if (readOnly()) {
+            <img class="circle-centre-icon" src="/spear_shield_weaponry.svg" alt="" aria-hidden="true" />
+          }
+        </button>
+
+        @if (standbyArc(); as arc) {
+          <svg class="circle-standby" viewBox="0 0 200 200">
+            <defs>
+              <path [attr.id]="arc.topId" [attr.d]="arc.topPath" />
+              <path [attr.id]="arc.bottomId" [attr.d]="arc.bottomPath" />
+            </defs>
+
+            <text [attr.font-size]="arc.fontSize">
+              <textPath [attr.href]="'#' + arc.topId" startOffset="50%" text-anchor="middle">{{ arc.top }}</textPath>
+            </text>
+
+            <text [attr.font-size]="arc.fontSize">
+              <textPath [attr.href]="'#' + arc.bottomId" startOffset="50%" text-anchor="middle">{{ arc.bottom }}</textPath>
+            </text>
+          </svg>
+        }
+      }
+    </div>
+  </div>
+
+  @if (!readOnly()) {
+    <cc-encounter-controls
+      [encounterId]="encounter().id"
+      [busy]="busy()"
+      [canEnd]="isActive()"
+      (allRequested)="allRequested.emit()"
+      (editRequested)="editRequested.emit()"
+      (endRequested)="endRequested.emit()"
+    />
+  }
+</div>

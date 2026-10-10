@@ -1,0 +1,43 @@
+<fieldset class="type-filter">
+  <legend class="type-filter__legend">Show all</legend>
+
+  <div class="type-filter__buttons">
+    <button
+      type="button"
+      class="type-filter__btn"
+      [class.is-on]="isOn('locations')"
+      [attr.aria-pressed]="isOn('locations')"
+      aria-label="Show all locations"
+      [title]="isOn('locations') ? 'Back to the tree' : 'Show all locations'"
+      (click)="toggle.emit('locations')"
+    >
+      <cc-location-icon [width]="18" color="white" />
+    </button>
+
+    <button
+      type="button"
+      class="type-filter__btn"
+      [class.is-on]="isOn('sublocations')"
+      [attr.aria-pressed]="isOn('sublocations')"
+      aria-label="Show all sublocations"
+      [title]="isOn('sublocations') ? 'Back to the tree' : 'Show all sublocations'"
+      (click)="toggle.emit('sublocations')"
+    >
+      <cc-sublocation-icon [width]="18" color="white" />
+    </button>
+
+    <button
+      type="button"
+      class="type-filter__btn"
+      [class.is-on]="isOn('casts')"
+      [attr.aria-pressed]="isOn('casts')"
+      aria-label="Show all casts"
+      [title]="isOn('casts') ? 'Back to the tree' : 'Show all casts'"
+      (click)="toggle.emit('casts')"
+    >
+      <cc-cast-icon [width]="18" color="white" />
+    </button>
+  </div>
+</fieldset>
+
+
