@@ -1,11 +1,12 @@
 import { Component, EventEmitter, Input, Output, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { IconComponent } from '../icon/icon.component';
 
 @Component({
   selector: 'app-storyline-filter-bar',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, IconComponent],
   templateUrl: './storyline-filter-bar.component.html',
   styleUrls: ['./storyline-filter-bar.component.scss']
 })

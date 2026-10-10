@@ -22,6 +22,7 @@ public class FactionFactory : IFactionFactory
         Description = request.Description,
         DmNotes    = request.DmNotes,
         SymbolPath = request.SymbolPath,
+        Keywords   = request.Keywords,
         Colors     = request.Colors,
         CreatedAt  = DateTime.UtcNow,
     };

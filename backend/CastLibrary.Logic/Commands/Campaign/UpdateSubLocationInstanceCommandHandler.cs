@@ -23,6 +23,7 @@ public class UpdateSublocationInstanceCommandHandler(
         instance.Name        = command.Request.Name;
         instance.Description = command.Request.Description;
         instance.DmNotes     = command.Request.DmNotes;
+        instance.Keywords    = command.Request.Keywords;
 
         await campaignUpdateRepository.UpdateSublocationInstanceAsync(instance);
 

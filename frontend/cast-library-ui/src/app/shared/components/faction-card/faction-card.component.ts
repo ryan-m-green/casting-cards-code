@@ -2,19 +2,22 @@ import { Component, inject, input, Output, EventEmitter, computed } from '@angul
 import { CommonModule } from '@angular/common';
 import { Faction, CampaignFactionInstance } from '../../models/faction.model';
 import { LockIconComponent } from '../lock-icon/lock-icon.component';
+import { CcFactionIconComponent } from '../v2/cc-faction-icon/cc-faction-icon.component';
 import { CampaignShellService } from '../../../core/campaign-shell.service';
+import { DrawerService } from '../../../core/drawer.service';
 
 export type FactionAlignment = 'good' | 'neutral' | 'evil';
 
 @Component({
   selector: 'app-faction-card',
   standalone: true,
-  imports: [CommonModule, LockIconComponent],
+  imports: [CommonModule, LockIconComponent, CcFactionIconComponent],
   templateUrl: './faction-card.component.html',
   styleUrl: './faction-card.component.scss'
 })
 export class FactionCardComponent {
   private shellSvc = inject(CampaignShellService);
+  private drawerService = inject(DrawerService);
 
   faction = input.required<Faction | CampaignFactionInstance>();
   tilt = input(0);
@@ -22,6 +25,7 @@ export class FactionCardComponent {
   editable = input(true);
   imageUpload = input(false);
   campaignMode = input(false);
+  details = input(false);
   secrets = input(false);
   secretsRevealed = input(false);
   influenceGlow = input<number | null | undefined>(undefined);
@@ -121,6 +125,17 @@ export class FactionCardComponent {
   onSecretsClick(e: Event): void {
     e.stopPropagation();
     this.secretsClick.emit();
+  }
+
+  onDetailsClick(e: Event): void {
+    e.stopPropagation();
+    const f = this.faction();
+    // Only campaign faction instances can open the details drawer
+    if (!('factionInstanceId' in f)) return;
+    this.drawerService.openFactionDetail({
+      faction: f,
+      campaignId: f.campaignId
+    });
   }
 
   onEditClick(e: Event): void {

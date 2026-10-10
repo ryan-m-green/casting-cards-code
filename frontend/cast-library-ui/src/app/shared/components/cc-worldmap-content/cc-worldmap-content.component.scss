@@ -1,0 +1,32 @@
+@use '../../../../styles/variables' as v;
+
+:host {
+  display: block;
+  width: 100%;
+}
+
+.wm-root {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.wm-image-wrap {
+  border: 1px solid v.$campaign-portal-border-bold;
+  border-radius: 8px;
+  overflow: hidden;
+  background: v.$campaign-portal-bg-medium;
+}
+
+.wm-image {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.wm-empty {
+  font-family: v.$font-body;
+  font-size: 14px;
+  font-style: italic;
+  color: v.$campaign-portal-text-softer;
+}

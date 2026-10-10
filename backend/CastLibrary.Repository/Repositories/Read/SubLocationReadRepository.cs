@@ -21,7 +21,7 @@ public class SublocationReadRepository(
         var @params = new { DmUserId = dmUserId };
         const string sql =
             @"SELECT id, dm_user_id AS DmUserId,
-                     name, description, dm_notes AS DmNotes, created_at AS CreatedAt
+                     name, description, keywords AS Keywords, dm_notes AS DmNotes, created_at AS CreatedAt
               FROM sublocations 
               WHERE dm_user_id = @DmUserId AND location_id IS NULL
               ORDER BY name";
@@ -58,7 +58,7 @@ public class SublocationReadRepository(
         var @params = new { Id = id };
         const string sql =
             @"SELECT id, location_id AS LocationId, dm_user_id AS DmUserId,
-                     name, description, dm_notes AS DmNotes, created_at AS CreatedAt
+                     name, description, keywords AS Keywords, dm_notes AS DmNotes, created_at AS CreatedAt
               FROM sublocations WHERE id = @Id";
 
         logging.LogDbOperation(correlation.TraceId, spanId, "SELECT", "sublocations", @params);

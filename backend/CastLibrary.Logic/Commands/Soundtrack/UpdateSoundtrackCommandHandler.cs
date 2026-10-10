@@ -31,6 +31,7 @@ public class UpdateSoundtrackCommandHandler(
         existing.Volume = command.Volume;
         existing.IsLoop = command.IsLoop;
         existing.LoopDelaySeconds = command.LoopDelaySeconds;
+        existing.Kind = command.Kind;
 
         return await updateRepository.UpdateAsync(existing);
     }
@@ -38,13 +39,14 @@ public class UpdateSoundtrackCommandHandler(
 
 public class UpdateSoundtrackCommand
 {
-    public UpdateSoundtrackCommand(Guid soundtrackId, string title, int volume, bool isLoop, int? loopDelaySeconds = null)
+    public UpdateSoundtrackCommand(Guid soundtrackId, string title, int volume, bool isLoop, int? loopDelaySeconds = null, string kind = "music")
     {
         SoundtrackId = soundtrackId;
         Title = title;
         Volume = volume;
         IsLoop = isLoop;
         LoopDelaySeconds = loopDelaySeconds;
+        Kind = kind;
     }
 
     public Guid SoundtrackId { get; }
@@ -52,4 +54,5 @@ public class UpdateSoundtrackCommand
     public int Volume { get; }
     public bool IsLoop { get; }
     public int? LoopDelaySeconds { get; }
+    public string Kind { get; }
 }

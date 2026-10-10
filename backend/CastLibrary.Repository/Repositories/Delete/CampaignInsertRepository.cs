@@ -119,7 +119,9 @@ public class CampaignInsertRepository(
             instance.Race,
             instance.Role,
             instance.Age,
-            instance.Alignment,
+            instance.MaxHitPoints,
+            instance.LostHitPoints,
+            instance.TempHitPoints,
             instance.Posture,
             instance.Speed,
             instance.VoicePlacement,
@@ -130,11 +132,11 @@ public class CampaignInsertRepository(
         const string sql =
             @"INSERT INTO campaign_cast_instances
                 (instance_id, campaign_id, source_cast_id, location_instance_id, sublocation_instance_id,
-                 name, pronouns, race, role, age, alignment, posture, speed, voice_placement,
+                 name, pronouns, race, role, age, max_hit_points, lost_hit_points, temp_hit_points, posture, speed, voice_placement,
                  description, public_description, is_visible_to_players, created_at)
               VALUES
                 (@InstanceId, @CampaignId, @SourceCastId, @LocationInstanceId, @SublocationInstanceId,
-                 @Name, @Pronouns, @Race, @Role, @Age, @Alignment, @Posture, @Speed,
+                 @Name, @Pronouns, @Race, @Role, @Age, @MaxHitPoints, @LostHitPoints, @TempHitPoints, @Posture, @Speed,
                  @VoicePlacement::text[], @Description, @PublicDescription, @IsVisibleToPlayers, NOW())";
 
         logging.LogDbOperation(correlation.TraceId, spanId, "INSERT", "campaign_cast_instances", @params);

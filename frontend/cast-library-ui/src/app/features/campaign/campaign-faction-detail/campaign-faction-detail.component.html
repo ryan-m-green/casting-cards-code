@@ -124,6 +124,8 @@
             [flippable]="false"
             [editable]="false"
             [campaignMode]="true"
+            [campaignId]="campaignId()"
+            [sublocationInstanceId]="sub.instanceId"
             [isPrimary]="isPrimarySublocation(sub.instanceId)"
             [tilt]="sublocationTiltFor(sub.instanceId)"
           />

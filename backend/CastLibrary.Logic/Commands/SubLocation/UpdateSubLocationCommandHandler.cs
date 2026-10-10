@@ -1,3 +1,4 @@
+using CastLibrary.Repository.Repositories.Insert;
 using CastLibrary.Repository.Repositories.Read;
 using CastLibrary.Repository.Repositories.Update;
 using CastLibrary.Shared.Domain;
@@ -11,7 +12,8 @@ public interface IUpdateSublocationCommandHandler
 }
 public class UpdateSublocationCommandHandler(
     ISublocationReadRepository sublocationRepository,
-    ISublocationUpdateRepository sublocationUpdateRepository) : IUpdateSublocationCommandHandler
+    ISublocationUpdateRepository sublocationUpdateRepository,
+    ICampaignKeywordInsertRepository campaignKeywordInsertRepository) : IUpdateSublocationCommandHandler
 {
     public async Task<SublocationDomain> HandleAsync(UpdateSublocationCommand command)
     {
@@ -22,6 +24,7 @@ public class UpdateSublocationCommandHandler(
         existing.Name = command.Request.Name;
         existing.Description = command.Request.Description;
         existing.DmNotes = command.Request.DmNotes;
+        existing.Keywords = command.Request.Keywords;
         existing.ShopItems = command.Request.ShopItems.Select((item, i) => new ShopItemDomain
         {
             Id = Guid.NewGuid(), SublocationId = command.Id, Name = item.Name,
@@ -29,7 +32,9 @@ public class UpdateSublocationCommandHandler(
             Description = item.Description, SortOrder = i,
         }).ToList();
 
-        return await sublocationUpdateRepository.UpdateAsync(existing);
+        var result = await sublocationUpdateRepository.UpdateAsync(existing);
+        await campaignKeywordInsertRepository.MergeKeywordsAsync(command.DmUserId, "sublocation", existing.Keywords);
+        return result;
     }
 }
 

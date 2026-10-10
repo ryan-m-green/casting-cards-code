@@ -1,0 +1,101 @@
+<div class="cc-color-pickers"
+     [class.cc-color-pickers--journal]="!isCampaignContext()"
+     [class.cc-color-pickers--campaign]="isCampaignContext()">
+  @if (label() && !hideColorPickers()) {
+    <label class="cc-color-pickers-label"
+           [class.cc-color-pickers-label--journal]="!isCampaignContext()"
+           [class.cc-color-pickers-label--campaign]="isCampaignContext()">{{ label() }}</label>
+  }
+
+  @if (!hideColorPickers()) {
+    <div class="color-pickers-container"
+         [class.color-pickers-container--journal]="!isCampaignContext()"
+         [class.color-pickers-container--campaign]="isCampaignContext()">
+      <div class="color-picker-wrapper"
+           [class.color-picker-wrapper--journal]="!isCampaignContext()"
+           [class.color-picker-wrapper--campaign]="isCampaignContext()">
+        <label class="color-picker-button"
+               [class.color-picker-button--journal]="!isCampaignContext()"
+               [class.color-picker-button--campaign]="isCampaignContext()"
+               [class.color-picker-button--disabled]="disabled()"
+               [style.background-color]="evilColor()">
+          <input type="color"
+                 class="color-picker-input"
+                 [disabled]="disabled()"
+                 [(ngModel)]="evilColor"
+                 (ngModelChange)="onEvilColorChange($event)" />
+          <span class="color-picker-button-text"
+                [class.color-picker-button-text--journal]="!isCampaignContext()"
+                [class.color-picker-button-text--campaign]="isCampaignContext()">
+            <span class="color-picker-text-bg">Evil</span>
+          </span>
+        </label>
+      </div>
+      <div class="color-picker-wrapper"
+           [class.color-picker-wrapper--journal]="!isCampaignContext()"
+           [class.color-picker-wrapper--campaign]="isCampaignContext()">
+        <label class="color-picker-button"
+               [class.color-picker-button--journal]="!isCampaignContext()"
+               [class.color-picker-button--campaign]="isCampaignContext()"
+               [class.color-picker-button--disabled]="disabled()"
+               [style.background-color]="goodColor()">
+          <input type="color"
+                 class="color-picker-input"
+                 [disabled]="disabled()"
+                 [(ngModel)]="goodColor"
+                 (ngModelChange)="onGoodColorChange($event)" />
+          <span class="color-picker-button-text"
+                [class.color-picker-button-text--journal]="!isCampaignContext()"
+                [class.color-picker-button-text--campaign]="isCampaignContext()">
+            <span class="color-picker-text-bg">Good</span>
+          </span>
+        </label>
+      </div>
+    </div>
+  }
+
+  <!-- Perception Bar -->
+  @if (!hidePerception()) {
+    <label class="perception-main-label"
+           [class.perception-main-label--journal]="!isCampaignContext()"
+           [class.perception-main-label--campaign]="isCampaignContext()">Perception</label>
+    <div class="perception-card"
+         [class.perception-card--journal]="!isCampaignContext()"
+         [class.perception-card--campaign]="isCampaignContext()"
+         [class.perception-card--hostile]="perception() < 0"
+         [class.perception-card--friendly]="perception() > 0"
+         [style.--faction-good-color]="goodColor()"
+         [style.--faction-evil-color]="evilColor()">
+      <input type="range"
+             min="-5" max="5" step="1"
+             class="perception-slider"
+             [class.perception-slider--journal]="!isCampaignContext()"
+             [class.perception-slider--campaign]="isCampaignContext()"
+             [class.slider-friendly]="perception() > 0"
+             [class.slider-hostile]="perception() < 0"
+             [disabled]="disabled()"
+             [(ngModel)]="perception"
+             (ngModelChange)="onPerceptionChange($event)" />
+      <div class="perception-ticks"
+           [class.perception-ticks--journal]="!isCampaignContext()"
+           [class.perception-ticks--campaign]="isCampaignContext()">
+        @for (t of [-5,-4,-3,-2,-1,0,1,2,3,4,5]; track t) {
+          <span></span>
+        }
+      </div>
+      <div class="perception-labels"
+           [class.perception-labels--journal]="!isCampaignContext()"
+           [class.perception-labels--campaign]="isCampaignContext()">
+        <span class="perception-label-end"
+              [class.perception-label-end--journal]="!isCampaignContext()"
+              [class.perception-label-end--campaign]="isCampaignContext()">{{ isCampaignContext() ? 'Hostile' : 'Enemy' }}</span>
+        <span class="perception-label-center"
+              [class.perception-label-center--journal]="!isCampaignContext()"
+              [class.perception-label-center--campaign]="isCampaignContext()">{{ perceptionLabel() }}</span>
+        <span class="perception-label-end"
+              [class.perception-label-end--journal]="!isCampaignContext()"
+              [class.perception-label-end--campaign]="isCampaignContext()">{{ isCampaignContext() ? 'Devoted' : 'Trusted' }}</span>
+      </div>
+    </div>
+  }
+</div>

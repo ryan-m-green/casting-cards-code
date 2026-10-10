@@ -9,10 +9,10 @@ public class CastDomain
     public string Race { get; set; } = string.Empty;
     public string Role { get; set; } = string.Empty;
     public string Age { get; set; } = string.Empty;
-    public string Alignment { get; set; } = string.Empty;
+    public int MaxHitPoints { get; set; }
     public string Posture { get; set; } = string.Empty;
     public string Speed { get; set; } = string.Empty;
-    public string[] VoicePlacement { get; set; } = [];
+    public string[] Keywords { get; set; } = [];
     public string VoiceNotes { get; set; } = string.Empty;
     public string Description { get; set; } = string.Empty;
     public string PublicDescription { get; set; } = string.Empty;

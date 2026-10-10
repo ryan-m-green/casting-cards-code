@@ -1,0 +1,49 @@
+@use '../../../../styles/variables' as v;
+
+:host {
+  display: block;
+  width: 100%;
+}
+
+.sv-root {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.sv-title {
+  margin: 0;
+  font-family: v.$font-header;
+  font-size: 16px;
+  font-weight: bolder;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: v.$campaign-portal-text-bright;
+}
+
+.sv-image-wrap {
+  border: 1px solid v.$campaign-portal-border-bold;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.sv-image {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.sv-body {
+  font-family: v.$font-body;
+  font-size: 14px;
+  line-height: 1.6;
+  color: v.$campaign-portal-text-muted;
+  white-space: pre-wrap;
+}
+
+.sv-empty {
+  font-family: v.$font-body;
+  font-size: 14px;
+  font-style: italic;
+  color: v.$campaign-portal-text-softer;
+}

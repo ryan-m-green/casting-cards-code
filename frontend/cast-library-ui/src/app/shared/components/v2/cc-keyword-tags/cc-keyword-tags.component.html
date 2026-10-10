@@ -1,0 +1,59 @@
+<div class="cc-keyword-tags">
+  @if (label()) {
+    <label class="cc-keyword-tags-label">{{ label() }}</label>
+  }
+  <div class="cc-keyword-tags-wrapper" [class.disabled]="disabled()">
+    <div class="cc-keyword-tags-chips">
+      @for (kw of keywords(); track kw) {
+        <span class="cc-keyword-tags-chip">
+          #{{ kw }}
+          <button
+            type="button"
+            class="cc-keyword-tags-chip-remove"
+            [disabled]="disabled()"
+            (click)="removeKeyword(kw)"
+            aria-label="Remove keyword">
+            ✕
+          </button>
+        </span>
+      }
+      <input
+        class="cc-keyword-tags-input"
+        [disabled]="disabled()"
+        [value]="inputValue()"
+        [placeholder]="keywords().length ? '' : placeholder()"
+        autocomplete="off"
+        (focus)="onFocus()"
+        (input)="onInput($event)"
+        (blur)="onBlur()"
+        (keydown)="onKeydown($event)"
+      />
+    </div>
+    <button
+      type="button"
+      class="cc-keyword-tags-caret"
+      [class.cc-keyword-tags-caret--open]="isOpen()"
+      [disabled]="disabled()"
+      (click)="toggle($event)"
+      aria-hidden="true">
+      ▾
+    </button>
+  </div>
+  @if (isOpen()) {
+    <ul class="cc-keyword-tags-panel" role="listbox">
+      @for (option of filteredOptions(); track option; let i = $index) {
+        <li
+          #optionItem
+          class="cc-keyword-tags-item"
+          [class.cc-keyword-tags-item--active]="activeIndex() === i"
+          role="option"
+          (mousedown)="select(option)"
+          (mouseenter)="activeIndex.set(i)"
+        >#{{ option }}</li>
+      }
+      @if (filteredOptions().length === 0) {
+        <li class="cc-keyword-tags-item cc-keyword-tags-item--no-results">No matches</li>
+      }
+    </ul>
+  }
+</div>

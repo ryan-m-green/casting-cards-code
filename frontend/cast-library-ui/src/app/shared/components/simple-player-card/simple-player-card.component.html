@@ -1,0 +1,39 @@
+<div class="simple-player-card" (pointerdown)="onPointerDown($event)" (click)="onCardClick($event)">
+  <div class="simple-card-frame">
+    <div class="simple-card-inner">
+      <!-- banner -->
+      <div class="simple-card-banner">
+        <div class="simple-card-name">{{ player().name }}</div>
+        <div class="simple-card-subtitle">{{ player().race }} · {{ player().class }}</div>
+      </div>
+
+      <!-- portrait -->
+      <div class="simple-card-portrait">
+        @if (player().imageUrl) {
+          <img [src]="player().imageUrl" [alt]="'Portrait of ' + player().name + ', a ' + player().race + ' ' + player().class" class="simple-card-portrait-img" (error)="$any($event.target).style.display='none'" (load)="$any($event.target).style.display=''" />
+        } @else {
+          <div class="simple-card-portrait-placeholder">
+            <cc-player-icon [width]="22" color="black"></cc-player-icon>
+          </div>
+        }
+      </div>
+
+      <!-- bottom strip -->
+      <div class="simple-card-strip">
+        <div class="simple-strip-left">
+          <div class="simple-pip-row">
+            <div class="simple-pip"></div>
+            <div class="simple-pip"></div>
+            <div class="simple-pip"></div>
+          </div>
+        </div>
+        <span class="simple-strip-label">Player</span>
+        <div class="simple-pip-row">
+          <div class="simple-pip"></div>
+          <div class="simple-pip"></div>
+          <div class="simple-pip"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

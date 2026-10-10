@@ -30,13 +30,14 @@ public class FactionUpdateRepository(
             faction.DmNotes,
             Colors     = JsonSerializer.Serialize(faction.Colors),
             faction.SymbolPath,
+            faction.Keywords,
         };
         const string sql =
             @"UPDATE factions
                  SET name = @Name, type = @Type, influence = @Influence,
                      perception = @Perception,
                      hidden = @Hidden,
-                     description = @Description, dm_notes = @DmNotes, symbol_path = @SymbolPath, colors = @Colors::jsonb
+                     description = @Description, dm_notes = @DmNotes, symbol_path = @SymbolPath, keywords = @Keywords::text[], colors = @Colors::jsonb
                WHERE faction_id = @FactionId";
 
         logging.LogDbOperation(correlation.TraceId, spanId, "UPDATE", "factions", @params);

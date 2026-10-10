@@ -94,6 +94,22 @@ else
     Console.WriteLine("       No alter.sql found — skipping.");
 }
 
+// ─── Step 3.5: Apply V2 alterations ─────────────────────────────────────────────
+Console.WriteLine("[3.5/4] Applying V2 alterations...");
+
+var v2AlterPath = Path.Combine(AppContext.BaseDirectory, "v2Alter.sql");
+if (File.Exists(v2AlterPath))
+{
+    var v2AlterSql = await File.ReadAllTextAsync(v2AlterPath);
+    await using var v2AlterCmd = new NpgsqlCommand(v2AlterSql, conn);
+    await v2AlterCmd.ExecuteNonQueryAsync();
+    Console.WriteLine("       V2 alterations applied.");
+}
+else
+{
+    Console.WriteLine("       No v2Alter.sql found — skipping.");
+}
+
 // ─── Step 4: Seed ─────────────────────────────────────────────────────────────
 Console.WriteLine("[4/4] Seeding...");
 

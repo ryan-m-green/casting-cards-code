@@ -1,0 +1,54 @@
+<div class="radial-tree" [style.--portal-color]="safePortalColor()">
+  <div class="radial-tree-header">
+    <span class="radial-tree-title">{{ location().name }}</span>
+  </div>
+
+  <div class="radial-tree-scroll">
+    <div
+      class="radial-stage"
+      [style.width.px]="stageSize()"
+      [style.height.px]="stageSize()"
+    >
+      <svg
+        class="radial-edges"
+        [attr.width]="stageSize()"
+        [attr.height]="stageSize()"
+      >
+        @for (edge of edges(); track $index) {
+          <line
+            [attr.x1]="center() + edge.x1"
+            [attr.y1]="center() + edge.y1"
+            [attr.x2]="center() + edge.x2"
+            [attr.y2]="center() + edge.y2"
+          />
+        }
+      </svg>
+
+      @for (node of nodes(); track node.id) {
+        <div
+          class="radial-node"
+          [class.radial-node--location]="node.kind === 'location'"
+          [class.radial-node--sublocation]="node.kind === 'sublocation'"
+          [class.radial-node--cast]="node.kind === 'cast'"
+          [style.left.px]="center() + node.x - cardWidth / 2"
+          [style.top.px]="center() + node.y - cardHeight / 2"
+        >
+          @switch (node.kind) {
+            @case ('location') {
+              <app-simple-location-card [location]="$any(node.entity)" />
+            }
+            @case ('sublocation') {
+              <app-simple-sublocation-card [sublocation]="$any(node.entity)" />
+            }
+            @case ('cast') {
+              <app-simple-cast-card
+                [cast]="$any(node.entity)"
+                (cardClick)="castClick.emit($any(node.entity))"
+              />
+            }
+          }
+        </div>
+      }
+    </div>
+  </div>
+</div>

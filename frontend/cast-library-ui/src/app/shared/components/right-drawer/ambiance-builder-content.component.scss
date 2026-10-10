@@ -1,0 +1,215 @@
+@use '../../../../styles/variables' as v;
+
+.builder {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.builder-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.builder-label {
+  font-family: v.$font-header;
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: v.$campaign-portal-text-muted;
+}
+
+.builder-input {
+  background: v.$campaign-portal-bg-medium;
+  border: 1px solid v.$campaign-portal-border-bold;
+  border-radius: 6px;
+  color: v.$campaign-portal-text-bright;
+  font-family: v.$font-body;
+  font-size: 14px;
+  padding: 8px 10px;
+
+  &:focus {
+    outline: none;
+    border-color: var(--portal-color, v.$color-base-purple-primary);
+  }
+}
+
+.builder-random {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: v.$font-body;
+  font-size: 13px;
+  color: v.$campaign-portal-text-muted;
+  cursor: pointer;
+}
+
+.builder-error {
+  font-family: v.$font-body;
+  font-size: 13px;
+  color: v.$color-base-red-2;
+  background: color-mix(in srgb, v.$color-base-red-5 40%, transparent);
+  border: 1px solid v.$color-base-red-4;
+  border-radius: 6px;
+  padding: 8px 12px;
+}
+
+.builder-items {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.builder-items-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.builder-add {
+  font-family: v.$font-header;
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 6px 10px;
+  background: transparent;
+  border: 1px solid v.$campaign-portal-border-bold;
+  border-radius: 6px;
+  color: v.$campaign-portal-text-bright;
+  cursor: pointer;
+  transition: all 0.18s ease;
+
+  &:hover {
+    border-color: var(--portal-color, v.$color-base-purple-primary);
+    background: v.$campaign-portal-bg-hover;
+  }
+}
+
+.builder-item {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 10px;
+  background: v.$campaign-portal-bg-medium;
+  border: 1px solid v.$campaign-portal-border-bold;
+  border-radius: 8px;
+}
+
+.builder-item-top {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+cc-campaign-dropdown {
+  flex: 1;
+  min-width: 0;
+}
+
+.builder-item-volume {
+  /* Volume controls are capped to half the builder item width. */
+  width: 50%;
+  max-width: 50%;
+}
+
+.builder-item-volume cc-slider {
+  width: 100%;
+}
+
+.builder-icon {
+  width: 28px;
+  height: 28px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: 1px solid v.$campaign-portal-border-bold;
+  border-radius: 6px;
+  color: v.$campaign-portal-text-bright;
+  font-size: 12px;
+  cursor: pointer;
+  transition: all 0.18s ease;
+  flex-shrink: 0;
+
+  &:hover:not(:disabled) {
+    border-color: var(--portal-color, v.$color-base-purple-primary);
+  }
+
+  &:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+  }
+}
+
+.builder-icon--danger:hover:not(:disabled) {
+  border-color: v.$color-base-red-2;
+  color: v.$color-base-red-2;
+}
+
+.builder-empty {
+  font-family: v.$font-body;
+  font-size: 13px;
+  color: v.$campaign-portal-text-muted;
+  text-align: center;
+  padding: 16px 12px;
+}
+
+.builder-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 4px;
+}
+
+.builder-btn {
+  font-family: v.$font-header;
+  font-size: 12px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 8px 14px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.18s ease;
+  white-space: nowrap;
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
+
+.builder-btn--primary {
+  background: color-mix(in srgb, v.$color-base-indigo-dark 60%, v.$color-base-arcane-purple 40%);
+  border: 1px solid var(--portal-color, v.$color-base-purple-primary);
+  color: v.$color-base-white-2;
+
+  &:hover:not(:disabled) {
+    background: color-mix(in srgb, v.$color-base-arcane-purple 60%, v.$color-base-indigo-dark 40%);
+  }
+}
+
+.builder-btn--ghost {
+  background: transparent;
+  border: 1px solid v.$campaign-portal-border-bold;
+  color: v.$campaign-portal-text-bright;
+
+  &:hover {
+    border-color: var(--portal-color, v.$color-base-purple-primary);
+  }
+}
+
+.builder-btn--danger {
+  background: v.$color-base-red-2;
+  border: 1px solid v.$campaign-btn-primary-border;
+  color: v.$color-base-white-2;
+
+  &:hover:not(:disabled) {
+    background: v.$color-base-red-4;
+  }
+
+  &.confirming {
+    background: v.$color-base-red-4;
+    border-color: v.$color-base-red-2;
+  }
+}

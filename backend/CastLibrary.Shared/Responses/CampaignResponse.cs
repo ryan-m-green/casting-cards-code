@@ -22,6 +22,7 @@ public class CampaignDetailResponse
     public string FantasyType { get; set; } = string.Empty;
     public string Description { get; set; } = string.Empty;
     public string SpineColor { get; set; } = string.Empty;
+    public string WorldMapImageUrl { get; set; } = string.Empty;
     public string Status { get; set; } = string.Empty;
     public bool? IsDemo { get; set; }
     public List<CampaignLocationInstanceResponse> Locations { get; set; } = [];
@@ -93,7 +94,9 @@ public class CampaignCastInstanceResponse
     public string Race { get; set; } = string.Empty;
     public string Role { get; set; } = string.Empty;
     public string Age { get; set; } = string.Empty;
-    public string Alignment { get; set; } = string.Empty;
+    public int MaxHitPoints { get; set; }
+    public int LostHitPoints { get; set; }
+    public int TempHitPoints { get; set; }
     public string Posture { get; set; } = string.Empty;
     public string Speed { get; set; } = string.Empty;
     public string[] VoicePlacement { get; set; } = [];

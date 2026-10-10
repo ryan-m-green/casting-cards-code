@@ -1,0 +1,190 @@
+@use '../../../../../styles/variables' as v;
+@use '../variables-v2' as v2;
+
+// ─── cc-lang-picker Component Fonts ───────────────────────────────────────────────
+$font-cc-lang-picker: v2.$font-v2-components;
+
+// ─── Reset ───────────────────────────────────────────────────────────────────────────
+* {
+  all: unset;
+  display: revert;
+}
+
+:host {
+  display: block;
+  margin-top: 8px;
+  margin-bottom: 8px;
+}
+
+// ── Journal Context Styles ─────────────────────────────────────────────────────
+.cc-lang-picker-label--journal {
+  font-family: $font-cc-lang-picker;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  color: v.$color-base-brown-14;
+  display: block;
+  margin-bottom: 8px;
+}
+
+.cc-lang-picker-container--journal {
+  display: flex;
+  gap: 8px;
+}
+
+.cc-lang-picker-col {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.cc-lang-picker-col-header--journal {
+  font-family: $font-cc-lang-picker;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: v.$color-base-brown-14;
+  margin-bottom: 4px;
+  padding-left: 2px;
+}
+
+.cc-lang-picker-list--journal {
+  border: 1px solid v.$color-border-solid;
+  border-radius: 3px;
+  background: rgba(v.$color-input-bg, 0.5);
+  min-height: 120px;
+  max-height: 180px;
+  overflow-y: auto;
+  padding: 2px 0;
+}
+
+.cc-lang-picker-list--selected.cc-lang-picker-list--journal {
+  background: rgba(v.$color-base-brown-14, 0.05);
+  border-color: rgba(v.$color-base-brown-14, 0.3);
+}
+
+.cc-lang-picker-item--journal {
+  padding: 5px 10px;
+  font-family: $font-cc-lang-picker;
+  font-size: 14px;
+  color: v.$color-base-brown-14;
+  cursor: pointer;
+  transition: background 0.15s ease;
+
+  &:hover:not(.cc-lang-picker-item--disabled) {
+    background: rgba(v.$color-base-brown-14, 0.1);
+  }
+
+  &--selected {
+    color: v.$color-base-brown-14;
+    font-weight: 500;
+
+    &:hover:not(.cc-lang-picker-item--disabled) {
+      background: rgba(v.$color-base-brown-14, 0.15);
+    }
+  }
+
+  &--disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  &:focus-visible {
+    outline: 2px solid v.$color-input-focus-border;
+    outline-offset: -2px;
+  }
+}
+
+.cc-lang-picker-empty--journal {
+  padding: 8px 10px;
+  font-family: $font-cc-lang-picker;
+  font-size: 11px;
+  font-style: italic;
+  color: rgba(v.$color-base-brown-14, 0.5);
+}
+
+// ── Campaign Context Styles ───────────────────────────────────────────────────
+.cc-lang-picker-label--campaign {
+  font-family: $font-cc-lang-picker;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  color: v.$color-lib-location-1;
+  display: block;
+  margin-bottom: 8px;
+}
+
+.cc-lang-picker-container--campaign {
+  display: flex;
+  gap: 8px;
+}
+
+.cc-lang-picker-col-header--campaign {
+  font-family: $font-cc-lang-picker;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: v.$color-lib-location-1;
+  margin-bottom: 4px;
+  padding-left: 2px;
+}
+
+.cc-lang-picker-list--campaign {
+  border: 1px solid v.$color-lib-location-1;
+  border-radius: 3px;
+  background: rgba(v.$color-base-black, 0.5);
+  min-height: 120px;
+  max-height: 180px;
+  overflow-y: auto;
+  padding: 2px 0;
+}
+
+.cc-lang-picker-list--selected.cc-lang-picker-list--campaign {
+  background: rgba(v.$color-lib-location-1, 0.1);
+  border-color: rgba(v.$color-lib-location-1, 0.5);
+}
+
+.cc-lang-picker-item--campaign {
+  padding: 5px 10px;
+  font-family: $font-cc-lang-picker;
+  font-size: 14px;
+  color: v.$color-base-mist-blue;
+  cursor: pointer;
+  transition: background 0.15s ease;
+
+  &:hover:not(.cc-lang-picker-item--disabled) {
+    background: rgba(v.$color-lib-location-1, 0.2);
+  }
+
+  &--selected {
+    color: v.$color-base-mist-blue;
+    font-weight: 500;
+
+    &:hover:not(.cc-lang-picker-item--disabled) {
+      background: rgba(v.$color-lib-location-1, 0.3);
+    }
+  }
+
+  &--disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  &:focus-visible {
+    outline: 2px solid v.$color-lib-location-1;
+    outline-offset: -2px;
+  }
+}
+
+.cc-lang-picker-empty--campaign {
+  padding: 8px 10px;
+  font-family: $font-cc-lang-picker;
+  font-size: 11px;
+  font-style: italic;
+  color: rgba(v.$color-lib-location-1, 0.5);
+}

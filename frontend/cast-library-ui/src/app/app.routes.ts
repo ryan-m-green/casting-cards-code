@@ -59,6 +59,31 @@ export const routes: Routes = [
     ],
   },
   {
+    path: 'v2/campaign-library',
+    canActivate: [authGuard, dmGuard],
+    loadComponent: () => import('./features/campaign/campaign-library/campaign-library.component').then(m => m.CampaignLibraryComponent),
+  },
+  {
+    path: 'v2/campaign/:id',
+    canActivate: [authGuard, libraryAccessGuard],
+    loadComponent: () => import('./layout/v2-campaign-shell/v2-campaign-shell.component').then(m => m.V2CampaignShellComponent),
+    children: [
+      {
+        path: '',
+        pathMatch: 'full',
+        loadComponent: () => import('./features/campaign/v2-campaign-placeholder/v2-campaign-placeholder.component').then(m => m.V2CampaignPlaceholderComponent),
+      },
+      {
+        path: 'the-party',
+        loadComponent: () => import('./features/campaign/v2-campaign-placeholder/v2-campaign-placeholder.component').then(m => m.V2CampaignPlaceholderComponent),
+      },
+      {
+        path: 'plot',
+        loadComponent: () => import('./features/campaign/v2-campaign-placeholder/v2-campaign-placeholder.component').then(m => m.V2CampaignPlaceholderComponent),
+      },
+    ],
+  },
+  {
     path: 'player/campaign/:id',
     canActivate: [authGuard, playerLibraryAccessGuard],
     loadComponent: () => import('./features/player/player-campaign-shell/player-campaign-shell.component').then(m => m.PlayerCampaignShellComponent),
@@ -259,6 +284,11 @@ export const routes: Routes = [
             path: 'bug-report',
             canActivate: [libraryAccessGuard],
             loadComponent: () => import('./features/bug-report/bug-report.component').then(m => m.BugReportComponent),
+          },
+          {
+            path: 'testarea',
+            canActivate: [adminGuard],
+            loadComponent: () => import('./features/gm-testarea/gm-testarea.component').then(m => m.GmTestareaComponent),
           },
           { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
         ],

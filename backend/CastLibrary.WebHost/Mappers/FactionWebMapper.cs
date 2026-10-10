@@ -29,6 +29,7 @@ public class FactionWebMapper(
             Description = domain.Description,
             DmNotes    = domain.DmNotes,
             SymbolPath = domain.SymbolPath,
+            Keywords   = domain.Keywords,
             Colors     = domain.Colors,
             ImageUrl   = domain.ImageUrl,
             CreatedAt  = domain.CreatedAt,

@@ -10,5 +10,6 @@ public class SoundtrackEntity
     public int Volume { get; set; } = 80;
     public bool IsLoop { get; set; }
     public int? LoopDelaySeconds { get; set; }
+    public string Kind { get; set; } = "music";
     public DateTime CreatedAt { get; set; }
 }

@@ -27,7 +27,8 @@ public class SoundtrackUpdateRepository(
               SET title = @Title,
                   volume = @Volume,
                   is_loop = @IsLoop,
-                  loop_delay_seconds = @LoopDelaySeconds
+                  loop_delay_seconds = @LoopDelaySeconds,
+                  kind = @Kind
               WHERE id = @Id
               RETURNING id,
                         campaign_id     AS CampaignId,
@@ -37,6 +38,7 @@ public class SoundtrackUpdateRepository(
                         volume,
                         is_loop         AS IsLoop,
                         loop_delay_seconds AS LoopDelaySeconds,
+                        kind,
                         created_at      AS CreatedAt";
 
         logging.LogDbOperation(correlation.TraceId, spanId, "UPDATE", "campaign_soundtracks", entity);

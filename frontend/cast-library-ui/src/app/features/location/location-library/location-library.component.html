@@ -8,11 +8,14 @@
       class="upgrade-badge-library" />
     <input class="search-bar search-bar--header" type="text" placeholder="Location name · Type…"
            [value]="searchTerm()" (input)="searchTerm.set($any($event.target).value)" />
-    <button class="campaign-primary-btn wr-ml-auto"
-            [class.disabled]="locationLimitReached() || isCreateDisabled()"
-            [attr.disabled]="(locationLimitReached() || isCreateDisabled()) ? 'true' : null"
-            [routerLink]="(locationLimitReached() || isCreateDisabled()) ? null : '/gm/locations/new'"
-            (click)="(locationLimitReached() || isCreateDisabled()) ? $event.preventDefault() : null">+ Create</button>
+    <div class="wr-ml-auto cc-keyword-editor-wrap">
+      <button class="campaign-primary-btn"
+              [class.disabled]="locationLimitReached() || isCreateDisabled()"
+              [attr.disabled]="(locationLimitReached() || isCreateDisabled()) ? 'true' : null"
+              [routerLink]="(locationLimitReached() || isCreateDisabled()) ? null : '/gm/locations/new'"
+              (click)="(locationLimitReached() || isCreateDisabled()) ? $event.preventDefault() : null">+ Create</button>
+      <cc-keyword-editor [cardType]="'location'"></cc-keyword-editor>
+    </div>
   </div>
 
   <div class="card-grid">

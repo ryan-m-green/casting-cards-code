@@ -9,6 +9,7 @@ import { FactionCardComponent } from '../../../shared/components/faction-card/fa
 import { JournalTitleComponent } from '../../../shared/components/journal-title/journal-title.component';
 import { JournalWatermarkComponent } from '../../../shared/components/journal-watermark/journal-watermark.component';
 import { UpgradeBadgeComponent } from '../../../shared/components/upgrade-badge/upgrade-badge.component';
+import { CcKeywordEditorComponent } from '../../../shared/components/v2/cc-keyword-editor/cc-keyword-editor.component';
 import { StripeService, EntityLimitsResponse } from '../../../core/stripe.service';
 import { AuthService } from '../../../core/auth/auth.service';
 import { CampaignHubService } from '../../../core/hub/campaign-hub.service';
@@ -17,7 +18,7 @@ import { SubscriptionDrawerService } from '../../../core/subscription-drawer.ser
 @Component({
   selector: 'app-faction-library',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterLink, FactionCardComponent, JournalTitleComponent, JournalWatermarkComponent, UpgradeBadgeComponent],
+  imports: [CommonModule, FormsModule, RouterLink, FactionCardComponent, JournalTitleComponent, JournalWatermarkComponent, UpgradeBadgeComponent, CcKeywordEditorComponent],
   templateUrl: './faction-library.component.html',
   styleUrl: './faction-library.component.scss'
 })

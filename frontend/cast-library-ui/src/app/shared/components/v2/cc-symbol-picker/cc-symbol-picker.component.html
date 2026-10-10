@@ -1,0 +1,142 @@
+<div class="symbol-picker" [class.symbol-picker--campaign]="isCampaignContext()">
+  <!-- ── Left: Preview Section ───────────────────────────────────── -->
+  <div class="sp-preview-section">
+    <div class="sp-preview-circle" [class.sp-preview-circle--campaign]="isCampaignContext()">
+      @if (selectedIcon()) {
+        <img [src]="selectedIcon()" alt="Selected symbol" class="sp-preview-image" [class.sp-preview-image--campaign]="isCampaignContext()" />
+        @if (!disabled()) {
+          <button class="sp-preview-clear" (click)="clearSymbol()" aria-label="Clear symbol" [class.sp-preview-clear--campaign]="isCampaignContext()">✕</button>
+        }
+      } @else {
+        <div class="sp-preview-placeholder">
+          <span class="sp-preview-icon">✦</span>
+          <div class="sp-preview-text">Select a<br />symbol</div>
+        </div>
+      }
+    </div>
+    <div class="sp-preview-info">
+      @if (selectedIcon()) {
+        <span class="sp-preview-label">Selected Symbol</span>
+      } @else {
+        <span class="sp-preview-label sp-preview-label--empty">No symbol selected</span>
+      }
+    </div>
+  </div>
+
+  <!-- ── Right: Browser Section ──────────────────────────────────── -->
+  <div class="sp-browser-section">
+    <!-- Search Bar -->
+    <div class="sp-search-wrap">
+      <app-cc-textbox
+        placeholder="Search symbols…"
+        [context]="context()"
+        [ngModel]="searchQuery()"
+        (ngModelChange)="onSearch($event)"
+        [disabled]="disabled()"
+        [showClear]="true" />
+    </div>
+
+    <!-- Search Results -->
+    @if (searchQuery()) {
+      @if (searchResults().length === 0) {
+        <p class="sp-empty">No symbols match "{{ searchQuery() }}"</p>
+      } @else {
+        @if (totalSearchPages() > 1) {
+          <div class="sp-pagination">
+            <button class="sp-pagination-btn" (click)="previousPage()" [disabled]="currentPage() === 1 || disabled()">←</button>
+            @for (page of [1, 2, 3, 4, 5]; track page) {
+              @if (page <= totalSearchPages()) {
+                <button class="sp-pagination-page"
+                        [class.sp-pagination-page--active]="currentPage() === page"
+                        (click)="goToPage(page)"
+                        [disabled]="disabled()">{{ page }}</button>
+              }
+            }
+            @if (totalSearchPages() > 5) {
+              <span class="sp-pagination-ellipsis">...</span>
+              <button class="sp-pagination-page"
+                      [class.sp-pagination-page--active]="currentPage() === totalSearchPages()"
+                      (click)="goToPage(totalSearchPages())"
+                      [disabled]="disabled()">{{ totalSearchPages() }}</button>
+            }
+            <button class="sp-pagination-btn" (click)="nextPage()" [disabled]="currentPage() === totalSearchPages() || disabled()">→</button>
+          </div>
+        }
+        <div class="sp-icon-grid">
+          @for (result of paginatedSearchResults(); track result.path) {
+            <button class="sp-icon-tile"
+                    [class.sp-icon-tile--selected]="selectedIcon() === result.path"
+                    [class.sp-icon-tile--campaign]="isCampaignContext()"
+                    (click)="selectSearchResult(result)"
+                    [title]="result.label"
+                    [disabled]="disabled()">
+              <img [src]="result.path" [alt]="result.label" class="sp-icon-img" [class.sp-icon-img--campaign]="isCampaignContext()" />
+              @if (selectedIcon() === result.path) {
+                <span class="sp-icon-check">✓</span>
+              }
+            </button>
+          }
+        </div>
+      }
+    }
+
+    <!-- Category Pills -->
+    @if (!searchQuery() && view() === 'categories') {
+      <div class="sp-pill-row">
+        @for (cat of categories; track cat) {
+          <button class="sp-pill"
+                  [class.sp-pill--campaign]="isCampaignContext()"
+                  (click)="selectCategory(cat)"
+                  [disabled]="disabled()">{{ displayName(cat) }}</button>
+        }
+      </div>
+    }
+
+    <!-- Icon Grid -->
+    @if (!searchQuery() && view() === 'icons') {
+      <div class="sp-nav">
+        <button class="sp-back" (click)="backToCategories()" [disabled]="disabled()">
+          ← {{ displayName(activeCategory()!) }}
+        </button>
+      </div>
+      @if (totalIconPages() > 1) {
+        <div class="sp-pagination">
+          <button class="sp-pagination-btn" (click)="previousPage()" [disabled]="currentPage() === 1 || disabled()">←</button>
+          @for (page of [1, 2, 3, 4, 5]; track page) {
+            @if (page <= totalIconPages()) {
+              <button class="sp-pagination-page"
+                      [class.sp-pagination-page--active]="currentPage() === page"
+                      (click)="goToPage(page)"
+                      [disabled]="disabled()">{{ page }}</button>
+            }
+          }
+          @if (totalIconPages() > 5) {
+            <span class="sp-pagination-ellipsis">...</span>
+            <button class="sp-pagination-page"
+                    [class.sp-pagination-page--active]="currentPage() === totalIconPages()"
+                    (click)="goToPage(totalIconPages())"
+                    [disabled]="disabled()">{{ totalIconPages() }}</button>
+          }
+          <button class="sp-pagination-btn" (click)="nextPage()" [disabled]="currentPage() === totalIconPages() || disabled()">→</button>
+        </div>
+      }
+      <div class="sp-icon-grid">
+        @for (icon of paginatedIcons(); track icon) {
+          <button class="sp-icon-tile"
+                  [class.sp-icon-tile--selected]="selectedIcon() === '/icons/' + activeCategory() + '/' + icon"
+                  [class.sp-icon-tile--campaign]="isCampaignContext()"
+                  (click)="selectIcon(icon)"
+                  [title]="iconLabel(icon)"
+                  [disabled]="disabled()">
+            <img [src]="'/icons/' + activeCategory() + '/' + icon"
+                 [alt]="iconLabel(icon)"
+                 class="sp-icon-img" [class.sp-icon-img--campaign]="isCampaignContext()" />
+            @if (selectedIcon() === '/icons/' + activeCategory() + '/' + icon) {
+              <span class="sp-icon-check">✓</span>
+            }
+          </button>
+        }
+      </div>
+    }
+  </div>
+</div>

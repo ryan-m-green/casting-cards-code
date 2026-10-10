@@ -26,7 +26,9 @@ public enum EntityType
     [Description("cast-traveled")]
     CastTraveled,
     [Description("soundtrack")]
-    Soundtrack
+    Soundtrack,
+    [Description("worldmap")]
+    WorldMap
 }
 
 public static class EntityTypeExtensions

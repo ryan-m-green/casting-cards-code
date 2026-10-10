@@ -1,3 +1,4 @@
+using CastLibrary.Repository.Repositories.Insert;
 using CastLibrary.Repository.Repositories.Read;
 using CastLibrary.Repository.Repositories.Update;
 using CastLibrary.Shared.Domain;
@@ -12,7 +13,8 @@ public interface IUpdateFactionCommandHandler
 
 public class UpdateFactionCommandHandler(
     IFactionReadRepository factionReadRepository,
-    IFactionUpdateRepository factionUpdateRepository) : IUpdateFactionCommandHandler
+    IFactionUpdateRepository factionUpdateRepository,
+    ICampaignKeywordInsertRepository campaignKeywordInsertRepository) : IUpdateFactionCommandHandler
 {
     public async Task<FactionDomain> HandleAsync(UpdateFactionCommand command)
     {
@@ -28,9 +30,12 @@ public class UpdateFactionCommandHandler(
         existing.Description = command.Request.Description;
         existing.DmNotes    = command.Request.DmNotes;
         existing.SymbolPath = command.Request.SymbolPath;
+        existing.Keywords   = command.Request.Keywords;
         existing.Colors     = command.Request.Colors;
 
-        return await factionUpdateRepository.UpdateAsync(existing);
+        var result = await factionUpdateRepository.UpdateAsync(existing);
+        await campaignKeywordInsertRepository.MergeKeywordsAsync(command.DmUserId, "faction", existing.Keywords);
+        return result;
     }
 }
 

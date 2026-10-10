@@ -1,0 +1,117 @@
+@use '../../../../../styles/variables' as v;
+@use '../variables-v2' as v2;
+
+// ─── cc-political-influence Component Fonts ───────────────────────────────────────
+$font-cc-political-influence: v2.$font-v2-components;
+
+// ─── Targeted Reset ─────────────────────────────────────────────────────────────────
+.pi-label,
+.pi-slider-row,
+.pi-slider-wrap,
+.pi-slider,
+.pi-slider-ticks,
+.pi-slider-value {
+  all: revert;
+}
+
+:host {
+  display: block;
+  margin-top: 8px;
+  margin-bottom: 8px;
+}
+
+// ─── Label ────────────────────────────────────────────────────────────────────────
+.pi-label {
+  font-family: $font-cc-political-influence;
+  font-size: 11px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  display: block;
+  margin-bottom: 8px;
+}
+
+.pi-label--journal {
+  color: v.$color-base-brown-14;
+}
+
+.pi-label--campaign {
+  color: v.$color-lib-location-1;
+}
+
+// ─── Slider Row ───────────────────────────────────────────────────────────────────
+.pi-slider-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.pi-slider-wrap {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.pi-slider {
+  flex: 1;
+  width: 100%;
+  margin-top: 0;
+  min-width: 0;
+  cursor: pointer;
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
+
+.pi-slider--journal {
+  accent-color: v.$color-base-gold-1;
+}
+
+.pi-slider--campaign {
+  accent-color: v.$color-arcane-border;
+}
+
+.pi-slider-ticks {
+  display: flex;
+  justify-content: space-between;
+  padding: 0 7px;
+
+  span {
+    width: 1px;
+    height: 4px;
+    border-radius: 1px;
+  }
+}
+
+.pi-slider-ticks--journal span {
+  background: rgba(v.$color-base-gold-1, 0.40);
+}
+
+.pi-slider-ticks--campaign span {
+  background: rgba(v.$color-arcane-border, 0.35);
+}
+
+.pi-slider-value-wrap {
+  min-width: 80px;
+  text-align: right;
+}
+
+.pi-slider-value {
+  font-family: v.$font-header;
+  letter-spacing: 0.12em;
+  white-space: nowrap;
+}
+
+.pi-slider-value--journal {
+  font-size: 11px;
+  color: v.$color-base-brown-14;
+}
+
+.pi-slider-value--campaign {
+  font-size: 12px;
+  color: v.$campaign-portal-text-bright;
+}

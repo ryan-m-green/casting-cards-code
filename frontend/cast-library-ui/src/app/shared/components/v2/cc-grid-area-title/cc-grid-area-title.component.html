@@ -1,0 +1,12 @@
+@if (title().length) {
+  <h2 class="grid-area-title">
+    @if (icon()) {
+      <img class="grid-area-title-icon" [src]="icon()" alt="" aria-hidden="true" />
+    }
+    <span class="grid-area-title-text">
+      @for (line of title(); track $index) {
+        <span class="grid-area-title-line">{{ line }}</span>
+      }
+    </span>
+  </h2>
+}

@@ -1,0 +1,72 @@
+<nav class="grid-navigation" [style.--portal-color]="portalColor() || null" aria-label="Grid navigation">
+  <svg class="main-svg">
+    <g class="radial-scale-group" transform="translate(133.5, 133.5) scale(0.534) translate(-250, -250)">
+      <!-- Campaign chronicles button: arc band sitting OUTSIDE the wheel, right next
+           to it. Inner edge 2px off the wheel's outer edge (125.47 + 2px/0.534);
+           depth = 3/4 of a wheel section (84.22 -> 63.17 -> outer radius 192.39).
+           Width = 1/4 section either side of the bottom-left/middle-left border
+           (247.5deg -> 11.25deg each side -> SVG 146.25..168.75). -->
+      <path
+        class="sector-path arch-slice"
+        d="M 61.31 287.53 A 192.39 192.39 0 0 0 90.03 356.88 L 142.55 321.79 A 129.22 129.22 0 0 1 123.26 275.21 Z"
+        role="button"
+        aria-label="Campaign Chronicles"
+        (click)="onChronicles()"
+        style="cursor: pointer;"
+      />
+
+      <!-- Icon centred in the chronicles arc (mid-angle 157.5deg, mid-radius 160.8) -->
+      <g transform="translate(101.44, 311.54)">
+        <image
+          [attr.href]="'/open_book_star_moon_storytelling.svg'"
+          x="-16"
+          y="-16"
+          width="32"
+          height="32"
+          class="sector-icon-svg arch-icon"
+          (click)="onChronicles()"
+        />
+      </g>
+
+      <!-- Octagon cells (active cell rendered last so it sits on top) -->
+      <path
+        *ngFor="let cell of cells; trackBy: trackCell"
+        [attr.d]="cell.path"
+        class="sector-path"
+        [class.is-active]="activeArea() === cell.key"
+        [attr.aria-label]="cell.ariaLabel"
+        (click)="cell.isCenter ? onCenter() : onSelect(cell.key)"
+        style="cursor: pointer;"
+      />
+
+      <!-- Center card image -->
+      <image
+        [attr.href]="'/tarot_cards_star.svg'"
+        [attr.x]="centerX - 22"
+        [attr.y]="centerY - 27"
+        width="44"
+        height="54"
+        class="center-card-image"
+        [class.is-active]="activeArea() === centerKey"
+      />
+
+      <g id="sector-icons">
+        <ng-container *ngFor="let item of items">
+          <g [attr.transform]="'translate(' + getSectorIconTransform(item.angle).x + ',' + getSectorIconTransform(item.angle).y + ')'">
+            <image
+              *ngIf="item.icon"
+              [attr.href]="item.icon"
+              [attr.x]="-(getIconDimensions(item).width / 2)"
+              [attr.y]="-(getIconDimensions(item).height / 2)"
+              [attr.width]="getIconDimensions(item).width"
+              [attr.height]="getIconDimensions(item).height"
+              class="sector-icon-svg"
+              [class.is-active]="activeArea() === item.key"
+              (click)="onSelect(item.key)"
+            />
+          </g>
+        </ng-container>
+      </g>
+    </g>
+  </svg>
+</nav>

@@ -6,10 +6,10 @@ export interface Cast {
   race: string;
   role: string;
   age: string;
-  alignment: string;
+  maxHitPoints: number;
   posture: string;
   speed: string;
-  voicePlacement: string[];
+  keywords: string[];
   voiceNotes: string;
   description: string;
   publicDescription: string;
@@ -23,10 +23,10 @@ export interface CreateCastRequest {
   race: string;
   role: string;
   age: string;
-  alignment: string;
+  maxHitPoints: number;
   posture: string;
   speed: string;
-  voicePlacement: string[];
+  keywords: string[];
   voiceNotes: string;
   description: string;
   publicDescription: string;
@@ -39,6 +39,9 @@ export interface CampaignCastInstance extends Cast {
   locationInstanceId: string | null;
   sublocationInstanceId: string | null;
   isVisibleToPlayers: boolean;
+  lostHitPoints: number;
+  tempHitPoints: number;
+  voicePlacement: string[];
   keywords: string[];
   dmNotes: string;
   factionSymbols?: { factionInstanceId: string; symbolPath: string }[];

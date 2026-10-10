@@ -6,6 +6,7 @@ import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../../environments/environment';
 import { Cast } from '../../../shared/models/cast.model';
 import { CastCardComponent } from '../../../shared/components/cast-card/cast-card.component';
+import { CcKeywordEditorComponent } from '../../../shared/components/v2/cc-keyword-editor/cc-keyword-editor.component';
 import { JournalTitleComponent } from '../../../shared/components/journal-title/journal-title.component';
 import { JournalWatermarkComponent } from '../../../shared/components/journal-watermark/journal-watermark.component';
 import { UpgradeBadgeComponent } from '../../../shared/components/upgrade-badge/upgrade-badge.component';
@@ -17,7 +18,7 @@ import { SubscriptionDrawerService } from '../../../core/subscription-drawer.ser
 @Component({
   selector: 'app-cast-library',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterLink, CastCardComponent, JournalTitleComponent, JournalWatermarkComponent, UpgradeBadgeComponent],
+  imports: [CommonModule, FormsModule, RouterLink, CastCardComponent, JournalTitleComponent, JournalWatermarkComponent, UpgradeBadgeComponent, CcKeywordEditorComponent],
   templateUrl: './cast-library.component.html',
   styleUrl: './cast-library.component.scss'
 })

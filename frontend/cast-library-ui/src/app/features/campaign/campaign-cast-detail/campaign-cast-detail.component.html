@@ -190,21 +190,48 @@
             }
           </div>
         }
-        @if (ca.alignment || editing()) {
+        @if (editing() || ca.maxHitPoints) {
           <div class="detail-cell">
-            <span class="detail-label">Alignment</span>
+            <span class="detail-label">Max Hit Points</span>
             @if (editing()) {
               <input class="detail-input"
-                     [ngModel]="editAlignment()"
-                     (ngModelChange)="editAlignment.set($event)"
-                     list="cast-detail-alignment-options"
-                     placeholder="Alignment…"
+                     type="number"
+                     [ngModel]="editMaxHitPoints()"
+                     (ngModelChange)="editMaxHitPoints.set($event)"
+                     placeholder="Max HP…"
                      autocomplete="off" />
-              <datalist id="cast-detail-alignment-options">
-                @for (a of alignmentOptions; track a) { <option [value]="a"></option> }
-              </datalist>
             } @else {
-              <span class="detail-value">{{ ca.alignment }}</span>
+              <span class="detail-value">{{ ca.maxHitPoints }}</span>
+            }
+          </div>
+        }
+        @if (editing() || ca.lostHitPoints) {
+          <div class="detail-cell">
+            <span class="detail-label">Lost Hit Points</span>
+            @if (editing()) {
+              <input class="detail-input"
+                     type="number"
+                     [ngModel]="editLostHitPoints()"
+                     (ngModelChange)="editLostHitPoints.set($event)"
+                     placeholder="Lost HP…"
+                     autocomplete="off" />
+            } @else {
+              <span class="detail-value">{{ ca.lostHitPoints }}</span>
+            }
+          </div>
+        }
+        @if (editing() || ca.tempHitPoints) {
+          <div class="detail-cell">
+            <span class="detail-label">Temp Hit Points</span>
+            @if (editing()) {
+              <input class="detail-input"
+                     type="number"
+                     [ngModel]="editTempHitPoints()"
+                     (ngModelChange)="editTempHitPoints.set($event)"
+                     placeholder="Temp HP…"
+                     autocomplete="off" />
+            } @else {
+              <span class="detail-value">{{ ca.tempHitPoints }}</span>
             }
           </div>
         }

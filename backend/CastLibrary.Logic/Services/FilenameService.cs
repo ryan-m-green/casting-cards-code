@@ -15,6 +15,7 @@ namespace CastLibrary.Logic.Services
             ConcurrentBag<CampaignSublocationInstanceDomain> sublocations,
             ConcurrentBag<CampaignCastInstanceDomain> casts,
             ConcurrentBag<CampaignPlayerDomain> players);
+        void AddWorldMapImageUrl(Guid dmUserId, Guid campaignId, CampaignDomain campaign);
     }
     public class FilenameService(IImageKeyCreator imageKeyCreator,
     IImageStorageOperator imageStorageOperator) : IFilenameService
@@ -65,6 +66,15 @@ namespace CastLibrary.Logic.Services
                     player.ImageUrl = newImageUrl;
                 }
             });
+        }
+
+        public void AddWorldMapImageUrl(Guid dmUserId, Guid campaignId, CampaignDomain campaign)
+        {
+            var imageKey = imageKeyCreator.Create(dmUserId, campaignId, campaignId, EntityType.WorldMap);
+            if (!string.IsNullOrEmpty(imageKey))
+            {
+                campaign.WorldMapImageUrl = imageStorageOperator.GetPublicUrl(imageKey);
+            }
         }
 
         public string BuildUniqueFilename(string prefix, string name, ConcurrentDictionary<string, byte> used)

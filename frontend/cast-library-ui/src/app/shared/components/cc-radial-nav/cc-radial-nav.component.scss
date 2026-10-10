@@ -1,0 +1,84 @@
+:host {
+  display: block;
+  position: fixed;
+  bottom: -60px;
+  right: -60px;
+  width: 267px;
+  height: 267px;
+  z-index: 100001;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.grid-navigation {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.main-svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.sector-path {
+  fill: rgba(128, 90, 213, 0.9);
+  stroke: rgba(255, 255, 255, 0.3);
+  stroke-width: 2;
+  pointer-events: auto;
+  transform-box: fill-box;
+  transform-origin: center;
+  transition:
+    fill 0.2s ease,
+    stroke 0.2s ease,
+    transform 0.25s cubic-bezier(0.22, 1, 0.36, 1),
+    filter 0.25s ease;
+}
+
+.sector-path:hover {
+  fill: rgba(128, 90, 213, 1);
+  stroke: rgba(255, 255, 255, 0.5);
+}
+
+.sector-path.is-active {
+  fill: rgba(128, 90, 213, 1);
+  stroke: rgba(255, 255, 255, 0.6);
+  transform: scale(1.14);
+  filter: drop-shadow(0 8px 10px rgba(0, 0, 0, 0.55));
+}
+
+.center-card-image {
+  pointer-events: none;
+  filter: brightness(0) invert(1) drop-shadow(0 2px 4px rgba(0, 0, 0, 0.45));
+  transition: opacity 0.2s ease;
+
+  &.is-active {
+    opacity: 1;
+  }
+
+  &:not(.is-active) {
+    opacity: 0.5;
+  }
+}
+
+.sector-icon-svg {
+  filter: brightness(0) invert(1);
+  transition: opacity 0.2s ease;
+  cursor: pointer;
+  pointer-events: auto;
+
+  &.is-active {
+    opacity: 1;
+  }
+
+  &:not(.is-active) {
+    opacity: 0.5;
+  }
+}
+
+/* Icon of the campaign chronicles arc button - it has no active state, so it
+   stays at full strength instead of dimming like the wheel's inactive icons */
+.sector-icon-svg.arch-icon {
+  opacity: 1;
+}

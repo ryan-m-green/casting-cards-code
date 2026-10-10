@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { signal, computed } from '@angular/core';
 import { BehaviorSubject, Subject, Observable } from 'rxjs';
-import { SoundtrackDomain } from '../shared/models/soundtrack.model';
+import { SoundtrackDomain, AmbianceDomain, AmbianceItemDomain } from '../shared/models/soundtrack.model';
 
 export interface ActiveTrack {
   id: string;
@@ -10,6 +10,16 @@ export interface ActiveTrack {
   isLoop: boolean;
   loopDelaySeconds?: number;
   audioElement: HTMLAudioElement;
+}
+
+interface ActiveAmbianceAudio {
+  audio: HTMLAudioElement;
+  volume: number;
+}
+
+interface ActiveAmbianceState {
+  timers: number[];
+  audios: ActiveAmbianceAudio[];
 }
 
 @Injectable({
@@ -24,6 +34,10 @@ export class AudioPlayerService {
   masterVolume$ = this.masterVolume.asObservable();
   activeTrackCount = computed(() => this.activeTracks.size);
   activeTrackIds$ = this.activeTrackIdsSubject.asObservable();
+
+  private activeAmbiances = new Map<string, ActiveAmbianceState>();
+  private activeAmbianceIdsSubject = new BehaviorSubject<string[]>([]);
+  activeAmbianceIds$ = this.activeAmbianceIdsSubject.asObservable();
 
   private trackStartedSubject = new Subject<{ id: string; title: string }>();
   trackStarted$ = this.trackStartedSubject.asObservable();
@@ -93,6 +107,139 @@ export class AudioPlayerService {
     };
   }
 
+  playAmbiance(ambiance: AmbianceDomain, soundtracks: SoundtrackDomain[]): void {
+    this.stopAmbiance(ambiance.id);
+
+    const state: ActiveAmbianceState = { timers: [], audios: [] };
+    this.activeAmbiances.set(ambiance.id, state);
+    this.activeAmbianceIdsSubject.next(Array.from(this.activeAmbiances.keys()));
+
+    const resolved = ambiance.items
+      .map(item => ({ item, soundtrack: soundtracks.find(s => s.id === item.soundtrackId) }))
+      .filter((x): x is { item: AmbianceItemDomain; soundtrack: SoundtrackDomain } => !!x.soundtrack);
+
+    if (resolved.length === 0) {
+      this.stopAmbiance(ambiance.id);
+      return;
+    }
+
+    const music = resolved.filter(x => x.soundtrack.kind === 'music');
+
+    if (ambiance.randomizeMusic) {
+      for (let i = music.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [music[i], music[j]] = [music[j], music[i]];
+      }
+    }
+
+    // Music: play sequentially in server order, looping the list.
+    if (music.length > 0) {
+      const playMusic = (index: number) => {
+        if (!this.activeAmbiances.has(ambiance.id)) return;
+
+        const entry = music[index % music.length];
+        const soundtrack = entry.soundtrack;
+        const volume = soundtrack.volume;
+        const audio = new Audio(soundtrack.fileUrl);
+        audio.volume = (volume / 100) * (this.masterVolume.value / 100);
+        audio.loop = false;
+        state.audios.push({ audio, volume });
+
+        audio.onended = () => {
+          this.removeAmbianceAudio(state, audio);
+          if (this.activeAmbiances.has(ambiance.id)) {
+            playMusic(index + 1);
+          }
+        };
+
+        audio.play().catch(() => {
+          this.removeAmbianceAudio(state, audio);
+          if (this.activeAmbiances.has(ambiance.id)) {
+            playMusic(index + 1);
+          }
+        });
+      };
+
+      playMusic(0);
+    }
+
+    // Sound effects: play all simultaneously, each on its own schedule.
+    for (const { item, soundtrack } of resolved.filter(x => x.soundtrack.kind === 'sound_effect')) {
+      const volume = soundtrack.volume;
+      const playSfx = () => {
+        if (!this.activeAmbiances.has(ambiance.id)) return;
+
+        const audio = new Audio(soundtrack.fileUrl);
+        audio.volume = (volume / 100) * (this.masterVolume.value / 100);
+        audio.loop = false;
+        state.audios.push({ audio, volume });
+
+        audio.onended = () => {
+          this.removeAmbianceAudio(state, audio);
+          this.scheduleNextSfx(state, ambiance.id, item, playSfx);
+        };
+
+        audio.play().catch(() => {
+          this.removeAmbianceAudio(state, audio);
+          this.scheduleNextSfx(state, ambiance.id, item, playSfx);
+        });
+      };
+
+      playSfx();
+    }
+  }
+
+  private scheduleNextSfx(
+    state: ActiveAmbianceState,
+    ambianceId: string,
+    item: AmbianceItemDomain,
+    playSfx: () => void
+  ): void {
+    if (!this.activeAmbiances.has(ambianceId)) return;
+
+    let delaySeconds: number | null = null;
+    if (item.pauseMode === 'manual' && item.pauseDelaySeconds != null) {
+      delaySeconds = item.pauseDelaySeconds;
+    } else if (
+      item.pauseMode === 'random' &&
+      item.pauseMinSeconds != null &&
+      item.pauseMaxSeconds != null
+    ) {
+      delaySeconds =
+        item.pauseMinSeconds + Math.random() * (item.pauseMaxSeconds - item.pauseMinSeconds);
+    }
+
+    if (delaySeconds == null) return; // 'none' -> play once, no repeat
+
+    const timer = window.setTimeout(playSfx, delaySeconds * 1000);
+    state.timers.push(timer);
+  }
+
+  stopAmbiance(ambianceId: string): void {
+    const state = this.activeAmbiances.get(ambianceId);
+    if (!state) return;
+
+    state.timers.forEach(timer => window.clearTimeout(timer));
+    state.audios.forEach(({ audio }) => {
+      audio.pause();
+      audio.currentTime = 0;
+    });
+
+    this.activeAmbiances.delete(ambianceId);
+    this.activeAmbianceIdsSubject.next(Array.from(this.activeAmbiances.keys()));
+  }
+
+  isAmbiancePlaying(ambianceId: string): boolean {
+    return this.activeAmbiances.has(ambianceId);
+  }
+
+  private removeAmbianceAudio(state: ActiveAmbianceState, audio: HTMLAudioElement): void {
+    const index = state.audios.findIndex(a => a.audio === audio);
+    if (index !== -1) {
+      state.audios.splice(index, 1);
+    }
+  }
+
   stopTrack(trackId: string): void {
     const track = this.activeTracks.get(trackId);
     if (track) {
@@ -118,6 +265,11 @@ export class AudioPlayerService {
     this.masterVolume.next(volume);
     this.activeTracks.forEach(track => {
       track.audioElement.volume = (track.volume / 100) * (volume / 100);
+    });
+    this.activeAmbiances.forEach(state => {
+      state.audios.forEach(({ audio, volume: trackVolume }) => {
+        audio.volume = (trackVolume / 100) * (volume / 100);
+      });
     });
   }
 

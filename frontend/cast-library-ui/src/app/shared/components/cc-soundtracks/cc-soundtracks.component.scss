@@ -1,0 +1,422 @@
+@use '../../../../styles/variables' as v;
+
+:host {
+  display: block;
+  width: 100%;
+  height: 100%;
+  position: relative;
+}
+
+.st-panel {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  padding: 56px 20px 20px;
+  gap: 14px;
+  overflow: hidden;
+}
+
+/* ── Top bar ─────────────────────────────────────────────── */
+.st-topbar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.st-upload-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.st-select {
+  background: v.$campaign-portal-bg-medium;
+  border: 1px solid v.$campaign-portal-border-bold;
+  border-radius: 6px;
+  color: v.$campaign-portal-text-bright;
+  font-family: v.$font-body;
+  font-size: 13px;
+  padding: 7px 10px;
+  cursor: pointer;
+
+  &:focus {
+    outline: none;
+    border-color: var(--portal-color, v.$color-base-purple-primary);
+  }
+}
+
+.st-volume {
+  display: flex;
+  align-items: center;
+  flex: 1;
+  min-width: 220px;
+}
+
+.st-volume cc-slider {
+  flex: 1;
+  min-width: 0;
+}
+
+/* ── Buttons ─────────────────────────────────────────────── */
+.st-btn {
+  font-family: v.$font-header;
+  font-size: 12px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 8px 14px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.18s ease;
+  white-space: nowrap;
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
+
+.st-btn--primary {
+  background: color-mix(in srgb, v.$color-base-indigo-dark 60%, v.$color-base-arcane-purple 40%);
+  border: 1px solid var(--portal-color, v.$color-base-purple-primary);
+  color: v.$color-base-white-2;
+
+  &:hover:not(:disabled) {
+    background: color-mix(in srgb, v.$color-base-arcane-purple 60%, v.$color-base-indigo-dark 40%);
+  }
+}
+
+.st-btn--danger {
+  background: v.$color-base-red-2;
+  border: 1px solid v.$campaign-btn-primary-border;
+  color: v.$color-base-white-2;
+
+  &:hover:not(:disabled) {
+    background: v.$color-base-red-4;
+  }
+}
+
+.st-btn--ghost {
+  background: transparent;
+  border: 1px solid v.$campaign-portal-border-bold;
+  color: v.$campaign-portal-text-bright;
+
+  &:hover {
+    border-color: var(--portal-color, v.$color-base-purple-primary);
+  }
+}
+
+.st-icon-btn {
+  width: 28px;
+  height: 28px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: 1px solid v.$campaign-portal-border-bold;
+  border-radius: 6px;
+  color: v.$campaign-portal-text-bright;
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.18s ease;
+  flex-shrink: 0;
+
+  &:hover {
+    border-color: var(--portal-color, v.$color-base-purple-primary);
+  }
+}
+
+.st-icon-btn--danger:hover {
+  border-color: v.$color-base-red-2;
+  color: v.$color-base-red-2;
+}
+
+.st-icon-btn.confirming {
+  border-color: v.$color-base-red-2;
+  color: v.$color-base-red-2;
+  background: color-mix(in srgb, v.$color-base-red-5 40%, transparent);
+  font-size: 10px;
+  width: auto;
+  padding: 0 8px;
+}
+
+/* ── Body / two columns ──────────────────────────────────── */
+.st-body {
+  flex: 1;
+  min-height: 0;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  overflow: hidden;
+
+  @media (max-width: 900px) {
+    grid-template-columns: 1fr;
+    grid-template-rows: 1fr 1fr;
+  }
+}
+
+.st-section {
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  background: v.$campaign-portal-bg-medium;
+  border: 1px solid v.$campaign-portal-border-bold;
+  border-radius: 10px;
+  padding: 14px;
+  overflow: hidden;
+}
+
+.st-section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.st-section-title {
+  margin: 0;
+  font-family: v.$font-header;
+  font-size: 13px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: v.$campaign-portal-text-bright;
+}
+
+.st-section-count {
+  font-family: v.$font-body;
+  font-size: 12px;
+  color: v.$campaign-portal-text-muted;
+}
+
+/* ── Lists ───────────────────────────────────────────────── */
+.st-library-list,
+.st-ambiance-list {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding-right: 4px;
+}
+
+.st-library-item,
+.st-ambiance-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 10px;
+  background: v.$campaign-portal-bg-dark;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  transition: all 0.18s ease;
+
+  &:hover {
+    border-color: v.$campaign-portal-border-hover;
+  }
+
+  &.playing {
+    border-color: var(--portal-color, v.$color-base-purple-primary);
+    background: color-mix(in srgb, v.$color-base-indigo-dark 60%, v.$color-base-arcane-purple 40%);
+  }
+}
+
+.st-play-btn {
+  width: 30px;
+  height: 30px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: color-mix(in srgb, v.$color-base-indigo-dark 60%, v.$color-base-arcane-purple 40%);
+  border: 1px solid v.$campaign-portal-border-bold;
+  border-radius: 50%;
+  color: v.$color-base-white-2;
+  font-size: 12px;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: all 0.18s ease;
+
+  &:hover {
+    border-color: var(--portal-color, v.$color-base-purple-primary);
+  }
+}
+
+.st-library-name {
+  flex: 1;
+  min-width: 0;
+  font-family: v.$font-body;
+  font-size: 14px;
+  color: v.$campaign-portal-text-bright;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.st-item-volume {
+  flex: 0 1 110px;
+  min-width: 90px;
+}
+
+.st-kind-badge {
+  font-family: v.$font-header;
+  font-size: 9px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 3px 7px;
+  border-radius: 10px;
+  background: color-mix(in srgb, v.$color-base-blue-8 30%, transparent);
+  border: 1px solid v.$color-base-blue-8;
+  color: v.$color-base-blue-9;
+  flex-shrink: 0;
+  cursor: pointer;
+  line-height: 1;
+  transition: all 0.18s ease;
+
+  &:hover {
+    border-color: var(--portal-color, v.$color-base-purple-primary);
+  }
+
+  &--sfx {
+    background: color-mix(in srgb, v.$color-base-gold-1 30%, transparent);
+    border-color: v.$color-base-gold-1;
+    color: v.$color-base-gold-11;
+  }
+}
+
+.st-library-item.in-draft {
+  border-color: var(--portal-color, v.$color-base-purple-primary);
+  background: color-mix(in srgb, v.$color-base-indigo-dark 40%, v.$campaign-portal-bg-dark 60%);
+}
+
+.st-error {
+  font-family: v.$font-body;
+  font-size: 13px;
+  color: v.$color-base-red-2;
+  background: color-mix(in srgb, v.$color-base-red-5 40%, transparent);
+  border: 1px solid v.$color-base-red-4;
+  border-radius: 6px;
+  padding: 8px 12px;
+}
+
+.st-ambiance-info {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.st-ambiance-name {
+  font-family: v.$font-body;
+  font-size: 14px;
+  color: v.$campaign-portal-text-bright;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.st-ambiance-meta {
+  font-family: v.$font-body;
+  font-size: 11px;
+  color: v.$campaign-portal-text-muted;
+}
+
+.st-empty {
+  font-family: v.$font-body;
+  font-size: 13px;
+  color: v.$campaign-portal-text-muted;
+  text-align: center;
+  padding: 24px 12px;
+}
+
+/* ── Draft sheet ─────────────────────────────────────────── */
+.st-draft-sheet {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 50;
+  max-height: 55%;
+  display: flex;
+  flex-direction: column;
+  background: v.$campaign-portal-bg-dark;
+  border-top: 1px solid v.$campaign-portal-border-bold;
+  box-shadow: 0 -8px 24px rgba(0, 0, 0, 0.45);
+  padding: 12px 16px;
+  gap: 10px;
+}
+
+.st-draft-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.st-draft-title {
+  flex: 1;
+  min-width: 0;
+}
+
+.st-draft-random {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: v.$font-body;
+  font-size: 12px;
+  color: v.$campaign-portal-text-muted;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.st-draft-items {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  overflow-y: auto;
+}
+
+.st-draft-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  padding: 8px 10px;
+  background: v.$campaign-portal-bg-medium;
+  border: 1px solid v.$campaign-portal-border-bold;
+  border-radius: 8px;
+}
+
+.st-draft-name {
+  flex: 1;
+  min-width: 0;
+  font-family: v.$font-body;
+  font-size: 14px;
+  color: v.$campaign-portal-text-bright;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.st-draft-loops {
+  font-family: v.$font-header;
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: v.$campaign-portal-text-muted;
+}
+
+.st-input {
+  background: v.$campaign-portal-bg-medium;
+  border: 1px solid v.$campaign-portal-border-bold;
+  border-radius: 6px;
+  color: v.$campaign-portal-text-bright;
+  font-family: v.$font-body;
+  font-size: 14px;
+  padding: 8px 10px;
+
+  &:focus {
+    outline: none;
+    border-color: var(--portal-color, v.$color-base-purple-primary);
+  }
+}

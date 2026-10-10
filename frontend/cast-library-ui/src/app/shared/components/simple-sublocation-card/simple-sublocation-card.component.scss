@@ -1,0 +1,169 @@
+@use '../../../../styles/variables' as v;
+
+:host {
+  display: block;
+  width: 75px;
+  height: 110px;
+  flex-shrink: 0;
+}
+
+.simple-sublocation-card {
+  width: 100%;
+  height: 100%;
+  perspective: 350px;
+  cursor: pointer;
+  position: relative;
+}
+
+.simple-card-frame {
+  position: absolute;
+  inset: 0;
+  border-radius: 4px;
+  padding: 2px;
+  background: linear-gradient(
+    145deg,
+    v.$color-ext-675 0%, v.$color-ext-676 15%, v.$color-ext-677 40%,
+    v.$color-ext-678 55%, v.$color-ext-679 70%, v.$color-ext-680 85%, v.$color-ext-681 100%
+  );
+  box-shadow:
+    0 0 0 1px v.$color-base-black-7,
+    0 3px 11px v.$color-shadow-dark,
+    inset 0 0.5px 0 v.$color-ext-682;
+  overflow: hidden;
+}
+
+.simple-card-inner {
+  width: 100%;
+  height: 100%;
+  border-radius: 2.5px;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  background: linear-gradient(160deg, v.$color-ext-683 0%, v.$color-ext-684 50%, v.$color-ext-685 100%);
+
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 10;
+    pointer-events: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='250' height='250'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='250' height='250' filter='url(%23n)' opacity='.1'/%3E%3C/svg%3E");
+    mix-blend-mode: multiply;
+  }
+}
+
+// ── Banner ────────────────────────────────────────────────────────────────────
+.simple-card-banner {
+  padding: 3px 4px 2.5px;
+  position: relative;
+  flex-shrink: 0;
+  background: linear-gradient(180deg, v.$color-ext-686 0%, v.$color-ext-687 100%);
+  border-bottom: 0.75px solid v.$color-ext-677;
+
+  &::after {
+    content: '';
+    position: absolute;
+    bottom: -1.5px;
+    left: 0;
+    right: 0;
+    height: 0.75px;
+    background: linear-gradient(90deg, transparent, v.$color-ext-688, transparent);
+  }
+}
+
+.simple-card-name {
+  font-family: 'Cinzel', serif;
+  font-weight: 700;
+  font-size: 6px;
+  letter-spacing: 0.03em;
+  line-height: 1.2;
+  color: v.$color-ext-675;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-shadow: 0 0.5px 2px v.$color-shadow-dark;
+  text-align: center;
+  max-width: 100%;
+}
+
+.simple-card-subtitle {
+  font-family: 'Cinzel', serif;
+  font-size: 3px;
+  letter-spacing: 0.12em;
+  color: v.$color-ext-678;
+  margin-top: 0.5px;
+  opacity: 0.8;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-align: center;
+}
+
+// ── Portrait ──────────────────────────────────────────────────────────────────
+.simple-card-portrait {
+  flex: 1;
+  margin: 2.5px;
+  border: 0.75px solid v.$color-border-black-strong;
+  border-radius: 1.5px;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(160deg, v.$color-ext-685, v.$color-ext-684, v.$color-ext-689);
+}
+
+.simple-card-portrait-placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  opacity: 0.3;
+}
+
+.simple-card-portrait-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+// ── Bottom Strip ───────────────────────────────────────────────────────────────
+.simple-card-strip {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 2px 4px;
+  background: linear-gradient(180deg, v.$color-ext-687 0%, v.$color-ext-686 100%);
+  border-top: 0.75px solid v.$color-ext-677;
+  flex-shrink: 0;
+}
+
+.simple-strip-left {
+  display: flex;
+  align-items: center;
+}
+
+.simple-pip-row {
+  display: flex;
+  gap: 1px;
+}
+
+.simple-pip {
+  width: 2px;
+  height: 2px;
+  background-color: v.$color-ext-675;
+  border-radius: 50%;
+  opacity: 0.7;
+}
+
+.simple-strip-label {
+  font-family: 'Cinzel', serif;
+  font-size: 3px;
+  letter-spacing: 0.12em;
+  color: v.$color-ext-675;
+  opacity: 0.8;
+  text-transform: uppercase;
+}

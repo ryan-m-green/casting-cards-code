@@ -82,6 +82,8 @@ public class CampaignsController(
     IAssignFactionToSublocationCommandHandler assignFactionToSublocationCommand,
     IAssignFactionToCastCommandHandler assignFactionToCastCommand,
     IUpdateCampaignLastAccessedCommandHandler updateLastAccessedCommand,
+    IUploadCampaignWorldMapImageCommandHandler uploadWorldMapImageCommand,
+    IFileValidationService fileValidationService,
     ICampaignAccessService campaignAccess) : ControllerBase
 {
     private Task<bool> CallerOwns(Guid campaignId) =>
@@ -164,6 +166,7 @@ public class CampaignsController(
         return NoContent();
     }
 
+    //TODO: Remove
     [HttpGet("{id}")]
     public async Task<IActionResult> GetById(Guid id)
     {
@@ -187,6 +190,7 @@ public class CampaignsController(
             FantasyType = campaign.FantasyType,
             Description = campaign.Description,
             SpineColor = campaign.SpineColor,
+            WorldMapImageUrl = campaign.WorldMapImageUrl,
             Status = campaign.Status.ToString(),
             IsDemo = campaign.IsDemo,
             Locations = locations.Select(o => campaignMapper.ToLocationInstanceResponse(o)).ToList(),
@@ -202,7 +206,7 @@ public class CampaignsController(
 
         return Ok(response);
     }
-
+    //TODO: Remove
     [HttpGet("{id}/player")]
     public async Task<IActionResult> GetPlayerView(Guid id)
     {
@@ -221,6 +225,7 @@ public class CampaignsController(
             FantasyType = campaign.FantasyType,
             Description = campaign.Description,
             SpineColor = campaign.SpineColor,
+            WorldMapImageUrl = campaign.WorldMapImageUrl,
             Status = campaign.Status.ToString(),
             Locations = locations.Select(campaignMapper.ToLocationInstanceResponse).ToList(),
             Casts = casts.Select(campaignMapper.ToCastInstanceResponse).ToList(),
@@ -232,6 +237,25 @@ public class CampaignsController(
         };
 
         return Ok(response);
+    }
+
+    [HttpPost("{id}/worldmap-image")]
+    [Authorize(Roles = "DM,Admin")]
+    [Consumes("multipart/form-data")]
+    public async Task<IActionResult> UploadWorldMapImage(Guid id, IFormFile file)
+    {
+        if (!await CallerOwns(id)) return Forbid();
+
+        var validationResult = await fileValidationService.ValidateFileAsync(file, 20 * 1024 * 1024,
+            new[] { "image/jpeg", "image/png", "image/webp" });
+
+        if (!validationResult.IsValid)
+            return BadRequest(validationResult.ErrorMessage);
+
+        var imageUrl = await uploadWorldMapImageCommand.HandleAsync(
+            new UploadCampaignWorldMapImageCommand(id, file.OpenReadStream(), validationResult.DetectedContentType));
+
+        return Ok(new { imageUrl });
     }
 
     [HttpPost("{id}/locations")]
@@ -269,7 +293,7 @@ public class CampaignsController(
 
         return NoContent();
     }
-
+    //TODO: Remove
     [HttpPatch("{id}/locations/{instanceId}/visibility")]
     [Authorize(Roles = "DM,Admin")]
     public async Task<IActionResult> UpdateLocationInstanceVisibility(Guid id, Guid instanceId,
@@ -288,7 +312,7 @@ public class CampaignsController(
 
         return NoContent();
     }
-
+    //TODO: Remove
     [HttpDelete("{id}/locations/{instanceId}")]
     [Authorize(Roles = "DM,Admin")]
     public async Task<IActionResult> DeleteLocationInstance(Guid id, Guid instanceId)
@@ -300,7 +324,7 @@ public class CampaignsController(
 
         return NoContent();
     }
-
+    //Investigate: Is this already handled in v2 controller?
     [HttpPost("{id}/casts")]
     [Authorize(Roles = "DM,Admin")]
     public async Task<IActionResult> AddCast(Guid id, [FromBody] AddCastToCampaignRequest request)
@@ -318,7 +342,7 @@ public class CampaignsController(
 
         return Ok(response);
     }
-
+    //TODO: Remove
     [HttpPatch("{id}/casts/{instanceId}")]
     [Authorize(Roles = "DM,Admin")]
     public async Task<IActionResult> UpdateCast(Guid id, Guid instanceId,
@@ -336,7 +360,7 @@ public class CampaignsController(
 
         return NoContent();
     }
-
+    //TODO: Remove
     [HttpPatch("{id}/casts/{instanceId}/custom-items")]
     [Authorize(Roles = "DM,Admin")]
     public async Task<IActionResult> UpdateCastCustomItems(Guid id, Guid instanceId,
@@ -347,7 +371,7 @@ public class CampaignsController(
 
         return NoContent();
     }
-
+    //TODO: Does this already exist in v2 controller?
     [HttpPatch("{id}/sublocations/{instanceId}/custom-items")]
     [Authorize(Roles = "DM,Admin")]
     public async Task<IActionResult> UpdateSublocationCustomItems(Guid id, Guid instanceId,
@@ -358,7 +382,7 @@ public class CampaignsController(
 
         return NoContent();
     }
-
+    //TODO: Remove
     [HttpDelete("{id}/casts/{instanceId}")]
     [Authorize(Roles = "DM,Admin")]
     public async Task<IActionResult> DeleteCast(Guid id, Guid instanceId)
@@ -370,7 +394,7 @@ public class CampaignsController(
 
         return NoContent();
     }
-
+    //TODO: Remove
     [HttpPost("{id}/sublocations")]
     [Authorize(Roles = "DM,Admin")]
     public async Task<IActionResult> AddSublocation(Guid id, [FromBody] AddSublocationToCampaignRequest request)
@@ -389,7 +413,7 @@ public class CampaignsController(
 
         return Ok(response);
     }
-
+    //TODO: Remove
     [HttpPatch("{id}/sublocations/{instanceId}")]
     [Authorize(Roles = "DM,Admin")]
     public async Task<IActionResult> UpdateSublocationInstance(Guid id, Guid instanceId,
@@ -407,7 +431,7 @@ public class CampaignsController(
 
         return NoContent();
     }
-
+    //TODO: Remove
     [HttpPost("{id}/sublocations/{instanceId}/shop-items")]
     [Authorize(Roles = "DM,Admin")]
     public async Task<IActionResult> AddSublocationShopItem(Guid id, Guid instanceId,
@@ -442,7 +466,7 @@ public class CampaignsController(
             IsScratchedOff  = item.IsScratchedOff,
         });
     }
-
+    //TODO: Remove
     [HttpPatch("{id}/sublocations/{instanceId}/shop-items/{shopItemId}")]
     [Authorize(Roles = "DM,Admin")]
     public async Task<IActionResult> UpdateShopItem(Guid id, Guid instanceId, Guid shopItemId,
@@ -675,7 +699,7 @@ public class CampaignsController(
             return NotFound();
         }
 
-        await hubContext.Clients.Group(id.ToString()).SendAsync("SecretRevealed", new SecretRevealedEvent
+        await hubContext.Clients.Group(id.ToString()).SendAsync("PlayerSecretRevealed", new SecretRevealedEvent
         {
             SecretId           = secretId,
             CampaignId         = id,

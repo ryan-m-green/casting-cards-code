@@ -23,8 +23,8 @@ public class SoundtrackInsertRepository(
         var entity = mapper.ToEntity(domain);
         
         const string sql =
-            @"INSERT INTO campaign_soundtracks (id, campaign_id, title, file_name, file_url, volume, is_loop, created_at)
-              VALUES (@Id, @CampaignId, @Title, @FileName, @FileUrl, @Volume, @IsLoop, @CreatedAt)
+            @"INSERT INTO campaign_soundtracks (id, campaign_id, title, file_name, file_url, volume, is_loop, kind, created_at)
+              VALUES (@Id, @CampaignId, @Title, @FileName, @FileUrl, @Volume, @IsLoop, @Kind, @CreatedAt)
               RETURNING id,
                         campaign_id     AS CampaignId,
                         title,
@@ -32,6 +32,7 @@ public class SoundtrackInsertRepository(
                         file_url        AS FileUrl,
                         volume,
                         is_loop         AS IsLoop,
+                        kind,
                         created_at      AS CreatedAt";
 
         logging.LogDbOperation(correlation.TraceId, spanId, "INSERT", "campaign_soundtracks", entity);

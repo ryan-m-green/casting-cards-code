@@ -24,6 +24,7 @@ public class FactionEntityMapper : IFactionEntityMapper
         Description = entity.Description,
         DmNotes    = entity.DmNotes,
         SymbolPath = entity.SymbolPath,
+        Keywords   = entity.Keywords ?? [],
         Colors     = string.IsNullOrWhiteSpace(entity.Colors)
             ? new FactionColors()
             : JsonSerializer.Deserialize<FactionColors>(entity.Colors) ?? new FactionColors(),
@@ -42,6 +43,7 @@ public class FactionEntityMapper : IFactionEntityMapper
         Description = domain.Description,
         DmNotes    = domain.DmNotes,
         SymbolPath = domain.SymbolPath,
+        Keywords   = domain.Keywords,
         Colors     = JsonSerializer.Serialize(domain.Colors),
         CreatedAt  = domain.CreatedAt,
     };

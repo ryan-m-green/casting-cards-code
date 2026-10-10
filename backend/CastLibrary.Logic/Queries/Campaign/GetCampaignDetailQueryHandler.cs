@@ -55,6 +55,7 @@ public class GetCampaignDetailQueryHandler(
         var playersBag = new ConcurrentBag<CampaignPlayerDomain>(players);
 
         filenameService.AddImageUrls(campaign.DmUserId, campaignId, locationBag, sublocationBag, castsBag, playersBag);
+        filenameService.AddWorldMapImageUrl(campaign.DmUserId, campaignId, campaign);
 
         return (campaign, locationBag.ToList(), castsBag.ToList(), 
             sublocationBag.ToList(), secrets, relationships, playersBag.ToList(), 

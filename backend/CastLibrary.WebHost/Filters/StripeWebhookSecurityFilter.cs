@@ -82,7 +82,6 @@ public class StripeWebhookSecurityFilter : ActionFilterAttribute
         catch(Exception e)
         {
             loggingService.LogError($"StripeWebhookSecurityFilter: Exit - Unexpected error: {e.Message}");
-            var a = 32;
         }
     }
 }

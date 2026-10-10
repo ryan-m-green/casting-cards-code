@@ -1,18 +1,22 @@
 import { Component, Input, Output, EventEmitter, signal, inject } from '@angular/core';
 import { Cast } from '../../models/cast.model';
 import { LockIconComponent } from '../lock-icon/lock-icon.component';
+import { CcCastIconComponent } from '../v2/cc-cast-icon/cc-cast-icon.component';
 import { CampaignShellService } from '../../../core/campaign-shell.service';
+import { DrawerService } from '../../../core/drawer.service';
 
 @Component({
   selector: 'app-cast-card',
   standalone: true,
-  imports: [LockIconComponent],
+  imports: [LockIconComponent, CcCastIconComponent],
   templateUrl: './cast-card.component.html',
   styleUrl: './cast-card.component.scss'
 })
 export class CastCardComponent {
   @Input({ required: true }) cast!: Cast;
+  @Input() campaignId: string = '';
   private shellSvc = inject(CampaignShellService);
+  private drawerService = inject(DrawerService);
 
   @Input() editable        = true;
   @Input() flippable       = true;
@@ -34,12 +38,15 @@ export class CastCardComponent {
   @Input() factionSymbols: { factionInstanceId: string; symbolPath: string }[] = [];
   @Input() isTraveling: boolean | null = null;
 
+  @Input() cardSecrets: any[] = [];
+
   @Output() editClick      = new EventEmitter<void>();
   @Output() deleteClick    = new EventEmitter<void>();
   @Output() fileSelected   = new EventEmitter<File>();
   @Output() secretsClick   = new EventEmitter<void>();
   @Output() cardClick      = new EventEmitter<void>();
   @Output() primaryToggled = new EventEmitter<void>();
+  @Output() detailsClick   = new EventEmitter<void>();
 
   flipped   = false;
   stars     = signal(0);
@@ -52,7 +59,6 @@ export class CastCardComponent {
   }
 
   toggleFlip(e: Event): void {
-    if (this.campaignMode) { this.cardClick.emit(); return; }
     if (this.flippable) this.flipped = !this.flipped;
   }
 
@@ -110,8 +116,21 @@ export class CastCardComponent {
     };
   }
 
+  onDetailsClick(e: Event): void {
+    e.stopPropagation();
+    const castInstance = this.campaignMode ? (this.cast as any) : null;
+    this.drawerService.openCastDetail({
+      cast: this.cast,
+      secrets: this.cardSecrets,
+      campaignId: this.campaignId,
+      castInstanceId: castInstance?.instanceId
+    });
+  }
+
   onNameClick(e: Event): void {
     e.stopPropagation();
-    this.shellSvc.openChronicleDrawerWithSearch(this.cast.name);
+    this.drawerService.openChronicle({
+      initialSearchQuery: this.cast.name
+    });
   }
 }

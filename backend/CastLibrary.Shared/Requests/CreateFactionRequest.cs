@@ -12,5 +12,6 @@ public class CreateFactionRequest
     public string Description { get; set; }
     public string DmNotes { get; set; }
     public string SymbolPath { get; set; }
+    public string[] Keywords { get; set; } = [];
     public FactionColors Colors { get; set; } = new FactionColors();
 }

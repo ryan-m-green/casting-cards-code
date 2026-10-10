@@ -210,6 +210,7 @@
   height: 100%;
   position: relative;
   z-index: 1;
+  opacity: 0.3;
 }
 
 .cc-portrait-label {
@@ -239,6 +240,7 @@
   opacity: .8;
   display: -webkit-box;
   -webkit-line-clamp: 2;
+  line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
@@ -445,6 +447,7 @@
 .cc-stat-val--clamp {
   display: -webkit-box;
   -webkit-line-clamp: 3;
+  line-clamp: 3;
   -webkit-box-orient: vertical;
   overflow: hidden;
 }

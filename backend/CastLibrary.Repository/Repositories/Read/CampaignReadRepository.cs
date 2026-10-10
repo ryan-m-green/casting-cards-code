@@ -222,7 +222,9 @@ public class CampaignReadRepository(
             Race = r.race ?? string.Empty,
             Role = r.role ?? string.Empty,
             Age = r.age ?? string.Empty,
-            Alignment = r.alignment ?? string.Empty,
+            MaxHitPoints = r.max_hit_points,
+            LostHitPoints = r.lost_hit_points,
+            TempHitPoints = r.temp_hit_points,
             Posture = r.posture ?? string.Empty,
             Speed = r.speed ?? string.Empty,
             VoicePlacement = r.voice_placement ?? Array.Empty<string>(),
@@ -274,7 +276,9 @@ public class CampaignReadRepository(
             Race = r.race ?? string.Empty,
             Role = r.role ?? string.Empty,
             Age = r.age ?? string.Empty,
-            Alignment = r.alignment ?? string.Empty,
+            MaxHitPoints = r.max_hit_points,
+            LostHitPoints = r.lost_hit_points,
+            TempHitPoints = r.temp_hit_points,
             Posture = r.posture ?? string.Empty,
             Speed = r.speed ?? string.Empty,
             VoicePlacement = r.voice_placement ?? Array.Empty<string>(),
@@ -316,7 +320,9 @@ public class CampaignReadRepository(
             Race = r.race ?? string.Empty,
             Role = r.role ?? string.Empty,
             Age = r.age ?? string.Empty,
-            Alignment = r.alignment ?? string.Empty,
+            MaxHitPoints = r.max_hit_points,
+            LostHitPoints = r.lost_hit_points,
+            TempHitPoints = r.temp_hit_points,
             Posture = r.posture ?? string.Empty,
             Speed = r.speed ?? string.Empty,
             VoicePlacement = r.voice_placement ?? Array.Empty<string>(),
@@ -358,7 +364,9 @@ public class CampaignReadRepository(
             Race = r.race ?? string.Empty,
             Role = r.role ?? string.Empty,
             Age = r.age ?? string.Empty,
-            Alignment = r.alignment ?? string.Empty,
+            MaxHitPoints = r.max_hit_points,
+            LostHitPoints = r.lost_hit_points,
+            TempHitPoints = r.temp_hit_points,
             Posture = r.posture ?? string.Empty,
             Speed = r.speed ?? string.Empty,
             VoicePlacement = r.voice_placement ?? Array.Empty<string>(),
@@ -726,7 +734,9 @@ public class CampaignReadRepository(
             Race = r.race ?? string.Empty,
             Role = r.role ?? string.Empty,
             Age = r.age ?? string.Empty,
-            Alignment = r.alignment ?? string.Empty,
+            MaxHitPoints = r.max_hit_points,
+            LostHitPoints = r.lost_hit_points,
+            TempHitPoints = r.temp_hit_points,
             Posture = r.posture ?? string.Empty,
             Speed = r.speed ?? string.Empty,
             VoicePlacement = r.voice_placement ?? Array.Empty<string>(),
@@ -827,7 +837,7 @@ public class CampaignReadRepository(
         return rows.Select(r =>
         {
             var fid = (Guid)r.faction_instance_id;
-            FactionColors? colors = null;
+            FactionColors colors = null;
             if (r.colors != null)
             {
                 colors = System.Text.Json.JsonSerializer.Deserialize<FactionColors>(r.colors);
@@ -882,7 +892,7 @@ public class CampaignReadRepository(
         logging.LogDbOperation(correlation.TraceId, spanId, "SELECT", "campaign_faction_instances", @params, r is null ? 0 : 1);
 
         if (r is null) return null;
-        FactionColors? colors = null;
+        FactionColors colors = null;
         if (r.colors != null)
         {
             colors = System.Text.Json.JsonSerializer.Deserialize<FactionColors>(r.colors);
@@ -1028,7 +1038,7 @@ public class CampaignReadRepository(
         return rows.Select(r =>
         {
             var fid = (Guid)r.faction_instance_id;
-            FactionColors? colors = null;
+            FactionColors colors = null;
             if (r.colors != null)
             {
                 colors = System.Text.Json.JsonSerializer.Deserialize<FactionColors>(r.colors);

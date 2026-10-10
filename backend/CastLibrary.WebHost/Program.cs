@@ -271,14 +271,14 @@ builder.Services.AddAuthentication(options =>
             OnMessageReceived = context =>
             {
                 var path = context.HttpContext.Request.Path;
-                
+
                 // Skip JWT validation for webhook endpoint entirely
                 if (path.StartsWithSegments("/api/stripe/webhook"))
                 {
                     context.NoResult();
                     return Task.CompletedTask;
                 }
-                
+
                 // For SignalR, try to get JWT from query parameter first, then cookie
                 if (path.StartsWithSegments("/hubs"))
                 {
@@ -289,7 +289,7 @@ builder.Services.AddAuthentication(options =>
                         context.Token = accessToken;
                         return Task.CompletedTask;
                     }
-                    
+
                     // Fallback to cookie
                     var token = context.HttpContext.Request.Cookies["casting_cards_token"];
                     if (!string.IsNullOrEmpty(token))
@@ -298,7 +298,29 @@ builder.Services.AddAuthentication(options =>
                         return Task.CompletedTask;
                     }
                 }
-                
+
+                // For SignalR test controller, read from cookie
+                if (path.StartsWithSegments("/api/signalrtest"))
+                {
+                    var token = context.HttpContext.Request.Cookies["casting_cards_token"];
+                    if (!string.IsNullOrEmpty(token))
+                    {
+                        context.Token = token;
+                        return Task.CompletedTask;
+                    }
+                }
+
+                // For GM testarea page v2 API endpoints, read from cookie
+                if (path.StartsWithSegments("/api/campaign"))
+                {
+                    var token = context.HttpContext.Request.Cookies["casting_cards_token"];
+                    if (!string.IsNullOrEmpty(token))
+                    {
+                        context.Token = token;
+                        return Task.CompletedTask;
+                    }
+                }
+
                 return Task.CompletedTask;
             }
         };

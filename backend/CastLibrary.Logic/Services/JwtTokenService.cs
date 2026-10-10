@@ -11,7 +11,7 @@ namespace CastLibrary.Logic.Services;
 public interface IJwtTokenService
 {
     string GenerateToken(UserDomain user);
-    string GenerateToken(UserDomain user, SubscriptionDomain? subscription);
+    string GenerateToken(UserDomain user, SubscriptionDomain subscription);
 }
 public class JwtTokenService(IConfiguration configuration) : IJwtTokenService
 {
@@ -20,7 +20,7 @@ public class JwtTokenService(IConfiguration configuration) : IJwtTokenService
         return GenerateToken(user, null);
     }
 
-    public string GenerateToken(UserDomain user, SubscriptionDomain? subscription)
+    public string GenerateToken(UserDomain user, SubscriptionDomain subscription)
     {
         var key    = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["Jwt:Key"]!));
         var creds  = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
@@ -38,7 +38,7 @@ public class JwtTokenService(IConfiguration configuration) : IJwtTokenService
         var bypassPayment = false;
         var subscriptionStatus = "FreeTrial";
         var subscriptionId = string.Empty;
-        var pricingModelId = (string?)null;
+        var pricingModelId = (string)null;
         var currentPeriodEnd = (DateTime?)null;
         var createdAt = DateTime.UtcNow;
         var pastDueSince = (DateTime?)null;

@@ -25,6 +25,9 @@ namespace CastLibrary.WebHost.IoC
             services.AddScoped<ICastInsertRepository, CastInsertRepository>();
             services.AddScoped<ICastUpdateRepository, CastUpdateRepository>();
             services.AddScoped<ICastDeleteRepository, CastDeleteRepository>();
+            services.AddScoped<ICampaignKeywordReadRepository, CampaignKeywordReadRepository>();
+            services.AddScoped<ICampaignKeywordInsertRepository, CampaignKeywordInsertRepository>();
+            services.AddScoped<ICampaignKeywordDeleteRepository, CampaignKeywordDeleteRepository>();
             services.AddScoped<ILocationReadRepository, LocationReadRepository>();
             services.AddScoped<ILocationInsertRepository, LocationInsertRepository>();
             services.AddScoped<ILocationUpdateRepository, LocationUpdateRepository>();
@@ -115,12 +118,14 @@ services.AddScoped<ICampaignSessionArchivedReadRepository, CampaignSessionArchiv
             services.AddScoped<ICampaignEventDeleteRepository, StorylineDeleteRepository>();
             services.AddScoped<ICampaignSessionChroniclesReadRepository, CampaignSessionChroniclesReadRepository>();
             services.AddScoped<ICampaignSessionChroniclesInsertRepository, CampaignSessionChroniclesInsertRepository>();
+            services.AddScoped<ICampaignChroniclesInsertRepository, CampaignChroniclesInsertRepository>();
             services.AddScoped<ISessionReadRepository, SessionReadRepository>();
             services.AddScoped<ISessionInsertRepository, SessionInsertRepository>();
             services.AddScoped<ISessionUpdateRepository, SessionUpdateRepository>();
             services.AddScoped<ICampaignSessionArchivedInsertRepository, CampaignSessionArchivedInsertRepository>();
             services.AddScoped<ICampaignChroniclesReadRepository, CampaignChroniclesReadRepository>();
             services.AddScoped<ICampaignChroniclesUpdateRepository, CampaignChroniclesUpdateRepository>();
+            services.AddScoped<ICampaignChroniclesFeedReadRepository, CampaignChroniclesFeedReadRepository>();
             services.AddScoped<ISessionDeleteRepository, CampaignSessionArchivedDeleteRepository>();
             services.AddScoped<IActiveSessionDeleteRepository, SessionDeleteRepository>();
             services.AddHealthChecks()
@@ -162,6 +167,8 @@ services.AddScoped<ICampaignSessionArchivedReadRepository, CampaignSessionArchiv
             services.AddScoped<ISubscriptionEntityMapper, SubscriptionEntityMapper>();
             services.AddScoped<IPricingModelEntityMapper, PricingModelEntityMapper>();
             services.AddScoped<ISoundtrackEntityMapper, SoundtrackEntityMapper>();
+            services.AddScoped<IAmbianceEntityMapper, AmbianceEntityMapper>();
+            services.AddScoped<IAmbianceItemEntityMapper, AmbianceItemEntityMapper>();
             services.AddScoped<IQuicknoteQueueReadRepository, QuicknoteQueueReadRepository>();
             services.AddScoped<IQuicknoteQueueInsertRepository, QuicknoteQueueInsertRepository>();
             services.AddScoped<IQuicknoteQueueUpdateRepository, QuicknoteQueueUpdateRepository>();
@@ -183,6 +190,10 @@ services.AddScoped<ICampaignSessionArchivedReadRepository, CampaignSessionArchiv
             services.AddScoped<ISoundtrackInsertRepository, SoundtrackInsertRepository>();
             services.AddScoped<ISoundtrackUpdateRepository, SoundtrackUpdateRepository>();
             services.AddScoped<ISoundtrackDeleteRepository, SoundtrackDeleteRepository>();
+            services.AddScoped<IAmbianceReadRepository, AmbianceReadRepository>();
+            services.AddScoped<IAmbianceInsertRepository, AmbianceInsertRepository>();
+            services.AddScoped<IAmbianceUpdateRepository, AmbianceUpdateRepository>();
+            services.AddScoped<IAmbianceDeleteRepository, AmbianceDeleteRepository>();
         }
     }
 }

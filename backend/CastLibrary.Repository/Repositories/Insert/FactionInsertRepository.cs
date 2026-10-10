@@ -30,14 +30,15 @@ public class FactionInsertRepository(
             faction.Description,
             faction.DmNotes,
             faction.SymbolPath,
+            faction.Keywords,
             Colors     = JsonSerializer.Serialize(faction.Colors),
             faction.CreatedAt,
         };
         const string sql =
             @"INSERT INTO factions
-                (faction_id, dm_user_id, name, type, influence, perception, hidden, description, dm_notes, symbol_path, colors, created_at)
+                (faction_id, dm_user_id, name, type, influence, perception, hidden, description, dm_notes, symbol_path, keywords, colors, created_at)
               VALUES
-                (@FactionId, @DmUserId, @Name, @Type, @Influence, @Perception, @Hidden, @Description, @DmNotes, @SymbolPath, @Colors::jsonb, @CreatedAt)";
+                (@FactionId, @DmUserId, @Name, @Type, @Influence, @Perception, @Hidden, @Description, @DmNotes, @SymbolPath, @Keywords::text[], @Colors::jsonb, @CreatedAt)";
 
         logging.LogDbOperation(correlation.TraceId, spanId, "INSERT", "factions", @params);
 

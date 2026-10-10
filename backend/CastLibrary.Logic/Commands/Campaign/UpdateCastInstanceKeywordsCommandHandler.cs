@@ -1,4 +1,5 @@
 ﻿using CastLibrary.Repository.Repositories;
+using CastLibrary.Repository.Repositories.Insert;
 using CastLibrary.Repository.Repositories.Update;
 using CastLibrary.Shared.Requests;
 
@@ -11,7 +12,8 @@ public interface IUpdateCastInstanceKeywordsCommandHandler
 
 public class UpdateCastInstanceKeywordsCommandHandler(
     ICampaignUpdateRepository campaignRepository,
-    IUserUpdateRepository userUpdateRepository) : IUpdateCastInstanceKeywordsCommandHandler
+    IUserUpdateRepository userUpdateRepository,
+    ICampaignKeywordInsertRepository campaignKeywordInsertRepository) : IUpdateCastInstanceKeywordsCommandHandler
 {
     public async Task HandleAsync(UpdateCastInstanceKeywordsCommand command)
     {
@@ -23,6 +25,7 @@ public class UpdateCastInstanceKeywordsCommandHandler(
 
         await campaignRepository.UpdateCastInstanceKeywordsAsync(command.InstanceId, normalized);
         await userUpdateRepository.MergeKeywordsAsync(command.DmUserId, normalized);
+        await campaignKeywordInsertRepository.MergeKeywordsAsync(command.DmUserId, "cast", normalized);
     }
 }
 

@@ -3,8 +3,9 @@ import { Component, Input, Output, EventEmitter, inject } from '@angular/core';
 import { Sublocation, CampaignSublocationInstance } from '../../models/sublocation.model';
 
 import { LockIconComponent } from '../lock-icon/lock-icon.component';
-
+import { CcSublocationIconComponent } from '../v2/cc-sublocation-icon/cc-sublocation-icon.component';
 import { CampaignShellService } from '../../../core/campaign-shell.service';
+import { DrawerService } from '../../../core/drawer.service';
 
 
 
@@ -14,7 +15,7 @@ import { CampaignShellService } from '../../../core/campaign-shell.service';
 
   standalone: true,
 
-  imports: [LockIconComponent],
+  imports: [LockIconComponent, CcSublocationIconComponent],
 
   templateUrl: './sublocation-card.component.html',
 
@@ -25,6 +26,7 @@ import { CampaignShellService } from '../../../core/campaign-shell.service';
 export class SublocationCardComponent {
 
   private shellSvc = inject(CampaignShellService);
+  private drawerService = inject(DrawerService);
 
 
 
@@ -56,19 +58,20 @@ export class SublocationCardComponent {
 
   @Input() symbolPath: string | null = null;
 
+  @Input() cardSecrets: any[] = [];
+
 
 
   @Output() editClick      = new EventEmitter<void>();
-
   @Output() deleteClick    = new EventEmitter<void>();
-
   @Output() fileSelected   = new EventEmitter<File>();
-
   @Output() secretsClick   = new EventEmitter<void>();
-
   @Output() cardClick      = new EventEmitter<void>();
-
   @Output() primaryToggled = new EventEmitter<void>();
+  @Output() detailsClick   = new EventEmitter<void>();
+
+  @Input() campaignId: string | null = null;
+  @Input() sublocationInstanceId: string | null = null;
 
 
 
@@ -91,11 +94,7 @@ export class SublocationCardComponent {
 
 
   toggleFlip(e: Event): void {
-
-    if (this.campaignMode) { this.cardClick.emit(); return; }
-
     if (this.flippable) this.flipped = !this.flipped;
-
   }
 
 
@@ -152,11 +151,23 @@ export class SublocationCardComponent {
 
 
 
+  onDetailsClick(e: Event): void {
+    e.stopPropagation();
+    this.drawerService.openSublocationDetail({
+      sublocation: this.sublocation,
+      secrets: this.cardSecrets,
+      campaignId: this.campaignId,
+      sublocationInstanceId: this.sublocationInstanceId
+    });
+  }
+
   onNameClick(e: Event): void {
 
     e.stopPropagation();
 
-    this.shellSvc.openChronicleDrawerWithSearch(this.sublocation.name);
+    this.drawerService.openChronicle({
+      initialSearchQuery: this.sublocation.name
+    });
 
   }
 

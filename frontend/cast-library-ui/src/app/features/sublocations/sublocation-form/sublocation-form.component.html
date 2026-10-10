@@ -1,5 +1,6 @@
 <div class="pc scroll-body">
   <app-journal-title [title]="sublocationId() ? 'Edit Sublocation' : 'Sublocation Creation'" />
+  <img src="/spilled_wine.PNG" alt="Spilled wine" class="spilled-wine-image" />
   <div class="wr wr-page-header">
     <a class="btn-ghost" routerLink="/gm/sublocations">← Library</a>
   </div>
@@ -41,8 +42,17 @@
     <label class="fi-label">Description</label>
     <textarea class="fi" formControlName="description" rows="3" autocomplete="off"></textarea>
     <fieldset class="form-gm-box">
-      <img src="/spilled_wine.PNG" alt="Spilled wine" class="spilled-wine-image" />
       <legend class="form-gm-box__legend">FOR GM EYES ONLY</legend>
+
+      <cc-keyword-tags
+        [options]="keywordOptions()"
+        [label]="'Hashtags / Keywords'"
+        [placeholder]="'Add or select hashtags…'"
+        [ngModel]="keywords()"
+        [ngModelOptions]="{ standalone: true }"
+        (ngModelChange)="keywords.set($event)">
+      </cc-keyword-tags>
+
       <label class="fi-label">GM Notes</label>
       <textarea class="fi" formControlName="dmNotes" rows="3" placeholder="Private notes…" autocomplete="off"></textarea>
     </fieldset>

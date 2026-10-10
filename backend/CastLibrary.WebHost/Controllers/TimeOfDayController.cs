@@ -23,7 +23,6 @@ public class TimeOfDayController(
     IUpdateSlicePlayerNotesCommandHandler updatePlayerNotesCommand,
     IUpdateSliceDmNotesCommandHandler updateDmNotesCommand,
     IAdvanceDayCommandHandler advanceDayCommand,
-    IRewindDayCommandHandler rewindDayCommand,
     IHubContext<CampaignHub> hubContext,
     ICampaignAccessService campaignAccess,
     IUserRetriever userRetriever) : ControllerBase

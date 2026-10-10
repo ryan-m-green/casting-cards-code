@@ -1,0 +1,9 @@
+<div class="wm-root" [style.--portal-color]="portalColor">
+  @if (worldMapImageUrl) {
+    <div class="wm-image-wrap">
+      <img class="wm-image" [src]="worldMapImageUrl" alt="World map" />
+    </div>
+  } @else {
+    <div class="wm-empty">No world map yet.</div>
+  }
+</div>

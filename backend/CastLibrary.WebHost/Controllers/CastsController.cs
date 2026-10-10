@@ -73,8 +73,8 @@ public class CastController(
             return BadRequest("Request body cannot be null");
         }
         
-        logger.LogInformation("POST /api/cast - Request payload: Name='{Name}', Race='{Race}', Role='{Role}', Age='{Age}', Alignment='{Alignment}'", 
-            request.Name, request.Race, request.Role, request.Age, request.Alignment);
+        logger.LogInformation("POST /api/cast - Request payload: Name='{Name}', Race='{Race}', Role='{Role}', Age='{Age}', MaxHitPoints='{MaxHitPoints}'", 
+            request.Name, request.Race, request.Role, request.Age, request.MaxHitPoints);
 
         var validator = new CreateCastRequestValidator();
         var validationResult = validator.Validate(request);
@@ -82,8 +82,8 @@ public class CastController(
         {
             var errors = validationResult.Errors.Select(e => e.ErrorMessage).ToList();
             logger.LogError("POST /api/cast - Validation failed. Errors: {Errors}", string.Join(", ", errors));
-            logger.LogError("POST /api/cast - Request payload that failed validation: Name='{Name}', Race='{Race}', Role='{Role}', Age='{Age}', Alignment='{Alignment}'", 
-                request.Name, request.Race, request.Role, request.Age, request.Alignment);
+            logger.LogError("POST /api/cast - Request payload that failed validation: Name='{Name}', Race='{Race}', Role='{Role}', Age='{Age}', MaxHitPoints='{MaxHitPoints}'", 
+                request.Name, request.Race, request.Role, request.Age, request.MaxHitPoints);
             return BadRequest(errors);
         }
         

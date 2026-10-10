@@ -1,0 +1,280 @@
+@use '../../../../../styles/variables' as v;
+
+// ─── cc-hp-counter ────────────────────────────────────────────────────────────
+// Three odometer-style spin dials (hundreds / tens / ones).
+//
+// Per dial:
+//   • the top and bottom arrow areas are the ONLY clickable regions
+//     (click = increase / decrease that digit) and show a `pointer` cursor
+//   • the number reel is not clickable, but can still be dragged to spin
+//   • mouse wheel and arrow keys also work
+// The arrow areas flex to fill the space above/below the reel so the clickable
+// targets stay generous (and grow further on coarse pointers).
+
+:host {
+  display: block;
+  margin-bottom: 10px;
+}
+
+.cc-hp-counter {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: flex-start; // label + dials each hug their own width (so the dials box never stretches to the label)
+  gap: 2px;
+}
+
+.cc-hp-counter-label {
+  display: block;
+  font-family: v.$font-header;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  margin-bottom: 2px;
+  color: v.$color-base-brown-14;
+}
+
+.cc-hp-counter-dials {
+  display: inline-flex;
+  align-items: stretch;
+  gap: 0; // dials sit flush against each other (no space between them)
+  padding: 4px; // 4px gutter between the border and the dials
+  background: v.$color-input-bg;
+  border: 1px solid v.$color-border-solid;
+  border-radius: 3px;
+  transition: border-color v.$transition-std, background v.$transition-std;
+
+  &:focus-within {
+    border-color: v.$color-input-focus-border;
+    background: v.$color-input-focus-bg;
+  }
+}
+
+// ─── Dial ─────────────────────────────────────────────────────────────────────
+.cc-hp-counter-dial {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  width: 46px;
+  height: 120px;
+  padding: 6px 0;
+  border-radius: 2px;
+  outline: none;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  transition: background v.$transition-fast, box-shadow v.$transition-fast;
+
+  &:focus-visible {
+    box-shadow: 0 0 0 2px rgba(v.$color-base-brown-warm, 0.35);
+  }
+
+  &--dragging {
+    background: rgba(v.$color-base-brown-warm, 0.10);
+
+    .cc-hp-counter-reel {
+      border-color: v.$color-input-focus-border;
+      cursor: grabbing;
+    }
+
+    .cc-hp-counter-digit--current {
+      transform: scale(1.08);
+    }
+  }
+
+  &--disabled {
+    opacity: 0.5;
+    pointer-events: none;
+  }
+}
+
+// ─── Arrow areas (the only clickable regions) ─────────────────────────────────
+.cc-hp-counter-arrow {
+  display: flex;
+  flex: 1 1 auto;
+  align-items: center;
+  justify-content: center;
+  width: 46px;
+  margin: 0;
+  padding: 0;
+  border: 1px solid v.$color-border-solid;
+  border-radius: 0;
+  background: none;
+  appearance: none;
+  -webkit-appearance: none;
+  box-sizing: border-box;
+  color: v.$color-base-brown-17;
+  cursor: pointer;
+  transition: color v.$transition-fast, transform v.$transition-fast;
+
+  svg {
+    display: block;
+    width: 13px;
+    height: 8px;
+    fill: currentColor;
+  }
+
+  &:hover:not(:disabled) {
+    color: v.$color-base-brown-14;
+    transform: scale(1.15);
+  }
+
+  &:active:not(:disabled) {
+    transform: scale(0.95);
+  }
+
+  &:disabled {
+    cursor: default;
+  }
+}
+
+// Round only the outward-facing ends of the arrow rows so the top row of arrow
+// areas (and the bottom row) reads like a pill.
+.cc-hp-counter-arrow--first {
+  border-top-left-radius: 3px;
+  border-bottom-left-radius: 3px;
+}
+
+.cc-hp-counter-arrow--last {
+  border-top-right-radius: 3px;
+  border-bottom-right-radius: 3px;
+}
+
+// ─── Reel (drag to spin; not clickable) ───────────────────────────────────────
+.cc-hp-counter-reel {
+  display: flex;
+  flex: 0 0 auto;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-width: 36px;
+  padding: 3px 2px;
+  background: rgba(v.$color-base-brown-warm, 0.06);
+  border: 1px solid v.$color-border-light;
+  border-radius: 2px;
+  overflow: hidden;
+  cursor: grab;
+  touch-action: none; // a vertical drag spins the reel instead of scrolling the page
+  transition: border-color v.$transition-fast;
+}
+
+.cc-hp-counter-digit {
+  font-family: v.$font-header;
+  line-height: 1;
+  text-align: center;
+  user-select: none;
+
+  &--current {
+    font-size: 24px;
+    font-weight: 700;
+    color: v.$color-base-brown-14;
+    text-shadow: 0 1px 0 rgba(255, 255, 255, 0.4);
+    transition: transform v.$transition-fast;
+  }
+
+  &--ghost {
+    font-size: 12px;
+    font-weight: 500;
+    color: v.$color-base-brown-17;
+    opacity: 0.55;
+  }
+}
+
+// ─── Larger targets on coarse pointers (phones / tablets) ─────────────────────
+@media (pointer: coarse) {
+  .cc-hp-counter-dial {
+    width: 46px;
+    height: 148px; // arrow areas are ~42px tall each
+    padding: 8px 0;
+  }
+
+  .cc-hp-counter-reel {
+    min-width: 46px;
+    padding: 5px 2px;
+  }
+
+  .cc-hp-counter-arrow svg {
+    width: 15px;
+    height: 9px;
+  }
+
+  .cc-hp-counter-digit--current {
+    font-size: 30px;
+  }
+
+  .cc-hp-counter-digit--ghost {
+    font-size: 14px;
+  }
+}
+
+// ─── Campaign skin (colour-only) ──────────────────────────────────────────────
+// The campaign context deliberately changes COLOURS ONLY. Each rule below
+// mirrors a journal declaration and keeps the journal's exact alpha/weight, so
+// the campaign version looks identical to the journal version (same positions,
+// same spacing, same border weight, same 4px gutter, dials flush) and only the
+// hues change.
+$hp-campaign-bg:     v.$color-base-black;                   // panel background (cf. cc-textbox--campaign)
+$hp-campaign-accent: v.$color-lib-location-1;               // campaign accent (borders / arrows)
+$hp-campaign-text:   v.$color-base-mist-blue;               // digits + label
+$hp-campaign-dim:    rgba(v.$color-base-mist-blue, 0.7);
+
+.cc-hp-counter--campaign {
+  .cc-hp-counter-label {
+    color: $hp-campaign-text;
+  }
+
+  .cc-hp-counter-dials {
+    background: $hp-campaign-bg;
+    // Matches journal $color-border-solid (brown @ 0.32) — same weight, new hue.
+    border-color: rgba($hp-campaign-accent, 0.32);
+
+    &:focus-within {
+      background: rgba($hp-campaign-accent, 0.10);
+      border-color: rgba($hp-campaign-accent, 0.65);
+    }
+  }
+
+  .cc-hp-counter-dial {
+    &:hover {
+      background: rgba($hp-campaign-accent, 0.05);
+    }
+
+    &:focus-visible {
+      box-shadow: 0 0 0 2px rgba($hp-campaign-accent, 0.35);
+    }
+
+    &--dragging {
+      background: rgba($hp-campaign-accent, 0.10);
+
+      .cc-hp-counter-reel {
+        border-color: rgba($hp-campaign-accent, 0.65);
+      }
+    }
+  }
+
+  .cc-hp-counter-arrow {
+    // Matches journal $color-border-solid (brown @ 0.32) so the dials stay flush.
+    border-color: rgba($hp-campaign-accent, 0.32);
+    color: $hp-campaign-dim;
+
+    &:hover:not(:disabled) {
+      color: $hp-campaign-text;
+    }
+  }
+
+  .cc-hp-counter-reel {
+    background: rgba($hp-campaign-accent, 0.06);
+    // Matches journal $color-border-light (brown @ 0.14).
+    border-color: rgba($hp-campaign-accent, 0.14);
+  }
+
+  .cc-hp-counter-digit--current {
+    color: $hp-campaign-text;
+  }
+
+  .cc-hp-counter-digit--ghost {
+    color: $hp-campaign-dim;
+  }
+}

@@ -1,0 +1,26 @@
+@if (label()) {
+  <div class="pi-label" [class.pi-label--journal]="!isCampaignContext()" [class.pi-label--campaign]="isCampaignContext()">{{ label() }}</div>
+}
+<div class="pi-slider-row">
+  <div class="pi-slider-wrap">
+    <input type="range" class="pi-slider"
+           [class.pi-slider--journal]="!isCampaignContext()"
+           [class.pi-slider--campaign]="isCampaignContext()"
+           [(ngModel)]="influence"
+           (ngModelChange)="influenceChange.emit($event)"
+           min="0" max="10" step="1"
+           [disabled]="disabled()" />
+    <div class="pi-slider-ticks"
+         [class.pi-slider-ticks--journal]="!isCampaignContext()"
+         [class.pi-slider-ticks--campaign]="isCampaignContext()">
+      @for (t of [0,1,2,3,4,5,6,7,8,9,10]; track t) {
+        <span></span>
+      }
+    </div>
+  </div>
+  <div class="pi-slider-value-wrap">
+    <span class="pi-slider-value"
+          [class.pi-slider-value--journal]="!isCampaignContext()"
+          [class.pi-slider-value--campaign]="isCampaignContext()">{{ influence() }} out of 10</span>
+  </div>
+</div>

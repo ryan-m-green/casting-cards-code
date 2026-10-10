@@ -1,0 +1,74 @@
+@use '../../../../styles/variables' as v;
+@use '../../../../styles/campaign-shell-vars' as shell;
+
+:host {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.radial-tree {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  background: transparent;
+}
+
+.radial-tree-header {
+  flex-shrink: 0;
+  padding: 12px 16px 6px;
+  text-align: center;
+  pointer-events: none;
+}
+
+.radial-tree-title {
+  font-family: v.$font-header;
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  color: color-mix(in srgb, var(--portal-color, shell.$shell-purple-primary), white 60%);
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.55);
+  text-transform: uppercase;
+}
+
+.radial-tree-scroll {
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 12px;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(167, 121, 233, 0.35) rgba(0, 0, 0, 0.4);
+}
+
+.radial-stage {
+  position: relative;
+  flex-shrink: 0;
+}
+
+.radial-edges {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+
+  line {
+    stroke: color-mix(in srgb, var(--portal-color, shell.$shell-purple-primary), white 20%);
+    stroke-width: 1;
+    stroke-opacity: 0.4;
+  }
+}
+
+.radial-node {
+  position: absolute;
+  width: 75px;
+  height: 110px;
+  transition: transform 0.18s ease, filter 0.18s ease;
+
+  &:hover {
+    z-index: 10;
+    transform: scale(1.08);
+  }
+}

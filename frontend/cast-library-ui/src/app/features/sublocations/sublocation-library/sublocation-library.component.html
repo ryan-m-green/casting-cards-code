@@ -8,11 +8,14 @@
       class="upgrade-badge-library" />
     <input class="search-bar search-bar--header" type="text" placeholder="Name · Description…"
            [value]="searchTerm()" (input)="searchTerm.set($any($event.target).value)" />
-    <button class="campaign-primary-btn wr-ml-auto"
-            [class.disabled]="sublocationLimitReached() || isCreateDisabled()"
-            [attr.disabled]="(sublocationLimitReached() || isCreateDisabled()) ? 'true' : null"
-            [routerLink]="(sublocationLimitReached() || isCreateDisabled()) ? null : '/gm/sublocations/new'"
-            (click)="(sublocationLimitReached() || isCreateDisabled()) ? $event.preventDefault() : null">+ Create</button>
+    <div class="wr-ml-auto cc-keyword-editor-wrap">
+      <button class="campaign-primary-btn"
+              [class.disabled]="sublocationLimitReached() || isCreateDisabled()"
+              [attr.disabled]="(sublocationLimitReached() || isCreateDisabled()) ? 'true' : null"
+              [routerLink]="(sublocationLimitReached() || isCreateDisabled()) ? null : '/gm/sublocations/new'"
+              (click)="(sublocationLimitReached() || isCreateDisabled()) ? $event.preventDefault() : null">+ Create</button>
+      <cc-keyword-editor [cardType]="'sublocation'"></cc-keyword-editor>
+    </div>
   </div>
 
   <div class="card-grid">

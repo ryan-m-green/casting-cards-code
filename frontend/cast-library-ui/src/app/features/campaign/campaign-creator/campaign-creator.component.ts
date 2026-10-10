@@ -594,6 +594,7 @@ export class CampaignCreatorComponent implements OnInit, OnDestroy {
         religion:       ci.religion,
         vibe:           ci.vibe,
         languages:      ci.languages,
+        keywords:       [],
         description:    ci.description,
         imageUrl:       libraryLocation?.imageUrl,
         createdAt:      '',

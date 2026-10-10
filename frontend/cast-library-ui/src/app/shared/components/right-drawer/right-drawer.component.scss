@@ -33,8 +33,19 @@
   background: v.$campaign-portal-bg-dark;
   border-left: none;
   box-shadow: none;
-  animation: drawer-slide-in 0.26s cubic-bezier(0.22, 1, 0.36, 1) both, portal-inward-breathe 8.4s ease-in-out infinite;
+  animation: drawer-slide-in 0.26s cubic-bezier(0.22, 1, 0.36, 1) both;
   overflow: hidden;
+
+  /* Portal breathing border lives on an overlay above the scrolling body so
+     content disappears beneath the border instead of painting over it. */
+  &::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 10;
+    pointer-events: none;
+    animation: portal-inward-breathe 8.4s ease-in-out infinite;
+  }
 
   &.is-closing {
     animation: drawer-slide-out 0.24s cubic-bezier(0.4, 0, 1, 1) both;
@@ -113,6 +124,8 @@
 
 .drawer-body {
   flex: 1;
+  display: flex;
+  flex-direction: column;
   overflow-y: auto;
   padding: 24px;
   scrollbar-width: thin;

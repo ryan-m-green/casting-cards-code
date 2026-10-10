@@ -1,0 +1,20 @@
+<div class="campaign-hierarchy" [style.--portal-color]="portalColor() || null">
+  @if (loading()) {
+    <div class="hierarchy-state hierarchy-loading">Loading campaign hierarchy...</div>
+  } @else if (error()) {
+    <div class="hierarchy-state hierarchy-error">{{ error() }}</div>
+  } @else if (trees().length === 0) {
+    <div class="hierarchy-state hierarchy-empty">No locations found for this campaign.</div>
+  } @else {
+    @for (tree of trees(); track tree.location.instanceId) {
+      <div class="hierarchy-tree-wrapper">
+        <app-cc-radial-tree
+          [location]="tree.location"
+          [sublocations]="tree.sublocations"
+          [casts]="tree.casts"
+          [portalColor]="portalColor()"
+        />
+      </div>
+    }
+  }
+</div>

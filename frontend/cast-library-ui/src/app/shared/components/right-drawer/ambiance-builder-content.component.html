@@ -1,0 +1,86 @@
+  <div class="builder" [style.--portal-color]="portalColor()">
+    <label class="builder-field">
+      <span class="builder-label">Title</span>
+      <input
+        class="builder-input"
+        type="text"
+        [ngModel]="title()"
+        (ngModelChange)="title.set($event)"
+        placeholder="Ambiance name"
+      />
+    </label>
+
+    <label class="builder-random">
+      <app-toggle-switch [checked]="randomizeMusic()" (checkedChange)="randomizeMusic.set($event)" />
+      Randomize music
+    </label>
+
+    @if (errorMessage()) {
+      <div class="builder-error">{{ errorMessage() }}</div>
+    }
+
+    <div class="builder-items">
+      <div class="builder-items-header">
+        <span class="builder-label">Tracks</span>
+        <button type="button" class="builder-add" (click)="addItem()">+ Add Track</button>
+      </div>
+
+      @for (item of items(); track $index) {
+        <div class="builder-item">
+          <div class="builder-item-volume">
+            <cc-slider
+              [min]="0"
+              [max]="100"
+              [step]="1"
+              [value]="item.volume"
+              (commit)="onItemVolumeChange($index, $event)"
+              [showValue]="false"
+              ariaLabel="Volume"
+              title="Volume"
+            />
+          </div>
+
+          <div class="builder-item-top">
+            <cc-campaign-dropdown
+              [options]="soundtrackOptions()"
+              [fontSize]="'13px'"
+              [placeholder]="'Select a soundtrack'"
+              [style.margin-bottom]="'0'"
+              [ngModel]="item.soundtrackId"
+              (ngModelChange)="onSoundtrackSelected($index, $event)"
+            />
+
+            <button type="button" class="builder-icon" (click)="moveItem($index, -1)" [disabled]="$index === 0" title="Move up">&#9650;</button>
+            <button type="button" class="builder-icon" (click)="moveItem($index, 1)" [disabled]="$index === items().length - 1" title="Move down">&#9660;</button>
+            <button type="button" class="builder-icon builder-icon--danger" (click)="removeItem($index)" title="Remove">&#10005;</button>
+          </div>
+
+          @if (isSoundEffect(item.soundtrackId)) {
+            <app-ambiance-item-pause-control
+              [(pauseMode)]="item.pauseMode"
+              [(pauseDelaySeconds)]="item.pauseDelaySeconds"
+              [(pauseMinSeconds)]="item.pauseMinSeconds"
+              [(pauseMaxSeconds)]="item.pauseMaxSeconds"
+            />
+          }
+        </div>
+      } @empty {
+        <p class="builder-empty">No tracks yet.</p>
+      }
+    </div>
+
+    <div class="builder-footer">
+      <button
+        type="button"
+        class="builder-btn builder-btn--danger"
+        [class.confirming]="pendingDelete()"
+        (click)="requestDelete()"
+      >
+        {{ pendingDelete() ? 'Confirm?' : 'Delete' }}
+      </button>
+      <button type="button" class="builder-btn builder-btn--ghost" (click)="closeDrawer.emit()">Cancel</button>
+      <button type="button" class="builder-btn builder-btn--primary" (click)="save()" [disabled]="saving()">
+        {{ saving() ? 'Saving...' : 'Save' }}
+      </button>
+    </div>
+  </div>

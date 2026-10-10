@@ -143,6 +143,16 @@
     <textarea id="location-description-textarea" class="fi" formControlName="description" rows="4" placeholder="Full description…" autocomplete="off"></textarea>
     <fieldset class="form-gm-box">
       <legend class="form-gm-box__legend">FOR GM EYES ONLY</legend>
+
+      <cc-keyword-tags
+        [options]="keywordOptions()"
+        [label]="'Hashtags / Keywords'"
+        [placeholder]="'Add or select hashtags…'"
+        [ngModel]="keywords()"
+        [ngModelOptions]="{ standalone: true }"
+        (ngModelChange)="keywords.set($event)">
+      </cc-keyword-tags>
+
       <label for="location-dmnotes-textarea" class="fi-label">GM Notes</label>
       <textarea id="location-dmnotes-textarea" class="fi" formControlName="dmNotes" rows="3" placeholder="Private notes…" autocomplete="off"></textarea>
     </fieldset>

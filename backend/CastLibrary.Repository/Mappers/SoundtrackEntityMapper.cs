@@ -23,6 +23,7 @@ public class SoundtrackEntityMapper : ISoundtrackEntityMapper
             Volume = entity.Volume,
             IsLoop = entity.IsLoop,
             LoopDelaySeconds = entity.LoopDelaySeconds,
+            Kind = entity.Kind,
             CreatedAt = entity.CreatedAt
         };
     }
@@ -39,6 +40,7 @@ public class SoundtrackEntityMapper : ISoundtrackEntityMapper
             Volume = domain.Volume,
             IsLoop = domain.IsLoop,
             LoopDelaySeconds = domain.LoopDelaySeconds,
+            Kind = domain.Kind,
             CreatedAt = domain.CreatedAt
         };
     }

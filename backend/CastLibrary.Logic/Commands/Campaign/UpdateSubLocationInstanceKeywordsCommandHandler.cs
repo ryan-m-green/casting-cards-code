@@ -1,4 +1,5 @@
 ﻿using CastLibrary.Repository.Repositories;
+using CastLibrary.Repository.Repositories.Insert;
 using CastLibrary.Repository.Repositories.Update;
 using CastLibrary.Shared.Requests;
 
@@ -11,7 +12,8 @@ public interface IUpdateSublocationInstanceKeywordsCommandHandler
 
 public class UpdateSublocationInstanceKeywordsCommandHandler(
     ICampaignUpdateRepository campaignRepository,
-    IUserUpdateRepository userUpdateRepository) : IUpdateSublocationInstanceKeywordsCommandHandler
+    IUserUpdateRepository userUpdateRepository,
+    ICampaignKeywordInsertRepository campaignKeywordInsertRepository) : IUpdateSublocationInstanceKeywordsCommandHandler
 {
     public async Task HandleAsync(UpdateSublocationInstanceKeywordsCommand command)
     {
@@ -23,6 +25,7 @@ public class UpdateSublocationInstanceKeywordsCommandHandler(
 
         await campaignRepository.UpdateSublocationInstanceKeywordsAsync(command.InstanceId, normalized);
         await userUpdateRepository.MergeKeywordsAsync(command.DmUserId, normalized);
+        await campaignKeywordInsertRepository.MergeKeywordsAsync(command.DmUserId, "sublocation", normalized);
     }
 }
 

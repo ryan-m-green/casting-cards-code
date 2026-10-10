@@ -14,6 +14,7 @@ export interface Faction {
   description?: string;
   dmNotes?: string;
   symbolPath?: string;
+  keywords: string[];
   imageUrl?: string;
   colors: FactionColors;
   createdAt: string;
@@ -27,6 +28,7 @@ export interface CreateFactionRequest {
   description?: string;
   dmNotes?: string;
   symbolPath?: string;
+  keywords: string[];
 }
 
 export interface FactionRelationship {

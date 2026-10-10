@@ -23,6 +23,8 @@ html, body {
   -webkit-user-select: none;
   scrollbar-gutter: stable;
   scrollbar-width: none;
+  /* Disable Chromium's horizontal overscroll history navigation (swipe-to-go-back arrow). */
+  overscroll-behavior-x: none;
 
   &::-webkit-scrollbar { display: none; }
 }

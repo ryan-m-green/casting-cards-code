@@ -1,0 +1,41 @@
+// --- Campaign Shell Unified Theming Variables -----------------------------------
+// This file contains variables for the unified campaign shell that supports both DM and player roles
+// with role-based content showing/hiding while maintaining consistent theming
+
+// ── Base Colors ───────────────────────────────────────────────────────────────────
+$shell-base-black: rgb(0, 0, 0); // Main shell background
+$shell-purple-primary: rgb(110, 40, 208); // Primary portal color for dynamic theming
+
+// ── Campaign Portal Theming ──────────────────────────────────────────────────────
+// These variables are used for the campaign portal interface elements
+$shell-portal-bg-dark: rgba(46, 26, 94, 1); // Portal dark background
+$shell-portal-bg-medium: rgba(46, 26, 94, 0.80); // Portal medium background / input bg
+$shell-portal-border-light: rgba(167, 121, 233, 0.15); // Portal light border
+$shell-portal-border: rgba(167, 121, 233, 0.2); // Portal standard border / char portrait
+$shell-portal-border-medium: rgba(167, 121, 233, 0.25); // Portal medium border
+$shell-portal-border-strong: rgba(167, 121, 233, 0.3); // Portal strong border
+$shell-portal-border-accent: rgba(167, 121, 233, 0.35); // Portal accent border
+$shell-portal-border-bold: rgba(167, 121, 233, 0.4); // Portal bold border / portrait
+$shell-portal-border-hover: rgba(167, 121, 233, 0.5); // Portal hover border
+$shell-portal-border-active: rgba(167, 121, 233, 0.55); // Portal active border
+$shell-portal-border-focus: rgba(167, 121, 233, 0.6); // Portal focus border
+$shell-portal-border-strong-focus: rgba(167, 121, 233, 0.65); // Portal strong focus
+$shell-portal-bg-hover: rgba(167, 121, 233, 0.1); // Portal hover background
+$shell-portal-bg-placeholder: rgba(167, 121, 233, 0.2); // Portrait placeholder
+
+// ── Portal Text Colors ───────────────────────────────────────────────────────────
+$shell-portal-text-primary: rgba(0, 200, 255, 0.9); // Portal primary text (aqua accent)
+$shell-portal-text-secondary: rgba(100, 180, 255, 0.9); // Portal secondary text
+$shell-portal-text-bright: rgba(150, 200, 255, 0.95); // Portal bright text / dropdown text
+$shell-portal-text-softer: rgba(180, 200, 220, 0.92); // Portal softer text
+$shell-portal-text-muted: rgba(180, 200, 220, 0.88); // Portal muted text
+$shell-portal-text-lavender: rgba(220, 200, 255, 0.95); // Portal lavender text
+$shell-portal-text-lavender-bright: rgba(220, 200, 255, 0.98); // Portal bright lavender
+$shell-portal-text-purple-light: rgb(40, 10, 74, 0.80); // Portal light purple text
+$shell-portal-glow-bright: rgba(0, 255, 150, 1.0); // Portal bright glow
+$shell-portal-placeholder: rgba(180, 150, 255, 1); // Portal placeholder text
+
+// ── Role-Specific Theming (Optional) ─────────────────────────────────────────────
+// These can be used for subtle role-based theming differences
+$shell-dm-accent: rgba(110, 40, 208, 0.8); // DM-specific accent color
+$shell-player-accent: rgba(0, 200, 255, 0.8); // Player-specific accent color

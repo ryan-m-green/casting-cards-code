@@ -1,0 +1,204 @@
+@use '../../../../../styles/variables' as v;
+@use '../variables-v2' as v2;
+
+// ─── cc-journal-dropdown Component Fonts ───────────────────────────────────────────────
+$font-cc-journal-dropdown: v2.$font-v2-components;
+
+:host {
+  display: block;
+  margin-top: 8px;
+  margin-bottom: 8px;
+}
+
+.cc-journal-dropdown {
+  position: relative;
+}
+
+.cc-journal-dropdown-label {
+  display: block;
+  font-family: $font-cc-journal-dropdown;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  margin-bottom: 2px;
+  color: v.$color-base-brown-14;
+}
+
+.cc-journal-dropdown-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+
+  &.disabled {
+    opacity: 0.5;
+    pointer-events: none;
+  }
+}
+
+.cc-journal-dropdown-input {
+  all: unset;
+  display: block;
+  flex: 1;
+  width: 100%;
+  box-sizing: border-box;
+  background: v.$color-input-bg;
+  border: 1px solid v.$color-border-solid;
+  border-radius: 2px;
+  color: v.$color-base-brown-14;
+  font-family: $font-cc-journal-dropdown;
+  font-size: var(--dd-font-size, 14px);
+  font-style: italic;
+  padding: 8px 80px 8px 10px;
+  cursor: text;
+  transition: border-color 0.15s ease;
+  text-align: left;
+  appearance: none;
+  -webkit-appearance: none;
+
+  &:focus {
+    border-color: v.$color-input-focus-border;
+    outline: none;
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    background: v.$color-input-bg;
+
+    &:hover,
+    &:focus {
+      border-color: v.$color-border-solid;
+    }
+  }
+
+  &::placeholder {
+    color: v.$color-base-brown-17;
+    font-style: italic;
+  }
+}
+
+.cc-journal-dropdown-clear {
+  all: unset;
+  position: absolute;
+  right: 36px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  color: v.$color-base-brown-17;
+  font-size: 14px;
+  cursor: pointer;
+  padding: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0.6;
+  transition: opacity 0.15s ease;
+
+  &:hover {
+    opacity: 1;
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+    opacity: 0.3;
+  }
+}
+
+.cc-journal-dropdown-caret {
+  all: unset;
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  color: v.$color-base-brown-17;
+  font-size: 12px;
+  cursor: pointer;
+  transition: transform 0.15s ease;
+  padding: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  &:disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+  }
+
+  &--open { transform: translateY(-50%) rotate(180deg); }
+}
+
+.cc-journal-dropdown-panel {
+  position: absolute;
+  top: calc(100%);
+  left: 0;
+  right: 0;
+  background: v.$color-input-bg;
+  border: 1px solid v.$color-border-solid;
+  border-radius: 2px;
+  list-style: none;
+  margin: 0;
+  padding: 4px 0;
+  z-index: 100;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.cc-journal-dropdown-item {
+  all: unset;
+  font-family: $font-cc-journal-dropdown;
+  font-size: var(--dd-font-size, 14px);
+  font-style: italic;
+  color: v.$color-base-brown-14;
+  padding: 9px 12px 9px 28px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  position: relative;
+  appearance: none;
+  -webkit-appearance: none;
+
+  &:hover {
+    background: v.$color-input-focus-bg;
+  }
+
+  &--selected {
+    background: transparent;
+    color: v.$color-base-brown-14;
+
+    &:hover,
+    &--active {
+      background: transparent;
+    }
+  }
+
+  &--active {
+    background: v.$color-input-focus-bg;
+    outline: none;
+  }
+
+  &--no-results {
+    color: v.$color-base-brown-17;
+    cursor: default;
+    font-style: italic;
+  }
+}
+
+.cc-dd-icon-img {
+  width: 18px;
+  height: 18px;
+  object-fit: contain;
+  flex-shrink: 0;
+  opacity: 0.85;
+}
+
+.cc-journal-dropdown-checkmark {
+  color: v.$color-base-brown-14;
+  font-weight: bold;
+  font-size: 16px;
+  position: absolute;
+  left: 12px;
+}

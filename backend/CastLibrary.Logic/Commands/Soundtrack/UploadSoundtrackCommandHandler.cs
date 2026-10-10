@@ -42,6 +42,7 @@ public class UploadSoundtrackCommandHandler(
             FileUrl = fileUrl,
             Volume = command.Volume,
             IsLoop = command.IsLoop,
+            Kind = command.Kind,
             CreatedAt = DateTime.UtcNow
         };
 
@@ -51,7 +52,7 @@ public class UploadSoundtrackCommandHandler(
 
 public class UploadSoundtrackCommand
 {
-    public UploadSoundtrackCommand(Guid campaignId, string title, string fileName, Stream stream, string contentType, int volume, bool isLoop)
+    public UploadSoundtrackCommand(Guid campaignId, string title, string fileName, Stream stream, string contentType, int volume, bool isLoop, string kind = "music")
     {
         CampaignId = campaignId;
         Title = title;
@@ -60,6 +61,7 @@ public class UploadSoundtrackCommand
         ContentType = contentType;
         Volume = volume;
         IsLoop = isLoop;
+        Kind = kind;
     }
 
     public Guid CampaignId { get; }
@@ -69,4 +71,5 @@ public class UploadSoundtrackCommand
     public string ContentType { get; }
     public int Volume { get; }
     public bool IsLoop { get; }
+    public string Kind { get; }
 }

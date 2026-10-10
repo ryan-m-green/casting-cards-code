@@ -15,6 +15,7 @@ namespace CastLibrary.Logic.Factories
             {
                 Name = sublocation.Name,
                 Description = sublocation.Description,
+                Keywords = sublocation.Keywords,
                 ImageFileName = imageFileName,
                 ShopItems = sublocation.ShopItems.Select(s => new ShopItemCard
                 {

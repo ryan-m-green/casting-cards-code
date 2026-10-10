@@ -30,6 +30,7 @@ namespace CastLibrary.Repository.Repositories.Insert
                 Location.Religion,
                 Location.Vibe,
                 Location.Languages,
+                Location.Keywords,
                 Location.Description,
                 Location.DmNotes,
                 Location.CampaignId,
@@ -38,10 +39,10 @@ namespace CastLibrary.Repository.Repositories.Insert
             const string sql =
                 @"INSERT INTO locations
                 (id, dm_user_id, name, classification, size, condition, geography, architecture,
-                 climate, religion, vibe, languages, description, dm_notes, campaign_id, created_at)
+                 climate, religion, vibe, languages, keywords, description, dm_notes, campaign_id, created_at)
               VALUES
                 (@Id, @DmUserId, @Name, @Classification, @Size, @Condition, @Geography,
-                 @Architecture, @Climate, @Religion, @Vibe, @Languages, @Description, @DmNotes, @CampaignId, @CreatedAt)";
+                 @Architecture, @Climate, @Religion, @Vibe, @Languages, @Keywords::text[], @Description, @DmNotes, @CampaignId, @CreatedAt)";
 
             logging.LogDbOperation(correlation.TraceId, spanId, "INSERT", "locations", @params);
 

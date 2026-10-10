@@ -54,6 +54,7 @@ export interface CampaignDetail {
   fantasyType: string;
   description: string;
   spineColor: string;
+  worldMapImageUrl: string | null;
   status: CampaignStatus;
   isDemo?: boolean | null;
   locations: CampaignLocationInstance[];

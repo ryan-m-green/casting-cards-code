@@ -4,6 +4,7 @@ using CastLibrary.Logic.Commands.BugReport;
 using CastLibrary.Logic.Commands.Campaign;
 using CastLibrary.Logic.Commands.CampaignChronicles;
 using CastLibrary.Logic.Commands.Soundtrack;
+using CastLibrary.Logic.Commands.Ambiance;
 using CastLibrary.Logic.Commands.Cast;
 using CastLibrary.Logic.Commands.Faction;
 using CastLibrary.Logic.Commands.Location;
@@ -28,6 +29,7 @@ using CastLibrary.Logic.Queries.PlayerNotes;
 using CastLibrary.Logic.Queries.QuicknoteQueue;
 using CastLibrary.Logic.Queries.Sublocation;
 using CastLibrary.Logic.Queries.Soundtrack;
+using CastLibrary.Logic.Queries.Ambiance;
 using CastLibrary.Logic.Queries.Subscription;
 using CastLibrary.Logic.Services;
 using CastLibrary.Logic.Strategies;
@@ -189,6 +191,7 @@ namespace CastLibrary.WebHost.IoC
             services.AddScoped<IUpdateFactionInstanceVisibilityCommandHandler, UpdateFactionInstanceVisibilityCommandHandler>();
             services.AddScoped<IUpsertFactionPlayerNotesCommandHandler, UpsertFactionPlayerNotesCommandHandler>();
             services.AddScoped<IMigratePlayerNoteToChronicleCommandHandler, MigratePlayerNoteToChronicleCommandHandler>();
+            services.AddScoped<IAddChronicleCommandHandler, AddChronicleCommandHandler>();
             services.AddScoped<ICreateQuicknoteQueueItemCommandHandler, CreateQuicknoteQueueItemCommandHandler>();
             services.AddScoped<IUpdateQuicknoteQueueItemCommandHandler, UpdateQuicknoteQueueItemCommandHandler>();
             services.AddScoped<IDeleteQuicknoteQueueItemCommandHandler, DeleteQuicknoteQueueItemCommandHandler>();
@@ -202,6 +205,7 @@ namespace CastLibrary.WebHost.IoC
             services.AddScoped<IUpdateCampaignEventBodyCommandHandler, UpdateCampaignEventBodyCommandHandler>();
             services.AddScoped<IUploadCampaignStorylineHandoutCommandHandler, UploadCampaignStorylineHandoutCommandHandler>();
             services.AddScoped<IUploadCampaignEventHandoutImageCommandHandler, UploadCampaignEventHandoutImageCommandHandler>();
+            services.AddScoped<IUploadCampaignWorldMapImageCommandHandler, UploadCampaignWorldMapImageCommandHandler>();
             services.AddScoped<IUpdateCampaignEventDetailsCommandHandler, UpdateCampaignEventDetailsCommandHandler>();
             services.AddScoped<IDeleteCampaignEventCommandHandler, DeleteCampaignEventCommandHandler>();
             services.AddScoped<IReorderCampaignEventsCommandHandler, ReorderCampaignEventsCommandHandler>();
@@ -212,6 +216,9 @@ namespace CastLibrary.WebHost.IoC
             services.AddScoped<IUploadSoundtrackCommandHandler, UploadSoundtrackCommandHandler>();
             services.AddScoped<IDeleteSoundtrackCommandHandler, DeleteSoundtrackCommandHandler>();
             services.AddScoped<IUpdateSoundtrackCommandHandler, UpdateSoundtrackCommandHandler>();
+            services.AddScoped<ICreateAmbianceCommandHandler, CreateAmbianceCommandHandler>();
+            services.AddScoped<IUpdateAmbianceCommandHandler, UpdateAmbianceCommandHandler>();
+            services.AddScoped<IDeleteAmbianceCommandHandler, DeleteAmbianceCommandHandler>();
 
             services.AddScoped<IStartSessionCommandHandler, StartSessionCommandHandler>();
             services.AddScoped<IUpdateSessionCommandHandler, UpdateSessionCommandHandler>();
@@ -245,7 +252,13 @@ namespace CastLibrary.WebHost.IoC
             services.AddScoped<IGetCampaignInviteCodeQueryHandler, GetCampaignInviteCodeQueryHandler>();
             services.AddScoped<IGetPlayerInventoryQueryHandler, GetPlayerInventoryQueryHandler>();
 
+            // V2 Campaign query handlers
+            services.AddScoped<IGetCampaignLocationInstancesQueryHandler, GetCampaignLocationInstancesQueryHandler>();
+            services.AddScoped<IGetCampaignSublocationInstancesQueryHandler, GetCampaignSublocationInstancesQueryHandler>();
+            services.AddScoped<IGetCampaignCastInstancesQueryHandler, GetCampaignCastInstancesQueryHandler>();
+
             services.AddScoped<IGetCampaignSoundtracksQueryHandler, GetCampaignSoundtracksQueryHandler>();
+            services.AddScoped<IGetCampaignAmbiancesQueryHandler, GetCampaignAmbiancesQueryHandler>();
 
             services.AddScoped<IGetCastRelationshipsQueryHandler, GetCastRelationshipsQueryHandler>();
             services.AddScoped<IGetCastRelationshipByIdQueryHandler, GetCastRelationshipByIdQueryHandler>();
@@ -258,6 +271,9 @@ namespace CastLibrary.WebHost.IoC
             services.AddScoped<IExportFactionLibraryQueryHandler, ExportFactionLibraryQueryHandler>();
             services.AddScoped<IImageFileNameQueryHandler, ImageFileNameQueryHandler>();
             services.AddScoped<IGetUserKeywordsQueryHandler, GetUserKeywordsQueryHandler>();
+            services.AddScoped<IGetCampaignKeywordsQueryHandler, GetCampaignKeywordsQueryHandler>();
+            services.AddScoped<IAddCampaignKeywordCommandHandler, AddCampaignKeywordCommandHandler>();
+            services.AddScoped<IDeleteCampaignKeywordCommandHandler, DeleteCampaignKeywordCommandHandler>();
 
             services.AddScoped<IGetCastPlayerNotesQueryHandler, GetCastPlayerNotesQueryHandler>();
             services.AddScoped<IGetLocationPlayerNotesQueryHandler, GetLocationPlayerNotesQueryHandler>();
@@ -278,6 +294,7 @@ namespace CastLibrary.WebHost.IoC
             services.AddScoped<IGetPlayerTraitsQueryHandler, GetPlayerTraitsQueryHandler>();
             services.AddScoped<IGetPlayerSecretsQueryHandler, GetPlayerSecretsQueryHandler>();
             services.AddScoped<IGetSharedPlayerSecretsQueryHandler, GetSharedPlayerSecretsQueryHandler>();
+            services.AddScoped<IGetCampaignSecretsQueryHandler, GetCampaignSecretsQueryHandler>();
             services.AddScoped<IGetPlayerConditionsQueryHandler, GetPlayerConditionsQueryHandler>();
             services.AddScoped<IGetDiscoveredCastQueryHandler, GetDiscoveredCastQueryHandler>();
             services.AddScoped<IGetPlayerCastPerceptionsQueryHandler, GetPlayerCastPerceptionsQueryHandler>();
@@ -292,6 +309,7 @@ namespace CastLibrary.WebHost.IoC
             services.AddScoped<IGetChroniclesQueryHandler, GetChroniclesQueryHandler>();
             services.AddScoped<IGetChroniclesSessionsPagedQueryHandler, GetChroniclesSessionsPagedQueryHandler>();
             services.AddScoped<IGetChroniclesSessionsQueryHandler, GetChroniclesSessionsQueryHandler>();
+            services.AddScoped<IGetChronicleFeedQueryHandler, GetChronicleFeedQueryHandler>();
             services.AddScoped<IDeleteSessionCommandHandler, DeleteSessionCommandHandler>();
 
             services.AddScoped<IGetQuicknoteQueueQueryHandler, GetQuicknoteQueueQueryHandler>();
@@ -337,6 +355,7 @@ namespace CastLibrary.WebHost.IoC
             services.AddScoped<ILibraryBundleTemplateFactory, LibraryBundleTemplateFactory>();
             services.AddScoped<ITemplateReadMeFactory, TemplateReadMeFactory>();
             services.AddScoped<IChroniclesFactory, ChroniclesFactory>();
+            services.AddScoped<ICampaignChronicleFeedFactory, CampaignChronicleFeedFactory>();
             services.AddScoped<IStorylineChronicleFactory, StorylineChronicleFactory>();
             services.AddScoped<IPlayerNoteChronicleFactory, PlayerNoteChronicleFactory>();
 
@@ -380,6 +399,14 @@ namespace CastLibrary.WebHost.IoC
             services.AddScoped<IWebhookEventStrategy, CastLibrary.Logic.Strategies.WebhookEvent.InvoicePaymentSucceededStrategy>();
             services.AddScoped<IWebhookEventStrategy, PaymentIntentPaymentFailedStrategy>();
             services.AddScoped<IWebhookEventStrategy, PaymentIntentSucceededStrategy>();
+
+            // v2 chronicle archive strategies
+            services.AddScoped<IChronicleMapper, ChronicleMapper>();
+            services.AddScoped<IChronicleArchiveStrategy, StorylineChronicleArchiveStrategy>();
+            services.AddScoped<IChronicleArchiveStrategy, PlayerNoteChronicleArchiveStrategy>();
+            services.AddScoped<IChronicleArchiveStrategy, SecretChronicleArchiveStrategy>();
+            services.AddScoped<IChronicleArchiveStrategy, CoinRewardChronicleArchiveStrategy>();
+            services.AddScoped<IChronicleArchiveStrategy, ShopPurchaseChronicleArchiveStrategy>();
 
             return services;
         }

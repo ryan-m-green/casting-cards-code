@@ -40,7 +40,7 @@ public class SoundtracksController(
 
     [HttpPost]
     [Consumes("multipart/form-data")]
-    public async Task<IActionResult> Upload(Guid campaignId, IFormFile file, [FromForm] string title, [FromForm] int volume = 80, [FromForm] bool isLoop = false)
+    public async Task<IActionResult> Upload(Guid campaignId, IFormFile file, [FromForm] string title, [FromForm] int volume = 80, [FromForm] bool isLoop = false, [FromForm] string kind = "music")
     {
         if (!await CallerOwns(campaignId)) return Forbid();
 
@@ -49,6 +49,9 @@ public class SoundtracksController(
 
         if (volume < 0 || volume > 100)
             return BadRequest("Volume must be between 0 and 100.");
+
+        if (kind is not ("music" or "sound_effect"))
+            return BadRequest("Kind must be either 'music' or 'sound_effect'.");
 
         var audioTypes = new[] { "audio/mpeg", "audio/wav", "audio/wave", "audio/ogg", "audio/x-wav", "audio/mp4", "audio/x-m4a", "audio/flac" };
         var validationResult = await fileValidationService.ValidateFileAsync(file, 25 * 1024 * 1024, audioTypes);
@@ -63,7 +66,7 @@ public class SoundtracksController(
         var resolvedContentType = validationResult.DetectedContentType;
 
         var domain = await uploadCommand.HandleAsync(
-            new UploadSoundtrackCommand(campaignId, title, file.FileName, file.OpenReadStream(), resolvedContentType, volume, isLoop));
+            new UploadSoundtrackCommand(campaignId, title, file.FileName, file.OpenReadStream(), resolvedContentType, volume, isLoop, kind));
 
         return CreatedAtAction(nameof(GetAll), new { campaignId }, domain);
     }
@@ -82,8 +85,14 @@ public class SoundtracksController(
         if (request.LoopDelaySeconds.HasValue && (request.LoopDelaySeconds < 1 || request.LoopDelaySeconds > 60))
             return BadRequest("Loop delay must be between 1 and 60 seconds.");
 
+        if (request.Kind is not ("music" or "sound_effect"))
+            return BadRequest("Kind must be either 'music' or 'sound_effect'.");
+
         var domain = await updateCommand.HandleAsync(
-            new UpdateSoundtrackCommand(soundtrackId, request.Title, request.Volume, request.IsLoop, request.LoopDelaySeconds));
+            new UpdateSoundtrackCommand(soundtrackId, request.Title, request.Volume, request.IsLoop, request.LoopDelaySeconds, request.Kind));
+
+        await hubContext.Clients.Group(campaignId.ToString())
+            .SendAsync("SoundtrackVolumeChanged", new { campaignId, soundtrackId, volume = domain.Volume });
 
         return Ok(domain);
     }
@@ -122,4 +131,5 @@ public class UpdateSoundtrackRequest
     public int Volume { get; set; } = 80;
     public bool IsLoop { get; set; }
     public int? LoopDelaySeconds { get; set; }
+    public string Kind { get; set; } = "music";
 }

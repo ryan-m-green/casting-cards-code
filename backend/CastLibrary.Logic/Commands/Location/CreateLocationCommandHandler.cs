@@ -11,7 +11,8 @@ public interface ICreateLocationCommandHandler
 }
 public class CreateLocationCommandHandler(
     ILocationInsertRepository locationInsertRepository,
-    ISubscriptionLimitService subscriptionLimitService) : ICreateLocationCommandHandler
+    ISubscriptionLimitService subscriptionLimitService,
+    ICampaignKeywordInsertRepository campaignKeywordInsertRepository) : ICreateLocationCommandHandler
 {
     public async Task<LocationDomain> HandleAsync(CreateLocationCommand command)
     {
@@ -24,9 +25,12 @@ public class CreateLocationCommandHandler(
             Condition = command.Request.Condition, Geography = command.Request.Geography,
             Architecture = command.Request.Architecture, Climate = command.Request.Climate,
             Religion = command.Request.Religion, Vibe = command.Request.Vibe, Languages = command.Request.Languages,
+            Keywords = command.Request.Keywords,
             Description = command.Request.Description, DmNotes = command.Request.DmNotes, CreatedAt = DateTime.UtcNow,
         };
-        return await locationInsertRepository.InsertAsync(domain);
+        var result = await locationInsertRepository.InsertAsync(domain);
+        await campaignKeywordInsertRepository.MergeKeywordsAsync(command.DmUserId, "location", domain.Keywords);
+        return result;
     }
 }
 
