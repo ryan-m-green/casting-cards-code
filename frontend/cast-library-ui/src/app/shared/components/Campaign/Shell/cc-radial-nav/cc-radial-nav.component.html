@@ -1,5 +1,14 @@
 <nav class="grid-navigation" [style.--portal-color]="portalColor() || null" aria-label="Grid navigation">
   <svg class="main-svg">
+    <defs>
+      <!-- Recolours the black icon files to white. Applied as an SVG filter *attribute* (the SVG
+           filter element), not just the CSS `filter` property, because the CSS property is not
+           honoured on SVG <image> elements in mobile Safari. Where the CSS filter does apply it
+           wins — CSS overrides presentation attributes — so desktop is unchanged. -->
+      <filter id="cc-radial-icon-white" color-interpolation-filters="sRGB" x="-25%" y="-25%" width="150%" height="150%">
+        <feColorMatrix type="matrix" values="0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 1 0" />
+      </filter>
+    </defs>
     <g class="radial-scale-group" transform="translate(133.5, 133.5) scale(0.534) translate(-250, -250)">
       <path
         class="sector-path arch-slice"
@@ -18,6 +27,7 @@
           width="40"
           height="40"
           class="sector-icon-svg arch-icon"
+          filter="url(#cc-radial-icon-white)"
           (click)="onChronicles()"
         />
       </g>
@@ -41,6 +51,7 @@
         [attr.width]="icon.width"
         [attr.height]="icon.height"
         class="center-card-image"
+        filter="url(#cc-radial-icon-white)"
         [class.is-active]="activeArea() === centerKey"
         [class.is-changed]="changedKeys().has(centerKey)"
       />
@@ -59,6 +70,7 @@
               [attr.height]="icon.height"
               preserveAspectRatio="xMidYMid meet"
               class="sector-icon-svg"
+              filter="url(#cc-radial-icon-white)"
               [class.is-active]="activeArea() === item.key"
               [class.is-changed]="changedKeys().has(item.key)"
               (click)="onSelect(item.key)"
