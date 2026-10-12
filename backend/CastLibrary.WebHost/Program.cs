@@ -11,6 +11,7 @@ using CastLibrary.WebHost.Hubs;
 using CastLibrary.WebHost.IoC;
 using CastLibrary.WebHost.Middleware;
 using CastLibrary.WebHost.Services;
+using CastLibrary.WebHost.Validators;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using CastLibrary.Shared.Enums;
 using Microsoft.AspNetCore.HttpOverrides;
