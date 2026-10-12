@@ -125,10 +125,14 @@ export class CcMyCharacterComponent implements OnInit, OnDestroy {
   private loadPlayerCard(): void {
     this.http.get<PlayerCard>(
       `${environment.apiUrl}/api/campaigns/${this.campaignId()}/player-cards/mine`
-    ).subscribe(card => {
-      this.playerCard.set(card);
-      this.loadTraits(card.id);
-      this.loadSecrets();
+    ).subscribe({
+      next: card => {
+        this.playerCard.set(card);
+        this.loadTraits(card.id);
+        this.loadSecrets();
+      },
+      // A caller with no card in this campaign (a DM, say) gets a 404 — the area just shows empty.
+      error: () => this.playerCard.set(null),
     });
   }
 
