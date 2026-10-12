@@ -307,6 +307,10 @@ CREATE INDEX IF NOT EXISTS idx_campaign_keywords_keyword_trgm
 -- ============================================================
 -- Library card keywords columns
 -- ============================================================
+ALTER TABLE locations   ADD COLUMN IF NOT EXISTS keywords TEXT[] NOT NULL DEFAULT '{}';
+ALTER TABLE sublocations ADD COLUMN IF NOT EXISTS keywords TEXT[] NOT NULL DEFAULT '{}';
+ALTER TABLE factions     ADD COLUMN IF NOT EXISTS keywords TEXT[] NOT NULL DEFAULT '{}';
+
 -- ============================================================
 -- Cast Hit Points: replace casts.alignment with casts.max_hit_points
 -- ============================================================
