@@ -68,7 +68,9 @@ public class PlayerCardsController(
         if (!await CallerCanAccess(campaignId)) return Forbid();
         var userId = userRetriever.GetUserId(User);
         var card = await getPlayerCard.HandleAsync(campaignId, userId);
-        if (card is null) return NotFound();
+        // Having no card in this campaign (a DM, say) is a normal empty state, not an error. Returning
+        // 404 here made the browser log a "failed to load resource" on every entry to such a campaign.
+        if (card is null) return Ok(null);
 
         var conditions = (await getPlayerConditions.HandleAsync(card.Id)).ToList();
 

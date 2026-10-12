@@ -127,11 +127,13 @@ export class CcMyCharacterComponent implements OnInit, OnDestroy {
       `${environment.apiUrl}/api/campaigns/${this.campaignId()}/player-cards/mine`
     ).subscribe({
       next: card => {
-        this.playerCard.set(card);
-        this.loadTraits(card.id);
-        this.loadSecrets();
+        this.playerCard.set(card ?? null);
+        if (card) {
+          this.loadTraits(card.id);
+          this.loadSecrets();
+        }
       },
-      // A caller with no card in this campaign (a DM, say) gets a 404 — the area just shows empty.
+      // A caller with no card in this campaign (a DM, say) simply shows an empty area.
       error: () => this.playerCard.set(null),
     });
   }

@@ -79,6 +79,10 @@ export class CcMotivationsContentComponent implements OnInit, OnDestroy {
       `${environment.apiUrl}/api/campaigns/${this.campaignId()}/player-cards/mine`
     ).subscribe({
       next: card => {
+        if (!card) {
+          this.loading.set(false);
+          return;
+        }
         this.playerCardId.set(card.id);
         this.loadTraits(card.id);
       },
