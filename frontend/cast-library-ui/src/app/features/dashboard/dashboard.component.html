@@ -9,7 +9,7 @@
 
   <div class="dashboard-subtitle">Card Deck Library</div>
 
-  <div class="sc section-label-mb">
+  <div class="sc section-label-mb" ccDragScroll>
     <button type="button" class="stat-tile" (click)="goto('/gm/cast')" [attr.aria-label]="'Go to Cast page. You have ' + stats().castCount + ' cast members.'">
       <cc-card-stat type="cast" [count]="stats().castCount" label="Cast" />
     </button>

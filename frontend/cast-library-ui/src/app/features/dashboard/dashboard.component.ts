@@ -15,6 +15,7 @@ import { CcCardStatComponent } from './cc-card-stat/cc-card-stat.component';
 import { CcDashConditionsCardComponent } from './cc-dash-conditions-card/cc-dash-conditions-card.component';
 import { CcCheatsheetDashCardComponent } from './cc-cheatsheet-dash-card/cc-cheatsheet-dash-card.component';
 import { CcSoundtrackCardComponent } from '../../shared/components/Campaign/Soundtracks/cc-soundtrack-card/cc-soundtrack-card.component';
+import { CcDragScrollDirective } from '../../shared/directives/cc-drag-scroll.directive';
 
 interface DashboardStats {
   campaignCount: number;
@@ -50,7 +51,7 @@ interface ImportFailure {
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [CommonModule, JournalTitleComponent, UpgradeBadgeComponent, CcCardStatComponent, CcDashConditionsCardComponent, CcCheatsheetDashCardComponent, CcSoundtrackCardComponent, PortalCardComponent],
+  imports: [CommonModule, JournalTitleComponent, UpgradeBadgeComponent, CcCardStatComponent, CcDashConditionsCardComponent, CcCheatsheetDashCardComponent, CcSoundtrackCardComponent, PortalCardComponent, CcDragScrollDirective],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.scss'
 })
