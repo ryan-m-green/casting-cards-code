@@ -13,13 +13,16 @@
   perspective: 700px;
   position: relative;
 
+  // The crown art is black; this chain tints it gold (the selected / primary state).
+  $crown-gold: brightness(0) saturate(100%) invert(80%) sepia(60%) saturate(700%) hue-rotate(5deg) brightness(105%);
+
   &__crown {
     position: absolute;
     top: -17px;
     right: -10px;
     width: 40px;
     height: 28px;
-    filter: brightness(0) saturate(100%) invert(80%) sepia(60%) saturate(700%) hue-rotate(5deg) brightness(105%) drop-shadow(0 1px 3px rgba(0, 0, 0, 0.75));
+    filter: $crown-gold drop-shadow(0 1px 3px rgba(0, 0, 0, 0.75));
     transform: rotate(20deg);
     pointer-events: none;
     z-index: 10;
@@ -34,10 +37,20 @@
     &--inactive {
       pointer-events: auto;
       cursor: pointer;
-      opacity: 0.25;
+      // The crown is gold on the gold card frame, so a faint one vanishes into it. Lift it a little
+      // and rim it in silver so the crown's pattern reads as a control you can pick.
+      opacity: 0.5;
+
+      filter:
+        $crown-gold
+        drop-shadow(1px 0 0 #ced4dc)
+        drop-shadow(-1px 0 0 #ced4dc)
+        drop-shadow(0 1px 0 #ced4dc)
+        drop-shadow(0 -1px 0 #ced4dc)
+        drop-shadow(0 1px 3px rgba(0, 0, 0, 0.75));
 
       &:hover {
-        opacity: 0.65;
+        opacity: 0.85;
       }
     }
 
