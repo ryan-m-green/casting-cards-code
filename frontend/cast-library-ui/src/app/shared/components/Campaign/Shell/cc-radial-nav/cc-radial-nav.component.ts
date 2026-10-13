@@ -51,6 +51,10 @@ export class CcRadialNavComponent {
   readonly itemRadius = 41.25;
   readonly itemDistance = 84.22;
 
+  /** The Campaign Chronicles arch icon's centre, in the radial SVG's own user space. */
+  readonly archIconX = 101.44;
+  readonly archIconY = 311.54;
+
   readonly items: CcRadialNavItem[] = [
     { key: 'bottom-right', label: 'Bot R', ariaLabel: 'Bottom Right', angle: 135 },
     { key: 'middle-right', label: 'Mid R', ariaLabel: 'Middle Right', angle: 90 },
@@ -132,6 +136,23 @@ export class CcRadialNavComponent {
 
   getSectorIconTransform(angle: number): { x: number; y: number } {
     return this.getItemCenter(angle);
+  }
+
+  /**
+   * Places an HTML icon (see the template) on the radial's own 267px pixel box. The SVG content is
+   * scaled by 0.534 about a point 133.5px in, so a slot authored at (x, y) in the SVG's user space
+   * lands there; `width`/`height` are the icon's user-space size.
+   */
+  iconBox(x: number, y: number, width: number, height: number): Record<string, string> {
+    const scale = 0.534;
+    const origin = 250;
+    const centre = 133.5;
+    return {
+      left: `${(x - origin) * scale + centre - (width * scale) / 2}px`,
+      top: `${(y - origin) * scale + centre - (height * scale) / 2}px`,
+      width: `${width * scale}px`,
+      height: `${height * scale}px`,
+    };
   }
 
   private circlePath(cx: number, cy: number, r: number): string {

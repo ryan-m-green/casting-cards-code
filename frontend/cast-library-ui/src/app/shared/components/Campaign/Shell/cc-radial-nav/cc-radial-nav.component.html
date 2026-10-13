@@ -1,14 +1,5 @@
 <nav class="grid-navigation" [style.--portal-color]="portalColor() || null" aria-label="Grid navigation">
   <svg class="main-svg">
-    <defs>
-      <!-- Recolours the black icon files to white. Applied as an SVG filter *attribute* (the SVG
-           filter element), not just the CSS `filter` property, because the CSS property is not
-           honoured on SVG <image> elements in mobile Safari. Where the CSS filter does apply it
-           wins — CSS overrides presentation attributes — so desktop is unchanged. -->
-      <filter id="cc-radial-icon-white" color-interpolation-filters="sRGB" x="-25%" y="-25%" width="150%" height="150%">
-        <feColorMatrix type="matrix" values="0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 1 0" />
-      </filter>
-    </defs>
     <g class="radial-scale-group" transform="translate(133.5, 133.5) scale(0.534) translate(-250, -250)">
       <path
         class="sector-path arch-slice"
@@ -18,19 +9,6 @@
         (click)="onChronicles()"
         style="cursor: pointer;"
       />
-
-      <g transform="translate(101.44, 311.54)">
-        <image
-          [attr.href]="'/bookshelf_full_books.svg'"
-          x="-20"
-          y="-20"
-          width="40"
-          height="40"
-          class="sector-icon-svg arch-icon"
-          filter="url(#cc-radial-icon-white)"
-          (click)="onChronicles()"
-        />
-      </g>
 
       <path
         *ngFor="let cell of cells; trackBy: trackCell"
@@ -43,43 +21,40 @@
         style="cursor: pointer;"
       />
 
-      <image
-        *ngIf="areaIcon(centerKey) as icon"
-        [attr.href]="icon.path"
-        [attr.x]="centerX - icon.width / 2"
-        [attr.y]="centerY - icon.height / 2"
-        [attr.width]="icon.width"
-        [attr.height]="icon.height"
-        class="center-card-image"
-        filter="url(#cc-radial-icon-white)"
-        [class.is-active]="activeArea() === centerKey"
-        [class.is-changed]="changedKeys().has(centerKey)"
-      />
-
-      <g id="sector-icons">
-        <ng-container *ngFor="let item of items">
-          <g
-            *ngIf="areaIcon(item.key) as icon"
-            [attr.transform]="'translate(' + getSectorIconTransform(item.angle).x + ',' + getSectorIconTransform(item.angle).y + ')'"
-          >
-            <image
-              [attr.href]="icon.path"
-              [attr.x]="-icon.width / 2"
-              [attr.y]="-icon.height / 2"
-              [attr.width]="icon.width"
-              [attr.height]="icon.height"
-              preserveAspectRatio="xMidYMid meet"
-              class="sector-icon-svg"
-              filter="url(#cc-radial-icon-white)"
-              [class.is-active]="activeArea() === item.key"
-              [class.is-changed]="changedKeys().has(item.key)"
-              (click)="onSelect(item.key)"
-            />
-          </g>
-        </ng-container>
-      </g>
     </g>
   </svg>
+
+  <!-- The icons live in an HTML layer over the SVG rather than as SVG <image> elements: the CSS
+       filter that inverts them to white is not applied to SVG <image> in mobile Safari (it *is*
+       applied to an HTML <img>). Each box mirrors the SVG's scale so an icon lands on its wedge. -->
+  <img
+    *ngIf="areaIcon(centerKey) as icon"
+    class="radial-icon center-card-image"
+    [src]="icon.path"
+    [style]="iconBox(centerX, centerY, icon.width, icon.height)"
+    [class.is-active]="activeArea() === centerKey"
+    [class.is-changed]="changedKeys().has(centerKey)"
+    (click)="onCenter()"
+    alt="" />
+
+  <ng-container *ngFor="let item of items">
+    <img
+      *ngIf="areaIcon(item.key) as icon"
+      class="radial-icon"
+      [src]="icon.path"
+      [style]="iconBox(getItemCenter(item.angle).x, getItemCenter(item.angle).y, icon.width, icon.height)"
+      [class.is-active]="activeArea() === item.key"
+      [class.is-changed]="changedKeys().has(item.key)"
+      (click)="onSelect(item.key)"
+      alt="" />
+  </ng-container>
+
+  <img
+    class="radial-icon arch-icon"
+    src="/bookshelf_full_books.svg"
+    [style]="iconBox(archIconX, archIconY, 40, 40)"
+    (click)="onChronicles()"
+    alt="" />
 </nav>
 
 <button class="leave-btn" type="button" (click)="onLeave()" aria-label="Leave campaign">

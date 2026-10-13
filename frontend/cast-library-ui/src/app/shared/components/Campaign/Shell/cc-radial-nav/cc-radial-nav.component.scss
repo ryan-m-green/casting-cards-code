@@ -48,21 +48,12 @@
   filter: drop-shadow(0 8px 10px rgba(0, 0, 0, 0.55));
 }
 
-.center-card-image {
-  pointer-events: none;
-  filter: brightness(0) invert(1) drop-shadow(0 2px 4px rgba(0, 0, 0, 0.45));
-  transition: opacity 0.2s ease;
-
-  &.is-active {
-    opacity: 1;
-  }
-
-  &:not(.is-active) {
-    opacity: 0.5;
-  }
-}
-
-.sector-icon-svg {
+/* The icon layer: plain HTML <img>s, so the white-inverting filter also applies on mobile Safari
+   (which does not apply filters to SVG <image> elements). Each is placed by `iconBox` in the TS. */
+.radial-icon {
+  position: absolute;
+  display: block;
+  object-fit: contain;
   filter: brightness(0) invert(1);
   transition: opacity 0.2s ease;
   cursor: pointer;
@@ -77,7 +68,12 @@
   }
 }
 
-.sector-icon-svg.arch-icon {
+.center-card-image {
+  pointer-events: none;
+  filter: brightness(0) invert(1) drop-shadow(0 2px 4px rgba(0, 0, 0, 0.45));
+}
+
+.radial-icon.arch-icon {
   opacity: 1;
 }
 
@@ -98,7 +94,7 @@
   }
 }
 
-.sector-icon-svg.is-changed {
+.radial-icon.is-changed {
   animation: radial-icon-glow 1.6s ease-in-out infinite;
 }
 
